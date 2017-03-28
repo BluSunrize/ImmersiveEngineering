@@ -761,6 +761,10 @@ gui.immersiveengineering.config.turret.expel_casings_off=Keep Casings
 gui.immersiveengineering.config.mixer.outputSingle=Output only bottom fluid
 gui.immersiveengineering.config.mixer.outputAll=Output all fluids
 
+gui.immersiveengineering.config.assembler.clearRecipe=Clear Recipe
+gui.immersiveengineering.config.assembler.recursiveIngredients=Recursive use of ingredients
+gui.immersiveengineering.config.assembler.nonRecursiveIngredients=Non-Recursive use of ingredients
+
 #CHAT
 chat.immersiveengineering.warning.wrongCable=You cannot attach this wire here
 chat.immersiveengineering.warning.wrongDimension=You are in the wrong dimension

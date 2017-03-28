@@ -1,7 +1,10 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
@@ -9,6 +12,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 
 public class GuiAssembler extends GuiContainer
 {
+	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public TileEntityAssembler tile;
 	public GuiAssembler(InventoryPlayer inventoryPlayer, TileEntityAssembler tile)
 	{
@@ -31,11 +36,15 @@ public class GuiAssembler extends GuiContainer
 	@Override
 	public void initGui()
 	{
+//		"\u2716"
+//		"\u2716"
+//		"\u2716"
 		super.initGui();
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, guiLeft+49,guiTop+65, 10,10, TextFormatting.GRAY+"\u2716"));
-		this.buttonList.add(new GuiButton(1, guiLeft+107,guiTop+65, 10,10, TextFormatting.GRAY+"\u2716"));
-		this.buttonList.add(new GuiButton(2, guiLeft+165,guiTop+65, 10,10, TextFormatting.GRAY+"\u2716"));
+		this.buttonList.add(new GuiButtonIE(0, guiLeft+ 11,guiTop+67, 10,10, null, texture,230,50).setHoverOffset(0,10));
+		this.buttonList.add(new GuiButtonIE(1, guiLeft+ 69,guiTop+67, 10,10, null, texture,230,50).setHoverOffset(0,10));
+		this.buttonList.add(new GuiButtonIE(2, guiLeft+127,guiTop+67, 10,10, null, texture,230,50).setHoverOffset(0,10));
+		this.buttonList.add(new GuiButtonState(3, guiLeft+162,guiTop+69, 16,16, null, tile.recursiveIngredients, texture,240,66,3));
 	}
 	@Override
 	protected void actionPerformed(GuiButton button)
@@ -43,6 +52,11 @@ public class GuiAssembler extends GuiContainer
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("buttonID", button.id);
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+		if(button.id==3)
+		{
+			tile.recursiveIngredients = !tile.recursiveIngredients;
+			this.initGui();
+		}
 	}
 
 	@Override
@@ -53,9 +67,9 @@ public class GuiAssembler extends GuiContainer
 		if(mx>=guiLeft+187&&mx<guiLeft+194 && my>=guiTop+12&&my<guiTop+59)
 			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
 
-		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204,guiTop+13,16,46, 250,0,20,50, mx,my, "immersiveengineering:textures/gui/assembler.png",tooltip);
-		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182,guiTop+70,16,46, 250,0,20,50, mx,my, "immersiveengineering:textures/gui/assembler.png",tooltip);
-		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204,guiTop+70,16,46, 250,0,20,50, mx,my, "immersiveengineering:textures/gui/assembler.png",tooltip);
+		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204,guiTop+13,16,46, 250,0,20,50, mx,my, texture,tooltip);
+		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182,guiTop+70,16,46, 250,0,20,50, mx,my, texture,tooltip);
+		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204,guiTop+70,16,46, 250,0,20,50, mx,my, texture,tooltip);
 
 		for(int i=0; i<tile.patterns.length; i++)
 			if(tile.inventory[18+i]==null && tile.patterns[i].inv[9]!=null)
@@ -66,6 +80,11 @@ public class GuiAssembler extends GuiContainer
 					for(int j=0; j<tooltip.size(); j++)
 						tooltip.set(j, (j==0?tile.patterns[i].inv[9].getRarity().rarityColor: TextFormatting.GRAY)+tooltip.get(j));
 				}
+
+		if(((mx>=guiLeft+11&&mx<guiLeft+21)||(mx>=guiLeft+69&&mx<guiLeft+79)||(mx>=guiLeft+127&&mx<guiLeft+137)) && my>guiTop+67&&my<guiTop+77)
+			tooltip.add(I18n.format(Lib.GUI_CONFIG+"assembler.clearRecipe"));
+		if(mx>=guiLeft+162&&mx<guiLeft+178 && my>guiTop+69&&my<guiTop+85)
+			tooltip.add(I18n.format(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients":"nonRecursiveIngredients")));
 
 		if(!tooltip.isEmpty())
 		{
@@ -79,15 +98,15 @@ public class GuiAssembler extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/assembler.png");
+		ClientUtils.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+187,guiTop+13+(46-stored), guiLeft+194,guiTop+59, 0xffb51500, 0xff600b00);
 
-		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204,guiTop+13,16,46, 230,0,20,50, mx,my, "immersiveengineering:textures/gui/assembler.png",null);
-		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182,guiTop+70,16,46, 230,0,20,50, mx,my, "immersiveengineering:textures/gui/assembler.png",null);
-		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204,guiTop+70,16,46, 230,0,20,50, mx,my, "immersiveengineering:textures/gui/assembler.png",null);
+		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204,guiTop+13,16,46, 230,0,20,50, mx,my, texture,null);
+		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182,guiTop+70,16,46, 230,0,20,50, mx,my, texture,null);
+		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204,guiTop+70,16,46, 230,0,20,50, mx,my, texture,null);
 
 		for(int i=0; i<tile.patterns.length; i++)
 			if(tile.inventory[18+i]==null && tile.patterns[i].inv[9]!=null)
