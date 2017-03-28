@@ -47,6 +47,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	public FluidTank[] tanks = {new FluidTank(8000),new FluidTank(8000),new FluidTank(8000)};
 	public ItemStack[] inventory = new ItemStack[18+3];
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this),new CrafterPatternInventory(this),new CrafterPatternInventory(this)};
+	public boolean recursiveIngredients = false;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -55,6 +56,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		tanks[0].readFromNBT(nbt.getCompoundTag("tank0"));
 		tanks[1].readFromNBT(nbt.getCompoundTag("tank1"));
 		tanks[2].readFromNBT(nbt.getCompoundTag("tank2"));
+		recursiveIngredients = nbt.getBoolean("recursiveIngredients");
 		if(!descPacket)
 		{
 			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 18+3);
@@ -73,6 +75,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		nbt.setTag("tank0", tanks[0].writeToNBT(new NBTTagCompound()));
 		nbt.setTag("tank1", tanks[1].writeToNBT(new NBTTagCompound()));
 		nbt.setTag("tank2", tanks[2].writeToNBT(new NBTTagCompound()));
+		nbt.setBoolean("recursiveIngredients", recursiveIngredients);
 		if(!descPacket)
 		{
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
@@ -95,6 +98,10 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				CrafterPatternInventory pattern = patterns[id];
 				for(int i = 0; i < pattern.inv.length; i++)
 					pattern.inv[i] = null;
+			}
+			else if(id==3)
+			{
+				recursiveIngredients=!recursiveIngredients;
 			}
 		} else if(message.hasKey("patternSync"))
 		{
@@ -311,13 +318,18 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		if(stack == null)
 			return false;
-		if(slot-1<patterns.length)
-			for(int p = slot; p < patterns.length; p++)
+		if(slot-1<patterns.length||recursiveIngredients)
+			for(int p = recursiveIngredients?0:slot; p < patterns.length; p++)
 			{
 				CrafterPatternInventory pattern = patterns[p];
 				for(int i=0; i<9; i++)
-					if(pattern.inv[i] != null && OreDictionary.itemMatches(pattern.inv[i], stack, false))
-						return true;
+					if(pattern.inv[i]!=null)
+					{
+						if(OreDictionary.itemMatches(pattern.inv[i], stack, false))
+							return true;
+						else if(pattern.inv[i].getItem()==stack.getItem() && !pattern.inv[i].getHasSubtypes() && pattern.inv[i].isItemStackDamageable())
+							return true;
+					}
 			}
 		return false;
 	}

@@ -28,6 +28,6 @@ public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.
 	@Override
 	public boolean listForCreative()
 	{
-		return ordinal()>2||ordinal()!=6;
+		return ordinal()>2&&ordinal()!=6;
 	}
 }

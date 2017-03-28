@@ -20,6 +20,13 @@ public class GuiButtonIE extends GuiButton
 		this.texV = v;
 	}
 
+	int[] hoverOffset;
+	public GuiButtonIE setHoverOffset(int x, int y)
+	{
+		this.hoverOffset = new int[]{x,y};
+		return this;
+	}
+
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY)
 	{
@@ -32,7 +39,10 @@ public class GuiButtonIE extends GuiButton
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-			this.drawTexturedModalRect(xPosition,yPosition, texU,texV, width,height);
+			if(hoverOffset!=null && this.hovered)
+				this.drawTexturedModalRect(xPosition,yPosition, texU+hoverOffset[0],texV+hoverOffset[1], width,height);
+			else
+				this.drawTexturedModalRect(xPosition,yPosition, texU,texV, width,height);
 			this.mouseDragged(mc, mouseX, mouseY);
 			if(displayString!=null && !displayString.isEmpty())
 			{
