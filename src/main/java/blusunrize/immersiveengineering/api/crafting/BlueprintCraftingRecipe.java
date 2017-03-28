@@ -290,6 +290,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 						b = true;
 						break;
 					}
+				if(!b)
+					break;
 			}
 			if(b)
 				return recipe;
