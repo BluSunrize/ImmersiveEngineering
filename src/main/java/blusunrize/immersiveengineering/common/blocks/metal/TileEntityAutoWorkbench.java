@@ -260,7 +260,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 			return true;
 		return super.hasCapability(capability, facing);
 	}
-	IItemHandler insertionHandler = new IEInventoryHandler(16, this, 0, true, false);
+	IItemHandler insertionHandler = new IEInventoryHandler(16, this, 1, true, false);
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
