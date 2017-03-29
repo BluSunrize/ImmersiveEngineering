@@ -202,7 +202,11 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 					this.setFire(3);
 				if(mop.entityHit instanceof EntityLivingBase)
 				{
-					this.onImpact(mop);
+					boolean allowHit = true;
+					if(this.shootingEntity instanceof EntityPlayer && mop.entityHit instanceof EntityPlayer)
+						allowHit = ((EntityPlayer)this.shootingEntity).canAttackPlayer((EntityPlayer)mop.entityHit);
+					if(allowHit)
+						this.onImpact(mop);
 					this.setDead();
 				}
 				else if(mop.typeOfHit== RayTraceResult.Type.BLOCK)
