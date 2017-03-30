@@ -35,6 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -278,6 +279,23 @@ public class Utils
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
 	{
 		return tile0.getPos().equals(tile1.getPos());
+	}
+
+	public static EnumFacing rotateFacingTowardsDir(EnumFacing f, EnumFacing dir)
+	{
+		if(dir==EnumFacing.NORTH)
+			return f;
+		else if(dir==EnumFacing.SOUTH && f.getAxis()!=Axis.Y)
+			return f.rotateY().rotateY();
+		else if(dir==EnumFacing.WEST && f.getAxis()!=Axis.Y)
+			return f.rotateYCCW();
+		else if(dir==EnumFacing.EAST && f.getAxis()!=Axis.Y)
+			return f.rotateY();
+		else if(dir==EnumFacing.DOWN && f.getAxis()!=Axis.Y)
+			return f.rotateAround(Axis.X);
+		else if(dir==EnumFacing.UP && f.getAxis()!=Axis.X)
+			return f.rotateAround(Axis.X).getOpposite();
+		return f;
 	}
 
 	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityLivingBase living, boolean bool)
