@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.util.IEFluid;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import net.minecraft.block.*;
@@ -50,6 +51,7 @@ import org.lwjgl.util.vector.Vector3f;
 import javax.annotation.Nonnull;
 import javax.vecmath.Quat4d;
 import java.util.*;
+import java.util.function.Function;
 
 public class ClientUtils
 {
@@ -1419,10 +1421,62 @@ public class ClientUtils
 
 	public static Vector3f[] applyMatrixToVertices(Matrix4 matrix, Vector3f... vertices)
 	{
+		if(matrix==null)
+			return  vertices;
 		Vector3f[] ret = new Vector3f[vertices.length];
 		for(int i = 0; i < ret.length; i++)
 			ret[i] = matrix.apply(vertices[i]);
 		return ret;
+	}
+
+	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	{
+		return createBakedBox(from, to, matrix, EnumFacing.NORTH, textureGetter, colour);
+	}
+	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, EnumFacing facing, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	{
+		return createBakedBox(from, to, matrix, facing, vertices->vertices, textureGetter, colour);
+	}
+	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, EnumFacing facing, Function<Vector3f[],Vector3f[]> vertexTransformer, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	{
+		HashSet quads = new HashSet();
+		if(vertexTransformer==null)
+			vertexTransformer = v->v;
+
+		Vector3f[] vertices = {new Vector3f(from.x,from.y,from.z),new Vector3f(from.x,from.y,to.z),new Vector3f(to.x,from.y,to.z),new Vector3f(to.x,from.y,from.z)};
+		TextureAtlasSprite sprite = textureGetter.apply(EnumFacing.DOWN);
+		if(sprite!=null)
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.DOWN,facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
+
+		for(Vector3f v : vertices)
+			v.setY(to.y);
+		sprite = textureGetter.apply(EnumFacing.UP);
+		if(sprite!=null)
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
+
+		vertices = new Vector3f[]{new Vector3f(to.x,to.y,from.z),new Vector3f(to.x,from.y,from.z),new Vector3f(from.x,from.y,from.z),new Vector3f(from.x,to.y,from.z)};
+		sprite = textureGetter.apply(EnumFacing.NORTH);
+		if(sprite!=null)
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.NORTH,facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
+
+		for(Vector3f v : vertices)
+			v.setZ(to.z);
+		sprite = textureGetter.apply(EnumFacing.SOUTH);
+		if(sprite!=null)
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.SOUTH,facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
+
+		vertices = new Vector3f[]{new Vector3f(from.x,to.y,to.z),new Vector3f(from.x,from.y,to.z),new Vector3f(from.x,from.y,from.z),new Vector3f(from.x,to.y,from.z)};
+		sprite = textureGetter.apply(EnumFacing.WEST);
+		if(sprite!=null)
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
+
+		for(Vector3f v : vertices)
+			v.setX(to.x);
+		sprite = textureGetter.apply(EnumFacing.EAST);
+		if(sprite!=null)
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), sprite, new double[]{from.z*16, 16-to.y*16, to.z*16, 16-from.y*16}, colour, false));
+
+		return quads;
 	}
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)

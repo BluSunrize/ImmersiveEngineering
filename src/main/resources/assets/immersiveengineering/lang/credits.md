@@ -4,3 +4,4 @@ CODE
 
 LOCALIZATION
 	- zh_CN: 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii
+	- ru_RU: lex1975
