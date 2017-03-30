@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -192,6 +193,16 @@ public class ConveyorHandler
 		 * @return the dyed colour as a hex RGB
 		 */
 		int getDyeColour();
+
+		/**
+		 * when the player rightclicks the block, after direction changes or dye have been handled
+		 *
+		 * @return true if anything happened, cancelling item use
+		 */
+		default boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
+		{
+			return false;
+		}
 
 		/**
 		 * @param wall 0 is left, 1 is right

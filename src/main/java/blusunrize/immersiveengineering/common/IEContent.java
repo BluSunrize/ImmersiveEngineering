@@ -26,10 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevice;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
@@ -558,6 +555,7 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
 
 		/**ASSEMBLER RECIPE ADAPTERS*/
 		//Shaped
@@ -661,7 +659,7 @@ public class IEContent
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
 		blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable,100,0));
-		blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA,20,0));
+		blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA,40,0));
 		blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable,100,1));
 		blockFluidConcrete.setPotionEffects(new PotionEffect(MobEffects.SLOWNESS,20,3, false,false));
 
