@@ -11,7 +11,11 @@
 - added Chemthrower compatability for ThermalFoundation fluids
 - added carpet, quarter and threequarter thicknesses for Concrete to make the fluid dry to more reasonable levels
 - added a toggleable option to the Mixer to output all fluids instead of just the bottom one
-- added placeable Toolboxes
+- added placeable Toolboxes, they are fully accessible while placed
+- added placeable Coresamples, these can be rightclicked with a map to set a marker to their origin
+- added a visible chunk boundary when holding or looking at the Sample Drill
+- added Redstone Wires to the API (thanks Malte)
+- added the Covered Conveyor, preventing players from picking up items from it
 - changed Razorwire to render extended wooden boards when stacked
 - changed the Conductive debuff to apply to Teslacoil and Electro-Razorwire damage
 - changed metal plates and Sheetmetal to be craftable for any IE-used metal
@@ -34,6 +38,15 @@
 - fixed the Potion fluid not having textures (thanks Malte)
 - fixed ConcurrentModificationException on Crafttweaker reloads (thanks Malte)
 - fixed the Mixer not working when its internal tank is filled (thanks Malte)
+- fixed IE slag not being usable in ThermalExpansion recipes
+- fixed the Turrets losing its inventory (thanks Malte)
+- fixed NBT sensitive fluids not outputting from barrels properly (thanks Malte)
+- fixed a dupebug of empty fluid containers in the Assembler
+- fixed Assembler outputting damageable craftign items
+- fixed missing sounds on IE explosions
+- fixed Refinery dividing by 0 if timer config is adjusted downwards
+- fixed AutoWorkbench not exposing the right slots to its item handler and rendering the wrong items
+- fixed projectiles ignoring PvP protection within player teams
 - Translations Added/Updated: ru_RU (lex1975) (this time for real, since I forgot it last time), zh_TW (xaxa123)
 
 #####Version 0.10-57 - BUILT
