@@ -136,10 +136,17 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(conveyorBeltSubtype != null && conveyorBeltSubtype.canBeDyed() && Utils.isDye(heldItem))
+		if(conveyorBeltSubtype!=null)
 		{
-			EnumDyeColor dye = EnumDyeColor.byDyeDamage(Utils.getDye(heldItem));
-			if(dye != null && conveyorBeltSubtype.setDyeColour(dye.getMapColor().colorValue))
+			boolean update;
+			if(conveyorBeltSubtype.canBeDyed() && Utils.isDye(heldItem))
+			{
+				EnumDyeColor dye = EnumDyeColor.byDyeDamage(Utils.getDye(heldItem));
+				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye.getMapColor().colorValue);
+			}
+			else
+				update = conveyorBeltSubtype.playerInteraction(this, player, hand, heldItem, hitX,hitY,hitZ, side);
+			if(update)
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
