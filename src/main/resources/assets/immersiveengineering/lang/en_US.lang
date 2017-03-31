@@ -151,6 +151,7 @@ tile.immersiveengineering.metalDevice0.capacitor_hv.name=HV Capacitor
 tile.immersiveengineering.metalDevice0.capacitor_creative.name=Creative Capacitor
 tile.immersiveengineering.metalDevice0.barrel.name=Metal Barrel
 tile.immersiveengineering.metalDevice0.fluid_pump.name=Fluid Pump
+tile.immersiveengineering.metalDevice0.fluid_placer.name=Floodgate
 tile.immersiveengineering.metalDevice1.blast_furnace_preheater.name=Blast Furnace Preheater
 tile.immersiveengineering.metalDevice1.furnace_heater.name=External Heater
 tile.immersiveengineering.metalDevice1.dynamo.name=Kinetic Dynamo

@@ -9,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -21,7 +22,9 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		super("metalDevice0",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDevice0.class), ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE,IEProperties.SIDECONFIG[0],IEProperties.SIDECONFIG[1],IEProperties.SIDECONFIG[2],IEProperties.SIDECONFIG[3],IEProperties.SIDECONFIG[4],IEProperties.SIDECONFIG[5]);
 		setHardness(3.0F);
 		setResistance(15.0F);
+		this.setMetaBlockLayer(BlockTypes_MetalDevice0.FLUID_PLACER.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setNotNormalBlock(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice0.FLUID_PLACER.getMeta());
 	}
 
 	@Override
@@ -80,6 +83,8 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 				return new TileEntityMetalBarrel();
 			case FLUID_PUMP:
 				return new TileEntityFluidPump();
+			case FLUID_PLACER:
+				return new TileEntityFluidPlacer();
 		}
 		return null;
 	}
