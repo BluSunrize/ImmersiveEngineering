@@ -2,12 +2,12 @@
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
 - added Crafttweaker integration for the Mixer
 - added the Garden Cloche! It grows a variety of crops!
-- added farming compatability for Actually Additions
-- added farming compatability for Attained Drops
-- added farming compatability for Mystical Agriculture
-- added farming compatability for Harvestcraft
-- added farming compatability for Better With Mods
-- added farming compatability for Extra Utils
+    - added farming compatability for Actually Additions
+    - added farming compatability for Attained Drops
+    - added farming compatability for Mystical Agriculture
+    - added farming compatability for Harvestcraft
+    - added farming compatability for Better With Mods
+    - added farming compatability for Extra Utils
 - added Chemthrower compatability for ThermalFoundation fluids
 - added carpet, quarter and threequarter thicknesses for Concrete to make the fluid dry to more reasonable levels
 - added a toggleable option to the Mixer to output all fluids instead of just the bottom one

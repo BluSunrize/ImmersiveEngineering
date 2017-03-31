@@ -12,7 +12,8 @@ public enum BlockTypes_MetalDevice0 implements IStringSerializable, BlockIEBase.
 	CAPACITOR_HV,
 	CAPACITOR_CREATIVE,
 	BARREL,
-	FLUID_PUMP;
+	FLUID_PUMP,
+	FLUID_PLACER;
 
 	@Override
 	public String getName()

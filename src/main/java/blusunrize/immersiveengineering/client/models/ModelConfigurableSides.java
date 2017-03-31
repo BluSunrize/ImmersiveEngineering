@@ -41,6 +41,13 @@ public class ModelConfigurableSides implements IBakedModel
 	private static HashMap<String, ITextureNamer> TYPES = new HashMap();
 	static{
 		TYPES.put("all6_", new ITextureNamer(){});//every side seperately
+		TYPES.put("s_", new ITextureNamer(){//all sides, same texture
+			@Override
+			public String nameFromSide(EnumFacing side, SideConfig cfg)
+			{
+				return "side";
+			}
+		});
 		TYPES.put("hud_", new ITextureNamer(){//horizontal, up, down
 			@Override
 			public String nameFromSide(EnumFacing side, SideConfig cfg)
