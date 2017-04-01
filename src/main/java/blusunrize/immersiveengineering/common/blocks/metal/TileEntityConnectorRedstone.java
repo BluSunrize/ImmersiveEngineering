@@ -136,9 +136,9 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		super.connectCable(cableType, target, other);
-		if(other instanceof TileEntityConnectorRedstone)
-			if(((TileEntityConnectorRedstone) other).wireNetwork != wireNetwork)
-				wireNetwork.mergeNetwork(((TileEntityConnectorRedstone) other).wireNetwork);
+		if(other instanceof IRedstoneConnector)
+			if(((IRedstoneConnector) other).getNetwork() != wireNetwork)
+				wireNetwork.mergeNetwork(((IRedstoneConnector) other).getNetwork());
 	}
 
 	@Override
