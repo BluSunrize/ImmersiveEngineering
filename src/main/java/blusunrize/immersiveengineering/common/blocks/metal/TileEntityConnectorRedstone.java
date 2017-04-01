@@ -31,6 +31,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public EnumFacing facing = EnumFacing.DOWN;
 	public int ioMode = 0; // 0 - input, 1 -output
 	public int redstoneChannel = 0;
+	public boolean rsDirty = false;
 
 	private RedstoneWireNetwork wireNetwork = new RedstoneWireNetwork().add(this);
 	private boolean loaded = false;
@@ -43,6 +44,8 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 			loaded = true;
 			wireNetwork.removeFromNetwork(null);
 		}
+		if (hasWorldObj() && !worldObj.isRemote && rsDirty)
+			wireNetwork.updateValues();
 	}
 
 	@Override
@@ -82,7 +85,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	@Override
 	public void onChange()
 	{
-		if (!isInvalid())
+		if (!isInvalid() && isRSOutput())
 		{
 			markContainingBlockForUpdate(null);
 			markBlockForUpdate(pos.offset(facing), null);
@@ -102,6 +105,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 			int val = worldObj.isBlockIndirectlyGettingPowered(pos);
 			signals[redstoneChannel] = (byte) Math.max(val, signals[redstoneChannel]);
 		}
+		rsDirty = false;
 	}
 
 	public boolean isRSOutput()
