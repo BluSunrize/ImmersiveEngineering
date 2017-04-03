@@ -81,13 +81,7 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 			getTileEntity().computerOn = args.checkBoolean(0);
 			return null;
 		}
-		
-		@Callback(doc = "function():boolean -- checks whether the bottling machine is on or off)")
-		public Object[] isEnabled(Context context, Arguments args)
-		{
-			return new Object[]{getTileEntity().computerOn};
-		}
-		
+
 		@Callback(doc = "function():number -- get energy storage capacity")
 		public Object[] getEnergyStored(Context context, Arguments args)
 		{
@@ -101,7 +95,7 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 		}
 
 		@Callback(doc = "function():table -- get tankinfo for fluid tank")
-		public Object[] getTankContents(Context context, Arguments args)
+		public Object[] getTank(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().tanks[0].getInfo()};
 		}

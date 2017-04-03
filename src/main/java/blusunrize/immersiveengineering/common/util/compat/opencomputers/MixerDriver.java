@@ -101,12 +101,6 @@ public class MixerDriver extends DriverSidedTileEntity
 			getTileEntity().computerOn = args.checkBoolean(0);
 			return null;
 		}
-		
-		@Callback(doc = "function():boolean -- checks whether the mixer is on or off)")
-		public Object[] isEnabled(Context context, Arguments args)
-		{
-			return new Object[]{getTileEntity().computerOn};
-		}
 
 		@Callback(doc = "function():boolean -- checks whether the mixer is currently active")
 		public Object[] isActive(Context context, Arguments args)
@@ -139,9 +133,9 @@ public class MixerDriver extends DriverSidedTileEntity
 			return new Object[]{stack};
 		}
 		
-		// Only wants to return info on the bottom fluid, so renamed the method from getTankInfo to getBottomFluid. Might be able to force displaying all fluids, not sure yet.
+		// Only wants to return info on the bottom fluid. Might be able to force displaying all fluids, not sure yet.
 		@Callback(doc = "function():table -- get bottom fluid in tank")
-		public Object[] getBottomFluid(Context context, Arguments args)
+		public Object[] getTank(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().tank.getInfo()};
 		}
