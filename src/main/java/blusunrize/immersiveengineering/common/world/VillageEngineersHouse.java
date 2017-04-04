@@ -193,6 +193,14 @@ public class VillageEngineersHouse extends Village
 		{
 			e.printStackTrace();
 		}
+
+		for(int zz=0; zz<=9; zz++)
+			for(int xx=0; xx<=10; xx++)
+			{
+				this.clearCurrentPositionBlocksUpwards(world, xx,10,zz, box);
+				this.replaceAirAndLiquidDownwards(world, Blocks.COBBLESTONE.getDefaultState(), xx, -1,zz, box);
+			}
+
 		if(IEConfig.enableVillagers)
 			this.spawnVillagers(world, box, 4, 1, 2, 1);
 		return true;
