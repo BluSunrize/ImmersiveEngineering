@@ -409,7 +409,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
-		return !"extension".equals(group) ;//&& !"base_glass".equals(group);
+		return !"glass".equals(group);
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

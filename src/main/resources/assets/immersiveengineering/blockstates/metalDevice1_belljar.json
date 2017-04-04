@@ -3,23 +3,11 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "forge:multi-layer",
-		"custom": {
-			"base": "immersiveengineering:metalDevice1_belljar#normal",
-			"Solid": "immersiveengineering:metalDevice1_belljar#normal",
-			"Translucent": "immersiveengineering:metalDevice1_belljar#glass"
-		}
+		"model": "immersiveengineering:metalDevice/belljar.obj.ie",
+		"custom": {"flip-v": true}
 	},
 	"variants":
 	{
-		"normal":[{
-		 	"model": "immersiveengineering:metalDevice/belljar.obj.ie",
-			"custom": {"flip-v": true}
-		}],
-		"glass":[{
-		 	"model": "immersiveengineering:metalDevice/belljar_glass.obj.ie",
-			"custom": {"flip-v": true}
-		}],
 		"inventory,type=belljar": [{
 			"transform": {
 				"scale": [ 0.1875, 0.1875, 0.1875 ],
