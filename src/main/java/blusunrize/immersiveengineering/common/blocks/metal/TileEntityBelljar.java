@@ -54,7 +54,14 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int dummy = 0;
 	private ItemStack[] inventory = new ItemStack[7];
-	public FluidTank tank = new FluidTank(4000);
+	public FluidTank tank = new FluidTank(4000)
+	{
+		@Override
+		protected void onContentsChanged()
+		{
+			TileEntityBelljar.this.sendSyncPacket(2);
+		}
+	};
 	public FluxStorage energyStorage = new FluxStorage(16000,Math.max(256,IEConfig.Machines.belljar_consumption));
 
 	private IPlantHandler curPlantHandler;
@@ -194,7 +201,10 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		if(type==0)
+		{
 			nbt.setFloat("growth", growth);
+			nbt.setInteger("energy", energyStorage.getEnergyStored());
+		}
 		else if(type==1)
 		{
 			nbt.setInteger("fertilizerAmount", fertilizerAmount);
@@ -209,6 +219,8 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	{
 		if(message.hasKey("growth"))
 			renderGrowth = message.getFloat("growth");
+		if(message.hasKey("energy"))
+			energyStorage.setEnergy(message.getInteger("energy"));
 		if(message.hasKey("fertilizerAmount"))
 			fertilizerAmount = message.getInteger("fertilizerAmount");
 		if(message.hasKey("fertilizerMod"))
