@@ -117,6 +117,91 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	}
 
 	@Override
+	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection)
+	{
+		boolean flag = false;
+		int i = startIndex;
+
+		if(reverseDirection)
+			i = endIndex - 1;
+
+		if(stack.isStackable())
+		{
+			while(stack.stackSize > 0 && (!reverseDirection && i<endIndex || reverseDirection && i>=startIndex))
+			{
+				Slot slot = this.inventorySlots.get(i);
+				ItemStack stackInSlot = slot.getStack();
+
+				if(stackInSlot!=null && areItemStacksEqual(stack, stackInSlot))
+				{
+					int j = stackInSlot.stackSize+stack.stackSize;
+					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
+					if(j<=maxSize)
+					{
+						stack.stackSize = 0;
+						stackInSlot.stackSize = j;
+						slot.onSlotChanged();
+						flag = true;
+					}
+					else if(stackInSlot.stackSize<maxSize)
+					{
+						stack.stackSize -= (maxSize-stackInSlot.stackSize);
+						stackInSlot.stackSize = maxSize;
+						slot.onSlotChanged();
+					}
+				}
+
+				if(reverseDirection)
+					--i;
+				else
+					++i;
+			}
+		}
+
+		if(stack.stackSize > 0)
+		{
+			if(reverseDirection)
+				i = endIndex - 1;
+			else
+				i = startIndex;
+
+			while(!reverseDirection && i<endIndex || reverseDirection && i>=startIndex)
+			{
+				Slot slot = this.inventorySlots.get(i);
+				ItemStack stackInSlot = slot.getStack();
+				if(stackInSlot==null && slot.isItemValid(stack))
+				{
+					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
+					if(stack.stackSize<=maxSize)
+					{
+						slot.putStack(stack.copy());
+						slot.onSlotChanged();
+						stack.stackSize = 0;
+						flag = true;
+						break;
+					}
+					else
+					{
+						slot.putStack(Utils.copyStackWithAmount(stack, maxSize));
+						slot.onSlotChanged();
+						stack.stackSize -= maxSize;
+					}
+				}
+				if(reverseDirection)
+					--i;
+				else
+					++i;
+			}
+		}
+		return flag;
+	}
+
+	private static boolean areItemStacksEqual(ItemStack stackA, ItemStack stackB)
+	{
+		return stackB.getItem() == stackA.getItem() && (!stackA.getHasSubtypes() || stackA.getMetadata() == stackB.getMetadata()) && ItemStack.areItemStackTagsEqual(stackA, stackB);
+	}
+
+	@Override
 	public void onContainerClosed(EntityPlayer playerIn)
 	{
 		super.onContainerClosed(playerIn);
