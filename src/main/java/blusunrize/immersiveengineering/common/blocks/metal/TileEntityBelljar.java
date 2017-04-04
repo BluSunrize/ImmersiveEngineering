@@ -69,6 +69,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public float fertilizerMod = 1;
 	private float growth = 0;
 	public float renderGrowth = 0;
+	public boolean renderActive = false;
 
 	@Override
 	public void update()
@@ -77,7 +78,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			return;
 		if(getWorld().isRemote)
 		{
-			if(energyStorage.getEnergyStored()>IEConfig.Machines.belljar_consumption && fertilizerAmount>0)
+			if(energyStorage.getEnergyStored()>IEConfig.Machines.belljar_consumption && fertilizerAmount>0 && renderActive)
 			{
 				IPlantHandler handler = getCurrentPlantHandler();
 				if(handler!=null&&handler.isCorrectSoil(inventory[1], inventory[0]) && fertilizerAmount>0)
@@ -106,8 +107,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 				IPlantHandler handler = getCurrentPlantHandler();
 				if(handler!=null&&handler.isCorrectSoil(inventory[1], inventory[0]) && fertilizerAmount>0 && energyStorage.extractEnergy(IEConfig.Machines.belljar_consumption, true)==IEConfig.Machines.belljar_consumption)
 				{
-					energyStorage.extractEnergy(IEConfig.Machines.belljar_consumption, false);
-					fertilizerAmount--;
+					boolean consume = false;
 					if(growth >= 1)
 					{
 						ItemStack[] outputs = handler.getOutput(inventory[1], inventory[0], this);
@@ -134,13 +134,30 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 									}
 								}
 							growth = handler.resetGrowth(inventory[1], inventory[0], growth, this, false);
+							consume = true;
 						}
 					}
 					else if(growth < 1)
 					{
 						growth += handler.getGrowthStep(inventory[1], inventory[0], growth, this, fertilizerMod, false);
+						consume = true;
 						if(worldObj.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
 							sendSyncPacket(0);
+					}
+					if(consume)
+					{
+						energyStorage.extractEnergy(IEConfig.Machines.belljar_consumption, false);
+						fertilizerAmount--;
+						if(!renderActive)
+						{
+							renderActive = true;
+							sendSyncPacket(3);
+						}
+					}
+					else if(renderActive)
+					{
+						renderActive = true;
+						sendSyncPacket(3);
 					}
 				}
 				else
@@ -212,6 +229,8 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		}
 		else if(type==2)
 			nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
+		else if(type==3)
+			nbt.setBoolean("renderActive", renderActive);
 		ImmersiveEngineering.packetHandler.sendToAllAround(new MessageTileSync(this, nbt), new TargetPoint(worldObj.provider.getDimension(),getPos().getX(), getPos().getY(), getPos().getZ(), 128));
 	}
 	@Override
@@ -219,6 +238,8 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	{
 		if(message.hasKey("growth"))
 			renderGrowth = message.getFloat("growth");
+		if(message.hasKey("renderActive"))
+			renderActive = message.getBoolean("renderActive");
 		if(message.hasKey("energy"))
 			energyStorage.setEnergy(message.getInteger("energy"));
 		if(message.hasKey("fertilizerAmount"))
