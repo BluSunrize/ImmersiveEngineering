@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChorusPlant;
 import net.minecraft.block.BlockCrops;
@@ -84,7 +86,7 @@ public class BelljarHandler
 
 	public static ResourceLocation getSoilTexture(ItemStack soil)
 	{
-		return soilTextureMap.get(new ComparableItemStack(soil));
+		return soilTextureMap.get(new ComparableItemStack(soil,false));
 	}
 
 	public interface IPlantHandler extends IPlantRenderer
@@ -129,7 +131,7 @@ public class BelljarHandler
 		float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile);
 	}
 
-	private static HashMap<ComparableItemStack, ItemStack> seedSoilMap = new HashMap<>();
+	private static HashMap<ComparableItemStack, IngredientStack> seedSoilMap = new HashMap<>();
 	private static HashMap<ComparableItemStack, ItemStack[]> seedOutputMap = new HashMap<>();
 	private static HashMap<ComparableItemStack, IBlockState[]> seedRenderMap = new HashMap<>();
 
@@ -140,13 +142,13 @@ public class BelljarHandler
 		@Override
 		public boolean isValid(ItemStack seed)
 		{
-			return seed!=null&&getSeedSet().contains(new ComparableItemStack(seed));
+			return seed!=null&&getSeedSet().contains(new ComparableItemStack(seed,false));
 		}
 		@Override
 		public boolean isCorrectSoil(ItemStack seed, ItemStack soil)
 		{
-			ItemStack reqSoil = seedSoilMap.get(new ComparableItemStack(seed));
-			return OreDictionary.itemMatches(reqSoil, soil, false);
+			IngredientStack reqSoil = seedSoilMap.get(new ComparableItemStack(seed,false));
+			return reqSoil.matchesItemStack(soil);
 		}
 		@Override
 		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
@@ -156,22 +158,26 @@ public class BelljarHandler
 		@Override
 		public ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile)
 		{
-			return seedOutputMap.get(new ComparableItemStack(seed));
+			return seedOutputMap.get(new ComparableItemStack(seed,false));
 		}
 
 		@Override
 		@SideOnly(Side.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
 			if(states!=null)
 				return states;
 			return null;
 		}
 
-		public void register(ItemStack seed, ItemStack[] output, ItemStack soil, IBlockState... render)
+		public void register(ItemStack seed, ItemStack[] output, Object soil, IBlockState... render)
 		{
-			ComparableItemStack comp = new ComparableItemStack(seed);
+			register(seed, output, ApiUtils.createIngredientStack(soil), render);
+		}
+		public void register(ItemStack seed, ItemStack[] output, IngredientStack soil, IBlockState... render)
+		{
+			ComparableItemStack comp = new ComparableItemStack(seed,false);
 			getSeedSet().add(comp);
 			seedSoilMap.put(comp, soil);
 			seedOutputMap.put(comp, output);
@@ -192,7 +198,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
 			if(states!=null)
 			{
 				IBlockState[] ret = new IBlockState[states.length];
@@ -204,15 +210,19 @@ public class BelljarHandler
 							ret[i] = ((BlockCrops)states[i].getBlock()).withAge(Math.min(max, Math.round(max*growth)));
 						}
 						else
+						{
 							for(IProperty prop : states[i].getPropertyNames())
-								if("age".equals(prop.getName()) && prop instanceof PropertyInteger)
+								if("age".equals(prop.getName())&&prop instanceof PropertyInteger)
 								{
 									int max = 0;
 									for(Integer allowed : ((PropertyInteger)prop).getAllowedValues())
-										if(allowed!=null && allowed>max)
+										if(allowed!=null&&allowed > max)
 											max = allowed;
 									ret[i] = states[i].withProperty(prop, Math.min(max, Math.round(max*growth)));
 								}
+							if(ret[i]==null)
+								ret[i] = states[i];
+						}
 				return ret;
 			}
 			return null;
@@ -255,7 +265,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 		{
-			ComparableItemStack comp = new ComparableItemStack(seed);
+			ComparableItemStack comp = new ComparableItemStack(seed,false);
 			IBlockState[] renderStates = seedRenderMap.get(comp);
 			if(renderStates.length>0 && renderStates[0]!=null && renderStates[0].getBlock() instanceof BlockStem)
 			{
@@ -271,7 +281,7 @@ public class BelljarHandler
 				GlStateManager.popMatrix();
 				if(growth>=.5)
 				{
-					ItemStack[] fruit = seedOutputMap.get(new ComparableItemStack(seed));
+					ItemStack[] fruit = seedOutputMap.get(new ComparableItemStack(seed,false));
 					if(fruit!=null&&fruit.length>0&&fruit[0]!=null&&fruit[0].getItem()!=null)
 					{
 						Block fruitBlock = Block.getBlockFromItem(fruit[0].getItem());
@@ -305,7 +315,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
 			if(states!=null)
 				return states;
 			return null;
@@ -314,7 +324,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
 			if(states!=null && states.length>2)
 				return .6875f-(states.length)*.0625f;
 			return .6875f;
@@ -323,7 +333,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
 			if(states!=null)
 				GlStateManager.translate(0, (-1+growth)*(states.length-1), 0);
 			return false;
@@ -346,8 +356,8 @@ public class BelljarHandler
 		stemHandler.register(new ItemStack(Items.PUMPKIN_SEEDS), new ItemStack[]{new ItemStack(Blocks.PUMPKIN)}, new ItemStack(Blocks.DIRT), Blocks.PUMPKIN_STEM.getDefaultState());
 		stemHandler.register(new ItemStack(Items.MELON_SEEDS), new ItemStack[]{new ItemStack(Blocks.MELON_BLOCK)}, new ItemStack(Blocks.DIRT), Blocks.MELON_STEM.getDefaultState());
 
-		stackingHandler.register(new ItemStack(Items.REEDS), new ItemStack[]{new ItemStack(Items.REEDS,2)}, new ItemStack(Blocks.SAND), Blocks.REEDS.getDefaultState(),Blocks.REEDS.getDefaultState());
-		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS,2)}, new ItemStack(Blocks.SAND), Blocks.CACTUS.getDefaultState(),Blocks.CACTUS.getDefaultState());
+		stackingHandler.register(new ItemStack(Items.REEDS), new ItemStack[]{new ItemStack(Items.REEDS,2)}, "sand", Blocks.REEDS.getDefaultState(),Blocks.REEDS.getDefaultState());
+		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS,2)}, "sand", Blocks.CACTUS.getDefaultState(),Blocks.CACTUS.getDefaultState());
 		stackingHandler.register(new ItemStack(Blocks.CHORUS_FLOWER), new ItemStack[]{new ItemStack(Items.CHORUS_FRUIT,1)}, new ItemStack(Blocks.END_STONE), Blocks.CHORUS_PLANT.getDefaultState().withProperty(BlockChorusPlant.DOWN,true).withProperty(BlockChorusPlant.UP,true),Blocks.CHORUS_PLANT.getDefaultState().withProperty(BlockChorusPlant.DOWN,true).withProperty(BlockChorusPlant.UP,true),Blocks.CHORUS_FLOWER.getDefaultState());
 
 		cropHandler.register(new ItemStack(Blocks.RED_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.RED_MUSHROOM,2)}, new ItemStack(Blocks.MYCELIUM), Blocks.RED_MUSHROOM.getDefaultState());
