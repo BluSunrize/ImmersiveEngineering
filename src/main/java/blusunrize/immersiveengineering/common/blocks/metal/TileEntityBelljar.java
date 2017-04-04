@@ -151,13 +151,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 						if(!renderActive)
 						{
 							renderActive = true;
-							sendSyncPacket(3);
+							sendSyncPacket(0);
 						}
 					}
 					else if(renderActive)
 					{
-						renderActive = true;
-						sendSyncPacket(3);
+						renderActive = false;
+						sendSyncPacket(0);
 					}
 				}
 				else
@@ -221,6 +221,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		{
 			nbt.setFloat("growth", growth);
 			nbt.setInteger("energy", energyStorage.getEnergyStored());
+			nbt.setBoolean("renderActive", renderActive);
 		}
 		else if(type==1)
 		{
@@ -229,8 +230,6 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		}
 		else if(type==2)
 			nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
-		else if(type==3)
-			nbt.setBoolean("renderActive", renderActive);
 		ImmersiveEngineering.packetHandler.sendToAllAround(new MessageTileSync(this, nbt), new TargetPoint(worldObj.provider.getDimension(),getPos().getX(), getPos().getY(), getPos().getZ(), 128));
 	}
 	@Override

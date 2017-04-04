@@ -12,12 +12,19 @@ public class ComparableItemStack
 
 	public ComparableItemStack(ItemStack stack)
 	{
+		this(stack, true);
+	}
+	public ComparableItemStack(ItemStack stack, boolean matchOre)
+	{
 		if(stack==null)
 			throw new RuntimeException("You cannot instantiate a ComparableItemStack with null for an Item!");
 		this.stack = stack;
-		int[] oids = OreDictionary.getOreIDs(stack);
-		if(oids!=null && oids.length>0)
-			this.oreID = oids[0];
+		if(matchOre)
+		{
+			int[] oids = OreDictionary.getOreIDs(stack);
+			if(oids!=null&&oids.length > 0)
+				this.oreID = oids[0];
+		}
 	}
 	public ComparableItemStack(String oreName)
 	{
@@ -75,7 +82,7 @@ public class ComparableItemStack
 		}
 		return true;
 	}
-	
+
 
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
