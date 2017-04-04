@@ -259,6 +259,7 @@ public class BelljarHandler
 			IBlockState[] renderStates = seedRenderMap.get(comp);
 			if(renderStates.length>0 && renderStates[0]!=null && renderStates[0].getBlock() instanceof BlockStem)
 			{
+				GlStateManager.rotate(-90,0,1,0);
 				BlockStem stem = (BlockStem)renderStates[0].getBlock();
 				IBlockState state = stem.getDefaultState().withProperty(BlockStem.AGE, (int)(growth >= .5?7: 2*growth*7));
 				if(growth>=.5)
