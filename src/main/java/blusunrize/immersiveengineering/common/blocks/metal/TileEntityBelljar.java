@@ -132,7 +132,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 					else if(growth < 1)
 					{
 						growth += handler.getGrowthStep(inventory[1], inventory[0], growth, this, fertilizerMod, false);
-						if(worldObj.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&32))
+						if(worldObj.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
 							sendSyncPacket(0);
 					}
 				}
@@ -202,7 +202,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		}
 		else if(type==2)
 			nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
-		ImmersiveEngineering.packetHandler.sendToAllAround(new MessageTileSync(this, nbt), new TargetPoint(getWorld().provider.getDimension(),getPos().getX(),getPos().getY(),getPos().getZ(), 128));
+		ImmersiveEngineering.packetHandler.sendToAllAround(new MessageTileSync(this, nbt), new TargetPoint(worldObj.provider.getDimension(),getPos().getX(), getPos().getY(), getPos().getZ(), 128));
 	}
 	@Override
 	public void receiveMessageFromServer(NBTTagCompound message)
