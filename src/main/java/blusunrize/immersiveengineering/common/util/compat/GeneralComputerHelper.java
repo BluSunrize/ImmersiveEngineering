@@ -24,6 +24,7 @@ public class GeneralComputerHelper
 			ManualHelper.getManual().addEntry("computer.arcfurnace", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace2"));
+			ManualHelper.getManual().addEntry("computer.bottlingmachine", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingmachine0"), new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingmachine1"));
 			ManualHelper.getManual().addEntry("computer.sampleDrill", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.sampleDrill0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.sampleDrill1"));
 			ManualHelper.getManual().addEntry("computer.crusher", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.crusher0"),
@@ -40,6 +41,7 @@ public class GeneralComputerHelper
 					new ManualPages.Text(ManualHelper.getManual(), "computer.refinery1"));
 			ManualHelper.getManual().addEntry("computer.assembler", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.assembler0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.assembler1"));
+			ManualHelper.getManual().addEntry("computer.mixer","computers", new ManualPages.Text(ManualHelper.getManual(), "computer.mixer0"), new ManualPages.Text(ManualHelper.getManual(), "computer.mixer1"));
 //			ManualHelper.getManual().addEntry("computer.bottlingMachine", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine0"),
 //					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine1"),
 //					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine2"));
