@@ -53,7 +53,7 @@ public class RedstoneWireNetwork
 			if(connector != null)
 			{
 				BlockPos conCC = Utils.toCC(connector);
-				Set<ImmersiveNetHandler.Connection> connections = ImmersiveNetHandler.INSTANCE.getConnections(connector.getWorld(), conCC);
+				Set<ImmersiveNetHandler.Connection> connections = ImmersiveNetHandler.INSTANCE.getConnections(connector.getConnectorWorld(), conCC);
 				if(connections != null)
 					for(ImmersiveNetHandler.Connection connection : connections)
 					{
@@ -62,7 +62,7 @@ public class RedstoneWireNetwork
 							node = connection.end;
 						if(!node.equals(removedCC))
 						{
-							TileEntity nodeTile = connector.getWorld().getTileEntity(node);
+							TileEntity nodeTile = connector.getConnectorWorld().getTileEntity(node);
 							if(nodeTile instanceof IRedstoneConnector)
 								if(connector.getNetwork() != ((IRedstoneConnector) nodeTile).getNetwork())
 									connector.getNetwork().mergeNetwork(((IRedstoneConnector) nodeTile).getNetwork());
