@@ -26,7 +26,7 @@ public interface IRedstoneConnector extends IImmersiveConnectable {
 	/**
 	 * @return the world that this connector is in
 	 */
-	World getWorld();
+	World getConnectorWorld();
 
 	/**
 	 * Called when the RedstoneWireNetwork updates its RS input values.
