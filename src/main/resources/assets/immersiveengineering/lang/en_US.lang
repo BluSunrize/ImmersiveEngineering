@@ -1171,6 +1171,11 @@ ie.manual.entry.chargingStation.subtext=Charge your glasses!
 ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.
 ie.manual.entry.chargingStation1=The electron tubes at the front give a feedback about the current charge of the item, but the block will also output a comparator signal for the same purposes.
 
+ie.manual.entry.belljar.name=Garden Cloche
+ie.manual.entry.belljar.subtext=Localized Rainforest
+ie.manual.entry.belljar0=The Garden Cloche, or Belljar, is a device designed to hasten the growth of plants. It allows even the an agriculturally challenged engineer to grow plants and harvest their yield.
+ie.manual.entry.belljar1=The device accepts power, fluid and items through its respective ports. Water and power are always required, various fertilizers are optional. The GUI features slots for soil and seed in the middle, fertilizer on the left and outputs on the right.<br>The hatch on the front of the glass dome is the only automatic output. Every seed needs to be paired with the correct soil to grow on, with dirt being automatically recognized as farmland.
+
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
 ie.manual.entry.highvoltage0=High-Voltage wires have the highest available transfer rate (<config;iA;wireTransferRate;2> Flux/t) and will need special connectors. Note that on High voltage connections, §oConnectors and Relays are different blocks§r, Relays will not be able to in- or output to the energy net. Furthermore, §oRelays can only be placed on the underside of the block.§r<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.
