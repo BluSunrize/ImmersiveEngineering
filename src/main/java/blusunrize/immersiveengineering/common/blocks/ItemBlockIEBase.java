@@ -72,7 +72,7 @@ public class ItemBlockIEBase extends ItemBlock
 		}
 		super.addInformation(stack, player, list, advInfo);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			list.add(I18n.format("desc.ImmersiveEngineering.info.energyStored", ItemNBTHelper.getInt(stack, "energyStorage")));
+			list.add(I18n.format("desc.immersiveengineering.info.energyStored", ItemNBTHelper.getInt(stack, "energyStorage")));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
