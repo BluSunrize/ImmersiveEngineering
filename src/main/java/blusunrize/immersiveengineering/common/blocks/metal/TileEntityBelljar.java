@@ -163,7 +163,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 				else
 					growth = 0;
 
-				if(fertilizerAmount<=0 && tank.getFluidAmount()>IEConfig.Machines.belljar_fluid)
+				if(fertilizerAmount<=0 && tank.getFluidAmount()>=IEConfig.Machines.belljar_fluid)
 				{
 					FluidFertilizerHandler fluidFert = BelljarHandler.getFluidFertilizerHandler(tank.getFluid());
 					if(fluidFert!=null)
