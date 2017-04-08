@@ -685,6 +685,7 @@ public class ClientProxy extends CommonProxy
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
 		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
+		ManualHelper.addEntry("belljar", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "belljar0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.BELLJAR.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "belljar1"));
 		ManualHelper.addEntry("teslaCoil", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "teslaCoil0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TESLA_COIL.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil1"),
