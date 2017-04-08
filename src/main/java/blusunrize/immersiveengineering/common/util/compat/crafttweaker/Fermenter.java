@@ -222,4 +222,74 @@ public class Fermenter
 			return true;
 		}
 	}
+
+	@ZenMethod
+	public static void removeByInput(IItemStack stack)
+	{
+		if(CraftTweakerHelper.toStack(stack) != null)
+			MineTweakerAPI.apply(new RemoveByInput(CraftTweakerHelper.toStack(stack)));
+	}
+
+	private static class RemoveByInput implements IUndoableAction
+	{
+		private final ItemStack input;
+		ArrayList<FermenterRecipe> removedRecipes = new ArrayList<FermenterRecipe>();
+
+		public RemoveByInput(ItemStack input)
+		{
+			this.input = input;
+		}
+
+		@Override
+		public void apply()
+		{
+			Iterator<FermenterRecipe> it = FermenterRecipe.recipeList.iterator();
+			while(it.hasNext())
+			{
+				FermenterRecipe r = it.next();
+				if(r != null && r.input.matchesItemStack(input))
+				{
+					removedRecipes.add(r);
+					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
+					it.remove();
+				}
+			}
+		}
+
+		@Override
+		public void undo()
+		{
+			if(removedRecipes != null)
+				for(FermenterRecipe recipe : removedRecipes)
+					if(recipe != null)
+					{
+						FermenterRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing Fermenter Recipes for input " + input.getDisplayName();
+		}
+
+		@Override
+		public String describeUndo()
+		{
+			return "Re-Adding Fermenter Recipes for input " + input.getDisplayName();
+		}
+
+		@Override
+		public Object getOverrideKey()
+		{
+			return null;
+		}
+
+		@Override
+		public boolean canUndo()
+		{
+			return true;
+		}
+	}
 }
