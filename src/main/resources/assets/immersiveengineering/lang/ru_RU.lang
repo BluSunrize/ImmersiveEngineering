@@ -51,7 +51,11 @@ tile.immersiveengineering.stoneDecorationStairs_concrete_leaded.name=Ступе�
 
 tile.immersiveengineering.stoneDevice.coke_oven.name=Коксовая печь
 tile.immersiveengineering.stoneDevice.blast_furnace.name=Доменная печь
-tile.immersiveengineering.stoneDevice.blast_furnace_advanced.name=Улучшение доменной печи
+tile.immersiveengineering.stoneDevice.blast_furnace_advanced.name=Улучшенная доменная печь
+tile.immersiveengineering.stoneDevice.concrete_sheet.name=Лист бетона
+tile.immersiveengineering.stoneDevice.concrete_quarter.name=Бетонная панель
+tile.immersiveengineering.stoneDevice.concrete_threequarter.name=Бетонный чанк
+tile.immersiveengineering.stoneDevice.coresample.name=Образец ядра
 
 tile.immersiveengineering.treatedWood.horizontal.name=Горизонтальные доски
 tile.immersiveengineering.treatedWood.vertical.name=Вертикальные доски
@@ -74,6 +78,7 @@ tile.immersiveengineering.woodenDevice0.gunpowder_barrel.name=Пороховая
 tile.immersiveengineering.woodenDevice0.reinforced_crate.name=Улучшенный деревянный чемодан
 tile.immersiveengineering.woodenDevice0.turntable.name=Поворотный стол
 tile.immersiveengineering.woodenDevice1.watermill.name=Водяное колесо
+tile.immersiveengineering.woodenDevice0.fluid_sorter.name=Жидкостный маршрутизатор
 tile.immersiveengineering.woodenDevice1.windmill.name=Ветряная мельница
 tile.immersiveengineering.woodenDevice1.windmill_advanced.name=Улучшеная ветряная мельница
 tile.immersiveengineering.woodenDevice1.post.name=Деревянный столб
@@ -123,6 +128,8 @@ tile.immersiveengineering.metalDecoration2.steel_wallmount.name=Стальной
 tile.immersiveengineering.metalDecoration2.aluminum_post.name=Алюминиевый столб
 tile.immersiveengineering.metalDecoration2.aluminum_wallmount.name=Алюминиевый крепёж
 tile.immersiveengineering.metalDecoration2.lantern.name=Фонарь
+tile.immersiveengineering.metalDecoration2.razor_wire.name=Колючая проволока
+tile.immersiveengineering.metalDecoration2.toolbox.name=Инструменты инженера
 
 tile.immersiveengineering.connector.connector_lv.name=Низковольтный коннектор
 tile.immersiveengineering.connector.relay_lv.name=Низковольтное реле
@@ -144,6 +151,7 @@ tile.immersiveengineering.metalDevice0.capacitor_hv.name=Высоковольт�
 tile.immersiveengineering.metalDevice0.capacitor_creative.name=Конденсатор для творческого режима
 tile.immersiveengineering.metalDevice0.barrel.name=Металлическая бочка
 tile.immersiveengineering.metalDevice0.fluid_pump.name=Жидкостный насос
+tile.immersiveengineering.metalDevice0.fluid_placer.name=Шлюз
 tile.immersiveengineering.metalDevice1.blast_furnace_preheater.name=Воздухонагреватель доменной печи
 tile.immersiveengineering.metalDevice1.furnace_heater.name=Внешний нагреватель
 tile.immersiveengineering.metalDevice1.dynamo.name=Кинетический генератор
@@ -154,11 +162,15 @@ tile.immersiveengineering.metalDevice1.fluid_pipe.name=Жидкостная тр
 tile.immersiveengineering.metalDevice1.sample_drill.name=Колонковый бур
 tile.immersiveengineering.metalDevice1.tesla_coil.name=Катушка Тесла
 tile.immersiveengineering.metalDevice1.floodlight.name=Прожектор
+tile.immersiveengineering.metalDevice1.turret_chem.name=Химическая турель
+tile.immersiveengineering.metalDevice1.turret_gun.name=Пулеметная турель
+tile.immersiveengineering.metalDevice1.belljar.name=Garden Cloche
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Конвейерная лента
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Сбрасывающая конвейерная лента
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=Вертикальная конвейерная лента
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=Раздваивающая конвейерная лента
+tile.immersiveengineering.conveyor.immersiveengineering:covered.name=Покрытая конвейерная лента
 
 tile.immersiveengineering.metalMultiblock.metal_press.name=Металлический пресс
 tile.immersiveengineering.metalMultiblock.crusher.name=Дробитель
@@ -175,6 +187,7 @@ tile.immersiveengineering.metalMultiblock.excavator.name=Экскаватор
 tile.immersiveengineering.metalMultiblock.bucket_wheel.name=Ковш экскаватора
 tile.immersiveengineering.metalMultiblock.arc_furnace.name=Дуговая печь
 tile.immersiveengineering.metalMultiblock.lightningrod.name=Громоотвод
+tile.immersiveengineering.metalMultiblock.mixer.name=Миксер
 
 tile.immersiveengineering.metalDecoration.structuralArm.name=Структурная опора
 
@@ -190,10 +203,18 @@ tile.immersiveengineering.molten_constantan.name=Расплавленный ко
 #Hydraulicraft Compat
 tile.harvesterTrolley.ieCrop.name=Сборщик промышленной конопли
 
+tile.immersiveengineering.fluidCreosote.name=Креозот
+tile.immersiveengineering.fluidPlantoil.name=Растительное масло
+tile.immersiveengineering.fluidEthanol.name=Этанол
+tile.immersiveengineering.fluidBiodiesel.name=Биодизель
+tile.immersiveengineering.fluidConcrete.name=Жидкий бетон
+
 fluid.creosote=Креозот
 fluid.plantoil=Растительное масло
 fluid.ethanol=Этанол
 fluid.biodiesel=Биодизель
+fluid.concrete=Жидкий бетон
+fluid.potion=Зелье
 
 # ITEMS
 item.immersiveengineering.metal.ingotCopper.name=Медный слиток
@@ -290,6 +311,22 @@ item.immersiveengineering.toolbox.name=Набор инструментов ин�
 
 item.immersiveengineering.revolver.normal.name=Револьвер
 item.immersiveengineering.revolver.speedloader.name=Скоростная обойма
+item.immersiveengineering.revolver.dev.name=♛Королевский покоритель♚
+item.immersiveengineering.revolver.infinity.name=Катализатор
+item.immersiveengineering.revolver.tesla.name=Пушка Гаусса
+item.immersiveengineering.revolver.sns.name=Парогенератор
+item.immersiveengineering.revolver.nerf.name=Понерфленный револьвер
+item.immersiveengineering.revolver.oblivion.name=Забвение
+item.immersiveengineering.revolver.oathkeeper.name=Oathkeeper
+item.immersiveengineering.revolver.bee.name=Beevolver
+item.immersiveengineering.revolver.fenrir.name=Fenrir
+item.immersiveengineering.revolver.earthshaker.name=§bEarthshaker§r
+item.immersiveengineering.revolver.warlord.name=The Repulsor
+item.immersiveengineering.revolver.superchief.name=The Super Chief
+item.immersiveengineering.revolver.rose.name=Divine Rose
+item.immersiveengineering.revolver.noName.name=No Name
+item.immersiveengineering.revolver.patreonBlu.name=§6Last Word§r
+item.immersiveengineering.revolver.patreonHazard.name=§4Twisted Phantom§r
 
 item.immersiveengineering.bullet.emptyCasing.name=Пустой патрон
 item.immersiveengineering.bullet.emptyShell.name=Пустая гильза
