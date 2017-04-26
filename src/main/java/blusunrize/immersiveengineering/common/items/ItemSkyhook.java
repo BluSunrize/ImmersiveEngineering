@@ -59,6 +59,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		if(slot == EntityEquipmentSlot.MAINHAND)
 		{
 			float dmg = 5 + ItemNBTHelper.getFloat(stack, "fallDamageBoost");
+			//TODO what is this meant to do? Probably not what it actually does!
 			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
 		}
 		return multimap;

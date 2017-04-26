@@ -80,7 +80,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 				for(IBlockState s : states)
 				{
 					List<BakedQuad> plantQuadList = this.plantQuads.get(s);
-//					if(plantQuadList==null)
+					if(plantQuadList==null)
 					{
 						IBakedModel plantModel = blockRenderer.getModelForState(s);
 						plantQuadList = plantModel.getQuads(s,null,0);
