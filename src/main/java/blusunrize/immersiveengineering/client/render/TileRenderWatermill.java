@@ -57,4 +57,8 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();
 	}
+	public static void reset()
+	{
+		quads = null;
+	}
 }
