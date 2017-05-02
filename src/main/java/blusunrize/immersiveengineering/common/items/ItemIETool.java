@@ -193,6 +193,13 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 						continue;
 					if(mb.createStructure(world, pos, side, player))
 						return EnumActionResult.SUCCESS;
+					for(EnumFacing otherSide : EnumFacing.HORIZONTALS)
+					{
+						if(side == otherSide)
+							continue;
+						if(mb.createStructure(world, pos, otherSide, player))
+							return EnumActionResult.SUCCESS;
+					}
 				}
 			TileEntity tile = world.getTileEntity(pos);
 			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction) && !(tile instanceof IConfigurableSides))
