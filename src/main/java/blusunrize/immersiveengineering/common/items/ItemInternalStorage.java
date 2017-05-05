@@ -42,7 +42,18 @@ public abstract class ItemInternalStorage extends ItemIEBase implements IInterna
 				stackList[i].writeToNBT(tag);
 				inv.appendTag(tag);
 			}
-		if(!stack.hasTagCompound())
+		if(stack.hasTagCompound())
+		{
+			NBTTagList invExisting = stack.getTagCompound().getTagList("Inv",10);
+			for (int i=0; i<invExisting.tagCount(); i++)
+			{
+				NBTTagCompound tag = invExisting.getCompoundTagAt(i);
+				int slot = tag.getByte("Slot") & 0xFF;
+				if ((slot >= stackList.length) && (slot < stackList.length))
+					inv.appendTag(tag);
+			}
+		}
+		else
 			stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setTag("Inv",inv);
 	}
