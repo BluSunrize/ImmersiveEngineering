@@ -304,6 +304,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice0,1, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta()), "III","ALA","WRW", 'L',"blockLead",'I',"ingotSteel",'A',"ingotAluminum",'R',"blockRedstone",'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice0,1, BlockTypes_MetalDevice0.BARREL.getMeta()), "SSS","B B","BBB", 'B',"blockSheetmetalIron",'S',"slabSheetmetalIron");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice0,1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()), " I ","ICI","PPP", 'I',"plateIron",'C',componentIron,'P',new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()));
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice0,1, BlockTypes_MetalDevice0.FLUID_PLACER.getMeta()), "IBI","B B","IBI", 'I',"plateIron",'B',Blocks.IRON_BARS);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta()), "SSS","S S","SHS", 'S',"blockSheetmetalIron", 'H',new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.DYNAMO.getMeta()), "RCR","III", 'C',copperCoil,'I',"ingotIron",'R',"dustRedstone");

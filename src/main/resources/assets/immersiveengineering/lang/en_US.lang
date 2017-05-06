@@ -151,7 +151,7 @@ tile.immersiveengineering.metalDevice0.capacitor_hv.name=HV Capacitor
 tile.immersiveengineering.metalDevice0.capacitor_creative.name=Creative Capacitor
 tile.immersiveengineering.metalDevice0.barrel.name=Metal Barrel
 tile.immersiveengineering.metalDevice0.fluid_pump.name=Fluid Pump
-tile.immersiveengineering.metalDevice0.fluid_placer.name=Floodgate
+tile.immersiveengineering.metalDevice0.fluid_placer.name=Fluid Outlet
 tile.immersiveengineering.metalDevice1.blast_furnace_preheater.name=Blast Furnace Preheater
 tile.immersiveengineering.metalDevice1.furnace_heater.name=External Heater
 tile.immersiveengineering.metalDevice1.dynamo.name=Kinetic Dynamo
@@ -1266,6 +1266,7 @@ ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe wi
 ie.manual.entry.fluidPipes2=Fluid Pumps have three essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world. Using your hammer on the base of the pump will switch the sides between in- and output.
 ie.manual.entry.fluidPipes3=In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.
 ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;Water blocks will serve as an infinite fluid source for the pump, as long as more than 3 blocks are connected.<br><br>;><config;b;pump_placeCobble;Fluid blocks that were picked up will be replaced with cobblestone to reduce the lag of flowing fluids. This behaviour can be toggled off and on by using an Engineer's Hammer on the pump.;>
+ie.manual.entry.fluidPipes5=The Fluid Outlet acts as an endpoint for a pipe system, allowing Fluid to be placed in the world. The sides can be configured between input, output (open gate) or closed, a redstone signal can be used to turn the outlet off.<br>The block will only ever output fluid up to its own heightlevel.
 
 ie.manual.entry.sorter.name=Item Router
 ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
