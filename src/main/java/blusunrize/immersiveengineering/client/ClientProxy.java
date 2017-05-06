@@ -658,7 +658,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "lightningrod1"));
 
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"),ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper")),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")),
