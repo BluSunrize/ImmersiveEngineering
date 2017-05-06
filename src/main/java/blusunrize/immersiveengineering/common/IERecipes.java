@@ -503,6 +503,7 @@ public class IERecipes
 
 		addCrusherRecipe(new ItemStack(Blocks.GRAVEL), "cobblestone", 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), Blocks.GRAVEL, 1600);
+		addCrusherRecipe(new ItemStack(Blocks.SAND), "itemSlag", 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "blockGlass", 3200);
 		addCrusherRecipe(new ItemStack(Items.QUARTZ,4), "blockQuartz", 3200);
 		addCrusherRecipe(new ItemStack(Items.GLOWSTONE_DUST,4), "glowstone", 3200);
