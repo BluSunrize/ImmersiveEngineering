@@ -59,7 +59,7 @@ public class IEDamageSources
 				for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 				{
 					ItemStack s = ((EntityLivingBase)e).getItemStackFromSlot(slot);
-					if (s!=null&&s.getItem() instanceof ITeslaEquipment)
+					if (!s.isEmpty()&&s.getItem() instanceof ITeslaEquipment)
 						((ITeslaEquipment)s.getItem()).onStrike(s, slot, (EntityLivingBase)e, cache, this);
 				}
 			}

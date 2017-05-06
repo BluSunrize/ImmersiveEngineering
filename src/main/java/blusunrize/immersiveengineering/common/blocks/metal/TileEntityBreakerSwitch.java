@@ -146,7 +146,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		Vec3d leftVec = transform.apply(new Vec3d(-1, .5, .5)).subtract(0, .5, .5);
 		EnumFacing dir = EnumFacing.getFacingFromVector((float) leftVec.xCoord, (float) leftVec.yCoord, (float) leftVec.zCoord);
 		int maxDiff = Integer.MIN_VALUE;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if (conns!=null)
 			for (Connection c:conns)
 			{
@@ -198,7 +198,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			active = !active;
 			if (wires>1)
 				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
-			worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
+			world.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
 			notifyNeighbours();
 		}
 		return true;
@@ -206,9 +206,9 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public void notifyNeighbours()
 	{
 		markDirty();
-		worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+		world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 		for(EnumFacing f : EnumFacing.VALUES)
-			worldObj.notifyNeighborsOfStateChange(getPos().offset(f), getBlockType());
+			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockType(), true);
 	}
 
 	@Override
@@ -338,25 +338,25 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 	protected void onConnectionChange()
 	{
-		if (worldObj!=null&&worldObj.isRemote)
+		if (world!=null&&world.isRemote)
 		{
 			endOfLeftConnection = null;
 			ImmersiveEngineering.proxy.clearConnectionModelCache();
 			// reset cached connection vertices
-			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
+			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 			if (conns!=null)
 				for (Connection c:conns)
 				{
 					c.catenaryVertices = null;
-					worldObj.markBlockRangeForRenderUpdate(c.end, c.end);
-					Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, c.end);
+					world.markBlockRangeForRenderUpdate(c.end, c.end);
+					Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(world, c.end);
 					if (connsThere!=null)
 						for (Connection c2:connsThere)
 							if (c2.end.equals(pos))
 								c2.catenaryVertices = null;
 				}
 		}
-		if (worldObj!=null)
+		if (world!=null)
 			markContainingBlockForUpdate(null);
 	}
 }

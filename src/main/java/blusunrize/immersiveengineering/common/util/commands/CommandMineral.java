@@ -38,17 +38,17 @@ public class CommandMineral extends IESubCommand
 				int i=0;
 				for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
 					s += ((i++)>0?", ":"")+mm.name;
-				sender.addChatMessage(new TextComponentString(s));
+				sender.sendMessage(new TextComponentString(s));
 				break;
 			case "get":
 				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(), coords.chunkXPos, coords.chunkZPos);
-				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get", TextFormatting.GOLD+(info.mineral!=null?info.mineral.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(""+info.depletion)+ TextFormatting.RESET));
+				sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get", TextFormatting.GOLD+(info.mineral!=null?info.mineral.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(""+info.depletion)+ TextFormatting.RESET));
 				break;
 			case "set":
 				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
 				if(args.length<3)
 				{
-					sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.clear",info.mineralOverride!=null?info.mineralOverride.name:"null"));
+					sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.clear",info.mineralOverride!=null?info.mineralOverride.name:"null"));
 					info.mineralOverride=null;
 					return;
 				}
@@ -59,11 +59,11 @@ public class CommandMineral extends IESubCommand
 						mineral=mm;
 				if(mineral==null)
 				{
-					sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.invalidMineral",args[2]));
+					sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.invalidMineral",args[2]));
 					return;
 				}
 				info.mineralOverride = mineral;
-				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.sucess",mineral.name));
+				sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.sucess",mineral.name));
 				IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 				break;
 			case "setDepletion":
@@ -72,7 +72,7 @@ public class CommandMineral extends IESubCommand
 				{
 					String h = I18n.translateToLocal(getHelp(".setDepletion"));
 					for(String str : h.split("<br>"))
-						sender.addChatMessage(new TextComponentString(str));
+						sender.sendMessage(new TextComponentString(str));
 					return;
 				}
 				int depl = 0;
@@ -80,20 +80,20 @@ public class CommandMineral extends IESubCommand
 					depl = Integer.parseInt(args[2].trim());
 				}catch(Exception e)
 				{
-					sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.NFE",args[2].trim()));
+					sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.NFE",args[2].trim()));
 					return;
 				}
 				info.depletion = depl;
-				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0? I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
+				sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0? I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
 				IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 				break;
 			default:
-				sender.addChatMessage(new TextComponentTranslation(getHelp("")));
+				sender.sendMessage(new TextComponentTranslation(getHelp("")));
 				break;
 			}
 		}
 		else
-			sender.addChatMessage(new TextComponentTranslation(getHelp("")));
+			sender.sendMessage(new TextComponentTranslation(getHelp("")));
 
 	}
 

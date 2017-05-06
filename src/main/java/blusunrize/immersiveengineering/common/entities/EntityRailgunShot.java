@@ -16,8 +16,8 @@ import net.minecraft.world.World;
 
 public class EntityRailgunShot extends EntityIEProjectile
 {
-	private ItemStack ammo;
-	private static final DataParameter<Optional<ItemStack>> dataMarker_ammo = EntityDataManager.createKey(EntityRailgunShot.class, DataSerializers.OPTIONAL_ITEM_STACK);
+	private ItemStack ammo = ItemStack.EMPTY;
+	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(EntityRailgunShot.class, DataSerializers.OPTIONAL_ITEM_STACK);
 	private RailgunProjectileProperties ammoProperties;
 
 	public EntityRailgunShot(World world)
@@ -46,7 +46,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataManager.register(dataMarker_ammo, Optional.absent());
+		this.dataManager.register(dataMarker_ammo, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -57,12 +57,12 @@ public class EntityRailgunShot extends EntityIEProjectile
 
 	public void setAmmoSynced()
 	{
-		if(this.getAmmo()!=null)
-			this.dataManager.set(dataMarker_ammo, Optional.of(getAmmo()));
+		if(!this.getAmmo().isEmpty())
+			this.dataManager.set(dataMarker_ammo, getAmmo());
 	}
 	public ItemStack getAmmoSynced()
 	{
-		return this.dataManager.get(dataMarker_ammo).orNull();
+		return this.dataManager.get(dataMarker_ammo);
 	}
 	public ItemStack getAmmo()
 	{
@@ -70,7 +70,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	}
 	public RailgunProjectileProperties getAmmoProperties()
 	{
-		if(ammoProperties==null && ammo!=null)
+		if(ammoProperties==null && !ammo.isEmpty())
 			ammoProperties = RailgunHandler.getProjectileProperties(ammo);
 		return ammoProperties;
 	}
@@ -91,11 +91,11 @@ public class EntityRailgunShot extends EntityIEProjectile
 	public void onEntityUpdate()
 	{
 		// For testign Desync
-		//		if(worldObj instanceof WorldServer)
-		//			((WorldServer)worldObj).func_147487_a("flame", posX,posY,posZ, 0, 0,0,0, 1);
+		//		if(world instanceof WorldServer)
+		//			((WorldServer)world).func_147487_a("flame", posX,posY,posZ, 0, 0,0,0, 1);
 		//		else
-		//			worldObj.spawnParticle("smoke", posX, posY, posZ, 0, 0, 0);
-		if(this.getAmmo() == null && this.worldObj.isRemote)
+		//			world.spawnParticle("smoke", posX, posY, posZ, 0, 0, 0);
+		if(this.getAmmo().isEmpty() && this.world.isRemote)
 			this.ammo = getAmmoSynced();
 		super.onEntityUpdate();
 	}
@@ -103,7 +103,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	@Override
 	public void onImpact(RayTraceResult mop)
 	{
-		if(!this.worldObj.isRemote && getAmmo()!=null)
+		if(!this.world.isRemote && !getAmmo().isEmpty())
 		{
 			if(mop.entityHit!=null)
 			{
@@ -119,7 +119,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 //	@Override
 //    public void onCollideWithPlayer(EntityPlayer player)
 //    {
-//        if(!this.worldObj.isRemote && this.inGround && this.getAmmo()!=null)
+//        if(!this.world.isRemote && this.inGround && this.getAmmo()!=null)
 //            if(player.inventory.addItemStackToInventory(this.getAmmo().copy()))
 //            {
 //                this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
@@ -132,7 +132,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	public void writeEntityToNBT(NBTTagCompound nbt)
 	{
 		super.writeEntityToNBT(nbt);
-		if(this.ammo!=null)
+		if(!this.ammo.isEmpty())
 			nbt.setTag("ammo", this.ammo.writeToNBT(new NBTTagCompound()));
 	}
 
@@ -140,6 +140,6 @@ public class EntityRailgunShot extends EntityIEProjectile
 	public void readEntityFromNBT(NBTTagCompound nbt)
 	{
 		super.readEntityFromNBT(nbt);
-		this.ammo = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("ammo"));
+		this.ammo = new ItemStack(nbt.getCompoundTag("ammo"));
 	}
 }

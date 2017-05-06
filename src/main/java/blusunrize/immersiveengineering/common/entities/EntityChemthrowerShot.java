@@ -84,9 +84,9 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	@Override
 	public void onEntityUpdate()
 	{
-		if(this.getFluid() == null && this.worldObj.isRemote)
+		if(this.getFluid() == null && this.world.isRemote)
 			this.fluid = getFluidSynced();
-		IBlockState state = worldObj.getBlockState(new BlockPos(posX,posY,posZ));
+		IBlockState state = world.getBlockState(new BlockPos(posX,posY,posZ));
 		Block b = state.getBlock();
 		if(b!=null && this.canIgnite() && (state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
 			this.setFire(6);
@@ -103,7 +103,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	@Override
 	public void onImpact(RayTraceResult mop)
 	{
-		if(!this.worldObj.isRemote && getFluid()!=null)
+		if(!this.world.isRemote && getFluid()!=null)
 		{
 			FluidStack fluidStack = getFluid();
 			Fluid fluid = fluidStack.getFluid();
@@ -111,7 +111,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 			boolean fire = fluid.getTemperature(fluidStack)>1000;
 			if(effect!=null)
 			{
-				ItemStack thrower = null;
+				ItemStack thrower = ItemStack.EMPTY;
 				EntityPlayer shooter = (EntityPlayer)this.getShooter();
 				if(shooter!=null)
 					thrower = shooter.getHeldItem(EnumHand.MAIN_HAND);
@@ -119,13 +119,13 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 				if(mop.typeOfHit== Type.ENTITY)
 					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluidStack);
 				else if(mop.typeOfHit== Type.BLOCK)
-					effect.applyToBlock(worldObj, mop, shooter, thrower, fluidStack);
+					effect.applyToBlock(world, mop, shooter, thrower, fluidStack);
 			}
 			else if(mop.entityHit!=null && fluid.getTemperature(fluidStack)>500)
 			{
 				int tempDiff = fluid.getTemperature(fluidStack)-300;
 				int damage = Math.abs(tempDiff)/500;
-				if(mop.entityHit.attackEntityFrom(DamageSource.lava, damage))
+				if(mop.entityHit.attackEntityFrom(DamageSource.LAVA, damage))
 					mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);
 			}
 			if(mop.entityHit!=null)
@@ -134,7 +134,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 				if(f>0)
 				{
 					mop.entityHit.setFire(f);
-					if(mop.entityHit.attackEntityFrom(DamageSource.inFire, 2))
+					if(mop.entityHit.attackEntityFrom(DamageSource.IN_FIRE, 2))
 						mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);
 				}
 			}

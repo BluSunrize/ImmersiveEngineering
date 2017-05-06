@@ -68,7 +68,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		int packets = lastPackets.size();
 		if(dummy)
 		{
-			TileEntity above = worldObj.getTileEntity(getPos().add(0,1,0));
+			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
 				packets = ((TileEntityEnergyMeter)above).lastPackets.size();
 		}
@@ -82,9 +82,9 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public void update()
 	{
-		if (!worldObj.isRemote&&((worldObj.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal<0))
+		if (!world.isRemote&&((world.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal<0))
 			updateComparatorValues();
-		if(dummy || worldObj.isRemote)
+		if(dummy || world.isRemote)
 			return;
 		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
 		lastPackets.add(lastEnergyPassed);
@@ -110,7 +110,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		if(dummy)
 		{
-			TileEntity above = worldObj.getTileEntity(getPos().add(0,1,0));
+			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
 				return ((TileEntityEnergyMeter)above).canConnectCable(cableType, target);
 			return false;
@@ -122,7 +122,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		if(dummy)
 		{
-			TileEntity above = worldObj.getTileEntity(getPos().add(0,1,0));
+			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
 				((TileEntityEnergyMeter) above).connectCable(cableType, target, other);
 		}
@@ -174,16 +174,16 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		worldObj.setBlockState(pos.add(0,1,0), state);
-		((TileEntityEnergyMeter)worldObj.getTileEntity(pos.add(0,1,0))).dummy = false;
-		((TileEntityEnergyMeter)worldObj.getTileEntity(pos.add(0,1,0))).facing = this.facing;
+		world.setBlockState(pos.add(0,1,0), state);
+		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0,1,0))).dummy = false;
+		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0,1,0))).facing = this.facing;
 	}
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		for(int i=0; i<=1; i++)
-			if(worldObj.getTileEntity(getPos().add(0,!dummy?-1:0,0).add(0,i,0)) instanceof TileEntityEnergyMeter)
-				worldObj.setBlockToAir(getPos().add(0,!dummy?-1:0,0).add(0,i,0));
+			if(world.getTileEntity(getPos().add(0,!dummy?-1:0,0).add(0,i,0)) instanceof TileEntityEnergyMeter)
+				world.setBlockToAir(getPos().add(0,!dummy?-1:0,0).add(0,i,0));
 	}
 
 	public int getAveragePower()
@@ -191,7 +191,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		TileEntityEnergyMeter te = this;
 		if(te.dummy)
 		{
-			TileEntity tmp = worldObj.getTileEntity(getPos().add(0,1,0));
+			TileEntity tmp = world.getTileEntity(getPos().add(0,1,0));
 			if(!(tmp instanceof TileEntityEnergyMeter))
 				return -1;
 			te = (TileEntityEnergyMeter) tmp;
@@ -269,7 +269,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		int oldVal = compVal;
 		int maxTrans = 0;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, dummy?pos.up():pos);
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, dummy?pos.up():pos);
 		if (conns==null)
 		{
 			compVal = 0;
@@ -281,7 +281,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		double val = getAveragePower()/(double)maxTrans;
 		compVal = (int) Math.ceil(15*val);
 		if (oldVal!=compVal)
-			worldObj.updateComparatorOutputLevel(pos, getBlockType());
+			world.updateComparatorOutputLevel(pos, getBlockType());
 	}
 	@Override
 	public int getComparatorInputOverride()

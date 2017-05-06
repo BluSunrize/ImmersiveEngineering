@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
 
@@ -91,9 +92,9 @@ public class IEAchievements
 		craftWorkbench = new AchievementIE("craftWorkbench", 2, -3, new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()), makeSteel).setNormalCrafting();
 
 		craftRevolver = new AchievementIE("craftRevolver", 3, -6, IEContent.itemRevolver, craftWorkbench).setNormalCrafting();
-		ItemStack[] upgrades = new ItemStack[20];
-		upgrades[18]=new ItemStack(IEContent.itemToolUpgrades,1,5);
-		upgrades[19]=new ItemStack(IEContent.itemToolUpgrades,1,6);
+		NonNullList<ItemStack> upgrades = NonNullList.withSize(20, ItemStack.EMPTY);
+		upgrades.set(18, new ItemStack(IEContent.itemToolUpgrades,1,5));
+		upgrades.set(19, new ItemStack(IEContent.itemToolUpgrades,1,6));
 		ItemStack revolver = new ItemStack(IEContent.itemRevolver);
 		((ItemRevolver)IEContent.itemRevolver).setContainedItems(revolver, upgrades);
 		((ItemRevolver)IEContent.itemRevolver).recalculateUpgrades(revolver);
@@ -104,11 +105,11 @@ public class IEAchievements
 		ItemStack drill = new ItemStack(IEContent.itemDrill);
 		((ItemDrill)IEContent.itemDrill).setHead(drill, new ItemStack(IEContent.itemDrillhead));
 		craftDrill = new AchievementIE("craftDrill", 1, -6, drill, craftWorkbench).setNormalCrafting();
-		upgrades = new ItemStack[4];
-		upgrades[0]=new ItemStack(IEContent.itemDrillhead);
-		upgrades[1]=new ItemStack(IEContent.itemToolUpgrades,1,0);
-		upgrades[2]=new ItemStack(IEContent.itemToolUpgrades,1,1);
-		upgrades[3]=new ItemStack(IEContent.itemToolUpgrades,3,2);
+		upgrades = NonNullList.withSize(4, ItemStack.EMPTY);
+		upgrades.set(0, new ItemStack(IEContent.itemDrillhead));
+		upgrades.set(1, new ItemStack(IEContent.itemToolUpgrades,1,0));
+		upgrades.set(2, new ItemStack(IEContent.itemToolUpgrades,1,1));
+		upgrades.set(3, new ItemStack(IEContent.itemToolUpgrades,3,2));
 		ItemStack drill2 = drill.copy();
 		((ItemDrill)IEContent.itemDrill).setContainedItems(drill2, upgrades);
 		((ItemDrill)IEContent.itemDrill).recalculateUpgrades(drill2);

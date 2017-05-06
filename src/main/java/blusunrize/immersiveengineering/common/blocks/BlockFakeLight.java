@@ -20,13 +20,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 {
 	public BlockFakeLight()
 	{
-		super("fakeLight", Material.AIR, PropertyEnum.create("type", BlockTypes_FakeLight.class), ItemBlockIEBase.class);
+		super("fake_light", Material.AIR, PropertyEnum.create("type", BlockTypes_FakeLight.class), ItemBlockIEBase.class);
 		setAllNotNormalBlock();
 	}
 	
@@ -36,8 +37,9 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 		return true;
 	}
 
+	@Nullable
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
 	{
 		return null;
 	}
@@ -100,18 +102,18 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 		@Override
 		public void update()
 		{
-			if(worldObj.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
+			if(world.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
 			{
 				if(floodlightCoords==null || floodlightCoords.length<3)
 				{
-					worldObj.setBlockToAir(getPos());
+					world.setBlockToAir(getPos());
 					return;
 				}
 				BlockPos floodlightPos = new BlockPos(floodlightCoords[0], floodlightCoords[1], floodlightCoords[2]);
-				TileEntity tile = worldObj.getTileEntity(floodlightPos);
+				TileEntity tile = world.getTileEntity(floodlightPos);
 				if( !(tile instanceof TileEntityFloodlight) || !((TileEntityFloodlight)tile).active)
 				{
-					worldObj.setBlockToAir(getPos());
+					world.setBlockToAir(getPos());
 					return;
 				}
 			}

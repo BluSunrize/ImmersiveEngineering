@@ -32,7 +32,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote && this.ticksExisted>trackCountdown)
+		if(!world.isRemote && this.ticksExisted>trackCountdown)
 		{
 			EntityLivingBase target = getTarget();
 			if(target!=null)
@@ -56,7 +56,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 		double r = 20D;
 		AxisAlignedBB aabb = new AxisAlignedBB(posX-r,posY-r,posZ-r, posX+r,posY+r,posZ+r);
 		EntityLivingBase target = null;
-		for(Object o: worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
+		for(Object o: world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
 			if(o instanceof EntityLivingBase && !o.equals(this.shootingEntity))
 				if(target==null || ((EntityLivingBase)o).getDistanceSqToEntity(this)<target.getDistanceSqToEntity(this))
 					target = (EntityLivingBase)o;

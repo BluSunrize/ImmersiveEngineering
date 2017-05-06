@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 
 public class ModelConfigurableSides implements IBakedModel
 {
-	private static final String MODEL_PREFIX = "confSides_";
+	private static final String MODEL_PREFIX = "conf_sides_";
 	private static final String RESOURCE_LOCATION = "models/block/smartmodel/"+MODEL_PREFIX;
 	//Holy shit, this type-chaining is messy. But I wanted to use lambdas!
 	private static HashMap<String, ITextureNamer> TYPES = new HashMap();

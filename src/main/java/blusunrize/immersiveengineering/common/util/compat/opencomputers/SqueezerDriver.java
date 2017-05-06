@@ -84,9 +84,9 @@ public class SqueezerDriver extends DriverSidedTileEntity
 			if(slot < 1 || slot > 8)
 				throw new IllegalArgumentException("Input slots are 1-8");
 			TileEntitySqueezer master = getTileEntity();
-			SqueezerRecipe recipe = SqueezerRecipe.findRecipe(master.inventory[slot - 1]);
+			SqueezerRecipe recipe = SqueezerRecipe.findRecipe(master.inventory.get(slot - 1));
 			if(recipe != null)
-				return new Object[]{master.inventory[slot - 1], recipe.itemOutput, recipe.fluidOutput, recipe.getTotalProcessTime()};
+				return new Object[]{master.inventory.get(slot - 1), recipe.itemOutput, recipe.fluidOutput, recipe.getTotalProcessTime()};
 			else
 				return null;
 		}
@@ -97,13 +97,13 @@ public class SqueezerDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1 || slot > 8)
 				throw new IllegalArgumentException("Input slots are 1-8");
-			return new Object[]{getTileEntity().inventory[slot - 1]};
+			return new Object[]{getTileEntity().inventory.get(slot - 1)};
 		}
 
 		@Callback(doc = "function():table -- returns the stack in the output slot")
 		public Object[] getOutputStack(Context context, Arguments args)
 		{
-			return new Object[]{getTileEntity().inventory[8]};
+			return new Object[]{getTileEntity().inventory.get(8)};
 		}
 
 		@Callback(doc = "function():table -- returns the output fluid tank")
@@ -115,13 +115,13 @@ public class SqueezerDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- returns the stack in the empty cannisters slot")
 		public Object[] getEmptyCannisters(Context context, Arguments args)
 		{
-			return new Object[]{getTileEntity().inventory[9]};
+			return new Object[]{getTileEntity().inventory.get(9)};
 		}
 
 		@Callback(doc = "function():table -- returns the stack in the filled cannisters slot")
 		public Object[] getFilledCannisters(Context context, Arguments args)
 		{
-			return new Object[]{getTileEntity().inventory[10]};
+			return new Object[]{getTileEntity().inventory.get(10)};
 		}
 
 		@Callback(doc = "function():int -- returns the maximum amount of energy stored")

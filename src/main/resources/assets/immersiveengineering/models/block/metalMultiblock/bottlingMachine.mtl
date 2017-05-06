@@ -1,6 +1,0 @@
-newmtl bottlingMachine
-map_Ka immersiveengineering:blocks/metalMultiblock_bottlingMachine
-newmtl conveyor
-map_Ka immersiveengineering:blocks/conveyor
-newmtl metalPress
-map_Ka immersiveengineering:blocks/metalMultiblock_metalPress

@@ -1,0 +1,4 @@
+newmtl assembler
+map_Ka immersiveengineering:blocks/metal_multiblock_assembler
+newmtl conveyor
+map_Ka immersiveengineering:blocks/conveyor

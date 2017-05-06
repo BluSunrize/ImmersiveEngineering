@@ -338,12 +338,12 @@ public class ConveyorHandler
 				if(contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile))
 				{
 					ItemStack stack = entity.getEntityItem();
-					if(stack != null)
+					if(!stack.isEmpty())
 					{
 						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, facing.getOpposite());
-						if(ret == null)
+						if(ret.isEmpty())
 							entity.setDead();
-						else if(ret.stackSize < stack.stackSize)
+						else if(ret.getCount() < stack.getCount())
 							entity.setEntityItemStack(ret);
 					}
 				}

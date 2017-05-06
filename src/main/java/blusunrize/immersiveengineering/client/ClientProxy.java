@@ -485,7 +485,7 @@ public class ClientProxy extends CommonProxy
 		//			ManualHelper.addEntry("updateNews_"+subVersion, ManualHelper.CAT_UPDATE, pages.toArray(new IManualPage[pages.size()]));
 		//			subVersion++;
 		//		}
-		List<ItemStack> tempItemList;
+		NonNullList<ItemStack> tempItemList;
 		List<PositionedItemStack[]> tempRecipeList;
 		List<IManualPage> pages;
 
@@ -548,14 +548,14 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.itemMaterial,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()),new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwoodPost0", new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.POST.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwoodPost1"));
-		ItemStack[] storageBlocks = new ItemStack[BlockTypes_MetalsIE.values().length];
-		ItemStack[] storageSlabs = new ItemStack[BlockTypes_MetalsIE.values().length];
+		NonNullList<ItemStack> storageBlocks = NonNullList.withSize(BlockTypes_MetalsIE.values().length, ItemStack.EMPTY);
+		NonNullList<ItemStack> storageSlabs = NonNullList.withSize(BlockTypes_MetalsIE.values().length, ItemStack.EMPTY);
 		for(int i=0; i<BlockTypes_MetalsIE.values().length; i++)
 		{
-			storageBlocks[i] = new ItemStack(IEContent.blockStorage,1,i);
-			storageSlabs[i] = new ItemStack(IEContent.blockStorageSlabs,1,i);
+			storageBlocks.set(i, new ItemStack(IEContent.blockStorage,1,i));
+			storageSlabs.set(i, new ItemStack(IEContent.blockStorageSlabs,1,i));
 		}
-		tempItemList = new ArrayList();
+		tempItemList = NonNullList.create();
 		for(int i=0; i<BlockTypes_MetalsAll.values().length; i++)
 			if(!IEContent.blockSheetmetal.isMetaHidden(i))
 				tempItemList.add(new ItemStack(IEContent.blockSheetmetal,1,i));
@@ -693,7 +693,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil3"),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil4"));
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
-		tempItemList = new ArrayList<>();
+		tempItemList = NonNullList.create();
 		for(int i=0; i<16; i++)
 			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour",EnumDyeColor.byDyeDamage(i).getMapColor().colorValue));
 		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_MACHINES,
@@ -749,7 +749,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "improvedBlastfurnace1", MultiblockBlastFurnaceAdvanced.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "improvedBlastfurnace2"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace3", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta())));
-		tempItemList = new ArrayList();
+		tempItemList = NonNullList.create();
 		IEContent.itemMold.getSubItems(IEContent.itemMold,ImmersiveEngineering.creativeTab, tempItemList);
 		ManualHelper.addEntry("metalPress", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "metalPress0", MultiblockMetalPress.instance),
@@ -885,7 +885,7 @@ public class ClientProxy extends CommonProxy
 					s0 = I18n.format("ie.manual.entry.mineralsDimAny",localizedName);
 
 				ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
-				for(int j=0; j<minerals[i].oreOutput.length; j++)
+				for(int j = 0; j< minerals[i].oreOutput.size(); j++)
 					formattedOutputs.add(j);
 				final int fi = i;
 				Collections.sort(formattedOutputs, new Comparator<Integer>(){
@@ -897,13 +897,13 @@ public class ClientProxy extends CommonProxy
 				});
 
 				String s1 = "";
-				ItemStack[] sortedOres = new ItemStack[minerals[i].oreOutput.length];
+				NonNullList<ItemStack> sortedOres = NonNullList.withSize(minerals[i].oreOutput.size(), ItemStack.EMPTY);
 				for(int j=0; j<formattedOutputs.size(); j++)
-					if(minerals[i].oreOutput[j]!=null)
+					if(!minerals[i].oreOutput.get(j).isEmpty())
 					{
 						int sorted = formattedOutputs.get(j);
-						s1 += "<br>" + new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0"," ")+"% "+minerals[i].oreOutput[sorted].getDisplayName();
-						sortedOres[j] = minerals[i].oreOutput[sorted];
+						s1 += "<br>" + new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0"," ")+"% "+ minerals[i].oreOutput.get(sorted).getDisplayName();
+						sortedOres.set(j, minerals[i].oreOutput.get(sorted));
 					}
 				String s2 = I18n.format("ie.manual.entry.minerals3", s0,s1);
 				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
@@ -935,13 +935,13 @@ public class ClientProxy extends CommonProxy
 					name = minerals[i].name;
 				multiTables[curTable][i][0] = name;
 				multiTables[curTable][i][1] = "";
-				for(int j=0; j<minerals[i].oreOutput.length; j++)
-					if(minerals[i].oreOutput[j]!=null)
+				for(int j = 0; j< minerals[i].oreOutput.size(); j++)
+					if(!minerals[i].oreOutput.get(j).isEmpty())
 					{
-						multiTables[curTable][i][1] += minerals[i].oreOutput[j].getDisplayName()+" "+( new DecimalFormat("#.00").format(minerals[i].recalculatedChances[j]*100)+"%" )+(j<minerals[i].oreOutput.length-1?"\n":"");
+						multiTables[curTable][i][1] += minerals[i].oreOutput.get(j).getDisplayName()+" "+( new DecimalFormat("#.00").format(minerals[i].recalculatedChances[j]*100)+"%" )+(j< minerals[i].oreOutput.size() -1?"\n":"");
 						totalLines++;
 					}
-				if(i<minerals.length-1 && totalLines+minerals[i+1].oreOutput.length>=13)
+				if(i<minerals.length-1 && totalLines+ minerals[i+1].oreOutput.size() >=13)
 				{
 					String[][][] newMultiTables = new String[multiTables.length+1][minerals.length][2];
 					System.arraycopy(multiTables,0, newMultiTables,0, multiTables.length);
@@ -1060,7 +1060,7 @@ public class ClientProxy extends CommonProxy
 		for(DrillHeadPerm p : ((ItemDrillhead)IEContent.itemDrillhead).perms)
 			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
 		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/shaders/greyscaleFire");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/shaders/greyscale_fire");
 
 		for(BulletHandler.IBullet bullet : BulletHandler.registry.values())
 			for(ResourceLocation rl : bullet.getTextures())
@@ -1092,7 +1092,7 @@ public class ClientProxy extends CommonProxy
 			EntityEquipmentSlot slot = EntityEquipmentSlot.values()[ID/100];
 			ID %= 100;//Slot determined, get actual ID
 			ItemStack item = player.getItemStackFromSlot(slot);
-			if(item!=null && item.getItem() instanceof IGuiItem && ((IGuiItem)item.getItem()).getGuiID(item)==ID)
+			if(!item.isEmpty() && item.getItem() instanceof IGuiItem && ((IGuiItem)item.getItem()).getGuiID(item)==ID)
 			{
 				if(ID==Lib.GUIID_Manual && ManualHelper.getManual()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), item, false))
 					return ManualHelper.getManual().getGui();
@@ -1105,14 +1105,14 @@ public class ClientProxy extends CommonProxy
 
 		if(ID>=Lib.GUIID_Base_Item)
 		{
-			ItemStack item = null;
+			ItemStack item = ItemStack.EMPTY;
 			for (EnumHand hand : EnumHand.values())
 			{
 				ItemStack held = player.getHeldItem(hand);
-				if(held!=null && held.getItem() instanceof IGuiItem && ((IGuiItem)held.getItem()).getGuiID(held)==ID)
+				if(!held.isEmpty() && held.getItem() instanceof IGuiItem && ((IGuiItem)held.getItem()).getGuiID(held)==ID)
 					item = held;
 			}
-			if(item!=null)
+			if(!item.isEmpty())
 			{
 
 			}
@@ -1282,17 +1282,17 @@ public class ClientProxy extends CommonProxy
 		//		if(stack!=null)
 		//			for(int i=0; i<3; i++)
 		//			{
-		//				double x = tile.xCoord+.5+.5*(tile.facing.getAxis()==Axis.Z?tile.getWorldObj().rand.nextGaussian()-.5:0);
-		//				double y = tile.yCoord+2 + tile.getWorldObj().rand.nextGaussian()/2;
-		//				double z = tile.zCoord+.5+.5*(tile.facing.getAxis()==Axis.X?tile.getWorldObj().rand.nextGaussian()-.5:0);
-		//				double mX = tile.getWorldObj().rand.nextGaussian() * 0.01D;
-		//				double mY = tile.getWorldObj().rand.nextGaussian() * 0.05D;
-		//				double mZ = tile.getWorldObj().rand.nextGaussian() * 0.01D;
+		//				double x = tile.xCoord+.5+.5*(tile.facing.getAxis()==Axis.Z?tile.getworld().rand.nextGaussian()-.5:0);
+		//				double y = tile.yCoord+2 + tile.getworld().rand.nextGaussian()/2;
+		//				double z = tile.zCoord+.5+.5*(tile.facing.getAxis()==Axis.X?tile.getworld().rand.nextGaussian()-.5:0);
+		//				double mX = tile.getworld().rand.nextGaussian() * 0.01D;
+		//				double mY = tile.getworld().rand.nextGaussian() * 0.05D;
+		//				double mZ = tile.getworld().rand.nextGaussian() * 0.01D;
 		//				EntityFX particle = null;
 		//				if(stack.getItem().getSpriteNumber()==0)
-		//					particle = new EntityFXBlockParts(tile.getWorldObj(), stack, tile.getWorldObj().rand.nextInt(16), x,y,z, mX,mY,mZ);
+		//					particle = new EntityFXBlockParts(tile.getworld(), stack, tile.getworld().rand.nextInt(16), x,y,z, mX,mY,mZ);
 		//				else
-		//					particle = new EntityFXItemParts(tile.getWorldObj(), stack, tile.getWorldObj().rand.nextInt(16), x,y,z, mX,mY,mZ);
+		//					particle = new EntityFXItemParts(tile.getworld(), stack, tile.getworld().rand.nextInt(16), x,y,z, mX,mY,mZ);
 		//				Minecraft.getMinecraft().effectRenderer.addEffect(particle);
 		//			}
 	}
@@ -1302,18 +1302,18 @@ public class ClientProxy extends CommonProxy
 		//		if(stack!=null && Config.getBoolean("excavator_particles"))
 		//			for(int i=0; i<16; i++)
 		//			{
-		//				double x = tile.getPos().getX()+.5+.1*(tile.facing.getAxis()==Axis.Z?2*(tile.getWorldObj().rand.nextGaussian()-.5):0);
-		//				double y = tile.getPos().getY()+2.5;// + tile.getWorldObj().rand.nextGaussian()/2;
-		//				double z = tile.getPos().getZ()+.5+.1*(tile.facing.getAxis()==Axis.X?2*(tile.getWorldObj().rand.nextGaussian()-.5):0);
-		//				double mX = ((tile.facing==EnumFacing.WEST?-.075:tile.facing==EnumFacing.EAST?.075:0)*(tile.mirrored?-1:1)) + ((tile.getWorldObj().rand.nextDouble()-.5)*.01);
-		//				double mY = -.15D;//tile.getWorldObj().rand.nextGaussian() * -0.05D;
-		//				double mZ = ((tile.facing==EnumFacing.NORTH?-.075:tile.facing==EnumFacing.SOUTH?.075:0)*(tile.mirrored?-1:1)) + ((tile.getWorldObj().rand.nextDouble()-.5)*.01);
+		//				double x = tile.getPos().getX()+.5+.1*(tile.facing.getAxis()==Axis.Z?2*(tile.getworld().rand.nextGaussian()-.5):0);
+		//				double y = tile.getPos().getY()+2.5;// + tile.getworld().rand.nextGaussian()/2;
+		//				double z = tile.getPos().getZ()+.5+.1*(tile.facing.getAxis()==Axis.X?2*(tile.getworld().rand.nextGaussian()-.5):0);
+		//				double mX = ((tile.facing==EnumFacing.WEST?-.075:tile.facing==EnumFacing.EAST?.075:0)*(tile.mirrored?-1:1)) + ((tile.getworld().rand.nextDouble()-.5)*.01);
+		//				double mY = -.15D;//tile.getworld().rand.nextGaussian() * -0.05D;
+		//				double mZ = ((tile.facing==EnumFacing.NORTH?-.075:tile.facing==EnumFacing.SOUTH?.075:0)*(tile.mirrored?-1:1)) + ((tile.getworld().rand.nextDouble()-.5)*.01);
 		//
 		//				EntityFX particle = null;
 		////				if(stack.getItem().getSpriteNumber()==0)
-		//					particle = new EntityFXBlockParts(tile.getWorld(), stack, tile.getWorldObj().rand.nextInt(16), x,y,z, mX,mY,mZ);
+		//					particle = new EntityFXBlockParts(tile.getWorld(), stack, tile.getworld().rand.nextInt(16), x,y,z, mX,mY,mZ);
 		////				else
-		////					particle = new EntityFXItemParts(tile.getWorldObj(), stack, tile.getWorldObj().rand.nextInt(16), x,y,z, mX,mY,mZ);
+		////					particle = new EntityFXItemParts(tile.getworld(), stack, tile.getworld().rand.nextInt(16), x,y,z, mX,mY,mZ);
 		//				particle.noClip=true;
 		//				particle.multipleParticleScaleBy(2);
 		//				Minecraft.getMinecraft().effectRenderer.addEffect(particle);
@@ -1442,7 +1442,7 @@ public class ClientProxy extends CommonProxy
 				if(ApiUtils.isExistingOreName(sortedMapArray[i].getKey()))
 				{
 					ItemStack is = OreDictionary.getOres(sortedMapArray[i].getKey()).get(0);
-					if(is!=null)
+					if(!is.isEmpty())
 						item = is.getDisplayName();
 				}
 
@@ -1468,7 +1468,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public World getClientWorld()
 	{
-		return ClientUtils.mc().theWorld;
+		return ClientUtils.mc().world;
 	}
 
 	@Override

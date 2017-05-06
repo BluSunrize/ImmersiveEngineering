@@ -33,23 +33,23 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote &&worldObj.getTotalWorldTime()%4==((getPos().getX()^getPos().getZ())&3))
+		if(!world.isRemote &&world.getTotalWorldTime()%4==((getPos().getX()^getPos().getZ())&3))
 		{
 			List<Entity> entities = null;
 			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()== Axis.Z?4:5):((facing.ordinal()-2)%4)];
 			aabb = new AxisAlignedBB(aabb.minX,aabb.minY-.8125,aabb.minZ, aabb.maxX,aabb.maxY,aabb.maxZ).offset(getPos());
-			entities = worldObj.getEntitiesWithinAABB(Entity.class, aabb);
+			entities = world.getEntitiesWithinAABB(Entity.class, aabb);
 			if(!ceilingAttached && !entities.isEmpty() && redstoneSignal==0)
 			{
 				redstoneSignal = 15;
 				markDirty();
-				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
-				worldObj.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
+				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockType(), false);
 			}
 			if(entities.isEmpty() && redstoneSignal!=0)
 			{
 				redstoneSignal = 0;
-				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
 			}
 		}
 	}
@@ -64,8 +64,8 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 			{
 				redstoneSignal = 15;
 				markDirty();
-				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
-				worldObj.notifyNeighborsOfStateChange(getPos().offset(EnumFacing.UP), getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
+				world.notifyNeighborsOfStateChange(getPos().offset(EnumFacing.UP), getBlockType(), false);
 			}
 		}
 	}

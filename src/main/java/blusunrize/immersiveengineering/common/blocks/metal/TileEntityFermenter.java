@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -39,7 +40,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 		super(MultiblockFermenter.instance, new int[]{3,3,3}, 16000, true);
 	}
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
-	public ItemStack[] inventory = new ItemStack[11];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -66,7 +67,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 		if(isDummy() || isRSDisabled())
 			return;
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			boolean update = false;
 			if(energyStorage.getEnergyStored()>0 && processQueue.size()<this.getProcessQueueMaxLength())
@@ -86,13 +87,13 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 					}});
 				for(int slot : preferredSlots)
 				{
-					ItemStack stack = this.getInventory()[slot];
-					if(stack!=null)
+					ItemStack stack = this.getInventory().get(slot);
+					if(!stack.isEmpty())
 					{
 						stack = stack.copy();
-						stack.stackSize-=usedInvSlots[slot];
+						stack.shrink(usedInvSlots[slot]);
 					}
-					if(stack!=null && stack.stackSize>0)
+					if(!stack.isEmpty() && stack.getCount()>0)
 					{
 						FermenterRecipe recipe = this.findRecipeForInsertion(stack);
 						if(recipe!=null)
@@ -113,7 +114,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
 				BlockPos outputPos = this.getPos().add(0,-1,0).offset(fw,2);
-				IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, fw.getOpposite());
+				IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, fw.getOpposite());
 				if(output!=null)
 				{
 					int accepted = output.fill(out, false);
@@ -124,32 +125,36 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 						update=true;
 					}
 				}
-				ItemStack empty = getInventory()[9];
-				if (empty!=null&&tanks[0].getFluidAmount()>0)
+				ItemStack empty = getInventory().get(9);
+				if (!empty.isEmpty()&&tanks[0].getFluidAmount()>0)
 				{
-					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory()[10], null);
-					if (full!=null)
+					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory().get(10), null);
+					if (!full.isEmpty())
 					{
-						if (getInventory()[10]!=null&&OreDictionary.itemMatches(full, getInventory()[10], true))
-							getInventory()[10].stackSize+=full.stackSize;
+						if (!getInventory().get(10).isEmpty()&&OreDictionary.itemMatches(full, getInventory().get(10), true))
+							getInventory().get(10).grow(full.getCount());
 						else
-							getInventory()[10] = full;
-						if(--inventory[9].stackSize<=0)
-							inventory[9]=null;
+							getInventory().set(10, full);
+						inventory.get(9).shrink(1);
+						if(inventory.get(9).getCount()<=0)
+							inventory.set(9, ItemStack.EMPTY);
 					}
 				}
 			}
-			if(inventory[8]!=null && worldObj.getTotalWorldTime()%8==0)
+			if(!inventory.get(8).isEmpty() && world.getTotalWorldTime()%8==0)
 			{
 				BlockPos outputPos = this.getPos().offset(fw);
-				TileEntity outputTile = this.worldObj.getTileEntity(outputPos);
+				TileEntity outputTile = this.world.getTileEntity(outputPos);
 				if(outputTile != null)
 				{
-					ItemStack stack = Utils.copyStackWithAmount(inventory[8], 1);
+					ItemStack stack = Utils.copyStackWithAmount(inventory.get(8), 1);
 					stack = Utils.insertStackIntoInventory(outputTile, stack, fw.getOpposite());
-					if(stack == null)
-						if((--this.inventory[8].stackSize) <= 0)
-							this.inventory[8] = null;
+					if(stack.isEmpty())
+					{
+						this.inventory.get(8).shrink(1);
+						if (this.inventory.get(8).getCount() <= 0)
+							this.inventory.set(8, ItemStack.EMPTY);
+					}
 				}
 			}
 
@@ -286,11 +291,11 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().offset(facing,2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -318,7 +323,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}

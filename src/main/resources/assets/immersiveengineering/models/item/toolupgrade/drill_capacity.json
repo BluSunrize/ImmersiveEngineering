@@ -1,0 +1,6 @@
+{
+	"parent":"immersiveengineering:item/ie_item_base",
+	"textures": {
+		"layer0":"immersiveengineering:items/toolupgrade_drill_capacity"
+	}
+}

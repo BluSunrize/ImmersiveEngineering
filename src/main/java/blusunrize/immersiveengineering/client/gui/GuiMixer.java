@@ -81,7 +81,7 @@ public class GuiMixer extends GuiContainer
 			tooltip.add(I18n.format(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All":"Single")));
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}

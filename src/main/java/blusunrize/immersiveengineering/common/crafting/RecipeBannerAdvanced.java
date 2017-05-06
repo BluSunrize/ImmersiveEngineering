@@ -7,7 +7,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipesBanners;
 import net.minecraft.tileentity.TileEntityBanner;
-import net.minecraft.tileentity.TileEntityBanner.EnumBannerPattern;
+import net.minecraft.tileentity.BannerPattern;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -17,9 +17,9 @@ import java.util.LinkedHashMap;
  */
 public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 {
-	public static LinkedHashMap<EnumBannerPattern, RecipeReference> advancedPatterns = new LinkedHashMap<>();
+	public static LinkedHashMap<BannerPattern, RecipeReference> advancedPatterns = new LinkedHashMap<>();
 
-	public static void addAdvancedPatternRecipe(TileEntityBanner.EnumBannerPattern pattern, IngredientStack stack, int... offset)
+	public static void addAdvancedPatternRecipe(BannerPattern pattern, IngredientStack stack, int... offset)
 	{
 		if(offset!=null && offset.length>0)
 		{
@@ -41,9 +41,9 @@ public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 
 	@Override
 	@Nullable
-	protected TileEntityBanner.EnumBannerPattern matchPatterns(InventoryCrafting invCrafting)
+	protected BannerPattern matchPatterns(InventoryCrafting invCrafting)
 	{
-		for(TileEntityBanner.EnumBannerPattern pattern : TileEntityBanner.EnumBannerPattern.values())
+		for(BannerPattern pattern : BannerPattern.values())
 			if(advancedPatterns.containsKey(pattern))
 			{
 				RecipeReference ref = advancedPatterns.get(pattern);
@@ -54,7 +54,7 @@ public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 				for(int i=0; i<invCrafting.getSizeInventory()&&matchesPattern; i++)
 				{
 					ItemStack itemstack = invCrafting.getStackInSlot(i);
-					if(itemstack!=null && itemstack.getItem()!=Items.BANNER)
+					if(!itemstack.isEmpty() && itemstack.getItem()!=Items.BANNER)
 					{
 						if(Utils.isDye(itemstack))
 						{
@@ -87,7 +87,7 @@ public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 									break;
 								}
 								ItemStack bannerCheck = invCrafting.getStackInSlot(bannerSlot);
-								if(bannerCheck==null || bannerCheck.getItem()!=Items.BANNER)
+								if(bannerCheck.isEmpty() || bannerCheck.getItem()!=Items.BANNER)
 								{
 									matchesPattern = false;
 									break;

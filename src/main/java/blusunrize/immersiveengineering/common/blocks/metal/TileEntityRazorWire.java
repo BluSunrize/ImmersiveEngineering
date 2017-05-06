@@ -85,7 +85,7 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		{
 			entity.motionX *= 0.2D;
 			entity.motionZ *= 0.2D;
-			int protection = (((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.FEET)!=null?1:0)+(((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.LEGS)!=null?1:0);
+			int protection = (!((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.FEET).isEmpty()?1:0)+(!((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty()?1:0);
 			float dmg = protection==2?.5f:protection==1?1:1.5f;
 			entity.attackEntityFrom(IEDamageSources.razorWire, dmg);
 		}
@@ -116,22 +116,22 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	{
 		EnumFacing dir = left?facing.rotateY():facing.rotateYCCW();
 		BlockPos neighbourPos = getPos().offset(dir, -1);
-		if(!worldObj.isBlockLoaded(neighbourPos))
+		if(!world.isBlockLoaded(neighbourPos))
 			return true;
-		if(worldObj.getTileEntity(neighbourPos) instanceof TileEntityRazorWire)
+		if(world.getTileEntity(neighbourPos) instanceof TileEntityRazorWire)
 			return false;
-		IBlockState neighbour = worldObj.getBlockState(neighbourPos);
-		return !neighbour.isSideSolid(worldObj, neighbourPos, dir);
+		IBlockState neighbour = world.getBlockState(neighbourPos);
+		return !neighbour.isSideSolid(world, neighbourPos, dir);
 	}
 	private boolean isOnGround()
 	{
 		BlockPos down = getPos().down();
-		return worldObj.getBlockState(down).isSideSolid(worldObj,down,EnumFacing.UP);
+		return world.getBlockState(down).isSideSolid(world,down,EnumFacing.UP);
 	}
 	private boolean isStacked()
 	{
 		BlockPos down = getPos().down();
-		TileEntity te = worldObj.getTileEntity(down);
+		TileEntity te = world.getTileEntity(down);
 		if(te instanceof TileEntityRazorWire)
 			return ((TileEntityRazorWire)te).isOnGround();
 		return false;
@@ -202,18 +202,18 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 				for(int i=1; i<=maxReach; i++)
 				{
 					BlockPos posP = getPos().offset(dir,i);
-					if(connectP && worldObj.isBlockLoaded(posP) && worldObj.getTileEntity(posP) instanceof TileEntityRazorWire)
+					if(connectP && world.isBlockLoaded(posP) && world.getTileEntity(posP) instanceof TileEntityRazorWire)
 						widthP++;
 					else
 						connectP = false;
 					BlockPos posN = getPos().offset(dir,-i);
-					if(connectN && worldObj.isBlockLoaded(posN) && worldObj.getTileEntity(posN) instanceof TileEntityRazorWire)
+					if(connectN && world.isBlockLoaded(posN) && world.getTileEntity(posN) instanceof TileEntityRazorWire)
 						widthN++;
 					else
 						connectN = false;
 				}
 				AxisAlignedBB aabb = new AxisAlignedBB(getPos().add(facing.getAxis()==Axis.Z?-widthN:0,0,facing.getAxis()==Axis.X?-widthN:0),getPos().add(facing.getAxis()==Axis.Z?1+widthP:1,1,facing.getAxis()==Axis.X?1+widthP:1));
-				List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
+				List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
 				for(EntityLivingBase ent : entities)
 					ent.attackEntityFrom(IEDamageSources.razorShock,2);
 			}

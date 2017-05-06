@@ -24,7 +24,7 @@ public class EnergyHelper
 {
 	public static boolean isFluxItem(ItemStack stack)
 	{
-		if(stack==null || stack.getItem()==null)
+		if(stack.isEmpty())
 			return false;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return true;
@@ -34,7 +34,7 @@ public class EnergyHelper
 	}
 	public static int getEnergyStored(ItemStack stack)
 	{
-		if(stack==null || stack.getItem()==null)
+		if(stack.isEmpty())
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).getEnergyStored(stack);
@@ -46,7 +46,7 @@ public class EnergyHelper
 	}
 	public static int getMaxEnergyStored(ItemStack stack)
 	{
-		if(stack==null || stack.getItem()==null)
+		if(stack.isEmpty())
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).getMaxEnergyStored(stack);
@@ -58,7 +58,7 @@ public class EnergyHelper
 	}
 	public static int insertFlux(ItemStack stack, int energy, boolean simulate)
 	{
-		if(stack==null || stack.getItem()==null)
+		if(stack.isEmpty())
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).receiveEnergy(stack, energy, simulate);
@@ -70,7 +70,7 @@ public class EnergyHelper
 	}
 	public static int extractFlux(ItemStack stack, int energy, boolean simulate)
 	{
-		if(stack==null || stack.getItem()==null)
+		if(stack.isEmpty())
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).extractEnergy(stack, energy, simulate);
@@ -83,7 +83,7 @@ public class EnergyHelper
 	static HashMap<Item,Boolean> reverseInsertion = new HashMap<Item,Boolean>();
 	public static int forceExtractFlux(ItemStack stack, int energy, boolean simulate)
 	{
-		if(stack==null || stack.getItem()==null)
+		if(stack.isEmpty())
 			return 0;
 		Boolean b = reverseInsertion.get(stack.getItem());
 		if(b==Boolean.TRUE)

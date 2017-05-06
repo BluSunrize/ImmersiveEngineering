@@ -21,7 +21,7 @@ public class GuiBlastFurnace extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/blastFurnace.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/blast_furnace.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 
 		if(tile.lastBurnTime>0)

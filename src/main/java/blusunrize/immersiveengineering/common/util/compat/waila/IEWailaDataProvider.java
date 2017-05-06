@@ -42,7 +42,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	{
 		if(accessor.getTileEntity() instanceof TileEntityMultiblockPart)
 			return new ItemStack(accessor.getBlock(), 1, accessor.getMetadata());
-		return null;
+		return ItemStack.EMPTY;
 	}
 	@Override
 	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)

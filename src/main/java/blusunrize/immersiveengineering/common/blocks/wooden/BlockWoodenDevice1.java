@@ -26,7 +26,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 {
 	public BlockWoodenDevice1()
 	{
-		super("woodenDevice1",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4,Properties.AnimationProperty);
+		super("wooden_device1",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4,Properties.AnimationProperty);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setAllNotNormalBlock();
@@ -47,7 +47,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		if(tileEntity instanceof TileEntityWoodenPost)
 		{
 			if(!((TileEntityWoodenPost)tileEntity).isDummy() && !world.isRemote && world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots)
-				world.spawnEntityInWorld(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, new ItemStack(this,1,this.getMetaFromState(state))));
+				world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, new ItemStack(this,1,this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
 	}
@@ -129,7 +129,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//
 	//			if(te instanceof TileEntityWoodenBarrel)
@@ -139,7 +139,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//		}
 	//	}
@@ -157,7 +157,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//
 	//			if(te instanceof TileEntityWoodenBarrel)
@@ -167,7 +167,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//		}
 	//		super.onBlockExploded(world, x, y, z, explosion);
@@ -226,7 +226,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				}
 	//			}
 	//			if(type==0 && !world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots)
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
+	//				world.spawnEntity(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
 	//		}
 	//		if(tileEntity instanceof TileEntityWatermill)
 	//		{
@@ -273,7 +273,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//						entityitem.motionZ = world.rand.nextGaussian()*.05;
 	//						if(stack.hasTagCompound())
 	//							entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-	//						world.spawnEntityInWorld(entityitem);
+	//						world.spawnEntity(entityitem);
 	//					}
 	//				}
 	//		}

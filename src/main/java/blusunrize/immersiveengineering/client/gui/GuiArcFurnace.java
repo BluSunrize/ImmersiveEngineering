@@ -31,7 +31,7 @@ public class GuiArcFurnace extends GuiContainer
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -41,7 +41,7 @@ public class GuiArcFurnace extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
 		GlStateManager.color(1,1,1,1);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/arcFurnace.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/arc_furnace.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess process : tile.processQueue)

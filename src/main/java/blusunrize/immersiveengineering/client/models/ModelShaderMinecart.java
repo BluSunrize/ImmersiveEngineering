@@ -40,11 +40,11 @@ public class ModelShaderMinecart extends ModelMinecart
 	public void render(Entity entity, float f0, float f1, float f2, float f3, float f4, float f5)
 	{
 		ShaderCase sCase = null;
-		ItemStack shader = null;
+		ItemStack shader = ItemStack.EMPTY;
 		if(shadedCarts.containsKey(entity.getEntityId()))
 		{
 			shader = shadedCarts.get(entity.getEntityId());
-			if(shader!=null && shader.getItem() instanceof IShaderItem)
+			if(shader != null && !shader.isEmpty() && shader.getItem() instanceof IShaderItem)
 				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader,null,"immersiveengineering:minecart");
 		}
 		if(sCase!=null)

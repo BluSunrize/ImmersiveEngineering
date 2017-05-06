@@ -42,7 +42,7 @@ public class GuiTurret extends GuiContainer
 	{
 		super.initGui();
 		Keyboard.enableRepeatEvents(true);
-		this.nameField = new GuiTextField(0, this.fontRendererObj, guiLeft+11,guiTop+88,58,12);
+		this.nameField = new GuiTextField(0, this.fontRenderer, guiLeft+11,guiTop+88,58,12);
 		this.nameField.setTextColor(-1);
 		this.nameField.setDisabledTextColour(-1);
 		this.nameField.setEnableBackgroundDrawing(false);
@@ -147,7 +147,7 @@ public class GuiTurret extends GuiContainer
 		}
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, -1,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, -1,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 

@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -60,10 +61,10 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		super.update();
 		if(isDummy())
 			return;
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			BlockPos wheelPos = this.getBlockPosForPos(31);
-			TileEntity center = worldObj.getTileEntity(wheelPos);
+			TileEntity center = world.getTileEntity(wheelPos);
 
 			if(center instanceof TileEntityBucketWheel)
 			{
@@ -74,7 +75,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 				if(wheel.facing==fRot)
 				{
 					if(active!=wheel.active)
-						worldObj.addBlockEvent(wheel.getPos(), wheel.getBlockType(), 0, active? 1: 0);
+						world.addBlockEvent(wheel.getPos(), wheel.getBlockType(), 0, active? 1: 0);
 					rot = wheel.rotation;
 					if(rot%45>40)
 						target = Math.round(rot/360f*8)%8;
@@ -85,21 +86,21 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 					for(int h = -3; h <= 3; h++)
 						for(int w = -3; w <= 3; w++)
 						{
-							TileEntity te = worldObj.getTileEntity(wheelPos.add(0, h, 0).offset(facing, w));
+							TileEntity te = world.getTileEntity(wheelPos.add(0, h, 0).offset(facing, w));
 							if(te instanceof TileEntityBucketWheel)
 							{
 								((TileEntityBucketWheel)te).facing = fRot;
 								((TileEntityBucketWheel)te).mirrored = this.mirrored;
 								te.markDirty();
 								((TileEntityBucketWheel)te).markContainingBlockForUpdate(null);
-								worldObj.addBlockEvent(te.getPos(), te.getBlockType(), 255, 0);
+								world.addBlockEvent(te.getPos(), te.getBlockType(), 255, 0);
 							}
 						}
 					}
 
 				if(!isRSDisabled())
 				{
-					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
+					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(world, wheelPos.getX()>>4, wheelPos.getZ()>>4);
 
 					int consumed = IEConfig.Machines.excavator_consumption;
 					int extracted = energyStorage.extractEnergy(consumed, true);
@@ -112,46 +113,46 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 						{
 							int targetDown = (target + 4) % 8;
 							NBTTagCompound packet = new NBTTagCompound();
-							if(wheel.digStacks[targetDown] == null)
+							if(wheel.digStacks.get(targetDown).isEmpty())
 							{
 								ItemStack blocking = this.digBlocksInTheWay(wheel);
 								BlockPos lowGroundPos = wheelPos.add(0,-5,0);
-								if(blocking!=null)
+								if(!blocking.isEmpty())
 								{
-									wheel.digStacks[targetDown] = blocking;
+									wheel.digStacks.set(targetDown, blocking);
 									wheel.markDirty();
 									this.markContainingBlockForUpdate(null);
 								} else if(mineral != null
-										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, -2))
-										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, 2))
-										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, -1))
-										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, 1))
-										&& !worldObj.isAirBlock(lowGroundPos))
+										&& !world.isAirBlock(lowGroundPos.offset(facing, -2))
+										&& !world.isAirBlock(lowGroundPos.offset(facing, 2))
+										&& !world.isAirBlock(lowGroundPos.offset(facing, -1))
+										&& !world.isAirBlock(lowGroundPos.offset(facing, 1))
+										&& !world.isAirBlock(lowGroundPos))
 								{
-									ItemStack ore = mineral.getRandomOre(worldObj.rand);
-									float configChance = worldObj.rand.nextFloat();
-									float failChance = worldObj.rand.nextFloat();
-									if(ore!=null && configChance> IEConfig.Machines.excavator_fail_chance && failChance>mineral.failChance)
+									ItemStack ore = mineral.getRandomOre(world.rand);
+									float configChance = world.rand.nextFloat();
+									float failChance = world.rand.nextFloat();
+									if(!ore.isEmpty() && configChance> IEConfig.Machines.excavator_fail_chance && failChance>mineral.failChance)
 									{
-										wheel.digStacks[targetDown] = ore;
+										wheel.digStacks.set(targetDown, ore);
 										wheel.markDirty();
 										this.markContainingBlockForUpdate(null);
 									}
-									ExcavatorHandler.depleteMinerals(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
+									ExcavatorHandler.depleteMinerals(world, wheelPos.getX()>>4, wheelPos.getZ()>>4);
 								}
-								if(wheel.digStacks[targetDown] != null)
+								if(!wheel.digStacks.get(targetDown).isEmpty())
 								{
 									packet.setInteger("fill", targetDown);
-									packet.setTag("fillStack", wheel.digStacks[targetDown].writeToNBT(new NBTTagCompound()));
+									packet.setTag("fillStack", wheel.digStacks.get(targetDown).writeToNBT(new NBTTagCompound()));
 								}
 							}
-							if(wheel.digStacks[target]!=null)
+							if(!wheel.digStacks.get(target).isEmpty())
 							{
-								this.doProcessOutput(wheel.digStacks[target].copy());
-								Block b = Block.getBlockFromItem(wheel.digStacks[target].getItem());
+								this.doProcessOutput(wheel.digStacks.get(target).copy());
+								Block b = Block.getBlockFromItem(wheel.digStacks.get(target).getItem());
 								if(b!=null&&b!=Blocks.AIR)
-									wheel.particleStack = wheel.digStacks[target].copy();
-								wheel.digStacks[target] = null;
+									wheel.particleStack = wheel.digStacks.get(target).copy();
+								wheel.digStacks.set(target, ItemStack.EMPTY);
 								wheel.markDirty();
 								this.markContainingBlockForUpdate(null);
 								packet.setInteger("empty", target);
@@ -171,7 +172,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 //				if(update)
 //				{
 //					this.markDirty();
-//					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+//					world.markBlockForUpdate(xCoord, yCoord, zCoord);
 //				}
 			}
 		}
@@ -181,95 +182,95 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 	{
 		BlockPos pos = wheel.getPos().add(0,-4,0);
 		ItemStack s = digBlock(pos);
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		//Backward 1
 		s = digBlock(pos.offset(facing,-1));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		//Backward 2
 		s = digBlock(pos.offset(facing,-2));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		//Forward 1
 		s = digBlock(pos.offset(facing,1));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		//Forward 2
 		s = digBlock(pos.offset(facing,2));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 
 		//Backward+Sides
 		s = digBlock(pos.offset(facing,-1).offset(facing.rotateY()));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		s = digBlock(pos.offset(facing,-1).offset(facing.rotateYCCW()));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		//Center Sides
 		s = digBlock(pos.offset(facing.rotateY()));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		s = digBlock(pos.offset(facing.rotateYCCW()));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		//Forward+Sides
 		s = digBlock(pos.offset(facing,1).offset(facing.rotateY()));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
 		s = digBlock(pos.offset(facing,1).offset(facing.rotateYCCW()));
-		if(s!=null)
+		if(!s.isEmpty())
 			return s;
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 
 	ItemStack digBlock(BlockPos pos)
 	{
-		if(!(worldObj instanceof WorldServer))
-			return null;
-		FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer((WorldServer) worldObj);
-		IBlockState blockstate = worldObj.getBlockState(pos);
+		if(!(world instanceof WorldServer))
+			return ItemStack.EMPTY;
+		FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer((WorldServer) world);
+		IBlockState blockstate = world.getBlockState(pos);
 		Block block = blockstate.getBlock();
-		if(block!=null && !worldObj.isAirBlock(pos) && blockstate.getPlayerRelativeBlockHardness(fakePlayer, worldObj, pos)!=0)
+		if(block!=null && !world.isAirBlock(pos) && blockstate.getPlayerRelativeBlockHardness(fakePlayer, world, pos)!=0)
 		{
-			if(!block.canHarvestBlock(worldObj, pos, fakePlayer))
-				return null;
-			block.onBlockHarvested(worldObj, pos, blockstate, fakePlayer);
-			if(block.removedByPlayer(blockstate, worldObj, pos, fakePlayer, true))
+			if(!block.canHarvestBlock(world, pos, fakePlayer))
+				return ItemStack.EMPTY;
+			block.onBlockHarvested(world, pos, blockstate, fakePlayer);
+			if(block.removedByPlayer(blockstate, world, pos, fakePlayer, true))
 			{
-				block.onBlockDestroyedByPlayer( worldObj, pos, blockstate);
-				if(block.canSilkHarvest(worldObj, pos, blockstate, fakePlayer))
+				block.onBlockDestroyedByPlayer( world, pos, blockstate);
+				if(block.canSilkHarvest(world, pos, blockstate, fakePlayer))
 				{
 					ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 					Item bitem = Item.getItemFromBlock(block);
 					if(bitem==null)
-						return null;
+						return ItemStack.EMPTY;
 					ItemStack itemstack = new ItemStack(bitem, 1, block.getMetaFromState(blockstate));
-					if (itemstack != null)
+					if (!itemstack.isEmpty())
 						items.add(itemstack);
 
-					ForgeEventFactory.fireBlockHarvesting(items, worldObj, pos, blockstate, 0, 1.0f, true, fakePlayer);
+					ForgeEventFactory.fireBlockHarvesting(items, world, pos, blockstate, 0, 1.0f, true, fakePlayer);
 
 					for(int i=0; i<items.size(); i++)
 						if(i!=0)
 						{
-							EntityItem ei = new EntityItem(worldObj, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, items.get(i).copy());
-							this.worldObj.spawnEntityInWorld(ei);
+							EntityItem ei = new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, items.get(i).copy());
+							this.world.spawnEntity(ei);
 						}
-					worldObj.playEvent(2001, pos, Block.getStateId(blockstate));
+					world.playEvent(2001, pos, Block.getStateId(blockstate));
 					if(items.size()>0)
 						return items.get(0);
 				}
 				else
 				{
-					block.harvestBlock(worldObj, fakePlayer, pos, blockstate, worldObj.getTileEntity(pos), null);
-					worldObj.playEvent(2001, pos, Block.getStateId(blockstate));
+					block.harvestBlock(world, fakePlayer, pos, blockstate, world.getTileEntity(pos), null);
+					world.playEvent(2001, pos, Block.getStateId(blockstate));
 				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -381,11 +382,11 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().offset(facing,-1);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -413,7 +414,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
 	}
@@ -479,8 +480,8 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 	public void disassemble() {
 		super.disassemble();
 		BlockPos wheelPos = this.getBlockPosForPos(31);
-		TileEntity center = worldObj.getTileEntity(wheelPos);
+		TileEntity center = world.getTileEntity(wheelPos);
 		if (center instanceof TileEntityBucketWheel)
-			worldObj.addBlockEvent(center.getPos(), center.getBlockType(), 0, 0);
+			world.addBlockEvent(center.getPos(), center.getBlockType(), 0, 0);
 	}
 }

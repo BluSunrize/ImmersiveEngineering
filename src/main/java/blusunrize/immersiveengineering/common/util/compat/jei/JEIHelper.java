@@ -48,7 +48,7 @@ public class JEIHelper implements IModPlugin
 			@Override
 			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
 			{
-				if(itemStack != null && ItemNBTHelper.hasKey(itemStack, "conveyorType"))
+				if(!itemStack.isEmpty() && ItemNBTHelper.hasKey(itemStack, "conveyorType"))
 					return ItemNBTHelper.getString(itemStack, "conveyorType");
 				return null;
 			}
@@ -59,7 +59,7 @@ public class JEIHelper implements IModPlugin
 			@Override
 			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
 			{
-				if(itemStack != null && itemStack.getMetadata() == 2 && ItemNBTHelper.hasKey(itemStack, "bullet"))
+				if(!itemStack.isEmpty() && itemStack.getMetadata() == 2 && ItemNBTHelper.hasKey(itemStack, "bullet"))
 					return ItemNBTHelper.getString(itemStack, "bullet");
 				return null;
 			}

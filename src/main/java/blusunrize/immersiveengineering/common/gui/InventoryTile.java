@@ -42,27 +42,37 @@ public class InventoryTile implements IInventory
 	@Override
 	public int getSizeInventory()
 	{
-		return inv.getInventory().length;
+		return inv.getInventory().size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (ItemStack stack : inv.getInventory()) {
+			if (!stack.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int index)
 	{
-		return inv.getInventory()[index];
+		return inv.getInventory().get(index);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count)
 	{
-		ItemStack stack = inv.getInventory()[index];
-		if(stack != null)
-			if(stack.stackSize<=count)
-				inv.getInventory()[index] = null;
+		ItemStack stack = inv.getInventory().get(index);
+		if(!stack.isEmpty())
+			if(stack.getCount()<=count)
+				inv.getInventory().set(index, ItemStack.EMPTY);
 			else
 			{
 				stack = stack.splitStack(count);
-				if(stack.stackSize==0)
-					inv.getInventory()[index] = null;
+				if(stack.getCount()==0)
+					inv.getInventory().set(index, ItemStack.EMPTY);
 			}
 		return stack;
 	}
@@ -70,15 +80,15 @@ public class InventoryTile implements IInventory
 	@Override
 	public ItemStack removeStackFromSlot(int index)
 	{
-		ItemStack ret = inv.getInventory()[index].copy();
-		inv.getInventory()[index] = null;
+		ItemStack ret = inv.getInventory().get(index).copy();
+		inv.getInventory().set(index, ItemStack.EMPTY);
 		return ret;
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack)
 	{
-		inv.getInventory()[index] = stack;
+		inv.getInventory().set(index, stack);
 	}
 
 	@Override
@@ -94,7 +104,7 @@ public class InventoryTile implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player)
+	public boolean isUsableByPlayer(EntityPlayer player)
 	{
 		return !tile.isInvalid() && tile.getDistanceSq(player.posX, player.posY, player.posZ)<64;
 	}
@@ -137,8 +147,8 @@ public class InventoryTile implements IInventory
 	@Override
 	public void clear()
 	{
-		for(int i=0; i<inv.getInventory().length; i++)
-			inv.getInventory()[i] = null;
+		for(int i=0; i<inv.getInventory().size(); i++)
+			inv.getInventory().set(i, ItemStack.EMPTY);
 	}
 
 }

@@ -9,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashMap;
@@ -48,12 +49,12 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	public void recalculateUpgrades(ItemStack stack)
 	{
 		clearUpgrades(stack);
-		ItemStack[] inv = getContainedItems(stack);
+		NonNullList<ItemStack> inv = getContainedItems(stack);
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		for(int i=0; i<inv.length; i++)//start at 1, 0 is the drill
+		for(int i=0; i<inv.size(); i++)//start at 1, 0 is the drill
 		{
-			ItemStack u = inv[i];
-			if(u!=null && u.getItem() instanceof IUpgrade)
+			ItemStack u = inv.get(i);
+			if(!u.isEmpty() && u.getItem() instanceof IUpgrade)
 			{
 				IUpgrade upg = (IUpgrade)u.getItem();
 				if(upg.getUpgradeTypes(u).contains(upgradeType) && upg.canApplyUpgrades(stack, u))

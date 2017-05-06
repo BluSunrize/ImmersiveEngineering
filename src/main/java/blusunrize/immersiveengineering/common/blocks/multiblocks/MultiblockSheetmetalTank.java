@@ -64,13 +64,13 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	{
 		return true;
 	}
-	@SideOnly(Side.CLIENT)
-	static ItemStack renderStack;
+	//@SideOnly(Side.CLIENT)
+	static ItemStack renderStack = ItemStack.EMPTY;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		if(renderStack==null)
+		if(renderStack.isEmpty())
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.TANK.getMeta());
 		GlStateManager.translate(1.875, 1.75, 1.125);
 		GlStateManager.rotate(-45, 0, 1, 0);

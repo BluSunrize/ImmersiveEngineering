@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 public class IENixieFontRender extends FontRenderer
 {
-	ResourceLocation tubeOverlay = new ResourceLocation("immersiveengineering:textures/misc/nixieTube.png");
+	ResourceLocation tubeOverlay = new ResourceLocation("immersiveengineering:textures/misc/nixie_tube.png");
 	public float c_red;
 	public float c_green;
 	public float c_blue;

@@ -11,6 +11,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -21,14 +22,14 @@ public class RecipeFlareBullets implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
-		ItemStack bullet = null;
+		ItemStack bullet = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
+			if(!stackInSlot.isEmpty())
 			{
-				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -36,7 +37,7 @@ public class RecipeFlareBullets implements IRecipe
 					return false;
 			}
 		}
-		return bullet != null && !list.isEmpty();
+		return !bullet.isEmpty() && !list.isEmpty();
 	}
 
 	@Override
@@ -45,12 +46,12 @@ public class RecipeFlareBullets implements IRecipe
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
-		ItemStack bullet = null;
+		ItemStack bullet = ItemStack.EMPTY;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
-				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+			if(!stackInSlot.isEmpty())
+				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 				{
 					bullet = stackInSlot;
 
@@ -77,7 +78,7 @@ public class RecipeFlareBullets implements IRecipe
 					++totalColourSets;
 				}
 		}
-		if(bullet!=null)
+		if(!bullet.isEmpty())
 		{
 			ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);
 
@@ -94,7 +95,7 @@ public class RecipeFlareBullets implements IRecipe
 			ItemNBTHelper.setInt(newBullet, "flareColour", newColour);
 			return newBullet;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public class RecipeFlareBullets implements IRecipe
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

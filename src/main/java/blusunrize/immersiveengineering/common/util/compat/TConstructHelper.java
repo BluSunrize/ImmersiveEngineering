@@ -231,7 +231,7 @@ public class TConstructHelper extends IECompatModule
 			if(target.isEntityAlive() && wasHit)
 			{
 				BlockPos pos = player.getPosition();
-				Biome biome = player.worldObj.getBiomeForCoordsBody(pos);
+				Biome biome = player.world.getBiomeForCoordsBody(pos);
 				float tempDif = biome.getFloatTemperature(pos)-0.5f;
 				if(tempDif!=0)
 				{

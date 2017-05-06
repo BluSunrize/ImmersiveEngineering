@@ -68,11 +68,12 @@ import net.minecraft.potion.PotionHelper;
 import net.minecraft.potion.PotionHelper.MixPredicate;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -209,22 +210,22 @@ public class IEContent
 
 		blockOre = (BlockIEBase)new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
 		blockStorage = (BlockIEBase)new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
-		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storageSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
+		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storage_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
 		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
-		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stoneDecoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stoneDecorationSlab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		blockStoneStair_hempcrete = new BlockIEStairs("stoneDecorationStairs_hempcrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
-		blockStoneStair_concrete0 = new BlockIEStairs("stoneDecorationStairs_concrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-		blockStoneStair_concrete1 = new BlockIEStairs("stoneDecorationStairs_concrete_tile", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		blockStoneStair_concrete2 = new BlockIEStairs("stoneDecorationStairs_concrete_leaded", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta())).setExplosionResistance(180f);
+		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stone_decoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
+		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stone_decoration_slab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
+		blockStoneStair_hempcrete = new BlockIEStairs("stone_decoration_stairs_hempcrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
+		blockStoneStair_concrete0 = new BlockIEStairs("stone_decoration_stairs_concrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+		blockStoneStair_concrete1 = new BlockIEStairs("stone_decoration_stairs_concrete_tile", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
+		blockStoneStair_concrete2 = new BlockIEStairs("stone_decoration_stairs_concrete_leaded", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta())).setExplosionResistance(180f);
 
 		blockStoneDevice = new BlockStoneDevice();
 
-		blockTreatedWood = (BlockIEBase)new BlockIEBase("treatedWood", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
-		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treatedWoodSlab", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
-		blockWoodenStair = new BlockIEStairs("treatedWoodStairs0", blockTreatedWood.getStateFromMeta(0)).setHasFlavour(true);
-		blockWoodenStair1 = new BlockIEStairs("treatedWoodStairs1", blockTreatedWood.getStateFromMeta(1)).setHasFlavour(true);
-		blockWoodenStair2 = new BlockIEStairs("treatedWoodStairs2", blockTreatedWood.getStateFromMeta(2)).setHasFlavour(true);
+		blockTreatedWood = (BlockIEBase)new BlockIEBase("treated_wood", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
+		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treated_wood_slab", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
+		blockWoodenStair = new BlockIEStairs("treated_wood_stairs0", blockTreatedWood.getStateFromMeta(0)).setHasFlavour(true);
+		blockWoodenStair1 = new BlockIEStairs("treated_wood_stairs1", blockTreatedWood.getStateFromMeta(1)).setHasFlavour(true);
+		blockWoodenStair2 = new BlockIEStairs("treated_wood_stairs2", blockTreatedWood.getStateFromMeta(2)).setHasFlavour(true);
 
 		blockWoodenDecoration = new BlockWoodenDecoration();
 		blockWoodenDevice0 = new BlockWoodenDevice0();
@@ -234,8 +235,8 @@ public class IEContent
 		blockFakeLight = new BlockFakeLight();
 
 		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
-		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
-		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metalDecoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
+		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetal_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
+		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metal_decoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
 		blockConnectors = new BlockConnector();
@@ -252,19 +253,19 @@ public class IEContent
 
 
 		itemMaterial = new ItemIEBase("material", 64,
-				"stickTreated", "stickIron", "stickSteel", "stickAluminum",
-				"hempFiber", "hempFabric",
-				"coalCoke", "slag",
-				"componentIron", "componentSteel",
-				"waterwheelSegment", "windmillBlade", "windmillBladeAdvanced",
-				"woodenGrip", "gunpartBarrel", "gunpartDrum", "gunpartHammer",
-				"dustCoke", "dustHOPGraphite", "ingotHOPGraphite",
-				"wireCopper", "wireElectrum", "wireAluminum", "wireSteel");
+				"stick_treated", "stick_iron", "stick_steel", "stick_aluminum",
+				"hemp_fiber", "hemp_fabric",
+				"coal_coke", "slag",
+				"component_iron", "component_steel",
+				"waterwheel_segment", "windmill_blade", "windmill_blade_advanced",
+				"wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
+				"dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
+				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel");
 		itemMetal = new ItemIEBase("metal", 64,
-				"ingotCopper", "ingotAluminum", "ingotLead", "ingotSilver", "ingotNickel", "ingotUranium", "ingotConstantan", "ingotElectrum", "ingotSteel",
-				"dustCopper", "dustAluminum", "dustLead", "dustSilver", "dustNickel", "dustUranium", "dustConstantan", "dustElectrum", "dustSteel", "dustIron", "dustGold",
-				"nuggetCopper", "nuggetAluminum", "nuggetLead", "nuggetSilver", "nuggetNickel", "nuggetUranium", "nuggetConstantan", "nuggetElectrum", "nuggetSteel", "nuggetIron",
-				"plateCopper", "plateAluminum", "plateLead", "plateSilver", "plateNickel", "plateUranium", "plateConstantan", "plateElectrum", "plateSteel", "plateIron", "plateGold");
+				"ingot_copper", "ingot_aluminum", "ingot_lead", "ingot_silver", "ingot_nickel", "ingot_uranium", "ingot_constantan", "ingot_electrum", "ingot_steel",
+				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
+				"nugget_copper", "nugget_aluminum", "nugget_lead", "nugget_silver", "nugget_nickel", "nugget_uranium", "nugget_constantan", "nugget_electrum", "nugget_steel", "nugget_iron",
+				"plate_copper", "plate_aluminum", "plate_lead", "plate_silver", "plate_nickel", "plate_uranium", "plate_constantan", "plate_electrum", "plate_steel", "plate_iron", "plate_gold");
 		itemTool = new ItemIETool();
 		itemToolbox = new ItemToolbox();
 		itemWireCoil = new ItemWireCoil();
@@ -275,7 +276,7 @@ public class IEContent
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
-		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bulletCasing", "wire").setMetaHidden(1);
+		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bullet_casing", "wire").setMetaHidden(1);
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
@@ -288,15 +289,15 @@ public class IEContent
 		itemEarmuffs = new ItemEarmuffs();
 		itemCoresample = new ItemCoresample();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
-		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveEngineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
+		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveengineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
 		for(int i = 0; i < itemsFaradaySuit.length; i++)
 			itemsFaradaySuit[i] = new ItemFaradaySuit(EntityEquipmentSlot.values()[2+i]);
 		itemFluorescentTube = new ItemFluorescentTube();
 
-		itemFakeIcons = new ItemIEBase("fakeIcon", 1, "birthday", "lucky")
+		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky")
 		{
 			@Override
-			public void getSubItems(Item item, CreativeTabs tab, List list)
+			public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 			{
 			}
 		};
@@ -493,16 +494,16 @@ public class IEContent
 
 		/**ENTITIES*/
 		int i = 0;
-		EntityRegistry.registerModEntity(EntityRevolvershot.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntitySkylineHook.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShot"), EntityRevolvershot.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "skylineHook"), EntitySkylineHook.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
 		//EntityRegistry.registerModEntity(EntitySkycrate.class, "skylineCrate", 2, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityRevolvershotHoming.class, "revolverShotHoming", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityWolfpackShot.class, "revolverShotWolfpack", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityChemthrowerShot.class, "chemthrowerShot", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityRailgunShot.class, "railgunShot", i++, ImmersiveEngineering.instance, 64, 5, true);
-		EntityRegistry.registerModEntity(EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShotHoming"), EntityRevolvershotHoming.class, "revolverShotHoming", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShotWolfpack"), EntityWolfpackShot.class, "revolverShotWolfpack", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrowerShot"), EntityChemthrowerShot.class, "chemthrowerShot", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "railgunShot"), EntityRailgunShot.class, "railgunShot", i++, ImmersiveEngineering.instance, 64, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShotFlare"), EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "explosive"), EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "fluorescentTube"), EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 		CapabilityShader.register();
 		ShaderRegistry.itemShader = IEContent.itemShader;
 		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
@@ -683,12 +684,12 @@ public class IEContent
 			@Override
 			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
 			@Override
-			public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 			{
 
 			}
 			@Override
-			public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
 		});
 		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,0));
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
@@ -936,6 +937,7 @@ public class IEContent
 				if(!item.isMetaHidden(meta))
 				{
 					String name = item.getSubNames()[meta];
+					name = createOreDictName(name);
 					if(type!=null&&!type.isEmpty())
 						name = name.substring(0,1).toUpperCase()+name.substring(1);
 					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
@@ -947,12 +949,35 @@ public class IEContent
 				if(!item.isMetaHidden(meta))
 				{
 					String name = item.getSubNames()[meta];
+					name = createOreDictName(name);
 					if(type!=null&&!type.isEmpty())
 						name = name.substring(0,1).toUpperCase()+name.substring(1);
 					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
 				}
 		}
 	}
+
+	private static String createOreDictName(String name)
+	{
+		String upperName = name.toUpperCase();
+		StringBuilder sb = new StringBuilder();
+		boolean nextCapital = false;
+		for (int i = 0; i < name.length(); i++)
+		{
+			if (name.charAt(i) == '_') {
+				nextCapital = true;
+			} else {
+				char nextChar = name.charAt(i);
+				if (nextCapital) {
+					nextChar = upperName.charAt(i);
+					nextCapital = false;
+				}
+				sb.append(nextChar);
+			}
+		}
+		return sb.toString();
+	}
+
 	public static void registerToOreDict(String type, BlockIEBase item, int... metas)
 	{
 		if(metas==null||metas.length<1)
@@ -981,23 +1006,23 @@ public class IEContent
 
 	public static void registerOre(String type, ItemStack ore, ItemStack ingot, ItemStack dust, ItemStack nugget, ItemStack plate, ItemStack block, ItemStack slab, ItemStack sheet, ItemStack slabSheet)
 	{
-		if(ore != null)
+		if(!ore.isEmpty())
 			OreDictionary.registerOre("ore" + type, ore);
-		if(ingot != null)
+		if(!ingot.isEmpty())
 			OreDictionary.registerOre("ingot" + type, ingot);
-		if(dust != null)
+		if(!dust.isEmpty())
 			OreDictionary.registerOre("dust" + type, dust);
-		if(nugget != null)
+		if(!nugget.isEmpty())
 			OreDictionary.registerOre("nugget" + type, nugget);
-		if(plate != null)
+		if(!plate.isEmpty())
 			OreDictionary.registerOre("plate" + type, plate);
-		if(block != null)
+		if(!block.isEmpty())
 			OreDictionary.registerOre("block" + type, block);
-		if(slab != null)
+		if(!slab.isEmpty())
 			OreDictionary.registerOre("slab" + type, slab);
-		if(sheet != null)
+		if(!sheet.isEmpty())
 			OreDictionary.registerOre("blockSheetmetal" + type, sheet);
-		if(slabSheet != null)
+		if(!slabSheet.isEmpty())
 			OreDictionary.registerOre("slabSheetmetal" + type, slabSheet);
 	}
 
@@ -1018,11 +1043,11 @@ public class IEContent
 	{
 		name = ImmersiveEngineering.MODID+"_"+name;
 		id = "ie_"+id;
-		ItemStack craftingStack = null;
+		ItemStack craftingStack = ItemStack.EMPTY;
 		if(item instanceof ItemStack && (offset==null||offset.length<1))
 			craftingStack = (ItemStack)item;
-		TileEntityBanner.EnumBannerPattern e = EnumHelper.addEnum(TileEntityBanner.EnumBannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
-		if(craftingStack==null)
+		BannerPattern e = EnumHelper.addEnum(BannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
+		if(craftingStack.isEmpty())
 			RecipeBannerAdvanced.addAdvancedPatternRecipe(e, ApiUtils.createIngredientStack(item), offset);
 	}
 }

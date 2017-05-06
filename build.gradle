@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "12.18.3.2185"
+    version = "13.20.0.2279"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
@@ -40,7 +40,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20160701"
+    mappings = "snapshot_20170323"
     //"snapshot_20160518" 1.9
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
@@ -82,15 +82,19 @@ dependencies {
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
 //    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.+"
 //    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
-    deobfCompile "mezz.jei:jei_1.10.2:3.14.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-    deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
-    deobfCompile "slimeknights:TConstruct:1.10.2-2.5.6.+"
-    deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
-    deobfCompile "com.github.mcjty:compatlayer:1.10-0.+"//1.10-0.2.2
+
+    //1.10 dependencies
+    deobfProvided 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
+    deobfProvided "slimeknights:TConstruct:1.10.2-2.6.+"
+
+    deobfCompile "mezz.jei:jei_1.11.2:4.2.+"
+    deobfCompile "slimeknights.mantle:Mantle:1.11.2-1.2.+"
+    deobfCompile "com.github.mcjty:compatlayer:1.11-0.+"//1.10-0.2.2
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.1x-1.+"//1.1x-1.4.4-55
-    deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.+"//17.68
-    deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
+    deobfCompile "MineTweaker3:MineTweaker3-MC1112-Main:1.11.2-3.0.+"//17.68
+    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+"
+
 }
 
 jar {

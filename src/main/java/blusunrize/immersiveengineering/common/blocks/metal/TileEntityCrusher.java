@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -66,7 +67,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			NBTTagList invList = nbt.getTagList("inputs", 10);
 			inputs.clear();
 			for(int i=0;i<invList.tagCount();i++)
-				inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
+				inputs.add( new ItemStack(invList.getCompoundTagAt(i)));
 		}
 	}
 	@Override
@@ -86,7 +87,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	public void update()
 	{
 		super.update();
-		if(worldObj.isRemote && !isDummy())
+		if(world.isRemote && !isDummy())
 		{
 			boolean active = shouldRenderAsActive();
 			ImmersiveEngineering.proxy.handleTileSound(IESounds.crusher, this, active, .5f, 1);
@@ -302,27 +303,27 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.xCoord-1.0625,center.yCoord,center.zCoord-1.0625, center.xCoord+1.0625,center.yCoord+1.25,center.zCoord+1.0625);
 			if(!entity.getEntityBoundingBox().intersectsWith(crusherInternal))
 				return;
-			if(entity instanceof EntityItem && ((EntityItem)entity).getEntityItem()!=null)
+			if(entity instanceof EntityItem && !((EntityItem)entity).getEntityItem().isEmpty())
 			{
 				ItemStack stack = ((EntityItem)entity).getEntityItem();
-				if(stack==null)
+				if(stack.isEmpty())
 					return;
 				CrusherRecipe recipe = master.findRecipeForInsertion(stack);
 				if(recipe==null)
 					return;
-				ItemStack displayStack = null;
+				ItemStack displayStack = ItemStack.EMPTY;
 				for(IngredientStack ingr : recipe.getItemInputs())
 					if(ingr.matchesItemStack(stack))
 					{
 						displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
 						break;
 					}
-				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, .5f, displayStack);
+				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
 				if(master.addProcessToQueue(process, true, true))
 				{
 					master.addProcessToQueue(process, false, true);
-					stack.stackSize -= displayStack.stackSize;
-					if(stack.stackSize<=0)
+					stack.shrink(displayStack.getCount());
+					if(stack.getCount()<=0)
 						entity.setDead();
 				}
 			}
@@ -364,11 +365,11 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().add(0,-1,0).offset(facing,-2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -396,7 +397,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
 	}

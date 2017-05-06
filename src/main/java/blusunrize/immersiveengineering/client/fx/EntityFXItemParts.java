@@ -15,7 +15,7 @@ public class EntityFXItemParts extends EntityFXIEBase
 		this.item = item;
 		this.part = part;
 		this.particleMaxAge = 16;
-		if(item!=null && item.getItem()!=null)
+		if(!item.isEmpty() && item.getItem()!=null)
 		{
 //			if(item.getItem() instanceof ItemBlock)
 //				this.particleIcon = Block.getBlockFromItem(item.getItem()).getIcon(0, item.getItemDamage());
@@ -43,7 +43,7 @@ public class EntityFXItemParts extends EntityFXIEBase
 	@Override
 	public void tessellateFromQueue(VertexBuffer worldRendererIn)
 	{
-		if(item!=null && item.getItem()!=null && this.particleTexture!=null)
+		if(!item.isEmpty() && item.getItem()!=null && this.particleTexture!=null)
 		{
 			float f10 = 0.025F * this.particleScale;
 

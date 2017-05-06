@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +35,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 		this.inputList = Lists.newArrayList(this.input);
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
-		this.outputList = Lists.newArrayList(this.itemOutput);
+		this.outputList = ListUtils.fromItem(this.itemOutput);
 	}
 	public SqueezerRecipe setInputSize(int size)
 	{
@@ -51,7 +52,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 	}
 	public static SqueezerRecipe findRecipe(ItemStack input)
 	{
-		if(input==null)
+		if(input.isEmpty())
 			return null;
 		for(SqueezerRecipe recipe : recipeList)
 			if(recipe.input.matches(input))

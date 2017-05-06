@@ -31,8 +31,9 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		IBlockState iblockstate = world.getBlockState(pos);
         Block localBlock = iblockstate.getBlock();
 		BlockPos posThere = pos;
@@ -61,17 +62,17 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 			}
 		}
 		else
-			return super.onItemUse(stack,player,world,pos,hand,side,hitX,hitY,hitZ);
+			return super.onItemUse(player,world,pos,hand,side,hitX,hitY,hitZ);
 		if(stackSlab!=null)
 		{
 			stackSlab.slabType=2;
 			stackSlab.markContainingBlockForUpdate(null);
 			world.playSound(stackSlab.getPos().getX()+.5, stackSlab.getPos().getY()+.5, stackSlab.getPos().getZ()+.5, this.block.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (this.block.getSoundType().getVolume() + 1.0F) / 2.0F, this.block.getSoundType().getPitch() * 0.8F, false);
-			--stack.stackSize;
+			stack.shrink(1);
 			return EnumActionResult.SUCCESS;
 		}
 		else
-			return super.onItemUse(stack,player,world,pos,hand,side,hitX,hitY,hitZ);
+			return super.onItemUse(player,world,pos,hand,side,hitX,hitY,hitZ);
 	}
 
 	@Override

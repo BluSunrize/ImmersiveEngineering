@@ -79,13 +79,14 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof IImmersiveConnectable && ((IImmersiveConnectable)tileEntity).canConnect())
 			{
+				ItemStack stack = player.getHeldItem(hand);
 				TargetingInfo target = new TargetingInfo(side, hitX,hitY,hitZ);
 				WireType wire = getWireType(stack);
 				BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, target);
@@ -95,7 +96,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 
 				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target))
 				{
-					player.addChatMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
+					player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
 					return EnumActionResult.FAIL;
 				}
 
@@ -114,16 +115,16 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
 					int distanceSq = (int) Math.ceil( linkPos.distanceSq(masterPos) );
 					if(array[0]!=world.provider.getDimension())
-						player.addChatMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
+						player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
 					else if(linkPos.equals(masterPos))
-						player.addChatMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
+						player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
 					else if( distanceSq > (type.getMaxLength()*type.getMaxLength()))
-						player.addChatMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"));
+						player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"));
 					else
 					{
 						TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
 						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||!((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink))
-							player.addChatMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
+							player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
 						else
 						{
 							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
@@ -137,7 +138,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 										connectionExists = true;
 								}
 							if(connectionExists)
-								player.addChatMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
+								player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
 							else
 							{
 								Vec3d rtOff0 = nodeHere.getRaytraceOffset(nodeLink).addVector(masterPos.getX(), masterPos.getY(), masterPos.getZ());
@@ -156,7 +157,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									player.addStat(IEAchievements.connectWire);
 
 									if(!player.capabilities.isCreativeMode)
-										stack.stackSize--;
+										stack.shrink(1);
 									((TileEntity)nodeHere).markDirty();
 									world.addBlockEvent(masterPos, ((TileEntity) nodeHere).getBlockType(), -1, 0);
 									IBlockState state = world.getBlockState(masterPos);
@@ -167,7 +168,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									world.notifyBlockUpdate(linkPos, state,state, 3);
 								}
 								else
-									player.addChatMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"));
+									player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"));
 							}
 						}
 					}

@@ -24,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -59,7 +60,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		if(slot == EntityEquipmentSlot.MAINHAND)
 		{
 			float dmg = 5 + ItemNBTHelper.getFloat(stack, "fallDamageBoost");
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
 		}
 		return multimap;
 	}
@@ -67,7 +68,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	public static HashMap<String, EntitySkylineHook> existingHooks = new HashMap<String, EntitySkylineHook>();
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
 		TileEntity connector = null;
 		double lastDist = 0;
@@ -93,6 +94,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 						}
 					}
 				}
+		ItemStack stack = player.getHeldItem(hand);
 		if(line!=null&&connector!=null)
 		{
 			SkylineHelper.spawnHook(player, connector, line);
@@ -147,7 +149,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		ItemStack[] contents = this.getContainedItems(stack);
+		NonNullList<ItemStack> contents = this.getContainedItems(stack);
 		player.addStat(IEAchievements.craftSkyhook);
 	}
 

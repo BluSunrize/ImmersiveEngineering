@@ -36,14 +36,14 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 	@Override
 	public void onNeighborBlockChange(BlockPos pos)
 	{
-		boolean r = this.worldObj.isBlockPowered(pos);
+		boolean r = this.world.isBlockPowered(pos);
 		if(r!=this.redstone)
 		{
 			this.redstone = r;
 			if(this.redstone)
 			{
 				BlockPos target = pos.offset(facing);
-				RotationUtil.rotateBlock(this.worldObj, target, invert?facing:facing.getOpposite());
+				RotationUtil.rotateBlock(this.world, target, invert?facing:facing.getOpposite());
 			}
 		}
 	}
@@ -86,7 +86,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 		{
 			invert = !invert;
 			markDirty();
-			worldObj.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+			world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 			return true;
 		}
 		return false;

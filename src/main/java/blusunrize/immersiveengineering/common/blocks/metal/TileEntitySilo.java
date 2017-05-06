@@ -29,7 +29,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> implements IComparatorOverride //IDeepStorageUnit
 {
-	public ItemStack identStack;
+	public ItemStack identStack = ItemStack.EMPTY;
 	public int storageAmount = 0;
 	static int maxStorage = 41472;
 	//	ItemStack inputStack;
@@ -44,23 +44,23 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	@Override
 	public void update()
 	{
-//		if(pos==4 && !worldObj.isRemote && this.outputStack==null && storageAmount>0 && identStack!=null)
+//		if(pos==4 && !world.isRemote && this.outputStack==null && storageAmount>0 && identStack!=null)
 //			this.markDirty();
 
-		if(pos==4 && !worldObj.isRemote && this.identStack!=null && storageAmount>0 && worldObj.isBlockIndirectlyGettingPowered(getPos())>0 && worldObj.getTotalWorldTime()%8==0)
+		if(pos==4 && !world.isRemote && !this.identStack.isEmpty() && storageAmount>0 && world.isBlockIndirectlyGettingPowered(getPos())>0 && world.getTotalWorldTime()%8==0)
 		{
 			updateComparatorValuesPart1();
 			for(EnumFacing f : EnumFacing.values())
 				if(f!=EnumFacing.UP)
 				{
-					TileEntity inventory = this.worldObj.getTileEntity(getPos().offset(f));
+					TileEntity inventory = this.world.getTileEntity(getPos().offset(f));
 					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
 					stack = Utils.insertStackIntoInventory(inventory, stack, f.getOpposite());
-					if(stack==null)
+					if(stack.isEmpty())
 					{
 						storageAmount--;
 						if(storageAmount<=0)
-							identStack = null;
+							identStack = ItemStack.EMPTY;
 						this.markDirty();
 						markContainingBlockForUpdate(null);
 						if(storageAmount<=0)
@@ -78,10 +78,10 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		if(nbt.hasKey("identStack"))
 		{
 			NBTTagCompound t = nbt.getCompoundTag("identStack");
-			this.identStack = ItemStack.loadItemStackFromNBT(t);
+			this.identStack = new ItemStack(t);
 		}
 		else
-			this.identStack = null;
+			this.identStack = ItemStack.EMPTY;
 		storageAmount = nbt.getInteger("storageAmount");
 		lockItem = nbt.getBoolean("lockItem");
 	}
@@ -90,7 +90,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		if(this.identStack!=null)
+		if(!this.identStack.isEmpty())
 		{
 			NBTTagCompound t = this.identStack.writeToNBT(new NBTTagCompound());
 			nbt.setTag("identStack", t);
@@ -139,18 +139,18 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	public void disassemble()
 	{
 		super.invalidate();
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntitySilo))
+			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntitySilo))
 				return;
 
 			for(int yy=0;yy<=6;yy++)
 				for(int xx=-1;xx<=1;xx++)
 					for(int zz=-1;zz<=1;zz++)
 					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
+						ItemStack s = ItemStack.EMPTY;
+						TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
 						if(te instanceof TileEntitySilo)
 						{
 							s = ((TileEntitySilo)te).getOriginalBlock();
@@ -158,15 +158,15 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 						}
 						if(startPos.add(xx, yy, zz).equals(getPos()))
 							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
 						{
 							if(startPos.add(xx, yy, zz).equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
+								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
 							else
 							{
 								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblock)
-									worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-								worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
+									world.setBlockToAir(startPos.add(xx, yy, zz));
+								world.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
 							}
 						}
 					}
@@ -294,22 +294,22 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 			stack = stack.copy();
 			TileEntitySilo silo = this.silo.master();
 			int space = maxStorage-silo.storageAmount;
-			if(slot!=0 || space<1 || stack==null || (silo.identStack!=null && !ItemHandlerHelper.canItemStacksStack(silo.identStack,stack)))
+			if(slot!=0 || space<1 || stack.isEmpty() || (!silo.identStack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(silo.identStack,stack)))
 				return stack;
-			int accepted = Math.min(space, stack.stackSize);
+			int accepted = Math.min(space, stack.getCount());
 			if(!simulate)
 			{
 				silo.updateComparatorValuesPart1();
 				silo.storageAmount += accepted;
-				if(silo.identStack==null)
+				if(silo.identStack.isEmpty())
 					silo.identStack = stack.copy();
 				silo.markDirty();
 				silo.markContainingBlockForUpdate(null);
 				silo.updateComparatorValuesPart2();
 			}
-			stack.stackSize -= accepted;
-			if(stack.stackSize<1)
-				stack = null;
+			stack.shrink(accepted);
+			if(stack.getCount() < 1)
+				stack = ItemStack.EMPTY;
 			return stack;
 		}
 
@@ -317,25 +317,31 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
 			TileEntitySilo silo = this.silo.master();
-			if(slot!=1 || silo.storageAmount<1 || amount<1 || silo.identStack==null)
-				return null;
+			if(slot!=1 || silo.storageAmount<1 || amount<1 || silo.identStack.isEmpty())
+				return ItemStack.EMPTY;
 			ItemStack out;
-			if(silo.identStack.stackSize>amount)
+			if(silo.identStack.getCount() > amount)
 				out = Utils.copyStackWithAmount(silo.identStack, amount);
 			else
 				out = silo.identStack.copy();
 			if(!simulate)
 			{
 				silo.updateComparatorValuesPart1();
-				silo.storageAmount -= out.stackSize;
+				silo.storageAmount -= out.getCount();
 				if(silo.storageAmount<=0 && !silo.lockItem)
-					silo.identStack = null;
+					silo.identStack = ItemStack.EMPTY;
 				silo.markDirty();
 				silo.markContainingBlockForUpdate(null);
 				silo.updateComparatorValuesPart2();
 			}
 			return out;
 		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return 64;
+		}
+
 		@Override
 		public void setStackInSlot(int slot, ItemStack stack)
 		{
@@ -372,7 +378,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		int vol = maxStorage / 6;
 		if((15*storageAmount)/maxStorage!=masterCompOld)
-			worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+			world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 		for(int i=0; i<6; i++)
 		{
 			int filled = storageAmount - i * vol;
@@ -383,7 +389,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 					for(int z=-1; z<=1; z++)
 					{
 						BlockPos pos = getPos().add(-offset[0]+x, -offset[1]+i+1, -offset[2]+z);
-						worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
 					}
 			}
 		}

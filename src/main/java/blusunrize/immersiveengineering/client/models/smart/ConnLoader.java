@@ -25,31 +25,31 @@ public class ConnLoader implements ICustomModelLoader
 	public static Map<String, ResourceLocation> baseModels = new HashMap<>();
 	static
 	{
-		baseModels.put("conn_lv", new ResourceLocation("immersiveengineering:block/connector/connectorLV.obj"));
-		baseModels.put("rel_lv", new ResourceLocation("immersiveengineering:block/connector/connectorLV.obj"));
-		textureReplacements.put("rel_lv", ImmutableMap.of("#immersiveengineering:blocks/connector_connectorLV",
-				"immersiveengineering:blocks/connector_relayLV"));
+		baseModels.put("conn_lv", new ResourceLocation("immersiveengineering:block/connector/connector_lv.obj"));
+		baseModels.put("rel_lv", new ResourceLocation("immersiveengineering:block/connector/connector_lv.obj"));
+		textureReplacements.put("rel_lv", ImmutableMap.of("#immersiveengineering:blocks/connector_connector_lv",
+				"immersiveengineering:blocks/connector_relay_lv"));
 
-		baseModels.put("conn_mv", new ResourceLocation("immersiveengineering:block/connector/connectorMV.obj"));
-		baseModels.put("rel_mv", new ResourceLocation("immersiveengineering:block/connector/connectorMV.obj"));
-		textureReplacements.put("rel_mv", ImmutableMap.of("#immersiveengineering:blocks/connector_connectorMV",
-				"immersiveengineering:blocks/connector_relayMV"));
+		baseModels.put("conn_mv", new ResourceLocation("immersiveengineering:block/connector/connector_mv.obj"));
+		baseModels.put("rel_mv", new ResourceLocation("immersiveengineering:block/connector/connector_mv.obj"));
+		textureReplacements.put("rel_mv", ImmutableMap.of("#immersiveengineering:blocks/connector_connector_mv",
+				"immersiveengineering:blocks/connector_relay_mv"));
 
-		baseModels.put("conn_hv", new ResourceLocation("immersiveengineering:block/connector/connectorHV.obj"));
-		baseModels.put("rel_hv", new ResourceLocation("immersiveengineering:block/connector/relayHV.obj"));
+		baseModels.put("conn_hv", new ResourceLocation("immersiveengineering:block/connector/connector_hv.obj"));
+		baseModels.put("rel_hv", new ResourceLocation("immersiveengineering:block/connector/relay_hv.obj"));
 
 		baseModels.put("conn_struct",
-				new ResourceLocation("immersiveengineering:block/connector/connectorStructural.obj.ie"));
+				new ResourceLocation("immersiveengineering:block/connector/connector_structural.obj.ie"));
 
-		baseModels.put("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connectorRedstone.obj.ie"));
+		baseModels.put("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connector_redstone.obj.ie"));
 
 		baseModels.put("breaker_off",
-				new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_off.obj.ie"));
-		baseModels.put("breaker_on", new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_on.obj.ie"));
+				new ResourceLocation("immersiveengineering:block/connector/breaker_switch_off.obj.ie"));
+		baseModels.put("breaker_on", new ResourceLocation("immersiveengineering:block/connector/breaker_switch_on.obj.ie"));
 
-		baseModels.put("eMeter", new ResourceLocation("immersiveengineering:block/connector/eMeter.obj"));
-		baseModels.put("redstoneBreaker",
-				new ResourceLocation("immersiveengineering:block/connector/redstoneBreaker.obj.ie"));
+		baseModels.put("e_meter", new ResourceLocation("immersiveengineering:block/connector/e_meter.obj"));
+		baseModels.put("redstone_breaker",
+				new ResourceLocation("immersiveengineering:block/connector/redstone_breaker.obj.ie"));
 
 		baseModels.put("transformer_hv_left",
 				new ResourceLocation("immersiveengineering:block/connector/transformer_hv_left.obj"));
@@ -60,28 +60,28 @@ public class ConnLoader implements ICustomModelLoader
 		baseModels.put("transformer_mv_right",
 				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_right.obj"));
 		baseModels.put("transformer_mv_post",
-				new ResourceLocation("immersiveengineering:block/connector/transformerPost.obj"));
+				new ResourceLocation("immersiveengineering:block/connector/transformer_post.obj"));
 
-		baseModels.put("eLantern",
-				new ResourceLocation("immersiveengineering:block/metalDevice/eLantern.obj"));
-		baseModels.put("eLantern_on",
-				new ResourceLocation("immersiveengineering:block/metalDevice/eLantern.obj"));
-		textureReplacements.put("eLantern_on",
-				ImmutableMap.of("#immersiveengineering:blocks/metalDevice1_electricLantern",
-						"immersiveengineering:blocks/metalDevice1_electricLantern_on"));
+		baseModels.put("e_lantern",
+				new ResourceLocation("immersiveengineering:block/metal_device/e_lantern.obj"));
+		baseModels.put("e_lantern_on",
+				new ResourceLocation("immersiveengineering:block/metal_device/e_lantern.obj"));
+		textureReplacements.put("e_lantern_on",
+				ImmutableMap.of("#immersiveengineering:blocks/metal_device1_electric_lantern",
+						"immersiveengineering:blocks/metal_device1_electric_lantern_on"));
 		baseModels.put("floodlight",
-				new ResourceLocation("immersiveengineering:block/metalDevice/floodlight.obj.ie"));
+				new ResourceLocation("immersiveengineering:block/metal_device/floodlight.obj.ie"));
 		baseModels.put("floodlight_on",
-				new ResourceLocation("immersiveengineering:block/metalDevice/floodlight.obj.ie"));
+				new ResourceLocation("immersiveengineering:block/metal_device/floodlight.obj.ie"));
 		textureReplacements.put("floodlight_on",
-				ImmutableMap.of("#immersiveengineering:blocks/metalDevice1_floodlight",
-						"immersiveengineering:blocks/metalDevice1_floodlight_on"));
+				ImmutableMap.of("#immersiveengineering:blocks/metal_device1_floodlight",
+						"immersiveengineering:blocks/metal_device1_floodlight_on"));
 		
 		baseModels.put("balloon",
 				new ResourceLocation("immersiveengineering:block/balloon.obj.ie"));
 
-		baseModels.put("razorWire",
-				new ResourceLocation("immersiveengineering:block/razorWire.obj.ie"));
+		baseModels.put("razor_wire",
+				new ResourceLocation("immersiveengineering:block/razor_wire.obj.ie"));
 	}
 
 	@Override

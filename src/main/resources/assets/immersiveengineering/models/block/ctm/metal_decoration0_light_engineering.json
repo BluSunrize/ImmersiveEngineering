@@ -1,0 +1,11 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "immersiveengineering:blocks/metal_decoration0_light_engineering"
+	},
+
+	"ctm" : {
+		"model": { "model": "cube" },
+		"face": "immersiveengineering:ctm/metal_decoration0_light_engineering.cf"
+	}
+}

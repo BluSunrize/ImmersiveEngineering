@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		super(null,input,null, time, energyPerTick);
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
-		this.outputList = Lists.newArrayList();
+		this.outputList = NonNullList.create();
 		for(Entry<ItemStack,Double> e : outputs.entrySet())
 		{
 			double scaledOut = e.getValue();
@@ -41,12 +42,12 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	}
 
 	@Override
-	public List<ItemStack> getOutputs(ItemStack input, ItemStack[] additives)
+	public NonNullList<ItemStack> getOutputs(ItemStack input, NonNullList<ItemStack> additives)
 	{
 		if(outputs==null)
-			return Lists.newArrayList();
+			return NonNullList.create();
 		float mod = !input.getItem().isDamageable()?1:(input.getMaxDamage()-input.getItemDamage())/(float)input.getMaxDamage();
-		ArrayList<ItemStack> outs = new ArrayList<ItemStack>();
+		NonNullList<ItemStack> outs = NonNullList.create();
 		for(Entry<ItemStack,Double> e : outputs.entrySet())
 		{
 			double scaledOut = mod*e.getValue();
@@ -68,8 +69,8 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	}
 	
 	@Override
-	public boolean matches(ItemStack input, ItemStack[] additives)
+	public boolean matches(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		return input!=null && this.input.matchesItemStack(input);
+		return !input.isEmpty() && this.input.matchesItemStack(input);
 	}
 }

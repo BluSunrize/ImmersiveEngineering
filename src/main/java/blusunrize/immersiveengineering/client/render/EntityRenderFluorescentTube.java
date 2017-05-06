@@ -23,7 +23,7 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 			{-1, 0}, {-sqrt2Half, -sqrt2Half}, {0, -1}, {sqrt2Half, -sqrt2Half}	
 	};
 	Random r = new Random();
-	ResourceLocation modelLocation = new ResourceLocation("immersiveengineering:fluorescentTube.obj");
+	ResourceLocation modelLocation = new ResourceLocation("immersiveengineering:fluorescent_tube.obj");
 	TextureAtlasSprite tex;
 	public EntityRenderFluorescentTube(RenderManager renderManager)
 	{

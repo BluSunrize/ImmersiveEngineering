@@ -66,7 +66,7 @@ public class SmartLightingQuad extends BakedQuad
 				info = (BlockInfo) blockInfo.get(consumer);
 				world = info.getWorld();
 				if (world instanceof ChunkCache)
-					world = ((ChunkCache)world).worldObj;
+					world = ((ChunkCache)world).world;
 				consumer = (IVertexConsumer) parent.get(consumer);
 			}
 			catch (Throwable e)

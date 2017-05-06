@@ -51,7 +51,7 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer<TileEnt
 		else
 			GlStateManager.shadeModel(7424);
 //		GlStateManager.translate(te.facing.getFrontOffsetX()*.25, 0, te.facing.getFrontOffsetZ()*.25);
-//		float angle = ClientUtils.mc().thePlayer.ticksExisted%100/100f;
+//		float angle = ClientUtils.mc().player.ticksExisted%100/100f;
 //		GlStateManager.rotate(angle*360, te.facing.getFrontOffsetX(), 0, te.facing.getFrontOffsetZ());
 		GlStateManager.rotate(te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), te.facing.getFrontOffsetX(), 0, te.facing.getFrontOffsetZ());
 		

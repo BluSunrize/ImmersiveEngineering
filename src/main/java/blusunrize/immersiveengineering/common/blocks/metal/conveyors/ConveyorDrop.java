@@ -32,12 +32,12 @@ public class ConveyorDrop extends ConveyorBasic
 			if(!tile.getWorld().isRemote)
 			{
 				ItemStack stack = entity.getEntityItem();
-				if(stack != null)
+				if(!stack.isEmpty())
 				{
 					ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.UP);
-					if(ret == null)
+					if(ret.isEmpty())
 						entity.setDead();
-					else if(ret.stackSize < stack.stackSize)
+					else if(ret.getCount() < stack.getCount())
 						entity.setEntityItemStack(ret);
 				}
 			}

@@ -16,22 +16,25 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
 {
 	public FluidTank tank = new FluidTank(12000);
-	ItemStack[] inventory = new ItemStack[4];
+	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
 	public boolean active = false;
@@ -83,13 +86,13 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote&&formed&&!isDummy())
+		if(!world.isRemote&&formed&&!isDummy())
 		{
 			boolean a = active;
 			boolean b = false;
 			if(process>0)
 			{
-				if(inventory[0]==null)
+				if(inventory.get(0).isEmpty())
 				{
 					process=0;
 					processMax=0;
@@ -116,10 +119,10 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 					if(recipe!=null)
 					{
 						Utils.modifyInvStackSize(inventory, 0, -1);
-						if(inventory[1]!=null)
-							inventory[1].stackSize+=recipe.output.copy().stackSize;
-						else if(inventory[1]==null)
-							inventory[1] = recipe.output.copy();
+						if(!inventory.get(1).isEmpty())
+							inventory.get(1).grow(recipe.output.copy().getCount());
+						else if(inventory.get(1).isEmpty())
+							inventory.set(1, recipe.output.copy());
 						this.tank.fill(new FluidStack(IEContent.fluidCreosote,recipe.creosoteOutput), true);
 					}
 					processMax=0;
@@ -134,16 +137,16 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 				}
 			}
 
-			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[3]==null||inventory[3].stackSize+1<=inventory[3].getMaxStackSize()))
+			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory.get(3).isEmpty() || inventory.get(3).getCount() + 1<= inventory.get(3).getMaxStackSize()))
 			{
-				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[2], inventory[3], null);
-				if(filledContainer!=null)
+				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory.get(2), inventory.get(3), null);
+				if(!filledContainer.isEmpty())
 				{
-					if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], filledContainer, true))
-						inventory[3].stackSize+=filledContainer.stackSize;
-					else if(inventory[3]==null)
-						inventory[3] = filledContainer.copy();
-					Utils.modifyInvStackSize(inventory, 2, -filledContainer.stackSize);
+					if(!inventory.get(3).isEmpty() && OreDictionary.itemMatches(inventory.get(3), filledContainer, true))
+						inventory.get(3).grow(filledContainer.getCount());
+					else if(inventory.get(3).isEmpty())
+						inventory.set(3, filledContainer.copy());
+					Utils.modifyInvStackSize(inventory, 2, -filledContainer.getCount());
 					b=true;
 				}
 			}
@@ -156,22 +159,22 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 					for(int xx=-1;xx<=1;xx++)
 						for(int zz=-1;zz<=1;zz++)
 						{
-							tileEntity = worldObj.getTileEntity(getPos().add(xx, yy, zz));
+							tileEntity = world.getTileEntity(getPos().add(xx, yy, zz));
 							if(tileEntity!=null)
 								tileEntity.markDirty();
 							this.markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							worldObj.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1,active?1:0);
+							world.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1,active?1:0);
 						}
 			}
 		}
 	}
 	public CokeOvenRecipe getRecipe()
 	{
-		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory[0]);
+		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
 
-		if(inventory[1]==null || (OreDictionary.itemMatches(inventory[1],recipe.output,false) && inventory[1].stackSize+recipe.output.stackSize<=getSlotLimit(1)) )
+		if(inventory.get(1).isEmpty() || (OreDictionary.itemMatches(inventory.get(1),recipe.output,false) && inventory.get(1).getCount() + recipe.output.getCount() <=getSlotLimit(1)) )
 			if(tank.getFluidAmount()+recipe.creosoteOutput<=tank.getCapacity())
 				return recipe;
 		return null;
@@ -240,18 +243,18 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public void disassemble()
 	{
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityCokeOven))
+			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntityCokeOven))
 				return;
 
 			for(int yy=-1;yy<=1;yy++)
 				for(int xx=-1;xx<=1;xx++)
 					for(int zz=-1;zz<=1;zz++)
 					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
+						ItemStack s = ItemStack.EMPTY;
+						TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
 						if(te instanceof TileEntityCokeOven)
 						{
 							s = ((TileEntityCokeOven)te).getOriginalBlock();
@@ -259,15 +262,15 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 						}
 						if(startPos.add(xx, yy, zz).equals(this.getPos()))
 							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						if(!s.isEmpty())
 						{
 							if(startPos.add(xx, yy, zz).equals(this.getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, s));
+								world.spawnEntity(new EntityItem(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, s));
 							else
 							{
 								if(Block.getBlockFromItem(s.getItem()) instanceof BlockIEMultiblock)
-									worldObj.setBlockToAir(startPos.add(xx,yy,zz));
-								worldObj.setBlockState(startPos.add(xx,yy,zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
+									world.setBlockToAir(startPos.add(xx,yy,zz));
+								world.setBlockState(startPos.add(xx,yy,zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
 							}
 						}
 					}
@@ -294,7 +297,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		TileEntityCokeOven master = master();
 		if (master!=null)
@@ -304,7 +307,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return false;
 		if(slot==0)
 			return CokeOvenRecipe.findRecipe(stack)!=null;
@@ -325,7 +328,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return true;
 		return super.hasCapability(capability, facing);
 	}
@@ -333,7 +336,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityCokeOven master = master();
 			if(master==null)

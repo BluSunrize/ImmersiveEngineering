@@ -22,10 +22,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,7 +38,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	//	{
 	//		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
 	//			return null;
-	//		TileEntity te = worldObj.getTileEntity(xCoord-offset[0], yCoord-offset[1], zCoord-offset[2]);
+	//		TileEntity te = world.getTileEntity(xCoord-offset[0], yCoord-offset[1], zCoord-offset[2]);
 	//		return te instanceof TileEntitySheetmetalTank?(TileEntitySheetmetalTank)te : null;
 	//	}
 
@@ -70,7 +67,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	@Override
 	public void update()
 	{
-		if(pos==4 && !worldObj.isRemote && worldObj.isBlockIndirectlyGettingPowered(getPos())>0)
+		if(pos==4 && !world.isRemote && world.isBlockIndirectlyGettingPowered(getPos())>0)
 			for(int i=0; i<6; i++)
 				if(i!=1 && tank.getFluidAmount()>0)
 				{
@@ -78,7 +75,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 					int outSize = Math.min(144, tank.getFluidAmount());
 					FluidStack out = new FluidStack(tank.getFluid().getFluid(), outSize);
 					BlockPos outputPos = getPos().offset(f);
-					IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, f.getOpposite());
+					IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, f.getOpposite());
 					if(output != null)
 					{
 						int accepted = output.fill(out, false);
@@ -128,18 +125,18 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	public void disassemble()
 	{
 		super.invalidate();
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntitySheetmetalTank))
+			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntitySheetmetalTank))
 				return;
 
 			for(int yy=0;yy<=4;yy++)
 				for(int xx=-1;xx<=1;xx++)
 					for(int zz=-1;zz<=1;zz++)
 					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
+						ItemStack s = ItemStack.EMPTY;
+						TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
 						if(te instanceof TileEntitySheetmetalTank)
 						{
 							s = ((TileEntitySheetmetalTank)te).getOriginalBlock();
@@ -147,15 +144,15 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 						}
 						if(startPos.add(xx, yy, zz).equals(getPos()))
 							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
 						{
 							if(startPos.add(xx, yy, zz).equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
+								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
 							else
 							{
 								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblock)
-									worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-								worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
+									world.setBlockToAir(startPos.add(xx, yy, zz));
+								world.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
 							}
 						}
 					}
@@ -187,9 +184,10 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		TileEntitySheetmetalTank master = this.master();
 		if(master!=null)
 		{
-			FluidStack f = FluidUtil.getFluidContained(heldItem);
-			if(FluidUtil.interactWithFluidHandler(heldItem, master.tank, player))
+			FluidActionResult fluidActionResult = FluidUtil.interactWithFluidHandler(heldItem, master.tank, player);
+			if(fluidActionResult.isSuccess())
 			{
+				player.setHeldItem(hand, fluidActionResult.getResult());
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -250,7 +248,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	{
 		int vol = tank.getCapacity() / 6;
 		if ((15*tank.getFluidAmount())/tank.getCapacity()!=masterCompOld)
-			worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+			world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 		for(int i=0; i<4; i++)
 		{
 			int filled = tank.getFluidAmount() - i * vol;
@@ -261,7 +259,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 					for(int z=-1; z<=1; z++)
 					{
 						BlockPos pos = getPos().add(-offset[0]+x, -offset[1]+i+1, -offset[2]+z);
-						worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
 					}
 			}
 		}

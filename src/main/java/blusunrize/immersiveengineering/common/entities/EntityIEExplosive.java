@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -90,7 +91,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		if(this.block!=null && name==null)
 		{
 			ItemStack s = new ItemStack(this.block.getBlock(),1,this.block.getBlock().getMetaFromState(this.block));
-			if(s!=null && s.getItem()!=null)
+			if(!s.isEmpty() && s.getItem()!=null)
 				name = s.getDisplayName();
 		}
 		if(name!=null)
@@ -123,14 +124,14 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote && this.block==null)
+		if(world.isRemote && this.block==null)
 			this.getBlockSynced();
 
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
@@ -147,10 +148,10 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		{
 			this.setDead();
 
-			if(!this.worldObj.isRemote)
+			if(!this.world.isRemote)
 			{
-				Explosion explosion = new IEExplosion(worldObj, this, posX,posY+(height/16f),posZ, explosionPower, explosionFire, explosionSmoke).setDropChance(explosionDropChance);
-				if(!ForgeEventFactory.onExplosionStart(worldObj, explosion))
+				Explosion explosion = new IEExplosion(world, this, posX,posY+(height/16f),posZ, explosionPower, explosionFire, explosionSmoke).setDropChance(explosionDropChance);
+				if(!ForgeEventFactory.onExplosionStart(world, explosion))
 				{
 					explosion.doExplosionA();
 					explosion.doExplosionB(true);
@@ -160,7 +161,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		else
 		{
 			this.handleWaterMovement();
-			this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
 	}
 }

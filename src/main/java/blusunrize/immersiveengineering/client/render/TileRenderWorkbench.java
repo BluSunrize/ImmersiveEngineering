@@ -59,11 +59,11 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 		GlStateManager.rotate(-90, 1,0,0);
 		GlStateManager.translate(0,-.875,0);
 		GlStateManager.scale(.75f,.75f,.75f);
-		if(te.getInventory()[0]!=null)
+		if(!te.getInventory().get(0).isEmpty())
 		{
 			try{
-				ItemStack is = te.getInventory()[0].copy();
-				is.stackSize = 1;
+				ItemStack is = te.getInventory().get(0).copy();
+				is.setCount(1);
 				ClientUtils.mc().getRenderItem().renderItem(is, ItemCameraTransforms.TransformType.FIXED);
 			}catch(Exception e)
 			{

@@ -48,7 +48,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			//				if(Lib.IC2 && !this.inICNet)
 			//				{
@@ -68,10 +68,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		}
 		else if (firstTick)
 		{
-			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
+			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 			if (conns!=null)
 				for (Connection conn:conns)
-					if (pos.compareTo(conn.end)<0&&worldObj.isBlockLoaded(conn.end))
+					if (pos.compareTo(conn.end)<0&&world.isBlockLoaded(conn.end))
 						this.markContainingBlockForUpdate(null);
 			firstTick = false;
 		}
@@ -139,7 +139,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(isRelay())
 			return false;
-		TileEntity tile = worldObj.getTileEntity(getPos().offset(facing));
+		TileEntity tile = world.getTileEntity(getPos().offset(facing));
 		return EnergyHelper.isFluxReceiver(tile, facing.getOpposite());
 	}
 	@Override
@@ -152,7 +152,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return 0;
 		int toAccept = Math.min(acceptanceLeft, amount);
 
-		TileEntity capacitor = worldObj.getTileEntity(getPos().offset(facing));
+		TileEntity capacitor = world.getTileEntity(getPos().offset(facing));
 		int ret = EnergyHelper.insertFlux(capacitor, facing.getOpposite(), toAccept, simulate);
 		//		if(capacitor instanceof IFluxReceiver && ((IFluxReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
 		//		{
@@ -280,9 +280,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
 	{
-		if(worldObj.isRemote || isRelay())
+		if(world.isRemote || isRelay())
 			return 0;
-		if(worldObj.getTotalWorldTime()==lastTransfer)
+		if(world.getTotalWorldTime()==lastTransfer)
 			return 0;
 
 		int accepted = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
@@ -293,7 +293,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		if(!simulate)
 		{
 			energyStorage.modifyEnergyStored(accepted);
-			lastTransfer = worldObj.getTotalWorldTime();
+			lastTransfer = world.getTotalWorldTime();
 			markDirty();
 		}
 
@@ -323,9 +323,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public int transferEnergy(int energy, boolean simulate, final int energyType)
 	{
 		int received = 0;
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
+			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), world);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			final int powerForSort = powerLeft;
 
@@ -336,7 +336,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<AbstractConnection,Integer>();
 			for(AbstractConnection con : outputs)
 			{
-				IImmersiveConnectable end = ApiUtils.toIIC(con.end, worldObj);
+				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
 				if(con.cableType!=null && end!=null)
 				{
 					int atmOut = Math.min(powerForSort,con.cableType.getTransferRate());
@@ -352,7 +352,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			if(sum>0)
 				for(AbstractConnection con : powerSorting.keySet())
 				{
-					IImmersiveConnectable end = ApiUtils.toIIC(con.end, worldObj);
+					IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
 					if(con.cableType!=null && end!=null)
 					{
 						float prio = powerSorting.get(con)/(float)sum;
@@ -370,15 +370,15 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							float length = sub.length/(float)sub.cableType.getMaxLength();
 							float baseLoss = (float)sub.cableType.getLossRatio();
 							float mod = (((maxInput-tempR)/(float)maxInput)/.25f)*.1f;
-							intermediaryLoss = MathHelper.clamp_float(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
+							intermediaryLoss = MathHelper.clamp(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
 
-							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimension()).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimension()).get(sub):0;
+							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).get(sub):0;
 							transferredPerCon += r;
 							if(!simulate)
 							{
-								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimension()).put(sub,transferredPerCon);
-								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start,worldObj);
-								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end,worldObj);
+								ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).put(sub,transferredPerCon);
+								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start,world);
+								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end,world);
 								if(subStart!=null && passedConnectors.add(subStart))
 									subStart.onEnergyPassthrough((int)(r-r*intermediaryLoss));
 								if(subEnd!=null && passedConnectors.add(subEnd))

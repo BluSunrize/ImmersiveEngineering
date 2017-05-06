@@ -1,10 +1,11 @@
 package blusunrize.immersiveengineering.common.util.inventory;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public interface IIEInventory
 {
-	ItemStack[] getInventory();
+	NonNullList<ItemStack> getInventory();
 	boolean isStackValid(int slot, ItemStack stack);
 	int getSlotLimit(int slot);
 	void doGraphicalUpdates(int slot);

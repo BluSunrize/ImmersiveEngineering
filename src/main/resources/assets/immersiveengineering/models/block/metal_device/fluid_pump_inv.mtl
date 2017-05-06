@@ -1,0 +1,6 @@
+newmtl top
+map_Ka immersiveengineering:blocks/metal_device0_fluid_pump_top
+newmtl side
+map_Ka immersiveengineering:blocks/metal_device0_fluid_pump_side_none
+newmtl bottom
+map_Ka immersiveengineering:blocks/metal_device0_fluid_pump_up_none

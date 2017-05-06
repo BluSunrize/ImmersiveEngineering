@@ -57,6 +57,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -106,7 +107,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			skyhookGrabableConnections.clear();
 			EntityPlayer player = event.player;
 			ItemStack stack = player.getActiveItemStack();
-			if(stack!=null && stack.getItem() instanceof ItemSkyhook)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemSkyhook)
 			{
 				TileEntity connector = null;
 				double lastDist = 0;
@@ -117,10 +118,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					for(int zz=-2; zz<=2; zz++)
 						for(int yy=0; yy<=3; yy++)
 						{
-							TileEntity tile = player.worldObj.getTileEntity(pos.add(xx, yy, zz));
+							TileEntity tile = player.world.getTileEntity(pos.add(xx, yy, zz));
 							if(tile!=null)
 							{
-								Connection con = SkylineHelper.getTargetConnection(player.worldObj, pos.add(xx, yy, zz), player, null);
+								Connection con = SkylineHelper.getTargetConnection(player.world, pos.add(xx, yy, zz), player, null);
 								if(con!=null)
 								{
 									double d = tile.getDistanceSq(player.posX,py,player.posZ);
@@ -161,20 +162,20 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			ShaderWrapper wrapper = event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 			ItemStack shader = wrapper != null ? wrapper.getShaderItem() : null;
-			if(shader != null)
+			if(!shader.isEmpty())
 				event.getToolTip().add(TextFormatting.DARK_GRAY + shader.getDisplayName());
 		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(),"IE:Earmuffs"))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), "IE:Earmuffs");
-			if(earmuffs!=null)
+			if(!earmuffs.isEmpty())
 				event.getToolTip().add(TextFormatting.GRAY+earmuffs.getDisplayName());
 		}
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(TextFormatting.GRAY+ I18n.format("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack())));
+			event.getToolTip().add(TextFormatting.GRAY+ I18n.format("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack())));
 		if(IEConfig.oreTooltips && event.isShowAdvancedItemTooltips())
 		{
 			for(int oid : OreDictionary.getOreIDs(event.getItemStack()))
@@ -192,12 +193,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			return;
 		if(!ItemEarmuffs.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
 			return;
-		if(ClientUtils.mc().thePlayer!=null && ClientUtils.mc().thePlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null)
+		if(ClientUtils.mc().player!=null && !ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty())
 		{
-			ItemStack earmuffs = ClientUtils.mc().thePlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 			if(ItemNBTHelper.hasKey(earmuffs, "IE:Earmuffs"))
 				earmuffs = ItemNBTHelper.getItemStack(earmuffs, "IE:Earmuffs");
-			if(earmuffs!=null && IEContent.itemEarmuffs.equals(earmuffs.getItem()) && !ItemNBTHelper.getBoolean(earmuffs,"IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
+			if(!earmuffs.isEmpty() && IEContent.itemEarmuffs.equals(earmuffs.getItem()) && !ItemNBTHelper.getBoolean(earmuffs,"IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
 				for(String blacklist : IEConfig.Tools.earDefenders_SoundBlacklist)
 					if(blacklist!=null && blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
@@ -249,7 +250,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			if(o instanceof IImmersiveConnectable)
 			{
 				TileEntity tile = (TileEntity)o;
-				//				int lb = tile.getWorldObj().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
+				//				int lb = tile.getworld().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
 				//				int lb_j = lb % 65536;
 				//				int lb_k = lb / 65536;
 				//				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
@@ -263,7 +264,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			}
 
 		Iterator<ImmersiveNetHandler.Connection> it = skyhookGrabableConnections.iterator();
-		World world = viewer.worldObj;
+		World world = viewer.world;
 		while(it.hasNext())
 		{
 			ImmersiveNetHandler.Connection con = it.next();
@@ -315,13 +316,13 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				GL11.glTranslatef(offsetX,offsetY,0);
 				ClientUtils.drawTexturedRect(0,0,resMin,resMin, 0f,1f,0f,1f);
 
-				ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+				ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 				ClientUtils.drawTexturedRect(218/256f*resMin,64/256f*resMin, 24/256f*resMin,128/256f*resMin, 64/256f,88/256f,96/256f,224/256f);
-				ItemStack equipped = ClientUtils.mc().thePlayer.getHeldItem(EnumHand.MAIN_HAND);
-				if(equipped!=null && equipped.getItem() instanceof IZoomTool)
+				ItemStack equipped = ClientUtils.mc().player.getHeldItem(EnumHand.MAIN_HAND);
+				if(!equipped.isEmpty() && equipped.getItem() instanceof IZoomTool)
 				{
 					IZoomTool tool = (IZoomTool)equipped.getItem();
-					float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().thePlayer);
+					float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().player);
 					if(steps!=null && steps.length>1)
 					{
 						int curStep = -1;
@@ -366,12 +367,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onRenderOverlayPost(RenderGameOverlayEvent.Post event)
 	{
-		if(ClientUtils.mc().thePlayer!=null && event.getType() == RenderGameOverlayEvent.ElementType.TEXT)
+		if(ClientUtils.mc().player!=null && event.getType() == RenderGameOverlayEvent.ElementType.TEXT)
 		{
-			EntityPlayer player = ClientUtils.mc().thePlayer;
+			EntityPlayer player = ClientUtils.mc().player;
 
 			for(EnumHand hand : EnumHand.values())
-				if(player.getHeldItem(hand)!=null)
+				if(!player.getHeldItem(hand).isEmpty())
 				{
 					ItemStack equipped = player.getHeldItem(hand);
 					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, false) || equipped.getItem() instanceof IWireCoil)
@@ -397,14 +398,14 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					}
 					else if (OreDictionary.itemMatches(equipped, new ItemStack(IEContent.itemFluorescentTube), false))
 					{
-						String s = I18n.format("desc.ImmersiveEngineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
+						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
 						ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped), true);
 					}
 					else if(equipped.getItem() instanceof ItemRevolver && equipped.getItemDamage()!=2)
 					{
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-						ItemStack[] bullets = ((ItemRevolver)equipped.getItem()).getBullets(equipped);
-						int bulletAmount = bullets.length;
+						NonNullList<ItemStack> bullets = ((ItemRevolver)equipped.getItem()).getBullets(equipped);
+						int bulletAmount = bullets.size();
 						EnumHandSide side = hand==EnumHand.MAIN_HAND?player.getPrimaryHand():player.getPrimaryHand().opposite();
 						float dx = side==EnumHandSide.RIGHT?event.getResolution().getScaledWidth()-32-48:48;
 						float dy = event.getResolution().getScaledHeight()-64;
@@ -424,7 +425,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						int[][] slots = ContainerRevolver.slotPositions[bulletAmount>=18?2: bulletAmount>8?1: 0];
 						for(int i=0; i<bulletAmount; i++)
 						{
-							if(bullets[i]!=null)
+							if(!bullets.get(i).isEmpty())
 							{
 								int x = 0;
 								int y = 0;
@@ -445,7 +446,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 									y = ii==1?57: ii==3?30: ii==4?11: 49;
 								}
 
-								ir.renderItemIntoGUI(bullets[i], x,y);
+								ir.renderItemIntoGUI(bullets.get(i), x,y);
 							}
 						}
 						RenderHelper.disableStandardItemLighting();
@@ -468,7 +469,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							||equipped.getItem() instanceof ItemChemthrower)
 					{
 						boolean drill = equipped.getItem() instanceof ItemDrill;
-						ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 						GL11.glColor4f(1, 1, 1, 1);
 						float dx = event.getResolution().getScaledWidth()-16;
 						float dy = event.getResolution().getScaledHeight();
@@ -518,7 +519,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108 / 256f, 174 / 256f, 4 / 256f, 76 / 256f);
 								RenderItem ir = ClientUtils.mc().getRenderItem();
 								ItemStack head = ((ItemDrill) equipped.getItem()).getHead(equipped);
-								if(head != null)
+								if(!head.isEmpty())
 								{
 									ir.renderItemIntoGUI(head, -51, -45);
 									ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
@@ -531,8 +532,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 								ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66 / 256f, 78 / 256f, (ignite ? 21 : 9) / 256f, (ignite ? 33 : 21) / 256f);
 
 							}
-							GL11.glPopMatrix();
 						}
+						GL11.glPopMatrix();
 					}
 					//				else if(equipped.getItem() instanceof ItemRailgun)
 					//				{
@@ -561,7 +562,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					RayTraceResult mop = ClientUtils.mc().objectMouseOver;
 					if(mop!=null && mop.getBlockPos()!=null)
 					{
-						TileEntity tileEntity = player.worldObj.getTileEntity(mop.getBlockPos());
+						TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
 						if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, true))
 						{
 							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText:0xffffff;
@@ -588,7 +589,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 							if(text!=null)
 							{
-								if (player.worldObj.getTotalWorldTime()%20==0)
+								if (player.world.getTotalWorldTime()%20==0)
 								{
 									ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(player.dimension, mop.getBlockPos()));
 								}
@@ -605,16 +606,16 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				}
 			if(ClientUtils.mc().objectMouseOver!=null)
 			{
-				boolean hammer = player.getHeldItem(EnumHand.MAIN_HAND) != null && Utils.isHammer(player.getHeldItem(EnumHand.MAIN_HAND));
+				boolean hammer = !player.getHeldItem(EnumHand.MAIN_HAND).isEmpty() && Utils.isHammer(player.getHeldItem(EnumHand.MAIN_HAND));
 				RayTraceResult mop = ClientUtils.mc().objectMouseOver;
 				if(mop!=null && mop.getBlockPos()!=null)
 				{
-					TileEntity tileEntity = player.worldObj.getTileEntity(mop.getBlockPos());
+					TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
 					if(tileEntity instanceof IBlockOverlayText)
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText) tileEntity;
-						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().thePlayer, mop, hammer);
-						boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().thePlayer, mop);
+						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
+						boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().player, mop);
 						if(text!=null && text.length>0)
 						{
 							FontRenderer font = useNixie?ClientProxy.nixieFontOptional:ClientUtils.font();
@@ -633,8 +634,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onFOVUpdate(FOVUpdateEvent event)
 	{
-		EntityPlayer player = ClientUtils.mc().thePlayer;
-		if(player.getHeldItem(EnumHand.MAIN_HAND)!=null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof IZoomTool)
+		EntityPlayer player = ClientUtils.mc().player;
+		if(!player.getHeldItem(EnumHand.MAIN_HAND).isEmpty() && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof IZoomTool)
 		{
 			if(player.isSneaking() && player.onGround)
 			{
@@ -681,8 +682,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	{
 		if(event.getDwheel() != 0)
 		{
-			EntityPlayer player = ClientUtils.mc().thePlayer;
-			if(player.getHeldItem(EnumHand.MAIN_HAND)!=null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof IZoomTool && player.isSneaking())
+			EntityPlayer player = ClientUtils.mc().player;
+			if(!player.getHeldItem(EnumHand.MAIN_HAND).isEmpty() && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof IZoomTool && player.isSneaking())
 			{
 				ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
 				IZoomTool tool = (IZoomTool)equipped.getItem();
@@ -729,12 +730,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double px = -TileEntityRendererDispatcher.staticPlayerX;
 			double py = -TileEntityRendererDispatcher.staticPlayerY;
 			double pz = -TileEntityRendererDispatcher.staticPlayerZ;
-			TileEntity tile = event.getPlayer().worldObj.getTileEntity(event.getTarget().getBlockPos());
+			TileEntity tile = event.getPlayer().world.getTileEntity(event.getTarget().getBlockPos());
 			ItemStack stack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
-			//			if(event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof IEBlockInterfaces.ICustomBoundingboxes)
+			//			if(event.getPlayer().world.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof IEBlockInterfaces.ICustomBoundingboxes)
 			if(tile instanceof IAdvancedSelectionBounds)
 			{
-				//				IEBlockInterfaces.ICustomBoundingboxes block = (IEBlockInterfaces.ICustomBoundingboxes) event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock();
+				//				IEBlockInterfaces.ICustomBoundingboxes block = (IEBlockInterfaces.ICustomBoundingboxes) event.getPlayer().world.getBlockState(event.getTarget().getBlockPos()).getBlock();
 				IAdvancedSelectionBounds iasb = (IAdvancedSelectionBounds)tile;
 				List<AxisAlignedBB> boxes = iasb.getAdvancedSelectionBounds();
 				if(boxes!=null && !boxes.isEmpty())
@@ -754,10 +755,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						}
 
 					if(overrideBox!=null)
-						RenderGlobal.func_189697_a(overrideBox.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0.4f);
+						RenderGlobal.drawSelectionBoundingBox(overrideBox.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0.4f);
 					else
 						for(AxisAlignedBB aabb : additionalBoxes.isEmpty()?boxes:additionalBoxes)
-							RenderGlobal.func_189697_a(aabb.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0.4f);
+							RenderGlobal.drawSelectionBoundingBox(aabb.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0.4f);
 					GlStateManager.depthMask(true);
 					GlStateManager.enableTexture2D();
 					GlStateManager.disableBlend();
@@ -782,7 +783,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				double tx = pos.getX()+.5;
 				double ty = pos.getY()+.5;
 				double tz = pos.getZ()+.5;
-				if(!event.getPlayer().worldObj.isAirBlock(pos.offset(f)))
+				if(!event.getPlayer().world.isAirBlock(pos.offset(f)))
 				{
 					tx += f.getFrontOffsetX();
 					ty += f.getFrontOffsetY();
@@ -800,8 +801,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				GlStateManager.disableBlend();
 			}
 
-			World world = event.getPlayer().worldObj;
-			if(stack != null && IEContent.blockConveyor.equals(Block.getBlockFromItem(stack.getItem())) && event.getTarget().sideHit.getAxis() == Axis.Y)
+			World world = event.getPlayer().world;
+			if(!stack.isEmpty() && IEContent.blockConveyor.equals(Block.getBlockFromItem(stack.getItem())) && event.getTarget().sideHit.getAxis() == Axis.Y)
 			{
 				EnumFacing side = event.getTarget().sideHit;
 				BlockPos pos = event.getTarget().getBlockPos();
@@ -865,10 +866,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				GlStateManager.disableBlend();
 			}
 
-			if(stack!=null && stack.getItem() instanceof ItemDrill && ((ItemDrill)stack.getItem()).isEffective(world.getBlockState(event.getTarget().getBlockPos()).getMaterial()))
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemDrill && ((ItemDrill)stack.getItem()).isEffective(world.getBlockState(event.getTarget().getBlockPos()).getMaterial()))
 			{
 				ItemStack head = ((ItemDrill)stack.getItem()).getHead(stack);
-				if(head!=null)
+				if(!head.isEmpty())
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world, event.getPlayer(), event.getTarget());
 					drawAdditionalBlockbreak(event.getContext(), event.getPlayer(), event.getPartialTicks(), blocks);
@@ -973,7 +974,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 
 		PlayerControllerMP controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.isHittingBlock)
-			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.worldObj, blocks);
+			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
 	}
 
 	@SubscribeEvent
@@ -982,17 +983,17 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		//Overlay renderer for the sample drill
 		boolean chunkBorders = false;
 		for(EnumHand hand : EnumHand.values())
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), ClientUtils.mc().thePlayer.getHeldItem(hand),true))
+			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), ClientUtils.mc().player.getHeldItem(hand),true))
 			{
 				chunkBorders = true;
 				break;
 			}
-		if(!chunkBorders && ClientUtils.mc().objectMouseOver!=null && ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK && ClientUtils.mc().objectMouseOver.getBlockPos()!=null && ClientUtils.mc().theWorld.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
+		if(!chunkBorders && ClientUtils.mc().objectMouseOver!=null && ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK && ClientUtils.mc().objectMouseOver.getBlockPos()!=null && ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
 			chunkBorders = true;
 
 		if(chunkBorders)
 		{
-			EntityPlayer player = ClientUtils.mc().thePlayer;
+			EntityPlayer player = ClientUtils.mc().player;
 			double px = TileEntityRendererDispatcher.staticPlayerX;
 			double py = TileEntityRendererDispatcher.staticPlayerY;
 			double pz = TileEntityRendererDispatcher.staticPlayerZ;
@@ -1079,12 +1080,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		for(EnumHand hand : EnumHand.values())
 		{
 			ItemStack heldItem = event.getEntity().getHeldItem(hand);
-			if(heldItem != null)
+			if(!heldItem.isEmpty())
 			{
 				ArmPose twohanded = null;
 				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemChemthrower), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemDrill), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun), heldItem, true))
 					twohanded = ArmPose.BLOCK;
-				if(twohanded!=null && event.getEntity().getHeldItem(hand==EnumHand.MAIN_HAND?EnumHand.OFF_HAND:EnumHand.MAIN_HAND)==null)
+				if(twohanded!=null && event.getEntity().getHeldItem(hand==EnumHand.MAIN_HAND?EnumHand.OFF_HAND:EnumHand.MAIN_HAND).isEmpty())
 				{
 					ModelBase model = event.getRenderer().getMainModel();
 					if(model instanceof ModelBiped)

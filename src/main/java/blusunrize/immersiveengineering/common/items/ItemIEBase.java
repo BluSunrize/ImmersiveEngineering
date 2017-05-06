@@ -6,9 +6,11 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemIEBase extends Item implements IColouredItem
@@ -37,7 +39,7 @@ public class ItemIEBase extends Item implements IColouredItem
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(getSubNames()!=null)
 		{

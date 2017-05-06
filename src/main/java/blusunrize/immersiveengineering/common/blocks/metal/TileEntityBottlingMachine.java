@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -72,7 +73,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 	{
 		super.update();
 
-		if(isDummy() || isRSDisabled() || worldObj.isRemote)
+		if(isDummy() || isRSDisabled() || world.isRemote)
 			return;
 
 		tickedProcesses = 0;
@@ -88,14 +89,14 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 				tickedProcesses++;
 			if(process.processFinished)
 			{
-				ItemStack output = process.items[1]!=null?process.items[1]:process.items[0];
+				ItemStack output = !process.items.get(1).isEmpty() ? process.items.get(1) : process.items.get(0);
 				EnumFacing outDir = mirrored?facing.rotateYCCW():facing.rotateY();
 				BlockPos outPos = getBlockPosForPos(8).offset(outDir);
-				TileEntity inventoryTile = this.worldObj.getTileEntity(outPos);
+				TileEntity inventoryTile = this.world.getTileEntity(outPos);
 				if(inventoryTile!=null)
 					output = Utils.insertStackIntoInventory(inventoryTile, output, outDir.getOpposite());
-				if(output!=null)
-					Utils.dropStackAtPos(worldObj, outPos, output, outDir);
+				if(!output.isEmpty())
+					Utils.dropStackAtPos(world, outPos, output, outDir);
 				processIterator.remove();
 			}
 		}
@@ -158,13 +159,13 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==2&&l==1&&w==1)
 		{
-			TileEntity tile = worldObj.getTileEntity(pos);
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof TileEntityFluidPump)
 				((TileEntityFluidPump)tile).dummy = true;
 		}
 		else if(h==1&&l==0)
 		{
-			TileEntity tile = worldObj.getTileEntity(pos);
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof TileEntityConveyorBelt)
 				((TileEntityConveyorBelt)tile).setFacing(this.mirrored?this.facing.rotateYCCW():this.facing.rotateY());
 		}
@@ -179,7 +180,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 			if(master==null)
 				return;
 			ItemStack stack = ((EntityItem)entity).getEntityItem();
-			if(stack==null)
+			if(stack.isEmpty())
 				return;
 
 			if(master.bottlingProcessQueue.size() < master.getProcessQueueMaxLength())
@@ -199,8 +200,8 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 				master.bottlingProcessQueue.add(p);
 				master.markDirty();
 				master.markContainingBlockForUpdate(null);
-				stack.stackSize -= 1;
-				if(stack.stackSize <= 0)
+                stack.shrink(1);
+				if(stack.getCount() <= 0)
 					entity.setDead();
 			}
 		}
@@ -221,11 +222,11 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 	{
 		EnumFacing outDir = mirrored?facing.rotateYCCW():facing.rotateY();
 		BlockPos pos = getPos().offset(outDir,2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, outDir.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, outDir);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, outDir);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -252,7 +253,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
 	}
@@ -365,14 +366,15 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 
 	public static class BottlingProcess
 	{
-		public ItemStack[] items;
+		public NonNullList<ItemStack> items;
 		public int processTick;
 		public int maxProcessTick = (int)(120*Config.IEConfig.Machines.bottlingMachine_timeModifier);
 		boolean processFinished = false;
 
 		public BottlingProcess(ItemStack input)
 		{
-			this.items = new ItemStack[]{input,null};
+			this.items = NonNullList.withSize(2, ItemStack.EMPTY);
+			this.items.set(0, input);
 		}
 
 		public boolean processStep(TileEntityBottlingMachine tile)
@@ -386,23 +388,23 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 					FluidStack fs = tile.tanks[0].getFluid();
 					if(fs!=null)
 					{
-						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(items[0], fs);
+						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(items.get(0), fs);
 						if(recipe!=null)
 						{
 							if (tile.tanks[0].drainInternal(recipe.fluidInput, false).amount==recipe.fluidInput.amount)
 							{
-								items[1] = recipe.getActualItemOutputs(tile).get(0);
+								items.set(1, recipe.getActualItemOutputs(tile).get(0));
 								tile.tanks[0].drainInternal(recipe.fluidInput, true);
 							}
 						}
 						else
 						{
-							ItemStack ret = Utils.fillFluidContainer(tile.tanks[0], items[0], null, null);
-							if(ret!=null)
-								items[1] = ret;
+							ItemStack ret = Utils.fillFluidContainer(tile.tanks[0], items.get(0), ItemStack.EMPTY, null);
+							if(!ret.isEmpty())
+								items.set(1, ret);
 						}
-						if(items[1]==null)
-							items[1] = items[0];
+						if(items.get(1).isEmpty())
+							items.set(1, items.get(0));
 					}
 				}
 				if(processTick>=maxProcessTick)
@@ -415,19 +417,19 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		public NBTTagCompound writeToNBT()
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
-			if(items[0]!=null)
-				nbt.setTag("input", items[0].writeToNBT(new NBTTagCompound()));
-			if(items[1]!=null)
-				nbt.setTag("output", items[1].writeToNBT(new NBTTagCompound()));
+			if(!items.get(0).isEmpty())
+				nbt.setTag("input", items.get(0).writeToNBT(new NBTTagCompound()));
+			if(!items.get(1).isEmpty())
+				nbt.setTag("output", items.get(1).writeToNBT(new NBTTagCompound()));
 			nbt.setInteger("processTick", processTick);
 			return nbt;
 		}
 		public static BottlingProcess readFromNBT(NBTTagCompound nbt)
 		{
-			ItemStack input = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("input"));
+			ItemStack input = new ItemStack(nbt.getCompoundTag("input"));
 			BottlingProcess process = new BottlingProcess(input);
 			if(nbt.hasKey("output"))
-				process.items[1] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("output"));
+				process.items.set(1, new ItemStack(nbt.getCompoundTag("output")));
 			process.processTick = nbt.getInteger("processTick");
 			return process;
 		}
@@ -449,7 +451,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
@@ -475,9 +477,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 					multiblock.markDirty();
 					multiblock.markContainingBlockForUpdate(null);
 				}
-				stack.stackSize-=1;
-				if(stack.stackSize<=0)
-					stack = null;
+                stack.shrink(1);
+				if(stack.getCount() <= 0)
+					stack = ItemStack.EMPTY;
 			}
 			return stack;
 		}
@@ -485,8 +487,14 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return 64;
+		}
+
 		@Override
 		public void setStackInSlot(int slot, ItemStack stack)
 		{

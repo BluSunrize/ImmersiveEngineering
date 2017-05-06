@@ -61,7 +61,7 @@ public class MultiblockHandler
 
 		default IBlockState getBlockstateFromStack(int index, ItemStack stack)
 		{
-			if(stack != null && stack.getItem() instanceof ItemBlock)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemBlock)
 				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 			return null;
 		}

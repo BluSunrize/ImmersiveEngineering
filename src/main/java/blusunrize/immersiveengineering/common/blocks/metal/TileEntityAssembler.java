@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -45,7 +46,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	}
 
 	public FluidTank[] tanks = {new FluidTank(8000),new FluidTank(8000),new FluidTank(8000)};
-	public ItemStack[] inventory = new ItemStack[18+3];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(18+3, ItemStack.EMPTY);
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this),new CrafterPatternInventory(this),new CrafterPatternInventory(this)};
 	public boolean recursiveIngredients = false;
 
@@ -96,8 +97,8 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			if(id >= 0 && id < patterns.length)
 			{
 				CrafterPatternInventory pattern = patterns[id];
-				for(int i = 0; i < pattern.inv.length; i++)
-					pattern.inv[i] = null;
+				for(int i = 0; i < pattern.inv.size(); i++)
+					pattern.inv.set(i, ItemStack.EMPTY);
 			}
 			else if(id==3)
 			{
@@ -111,7 +112,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			for(int i = 0; i < list.tagCount(); i++)
 			{
 				NBTTagCompound itemTag = list.getCompoundTagAt(i);
-				pattern.inv[itemTag.getInteger("slot")] = ItemStack.loadItemStackFromNBT(itemTag);
+				pattern.inv.set(itemTag.getInteger("slot"), new ItemStack(itemTag));
 			}
 		}
 	}
@@ -120,35 +121,35 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		super.update();
 
-		if(isDummy() || isRSDisabled() || worldObj.isRemote || worldObj.getTotalWorldTime()%16!=((getPos().getX()^getPos().getZ())&15))
+		if(isDummy() || isRSDisabled() || world.isRemote || world.getTotalWorldTime()%16!=((getPos().getX()^getPos().getZ())&15))
 			return;
 		boolean update = false;
-		ItemStack[][] outputBuffer = new ItemStack[patterns.length][0];
+		NonNullList<ItemStack>[] outputBuffer = new NonNullList[patterns.length];
 		for(int p=0; p<patterns.length; p++)
 		{
 			CrafterPatternInventory pattern = patterns[p];
 			if ((controllingComputers != 0) && !computerOn[p])
 				return;
-			if(pattern.inv[9] != null && canOutput(pattern.inv[9], p))
+			if(!pattern.inv.get(9).isEmpty() && canOutput(pattern.inv.get(9), p))
 			{
-				ItemStack output = pattern.inv[9].copy();
+				ItemStack output = pattern.inv.get(9).copy();
 				ArrayList<ItemStack> queryList = new ArrayList<>();//List of all available inputs in the inventory
-				for(ItemStack[] bufferedStacks : outputBuffer)
+				for(NonNullList<ItemStack> bufferedStacks : outputBuffer)
 					for(ItemStack stack : bufferedStacks)
-						if(stack!=null)
+						if(!stack.isEmpty())
 							queryList.add(stack.copy());
 				for(ItemStack stack : this.inventory)
-					if(stack!=null)
+					if(!stack.isEmpty())
 						queryList.add(stack.copy());
 				int consumed = IEConfig.Machines.assembler_consumption;
 				if(this.energyStorage.extractEnergy(consumed, true)==consumed && this.hasIngredients(pattern, queryList))
 				{
 					this.energyStorage.extractEnergy(consumed, false);
-					ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();//List of all outputs for the current recipe. This includes discarded containers
+					NonNullList<ItemStack> outputList = NonNullList.create();//List of all outputs for the current recipe. This includes discarded containers
 					outputList.add(output);
 					AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
 					AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
-					ItemStack[] gridItems = new ItemStack[9];
+					NonNullList<ItemStack> gridItems = NonNullList.withSize(9, ItemStack.EMPTY);
 					for(int i = 0; i < queries.length; i++)
 						if(queries[i] != null)
 						{
@@ -163,61 +164,61 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 							if(taken == null)
 								taken = this.consumeItem(recipeQuery.query, recipeQuery.querySize, inventory, outputList);
 							if(taken != null)
-								gridItems[i] = taken.orNull();
+								gridItems.set(i, taken.orNull());
 						}
-					ItemStack[] remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
+					NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
 					for(ItemStack rem : remainingItems)
-						if(rem != null)
+						if(!rem.isEmpty())
 							outputList.add(rem);
-					outputBuffer[p]=outputList.toArray(new ItemStack[outputList.size()]);
+					outputBuffer[p]=outputList;
 					update = true;
 				}
 			}
 		}
-		TileEntity inventoryTile = this.worldObj.getTileEntity(getPos().offset(facing,2));
+		TileEntity inventoryTile = this.world.getTileEntity(getPos().offset(facing,2));
 		for(int buffer=0; buffer<outputBuffer.length; buffer++)
-			if(outputBuffer[buffer] != null && outputBuffer[buffer].length > 0)
-				for(int iOutput = 0; iOutput < outputBuffer[buffer].length; iOutput++)
+			if(outputBuffer[buffer] != null && outputBuffer[buffer].size() > 0)
+				for(int iOutput = 0; iOutput < outputBuffer[buffer].size(); iOutput++)
 				{
-					ItemStack output = outputBuffer[buffer][iOutput];
-					if(output != null && output.stackSize > 0)
+					ItemStack output = outputBuffer[buffer].get(iOutput);
+					if(!output.isEmpty() && output.getCount() > 0)
 					{
 						if(!isRecipeIngredient(output, buffer) && inventoryTile != null)
 						{
 							output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-							if(output == null || output.stackSize <= 0)
+							if(output.isEmpty() || output.getCount() <= 0)
 								continue;
 						}
 						int free = -1;
 						if(iOutput == 0)//Main recipe output
 						{
-							if(this.inventory[18 + buffer] == null && free < 0)
+							if(this.inventory.get(18 + buffer).isEmpty() && free < 0)
 								free = 18 + buffer;
-							else if(this.inventory[18 + buffer] != null && OreDictionary.itemMatches(output, this.inventory[18 + buffer], true) && this.inventory[18 + buffer].stackSize + output.stackSize <= this.inventory[18 + buffer].getMaxStackSize())
+							else if(!this.inventory.get(18 + buffer).isEmpty() && OreDictionary.itemMatches(output, this.inventory.get(18 + buffer), true) && this.inventory.get(18 + buffer).getCount() + output.getCount() <= this.inventory.get(18 + buffer).getMaxStackSize())
 							{
-								this.inventory[18 + buffer].stackSize += output.stackSize;
+								this.inventory.get(18 + buffer).grow(output.getCount());
 								free = -1;
 								continue;
 							}
 						} else
-							for(int i = 0; i < this.inventory.length; i++)
+							for(int i = 0; i < this.inventory.size(); i++)
 							{
-								if(this.inventory[i] == null && free < 0)
+								if(this.inventory.get(i).isEmpty() && free < 0)
 									free = i;
-								else if(this.inventory[i] != null && OreDictionary.itemMatches(output, this.inventory[i], true) && this.inventory[i].stackSize + output.stackSize <= this.inventory[i].getMaxStackSize())
+								else if(!this.inventory.get(i).isEmpty() && OreDictionary.itemMatches(output, this.inventory.get(i), true) && this.inventory.get(i).getCount() + output.getCount() <= this.inventory.get(i).getMaxStackSize())
 								{
-									this.inventory[i].stackSize += output.stackSize;
+									this.inventory.get(i).grow(output.getCount());
 									free = -1;
 									break;
 								}
 							}
 						if(free >= 0)
-							this.inventory[free] = output.copy();
+							this.inventory.set(free, output.copy());
 					}
 				}
 		for (int i=0;i<3;i++)
-			if(!isRecipeIngredient(this.inventory[18+i], i) && inventoryTile!=null)
-				this.inventory[18+i] = Utils.insertStackIntoInventory(inventoryTile, this.inventory[18+i], facing.getOpposite());
+			if(!isRecipeIngredient(this.inventory.get(18+i), i) && inventoryTile!=null)
+				this.inventory.set(18+i, Utils.insertStackIntoInventory(inventoryTile, this.inventory.get(18+i), facing.getOpposite()));
 		if(update)
 		{
 			this.markDirty();
@@ -225,7 +226,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 	}
 
-	public Optional<ItemStack> consumeItem(Object query, int querySize, ItemStack[] inventory, ArrayList<ItemStack> containerItems)
+	public Optional<ItemStack> consumeItem(Object query, int querySize, NonNullList<ItemStack> inventory, NonNullList<ItemStack> containerItems)
 	{
 		FluidStack fs = query instanceof FluidStack ? (FluidStack)query : (query instanceof IngredientStack && ((IngredientStack)query).fluid != null) ? ((IngredientStack)query).fluid : null;
 		if(fs != null)
@@ -238,16 +239,16 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					return Optional.absent();
 				}
 		Optional<ItemStack> ret = null;
-		for(int i=0; i<inventory.length; i++)
-			if(inventory[i] != null && Utils.stackMatchesObject(inventory[i], query, true))
+		for(int i = 0; i< inventory.size(); i++)
+			if(!inventory.get(i).isEmpty() && Utils.stackMatchesObject(inventory.get(i), query, true))
 			{
-				int taken = Math.min(querySize, inventory[i].stackSize);
+				int taken = Math.min(querySize, inventory.get(i).getCount());
 				boolean doTake = true;
 				if(doTake)
 				{
-					ret = Optional.of(inventory[i].splitStack(taken));
-					if(inventory[i].stackSize <= 0)
-						inventory[i] = null;
+					ret = Optional.of(inventory.get(i).splitStack(taken));
+					if(inventory.get(i).getCount() <= 0)
+						inventory.set(i, ItemStack.EMPTY);
 				}
 				querySize -= taken;
 				if(querySize <= 0)
@@ -287,11 +288,11 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				while(it.hasNext())
 				{
 					ItemStack next = it.next();
-					if(next != null && Utils.stackMatchesObject(next, recipeQuery.query, true))
+					if(!next.isEmpty() && Utils.stackMatchesObject(next, recipeQuery.query, true))
 					{
-						int taken = Math.min(querySize, next.stackSize);
-						next.stackSize -= taken;
-						if(next.stackSize <= 0)
+						int taken = Math.min(querySize, next.getCount());
+						next.shrink(taken);
+						if(next.getCount() <= 0)
 							it.remove();
 						querySize -= taken;
 						if(querySize <= 0)
@@ -308,26 +309,26 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	}
 	public boolean canOutput(ItemStack output, int iPattern)
 	{
-		if(this.inventory[18+iPattern]==null)
+		if(this.inventory.get(18+iPattern).isEmpty())
 			return true;
-		else if(OreDictionary.itemMatches(output, this.inventory[18+iPattern], true) && Utils.compareItemNBT(output, this.inventory[18+iPattern]) && this.inventory[18+iPattern].stackSize+output.stackSize<=this.inventory[18+iPattern].getMaxStackSize())
+		else if(OreDictionary.itemMatches(output, this.inventory.get(18+iPattern), true) && Utils.compareItemNBT(output, this.inventory.get(18+iPattern)) && this.inventory.get(18 + iPattern).getCount() + output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize())
 			return true;
 		return false;
 	}
 	public boolean isRecipeIngredient(ItemStack stack, int slot)
 	{
-		if(stack == null)
+		if(stack.isEmpty())
 			return false;
 		if(slot-1<patterns.length||recursiveIngredients)
 			for(int p = recursiveIngredients?0:slot; p < patterns.length; p++)
 			{
 				CrafterPatternInventory pattern = patterns[p];
 				for(int i=0; i<9; i++)
-					if(pattern.inv[i]!=null)
+					if(!pattern.inv.get(i).isEmpty())
 					{
-						if(OreDictionary.itemMatches(pattern.inv[i], stack, false))
+						if(OreDictionary.itemMatches(pattern.inv.get(i), stack, false))
 							return true;
-						else if(pattern.inv[i].getItem()==stack.getItem() && !pattern.inv[i].getHasSubtypes() && pattern.inv[i].isItemStackDamageable())
+						else if(pattern.inv.get(i).getItem()==stack.getItem() && !pattern.inv.get(i).getHasSubtypes() && pattern.inv.get(i).isItemStackDamageable())
 							return true;
 					}
 			}
@@ -381,7 +382,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&w==1&&l!=1)
 		{
-			TileEntity tile = worldObj.getTileEntity(pos);
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof TileEntityConveyorBelt)
 				((TileEntityConveyorBelt)tile).setFacing(this.facing);
 		}
@@ -401,11 +402,11 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().offset(facing,-1);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -433,7 +434,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
 	}
@@ -556,7 +557,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 
 	public static class CrafterPatternInventory implements IInventory
 	{
-		public ItemStack[] inv = new ItemStack[10];
+		public NonNullList<ItemStack> inv = NonNullList.withSize(10, ItemStack.EMPTY);
 		public IRecipe recipe;
 		final TileEntityAssembler tile;
 		public CrafterPatternInventory(TileEntityAssembler tile)
@@ -568,22 +569,32 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			return 10;
 		}
+
+		@Override
+		public boolean isEmpty() {
+			for (ItemStack stack : inv) {
+				if (!stack.isEmpty())
+					return false;
+			}
+			return true;
+		}
+
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			return inv[slot];
+			return inv.get(slot);
 		}
 		@Override
 		public ItemStack decrStackSize(int slot, int amount)
 		{
 			ItemStack stack = getStackInSlot(slot);
-			if(slot<9 && stack != null)
-				if(stack.stackSize <= amount)
+			if(slot<9 && !stack.isEmpty())
+				if(stack.getCount() <= amount)
 					setInventorySlotContents(slot, null);
 				else
 				{
 					stack = stack.splitStack(amount);
-					if(stack.stackSize == 0)
+					if(stack.getCount() == 0)
 						setInventorySlotContents(slot, null);
 				}
 			return stack;
@@ -592,7 +603,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		public ItemStack removeStackFromSlot(int slot)
 		{
 			ItemStack stack = getStackInSlot(slot);
-			if (stack != null)
+			if (!stack.isEmpty())
 				setInventorySlotContents(slot, null);
 			return stack;
 		}
@@ -601,32 +612,32 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			if(slot<9)
 			{
-				inv[slot] = stack;
-				if (stack != null && stack.stackSize > getInventoryStackLimit())
-					stack.stackSize = getInventoryStackLimit();
+				inv.set(slot, stack);
+				if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
+					stack.setCount(getInventoryStackLimit());
 			}
 			recalculateOutput();
 		}
 		@Override
 		public void clear()
 		{
-			for(int i=0; i<this.inv.length; i++)
-				this.inv[i] = null;
+			for(int i = 0; i< this.inv.size(); i++)
+				this.inv.set(i, ItemStack.EMPTY);
 		}
 
 		public void recalculateOutput()
 		{
 			InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
 			this.recipe = Utils.findRecipe(invC, tile.getWorld());
-			this.inv[9] = recipe!=null?recipe.getCraftingResult(invC):null;
+			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC):null);
 		}
 		public ArrayList<ItemStack> getTotalPossibleOutputs()
 		{
 			ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();
-			outputList.add(inv[9].copy());
+			outputList.add(inv.get(9).copy());
 			for(int i=0; i<9; i++)
 			{
-				FluidStack fs = FluidUtil.getFluidContained(inv[i]);
+				FluidStack fs = FluidUtil.getFluidContained(inv.get(i));
 				if(fs != null)
 				{
 					boolean hasFluid = false;
@@ -645,7 +656,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			}
 			InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
 			for(ItemStack ss : this.recipe.getRemainingItems(invC))
-				if(ss!=null)
+				if(!ss.isEmpty())
 					outputList.add(ss);
 			return outputList;
 		}
@@ -665,7 +676,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			return 1;
 		}
 		@Override
-		public boolean isUseableByPlayer(EntityPlayer player)
+		public boolean isUsableByPlayer(EntityPlayer player)
 		{
 			return true;
 		}
@@ -685,12 +696,12 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 		public void writeToNBT(NBTTagList list)
 		{
-			for(int i=0; i<this.inv.length; i++)
-				if(this.inv[i] != null)
+			for(int i = 0; i< this.inv.size(); i++)
+				if(!this.inv.get(i).isEmpty())
 				{
 					NBTTagCompound itemTag = new NBTTagCompound();
 					itemTag.setByte("Slot", (byte)i);
-					this.inv[i].writeToNBT(itemTag);
+					this.inv.get(i).writeToNBT(itemTag);
 					list.appendTag(itemTag);
 				}
 		}
@@ -701,7 +712,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				NBTTagCompound itemTag = list.getCompoundTagAt(i);
 				int slot = itemTag.getByte("Slot") & 255;
 				if(slot>=0 && slot<getSizeInventory())
-					this.inv[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+					this.inv.set(slot, new ItemStack(itemTag));
 			}
 			recalculateOutput();
 		}
