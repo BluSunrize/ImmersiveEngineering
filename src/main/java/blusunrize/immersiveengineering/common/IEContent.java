@@ -37,11 +37,8 @@ import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.IEFluid;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
-import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.IEVillagerTrades;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import net.minecraft.block.Block;
@@ -57,6 +54,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
@@ -896,6 +894,25 @@ public class IEContent
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[1]), new EntityVillager.PriceInfo(9, 11)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[2]), new EntityVillager.PriceInfo(5, 7)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
+			);
+
+			VillagerRegistry.VillagerCareer career_outfitter = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".outfitter");
+
+			ItemStack bag_common = new ItemStack(IEContent.itemShaderBag);
+			ItemNBTHelper.setString(bag_common, "rarity", EnumRarity.COMMON.toString());
+			ItemStack bag_uncommon = new ItemStack(IEContent.itemShaderBag);
+			ItemNBTHelper.setString(bag_uncommon, "rarity", EnumRarity.UNCOMMON.toString());
+			ItemStack bag_rare = new ItemStack(IEContent.itemShaderBag);
+			ItemNBTHelper.setString(bag_rare, "rarity", EnumRarity.RARE.toString());
+
+			career_outfitter.addTrade(1,
+					new IEVillagerTrades.EmeraldForItemstack(bag_common, new EntityVillager.PriceInfo(8, 16))
+			);
+			career_outfitter.addTrade(2,
+					new IEVillagerTrades.EmeraldForItemstack(bag_uncommon, new EntityVillager.PriceInfo(12, 20))
+			);
+			career_outfitter.addTrade(3,
+					new IEVillagerTrades.EmeraldForItemstack(bag_rare, new EntityVillager.PriceInfo(16, 24))
 			);
 		}
 
