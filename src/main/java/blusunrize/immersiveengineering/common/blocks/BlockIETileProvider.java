@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -62,16 +63,25 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile != null && ( !(tile instanceof ITileDrop) || !((ITileDrop)tile).preventInventoryDrop()) && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+		if(tile != null && ( !(tile instanceof ITileDrop) || !((ITileDrop)tile).preventInventoryDrop()))
 		{
-			IItemHandler h = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if (h instanceof IEInventoryHandler)
-				for (int i = 0;i<h.getSlots();i++)
-					if (h.getStackInSlot(i)!=null)
-					{
-						spawnAsEntity(world, pos, h.getStackInSlot(i));
-						((IEInventoryHandler) h).setStackInSlot(i, null);
-					}
+			if(tile instanceof IIEInventory && ((IIEInventory)tile).getDroppedItems()!=null)
+			{
+				for(ItemStack s : ((IIEInventory)tile).getDroppedItems())
+					if(s!=null)
+						spawnAsEntity(world, pos, s);
+			}
+			else if(tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+			{
+				IItemHandler h = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+				if(h instanceof IEInventoryHandler)
+					for(int i = 0; i < h.getSlots(); i++)
+						if(h.getStackInSlot(i)!=null)
+						{
+							spawnAsEntity(world, pos, h.getStackInSlot(i));
+							((IEInventoryHandler)h).setStackInSlot(i, null);
+						}
+			}
 		}
 		if(tile instanceof IHasDummyBlocks)
 		{
