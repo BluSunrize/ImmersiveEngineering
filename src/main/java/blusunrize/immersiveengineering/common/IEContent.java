@@ -673,7 +673,7 @@ public class IEContent
 					List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluid.tag);
 					for(PotionEffect e : effects)
 					{
-						PotionEffect newEffect = new PotionEffect(e.getPotion(),e.getDuration(),e.getAmplifier());
+						PotionEffect newEffect = new PotionEffect(e.getPotion(),(int)Math.ceil(e.getDuration()*.05),e.getAmplifier());
 						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
