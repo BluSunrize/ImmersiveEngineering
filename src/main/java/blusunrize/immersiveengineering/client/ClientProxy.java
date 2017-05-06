@@ -683,6 +683,7 @@ public class ClientProxy extends CommonProxy
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
 		if(IEConfig.Machines.pump_infiniteWater || IEConfig.Machines.pump_placeCobble)
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes5", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PLACER.getMeta())));
 		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
 		ManualHelper.addEntry("belljar", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "belljar0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.BELLJAR.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "belljar1"));

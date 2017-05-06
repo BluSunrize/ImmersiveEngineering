@@ -55,7 +55,6 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 					if((state.getBlock().isAir(state,getWorld(),targetPos) || !state.getMaterial().isSolid()) && !isFullFluidBlock(targetPos, state))
 					if(FluidUtil.tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
 					{
-//						getWorld().setBlockState(targetPos, Blocks.GLASS.getDefaultState());
 						tank.drain(Fluid.BUCKET_VOLUME, true);
 						addConnectedSpaces(targetPos);
 						handleTempFluids();
