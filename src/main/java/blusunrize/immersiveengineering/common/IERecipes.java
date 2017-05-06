@@ -321,7 +321,7 @@ public class IERecipes
 		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', Items.LEATHER);
 		addShapelessOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1), baseConveyor);
 		addShapelessOredictRecipe(baseConveyor, Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1));
-		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper"), 1), "C", "H", 'C', baseConveyor, 'H', Blocks.HOPPER);
+		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper"), 1), "C", "H", 'C', baseConveyor, 'H', Blocks.IRON_TRAPDOOR);
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical"), 3), "CI", "C ", "CI", 'C', baseConveyor, 'I', "ingotIron");
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":splitter"), 3), "CIC", " C ", 'C', baseConveyor, 'I', "ingotIron");
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":covered"), 1), "S", "C", 'C', baseConveyor, 'S',"scaffoldingSteel");
