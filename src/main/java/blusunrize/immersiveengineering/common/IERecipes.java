@@ -319,6 +319,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.BELLJAR.getMeta()), " L ","G G","WCW", 'L',new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.LANTERN.getMeta()), 'G',"blockGlass", 'W',"plankTreatedWood", 'C',componentIron);
 
 		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', Items.LEATHER);
+		addShapelessOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1), baseConveyor);
+		addShapelessOredictRecipe(baseConveyor, Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1));
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper"), 1), "C", "H", 'C', baseConveyor, 'H', Blocks.HOPPER);
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical"), 3), "CI", "C ", "CI", 'C', baseConveyor, 'I', "ingotIron");
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":splitter"), 3), "CIC", " C ", 'C', baseConveyor, 'I', "ingotIron");

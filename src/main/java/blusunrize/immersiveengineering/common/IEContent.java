@@ -552,6 +552,7 @@ public class IEContent
 			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
 		});
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));

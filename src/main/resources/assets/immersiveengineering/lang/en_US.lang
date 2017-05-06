@@ -167,6 +167,8 @@ tile.immersiveengineering.metalDevice1.turret_gun.name=Gun Turret
 tile.immersiveengineering.metalDevice1.belljar.name=Garden Cloche
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.name=Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=Ignores Redstone Control
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=Vertical Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=Splitting Conveyor Belt
@@ -1236,7 +1238,7 @@ ie.manual.entry.biodiesel4=Engineer's Hammer.<br>The front of the refinery serve
 ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?
 ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
-ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>Using a redstone signal on a conveyor will turn it off.<br>Rightclicking a conveyor with any dye will colour the walls of the conveyor to easily identify where it is going.
+ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>Using a redstone signal on a conveyor will turn it off, this behavior can be disabled by crafting it into a redstone-ignoring version. <br>Rightclicking a conveyor with any dye will colour the walls of the conveyor to easily identify where it is going.
 ie.manual.entry.conveyor2=The Dropping Conveyor Belt is quite simply a conveyor with a hatch in the middle, allowing it to drop items that pass over it downwards.<br>Items will be inserted into inventories below or simply dropped if there is an empty space below the conveyor.
 ie.manual.entry.conveyor3=The Vertical Conveyor Belt is a belt meant to be mounted on walls. Using the buckets attached to it, it will lift entities straight up. Despite the use of the term "bucket", it will not lift fluids.<br>This belt can insert into inventories above it or simply expel items over the edge at the top onto more conveyors.
 ie.manual.entry.conveyor4=The Splitting Conveyor Belt alternates between redirecting Items and Entities left and right, plain and simple. This feature can be used to achieve a more equal distribution in your factories.
