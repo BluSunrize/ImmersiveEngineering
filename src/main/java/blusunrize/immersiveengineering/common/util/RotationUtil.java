@@ -24,6 +24,10 @@ public class RotationUtil
 			//preventing extended pistons from rotating
 			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.getValue(BlockPistonBase.EXTENDED));
 		});
+		permittedRotation.add(state -> {
+			//preventing endportals, skulls from rotating
+			return !(state.getBlock()==Blocks.END_PORTAL_FRAME||state.getBlock()==Blocks.SKULL);
+		});
 		permittedTileRotation.add(tile -> {
 			//preventing double chests from rotating
 			if(tile instanceof TileEntityChest)
