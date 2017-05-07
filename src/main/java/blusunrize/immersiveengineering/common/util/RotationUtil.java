@@ -24,6 +24,20 @@ public class RotationUtil
 			//preventing extended pistons from rotating
 			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.getValue(BlockPistonBase.EXTENDED));
 		});
+		permittedRotation.add(state -> {
+			//beds don't like being rotated piecewise
+			return state.getBlock()!=Blocks.BED;
+		});
+		/*permittedRotation.add(state -> {
+			//A lot of the RS stuff breaks when rotated
+			Block b = state.getBlock();
+			return b!=Blocks.TRIPWIRE_HOOK&&b!=Blocks.STONE_BUTTON&&b!=Blocks.WOODEN_BUTTON&&b!=Blocks.LEVER&&b!=Blocks.REDSTONE_TORCH;
+		});
+		permittedRotation.add(state -> {
+			//misc things don't like floating in the air...
+			Block b = state.getBlock();
+			return b!=Blocks.TORCH&&b!=Blocks.LADDER&&b!=Blocks.WALL_SIGN&&b!=Blocks.WALL_BANNER;
+		});*/
 		permittedTileRotation.add(tile -> {
 			//preventing double chests from rotating
 			if(tile instanceof TileEntityChest)
