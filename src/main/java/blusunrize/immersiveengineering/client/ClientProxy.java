@@ -1504,18 +1504,23 @@ public class ClientProxy extends CommonProxy
 		ConnModelReal.cache.clear();
 	}
 
+	static
+	{
+		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
+		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
+		IEApi.renderCacheClearers.add(ConnModelReal.cache::clear);
+		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
+		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::clear);
+		IEApi.renderCacheClearers.add(TileEntityFluidPipe.cachedOBJStates::clear);
+		IEApi.renderCacheClearers.add(TileRenderBelljar::reset);
+		IEApi.renderCacheClearers.add(TileRenderWatermill::reset);
+		IEApi.renderCacheClearers.add(TileRenderWindmill::reset);
+	}
 	@Override
 	public void clearRenderCaches()
 	{
-		IESmartObjModel.modelCache.clear();
-		IESmartObjModel.cachedBakedItemModels.clear();
-		ConnModelReal.cache.clear();
-		ModelConveyor.modelCache.clear();
-		ModelConfigurableSides.modelCache.clear();
-		TileEntityFluidPipe.cachedOBJStates.clear();
-		TileRenderWindmill.reset();
-		TileRenderWatermill.reset();
-		TileRenderBelljar.reset();
+		for (Runnable r:IEApi.renderCacheClearers)
+			r.run();
 	}
 	private static void mapFluidState(Block block, Fluid fluid)
 	{
