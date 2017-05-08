@@ -25,8 +25,8 @@ import java.util.List;
 
 public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBelljar>
 {
-	private HashMap<EnumFacing, List<BakedQuad>> quads = new HashMap<>();
-	private HashMap<IBlockState, List<BakedQuad>> plantQuads = new HashMap<>();
+	private static HashMap<EnumFacing, List<BakedQuad>> quads = new HashMap<>();
+	private static HashMap<IBlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
 	@Override
 	public void renderTileEntityAt(TileEntityBelljar tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -79,14 +79,14 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 					return;
 				for(IBlockState s : states)
 				{
-					List<BakedQuad> plantQuadList = this.plantQuads.get(s);
-//					if(plantQuadList==null)
+					List<BakedQuad> plantQuadList = plantQuads.get(s);
+					if(plantQuadList==null)
 					{
 						IBakedModel plantModel = blockRenderer.getModelForState(s);
 						plantQuadList = plantModel.getQuads(s,null,0);
 						for(EnumFacing f : EnumFacing.values())
 							plantQuadList.addAll(plantModel.getQuads(s,f,0));
-						this.plantQuads.put(s, plantQuadList);
+						plantQuads.put(s, plantQuadList);
 					}
 					if(plantQuadList!=null)
 					{
@@ -112,5 +112,10 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 
 		GlStateManager.popMatrix();
 		RenderHelper.enableStandardItemLighting();
+	}
+	public static void reset()
+	{
+		quads.clear();
+		plantQuads.clear();
 	}
 }

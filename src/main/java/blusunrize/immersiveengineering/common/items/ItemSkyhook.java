@@ -8,15 +8,11 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import com.google.common.collect.Multimap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -52,7 +48,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 			ItemNBTHelper.setFloat(stack, "fallDamageBoost", dmg);
 		}
 	}
-	@Override
+	/*@Override
 	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
 		Multimap multimap = super.getAttributeModifiers(slot, stack);
@@ -62,7 +58,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
 		}
 		return multimap;
-	}
+	}*/
 
 	public static HashMap<String, EntitySkylineHook> existingHooks = new HashMap<String, EntitySkylineHook>();
 
