@@ -97,9 +97,18 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					}
 					else
 					{
-						process-=processSpeed;
-						if(!active)
-							active=true;
+						BlastFurnaceRecipe recipe = getRecipe();
+						if (recipe!=null&&recipe.time!=processMax) {
+							processMax = 0;
+							process = 0;
+							active = false;
+						}
+						else
+						{
+							process -= processSpeed;
+							if (!active)
+								active = true;
+						}
 					}
 					burnTime-=processSpeed;
 					markContainingBlockForUpdate(null);

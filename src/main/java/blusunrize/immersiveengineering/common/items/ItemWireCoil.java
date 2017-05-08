@@ -172,10 +172,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						}
 					}
 					ItemNBTHelper.remove(stack, "linkingPos");
-					ItemNBTHelper.remove(stack, "side");
-					ItemNBTHelper.remove(stack, "hitX");
-					ItemNBTHelper.remove(stack, "hitY");
-					ItemNBTHelper.remove(stack, "hitZ");
+					ItemNBTHelper.remove(stack, "targettingInfo");
 				}
 				return EnumActionResult.SUCCESS;
 			}
