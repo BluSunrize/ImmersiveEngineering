@@ -282,27 +282,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 				float scale = .0375f/(blueprint.textureScale/16f);
 				GlStateManager.scale(scale, -scale, scale);
 				GlStateManager.color(1, 1, 1, 1);
-
-				//Draw edges
-				GlStateManager.glLineWidth(lineWidth);
-				GlStateManager.glBegin(GL11.GL_LINES);
-				for(Pair<Point, Point> line : blueprint.lines)
-				{
-					GlStateManager.glVertex3f(line.getKey().x, line.getKey().y, 0);
-					GlStateManager.glVertex3f(line.getValue().x, line.getValue().y, 0);
-				}
-				GlStateManager.glEnd();
-
-				if(lineWidth >= 1)//Draw shading if player is close enough
-				{
-					GlStateManager.glLineWidth(lineWidth*.66f);
-					GL11.glPointSize(4);
-					GlStateManager.glBegin(GL11.GL_LINES);
-					for(ShadeStyle style : blueprint.areas.keySet())
-						for(Point pixel : blueprint.areas.get(style))
-							style.drawShading(pixel);
-					GlStateManager.glEnd();
-				}
+				blueprint.draw(lineWidth);
 				GlStateManager.scale(1/scale, -1/scale, 1/scale);
 				GlStateManager.enableAlpha();
 				GlStateManager.enableTexture2D();
@@ -489,7 +469,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		return new BlueprintLines(wMax, complete_lines, complete_areaMap);
 	}
 
-	private static class BlueprintLines
+	public static class BlueprintLines
 	{
 		final int textureScale;
 		final Set<Pair<Point, Point>> lines;
@@ -500,6 +480,35 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 			this.textureScale = textureScale;
 			this.lines = lines;
 			this.areas = areas;
+		}
+
+		public int getTextureScale()
+		{
+			return textureScale;
+		}
+
+		public void draw(float lineWidth)
+		{
+			//Draw edges
+			GlStateManager.glLineWidth(lineWidth);
+			GlStateManager.glBegin(GL11.GL_LINES);
+			for(Pair<Point, Point> line : lines)
+			{
+				GlStateManager.glVertex3f(line.getKey().x, line.getKey().y, 0);
+				GlStateManager.glVertex3f(line.getValue().x, line.getValue().y, 0);
+			}
+			GlStateManager.glEnd();
+
+			if(lineWidth >= 1)//Draw shading if player is close enough
+			{
+				GlStateManager.glLineWidth(lineWidth*.66f);
+				GL11.glPointSize(4);
+				GlStateManager.glBegin(GL11.GL_LINES);
+				for(ShadeStyle style : areas.keySet())
+					for(Point pixel : areas.get(style))
+						style.drawShading(pixel);
+				GlStateManager.glEnd();
+			}
 		}
 	}
 	private static class ShadeStyle
