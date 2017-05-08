@@ -52,7 +52,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 				continue;
 			float transportTime = 52.5f/(float)process.maxTicks;
 			float pressTime = 3.75f/(float)process.maxTicks;
-			float fProcess = process.processTick/(float)process.maxTicks;
+			float fProcess = (process.processTick+(te.shouldRenderAsActive()?partialTicks:0))/(float)process.maxTicks;
 			if(fProcess<transportTime)
 				shift[i] = fProcess/transportTime*.5f;
 			else if(fProcess<(1-transportTime))

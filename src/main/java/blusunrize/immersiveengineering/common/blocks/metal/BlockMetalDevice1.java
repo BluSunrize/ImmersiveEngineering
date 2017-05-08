@@ -106,13 +106,13 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	@Override
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
-		if(stack.getItemDamage()==BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta() || stack.getItemDamage()==BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta())
+		if(stack.getItemDamage()==BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta() || stack.getItemDamage()==BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta() || stack.getItemDamage()==BlockTypes_MetalDevice1.BELLJAR.getMeta())
 		{
 			for(int hh=1; hh<=2; hh++)
 				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
 					return false;
 		}
-		else if(stack.getItemDamage()== BlockTypes_MetalDevice1.TESLA_COIL.getMeta() || stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_CHEM.getMeta())
+		else if(stack.getItemDamage()== BlockTypes_MetalDevice1.TESLA_COIL.getMeta() || stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_CHEM.getMeta() || stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_GUN.getMeta())
 		{
 			if(!world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
 				return false;

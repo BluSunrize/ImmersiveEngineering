@@ -233,6 +233,11 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		return null;
 	}
 	@Override
+	public ItemStack[] getDroppedItems()
+	{
+		return new ItemStack[]{mold};
+	}
+	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return false;

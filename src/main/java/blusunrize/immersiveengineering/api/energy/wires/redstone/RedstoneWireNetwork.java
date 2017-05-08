@@ -36,6 +36,7 @@ public class RedstoneWireNetwork
 			if(connector != null)
 				connector.onChange();
 		}
+		updateValues();
 	}
 
 	public void removeFromNetwork(IRedstoneConnector removedConnector)

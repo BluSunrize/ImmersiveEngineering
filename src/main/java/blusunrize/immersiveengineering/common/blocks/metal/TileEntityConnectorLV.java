@@ -238,25 +238,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(facing!=this.facing)
+		if(facing!=this.facing || isRelay())
 			return null;
 		if(energyWrapper==null || energyWrapper.side!=this.facing)
 			energyWrapper = new IEForgeEnergyWrapper(this, this.facing);
 		return energyWrapper;
-	}
-	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-	{
-		if(capability == CapabilityEnergy.ENERGY && facing==this.facing)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
-	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
-	{
-		if(capability == CapabilityEnergy.ENERGY && facing==this.facing)
-			return (T)getCapabilityWrapper(this.facing);
-		return super.getCapability(capability, facing);
 	}
 
 	@Override

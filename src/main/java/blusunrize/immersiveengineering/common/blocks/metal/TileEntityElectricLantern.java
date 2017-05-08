@@ -8,19 +8,23 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 
-public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IBlockBounds, IActiveState, ILightValue
+public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IDirectionalTile,IHammerInteraction, IBlockBounds, IActiveState, ILightValue
 {
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.Machines.lantern_energyDraw;
 	private int maximumStorage = IEConfig.Machines.lantern_maximumStorage;
 	public boolean active = false;
 	private boolean interdictionList=false;
+	private boolean flipped = false;
 
 	@Override
 	public void update()
@@ -75,6 +79,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		super.readCustomNBT(nbt, descPacket);
 		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInteger("energyStorage");
+		flipped = nbt.getBoolean("flipped");
 	}
 
 	@Override
@@ -83,6 +88,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active",active);
 		nbt.setInteger("energyStorage",energyStorage);
+		nbt.setBoolean("flipped",flipped);
 	}
 
 	@Override
@@ -134,9 +140,9 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		if(xDif==0&&zDif==0)
 			return new Vec3d(.5, .0625, .5);
 		else if(Math.abs(xDif)>=Math.abs(zDif))
-			return new Vec3d(xDif<0?.25:xDif>0?.75:.5, .0625, .5);
+			return new Vec3d(xDif<0?.25:xDif>0?.75:.5, flipped?.9375:.0625, .5);
 		else
-			return new Vec3d(.5, .0625, zDif<0?.25:zDif>0?.75:.5);
+			return new Vec3d(.5, flipped?.9375:.0625, zDif<0?.25:zDif>0?.75:.5);
 	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
@@ -144,8 +150,8 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)? con.end.getX()-getPos().getX(): (con.end.equals(getPos())&& con.start!=null)?con.start.getX()-getPos().getX(): 0;
 		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)? con.end.getZ()-getPos().getZ(): (con.end.equals(getPos())&& con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
 		if(Math.abs(xDif)>=Math.abs(zDif))
-			return new Vec3d(xDif<0?.25:xDif>0?.75:.5, .0625, .5);
-		return new Vec3d(.5, .0625, zDif<0?.25:zDif>0?.75:.5);
+			return new Vec3d(xDif<0?.25:xDif>0?.75:.5, flipped?.9375:.0625, .5);
+		return new Vec3d(.5, flipped?.9375:.0625, zDif<0?.25:zDif>0?.75:.5);
 	}
 
 	@Override
@@ -169,5 +175,45 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	public int getLightValue()
 	{
 		return active?15:0;
+	}
+
+
+	@Override
+	public EnumFacing getFacing()
+	{
+		return flipped?EnumFacing.UP:EnumFacing.NORTH;
+	}
+	@Override
+	public void setFacing(EnumFacing facing)
+	{
+	}
+	@Override
+	public int getFacingLimitation()
+	{
+		return -1;
+	}
+	@Override
+	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	{
+		return false;
+	}
+	@Override
+	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	{
+		return false;
+	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	{
+		flipped = !flipped;
+		markContainingBlockForUpdate(null);
+		worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
+		return true;
 	}
 }

@@ -13,6 +13,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +22,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -89,6 +91,14 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 			ItemNBTHelper.setString(stack, "conveyorType", key.toString());
 			list.add(stack);
 		}
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+	{
+		String flavourKey = getUnlocalizedName(stack)+".flavour";
+		if(I18n.canTranslate(flavourKey))
+			tooltip.add(I18n.translateToLocal(flavourKey));
 	}
 
 	@Override

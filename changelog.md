@@ -15,10 +15,21 @@
 - added placeable Coresamples, these can be rightclicked with a map to set a marker to their origin
 - added a visible chunk boundary when holding or looking at the Sample Drill
 - added Redstone Wires to the API (thanks Malte)
+- added a render reset hook to the API (thanks Malte)
 - added the Covered Conveyor, preventing players from picking up items from it
+- added a Conveyor unaffected by redstone
+- added the Fluid Outlet. It puts fluids in the world!
+- added OC compat for Mixer and BottlingMachine (thanks GuyRunningSouth)
+- added a Villager Job to sell Shader Bags
+- added a Crusher recipe to turn slag into sand
+- added a special ItemFrame render for Blueprints
+- added the ability to flip Powered Lanterns using the hammer
 - changed Razorwire to render extended wooden boards when stacked
 - changed the Conductive debuff to apply to Teslacoil and Electro-Razorwire damage
 - changed metal plates and Sheetmetal to be craftable for any IE-used metal
+- changed Crafttweaker functions for Squeezer and Fermenter to feature input-based removal
+- changed dropping Conveyors to use Iron Trapdoors rather than Hoppers in the recipe
+- changed fluid potions to have reduced durations in the chemthrower
 - fixed Concrete blocks not applying suffocation damage
 - fixed some cartridges being allowed in turrets, fixes crash with Immersive Floofs
 - fixed energy drain on eletrified bullets, reduced drain for multii-projectile cartridges
@@ -26,7 +37,7 @@
 - fixed item in- and outputs on Turrets being unavailable
 - fixed manual entry for Razorwire
 - fixed NullPointer on FluidStacks
-- fixed Turntables and Hammers being able to rotate extended pistons and chests
+- fixed Turntables and Hammers being able to rotate extended pistons, chests, beds, end portals and skulls
 - fixed the Drill taking more damage than intended (thanks Malte)
 - fixed the display of double arrays in the manual (thanks Malte)
 - fixed lang file as per suggestions on github
@@ -47,6 +58,17 @@
 - fixed Refinery dividing by 0 if timer config is adjusted downwards
 - fixed AutoWorkbench not exposing the right slots to its item handler and rendering the wrong items
 - fixed projectiles ignoring PvP protection within player teams
+- fixed wires not being removed properly if TileDrops are off (thanks Malte)
+- fixed floating Engineer's houses
+- fixed broken Energy Storage tooltips
+- fixed Metal Press not dropping its mold when broken
+- fixed various double-size blocks deleting things above them
+- fixed stuttering on Metal Press and Watermill (thanks Malte)
+- fixed Relays connecting to energy accepting things, to make their role more obvious (thanks Malte)
+- fixed resource reloading on TESRs (thanks Malte)
+- fixed various Turret projectile issues (thanks Malte)
+- fixed a Blast Furnace processing speed bug (thanks Malte)
+- fixed Skyhook being a stupidly powerful weapon (thanks Malte)
 - Translations Added/Updated: ru_RU (lex1975) (this time for real, since I forgot it last time), zh_TW (xaxa123)
 
 #####Version 0.10-57 - BUILT

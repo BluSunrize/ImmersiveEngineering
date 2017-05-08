@@ -22,7 +22,7 @@
 				"rotation": {"x": -90 }
 			}},
 			"up": { "transform": {
-				"rotation": {"x": 90 }
+				"rotation": {"x": 180 }
 			}},
 			"north": { "transform": {
 				"rotation": {"y": 0 }

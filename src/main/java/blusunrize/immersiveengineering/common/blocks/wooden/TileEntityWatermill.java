@@ -51,9 +51,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 			return;
 		}
 		else
-			canTurn=getRotationVec().lengthVector()!=0;
+			canTurn = multiblock||getRotationVec().lengthVector() != 0;
 
-		if(world.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
+		if(world.getTotalWorldTime()%64==((getPos().getX()^getPos().getZ())&63))
 		{
 			rotationVec=null;
 		}
@@ -73,7 +73,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 				tileEntity = world.getTileEntity(getPos().offset(facing, l));
 			}
 
-			double perTick = 1f/1440 * power/l;
+			perTick = 1f/1440 * power/l;
 			canTurn = perTick!=0;
 			rotation += perTick;
 			rotation %= 1;
@@ -84,6 +84,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 				{
 					((TileEntityWatermill)tileEntity).rotation = rotation;
 					((TileEntityWatermill)tileEntity).canTurn = canTurn;
+					((TileEntityWatermill)tileEntity).perTick = perTick;
 					((TileEntityWatermill)tileEntity).multiblock = true;
 				}
 			}

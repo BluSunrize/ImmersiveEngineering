@@ -29,7 +29,7 @@ public abstract class ContainerInternalStorageItem extends Container
 		this.blockedSlot = (iinventory.currentItem + 27 + internalSlots);
 
 
-		if (!world.isRemote)
+		//if (!world.isRemote)
 			try {
 				((InventoryStorageItem)this.input).stackList = ((IInternalStorageItem)this.heldItem.getItem()).getContainedItems(this.heldItem);
 			} catch(Exception e)
@@ -44,13 +44,13 @@ public abstract class ContainerInternalStorageItem extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot)
 	{
-		ItemStack stack = ItemStack.EMPTY;
+		ItemStack oldStackInSlot = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
 		if(slotObject != null && slotObject.getHasStack())
 		{
 			ItemStack stackInSlot = slotObject.getStack();
-			stack = stackInSlot.copy();
+			oldStackInSlot = stackInSlot.copy();
 
 			if(slot < internalSlots)
 			{
@@ -78,9 +78,7 @@ public abstract class ContainerInternalStorageItem extends Container
 						if(this.mergeItemStack(insert, i, i + 1, true))
 						{
 							b = false;
-							break;
-						} else
-							continue;
+						}
 					}
 				}
 				if(b)
@@ -92,12 +90,15 @@ public abstract class ContainerInternalStorageItem extends Container
 			else
 				slotObject.onSlotChanged();
 
-			if (stackInSlot.getCount() == stack.getCount())
+			slotObject.inventory.markDirty();
+			if (stackInSlot.getCount() == oldStackInSlot.getCount())
 				return ItemStack.EMPTY;
-			slotObject.onTake(player, stack);
+			slotObject.onTake(player, oldStackInSlot);
+
 			updatePlayerItem();
+			detectAndSendChanges();
 		}
-		return stack;
+		return oldStackInSlot;
 	}
 
 	@Override

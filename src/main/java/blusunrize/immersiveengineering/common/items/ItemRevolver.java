@@ -58,7 +58,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		super("revolver", 1, "REVOLVER", "normal","speedloader");
 	}
 	public static UUID speedModUUID = Utils.generateNewUUID();
-	public HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap();
+	public HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
 	public TextureAtlasSprite revolverDefaultTexture;
 	public void stichRevolverTextures(TextureMap map)
 	{
@@ -351,6 +351,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		NonNullList<ItemStack> stackList = this.getContainedItems(revolver);
 		for(int i = 0; i< bullets.size(); i++)
 			stackList.set(i, bullets.get(i));
+		for (int i = bullets.size();i<getBulletSlotAmount(revolver);i++)
+			stackList.set(i, ItemStack.EMPTY);
 		this.setContainedItems(revolver, stackList);
 	}
 	public int getBulletSlotAmount(ItemStack revolver)

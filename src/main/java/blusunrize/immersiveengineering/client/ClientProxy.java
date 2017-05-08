@@ -658,7 +658,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "lightningrod1"));
 
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"),ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper")),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")),
@@ -683,6 +683,7 @@ public class ClientProxy extends CommonProxy
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
 		if(IEConfig.Machines.pump_infiniteWater || IEConfig.Machines.pump_placeCobble)
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes5", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PLACER.getMeta())));
 		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
 		ManualHelper.addEntry("belljar", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "belljar0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.BELLJAR.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "belljar1"));
@@ -1504,15 +1505,23 @@ public class ClientProxy extends CommonProxy
 		ConnModelReal.cache.clear();
 	}
 
+	static
+	{
+		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
+		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
+		IEApi.renderCacheClearers.add(ConnModelReal.cache::clear);
+		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
+		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::clear);
+		IEApi.renderCacheClearers.add(TileEntityFluidPipe.cachedOBJStates::clear);
+		IEApi.renderCacheClearers.add(TileRenderBelljar::reset);
+		IEApi.renderCacheClearers.add(TileRenderWatermill::reset);
+		IEApi.renderCacheClearers.add(TileRenderWindmill::reset);
+	}
 	@Override
 	public void clearRenderCaches()
 	{
-		IESmartObjModel.modelCache.clear();
-		IESmartObjModel.cachedBakedItemModels.clear();
-		ConnModelReal.cache.clear();
-		ModelConveyor.modelCache.clear();
-		ModelConfigurableSides.modelCache.clear();
-		TileEntityFluidPipe.cachedOBJStates.clear();
+		for (Runnable r:IEApi.renderCacheClearers)
+			r.run();
 	}
 	private static void mapFluidState(Block block, Fluid fluid)
 	{
