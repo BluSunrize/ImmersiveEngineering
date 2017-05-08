@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,6 +45,12 @@ public class IEApi
 	 * 2: conductive, increases flux damage done to the target (CoFH/RedstoneArsenal compat)<br>
 	 */
 	public static Potion[] potions;
+
+	/**
+	 * Each element of this list will be called once when the command "/cie resetrender" is run.
+	 * These elements could be something like modelCache::clear.
+	 */
+	public static List<Runnable> renderCacheClearers = new ArrayList<>();
 
 	public static ItemStack getPreferredOreStack(String oreName)
 	{

@@ -17,10 +17,15 @@ import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+import java.util.WeakHashMap;
 
 public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWindmill>
 {
 	private List<BakedQuad> quads;
+	private static WeakHashMap<TileRenderWindmill, Boolean> instances = new WeakHashMap<>();
+	{
+		instances.put(this, true);
+	}
 	@Override
 	public void renderTileEntityAt(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage)
 	//	public void renderTileEntityFast(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer vertexBuffer)
@@ -63,5 +68,10 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 	    RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();
+	}
+	public static void reset()
+	{
+		for (TileRenderWindmill r:instances.keySet())
+			r.quads = null;
 	}
 }
