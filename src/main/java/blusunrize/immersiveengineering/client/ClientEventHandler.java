@@ -315,7 +315,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						GlStateManager.disableCull();
 						GlStateManager.disableTexture2D();
 						GlStateManager.enableBlend();
-//						float scale = .046875f/(blueprint.getTextureScale()/16f);
 						float scale = .0375f/(blueprint.getTextureScale()/16f);
 						GlStateManager.scale(-scale, -scale, scale);
 						GlStateManager.color(1, 1, 1, 1);
