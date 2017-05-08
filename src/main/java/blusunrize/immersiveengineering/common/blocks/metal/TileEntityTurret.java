@@ -161,9 +161,12 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			if(whitelist ^ isListedName(targetList, entity.getName()))
 				continue;
 			//Same as above but for the owner of the pet, to prevent shooting wolves
-			if(entity instanceof IEntityOwnable && ((IEntityOwnable)entity).getOwner()!=null)
-				if(whitelist ^ isListedName(targetList, ((IEntityOwnable)entity).getOwner().getName()))
+			if(entity instanceof IEntityOwnable)
+			{
+				Entity entityOwner = ((IEntityOwnable)entity).getOwner();
+				if(entityOwner!=null&&(whitelist ^ isListedName(targetList, entityOwner.getName())))
 					continue;
+			}
 
 			if(entity instanceof EntityAnimal && !attackAnimals)
 				continue;
