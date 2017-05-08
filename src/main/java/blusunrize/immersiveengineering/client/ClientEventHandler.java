@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
@@ -14,6 +15,8 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
+import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
+import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -284,7 +287,54 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		connectionsRendered = true;
 	}
 	 */
-	@SubscribeEvent()
+
+	@SubscribeEvent
+	public void onRenderItemFrame(RenderItemInFrameEvent event)
+	{
+		if(event.getItem()!=null && event.getItem().getItem() instanceof ItemEngineersBlueprint)
+		{
+			double playerDistanceSq = ClientUtils.mc().thePlayer.getDistanceSq(event.getEntityItemFrame().getPosition());
+
+			if(playerDistanceSq<1000)
+			{
+				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(event.getItem(), "blueprint"));
+				if(recipes!=null&&recipes.length > 0)
+				{
+					int i = event.getEntityItemFrame().getRotation();
+					BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
+					BlueprintLines blueprint = recipe==null?null: TileRenderAutoWorkbench.getBlueprintDrawable(recipe, event.getEntityItemFrame().getEntityWorld());
+					if(blueprint!=null)
+					{
+						GlStateManager.rotate(-i*45.0F, 0.0F, 0.0F, 1.0F);
+						ClientUtils.bindTexture("immersiveengineering:textures/models/blueprintFrame.png");
+						GlStateManager.translate(-.5, .5,-.001);
+						ClientUtils.drawTexturedRect(.125f,-.875f, .75f,.75f, 1d,0d,1d,0d);
+						//Width depends on distance
+						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
+						GlStateManager.translate(.75,-.25,-.002);
+						GlStateManager.disableCull();
+						GlStateManager.disableTexture2D();
+						GlStateManager.enableBlend();
+//						float scale = .046875f/(blueprint.getTextureScale()/16f);
+						float scale = .0375f/(blueprint.getTextureScale()/16f);
+						GlStateManager.scale(-scale, -scale, scale);
+						GlStateManager.color(1, 1, 1, 1);
+
+						blueprint.draw(lineWidth);
+
+						GlStateManager.scale(1/scale, -1/scale, 1/scale);
+						GlStateManager.enableAlpha();
+						GlStateManager.enableTexture2D();
+						GlStateManager.enableCull();
+
+						event.setCanceled(true);
+					}
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
 	public void onRenderOverlayPre(RenderGameOverlayEvent.Pre event)
 	{
 		if(ZoomHandler.isZooming && event.getType()==RenderGameOverlayEvent.ElementType.CROSSHAIRS)
