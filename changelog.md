@@ -22,6 +22,8 @@
 - added OC compat for Mixer and BottlingMachine (thanks GuyRunningSouth)
 - added a Villager Job to sell Shader Bags
 - added a Crusher recipe to turn slag into sand
+- added a special ItemFrame render for Blueprints
+- added the ability to flip Powered Lanterns using the hammer
 - changed Razorwire to render extended wooden boards when stacked
 - changed the Conductive debuff to apply to Teslacoil and Electro-Razorwire damage
 - changed metal plates and Sheetmetal to be craftable for any IE-used metal
