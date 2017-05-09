@@ -91,5 +91,12 @@
 			"immersiveengineering:tesla"
 		],
 		"subtitle": "subtitle.immersiveengineering.tesla"
+	},
+	"direSwitch": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:direSwitch"
+		],
+		"subtitle": "subtitle.immersiveengineering.direSwitch"
 	}
 }
