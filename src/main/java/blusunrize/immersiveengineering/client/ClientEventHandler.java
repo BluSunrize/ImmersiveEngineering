@@ -294,7 +294,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	{
 		if(event.getItem()!=null && event.getItem().getItem() instanceof ItemEngineersBlueprint)
 		{
-			double playerDistanceSq = ClientUtils.mc().thePlayer.getDistanceSq(event.getEntityItemFrame().getPosition());
+			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame().getPosition());
 
 			if(playerDistanceSq<1000)
 			{

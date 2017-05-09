@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttacha
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -233,9 +234,9 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		return null;
 	}
 	@Override
-	public ItemStack[] getDroppedItems()
+	public NonNullList<ItemStack> getDroppedItems()
 	{
-		return new ItemStack[]{mold};
+		return ListUtils.fromItem(mold);
 	}
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)

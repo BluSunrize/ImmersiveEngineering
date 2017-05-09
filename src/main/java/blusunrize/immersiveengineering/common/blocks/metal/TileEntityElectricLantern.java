@@ -213,7 +213,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);
-		worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
+		world.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
 		return true;
 	}
 }
