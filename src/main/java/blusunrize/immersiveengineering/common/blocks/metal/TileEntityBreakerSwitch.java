@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Optional;
@@ -26,6 +27,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -196,6 +198,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		if (!Utils.isHammer(heldItem))
 		{
 			active = !active;
+			worldObj.playSound(getPos().getX(),getPos().getY(),getPos().getZ(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F,1, true);
 			if (wires>1)
 				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
 			worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
