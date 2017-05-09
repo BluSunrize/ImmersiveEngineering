@@ -1,4 +1,4 @@
-#####Version 0.10-58
+#####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
 - added Crafttweaker integration for the Mixer
 - added the Garden Cloche! It grows a variety of crops!
@@ -24,6 +24,8 @@
 - added a Crusher recipe to turn slag into sand
 - added a special ItemFrame render for Blueprints
 - added the ability to flip Powered Lanterns using the hammer
+- added the option for Strip Curtains to output a strong RS signal
+- added a sound to the Breaker Switch - Clearly the best feature of this update
 - changed Razorwire to render extended wooden boards when stacked
 - changed the Conductive debuff to apply to Teslacoil and Electro-Razorwire damage
 - changed metal plates and Sheetmetal to be craftable for any IE-used metal
@@ -69,6 +71,7 @@
 - fixed various Turret projectile issues (thanks Malte)
 - fixed a Blast Furnace processing speed bug (thanks Malte)
 - fixed Skyhook being a stupidly powerful weapon (thanks Malte)
+- fixed the Crusher outputting to the wrong side
 - Translations Added/Updated: ru_RU (lex1975) (this time for real, since I forgot it last time), zh_TW (xaxa123)
 
 #####Version 0.10-57 - BUILT
