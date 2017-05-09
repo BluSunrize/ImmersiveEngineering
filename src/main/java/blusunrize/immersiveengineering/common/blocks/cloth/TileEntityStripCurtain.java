@@ -2,8 +2,10 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -16,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -23,12 +26,13 @@ import java.util.List;
 /**
  * @author BluSunrize - 01.10.2016
  */
-public class TileEntityStripCurtain extends TileEntityIEBase implements ITickable, IRedstoneOutput, IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
+public class TileEntityStripCurtain extends TileEntityIEBase implements ITickable, IRedstoneOutput, IHammerInteraction, IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public boolean ceilingAttached = false;
 	public int colour = 0xffffff;
 	private int redstoneSignal = 0;
+	private boolean strongSignal = false;
 
 	@Override
 	public void update()
@@ -72,19 +76,14 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	@Override
 	public int getStrongRSOutput(IBlockState state, EnumFacing side)
 	{
-//		if(ceilingAttached && side!=EnumFacing.DOWN)
-//			return 0;
-//		if(!ceilingAttached && side.getOpposite()!=facing)
-//			return 0;
-//		return redstoneSignal;
-		return 0;
+		if(!strongSignal)
+			return 0;
+		return getWeakRSOutput(state, facing);
 	}
 	@Override
 	public int getWeakRSOutput(IBlockState state, EnumFacing side)
 	{
-		if(ceilingAttached && side!=EnumFacing.DOWN)
-			return 0;
-		if(!ceilingAttached && side.getOpposite()!=facing)
+		if(side==EnumFacing.DOWN)
 			return 0;
 		return redstoneSignal;
 	}
@@ -200,5 +199,13 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	{
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 			this.colour = ItemNBTHelper.getInt(stack, "colour");
+	}
+
+	@Override
+	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	{
+		strongSignal = !strongSignal;
+		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
+		return true;
 	}
 }

@@ -786,6 +786,8 @@ chat.immersiveengineering.info.rsSignal.invertedOn=Redstone signal: Inverted
 chat.immersiveengineering.info.rsSignal.invertedOff=Redstone signal: Not inverted
 chat.immersiveengineering.info.rsControl.invertedOn=Redstone control: Inverted
 chat.immersiveengineering.info.rsControl.invertedOff=Redstone control: Not inverted
+chat.immersiveengineering.info.rsControl.strongSignal.true=Strong Redstone Signal: Enabled
+chat.immersiveengineering.info.rsControl.strongSignal.false=Strong Redstone Signal: Disabled
 chat.immersiveengineering.info.tesla.highPower=Power mode: High
 chat.immersiveengineering.info.tesla.lowPower=Power mode: Low
 chat.immersiveengineering.info.notOwner=Only the owner '%1$s' may access this block
@@ -831,6 +833,7 @@ subtitle.immersiveengineering.chargeSlow=Charging capacitors
 subtitle.immersiveengineering.spark=Electrical sparks
 subtitle.immersiveengineering.railgunFire=Railgun fire
 subtitle.immersiveengineering.tesla=Tesla Coil zapping
+subtitle.immersiveengineering.direSwitch=Direwolf20 imitating a knifeswitch
 
 #RECIPES
 recipe.immersiveengineering.hammerCrushing=Crushing
@@ -1012,7 +1015,7 @@ ie.manual.entry.hemp.subtext=530 fabric it
 ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link;biodiesel;§o§nBiodiesel§r>, the hemp fibers are also useful for the creation of Tough Fabric. The seeds can be gathered by breaking tall grass.
 ie.manual.entry.hemp1=Tough Fabric is a resilient weave made from hemp fiber. It's used to create <link;generator;§o§nImproved §o§nWindmills§r;3> as well as <link;balloon;§o§nBalloons§r> and §o§nJump §o§nCushions§r (detailed on the next page).
 ie.manual.entry.hemp2=Jump Cushions are simple blocks created from tough fabric and inflated with air. They are capable of absorbing impacts and prevent falldamage when landed upon, but, unlike slime blocks, will not bounce you back up.
-ie.manual.entry.hemp3=Strip Curtains are pieces of fabric that are mounted to doorframes or other openings to serve in blocking the view.<br>When an entity passes through them, they will emit a redstone signal.<br>They can be dyed in the same way leather armor can.
+ie.manual.entry.hemp3=Strip Curtains are pieces of fabric that are mounted to doorframes or other openings to serve in blocking the view.<br>When an entity passes through them, they will emit a redstone signal. Rightclick them with the hammer to enable strong signals.<br>They can be dyed in the same way leather armor can.
 
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
@@ -1127,7 +1130,7 @@ ie.manual.entry.metalconstruction2=Structural Connectors work similarly to norma
 ie.manual.entry.lighting.name=Engineered Lighting
 ie.manual.entry.lighting.subtext=Lighting up the Wasteland
 ie.manual.entry.lighting0=Deep in the halls of the factories, it can be quite dark. In order to still find your way around the machines, you should probably light up the place with some Lanterns. These Lanterns provide almost as much light as a glowstone block would.
-ie.manual.entry.lighting1=Powered Lanterns are one of the first ever invented uses for electric power. To run these, you need to connect them directly to your power grid using wires. They will allow power to be transferred through them, so you can link them in a row.
+ie.manual.entry.lighting1=Powered Lanterns are one of the first ever invented uses for electric power. To run these, you need to connect them directly to your power grid using wires. They will allow power to be transferred through them, so you can link them in a row.<br>Using the Engineer's Hammer on them will flip them upside down.
 ie.manual.entry.lighting2=As long as they are supplied with a little bit of power, they will light up the surrounding area like a normal Lantern, but additionally, they will also prevent hostile mobs to spawn in a 32 block radius!
 ie.manual.entry.lighting3=Floodlights are strong lightsources. While they require more power than a simple Powered Lantern, they will create a cone of light up to 32 blocks long. Use an Engineer's Hammer on the top or bottom faces of the block to rotate the light or click its sides to change its pitch.
 ie.manual.entry.lighting4=Generally, Floodlights require a redstone signal to run, however their control-behavior can be inverted by sneaking and right-clicking their base with an Engineer's Hammer.

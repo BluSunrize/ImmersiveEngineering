@@ -367,9 +367,9 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		BlockPos pos = getPos().add(0,-1,0).offset(facing,-2);
 		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
-			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
+			output = Utils.insertStackIntoInventory(inventoryTile, output, facing);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, pos, output, facing);
+			Utils.dropStackAtPos(world, pos, output, facing.getOpposite());
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
