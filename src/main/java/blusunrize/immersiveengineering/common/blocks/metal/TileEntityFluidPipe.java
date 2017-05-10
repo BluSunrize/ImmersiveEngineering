@@ -1154,7 +1154,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				if(entityitem != null)
 					entityitem.setNoPickupDelay();
 			}
-			pipeCover = null;
+			pipeCover = ItemStack.EMPTY;
 			this.markContainingBlockForUpdate(null);
 			world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 			return true;
@@ -1172,8 +1172,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						}
 						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
 						heldItem.shrink(1);
-						if(heldItem.getCount() <= 0)
-							heldItem = null;
 						this.markContainingBlockForUpdate(null);
 						world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 						return true;
