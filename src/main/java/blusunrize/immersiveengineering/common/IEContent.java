@@ -690,6 +690,34 @@ public class IEContent
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
 		});
+
+		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect(){
+			@Override
+			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			{
+//				if(fluid.tag!=null)
+//				{
+//					List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluid.tag);
+//					for(PotionEffect e : effects)
+//					{
+//						PotionEffect newEffect = new PotionEffect(e.getPotion(),(int)Math.ceil(e.getDuration()*.05),e.getAmplifier());
+//						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
+//						target.addPotionEffect(newEffect);
+//					}
+//				}
+			}
+			@Override
+			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+			@Override
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			{
+				world.setBlockState(mop.getBlockPos().offset(mop.sideHit), blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+//				mop.getBlockPos()
+			}
+			@Override
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+		});
+
 		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,0));
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));

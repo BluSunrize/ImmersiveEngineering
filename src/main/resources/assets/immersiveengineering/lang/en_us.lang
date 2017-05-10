@@ -326,9 +326,9 @@ item.immersiveengineering.revolver.earthshaker.name=§bEarthshaker§r
 item.immersiveengineering.revolver.warlord.name=The Repulsor
 item.immersiveengineering.revolver.superchief.name=The Super Chief
 item.immersiveengineering.revolver.rose.name=Divine Rose
-item.immersiveengineering.revolver.no_name.name=No Name
-item.immersiveengineering.revolver.patreon_blu.name=§6Last Word§r
-item.immersiveengineering.revolver.patreon_hazard.name=§4Twisted Phantom§r
+item.immersiveengineering.revolver.noName.name=No Name
+item.immersiveengineering.revolver.patreonBlu.name=§6Last Word§r
+item.immersiveengineering.revolver.patreonHazard.name=§4Twisted Phantom§r
 
 item.immersiveengineering.bullet.empty_casing.name=Empty Casing
 item.immersiveengineering.bullet.empty_shell.name=Empty Shell
