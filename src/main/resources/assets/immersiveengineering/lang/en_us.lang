@@ -728,16 +728,16 @@ desc.immersiveengineering.flavour.drillhead.damage=Attack Damage: %1$s
 
 desc.immersiveengineering.flavour.skyhook=A new form of travel
 
-desc.immersiveengineering.flavour.toolupgrade.drillWaterproof=Allows the Mining Drill to operate under water
-desc.immersiveengineering.flavour.toolupgrade.drillSpeed=Increases the digging speed of the Mining Drill
-desc.immersiveengineering.flavour.toolupgrade.drillDamage=Increases the attack damage of the Mining Drill, stacks up to 3
-desc.immersiveengineering.flavour.toolupgrade.drillCapacity=Increases the internal tank size of the Mining Drill and Chemical Thrower
-desc.immersiveengineering.flavour.toolupgrade.revolverBayonet=Adds melee damage to the Revolver
-desc.immersiveengineering.flavour.toolupgrade.revolverMagazine=Increases the Revolver's magazine size
-desc.immersiveengineering.flavour.toolupgrade.revolverElectro=Revolver shots inflict shock damage
-desc.immersiveengineering.flavour.toolupgrade.chemthrowerFocus=Decreases spread and increases range of the Chemical Thrower
-desc.immersiveengineering.flavour.toolupgrade.railgunScope=Allows Railgun to zoom in
-desc.immersiveengineering.flavour.toolupgrade.railgunCapacitors=Reduces charge time and increases energy storage of the Railgun
+desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=Allows the Mining Drill to operate under water
+desc.immersiveengineering.flavour.toolupgrade.drill_speed=Increases the digging speed of the Mining Drill
+desc.immersiveengineering.flavour.toolupgrade.drill_damage=Increases the attack damage of the Mining Drill, stacks up to 3
+desc.immersiveengineering.flavour.toolupgrade.drill_capacity=Increases the internal tank size of the Mining Drill and Chemical Thrower
+desc.immersiveengineering.flavour.toolupgrade.revolver_bayonet=Adds melee damage to the Revolver
+desc.immersiveengineering.flavour.toolupgrade.revolver_magazine=Increases the Revolver's magazine size
+desc.immersiveengineering.flavour.toolupgrade.revolver_electro=Revolver shots inflict shock damage
+desc.immersiveengineering.flavour.toolupgrade.chemthrower_focus=Decreases spread and increases range of the Chemical Thrower
+desc.immersiveengineering.flavour.toolupgrade.railgun_scope=Allows Railgun to zoom in
+desc.immersiveengineering.flavour.toolupgrade.railgun_capacitors=Reduces charge time and increases energy storage of the Railgun
 
 gui.immersiveengineering.empty=Empty
 gui.immersiveengineering.blastFurnace=Blast Furnace
