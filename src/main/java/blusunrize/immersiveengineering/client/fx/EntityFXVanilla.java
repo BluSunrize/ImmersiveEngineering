@@ -48,7 +48,7 @@ public class EntityFXVanilla extends EntityFXIEBase
 				this.setExpired();
 			this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
 			this.motionY += 0.004D;
-			this.moveEntity(this.motionX, this.motionY, this.motionZ);
+			this.move(this.motionX, this.motionY, this.motionZ);
 			if (this.posY == this.prevPosY)
 			{
 				this.motionX *= 1.1D;
@@ -57,7 +57,7 @@ public class EntityFXVanilla extends EntityFXIEBase
 			this.motionX *= 0.9599999785423279D;
 			this.motionY *= 0.9599999785423279D;
 			this.motionZ *= 0.9599999785423279D;
-			if (this.isCollided)
+			if (this.onGround)
 			{
 				this.motionX *= 0.699999988079071D;
 				this.motionZ *= 0.699999988079071D;
@@ -71,11 +71,11 @@ public class EntityFXVanilla extends EntityFXIEBase
 				this.setExpired();
 			this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
 			this.motionY += 0.004D;
-			this.moveEntity(this.motionX, this.motionY, this.motionZ);
+			this.move(this.motionX, this.motionY, this.motionZ);
 			this.motionX *= 0.8999999761581421D;
 			this.motionY *= 0.8999999761581421D;
 			this.motionZ *= 0.8999999761581421D;
-			if (this.isCollided)
+			if (this.onGround)
 			{
 				this.motionX *= 0.699999988079071D;
 				this.motionZ *= 0.699999988079071D;
@@ -88,7 +88,7 @@ public class EntityFXVanilla extends EntityFXIEBase
 			this.prevPosZ = this.posZ;
 			if (this.particleAge++ >= this.particleMaxAge)
 				this.setExpired();
-			this.moveEntity(this.motionX, this.motionY, this.motionZ);
+			this.move(this.motionX, this.motionY, this.motionZ);
 			if (this.posY == this.prevPosY)
 			{
 				this.motionX *= 1.1D;
@@ -97,7 +97,7 @@ public class EntityFXVanilla extends EntityFXIEBase
 			this.motionX *= 0.8600000143051147D;
 			this.motionY *= 0.8600000143051147D;
 			this.motionZ *= 0.8600000143051147D;
-			if (this.isCollided)
+			if (this.onGround)
 			{
 				this.motionX *= 0.699999988079071D;
 				this.motionZ *= 0.699999988079071D;

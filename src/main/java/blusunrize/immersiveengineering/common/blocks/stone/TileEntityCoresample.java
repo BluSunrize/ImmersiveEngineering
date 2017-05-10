@@ -19,13 +19,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec4b;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
+import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
@@ -33,13 +33,13 @@ import java.util.Locale;
 
 public class TileEntityCoresample extends TileEntityIEBase implements IDirectionalTile, ITileDrop, IPlayerInteraction, IBlockOverlayText
 {
-	public ItemStack coresample;
+	public ItemStack coresample = ItemStack.EMPTY;
 	public EnumFacing facing = EnumFacing.NORTH;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		coresample = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("coresample"));
+		coresample = new ItemStack(nbt.getCompoundTag("coresample"));
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 	}
 	@Override
@@ -90,11 +90,11 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				getWorld().setBlockToAir(getPos());
-				getWorld().spawnEntityInWorld(entityitem);
+				getWorld().spawnEntity(entityitem);
 			}
 			return true;
 		}
-		else if(heldItem!=null && heldItem.getItem()==Items.FILLED_MAP && ItemNBTHelper.hasKey(coresample, "coords"))
+		else if(!heldItem.isEmpty() && heldItem.getItem()==Items.FILLED_MAP && ItemNBTHelper.hasKey(coresample, "coords"))
 		{
 			if(!getWorld().isRemote)
 			{
@@ -118,9 +118,9 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 					byte b2 = (byte)8;
 
 					if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
-						mapData.mapDecorations.put(ident, new Vec4b((byte)5, mapX, mapZ, b2));
+						mapData.mapDecorations.put(ident, new MapDecoration(MapDecoration.Type.TARGET_POINT, mapX, mapZ, b2));
 					else
-						player.addChatMessage(new TextComponentTranslation(Lib.CHAT_INFO+"coresample.mapFail"));
+						player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"coresample.mapFail"));
 				}
 			}
 			return true;

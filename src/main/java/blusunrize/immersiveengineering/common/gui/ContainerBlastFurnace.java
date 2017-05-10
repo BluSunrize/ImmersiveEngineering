@@ -70,7 +70,7 @@ public class ContainerBlastFurnace extends ContainerIEBase<TileEntityBlastFurnac
 //
 //			if (stackInSlot.stackSize == stack.stackSize)
 //				return null;
-//			slotObject.onPickupFromSlot(player, stackInSlot);
+//			slotObject.onTake(player, stackInSlot);
 //		}
 //		return stack;
 //	}

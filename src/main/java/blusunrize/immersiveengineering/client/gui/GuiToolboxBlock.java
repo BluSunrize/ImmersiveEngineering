@@ -31,7 +31,7 @@ public class GuiToolboxBlock extends GuiContainer
 		for(int i=0; i<((ContainerToolboxBlock)this.inventorySlots).slotCount; i++)
 		{
 			Slot s = this.inventorySlots.inventorySlots.get(i);
-			if(!s.getHasStack() && mx>guiLeft+s.xDisplayPosition&&mx<guiLeft+s.xDisplayPosition+16 && my>guiTop+s.yDisplayPosition&&my<guiTop+s.yDisplayPosition+16)
+			if(!s.getHasStack() && mx>guiLeft+s.xPos&&mx<guiLeft+s.xPos+16 && my>guiTop+s.yPos&&my<guiTop+s.yPos+16)
 				slot = i;
 		}
 		String ss = null;
@@ -41,7 +41,7 @@ public class GuiToolboxBlock extends GuiContainer
 			tooltip.add(TextFormatting.GRAY+ I18n.format(Lib.DESC_INFO+"toolbox."+ss));
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}

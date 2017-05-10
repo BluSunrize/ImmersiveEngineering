@@ -18,16 +18,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
 {
-	ItemStack[] inventory = new ItemStack[4];
+	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
 	public boolean active = false;
@@ -81,7 +83,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote&&formed&&!isDummy())
+		if(!world.isRemote&&formed&&!isDummy())
 		{
 			boolean a = active;
 
@@ -90,7 +92,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 				if(process>0)
 				{
 					int processSpeed = getProcessSpeed();
-					if(inventory[0]==null)
+					if(inventory.get(0).isEmpty())
 					{
 						process=0;
 						processMax=0;
@@ -121,17 +123,17 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							Utils.modifyInvStackSize(inventory, 0, -(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1));
-							if(inventory[2]!=null)
-								inventory[2].stackSize+=recipe.output.copy().stackSize;
+							Utils.modifyInvStackSize(inventory, 0, -(recipe.input instanceof ItemStack ? ((ItemStack) recipe.input).getCount() : 1));
+							if(!inventory.get(2).isEmpty())
+								inventory.get(2).grow(recipe.output.copy().getCount());
 							else
-								inventory[2] = recipe.output.copy();
-							if (recipe.slag!=null)
+								inventory.set(2, recipe.output.copy());
+							if (!recipe.slag.isEmpty())
 							{
-								if(inventory[3]!=null)
-									inventory[3].stackSize+=recipe.slag.copy().stackSize;
+								if(!inventory.get(3).isEmpty())
+									inventory.get(3).grow(recipe.slag.copy().getCount());
 								else
-									inventory[3] = recipe.slag.copy();
+									inventory.set(3, recipe.slag.copy());
 							}
 						}
 						processMax=0;
@@ -154,10 +156,10 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 
 			if(burnTime<=10 && getRecipe()!=null)
 			{
-				if(BlastFurnaceRecipe.isValidBlastFuel(inventory[1]))
+				if(BlastFurnaceRecipe.isValidBlastFuel(inventory.get(1)))
 				{
-					burnTime += BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
-					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
+					burnTime += BlastFurnaceRecipe.getBlastFuelTime(inventory.get(1));
+					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory.get(1));
 					Utils.modifyInvStackSize(inventory, 1, -1);
 					markContainingBlockForUpdate(null);
 				}
@@ -172,23 +174,23 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					for(int xx=-1;xx<=1;xx++)
 						for(int zz=-1;zz<=1;zz++)
 						{
-							tileEntity = worldObj.getTileEntity(getPos().add(xx, yy, zz));
+							tileEntity = world.getTileEntity(getPos().add(xx, yy, zz));
 							if(tileEntity!=null)
 								tileEntity.markDirty();
 							markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							worldObj.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1,active?1:0);
+							world.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1,active?1:0);
 						}
 			}
 		}
 	}
 	public BlastFurnaceRecipe getRecipe()
 	{
-		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory[0]);
+		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
-		if((inventory[0].stackSize>=((recipe.input instanceof ItemStack)?((ItemStack)recipe.input).stackSize:1)
-				&& inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<=getSlotLimit(2)) )
-				&& (inventory[3]==null || (OreDictionary.itemMatches(inventory[3],recipe.slag,true) && inventory[3].stackSize+recipe.slag.stackSize<=getSlotLimit(3)) ))
+		if((inventory.get(0).getCount() >= ((recipe.input instanceof ItemStack) ? ((ItemStack) recipe.input).getCount() : 1)
+				&& inventory.get(2).isEmpty() || (OreDictionary.itemMatches(inventory.get(2),recipe.output,true) && inventory.get(2).getCount() + recipe.output.getCount() <=getSlotLimit(2)) )
+				&& (inventory.get(3).isEmpty() || (OreDictionary.itemMatches(inventory.get(3),recipe.slag,true) && inventory.get(3).getCount() + recipe.slag.getCount() <=getSlotLimit(3)) ))
 			return recipe;
 		return null;
 	}
@@ -260,18 +262,18 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public void disassemble()
 	{
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityBlastFurnace))
+			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntityBlastFurnace))
 				return;
 
 			for(int yy=-1;yy<=1;yy++)
 				for(int xx=-1;xx<=1;xx++)
 					for(int zz=-1;zz<=1;zz++)
 					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
+						ItemStack s = ItemStack.EMPTY;
+						TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
 						if(te instanceof TileEntityBlastFurnace)
 						{
 							s = ((TileEntityBlastFurnace)te).getOriginalBlock();
@@ -279,15 +281,15 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 						}
 						if(startPos.add(xx, yy, zz).equals(getPos()))
 							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
 						{
 							if(startPos.add(xx, yy, zz).equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
+								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
 							else
 							{
 								if(Block.getBlockFromItem(s.getItem())==IEContent.blockStoneDevice)
-									worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-								worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
+									world.setBlockToAir(startPos.add(xx, yy, zz));
+								world.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
 							}
 						}
 					}
@@ -295,7 +297,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
 	}
@@ -332,7 +334,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return null;
 		return super.getCapability(capability, facing);
 	}

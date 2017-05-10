@@ -1,11 +1,14 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -42,14 +45,14 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			this.inputs[io] = ApiUtils.createIngredientStack(inputs[io]);
 
 		this.inputList = Lists.newArrayList(this.inputs);
-		this.outputList = Lists.newArrayList(this.output);
+		this.outputList = ListUtils.fromItem(this.output);
 
 		//Time and energy values are for the automatic workbench
 		this.totalProcessEnergy = (int)Math.floor(23040*energyModifier);
 		this.totalProcessTime = (int)Math.floor(180*timeModifier);
 	}
 
-	public boolean matchesRecipe(ItemStack[] query)
+	public boolean matchesRecipe(NonNullList<ItemStack> query)
 	{
 		//		ArrayList<Object> inputList = new ArrayList();
 		//		for(Object i : inputs)
@@ -110,21 +113,21 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		//			return true;
 		return getMaxCrafted(query)>0;
 	}
-	public int getMaxCrafted(ItemStack[] query)
+	public int getMaxCrafted(NonNullList<ItemStack> query)
 	{
 		HashMap<ItemStack, Integer> queryAmount = new HashMap<ItemStack, Integer>();
 		for(ItemStack q : query)
-			if(q!=null)
+			if(!q.isEmpty())
 			{
 				boolean inc = false;
 				for(ItemStack key : queryAmount.keySet())
 					if(OreDictionary.itemMatches(q, key, true))
 					{
-						queryAmount.put(key, queryAmount.get(key)+q.stackSize);
+						queryAmount.put(key, queryAmount.get(key)+q.getCount());
 						inc = true;
 					}
 				if(!inc)
-					queryAmount.put(q, q.stackSize);
+					queryAmount.put(q, q.getCount());
 			}
 
 		int maxCrafted = 0;
@@ -160,29 +163,29 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		return maxCrafted;
 	}
 
-	public ItemStack[] consumeInputs(ItemStack[] query, int crafted)
+	public NonNullList<ItemStack> consumeInputs(NonNullList<ItemStack> query, int crafted)
 	{
 		ArrayList<IngredientStack> inputList = new ArrayList(inputs.length);
 		for(IngredientStack i : inputs)
 			if(i!=null)
 				inputList.add(i);
 
-		ArrayList<ItemStack> consumed = new ArrayList(inputList.size());
+		NonNullList<ItemStack> consumed = NonNullList.create();
 		Iterator<IngredientStack> inputIt = inputList.iterator();
 		while(inputIt.hasNext())
 		{
 			IngredientStack ingr = inputIt.next();
 			int inputSize = ingr.inputSize*crafted;
 
-			for(int i=0; i<query.length; i++)
-				if(query[i]!=null)
-					if(ingr.matchesItemStackIgnoringSize(query[i]))
+			for(int i = 0; i< query.size(); i++)
+				if(!query.get(i).isEmpty())
+					if(ingr.matchesItemStackIgnoringSize(query.get(i)))
 					{
-						int taken = Math.min(query[i].stackSize, inputSize);
-						consumed.add(ApiUtils.copyStackWithAmount(query[i],taken));
-						query[i].stackSize-=taken;
-						if(query[i].stackSize<=0)
-							query[i] = null;
+						int taken = Math.min(query.get(i).getCount(), inputSize);
+						consumed.add(ApiUtils.copyStackWithAmount(query.get(i),taken));
+						query.get(i).shrink(taken);
+						if(query.get(i).getCount()<=0)
+							query.set(i, ItemStack.EMPTY);
 						inputSize-=taken;
 						if(inputSize<=0)
 						{
@@ -191,7 +194,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 						}
 					}
 		}
-		return consumed.toArray(new ItemStack[consumed.size()]);
+		return consumed;
 	}
 	public ArrayList<IngredientStack> getFormattedInputs()
 	{
@@ -214,7 +217,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 									break;
 								}
 					}
-					else if(ingr.stack!=null && OreDictionary.itemMatches(ingr.stack, formatted.stack, false))
+					else if(!ingr.stack.isEmpty() && OreDictionary.itemMatches(ingr.stack, formatted.stack, false))
 						isNew=false;
 					if(!isNew)
 						formatted.inputSize += ingr.inputSize;
@@ -225,7 +228,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 						formattedInputs.add(new IngredientStack(ingr.oreName, ingr.inputSize));
 					else if(ingr.stackList!=null)
 						formattedInputs.add(new IngredientStack(Lists.newArrayList(ingr.stackList), ingr.inputSize));
-					else if(ingr.stack!=null)
+					else if(!ingr.stack.isEmpty())
 						formattedInputs.add(new IngredientStack(ApiUtils.copyStackWithAmount(ingr.stack, ingr.inputSize)));
 				}
 			}

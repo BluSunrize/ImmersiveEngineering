@@ -34,7 +34,7 @@ public class EntityWolfpackShot extends EntityRevolvershotHoming
 	@Override
 	protected void onImpact(RayTraceResult mop)
 	{
-		if(!this.worldObj.isRemote && mop.entityHit != null)
+		if(!this.world.isRemote && mop.entityHit != null)
 		{
 			if(mop.entityHit.hurtResistantTime>0)
 				mop.entityHit.hurtResistantTime=0;

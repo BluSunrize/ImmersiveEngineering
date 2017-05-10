@@ -59,7 +59,7 @@ public class CapabilityShader
 		{
 			if(!container.hasTagCompound())
 				container.setTagCompound(new NBTTagCompound());
-			if(shader!=null)
+			if(!shader.isEmpty())
 			{
 				NBTTagCompound shaderTag = shader.writeToNBT(new NBTTagCompound());
 				container.getTagCompound().setTag(SHADER_NBT_KEY, shaderTag);
@@ -73,14 +73,14 @@ public class CapabilityShader
 		{
 			NBTTagCompound tagCompound = container.getTagCompound();
 			if(tagCompound == null || !tagCompound.hasKey(SHADER_NBT_KEY))
-				return null;
-			return ItemStack.loadItemStackFromNBT(tagCompound.getCompoundTag(SHADER_NBT_KEY));
+				return ItemStack.EMPTY;
+			return new ItemStack(tagCompound.getCompoundTag(SHADER_NBT_KEY));
 		}
 	}
 
 	public static class ShaderWrapper_Direct extends ShaderWrapper implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
 	{
-		protected ItemStack shader;
+		protected ItemStack shader = ItemStack.EMPTY;
 
 		public ShaderWrapper_Direct(String type)
 		{
@@ -93,7 +93,6 @@ public class CapabilityShader
 			this.shader = shader;
 		}
 		@Override
-		@Nullable
 		public ItemStack getShaderItem()
 		{
 			return this.shader;
@@ -117,7 +116,7 @@ public class CapabilityShader
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			ItemStack shader = getShaderItem();
-			if(shader != null)
+			if(!shader.isEmpty())
 				shader.writeToNBT(nbt);
 			else
 				nbt.setString("IE:NoShader", "");
@@ -130,7 +129,7 @@ public class CapabilityShader
 			NBTTagCompound tags = nbt;
 			setShaderType(tags.getString("IE:ShaderType"));
 			if(!tags.hasKey("IE:NoShader"))
-				setShaderItem(ItemStack.loadItemStackFromNBT(tags));
+				setShaderItem(new ItemStack(tags));
 		}
 	}
 
@@ -143,7 +142,7 @@ public class CapabilityShader
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
 				ItemStack shader = instance.getShaderItem();
-				if(shader != null)
+				if(!shader.isEmpty())
 					shader.writeToNBT(nbt);
 				else
 					nbt.setString("IE:NoShader", "");
@@ -157,7 +156,7 @@ public class CapabilityShader
 				NBTTagCompound tags = (NBTTagCompound) nbt;
 				instance.setShaderType(tags.getString("IE:ShaderType"));
 				if(!tags.hasKey("IE:NoShader"))
-					instance.setShaderItem(ItemStack.loadItemStackFromNBT(tags));
+					instance.setShaderItem(new ItemStack(tags));
 			}
 		}, new Callable<ShaderWrapper>()
 		{

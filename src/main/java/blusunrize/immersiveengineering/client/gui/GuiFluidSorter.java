@@ -65,7 +65,7 @@ public class GuiFluidSorter extends GuiContainer
 				}
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}

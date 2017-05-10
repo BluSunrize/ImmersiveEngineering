@@ -46,7 +46,7 @@ public class ExtraUtilsHelper extends IECompatModule
 	{
 		IProperty propGrowth = null;
 		final IBlockState state = block.getDefaultState();
-		for(IProperty prop : state.getPropertyNames())
+		for(IProperty prop : state.getPropertyKeys())
 			if("growth".equals(prop.getName()))
 				propGrowth = prop;
 		if(propGrowth!=null)

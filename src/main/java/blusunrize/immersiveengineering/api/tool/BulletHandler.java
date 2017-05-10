@@ -21,9 +21,9 @@ import java.util.function.Function;
  */
 public class BulletHandler
 {
-	public static ItemStack emptyCasing;
-	public static ItemStack emptyShell;
-	public static ItemStack basicCartridge;
+	public static ItemStack emptyCasing = ItemStack.EMPTY;
+	public static ItemStack emptyShell = ItemStack.EMPTY;
+	public static ItemStack basicCartridge = ItemStack.EMPTY;
 	/**
 	 * A list of all cartridges that shoot a homing bullet. Used to add Wolfpack Cartridges
 	 */

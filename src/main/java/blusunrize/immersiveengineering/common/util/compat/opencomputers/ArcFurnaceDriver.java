@@ -116,7 +116,7 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 			if(slot < 1 || slot > 12)
 				throw new IllegalArgumentException("Input slots are 1-12");
 			TileEntityArcFurnace master = getTileEntity();
-			Map<String, Object> stack = Utils.saveStack(master.inventory[slot - 1]);
+			Map<String, Object> stack = Utils.saveStack(master.inventory.get(slot - 1));
 			mainLoop:
 			for(MultiblockProcess<ArcFurnaceRecipe> p : master.processQueue)
 				for(int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>) p).getInputSlots())
@@ -140,7 +140,7 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1 || slot > 6)
 				throw new IllegalArgumentException("Output slots are 1-6");
-			return new Object[]{getTileEntity().inventory[slot + 15]};
+			return new Object[]{getTileEntity().inventory.get(slot + 15)};
 		}
 
 		@Callback(doc = "function(stack:int):table -- returns the specified additive stack")
@@ -149,13 +149,13 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1 || slot > 4)
 				throw new IllegalArgumentException("Additive slots are 1-4");
-			return new Object[]{getTileEntity().inventory[slot + 11]};
+			return new Object[]{getTileEntity().inventory.get(slot + 11)};
 		}
 
 		@Callback(doc = "function():table -- returns the slag stack")
 		public Object[] getSlagStack(Context context, Arguments args)
 		{
-			return new Object[]{getTileEntity().inventory[22]};
+			return new Object[]{getTileEntity().inventory.get(22)};
 		}
 
 		@Callback(doc = "function():boolean -- checks whether the arc furnace has all 3 electrodes")
@@ -171,9 +171,9 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1 || slot > 3)
 				throw new IllegalArgumentException("Electrode slots are 1-3");
-			ItemStack stack = getTileEntity().inventory[slot + 22];
+			ItemStack stack = getTileEntity().inventory.get(slot + 22);
 			Map<String, Object> map = Utils.saveStack(stack);
-			if(stack != null && stack.getItem() instanceof ItemGraphiteElectrode)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemGraphiteElectrode)
 				map.put("damage", ItemNBTHelper.getInt(stack, "graphDmg"));
 			return new Object[]{map};
 		}

@@ -140,7 +140,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onMinecartInteraction(MinecartInteractEvent event)
 	{
-		if(!event.getPlayer().worldObj.isRemote && event.getItem()!=null && event.getItem().getItem() instanceof IShaderItem)
+		if(!event.getPlayer().world.isRemote && !event.getItem().isEmpty() && event.getItem().getItem() instanceof IShaderItem)
 			if(event.getMinecart().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 //				if(event.getMinecart().hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
 			{
@@ -188,7 +188,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
 	{
-		if(event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityMinecart && event.getEntity().hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+		if(event.getEntity().world.isRemote && event.getEntity() instanceof EntityMinecart && event.getEntity().hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(),null));
 	}
 //	@SubscribeEvent
@@ -310,7 +310,7 @@ public class EventHandler
 	public void onLogin(PlayerLoggedInEvent event)
 	{
 		ExcavatorHandler.allowPackets = true;
-		if(!event.player.worldObj.isRemote)
+		if(!event.player.world.isRemote)
 		{
 			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>();
 			for(Entry<MineralMix,Integer> e: ExcavatorHandler.mineralList.entrySet())
@@ -330,16 +330,16 @@ public class EventHandler
 	{
 		if(event.getTargetBlock().getBlock() instanceof BlockIEBase)
 		{
-			if(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)!=null&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_HAMMER))
+			if(!event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_HAMMER))
 			{
-				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().worldObj, event.getEntityPlayer(), true);
+				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().world, event.getEntityPlayer(), true);
 				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
 					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowHammerHarvest(event.getTargetBlock()))
 						event.setCanHarvest(true);
 			}
-			if(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)!=null&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_WIRECUTTER))
+			if(!event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_WIRECUTTER))
 			{
-				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().worldObj, event.getEntityPlayer(), true);
+				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().world, event.getEntityPlayer(), true);
 				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
 					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowWirecutterHarvest(event.getTargetBlock()))
 						event.setCanHarvest(true);
@@ -371,7 +371,7 @@ public class EventHandler
 			if(crusher!=null)
 			{
 				for(EntityItem item: event.getDrops())
-					if(item!=null && item.getEntityItem()!=null)
+					if(item!=null && !item.getEntityItem().isEmpty())
 						crusher.doProcessOutput(item.getEntityItem());
 				crusherMap.remove(event.getEntityLiving().getUniqueID());
 				event.setCanceled(true);
@@ -389,7 +389,7 @@ public class EventHandler
 					return;
 			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
 			ItemNBTHelper.setString(bag, "rarity", r.toString());
-			event.getDrops().add(new EntityItem(event.getEntityLiving().worldObj, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
+			event.getDrops().add(new EntityItem(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
 		}
 	}
 
@@ -441,14 +441,14 @@ public class EventHandler
 					{
 						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorld()==null)
 							it.remove();
-						else if( ((TileEntity)interdictor).getWorld().provider.getDimension()== event.getEntity().worldObj.provider.getDimension() && ((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ)<=interdictor.getInterdictionRangeSquared())
+						else if( ((TileEntity)interdictor).getWorld().provider.getDimension()== event.getEntity().world.provider.getDimension() && ((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ)<=interdictor.getInterdictionRangeSquared())
 							event.setCanceled(true);
 					}
 					else if(interdictor instanceof Entity)
 					{
-						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
+						if(((Entity)interdictor).isDead || ((Entity)interdictor).world==null)
 							it.remove();
-						else if(((Entity)interdictor).worldObj.provider.getDimension()== event.getEntity().worldObj.provider.getDimension() && ((Entity)interdictor).getDistanceSqToEntity(event.getEntity())<=interdictor.getInterdictionRangeSquared())
+						else if(((Entity)interdictor).world.provider.getDimension()== event.getEntity().world.provider.getDimension() && ((Entity)interdictor).getDistanceSqToEntity(event.getEntity())<=interdictor.getInterdictionRangeSquared())
 							event.setCanceled(true);
 					}
 				}
@@ -473,14 +473,14 @@ public class EventHandler
 					{
 						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorld()==null)
 							it.remove();
-						else if( ((TileEntity)interdictor).getWorld().provider.getDimension()== event.getEntity().worldObj.provider.getDimension() && ((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ)<=interdictor.getInterdictionRangeSquared())
+						else if( ((TileEntity)interdictor).getWorld().provider.getDimension()== event.getEntity().world.provider.getDimension() && ((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 					else if(interdictor instanceof Entity)
 					{
-						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
+						if(((Entity)interdictor).isDead || ((Entity)interdictor).world==null)
 							it.remove();
-						else if(((Entity)interdictor).worldObj.provider.getDimension()== event.getEntity().worldObj.provider.getDimension() && ((Entity)interdictor).getDistanceSqToEntity(event.getEntity())<=interdictor.getInterdictionRangeSquared())
+						else if(((Entity)interdictor).world.provider.getDimension()== event.getEntity().world.provider.getDimension() && ((Entity)interdictor).getDistanceSqToEntity(event.getEntity())<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 				}
@@ -532,7 +532,7 @@ public class EventHandler
 	{
 		ItemStack current = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(current!=null && current.getItem().equals(IEContent.itemDrill) && current.getItemDamage()==0 && event.getEntityPlayer().isInsideOfMaterial(Material.WATER))
+		if(!current.isEmpty() && current.getItem().equals(IEContent.itemDrill) && current.getItemDamage()==0 && event.getEntityPlayer().isInsideOfMaterial(Material.WATER))
 			if( ((ItemDrill)IEContent.itemDrill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
@@ -547,16 +547,16 @@ public class EventHandler
 	@SubscribeEvent
 	public void onAnvilChange(AnvilUpdateEvent event)
 	{
-		if(event.getLeft() !=null && event.getLeft().getItem() instanceof IDrillHead && ((IDrillHead) event.getLeft().getItem()).getHeadDamage(event.getLeft())>0)
+		if(!event.getLeft().isEmpty() && event.getLeft().getItem() instanceof IDrillHead && ((IDrillHead) event.getLeft().getItem()).getHeadDamage(event.getLeft())>0)
 		{
-			if(event.getRight()!=null && event.getLeft().getItem().getIsRepairable(event.getLeft(), event.getRight()))
+			if(!event.getRight().isEmpty() && event.getLeft().getItem().getIsRepairable(event.getLeft(), event.getRight()))
 			{
 				event.setOutput(event.getLeft().copy());
 				int repair = Math.min(
 						((IDrillHead)event.getOutput().getItem()).getHeadDamage(event.getOutput()),
 						((IDrillHead) event.getOutput().getItem()).getMaximumHeadDamage(event.getOutput())/4);
 				int cost = 0;
-				for(;repair>0&&cost<event.getRight().stackSize; ++cost)
+				for(; repair>0&& cost < event.getRight().getCount(); ++cost)
 				{
 					((IDrillHead) event.getOutput().getItem()).damageHead(event.getOutput(), -repair);
 					event.setCost(Math.max(1, repair/200));

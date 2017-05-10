@@ -16,7 +16,7 @@ public class GuiRevolver extends GuiContainer
 	public GuiRevolver(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack revolver)
 	{
 		super(new ContainerRevolver(inventoryPlayer, world, slot, revolver));
-		if(revolver!=null && revolver.getItem() instanceof ItemRevolver)
+		if(!revolver.isEmpty() && revolver.getItem() instanceof ItemRevolver)
 			bullets =  ((ItemRevolver)revolver.getItem()).getBulletSlotAmount(revolver);
 	}
 

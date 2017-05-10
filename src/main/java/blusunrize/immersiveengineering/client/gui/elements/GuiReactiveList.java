@@ -39,7 +39,7 @@ public class GuiReactiveList extends GuiButton
 	}
 	private void recalculateEntries()
 	{
-		perPage = (int)((this.height-padding[0]-padding[1])/(ClientUtils.mc().fontRendererObj.FONT_HEIGHT*textScale));
+		perPage = (int)((this.height-padding[0]-padding[1])/(ClientUtils.mc().fontRenderer.FONT_HEIGHT*textScale));
 		if(perPage<entries.length)
 		{
 			needsSlider = true;
@@ -92,7 +92,7 @@ public class GuiReactiveList extends GuiButton
 	@Override
 	public void drawButton(Minecraft mc, int mx, int my)
 	{
-		FontRenderer fr = ClientUtils.mc().fontRendererObj;
+		FontRenderer fr = ClientUtils.mc().fontRenderer;
 		boolean uni = fr.getUnicodeFlag();
 		fr.setUnicodeFlag(unicode);
 
@@ -181,7 +181,7 @@ public class GuiReactiveList extends GuiButton
 	public boolean mousePressed(Minecraft mc, int mx, int my)
 	{
 		boolean b = super.mousePressed(mc, mx, my);
-		FontRenderer fr = ClientUtils.mc().fontRendererObj;
+		FontRenderer fr = ClientUtils.mc().fontRenderer;
 		selectedOption=-1;
 		if(b)
 		{

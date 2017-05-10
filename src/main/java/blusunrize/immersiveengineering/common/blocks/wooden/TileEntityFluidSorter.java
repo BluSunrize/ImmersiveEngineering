@@ -27,19 +27,19 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 
 	public int routeFluid(EnumFacing inputSide, FluidStack stack, boolean doFill)
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			IFluidHandler[][] validOutputs = getValidOutputs(inputSide, stack, true);
 			if(validOutputs[0].length>0)
 			{
-				int rand = worldObj.rand.nextInt(validOutputs[0].length);
+				int rand = world.rand.nextInt(validOutputs[0].length);
 				int accepted = validOutputs[0][rand].fill(stack.copy(), doFill);
 				if(accepted>0)
 					return accepted;
 			}
 			if(validOutputs[1].length>0)
 			{
-				int rand = worldObj.rand.nextInt(validOutputs[1].length);
+				int rand = world.rand.nextInt(validOutputs[1].length);
 				int accepted = validOutputs[1][rand].fill(stack.copy(), doFill);
 				if(accepted>0)
 					return accepted;
@@ -92,7 +92,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		ArrayList<IFluidHandler> validFilteredInvOuts = new ArrayList<IFluidHandler>(6);
 		ArrayList<IFluidHandler> validUnfilteredInvOuts = new ArrayList<IFluidHandler>(6);
 		for(EnumFacing side : EnumFacing.values())
-			if(side!=inputSide && worldObj.isBlockLoaded(getPos().offset(side)))
+			if(side!=inputSide && world.isBlockLoaded(getPos().offset(side)))
 			{
 				boolean unmapped = true;
 				boolean allowed = false;
@@ -114,7 +114,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 				}
 				if(allowed || (allowUnmapped&&unmapped))
 				{
-					TileEntity tile = worldObj.getTileEntity(getPos().offset(side));
+					TileEntity tile = world.getTileEntity(getPos().offset(side));
 					if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 					{
 						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());

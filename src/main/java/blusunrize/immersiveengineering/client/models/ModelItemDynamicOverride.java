@@ -108,7 +108,7 @@ public class ModelItemDynamicOverride implements IPerspectiveAwareModel
 		@Override
 		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 		{
-			if(stack != null && stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
+			if(!stack.isEmpty() && stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{
 				IEItemInterfaces.ITextureOverride texOverride = (IEItemInterfaces.ITextureOverride) stack.getItem();
 				String key = texOverride.getModelCacheKey(stack);

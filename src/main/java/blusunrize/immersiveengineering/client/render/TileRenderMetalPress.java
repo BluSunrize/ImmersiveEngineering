@@ -59,7 +59,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 				shift[i] = .5f;
 			else
 				shift[i] = .5f+ (fProcess-(1-transportTime))/transportTime*.5f;
-			if(te.mold!=null)
+			if(!te.mold.isEmpty())
 				if(fProcess>=transportTime&&fProcess<(1-transportTime))
 				{
 					if(fProcess<(transportTime+pressTime))
@@ -89,7 +89,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 		RenderHelper.enableStandardItemLighting();
 		
 		GlStateManager.rotate(te.facing==EnumFacing.SOUTH?180: te.facing==EnumFacing.WEST?90: te.facing==EnumFacing.EAST?-90: 0, 0,1,0);
-		if(te.mold!=null)
+		if(!te.mold.isEmpty())
 		{
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0,.34,0);

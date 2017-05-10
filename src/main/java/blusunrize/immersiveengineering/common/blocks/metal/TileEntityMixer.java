@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -41,7 +42,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		super(MultiblockMixer.instance, new int[]{3,3,3}, 16000, true);
 	}
 	public MultiFluidTank tank = new MultiFluidTank(8000);
-	public ItemStack[] inventory = new ItemStack[8];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
 	public boolean outputAll;
 
@@ -80,24 +81,24 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		if(isDummy() || isRSDisabled())
 			return;
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(shouldRenderAsActive())
 			{
-				if(worldObj.rand.nextInt(8)==0)
+				if(world.rand.nextInt(8)==0)
 				{
 					FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0):null;
 					if(fs!=null)
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
 						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getFrontOffsetX()*.5f+(mirrored?facing.rotateYCCW():facing.rotateY()).getFrontOffsetX()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getFrontOffsetZ()*.5f+(mirrored?facing.rotateYCCW():facing.rotateY()).getFrontOffsetZ()*.5f);
-						float r = worldObj.rand.nextFloat()*.8125f;
+						float r = world.rand.nextFloat()*.8125f;
 						float angleRad = (float)Math.toRadians(animation_agitator);
 						partPos = partPos.addVector(r*Math.cos(angleRad),0,r*Math.sin(angleRad));
-						if(worldObj.rand.nextBoolean())
-							ImmersiveEngineering.proxy.spawnBubbleFX(worldObj, fs, partPos.xCoord,partPos.yCoord,partPos.zCoord, 0,0,0);
+						if(world.rand.nextBoolean())
+							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.xCoord,partPos.yCoord,partPos.zCoord, 0,0,0);
 						else
-							ImmersiveEngineering.proxy.spawnFluidSplashFX(worldObj, fs, partPos.xCoord,partPos.yCoord,partPos.zCoord, 0,0,0);
+							ImmersiveEngineering.proxy.spawnFluidSplashFX(world, fs, partPos.xCoord,partPos.yCoord,partPos.zCoord, 0,0,0);
 					}
 				}
 				animation_agitator = (animation_agitator+9)%360;
@@ -117,10 +118,10 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 						if(process instanceof MultiblockProcessInMachine)
 							for(int i : ((MultiblockProcessInMachine<MixerRecipe>)process).inputSlots)
 								usedInvSlots.add(i);
-					ItemStack[] components = new ItemStack[this.inventory.length];
-					for(int i=0; i<components.length; i++)
+					NonNullList<ItemStack> components = NonNullList.withSize(this.inventory.size(), ItemStack.EMPTY);
+					for(int i=0; i<components.size(); i++)
 						if(!usedInvSlots.contains(i))
-							components[i] = inventory[i];
+							components.set(i, inventory.get(i));
 
 					for(FluidStack fs : tank.fluids)
 					{
@@ -142,7 +143,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			if(this.tank.getFluidTypes()>1 || !foundRecipe || outputAll)
 			{
 				BlockPos outputPos = this.getPos().down().offset(facing.getOpposite(), 2);
-				IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, facing);
+				IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, facing);
 				if(output!=null)
 				{
 					if(!outputAll)
@@ -385,11 +386,11 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().offset(facing,2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -416,7 +417,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}
@@ -544,9 +545,9 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			if(this.processTick%timerStep==0)
 			{
 				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput,1,false), true);
-				ItemStack[] components = new ItemStack[this.inputSlots.length];
-				for(int i=0; i<components.length; i++)
-					components[i] = multiblock.getInventory()[this.inputSlots[i]];
+				NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
+				for(int i=0; i<components.size(); i++)
+					components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
 				FluidStack output = this.recipe.getFluidOutput(drained, components);
 
 				FluidStack fs = Utils.copyFluidStackWithAmount(output,1,false);
@@ -561,11 +562,11 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			super.processFinish(multiblock);
 			if(this.recipe instanceof MixerRecipePotion)
 				for(int i : this.inputSlots)
-					if(multiblock.getInventory()[i]!=null && PotionHelper.isReagent(multiblock.getInventory()[i]))
+					if(!multiblock.getInventory().get(i).isEmpty() && PotionHelper.isReagent(multiblock.getInventory().get(i)))
 					{
-						multiblock.getInventory()[i].stackSize--;
-						if(multiblock.getInventory()[i].stackSize<=0)
-							multiblock.getInventory()[i] = null;
+						multiblock.getInventory().get(i).shrink(1);
+						if(multiblock.getInventory().get(i).getCount() <= 0)
+							multiblock.getInventory().set(i, ItemStack.EMPTY);
 					}
 		}
 	}

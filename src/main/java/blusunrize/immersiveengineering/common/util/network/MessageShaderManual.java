@@ -71,7 +71,7 @@ public class MessageShaderManual implements IMessage
 				String[] ss = received.toArray(new String[received.size()+1]);
 				System.arraycopy(ss,0, ss,1, ss.length-1);
 				ss[0] = message.args[0];
-				ImmersiveEngineering.packetHandler.sendTo(new MessageShaderManual(MessageType.SYNC,ss), ctx.getServerHandler().playerEntity);
+				ImmersiveEngineering.packetHandler.sendTo(new MessageShaderManual(MessageType.SYNC,ss), ctx.getServerHandler().player);
 			}
 			else if(message.key==MessageType.UNLOCK && message.args.length>1)
 			{

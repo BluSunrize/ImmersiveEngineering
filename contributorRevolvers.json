@@ -65,7 +65,7 @@
 
 {
 "uuid":["1501b168-941a-4c8f-a729-4d317fc2e717"],
-"tag":"noName","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment","dev_bayonet","dev_scope"]
+"tag":"no_name","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment","dev_bayonet","dev_scope"]
 }
 
 {
@@ -78,7 +78,7 @@
 "d487b13e-29ea-4b4a-991d-8b1a21904b2e",
 "6b759514-251e-471b-886a-91b8b893777e"
 ],
-"tag":"patreonHazard","flavour":"","baseUpgrades":{},"renderAdditions":["dev_scope"]
+"tag":"patreon_hazard","flavour":"","baseUpgrades":{},"renderAdditions":["dev_scope"]
 }
 
 {
@@ -89,7 +89,7 @@
 "d4f46d8e-eee2-48ef-aa91-1b32fd19cd9c",
 "1c1a9096-4e85-4bc0-8833-8cd14df6a785"
 ],
-"tag":"patreonBlu_0","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment"]
+"tag":"patreon_blu_0","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment"]
 }
 
 {
@@ -105,5 +105,5 @@
 "c2320ea5-f43f-4cc6-9aa9-d8336b177550",
 "94add73d-b1ae-405d-9bab-3f43169e63da"
 ],
-"tag":"patreonBlu_1","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment","dev_scope"]
+"tag":"patreon_blu_1","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment","dev_scope"]
 }

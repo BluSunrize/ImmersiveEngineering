@@ -40,12 +40,7 @@ public class BlastFurnaceFuelWrapper extends BlankRecipeWrapper
 	@Override
 	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-		minecraft.fontRendererObj.drawString(burnTime, 24, 12, Color.gray.getRGB());
+		minecraft.fontRenderer.drawString(burnTime, 24, 12, Color.gray.getRGB());
 	}
-
-	@Override
-	public void drawAnimations(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight)
-	{
-		flame.draw(minecraft, 2, 0);
-	}
+	//FIXME: drawAnimations was removed, is there an alternative?
 }

@@ -58,7 +58,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void update()
 	{
-		if(dummy || worldObj.isRemote)
+		if(dummy || world.isRemote)
 			return;
 		if(tank.getFluidAmount()>0)
 		{
@@ -66,12 +66,12 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			tank.drain(i, true);
 		}
 
-		if(worldObj.isBlockIndirectlyGettingPowered(getPos())>0||worldObj.isBlockIndirectlyGettingPowered(getPos().add(0,1,0))>0)
+		if(world.isBlockIndirectlyGettingPowered(getPos())>0||world.isBlockIndirectlyGettingPowered(getPos().add(0,1,0))>0)
 		{
 			for(EnumFacing f : EnumFacing.values())
 				if(sideConfig[f.ordinal()]==0)
 				{
-					TileEntity tile = worldObj.getTileEntity(getPos().offset(f));
+					TileEntity tile = world.getTileEntity(getPos().offset(f));
 					if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 					{
 						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
@@ -81,12 +81,12 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 						int out = this.outputFluid(drain, false);
 						handler.drain(out, true);
 					}
-					else if(worldObj.getTotalWorldTime()%20==((getPos().getX()^getPos().getZ())&19) && worldObj.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER && IEConfig.Machines.pump_infiniteWater && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true)>= IEConfig.Machines.pump_consumption)
+					else if(world.getTotalWorldTime()%20==((getPos().getX()^getPos().getZ())&19) && world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER && IEConfig.Machines.pump_infiniteWater && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true)>= IEConfig.Machines.pump_consumption)
 					{
 						int connectedSources = 0;
 						for(EnumFacing f2 : EnumFacing.HORIZONTALS)
 						{
-							IBlockState waterState = worldObj.getBlockState(getPos().offset(f).offset(f2));
+							IBlockState waterState = world.getBlockState(getPos().offset(f).offset(f2));
 							if(waterState.getBlock()==Blocks.WATER && Blocks.WATER.getMetaFromState(waterState)==0)
 								connectedSources++;
 						}
@@ -97,7 +97,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 						}
 					}
 				}
-			if(worldObj.getTotalWorldTime()%40==(((getPos().getX()^getPos().getZ()))%40+40)%40)
+			if(world.getTotalWorldTime()%40==(((getPos().getX()^getPos().getZ()))%40+40)%40)
 			{
 				if(closedList.isEmpty())
 					prepareAreaCheck();
@@ -105,21 +105,21 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				{
 					int target = closedList.size()-1;
 					BlockPos pos = closedList.get(target);
-					FluidStack fs = Utils.drainFluidBlock(worldObj, pos, false);
+					FluidStack fs = Utils.drainFluidBlock(world, pos, false);
 					if(fs==null)
 						closedList.remove(target);
 					else if(tank.fill(fs, false)==fs.amount && this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true)>= IEConfig.Machines.pump_consumption)
 					{
 						this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, false);
-						fs = Utils.drainFluidBlock(worldObj, pos, true);
+						fs = Utils.drainFluidBlock(world, pos, true);
 						//						int rainbow = (closedList.size()%11)+1;
 						//						if(rainbow>6)
 						//							rainbow+=2;
 						//						if(rainbow>9)
 						//							rainbow++;
-						//						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
+						//						world.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
 						if(IEConfig.Machines.pump_placeCobble && placeCobble)
-							worldObj.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
+							world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
 						this.tank.fill(fs, true);
 						closedList.remove(target);
 					}
@@ -154,18 +154,18 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			next = openList.get(0);
 			if(!checked.contains(next))
 			{
-				Fluid fluid = Utils.getRelatedFluid(worldObj, next);
+				Fluid fluid = Utils.getRelatedFluid(world, next);
 				if(fluid!=null && (fluid!=FluidRegistry.WATER||!IEConfig.Machines.pump_infiniteWater) && (searchFluid==null || fluid==searchFluid))
 				{
 					if(searchFluid==null)
 						searchFluid = fluid;
 
-					if (Utils.drainFluidBlock(worldObj, next, false)!=null)
+					if (Utils.drainFluidBlock(world, next, false)!=null)
 						closedList.add(next);
 					for(EnumFacing f : EnumFacing.values())
 					{
 						BlockPos pos2 = next.offset(f);
-						fluid = Utils.getRelatedFluid(worldObj, pos2);
+						fluid = Utils.getRelatedFluid(world, pos2);
 						if(!checked.contains(pos2) && !closedList.contains(pos2) && !openList.contains(pos2) && fluid!=null && (fluid!=FluidRegistry.WATER||!IEConfig.Machines.pump_infiniteWater) && (searchFluid==null || fluid==searchFluid))
 							openList.add(pos2);
 					}
@@ -194,7 +194,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		for(EnumFacing f : EnumFacing.values())
 			if(sideConfig[f.ordinal()]==1)
 			{
-				TileEntity tile = worldObj.getTileEntity(getPos().offset(f));
+				TileEntity tile = world.getTileEntity(getPos().offset(f));
 				if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
 					IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
@@ -281,7 +281,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				sideConfig[side]=-1;
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
-			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+			world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 			return true;
 		}
 		else if (p.isSneaking())
@@ -289,7 +289,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			TileEntityFluidPump master = this;
 			if (dummy)
 			{
-				TileEntity tmp = worldObj.getTileEntity(pos.down());
+				TileEntity tmp = world.getTileEntity(pos.down());
 				if (tmp instanceof TileEntityFluidPump)
 					master = (TileEntityFluidPump) tmp;
 			}
@@ -386,7 +386,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	{
 		if(dummy)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-1,0));
+			TileEntity te = world.getTileEntity(getPos().add(0,-1,0));
 			if(te instanceof TileEntityFluidPump)
 				return ((TileEntityFluidPump)te).getFluxStorage();
 		}
@@ -415,15 +415,15 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		worldObj.setBlockState(pos.add(0,1,0), state);
-		((TileEntityFluidPump)worldObj.getTileEntity(pos.add(0,1,0))).dummy = true;
+		world.setBlockState(pos.add(0,1,0), state);
+		((TileEntityFluidPump)world.getTileEntity(pos.add(0,1,0))).dummy = true;
 	}
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		for(int i=0; i<=1; i++)
-			if(Utils.isBlockAt(worldObj, getPos().add(0, dummy ? -1 : 0, 0).add(0, i, 0), IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
-				worldObj.setBlockToAir(getPos().add(0, dummy ? -1 : 0, 0).add(0, i, 0));
+			if(Utils.isBlockAt(world, getPos().add(0, dummy ? -1 : 0, 0).add(0, i, 0), IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
+				world.setBlockToAir(getPos().add(0, dummy ? -1 : 0, 0).add(0, i, 0));
 	}
 
 	@Override

@@ -12,9 +12,11 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class RecipeEarmuffs implements IRecipe
@@ -22,25 +24,25 @@ public class RecipeEarmuffs implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
-		ItemStack earmuffs = null;
-		ItemStack armor = null;
+		ItemStack earmuffs = ItemStack.EMPTY;
+		ItemStack armor = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
-				if(earmuffs==null && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+			if(!stackInSlot.isEmpty())
+				if(earmuffs.isEmpty() && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					earmuffs = stackInSlot;
-				else if(armor == null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor) stackInSlot.getItem()).armorType == EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor) stackInSlot.getItem()).armorType == EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
 				else
 					return false;
 		}
-		if(earmuffs!=null && (armor!=null||!list.isEmpty()))
+		if(!earmuffs.isEmpty() && (!armor.isEmpty() ||!list.isEmpty()))
 			return true;
-		else if(armor!=null && ItemNBTHelper.hasKey(armor, "IE:Earmuffs") && earmuffs==null && list.isEmpty())
+		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, "IE:Earmuffs") && earmuffs.isEmpty() && list.isEmpty())
 			return true;
 		return false;
 	}
@@ -48,16 +50,16 @@ public class RecipeEarmuffs implements IRecipe
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
-		ItemStack earmuffs = null;
-		ItemStack armor = null;
+		ItemStack earmuffs = ItemStack.EMPTY;
+		ItemStack armor = ItemStack.EMPTY;
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
-				if(earmuffs==null && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+			if(!stackInSlot.isEmpty())
+				if(earmuffs.isEmpty() && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 				{
 					earmuffs = stackInSlot;
 					int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
@@ -82,11 +84,11 @@ public class RecipeEarmuffs implements IRecipe
 					colourArray[2] += b;
 					++totalColourSets;
 				}
-				else if(armor==null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 		}
 
-		if(earmuffs!=null)
+		if(!earmuffs.isEmpty())
 		{
 			if(totalColourSets>1)
 			{
@@ -103,7 +105,7 @@ public class RecipeEarmuffs implements IRecipe
 				ItemNBTHelper.setInt(earmuffs, "IE:EarmuffColour", newColour);
 			}
 			ItemStack output;
-			if(armor!=null)
+			if(!armor.isEmpty())
 			{
 				output = armor.copy();
 				ItemNBTHelper.setItemStack(output, "IE:Earmuffs", earmuffs.copy());
@@ -112,13 +114,13 @@ public class RecipeEarmuffs implements IRecipe
 				output = earmuffs.copy();
 			return output;
 		}
-		else if(armor!=null && ItemNBTHelper.hasKey(armor, "IE:Earmuffs"))
+		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, "IE:Earmuffs"))
 		{
 			ItemStack output = armor.copy();
 			ItemNBTHelper.remove(output, "IE:Earmuffs");
 			return output;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -133,14 +135,14 @@ public class RecipeEarmuffs implements IRecipe
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
-		ItemStack[] remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
-		for(int i=0;i<remaining.length;i++)
+		NonNullList<ItemStack> remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		for(int i=0;i<remaining.size();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null && ItemNBTHelper.hasKey(stackInSlot, "IE:Earmuffs"))
-				remaining[i] = ItemNBTHelper.getItemStack(stackInSlot, "IE:Earmuffs");
+			if(!stackInSlot.isEmpty() && ItemNBTHelper.hasKey(stackInSlot, "IE:Earmuffs"))
+				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, "IE:Earmuffs"));
 		}
 		return remaining;
 	}

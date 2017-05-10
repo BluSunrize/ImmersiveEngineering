@@ -24,7 +24,7 @@ public class Fermenter
 		if(CraftTweakerHelper.toObject(input) == null)
 			return;
 		//Either output or fluid must not be null. 
-		if(CraftTweakerHelper.toStack(output) == null && (CraftTweakerHelper.toFluidStack(fluid) == null || CraftTweakerHelper.toFluidStack(fluid).getFluid() == null))
+		if(CraftTweakerHelper.toStack(output).isEmpty() && (CraftTweakerHelper.toFluidStack(fluid) == null || CraftTweakerHelper.toFluidStack(fluid).getFluid() == null))
 			return;
 
 		FermenterRecipe r = new FermenterRecipe(CraftTweakerHelper.toFluidStack(fluid), CraftTweakerHelper.toStack(output), CraftTweakerHelper.toObject(input), energy);
@@ -64,7 +64,7 @@ public class Fermenter
 		public String describe()
 		{
 			String fluid = recipe.fluidOutput != null ? recipe.fluidOutput.getLocalizedName() : "null";
-			String out = recipe.itemOutput != null ? recipe.itemOutput.getDisplayName() : "null";
+			String out = !recipe.itemOutput.isEmpty() ? recipe.itemOutput.getDisplayName() : "null";
 			return "Adding Fermenter Recipe for Fluid " + fluid + " and Item " + out;
 		}
 
@@ -72,7 +72,7 @@ public class Fermenter
 		public String describeUndo()
 		{
 			String fluid = recipe.fluidOutput != null ? recipe.fluidOutput.getLocalizedName() : "null";
-			String out = recipe.itemOutput != null ? recipe.itemOutput.getDisplayName() : "null";
+			String out = !recipe.itemOutput.isEmpty() ? recipe.itemOutput.getDisplayName() : "null";
 			return "Removing Fermenter Recipe for Fluid " + fluid + " and Item " + out;
 		}
 
@@ -156,7 +156,7 @@ public class Fermenter
 	@ZenMethod
 	public static void removeItemRecipe(IItemStack stack)
 	{
-		if(CraftTweakerHelper.toStack(stack) != null)
+		if(!CraftTweakerHelper.toStack(stack).isEmpty())
 			MineTweakerAPI.apply(new RemoveStack(CraftTweakerHelper.toStack(stack)));
 	}
 

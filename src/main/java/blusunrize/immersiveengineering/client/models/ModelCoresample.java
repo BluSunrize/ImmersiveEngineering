@@ -72,12 +72,12 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 				HashMap<TextureAtlasSprite, Integer> textureOre = new HashMap();
 				if(mineral!=null && mineral.oreOutput!=null)
 				{
-					for(int i=0; i<mineral.oreOutput.length; i++)
-						if(mineral.oreOutput[i]!=null)
+					for(int i=0; i<mineral.oreOutput.size(); i++)
+						if(!mineral.oreOutput.get(i).isEmpty())
 						{
 							int weight = Math.max(2, Math.round(16*mineral.recalculatedChances[i]));
-							Block b = Block.getBlockFromItem(mineral.oreOutput[i].getItem());
-							IBlockState state = b!=null?b.getStateFromMeta(mineral.oreOutput[i].getMetadata()): Blocks.STONE.getDefaultState();
+							Block b = Block.getBlockFromItem(mineral.oreOutput.get(i).getItem());
+							IBlockState state = b!=null?b.getStateFromMeta(mineral.oreOutput.get(i).getMetadata()): Blocks.STONE.getDefaultState();
 							IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 							if(model!=null && model.getParticleTexture()!=null)
 								textureOre.put(model.getParticleTexture(), weight);

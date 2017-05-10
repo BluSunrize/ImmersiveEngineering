@@ -1,6 +1,0 @@
-{
-	"parent":"immersiveengineering:item/ieItemBase",
-	"textures": {
-		"layer0":"immersiveengineering:items/toolupgrade_drillDamage"
-	}
-}

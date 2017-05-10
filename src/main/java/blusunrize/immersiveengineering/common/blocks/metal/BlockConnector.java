@@ -52,11 +52,11 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		if(meta==BlockTypes_Connector.TRANSFORMER_HV.getMeta())
 			return "transformer_hv";
 		if(meta==BlockTypes_Connector.BREAKERSWITCH.getMeta())
-			return "breakerSwitch";
+			return "breaker_switch";
 		if(meta==BlockTypes_Connector.REDSTONE_BREAKER.getMeta())
-			return "redstoneBreaker";
+			return "redstone_breaker";
 		if(meta==BlockTypes_Connector.ENERGY_METER.getMeta())
-			return "energyMeter";
+			return "energy_meter";
 		return null;
 	}
 	@Override
@@ -107,7 +107,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityConnectorLV)
@@ -169,9 +169,9 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		return null;
 	}
 	@Override
-	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
-		IBlockState ret = super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+		IBlockState ret = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
 		if (meta==BlockTypes_Connector.TRANSFORMER.getMeta())
 		{
 			BlockPos pos2 = pos.offset(facing, -1);

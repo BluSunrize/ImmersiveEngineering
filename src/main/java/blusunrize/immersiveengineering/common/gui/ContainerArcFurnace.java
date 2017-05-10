@@ -81,7 +81,7 @@ public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
 //
 //			if (stackInSlot.stackSize == stack.stackSize)
 //				return null;
-//			slotObject.onPickupFromSlot(player, stackInSlot);
+//			slotObject.onTake(player, stackInSlot);
 //		}
 //		return stack;
 	}

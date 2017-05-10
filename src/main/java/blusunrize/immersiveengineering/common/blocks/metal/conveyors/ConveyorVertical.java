@@ -205,12 +205,12 @@ public class ConveyorVertical extends ConveyorBasic
 					if(contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile))
 					{
 						ItemStack stack = ((EntityItem) entity).getEntityItem();
-						if(stack != null)
+						if(!stack.isEmpty())
 						{
 							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.DOWN);
-							if(ret == null)
+							if(ret.isEmpty())
 								entity.setDead();
-							else if(ret.stackSize < stack.stackSize)
+							else if(ret.getCount() < stack.getCount())
 								((EntityItem) entity).setEntityItemStack(ret);
 						}
 					}

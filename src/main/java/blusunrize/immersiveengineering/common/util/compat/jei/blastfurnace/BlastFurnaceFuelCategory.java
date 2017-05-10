@@ -34,12 +34,6 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel,
 	}
 
 	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, BlastFurnaceFuelWrapper recipeWrapper)
-	{
-		//Deprecated
-	}
-	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, BlastFurnaceFuelWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();

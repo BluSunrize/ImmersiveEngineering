@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util;
 
+import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -27,7 +28,7 @@ public class IEVillagerTrades
 		}
 
 		@Override
-		public void modifyMerchantRecipeList(MerchantRecipeList recipeList, Random random)
+		public void addMerchantRecipe(IMerchant merchant, MerchantRecipeList recipeList, Random random)
 		{
 			recipeList.add(new MerchantRecipe(Utils.copyStackWithAmount(this.buyingItem, this.buyAmounts.getPrice(random)), Items.EMERALD));
 		}
@@ -51,7 +52,7 @@ public class IEVillagerTrades
 		}
 
 		@Override
-		public void modifyMerchantRecipeList(MerchantRecipeList recipeList, Random random)
+		public void addMerchantRecipe(IMerchant merchant, MerchantRecipeList recipeList, Random random)
 		{
 			int i = 1;
 			if(this.priceInfo != null)

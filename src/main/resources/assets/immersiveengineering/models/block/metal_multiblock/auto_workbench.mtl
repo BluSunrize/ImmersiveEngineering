@@ -1,0 +1,8 @@
+newmtl workbench
+map_Ka immersiveengineering:blocks/metal_multiblock_autoworkbench
+newmtl conveyor
+map_Ka immersiveengineering:blocks/conveyor
+newmtl blueprint
+map_Ka immersiveengineering:blocks/metal_multiblock_autoworkbench_blueprint
+newmtl assembler
+map_Ka immersiveengineering:blocks/metal_multiblock_assembler

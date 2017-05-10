@@ -50,7 +50,7 @@ public class ManualPageShader extends ManualPages
 	@Override
 	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
-		EntityPlayer player = ManualUtils.mc().thePlayer;
+		EntityPlayer player = ManualUtils.mc().player;
 		String username = player.getName();
 		unlocked = ShaderRegistry.receivedShaders.get(username).contains(shader.getName());
 
@@ -63,7 +63,7 @@ public class ManualPageShader extends ManualPages
 		{
 			ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 			for(ItemStack is : ShaderRegistry.itemExamples)
-				if(is!=null && is.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+				if(!is.isEmpty() && is.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
 				{
 					ItemStack s = is.copy();
 					ShaderWrapper wrapper = s.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
@@ -99,7 +99,7 @@ public class ManualPageShader extends ManualPages
 				this.text += "<br><br>" + I18n.format("desc.immersiveengineering.info.shader.details") + "<br>" + details;
 
 			String cost = Integer.toString(replicationCost.inputSize);
-			if(!ApiUtils.hasPlayerIngredient(gui.mc.thePlayer,replicationCost) && !gui.mc.thePlayer.capabilities.isCreativeMode)
+			if(!ApiUtils.hasPlayerIngredient(gui.mc.player,replicationCost) && !gui.mc.player.capabilities.isCreativeMode)
 				cost = TextFormatting.RED+cost;
 			pageButtons.add(new GuiButtonManual(gui, 102, x+50, y+138, 70,12, TextFormatting.BOLD+I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
 		}
@@ -128,7 +128,7 @@ public class ManualPageShader extends ManualPages
 		GL11.glScalef(1/scale,1/scale,1/scale);
 
 		if(unlocked)
-			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(gui.mc.thePlayer.ticksExisted), x+102, y + 136);
+			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(gui.mc.player.ticksExisted), x+102, y + 136);
 
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -160,13 +160,13 @@ public class ManualPageShader extends ManualPages
 			example = (example+1)%exampleItems.length;
 		else if(button.id==102)
 		{
-			if(ApiUtils.hasPlayerIngredient(gui.mc.thePlayer,replicationCost) || gui.mc.thePlayer.capabilities.isCreativeMode)
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN,gui.mc.thePlayer.getName(),shader.getName()));
+			if(ApiUtils.hasPlayerIngredient(gui.mc.player,replicationCost) || gui.mc.player.capabilities.isCreativeMode)
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN,gui.mc.player.getName(),shader.getName()));
 			gui.initGui();
 		}
 		else if(button.id==103)
 		{
-			String player = ManualUtils.mc().thePlayer.getName();
+			String player = ManualUtils.mc().player.getName();
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.UNLOCK,player,shader.getName()));
 			ShaderRegistry.receivedShaders.put(player,shader.getName());
 			gui.initGui();

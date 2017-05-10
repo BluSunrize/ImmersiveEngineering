@@ -72,7 +72,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			@Override
 			public Boolean apply(@Nullable ItemStack input)
 			{
-				if(input == null)
+				if(input.isEmpty())
 					return Boolean.FALSE;
 				for(ItemStack stack : scaffolds)
 					if(OreDictionary.itemMatches(stack, input, false))
@@ -86,7 +86,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			@Override
 			public Boolean apply(@Nullable ItemStack input)
 			{
-				if(input == null)
+				if(input.isEmpty())
 					return Boolean.FALSE;
 				for(ItemStack stack : scaffolds)
 					if(OreDictionary.itemMatches(stack, input, false))
@@ -97,7 +97,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	public int[] sideConfig = new int[] {0,0,0,0,0,0};
-	public ItemStack pipeCover = null;
+	public ItemStack pipeCover = ItemStack.EMPTY;
 
 	public static Set<DirectionalFluidOutput> getConnectedFluidHandlers(BlockPos node, World world)
 	{
@@ -161,7 +161,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public void invalidate()
 	{
 		super.invalidate();
-		if (!worldObj.isRemote)
+		if (!world.isRemote)
 			indirectConnections.clear();
 	}
 
@@ -169,7 +169,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(!(entity instanceof EntityLivingBase) || ((EntityLivingBase)entity).isOnLadder() || pipeCover==null)
+		if(!(entity instanceof EntityLivingBase) || ((EntityLivingBase)entity).isOnLadder() || pipeCover.isEmpty())
 			return;
 		else
 		{
@@ -212,14 +212,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null || sideConfig.length!=6)
 			sideConfig = new int[]{0,0,0,0,0,0};
-		pipeCover = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("pipeCover"));
+		pipeCover = new ItemStack(nbt.getCompoundTag("pipeCover"));
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
-		if(pipeCover != null)
+		if(!pipeCover.isEmpty())
 			nbt.setTag("pipeCover", (pipeCover.writeToNBT(new NBTTagCompound())));
 	}
 
@@ -272,7 +272,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@SideOnly(Side.CLIENT)
 	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
 	{
-		if(pipeCover != null)
+		if(!pipeCover.isEmpty())
 		{
 			Block b = Block.getBlockFromItem(pipeCover.getItem());
 			IBlockState state = b != null ? b.getStateFromMeta(pipeCover.getMetadata()) : Blocks.STONE.getDefaultState();
@@ -304,7 +304,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public Collection<ItemStack> getExtraDrops(EntityPlayer player, IBlockState state)
 	{
-		if(pipeCover!=null)
+		if(!pipeCover.isEmpty())
 			return Lists.newArrayList(pipeCover);
 		return null;
 	}
@@ -328,14 +328,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		@Override
 		public int fill(FluidStack resource, boolean doFill)
 		{
-//		if(resource==null || from==null || sideConfig[from.ordinal()]!=0 || worldObj.isRemote)
+//		if(resource==null || from==null || sideConfig[from.ordinal()]!=0 || world.isRemote)
 //			return 0;
 			if(resource == null)
 				return 0;
 			int canAccept = resource.amount;
 			if(canAccept <= 0)
 				return 0;
-			ArrayList<DirectionalFluidOutput> outputList = new ArrayList(getConnectedFluidHandlers(pipe.getPos(), pipe.worldObj));
+			ArrayList<DirectionalFluidOutput> outputList = new ArrayList(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
 
 			BlockPos ccFrom2 = new BlockPos(pipe.getPos().offset(facing));
 			if(outputList.size() < 1)
@@ -347,7 +347,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			for(DirectionalFluidOutput output : outputList)
 			{
 				BlockPos cc = Utils.toCC(output.containingTile);
-				if(!cc.equals(ccFrom) && pipe.worldObj.isBlockLoaded(cc) && !pipe.equals(output.containingTile))
+				if(!cc.equals(ccFrom) && pipe.world.isBlockLoaded(cc) && !pipe.equals(output.containingTile))
 				//&& output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
 				{
 					int limit = (resource.tag != null && resource.tag.hasKey("pressurized")) || pipe.canOutputPressurized(output.containingTile, false) ? 1000 : 50;
@@ -414,9 +414,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		IFluidTankProperties[] tankInfo;
 		for(int i=5; i>=0; i--)
 		{
-			//			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
+			//			TileEntity con = world.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			EnumFacing dir = EnumFacing.getFront(i);
-			TileEntity con = worldObj.getTileEntity(getPos().offset(dir));
+			TileEntity con = world.getTileEntity(getPos().offset(dir));
 			connections <<= 1;
 			if(sideConfig[i]==0 && con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
@@ -434,9 +434,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		IFluidTankProperties[] tankInfo;
 		for(int i=5; i>=0; i--)
 		{
-			//			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
+			//			TileEntity con = world.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			EnumFacing dir = EnumFacing.getFront(i);
-			TileEntity con = worldObj.getTileEntity(getPos().offset(dir));
+			TileEntity con = world.getTileEntity(getPos().offset(dir));
 			connections <<= 1;
 			if(con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
@@ -458,8 +458,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 		if(thisConnections!=3&&thisConnections!=12&&thisConnections!=48)
 			return 1;
-		//		TileEntity con = worldObj.getTileEntity(xCoord+(connection==4?-1: connection==5?1: 0),yCoord+(connection==0?-1: connection==1?1: 0),zCoord+(connection==2?-1: connection==3?1: 0));
-		TileEntity con = worldObj.getTileEntity(getPos().offset(EnumFacing.getFront(connection)));
+		//		TileEntity con = world.getTileEntity(xCoord+(connection==4?-1: connection==5?1: 0),yCoord+(connection==0?-1: connection==1?1: 0),zCoord+(connection==2?-1: connection==3?1: 0));
+		TileEntity con = world.getTileEntity(getPos().offset(EnumFacing.getFront(connection)));
 		if(con instanceof TileEntityFluidPipe)
 		{
 			byte tileConnections = ((TileEntityFluidPipe)con).getConnectionByte();
@@ -477,14 +477,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		markDirty();
 
 		EnumFacing fd = EnumFacing.getFront(side);
-		TileEntity connected = worldObj.getTileEntity(getPos().offset(fd));
+		TileEntity connected = world.getTileEntity(getPos().offset(fd));
 		if(connected instanceof TileEntityFluidPipe)
 		{
 			((TileEntityFluidPipe)connected).sideConfig[fd.getOpposite().ordinal()] = sideConfig[side];
 			connected.markDirty();
-			worldObj.addBlockEvent(getPos().offset(fd), getBlockType(), 0,0);
+			world.addBlockEvent(getPos().offset(fd), getBlockType(), 0,0);
 		}
-		worldObj.addBlockEvent(getPos(), getBlockType(), 0,0);
+		world.addBlockEvent(getPos(), getBlockType(), 0,0);
 	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
@@ -506,7 +506,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
-		if(pipeCover != null)
+		if(!pipeCover.isEmpty())
 		{
 			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).expandXyz(-.03125f).offset(getPos()));
 			return list;
@@ -554,7 +554,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		byte connections = getAvailableConnectionByte();
 		byte availableConnections = getConnectionByte();
-		double[] baseAABB = pipeCover != null ? new double[]{.002, .998, .002, .998, .002, .998} : new double[]{.25, .75, .25, .75, .25, .75};
+		double[] baseAABB = !pipeCover.isEmpty() ? new double[]{.002, .998, .002, .998, .002, .998} : new double[]{.25, .75, .25, .75, .25, .75};
 		for(int i=0; i<6; i++)
 		{
 			double depth = getConnectionStyle(i)==0?.25:.125;
@@ -604,7 +604,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			else
 				key += "0";
 		}
-		if(pipeCover != null)
+		if(!pipeCover.isEmpty())
 			key += "scaf:" + pipeCover.getItem().getRegistryName();
 		return key;
 	}
@@ -1146,9 +1146,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(heldItem == null && player.isSneaking() && pipeCover != null)
+		if(heldItem.isEmpty() && player.isSneaking() && !pipeCover.isEmpty())
 		{
-			if(!worldObj.isRemote && worldObj.getGameRules().getBoolean("doTileDrops"))
+			if(!world.isRemote && world.getGameRules().getBoolean("doTileDrops"))
 			{
 				EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
 				if(entityitem != null)
@@ -1156,25 +1156,26 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			}
 			pipeCover = null;
 			this.markContainingBlockForUpdate(null);
-			worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+			world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 			return true;
-		} else if(heldItem != null && !player.isSneaking())
+		} else if(!heldItem.isEmpty() && !player.isSneaking())
 			for(Function<ItemStack, Boolean> func : validPipeCovers)
 				if(func.apply(heldItem) == Boolean.TRUE)
 				{
 					if(!OreDictionary.itemMatches(pipeCover, heldItem, true))
 					{
-						if(!worldObj.isRemote && pipeCover != null && worldObj.getGameRules().getBoolean("doTileDrops"))
+						if(!world.isRemote && !pipeCover.isEmpty() && world.getGameRules().getBoolean("doTileDrops"))
 						{
 							EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
 							if(entityitem != null)
 								entityitem.setNoPickupDelay();
 						}
 						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
-						if((--heldItem.stackSize) <= 0)
+						heldItem.shrink(1);
+						if(heldItem.getCount() <= 0)
 							heldItem = null;
 						this.markContainingBlockForUpdate(null);
-						worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+						world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 						return true;
 					}
 				}
@@ -1183,7 +1184,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 			return true;
 		EnumFacing fd = side;
 		List<AxisAlignedBB> boxes = this.getAdvancedSelectionBounds();

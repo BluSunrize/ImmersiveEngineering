@@ -63,18 +63,18 @@ public class ClientUtils
 	//	// MOD SPECIFIC METHODS
 	//	public static void renderAttachedConnections(TileEntity tile)
 	//	{
-	//		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
+	//		if(tile.getworld()!=null && tile instanceof IImmersiveConnectable)
 	//		{
-	//			Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile));
+	//			Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(tile.getworld(), Utils.toCC(tile));
 	//			if(outputs!=null)
 	//			{
 	//				Iterator<ImmersiveNetHandler.Connection> itCon = outputs.iterator();
 	//				while(itCon.hasNext())
 	//				{
 	//					ImmersiveNetHandler.Connection con = itCon.next();
-	//					TileEntity tileEnd = tile.getWorldObj().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
+	//					TileEntity tileEnd = tile.getworld().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
 	//					if(tileEnd instanceof IImmersiveConnectable)
-	//						drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()), con.cableType.getIcon(con));
+	//						drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getworld()), con.cableType.getIcon(con));
 	//				}
 	//			}
 	//		}
@@ -297,7 +297,7 @@ public class ClientUtils
 	//	}
 	public static FontRenderer font()
 	{
-		return mc().fontRendererObj;
+		return mc().fontRenderer;
 	}
 
 	public static Timer timer()
@@ -474,7 +474,7 @@ public class ClientUtils
 	//	 */
 	//	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	//	{
-	//		renderStaticWavefrontModel(tile.getWorldObj(),tile.xCoord,tile.yCoord,tile.zCoord, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
+	//		renderStaticWavefrontModel(tile.getworld(),tile.xCoord,tile.yCoord,tile.zCoord, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
 	//	}
 	//	public static void renderStaticWavefrontModel(IBlockAccess world, int x, int y, int z, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	//	{
@@ -574,7 +574,7 @@ public class ClientUtils
 	//	}
 	//	public static void renderStaticWavefrontModelWithIcon(TileEntity tile, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	//	{
-	//		renderStaticWavefrontModelWithIcon(tile.getWorldObj(),tile.xCoord,tile.yCoord,tile.zCoord, model, icon, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
+	//		renderStaticWavefrontModelWithIcon(tile.getworld(),tile.xCoord,tile.yCoord,tile.zCoord, model, icon, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
 	//	}
 	//	public static void renderStaticWavefrontModelWithIcon(IBlockAccess world, int x, int y, int z, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	//	{
@@ -1143,7 +1143,7 @@ public class ClientUtils
 
 	public static void renderToolTip(ItemStack stack, int x, int y)
 	{
-		List list = stack.getTooltip(mc().thePlayer, mc().gameSettings.advancedItemTooltips);
+		List list = stack.getTooltip(mc().player, mc().gameSettings.advancedItemTooltips);
 
 		for(int k = 0; k < list.size(); ++k)
 			if(k == 0)

@@ -37,14 +37,14 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote && formed && pos==13)
+		if(!world.isRemote && formed && pos==13)
 		{
 			if(energyStorage.getEnergyStored()>0)
 			{
 				TileEntity tileEntity;
 				for(EnumFacing f : EnumFacing.HORIZONTALS)
 				{
-					tileEntity = worldObj.getTileEntity(getPos().offset(f,2));
+					tileEntity = world.getTileEntity(getPos().offset(f,2));
 					if(tileEntity instanceof IFluxReceiver)
 					{
 						IFluxReceiver ifr = (IFluxReceiver) tileEntity;
@@ -55,20 +55,20 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				}
 			}
 
-			if(worldObj.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
+			if(world.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
 				fenceNet = null;
 			if(fenceNet==null)
 				fenceNet = this.getFenceNet();
-			if(fenceNet!=null && worldObj.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
+			if(fenceNet!=null && world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127) && ( world.isThundering() || (world.isRaining()&&world.rand.nextInt(10)==0) ))
 			{
 				int i = this.height + this.fenceNet.size();
-				if(worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(getPos().getY()+i))
+				if(world.rand.nextInt(4096*world.getHeight())<i*(getPos().getY()+i))
 				{
 					this.energyStorage.setEnergy(IEConfig.Machines.lightning_output);
-					BlockPos pos = fenceNet.get(worldObj.rand.nextInt(fenceNet.size()));
-					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(worldObj, pos.getX(),pos.getY(),pos.getZ(), true);
-					worldObj.addWeatherEffect(entityLightningBolt);
-					worldObj.spawnEntityInWorld(entityLightningBolt);
+					BlockPos pos = fenceNet.get(world.rand.nextInt(fenceNet.size()));
+					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(world, pos.getX(),pos.getY(),pos.getZ(), true);
+					world.addWeatherEffect(entityLightningBolt);
+					world.spawnEntity(entityLightningBolt);
 				}
 			}
 		}
@@ -78,12 +78,12 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	{
 		this.height = 0;
 		boolean broken = false;
-		for(int i=getPos().getY()+2; i<worldObj.getHeight()-1; i++)
+		for(int i=getPos().getY()+2; i<world.getHeight()-1; i++)
 		{
 			BlockPos pos = new BlockPos(getPos().getX(),i,getPos().getZ());
 			if(!broken && isFence(pos))
 				this.height++;
-			else if(!worldObj.isAirBlock(pos))
+			else if(!world.isAirBlock(pos))
 				return null;
 			else
 			{
@@ -113,7 +113,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	}
 	boolean isFence(BlockPos pos)
 	{
-		return Utils.isBlockAt(worldObj, pos, IEContent.blockMetalDecoration1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
+		return Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
 	}
 
 	@Override
@@ -182,30 +182,30 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	public ItemStack getOriginalBlock()
 	{
 		if(pos<0)
-			return null;
-		ItemStack s = null;
+			return ItemStack.EMPTY;
+		ItemStack s = ItemStack.EMPTY;
 		try{
 			s = MultiblockLightningrod.instance.getStructureManual()[pos/9][pos%9/3][pos%3];
 		}catch(Exception e){e.printStackTrace();}
-		return s!=null?s.copy():null;
+		return s.copy();
 	}
 
 	@Override
 	public void disassemble()
 	{
 		super.invalidate();
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityLightningrod))
+			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntityLightningrod))
 				return;
 
 			for(int yy=-1;yy<=1;yy++)
 				for(int xx=-1;xx<=1;xx++)
 					for(int zz=-1;zz<=1;zz++)
 					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
+						ItemStack s = ItemStack.EMPTY;
+						TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
 						if(te instanceof TileEntityLightningrod)
 						{
 							s = ((TileEntityLightningrod)te).getOriginalBlock();
@@ -213,15 +213,15 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 						}
 						if(startPos.add(xx, yy, zz).equals(getPos()))
 							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
 						{
 							if(startPos.add(xx, yy, zz).equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
+								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
 							else
 							{
 								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblock)
-									worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-								worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
+									world.setBlockToAir(startPos.add(xx, yy, zz));
+								world.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
 							}
 						}
 					}

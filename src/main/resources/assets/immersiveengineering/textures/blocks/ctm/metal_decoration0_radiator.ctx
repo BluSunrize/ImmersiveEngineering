@@ -1,0 +1,7 @@
+{
+	"type":"CTM",
+	"textures":[
+    		"blocks/metal_decoration0_radiator",
+    		"./metal_decoration0_radiator_ctm"
+    ]
+}

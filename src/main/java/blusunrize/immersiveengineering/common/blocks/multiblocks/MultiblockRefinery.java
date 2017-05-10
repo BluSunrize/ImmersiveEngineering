@@ -79,7 +79,7 @@ public class MultiblockRefinery implements IMultiblock
 	@Override
 	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
-		if(stack!=null && stack.getItem() instanceof ItemBlock)
+		if(!stack.isEmpty() && stack.getItem() instanceof ItemBlock)
 			return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 		return null;
 	}
@@ -94,13 +94,13 @@ public class MultiblockRefinery implements IMultiblock
 	{
 		return true;
 	}
-	@SideOnly(Side.CLIENT)
-	static ItemStack renderStack;
+	//@SideOnly(Side.CLIENT)
+	static ItemStack renderStack = ItemStack.EMPTY;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		if(renderStack==null)
+		if(renderStack.isEmpty())
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.REFINERY.getMeta());
 		GlStateManager.translate(1, 1.5, 3);
 		GlStateManager.rotate(-45, 0, 1, 0);

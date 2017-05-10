@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -41,7 +42,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		super(MultiblockArcFurnace.instance, new int[]{5,5,5}, 64000, true);
 	}
-	public ItemStack[] inventory = new ItemStack[26];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -63,13 +64,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		super.update();
 
-		if(!worldObj.isRemote && !isDummy() && !isRSDisabled() && energyStorage.getEnergyStored() > 0)
+		if(!world.isRemote && !isDummy() && !isRSDisabled() && energyStorage.getEnergyStored() > 0)
 		{
 			if(this.tickedProcesses > 0)
 				for(int i = 23; i < 26; i++)
-					if(this.inventory[i].attemptDamageItem(1, worldObj.rand))
+					if(this.inventory.get(i).attemptDamageItem(1, world.rand))
 					{
-						this.inventory[i] = null;
+						this.inventory.set(i, ItemStack.EMPTY);
 						//						updateClient = true;
 						//						update = true;
 					}
@@ -90,19 +91,19 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				//				{
 				//					return Integer.compare(usedInvSlots[arg0],usedInvSlots[arg1]);
 				//				}});
-				ItemStack[] additives = new ItemStack[4];
+				NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
 				for(int i = 0; i < 4; i++)
-					additives[i] = (inventory[12 + i] != null ? inventory[12 + i].copy() : null);
+					additives.set(i, !inventory.get(12 + i).isEmpty() ? inventory.get(12 + i).copy() : ItemStack.EMPTY);
 				for(int slot = 0; slot < 12; slot++)
 					if(!usedInvSlots.contains(slot))
 					{
-						ItemStack stack = this.getInventory()[slot];
+						ItemStack stack = this.getInventory().get(slot);
 						//				if(stack!=null)
 						//				{
 						//					stack = stack.copy();
 						////					stack.stackSize-=usedInvSlots[slot];
 						//				}
-						if(stack != null && stack.stackSize > 0)
+						if(!stack.isEmpty() && stack.getCount() > 0)
 						{
 							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
 
@@ -120,33 +121,36 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					}
 			}
 
-			if(worldObj.getTotalWorldTime()%8==0)
+			if(world.getTotalWorldTime()%8==0)
 			{
 				BlockPos outputPos = this.getBlockPosForPos(2).offset(facing,-1);
-				TileEntity outputTile = this.worldObj.getTileEntity(outputPos);
+				TileEntity outputTile = this.world.getTileEntity(outputPos);
 				if(outputTile!=null)
 					for(int j=16; j<22; j++)
-						if(inventory[j]!=null)
+						if(!inventory.get(j).isEmpty())
 						{
-							ItemStack stack = Utils.copyStackWithAmount(inventory[j],1);
+							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j),1);
 							stack = Utils.insertStackIntoInventory(outputTile, stack, facing.getOpposite());
-							if(stack==null)
-								if((--this.inventory[j].stackSize) <= 0)
-									this.inventory[j] = null;
+							if(stack.isEmpty()) {
+								this.inventory.get(j).shrink(1);
+								if (this.inventory.get(j).getCount() <= 0)
+									this.inventory.set(j, ItemStack.EMPTY);
+							}
 						}
 
 				outputPos = this.getBlockPosForPos(22).offset(facing);
-				outputTile = this.worldObj.getTileEntity(outputPos);
+				outputTile = this.world.getTileEntity(outputPos);
 				if(outputTile!=null)
-					if(inventory[22]!=null)
+					if(!inventory.get(22).isEmpty())
 					{
-						int out = Math.min(inventory[22].stackSize, 16);
-						ItemStack stack = Utils.copyStackWithAmount(inventory[22], out);
+						int out = Math.min(inventory.get(22).getCount(), 16);
+						ItemStack stack = Utils.copyStackWithAmount(inventory.get(22), out);
 						stack = Utils.insertStackIntoInventory(outputTile, stack, facing);
-						if(stack != null)
-							out -= stack.stackSize;
-						if((this.inventory[22].stackSize -= out) <= 0)
-							this.inventory[22] = null;
+						if(!stack.isEmpty())
+							out -= stack.getCount();
+						this.inventory.get(22).shrink(out);
+						if(this.inventory.get(22).getCount() <= 0)
+							this.inventory.set(22, ItemStack.EMPTY);
 					}
 			}
 		}
@@ -389,11 +393,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		if(!hasElectrodes())
 			return false;
-		if(process.recipe!=null && process.recipe.slag!=null)
+		if(process.recipe!=null && !process.recipe.slag.isEmpty())
 		{
-			if(this.inventory[22]==null)
+			if(this.inventory.get(22).isEmpty())
 				return true;
-			if(!ItemHandlerHelper.canItemStacksStack(this.inventory[22], process.recipe.slag) || inventory[22].stackSize+process.recipe.slag.stackSize>getSlotLimit(22))
+			if(!ItemHandlerHelper.canItemStacksStack(this.inventory.get(22), process.recipe.slag) || inventory.get(22).getCount() + process.recipe.slag.getCount() >getSlotLimit(22))
 				return false;
 		}
 		return true;
@@ -402,11 +406,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().add(0,-1,0).offset(facing,-2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -415,12 +419,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public void onProcessFinish(MultiblockProcess<ArcFurnaceRecipe> process)
 	{
-		if(process.recipe.slag!=null)
+		if(!process.recipe.slag.isEmpty())
 		{
-			if(this.inventory[22]==null)
-				this.inventory[22] = process.recipe.slag.copy();
-			else if(ItemHandlerHelper.canItemStacksStack(this.inventory[22], process.recipe.slag) || inventory[22].stackSize+process.recipe.slag.stackSize>getSlotLimit(22))
-				this.inventory[22].stackSize += process.recipe.slag.stackSize;
+			if(this.inventory.get(22).isEmpty())
+				this.inventory.set(22, process.recipe.slag.copy());
+			else if(ItemHandlerHelper.canItemStacksStack(this.inventory.get(22), process.recipe.slag) || inventory.get(22).getCount() + process.recipe.slag.getCount() >getSlotLimit(22))
+				this.inventory.get(22).grow(process.recipe.slag.getCount());
 		}
 	}
 	@Override
@@ -441,7 +445,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
 	}
@@ -572,12 +576,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		}
 
 		@Override
-		protected List<ItemStack> getRecipeItemOutputs(TileEntityMultiblockMetal multiblock)
+		protected NonNullList<ItemStack> getRecipeItemOutputs(TileEntityMultiblockMetal multiblock)
 		{
-			ItemStack input = multiblock.getInventory()[this.inputSlots[0]];
-			ItemStack[] additives = new ItemStack[4];
+			ItemStack input = multiblock.getInventory().get(this.inputSlots[0]);
+			NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
 			for(int i=0; i<4; i++)
-				additives[i] = (multiblock.getInventory()[12+i]!=null?multiblock.getInventory()[12+i].copy():null);
+				additives.set(i, !multiblock.getInventory().get(12+i).isEmpty()? multiblock.getInventory().get(12+i).copy():ItemStack.EMPTY);
 			return recipe.getOutputs(input, additives);
 		}
 
@@ -591,7 +595,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	public boolean hasElectrodes()
 	{
 		for(int i = 23; i < 26; i++)
-			if(inventory[i] == null)
+			if(inventory.get(i).isEmpty())
 				return false;
 		return true;
 	}

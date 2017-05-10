@@ -23,7 +23,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 				if (h==null||h.getTankProperties().length==0)
 					return false;
 				FluidStack fs = h.getTankProperties()[0].getContents();
@@ -46,7 +46,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 				if (h==null||h.getTankProperties().length==0)
 					return false;
 				FluidStack fs = h.getTankProperties()[0].getContents();
@@ -69,7 +69,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				return super.isItemValid(itemStack) || (itemStack!=null && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
+				return super.isItemValid(itemStack) || (!itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null));
 			}
 		});
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 5, 133,54));

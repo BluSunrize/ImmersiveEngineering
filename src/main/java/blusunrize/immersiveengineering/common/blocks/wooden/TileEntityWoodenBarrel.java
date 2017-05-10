@@ -22,6 +22,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
@@ -40,7 +41,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	@Override
 	public void update()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 			return;
 
 		boolean update = false;
@@ -49,7 +50,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			{
 				EnumFacing f = EnumFacing.getFront(i);
 				int out = Math.min(40,tank.getFluidAmount());
-				TileEntity te = worldObj.getTileEntity(getPos().offset(f));
+				TileEntity te = world.getTileEntity(getPos().offset(f));
 				if(te!=null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
 					IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
@@ -217,7 +218,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			sideConfig[side]=-1;
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
@@ -247,19 +248,21 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 				return true;
 			}
 
-		if(FluidUtil.interactWithFluidHandler(heldItem, tank, player))
+		FluidActionResult fluidActionResult = FluidUtil.interactWithFluidHandler(heldItem, tank, player);
+		if(fluidActionResult.isSuccess())
 		{
+			player.setHeldItem(hand, fluidActionResult.getResult());
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}
-//			else if(Utils.fillFluidHandlerWithPlayerItem(worldObj, this.tank, player, hand, heldItem))
+//			else if(Utils.fillFluidHandlerWithPlayerItem(world, this.tank, player, hand, heldItem))
 //			{
 //				this.markDirty();
 //				this.markContainingBlockForUpdate(null);
 //				return true;
 //			}
-//		if(Utils.fillPlayerItemFromFluidHandler(worldObj, this.tank, player, hand, heldItem, this.tank.getFluid()))
+//		if(Utils.fillPlayerItemFromFluidHandler(world, this.tank, player, hand, heldItem, this.tank.getFluid()))
 //		{
 //			this.markDirty();
 //			this.markContainingBlockForUpdate(null);

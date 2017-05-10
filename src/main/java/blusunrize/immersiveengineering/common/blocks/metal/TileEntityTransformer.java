@@ -105,7 +105,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if(cableType==WireType.STEEL&&!canTakeHV())
 			return false;
 		if(dummy!=0) {
-			TileEntity master = worldObj.getTileEntity(getPos().add(0, -dummy, 0));
+			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
 			return master instanceof TileEntityTransformer && ((TileEntityTransformer) master).canConnectCable(cableType, target);
 		}
 		int tc = getTargetedConnector(target);
@@ -131,7 +131,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		if(dummy!=0)
 		{
-			TileEntity master = worldObj.getTileEntity(getPos().add(0,-dummy,0));
+			TileEntity master = world.getTileEntity(getPos().add(0,-dummy,0));
 			if(master instanceof TileEntityTransformer)
 				((TileEntityTransformer) master).connectCable(cableType, target, other);
 			return;
@@ -263,7 +263,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if (onPost)
 			return false;
 		if (dummy!=0) {
-			TileEntity master = worldObj.getTileEntity(pos.down(dummy));
+			TileEntity master = world.getTileEntity(pos.down(dummy));
 			return master instanceof TileEntityTransformer && ((TileEntityTransformer) master).getIsMirrored();
 		}
 		else
@@ -328,9 +328,9 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		else
 			for(int i=1; i<=2; i++)
 			{
-				worldObj.setBlockState(pos.add(0,i,0), state);
-				((TileEntityTransformer)worldObj.getTileEntity(pos.add(0,i,0))).dummy = i;
-				((TileEntityTransformer)worldObj.getTileEntity(pos.add(0,i,0))).facing = this.facing;
+				world.setBlockState(pos.add(0,i,0), state);
+				((TileEntityTransformer)world.getTileEntity(pos.add(0,i,0))).dummy = i;
+				((TileEntityTransformer)world.getTileEntity(pos.add(0,i,0))).facing = this.facing;
 			}
 	}
 	@Override
@@ -339,7 +339,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if (onPost)
 			return;
 		for(int i=0; i<=2; i++)
-			worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
+			world.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
 	}
 
 	@Override

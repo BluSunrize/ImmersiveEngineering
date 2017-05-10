@@ -103,17 +103,17 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void removeCable(Connection connection)
 	{
 		WireType type = connection != null ? connection.cableType : null;
-		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
+		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(this));
 		if(outputs == null || outputs.size() == 0)
 		{
 			if(type == limitType || type == null)
 				this.limitType = null;
 		}
 		this.markDirty();
-		if(worldObj != null)
+		if(world != null)
 		{
-			IBlockState state = worldObj.getBlockState(pos);
-			worldObj.notifyBlockUpdate(pos, state,state, 3);
+			IBlockState state = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, state,state, 3);
 		}
 	}
 
@@ -138,20 +138,20 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		if(id==-1||id==255)
 		{
-			IBlockState state = worldObj.getBlockState(pos);
-			worldObj.notifyBlockUpdate(pos, state,state, 3);
+			IBlockState state = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, state,state, 3);
 			return true;
 		} else if(id == 254)
 		{
-			IBlockState state = worldObj.getBlockState(pos);
+			IBlockState state = world.getBlockState(pos);
 			if(state instanceof IExtendedBlockState)
 			{
-				state = state.getActualState(worldObj, getPos());
-				state = state.getBlock().getExtendedState(state, worldObj, getPos());
+				state = state.getActualState(world, getPos());
+				state = state.getBlock().getExtendedState(state, world, getPos());
 				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState) state);
 				ImmersiveEngineering.proxy.removeStateFromConnectionModelCache((IExtendedBlockState) state);
 			}
-			worldObj.notifyBlockUpdate(pos, state, state, 3);
+			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
@@ -181,9 +181,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			if (descPacket)
 				writeConnsToNBT(nbt);
 
-			//			if(this.worldObj!=null)
+			//			if(this.world!=null)
 			//			{
-			//				nbt.setIntArray("prevPos", new int[]{this.worldObj.provider.dimensionId,xCoord,yCoord,zCoord});
+			//				nbt.setIntArray("prevPos", new int[]{this.world.provider.dimensionId,xCoord,yCoord,zCoord});
 			//			}
 		}catch(Exception e)
 		{
@@ -192,17 +192,17 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 	private void loadConnsFromNBT(NBTTagCompound nbt)
 	{
-		if(worldObj!=null && worldObj.isRemote && !Minecraft.getMinecraft().isSingleplayer() && nbt!=null)
+		if(world!=null && world.isRemote && !Minecraft.getMinecraft().isSingleplayer() && nbt!=null)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);
+			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), world);
 			for(int i=0; i<connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				Connection con = Connection.readFromNBT(conTag);
 				if(con!=null)
 				{
-					ImmersiveNetHandler.INSTANCE.addConnection(worldObj, Utils.toCC(this), con);
+					ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(this), con);
 				}
 				else
 					IELogger.error("CLIENT read connection as null");
@@ -211,10 +211,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 	private void writeConnsToNBT(NBTTagCompound nbt)
 	{
-		if(worldObj!=null && !worldObj.isRemote && nbt!=null)
+		if(world!=null && !world.isRemote && nbt!=null)
 		{
 			NBTTagList connectionList = new NBTTagList();
-			Set<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
+			Set<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(this));
 			if(conL!=null)
 				for(Connection con : conL)
 					connectionList.appendTag(con.writeToNBT());
@@ -224,7 +224,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 
 	public Set<Connection> genConnBlockstate()
 	{
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if (conns == null)
 			return ImmutableSet.of();
 		Set<Connection> ret = new HashSet<Connection>()
@@ -247,11 +247,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		};
 		for (Connection c : conns)
 		{
-			IImmersiveConnectable end = ApiUtils.toIIC(c.end, worldObj, false);
+			IImmersiveConnectable end = ApiUtils.toIIC(c.end, world, false);
 			if (end==null)
 				continue;
 			// generate subvertices
-			c.getSubVertices(worldObj);
+			c.getSubVertices(world);
 			ret.add(c);
 		}
 
@@ -273,7 +273,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void invalidate()
 	{
 		super.invalidate();
-		if (worldObj.isRemote)
-			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(pos, worldObj);
+		if (world.isRemote)
+			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(pos, world);
 	}
 }

@@ -7,14 +7,18 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -53,7 +57,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 					BlockPos targetPos = lowestLayer.poll();
 					IBlockState state = getWorld().getBlockState(targetPos);
 					if((state.getBlock().isAir(state,getWorld(),targetPos) || !state.getMaterial().isSolid()) && !isFullFluidBlock(targetPos, state))
-					if(FluidUtil.tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
+					if(this.tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
 					{
 						tank.drain(Fluid.BUCKET_VOLUME, true);
 						addConnectedSpaces(targetPos);
@@ -63,6 +67,52 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 			}
 		}
 		tickCount++;
+	}
+
+	//FIXME: Blatantly stolen from Forge. I'm going to do a PR to return this method back to forge, but for now...
+	//Forge changed this method to require an ItemStack which isn't appropriate here.
+	//Mezz reported he was doing further work in this space for us, we should be able to remove this soon.
+	public static boolean tryPlaceFluid(@Nullable EntityPlayer player, World worldIn, FluidStack fluidStack, BlockPos pos)
+	{
+		if (worldIn == null || fluidStack == null || pos == null)
+		{
+			return false;
+		}
+
+		Fluid fluid = fluidStack.getFluid();
+		if (fluid == null || !fluid.canBePlacedInWorld())
+		{
+			return false;
+		}
+
+		// check that we can place the fluid at the destination
+		IBlockState destBlockState = worldIn.getBlockState(pos);
+		Material destMaterial = destBlockState.getMaterial();
+		boolean isDestNonSolid = !destMaterial.isSolid();
+		boolean isDestReplaceable = destBlockState.getBlock().isReplaceable(worldIn, pos);
+		if (!worldIn.isAirBlock(pos) && !isDestNonSolid && !isDestReplaceable)
+		{
+			return false; // Non-air, solid, unreplacable block. We can't put fluid here.
+		}
+
+		if (worldIn.provider.doesWaterVaporize() && fluid.doesVaporize(fluidStack))
+		{
+			fluid.vaporize(player, worldIn, pos, fluidStack);
+		}
+		else
+		{
+			if (!worldIn.isRemote && (isDestNonSolid || isDestReplaceable) && !destMaterial.isLiquid())
+			{
+				worldIn.destroyBlock(pos, true);
+			}
+
+			SoundEvent soundevent = fluid.getEmptySound(fluidStack);
+			worldIn.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+			IBlockState fluidBlockState = fluid.getBlock().getDefaultState();
+			worldIn.setBlockState(pos, fluidBlockState, 11);
+		}
+		return true;
 	}
 
 	private void prepareAreaCheck()

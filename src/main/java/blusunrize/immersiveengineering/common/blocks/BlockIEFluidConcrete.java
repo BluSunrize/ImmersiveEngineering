@@ -135,7 +135,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 				{
 					world.setBlockState(pos, state.withProperty(LEVEL, quantaPerBlock - expQuanta), 2);
 					world.scheduleUpdate(pos, this, tickRate);
-					world.notifyNeighborsOfStateChange(pos, this);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
 			}
 		}

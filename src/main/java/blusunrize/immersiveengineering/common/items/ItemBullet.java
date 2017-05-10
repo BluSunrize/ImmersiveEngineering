@@ -25,6 +25,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -44,7 +45,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	public ItemBullet()
 	{
 //		super("bullet", 64, "emptyCasing","emptyShell","casull","armorPiercing","buckshot","HE","dragonsbreath","homing","wolfpack","silver","potion","flare");
-		super("bullet", 64, "emptyCasing", "emptyShell", "bullet");
+		super("bullet", 64, "empty_casing", "empty_shell", "bullet");
 
 		BulletHandler.emptyCasing = new ItemStack(this, 1, 0);
 		BulletHandler.emptyShell = new ItemStack(this, 1, 1);
@@ -60,7 +61,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				entities -> IEDamageSources.causePiercingDamage((EntityRevolvershot) entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_AP,
 				BulletHandler.emptyCasing,
-				new ResourceLocation("immersiveengineering:items/bullet_armorPiercing")));
+				new ResourceLocation("immersiveengineering:items/bullet_armor_piercing")));
 
 		BulletHandler.registerBullet("buckshot", new BulletHandler.DamagingBullet(
 				entities -> IEDamageSources.causeBuckshotDamage((EntityRevolvershot) entities[0], entities[1]),
@@ -122,7 +123,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		list.add(new ItemStack(this, 1, 0));
 		list.add(new ItemStack(this, 1, 1));
@@ -247,12 +248,12 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 //				}
 //				break;
 //			case 5://homing
-//				EntityRevolvershotHoming bullet = new EntityRevolvershotHoming(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
+//				EntityRevolvershotHoming bullet = new EntityRevolvershotHoming(player.world, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
 //				bullet.motionX = vec.xCoord;
 //				bullet.motionY = vec.yCoord;
 //				bullet.motionZ = vec.zCoord;
 //				bullet.bulletElectro = electro;
-//				player.worldObj.spawnEntityInWorld(bullet);
+//				player.world.spawnEntity(bullet);
 //				break;
 //			case 6://wolfpack
 //				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
@@ -265,14 +266,14 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 //				shot.bulletPotion = ItemNBTHelper.getItemStack(bulletStack, "potion");
 //				break;
 //			case 9://Flare
-//				EntityRevolvershotFlare flare = new EntityRevolvershotFlare(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
+//				EntityRevolvershotFlare flare = new EntityRevolvershotFlare(player.world, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
 //				flare.motionX = vec.xCoord;
 //				flare.motionY = vec.yCoord;
 //				flare.motionZ = vec.zCoord;
 //				flare.bulletElectro = electro;
 //				flare.colour = this.getColourForIEItem(bulletStack, 1);
 //				flare.setColourSynced();
-//				player.worldObj.spawnEntityInWorld(flare);
+//				player.world.spawnEntity(flare);
 //				break;
 //		}
 //	}
@@ -292,7 +293,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		public String getUnlocalizedName(ItemStack cartridge, String baseName)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(cartridge, "potion");
-			if(pot != null)
+			if(!pot.isEmpty())
 				if(pot.getItem() instanceof ItemLingeringPotion)
 					baseName += ".linger";
 				else if(pot.getItem() instanceof ItemSplashPotion)
@@ -312,14 +313,14 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
 			EntityRevolvershot bullet = (EntityRevolvershot)projectile;
-			if(bullet.bulletPotion != null && bullet.bulletPotion.hasTagCompound())
+			if(!bullet.bulletPotion.isEmpty() && bullet.bulletPotion.hasTagCompound())
 			{
 				PotionType potionType = PotionUtils.getPotionFromItem(bullet.bulletPotion);
 				List<PotionEffect> effects = PotionUtils.getEffectsFromStack(bullet.bulletPotion);
 				if(effects != null)
 					if(bullet.bulletPotion.getItem() instanceof ItemLingeringPotion)
 					{
-						EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(bullet.worldObj, bullet.posX, bullet.posY, bullet.posZ);
+						EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(bullet.world, bullet.posX, bullet.posY, bullet.posZ);
 						entityareaeffectcloud.setOwner(shooter);
 						entityareaeffectcloud.setRadius(3.0F);
 						entityareaeffectcloud.setRadiusOnUse(-0.5F);
@@ -328,11 +329,11 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 						entityareaeffectcloud.setPotion(potionType);
 						for(PotionEffect potioneffect : effects)
 							entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-						bullet.worldObj.spawnEntityInWorld(entityareaeffectcloud);
+						bullet.world.spawnEntity(entityareaeffectcloud);
 					}
 					else if(bullet.bulletPotion.getItem() instanceof ItemSplashPotion)
 					{
-						List<EntityLivingBase> livingEntities = bullet.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
+						List<EntityLivingBase> livingEntities = bullet.world.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
 						if(livingEntities != null && !livingEntities.isEmpty())
 							for(EntityLivingBase living : livingEntities)
 								if(living.canBeHitWithPotion())
@@ -363,7 +364,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 								p = new PotionEffect(p.getPotion(), 1);
 							((EntityLivingBase)target.entityHit).addPotionEffect(p);
 						}
-				world.playEvent(2002, new BlockPos(bullet), PotionType.getID(potionType));
+				world.playEvent(2002, new BlockPos(bullet), PotionUtils.getPotionColor(potionType));
 			}
 		}
 
@@ -372,7 +373,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		public void addTooltip(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
-			if(pot != null && pot.getItem() instanceof ItemPotion)
+			if(!pot.isEmpty() && pot.getItem() instanceof ItemPotion)
 				PotionUtils.addPotionTooltip(pot, list, 1f);
 		}
 
@@ -382,7 +383,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			if(layer == 1)
 			{
 				ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
-				return pot == null ? 0xff385dc6 : PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(pot));
+				return pot.isEmpty() ? 0xff385dc6 : PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(pot));
 			}
 			return 0xffffffff;
 		}
@@ -399,7 +400,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		@Override
 		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			EntityRevolvershotFlare flare =  shooter!=null?new EntityRevolvershotFlare(projectile.worldObj, shooter, projectile.motionX*1.5,projectile.motionY*1.5,projectile.motionZ*1.5, this, cartridge): new EntityRevolvershotFlare(projectile.worldObj, projectile.posX,projectile.posY,projectile.posZ, 0,0,0, this);
+			EntityRevolvershotFlare flare =  shooter!=null?new EntityRevolvershotFlare(projectile.world, shooter, projectile.motionX*1.5,projectile.motionY*1.5,projectile.motionZ*1.5, this, cartridge): new EntityRevolvershotFlare(projectile.world, projectile.posX,projectile.posY,projectile.posZ, 0,0,0, this);
 			flare.motionX = projectile.motionX;
 			flare.motionY = projectile.motionY;
 			flare.motionZ = projectile.motionZ;
@@ -471,7 +472,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		@Override
 		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			EntityRevolvershotHoming shot = shooter!=null?new EntityRevolvershotHoming(projectile.worldObj, shooter, projectile.motionX*1.5,projectile.motionY*1.5,projectile.motionZ*1.5, this, cartridge): new EntityRevolvershotHoming(projectile.worldObj, projectile.posX,projectile.posY,projectile.posZ, 0,0,0, this);
+			EntityRevolvershotHoming shot = shooter!=null?new EntityRevolvershotHoming(projectile.world, shooter, projectile.motionX*1.5,projectile.motionY*1.5,projectile.motionZ*1.5, this, cartridge): new EntityRevolvershotHoming(projectile.world, projectile.posX,projectile.posY,projectile.posZ, 0,0,0, this);
 			shot.motionX = projectile.motionX;
 			shot.motionY = projectile.motionY;
 			shot.motionZ = projectile.motionZ;
@@ -517,7 +518,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				bullet.motionX = vecDir.xCoord * .375;
 				bullet.motionY = vecDir.yCoord * .375;
 				bullet.motionZ = vecDir.zCoord * .375;
-				world.spawnEntityInWorld(bullet);
+				world.spawnEntity(bullet);
 			}
 		}
 

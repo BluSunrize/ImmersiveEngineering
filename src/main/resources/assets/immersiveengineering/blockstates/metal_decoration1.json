@@ -1,0 +1,74 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "cube_all",
+		"textures": { "texture": "immersiveengineering:blocks/storage_steel" }
+	},
+	"variants":
+	{
+		"inventory,type=steel_fence": [{
+			"model": "fence_inventory", "y": 90,
+			"textures": { "texture": "immersiveengineering:blocks/storage_steel" }}],
+		"inventory,type=steel_scaffolding_0": [{"model": "immersiveengineering:ie_scaffolding", "textures": { "side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding", "top": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top", "bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top"} }],
+		"inventory,type=steel_scaffolding_1": [{"model": "immersiveengineering:ie_scaffolding", "textures": { "side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding", "top": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top1", "bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top"} }],
+		"inventory,type=steel_scaffolding_2": [{"model": "immersiveengineering:ie_scaffolding", "textures": { "side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding", "top": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top2", "bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top"} }],
+		"inventory,type=aluminum_fence": [{
+			"model": "fence_inventory", "y": 90,
+			"textures": { "texture": "immersiveengineering:blocks/storage_aluminum" }}],
+		"inventory,type=aluminum_scaffolding_0": [{"model": "immersiveengineering:ie_scaffolding", "textures": { "side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding", "top": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top", "bottom": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top"} }],
+		"inventory,type=aluminum_scaffolding_1": [{"model": "immersiveengineering:ie_scaffolding", "textures": { "side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding", "top": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top1", "bottom": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top"} }],
+		"inventory,type=aluminum_scaffolding_2": [{"model": "immersiveengineering:ie_scaffolding", "textures": { "side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding", "top": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top2", "bottom": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top"} }],
+		"type":
+		{
+			"steel_fence": {
+				"model": "minecraft:oak_fence_post",
+				"textures": { "texture": "immersiveengineering:blocks/storage_steel" }
+			},
+			"steel_scaffolding_0": {
+				"model": "immersiveengineering:ctm/metal_decoration1_steel_scaffolding"
+			},
+			"steel_scaffolding_1": {
+				"model": "immersiveengineering:ctm/metal_decoration1_steel_scaffolding1"
+			},
+			"steel_scaffolding_2": {
+				"model": "immersiveengineering:ctm/metal_decoration1_steel_scaffolding2"
+			},
+			"aluminum_fence": {
+				"model": "fence_post",
+				"textures": { "texture": "immersiveengineering:blocks/storage_aluminum" }
+			},
+			"aluminum_scaffolding_0": {
+				"model": "immersiveengineering:ctm/metal_decoration1_aluminum_scaffolding"
+			},
+			"aluminum_scaffolding_1": {
+				"model": "immersiveengineering:ctm/metal_decoration1_aluminum_scaffolding1"
+			},
+			"aluminum_scaffolding_2": {
+				"model": "immersiveengineering:ctm/metal_decoration1_aluminum_scaffolding2"
+			}
+		}
+		,
+		"north":
+		{
+			"false":{},
+			"true":{	}
+		},
+		"south":
+		{
+			"false":{},
+			"true":{}
+		},
+		"east":
+		{
+			"false":{},
+			"true":{}
+		},
+		"west":
+		{
+			"false":{},
+			"true":{}
+		}
+	}
+}

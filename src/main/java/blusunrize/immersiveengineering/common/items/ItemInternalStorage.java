@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.tool.IInternalStorageItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 
 public abstract class ItemInternalStorage extends ItemIEBase implements IInternalStorageItem 
 {
@@ -13,9 +14,9 @@ public abstract class ItemInternalStorage extends ItemIEBase implements IInterna
 	}
 	
 	@Override
-	public ItemStack[] getContainedItems(ItemStack stack)
+	public NonNullList<ItemStack> getContainedItems(ItemStack stack)
 	{
-		ItemStack[] stackList = new ItemStack[getInternalSlots(stack)];
+		NonNullList<ItemStack> stackList = NonNullList.withSize(getInternalSlots(stack), ItemStack.EMPTY);
 		if(stack.hasTagCompound())
 		{
 			NBTTagList inv = stack.getTagCompound().getTagList("Inv",10);
@@ -23,23 +24,23 @@ public abstract class ItemInternalStorage extends ItemIEBase implements IInterna
 			{
 				NBTTagCompound tag = inv.getCompoundTagAt(i);
 				int slot = tag.getByte("Slot") & 0xFF;
-				if ((slot >= 0) && (slot < stackList.length))
-					stackList[slot] = ItemStack.loadItemStackFromNBT(tag);
+				if ((slot >= 0) && (slot < stackList.size()))
+					stackList.set(slot, new ItemStack(tag));
 			}
 		}
 		return stackList;
 	}
 	
 	@Override
-	public void setContainedItems(ItemStack stack, ItemStack[] stackList)
+	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> stackList)
 	{
 		NBTTagList inv = new NBTTagList();
-		for (int i = 0; i < stackList.length; i++)
-			if (stackList[i] != null)
+		for (int i = 0; i < stackList.size(); i++)
+			if (!stackList.get(i).isEmpty())
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setByte("Slot", (byte)i);
-				stackList[i].writeToNBT(tag);
+				stackList.get(i).writeToNBT(tag);
 				inv.appendTag(tag);
 			}
 		if(stack.hasTagCompound())
@@ -49,7 +50,7 @@ public abstract class ItemInternalStorage extends ItemIEBase implements IInterna
 			{
 				NBTTagCompound tag = invExisting.getCompoundTagAt(i);
 				int slot = tag.getByte("Slot") & 0xFF;
-				if ((slot >= stackList.length) && (slot < stackList.length))
+				if ((slot >= stackList.size()) && (slot < stackList.size()))
 					inv.appendTag(tag);
 			}
 		}

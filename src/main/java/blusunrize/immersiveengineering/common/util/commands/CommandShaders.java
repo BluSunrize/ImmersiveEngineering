@@ -31,15 +31,15 @@ public class CommandShaders extends IESubCommand
 				if(ShaderRegistry.receivedShaders.containsKey(player))
 					ShaderRegistry.receivedShaders.get(player).clear();
 				ShaderRegistry.recalculatePlayerTotalWeight(player);
-				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".clear.sucess",player));
+				sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".clear.sucess",player));
 				break;
 			default:
-				sender.addChatMessage(new TextComponentTranslation(getHelp("")));
+				sender.sendMessage(new TextComponentTranslation(getHelp("")));
 				break;
 			}
 		}
 		else
-			sender.addChatMessage(new TextComponentTranslation(getHelp("")));
+			sender.sendMessage(new TextComponentTranslation(getHelp("")));
 
 	}
 
@@ -54,7 +54,7 @@ public class CommandShaders extends IESubCommand
 				case "clear":
 					if(args.length>2)
 						break;
-					list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, server.getAllUsernames()));
+					list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()));
 					break;
 			}
 			return list;

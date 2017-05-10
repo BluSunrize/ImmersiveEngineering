@@ -67,7 +67,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 			float itemX = -1.5f;//-1;
 			float itemY = -.15625f;// -.34375f;
 			float itemZ = 1;//-.9375f;
-			float itemFill = 0;//ClientUtils.mc().thePlayer.ticksExisted%100; //0f;
+			float itemFill = 0;//ClientUtils.mc().player.ticksExisted%100; //0f;
 
 			if(processTimer <= 35)//slide
 			{
@@ -162,14 +162,14 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 				if(process==null)
 					continue;
 
-				ItemStack display = itemDisplays[i][4]==0||process.items[1]==null?process.items[0]:process.items[1];
+				ItemStack display = itemDisplays[i][4]==0||process.items.get(1).isEmpty()?process.items.get(0):process.items.get(1);
 				scale = .4375f;
 
 				GlStateManager.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
 				GlStateManager.scale(scale, scale, scale);
 
 				if(itemDisplays[i][4]==0)
-					ClientUtils.mc().getRenderItem().renderItem(process.items[0], ItemCameraTransforms.TransformType.FIXED);
+					ClientUtils.mc().getRenderItem().renderItem(process.items.get(0), ItemCameraTransforms.TransformType.FIXED);
 				else if(itemDisplays[i][4]==1)
 					ClientUtils.mc().getRenderItem().renderItem(display, ItemCameraTransforms.TransformType.FIXED);
 				else
@@ -206,7 +206,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 					GL11.glStencilMask(0x00);
 
 					GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
-					ClientUtils.mc().getRenderItem().renderItem(process.items[0], ItemCameraTransforms.TransformType.FIXED);
+					ClientUtils.mc().getRenderItem().renderItem(process.items.get(0), ItemCameraTransforms.TransformType.FIXED);
 
 					GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
 					ClientUtils.mc().getRenderItem().renderItem(display, ItemCameraTransforms.TransformType.FIXED);

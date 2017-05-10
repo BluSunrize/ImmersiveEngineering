@@ -30,6 +30,6 @@ public class ContainerFluidSorter extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

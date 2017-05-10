@@ -1,7 +1,0 @@
-{
-	"parent":"immersiveengineering:item/ieItemBase",
-	"textures": {
-		"layer0":"immersiveengineering:items/fluorescentTube",
-		"layer1":"immersiveengineering:items/fluorescentTube_rod"
-	}
-}

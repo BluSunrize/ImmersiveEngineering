@@ -95,8 +95,8 @@ public class IEWorldGen implements IWorldGenerator
 		if((!event.getData().getCompoundTag("ImmersiveEngineering").hasKey(IEConfig.Ores.retrogen_key)) && (IEConfig.Ores.retrogen_copper|| IEConfig.Ores.retrogen_bauxite|| IEConfig.Ores.retrogen_lead|| IEConfig.Ores.retrogen_silver|| IEConfig.Ores.retrogen_nickel|| IEConfig.Ores.retrogen_uranium))
 		{
 			if(IEConfig.Ores.retrogen_log_flagChunk)
-				IELogger.info("Chunk "+event.getChunk().getChunkCoordIntPair()+" has been flagged for Ore RetroGeneration by IE.");
-			retrogenChunks.put(dimension, event.getChunk().getChunkCoordIntPair());
+				IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
+			retrogenChunks.put(dimension, event.getChunk().getPos());
 		}
 	}
 

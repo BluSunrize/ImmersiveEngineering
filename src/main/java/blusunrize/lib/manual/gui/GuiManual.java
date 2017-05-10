@@ -143,7 +143,7 @@ public class GuiManual extends GuiScreen
 		if(textField)
 		{
 			Keyboard.enableRepeatEvents(true);
-			searchField = new GuiTextField(99, this.fontRendererObj, guiLeft+166, guiTop+78, 120, 12);
+			searchField = new GuiTextField(99, this.fontRenderer, guiLeft+166, guiTop+78, 120, 12);
 			searchField.setTextColor(-1);
 			searchField.setDisabledTextColour(-1);
 			searchField.setEnableBackgroundDrawing(false);

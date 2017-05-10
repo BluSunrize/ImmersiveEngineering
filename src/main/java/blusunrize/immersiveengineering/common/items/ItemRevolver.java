@@ -14,10 +14,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
 import com.google.common.base.Optional;
@@ -134,7 +131,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
@@ -192,10 +189,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		{
 			double melee = getUpgrades(stack).getDouble("melee");
 			if(melee != 0)
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, 0));
 			double speed = getUpgrades(stack).getDouble("speed");
 			if(speed != 0)
-				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, 1));
+				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, 1));
 		}
 		return multimap;
 	}
@@ -234,8 +231,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		}
 	}
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack revolver, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack revolver = player.getHeldItem(hand);
 		if(!world.isRemote)
 		{
 			if(player.isSneaking() || revolver.getItemDamage()==1)
@@ -250,26 +248,26 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				if(ItemNBTHelper.getInt(revolver, "cooldown")>0)
 					return new ActionResult(EnumActionResult.PASS, revolver);
 
-				ItemStack[] bullets = getBullets(revolver);
+				NonNullList<ItemStack> bullets = getBullets(revolver);
 
 				if(isEmpty(revolver))
 				{
 					for(int i=0; i<player.inventory.getSizeInventory(); i++)
 					{
 						ItemStack loader = player.inventory.getStackInSlot(i);
-						if(loader!=null && loader.getItem() == this && loader.getItemDamage()==1 && !isEmpty(loader))
+						if(!loader.isEmpty() && loader.getItem() == this && loader.getItemDamage()==1 && !isEmpty(loader))
 						{
 							int dc = 0;
 							for(ItemStack b : bullets)
-								if(b!=null)
+								if(!b.isEmpty())
 								{
-									world.spawnEntityInWorld(new EntityItem(world, player.posX,player.posY,player.posZ, b ));
+									world.spawnEntity(new EntityItem(world, player.posX,player.posY,player.posZ, b ));
 									dc++;
 								}
 							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, .5f, 3f);
 							ItemNBTHelper.setDelayedSoundsForStack(revolver, "casings", "random.successful_hit",.05f,5, dc/2, 8,2);
 							setBullets(revolver, getBullets(loader));
-							setBullets(loader, new ItemStack[8]);
+							setBullets(loader, NonNullList.withSize(8, ItemStack.EMPTY));
 							player.inventory.setInventorySlotContents(i, loader);
 							player.inventory.markDirty();
 							if (player instanceof EntityPlayerMP)
@@ -283,9 +281,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 				if(!ItemNBTHelper.getBoolean(revolver, "blocked"))
 				{
-					if(bullets[0] != null && bullets[0].getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(bullets[0], "bullet"))
+					if(!bullets.get(0).isEmpty() && bullets.get(0).getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
 					{
-						String key = ItemNBTHelper.getString(bullets[0], "bullet");
+						String key = ItemNBTHelper.getString(bullets.get(0), "bullet");
 						IBullet bullet = BulletHandler.getBullet(key);
 						if(bullet != null)
 						{
@@ -294,16 +292,16 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 							int count = bullet.getProjectileCount(player);
 							if(count == 1)
 							{
-								Entity entBullet = getBullet(player, vec, vec, key, bullets[0], electro);
-								player.worldObj.spawnEntityInWorld(bullet.getProjectile(player, bullets[0], entBullet, electro));
+								Entity entBullet = getBullet(player, vec, vec, key, bullets.get(0), electro);
+								player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 							} else
 								for(int i = 0; i < count; i++)
 								{
 									Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian() * .1, player.getRNG().nextGaussian() * .1, player.getRNG().nextGaussian() * .1);
-									Entity entBullet = getBullet(player, vec, vecDir, key, bullets[0], electro);
-									player.worldObj.spawnEntityInWorld(bullet.getProjectile(player, bullets[0], entBullet, electro));
+									Entity entBullet = getBullet(player, vec, vecDir, key, bullets.get(0), electro);
+									player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 								}
-							bullets[0] = bullet.getCasing(bullets[0]);
+							bullets.set(0, bullet.getCasing(bullets.get(0)));
 							world.playSound(null, player.posX, player.posY, player.posZ, IESounds.revolverFire, SoundCategory.PLAYERS, 1f, 1f);
 						} else
 							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
@@ -311,10 +309,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 					else
 						world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
 
-					ItemStack[] cycled = new ItemStack[getBulletSlotAmount(revolver)];
-					for(int i=1; i<cycled.length; i++)
-						cycled[i-1] = bullets[i];
-					cycled[cycled.length-1] = bullets[0];
+					NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletSlotAmount(revolver), ItemStack.EMPTY);
+					for(int i = 1; i< cycled.size(); i++)
+						cycled.set(i-1, bullets.get(i));
+					cycled.set(cycled.size() -1, bullets.get(0));
 					setBullets(revolver, cycled);
 					ItemNBTHelper.setInt(revolver, "cooldown", 10);
 					return new ActionResult(EnumActionResult.SUCCESS, revolver);
@@ -327,7 +325,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	EntityRevolvershot getBullet(EntityPlayer player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
 	{
-		EntityRevolvershot bullet = new EntityRevolvershot(player.worldObj, player, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, type, stack);
+		EntityRevolvershot bullet = new EntityRevolvershot(player.world, player, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, type, stack);
 		bullet.motionX = vecDir.xCoord;
 		bullet.motionY = vecDir.yCoord;
 		bullet.motionZ = vecDir.zCoord;
@@ -337,27 +335,24 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	public boolean isEmpty(ItemStack stack)
 	{
-		ItemStack[] bullets = getBullets(stack);
+		NonNullList<ItemStack> bullets = getBullets(stack);
 		boolean empty = true;
 		for(ItemStack b : bullets)
-			if(b != null && b.getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(b, "bullet"))
+			if(!b.isEmpty() && b.getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(b, "bullet"))
 				empty=false;
 		return empty;
 	}
-	public ItemStack[] getBullets(ItemStack revolver)
+	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		ItemStack[] stackList = this.getContainedItems(revolver);
-		ItemStack[] bullets = new ItemStack[getBulletSlotAmount(revolver)];
-		System.arraycopy(stackList,0, bullets,0, bullets.length);
-		return bullets;
+		return ListUtils.fromItems(this.getContainedItems(revolver));
 	}
-	public void setBullets(ItemStack revolver, ItemStack[] bullets)
+	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
 	{
-		ItemStack[] stackList = this.getContainedItems(revolver);
-		for(int i=0; i<bullets.length; i++)
-			stackList[i] = bullets[i];
-		for (int i = bullets.length;i<getBulletSlotAmount(revolver);i++)
-			stackList[i] = null;
+		NonNullList<ItemStack> stackList = this.getContainedItems(revolver);
+		for(int i = 0; i< bullets.size(); i++)
+			stackList.set(i, bullets.get(i));
+		for (int i = bullets.size();i<getBulletSlotAmount(revolver);i++)
+			stackList.set(i, ItemStack.EMPTY);
 		this.setContainedItems(revolver, stackList);
 	}
 	public int getBulletSlotAmount(ItemStack revolver)
@@ -489,7 +484,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player)
 	{
-		if(stack==null || player==null)
+		if(stack.isEmpty() || player==null)
 			return;
 
 		if(stack.getItemDamage()==1)
@@ -549,9 +544,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		ItemStack[] contents = this.getContainedItems(stack);
+		NonNullList<ItemStack> contents = this.getContainedItems(stack);
 		player.addStat(IEAchievements.craftRevolver);
-		if(contents[18]!=null&&contents[19]!=null)
+		if(!contents.get(18).isEmpty()&&!contents.get(19).isEmpty())
 			player.addStat(IEAchievements.upgradeRevolver);
 	}
 

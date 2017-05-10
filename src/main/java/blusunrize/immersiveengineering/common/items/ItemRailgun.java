@@ -31,10 +31,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -186,18 +183,19 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		int energy = IEConfig.Tools.railgun_consumption;
 		float energyMod = 1 + this.getUpgrades(stack).getFloat("consumption");
 		energy = (int)(energy*energyMod);
-		if(this.extractEnergy(stack, energy, true)==energy && findAmmo(player)!=null)
+		if(this.extractEnergy(stack, energy, true)==energy && !findAmmo(player).isEmpty())
 		{
 			player.setActiveHand(hand);
 			player.playSound(getChargeTime(stack) <= 20 ? IESounds.chargeFast : IESounds.chargeSlow, 1.5f, 1);
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult(EnumActionResult.PASS, stack);
+		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase user, int count)
@@ -221,18 +219,18 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 			if (this.extractEnergy(stack, energy, true) == energy)
 			{
 				ItemStack ammo = findAmmo((EntityPlayer)user);
-				if(ammo!=null)
+				if(!ammo.isEmpty())
 				{
 					Vec3d vec = user.getLookVec();
 					float speed = 20;
-					EntityRailgunShot shot = new EntityRailgunShot(user.worldObj, user, vec.xCoord * speed, vec.yCoord * speed, vec.zCoord * speed, Utils.copyStackWithAmount(ammo, 1));
-					ammo.stackSize--;
-					if(ammo.stackSize<=0)
+					EntityRailgunShot shot = new EntityRailgunShot(user.world, user, vec.xCoord * speed, vec.yCoord * speed, vec.zCoord * speed, Utils.copyStackWithAmount(ammo, 1));
+					ammo.shrink(1);
+					if(ammo.getCount()<=0)
 						((EntityPlayer)user).inventory.deleteStack(ammo);
 					user.playSound(IESounds.railgunFire, 1, .5f + (.5f * user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if (!world.isRemote)
-						user.worldObj.spawnEntityInWorld(shot);
+						user.world.spawnEntity(shot);
 				}
 			}
 		}
@@ -251,11 +249,11 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 				if(isAmmo(itemstack))
 					return itemstack;
 			}
-		return null;
+		return ItemStack.EMPTY;
 	}
 	public static boolean isAmmo(ItemStack stack)
 	{
-		if(stack == null)
+		if(stack.isEmpty())
 			return false;
 		RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(stack);
 		return prop!=null;
@@ -275,7 +273,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		ItemStack[] contents = this.getContainedItems(stack);
+		NonNullList<ItemStack> contents = this.getContainedItems(stack);
 		player.addStat(IEAchievements.craftRailgun);
 		//		if(contents[18]!=null&&contents[19]!=null)
 		//			player.triggerAchievement(IEAchievements.upgradeRailgun);

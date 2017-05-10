@@ -24,10 +24,10 @@ public class GuiCokeOven extends GuiContainer
 	{
 		super.drawScreen(mx, my, partial);
 		ArrayList<String> tooltip = new ArrayList<String>();
-		ClientUtils.handleGuiTank(tile.tank, guiLeft+129,guiTop+20, 16,47, 176,31,20,51, mx,my, "immersiveengineering:textures/gui/cokeOven.png", tooltip);
+		ClientUtils.handleGuiTank(tile.tank, guiLeft+129,guiTop+20, 16,47, 176,31,20,51, mx,my, "immersiveengineering:textures/gui/coke_oven.png", tooltip);
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -37,7 +37,7 @@ public class GuiCokeOven extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/coke_oven.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 
 		if(tile.processMax>0&&tile.process>0)
@@ -53,7 +53,7 @@ public class GuiCokeOven extends GuiContainer
 //			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
 //		}
 //		this.drawTexturedModalRect(guiLeft+127,guiTop+18, 176,31, 20,51);
-		ClientUtils.handleGuiTank(tile.tank, guiLeft+129,guiTop+20, 16,47, 176,31,20,51, mx,my, "immersiveengineering:textures/gui/cokeOven.png", null);
+		ClientUtils.handleGuiTank(tile.tank, guiLeft+129,guiTop+20, 16,47, 176,31,20,51, mx,my, "immersiveengineering:textures/gui/coke_oven.png", null);
 		
 	}
 }

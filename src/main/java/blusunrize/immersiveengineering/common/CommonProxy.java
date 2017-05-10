@@ -59,10 +59,10 @@ public class CommonProxy implements IGuiHandler
 	public static void openGuiForItem(@Nonnull EntityPlayer player, @Nonnull EntityEquipmentSlot slot)
 	{
 		ItemStack stack = player.getItemStackFromSlot(slot);
-		if(stack==null || !(stack.getItem() instanceof IGuiItem))
+		if(stack.isEmpty() || !(stack.getItem() instanceof IGuiItem))
 			return;
 		IGuiItem gui = (IGuiItem)stack.getItem();
-		player.openGui(ImmersiveEngineering.instance, 100*slot.ordinal() + gui.getGuiID(stack), player.worldObj, (int)player.posX,(int)player.posY,(int)player.posZ);
+		player.openGui(ImmersiveEngineering.instance, 100*slot.ordinal() + gui.getGuiID(stack), player.world, (int)player.posX,(int)player.posY,(int)player.posZ);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class CommonProxy implements IGuiHandler
 			EntityEquipmentSlot slot = EntityEquipmentSlot.values()[ID/100];
 			ID %= 100;//Slot determined, get actual ID
 			ItemStack item = player.getItemStackFromSlot(slot);
-			if(item!=null && item.getItem() instanceof IGuiItem && ((IGuiItem)item.getItem()).getGuiID(item)==ID)
+			if(!item.isEmpty() && item.getItem() instanceof IGuiItem && ((IGuiItem)item.getItem()).getGuiID(item)==ID)
 			{
 				if(ID == Lib.GUIID_Revolver && item.getItem() instanceof ItemRevolver)
 					return new ContainerRevolver(player.inventory, world, slot, item);

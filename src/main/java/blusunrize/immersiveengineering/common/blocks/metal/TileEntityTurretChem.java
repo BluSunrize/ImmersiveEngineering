@@ -75,21 +75,21 @@ public class TileEntityTurretChem extends TileEntityTurret
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&this.ignite;
 				for(int i = 0; i < split; i++)
 				{
-					Vec3d vecDir = v.addVector(worldObj.rand.nextGaussian()*scatter, worldObj.rand.nextGaussian()*scatter, worldObj.rand.nextGaussian()*scatter);
-					EntityChemthrowerShot chem = new EntityChemthrowerShot(worldObj, getPos().getX()+.5+v.xCoord*0.875,getPos().getY()+1.5+v.yCoord*0.875,getPos().getZ()+.5+v.zCoord*0.875, 0,0,0, fs);
+					Vec3d vecDir = v.addVector(world.rand.nextGaussian()*scatter, world.rand.nextGaussian()*scatter, world.rand.nextGaussian()*scatter);
+					EntityChemthrowerShot chem = new EntityChemthrowerShot(world, getPos().getX()+.5+v.xCoord*0.875,getPos().getY()+1.5+v.yCoord*0.875,getPos().getZ()+.5+v.zCoord*0.875, 0,0,0, fs);
 					chem.motionX = vecDir.xCoord*range;
 					chem.motionY = vecDir.yCoord*range;
 					chem.motionZ = vecDir.zCoord*range;
 					if(ignite)
 						chem.setFire(10);
-					if(!worldObj.isRemote)
-						worldObj.spawnEntityInWorld(chem);
+					if(!world.isRemote)
+						world.spawnEntity(chem);
 				}
 				if(tick%4==0)
 					if(ignite)
-						worldObj.playSound(null, getPos(), IESounds.sprayFire, SoundCategory.BLOCKS, .5F,1.5F);
+						world.playSound(null, getPos(), IESounds.sprayFire, SoundCategory.BLOCKS, .5F,1.5F);
 					else
-						worldObj.playSound(null, getPos(), IESounds.spray, SoundCategory.BLOCKS, .5F,.75F);
+						world.playSound(null, getPos(), IESounds.spray, SoundCategory.BLOCKS, .5F,.75F);
 			}
 		}
 	}

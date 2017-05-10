@@ -18,7 +18,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe,
 	static ItemStack metalPressStack;
 	public MetalPressRecipeCategory(IGuiHelper helper)
 	{
-		super("metalPress","tile.immersiveengineering.metalMultiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
+		super("metalPress","tile.immersiveengineering.metal_multiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
 		metalPressStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
 	}
 
@@ -30,12 +30,6 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe,
 	}
 
 	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, MetalPressRecipeWrapper recipeWrapper)
-	{
-		//Deprecated
-	}
-	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, MetalPressRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
@@ -44,7 +38,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe,
 		guiItemStacks.init(2, false, 102, 3);
 		guiItemStacks.set(0, recipeWrapper.recipeInputs[0]);
 		guiItemStacks.set(1, recipeWrapper.recipeInputs[1]);
-		guiItemStacks.set(2, ingredients.getOutputs(ItemStack.class));
+		guiItemStacks.set(2, ingredients.getOutputs(ItemStack.class).get(0));
 	}
 
 	@Override

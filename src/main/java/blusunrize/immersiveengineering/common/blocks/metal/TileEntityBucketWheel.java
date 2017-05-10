@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,17 +34,17 @@ import java.util.HashMap;
 public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBucketWheel> implements IHasObjProperty, IDynamicTexture
 {
 	public float rotation = 0;
-	public ItemStack[] digStacks = new ItemStack[8];
+	public NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
-	public ItemStack particleStack;
+	public ItemStack particleStack = ItemStack.EMPTY;
 
 	@Override
 	public ItemStack getOriginalBlock()
 	{
 		if(pos<0)
-			return null;
-		ItemStack s = pos<0?null: MultiblockBucketWheel.instance.getStructureManual()[pos/7][pos%7][0];
-		return s!=null?s.copy():null;
+			return ItemStack.EMPTY;
+		ItemStack s = pos<0?ItemStack.EMPTY: MultiblockBucketWheel.instance.getStructureManual()[pos/7][pos%7][0];
+		return s.copy();
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		rotation = (Math.abs(nbtRot-rotation)>5*IEConfig.Machines.excavator_speed)?nbtRot:rotation; // avoid stuttering due to packet delays
 		digStacks = Utils.readInventory(nbt.getTagList("digStacks", 10), 8);
 		active = nbt.getBoolean("active");
-		particleStack = nbt.hasKey("particleStack")?ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("particleStack")):null;
+		particleStack = nbt.hasKey("particleStack")?new ItemStack(nbt.getCompoundTag("particleStack")):ItemStack.EMPTY;
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -63,7 +64,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		nbt.setFloat("rotation", rotation);
 		nbt.setTag("digStacks", Utils.writeInventory(digStacks));
 		nbt.setBoolean("active", active);
-		if(particleStack!=null)
+		if(!particleStack.isEmpty())
 			nbt.setTag("particleStack", particleStack.writeToNBT(new NBTTagCompound()));
 	}
 
@@ -95,20 +96,20 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 			rotation%=360;
 		}
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
-			if(particleStack!=null)
+			if(!particleStack.isEmpty())
 			{
 				ImmersiveEngineering.proxy.spawnBucketWheelFX(this, particleStack);
 				particleStack = null;
 			}
 		}
-		else if (active&&worldObj.getTotalWorldTime()%20==0)
+		else if (active&&world.getTotalWorldTime()%20==0)
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setFloat("rotation", rotation);
 			MessageTileSync sync = new MessageTileSync(this, nbt);
-			ImmersiveEngineering.packetHandler.sendToAllAround(sync, new TargetPoint(worldObj.provider.getDimension(),
+			ImmersiveEngineering.packetHandler.sendToAllAround(sync, new TargetPoint(world.provider.getDimension(),
 					getPos().getX(), getPos().getY(), getPos().getZ(), 100));
 		}
 	}
@@ -118,7 +119,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	{
 		super.invalidate();
 
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = getPos().add(-offset[0], -offset[1], -offset[2]);
 
@@ -129,8 +130,8 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 					int yy = h;
 					int zz = (facing==EnumFacing.EAST?-w: facing==EnumFacing.WEST?w: 0);
 					BlockPos pos = startPos.add(xx, yy, zz);
-					ItemStack s = null;
-					TileEntity te = worldObj.getTileEntity(pos);
+					ItemStack s = ItemStack.EMPTY;
+					TileEntity te = world.getTileEntity(pos);
 					if(te instanceof TileEntityBucketWheel)
 					{
 						s = ((TileEntityBucketWheel)te).getOriginalBlock();
@@ -143,12 +144,12 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 					if(state!=null)
 					{
 						if(pos.equals(getPos()))
-							worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
+							world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
 						else
 						{
 							if(state.getBlock()==this.getBlockType())
-								worldObj.setBlockToAir(pos);
-							worldObj.setBlockState(pos, state);
+								world.setBlockToAir(pos);
+							world.setBlockState(pos, state);
 						}
 					}
 				}
@@ -162,11 +163,11 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		synchronized (digStacks)
 		{
 			HashMap<String,String> texMap = new HashMap<String,String>();
-			for(int i=0; i<this.digStacks.length; i++)
-				if(this.digStacks[i]!=null)
+			for(int i = 0; i< this.digStacks.size(); i++)
+				if(!this.digStacks.get(i).isEmpty())
 				{
-					Block b = Block.getBlockFromItem(this.digStacks[i].getItem());
-					IBlockState state = b!=null?b.getStateFromMeta(this.digStacks[i].getMetadata()): Blocks.STONE.getDefaultState();
+					Block b = Block.getBlockFromItem(this.digStacks.get(i).getItem());
+					IBlockState state = b!=null?b.getStateFromMeta(this.digStacks.get(i).getMetadata()): Blocks.STONE.getDefaultState();
 					IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 					if(model!=null && model.getParticleTexture()!=null)
 						texMap.put("dig"+i, model.getParticleTexture().getIconName());
@@ -187,10 +188,9 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		synchronized (digStacks)
 		{
 			if (message.hasKey("fill"))
-				this.digStacks[message.getInteger("fill")] = ItemStack
-				.loadItemStackFromNBT(message.getCompoundTag("fillStack"));
+				this.digStacks.set(message.getInteger("fill"), new ItemStack(message.getCompoundTag("fillStack")));
 			if (message.hasKey("empty"))
-				this.digStacks[message.getInteger("empty")] = null;
+				this.digStacks.set(message.getInteger("empty"), ItemStack.EMPTY);
 			if (message.hasKey("rotation"))
 			{
 				int packetRotation = message.getInteger("rotation");

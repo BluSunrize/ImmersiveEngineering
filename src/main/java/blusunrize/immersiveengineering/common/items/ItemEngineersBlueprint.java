@@ -15,6 +15,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -65,7 +66,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for(String key : BlueprintCraftingRecipe.blueprintCategories)
 		{
@@ -104,30 +105,30 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	public void updateOutputs(ItemStack stack)
 	{
 		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
-		ItemStack[] stored = this.getContainedItems(stack);
-		ItemStack[] query = new ItemStack[6];
-		for(int i=0; i<stored.length; i++)
+		NonNullList<ItemStack> stored = this.getContainedItems(stack);
+		NonNullList<ItemStack> query = NonNullList.withSize(6, ItemStack.EMPTY);
+		for(int i=0; i<stored.size(); i++)
 			if(i<6)
-				query[i] = stored[i];
+				query.set(i, stored.get(i));
 			else
 			{
-				stored[i] = null;
+				stored.set(i, ItemStack.EMPTY);
 				int craftable = recipes[i-6].getMaxCrafted(query);
 				if(craftable>0)
-					stored[i] = Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.stackSize*craftable, 64));
+					stored.set(i, Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.getCount() * craftable, 64)));
 			}
 		this.setContainedItems(stack, stored);
 	}
 
 	public void reduceInputs(BlueprintCraftingRecipe recipe, ItemStack stack, ItemStack crafted, Container contained)
 	{
-		ItemStack[] stored = this.getContainedItems(stack);
-		ItemStack[] query = new ItemStack[6];
+		NonNullList<ItemStack> stored = this.getContainedItems(stack);
+		NonNullList<ItemStack> query = NonNullList.withSize(6, ItemStack.EMPTY);
 		for(int i=0; i<6; i++)
-			query[i] = stored[i];
-		recipe.consumeInputs(query, crafted.stackSize/recipe.output.stackSize);
+			query.set(i, stored.get(i));
+		recipe.consumeInputs(query, crafted.getCount()/recipe.output.getCount());
 		for(int i=0; i<6; i++)
-			stored[i] = query[i];
+			stored.set(i, query.get(i));
 		this.setContainedItems(stack, stored);
 		if (contained instanceof ContainerModWorkbench)
 		{
@@ -149,9 +150,9 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@Override
 	public boolean canTakeFromWorkbench(ItemStack stack)
 	{
-		ItemStack[] stored = this.getContainedItems(stack);
+		NonNullList<ItemStack> stored = this.getContainedItems(stack);
 		for(int i=0; i<6; i++)
-			if(stored[i]!=null)
+			if(!stored.get(i).isEmpty())
 				return false;
 		return true;
 	}

@@ -29,7 +29,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public void update()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 			return;
 		if(!interdictionList && IEConfig.Machines.lantern_spawnPrevent)
 		{
@@ -52,8 +52,8 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		if(active!=b)
 		{
 			this.markContainingBlockForUpdate(null);
-			worldObj.checkLightFor(EnumSkyBlock.BLOCK, getPos());
-			worldObj.addBlockEvent(getPos(), getBlockType(), 1, 0);
+			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
+			world.addBlockEvent(getPos(), getBlockType(), 1, 0);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			worldObj.checkLightFor(EnumSkyBlock.BLOCK, getPos());
+			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
@@ -213,7 +213,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);
-		worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
+		world.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
 		return true;
 	}
 }

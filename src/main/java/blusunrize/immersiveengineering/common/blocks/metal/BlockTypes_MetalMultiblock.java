@@ -52,10 +52,10 @@ public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBa
 	}
 	public String getCustomState()
 	{
-		String[] split = getName().split("_");
+		/*String[] split = getName().split("_");
 		String s = split[0].toLowerCase(Locale.ENGLISH);
 		for(int i=1; i<split.length; i++)
-			s+=split[i].substring(0,1).toUpperCase(Locale.ENGLISH)+split[i].substring(1).toLowerCase(Locale.ENGLISH);
-		return s;
+			s+=split[i].substring(0,1).toUpperCase(Locale.ENGLISH)+split[i].substring(1).toLowerCase(Locale.ENGLISH);*/
+		return getName().toLowerCase();
 	}
 }

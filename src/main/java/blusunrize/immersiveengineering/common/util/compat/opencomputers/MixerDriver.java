@@ -115,7 +115,7 @@ public class MixerDriver extends DriverSidedTileEntity
 			if(slot < 1 || slot > 12)
 				throw new IllegalArgumentException("Input slots are 1-12");
 			TileEntityMixer master = getTileEntity();
-			Map<String, Object> stack = Utils.saveStack(master.inventory[slot - 1]);
+			Map<String, Object> stack = Utils.saveStack(master.inventory.get(slot - 1));
 			mainLoop:
 			for(MultiblockProcess<MixerRecipe> p : master.processQueue)
 				for(int i : ((MultiblockProcessInMachine<MixerRecipe>) p).getInputSlots())

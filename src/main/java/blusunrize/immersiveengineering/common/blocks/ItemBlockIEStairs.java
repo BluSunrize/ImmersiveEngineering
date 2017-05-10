@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ItemBlockIEStairs extends ItemBlock
 		return damageValue;
 	}
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List itemList)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList)
 	{
 		this.block.getSubBlocks(item, tab, itemList);
 	}

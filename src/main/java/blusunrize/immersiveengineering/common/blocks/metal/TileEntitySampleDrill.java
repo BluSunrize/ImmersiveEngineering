@@ -38,7 +38,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public int dummy=0;
 	public int process=0;
 	public boolean active = false;
-	public ItemStack sample;
+	public ItemStack sample = ItemStack.EMPTY;
 
 	public static boolean _Immovable()
 	{
@@ -48,10 +48,10 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Override
 	public void update()
 	{
-		if(dummy!=0 || worldObj.isRemote || worldObj.isAirBlock(getPos().add(0,-1,0)) || sample!=null)
+		if(dummy!=0 || world.isRemote || world.isAirBlock(getPos().add(0,-1,0)) || !sample.isEmpty())
 			return;
 
-		boolean powered = worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
+		boolean powered = world.isBlockIndirectlyGettingPowered(getPos())>0;
 		if(!active && powered)
 			active = true;
 		else if(active && !powered && process>= IEConfig.Machines.coredrill_time)
@@ -66,8 +66,8 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 				{
 					int cx = getPos().getX()>>4;
 					int cz = getPos().getZ()>>4;
-					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(worldObj, cx, cz);
-					this.sample = createCoreSample(worldObj, (getPos().getX()>>4), (getPos().getZ()>>4), info);
+					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, cx, cz);
+					this.sample = createCoreSample(world, (getPos().getX()>>4), (getPos().getZ()>>4), info);
 				}
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
@@ -84,14 +84,14 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 	public String getVein()
 	{
-		if(sample == null)
+		if(sample.isEmpty())
 			return "";
 		return sample.getTagCompound().getString("mineral");
 	}
 
 	public int getExpectedVeinYield()
 	{
-		if(sample == null)
+		if(sample.isEmpty())
 			return -1;
 		return ExcavatorHandler.mineralVeinCapacity - sample.getTagCompound().getInteger("depletion");
 	}
@@ -121,7 +121,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		nbt.setInteger("dummy", dummy);
 		nbt.setInteger("process", process);
 		nbt.setBoolean("active", active);
-		if(sample!=null)
+		if(!sample.isEmpty())
 			nbt.setTag("sample", sample.writeToNBT(new NBTTagCompound()));
 	}
 	@Override
@@ -132,7 +132,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		process = nbt.getInteger("process");
 		active = nbt.getBoolean("active");
 		if(nbt.hasKey("sample"))
-			sample = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("sample"));
+			sample = new ItemStack(nbt.getCompoundTag("sample"));
 
 	}
 
@@ -157,7 +157,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		if(dummy>0)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
+			TileEntity te = world.getTileEntity(getPos().add(0,-dummy,0));
 			if(te instanceof TileEntitySampleDrill)
 				return ((TileEntitySampleDrill)te).getFluxStorage();
 		}
@@ -193,16 +193,16 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		for(int i=1; i<=2; i++)
 		{
-			worldObj.setBlockState(pos.add(0,i,0), state);
-			((TileEntitySampleDrill)worldObj.getTileEntity(pos.add(0,i,0))).dummy = i;
+			world.setBlockState(pos.add(0,i,0), state);
+			((TileEntitySampleDrill)world.getTileEntity(pos.add(0,i,0))).dummy = i;
 		}
 	}
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		for(int i=0; i<=2; i++)
-			if(worldObj.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntitySampleDrill)
-				worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
+			if(world.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntitySampleDrill)
+				world.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
 	}
 
 	@Override
@@ -210,16 +210,16 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		if(dummy!=0)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
+			TileEntity te = world.getTileEntity(getPos().add(0,-dummy,0));
 			if(te instanceof TileEntitySampleDrill)
 				return ((TileEntitySampleDrill)te).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 		}
 			
-		if(this.sample!=null)
+		if(!this.sample.isEmpty())
 		{
-			if(!worldObj.isRemote)
+			if(!world.isRemote)
 				player.entityDropItem(this.sample.copy(), .5f);
-			this.sample = null;
+			this.sample = ItemStack.EMPTY;
 			this.active = false;
 			markDirty();
 			this.markContainingBlockForUpdate(null);
@@ -243,17 +243,17 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		//			int chunkZ = (z>>4);
 		//			String s0 = (chunkX*16)+", "+(chunkZ*16);
 		//			String s1 = (chunkX*16+16)+", "+(chunkZ*16+16);
-		//			player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"forChunk", s0,s1).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GRAY)));
+		//			player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"forChunk", s0,s1).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GRAY)));
 		//			if(process<Config.getInt("coredrill_time"))
 		//			{
 		//				float f = process/(float)Config.getInt("coredrill_time");
-		//				player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.progress",(int)(f*100)+"%").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
+		//				player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.progress",(int)(f*100)+"%").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
 		//			}
 		//			else
 		//			{
 		//				ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(world, chunkX, chunkZ);
 		//				if(mineral==null)
-		//					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.none").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
+		//					player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.none").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
 		//				else
 		//				{
 		//					String name = Lib.DESC_INFO+"mineral."+mineral.name;
@@ -264,11 +264,11 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		//					boolean deplOverride = info.depletion<0;
 		//					if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
 		//						localizedName = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+localizedName;
-		//					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",localizedName));
+		//					player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",localizedName));
 		//					if(ExcavatorHandler.mineralVeinCapacity>0&&!deplOverride)
 		//					{
 		//						String f = Utils.formatDouble((Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
-		//						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
+		//						player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
 		//					}
 		//				}
 		//			}

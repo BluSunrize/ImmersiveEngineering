@@ -19,7 +19,7 @@ public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
 
 		GlStateManager.translate(x+.5, y, z+.5);
 
-		if(tile.identStack!=null)
+		if(!tile.identStack.isEmpty())
 		{
 			GlStateManager.translate(0,5,0);
 			float baseScale = .0625f;
@@ -29,7 +29,7 @@ public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
 			float textScale = .375f;
 			GlStateManager.scale(baseScale,-baseScale,baseScale);
 			ItemStack stack = Utils.copyStackWithAmount(tile.identStack, tile.storageAmount);
-			String s = ""+stack.stackSize;
+			String s = "" + stack.getCount();
 			float w = this.getFontRenderer().getStringWidth(s);
 
 			float xx = -.5f*itemScale;
@@ -49,7 +49,7 @@ public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
 				GlStateManager.depthMask(false);
 				GlStateManager.translate(8-w/2,17,.001f);
 				GlStateManager.scale(textScale,textScale,1);
-				ClientUtils.font().drawString(""+stack.stackSize, 0,0,0x888888, true);
+				ClientUtils.font().drawString("" + stack.getCount(), 0,0,0x888888, true);
 				GlStateManager.scale(1/textScale,1/textScale,1);
 				GlStateManager.translate(-(8-w/2),-17,-.001f);
 				GlStateManager.depthMask(true);

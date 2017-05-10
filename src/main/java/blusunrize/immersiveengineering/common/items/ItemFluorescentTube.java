@@ -29,29 +29,30 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 
 	public ItemFluorescentTube()
 	{
-		super("fluorescentTube", 1);
+		super("fluorescent_tube", 1);
 	}
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(side==EnumFacing.UP)
 		{
 			if(!world.isRemote)
 			{
+				ItemStack stack = player.getHeldItem(hand);
 				Vec3d look = player.getLookVec();
 				float angle = (float) Math.toDegrees(Math.atan2(look.xCoord, look.zCoord));
 				EntityFluorescentTube tube = new EntityFluorescentTube(world, stack.copy(), angle);
 				tube.setPosition(pos.getX()+hitX, pos.getY()+1.5, pos.getZ()+hitZ);
-				world.spawnEntityInWorld(tube);
+				world.spawnEntity(tube);
 				stack.splitStack(1);
-				if (stack.stackSize>0)
+				if (stack.getCount()>0)
 					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
 				else
 					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
 			}
 			return EnumActionResult.SUCCESS;
 		}
-		return super.onItemUse(stack, player, world, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
 	}
 	public static float[] getRGB(ItemStack s)
 	{

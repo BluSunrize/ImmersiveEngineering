@@ -99,22 +99,22 @@ public class GuiModWorkbench extends GuiContainer
 			if(s instanceof IESlot.BlueprintOutput && !s.getHasStack())
 			{
 				BlueprintCraftingRecipe recipe = ((IESlot.BlueprintOutput)s).recipe;
-				if(recipe!=null && recipe.output!=null)
-					if(isPointInRegion(s.xDisplayPosition,s.yDisplayPosition, 16,16, mx,my))
+				if(recipe!=null && !recipe.output.isEmpty())
+					if(isPointInRegion(s.xPos,s.yPos, 16,16, mx,my))
 					{
 						ArrayList<String> tooltip = new ArrayList<String>();
 						tooltip.add(recipe.output.getRarity().rarityColor+recipe.output.getDisplayName());
 						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();
 						for(IngredientStack stack : recipe.inputs)
 						{
-							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(this.mc.thePlayer.ticksExisted), stack.inputSize);
-							if(toAdd==null)
+							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(this.mc.player.ticksExisted), stack.inputSize);
+							if(toAdd.isEmpty())
 								continue;
 							boolean isNew = true;
 							for(ItemStack ss : inputs)
 								if(OreDictionary.itemMatches(ss, toAdd, true))
 								{
-									ss.stackSize += toAdd.stackSize;
+									ss.grow(toAdd.getCount());
 									isNew = false;
 									break;
 								}
@@ -122,9 +122,9 @@ public class GuiModWorkbench extends GuiContainer
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(TextFormatting.GRAY.toString()+ss.stackSize+"x "+ ss.getDisplayName());
+							tooltip.add(TextFormatting.GRAY.toString() + ss.getCount() + "x " + ss.getDisplayName());
 
-						ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj);
+						ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer);
 						RenderHelper.enableGUIStandardItemLighting();
 					}
 			}
@@ -144,12 +144,12 @@ public class GuiModWorkbench extends GuiContainer
 		{
 			Slot s = inventorySlots.getSlot(i);
 
-			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition-1, guiTop+ s.yDisplayPosition-1, 17,1, 0x77222222);
-			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition-1, guiTop+ s.yDisplayPosition+0, 1,16, 0x77222222);
-			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+16, guiTop+ s.yDisplayPosition+0, 1,17, 0x77999999);
-			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+0, guiTop+ s.yDisplayPosition+16, 16,1, 0x77999999);
-			if( !(s instanceof IESlot.BlueprintOutput) || s.getHasStack() || ((IESlot.BlueprintOutput)s).recipe.output==null)
-				ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+0, guiTop+ s.yDisplayPosition+0, 16,16, 0x77444444);
+			ClientUtils.drawColouredRect(guiLeft+ s.xPos-1, guiTop+ s.yPos-1, 17,1, 0x77222222);
+			ClientUtils.drawColouredRect(guiLeft+ s.xPos-1, guiTop+ s.yPos+0, 1,16, 0x77222222);
+			ClientUtils.drawColouredRect(guiLeft+ s.xPos+16, guiTop+ s.yPos+0, 1,17, 0x77999999);
+			ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+16, 16,1, 0x77999999);
+			if( !(s instanceof IESlot.BlueprintOutput) || s.getHasStack() || ((IESlot.BlueprintOutput)s).recipe.output.isEmpty())
+				ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+0, 16,16, 0x77444444);
 		}
 
 		for(int i=0; i<((ContainerModWorkbench)inventorySlots).slotCount; i++)
@@ -158,20 +158,20 @@ public class GuiModWorkbench extends GuiContainer
 			if(s instanceof IESlot.BlueprintOutput && !s.getHasStack())
 			{
 				ItemStack ghostStack = ((IESlot.BlueprintOutput)s).recipe.output;
-				if(ghostStack!=null)
+				if(!ghostStack.isEmpty())
 				{
 					this.zLevel = 200.0F;
 					itemRender.zLevel = 200.0F;
 					FontRenderer font = ghostStack.getItem().getFontRenderer(ghostStack);
 					if(font==null)
-						font = fontRendererObj;
-					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xDisplayPosition, guiTop+s.yDisplayPosition);
+						font = fontRenderer;
+					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
 					this.zLevel = 0.0F;
 					itemRender.zLevel = 0.0F;
 
 					GlStateManager.disableLighting();
 					GlStateManager.disableDepth();
-					ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+0, guiTop+ s.yDisplayPosition+0, 16,16, 0x77444444);
+					ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+0, 16,16, 0x77444444);
 					GlStateManager.enableLighting();
 					GlStateManager.enableDepth();
 				}

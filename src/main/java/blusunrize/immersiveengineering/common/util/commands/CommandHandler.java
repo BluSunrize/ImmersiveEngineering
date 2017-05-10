@@ -34,7 +34,7 @@ public class CommandHandler extends CommandBase
 	}
 
 	@Override
-	public String getCommandName()
+	public String getName()
 	{
 		return name;
 	}
@@ -46,7 +46,7 @@ public class CommandHandler extends CommandBase
 	}
 
 	@Override
-	public List<String> getCommandAliases()
+	public List<String> getAliases()
 	{
 		return Collections.emptyList();
 	}
@@ -59,7 +59,7 @@ public class CommandHandler extends CommandBase
 //	}
 
 	@Override
-	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		if(args.length>0)
@@ -83,7 +83,7 @@ public class CommandHandler extends CommandBase
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender)
+	public String getUsage(ICommandSender sender)
 	{
 		String sub = "";
 		int i=0;
@@ -100,11 +100,11 @@ public class CommandHandler extends CommandBase
 			{
 				if(com.getIdent().equalsIgnoreCase(args[0]))
 				{
-					if(!sender.canCommandSenderUseCommand(com.getPermissionLevel(), this.getCommandName()))
+					if(!sender.canUseCommand(com.getPermissionLevel(), this.getName()))
 					{
 						TextComponentTranslation msg = new TextComponentTranslation("commands.generic.permission");
 						msg.getStyle().setColor(TextFormatting.RED);
-						sender.addChatMessage(msg);
+						sender.sendMessage(msg);
 					}
 					else
 						com.perform(this, server, sender, args);
@@ -116,7 +116,7 @@ public class CommandHandler extends CommandBase
 			int i=0;
 			for(IESubCommand com : commands)
 				sub += ((i++)>0?", ":"")+com.getIdent();
-			sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
+			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
 		}
 	}
 

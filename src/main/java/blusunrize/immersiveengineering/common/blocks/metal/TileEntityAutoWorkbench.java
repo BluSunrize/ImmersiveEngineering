@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -28,7 +29,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		super(MultiblockAutoWorkbench.instance, new int[]{2,3,3}, 32000, true);
 	}
 
-	public ItemStack[] inventory = new ItemStack[17];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);
 	public int selectedRecipe = -1;
 
 	@Override
@@ -64,21 +65,21 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	{
 		super.update();
 
-		if(isDummy() || isRSDisabled() || worldObj.isRemote || worldObj.getTotalWorldTime()%16!=((getPos().getX()^getPos().getZ())&15) || inventory[0]==null)
+		if(isDummy() || isRSDisabled() || world.isRemote || world.getTotalWorldTime()%16!=((getPos().getX()^getPos().getZ())&15) || inventory.get(0).isEmpty())
 			return;
 
-		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(inventory[0],"blueprint"));
+		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(inventory.get(0),"blueprint"));
 		if(recipes.length>0 && (this.selectedRecipe>=0 && this.selectedRecipe<recipes.length))
 		{
 			BlueprintCraftingRecipe recipe = recipes[this.selectedRecipe];
-			if(recipe!=null && recipe.output!=null)
+			if(recipe!=null && !recipe.output.isEmpty())
 			{
-				ItemStack[] query = new ItemStack[16];
+				NonNullList<ItemStack> query = NonNullList.withSize(16, ItemStack.EMPTY);
 				System.arraycopy(this.inventory,1, query,0, 16);
 				int crafted = recipe.getMaxCrafted(query);
 				if(crafted>0)
 				{
-					if(this.addProcessToQueue(new MultiblockProcessInWorld(recipe, 0.78f), true))
+					if(this.addProcessToQueue(new MultiblockProcessInWorld(recipe, 0.78f, NonNullList.create()), true))
 					{
 						this.addProcessToQueue(new MultiblockProcessInWorld(recipe, 0.78f, recipe.consumeInputs(query,1)), false);
 						System.arraycopy(query,0, this.inventory,1, 16);
@@ -184,11 +185,11 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	{
 		EnumFacing outDir = mirrored?facing.rotateYCCW():facing.rotateY();
 		BlockPos pos = getPos().offset(outDir,2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, outDir.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, outDir);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, outDir);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -216,7 +217,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
 	}

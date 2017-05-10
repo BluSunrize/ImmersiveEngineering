@@ -37,15 +37,15 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public void update()
 	{
-		if(worldObj.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127))
+		if(world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127))
 			canTurn = checkArea();
 		if(!canTurn)
 			return;
 
 		double mod = .00005;
-		if(!worldObj.isRaining())
+		if(!world.isRaining())
 			mod *= .75;
-		if(!worldObj.isThundering())
+		if(!world.isThundering())
 			mod *= .66;
 		if(getPos().getY()>200)
 			mod *= 2;
@@ -63,9 +63,9 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 		rotation %= 1;
 		perTick = (float) (turnSpeed*mod);
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			TileEntity tileEntity = worldObj.getTileEntity(pos.offset(facing));
+			TileEntity tileEntity = world.getTileEntity(pos.offset(facing));
 			if(tileEntity instanceof IRotationAcceptor)
 			{
 				IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
@@ -86,7 +86,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 		{
 			int r=Math.abs(hh)==6?1: Math.abs(hh)==5?3: Math.abs(hh)==4?4: Math.abs(hh)>1?5: 6;
 			for(int ww=-r;ww<=r;ww++)
-				if((hh!=0||ww!=0)&&!worldObj.isAirBlock(getPos().add((facing.getAxis()==Axis.Z?ww:0),hh,(facing.getAxis()==Axis.Z?0:ww))))
+				if((hh!=0||ww!=0)&&!world.isAirBlock(getPos().add((facing.getAxis()==Axis.Z?ww:0),hh,(facing.getAxis()==Axis.Z?0:ww))))
 					return false;
 		}
 
@@ -99,9 +99,9 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 				for(int dd=1;dd<8;dd++)
 				{
 					BlockPos pos = getPos().add(0, hh, 0).offset(facing.getOpposite(), dd).offset(facing.rotateY(), ww);
-					if(worldObj.isAirBlock(pos))
+					if(world.isAirBlock(pos))
 						turnSpeed ++;
-					else if(worldObj.getTileEntity(pos) instanceof TileEntityWindmill)
+					else if(world.getTileEntity(pos) instanceof TileEntityWindmill)
 					{
 						blocked+=20;
 						turnSpeed-=179;

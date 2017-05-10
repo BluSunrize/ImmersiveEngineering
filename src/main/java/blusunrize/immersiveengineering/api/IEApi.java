@@ -61,27 +61,27 @@ public class IEApi
 			return preferredStack;
 		}
 		ItemStack s = oreOutputPreference.get(oreName);
-		return s!=null?s.copy():null;
+		return s == null ? ItemStack.EMPTY : s.copy();
 	}
 	public static ItemStack getPreferredStackbyMod(List<ItemStack> list)
 	{
-		ItemStack preferredStack = null;
+		ItemStack preferredStack = ItemStack.EMPTY;
 		int lastPref = -1;
 		for(ItemStack stack : list)
-			if(stack!=null && stack.getItem()!=null)
+			if(!stack.isEmpty())
 			{
 				ResourceLocation rl = GameData.getItemRegistry().getNameForObject(stack.getItem());
 				if(rl!=null)
 				{
 					String modId = rl.getResourceDomain();
 					int idx = modId==null||modId.isEmpty()?-1: modPreference.indexOf(modId);
-					if(preferredStack==null || (idx>=0 && (lastPref<0 || idx<lastPref)))
+					if(preferredStack.isEmpty() || (idx>=0 && (lastPref<0 || idx<lastPref)))
 					{
 						preferredStack = stack;
 						lastPref = idx;
 					}
 				}
 			}
-		return preferredStack!=null?preferredStack.copy():null;
+		return preferredStack.copy();
 	}
 }

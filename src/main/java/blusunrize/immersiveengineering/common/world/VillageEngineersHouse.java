@@ -135,7 +135,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 7,1,6, 7,5,6, IEContent.blockWoodenDecoration.getStateFromMeta(0),IEContent.blockWoodenDecoration.getStateFromMeta(0), false);
 
 		//Doors
-		this.func_189915_a(world, box, rand, 4, 1, 3, EnumFacing.NORTH, Blocks.OAK_DOOR);
+		this.generateDoor(world, box, rand, 4, 1, 3, EnumFacing.NORTH, Blocks.OAK_DOOR);
 		if(getCoordBaseMode()==EnumFacing.SOUTH || getCoordBaseMode()==EnumFacing.WEST)
 		{
 			this.placeDoor(world, box, rand, 3,5,5, EnumFacing.NORTH, EnumHingePosition.LEFT);
@@ -252,7 +252,7 @@ public class VillageEngineersHouse extends Village
 		e.setDisplayedItem(stack);
 		if(e.onValidSurface() && world.getEntitiesWithinAABB(EntityHanging.class, new AxisAlignedBB(i1-.125,j1,k1-.125,i1+1.125,j1+1,k1+1.125)).isEmpty())
 			if(!world.isRemote)
-				world.spawnEntityInWorld(e);
+				world.spawnEntity(e);
 	}
 
 	@Override
@@ -278,7 +278,7 @@ public class VillageEngineersHouse extends Village
 		@Override
 		public PieceWeight getVillagePieceWeight(Random random, int i)
 		{
-			return new PieceWeight(VillageEngineersHouse.class, 15, MathHelper.getRandomIntegerInRange(random, 0 + i, 1 + i));
+			return new PieceWeight(VillageEngineersHouse.class, 15, MathHelper.getInt(random, 0 + i, 1 + i));
 		}
 		@Override
 		public Class<?> getComponentClass()

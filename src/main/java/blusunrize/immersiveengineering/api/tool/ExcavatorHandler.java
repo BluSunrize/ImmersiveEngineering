@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -132,7 +133,7 @@ public class ExcavatorHandler
 		public float failChance;
 		public String[] ores;
 		public float[] chances;
-		public ItemStack[] oreOutput;
+		public NonNullList<ItemStack> oreOutput;
 		public float[] recalculatedChances;
 		boolean isValid = false;
 		/**Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list*/
@@ -159,8 +160,8 @@ public class ExcavatorHandler
 		public void recalculateChances()
 		{
 			double chanceSum = 0;
-			ArrayList<ItemStack> existing = new ArrayList();
-			ArrayList<Double> reChances = new ArrayList();
+			NonNullList<ItemStack> existing = NonNullList.create();
+			ArrayList<Double> reChances = new ArrayList<>();
 			for(int i=0; i<ores.length; i++)
 			{
 				String ore = ores[i];
@@ -169,7 +170,7 @@ public class ExcavatorHandler
 				if(ore!=null && !ore.isEmpty() && ApiUtils.isExistingOreName(ore))
 				{
 					ItemStack preferredOre = IEApi.getPreferredOreStack(ore);
-					if(preferredOre!=null)
+					if(!preferredOre.isEmpty())
 					{
 						existing.add(preferredOre);
 						reChances.add((double)chances[i]);
@@ -178,7 +179,7 @@ public class ExcavatorHandler
 				}
 			}
 			isValid = existing.size()>0;
-			oreOutput = existing.toArray(new ItemStack[existing.size()]);
+			oreOutput = existing;
 			recalculatedChances = new float[reChances.size()];
 			for(int i=0; i<reChances.size(); i++)
 				recalculatedChances[i] = (float)(reChances.get(i)/chanceSum);
@@ -191,9 +192,9 @@ public class ExcavatorHandler
 			{
 				r -= recalculatedChances[i];
 				if(r < 0)
-					return this.oreOutput[i];
+					return this.oreOutput.get(i);
 			}
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		public boolean isValid()
@@ -266,9 +267,9 @@ public class ExcavatorHandler
 				chances[i] = tagList.getFloatAt(i);
 
 			tagList = tag.getTagList("oreOutput", 10);
-			ItemStack[] oreOutput = new ItemStack[tagList.tagCount()];
-			for(int i=0; i<oreOutput.length; i++)
-				oreOutput[i] = ItemStack.loadItemStackFromNBT(tagList.getCompoundTagAt(i));
+			NonNullList<ItemStack> oreOutput = NonNullList.withSize(tagList.tagCount(), ItemStack.EMPTY);
+			for(int i = 0; i< oreOutput.size(); i++)
+				oreOutput.set(i, new ItemStack(tagList.getCompoundTagAt(i)));
 
 			tagList = tag.getTagList("recalculatedChances", 5);
 			float[] recalculatedChances = new float[tagList.tagCount()];
