@@ -77,23 +77,15 @@ repositories {
 }
 
 dependencies {
-    //1.9 dependencies
-//    deobfCompile "mezz.jei:jei_1.9.4:3.6.+"
-//    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-//    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.+"
-//    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
-    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-
-    //1.10 dependencies
-    deobfProvided 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
-    deobfProvided "slimeknights:TConstruct:1.10.2-2.6.+"
-
     deobfCompile "mezz.jei:jei_1.11.2:4.2.+"
     deobfCompile "slimeknights.mantle:Mantle:1.11.2-1.2.+"
     deobfCompile "com.github.mcjty:compatlayer:1.11-0.+"//1.10-0.2.2
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.1x-1.+"//1.1x-1.4.4-55
     deobfCompile "MineTweaker3:MineTweaker3-MC1112-Main:1.11.2-3.0.+"//17.68
     deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+"
+    deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+"
+    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
+    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
 
 }
 
