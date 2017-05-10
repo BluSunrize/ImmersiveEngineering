@@ -69,7 +69,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				int split = key.lastIndexOf("_");
 				if(split<0)
 					split = key.length();
-				revolverIcons.put(key, ApiUtils.getRegisterSprite(map, "immersiveengineering:revolvers/revolver_"+key.substring(0,split)));
+				revolverIcons.put(key, ApiUtils.getRegisterSprite(map, "immersiveengineering:revolvers/revolver_"+key.substring(0,split).toLowerCase()));
 			}
 	}
 
@@ -344,7 +344,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	}
 	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		return ListUtils.fromItems(this.getContainedItems(revolver));
+		return ListUtils.fromItems(this.getContainedItems(revolver).subList(0,getBulletSlotAmount(revolver)));
 	}
 	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
 	{
@@ -489,7 +489,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 		if(stack.getItemDamage()==1)
 			return;
-		String uuid = player.getUniqueID().toString();
+		String uuid = "1501b168-941a-4c8f-a729-4d317fc2e717";//player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
 			ArrayList<SpecialRevolver> list = new ArrayList(specialRevolvers.get(uuid));

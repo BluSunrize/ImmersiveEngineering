@@ -85,7 +85,8 @@ dependencies {
     deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+"
     deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
-    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
+//    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
+    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+'
 
 }
 
