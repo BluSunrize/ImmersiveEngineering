@@ -1,10 +1,12 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		this.inputList = Lists.newArrayList(this.input);
 		if(this.additives.length>0)
 			this.inputList.addAll(Lists.newArrayList(this.additives));
-		this.outputList = Lists.newArrayList(this.output);
+		this.outputList = ListUtils.fromItem(this.output);
 	}
 	
 	@Override
@@ -116,15 +118,17 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return null;
 	}
 
-	public List<ItemStack> getOutputs(ItemStack input, ItemStack[] additives)
+	public NonNullList<ItemStack> getOutputs(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		return Lists.newArrayList(output); 
+		NonNullList<ItemStack> outputs = NonNullList.create();
+		outputs.add(output);
+		return outputs;
 	}
-	public boolean matches(ItemStack input, ItemStack[] additives)
+	public boolean matches(ItemStack input, NonNullList<ItemStack> additives)
 	{
 		if(this.input!=null && this.input.matches(input))
 		{
-			ArrayList<ItemStack> qAdd = new ArrayList<ItemStack>(additives.length);
+			ArrayList<ItemStack> qAdd = new ArrayList<ItemStack>(additives.size());
 			for(ItemStack s : additives)
 				qAdd.add(s);
 
@@ -136,22 +140,22 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 					while(it.hasNext())
 					{
 						ItemStack query = it.next();
-						if(query!=null)
+						if(!query.isEmpty())
 						{
 							if(add.matches(query))
 							{
-								if(query.stackSize > addAmount)
+								if(query.getCount() > addAmount)
 								{
-									query.stackSize-=addAmount;
+									query.shrink(addAmount);
 									addAmount=0;
 								}
 								else
 								{
-									addAmount-=query.stackSize;
-									query.stackSize=0;
+									addAmount -= query.getCount();
+									query.setCount(0);
 								}
 							}
-							if(query.stackSize<=0)
+							if(query.getCount() <= 0)
 								it.remove();
 							if(addAmount<=0)
 								break;
@@ -191,7 +195,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 			recipeList.add(recipe);
 		return recipe;
 	}
-	public static ArcFurnaceRecipe findRecipe(ItemStack input, ItemStack[] additives)
+	public static ArcFurnaceRecipe findRecipe(ItemStack input, NonNullList<ItemStack> additives)
 	{
 		for(ArcFurnaceRecipe recipe : recipeList)
 			if(recipe!=null && recipe.matches(input, additives))

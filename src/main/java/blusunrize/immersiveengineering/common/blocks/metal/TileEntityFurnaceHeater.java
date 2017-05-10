@@ -31,16 +31,16 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			boolean a = active;
-			boolean redstonePower = worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
+			boolean redstonePower = world.isBlockIndirectlyGettingPowered(getPos())>0;
 			if(active && !redstonePower)
 				active=false;
 			if(energyStorage.getEnergyStored()>3200||a)
 				for(EnumFacing fd : EnumFacing.VALUES)
 				{
-					TileEntity tileEntity = worldObj.getTileEntity(getPos().offset(fd));
+					TileEntity tileEntity = world.getTileEntity(getPos().offset(fd));
 					int consumed = 0;
 					if(tileEntity!=null)
 						if(tileEntity instanceof IExternalHeatable)
@@ -62,7 +62,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
-				worldObj.addBlockEvent(getPos(), this.getBlockType(), 1,active?1:0);
+				world.addBlockEvent(getPos(), this.getBlockType(), 1,active?1:0);
 			}
 		}
 	}
@@ -92,7 +92,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	@Override
 	public boolean getIsActive()
 	{
-		return active || worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
+		return active || world.isBlockIndirectlyGettingPowered(getPos())>0;
 	}
 	//	@Override
 	//	public SideConfig getEnergySideConfig(int side)
@@ -104,8 +104,8 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	//	{
 	//		sockets[side] = sockets[side]==1?0:1;
 	//		this.markDirty();
-	//		worldObj.markBlockForUpdate(getPos());
-	//		worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+	//		world.markBlockForUpdate(getPos());
+	//		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 	//	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)

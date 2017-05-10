@@ -108,11 +108,11 @@ public class ManualPageMultiblock extends ManualPages
 				{
 					IngredientStack req = totalMaterials[ss];
 					int reqSize = req.inputSize;
-					for(int slot = 0; slot < ManualUtils.mc().thePlayer.inventory.getSizeInventory(); slot++)
+					for(int slot = 0; slot < ManualUtils.mc().player.inventory.getSizeInventory(); slot++)
 					{
-						ItemStack inSlot = ManualUtils.mc().thePlayer.inventory.getStackInSlot(slot);
-						if(inSlot != null && req.matchesItemStackIgnoringSize(inSlot))
-							if((reqSize -= inSlot.stackSize) <= 0)
+						ItemStack inSlot = ManualUtils.mc().player.inventory.getStackInSlot(slot);
+						if(!inSlot.isEmpty() && req.matchesItemStackIgnoringSize(inSlot))
+							if((reqSize -= inSlot.getCount()) <= 0)
 								break;
 					}
 					if(reqSize <= 0)
@@ -135,7 +135,7 @@ public class ManualPageMultiblock extends ManualPages
 					String s = hasItems[ss] ? (TextFormatting.GREEN + TextFormatting.BOLD.toString() + "\u2713" + TextFormatting.RESET + " ") : hasAnyItems ? ("   ") : "";
 					s += TextFormatting.GRAY + sIndent + req.inputSize + "x " + TextFormatting.RESET;
 					ItemStack example = req.getExampleStack();
-					if(example != null)
+					if(!example.isEmpty())
 						s += example.getRarity().rarityColor + example.getDisplayName();
 					else
 						s += "???";
@@ -174,7 +174,7 @@ public class ManualPageMultiblock extends ManualPages
 				//			GL11.glDepthFunc(GL11.GL_ALWAYS);
 				//			GL11.glDisable(GL11.GL_CULL_FACE);
 				int i = 0;
-				ItemStack highlighted = null;
+				ItemStack highlighted = ItemStack.EMPTY;
 
 				final BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 
@@ -313,6 +313,8 @@ public class ManualPageMultiblock extends ManualPages
 
 		private IBlockState convert(int index, ItemStack itemstack)
 		{
+			if (itemstack == null)
+				return Blocks.AIR.getDefaultState();
 			IBlockState state = data.multiblock.getBlockstateFromStack(index, itemstack);
 			if(state!=null)
 				return state;
@@ -422,7 +424,7 @@ public class ManualPageMultiblock extends ManualPages
 					if(structure[h][l].length > structureWidth)
 						structureWidth = structure[h][l].length;
 					for(ItemStack ss : structure[h][l])
-						if(ss != null)
+						if(ss != null && !ss.isEmpty())
 							perLvl++;
 				}
 				countPerLevel[h] = perLvl;
@@ -462,7 +464,8 @@ public class ManualPageMultiblock extends ManualPages
 			int x = r / structureWidth;
 			int z = r % structureWidth;
 
-			return data[y][x][z] == null;
+			ItemStack stack = data[y][x][z];
+			return stack == null || stack.isEmpty();
 		}
 
 		public int getLimiter()

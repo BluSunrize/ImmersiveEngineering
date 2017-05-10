@@ -7,6 +7,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -31,14 +32,14 @@ public class RecipeRGBColouration implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
-		ItemStack itemToColour = null;
+		ItemStack itemToColour = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
+			if(!stackInSlot.isEmpty())
 			{
-				if(itemToColour == null && predicate.test(stackInSlot))
+				if(itemToColour.isEmpty() && predicate.test(stackInSlot))
 					itemToColour = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -46,7 +47,7 @@ public class RecipeRGBColouration implements IRecipe
 					return false;
 			}
 		}
-		return itemToColour!=null && !list.isEmpty();
+		return !itemToColour.isEmpty() && !list.isEmpty();
 	}
 
 	@Override
@@ -55,12 +56,12 @@ public class RecipeRGBColouration implements IRecipe
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
-		ItemStack itemToColour = null;
+		ItemStack itemToColour = ItemStack.EMPTY;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
-				if(itemToColour == null && predicate.test(stackInSlot))
+			if(!stackInSlot.isEmpty())
+				if(itemToColour.isEmpty() && predicate.test(stackInSlot))
 				{
 					itemToColour = stackInSlot;
 					int colour = colourGetter.apply(itemToColour);
@@ -86,7 +87,7 @@ public class RecipeRGBColouration implements IRecipe
 					++totalColourSets;
 				}
 		}
-		if(itemToColour!=null)
+		if(!itemToColour.isEmpty())
 		{
 			ItemStack newItem = Utils.copyStackWithAmount(itemToColour, 1);
 			int r = colourArray[0] / totalColourSets;
@@ -102,7 +103,7 @@ public class RecipeRGBColouration implements IRecipe
 			colourSetter.accept(newItem, newColour);
 			return newItem;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -113,11 +114,11 @@ public class RecipeRGBColouration implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}

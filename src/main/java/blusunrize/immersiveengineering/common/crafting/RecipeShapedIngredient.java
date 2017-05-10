@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -117,7 +118,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		if(nbtCopyTargetSlot >= 0)
 		{
 			ItemStack out = output.copy();
-			if(matrix.getStackInSlot(nbtCopyTargetSlot) != null && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
+			if(!matrix.getStackInSlot(nbtCopyTargetSlot).isEmpty() && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
 				out.setTagCompound(matrix.getStackInSlot(nbtCopyTargetSlot).getTagCompound().copy());
 			return out;
 		}
@@ -126,9 +127,9 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
 	{
-		ItemStack[] remains = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		NonNullList<ItemStack> remains = ForgeHooks.defaultRecipeGetRemainingItems(inv);
 //		Commented out, apparently fluids handle this reasonably well themselves .-.
 //		for(int i = 0; i < height*width; i++)
 //		{
@@ -195,7 +196,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 				}
 
 				ItemStack slot = inv.getStackInRowAndColumn(x, y);
-				if((target == null) != (slot == null))
+				if((target == null) != (slot.isEmpty()))
 					return false;
 				else if(target != null && !target.matchesItemStack(slot))
 					return false;

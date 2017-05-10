@@ -8,6 +8,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -16,34 +17,34 @@ public class RecipePotionBullets implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
-		ItemStack bullet = null;
-		ItemStack potion = null;
+		ItemStack bullet = ItemStack.EMPTY;
+		ItemStack potion = ItemStack.EMPTY;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
-				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+			if(!stackInSlot.isEmpty())
+				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
-				else if(potion==null && stackInSlot.getItem() instanceof ItemPotion)
+				else if(potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
 				else
 					return false;
 		}
-		return bullet!=null&&potion!=null;
+		return !bullet.isEmpty() && !potion.isEmpty();
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
-		ItemStack bullet = null;
-		ItemStack potion = null;
+		ItemStack bullet = ItemStack.EMPTY;
+		ItemStack potion = ItemStack.EMPTY;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
-				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+			if(!stackInSlot.isEmpty())
+				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
-				else if(potion==null && stackInSlot.getItem() instanceof ItemPotion)
+				else if(potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
 		}
 		ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);
@@ -63,7 +64,7 @@ public class RecipePotionBullets implements IRecipe
 	}
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }

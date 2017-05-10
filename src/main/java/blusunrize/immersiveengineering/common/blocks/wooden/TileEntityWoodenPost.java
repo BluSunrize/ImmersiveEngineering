@@ -64,7 +64,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		TileEntity te;
 		for(int i=0; i<=2; i++)
 		{
-			te = worldObj.getTileEntity(getPos().add(0,1+i,0));
+			te = world.getTileEntity(getPos().add(0,1+i,0));
 			if(te instanceof TileEntityWoodenPost)//Stacked pieces
 			{
 				for(EnumFacing f : EnumFacing.HORIZONTALS)
@@ -72,7 +72,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 					{
 						if(i==2)//Arms
 						{
-							TileEntityWoodenPost arm = (TileEntityWoodenPost)worldObj.getTileEntity(pos.add(0,1+i,0).offset(f));
+							TileEntityWoodenPost arm = (TileEntityWoodenPost)world.getTileEntity(pos.add(0,1+i,0).offset(f));
 							boolean up = arm.hasConnection(EnumFacing.UP);
 							boolean down = arm.hasConnection(EnumFacing.DOWN);
 							if(up || (!up&&!down))
@@ -93,11 +93,11 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		BlockPos pos = getPos().offset(dir);
 		if(dummy>0&&dummy<3)
 		{
-			IBlockState state = worldObj.getBlockState(pos);
+			IBlockState state = world.getBlockState(pos);
 			for(Enum meta : postMetaProperties)
 				if(state.getProperties().containsValue(meta))
 					return false;
-			AxisAlignedBB boundingBox = state.getBoundingBox(worldObj, pos);
+			AxisAlignedBB boundingBox = state.getBoundingBox(world, pos);
 			double minX = boundingBox.minX;
 			double maxX = boundingBox.maxX;
 			double minZ = boundingBox.minZ;
@@ -107,15 +107,15 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		}
 		else if(dummy==3)
 		{
-			TileEntity te = worldObj.getTileEntity(pos);
+			TileEntity te = world.getTileEntity(pos);
 			return (te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)te).dummy-3==dir.ordinal());
 		}
 		else if(dummy>3)
 		{
-			if(worldObj.isAirBlock(pos))
+			if(world.isAirBlock(pos))
 				return false;
-			IBlockState state = worldObj.getBlockState(pos);
-			AxisAlignedBB boundingBox = state.getBoundingBox(worldObj, pos);
+			IBlockState state = world.getBlockState(pos);
+			AxisAlignedBB boundingBox = state.getBoundingBox(world, pos);
 			return dir==EnumFacing.UP?boundingBox.minY==0: dir == EnumFacing.DOWN && boundingBox.maxY == 1;
 		}
 		return false;
@@ -156,9 +156,9 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 	{
 		for(int i=1; i<=3; i++)
 		{
-			worldObj.setBlockState(pos.add(0,i,0), state);
-			((TileEntityWoodenPost)worldObj.getTileEntity(pos.add(0,i,0))).dummy = (byte)i;
-			worldObj.addBlockEvent(pos.add(0, i, 0), getBlockType(), 255, 0);
+			world.setBlockState(pos.add(0,i,0), state);
+			((TileEntityWoodenPost)world.getTileEntity(pos.add(0,i,0))).dummy = (byte)i;
+			world.addBlockEvent(pos.add(0, i, 0), getBlockType(), 255, 0);
 		}
 	}
 	@Override
@@ -167,16 +167,16 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		if(dummy<=3)
 			for(int i=0; i<=3; i++)
 			{
-				if(worldObj.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntityWoodenPost)
-					worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
+				if(world.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntityWoodenPost)
+					world.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
 				if(i==3)
 				{
 					TileEntity te;
 					for(EnumFacing facing : EnumFacing.HORIZONTALS)
 					{
-						te = worldObj.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0).offset(facing));
+						te = world.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0).offset(facing));
 						if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) te).dummy==(3+facing.ordinal()))
-							worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0).offset(facing));
+							world.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0).offset(facing));
 					}
 				}
 			}
@@ -189,25 +189,25 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		{
 			BlockPos offsetPos = getPos().offset(side);
 			//No Arms if space is blocked
-			if(!worldObj.isAirBlock(offsetPos))
+			if(!world.isAirBlock(offsetPos))
 				return false;
 			//No Arms if perpendicular arms exist
-			TileEntity perpendicular = worldObj.getTileEntity(getPos().offset(side.rotateY()));
+			TileEntity perpendicular = world.getTileEntity(getPos().offset(side.rotateY()));
 			if(perpendicular instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)perpendicular).dummy-3==side.rotateY().ordinal())
 				return false;
-			perpendicular = worldObj.getTileEntity(getPos().offset(side.rotateYCCW()));
+			perpendicular = world.getTileEntity(getPos().offset(side.rotateYCCW()));
 			if(perpendicular instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)perpendicular).dummy-3==side.rotateYCCW().ordinal())
 				return false;
 
-			worldObj.setBlockState(offsetPos, worldObj.getBlockState(getPos()));
-			((TileEntityWoodenPost)worldObj.getTileEntity(offsetPos)).dummy = (byte)(3+side.ordinal());
+			world.setBlockState(offsetPos, world.getBlockState(getPos()));
+			((TileEntityWoodenPost)world.getTileEntity(offsetPos)).dummy = (byte)(3+side.ordinal());
 			this.markBlockForUpdate(offsetPos, null);
 			this.markBlockForUpdate(getPos().add(0,-3,0), null);
 		}
 		else if(this.dummy>3)
 		{
 			EnumFacing f = EnumFacing.getFront(dummy-3).getOpposite();
-			this.worldObj.setBlockToAir(getPos());
+			this.world.setBlockToAir(getPos());
 			this.markBlockForUpdate(getPos().offset(f).add(0,-3,0), null);
 		}
 		return false;

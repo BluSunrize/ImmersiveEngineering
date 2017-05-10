@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -18,9 +19,9 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 	{
 		return inputList;
 	}
-	protected List<ItemStack> outputList;
+	protected NonNullList<ItemStack> outputList;
 	@Override
-	public List<ItemStack> getItemOutputs()
+	public NonNullList<ItemStack> getItemOutputs()
 	{
 		return outputList;
 	}
@@ -93,7 +94,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 			for(int i=0; i<outputList.size(); i++)
 			{
 				ItemStack s = outputList.get(i);
-				ArrayList<ItemStack> list = Lists.newArrayList(s!=null?s.copy():null);
+				ArrayList<ItemStack> list = Lists.newArrayList(s!=null&&!s.isEmpty()?s.copy():ItemStack.EMPTY);
 				this.jeiItemOutputList[i] = list;
 				this.jeiTotalItemOutputList.addAll(list);
 			}

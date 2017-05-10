@@ -69,7 +69,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	@Override
 	public void update()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 			return;
 		if(turnCooldown > 0)
 			turnCooldown--;
@@ -86,7 +86,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			shouldUpdate = false;
 		}
 
-		enabled = (controllingComputers > 0 && computerOn) || (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted);
+		enabled = (controllingComputers > 0 && computerOn) || (world.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted);
 		if(energyStorage >= (!active ? energyDraw*10 : energyDraw) && enabled && switchCooldown <= 0)
 		{
 			energyStorage -= energyDraw;
@@ -100,7 +100,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 
 		switchCooldown--;
-		if(active != b || worldObj.getTotalWorldTime() % 512 == ((getPos().getX() ^ getPos().getZ()) & 511))
+		if(active != b || world.getTotalWorldTime() % 512 == ((getPos().getX() ^ getPos().getZ()) & 511))
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true,active);
@@ -110,16 +110,16 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			if(!lightsToBePlaced.isEmpty())
 				lightsToBePlaced.clear();
 		}
-		else if(!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty() && worldObj.getTotalWorldTime()%8==((getPos().getX()^getPos().getZ())&7))
+		else if(!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty() && world.getTotalWorldTime()%8==((getPos().getX()^getPos().getZ())&7))
 		{
 			Iterator<BlockPos> it = lightsToBePlaced.iterator();
 			int timeout = 0;
 			while(it.hasNext() && timeout++<16)
 			{
 				BlockPos cc = it.next();
-				//				worldObj.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
-				worldObj.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
-				TileEntity te = worldObj.getTileEntity(cc);
+				//				world.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
+				world.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
+				TileEntity te = world.getTileEntity(cc);
 				if (te instanceof TileEntityFakeLight)
 					((TileEntityFakeLight)te).floodlightCoords = new int[]{getPos().getX(),getPos().getY(),getPos().getZ()};
 				fakeLights.add(cc);
@@ -130,8 +130,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			while(it.hasNext() && timeout++<16)
 			{
 				BlockPos cc = it.next();
-				if(worldObj.getTileEntity(cc) instanceof TileEntityFakeLight)
-					worldObj.setBlockToAir(cc);
+				if(world.getTileEntity(cc) instanceof TileEntityFakeLight)
+					world.setBlockToAir(cc);
 				it.remove();
 			}
 		}
@@ -145,7 +145,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		while(it.hasNext())
 		{
 			BlockPos cc = it.next();
-			TileEntity te = worldObj.getTileEntity(cc);
+			TileEntity te = world.getTileEntity(cc);
 			if(te instanceof TileEntityFakeLight)
 			{
 				if(deleteOld)
@@ -233,7 +233,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
-		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range), worldObj, ignore);
+		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range), world, ignore);
 		double maxDistance = hit!=null?new Vec3d(hit).addVector(.5,.75,.5).squareDistanceTo(light):range*range;
 		for(int i=1+offset; i<=range; i++)
 		{
@@ -243,9 +243,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				break;
 			if(target.getY()>255||target.getY()<0)
 				continue;
-			//&&worldObj.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
+			//&&world.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 
-			if(!target.equals(getPos())&&worldObj.isAirBlock(target))
+			if(!target.equals(getPos())&&world.isAirBlock(target))
 			{
 				if(!checklist.remove(target))
 					lightsToBePlaced.add(target);
@@ -289,7 +289,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			int[] icc = nbt.getIntArray("fakeLight_"+i);
 			fakeLights.add(new BlockPos(icc[0],icc[1],icc[2]));
 		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && world!=null)
 			this.markContainingBlockForUpdate(null);
 		if(descPacket)
 		{
@@ -358,7 +358,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			worldObj.checkLightFor(EnumSkyBlock.BLOCK, getPos());
+			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
@@ -626,7 +626,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX + (dir ? -11.25f : 11.25f)));
 		markDirty();
 		this.markContainingBlockForUpdate(null);
-		worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 		turnCooldown = 20;
 	}
 
@@ -643,7 +643,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		this.rotY %= 360;
 		markDirty();
 		this.markContainingBlockForUpdate(null);
-		worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 		turnCooldown = 20;
 	}
 }

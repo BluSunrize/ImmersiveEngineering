@@ -118,11 +118,11 @@ public class ChemthrowerHandler
 		}
 		public abstract void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 
-		public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+		public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 		{
-			applyToBlock(worldObj, mop, shooter, thrower, fluid.getFluid());
+			applyToBlock(world, mop, shooter, thrower, fluid.getFluid());
 		}
-		public abstract void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 	}
 	public static class ChemthrowerEffect_Damage extends ChemthrowerEffect
 	{
@@ -147,7 +147,7 @@ public class ChemthrowerHandler
 			}
 		}
 		@Override
-		public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 		}
 	}
@@ -194,8 +194,8 @@ public class ChemthrowerHandler
 		private static DamageSource getPlayerDrownDamage(EntityPlayer player)
 		{
 			if(player==null)
-				return DamageSource.drown;
-			return new EntityDamageSource(DamageSource.drown.getDamageType(),player).setDamageBypassesArmor();
+				return DamageSource.DROWN;
+			return new EntityDamageSource(DamageSource.DROWN.getDamageType(),player).setDamageBypassesArmor();
 		}
 		@Override
 		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
@@ -208,11 +208,11 @@ public class ChemthrowerHandler
 					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
 		}
 		@Override
-		public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
-			Block b = worldObj.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
+			Block b = world.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
 			if(b instanceof BlockFire)
-				worldObj.setBlockToAir(mop.getBlockPos().offset(mop.sideHit));
+				world.setBlockToAir(mop.getBlockPos().offset(mop.sideHit));
 		}
 	}
 	public static class ChemthrowerEffect_RandomTeleport extends ChemthrowerEffect_Damage
@@ -227,18 +227,18 @@ public class ChemthrowerHandler
 		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			super.applyToEntity(target, shooter, thrower, fluid);
-			if(target.worldObj.rand.nextFloat()<chance)
+			if(target.world.rand.nextFloat()<chance)
 			{
-				double x = target.posX - 8 + target.worldObj.rand.nextInt(17);
-				double y = target.posY + target.worldObj.rand.nextInt(8);
-				double z = target.posZ - 8 + target.worldObj.rand.nextInt(17);
-				if(!target.worldObj.getBlockState(new BlockPos(x,y,z)).getMaterial().isSolid())
+				double x = target.posX - 8 + target.world.rand.nextInt(17);
+				double y = target.posY + target.world.rand.nextInt(8);
+				double z = target.posZ - 8 + target.world.rand.nextInt(17);
+				if(!target.world.getBlockState(new BlockPos(x,y,z)).getMaterial().isSolid())
 				{
 					EnderTeleportEvent event = new EnderTeleportEvent(target, x, y, z, 0);
 					if(MinecraftForge.EVENT_BUS.post(event))
 						return;
 					target.setPositionAndUpdate(event.getTargetX(), event.getTargetY()	, event.getTargetZ());
-					target.worldObj.playSound(target.posX,target.posY,target.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+					target.world.playSound(target.posX,target.posY,target.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
 				}
 			}
 		}

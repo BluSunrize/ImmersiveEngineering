@@ -193,7 +193,7 @@ public class ImmersiveNetHandler
 						double dy = node.getY()+.5+Math.signum(con.start.getY()-con.end.getY());
 						double dz = node.getZ()+.5+Math.signum(con.start.getZ()-con.end.getZ());
 						if(doDrops&&world.getGameRules().getBoolean("doTileDrops"))
-							world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil(con)));
+							world.spawnEntity(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil(con)));
 						if(world.isBlockLoaded(con.start))
 							world.addBlockEvent(con.start, world.getBlockState(con.start).getBlock(),-1,0);
 					}
@@ -258,7 +258,7 @@ public class ImmersiveNetHandler
 							double dy = node.getY()+.5+Math.signum(con.start.getY()-con.end.getY());
 							double dz = node.getZ()+.5+Math.signum(con.start.getZ()-con.end.getZ());
 							if(world.getGameRules().getBoolean("doTileDrops"))
-								world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil(con)));
+								world.spawnEntity(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil(con)));
 							if(world.isBlockLoaded(con.start))
 								world.addBlockEvent(con.start, world.getBlockState(con.start).getBlock(),-1,0);
 						}

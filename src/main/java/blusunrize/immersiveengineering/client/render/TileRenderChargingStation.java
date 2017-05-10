@@ -31,12 +31,12 @@ public class TileRenderChargingStation extends TileEntitySpecialRenderer<TileEnt
 					GlStateManager.rotate(90, 0,1,0);
 					break;
 			}
-			if(te.inventory[0]!=null)
+			if(!te.inventory.get(0).isEmpty())
 			{
 				GlStateManager.pushMatrix();
 				float scale = .625f;
 				GlStateManager.scale(scale,scale,1);
-				ClientUtils.mc().getRenderItem().renderItem(te.inventory[0], TransformType.FIXED);
+				ClientUtils.mc().getRenderItem().renderItem(te.inventory.get(0), TransformType.FIXED);
 				GlStateManager.popMatrix();
 
 //				if(!RenderManager.instance.options.fancyGraphics && MinecraftForgeClient.getItemRenderer(te.inventory, ItemRenderType.ENTITY)==null)

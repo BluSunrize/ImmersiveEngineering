@@ -19,7 +19,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe,
 	//	static ItemStack arcFurnaceStack;
 	public ArcFurnaceRecipeCategory(IGuiHelper helper, String recipeType, Class recipeClass)
 	{
-		super("arcFurnace"+(recipeType!=null?"."+recipeType: ""), "tile.immersiveengineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140, 50), recipeClass, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
+		super("arcFurnace"+(recipeType!=null?"."+recipeType: ""), "tile.immersiveengineering.metal_multiblock.arc_furnace.name", helper.createBlankDrawable(140, 50), recipeClass, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
 		subType = recipeType;
 		if(recipeType!=null)
 			this.localizedName += " - "+recipeType;
@@ -29,13 +29,6 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe,
 	public ArcFurnaceRecipeCategory(IGuiHelper helper)
 	{
 		this(helper, null, ArcFurnaceRecipe.class);
-	}
-
-	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, ArcFurnaceRecipeWrapper recipeWrapper)
-	{
-		//Deprecated
 	}
 
 	@Override

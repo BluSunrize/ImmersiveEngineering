@@ -1,0 +1,6 @@
+{
+	"parent":"item/handheld",
+	"textures": {
+		"layer0":"immersiveengineering:items/material_stick_treated"
+	}
+}

@@ -82,7 +82,7 @@ public class MultiblockFermenter implements IMultiblock
 	@Override
 	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
-		if(stack!=null)
+		if(!stack.isEmpty())
 		{
 			if(stack.getItem() == Items.CAULDRON)
 				return Blocks.CAULDRON.getDefaultState();
@@ -102,13 +102,13 @@ public class MultiblockFermenter implements IMultiblock
 	{
 		return true;
 	}
-	@SideOnly(Side.CLIENT)
-	static ItemStack renderStack;
+	//@SideOnly(Side.CLIENT)
+	static ItemStack renderStack = ItemStack.EMPTY;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		if(renderStack==null)
+		if(renderStack.isEmpty())
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.FERMENTER.getMeta());
 		GlStateManager.translate(1.5, 1.5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);

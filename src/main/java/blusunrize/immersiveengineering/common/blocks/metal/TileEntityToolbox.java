@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -26,7 +27,7 @@ import javax.annotation.Nullable;
 
 public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalTile, IBlockBounds, IIEInventory, IGuiTile, ITileDrop, IPlayerInteraction
 {
-	ItemStack[] inventory = new ItemStack[27];
+	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public String name;
 	private EnumFacing facing = EnumFacing.NORTH;
 
@@ -59,7 +60,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				getWorld().setBlockToAir(getPos());
-				getWorld().spawnEntityInWorld(entityitem);
+				getWorld().spawnEntity(entityitem);
 			}
 			return true;
 		}
@@ -90,14 +91,14 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		if(stack!=null)
+		if(!stack.isEmpty())
 		{
 			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
 				return false;

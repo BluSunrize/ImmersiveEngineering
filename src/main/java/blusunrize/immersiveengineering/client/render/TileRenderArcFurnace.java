@@ -28,7 +28,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 			return;
 		List<String> renderedParts = null;
 		for(int i=0; i<3; i++)
-			if(te.getInventory()[23+i]!=null)
+			if(!te.getInventory().get(23+i).isEmpty())
 			{
 				if(renderedParts==null)
 					renderedParts = Lists.newArrayList("electrode"+(i+1));

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,7 +30,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 		this.inputList = Lists.newArrayList(this.input);
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
-		this.outputList = Lists.newArrayList(this.output);
+		this.outputList = ListUtils.fromItem(this.output);
 	}
 
 	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<BottlingMachineRecipe>();
@@ -41,7 +42,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	}
 	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)
 	{
-		if(input!=null && fluid!=null)
+		if(!input.isEmpty() && fluid!=null)
 			for(BottlingMachineRecipe recipe : recipeList)
 				if(ApiUtils.stackMatchesObject(input, recipe.input) && fluid.containsFluid(recipe.fluidInput))
 					return recipe;

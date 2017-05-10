@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -221,7 +222,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			T tile = this.getTileForPos(rsPos);
 			if(tile!=null)
 			{
-				boolean b = worldObj.isBlockIndirectlyGettingPowered(tile.getPos())>0;
+				boolean b = world.isBlockIndirectlyGettingPowered(tile.getPos())>0;
 				return redstoneControlInverted != b;
 			}
 		}
@@ -245,7 +246,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public T getTileForPos(int targetPos)
 	{
 		BlockPos target = getBlockPosForPos(targetPos);
-		TileEntity tile = worldObj.getTileEntity(target);
+		TileEntity tile = world.getTileEntity(target);
 		if(this.getClass().isInstance(tile))
 			return (T)tile;
 		return null;
@@ -254,8 +255,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public ItemStack getOriginalBlock()
 	{
 		if(pos<0)
-			return null;
-		ItemStack s = null;
+			return ItemStack.EMPTY;
+		ItemStack s = ItemStack.EMPTY;
 		try{
 			int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
 			int h = (pos/blocksPerLevel);
@@ -263,12 +264,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			int w = (pos%structureDimensions[2]);
 			s = this.mutliblockInstance.getStructureManual()[h][l][w];
 		}catch(Exception e){e.printStackTrace();}
-		return s!=null?s.copy():null;
+		return s.copy();
 	}
 	@Override
 	public void disassemble()
 	{
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = this.getBlockPosForPos(0);
 			for(int yy=0;yy<structureDimensions[0];yy++)
@@ -278,9 +279,9 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						int w = mirrored?-ww:ww;
 						BlockPos pos = startPos.offset(facing, ll).offset(facing.rotateY(), w).add(0, yy, 0);
 
-						ItemStack s = null;
+						ItemStack s = ItemStack.EMPTY;
 
-						TileEntity te = worldObj.getTileEntity(pos);
+						TileEntity te = world.getTileEntity(pos);
 						if(te instanceof TileEntityMultiblockMetal)
 						{
 							s = ((TileEntityMultiblockMetal)te).getOriginalBlock();
@@ -293,7 +294,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						if(state!=null)
 						{
 							if(pos.equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
+								world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
 							else
 								replaceStructureBlock(pos, state, s, yy,ll,ww);
 						}
@@ -303,9 +304,9 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
 	{
 		if(state.getBlock()==this.getBlockType())
-			worldObj.setBlockToAir(pos);
-		worldObj.setBlockState(pos, state);
-		TileEntity tile = worldObj.getTileEntity(pos);
+			world.setBlockToAir(pos);
+		world.setBlockState(pos, state);
+		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)
 			((ITileDrop)tile).readOnPlacement(null, stack);
 	}
@@ -330,7 +331,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public void update()
 	{
 		tickedProcesses = 0;
-		if(worldObj.isRemote || isDummy() || isRSDisabled())
+		if(world.isRemote || isDummy() || isRSDisabled())
 			return;
 
 		int max = getMaxProcessPerTick();
@@ -378,7 +379,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					{
 						for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
 							if(OreDictionary.itemMatches(old, in, true) && Utils.compareItemNBT(old, in))
-								if(old.stackSize+in.stackSize>old.getMaxStackSize())
+								if(old.getCount() + in.getCount() >old.getMaxStackSize())
 								{
 									canStack = false;
 									break;
@@ -394,7 +395,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 								for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
 									if(OreDictionary.itemMatches(old, in, true) && Utils.compareItemNBT(old, in))
 									{
-										old.stackSize+=in.stackSize;
+										old.grow(in.getCount());
 										break;
 									}
 							}
@@ -483,7 +484,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				{
 					int[] outputSlots = multiblock.getOutputSlots();
 					for(ItemStack output : outputs)
-						if(output!=null)
+						if(!output.isEmpty())
 						{
 							boolean canOutput = false;
 							if(outputSlots==null)
@@ -492,8 +493,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 							{
 								for(int iOutputSlot : outputSlots)
 								{
-									ItemStack s = multiblock.getInventory()[iOutputSlot];
-									if(s==null || (ItemHandlerHelper.canItemStacksStack(s, output) && s.stackSize+output.stackSize<= multiblock.getSlotLimit(iOutputSlot)))
+									ItemStack s = multiblock.getInventory().get(iOutputSlot);
+									if(s.isEmpty() || (ItemHandlerHelper.canItemStacksStack(s, output) && s.getCount() + output.getCount() <= multiblock.getSlotLimit(iOutputSlot)))
 									{
 										canOutput = true;
 										break;
@@ -569,22 +570,22 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			{
 				int[] outputSlots = multiblock.getOutputSlots();
 				for(ItemStack output : outputs)
-					if(output!=null)
+					if(!output.isEmpty())
 						if(outputSlots==null || multiblock.getInventory()==null)
 							multiblock.doProcessOutput(output.copy());
 						else
 						{
 							for(int iOutputSlot:outputSlots)
 							{
-								ItemStack s = multiblock.getInventory()[iOutputSlot];
-								if(s==null)
+								ItemStack s = multiblock.getInventory().get(iOutputSlot);
+								if(s.isEmpty())
 								{
-									multiblock.getInventory()[iOutputSlot] = output.copy();
+									multiblock.getInventory().set(iOutputSlot, output.copy());
 									break;
 								}
-								else if(ItemHandlerHelper.canItemStacksStack(s, output) && s.stackSize+output.stackSize<= multiblock.getSlotLimit(iOutputSlot))
+								else if(ItemHandlerHelper.canItemStacksStack(s, output) && s.getCount() + output.getCount() <= multiblock.getSlotLimit(iOutputSlot))
 								{
-									multiblock.getInventory()[iOutputSlot].stackSize += output.stackSize;
+									multiblock.getInventory().get(iOutputSlot).grow(output.getCount());
 									break;
 								}
 							}
@@ -655,13 +656,13 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		@Override
 		public void doProcessTick(TileEntityMultiblockMetal multiblock)
 		{
-			ItemStack[] inv = multiblock.getInventory();
+			NonNullList<ItemStack> inv = multiblock.getInventory();
 			if(recipe.getItemInputs()!=null && inv!=null)
 			{
-				ItemStack[] query = new ItemStack[inputSlots.length];
+				NonNullList<ItemStack> query = NonNullList.withSize(inputSlots.length, ItemStack.EMPTY);
 				for(int i=0; i<inputSlots.length; i++)
-					if(inputSlots[i]>=0&&inputSlots[i]<inv.length)
-						query[i] = multiblock.getInventory()[inputSlots[i]];
+					if(inputSlots[i]>=0&&inputSlots[i]< inv.size())
+						query.set(i, multiblock.getInventory().get(inputSlots[i]));
 				if(!ApiUtils.stacksMatchIngredientList(recipe.getItemInputs(), query))
 				{
 					this.clearProcess = true;
@@ -687,7 +688,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		protected void processFinish(TileEntityMultiblockMetal multiblock)
 		{
 			super.processFinish(multiblock);
-			ItemStack[] inv = multiblock.getInventory();
+			NonNullList<ItemStack> inv = multiblock.getInventory();
 			List<IngredientStack> itemInputList = this.getRecipeItemInputs(multiblock);
 			if(inv != null && this.inputSlots != null && itemInputList != null)
 			{
@@ -697,11 +698,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					IngredientStack ingr = iterator.next();
 					int ingrSize = ingr.inputSize;
 					for(int slot : this.inputSlots)
-						if(inv[slot] != null && ingr.matchesItemStackIgnoringSize(inv[slot]))
+						if(!inv.get(slot).isEmpty() && ingr.matchesItemStackIgnoringSize(inv.get(slot)))
 						{
-							int taken = Math.min(inv[slot].stackSize, ingrSize);
-							if((inv[slot].stackSize -= taken) <= 0)
-								inv[slot] = null;
+							int taken = Math.min(inv.get(slot).getCount(), ingrSize);
+							inv.get(slot).shrink(taken);
+							if(inv.get(slot).getCount() <= 0)
+								inv.set(slot, ItemStack.EMPTY);
 							if((ingrSize -= taken) <= 0)
 								break;
 						}
@@ -750,10 +752,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		public List<ItemStack> inputItems;
 		protected float transformationPoint;
-		public MultiblockProcessInWorld(R recipe, float transformationPoint, ItemStack... inputItem)
+		public MultiblockProcessInWorld(R recipe, float transformationPoint, NonNullList<ItemStack> inputItem)
 		{
 			super(recipe);
-			this.inputItems = new ArrayList<>(inputItem.length);
+			this.inputItems = new ArrayList<>(inputItem.size());
 			for(ItemStack s : inputItem)
 				this.inputItems.add(s);
 			this.transformationPoint = transformationPoint;
@@ -790,7 +792,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						size = s.inputSize;
 						break;
 					}
-				if(size>0 && inputItem.stackSize>size)
+
+				if(size>0 && inputItem.getCount() > size)
 				{
 					inputItem.splitStack(size);
 					processTick = 0;
@@ -829,7 +832,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
@@ -839,20 +842,20 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			IMultiblockRecipe recipe = this.multiblock.findRecipeForInsertion(stack);
 			if(recipe==null)
 				return stack;
-			ItemStack displayStack = null;
+			ItemStack displayStack = ItemStack.EMPTY;
 			for(IngredientStack ingr : recipe.getItemInputs())
 				if(ingr.matchesItemStack(stack))
 				{
 					displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
 					break;
 				}
-			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, transformationPoint, displayStack), simulate, doProcessStacking))
+			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, transformationPoint, Utils.createNonNullItemStackListFromItemStack(displayStack)), simulate, doProcessStacking))
 			{
 				multiblock.markDirty();
 				multiblock.markContainingBlockForUpdate(null);
-				stack.stackSize -= displayStack.stackSize;
-				if(stack.stackSize<=0)
-					stack = null;
+				stack.shrink(displayStack.getCount());
+				if(stack.getCount()<=0)
+					stack = ItemStack.EMPTY;
 			}
 			return stack;
 		}
@@ -860,8 +863,14 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return 64;
+		}
+
 		@Override
 		public void setStackInSlot(int slot, ItemStack stack)
 		{

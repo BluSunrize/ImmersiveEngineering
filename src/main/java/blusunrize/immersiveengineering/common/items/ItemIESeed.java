@@ -23,8 +23,9 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if(side != EnumFacing.UP)
 			return EnumActionResult.PASS;
 		else if (player.canPlayerEdit(pos, side, stack) && player.canPlayerEdit(pos.add(0,1,0), side, stack))
@@ -33,7 +34,7 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 			if(state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this) && world.isAirBlock(pos.add(0,1,0)))
 			{
 				world.setBlockState(pos.add(0,1,0), this.cropBlock.getDefaultState());
-				--stack.stackSize;
+				stack.shrink(1);
 				return EnumActionResult.SUCCESS;
 			}
 			else

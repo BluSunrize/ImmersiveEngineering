@@ -21,7 +21,7 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 	public ItemFaradaySuit(EntityEquipmentSlot type)
 	{
 		super(mat, 0, type);
-		String name = "faradaySuit_"+type.getName().toLowerCase(Locale.ENGLISH);
+		String name = "faraday_suit_"+type.getName().toLowerCase(Locale.ENGLISH);
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.setMaxStackSize(1);

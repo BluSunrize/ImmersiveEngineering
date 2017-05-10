@@ -32,6 +32,11 @@ public class InventoryShader implements IInventory
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return this.shader.isEmpty();
+	}
+
+	@Override
 	public ItemStack getStackInSlot(int i)
 	{
 		return this.shader;
@@ -40,22 +45,22 @@ public class InventoryShader implements IInventory
 	@Override
 	public ItemStack removeStackFromSlot(int i)
 	{
-		if(this.shader!=null)
+		if(!this.shader.isEmpty())
 		{
 			ItemStack itemstack = this.shader.copy();
 			this.shader = null;
 			return itemstack;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
-		if(this.shader!=null)
+		if(!this.shader.isEmpty())
 		{
 			ItemStack itemstack;
-			if(this.shader.stackSize <= j)
+			if(shader.getCount()<=j)
 			{
 				itemstack = this.shader.copy();
 				this.shader = null;
@@ -65,12 +70,12 @@ public class InventoryShader implements IInventory
 			}
 			itemstack = this.shader.splitStack(j);
 
-			if(this.shader.stackSize==0)
+			if(shader.getCount()==0)
 				this.shader = null;
 			this.container.onCraftMatrixChanged(this);
 			return itemstack;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 
@@ -78,8 +83,8 @@ public class InventoryShader implements IInventory
 	public void setInventorySlotContents(int i, ItemStack stack)
 	{
 		this.shader = stack;
-		if(stack!=null && stack.stackSize>this.getInventoryStackLimit())
-			stack.stackSize = this.getInventoryStackLimit();
+		if(!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
+			stack.setCount(this.getInventoryStackLimit());
 		this.container.onCraftMatrixChanged(this);
 	}
 
@@ -113,7 +118,7 @@ public class InventoryShader implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUsableByPlayer(EntityPlayer entityplayer) {
 		return true;
 	}
 

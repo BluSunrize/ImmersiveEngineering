@@ -217,7 +217,7 @@ public class ConnModelReal implements IBakedModel
 				return false;
 			if (!Arrays.equals(additionalProperties, o.additionalProperties))
 				return false;
-			for(IProperty<?> i : state.getPropertyNames())
+			for(IProperty<?> i : state.getPropertyKeys())
 			{
 				if(!o.state.getProperties().containsKey(i))
 					return false;
@@ -253,7 +253,7 @@ public class ConnModelReal implements IBakedModel
 			final int prime = 31;
 			if (extraCacheKey!=null)
 				val = val*prime+extraCacheKey.hashCode();
-			for (IProperty<?> n : state.getPropertyNames())
+			for (IProperty<?> n : state.getPropertyKeys())
 				if (!ignoredProperties.contains(n))
 				{
 					Object o = state.getValue(n);

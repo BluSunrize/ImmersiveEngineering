@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.tool;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
@@ -49,7 +50,7 @@ public class AssemblerHandler
 	public interface IRecipeAdapter<R extends IRecipe>
 	{
 		RecipeQuery[] getQueriedInputs(R recipe);
-		default RecipeQuery[] getQueriedInputs(R recipe, ItemStack[] input)
+		default RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input)
 		{
 			return getQueriedInputs(recipe);
 		}
@@ -69,9 +70,9 @@ public class AssemblerHandler
 		{
 			ItemStack stack = (ItemStack)o;
 			if(stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) && FluidUtil.getFluidContained(stack)!=null)
-				return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.stackSize);
+				return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.getCount());
 			else
-				return new RecipeQuery(stack, stack.stackSize);
+				return new RecipeQuery(stack, stack.getCount());
 		} else if(o instanceof IngredientStack)
 			return new RecipeQuery(o, ((IngredientStack)o).inputSize);
 		return new RecipeQuery(o, 1);

@@ -49,14 +49,14 @@ public class DenseOresHelper extends IECompatModule
 					for(CrusherRecipe recipe: CrusherRecipe.recipeList)
 						if(recipe.oreInputString!=null && recipe.oreInputString.equals(baseOre))
 						{
-							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.stackSize*4);
+							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.getCount() * 4);
 							CrusherRecipe r = new CrusherRecipe(out, denseOre, (int)(recipe.getTotalProcessEnergy()/CrusherRecipe.energyModifier)*2);
 							if(recipe.secondaryOutput!=null)
 							{
 								Object[] newSec = new Object[recipe.secondaryOutput.length*2];
 								for(int i=0; i<recipe.secondaryOutput.length; i++)
 								{
-									newSec[i*2] = Utils.copyStackWithAmount(recipe.secondaryOutput[i], recipe.secondaryOutput[i].stackSize*2);
+									newSec[i*2] = Utils.copyStackWithAmount(recipe.secondaryOutput[i], recipe.secondaryOutput[i].getCount() * 2);
 									newSec[i*2+1] = recipe.secondaryChance[i]*2;
 								}
 								r.addToSecondaryOutput(newSec);
@@ -68,7 +68,7 @@ public class DenseOresHelper extends IECompatModule
 					for(ArcFurnaceRecipe recipe: ArcFurnaceRecipe.recipeList)
 						if(recipe.oreInputString!=null && recipe.oreInputString.equals(baseOre))
 						{
-							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.stackSize*4);
+							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.getCount() * 4);
 							
 							int time = (int)(recipe.getTotalProcessTime()/ArcFurnaceRecipe.timeModifier);
 							int perTick = (int)(recipe.getTotalProcessEnergy()/recipe.getTotalProcessTime()/ArcFurnaceRecipe.energyModifier);

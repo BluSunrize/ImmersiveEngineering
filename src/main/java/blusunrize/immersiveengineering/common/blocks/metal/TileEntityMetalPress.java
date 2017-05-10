@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttacha
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -35,7 +37,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//	public ItemStack[] inventory = new ItemStack[3];
 	//	public MetalPressRecipe[] curRecipes = new MetalPressRecipe[3];
 	//	public int[] process = new int[3];
-	public ItemStack mold = null;
+	public ItemStack mold = ItemStack.EMPTY;
 	//	public boolean active;
 	//	public static final int MAX_PROCESS = 120;
 	//	public int stopped = -1;
@@ -50,7 +52,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	public void update()
 	{
 		super.update();
-		if(isDummy() || isRSDisabled() || worldObj.isRemote)
+		if(isDummy() || isRSDisabled() || world.isRemote)
 			return;
 		for(MultiblockProcess process : processQueue)
 		{
@@ -59,11 +61,11 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			float pressTime = 3.75f*tick;
 			float fProcess = process.processTick*tick;
 			if(fProcess>=transportTime && fProcess<transportTime+tick)
-				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
+				world.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
 			if(fProcess>=(transportTime+pressTime) && fProcess<(transportTime+pressTime+tick))
-				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_smash, SoundCategory.BLOCKS, .3f,1, true);
+				world.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_smash, SoundCategory.BLOCKS, .3f,1, true);
 			if(fProcess>=(1-transportTime) && fProcess<(1-transportTime+tick))
-				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
+				world.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
 		}
 	}
 
@@ -71,13 +73,13 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		mold = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("mold"));
+		mold = new ItemStack(nbt.getCompoundTag("mold"));
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		if(this.mold!=null)
+		if(!this.mold.isEmpty())
 			nbt.setTag("mold", this.mold.writeToNBT(new NBTTagCompound()));
 	}
 
@@ -86,28 +88,29 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	{
 		TileEntityMetalPress master = master();
 		if(master!=null)
-			if(player.isSneaking() && master.mold!=null)
+			if(player.isSneaking() && !master.mold.isEmpty())
 			{
-				if(heldItem==null)
+				if(heldItem.isEmpty())
 					player.setHeldItem(hand, master.mold.copy());
-				else if(!worldObj.isRemote)
+				else if(!world.isRemote)
 					player.entityDropItem(master.mold.copy(),0);
-				master.mold=null;
+				master.mold= ItemStack.EMPTY;
 				this.updateMasterBlock(null, true);
 				return true;
 			}
 			else if(MetalPressRecipe.isValidMold(heldItem))
 			{
-				ItemStack tempMold = master.mold!=null?master.mold.copy():null;
+				ItemStack tempMold = !master.mold.isEmpty()?master.mold.copy():ItemStack.EMPTY;
 				master.mold = Utils.copyStackWithAmount(heldItem,1);
-				if(heldItem.stackSize--<=0)
-					heldItem = null;
+				heldItem.shrink(1);
+				if(heldItem.getCount() <= 0)
+					heldItem = ItemStack.EMPTY;
 				else
 					player.setHeldItem(hand, heldItem);
-				if(tempMold!=null)
-					if(heldItem==null)
+				if(!tempMold.isEmpty())
+					if(heldItem.isEmpty())
 						player.setHeldItem(hand, tempMold);
-					else if(!worldObj.isRemote)
+					else if(!world.isRemote)
 						player.entityDropItem(tempMold,0);
 				this.updateMasterBlock(null, true);
 				return true;
@@ -130,7 +133,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&l!=1)
 		{
-			TileEntity tile = worldObj.getTileEntity(pos);
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof TileEntityConveyorBelt)
 				((TileEntityConveyorBelt)tile).setFacing(this.facing);
 		}
@@ -139,18 +142,18 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(pos==3 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem && ((EntityItem)entity).getEntityItem()!=null)
+		if(pos==3 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem && !((EntityItem)entity).getEntityItem().isEmpty())
 		{
 			TileEntityMetalPress master = master();
 			if(master==null)
 				return;
 			ItemStack stack = ((EntityItem)entity).getEntityItem();
-			if(stack==null)
+			if(stack.isEmpty())
 				return;
 			IMultiblockRecipe recipe = master.findRecipeForInsertion(stack);
 			if(recipe==null)
 				return;
-			ItemStack displayStack = null;
+			ItemStack displayStack = ItemStack.EMPTY;
 			for(IngredientStack ingr : recipe.getItemInputs())
 				if(ingr.matchesItemStack(stack))
 				{
@@ -158,12 +161,12 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 					break;
 				}
 			float transformationPoint = 56.25f/(float)recipe.getTotalProcessTime();
-			MultiblockProcess process = new MultiblockProcessInWorld(recipe, transformationPoint, displayStack);
+			MultiblockProcess process = new MultiblockProcessInWorld(recipe, transformationPoint, Utils.createNonNullItemStackListFromItemStack(displayStack));
 			if(master.addProcessToQueue(process, true))
 			{
 				master.addProcessToQueue(process, false);
-				stack.stackSize -= displayStack.stackSize;
-				if(stack.stackSize<=0)
+				stack.shrink(displayStack.getCount());
+				if(stack.getCount()<=0)
 					entity.setDead();
 			}
 		}
@@ -194,11 +197,11 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().offset(facing,2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -226,14 +229,14 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
 	}
 	@Override
-	public ItemStack[] getDroppedItems()
+	public NonNullList<ItemStack> getDroppedItems()
 	{
-		return new ItemStack[]{mold};
+		return ListUtils.fromItem(mold);
 	}
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
@@ -334,7 +337,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//	{
 	//		if(!formed || pos!=4)
 	//			return;
-	//		if (worldObj.isRemote)
+	//		if (world.isRemote)
 	//		{
 	//			if (!active)
 	//				return;
@@ -359,17 +362,17 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//				if(process[i]>=MAX_PROCESS)
 	//				{
 	//					ItemStack output = inventory[i].copy();
-	//					TileEntity inventoryTile = this.worldObj.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
+	//					TileEntity inventoryTile = this.world.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
 	//					if(inventoryTile instanceof IInventory)
 	//						output = Utils.insertStackIntoInventory((IInventory)inventoryTile, output, ForgeDirection.OPPOSITES[facing]);
 	//					if(output!=null)
 	//					{
 	//						ForgeDirection fd = ForgeDirection.getOrientation(facing);
-	//						EntityItem ei = new EntityItem(worldObj, xCoord+.5+(facing==4?-2:facing==5?2:0),yCoord,zCoord+.5+(facing==2?-2:facing==3?2:0), output.copy());
+	//						EntityItem ei = new EntityItem(world, xCoord+.5+(facing==4?-2:facing==5?2:0),yCoord,zCoord+.5+(facing==2?-2:facing==3?2:0), output.copy());
 	//						ei.motionX = (0.075F * fd.offsetX);
 	//						ei.motionY = 0.025000000372529D;
 	//						ei.motionZ = (0.075F * fd.offsetZ);
-	//						this.worldObj.spawnEntityInWorld(ei);
+	//						this.world.spawnEntity(ei);
 	//					}
 	//					curRecipes[i] = null;
 	//					process[i]=-1;
@@ -419,7 +422,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//		if(update)
 	//		{
 	//			this.markDirty();
-	//			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	//			world.markBlockForUpdate(xCoord, yCoord, zCoord);
 	//		}
 	//	}
 	//	public int getNextProcessID()
@@ -456,7 +459,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//			if ((process[i]<0^processTmp[i]<0)||!descPacket)
 	//				process[i] = processTmp[i];
 	//		energyStorage.readFromNBT(nbt);
-	//		mold = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("mold"));
+	//		mold = new ItemStack(nbt.getCompoundTag("mold"));
 	//		if (descPacket)
 	//			active = nbt.getBoolean("active");
 	//		if (nbt.hasKey("stoppedSlot"))
@@ -519,12 +522,12 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//	@Override
 	//	public void disassemble()
 	//	{
-	//		if(!worldObj.isRemote&&pos==4&&mold!=null)
+	//		if(!world.isRemote&&pos==4&&mold!=null)
 	//		{
-	//			EntityItem moldDrop = new EntityItem(worldObj, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, mold);
-	//			worldObj.spawnEntityInWorld(moldDrop);
+	//			EntityItem moldDrop = new EntityItem(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, mold);
+	//			world.spawnEntity(moldDrop);
 	//		}
-	//		if(formed && !worldObj.isRemote)
+	//		if(formed && !world.isRemote)
 	//		{
 	//			int f = facing;
 	//			TileEntity master = master();
@@ -539,7 +542,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//					int xx = f>3?l:0;
 	//					int zz = f<4?l:0;
 	//					ItemStack s = null;
-	//					TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+	//					TileEntity te = world.getTileEntity(startX+xx,startY+yy,startZ+zz);
 	//					if(te instanceof TileEntityMetalPress)
 	//					{
 	//						s = ((TileEntityMetalPress)te).getOriginalBlock();
@@ -550,15 +553,15 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//					if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
 	//					{
 	//						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
-	//							worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+	//							world.spawnEntity(new EntityItem(world, xCoord+.5,yCoord+.5,zCoord+.5, s));
 	//						else
 	//						{
 	//							if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
-	//								worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+	//								world.setBlockToAir(startX+xx,startY+yy,startZ+zz);
 	//							int meta = s.getItemDamage();
-	//							worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), meta, 0x3);
+	//							world.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), meta, 0x3);
 	//						}
-	//						TileEntity tile = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+	//						TileEntity tile = world.getTileEntity(startX+xx,startY+yy,startZ+zz);
 	//						if(tile instanceof TileEntityConveyorBelt)
 	//							((TileEntityConveyorBelt)tile).facing = ForgeDirection.OPPOSITES[f];
 	//					}
@@ -580,7 +583,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 	//			master.markDirty();
 	//			if(rec>0)
-	//				worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
+	//				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 	//			return rec;
 	//		}
 	//		return 0;

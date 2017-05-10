@@ -39,7 +39,7 @@ public class AttainedDropsHelper extends IECompatModule
 			return;
 		final IBlockState blockstatePlant = blockPlant.getDefaultState();
 		IProperty propertyAge = null;
-		for(IProperty prop : blockstatePlant.getPropertyNames())
+		for(IProperty prop : blockstatePlant.getPropertyKeys())
 			if("age".equals(prop.getName()) && prop instanceof PropertyInteger)
 				propertyAge = prop;
 		final IProperty propertyAge_final = propertyAge;
@@ -60,7 +60,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@Override
 			public boolean isCorrectSoil(ItemStack seed, ItemStack soil)
 			{
-				return soil!=null&&soilOutputMap.containsKey(new ComparableItemStack(soil));
+				return !soil.isEmpty()&&soilOutputMap.containsKey(new ComparableItemStack(soil));
 			}
 			@Override
 			public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
@@ -83,7 +83,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@Override
 			public boolean isValid(ItemStack seed)
 			{
-				return seed!=null && seed.getItem()==itemSeed;
+				return !seed.isEmpty() && seed.getItem()==itemSeed;
 			}
 
 			@Override

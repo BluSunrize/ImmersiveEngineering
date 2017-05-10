@@ -75,10 +75,10 @@ public abstract class TileEntityIEBase extends TileEntity
 			return true;
 		} else if(id == 254)
 		{
-			IBlockState state = worldObj.getBlockState(pos);
+			IBlockState state = world.getBlockState(pos);
 			if(state instanceof IExtendedBlockState)
 				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState) state);
-			worldObj.notifyBlockUpdate(pos, state, state, 3);
+			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}
 		return super.receiveClientEvent(id, type);
@@ -100,11 +100,11 @@ public abstract class TileEntityIEBase extends TileEntity
 	}
 	public void markBlockForUpdate(BlockPos pos, IBlockState newState)
 	{
-		IBlockState state = worldObj.getBlockState(getPos());
+		IBlockState state = world.getBlockState(getPos());
 		if(newState==null)
 			newState = state;
-		worldObj.notifyBlockUpdate(pos,state,newState,3);
-		worldObj.notifyNeighborsOfStateChange(pos, newState.getBlock());
+		world.notifyBlockUpdate(pos,state,newState,3);
+		world.notifyNeighborsOfStateChange(pos, newState.getBlock(), true);
 	}
 
 

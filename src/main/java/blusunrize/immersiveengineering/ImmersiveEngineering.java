@@ -43,7 +43,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:Forge@[12.18.2.2104,];after:JEI@[3.14.7.414,);after:Railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[13.20.0.2259,);after:jei@[4.2,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
@@ -177,12 +177,13 @@ public class ImmersiveEngineering
 			if(!world.isRemote)
 			{
 				IELogger.info("WorldData loading");
-				IESaveData worldData = (IESaveData) world.loadItemData(IESaveData.class, IESaveData.dataName);
+
+				IESaveData worldData = (IESaveData) world.loadData(IESaveData.class, IESaveData.dataName);
 				if(worldData==null)
 				{
 					IELogger.info("WorldData not found");
 					worldData = new IESaveData(IESaveData.dataName);
-					world.setItemData(IESaveData.dataName, worldData);
+					world.setData(IESaveData.dataName, worldData);
 				}
 				else
 					IELogger.info("WorldData retrieved");
@@ -225,9 +226,9 @@ public class ImmersiveEngineering
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)
 	{
 		@Override
-		public Item getTabIconItem()
+		public ItemStack getTabIconItem()
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		@Override
 		public ItemStack getIconItemStack()

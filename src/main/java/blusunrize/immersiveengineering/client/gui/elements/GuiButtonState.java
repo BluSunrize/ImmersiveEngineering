@@ -25,7 +25,7 @@ public class GuiButtonState extends GuiButtonIE
 		if(this.visible)
 		{
 			ClientUtils.bindTexture(texture);
-			FontRenderer fontrenderer = mc.fontRendererObj;
+			FontRenderer fontrenderer = mc.fontRenderer;
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 			GlStateManager.enableBlend();

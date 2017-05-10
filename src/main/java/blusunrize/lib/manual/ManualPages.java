@@ -1,5 +1,6 @@
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
@@ -13,6 +14,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -309,8 +311,13 @@ public abstract class ManualPages implements IManualPage
 
 	public static class ItemDisplay extends ManualPages
 	{
-		ItemStack[] stacks;
-		public ItemDisplay(ManualInstance manual, String text, ItemStack... stacks)
+		NonNullList<ItemStack> stacks;
+
+		public ItemDisplay(ManualInstance manual, String text, ItemStack... stacks) {
+			this(manual, text, Utils.createNonNullItemStackListFromArray(stacks));
+		}
+
+		public ItemDisplay(ManualInstance manual, String text, NonNullList<ItemStack> stacks)
 		{
 			super(manual,text);
 			this.stacks=stacks;
@@ -319,7 +326,7 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 		{
-			int length = stacks.length;
+			int length = stacks.size();
 			int yOffset = 0;
 			if(length>0)
 			{
@@ -342,9 +349,9 @@ public abstract class ManualPages implements IManualPage
 		{
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
-			ItemStack highlighted = null;
+			ItemStack highlighted = ItemStack.EMPTY;
 			int yOffset = 0;
-			int length = stacks.length;
+			int length = stacks.size();
 			if(length>0)
 			{
 				float scale = length>8?1f: length>3?1.5f: 2f;
@@ -376,9 +383,9 @@ public abstract class ManualPages implements IManualPage
 							break;
 						int xx = x+60-w2 + (int)(i*18*scale);
 						int yy = y+(lines<2?4:0)+line*(int)(18*scale);
-						ManualUtils.renderItem().renderItemAndEffectIntoGUI(stacks[item], (int)(xx/scale),(int)(yy/scale));
+						ManualUtils.renderItem().renderItemAndEffectIntoGUI(stacks.get(item), (int)(xx/scale),(int)(yy/scale));
 						if(mx>=xx&&mx<xx+(16*scale) && my>=yy&&my<yy+(16*scale))
-							highlighted = stacks[item];
+							highlighted = stacks.get(item);
 					}
 				}
 				GL11.glScalef(1/scale,1/scale,1/scale);
@@ -390,7 +397,7 @@ public abstract class ManualPages implements IManualPage
 				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOffset, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
-			if(highlighted!=null)
+			if(!highlighted.isEmpty())
 				gui.renderToolTip(highlighted, mx, my);
 			RenderHelper.disableStandardItemLighting();
 		}
@@ -442,7 +449,7 @@ public abstract class ManualPages implements IManualPage
 
 		void checkRecipe(IRecipe rec, Object key, Object stack, int iStack)
 		{
-			if(rec.getRecipeOutput()!=null && ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
+			if(!rec.getRecipeOutput().isEmpty() && ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
 			{
 				Object[] ingredientsPre=null;
 				int w=0;
@@ -483,7 +490,7 @@ public abstract class ManualPages implements IManualPage
 						while(itValidate.hasNext())
 						{
 							ItemStack stVal = itValidate.next();
-							if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
+							if(stVal.isEmpty() || stVal.getItem()==null || stVal.getDisplayName()==null)
 								itValidate.remove();
 						}
 					}
@@ -532,7 +539,7 @@ public abstract class ManualPages implements IManualPage
 			RenderHelper.enableGUIStandardItemLighting();
 
 			int totalYOff = 0;
-			ItemStack highlighted = null;
+			ItemStack highlighted = ItemStack.EMPTY;
 			for(int i=0; i<stacks.length; i++)
 			{
 				Object stack = stacks[i];
@@ -568,7 +575,7 @@ public abstract class ManualPages implements IManualPage
 				{
 					for(PositionedItemStack pstack : rList.get(recipePage[i]))
 						if(pstack!=null)
-							if(pstack.getStack()!=null)
+							if(!pstack.getStack().isEmpty())
 							{
 								ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
 								ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y, null);
@@ -589,7 +596,7 @@ public abstract class ManualPages implements IManualPage
 				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+totalYOff-2, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
-			if(highlighted!=null)
+			if(!highlighted.isEmpty())
 				gui.renderToolTip(highlighted, mx, my);
 			GlStateManager.enableBlend();
 			RenderHelper.disableStandardItemLighting();
@@ -678,7 +685,7 @@ public abstract class ManualPages implements IManualPage
 						for(int iStack=0; iStack<stacks.length; iStack++)
 						{
 							Object stack = stacks[iStack];
-							if(((IRecipe)o).getRecipeOutput()!=null && ManualUtils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
+							if(!((IRecipe)o).getRecipeOutput().isEmpty() && ManualUtils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
 							{
 								IRecipe r = (IRecipe)o;
 								Object[] ingredientsPre=null;
@@ -720,7 +727,7 @@ public abstract class ManualPages implements IManualPage
 										while(itValidate.hasNext())
 										{
 											ItemStack stVal = itValidate.next();
-											if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
+											if(stVal.isEmpty() || stVal.getItem()==null || stVal.getDisplayName()==null)
 												itValidate.remove();
 										}
 									}
@@ -766,7 +773,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
 
-			ItemStack highlighted = null;
+			ItemStack highlighted = ItemStack.EMPTY;
 
 			if(!recipes.isEmpty() && recipePage>=0 && recipePage<this.recipes.size())
 			{
@@ -791,7 +798,7 @@ public abstract class ManualPages implements IManualPage
 			{
 				for(PositionedItemStack pstack : recipes.get(recipePage))
 					if(pstack!=null)
-						if(pstack.getStack()!=null)
+						if(!pstack.getStack().isEmpty())
 						{
 							ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+pstack.y);
 							ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer, pstack.getStack(), x+pstack.x, y+pstack.y, null);
@@ -812,7 +819,7 @@ public abstract class ManualPages implements IManualPage
 			//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOff+2, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
-			if(highlighted!=null)
+			if(!highlighted.isEmpty())
 				gui.renderToolTip(highlighted, mx, my);
 			GlStateManager.enableBlend();
 			RenderHelper.disableStandardItemLighting();
@@ -939,7 +946,7 @@ public abstract class ManualPages implements IManualPage
 				{
 					if(((ItemStack)stack).getItemDamage()==OreDictionary.WILDCARD_VALUE)
 					{
-						ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+						NonNullList<ItemStack> list = NonNullList.create();
 						((ItemStack)stack).getItem().getSubItems(((ItemStack)stack).getItem(), ((ItemStack)stack).getItem().getCreativeTab(), list);
 						if(list.size()>0)
 							displayList.addAll(list);
@@ -953,7 +960,7 @@ public abstract class ManualPages implements IManualPage
 					{
 						if(subStack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
 						{
-							ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+							NonNullList<ItemStack> list = NonNullList.create();
 							subStack.getItem().getSubItems(subStack.getItem(), subStack.getItem().getCreativeTab(), list);
 							if(list.size()>0)
 								displayList.addAll(list);
@@ -964,7 +971,7 @@ public abstract class ManualPages implements IManualPage
 				}
 			}
 			if(displayList==null || displayList.isEmpty())
-				return null;
+				return ItemStack.EMPTY;
 
 			int perm = (int) (System.nanoTime()/1000000000 % displayList.size());
 			return displayList.get(perm);

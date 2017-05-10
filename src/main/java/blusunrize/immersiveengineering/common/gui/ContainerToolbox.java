@@ -44,7 +44,7 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 	@Override
 	public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return true;
 		if(IEContent.itemToolbox.equals(stack.getItem()))
 			return false;
@@ -53,7 +53,7 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 		else if(slotNumer<10)
 			return ToolboxHandler.isTool(stack);
 		else if(slotNumer<16)
-			return ToolboxHandler.isWiring(stack, worldObj);
+			return ToolboxHandler.isWiring(stack, world);
 		else
 			return true;
 	}

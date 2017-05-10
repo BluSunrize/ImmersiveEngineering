@@ -2,10 +2,12 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -37,13 +39,13 @@ public class CrusherRecipe extends MultiblockRecipe
 		this.totalProcessTime = (int)Math.floor(50*timeModifier);
 
 		this.inputList = Lists.newArrayList(this.input);
-		this.outputList = Lists.newArrayList(this.output);
+		this.outputList = ListUtils.fromItem(this.output);
 	}
 
 	@Override
-	public List<ItemStack> getActualItemOutputs(TileEntity tile)
+	public NonNullList<ItemStack> getActualItemOutputs(TileEntity tile)
 	{
-		ArrayList<ItemStack> list = new ArrayList<>();
+		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
 		if(secondaryOutput != null && secondaryChance != null)
 			for(int i = 0; i < secondaryOutput.length; i++)
@@ -72,8 +74,8 @@ public class CrusherRecipe extends MultiblockRecipe
 			if(outputs[i*2]!=null)
 			{
 				Object o = ApiUtils.convertToValidRecipeInput(outputs[i*2]);
-				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof List?IEApi.getPreferredStackbyMod((List<ItemStack>)o): null;
-				if(ss!=null)
+				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof List?IEApi.getPreferredStackbyMod((List<ItemStack>)o): ItemStack.EMPTY;
+				if(!ss.isEmpty())
 				{
 					newSecondaryOutput.add(ss);
 					newSecondaryChance.add((Float)outputs[i*2+1]);
@@ -85,7 +87,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		for(Float f : newSecondaryChance)
 			secondaryChance[i++] = f;
 
-		this.outputList = Lists.newArrayList(this.secondaryOutput);
+		this.outputList = ListUtils.fromItems(this.secondaryOutput);
 		if(this.outputList.isEmpty())
 			this.outputList.add(this.output);
 		else
@@ -98,7 +100,7 @@ public class CrusherRecipe extends MultiblockRecipe
 	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
 	{
 		CrusherRecipe r = new CrusherRecipe(output, input, energy);
-		if(r.input!=null && r.output!=null)
+		if(r.input!=null && !r.output.isEmpty())
 			recipeList.add(r);
 		return r;
 	}

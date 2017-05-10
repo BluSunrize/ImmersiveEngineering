@@ -72,13 +72,13 @@ public class GuiAssembler extends GuiContainer
 		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204,guiTop+70,16,46, 250,0,20,50, mx,my, texture,tooltip);
 
 		for(int i=0; i<tile.patterns.length; i++)
-			if(tile.inventory[18+i]==null && tile.patterns[i].inv[9]!=null)
+			if(tile.inventory.get(18+i).isEmpty() && !tile.patterns[i].inv.get(9).isEmpty())
 				if(mx>=guiLeft+27+i*58&&mx<guiLeft+43+i*58 && my>=guiTop+64&&my<guiTop+80)
 				{
-					tooltip.add(tile.patterns[i].inv[9].getDisplayName());
-					tile.patterns[i].inv[9].getItem().addInformation(tile.patterns[i].inv[9], ClientUtils.mc().thePlayer, tooltip, false);
+					tooltip.add(tile.patterns[i].inv.get(9).getDisplayName());
+					tile.patterns[i].inv.get(9).getItem().addInformation(tile.patterns[i].inv.get(9), ClientUtils.mc().player, tooltip, false);
 					for(int j=0; j<tooltip.size(); j++)
-						tooltip.set(j, (j==0?tile.patterns[i].inv[9].getRarity().rarityColor: TextFormatting.GRAY)+tooltip.get(j));
+						tooltip.set(j, (j==0?tile.patterns[i].inv.get(9).getRarity().rarityColor: TextFormatting.GRAY)+tooltip.get(j));
 				}
 
 		if(((mx>=guiLeft+11&&mx<guiLeft+21)||(mx>=guiLeft+69&&mx<guiLeft+79)||(mx>=guiLeft+127&&mx<guiLeft+137)) && my>guiTop+67&&my<guiTop+77)
@@ -88,7 +88,7 @@ public class GuiAssembler extends GuiContainer
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 
@@ -109,9 +109,9 @@ public class GuiAssembler extends GuiContainer
 		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204,guiTop+70,16,46, 230,0,20,50, mx,my, texture,null);
 
 		for(int i=0; i<tile.patterns.length; i++)
-			if(tile.inventory[18+i]==null && tile.patterns[i].inv[9]!=null)
+			if(tile.inventory.get(18+i).isEmpty() && !tile.patterns[i].inv.get(9).isEmpty())
 			{
-				ItemStack stack = tile.patterns[i].inv[9];
+				ItemStack stack = tile.patterns[i].inv.get(9);
 				GL11.glPushMatrix();
 				GL11.glTranslatef(0.0F, 0.0F, 32.0F);
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -119,12 +119,12 @@ public class GuiAssembler extends GuiContainer
 				this.zLevel = 200.0F;
 				itemRender.zLevel = 200.0F;
 				FontRenderer font = null;
-				if(stack!=null)
+				if(!stack.isEmpty())
 					font = stack.getItem().getFontRenderer(stack);
 				if(font==null)
-					font = fontRendererObj;
+					font = fontRenderer;
 				itemRender.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
-				itemRender.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.stackSize);
+				itemRender.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString() + stack.getCount());
 				this.zLevel = 0.0F;
 				itemRender.zLevel = 0.0F;
 

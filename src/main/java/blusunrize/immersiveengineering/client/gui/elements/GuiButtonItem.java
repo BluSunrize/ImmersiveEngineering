@@ -34,14 +34,14 @@ public class GuiButtonItem extends GuiButton
 			this.drawTexturedModalRect(xPosition,yPosition, 24+(state?18:0),128, width,height);
 			this.mouseDragged(mc, mouseX, mouseY);
 
-			if(item!=null)
+			if(!item.isEmpty())
 			{
 				this.zLevel = 200.0F;
 				RenderItem itemRender = mc.getRenderItem();
 				itemRender.zLevel = 200.0F;
 				FontRenderer font = item.getItem().getFontRenderer(item);
 				if(font==null)
-					font = mc.fontRendererObj;
+					font = mc.fontRenderer;
 				itemRender.renderItemAndEffectIntoGUI(item, xPosition+1, yPosition+1);
 				this.zLevel = 0.0F;
 				itemRender.zLevel = 0.0F;

@@ -94,6 +94,10 @@ public class MultiblockArcFurnace implements IMultiblock
 						else if(l==4&&(w==1||w==3))
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
+
+					if (structure[h][l][w] == null) {
+						structure[h][l][w] = ItemStack.EMPTY;
+					}
 				}
 	}
 	@Override
@@ -110,7 +114,7 @@ public class MultiblockArcFurnace implements IMultiblock
 	@Override
 	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
-		if(stack!=null)
+		if(!stack.isEmpty())
 		{
 			if(stack.getItem() == Items.CAULDRON)
 				return Blocks.CAULDRON.getDefaultState();
@@ -125,13 +129,13 @@ public class MultiblockArcFurnace implements IMultiblock
 	{
 		return true;
 	}
-	@SideOnly(Side.CLIENT)
-	static ItemStack renderStack;
+	//@SideOnly(Side.CLIENT)
+	static ItemStack renderStack = ItemStack.EMPTY;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		if(renderStack==null)
+		if(renderStack.isEmpty())
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
 
 		GlStateManager.translate(2.5, 2.25, 2.25);
@@ -189,7 +193,7 @@ public class MultiblockArcFurnace implements IMultiblock
 			for(int l=0;l<5;l++)
 				for(int w=-2;w<=2;w++)
 					for(int h=0;h<5;h++)
-						if(structure[h][l][w+2]!=null)
+						if(!structure[h][l][w+2].isEmpty())
 						{
 							int ww = mirrored?-w:w;
 							BlockPos pos2 = startPos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
@@ -218,7 +222,7 @@ public class MultiblockArcFurnace implements IMultiblock
 		for(int l=0;l<5;l++)
 			for(int w=-2;w<=2;w++)
 				for(int h=0;h<5;h++)
-					if(structure[h][l][w+2]!=null)
+					if(!structure[h][l][w+2].isEmpty())
 					{
 						int ww = mirror?-w:w;
 						BlockPos pos = startPos.offset(dir, l).offset(dir.rotateY(), ww).add(0, h, 0);

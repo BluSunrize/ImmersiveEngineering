@@ -146,19 +146,19 @@ public class IETileSound implements ITickableSound
 	public void evaluateVolume()
 	{
 		volumeAjustment=1f;
-		if(ClientUtils.mc().thePlayer!=null && ClientUtils.mc().thePlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null)
+		if(ClientUtils.mc().player!=null && !ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty())
 		{
-			ItemStack stack = ClientUtils.mc().thePlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+			ItemStack stack = ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 			if(ItemNBTHelper.hasKey(stack,"IE:Earmuffs"))
 				stack = ItemNBTHelper.getItemStack(stack, "IE:Earmuffs");
-			if(stack!=null && IEContent.itemEarmuffs.equals(stack.getItem()))
+			if(!stack.isEmpty() && IEContent.itemEarmuffs.equals(stack.getItem()))
 				volumeAjustment = ItemEarmuffs.getVolumeMod(stack);
 		}
 		if(volumeAjustment>.1f)
 			for(int dx = (int)Math.floor(tileX-8)>>4; dx<=(int)Math.floor(tileX+8)>>4; dx++)
 				for(int dz = (int)Math.floor(tileZ-8)>>4; dz<=(int)Math.floor(tileZ+8)>>4; dz++)
 				{
-					Iterator it = ClientUtils.mc().thePlayer.worldObj.getChunkFromChunkCoords(dx, dz).getTileEntityMap().values().iterator();
+					Iterator it = ClientUtils.mc().player.world.getChunkFromChunkCoords(dx, dz).getTileEntityMap().values().iterator();
 					while (it.hasNext())
 					{
 						TileEntity tile = (TileEntity)it.next();
@@ -172,7 +172,7 @@ public class IETileSound implements ITickableSound
 					}
 				}
 
-		TileEntity tile = ClientUtils.mc().thePlayer.worldObj.getTileEntity(new BlockPos(tileX,tileY,tileZ));
+		TileEntity tile = ClientUtils.mc().player.world.getTileEntity(new BlockPos(tileX,tileY,tileZ));
 		if(!(tile instanceof ISoundTile))
 			donePlaying = true;
 		else
@@ -183,7 +183,7 @@ public class IETileSound implements ITickableSound
 	@Override
 	public void update()
 	{
-		if(ClientUtils.mc().thePlayer!=null && ClientUtils.mc().thePlayer.worldObj.getTotalWorldTime()%40==0)
+		if(ClientUtils.mc().player!=null && ClientUtils.mc().player.world.getTotalWorldTime()%40==0)
 			evaluateVolume();
 	}
 

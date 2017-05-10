@@ -37,7 +37,7 @@ public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
 		if(slotObject != null && slotObject.getHasStack() && !(slotObject instanceof IESlot.Ghost))
@@ -47,22 +47,22 @@ public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 			if(slot<48)
 			{
 				if(!this.mergeItemStack(stackInSlot, 48,(48+36), true))
-					return null;
+					return ItemStack.EMPTY;
 			}
 			else
 			{
 				if(!this.mergeItemStack(stackInSlot, 30,48, false))
-					return null;
+					return ItemStack.EMPTY;
 			}
 
-			if (stackInSlot.stackSize == 0)
-				slotObject.putStack(null);
+			if (stackInSlot.getCount() == 0)
+				slotObject.putStack(ItemStack.EMPTY);
 			else
 				slotObject.onSlotChanged();
 
-			if (stackInSlot.stackSize == stack.stackSize)
-				return null;
-			slotObject.onPickupFromSlot(player, stackInSlot);
+			if (stackInSlot.getCount() == stack.getCount())
+				return ItemStack.EMPTY;
+			slotObject.onTake(player, stackInSlot);
 		}
 		return stack;
 	}

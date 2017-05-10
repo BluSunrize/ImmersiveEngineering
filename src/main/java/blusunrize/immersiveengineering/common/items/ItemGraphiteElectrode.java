@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -18,11 +19,11 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	public static int electrodeMaxDamage;
 	public ItemGraphiteElectrode()
 	{
-		super("graphiteElectrode", 16);
+		super("graphite_electrode", 16);
 		electrodeMaxDamage = IEConfig.Machines.arcfurnace_electrodeDamage;
 	}
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		super.getSubItems(item, tab, list);
 	}
@@ -46,7 +47,7 @@ public class ItemGraphiteElectrode extends ItemIEBase
 			}
 	}
 	@Override
-	public boolean isItemTool(ItemStack stack)
+	public boolean isEnchantable(ItemStack stack)
 	{
 		return false;
 	}

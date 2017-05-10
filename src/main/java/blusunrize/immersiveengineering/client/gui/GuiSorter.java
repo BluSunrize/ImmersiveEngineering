@@ -46,7 +46,7 @@ public class GuiSorter extends GuiContainer
 					String[] split = I18n.format(Lib.DESC_INFO + "filter." + (type == 0 ? "oreDict" : type == 1 ? "nbt" : "fuzzy")).split("<br>");
 					for(int i=0; i<split.length; i++)
 						tooltip.add((i==0? TextFormatting.WHITE: TextFormatting.GRAY)+split[i]);
-					ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
+					ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize,-1);
 					RenderHelper.enableGUIStandardItemLighting();
 				}
 		}

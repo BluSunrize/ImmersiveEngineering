@@ -64,7 +64,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompoundTag("conveyorBeltSubtypeNBT"));
 		}
 
-		if(descPacket && worldObj!=null)
+		if(descPacket && world!=null)
 			this.markContainingBlockForUpdate(null);
 	}
 
@@ -127,7 +127,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
-			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+			world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 			return true;
 		}
 		return false;
@@ -150,7 +150,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
-				worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+				world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 				return true;
 			}
 		}
@@ -250,7 +250,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
@@ -262,16 +262,22 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 				entity.motionX = 0;
 				entity.motionY = 0;
 				entity.motionZ = 0;
-				conveyor.getWorld().spawnEntityInWorld(entity);
+				conveyor.getWorld().spawnEntity(entity);
 			}
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return 64;
+		}
+
 		@Override
 		public void setStackInSlot(int slot, ItemStack stack)
 		{

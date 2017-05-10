@@ -25,7 +25,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 {
 	public BlockWoodenDecoration()
 	{
-		super("woodenDecoration",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDecoration.class), ItemBlockIEBase.class, BlockFence.NORTH,BlockFence.SOUTH,BlockFence.WEST,BlockFence.EAST);
+		super("wooden_decoration",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDecoration.class), ItemBlockIEBase.class, BlockFence.NORTH,BlockFence.SOUTH,BlockFence.WEST,BlockFence.EAST);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
@@ -166,7 +166,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	}
 
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn)
+	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
 	{
 		state = state.getActualState(worldIn, pos);
 		if(getMetaFromState(state)==BlockTypes_WoodenDecoration.FENCE.getMeta())

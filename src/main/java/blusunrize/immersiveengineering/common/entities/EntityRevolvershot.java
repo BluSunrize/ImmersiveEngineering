@@ -46,7 +46,7 @@ public class EntityRevolvershot extends Entity
 	private int tickLimit=40;
 	String bulletType;
 	public boolean bulletElectro = false;
-	public ItemStack bulletPotion = null;
+	public ItemStack bulletPotion = ItemStack.EMPTY;
 
 	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.createKey(EntityRevolvershot.class, DataSerializers.STRING);
 
@@ -109,7 +109,7 @@ public class EntityRevolvershot extends Entity
 	}
 	public EntityLivingBase getShooterSynced()
 	{
-		return this.worldObj.getPlayerEntityByName(this.dataManager.get(dataMarker_shooter));
+		return this.world.getPlayerEntityByName(this.dataManager.get(dataMarker_shooter));
 	}
 	public Entity getShooter()
 	{
@@ -119,20 +119,20 @@ public class EntityRevolvershot extends Entity
 	@Override
 	public void onUpdate()
 	{
-		if(this.getShooter() == null && this.worldObj.isRemote)
+		if(this.getShooter() == null && this.world.isRemote)
 			this.shootingEntity = getShooterSynced();
 
-		if(!this.worldObj.isRemote && (this.shootingEntity != null && this.shootingEntity.isDead))
+		if(!this.world.isRemote && (this.shootingEntity != null && this.shootingEntity.isDead))
 			this.setDead();
 		else
 		{
 			BlockPos blockpos = new BlockPos(this.xTile, this.yTile, this.zTile);
-			IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+			IBlockState iblockstate = this.world.getBlockState(blockpos);
 			Block block = iblockstate.getBlock();
 
 			if(iblockstate.getMaterial() != Material.AIR)
 			{
-				AxisAlignedBB axisalignedbb = iblockstate.getCollisionBoundingBox(this.worldObj, blockpos);
+				AxisAlignedBB axisalignedbb = iblockstate.getCollisionBoundingBox(this.world, blockpos);
 
 				if (axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
 				{
@@ -177,7 +177,7 @@ public class EntityRevolvershot extends Entity
 
 			Vec3d vec3 = new Vec3d(this.posX, this.posY, this.posZ);
 			Vec3d vec31 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-			RayTraceResult movingobjectposition = this.worldObj.rayTraceBlocks(vec3, vec31);
+			RayTraceResult movingobjectposition = this.world.rayTraceBlocks(vec3, vec31);
 			vec3 = new Vec3d(this.posX, this.posY, this.posZ);
 			vec31 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
@@ -185,7 +185,7 @@ public class EntityRevolvershot extends Entity
 				vec31 = new Vec3d(movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord);
 
 			Entity entity = null;
-			List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 			double d0 = 0.0D;
 
 			for (int i = 0; i < list.size(); ++i)
@@ -218,7 +218,7 @@ public class EntityRevolvershot extends Entity
 			this.posX += this.motionX;
 			this.posY += this.motionY;
 			this.posZ += this.motionZ;
-			float f1 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+			float f1 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 			this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX) * 180.0D / Math.PI) + 90.0F;
 
 			for (this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY) * 180.0D / Math.PI) - 90.0F; this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F);
@@ -238,12 +238,12 @@ public class EntityRevolvershot extends Entity
 				for (int j = 0; j < 4; ++j)
 				{
 					float f3 = 0.25F;
-					this.worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * (double)f3, this.posY - this.motionY * (double)f3, this.posZ - this.motionZ * (double)f3, this.motionX, this.motionY, this.motionZ);
+					this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * (double)f3, this.posY - this.motionY * (double)f3, this.posZ - this.motionZ * (double)f3, this.motionX, this.motionY, this.motionZ);
 				}
 			}
 
 			if(ticksExisted%4==0)
-				this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+				this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
 			this.setPosition(this.posX, this.posY, this.posZ);
 		}
 	}
@@ -258,7 +258,7 @@ public class EntityRevolvershot extends Entity
 		{
 			IBullet bullet = BulletHandler.getBullet(bulletType);
 			if(bullet != null)
-				bullet.onHitTarget(worldObj, mop, this.shootingEntity, this, headshot);
+				bullet.onHitTarget(world, mop, this.shootingEntity, this, headshot);
 			if(headshot && mop.entityHit instanceof EntityAgeable && ((EntityAgeable)mop.entityHit).isChild())
 			{
 				if(this.shootingEntity instanceof EntityPlayer)
@@ -266,10 +266,10 @@ public class EntityRevolvershot extends Entity
 				this.playSound(IESounds.birthdayParty, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
 			}
 		}
-		if(!this.worldObj.isRemote)
+		if(!this.world.isRemote)
 		{
 //			if(bulletType==3)
-//				worldObj.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
+//				world.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
 			this.secondaryImpact(mop);
 		}
 		this.setDead();
@@ -313,14 +313,14 @@ public class EntityRevolvershot extends Entity
 //				Vec3d vecDir = new Vec3d(0, 1, 0);
 //				vecDir = matrix.apply(vecDir);
 //
-//				EntityWolfpackShot bullet = new EntityWolfpackShot(worldObj, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
+//				EntityWolfpackShot bullet = new EntityWolfpackShot(world, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
 //				if(mop.entityHit instanceof EntityLivingBase)
 //					bullet.targetOverride = (EntityLivingBase)mop.entityHit;
 //				bullet.setPosition(posX+vecDir.xCoord, posY+vecDir.yCoord, posZ+vecDir.zCoord);
 //				bullet.motionX = vecDir.xCoord*.375;
 //				bullet.motionY = vecDir.yCoord*.375;
 //				bullet.motionZ = vecDir.zCoord*.375;
-//				worldObj.spawnEntityInWorld(bullet);
+//				world.spawnEntity(bullet);
 //			}
 //		}
 //		if(bulletType==8 && bulletPotion!=null && bulletPotion.getItem() instanceof ItemPotion)
@@ -330,7 +330,7 @@ public class EntityRevolvershot extends Entity
 //			if(effects!=null)
 //				if(bulletPotion.getItem() instanceof ItemLingeringPotion)
 //				{
-//					EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(this.worldObj, this.posX, this.posY, this.posZ);
+//					EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(this.world, this.posX, this.posY, this.posZ);
 //					entityareaeffectcloud.setOwner(shootingEntity);
 //					entityareaeffectcloud.setRadius(3.0F);
 //					entityareaeffectcloud.setRadiusOnUse(-0.5F);
@@ -339,11 +339,11 @@ public class EntityRevolvershot extends Entity
 //					entityareaeffectcloud.setPotion(potionType);
 //					for(PotionEffect potioneffect : effects)
 //						entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-//					this.worldObj.spawnEntityInWorld(entityareaeffectcloud);
+//					this.world.spawnEntity(entityareaeffectcloud);
 //				}
 //				else if(bulletPotion.getItem() instanceof ItemSplashPotion)
 //				{
-//					List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
+//					List<EntityLivingBase> livingEntities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
 //					if(livingEntities!=null && !livingEntities.isEmpty())
 //						for(EntityLivingBase living : livingEntities)
 //							if(living.canBeHitWithPotion())
@@ -374,7 +374,7 @@ public class EntityRevolvershot extends Entity
 //							p = new PotionEffect(p.getPotion(),1);
 //						((EntityLivingBase)mop.entityHit).addPotionEffect(p);
 //					}
-//			worldObj.playEvent(2002, new BlockPos(this), PotionType.getID(potionType));
+//			world.playEvent(2002, new BlockPos(this), PotionType.getID(potionType));
 //		}
 	}
 	public void onExpire()
@@ -400,7 +400,7 @@ public class EntityRevolvershot extends Entity
 		nbt.setByte("inGround", (byte)(this.inGround ? 1 : 0));
 		nbt.setTag("direction", this.newDoubleNBTList(this.motionX, this.motionY, this.motionZ));
 		nbt.setString("bulletType", this.bulletType);
-		if(bulletPotion!=null)
+		if(!bulletPotion.isEmpty())
 			nbt.setTag("bulletPotion", bulletPotion.writeToNBT(new NBTTagCompound()));
 		if(this.shootingEntity!=null)
 			nbt.setString("shootingEntity", this.shootingEntity.getName());
@@ -419,7 +419,7 @@ public class EntityRevolvershot extends Entity
 		this.inGround = nbt.getByte("inGround") == 1;
 		this.bulletType = nbt.getString("bulletType");
 		if(nbt.hasKey("bulletPotion"))
-			this.bulletPotion= ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("bulletPotion"));
+			this.bulletPotion= new ItemStack(nbt.getCompoundTag("bulletPotion"));
 
 		if (nbt.hasKey("direction", 9))
 		{
@@ -433,8 +433,8 @@ public class EntityRevolvershot extends Entity
 			this.setDead();
 		}
 
-		if(this.worldObj!=null)
-			this.shootingEntity = this.worldObj.getPlayerEntityByName(nbt.getString("shootingEntity"));
+		if(this.world!=null)
+			this.shootingEntity = this.world.getPlayerEntityByName(nbt.getString("shootingEntity"));
 	}
 
 	@Override

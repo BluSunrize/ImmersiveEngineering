@@ -24,16 +24,10 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, Ref
 
 	public RefineryRecipeCategory(IGuiHelper helper)
 	{
-		super("refinery","tile.immersiveengineering.metalMultiblock.refinery.name", helper.createDrawable(background, 6,10, 164,62), RefineryRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.REFINERY.getMeta()));
+		super("refinery","tile.immersiveengineering.metal_multiblock.refinery.name", helper.createDrawable(background, 6,10, 164,62), RefineryRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.REFINERY.getMeta()));
 		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
 	}
 
-	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, RefineryRecipeWrapper recipeWrapper)
-	{
-		//Deprecated
-	}
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, RefineryRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
@@ -51,7 +45,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, Ref
 			}
 		}
 		guiFluidStacks.init(2, false, 103,10, 16,47, 6000, false, tankOverlay);
-		guiFluidStacks.set(2, ingredients.getOutputs(FluidStack.class));
+		guiFluidStacks.set(2, ingredients.getOutputs(FluidStack.class).get(0));
 
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}

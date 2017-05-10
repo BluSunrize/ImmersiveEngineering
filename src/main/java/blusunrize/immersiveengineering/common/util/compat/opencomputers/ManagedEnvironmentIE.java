@@ -4,12 +4,12 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.network.Visibility;
-import li.cil.oc.api.prefab.ManagedEnvironment;
+import li.cil.oc.api.prefab.AbstractManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends ManagedEnvironment implements NamedBlock
+public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends AbstractManagedEnvironment implements NamedBlock
 {
 	World w;
 	BlockPos pos;

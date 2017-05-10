@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,7 +59,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
@@ -69,7 +70,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 			this.motionZ *= 0.699999988079071D;
 			this.motionY *= -0.5D;
 		}
-		if (firstTick&&!worldObj.isRemote&&rgb!=null)
+		if (firstTick&&!world.isRemote&&rgb!=null)
 		{
 			dataManager.set(dataMarker_r, rgb[0]);
 			dataManager.set(dataMarker_g, rgb[1]);
@@ -78,13 +79,13 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 			firstTick = false;
 		}
 		// tube logic
-		if (timer>0&&!worldObj.isRemote)
+		if (timer>0&&!world.isRemote)
 		{
 			timer--;
 			if (timer<=0)
 				dataManager.set(dataMarker_active, false);
 		}
-		if (worldObj.isRemote)
+		if (world.isRemote)
 		{
 			active = dataManager.get(dataMarker_active);
 			rgb = new float[]{dataManager.get(dataMarker_r),
@@ -126,12 +127,12 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
-		if (!isDead&&!worldObj.isRemote)
+		if (!isDead&&!world.isRemote)
 		{
 			ItemStack tube = new ItemStack(IEContent.itemFluorescentTube);
 			ItemFluorescentTube.setRGB(tube, rgb);
-			EntityItem ent = new EntityItem(worldObj, posX, posY, posZ, tube);
-			worldObj.spawnEntityInWorld(ent);
+			EntityItem ent = new EntityItem(world, posX, posY, posZ, tube);
+			world.spawnEntity(ent);
 			setDead();
 		}
 		return super.attackEntityFrom(source, amount);
@@ -157,15 +158,15 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		}
 	}
 	@Override
-	public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d targetVec3, ItemStack stack, EnumHand hand)
+	public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d targetVec3, EnumHand hand)
 	{
-		if(Utils.isHammer(stack))
+		if(Utils.isHammer(player.getHeldItem(hand)))
 		{
 			angleHorizontal+=(player.isSneaking()?10:1);
 			angleHorizontal%=360;
 			dataManager.set(dataMarker_angleHorizontal, angleHorizontal);
 			return EnumActionResult.SUCCESS;
 		}
-		return super.applyPlayerInteraction(player, targetVec3, stack, hand);
+		return super.applyPlayerInteraction(player, targetVec3, hand);
 	}
 }

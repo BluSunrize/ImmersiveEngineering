@@ -1,0 +1,55 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:ie_pillar",
+		"textures": {
+			"particle": "#side",
+			"side": "immersiveengineering:blocks/wooden_device_crate_festive",
+			"top": "immersiveengineering:blocks/wooden_device_crate_festive_top",
+			"bottom": "immersiveengineering:blocks/wooden_device_crate_festive_top"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=crate": [{ "textures": { "side": "immersiveengineering:blocks/wooden_device_crate_festive", "top": "immersiveengineering:blocks/wooden_device_crate_festive_top", "bottom": "immersiveengineering:blocks/wooden_device_crate_festive_top"} }],
+		"inventory,type=gunpowder_barrel": [{ "textures": { "side": "immersiveengineering:blocks/wooden_device_gunpowder_barrel_festive", "bottom": "immersiveengineering:blocks/wooden_device_gunpowder_barrel_festive_bottom", "top": "immersiveengineering:blocks/wooden_device_gunpowder_barrel_festive_top"} }],
+		"inventory,type=reinforced_crate": [{ "textures": { "side": "immersiveengineering:blocks/wooden_device_reinforced_crate_festive", "top": "immersiveengineering:blocks/wooden_device_reinforced_crate_festive_top", "bottom": "immersiveengineering:blocks/wooden_device_reinforced_crate_festive_top"} }],
+		"type":
+		{
+			"crate": {
+			},
+			"gunpowder_barrel": {
+				"textures": {
+					"particle": "immersiveengineering:blocks/wooden_device_gunpowder_barrel_festive",
+					"side": "immersiveengineering:blocks/wooden_device_gunpowder_barrel_festive",
+					"top": "immersiveengineering:blocks/wooden_device_gunpowder_barrel_festive_top",
+					"bottom": "immersiveengineering:blocks/wooden_device_gunpowder_barrel_festive_bottom"
+				}
+			},
+			"reinforced_crate": {
+				"textures": {
+					"particle": "immersiveengineering:blocks/wooden_device_reinforced_crate_festive",
+					"side": "immersiveengineering:blocks/wooden_device_reinforced_crate_festive",
+					"top": "immersiveengineering:blocks/wooden_device_reinforced_crate_festive_top",
+					"bottom": "immersiveengineering:blocks/wooden_device_reinforced_crate_festive_top"
+				}
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": {},
+			"south": {},
+			"west": {},
+			"east": {}
+		},
+		"_0multiblockslave":
+		{
+			"false":{},
+			"true":{}
+		}
+	}
+}

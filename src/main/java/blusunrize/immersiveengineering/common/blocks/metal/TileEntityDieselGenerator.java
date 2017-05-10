@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -91,17 +92,17 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 			animation_fanRotation %= 360;
 		}
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f,1);
-			if(active && worldObj.getTotalWorldTime()%4==0)
+			if(active && world.getTotalWorldTime()%4==0)
 			{
 				BlockPos exhaust = this.getBlockPosForPos(38);
 				EnumFacing fl = facing;
 				EnumFacing fw = facing.rotateY();
 				if(mirrored)
 					fw = fw.getOpposite();
-				worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, exhaust.getX()+.5+(fl.getFrontOffsetX()*.3125f)+(-fw.getFrontOffsetX()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getFrontOffsetZ()*.3125f)+(-fw.getFrontOffsetZ()*.3125f), 0,0,0);
+				world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, exhaust.getX()+.5+(fl.getFrontOffsetX()*.3125f)+(-fw.getFrontOffsetX()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getFrontOffsetZ()*.3125f)+(-fw.getFrontOffsetZ()*.3125f), 0,0,0);
 			}
 		}
 		else
@@ -161,7 +162,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	}
 	TileEntity getEnergyOutput(int w)
 	{
-		TileEntity eTile = worldObj.getTileEntity(this.getBlockPosForPos(16+w).add(0,1,0));
+		TileEntity eTile = world.getTileEntity(this.getBlockPosForPos(16+w).add(0,1,0));
 		if(EnergyHelper.isFluxReceiver(eTile, EnumFacing.DOWN))
 			return eTile;
 		return null;
@@ -359,7 +360,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
 	}

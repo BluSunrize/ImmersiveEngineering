@@ -1,0 +1,55 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:stripcurtain",
+		"textures": {
+			"metal": "immersiveengineering:blocks/conveyor_casing_side",
+			"side": "immersiveengineering:blocks/cloth_device_stripcurtain"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=stripcurtain":	[{
+			"transform": {
+				"firstperson_righthand": { "translation": [ 0, 0.375, 0.25 ], "rotation": [{ "y": 45 }], "scale": 0.4},
+				"firstperson_lefthand": { "translation": [ 0, 0.25, -0.25 ], "rotation": [{ "y": 225 }], "scale": 0.4},
+				"thirdperson_righthand": {"scale": 0.375, "translation": [ 0, 0.25, 0.5 ], "rotation": [{ "x": 75 },{ "y": 45 }]},
+				"thirdperson_lefthand": {"scale": 0.375, "translation": [ -0.25, 0.5, 0.5 ], "rotation": [{ "x": 75 },{ "y": 225 }]},
+				"fixed": {"scale": 0.5},
+				"gui": {"translation": [ 0.25, 0.5625, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": 0.625},
+				"ground": {"translation": [ 0, 3, 0 ], "scale": 0.25}
+			}
+		}],
+		"type":
+		{
+			"stripcurtain":	{
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"boolean0":
+		{
+			"false":{},
+			"true":{
+				"model": "immersiveengineering:stripcurtain_middle"
+			}
+		}
+	}
+}

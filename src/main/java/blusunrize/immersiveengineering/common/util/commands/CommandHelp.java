@@ -33,7 +33,7 @@ public class CommandHelp extends IESubCommand
 				{
 					String h = I18n.translateToLocal(com.getHelp(sub));
 					for(String s : h.split("<br>"))
-						sender.addChatMessage(new TextComponentString(s));
+						sender.sendMessage(new TextComponentString(s));
 				}
 			}
 		}
@@ -41,12 +41,12 @@ public class CommandHelp extends IESubCommand
 		{
 			String h = I18n.translateToLocal(getHelp(""));
 			for(String s : h.split("<br>"))
-				sender.addChatMessage(new TextComponentString(s));
+				sender.sendMessage(new TextComponentString(s));
 			String sub = "";
 			int i=0;
 			for(IESubCommand com : handler.commands)
 				sub += ((i++)>0?", ":"")+com.getIdent();
-			sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
+			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
 		}
 	}
 
@@ -55,7 +55,7 @@ public class CommandHelp extends IESubCommand
 	{
 		ArrayList<String> list = new ArrayList<>();
 		for(IESubCommand sub : h.commands)
-			if(sub!=this && sender.canCommandSenderUseCommand(sub.getPermissionLevel(),h.getCommandName()))
+			if(sub!=this && sender.canUseCommand(sub.getPermissionLevel(),h.getName()))
 			{
 				if(args.length==1)
 				{

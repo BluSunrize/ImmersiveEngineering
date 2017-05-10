@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -33,7 +34,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		super(MultiblockRefinery.instance, new int[]{3,3,5}, 16000, true);
 	}
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000),new FluidTank(24000),new FluidTank(24000)};
-	public ItemStack[] inventory = new ItemStack[6];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -60,7 +61,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 	public void update()
 	{
 		super.update();
-		if(worldObj.isRemote || isDummy())
+		if(world.isRemote || isDummy())
 			return;
 
 		boolean update = false;
@@ -83,22 +84,23 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 
 		if(this.tanks[2].getFluidAmount()>0)
 		{
-			ItemStack filledContainer = Utils.fillFluidContainer(tanks[2], inventory[4], inventory[5], null);
-			if(filledContainer!=null)
+			ItemStack filledContainer = Utils.fillFluidContainer(tanks[2], inventory.get(4), inventory.get(5), null);
+			if(!filledContainer.isEmpty())
 			{
-				if(inventory[5]!=null && OreDictionary.itemMatches(inventory[5], filledContainer, true))
-					inventory[5].stackSize+=filledContainer.stackSize;
-				else if(inventory[5]==null)
-					inventory[5] = filledContainer.copy();
-				if(--inventory[4].stackSize<=0)
-					inventory[4]=null;
+				if(!inventory.get(5).isEmpty() && OreDictionary.itemMatches(inventory.get(5), filledContainer, true))
+					inventory.get(5).grow(filledContainer.getCount());
+				else if(inventory.get(5).isEmpty())
+					inventory.set(5, filledContainer.copy());
+				inventory.get(4).shrink(1);
+				if(inventory.get(4).getCount() <= 0)
+					inventory.set(4, ItemStack.EMPTY);
 				update = true;
 			}
 			if(this.tanks[2].getFluidAmount()>0)
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[2].getFluid(), Math.min(this.tanks[2].getFluidAmount(), 80), false);
 				BlockPos outputPos = this.getPos().add(0,-1,0).offset(facing.getOpposite());
-				IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, facing);
+				IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, facing);
 				if(output!=null)
 				{
 					int accepted = output.fill(out, false);
@@ -112,26 +114,28 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			}
 		}
 
-		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory[0], inventory[1], null);
-		if(emptyContainer!=null && emptyContainer.stackSize>0)
+		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory.get(0), inventory.get(1), null);
+		if(!emptyContainer.isEmpty() && emptyContainer.getCount() > 0)
 		{
-			if(inventory[1]!=null && OreDictionary.itemMatches(inventory[1], emptyContainer, true))
-				inventory[1].stackSize+=emptyContainer.stackSize;
-			else if(inventory[1]==null)
-				inventory[1] = emptyContainer.copy();
-			if(--inventory[0].stackSize<=0)
-				inventory[0]=null;
+			if(!inventory.get(1).isEmpty() && OreDictionary.itemMatches(inventory.get(1), emptyContainer, true))
+				inventory.get(1).grow(emptyContainer.getCount());
+			else if(inventory.get(1).isEmpty())
+				inventory.set(1, emptyContainer.copy());
+			inventory.get(0).shrink(1);
+			if(inventory.get(0).getCount() <= 0)
+				inventory.set(0, ItemStack.EMPTY);
 			update = true;
 		}
-		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory[2], inventory[3], null);
-		if(emptyContainer!=null && emptyContainer.stackSize>0)
+		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory.get(2), inventory.get(3), null);
+		if(!emptyContainer.isEmpty() && emptyContainer.getCount() > 0)
 		{
-			if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], emptyContainer, true))
-				inventory[3].stackSize+=emptyContainer.stackSize;
-			else if(inventory[3]==null)
-				inventory[3] = emptyContainer.copy();
-			if(--inventory[2].stackSize<=0)
-				inventory[2]=null;
+			if(!inventory.get(3).isEmpty() && OreDictionary.itemMatches(inventory.get(3), emptyContainer, true))
+				inventory.get(3).grow(emptyContainer.getCount());
+			else if(inventory.get(3).isEmpty())
+				inventory.set(3, emptyContainer.copy());
+			inventory.get(2).shrink(1);
+			if(inventory.get(2).getCount() <= 0)
+				inventory.set(2, ItemStack.EMPTY);
 			update = true;
 		}
 
@@ -288,11 +292,11 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().offset(facing,2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -320,7 +324,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}

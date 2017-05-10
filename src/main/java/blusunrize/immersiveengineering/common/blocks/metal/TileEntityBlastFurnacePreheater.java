@@ -57,17 +57,17 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	{
 		for(int i=1; i<=2; i++)
 		{
-			worldObj.setBlockState(pos.add(0,i,0), state);
-			((TileEntityBlastFurnacePreheater)worldObj.getTileEntity(pos.add(0,i,0))).dummy = i;
-			((TileEntityBlastFurnacePreheater)worldObj.getTileEntity(pos.add(0,i,0))).facing = this.facing;
+			world.setBlockState(pos.add(0,i,0), state);
+			((TileEntityBlastFurnacePreheater)world.getTileEntity(pos.add(0,i,0))).dummy = i;
+			((TileEntityBlastFurnacePreheater)world.getTileEntity(pos.add(0,i,0))).facing = this.facing;
 		}
 	}
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		for(int i=0; i<=2; i++)
-			if(worldObj.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntityBlastFurnacePreheater)
-				worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
+			if(world.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntityBlastFurnacePreheater)
+				world.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	{
 		if(dummy>0)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
+			TileEntity te = world.getTileEntity(getPos().add(0,-dummy,0));
 			if(te instanceof TileEntityBlastFurnacePreheater)
 				return ((TileEntityBlastFurnacePreheater)te).getFluxStorage();
 		}
@@ -152,7 +152,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	{
 		for(int i=0; i<=2; i++)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy+i,0));
+			TileEntity te = world.getTileEntity(getPos().add(0,-dummy+i,0));
 			if(te instanceof TileEntityBlastFurnacePreheater)
 			{
 				((TileEntityBlastFurnacePreheater)te).setFacing(newDir);

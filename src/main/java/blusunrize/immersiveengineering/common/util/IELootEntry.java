@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.Math.min;
+
 /**
  * @author BluSunrize - 22.07.2016
  */
@@ -52,7 +54,7 @@ public class IELootEntry extends LootEntryItem
 			totalFunctions.add(f);
 		if(stack.getMetadata()!=0)
 			totalFunctions.add(new SetMetadata(new LootCondition[0], new RandomValueRange(stack.getMetadata(),stack.getMetadata())));
-		if(stack.stackSize>1)
+		if(stack.getCount() > 1)
 			totalFunctions.add(new SetCount(new LootCondition[0], new RandomValueRange(stack.getMetadata(),stack.getMetadata())));
 		if(stack.getTagCompound()!=null)
 			totalFunctions.add(new SetNBT(new LootCondition[0], stack.getTagCompound()));
@@ -64,18 +66,18 @@ public class IELootEntry extends LootEntryItem
 	{
 		ItemStack itemstack = stack.copy();
 		int i = 0;
-		if(itemstack.stackSize > 0)
+		if(itemstack.getCount() > 0)
 		{
-			if(itemstack.stackSize < this.stack.getItem().getItemStackLimit(itemstack))
+			if(itemstack.getCount() < this.stack.getItem().getItemStackLimit(itemstack))
 				stacks.add(itemstack);
 			else
 			{
-				i = itemstack.stackSize;
+				i = itemstack.getCount();
 				while(i > 0)
 				{
 					ItemStack itemstack1 = itemstack.copy();
-					itemstack1.stackSize = Math.min(itemstack.getMaxStackSize(), i);
-					i -= itemstack1.stackSize;
+					itemstack1.setCount(min(itemstack.getMaxStackSize(), i));
+					i -= itemstack1.getCount();
 					stacks.add(itemstack1);
 				}
 			}

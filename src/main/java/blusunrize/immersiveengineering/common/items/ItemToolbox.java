@@ -29,16 +29,18 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack , World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
 			CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
 		return new ActionResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSneaking())
 		{
 			IBlockState state = world.getBlockState(pos);
@@ -46,7 +48,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 			if(!block.isReplaceable(world, pos))
 				pos = pos.offset(side);
 
-			if(stack.stackSize != 0 && player.canPlayerEdit(pos, side, stack) && world.canBlockBePlaced(IEContent.blockMetalDecoration2, pos, false, side, null, stack))
+			if(stack.getCount() != 0 && player.canPlayerEdit(pos, side, stack) && world.mayPlace(IEContent.blockMetalDecoration2, pos, false, side, null))
 			{
 				IBlockState toolbox = IEContent.blockMetalDecoration2.getStateFromMeta(BlockTypes_MetalDecoration2.TOOLBOX.getMeta());
 				if(world.setBlockState(pos, toolbox, 3))
@@ -55,14 +57,14 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-					--stack.stackSize;
+					stack.shrink(1);
 				}
 				return EnumActionResult.SUCCESS;
 			}
 			else
 				return EnumActionResult.FAIL;
 		}
-		return super.onItemUse(stack, player, world, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
 	}
 
 	@Override

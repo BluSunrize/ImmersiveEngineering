@@ -97,17 +97,17 @@ public class MultiblockExcavatorDemo implements IMultiblock
 	{
 		return true;
 	}
-	@SideOnly(Side.CLIENT)
-	static ItemStack renderStack;
-	@SideOnly(Side.CLIENT)
-	static ItemStack renderStack2;
+	//@SideOnly(Side.CLIENT)
+	static ItemStack renderStack = ItemStack.EMPTY;
+	//@SideOnly(Side.CLIENT)
+	static ItemStack renderStack2 = ItemStack.EMPTY;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		if(renderStack==null)
+		if(renderStack.isEmpty())
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.EXCAVATOR.getMeta());
-		if(renderStack2==null)
+		if(renderStack2.isEmpty())
 			renderStack2 = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
 		GlStateManager.translate(2, 3.5, 2.875);
 		GlStateManager.rotate(-225, 0, 1, 0);

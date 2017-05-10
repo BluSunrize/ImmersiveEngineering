@@ -44,7 +44,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 		rotation += player.isSneaking()?-22.5f:22.5f;
 		rotation %= 360;
 		markDirty();
-		worldObj.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 		return true;
 	}
 
@@ -59,7 +59,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	{
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && world!=null)
 			this.markContainingBlockForUpdate(null);
 	}
 

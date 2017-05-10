@@ -217,11 +217,12 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	{
 		return true;
 	}
+	@Nullable
 	public T master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
 			return (T)this;
-		TileEntity te = worldObj.getTileEntity(getPos().add(-offset[0],-offset[1],-offset[2]));
+		TileEntity te = world.getTileEntity(getPos().add(-offset[0],-offset[1],-offset[2]));
 		return this.getClass().isInstance(te)?(T)te: null;
 	}
 	public void updateMasterBlock(IBlockState state, boolean blockUpdate)

@@ -53,11 +53,12 @@ public abstract class IESlot extends Slot
 			return false;
 		}
 		@Override
-		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
+		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
-			super.onPickupFromSlot(player, stack);
+			ItemStack result = super.onTake(player, stack);
 			if(player!=null && (this.container instanceof ContainerBlastFurnace || this.container instanceof ContainerArcFurnace) && ApiUtils.compareToOreName(stack, "ingotSteel"))
 				player.addStat(IEAchievements.makeSteel);
+			return result;
 		}
 	}
 	public static class FluidContainer extends IESlot
@@ -106,7 +107,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack != null && itemStack.getItem() instanceof ItemBullet;
+			return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemBullet;
 		}
 		@Override
 		public int getSlotStackLimit()
@@ -123,7 +124,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && itemStack.getItem() instanceof IDrillHead;
+			return !itemStack.isEmpty() && itemStack.getItem() instanceof IDrillHead;
 		}
 		@Override
 		public int getSlotStackLimit()
@@ -150,7 +151,7 @@ public abstract class IESlot extends Slot
 				for(Slot slot : container.inventorySlots)
 					if(slot instanceof Upgrades && ((Upgrades)slot).preventDoubles && OreDictionary.itemMatches(slot.getStack(), itemStack, true))
 						return false;
-			return itemStack!=null && itemStack.getItem() instanceof IUpgrade && ((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type) && ((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
+			return !itemStack.isEmpty() && itemStack.getItem() instanceof IUpgrade && ((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type) && ((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
 		}
 		@Override
 		public int getSlotStackLimit()
@@ -171,7 +172,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			if(itemStack==null || !(itemStack.getItem() instanceof IShaderItem) || tool==null || !tool.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+			if(itemStack.isEmpty() || !(itemStack.getItem() instanceof IShaderItem) || tool.isEmpty() || !tool.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
 				return false;
 			ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
 			if(wrapper==null)
@@ -195,7 +196,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			if(itemStack==null)
+			if(itemStack.isEmpty())
 				return false;
 			if(itemStack.getItem() instanceof IUpgradeableTool)
 				return ((IUpgradeableTool)itemStack.getItem()).canModify(itemStack);
@@ -218,15 +219,15 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean canTakeStack(EntityPlayer player)
 		{
-			return !(this.getStack() != null && getStack().getItem() instanceof IUpgradeableTool && !((IUpgradeableTool) getStack().getItem()).canTakeFromWorkbench(getStack()));
+			return !(!this.getStack().isEmpty() && getStack().getItem() instanceof IUpgradeableTool && !((IUpgradeableTool) getStack().getItem()).canTakeFromWorkbench(getStack()));
 		}
 		@Override
-		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
+		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
-			super.onPickupFromSlot(player, stack);
-			if(stack!=null && stack.getItem() instanceof IUpgradeableTool)
+			ItemStack result = super.onTake(player, stack);
+			if(!stack.isEmpty() && stack.getItem() instanceof IUpgradeableTool)
 				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
-
+			return result;
 		}
 	}
 	public static class AutoBlueprint extends IESlot
@@ -238,7 +239,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && itemStack.getItem() instanceof ItemEngineersBlueprint;
+			return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemEngineersBlueprint;
 		}
 		@Override
 		public int getSlotStackLimit()
@@ -307,7 +308,7 @@ public abstract class IESlot extends Slot
 		public void onSlotChanged()
 		{
 			this.inventory.markDirty();
-			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
+			if(!upgradeableTool.isEmpty() && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).updateOutputs(upgradeableTool);
 			if(container instanceof ContainerModWorkbench)
 				((ContainerModWorkbench)container).rebindSlots();
@@ -344,9 +345,9 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
+		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
-			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
+			if(!upgradeableTool.isEmpty() && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
 			if(container instanceof ContainerModWorkbench)
 			{
@@ -367,7 +368,7 @@ public abstract class IESlot extends Slot
 					player.addStat(achievement);
 			}
 			this.inventory.markDirty();
-			super.onPickupFromSlot(player, stack);
+			return super.onTake(player, stack);
 		}
 	}
 
@@ -380,7 +381,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && ArcFurnaceRecipe.isValidRecipeInput(itemStack);
+			return !itemStack.isEmpty() && ArcFurnaceRecipe.isValidRecipeInput(itemStack);
 		}
 	}
 	public static class ArcAdditive extends IESlot
@@ -392,7 +393,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && ArcFurnaceRecipe.isValidRecipeAdditive(itemStack);
+			return !itemStack.isEmpty() && ArcFurnaceRecipe.isValidRecipeAdditive(itemStack);
 		}
 	}
 	public static class ArcElectrode extends IESlot
@@ -410,7 +411,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && IEContent.itemGraphiteElectrode.equals(itemStack.getItem());
+			return !itemStack.isEmpty() && IEContent.itemGraphiteElectrode.equals(itemStack.getItem());
 		}
 	}
 
@@ -431,7 +432,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && (type==1?BelljarHandler.getHandler(itemStack)!=null: type!=2||BelljarHandler.getItemFertilizerHandler(itemStack)!=null);
+			return !itemStack.isEmpty() && (type==1?BelljarHandler.getHandler(itemStack)!=null: type!=2||BelljarHandler.getItemFertilizerHandler(itemStack)!=null);
 		}
 	}
 

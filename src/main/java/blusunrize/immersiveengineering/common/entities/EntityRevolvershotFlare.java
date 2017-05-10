@@ -63,17 +63,17 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 		super.onUpdate();
 		if(colour<0)
 			colour = getColourSynced();
-		if(worldObj.isRemote && ticksExisted%1==0)
+		if(world.isRemote && ticksExisted%1==0)
 		{
 			float r = (getColour()>>16&255)/255f;
 			float g = (getColour()>>8&255)/255f;
 			float b = (getColour()&255)/255f;
-			ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, posX,posY,posZ, 0,0,0, 1, r,g,b);
+			ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX,posY,posZ, 0,0,0, 1, r,g,b);
 			if(ticksExisted>40)
 				for(int i=0; i<20; i++)
 				{
-					Vec3d v = new Vec3d(worldObj.rand.nextDouble()-.5,worldObj.rand.nextDouble()-.5,worldObj.rand.nextDouble()-.5);
-					ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
+					Vec3d v = new Vec3d(world.rand.nextDouble()-.5,world.rand.nextDouble()-.5,world.rand.nextDouble()-.5);
+					ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
 				}
 		}
 		if(ticksExisted==40)
@@ -86,8 +86,8 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 			float b = (getColour()&255)/255f;
 			for(int i=0; i<80; i++)
 			{
-				Vec3d v = new Vec3d((worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1);
-				ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
+				Vec3d v = new Vec3d((world.rand.nextDouble()-.5)*i>40?2:1,(world.rand.nextDouble()-.5)*i>40?2:1,(world.rand.nextDouble()-.5)*i>40?2:1);
+				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 	{
 		if(ticksExisted<=40)
 		{
-			if(!this.worldObj.isRemote)
+			if(!this.world.isRemote)
 				if(mop.entityHit != null)
 				{
 					if(!mop.entityHit.isImmuneToFire())
@@ -106,16 +106,16 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 				else if(mop.getBlockPos()!=null)
 				{
 					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
-					if(this.worldObj.isAirBlock(pos))
-						this.worldObj.setBlockState(pos, Blocks.FIRE.getDefaultState());
+					if(this.world.isAirBlock(pos))
+						this.world.setBlockState(pos, Blocks.FIRE.getDefaultState());
 				}
 			float r = (getColour()>>16&255)/255f;
 			float g = (getColour()>>8&255)/255f;
 			float b = (getColour()&255)/255f;
 			for(int i=0; i<80; i++)
 			{
-				Vec3d v = new Vec3d((worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1);
-				ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
+				Vec3d v = new Vec3d((world.rand.nextDouble()-.5)*i>40?2:1,(world.rand.nextDouble()-.5)*i>40?2:1,(world.rand.nextDouble()-.5)*i>40?2:1);
+				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
 			}
 		}
 		this.setDead();

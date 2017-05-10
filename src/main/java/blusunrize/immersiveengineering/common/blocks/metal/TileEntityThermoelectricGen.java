@@ -29,11 +29,11 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			int energy = 0;
 			for(EnumFacing fd : new EnumFacing[]{EnumFacing.DOWN,EnumFacing.NORTH,EnumFacing.WEST})
-				if(!worldObj.isAirBlock(getPos().offset(fd)) && !worldObj.isAirBlock(getPos().offset(fd.getOpposite())))
+				if(!world.isAirBlock(getPos().offset(fd)) && !world.isAirBlock(getPos().offset(fd.getOpposite())))
 				{
 					int temp0 = getTemperature(getPos().offset(fd));
 					int temp1 = getTemperature(getPos().offset(fd.getOpposite()));
@@ -51,7 +51,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	{
 		for(EnumFacing fd : EnumFacing.VALUES)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().offset(fd));
+			TileEntity te = world.getTileEntity(getPos().offset(fd));
 			amount -= EnergyHelper.insertFlux(te, fd.getOpposite(), amount, false);
 		}
 	}
@@ -61,13 +61,13 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	{
 		Fluid f = getFluid(pos);
 		if(f!=null)
-			return f.getTemperature(worldObj, pos);
-		IBlockState state = worldObj.getBlockState(pos);
+			return f.getTemperature(world, pos);
+		IBlockState state = world.getBlockState(pos);
 		return ThermoelectricHandler.getTemperature(state.getBlock(), state.getBlock().getMetaFromState(state));
 	}
 	Fluid getFluid(BlockPos pos)
 	{
-		IBlockState state = worldObj.getBlockState(pos);
+		IBlockState state = world.getBlockState(pos);
 		Block b = state.getBlock();
 		Fluid f = FluidRegistry.lookupFluidForBlock(b);
 		if(f==null && b instanceof BlockDynamicLiquid && b.getMetaFromState(state)==0)
@@ -75,7 +75,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 				f = FluidRegistry.WATER;
 			else if(state.getMaterial().equals(Material.LAVA))
 				f = FluidRegistry.LAVA;
-		if(b instanceof IFluidBlock && !((IFluidBlock)b).canDrain(worldObj, pos))
+		if(b instanceof IFluidBlock && !((IFluidBlock)b).canDrain(world, pos))
 			return null;
 		if(b instanceof BlockStaticLiquid && b.getMetaFromState(state)!=0)
 			return null;

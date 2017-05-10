@@ -1,0 +1,39 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:metal_device/fluid_pipe.obj.ie",
+		"custom": {"flip-v": true}
+	},
+	"variants":
+	{
+		"inventory,type=fluid_pipe": [{
+		}],
+		"type":
+		{
+			"fluid_pipe": {
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": {},
+			"south": {},
+			"west": {},
+			"east": {}
+		},
+		"_0multiblockslave":
+		{
+			"false":{},
+			"true":{}
+		},
+		//active texture
+		"boolean0":
+		{
+			"false":{},
+			"true":{}
+		}
+	}
+}

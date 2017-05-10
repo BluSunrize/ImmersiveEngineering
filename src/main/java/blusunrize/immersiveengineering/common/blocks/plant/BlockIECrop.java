@@ -215,11 +215,13 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return ret;
 	}
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block)
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos block)
 	{
-		super.neighborChanged(state, world, pos, block);
-		if(this.getMetaFromState(state)<getMaxMeta(0))
-			world.notifyBlockOfStateChange(pos.add(0,1,0), this);
+        super.onNeighborChange(world, pos, block);
+		if(this.getMetaFromState(world.getBlockState(pos))<getMaxMeta(0))
+            //FIXME: TEST THIS.
+            if (world instanceof World)
+                ((World)world).notifyNeighborsOfStateChange(pos.add(0, 1, 0), this, true);
 	}
 
 

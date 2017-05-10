@@ -14,7 +14,7 @@ public class ContainerCrate extends ContainerIEBase
 	public ContainerCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		super(inventoryPlayer, tile);
-		for(int i=0; i<tile.getInventory().length; i++)
+		for(int i=0; i<tile.getInventory().size(); i++)
 			this.addSlotToContainer(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18){
 				@Override
 				public boolean isItemValid(ItemStack stack)
@@ -24,7 +24,7 @@ public class ContainerCrate extends ContainerIEBase
 					return !OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true);
 				}
 			});
-		this.slotCount=tile.getInventory().length;
+		this.slotCount=tile.getInventory().size();
 		this.tile = tile;
 
 		for (int i = 0; i < 3; i++)

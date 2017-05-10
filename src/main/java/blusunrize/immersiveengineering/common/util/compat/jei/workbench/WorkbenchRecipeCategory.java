@@ -26,12 +26,6 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 	}
 
 	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, WorkbenchRecipeWrapper recipeWrapper)
-	{
-		//Deprecated
-	}
-	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, WorkbenchRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();

@@ -42,7 +42,7 @@ public class ContainerToolboxBlock extends ContainerIEBase implements ICallbackC
 	@Override
 	public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return true;
 		if(IEContent.itemToolbox.equals(stack.getItem()))
 			return false;

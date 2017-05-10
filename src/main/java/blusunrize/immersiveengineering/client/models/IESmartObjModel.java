@@ -54,7 +54,7 @@ public class IESmartObjModel extends OBJBakedModel
 	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	ImmutableList<BakedQuad> bakedQuads;
 	TextureAtlasSprite tempSprite;
-	ItemStack tempStack;
+	ItemStack tempStack = ItemStack.EMPTY;
 	IBlockState tempState;
 	VertexFormat format;
 	Map<String, String> texReplace = null;
@@ -74,7 +74,7 @@ public class IESmartObjModel extends OBJBakedModel
 			return super.handlePerspective(cameraTransformType);
 		//		Matrix4 matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
 		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy():new Matrix4();
-		if(this.tempStack!=null && this.tempStack.getItem() instanceof IOBJModelCallback)
+		if(!this.tempStack.isEmpty() && this.tempStack.getItem() instanceof IOBJModelCallback)
 			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix);
 
 		//Dynamic stuff to use when figurign out positioning for new items!
@@ -131,7 +131,7 @@ public class IESmartObjModel extends OBJBakedModel
 				{
 					ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 					ItemStack shader = wrapper.getShaderItem();
-					if (shader != null && shader.getItem() instanceof IShaderItem)
+					if (!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
 					{
 						ShaderCase sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
 						if(sCase!=null)
@@ -221,25 +221,25 @@ public class IESmartObjModel extends OBJBakedModel
 	private ImmutableList<BakedQuad> buildQuads()
 	{
 		List<BakedQuad> quads = Lists.newArrayList();
-		ItemStack shader = null;
+		ItemStack shader = ItemStack.EMPTY;
 		ShaderCase sCase = null;
 		IOBJModelCallback callback = null;
 		Object callbackObject = null;
-		if(this.tempStack!=null && tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		if(!this.tempStack.isEmpty() && tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
 			ShaderWrapper wrapper = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 			shader = wrapper.getShaderItem();
-			if(shader!=null && shader.getItem() instanceof IShaderItem)
+			if(!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
 				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
 		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(CapabilityShader.BLOCKSTATE_PROPERTY))
 		{
 			ShaderWrapper wrapper = ((IExtendedBlockState)this.tempState).getValue(CapabilityShader.BLOCKSTATE_PROPERTY);
 			shader = wrapper.getShaderItem();
-			if(shader!=null && shader.getItem() instanceof IShaderItem)
+			if(!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
 				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, wrapper.getShaderType());
 		}
 
-		if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
+		if(!this.tempStack.isEmpty() && tempStack.getItem() instanceof IOBJModelCallback)
 		{
 			callback = (IOBJModelCallback)tempStack.getItem();
 			callbackObject = this.tempStack;

@@ -61,13 +61,13 @@ public class MultiblockBucketWheel implements IMultiblock
 	{
 		return true;
 	}
-	@SideOnly(Side.CLIENT)
-	static ItemStack renderStack;
+	//@SideOnly(Side.CLIENT)
+	static ItemStack renderStack = ItemStack.EMPTY;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		if(renderStack==null)
+		if(renderStack.isEmpty())
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
 		GlStateManager.translate(3.5, 3.5, 0.5);
 		GlStateManager.rotate(-45, 0, 1, 0);

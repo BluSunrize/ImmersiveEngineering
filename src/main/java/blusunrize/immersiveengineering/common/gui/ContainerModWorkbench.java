@@ -12,6 +12,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbench>
 {
@@ -43,7 +44,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		slotCount=1;
 
 		ItemStack tool = this.getSlot(0).getStack();
-		if(tool!=null)
+		if(!tool.isEmpty())
 		{
 			if(tool.getItem() instanceof IUpgradeableTool)
 			{
@@ -59,7 +60,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 						slotCount++;
 					}
 
-				ItemStack[] cont = ((IUpgradeableTool)tool.getItem()).getContainedItems(tool);
+				NonNullList<ItemStack> cont = ((IUpgradeableTool)tool.getItem()).getContainedItems(tool);
 				this.toolInv.stackList = cont;
 			}
 			if(tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
@@ -81,7 +82,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
 		if (slotObject != null && slotObject.getHasStack())
@@ -92,19 +93,19 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 			if (slot < slotCount)
 			{
 				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
-					return null;
+					return ItemStack.EMPTY;
 			}
-			else if(stackInSlot!=null)
+			else if(!stackInSlot.isEmpty())
 			{
 				if(stackInSlot.getItem() instanceof IUpgradeableTool && ((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
-						return null;
+						return ItemStack.EMPTY;
 				}
 				else if(stackInSlot.getItem() instanceof IConfigurableTool && ((IConfigurableTool)stackInSlot.getItem()).canConfigure(stackInSlot))
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
-						return null;
+						return ItemStack.EMPTY;
 				}
 				else if(slotCount>1)
 				{
@@ -122,18 +123,18 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 								continue;
 					}
 					if(b)
-						return null;
+						return ItemStack.EMPTY;
 				}
 			}
 
-			if (stackInSlot.stackSize == 0)
-				slotObject.putStack(null);
+			if (stackInSlot.getCount() == 0)
+				slotObject.putStack(ItemStack.EMPTY);
 			else
 				slotObject.onSlotChanged();
 
-			if (stackInSlot.stackSize == stack.stackSize)
-				return null;
-			slotObject.onPickupFromSlot(player, stack);
+			if (stackInSlot.getCount() == stack.getCount())
+				return ItemStack.EMPTY;
+			slotObject.onTake(player, stack);
 		}
 		return stack;
 	}

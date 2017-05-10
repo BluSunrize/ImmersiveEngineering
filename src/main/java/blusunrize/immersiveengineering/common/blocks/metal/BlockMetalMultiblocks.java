@@ -19,7 +19,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 {
 	public BlockMetalMultiblocks()
 	{
-		super("metalMultiblock",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalMultiblock.class), ItemBlockIEBase.class, IEProperties.DYNAMICRENDER,IEProperties.BOOLEANS[0],Properties.AnimationProperty,IEProperties.OBJ_TEXTURE_REMAP);
+		super("metal_multiblock",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalMultiblock.class), ItemBlockIEBase.class, IEProperties.DYNAMICRENDER,IEProperties.BOOLEANS[0],Properties.AnimationProperty,IEProperties.OBJ_TEXTURE_REMAP);
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.TANK.getMeta(), BlockRenderLayer.CUTOUT);
@@ -92,7 +92,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	//		{
 	//			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)tileEntity;
 	//			if(!tile.formed && tile.pos==-1 && tile.getOriginalBlock()!=null)
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5,y+.5,z+.5, tile.getOriginalBlock().copy()));
+	//				world.spawnEntity(new EntityItem(world, x+.5,y+.5,z+.5, tile.getOriginalBlock().copy()));
 	//
 	//			if(tileEntity instanceof IInventory)
 	//			{
@@ -115,7 +115,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	//							entityitem.motionZ = world.rand.nextGaussian()*.05;
 	//							if(stack.hasTagCompound())
 	//								entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-	//							world.spawnEntityInWorld(entityitem);
+	//							world.spawnEntity(entityitem);
 	//						}
 	//					}
 	//				}

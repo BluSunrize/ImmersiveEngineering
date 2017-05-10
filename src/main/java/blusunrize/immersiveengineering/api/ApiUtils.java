@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -80,17 +81,17 @@ public class ApiUtils
 	}
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
-		if(stack==null)
-			return null;
+		if(stack.isEmpty())
+			return ItemStack.EMPTY;
 		ItemStack s2 = stack.copy();
-		s2.stackSize=amount;
+		s2.setCount(amount);
 		return s2;
 	}
-	public static boolean stacksMatchIngredientList(List<IngredientStack> list, ItemStack... stacks)
+	public static boolean stacksMatchIngredientList(List<IngredientStack> list, NonNullList<ItemStack> stacks)
 	{
-		ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(stacks.length);
+		ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(stacks.size());
 		for(ItemStack s : stacks)
-			if(s!=null)
+			if(!s.isEmpty())
 				queryList.add(s.copy());
 
 		for(IngredientStack ingr : list)
@@ -101,22 +102,22 @@ public class ApiUtils
 				while(it.hasNext())
 				{
 					ItemStack query = it.next();
-					if(query!=null)
+					if(!query.isEmpty())
 					{
 						if(ingr.matchesItemStackIgnoringSize(query))
 						{
-							if(query.stackSize > amount)
+							if(query.getCount() > amount)
 							{
-								query.stackSize-=amount;
+								query.shrink(amount);
 								amount=0;
 							}
 							else
 							{
-								amount-=query.stackSize;
-								query.stackSize=0;
+								amount-=query.getCount();
+								query.setCount(0);
 							}
 						}
-						if(query.stackSize<=0)
+						if(query.getCount()<=0)
 							it.remove();
 						if(amount<=0)
 							break;
@@ -212,7 +213,7 @@ public class ApiUtils
 				return copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+type[1]), (int)val);
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 	public static Object[] breakStackIntoPreciseIngots(ItemStack stack)
 	{
@@ -232,11 +233,11 @@ public class ApiUtils
 
 	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
 	{
-		if(stack != null && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty() && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp == null || temp.stackSize < stack.stackSize)
+			if(temp.isEmpty() || temp.getCount() < stack.getCount())
 				return true;
 		}
 		return false;
@@ -244,11 +245,11 @@ public class ApiUtils
 
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
 	{
-		if(stack != null && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty() && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp == null || temp.stackSize < stack.stackSize)
+			if(temp.isEmpty() || temp.getCount() < stack.getCount())
 				return ItemHandlerHelper.insertItem(handler, stack, false);
 		}
 		return stack;
@@ -256,7 +257,7 @@ public class ApiUtils
 
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side, boolean simulate)
 	{
-		if(inventory != null && stack != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(inventory != null && !stack.isEmpty() && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
@@ -444,14 +445,14 @@ public class ApiUtils
 		else if(o instanceof String)
 		{
 			if(!isExistingOreName((String)o))
-				return null;
+				return ItemStack.EMPTY;
 			List<ItemStack> l = OreDictionary.getOres((String)o);
 			if(!l.isEmpty())
 				return l.get(0);
 			else
-				return null;
+				return ItemStack.EMPTY;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public static boolean hasPlayerIngredient(EntityPlayer player, IngredientStack ingredient)
@@ -463,7 +464,7 @@ public class ApiUtils
 			itemstack = player.getHeldItem(hand);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
 			{
-				amount -= itemstack.stackSize;
+				amount -= itemstack.getCount();
 				if(amount <= 0)
 					return true;
 			}
@@ -473,7 +474,7 @@ public class ApiUtils
 			itemstack = player.inventory.getStackInSlot(i);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
 			{
-				amount-=itemstack.stackSize;
+				amount -= itemstack.getCount();
 				if(amount<=0)
 					return true;
 			}
@@ -489,10 +490,10 @@ public class ApiUtils
 			itemstack = player.getHeldItem(hand);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
 			{
-				int taken = Math.min(amount, itemstack.stackSize);
+				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
-				itemstack.stackSize -= taken;
-				if(itemstack.stackSize<=0)
+				itemstack.shrink(taken);
+				if(itemstack.getCount() <= 0)
 					player.setHeldItem(hand, null);
 				if(amount<=0)
 					return;
@@ -503,10 +504,10 @@ public class ApiUtils
 			itemstack = player.inventory.getStackInSlot(i);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
 			{
-				int taken = Math.min(amount, itemstack.stackSize);
+				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
-				itemstack.stackSize -= taken;
-				if(itemstack.stackSize<=0)
+				itemstack.shrink(taken);
+				if(itemstack.getCount() <= 0)
 					player.inventory.setInventorySlotContents(i, null);
 				if(amount<=0)
 					return;

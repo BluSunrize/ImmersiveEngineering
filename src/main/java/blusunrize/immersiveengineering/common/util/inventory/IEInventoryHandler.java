@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import javax.annotation.Nonnull;
 
 public class IEInventoryHandler implements IItemHandlerModifiable
 {
@@ -45,12 +46,12 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		return this.inv.getInventory()[this.slotOffset + slot];
+		return this.inv.getInventory().get(this.slotOffset + slot);
 	}
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 	{
-		if(!canInsert[slot] || stack==null)
+		if(!canInsert[slot] || stack.isEmpty())
 			return stack;
 		stack = stack.copy();
 
@@ -58,22 +59,22 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			return stack;
 		
 		int offsetSlot = this.slotOffset+slot;
-		ItemStack currentStack = inv.getInventory()[offsetSlot];
+		ItemStack currentStack = inv.getInventory().get(offsetSlot);
 
-		if(currentStack==null)
+		if(currentStack.isEmpty())
 		{
 			int accepted = Math.min(stack.getMaxStackSize(), inv.getSlotLimit(offsetSlot));
-			if(accepted<stack.stackSize)
+			if(accepted < stack.getCount())
 			{
 				if(!simulate)
 				{
-					inv.getInventory()[offsetSlot] = stack.splitStack(accepted);
+					inv.getInventory().set(offsetSlot, stack.splitStack(accepted));
 					inv.doGraphicalUpdates(offsetSlot);
 					return stack;
 				}
 				else
 				{
-					stack.stackSize -= accepted;
+					stack.shrink(accepted);
 					return stack;
 				}
 			}
@@ -81,10 +82,10 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			{
 				if(!simulate)
 				{
-					inv.getInventory()[offsetSlot] = stack;
+					inv.getInventory().set(offsetSlot, stack);
 					inv.doGraphicalUpdates(offsetSlot);
 				}
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 		else
@@ -92,20 +93,20 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			if(!ItemHandlerHelper.canItemStacksStack(stack, currentStack))
 				return stack;
 
-			int accepted = Math.min(stack.getMaxStackSize(), inv.getSlotLimit(offsetSlot)) - currentStack.stackSize;
-			if(accepted<stack.stackSize)
+			int accepted = Math.min(stack.getMaxStackSize(), inv.getSlotLimit(offsetSlot)) - currentStack.getCount();
+			if(accepted < stack.getCount())
 			{
 				if(!simulate)
 				{
 					ItemStack newStack = stack.splitStack(accepted);
-					newStack.stackSize += currentStack.stackSize;
-					inv.getInventory()[offsetSlot] = newStack;
+					newStack.grow(currentStack.getCount());
+					inv.getInventory().set(offsetSlot, newStack);
 					inv.doGraphicalUpdates(offsetSlot);
 					return stack;
 				}
 				else
 				{
-					stack.stackSize -= accepted;
+					stack.shrink(accepted);
 					return stack;
 				}
 			}
@@ -114,11 +115,11 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 				if(!simulate)
 				{
 					ItemStack newStack = stack.copy();
-					newStack.stackSize += currentStack.stackSize;
-					inv.getInventory()[offsetSlot] = newStack;
+					newStack.grow(currentStack.getCount());
+					inv.getInventory().set(offsetSlot, newStack);
 					inv.doGraphicalUpdates(offsetSlot);
 				}
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 	}
@@ -126,33 +127,39 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	public ItemStack extractItem(int slot, int amount, boolean simulate)
 	{
 		if(!canExtract[slot] || amount==0)
-			return null;
+			return ItemStack.EMPTY;
 
 		int offsetSlot = this.slotOffset+slot;
-		ItemStack currentStack = inv.getInventory()[offsetSlot];
+		ItemStack currentStack = inv.getInventory().get(offsetSlot);
 
-		if(currentStack==null)
-			return null;
+		if(currentStack.isEmpty())
+			return ItemStack.EMPTY;
 
-		int extracted = Math.min(currentStack.stackSize, amount);
+		int extracted = Math.min(currentStack.getCount(), amount);
 
 		ItemStack copy = currentStack.copy();
-		copy.stackSize = extracted;
+		copy.setCount(extracted);
 		if(!simulate)
 		{
-			if(extracted<currentStack.stackSize)
-				currentStack.stackSize -= extracted;
+			if(extracted < currentStack.getCount())
+				currentStack.shrink(extracted);
 			else
-				currentStack = null;
-			inv.getInventory()[offsetSlot] = currentStack;
+				currentStack = ItemStack.EMPTY;
+			inv.getInventory().set(offsetSlot, currentStack);
 			inv.doGraphicalUpdates(offsetSlot);
 		}
 		return copy;
 	}
+
 	@Override
-	public void setStackInSlot(int slot, ItemStack stack)
+	public int getSlotLimit(int slot) {
+		return 64;
+	}
+
+	@Override
+	public void setStackInSlot(int slot, @Nonnull ItemStack stack)
 	{
-		inv.getInventory()[this.slotOffset+slot] = stack;
+		inv.getInventory().set(this.slotOffset+slot, stack);
 		inv.doGraphicalUpdates(this.slotOffset+slot);
 	}
 }

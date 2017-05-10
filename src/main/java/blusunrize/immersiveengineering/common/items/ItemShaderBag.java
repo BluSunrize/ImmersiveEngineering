@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -23,7 +24,7 @@ public class ItemShaderBag extends ItemIEBase
 {
 	public ItemShaderBag()
 	{
-		super("shaderBag", 64);
+		super("shader_bag", 64);
 	}
 
 //	@Override
@@ -46,7 +47,7 @@ public class ItemShaderBag extends ItemIEBase
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for(int i=ShaderRegistry.sortedRarityMap.size()-1; i>=0; i--)
 		{
@@ -74,8 +75,9 @@ public class ItemShaderBag extends ItemIEBase
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
 			if(ShaderRegistry.totalWeight.containsKey(stack.getRarity()))
 			{
@@ -86,8 +88,8 @@ public class ItemShaderBag extends ItemIEBase
 				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
 				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity())<=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC) && ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity())>=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
 					player.addStat(IEAchievements.secret_luckOfTheDraw);
-				stack.stackSize--;
-				if(stack.stackSize<=0)
+				stack.shrink(1);
+				if(stack.getCount()<=0)
 					return new ActionResult(EnumActionResult.SUCCESS, shaderItem);
 				if(!player.inventory.addItemStackToInventory(shaderItem))
 					player.dropItem(shaderItem, false, true);

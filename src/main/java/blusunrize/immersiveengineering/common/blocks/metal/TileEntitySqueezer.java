@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -39,7 +40,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 		super(MultiblockSqueezer.instance, new int[]{3,3,3}, 16000, true);
 	}
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
-	public ItemStack[] inventory = new ItemStack[11];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public float animation_piston = 0;
 	public boolean animation_down = true;
 
@@ -68,7 +69,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 		if(isDummy() || isRSDisabled())
 			return;
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(this.processQueue.isEmpty() && animation_piston<.6875)
 				animation_piston = Math.min(.6875f, animation_piston+.03125f);
@@ -104,13 +105,13 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 					}});
 				for(int slot : preferredSlots)
 				{
-					ItemStack stack = this.getInventory()[slot];
-					if(stack!=null)
+					ItemStack stack = this.getInventory().get(slot);
+					if(!stack.isEmpty())
 					{
 						stack = stack.copy();
-						stack.stackSize-=usedInvSlots[slot];
+                        stack.shrink(usedInvSlots[slot]);
 					}
-					if(stack!=null && stack.stackSize>0)
+					if(!stack.isEmpty() && stack.getCount() > 0)
 					{
 						SqueezerRecipe recipe = this.findRecipeForInsertion(stack);
 						if(recipe!=null)
@@ -131,7 +132,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
 				BlockPos outputPos = this.getPos().add(0,-1,0).offset(fw,2);
-				IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, fw.getOpposite());
+				IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, fw.getOpposite());
 				if(output!=null)
 				{
 					int accepted = output.fill(out, false);
@@ -142,32 +143,35 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 						update=true;
 					}
 				}
-				ItemStack empty = getInventory()[9];
-				if (empty!=null&&tanks[0].getFluidAmount()>0)
+				ItemStack empty = getInventory().get(9);
+				if (!empty.isEmpty()&&tanks[0].getFluidAmount()>0)
 				{
-					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory()[10], null);
-					if (full!=null)
+					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory().get(10), null);
+					if (!full.isEmpty())
 					{
-						if (getInventory()[10]!=null&&OreDictionary.itemMatches(full, getInventory()[10], true))
-							getInventory()[10].stackSize+=full.stackSize;
+						if (!getInventory().get(10).isEmpty()&&OreDictionary.itemMatches(full, getInventory().get(10), true))
+							getInventory().get(10).grow(full.getCount());
 						else
-							getInventory()[10] = full;
-						if(--inventory[9].stackSize<=0)
-							inventory[9]=null;
+							getInventory().set(10, full);
+						inventory.get(9).shrink(1);
+						if(inventory.get(9).getCount() <= 0)
+							inventory.set(9, ItemStack.EMPTY);
 					}
 				}
 			}
-			if(inventory[8]!=null && worldObj.getTotalWorldTime()%8==0)
+			if(!inventory.get(8).isEmpty() && world.getTotalWorldTime()%8==0)
 			{
 				BlockPos outputPos = this.getPos().offset(fw);
-				TileEntity outputTile = this.worldObj.getTileEntity(outputPos);
+				TileEntity outputTile = this.world.getTileEntity(outputPos);
 				if(outputTile != null)
 				{
-					ItemStack stack = Utils.copyStackWithAmount(inventory[8], 1);
+					ItemStack stack = Utils.copyStackWithAmount(inventory.get(8), 1);
 					stack = Utils.insertStackIntoInventory(outputTile, stack, fw.getOpposite());
-					if(stack == null)
-						if((--this.inventory[8].stackSize) <= 0)
-							this.inventory[8] = null;
+					if(stack.isEmpty()) {
+						this.inventory.get(8).shrink(1);
+						if (this.inventory.get(8).getCount() <= 0)
+							this.inventory.set(8, ItemStack.EMPTY);
+					}
 				}
 			}
 
@@ -359,11 +363,11 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	public void doProcessOutput(ItemStack output)
 	{
 		BlockPos pos = getPos().offset(facing,2);
-		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+		if(!output.isEmpty())
+			Utils.dropStackAtPos(world, pos, output, facing);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -391,7 +395,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}
@@ -487,7 +491,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//	{
 	//		if(!formed || pos!=4)
 	//			return;
-	//		if (worldObj.isRemote)
+	//		if (world.isRemote)
 	//		{
 	//			if (!active)
 	//				return;
@@ -512,17 +516,17 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//				if(process[i]>=MAX_PROCESS)
 	//				{
 	//					ItemStack output = inventory[i].copy();
-	//					TileEntity inventoryTile = this.worldObj.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
+	//					TileEntity inventoryTile = this.world.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
 	//					if(inventoryTile instanceof IInventory)
 	//						output = Utils.insertStackIntoInventory((IInventory)inventoryTile, output, ForgeDirection.OPPOSITES[facing]);
 	//					if(output!=null)
 	//					{
 	//						ForgeDirection fd = ForgeDirection.getOrientation(facing);
-	//						EntityItem ei = new EntityItem(worldObj, xCoord+.5+(facing==4?-2:facing==5?2:0),yCoord,zCoord+.5+(facing==2?-2:facing==3?2:0), output.copy());
+	//						EntityItem ei = new EntityItem(world, xCoord+.5+(facing==4?-2:facing==5?2:0),yCoord,zCoord+.5+(facing==2?-2:facing==3?2:0), output.copy());
 	//						ei.motionX = (0.075F * fd.offsetX);
 	//						ei.motionY = 0.025000000372529D;
 	//						ei.motionZ = (0.075F * fd.offsetZ);
-	//						this.worldObj.spawnEntityInWorld(ei);
+	//						this.world.spawnEntity(ei);
 	//					}
 	//					curRecipes[i] = null;
 	//					process[i]=-1;
@@ -572,7 +576,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//		if(update)
 	//		{
 	//			this.markDirty();
-	//			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	//			world.markBlockForUpdate(xCoord, yCoord, zCoord);
 	//		}
 	//	}
 	//	public int getNextProcessID()
@@ -609,7 +613,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//			if ((process[i]<0^processTmp[i]<0)||!descPacket)
 	//				process[i] = processTmp[i];
 	//		energyStorage.readFromNBT(nbt);
-	//		mold = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("mold"));
+	//		mold = new ItemStack(nbt.getCompoundTag("mold"));
 	//		if (descPacket)
 	//			active = nbt.getBoolean("active");
 	//		if (nbt.hasKey("stoppedSlot"))
@@ -672,12 +676,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//	@Override
 	//	public void disassemble()
 	//	{
-	//		if(!worldObj.isRemote&&pos==4&&mold!=null)
+	//		if(!world.isRemote&&pos==4&&mold!=null)
 	//		{
-	//			EntityItem moldDrop = new EntityItem(worldObj, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, mold);
-	//			worldObj.spawnEntityInWorld(moldDrop);
+	//			EntityItem moldDrop = new EntityItem(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, mold);
+	//			world.spawnEntity(moldDrop);
 	//		}
-	//		if(formed && !worldObj.isRemote)
+	//		if(formed && !world.isRemote)
 	//		{
 	//			int f = facing;
 	//			TileEntity master = master();
@@ -692,7 +696,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//					int xx = f>3?l:0;
 	//					int zz = f<4?l:0;
 	//					ItemStack s = null;
-	//					TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+	//					TileEntity te = world.getTileEntity(startX+xx,startY+yy,startZ+zz);
 	//					if(te instanceof TileEntityMetalPress)
 	//					{
 	//						s = ((TileEntityMetalPress)te).getOriginalBlock();
@@ -703,15 +707,15 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//					if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
 	//					{
 	//						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
-	//							worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+	//							world.spawnEntity(new EntityItem(world, xCoord+.5,yCoord+.5,zCoord+.5, s));
 	//						else
 	//						{
 	//							if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
-	//								worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+	//								world.setBlockToAir(startX+xx,startY+yy,startZ+zz);
 	//							int meta = s.getItemDamage();
-	//							worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), meta, 0x3);
+	//							world.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), meta, 0x3);
 	//						}
-	//						TileEntity tile = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+	//						TileEntity tile = world.getTileEntity(startX+xx,startY+yy,startZ+zz);
 	//						if(tile instanceof TileEntityConveyorBelt)
 	//							((TileEntityConveyorBelt)tile).facing = ForgeDirection.OPPOSITES[f];
 	//					}
@@ -733,7 +737,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 	//			master.markDirty();
 	//			if(rec>0)
-	//				worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
+	//				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 	//			return rec;
 	//		}
 	//		return 0;
