@@ -40,6 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -135,7 +136,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				return container;
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 	//	@Override
 	//	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
@@ -144,8 +145,9 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	//	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(stack.getItemDamage() == 0)
 		{
@@ -260,7 +262,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 							Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
 							for(AbstractConnection con : connections)
 								if(Utils.toCC(nodeHere).equals(con.end))
-									player.addChatComponentMessage(new TextComponentTranslation(Lib.CHAT_INFO + "averageLoss", Utils.formatDouble(con.getAverageLossRate() * 100, "###.000")));
+									player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO + "averageLoss", Utils.formatDouble(con.getAverageLossRate() * 100, "###.000")));
 						}
 					}
 					ItemNBTHelper.remove(stack, "linkingPos");
@@ -274,7 +276,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
 	{
-		return !player.worldObj.isRemote && stack.getItemDamage() == 0 && RotationUtil.rotateEntity(entity, player);
+		return !player.world.isRemote && stack.getItemDamage() == 0 && RotationUtil.rotateEntity(entity, player);
 	}
 
 	@Override
@@ -284,8 +286,9 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if(stack.getItemDamage()==3)
 		{
 			player.addStat(IEAchievements.openManual);
@@ -297,7 +300,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass)
+	public int getHarvestLevel(ItemStack stack, String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
 	{
 		if(getToolClasses(stack).contains(toolClass))
 			return 2;

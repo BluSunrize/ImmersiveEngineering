@@ -22,10 +22,11 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 		super(b);
 	}
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
+		ItemStack itemStackIn = playerIn.getHeldItem(hand);
 		if(itemStackIn.getMetadata()!=BlockTypes_ClothDevice.BALLOON.getMeta())
-			return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
+			return super.onItemRightClick(worldIn, playerIn, hand);
 		if(playerIn.isSneaking())
 			increaseOffset(itemStackIn);
 		else
@@ -40,9 +41,9 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 				if(!worldIn.isRemote)
 				{
 					worldIn.setBlockState(bPos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.BALLOON.getMeta()));
-					itemStackIn.stackSize--;
-					if(itemStackIn.stackSize <= 0)
-						playerIn.setHeldItem(hand, null);
+					itemStackIn.shrink(1);
+					if(itemStackIn.getCount() <= 0)
+						playerIn.setHeldItem(hand, ItemStack.EMPTY);
 				}
 				return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
 			}
@@ -50,14 +51,15 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 		return new ActionResult(EnumActionResult.PASS, itemStackIn);
 	}
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = playerIn.getHeldItem(hand);
 		if(stack.getMetadata()==BlockTypes_ClothDevice.BALLOON.getMeta() && playerIn.isSneaking())
 		{
 			increaseOffset(stack);
 			return EnumActionResult.SUCCESS;
 		}
-		return super.onItemUse(stack, playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
 	}
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)

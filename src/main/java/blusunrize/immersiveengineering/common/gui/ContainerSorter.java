@@ -46,27 +46,27 @@ public class ContainerSorter extends Container
 		if(!(slot instanceof IESlot.Ghost))
 			return super.slotClick(id, button, modifier, player);
 
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		ItemStack stackSlot = slot.getStack();
-		if(stackSlot!=null)
+		if(!stackSlot.isEmpty())
 			stack = stackSlot.copy();
 
 		if (button==2)
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		else if(button==0||button==1)
 		{
 			InventoryPlayer playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
-			if (stackSlot == null)
+			if (stackSlot.isEmpty())
 			{
-				if(stackHeld != null && slot.isItemValid(stackHeld))
+				if(!stackHeld.isEmpty() && slot.isItemValid(stackHeld))
 				{
 					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
 				}
 			}
-			else if (stackHeld == null)
+			else if (stackHeld.isEmpty())
 			{
-				slot.putStack(null);
+				slot.putStack(ItemStack.EMPTY);
 			}
 			else if (slot.isItemValid(stackHeld))
 			{
@@ -88,7 +88,7 @@ public class ContainerSorter extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
-		return null;
+		return ItemStack.EMPTY;
 		//		ItemStack stack = null;
 		//		Slot slotObject = (Slot) inventorySlots.get(slot);
 		//
@@ -115,7 +115,7 @@ public class ContainerSorter extends Container
 		//
 		//			if (stackInSlot.stackSize == stack.stackSize)
 		//				return null;
-		//			slotObject.onPickupFromSlot(player, stackInSlot);
+		//			slotObject.onTake(player, stackInSlot);
 		//		}
 		//		return stack;
 	}

@@ -153,8 +153,8 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
-		ItemStack blueprintStack = te.inventory[0];
-		if(blueprintStack!=null)
+		ItemStack blueprintStack = te.inventory.get(0);
+		if(!blueprintStack.isEmpty())
 			renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "blueprint");
 
 
@@ -263,9 +263,9 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().thePlayer.getDistanceSq(blockPos);
+		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(blockPos);
 
-		if(blueprintStack!=null && playerDistanceSq<1000)
+		if(!blueprintStack.isEmpty() && playerDistanceSq<1000)
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(blueprintStack,"blueprint"));
 			BlueprintCraftingRecipe recipe = (te.selectedRecipe<0||te.selectedRecipe>=recipes.length)?null:recipes[te.selectedRecipe];
@@ -329,9 +329,9 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 
 	public static BlueprintLines getBlueprintDrawable(ItemStack stack, World world)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return null;
-		EntityPlayer player = ClientUtils.mc().thePlayer;
+		EntityPlayer player = ClientUtils.mc().player;
 		ArrayList<BufferedImage> images = new ArrayList<>();
 		try
 		{

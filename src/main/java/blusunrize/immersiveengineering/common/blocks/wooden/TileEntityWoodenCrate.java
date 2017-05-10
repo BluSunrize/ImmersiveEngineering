@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -38,7 +39,7 @@ import java.util.Random;
 
 public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInventory, IGuiTile, ITileDrop, IComparatorOverride, ILootContainer
 {
-	ItemStack[] inventory = new ItemStack[27];
+	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
 	public String name;
 
@@ -72,14 +73,14 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	{
 		boolean write = false;
 		NBTTagList invList = new NBTTagList();
-		for(int i=0; i<this.inventory.length; i++)
-			if(this.inventory[i] != null)
+		for(int i=0; i<this.inventory.size(); i++)
+			if(!this.inventory.get(i).isEmpty())
 			{
 				if(toItem)
 					write = true;
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", (byte)i);
-				this.inventory[i].writeToNBT(itemTag);
+				this.inventory.get(i).writeToNBT(itemTag);
 				invList.appendTag(itemTag);
 			}
 		if(!toItem || write)
@@ -90,7 +91,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	@Nullable
 	public ITextComponent getDisplayName()
 	{
-		return name!=null?new TextComponentString(name) : new TextComponentTranslation(getBlockMetadata()==0?"tile.immersiveengineering.woodenDevice0.crate.name":"tile.immersiveengineering.woodenDevice0.reinforced_crate.name");
+		return name!=null?new TextComponentString(name) : new TextComponentTranslation(getBlockMetadata()==0?"tile.immersiveengineering.wooden_device0.crate.name":"tile.immersiveengineering.wooden_device0.reinforced_crate.name");
 	}
 
 	@Override
@@ -113,10 +114,10 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	{
 		if(this.lootTable!=null && !clientside)
 		{
-			LootTable loottable = this.worldObj.getLootTableManager().getLootTableFromLocation(this.lootTable);
+			LootTable loottable = this.world.getLootTableManager().getLootTableFromLocation(this.lootTable);
 			this.lootTable = null;
 			Random random;
-			LootContext.Builder contextBuilder = new LootContext.Builder((WorldServer)this.worldObj);
+			LootContext.Builder contextBuilder = new LootContext.Builder((WorldServer)this.world);
 			if(player != null)
 				contextBuilder.withLuck(player.getLuck());
 			LootContext context = contextBuilder.build();
@@ -124,8 +125,8 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 
 			List<ItemStack> list = loottable.generateLootForPools(rand, context);
 			List<Integer> listSlots = Lists.newArrayList();
-			for(int i=0; i<inventory.length; i++)
-				if(inventory[i]==null)
+			for(int i=0; i<inventory.size(); i++)
+				if(inventory.get(i).isEmpty())
 					listSlots.add(Integer.valueOf(i));
 			Collections.shuffle(listSlots, rand);
 			if(listSlots.isEmpty())
@@ -134,20 +135,20 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			for(ItemStack itemstack : list)
 			{
 				int slot = listSlots.remove(listSlots.size() - 1).intValue();
-				inventory[slot] = itemstack;
+				inventory.set(slot, itemstack);
 			}
 		}
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		if(stack!=null)
+		if(!stack.isEmpty())
 		{
 			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
 				return false;

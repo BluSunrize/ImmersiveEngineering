@@ -39,6 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -54,6 +55,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -116,7 +118,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.fuel")+" "+fs.amount+"/"+getCapacity(stack,2000)+"mB");
 		else
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.empty"));
-		if(getHead(stack)==null)
+		if(getHead(stack).isEmpty())
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.noHead"));
 		else
 		{
@@ -152,7 +154,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
 	{
-		if(material.equals("head") && this.getHead(stack)!=null && this.getHead(stack).getItem() instanceof IDrillHead)
+		if(material.equals("head") && !this.getHead(stack).isEmpty() && this.getHead(stack).getItem() instanceof IDrillHead)
 		{
 			TextureAtlasSprite spr = ((IDrillHead)this.getHead(stack).getItem()).getDrillTexture(stack, this.getHead(stack));
 			return spr;
@@ -170,7 +172,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			return upgrades.getBoolean("waterproof");
 		if(group.equals("upgrade_speed"))
 			return upgrades.getInteger("speed")>0;
-		if(this.getHead(stack) != null)
+		if(!this.getHead(stack).isEmpty())
 		{
 			if(group.equals("drill_head"))
 				return true;
@@ -232,22 +234,22 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		ItemStack[] contents = this.getContainedItems(stack);
+		NonNullList<ItemStack> contents = this.getContainedItems(stack);
 		player.addStat(IEAchievements.craftDrill);
-		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
+		if(!contents.get(0).isEmpty() && !contents.get(1).isEmpty() && !contents.get(2).isEmpty() && !contents.get(3).isEmpty())
 			player.addStat(IEAchievements.upgradeDrill);
 	}
 
 	/*INVENTORY STUFF*/
 	public ItemStack getHead(ItemStack drill)
 	{
-		ItemStack head = this.getContainedItems(drill)[0];
-		return head!=null&&head.getItem() instanceof IDrillHead?head: null;
+		ItemStack head = this.getContainedItems(drill).get(0);
+		return !head.isEmpty() &&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
 	}
 	public void setHead(ItemStack drill, ItemStack head)
 	{
-		ItemStack[] inv = this.getContainedItems(drill);
-		inv[0] = head;
+		NonNullList<ItemStack> inv = this.getContainedItems(drill);
+		inv.set(0, head);
 		this.setContainedItems(drill, inv);
 	}
 
@@ -268,12 +270,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public int getMaxHeadDamage(ItemStack stack)
 	{
 		ItemStack head = getHead(stack);
-		return head!=null?((IDrillHead)head.getItem()).getMaximumHeadDamage(head): 0;
+		return !head.isEmpty() ?((IDrillHead)head.getItem()).getMaximumHeadDamage(head): 0;
 	}
 	public int getHeadDamage(ItemStack stack)
 	{
 		ItemStack head = getHead(stack);
-		return head!=null?((IDrillHead)head.getItem()).getHeadDamage(head): 0;
+		return !head.isEmpty() ?((IDrillHead)head.getItem()).getHeadDamage(head): 0;
 	}
 	public boolean isDrillBroken(ItemStack stack)
 	{
@@ -300,7 +302,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		{
 			int dmg = ForgeHooks.isToolEffective(world, pos, stack)?1:3;
 			ItemStack head = getHead(stack);
-			if(head!=null)
+			if(!head.isEmpty())
 			{
 				if(living instanceof EntityPlayer)
 				{
@@ -329,23 +331,24 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		if(slot == EntityEquipmentSlot.MAINHAND)
 		{
 			ItemStack head = getHead(stack);
-			if(head != null)
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead) head.getItem()).getAttackDamage(head) + getUpgrades(stack).getInteger("damage"), 0));
+			if(!head.isEmpty())
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead) head.getItem()).getAttackDamage(head) + getUpgrades(stack).getInteger("damage"), 0));
 		}
 		return multimap;
 	}
+
 	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass)
+	public int getHarvestLevel(ItemStack stack, String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
 	{
 		ItemStack head = getHead(stack);
-		if(head!=null)
+		if(!head.isEmpty())
 			return ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack, "harvestLevel");
 		return 0;
 	}
 	@Override
 	public Set<String> getToolClasses(ItemStack stack)
 	{
-		if(getHead(stack)!=null && !isDrillBroken(stack))
+		if(!getHead(stack).isEmpty() && !isDrillBroken(stack))
 			return ImmutableSet.of("pickaxe");
 		return super.getToolClasses(stack);
 	}
@@ -366,7 +369,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		ItemStack head = getHead(stack);
-		if(head!=null && !isDrillBroken(stack))
+		if(!head.isEmpty() && !isDrillBroken(stack))
 			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+ItemNBTHelper.getInt(stack, "speed");
 		return super.getStrVsBlock(stack, state);
 	}
@@ -384,12 +387,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, EntityPlayer player)
 	{
-		World world = player.worldObj;
+		World world = player.world;
 		if(player.isSneaking() || world.isRemote || !(player instanceof EntityPlayerMP))
 			return false;
 		RayTraceResult mop = this.rayTrace(world, player, true);
 		ItemStack head = getHead(stack);
-		if(mop==null || head==null || this.isDrillBroken(stack))
+		if(mop==null || head.isEmpty() || this.isDrillBroken(stack))
 			return false;
 		//		EnumFacing side = mop.sideHit;
 		//		int diameter = ((IDrillHead)head.getItem()).getMiningSize(head)+getUpgrades(stack).getInteger("size");
@@ -487,12 +490,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 			{
-				return capability== CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability== CapabilityShader.SHADER_CAPABILITY;
+				return capability== CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY || capability== CapabilityShader.SHADER_CAPABILITY;
 			}
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 			{
-				if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+				if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 					return (T)fluids;
 				if(capability==CapabilityShader.SHADER_CAPABILITY)
 					return (T)shaders;

@@ -19,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -34,7 +35,7 @@ public class ItemCoresample extends ItemIEBase
 		super("coresample", 1);
 	}
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		super.getSubItems(item, tab, list);
 	}
@@ -91,10 +92,10 @@ public class ItemCoresample extends ItemIEBase
 	}
 
 
-
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSneaking())
 		{
 			IBlockState state = world.getBlockState(pos);
@@ -102,7 +103,7 @@ public class ItemCoresample extends ItemIEBase
 			if(!block.isReplaceable(world, pos))
 				pos = pos.offset(side);
 
-			if(stack.stackSize != 0 && player.canPlayerEdit(pos, side, stack) && world.canBlockBePlaced(IEContent.blockStoneDevice, pos, false, side, null, stack))
+			if(!stack.isEmpty() && player.canPlayerEdit(pos, side, stack) && world.mayPlace(IEContent.blockStoneDevice, pos, false, side, null))
 			{
 				IBlockState toolbox = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CORESAMPLE.getMeta());
 				if(world.setBlockState(pos, toolbox, 3))
@@ -110,14 +111,14 @@ public class ItemCoresample extends ItemIEBase
 					IEContent.blockStoneDevice.onIEBlockPlacedBy(world, pos, toolbox, side, hitX,hitY,hitZ, player, stack);
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-					--stack.stackSize;
+					stack.shrink(1);
 				}
 				return EnumActionResult.SUCCESS;
 			}
 			else
 				return EnumActionResult.FAIL;
 		}
-		return super.onItemUse(stack, player, world, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
 	}
 
 }

@@ -1,8 +1,0 @@
-{
-	"type":"CTM",
-	"textures":[
-		"./metalDecoration0_darkFrame",
-		"./metalDecoration0_darkFrame_ctm"
-	],
-    "layer":"TRANSLUCENT"
-}

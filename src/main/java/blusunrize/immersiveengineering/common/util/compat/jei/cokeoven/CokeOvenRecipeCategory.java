@@ -28,23 +28,17 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe, Cok
 	}
 
 	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, CokeOvenRecipeWrapper recipeWrapper)
-	{
-		//Deprecated
-	}
-	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, CokeOvenRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 21, 21);
 		guiItemStacks.init(1, false, 76, 21);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class));
+		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
 
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, false, 121,7, 16,47, 12000, false, tankOverlay);
-		guiFluidStacks.set(0, ingredients.getOutputs(FluidStack.class));
+		guiFluidStacks.set(0, ingredients.getOutputs(FluidStack.class).get(0));
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 

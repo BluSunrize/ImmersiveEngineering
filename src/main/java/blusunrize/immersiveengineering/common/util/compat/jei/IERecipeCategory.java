@@ -27,7 +27,7 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 		this.background = background;
 		this.recipeClass = recipeClass;
 		for(ItemStack stack : displayStacks)
-			JEIHelper.modRegistry.addRecipeCategoryCraftingItem(stack, getRecipeCategoryUid());
+			JEIHelper.modRegistry.addRecipeCategoryCraftingItem(stack, getUid());
 	}
 
 	@Nullable
@@ -61,11 +61,6 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 	}
 
 	@Override
-	public void drawAnimations(Minecraft minecraft)
-	{
-	}
-
-	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
 		return Collections.emptyList();
@@ -77,11 +72,6 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 		return this.recipeClass;
 	}
 
-	@Override
-	public String getRecipeCategoryUid()
-	{
-		return "ie."+uniqueName;
-	}
 	@Override
 	public String getRecipeCategoryUid(@Nonnull T recipe)
 	{

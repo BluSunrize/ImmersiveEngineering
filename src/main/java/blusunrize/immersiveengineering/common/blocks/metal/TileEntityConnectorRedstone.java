@@ -40,12 +40,12 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	@Override
 	public void update()
 	{
-		if(hasWorldObj() && !worldObj.isRemote && !loaded)
+		if(hasWorld() && !world.isRemote && !loaded)
 		{
 			loaded = true;
 			wireNetwork.removeFromNetwork(null);
 		}
-		if (hasWorldObj() && !worldObj.isRemote && rsDirty)
+		if (hasWorld() && !world.isRemote && rsDirty)
 			wireNetwork.updateValues();
 	}
 
@@ -109,7 +109,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		if (isRSInput())
 		{
-			int val = worldObj.isBlockIndirectlyGettingPowered(pos);
+			int val = world.isBlockIndirectlyGettingPowered(pos);
 			signals[redstoneChannel] = (byte) Math.max(val, signals[redstoneChannel]);
 		}
 		rsDirty = false;
@@ -131,7 +131,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		markDirty();
 		wireNetwork.updateValues();
 		onChange();
-		worldObj.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 		return true;
 	}
 

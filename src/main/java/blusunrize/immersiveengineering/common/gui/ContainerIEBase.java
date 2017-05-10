@@ -25,7 +25,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer player)
 	{
-		return inv.isUseableByPlayer(player);
+		return inv.isUsableByPlayer(player);
 	}
 
 	@Override
@@ -35,27 +35,27 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 		if(!(slot instanceof IESlot.Ghost))
 			return super.slotClick(id, button, clickType, player);
 		//Spooky Ghost Slots!!!!
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		ItemStack stackSlot = slot.getStack();
-		if(stackSlot!=null)
+		if(!stackSlot.isEmpty())
 			stack = stackSlot.copy();
 
 		if (button==2)
-			slot.putStack(null);
+			slot.putStack(ItemStack.EMPTY);
 		else if(button==0||button==1)
 		{
 			InventoryPlayer playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
-			if (stackSlot == null)
+			if (stackSlot.isEmpty())
 			{
-				if(stackHeld != null && slot.isItemValid(stackHeld))
+				if(!stackHeld.isEmpty() && slot.isItemValid(stackHeld))
 				{
 					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
 				}
 			}
-			else if (stackHeld == null)
+			else if (stackHeld.isEmpty())
 			{
-				slot.putStack(null);
+				slot.putStack(ItemStack.EMPTY);
 			}
 			else if (slot.isItemValid(stackHeld))
 			{
@@ -77,7 +77,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
 		if(slotObject != null && slotObject.getHasStack())
@@ -88,7 +88,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 			if(slot < slotCount)
 			{
 				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
-					return null;
+					return ItemStack.EMPTY;
 			}
 			else
 			{
@@ -101,17 +101,17 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 							break;
 						}
 				if(!b)
-					return null;
+					return ItemStack.EMPTY;
 			}
 
-			if(stackInSlot.stackSize == 0)
-				slotObject.putStack(null);
+			if(stackInSlot.getCount() == 0)
+				slotObject.putStack(ItemStack.EMPTY);
 			else
 				slotObject.onSlotChanged();
 
-			if(stackInSlot.stackSize == stack.stackSize)
-				return null;
-			slotObject.onPickupFromSlot(player, stackInSlot);
+			if(stackInSlot.getCount() == stack.getCount())
+				return ItemStack.EMPTY;
+			slotObject.onTake(player, stackInSlot);
 		}
 		return stack;
 	}
@@ -127,26 +127,26 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 
 		if(stack.isStackable())
 		{
-			while(stack.stackSize > 0 && (!reverseDirection && i<endIndex || reverseDirection && i>=startIndex))
+			while(!stack.isEmpty() && (!reverseDirection && i<endIndex || reverseDirection && i>=startIndex))
 			{
 				Slot slot = this.inventorySlots.get(i);
 				ItemStack stackInSlot = slot.getStack();
 
-				if(stackInSlot!=null && areItemStacksEqual(stack, stackInSlot))
+				if(!stackInSlot.isEmpty() && areItemStacksEqual(stack, stackInSlot))
 				{
-					int j = stackInSlot.stackSize+stack.stackSize;
+					int j = stackInSlot.getCount()+stack.getCount();
 					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
 					if(j<=maxSize)
 					{
-						stack.stackSize = 0;
-						stackInSlot.stackSize = j;
+						stack.setCount(0);
+						stackInSlot.setCount(j);
 						slot.onSlotChanged();
 						flag = true;
 					}
-					else if(stackInSlot.stackSize<maxSize)
+					else if(stackInSlot.getCount()<maxSize)
 					{
-						stack.stackSize -= (maxSize-stackInSlot.stackSize);
-						stackInSlot.stackSize = maxSize;
+						stack.shrink(maxSize-stackInSlot.getCount());
+						stackInSlot.setCount(maxSize);
 						slot.onSlotChanged();
 					}
 				}
@@ -158,7 +158,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 			}
 		}
 
-		if(stack.stackSize > 0)
+		if(!stack.isEmpty())
 		{
 			if(reverseDirection)
 				i = endIndex - 1;
@@ -169,14 +169,14 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 			{
 				Slot slot = this.inventorySlots.get(i);
 				ItemStack stackInSlot = slot.getStack();
-				if(stackInSlot==null && slot.isItemValid(stack))
+				if(stackInSlot.isEmpty() && slot.isItemValid(stack))
 				{
 					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
-					if(stack.stackSize<=maxSize)
+					if(stack.getCount()<=maxSize)
 					{
 						slot.putStack(stack.copy());
 						slot.onSlotChanged();
-						stack.stackSize = 0;
+						stack.setCount(0);
 						flag = true;
 						break;
 					}
@@ -184,7 +184,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 					{
 						slot.putStack(Utils.copyStackWithAmount(stack, maxSize));
 						slot.onSlotChanged();
-						stack.stackSize -= maxSize;
+						stack.shrink(maxSize);
 					}
 				}
 				if(reverseDirection)

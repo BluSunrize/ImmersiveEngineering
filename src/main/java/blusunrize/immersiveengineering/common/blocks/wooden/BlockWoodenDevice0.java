@@ -32,7 +32,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 	public BlockWoodenDevice0()
 	{
-		super("woodenDevice0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
+		super("wooden_device0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
@@ -62,7 +62,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 	public int getExplosivesType(IBlockState state)
 	{
-		if(!state.getPropertyNames().contains(this.property))
+		if(!state.getPropertyKeys().contains(this.property))
 			return -1;
 		if(state.getValue(this.property)==BlockTypes_WoodenDevice0.GUNPOWDER_BARREL)
 			return 0;
@@ -75,7 +75,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 			if(explosivesType==0)
 			{
 				EntityIEExplosive explosive = new EntityIEExplosive(world, pos, igniter, state, 4).setDropChance(1);
-				world.spawnEntityInWorld(explosive);
+				world.spawnEntity(explosive);
 				world.playSound(null, explosive.posX, explosive.posY, explosive.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				world.setBlockToAir(pos);
 			}
@@ -104,10 +104,11 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		int explosivesType = this.getExplosivesType(state);
-		if(explosivesType>=0 && stack!=null)
+		if(explosivesType>=0 && !stack.isEmpty())
 		{
 			Item item = stack.getItem();
 
@@ -117,11 +118,11 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 				if(item==Items.FLINT_AND_STEEL)
 					stack.damageItem(1, player);
 				else if (!player.capabilities.isCreativeMode)
-					--stack.stackSize;
+					stack.shrink(1);
 				return true;
 			}
 		}
-		return super.onBlockActivated(world, pos, state, player, hand, stack, side, hitX, hitY, hitZ);
+		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
 	}
 	@Override
 	public boolean canDropFromExplosion(Explosion explosionIn)
@@ -206,7 +207,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//
 	//			if(te instanceof TileEntityWoodenBarrel)
@@ -216,7 +217,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//		}
 	//	}
@@ -234,7 +235,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//
 	//			if(te instanceof TileEntityWoodenBarrel)
@@ -244,7 +245,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
 	//				if(!tag.hasNoTags())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//		}
 	//		super.onBlockExploded(world, x, y, z, explosion);
@@ -303,7 +304,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				}
 	//			}
 	//			if(type==0 && !world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots)
-	//				world.spawnEntityInWorld(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
+	//				world.spawnEntity(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
 	//		}
 	//		if(tileEntity instanceof TileEntityWatermill)
 	//		{
@@ -350,7 +351,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//						entityitem.motionZ = world.rand.nextGaussian()*.05;
 	//						if(stack.hasTagCompound())
 	//							entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-	//						world.spawnEntityInWorld(entityitem);
+	//						world.spawnEntity(entityitem);
 	//					}
 	//				}
 	//		}

@@ -36,7 +36,7 @@ public class ThermoelectricHandler
 	public static int getTemperature(Block block, int meta)
 	{
 		ItemStack stack = new ItemStack(block, 1, meta);
-		if(stack.getItem() != null)
+		if(!stack.isEmpty())
 			for(int oreID : OreDictionary.getOreIDs(stack))
 				if(temperatureMap.containsKey(OreDictionary.getOreName(oreID)))
 					return temperatureMap.get(OreDictionary.getOreName(oreID));

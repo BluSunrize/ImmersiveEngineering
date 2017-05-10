@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -34,7 +35,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		this.totalProcessTime = (int)Math.floor(120*timeModifier);
 
 		this.inputList = Lists.newArrayList(this.input);
-		this.outputList = Lists.newArrayList(this.output);
+		this.outputList = ListUtils.fromItem(this.output);
 	}
 	public MetalPressRecipe setInputSize(int size)
 	{
@@ -60,7 +61,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	}
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, boolean checkStackSize)
 	{
-		if(mold==null || input==null)
+		if(mold.isEmpty() || input.isEmpty())
 			return null;
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold);
 		List<MetalPressRecipe> list = recipeList.get(comp);
@@ -89,7 +90,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	}
 	public static boolean isValidMold(ItemStack itemStack)
 	{
-		if(itemStack==null)
+		if(itemStack.isEmpty())
 			return false;
 		return recipeList.containsKey(ApiUtils.createComparableItemStack(itemStack));
 	}

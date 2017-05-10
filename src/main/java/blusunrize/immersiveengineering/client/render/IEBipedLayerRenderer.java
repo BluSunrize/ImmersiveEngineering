@@ -31,10 +31,10 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 //			}
 //		}
 
-		if(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null && ItemNBTHelper.hasKey(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), "IE:Earmuffs"))
+		if(!living.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty() && ItemNBTHelper.hasKey(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), "IE:Earmuffs"))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), "IE:Earmuffs");
-			if(earmuffs != null)
+			if(!earmuffs.isEmpty())
 			{
 				GlStateManager.pushMatrix();
 				ModelBiped model = IEContent.itemEarmuffs.getArmorModel(living, earmuffs, EntityEquipmentSlot.HEAD, null);

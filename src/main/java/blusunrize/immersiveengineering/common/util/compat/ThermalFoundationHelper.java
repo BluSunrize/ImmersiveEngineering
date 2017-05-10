@@ -82,11 +82,11 @@ public class ThermalFoundationHelper extends IECompatModule
 		ChemthrowerHandler.registerEffect("petrotheum", new ChemthrowerEffect_Potion(null,0, new PotionEffect(MobEffects.HASTE,300,2),new PotionEffect(MobEffects.NIGHT_VISION,300,0),new PotionEffect(MobEffects.RESISTANCE,300,1))
 		{
 			@Override
-			public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 			{
-				IBlockState state = worldObj.getBlockState(mop.getBlockPos());
+				IBlockState state = world.getBlockState(mop.getBlockPos());
 				if(state.getBlock()==Blocks.STONE||state.getBlock()==Blocks.COBBLESTONE||state.getBlock()==Blocks.STONEBRICK||state.getBlock()==Blocks.MOSSY_COBBLESTONE)
-					worldObj.setBlockState(mop.getBlockPos(), Blocks.GRAVEL.getDefaultState());
+					world.setBlockState(mop.getBlockPos(), Blocks.GRAVEL.getDefaultState());
 			}
 		});
 		ChemthrowerHandler.registerEffect("mana", new ChemthrowerEffect_RandomTeleport(null,0, .01f));

@@ -36,6 +36,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -64,6 +65,8 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+
+import static java.lang.Math.min;
 
 public class Utils
 {
@@ -109,7 +112,7 @@ public class Utils
 	}
 	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
 	{
-		if((stack1==null) != (stack2==null))
+		if((stack1.isEmpty()) != (stack2.isEmpty()))
 			return false;
 		boolean empty1 = (stack1.getTagCompound()==null||stack1.getTagCompound().hasNoTags());
 		boolean empty2 = (stack2.getTagCompound()==null||stack2.getTagCompound().hasNoTags());
@@ -127,7 +130,7 @@ public class Utils
 			inputSet.add(new IngredientStack(s));
 		for(ItemStack t : target)
 		{
-			int size = t.stackSize;
+			int size = t.getCount();
 			Iterator<IngredientStack> it = inputSet.iterator();
 			while(it.hasNext())
 			{
@@ -150,16 +153,16 @@ public class Utils
 	}
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
-		if(stack==null)
-			return null;
+		if(stack.isEmpty())
+			return ItemStack.EMPTY;
 		ItemStack s2 = stack.copy();
-		s2.stackSize=amount;
+		s2.setCount(amount);
 		return s2;
 	}
 	public static String[] dyeNames = {"Black","Red","Green","Brown","Blue","Purple","Cyan","LightGray","Gray","Pink","Lime","Yellow","LightBlue","Magenta","Orange","White"};
 	public static int getDye(ItemStack stack)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return -1;
 		if(stack.getItem().equals(Items.DYE))
 			return stack.getItemDamage();
@@ -170,7 +173,7 @@ public class Utils
 	}
 	public static boolean isDye(ItemStack stack)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return false;
 		if(stack.getItem().equals(Items.DYE))
 			return true;
@@ -334,7 +337,7 @@ public class Utils
 
 	public static boolean isHammer(ItemStack stack)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return false;
 		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER);
 	}
@@ -530,7 +533,7 @@ public class Utils
 
 	public static IBlockState getStateFromItemStack(ItemStack stack)
 	{
-		if(stack==null||stack.getItem()==null)
+		if(stack.isEmpty())
 			return null;
 		Block block = getBlockFromItem(stack.getItem());
 		if(block!=null)
@@ -546,29 +549,29 @@ public class Utils
 
 	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
 	{
-		if(stack!=null && inventory!=null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty() && inventory!=null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp==null || temp.stackSize<stack.stackSize)
+			if(temp.isEmpty() || temp.getCount() < stack.getCount())
 				return true;
 		}
 		return false;
 	}
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
 	{
-		if(stack!=null && inventory!=null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty() && inventory!=null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp==null || temp.stackSize<stack.stackSize)
+			if(temp.isEmpty() || temp.getCount() < stack.getCount())
 				return ItemHandlerHelper.insertItem(handler, stack, false);
 		}
 		return stack;
 	}
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side, boolean simulate)
 	{
-		if(inventory!=null && stack!=null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(inventory!=null && !stack.isEmpty() && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
@@ -577,7 +580,7 @@ public class Utils
 	}
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, EnumFacing facing)
 	{
-		if(stack!=null)
+		if(!stack.isEmpty())
 		{
 			EntityItem ei = new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, stack.copy());
 			ei.motionY = 0.025000000372529D;
@@ -586,7 +589,7 @@ public class Utils
 				ei.motionX = (0.075F * facing.getFrontOffsetX());
 				ei.motionZ = (0.075F * facing.getFrontOffsetZ());
 			}
-			world.spawnEntityInWorld(ei);
+			world.spawnEntity(ei);
 		}
 	}
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack)
@@ -641,22 +644,22 @@ public class Utils
 			return stack;
 		}
 		int stackLimit = inventory.getInventoryStackLimit();
-		inventory.setInventorySlotContents(slot, copyStackWithAmount(stack, Math.min(stack.stackSize, stackLimit)));
-		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
+		inventory.setInventorySlotContents(slot, copyStackWithAmount(stack, Math.min(stack.getCount(), stackLimit)));
+		return stackLimit >= stack.getCount() ? ItemStack.EMPTY : stack.splitStack(stack.getCount() - stackLimit);
 	}
 	public static ItemStack addToOccupiedSlot(IInventory inventory, int slot, ItemStack stack, ItemStack existingStack)
 	{
 		int stackLimit = Math.min(inventory.getInventoryStackLimit(), stack.getMaxStackSize());
-		if (stack.stackSize + existingStack.stackSize > stackLimit) {
-			int stackDiff = stackLimit - existingStack.stackSize;
-			existingStack.stackSize = stackLimit;
-			stack.stackSize -= stackDiff;
+		if (stack.getCount() + existingStack.getCount() > stackLimit) {
+			int stackDiff = stackLimit - existingStack.getCount();
+			existingStack.setCount(stackLimit);
+			stack.shrink(stackDiff);
 			inventory.setInventorySlotContents(slot, existingStack);
 			return stack;
 		}
-		existingStack.stackSize += Math.min(stack.stackSize, stackLimit);
+		existingStack.grow(min(stack.getCount(), stackLimit));
 		inventory.setInventorySlotContents(slot, existingStack);
-		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
+		return stackLimit >= stack.getCount() ? ItemStack.EMPTY : stack.splitStack(stack.getCount() - stackLimit);
 	}
 
 
@@ -704,33 +707,51 @@ public class Utils
 
 	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable EntityPlayer player)
 	{
-		if(containerIn==null)
-			return null;
+		if(containerIn==null || containerIn.isEmpty())
+			return ItemStack.EMPTY;
 		if(containerIn.hasTagCompound() && containerIn.getTagCompound().hasNoTags())
 			containerIn.setTagCompound(null);
-		ItemStack full = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
-		if(full!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,full,true)))
+
+		FluidActionResult result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
+		if(result.isSuccess())
 		{
-			if(containerOut != null && containerOut.stackSize + full.stackSize > containerOut.getMaxStackSize())
-				return null;
-			return FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+			final ItemStack full = result.getResult();
+			if((containerOut.isEmpty() || OreDictionary.itemMatches(containerOut, full,true)))
+			{
+				if (!containerOut.isEmpty() && containerOut.getCount() + full.getCount() > containerOut.getMaxStackSize())
+					return ItemStack.EMPTY;
+				result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+				if (result.isSuccess()) {
+					return result.getResult();
+				}
+			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable EntityPlayer player)
 	{
-		if(containerIn==null)
-			return null;
+		if(containerIn==null || containerIn.isEmpty())
+			return ItemStack.EMPTY;
+
 		if(containerIn.hasTagCompound() && containerIn.getTagCompound().hasNoTags())
 			containerIn.setTagCompound(null);
-		ItemStack empty = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
-		if(empty!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,empty,true)))
+
+		FluidActionResult result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
+		if(result.isSuccess())
 		{
-			if(containerOut != null && containerOut.stackSize + empty.stackSize > containerOut.getMaxStackSize())
-				return null;
-			return FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+			ItemStack empty = result.getResult();
+			if ((containerOut.isEmpty() || OreDictionary.itemMatches(containerOut,empty,true)))
+			{
+				if (!containerOut.isEmpty() && containerOut.getCount() + empty.getCount() > containerOut.getMaxStackSize())
+					return ItemStack.EMPTY;
+				result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+				if (result.isSuccess()) {
+					return result.getResult();
+				}
+			}
 		}
-		return null;
+		return ItemStack.EMPTY;
+
 	}
 
 //	public static FluidStack getFluidFromItemStack(ItemStack stack)
@@ -747,9 +768,9 @@ public class Utils
 
 	public static boolean isFluidRelatedItemStack(ItemStack stack)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return false;
-		return stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		return stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	}
 
 	public static IRecipe findRecipe(InventoryCrafting crafting, World world)
@@ -762,6 +783,24 @@ public class Utils
 		}
 		return null;
 	}
+
+	public static NonNullList<ItemStack> createNonNullItemStackListFromArray(ItemStack[] stacks)
+	{
+		NonNullList<ItemStack> list = NonNullList.withSize(stacks.length, ItemStack.EMPTY);
+		for (int i = 0; i < stacks.length; i++)
+		{
+			list.set(i, stacks[i]);
+		}
+		return list;
+	}
+
+	public static NonNullList<ItemStack> createNonNullItemStackListFromItemStack(ItemStack stack)
+	{
+		NonNullList<ItemStack> list = NonNullList.withSize(1, ItemStack.EMPTY);
+		list.set(0, stack);
+		return list;
+	}
+
 	public static class InventoryCraftingFalse extends InventoryCrafting
 	{
 		private static final Container nullContainer = new Container()
@@ -779,12 +818,12 @@ public class Utils
 			super(nullContainer, w, h);
 		}
 
-		public static InventoryCrafting createFilledCraftingInventory(int w, int h, ItemStack[] stacks)
+		public static InventoryCrafting createFilledCraftingInventory(int w, int h, NonNullList<ItemStack> stacks)
 		{
 			InventoryCrafting invC = new Utils.InventoryCraftingFalse(w, h);
 			for(int j = 0; j < w * h; j++)
-				if(stacks[j] != null)
-					invC.setInventorySlotContents(j, stacks[j].copy());
+				if(!stacks.get(j).isEmpty())
+					invC.setInventorySlotContents(j, stacks.get(j).copy());
 			return invC;
 		}
 	}
@@ -940,16 +979,16 @@ public class Utils
 			return world.getTileEntity(pos);
 		return null;
 	}
-	public static ItemStack[] readInventory(NBTTagList nbt, int size)
+	public static NonNullList<ItemStack> readInventory(NBTTagList nbt, int size)
 	{
-		ItemStack[] inv = new ItemStack[size];
+		NonNullList<ItemStack> inv = NonNullList.withSize(size, ItemStack.EMPTY);
 		int max = nbt.tagCount();
 		for (int i = 0;i<max;i++)
 		{
 			NBTTagCompound itemTag = nbt.getCompoundTagAt(i);
 			int slot = itemTag.getByte("Slot") & 255;
 			if(slot>=0 && slot<size)
-				inv[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+				inv.set(slot, new ItemStack(itemTag));
 		}
 		return inv;
 	}
@@ -957,7 +996,7 @@ public class Utils
 	{
 		NBTTagList invList = new NBTTagList();
 		for(int i=0; i<inv.length; i++)
-			if(inv[i] != null)
+			if(!inv[i].isEmpty())
 			{
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", (byte)i);
@@ -972,7 +1011,7 @@ public class Utils
 		byte slot = 0;
 		for(ItemStack s : inv)
 		{
-			if(s!=null)
+			if(!s.isEmpty())
 			{
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", slot);
@@ -983,28 +1022,30 @@ public class Utils
 		}
 		return invList;
 	}
-	public static ItemStack[] loadItemStacksFromNBT(NBTBase nbt)
+	public static NonNullList<ItemStack> loadItemStacksFromNBT(NBTBase nbt)
 	{
+		NonNullList<ItemStack> itemStacks = NonNullList.create();
 		if(nbt instanceof NBTTagCompound)
 		{
-			ItemStack stack = ItemStack.loadItemStackFromNBT((NBTTagCompound)nbt);
-			return new ItemStack[]{stack};
+			ItemStack stack = new ItemStack((NBTTagCompound)nbt);
+			itemStacks.add(stack);
+			return itemStacks;
 		}
 		else if(nbt instanceof NBTTagList)
 		{
 			NBTTagList list = (NBTTagList)nbt;
 			return readInventory(list, list.tagCount());
 		}
-		return new ItemStack[0];
+		return itemStacks;
 	}
 
-	public static void modifyInvStackSize(ItemStack[] inv, int slot, int amount)
+	public static void modifyInvStackSize(NonNullList<ItemStack> inv, int slot, int amount)
 	{
-		if(slot>=0&&slot<inv.length && inv[slot]!=null)
+		if(slot>=0&&slot< inv.size() && !inv.get(slot).isEmpty())
 		{
-			inv[slot].stackSize += amount;
-			if(inv[slot].stackSize<=0)
-				inv[slot] = null;
+			inv.get(slot).grow(amount);
+			if(inv.get(slot).getCount() <= 0)
+				inv.set(slot, ItemStack.EMPTY);
 		}
 	}
 
@@ -1015,9 +1056,9 @@ public class Utils
 		while(iterator.hasNext())
 		{
 			ItemStack itemstack = iterator.next();
-			if(itemstack.stackSize <= 0)
+			if(itemstack.getCount() <= 0)
 				iterator.remove();
-			else if(itemstack.stackSize > 1)
+			else if(itemstack.getCount() > 1)
 			{
 				list.add(itemstack);
 				iterator.remove();
@@ -1026,18 +1067,18 @@ public class Utils
 		slotAmount = slotAmount - stacks.size();
 		while(slotAmount>0 && list.size()>0)
 		{
-			ItemStack itemstack2 = list.remove(MathHelper.getRandomIntegerInRange(rand, 0, list.size() - 1));
-			int i = MathHelper.getRandomIntegerInRange(rand, 1, itemstack2.stackSize / 2);
-			itemstack2.stackSize -= i;
+			ItemStack itemstack2 = list.remove(MathHelper.getInt(rand, 0, list.size() - 1));
+			int i = MathHelper.getInt(rand, 1, itemstack2.getCount() / 2);
+			itemstack2.shrink(i);
 			ItemStack itemstack1 = itemstack2.copy();
-			itemstack1.stackSize = i;
+			itemstack1.setCount(i);
 
-			if(itemstack2.stackSize>1 && rand.nextBoolean())
+			if(itemstack2.getCount() > 1 && rand.nextBoolean())
 				list.add(itemstack2);
 			else
 				stacks.add(itemstack2);
 
-			if(itemstack1.stackSize>1 && rand.nextBoolean())
+			if(itemstack1.getCount() > 1 && rand.nextBoolean())
 				list.add(itemstack1);
 			else
 				stacks.add(itemstack1);
@@ -1084,17 +1125,17 @@ public class Utils
 		{
 			int i=0;
 			float f = 0.0F;
-			for(int j=0; j<inv.getInventory().length; ++j)
+			for(int j = 0; j< inv.getInventory().size(); ++j)
 			{
-				ItemStack itemstack = inv.getInventory()[j];
-				if(itemstack!=null)
+				ItemStack itemstack = inv.getInventory().get(j);
+				if(!itemstack.isEmpty())
 				{
-					f += (float)itemstack.stackSize / (float)Math.min(inv.getSlotLimit(j), itemstack.getMaxStackSize());
+					f += (float) itemstack.getCount() / (float)Math.min(inv.getSlotLimit(j), itemstack.getMaxStackSize());
 					++i;
 				}
 			}
-			f = f/(float)inv.getInventory().length;
-			return MathHelper.floor_float(f * 14.0F) + (i > 0 ? 1 : 0);
+			f = f/(float) inv.getInventory().size();
+			return MathHelper.floor(f * 14.0F) + (i > 0 ? 1 : 0);
 		}
 	}
 
@@ -1102,9 +1143,9 @@ public class Utils
 	public static Map<String, Object> saveStack(ItemStack stack)
 	{
 		HashMap<String, Object> ret = new HashMap<>();
-		if(stack != null && stack.getItem() != null)
+		if(!stack.isEmpty())
 		{
-			ret.put("size", stack.stackSize);
+			ret.put("size", stack.getCount());
 			ret.put("name", Item.REGISTRY.getNameForObject(stack.getItem()));
 			ret.put("nameUnlocalized", stack.getUnlocalizedName());
 			ret.put("label", stack.getDisplayName());

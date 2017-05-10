@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 
 import javax.annotation.Nonnull;
@@ -31,12 +32,6 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<Co
 		return ContainerAssembler.class;
 	}
 
-	@Override
-	public String getRecipeCategoryUid()
-	{
-		return VanillaRecipeCategoryUid.CRAFTING;
-	}
-
 	@Nullable
 	@Override
 	public IRecipeTransferError transferRecipe(@Nonnull ContainerAssembler container, @Nonnull IRecipeLayout recipeLayout, @Nonnull EntityPlayer player, boolean maxTransfer, boolean doTransfer)
@@ -48,7 +43,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<Co
 				{
 					IGuiItemStackGroup stacks = recipeLayout.getItemStacks();
 					NBTTagList tagList = new NBTTagList();
-					ItemStack[] convertedInput = new ItemStack[stacks.getGuiIngredients().size() - 1];
+					NonNullList<ItemStack> convertedInput = NonNullList.withSize(stacks.getGuiIngredients().size() - 1, ItemStack.EMPTY);
 					int j = 0;
 					for(IGuiIngredient<ItemStack> ingr : stacks.getGuiIngredients().values())
 					{
@@ -56,16 +51,16 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<Co
 						{
 							List<ItemStack> list = ingr.getAllIngredients();
 							if(list != null && list.size() > 0)
-								convertedInput[j - 1] = list.get(0);
+								convertedInput.set(j - 1, list.get(0));
 						}
 						j++;
 					}
-					for(int slot = 0; slot < Math.min(convertedInput.length, 9); slot++)
+					for(int slot = 0; slot < Math.min(convertedInput.size(), 9); slot++)
 					{
-						container.putStackInSlot(i * 10 + slot, convertedInput[slot]);
+						container.putStackInSlot(i * 10 + slot, convertedInput.get(slot));
 						NBTTagCompound itemTag = new NBTTagCompound();
-						if(convertedInput[slot] != null)
-							convertedInput[slot].writeToNBT(itemTag);
+						if(!convertedInput.get(slot).isEmpty())
+							convertedInput.get(slot).writeToNBT(itemTag);
 						itemTag.setInteger("slot", slot);
 						tagList.appendTag(itemTag);
 					}

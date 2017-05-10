@@ -23,7 +23,7 @@ public class MessageMinecartShaderSync implements IMessage
 	ItemStack shader;
 	public MessageMinecartShaderSync(Entity entity, Object o)
 	{
-		this.dimension = entity.worldObj.provider.getDimension();
+		this.dimension = entity.world.provider.getDimension();
 		this.entityID = entity.getEntityId();
 		if(o instanceof ShaderWrapper)
 			shader = ((ShaderWrapper)o).getShaderItem();

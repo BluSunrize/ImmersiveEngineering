@@ -1,0 +1,180 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:ie_six_sides",
+		"textures": {
+			"bottom": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_bottom",
+			"top": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_top",
+			"north": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+			"south": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+			"west": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+			"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+
+			"sideOff": "immersiveengineering:blocks/metal_device1_furnace_heater",
+			"sideOn": "immersiveengineering:blocks/metal_device1_furnace_heater_active"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=blast_furnace_preheater": [{
+			"model": "immersiveengineering:metal_device/blastfurnace_preheater.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.1875, 0.1875, 0.1875 ],
+				"firstperson_righthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
+				"firstperson_lefthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
+				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"fixed": {"scale": [ 2,2,2 ], "translation": [ 0, -0.25, 0 ], "rotation": [{ "y": 0 }]},
+				"gui": { "translation": [ 0, -0.25, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": [ 1.5, 1.5, 1.5 ] }
+			}
+		}],
+		"inventory,type=furnace_heater": [{"textures": {
+			"bottom": "immersiveengineering:blocks/metal_device1_furnace_heater",
+			"top": "immersiveengineering:blocks/metal_device1_furnace_heater",
+			"north": "immersiveengineering:blocks/metal_device1_furnace_heater",
+			"south": "immersiveengineering:blocks/metal_device1_furnace_heater",
+			"west": "immersiveengineering:blocks/metal_device1_furnace_heater",
+			"east": "immersiveengineering:blocks/metal_device1_furnace_heater"}
+		}],
+		"inventory,type=dynamo": [{"textures": {
+			"bottom": "immersiveengineering:blocks/metal_device1_dynamo_bottom",
+			"top": "immersiveengineering:blocks/metal_device1_dynamo_top",
+			"north": "immersiveengineering:blocks/metal_device1_dynamo_front",
+			"south": "immersiveengineering:blocks/metal_device1_dynamo_top",
+			"west": "immersiveengineering:blocks/metal_device1_dynamo_side",
+			"east": "immersiveengineering:blocks/metal_device1_dynamo_side"}
+		}],
+		"inventory,type=thermoelectric_gen": [{"textures": {
+			"bottom": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_bottom",
+			"top": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_top",
+			"north": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+			"south": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+			"west": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+			"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side"}
+		}],
+		"inventory,type=tesla_coil": [{
+			"model": "immersiveengineering:metal_device/teslacoil.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.28125, 0.28125, 0.28125 ],
+				"rotation": [{ "x": 90 }],
+				"firstperson_righthand": { "scale": [ 1, 1, 1 ], "rotation": [{ "y": 180 }] },
+				"firstperson_lefthand": { "scale": [ 1, 1, 1 ], "rotation": [{ "y": 180 }] },
+				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"fixed": {"scale": [ 2,2,2 ], "translation": [ 0, -0.25, 0 ], "rotation": [{ "y": 0 }]},
+				"gui": { "translation": [ 0, -0.15625, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": [ 1.5, 1.5, 1.5 ] }
+			}
+		}],
+		"inventory,type=turret_chem": [{
+			"model": "immersiveengineering:metal_device/chem_turret_inv.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.25, 0.25, 0.25 ],
+				"firstperson_righthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 90 }] },
+				"firstperson_lefthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 90 }] },
+				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"fixed": {"scale": [ 2,2,2 ], "translation": [ 0.125, -0.25, 0 ], "rotation": [{ "y": 90 }]},
+				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": [ 1.5, 1.5, 1.5 ] }
+			}
+		}],
+		"inventory,type=turret_gun": [{
+			"model": "immersiveengineering:metal_device/gun_turret_inv.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.25, 0.25, 0.25 ],
+				"firstperson_righthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 90 }] },
+				"firstperson_lefthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 90 }] },
+				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"fixed": {"scale": [ 2,2,2 ], "translation": [ 0.125, -0.25, 0 ], "rotation": [{ "y": 90 }]},
+				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": [ 1.5, 1.5, 1.5 ] }
+			}
+		}],
+		"type":
+		{
+			"blast_furnace_preheater": {
+				"model": "immersiveengineering:metal_device/blastfurnace_preheater.obj",
+				"custom": { "flip-v": true }
+			},
+			"furnace_heater": {"textures": {
+				"bottom": "#sideOff",
+				"top": "#sideOff",
+				"north": "immersiveengineering:blocks/metal_device1_furnace_heater_socket",
+				"south": "#sideOff",
+				"west": "#sideOff",
+				"east": "#sideOff",
+				"sideOff": "immersiveengineering:blocks/metal_device1_furnace_heater",
+				"sideOn": "immersiveengineering:blocks/metal_device1_furnace_heater_active"
+			}},
+			"dynamo": {"textures": {
+				"bottom": "immersiveengineering:blocks/metal_device1_dynamo_bottom",
+				"top": "immersiveengineering:blocks/metal_device1_dynamo_top",
+				"north": "immersiveengineering:blocks/metal_device1_dynamo_front",
+				"south": "immersiveengineering:blocks/metal_device1_dynamo_bottom",
+				"west": "immersiveengineering:blocks/metal_device1_dynamo_side",
+				"east": "immersiveengineering:blocks/metal_device1_dynamo_side"
+			}},
+			"thermoelectric_gen": {"textures": {
+				"bottom": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_bottom",
+				"top": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_top",
+				"north": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+				"south": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+				"west": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
+				"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side"
+			}},
+			"tesla_coil": {
+				"model": "immersiveengineering:metal_device/teslacoil.obj",
+				"custom": { "flip-v": true }
+			},
+			"turret_chem": {
+				"model": "immersiveengineering:metal_device/chem_turret.obj.ie",
+				"custom": { "flip-v": true }
+			},
+			"turret_gun": {
+				"model": "immersiveengineering:metal_device/gun_turret.obj.ie",
+				"custom": { "flip-v": true }
+			}
+		},
+		"facing":
+		{
+			"down": { "transform": {
+				"rotation": {"x": -90 }
+			}},
+			"up": { "transform": {
+				"rotation": {"x": 90 }
+			}},
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"_0multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		//active texture
+		"boolean0":
+		{
+			"false":{},
+			"true":{"textures": {
+				"sideOff": "#sideOn"
+			}}
+		}
+	}
+}

@@ -28,7 +28,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 		int output = (int) (IEConfig.Machines.dynamo_output * rotation);
 		for(EnumFacing fd : EnumFacing.VALUES)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().offset(fd));
+			TileEntity te = world.getTileEntity(getPos().offset(fd));
 			output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
 		}
 	}
@@ -69,8 +69,8 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
-//		if(descPacket && worldObj!=null)
-//			worldObj.markBlockForUpdate(getPos());
+//		if(descPacket && world!=null)
+//			world.markBlockForUpdate(getPos());
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)

@@ -24,17 +24,11 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 
 	public BottlingMachineRecipeCategory(IGuiHelper helper)
 	{
-		super("bottlingMachine","tile.immersiveengineering.metalMultiblock.bottling_machine.name", helper.createBlankDrawable(140,50), BottlingMachineRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta()));
+		super("bottlingMachine","tile.immersiveengineering.metal_multiblock.bottling_machine.name", helper.createBlankDrawable(140,50), BottlingMachineRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta()));
 		tankOverlay = helper.createDrawable(background, 177,31, 20,51, -2,2,-2,2);
 		bottlignMachineStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta());
 	}
 
-	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, BottlingMachineRecipeWrapper recipeWrapper)
-	{
-		//Deprecated
-	}
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, BottlingMachineRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
@@ -42,7 +36,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		guiItemStacks.init(0, true, 0, 12);
 		guiItemStacks.init(1, false, 100, 12);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class));
+		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
 
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, true, 75,0, 16,47, 4000, false, tankOverlay);

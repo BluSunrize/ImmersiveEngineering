@@ -62,7 +62,7 @@ public class CraftTweakerHelper extends IECompatModule
 	public static ItemStack toStack(IItemStack iStack)
 	{
 		if(iStack == null)
-			return null;
+			return ItemStack.EMPTY;
 		return (ItemStack) iStack.getInternal();
 	}
 

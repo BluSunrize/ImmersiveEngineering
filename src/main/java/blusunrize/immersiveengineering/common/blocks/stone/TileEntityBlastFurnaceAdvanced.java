@@ -22,23 +22,23 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	public void update()
 	{
 		super.update();
-		if(!worldObj.isRemote && worldObj.getTotalWorldTime()%8==0 && !isDummy())
+		if(!world.isRemote && world.getTotalWorldTime()%8==0 && !isDummy())
 		{
-			TileEntity inventoryFront = this.worldObj.getTileEntity(getPos().offset(facing,2).add(0,-1,0));
-			if(this.inventory[2]!=null)
+			TileEntity inventoryFront = this.world.getTileEntity(getPos().offset(facing,2).add(0,-1,0));
+			if(!this.inventory.get(2).isEmpty())
 			{
-				ItemStack stack = this.inventory[2];
+				ItemStack stack = this.inventory.get(2);
 				if(inventoryFront!=null)
 					stack = Utils.insertStackIntoInventory(inventoryFront, stack, facing.getOpposite());
-				this.inventory[2] = stack;
+				this.inventory.set(2, stack);
 			}
-			TileEntity inventoryBack = this.worldObj.getTileEntity(getPos().offset(facing,-2).add(0,-1,0));
-			if(this.inventory[3]!=null)
+			TileEntity inventoryBack = this.world.getTileEntity(getPos().offset(facing,-2).add(0,-1,0));
+			if(!this.inventory.get(3).isEmpty())
 			{
-				ItemStack stack = this.inventory[3];
+				ItemStack stack = this.inventory.get(3);
 				if(inventoryBack!=null)
 					stack = Utils.insertStackIntoInventory(inventoryBack, stack, facing);
-				this.inventory[3] = stack;
+				this.inventory.set(3, stack);
 			}
 		}
 	}
@@ -103,10 +103,10 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		{
 			EnumFacing phf = j==0?facing.rotateY():facing.rotateYCCW();
 			BlockPos pos = getPos().add(0,-1,0).offset(phf,2);
-			if(worldObj.getTileEntity(pos) instanceof TileEntityBlastFurnacePreheater)
+			if(world.getTileEntity(pos) instanceof TileEntityBlastFurnacePreheater)
 			{
-				if( ((TileEntityBlastFurnacePreheater)worldObj.getTileEntity(pos)).facing==phf.getOpposite())
-					i += ((TileEntityBlastFurnacePreheater)worldObj.getTileEntity(pos)).doSpeedup();
+				if( ((TileEntityBlastFurnacePreheater)world.getTileEntity(pos)).facing==phf.getOpposite())
+					i += ((TileEntityBlastFurnacePreheater)world.getTileEntity(pos)).doSpeedup();
 			}
 		}
 		return i;
@@ -115,10 +115,10 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	@Override
 	public void disassemble()
 	{
-		if(formed && !worldObj.isRemote)
+		if(formed && !world.isRemote)
 		{
 			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityBlastFurnaceAdvanced))
+			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntityBlastFurnaceAdvanced))
 				return;
 			
 			for(int yy=-1;yy<=2;yy++)
@@ -126,8 +126,8 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 					for(int zz=-1;zz<=1;zz++)
 						if(yy!=2 || (xx==0 && zz==0))
 						{
-							ItemStack s = null;
-							TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
+							ItemStack s = ItemStack.EMPTY;
+							TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
 							if(te instanceof TileEntityBlastFurnaceAdvanced)
 							{
 								s = ((TileEntityBlastFurnaceAdvanced)te).getOriginalBlock();
@@ -135,15 +135,15 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 							}
 							if(startPos.add(xx, yy, zz).equals(getPos()))
 								s = this.getOriginalBlock();
-							if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+							if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
 							{
 								if(startPos.add(xx, yy, zz).equals(getPos()))
-									worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
+									world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
 								else
 								{
 									if(Block.getBlockFromItem(s.getItem())==IEContent.blockStoneDevice)
-										worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-									worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
+										world.setBlockToAir(startPos.add(xx, yy, zz));
+									world.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
 								}
 							}
 						}

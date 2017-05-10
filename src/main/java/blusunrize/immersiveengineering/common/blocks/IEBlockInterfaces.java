@@ -120,7 +120,7 @@ public class IEBlockInterfaces
 			if(limit==0)
 				f = side;
 			else if(limit==1)
-				f = BlockPistonBase.getFacingFromEntity(pos, placer);
+				f = EnumFacing.getDirectionFromEntityLiving(pos, placer);
 			else if(limit==2)
 				f = EnumFacing.fromAngle(placer.rotationYaw);
 			else if(limit==3)

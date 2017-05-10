@@ -7,6 +7,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -15,12 +16,12 @@ public class RecipeShaderBags implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
-				if(stack==null)
+			if(!stackInSlot.isEmpty())
+				if(stack.isEmpty())
 				{
 					if(IEContent.itemShaderBag.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "rarity"))
 						stack = stackInSlot;
@@ -32,7 +33,7 @@ public class RecipeShaderBags implements IRecipe
 				else
 					return false;
 		}
-		return stack!=null;
+		return !stack.isEmpty();
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class RecipeShaderBags implements IRecipe
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(stackInSlot!=null)
+			if(!stackInSlot.isEmpty())
 			{
 				ItemStack output = new ItemStack(IEContent.itemShaderBag,IEContent.itemShaderBag.equals(stackInSlot.getItem())?2:1);
 				EnumRarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
@@ -52,7 +53,7 @@ public class RecipeShaderBags implements IRecipe
 				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -67,7 +68,7 @@ public class RecipeShaderBags implements IRecipe
 	}
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }

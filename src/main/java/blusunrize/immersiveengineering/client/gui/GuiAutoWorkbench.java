@@ -45,7 +45,7 @@ public class GuiAutoWorkbench extends GuiContainer
 				int xx = guiLeft+121;
 				int yy = guiTop+(l>6?59-(l-3)/3*18: l>3?59: 68);
 				for(int i=0; i<l; i++)
-					if(recipes[i]!=null && recipes[i].output!=null)
+					if(recipes[i]!=null && !recipes[i].output.isEmpty())
 					{
 						this.buttonList.add(new GuiButtonItem(i, xx+(i%3)*18,yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe));
 					}
@@ -119,7 +119,7 @@ public class GuiAutoWorkbench extends GuiContainer
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -129,7 +129,7 @@ public class GuiAutoWorkbench extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/autoWorkbench.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
@@ -139,12 +139,12 @@ public class GuiAutoWorkbench extends GuiContainer
 //		{
 //			Slot s = inventorySlots.getSlot(i);
 //
-//			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition-1, guiTop+ s.yDisplayPosition-1, 17,1, 0x77222222);
-//			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition-1, guiTop+ s.yDisplayPosition+0, 1,16, 0x77222222);
-//			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+16, guiTop+ s.yDisplayPosition+0, 1,17, 0x77999999);
-//			ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+0, guiTop+ s.yDisplayPosition+16, 16,1, 0x77999999);
+//			ClientUtils.drawColouredRect(guiLeft+ s.xPos-1, guiTop+ s.yPos-1, 17,1, 0x77222222);
+//			ClientUtils.drawColouredRect(guiLeft+ s.xPos-1, guiTop+ s.yPos+0, 1,16, 0x77222222);
+//			ClientUtils.drawColouredRect(guiLeft+ s.xPos+16, guiTop+ s.yPos+0, 1,17, 0x77999999);
+//			ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+16, 16,1, 0x77999999);
 //			if( !(s instanceof IESlot.BlueprintOutput) || s.getHasStack() || ((IESlot.BlueprintOutput)s).recipe.output==null)
-//				ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+0, guiTop+ s.yDisplayPosition+0, 16,16, 0x77444444);
+//				ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+0, 16,16, 0x77444444);
 //		}
 //
 //		for(int i=0; i<((ContainerModWorkbench)inventorySlots).slotCount; i++)
@@ -159,14 +159,14 @@ public class GuiAutoWorkbench extends GuiContainer
 //					itemRender.zLevel = 200.0F;
 //					FontRenderer font = ghostStack.getItem().getFontRenderer(ghostStack);
 //					if(font==null)
-//						font = fontRendererObj;
-//					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xDisplayPosition, guiTop+s.yDisplayPosition);
+//						font = fontRenderer;
+//					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
 //					this.zLevel = 0.0F;
 //					itemRender.zLevel = 0.0F;
 //
 //					GlStateManager.disableLighting();
 //					GlStateManager.disableDepth();
-//					ClientUtils.drawColouredRect(guiLeft+ s.xDisplayPosition+0, guiTop+ s.yDisplayPosition+0, 16,16, 0x77444444);
+//					ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+0, 16,16, 0x77444444);
 //					GlStateManager.enableLighting();
 //					GlStateManager.enableDepth();
 //				}

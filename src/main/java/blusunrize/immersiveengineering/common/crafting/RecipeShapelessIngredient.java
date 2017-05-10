@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -84,7 +85,7 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 				if(ingredients.get(nbtCopyTargetSlot).matchesItemStack(slot))
 				{
 					ItemStack out = output.copy();
-					if(matrix.getStackInSlot(nbtCopyTargetSlot) != null && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
+					if(!matrix.getStackInSlot(nbtCopyTargetSlot).isEmpty() && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
 						out.setTagCompound(matrix.getStackInSlot(nbtCopyTargetSlot).getTagCompound().copy());
 					return out;
 				}
@@ -93,33 +94,33 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
-		ItemStack[] remains = super.getRemainingItems(inv);
-		for(int i = 0; i < remains.length; i++)
+		NonNullList<ItemStack>  remains = super.getRemainingItems(inv);
+		for(int i = 0; i < remains.size(); i++)
 		{
 			ItemStack s = inv.getStackInSlot(i);
-			ItemStack remain = remains[i];
+			ItemStack remain = remains.get(i);
 			if(toolDamageSlot >= 0 && toolDamageSlot < ingredients.size())
 			{
-				ItemStack tool = null;
-				if(remain == null && s != null && ingredients.get(toolDamageSlot).matchesItemStack(s))
+				ItemStack tool = ItemStack.EMPTY;
+				if(remain.isEmpty() && !s.isEmpty() && ingredients.get(toolDamageSlot).matchesItemStack(s))
 					tool = s.copy();
-				else if(remain != null && ingredients.get(toolDamageSlot).matchesItemStack(remain))
+				else if(!remain.isEmpty() && ingredients.get(toolDamageSlot).matchesItemStack(remain))
 					tool = remain;
-				if(tool != null && tool.getItem().isDamageable())
+				if(!tool.isEmpty() && tool.getItem().isDamageable())
 				{
 					tool.setItemDamage(tool.getItemDamage() + 1);
 					if(tool.getItemDamage() > tool.getMaxDamage())
 						tool = null;
-					remains[i] = tool;
+					remains.set(i, tool);
 				}
 			}
-			if(s != null && remain == null && s.getItem() instanceof UniversalBucket)
+			if(!s.isEmpty() && remain.isEmpty() && s.getItem() instanceof UniversalBucket)
 			{
 				ItemStack empty = ((UniversalBucket) s.getItem()).getEmpty();
-				if(empty != null)
-					remains[i] = empty.copy();
+				if(!empty.isEmpty())
+					remains.set(i, empty.copy());
 			}
 		}
 		return remains;
@@ -133,7 +134,7 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 		for(int i = 0; i < matrix.getSizeInventory(); i++)
 		{
 			ItemStack slot = matrix.getStackInSlot(i);
-			if(slot != null)
+			if(!slot.isEmpty())
 			{
 				boolean inRecipe = false;
 				Iterator<IngredientStack> iterator = required.iterator();

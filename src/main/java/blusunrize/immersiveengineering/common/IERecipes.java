@@ -28,6 +28,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -493,11 +494,11 @@ public class IERecipes
 		oreOutputSecondaries.put("Uranium", new Object[]{"dustLead",.1f});
 		oreOutputSecondaries.put("Yellorium", new Object[]{"dustLead",.1f});
 		oreOutputSecondaries.put("Plutonium", new Object[]{"dustUranium",.1f});
-		Item item = GameRegistry.findItem("IC2", "itemOreIridium");
+		Item item = GameRegistry.findRegistry(Item.class).getValue(new ResourceLocation("IC2", "itemOreIridium"));
 		oreOutputSecondaries.put("Osmium", new Object[]{item,.01f});
 		oreOutputSecondaries.put("Iridium", new Object[]{"dustPlatium",.1f});
 		oreOutputSecondaries.put("FzDarkIron", new Object[]{"dustIron",.1f});
-		item = GameRegistry.findItem("Railcraft", "firestone.raw");
+		item = GameRegistry.findRegistry(Item.class).getValue(new ResourceLocation("Railcraft", "firestone.raw"));
 		if(item!=null)
 			oreOutputModifier.put("Firestone", new ItemStack(item));
 		oreOutputSecondaries.put("Nikolite", new Object[]{Items.DIAMOND,.025f});
@@ -531,7 +532,7 @@ public class IERecipes
 				{
 					String ore = name.substring("ore".length());
 					ItemStack out = oreOutputModifier.get(ore);
-					if(out==null)
+					if(out == null || out.isEmpty())
 					{
 						if(ApiUtils.isExistingOreName("gem"+ore))
 							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
@@ -549,7 +550,7 @@ public class IERecipes
 							}
 						}
 					}
-					if(out!=null)
+					if(out != null && !out.isEmpty())
 					{
 						Object[] secondaries = oreOutputSecondaries.get(ore);
 						Object s = secondaries!=null&&secondaries.length>1?secondaries[0]: null;
@@ -557,12 +558,12 @@ public class IERecipes
 						addOreProcessingRecipe(out, ore, 6000, true, s, f);
 					}
 					out = arcOutputModifier.get(ore);
-					if(out==null)
+					if(out == null || out.isEmpty())
 					{
 						if(ApiUtils.isExistingOreName("ingot"+ore))
 							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore),2);
 					}
-					if(out!=null && !arcBlacklist.contains(ore))
+					if(out != null && !out.isEmpty() && !arcBlacklist.contains(ore))
 						addArcOreSmelting(out, ore);
 				}
 				else if(name.startsWith("gem"))
@@ -575,14 +576,14 @@ public class IERecipes
 				{
 					String ore = name.substring("dust".length());
 					ItemStack out = arcOutputModifier.get(ore);
-					if(out==null)
+					if(out == null || out.isEmpty())
 					{
 						if(ApiUtils.isExistingOreName("ingot"+ore))
 							out = IEApi.getPreferredOreStack("ingot"+ore);
 					}
 					else
-						out = Utils.copyStackWithAmount(out, out.stackSize/2);
-					if(out!=null && !arcBlacklist.contains(ore))
+						out = Utils.copyStackWithAmount(out, out.getCount() / 2);
+					if(out != null && !out.isEmpty() && !arcBlacklist.contains(ore))
 						addArcRecipe(out, "dust"+ore, 100,512, null);
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 						addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "ingot"+ore, 3600, null,0);
@@ -646,7 +647,7 @@ public class IERecipes
 	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, boolean ingot, Object secondary, float secChance)
 	{
 		if(ingot && ApiUtils.isExistingOreName("ingot"+ore))
-			addCrusherRecipe(Utils.copyStackWithAmount(output, output.stackSize/2), "ingot"+ore, (int)(energy*.6f));
+			addCrusherRecipe(Utils.copyStackWithAmount(output, output.getCount() / 2), "ingot"+ore, (int)(energy*.6f));
 		if(ApiUtils.isExistingOreName("ore"+ore))
 			addCrusherRecipe(output, "ore"+ore, energy, secondary,secChance);
 		//		if(ApiUtils.isExistingOreName("oreNether"+ore))
@@ -667,7 +668,7 @@ public class IERecipes
 		if(!ApiUtils.isExistingOreName("dust"+ore))
 			return;
 		ItemStack dust = IEApi.getPreferredOreStack("dust"+ore);
-		if(dust==null)
+		if(dust.isEmpty())
 			return;
 		if(ApiUtils.isExistingOreName("ore"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "ore"+ore, 6000, secondary,chance);
@@ -691,7 +692,7 @@ public class IERecipes
 		if(!ApiUtils.isExistingOreName(oreName))
 			return null;
 		ItemStack out = IEApi.getPreferredOreStack(oreName);
-		if(out==null)
+		if(out.isEmpty())
 			return null;
 		return CrusherRecipe.addRecipe(Utils.copyStackWithAmount(out, outSize), input, energy);
 	}
@@ -762,7 +763,7 @@ public class IERecipes
 		if(!ApiUtils.isExistingOreName(outName))
 			return;
 		ItemStack out = IEApi.getPreferredOreStack(outName);
-		if(out==null)
+		if(out.isEmpty())
 			return;
 		addOreDictAlloyingRecipe(Utils.copyStackWithAmount(out, outSize), inputName, time,energyPerTick, additives);
 	}

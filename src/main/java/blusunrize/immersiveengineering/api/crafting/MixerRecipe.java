@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class MixerRecipe extends MultiblockRecipe
 		return r;
 	}
 
-	public static MixerRecipe findRecipe(FluidStack fluid, ItemStack... components)
+	public static MixerRecipe findRecipe(FluidStack fluid, NonNullList<ItemStack> components)
 	{
 		if(fluid==null)
 			return null;
@@ -61,19 +62,19 @@ public class MixerRecipe extends MultiblockRecipe
 		return null;
 	}
 
-	public FluidStack getFluidOutput(FluidStack input, ItemStack... components)
+	public FluidStack getFluidOutput(FluidStack input, NonNullList<ItemStack> components)
 	{
 		return this.fluidOutput;
 	}
 
-	public boolean matches(FluidStack fluid, ItemStack... components)
+	public boolean matches(FluidStack fluid, NonNullList<ItemStack> components)
 	{
 		if(fluid!=null && fluid.containsFluid(this.fluidInput))
 		{
 
-			ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(components.length);
+			ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(components.size());
 			for(ItemStack s : components)
-				if(s!=null)
+				if(!s.isEmpty())
 					queryList.add(s.copy());
 
 			for(IngredientStack add : this.itemInputs)
@@ -84,20 +85,20 @@ public class MixerRecipe extends MultiblockRecipe
 					while(it.hasNext())
 					{
 						ItemStack query = it.next();
-						if(query!=null)
+						if(!query.isEmpty())
 						{
 							if(add.matches(query))
-								if(query.stackSize > addAmount)
+								if(query.getCount() > addAmount)
 								{
-									query.stackSize-=addAmount;
+									query.shrink(addAmount);
 									addAmount=0;
 								}
 								else
 								{
-									addAmount-=query.stackSize;
-									query.stackSize=0;
+									addAmount -= query.getCount();
+									query.setCount(0);
 								}
-							if(query.stackSize<=0)
+							if(query.getCount() <= 0)
 								it.remove();
 							if(addAmount<=0)
 								break;
@@ -111,14 +112,14 @@ public class MixerRecipe extends MultiblockRecipe
 		return false;
 	}
 
-	public int[] getUsedSlots(FluidStack input, ItemStack... components)
+	public int[] getUsedSlots(FluidStack input, NonNullList<ItemStack> components)
 	{
 		Set<Integer> usedSlotSet = new HashSet<Integer>();
 		for(int i=0; i<itemInputs.length; i++)
 		{
 			IngredientStack ingr = itemInputs[i];
-			for(int j=0; j<components.length; j++)
-				if(!usedSlotSet.contains(j) && components[j]!=null && ingr.matchesItemStack(components[j]))
+			for(int j=0; j<components.size(); j++)
+				if(!usedSlotSet.contains(j) && !components.get(j).isEmpty() && ingr.matchesItemStack(components.get(j)))
 				{
 					usedSlotSet.add(j);
 					break;

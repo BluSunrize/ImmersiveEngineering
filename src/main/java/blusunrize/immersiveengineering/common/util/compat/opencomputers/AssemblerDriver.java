@@ -89,11 +89,11 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			if(recipe > 3 || recipe < 1)
 				throw new IllegalArgumentException("Only recipes 1-3 are available");
 			TileEntityAssembler master = getTileEntity();
-			if(master.patterns[recipe - 1].inv[9] == null)
+			if(master.patterns[recipe - 1].inv.get(9).isEmpty())
 				throw new IllegalArgumentException("The requested recipe is invalid");
 			ArrayList<ItemStack> queryList = new ArrayList<>();
 			for(ItemStack stack : master.inventory)
-				if(stack != null)
+				if(!stack.isEmpty())
 					queryList.add(stack.copy());
 			return new Object[]{master.hasIngredients(master.patterns[recipe - 1], queryList)};
 		}
@@ -118,8 +118,8 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			TileEntityAssembler te = getTileEntity();
 			HashMap<String, Object> ret = new HashMap<>();
 			for(int i = 0; i < 9; i++)
-				ret.put("in" + (i + 1), te.patterns[recipe - 1].inv[i]);
-			ret.put("out", te.patterns[recipe - 1].inv[9]);
+				ret.put("in" + (i + 1), te.patterns[recipe - 1].inv.get(i));
+			ret.put("out", te.patterns[recipe - 1].inv.get(9));
 			return new Object[]{ret};
 		}
 
@@ -129,7 +129,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			int recipe = args.checkInteger(0);
 			if(recipe > 3 || recipe < 1)
 				throw new IllegalArgumentException("Only recipes 1-3 are available");
-			return new Object[]{getTileEntity().patterns[recipe - 1].inv[9] != null};
+			return new Object[]{!getTileEntity().patterns[recipe - 1].inv.get(9).isEmpty()};
 		}
 
 		@Callback(doc = "function(tank:int):table -- gets the specified tank")
@@ -159,7 +159,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1 || slot > 18)
 				throw new IllegalArgumentException("Only slots 1-18 are available");
-			return new Object[]{getTileEntity().inventory[slot - 1]};
+			return new Object[]{getTileEntity().inventory.get(slot - 1)};
 		}
 
 		@Callback(doc = "function(slot:int):table -- returns the stack in the output slot of the specified recipe")
@@ -168,7 +168,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1 || slot > 3)
 				throw new IllegalArgumentException("Only recipes 1-3 are available");
-			return new Object[]{getTileEntity().inventory[17 + slot]};
+			return new Object[]{getTileEntity().inventory.get(17 + slot)};
 		}
 
 	}

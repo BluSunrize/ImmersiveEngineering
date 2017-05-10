@@ -91,16 +91,16 @@ public class IEPotions
 				if(living.onGround)
 					living.moveRelative(0,1, 0.005F);
 				EntityEquipmentSlot hand = living.getRNG().nextBoolean()?EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND;
-				if(!living.worldObj.isRemote && living.getRNG().nextInt(300)==0 && living.getItemStackFromSlot(hand)!=null)
+				if(!living.world.isRemote && living.getRNG().nextInt(300)==0 && !living.getItemStackFromSlot(hand).isEmpty())
 				{
 					EntityItem dropped = living.entityDropItem(living.getItemStackFromSlot(hand).copy(), 1);
 					dropped.setPickupDelay(20);
 					living.setItemStackToSlot(hand, null);
 				}
 			}
-			else if(this==IEPotions.concreteFeet && !living.worldObj.isRemote)
+			else if(this==IEPotions.concreteFeet && !living.world.isRemote)
 			{
-				IBlockState state = living.worldObj.getBlockState(living.getPosition());
+				IBlockState state = living.world.getBlockState(living.getPosition());
 				if(state.getBlock()!=IEContent.blockStoneDecoration && state.getBlock()!=IEContent.blockStoneDecorationSlabs)
 				{
 					PotionEffect effect = living.getActivePotionEffect(this);

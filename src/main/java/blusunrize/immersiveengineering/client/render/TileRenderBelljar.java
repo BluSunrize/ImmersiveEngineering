@@ -12,7 +12,9 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -69,12 +71,13 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0, 1.0625, 0);
 			GlStateManager.color(1, 1, 1, 1);
-			float scale = plantHandler.getRenderSize(tile.getInventory()[1], tile.getInventory()[0], tile.renderGrowth, tile);
+			NonNullList<ItemStack> inventory = tile.getInventory();
+			float scale = plantHandler.getRenderSize(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
 			GlStateManager.translate((1-scale)/2, 0, (1-scale)/2);
 			GlStateManager.scale(scale, scale, scale);
-			if(!plantHandler.overrideRender(tile.getInventory()[1], tile.getInventory()[0], tile.renderGrowth, tile, blockRenderer))
+			if(!plantHandler.overrideRender(inventory.get(1), inventory.get(0), tile.renderGrowth, tile, blockRenderer))
 			{
-				IBlockState[] states = plantHandler.getRenderedPlant(tile.getInventory()[1], tile.getInventory()[0], tile.renderGrowth, tile);
+				IBlockState[] states = plantHandler.getRenderedPlant(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
 				if(states==null||states.length < 1)
 					return;
 				for(IBlockState s : states)

@@ -26,6 +26,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -75,7 +76,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			if(dSq > r*r)
 				this.target=null;
 			else
-			if(worldObj.isRemote)
+			if(world.isRemote)
 			{
 				float facingYaw = facing==EnumFacing.NORTH?180: facing==EnumFacing.WEST?-90: facing==EnumFacing.EAST?90: 0;
 				double yaw = (MathHelper.atan2(dX, dZ)*(180/Math.PI))-facingYaw;
@@ -86,7 +87,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 					this.rotationYaw = (float)yaw;
 			}
 		}
-		else if(worldObj.isRemote)
+		else if(world.isRemote)
 		{
 			this.rotationYaw*=.75;
 			if(Math.abs(rotationYaw)<10)
@@ -97,18 +98,18 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		}
 
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 			return;
-		if(worldObj.getTotalWorldTime()%64==((getPos().getX()^getPos().getZ())&63))
+		if(world.getTotalWorldTime()%64==((getPos().getX()^getPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.Machines.turret_consumption;
-		if(worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted)
+		if(world.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
 				energyStorage.extractEnergy(energy, false);
-				if(target==null||target.isDead||worldObj.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canSeeEntity(target))
+				if(target==null||target.isDead||world.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canSeeEntity(target))
 				{
 					target = getTarget();
 					if(target!=null)
@@ -142,14 +143,14 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 	private boolean canSeeEntity(EntityLivingBase entity)
 	{
-		return Utils.rayTraceForFirst(new Vec3d(getPos().getX()+.5, getPos().getY()+1.375, getPos().getZ()+.5), new Vec3d(entity.posX, entity.posY+entity.getEyeHeight(), entity.posZ), worldObj, Collections.singleton(getPos().up()))==null;
-//		return this.worldObj.rayTraceBlocks(, false, true, false)==null;
+		return Utils.rayTraceForFirst(new Vec3d(getPos().getX()+.5, getPos().getY()+1.375, getPos().getZ()+.5), new Vec3d(entity.posX, entity.posY+entity.getEyeHeight(), entity.posZ), world, Collections.singleton(getPos().up()))==null;
+//		return this.world.rayTraceBlocks(, false, true, false)==null;
 	}
 
 	private EntityLivingBase getTarget()
 	{
 		double range = getRange();
-		List<EntityLivingBase> list = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(getPos().getX()-range,getPos().getY(),getPos().getZ()-range, getPos().getX()+range,getPos().getY()+3,getPos().getZ()+range));
+		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(getPos().getX()-range,getPos().getY(),getPos().getZ()-range, getPos().getX()+range,getPos().getY()+3,getPos().getZ()+range));
 		if(list.isEmpty())
 			return null;
 		EntityLivingBase target = null;
@@ -243,7 +244,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		if(nbt.hasKey("target"))
 		{
 			int targetId = nbt.getInteger("target");
-			Entity ent = worldObj.getEntityByID(targetId);
+			Entity ent = world.getEntityByID(targetId);
 			if(ent instanceof EntityLivingBase && !ent.isDead)
 				target = (EntityLivingBase)ent;
 		}
@@ -307,7 +308,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		if(dummy)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().offset(facing,-1));
+			TileEntity te = world.getTileEntity(getPos().offset(facing,-1));
 			if(te instanceof TileEntityTurret)
 				return ((TileEntityTurret)te).hammerUseSide(side, player, hitX, hitY, hitZ);
 			return false;
@@ -323,9 +324,9 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
-		return new ItemStack[0];
+		return NonNullList.create();
 	}
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
@@ -365,7 +366,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		if(!dummy)
 			return this;
-		TileEntity te = worldObj.getTileEntity(getPos().down());
+		TileEntity te = world.getTileEntity(getPos().down());
 		if(te instanceof TileEntityTurret)
 			return te;
 		return null;
@@ -407,7 +408,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		if(dummy)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().down());
+			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TileEntityTurret)
 				return ((TileEntityTurret)te).canEntityDestroy(entity);
 		}
@@ -424,15 +425,15 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		worldObj.setBlockState(pos.up(), state);
-		((TileEntityTurret)worldObj.getTileEntity(pos.up())).dummy = true;
-		((TileEntityTurret)worldObj.getTileEntity(pos.up())).facing = facing;
+		world.setBlockState(pos.up(), state);
+		((TileEntityTurret)world.getTileEntity(pos.up())).dummy = true;
+		((TileEntityTurret)world.getTileEntity(pos.up())).facing = facing;
 	}
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		if(worldObj.getTileEntity(dummy?getPos().down():getPos().up()) instanceof TileEntityTurret)
-			worldObj.setBlockToAir(dummy?getPos().down():getPos().up());
+		if(world.getTileEntity(dummy?getPos().down():getPos().up()) instanceof TileEntityTurret)
+			world.setBlockToAir(dummy?getPos().down():getPos().up());
 	}
 
 	@Override
@@ -442,7 +443,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		TileEntityTurret turret = this;
 		if(dummy)
 		{
-			TileEntity t = worldObj.getTileEntity(getPos().down());
+			TileEntity t = world.getTileEntity(getPos().down());
 			if(t instanceof TileEntityTurret)
 				turret = (TileEntityTurret)t;
 			else
@@ -518,7 +519,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		if(dummy)
 		{
-			TileEntity te = worldObj.getTileEntity(getPos().down());
+			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TileEntityTurret)
 				return ((TileEntityTurret)te).getFluxStorage();
 		}

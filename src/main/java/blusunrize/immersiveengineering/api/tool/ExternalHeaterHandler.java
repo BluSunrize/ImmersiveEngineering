@@ -80,17 +80,17 @@ public class ExternalHeaterHandler
 		boolean canCook(TileEntityFurnace tileEntity)
 		{
 			ItemStack input = tileEntity.getStackInSlot(0);
-			if(input == null)
+			if(input.isEmpty())
 				return false;
 			ItemStack output = FurnaceRecipes.instance().getSmeltingResult(input);
-			if(output == null)
+			if(output.isEmpty())
 				return false;
 			ItemStack existingOutput = tileEntity.getStackInSlot(2);
-			if(existingOutput==null)
+			if(existingOutput.isEmpty())
 				return true;
 			if(!existingOutput.isItemEqual(output))
 				return false;
-			int stackSize = existingOutput.stackSize+output.stackSize;
+			int stackSize = existingOutput.getCount() + output.getCount();
 			return stackSize<=tileEntity.getInventoryStackLimit() && stackSize<=output.getMaxStackSize();
 		}
 

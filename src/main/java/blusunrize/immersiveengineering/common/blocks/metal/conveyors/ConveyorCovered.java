@@ -68,7 +68,7 @@ public class ConveyorCovered extends ConveyorBasic
 		validCoveyorCovers.add(input -> input==null?Boolean.FALSE: Utils.compareToOreName(input, "blockGlass"));
 	}
 
-	public ItemStack cover = null;
+	public ItemStack cover = ItemStack.EMPTY;
 
 	@Override
 	public void  onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
@@ -82,7 +82,7 @@ public class ConveyorCovered extends ConveyorBasic
 	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
 	{
 		String key = super.getModelCacheKey(tile, facing);
-		if(cover!=null)
+		if(!cover.isEmpty())
 			key += "s"+cover.getItem().getRegistryName()+cover.getMetadata();
 		return key;
 	}
@@ -94,7 +94,7 @@ public class ConveyorCovered extends ConveyorBasic
 	{
 		ItemStack cover = this.cover!=null?this.cover:defaultCover;
 		Block b = Block.getBlockFromItem(cover.getItem());
-		IBlockState state = b != null ? b.getStateFromMeta(cover.getMetadata()) : Blocks.STONE.getDefaultState();
+		IBlockState state = !cover.isEmpty() ? b.getStateFromMeta(cover.getMetadata()) : Blocks.STONE.getDefaultState();
 		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 		if(model != null)
 		{
@@ -171,7 +171,8 @@ public class ConveyorCovered extends ConveyorBasic
 								entityitem.setNoPickupDelay();
 						}
 						cover = Utils.copyStackWithAmount(heldItem, 1);
-						if((--heldItem.stackSize) <= 0)
+						heldItem.shrink(1);
+						if(heldItem.getCount() <= 0)
 							player.setHeldItem(hand, heldItem);
 						return true;
 					}
@@ -222,6 +223,6 @@ public class ConveyorCovered extends ConveyorBasic
 	public void readConveyorNBT(NBTTagCompound nbt)
 	{
 		super.readConveyorNBT(nbt);
-		cover = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("cover"));
+		cover = new ItemStack(nbt.getCompoundTag("cover"));
 	}
 }

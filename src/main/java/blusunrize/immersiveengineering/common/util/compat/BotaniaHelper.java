@@ -129,7 +129,7 @@ public class BotaniaHelper extends IECompatModule
 			event.getEntityLiving().writeEntityToNBT(tag);
 			if(tag.getBoolean("hardMode"))
 				for(EntityItem item : event.getDrops())
-					if(item != null && item.getEntityItem() != null && IEContent.itemShaderBag.equals(item.getEntityItem().getItem()))
+					if(item != null && !item.getEntityItem().isEmpty() && IEContent.itemShaderBag.equals(item.getEntityItem().getItem()))
 						ItemNBTHelper.setString(item.getEntityItem(), "rarity", "RELIC");
 		}
 	}

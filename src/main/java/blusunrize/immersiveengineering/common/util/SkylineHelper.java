@@ -51,8 +51,8 @@ public class SkylineHelper
 	{
 		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start:connection.end;
 		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end:connection.start;
-		IImmersiveConnectable iicStart = ApiUtils.toIIC(cc1, player.worldObj);
-		IImmersiveConnectable iicEnd = ApiUtils.toIIC(cc0, player.worldObj);
+		IImmersiveConnectable iicStart = ApiUtils.toIIC(cc1, player.world);
+		IImmersiveConnectable iicEnd = ApiUtils.toIIC(cc0, player.world);
 		Vec3d vStart = new Vec3d(cc1);
 		Vec3d vEnd = new Vec3d(cc0);
 
@@ -72,9 +72,9 @@ public class SkylineHelper
 		//		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
 //		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
 
-		EntitySkylineHook hook = new EntitySkylineHook(player.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
+		EntitySkylineHook hook = new EntitySkylineHook(player.world, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
 		float speed = 1;
-		if(player.getActiveItemStack()!=null&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
+		if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
 			speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
 		Vec3d moveVec = getSubMovementVector(vStart, steps[0], speed);
 		hook.motionX = moveVec.xCoord;//*speed;
@@ -85,10 +85,10 @@ public class SkylineHelper
 		//		hook.motionZ = (steps[0].zCoord-cc1.posZ)*.5f;
 
 		//		for(Vec3 v : steps)
-		//			living.worldObj.spawnParticle("smoke", v.xCoord,v.yCoord,v.zCoord, 0,0,0 );
+		//			living.world.spawnParticle("smoke", v.xCoord,v.yCoord,v.zCoord, 0,0,0 );
 
-		if(!player.worldObj.isRemote)
-			player.worldObj.spawnEntityInWorld(hook);
+		if(!player.world.isRemote)
+			player.world.spawnEntity(hook);
 		ItemSkyhook.existingHooks.put(player.getName(), hook);
 		player.startRiding(hook);
 		return hook;

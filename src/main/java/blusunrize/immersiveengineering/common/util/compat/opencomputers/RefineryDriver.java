@@ -128,9 +128,9 @@ public class RefineryDriver extends DriverSidedTileEntity
 		{
 			TileEntityRefinery te = getTileEntity();
 			HashMap<String, ItemStack> ret = new HashMap<>(3);
-			ret.put("input1", te.inventory[1]);
-			ret.put("input2", te.inventory[3]);
-			ret.put("output", te.inventory[4]);
+			ret.put("input1", te.inventory.get(1));
+			ret.put("input2", te.inventory.get(3));
+			ret.put("output", te.inventory.get(4));
 			return new Object[]{ret};
 		}
 
@@ -139,9 +139,9 @@ public class RefineryDriver extends DriverSidedTileEntity
 		{
 			TileEntityRefinery te = getTileEntity();
 			HashMap<String, ItemStack> ret = new HashMap<>(3);
-			ret.put("input1", te.inventory[0]);
-			ret.put("input2", te.inventory[2]);
-			ret.put("output", te.inventory[5]);
+			ret.put("input1", te.inventory.get(0));
+			ret.put("input2", te.inventory.get(2));
+			ret.put("output", te.inventory.get(5));
 			return new Object[]{ret};
 		}
 

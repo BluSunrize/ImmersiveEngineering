@@ -139,7 +139,7 @@ public class ArcRecyclingThreadHandler extends Thread
 			for(int pass=0; pass<passes; pass++)
 			{
 				IRecipe recipe = recipeList.get(baseOffset+pass);
-				if(recipe.getRecipeOutput()!=null && isValidForRecycling(recipe.getRecipeOutput()))
+				if(!recipe.getRecipeOutput().isEmpty() && isValidForRecycling(recipe.getRecipeOutput()))
 				{
 					RecyclingCalculation calc = getRecycleCalculation(recipe.getRecipeOutput(), recipe);
 					if(calc!=null)
@@ -151,7 +151,7 @@ public class ArcRecyclingThreadHandler extends Thread
 
 	public static boolean isValidForRecycling(ItemStack stack)
 	{
-		if(stack==null)
+		if(stack.isEmpty())
 			return false;
 		Item item = stack.getItem();
 		if(item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor)
@@ -176,20 +176,23 @@ public class ArcRecyclingThreadHandler extends Thread
 
 		if(inputs!=null)
 		{
-			int inputSize = stack.stackSize;
+			int inputSize = stack.getCount();
 			List<ItemStack> missingSub = new ArrayList<ItemStack>();
 			HashMap<ItemStack,Double> outputs = new HashMap<ItemStack,Double>();
 			for(Object in : inputs)
 				if(in!=null)
 				{
-					ItemStack inputStack = null;
+					ItemStack inputStack = ItemStack.EMPTY;
 					if(in instanceof ItemStack)
 						inputStack = (ItemStack)in;
 					else if(in instanceof List)
-						inputStack = ((List<ItemStack>)in).get(0);
+					{
+						final List<ItemStack> list = (List<ItemStack>) in;
+						inputStack = list.size() > 0 ? list.get(0) : ItemStack.EMPTY;
+					}
 					else if(in instanceof String)
 						inputStack = IEApi.getPreferredOreStack((String)in);
-					if(inputStack==null)
+					if(inputStack.isEmpty())
 						continue;
 
 					Object[] brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);

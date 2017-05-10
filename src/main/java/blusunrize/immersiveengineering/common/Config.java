@@ -74,7 +74,7 @@ public class Config
 
 
 		@Comment({"A list of all mods that IE has integrated compatability for","Setting any of these to false disables the respective compat"})
-		public static Map<String,Boolean> compat = Maps.toMap(IECompatModule.moduleClasses.keySet(), (s)->Boolean.TRUE);
+		public static Map<String,Boolean> compat = Maps.newHashMap(Maps.toMap(IECompatModule.moduleClasses.keySet(), (s)->Boolean.TRUE));
 
 		public static Machines machines = new Machines();
 		public static Ores ores = new Ores();

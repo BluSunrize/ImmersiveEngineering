@@ -39,7 +39,7 @@ public class MessageSpeedloaderSync implements IMessage
 		public IMessage onMessage(MessageSpeedloaderSync message, MessageContext ctx)
 		{
 			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-				Minecraft.getMinecraft().thePlayer.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemRevolver, 1, 1));
+				Minecraft.getMinecraft().player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemRevolver, 1, 1));
 			return null;
 		}
 	}

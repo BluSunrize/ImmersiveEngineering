@@ -15,6 +15,6 @@ public class GuiButtonCheckbox extends GuiButtonState
 	{
 		super.drawButton(mc, mouseX, mouseY);
 		if(this.visible && state)
-			this.drawCenteredString( mc.fontRendererObj, "\u2714", xPosition+width/2, yPosition-2, !this.enabled?0xA0A0A0: this.hovered?Lib.COLOUR_I_ImmersiveOrange: 0xE0E0E0);
+			this.drawCenteredString( mc.fontRenderer, "\u2714", xPosition+width/2, yPosition-2, !this.enabled?0xA0A0A0: this.hovered?Lib.COLOUR_I_ImmersiveOrange: 0xE0E0E0);
 	}
 }

@@ -101,7 +101,7 @@ public class ComparableItemStack
 			return new ComparableItemStack(nbt.getString("oreID"));
 		else if(nbt.hasKey("stack"))
 		{
-			ComparableItemStack comp = new ComparableItemStack(ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("stack")));
+			ComparableItemStack comp = new ComparableItemStack(new ItemStack(nbt.getCompoundTag("stack")));
 			comp.useNBT = nbt.getBoolean("useNBT");
 			return comp;
 		}

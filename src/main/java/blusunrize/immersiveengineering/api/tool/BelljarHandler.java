@@ -47,7 +47,7 @@ public class BelljarHandler
 	}
 	public static IPlantHandler getHandler(ItemStack seed)
 	{
-		if(seed==null)
+		if(seed.isEmpty())
 			return null;
 		for(IPlantHandler handler : plantHandlers)
 			if(handler.isValid(seed))
@@ -76,7 +76,7 @@ public class BelljarHandler
 	}
 	public static ItemFertilizerHandler getItemFertilizerHandler(ItemStack itemStack)
 	{
-		if(itemStack==null)
+		if(itemStack.isEmpty())
 			return null;
 		for(ItemFertilizerHandler handler : itemFertilizers)
 			if(handler.isValid(itemStack))
@@ -211,7 +211,7 @@ public class BelljarHandler
 						}
 						else
 						{
-							for(IProperty prop : states[i].getPropertyNames())
+							for(IProperty prop : states[i].getPropertyKeys())
 								if("age".equals(prop.getName())&&prop instanceof PropertyInteger)
 								{
 									int max = 0;
@@ -382,7 +382,7 @@ public class BelljarHandler
 			@Override
 			public boolean isValid(@Nullable ItemStack fertilizer)
 			{
-				return fertilizer!=null&&OreDictionary.itemMatches(bonemeal,fertilizer,true);
+				return !fertilizer.isEmpty()&&OreDictionary.itemMatches(bonemeal,fertilizer,true);
 			}
 			@Override
 			public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)

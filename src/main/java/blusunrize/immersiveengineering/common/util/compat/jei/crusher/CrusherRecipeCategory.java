@@ -18,17 +18,11 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe, Crush
 	static ItemStack crusherStack;
 	public CrusherRecipeCategory(IGuiHelper helper)
 	{
-		super("crusher","tile.immersiveengineering.metalMultiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.CRUSHER.getMeta()));
+		super("crusher","tile.immersiveengineering.metal_multiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.CRUSHER.getMeta()));
 		crusherStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.CRUSHER.getMeta());
 	}
 
 	int[][] outputSlots;
-	@Override
-	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, CrusherRecipeWrapper recipeWrapper)
-	{
-		//Deprecated
-	}
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, CrusherRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{

@@ -6,25 +6,26 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public class InventoryStorageItem implements IInventory
 {
-	private ItemStack itemStack;
+	private ItemStack itemStack = ItemStack.EMPTY;
 	private Container container;
-	public ItemStack[] stackList;
+	public NonNullList<ItemStack> stackList;
 	private String name;
 
 	public InventoryStorageItem(Container par1Container, ItemStack stack)
 	{
 		this.container = par1Container;
-		if(stack!=null && stack.getItem() instanceof IInternalStorageItem)
+		if(!stack.isEmpty() && stack.getItem() instanceof IInternalStorageItem)
 		{
 			this.itemStack=stack;
 			int slots = ((IInternalStorageItem)stack.getItem()).getInternalSlots(stack);
-			this.stackList = new ItemStack[slots];
+			this.stackList = NonNullList.withSize(slots, ItemStack.EMPTY);
 			this.name = stack.getDisplayName();
 		}
 	}
@@ -33,66 +34,77 @@ public class InventoryStorageItem implements IInventory
 	@Override
 	public int getSizeInventory()
 	{
-		return this.stackList.length;
+		return this.stackList.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (int i = 0; i < stackList.size(); ++i) {
+			if (!stackList.get(i).isEmpty()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
-		if(i >= this.getSizeInventory())return null;
-		return this.stackList[i];
+		if(i >= this.getSizeInventory())return ItemStack.EMPTY;
+		return this.stackList.get(i);
 	}	
 
 	@Override
 	public ItemStack removeStackFromSlot(int i)
 	{
-		if (this.stackList[i] != null)
+		if (!this.stackList.get(i).isEmpty())
 		{
-			ItemStack itemstack = this.stackList[i];
-			this.stackList[i] = null;
+			ItemStack itemstack = this.stackList.get(i);
+			this.stackList.set(i, ItemStack.EMPTY);
 			return itemstack;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
 
-		if (this.stackList[i] != null)
+		if (!this.stackList.get(i).isEmpty())
 		{
 			ItemStack itemstack;
 
-			if (this.stackList[i].stackSize <= j)
+			if (this.stackList.get(i).getCount() <= j)
 			{
-				itemstack = this.stackList[i];
-				this.stackList[i] = null;
+				itemstack = this.stackList.get(i);
+				this.stackList.set(i, ItemStack.EMPTY);
 				this.markDirty();
 				this.container.onCraftMatrixChanged(this);
 				return itemstack;
 			}
-			itemstack = this.stackList[i].splitStack(j);
+			itemstack = this.stackList.get(i).splitStack(j);
 
-			if (this.stackList[i].stackSize == 0)
+			if (this.stackList.get(i).getCount() == 0)
 			{
-				this.stackList[i] = null;
+				this.stackList.set(i, ItemStack.EMPTY);
 			}
 
 			this.container.onCraftMatrixChanged(this);
 			return itemstack;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack stack)
 	{
-		this.stackList[i] = stack;
+		this.stackList.set(i, stack);
 
-		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
 		{
-			stack.stackSize = this.getInventoryStackLimit();
+			stack.setCount(this.getInventoryStackLimit());
 		}
 
 		this.container.onCraftMatrixChanged(this);
@@ -123,7 +135,7 @@ public class InventoryStorageItem implements IInventory
 	@Override
 	public void markDirty()
 	{
-		if(itemStack!=null)
+		if(!itemStack.isEmpty())
 		{
 			((IInternalStorageItem)this.itemStack.getItem()).setContainedItems(itemStack, stackList);
 			if(this.itemStack.getItem() instanceof IUpgradeableTool)
@@ -132,7 +144,7 @@ public class InventoryStorageItem implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUsableByPlayer(EntityPlayer entityplayer) {
 		return true;
 	}
 

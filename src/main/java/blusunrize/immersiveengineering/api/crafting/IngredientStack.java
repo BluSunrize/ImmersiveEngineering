@@ -17,7 +17,7 @@ import java.util.List;
 
 public class IngredientStack
 {
-	public ItemStack stack;
+	public ItemStack stack = ItemStack.EMPTY;
 	public List<ItemStack> stackList;
 	public String oreName;
 	public FluidStack fluid;
@@ -27,7 +27,7 @@ public class IngredientStack
 	public IngredientStack(ItemStack stack)
 	{
 		this.stack = stack;
-		this.inputSize = stack.stackSize;
+		this.inputSize = stack.getCount();
 	}
 	public IngredientStack(String oreName, int inputSize)
 	{
@@ -124,15 +124,15 @@ public class IngredientStack
 	public ItemStack getRandomizedExampleStack(long rand)
 	{
 		ItemStack ret = stack;
-		if(ret==null&&stackList!=null&&stackList.size()>0)
+		if(ret.isEmpty()&&stackList!=null&&stackList.size()>0)
 			ret = stackList.get((int)(rand / 20 % stackList.size()));
-		if(ret==null&&oreName!=null)
+		if(ret.isEmpty()&&oreName!=null)
 		{
 			List<ItemStack> ores = OreDictionary.getOres(oreName);
 			if(ores!=null&&ores.size()>0)
 				ret = ores.get((int)(rand / 20 % ores.size()));
 		}
-		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+		if(ret.isEmpty()&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
 			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
 		return ret;
 	}
@@ -140,33 +140,33 @@ public class IngredientStack
 	public ItemStack getExampleStack()
 	{
 		ItemStack ret = stack;
-		if(ret == null && stackList != null && stackList.size() > 0)
+		if(ret.isEmpty() && stackList != null && stackList.size() > 0)
 			ret = stackList.get(0);
-		if(ret == null && oreName != null)
+		if(ret.isEmpty() && oreName != null)
 		{
 			List<ItemStack> ores = OreDictionary.getOres(oreName);
 			if(ores != null && ores.size() > 0)
 				ret = ores.get(0);
 		}
-		if(ret == null && fluid != null && ForgeModContainer.getInstance().universalBucket != null)
+		if(ret.isEmpty() && fluid != null && ForgeModContainer.getInstance().universalBucket != null)
 			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
 		return ret;
 	}
 	public Object getShapedRecipeInput()
 	{
 		Object ret = stack;
-		if(ret==null&&stackList!=null&&stackList.size()>0)
+		if(ret==ItemStack.EMPTY&&stackList!=null&&stackList.size()>0)
 			ret = stackList;
-		if(ret==null&&oreName!=null)
+		if(ret==ItemStack.EMPTY&&oreName!=null)
 			ret = OreDictionary.getOres(oreName);
-		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+		if(ret==ItemStack.EMPTY&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
 			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
 		return ret;
 	}
 
 	public boolean matchesItemStack(ItemStack input)
 	{
-		if(input==null)
+		if(input.isEmpty())
 			return false;
 		if(this.fluid!=null)
 		{
@@ -175,14 +175,14 @@ public class IngredientStack
 				return true;
 		}
 		if(this.oreName!=null)
-			return ApiUtils.compareToOreName(input, oreName) && this.inputSize <= input.stackSize;
+			return ApiUtils.compareToOreName(input, oreName) && this.inputSize <= input.getCount();
 		if(this.stackList!=null)
 		{
 			for(ItemStack iStack : this.stackList)
-				if(OreDictionary.itemMatches(iStack, input, false) && this.inputSize <= input.stackSize)
+				if(OreDictionary.itemMatches(iStack, input, false) && this.inputSize <= input.getCount())
 					return true;
 		}
-		if(!OreDictionary.itemMatches(stack,input, false) ||  this.inputSize > input.stackSize)
+		if(!OreDictionary.itemMatches(stack,input, false) || this.inputSize > input.getCount())
 			return false;
 		if(this.useNBT)
 		{
@@ -198,7 +198,7 @@ public class IngredientStack
 
 	public boolean matchesItemStackIgnoringSize(ItemStack input)
 	{
-		if(input == null)
+		if(input.isEmpty())
 			return false;
 		if(this.fluid!=null)
 		{
@@ -245,7 +245,7 @@ public class IngredientStack
 						return true;
 			return false;
 		}
-		if(this.stack!=null && ((IngredientStack)object).stack!=null)
+		if(!this.stack.isEmpty() && !((IngredientStack)object).stack.isEmpty())
 		{
 			ItemStack otherStack = ((IngredientStack)object).stack;
 			if(!OreDictionary.itemMatches(stack,otherStack, false))
@@ -281,7 +281,7 @@ public class IngredientStack
 		{
 			NBTTagList list = new NBTTagList();
 			for(ItemStack stack : stackList)
-				if(stack!=null)
+				if(!stack.isEmpty())
 					list.appendTag(stack.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("stackList", list);
 			nbt.setInteger("nbtType", 1);
@@ -301,8 +301,8 @@ public class IngredientStack
 			switch(nbt.getInteger("nbtType"))
 			{
 				case 0:
-					ItemStack stack = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("stack"));
-					stack.stackSize = nbt.getInteger("inputSize");
+					ItemStack stack = new ItemStack(nbt.getCompoundTag("stack"));
+					stack.setCount(nbt.getInteger("inputSize"));
 					IngredientStack ingr = new IngredientStack(stack);
 					ingr.useNBT = nbt.getBoolean("useNBT");
 					return ingr;
@@ -310,7 +310,7 @@ public class IngredientStack
 					NBTTagList list = nbt.getTagList("stackList", 10);
 					List<ItemStack> stackList = new ArrayList();
 					for(int i=0; i<list.tagCount(); i++)
-						stackList.add(ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i)));
+						stackList.add(new ItemStack(list.getCompoundTagAt(i)));
 					return new IngredientStack(stackList, nbt.getInteger("inputSize"));
 				case 2:
 					return new IngredientStack(nbt.getString("oreName"), nbt.getInteger("inputSize"));

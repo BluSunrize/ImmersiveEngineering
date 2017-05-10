@@ -101,7 +101,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 
 	@Override
 	public String getCacheKey(IBlockState object) {
-		if(shader!=null && shader.getShaderItem()!=null && shader.getShaderItem().getItem() instanceof IShaderItem)
+		if(shader!=null && !shader.getShaderItem().isEmpty() && shader.getShaderItem().getItem() instanceof IShaderItem)
 			return ((IShaderItem)shader.getShaderItem().getItem()).getShaderName(shader.getShaderItem());
 		return colour0+":"+colour1+":"+style;
 	}
@@ -109,7 +109,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	@Override
 	public int getRenderColour(IBlockState object, String group)
 	{
-		if(shader!=null && shader.getShaderItem()!=null && shader.getShaderItem().getItem() instanceof IShaderItem)
+		if(shader!=null && !shader.getShaderItem().isEmpty() && shader.getShaderItem().getItem() instanceof IShaderItem)
 			return 0xffffffff;
 		if (style==0)
 		{
@@ -165,7 +165,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(heldItem!=null && heldItem.getItem() instanceof IShaderItem)
+		if(!heldItem.isEmpty() && heldItem.getItem() instanceof IShaderItem)
 		{
 			if(this.shader==null)
 				this.shader = new ShaderWrapper_Direct("immersiveengineering:balloon");

@@ -2,9 +2,9 @@
 	"dieselGenerator": {
 		"category": "block",
 		"sounds": [
-			"immersiveengineering:dieselGenerator"
+			"immersiveengineering:diesel_generator"
 		],
-		"subtitle": "subtitle.immersiveengineering.dieselGenerator"
+		"subtitle": "subtitle.immersiveengineering.diesel_generator"
 	},
 	"crusher": {
 		"category": "block",
@@ -16,30 +16,30 @@
 	"metalPressPiston": {
 		"category": "block",
 		"sounds": [
-			"immersiveengineering:metalPressPiston"
+			"immersiveengineering:metal_press_piston"
 		],
-		"subtitle": "subtitle.immersiveengineering.metalPressPiston"
+		"subtitle": "subtitle.immersiveengineering.metal_press_piston"
 	},
 	"metalPressSmash": {
 		"category": "block",
 		"sounds": [
-			"immersiveengineering:metalPressSmash"
+			"immersiveengineering:metal_press_smash"
 		],
-		"subtitle": "subtitle.immersiveengineering.metalPressSmash"
+		"subtitle": "subtitle.immersiveengineering.metal_press_smash"
 	},
 	"birthdayParty": {
 		"category": "neutral",
 		"sounds": [
-			"immersiveengineering:birthdayParty"
+			"immersiveengineering:birthday_party"
 		],
-		"subtitle": "subtitle.immersiveengineering.birthdayParty"
+		"subtitle": "subtitle.immersiveengineering.birthday_party"
 	},
 	"revolverFire": {
 		"category": "neutral",
 		"sounds": [
-			"immersiveengineering:revolverFire"
+			"immersiveengineering:revolver_fire"
 		],
-		"subtitle": "subtitle.immersiveengineering.revolverFire"
+		"subtitle": "subtitle.immersiveengineering.revolver_fire"
 	},
 	"spray": {
 		"category": "player",
@@ -58,16 +58,16 @@
 	"chargeFast": {
 		"category": "neutral",
 		"sounds": [
-			"immersiveengineering:chargeFast"
+			"immersiveengineering:charge_fast"
 		],
-		"subtitle": "subtitle.immersiveengineering.chargeFast"
+		"subtitle": "subtitle.immersiveengineering.charge_fast"
 	},
 	"chargeSlow": {
 		"category": "neutral",
 		"sounds": [
-			"immersiveengineering:chargeSlow"
+			"immersiveengineering:charge_slow"
 		],
-		"subtitle": "subtitle.immersiveengineering.chargeSlow"
+		"subtitle": "subtitle.immersiveengineering.charge_slow"
 	},
 	"spark": {
 		"category": "neutral",
@@ -81,9 +81,9 @@
 	"railgunFire": {
 		"category": "neutral",
 		"sounds": [
-			"immersiveengineering:railgunFire"
+			"immersiveengineering:railgun_fire"
 		],
-		"subtitle": "subtitle.immersiveengineering.railgunFire"
+		"subtitle": "subtitle.immersiveengineering.railgun_fire"
 	},
 	"tesla": {
 		"category": "block",
@@ -95,8 +95,8 @@
 	"direSwitch": {
 		"category": "block",
 		"sounds": [
-			"immersiveengineering:direSwitch"
+			"immersiveengineering:dire_switch"
 		],
-		"subtitle": "subtitle.immersiveengineering.direSwitch"
+		"subtitle": "subtitle.immersiveengineering.dire_switch"
 	}
 }

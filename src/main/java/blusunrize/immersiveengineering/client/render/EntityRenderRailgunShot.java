@@ -30,7 +30,7 @@ public class EntityRenderRailgunShot extends Render
 
 		ItemStack ammo = ((EntityRailgunShot)entity).getAmmo();
 		int[][] colourMap = {{0x777777,0xa4a4a4}};
-		if(ammo!=null)
+		if(!ammo.isEmpty())
 		{
 			RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(ammo);
 			colourMap = prop!=null?prop.colourMap:colourMap;

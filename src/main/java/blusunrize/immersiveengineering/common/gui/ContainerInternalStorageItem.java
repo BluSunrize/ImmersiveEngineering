@@ -10,17 +10,17 @@ import net.minecraft.world.World;
 
 public abstract class ContainerInternalStorageItem extends Container
 {
-	protected World worldObj;
+	protected World world;
 	protected int blockedSlot;
 	public IInventory input;
 	protected EntityEquipmentSlot equipmentSlot = null;
-	protected ItemStack heldItem = null;
+	protected ItemStack heldItem = ItemStack.EMPTY;
 	protected EntityPlayer player = null;
 	public final int internalSlots;
 
 	public ContainerInternalStorageItem(InventoryPlayer iinventory, World world, EntityEquipmentSlot entityEquipmentSlot, ItemStack heldItem)
 	{
-		this.worldObj = world;
+		this.world = world;
 		this.player = iinventory.player;
 		this.equipmentSlot = entityEquipmentSlot;
 		this.heldItem = heldItem;
@@ -44,7 +44,7 @@ public abstract class ContainerInternalStorageItem extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot)
 	{
-		ItemStack oldStackInSlot = null;
+		ItemStack oldStackInSlot = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
 		if(slotObject != null && slotObject.getHasStack())
@@ -55,9 +55,9 @@ public abstract class ContainerInternalStorageItem extends Container
 			if(slot < internalSlots)
 			{
 				if(!this.mergeItemStack(stackInSlot, internalSlots, (internalSlots + 36), true))
-					return null;
+					return ItemStack.EMPTY;
 			}
-			else if(stackInSlot!=null)
+			else if(!stackInSlot.isEmpty())
 			{
 				boolean b = true;
 				for(int i=0; i<internalSlots; i++)
@@ -65,15 +65,15 @@ public abstract class ContainerInternalStorageItem extends Container
 					Slot s = inventorySlots.get(i);
 					if(s!=null && s.isItemValid(stackInSlot))
 					{
-						if(s.getStack()!=null && (!ItemStack.areItemsEqual(stackInSlot,s.getStack()) || !Utils.compareItemNBT(stackInSlot,s.getStack())) )
+						if(!s.getStack().isEmpty() && (!ItemStack.areItemsEqual(stackInSlot,s.getStack()) || !Utils.compareItemNBT(stackInSlot,s.getStack())) )
 							continue;
 						int space = Math.min(s.getItemStackLimit(stackInSlot), stackInSlot.getMaxStackSize());
-						if(s.getStack() != null)
-							space -= s.getStack().stackSize;
+						if(!s.getStack().isEmpty())
+                            space -= s.getStack().getCount();
 						if(space <= 0)
 							continue;
 						ItemStack insert = stackInSlot;
-						if(space < stackInSlot.stackSize)
+						if(space < stackInSlot.getCount())
 							insert = stackInSlot.splitStack(space);
 						if(this.mergeItemStack(insert, i, i + 1, true))
 						{
@@ -82,17 +82,19 @@ public abstract class ContainerInternalStorageItem extends Container
 					}
 				}
 				if(b)
-					return null;
+					return ItemStack.EMPTY;
 			}
 
-			if (stackInSlot.stackSize == 0)
-				slotObject.putStack(null);
+			if (stackInSlot.getCount() == 0)
+				slotObject.putStack(ItemStack.EMPTY);
 			else
 				slotObject.onSlotChanged();
+
 			slotObject.inventory.markDirty();
-			if (stackInSlot.stackSize == oldStackInSlot.stackSize)
-				return null;
-			slotObject.onPickupFromSlot(player, oldStackInSlot);
+			if (stackInSlot.getCount() == oldStackInSlot.getCount())
+				return ItemStack.EMPTY;
+			slotObject.onTake(player, oldStackInSlot);
+
 			updatePlayerItem();
 			detectAndSendChanges();
 		}
@@ -109,7 +111,7 @@ public abstract class ContainerInternalStorageItem extends Container
 	public ItemStack slotClick(int par1, int par2, ClickType par3, EntityPlayer par4EntityPlayer)
 	{
 		if(par1 == this.blockedSlot || (par3== ClickType.SWAP&&par2==par4EntityPlayer.inventory.currentItem))
-			return null;
+			return ItemStack.EMPTY;
 		ItemStack ret = super.slotClick(par1, par2, par3, par4EntityPlayer);
 		updatePlayerItem();
 		return ret;
@@ -119,7 +121,7 @@ public abstract class ContainerInternalStorageItem extends Container
 	public void onContainerClosed(EntityPlayer par1EntityPlayer)
 	{
 		super.onContainerClosed(par1EntityPlayer);
-		if (!this.worldObj.isRemote)
+		if (!this.world.isRemote)
 			updatePlayerItem();
 	}
 
@@ -127,7 +129,7 @@ public abstract class ContainerInternalStorageItem extends Container
 	{
 		((IInternalStorageItem)this.heldItem.getItem()).setContainedItems(this.heldItem, ((InventoryStorageItem)this.input).stackList);
 		ItemStack hand = player.getItemStackFromSlot(this.equipmentSlot);
-		if(hand != null && !hand.equals(heldItem))
+		if(!hand.isEmpty() && !hand.equals(heldItem))
 			player.setItemStackToSlot(this.equipmentSlot, this.heldItem);
 		player.inventory.markDirty();
 	}

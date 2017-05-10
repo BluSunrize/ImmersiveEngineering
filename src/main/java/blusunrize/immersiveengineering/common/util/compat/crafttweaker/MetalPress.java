@@ -26,7 +26,7 @@ public class MetalPress
 			return;
 		ItemStack sOut = CraftTweakerHelper.toStack(output);
 		ItemStack sMold = CraftTweakerHelper.toStack(mold);
-		if(sOut != null && sMold != null)
+		if(!sOut.isEmpty() && !sMold.isEmpty())
 		{
 			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, sMold, energy);
 			if(inputSize > 0)

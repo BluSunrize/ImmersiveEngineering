@@ -1,0 +1,50 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "cube_all",
+		"textures": {
+			"particle": "immersiveengineering:blocks/treated_wood_horizontal",
+			"texture": "immersiveengineering:blocks/treated_wood_horizontal"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=fence": [{
+			"model": "fence_inventory", "y": 90,
+			"textures": { "texture": "immersiveengineering:blocks/treated_wood_horizontal" }}],
+		"inventory,type=scaffolding": [{"model": "immersiveengineering:ie_scaffolding", "textures": { "side": "immersiveengineering:blocks/wooden_decoration_scaffolding", "top": "immersiveengineering:blocks/wooden_decoration_scaffolding_top", "bottom": "immersiveengineering:blocks/wooden_decoration_scaffolding_top"} }],
+		"type":
+		{
+			"fence": {
+				"model": "fence_post",
+				"textures": { "texture": "immersiveengineering:blocks/treated_wood_horizontal" }
+			},
+			"scaffolding": {
+				"model": "immersiveengineering:ie_scaffolding",
+				"textures": { "side": "immersiveengineering:blocks/wooden_decoration_scaffolding", "top": "immersiveengineering:blocks/wooden_decoration_scaffolding_top", "bottom": "immersiveengineering:blocks/wooden_decoration_scaffolding_top"}
+			}
+		},
+		"north":
+		{
+			"false":{},
+			"true":{}
+		},
+		"south":
+		{
+			"false":{},
+			"true":{}
+		},
+		"east":
+		{
+			"false":{},
+			"true":{}
+		},
+		"west":
+		{
+			"false":{},
+			"true":{}
+		}
+	}
+}

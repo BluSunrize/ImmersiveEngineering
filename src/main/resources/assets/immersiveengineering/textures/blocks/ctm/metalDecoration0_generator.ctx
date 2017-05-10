@@ -1,7 +1,0 @@
-{
-	"type":"CTM",
-	"textures":[
-    		"blocks/metalDecoration0_generator",
-    		"./metalDecoration0_generator_ctm"
-    ]
-}

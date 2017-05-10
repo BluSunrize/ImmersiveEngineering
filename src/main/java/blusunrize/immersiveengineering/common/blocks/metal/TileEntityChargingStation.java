@@ -23,6 +23,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -33,32 +34,32 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 {
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	public EnumFacing facing = EnumFacing.NORTH;
-	public ItemStack[] inventory = new ItemStack[1];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	private boolean charging = true;
 	public int comparatorOutput=0;
 
 	@Override
 	public void update()
 	{
-		if(EnergyHelper.isFluxItem(inventory[0]))
+		if(EnergyHelper.isFluxItem(inventory.get(0)))
 		{
-			if(worldObj.isRemote&&charging)
+			if(world.isRemote&&charging)
 			{
 				float charge = 0;
-				float max = EnergyHelper.getMaxEnergyStored(inventory[0]);
+				float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
 				if(max>0)
-					charge = EnergyHelper.getEnergyStored(inventory[0])/max;
+					charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
 
 				for(int i=0; i<3; i++)
 				{
-					long time = worldObj.getTotalWorldTime();
+					long time = world.getTotalWorldTime();
 					if(charge>=1 || (time%12>=i*4&&time%12<=i*4+2))
 					{
 						int shift = i-1;
 						double x = getPos().getX()+.5+(facing==EnumFacing.WEST?-.46875:facing==EnumFacing.EAST?.46875: facing==EnumFacing.NORTH?(-.1875*shift): (.1875*shift));
 						double y = getPos().getY()+.25;
 						double z = getPos().getZ()+.5+(facing==EnumFacing.NORTH?-.46875:facing==EnumFacing.SOUTH?.46875: facing==EnumFacing.EAST?(-.1875*shift): (.1875*shift));
-						ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, x,y,z, .25,.25,.25, .5f, 1-charge,charge,0);
+						ImmersiveEngineering.proxy.spawnRedstoneFX(world, x,y,z, .25,.25,.25, .5f, 1-charge,charge,0);
 					}
 				}
 			}
@@ -70,18 +71,18 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 					this.markContainingBlockForUpdate(null);
 					return;
 				}
-				if(EnergyHelper.isFluxItem(inventory[0]))
+				if(EnergyHelper.isFluxItem(inventory.get(0)))
 				{
-					int stored = EnergyHelper.getEnergyStored(inventory[0]);
-					int max = EnergyHelper.getMaxEnergyStored(inventory[0]);
+					int stored = EnergyHelper.getEnergyStored(inventory.get(0));
+					int max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
 					int space = max - stored;
 					if(space>0)
 					{
 						int energyDec = (10*stored)/max;
 						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.Machines.charger_consumption));
-						int accepted = Math.min(EnergyHelper.insertFlux(inventory[0], insert, true), this.energyStorage.extractEnergy(insert, true));
+						int accepted = Math.min(EnergyHelper.insertFlux(inventory.get(0), insert, true), this.energyStorage.extractEnergy(insert, true));
 						if((accepted=this.energyStorage.extractEnergy(accepted, false))>0)
-							stored += EnergyHelper.insertFlux(inventory[0], accepted, false);
+							stored += EnergyHelper.insertFlux(inventory.get(0), accepted, false);
 						int energyDecNew = (10*stored)/max;
 						if(energyDec!=energyDecNew)
 							this.markContainingBlockForUpdate(null);
@@ -96,14 +97,14 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		}
 
 
-		if(!worldObj.isRemote && worldObj.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
+		if(!world.isRemote && world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
 		{
 			float charge = 0;
-			if(EnergyHelper.isFluxItem(inventory[0]))
+			if(EnergyHelper.isFluxItem(inventory.get(0)))
 			{
-				float max = EnergyHelper.getMaxEnergyStored(inventory[0]);
+				float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
 				if(max>0)
-					charge = EnergyHelper.getEnergyStored(inventory[0])/max;
+					charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
 			}
 			//				else
 			//					charge = (float)(IC2Helper.getCurrentItemCharge(inventory)/IC2Helper.getMaxItemCharge(inventory));
@@ -111,7 +112,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 			if(i!=this.comparatorOutput)
 			{
 				this.comparatorOutput=i;
-				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 			}
 		}
 	}
@@ -121,7 +122,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		energyStorage.readFromNBT(nbt);
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
-		inventory[0] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("inventory"));
+		inventory.set(0, new ItemStack(nbt.getCompoundTag("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
 	@Override
@@ -130,8 +131,8 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		energyStorage.writeToNBT(nbt);
 		nbt.setInteger("facing", facing.ordinal());
 		nbt.setBoolean("charging", charging);
-		if(inventory[0]!=null)
-			nbt.setTag("inventory", inventory[0].writeToNBT(new NBTTagCompound()));
+		if(!inventory.get(0).isEmpty())
+			nbt.setTag("inventory", inventory.get(0).writeToNBT(new NBTTagCompound()));
 	}
 
 	@Override
@@ -219,7 +220,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}
@@ -261,18 +262,18 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		if(EnergyHelper.isFluxItem(heldItem))
 		{
-			ItemStack stored = inventory[0]!=null?inventory[0].copy():null;
-			inventory[0] = heldItem.copy();
+			ItemStack stored = !inventory.get(0).isEmpty()? inventory.get(0).copy():ItemStack.EMPTY;
+			inventory.set(0, heldItem.copy());
 			player.setHeldItem(hand, stored);
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}
-		else if(inventory[0]!=null)
+		else if(!inventory.get(0).isEmpty())
 		{
-			if(!worldObj.isRemote)
-				player.entityDropItem(inventory[0].copy(), .5f);
-			inventory[0] = null;
+			if(!world.isRemote)
+				player.entityDropItem(inventory.get(0).copy(), .5f);
+			inventory.set(0, ItemStack.EMPTY);
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 			return true;
@@ -304,7 +305,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	//					setInventorySlotContents(slot, null);
 	//			}
 	//		this.markDirty();
-	//		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
+	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
 	//		return stack;
 	//	}
 	//	@Override
@@ -322,7 +323,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	//		if(stack != null && stack.stackSize > getInventoryStackLimit())
 	//			stack.stackSize = getInventoryStackLimit();
 	//		this.markDirty();
-	//		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
+	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
 	//	}
 	//	@Override
 	//	public String getInventoryName()
@@ -342,7 +343,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	//	@Override
 	//	public boolean isUseableByPlayer(EntityPlayer player)
 	//	{
-	//		return worldObj.getTileEntity(xCoord,yCoord,zCoord)!=this?false:player.getDistanceSq(xCoord+.5D,yCoord+.5D,zCoord+.5D)<=64;
+	//		return world.getTileEntity(xCoord,yCoord,zCoord)!=this?false:player.getDistanceSq(xCoord+.5D,yCoord+.5D,zCoord+.5D)<=64;
 	//	}
 	//	@Override
 	//	public void openInventory()

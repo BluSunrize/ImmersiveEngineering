@@ -37,18 +37,18 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	@Override
 	public void update()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			for(int i=0; i<6; i++)
 				this.transferEnergy(i);
 
-			if(worldObj.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
+			if(world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
 			{
 				int i = scaleStoredEnergyTo(15);
 				if(i!=this.comparatorOutput)
 				{
 					this.comparatorOutput=i;
-					worldObj.updateComparatorOutputLevel(getPos(), getBlockType());
+					world.updateComparatorOutputLevel(getPos(), getBlockType());
 				}
 			}
 		}
@@ -63,7 +63,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		if(this.sideConfig[side] != SideConfig.OUTPUT)
 			return;
 		EnumFacing fd = EnumFacing.getFront(side);
-		TileEntity tileEntity = worldObj.getTileEntity(getPos().offset(fd));
+		TileEntity tileEntity = world.getTileEntity(getPos().offset(fd));
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
 		this.energyStorage.modifyEnergyStored(-EnergyHelper.insertFlux(tileEntity, fd.getOpposite(), out, false));
 	}
@@ -78,7 +78,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		sideConfig[side] = SideConfig.next(sideConfig[side]);
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 		return true;
 	}
 	@Override

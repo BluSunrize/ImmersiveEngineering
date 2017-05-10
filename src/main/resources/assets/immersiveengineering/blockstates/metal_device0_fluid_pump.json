@@ -1,0 +1,36 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:smartmodel/conf_sides_hv_metal_device0_fluid_pump"
+	},
+	"variants":
+	{
+		"inventory,type=fluid_pump": [{
+			"model": "immersiveengineering:metal_device/fluid_pump_inv.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.28125, 0.28125, 0.28125 ],
+				"firstperson_righthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
+				"firstperson_lefthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
+				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"fixed": {"scale": [ 2,2,2 ], "translation": [ 0, -0.25, 0 ], "rotation": [{ "y": 0 }]},
+				"gui": { "translation": [ 0, -0.15625, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": [ 1.5, 1.5, 1.5 ] }
+			}
+		}],
+		"type":
+		{
+			"fluid_pump": {}
+		},
+		"_0multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "immersiveengineering:metal_device/fluid_pump.obj",
+				"custom": { "flip-v": true }
+			}
+		}
+	}
+}

@@ -44,7 +44,7 @@ public class ParticleFluidSplash extends Particle
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= (double)this.particleGravity;
-		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		this.move(this.motionX, this.motionY, this.motionZ);
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
@@ -52,7 +52,7 @@ public class ParticleFluidSplash extends Particle
 		if(this.particleMaxAge-- <= 0)
 			this.setExpired();
 
-		if (this.isCollided)
+		if (this.onGround)
 		{
 			if(Math.random() < 0.5D)
 				this.setExpired();
@@ -61,7 +61,7 @@ public class ParticleFluidSplash extends Particle
 		}
 
 		BlockPos blockpos = new BlockPos(this.posX, this.posY, this.posZ);
-		IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+		IBlockState iblockstate = this.world.getBlockState(blockpos);
 		Material material = iblockstate.getMaterial();
 
 		if(material.isLiquid() || material.isSolid())
@@ -70,8 +70,8 @@ public class ParticleFluidSplash extends Particle
 			if(iblockstate.getBlock() instanceof BlockLiquid)
 				d0 = (double)(1.0F - BlockLiquid.getLiquidHeightPercent(iblockstate.getValue(BlockLiquid.LEVEL).intValue()));
 			else
-				d0 = iblockstate.getBoundingBox(this.worldObj, blockpos).maxY;
-			double d1 = (double)MathHelper.floor_double(this.posY) + d0;
+				d0 = iblockstate.getBoundingBox(this.world, blockpos).maxY;
+			double d1 = (double)MathHelper.floor(this.posY) + d0;
 			if(this.posY < d1)
 				this.setExpired();
 		}
@@ -97,7 +97,7 @@ public class ParticleFluidSplash extends Particle
 	public static class Factory implements IParticleFactory
 	{
 		@Override
-		public Particle getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
+		public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
 		{
 			return new ParticleFluidSplash(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
 		}

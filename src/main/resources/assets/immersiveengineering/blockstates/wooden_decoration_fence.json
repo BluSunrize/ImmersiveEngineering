@@ -1,0 +1,18 @@
+{
+
+	"multipart": [
+		{   "apply": { "model": "immersiveengineering:treated_wood_fence_post" }},
+		{   "when": { "north": "true" },
+			"apply": { "model": "immersiveengineering:treated_wood_fence_side", "uvlock": false }
+		},
+		{   "when": { "east": "true" },
+			"apply": { "model": "immersiveengineering:treated_wood_fence_side", "y": 90, "uvlock": false }
+		},
+		{   "when": { "south": "true" },
+			"apply": { "model": "immersiveengineering:treated_wood_fence_side", "y": 180, "uvlock": false }
+		},
+		{   "when": { "west": "true" },
+			"apply": { "model": "immersiveengineering:treated_wood_fence_side", "y": 270, "uvlock": false }
+		}
+	]
+}

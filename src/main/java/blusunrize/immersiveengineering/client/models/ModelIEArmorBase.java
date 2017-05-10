@@ -80,7 +80,7 @@ public abstract class ModelIEArmorBase extends ModelBiped
 			if(this.swingProgress > -9990.0F)
 			{
 				float f6 = this.swingProgress;
-				this.bipedBody.rotateAngleY = (MathHelper.sin(MathHelper.sqrt_float(f6) * 3.141593F * 2.0F) * 0.2F);
+				this.bipedBody.rotateAngleY = (MathHelper.sin(MathHelper.sqrt(f6) * 3.141593F * 2.0F) * 0.2F);
 				this.bipedRightArm.rotationPointZ = (MathHelper.sin(this.bipedBody.rotateAngleY) * 5.0F);
 				this.bipedRightArm.rotationPointX = (-MathHelper.cos(this.bipedBody.rotateAngleY) * 5.0F);
 				this.bipedLeftArm.rotationPointZ = (-MathHelper.sin(this.bipedBody.rotateAngleY) * 5.0F);

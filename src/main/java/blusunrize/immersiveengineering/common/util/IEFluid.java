@@ -99,12 +99,12 @@ public class IEFluid extends Fluid
 			buf.writeBoolean(value.isPresent());
 			FluidStack fs = value.orNull();
 			if(fs!=null)
-				buf.writeNBTTagCompoundToBuffer(fs.writeToNBT(new NBTTagCompound()));
+				buf.writeCompoundTag(fs.writeToNBT(new NBTTagCompound()));
 		}
 		@Override
 		public Optional<FluidStack> read(PacketBuffer buf) throws IOException
 		{
-			FluidStack fs = !buf.readBoolean()?null : FluidStack.loadFluidStackFromNBT(buf.readNBTTagCompoundFromBuffer());
+			FluidStack fs = !buf.readBoolean()?null : FluidStack.loadFluidStackFromNBT(buf.readCompoundTag());
 			return Optional.fromNullable(fs);
 		}
 		@Override

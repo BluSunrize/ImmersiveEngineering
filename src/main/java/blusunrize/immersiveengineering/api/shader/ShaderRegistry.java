@@ -11,6 +11,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -354,14 +355,14 @@ public class ShaderRegistry
 		if(manualEntry!=null)
 		{
 			ArrayList<PositionedItemStack[]> recipes = new ArrayList();
-			ItemStack[] shaderBags = new ItemStack[ShaderRegistry.sortedRarityMap.size()];
+			NonNullList<ItemStack> shaderBags = NonNullList.withSize(ShaderRegistry.sortedRarityMap.size(), ItemStack.EMPTY);
 			recipes = new ArrayList();
 			for(int i=0; i<ShaderRegistry.sortedRarityMap.size(); i++)
 			{
 				EnumRarity outputRarity = ShaderRegistry.sortedRarityMap.get(i);
-				shaderBags[i] = new ItemStack(itemShaderBag);
-				shaderBags[i].setTagCompound(new NBTTagCompound());
-				shaderBags[i].getTagCompound().setString("rarity", outputRarity.toString());
+				shaderBags.set(i, new ItemStack(itemShaderBag));
+				shaderBags.get(i).setTagCompound(new NBTTagCompound());
+				shaderBags.get(i).getTagCompound().setString("rarity", outputRarity.toString());
 				ArrayList<EnumRarity> upperRarities = ShaderRegistry.getHigherRarities(outputRarity);
 				if(!upperRarities.isEmpty())
 				{

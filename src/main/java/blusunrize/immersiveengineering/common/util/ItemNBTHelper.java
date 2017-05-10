@@ -127,7 +127,7 @@ public class ItemNBTHelper
 			{
 				//ToDo: Delayed Sounds could be nicer anyway.
 //				ent.playSound();
-//				ent.worldObj.playSoundAtEntity(ent, getString(stack, "delayedSound_"+nbtKey+"_sound"), getFloat(stack, "delayedSound_"+nbtKey+"_volume"), getFloat(stack, "delayedSound_"+nbtKey+"_pitch"));
+//				ent.world.playSoundAtEntity(ent, getString(stack, "delayedSound_"+nbtKey+"_sound"), getFloat(stack, "delayedSound_"+nbtKey+"_volume"), getFloat(stack, "delayedSound_"+nbtKey+"_pitch"));
 			}
 			else
 				++l;
@@ -173,8 +173,8 @@ public class ItemNBTHelper
 	public static ItemStack getItemStack(ItemStack stack, String key)
 	{		
 		if(hasTag(stack) && getTag(stack).hasKey(key))
-			return ItemStack.loadItemStackFromNBT(getTagCompound(stack, key));
-		return null;
+			return new ItemStack(getTagCompound(stack, key));
+		return ItemStack.EMPTY;
 	}
 
 	public static void setLore(ItemStack stack, String... lore)

@@ -29,7 +29,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 {
 	public BlockClothDevice()
 	{
-		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY, IEProperties.CONNECTIONS);
+		super("cloth_device", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY, IEProperties.CONNECTIONS);
 		setHardness(0.8F);
 		setHasColours();
 		setMetaLightOpacity(1, 0);

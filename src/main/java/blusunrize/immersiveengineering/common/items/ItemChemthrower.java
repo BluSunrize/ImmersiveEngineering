@@ -24,10 +24,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -71,7 +68,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		ItemStack[] contents = this.getContainedItems(stack);
+		NonNullList<ItemStack> contents = this.getContainedItems(stack);
 		player.addStat(IEAchievements.craftChemthrower);
 		//No upgrade achievement yet
 //		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
@@ -79,8 +76,9 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
@@ -117,14 +115,14 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 				for(int i=0; i<split; i++)
 				{
 					Vec3d vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
-					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.worldObj, player, vecDir.xCoord*0.25,vecDir.yCoord*0.25,vecDir.zCoord*0.25, fs);
+					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.world, player, vecDir.xCoord*0.25,vecDir.yCoord*0.25,vecDir.zCoord*0.25, fs);
 					chem.motionX = vecDir.xCoord*range;
 					chem.motionY = vecDir.yCoord*range;
 					chem.motionZ = vecDir.zCoord*range;
 					if(ignite)
 						chem.setFire(10);
-					if(!player.worldObj.isRemote)
-						player.worldObj.spawnEntityInWorld(chem);
+					if(!player.world.isRemote)
+						player.world.spawnEntity(chem);
 				}
 				if(count%4==0)
 				{
@@ -197,12 +195,12 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 			{
-				return capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability== CapabilityShader.SHADER_CAPABILITY;
+				return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY || capability== CapabilityShader.SHADER_CAPABILITY;
 			}
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 			{
-				if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+				if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 					return (T)fluids;
 				if(capability==CapabilityShader.SHADER_CAPABILITY)
 					return (T)shaders;
