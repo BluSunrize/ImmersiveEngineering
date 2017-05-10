@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "13.20.0.2279"
+    version = "13.20.0.2282"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
