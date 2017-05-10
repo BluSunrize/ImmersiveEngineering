@@ -19,6 +19,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +84,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 					if(plantQuadList==null)
 					{
 						IBakedModel plantModel = blockRenderer.getModelForState(s);
-						plantQuadList = plantModel.getQuads(s,null,0);
+						plantQuadList = new ArrayList<BakedQuad>(plantModel.getQuads(s,null,0));
 						for(EnumFacing f : EnumFacing.values())
 							plantQuadList.addAll(plantModel.getQuads(s,f,0));
 						plantQuads.put(s, plantQuadList);
