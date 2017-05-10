@@ -92,7 +92,7 @@ public class ConveyorCovered extends ConveyorBasic
 	@SideOnly(Side.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
 	{
-		ItemStack cover = this.cover!=null?this.cover:defaultCover;
+		ItemStack cover = !this.cover.isEmpty()?this.cover:defaultCover;
 		Block b = Block.getBlockFromItem(cover.getItem());
 		IBlockState state = !cover.isEmpty() ? b.getStateFromMeta(cover.getMetadata()) : Blocks.STONE.getDefaultState();
 		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
@@ -148,7 +148,7 @@ public class ConveyorCovered extends ConveyorBasic
 	@Override
 	public boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
 	{
-		if(heldItem == null && player.isSneaking() && cover != null)
+		if(heldItem.isEmpty() && player.isSneaking() && !cover.isEmpty())
 		{
 			if(!tile.getWorld().isRemote && tile.getWorld().getGameRules().getBoolean("doTileDrops"))
 			{
@@ -156,15 +156,15 @@ public class ConveyorCovered extends ConveyorBasic
 				if(entityitem != null)
 					entityitem.setNoPickupDelay();
 			}
-			cover = null;
+			cover = ItemStack.EMPTY;
 			return true;
-		} else if(heldItem != null && !player.isSneaking())
+		} else if(!heldItem.isEmpty() && !player.isSneaking())
 			for(com.google.common.base.Function<ItemStack, Boolean> func : validCoveyorCovers)
 				if(func.apply(heldItem) == Boolean.TRUE)
 				{
 					if(!OreDictionary.itemMatches(cover, heldItem, true))
 					{
-						if(!tile.getWorld().isRemote && cover!=null && tile.getWorld().getGameRules().getBoolean("doTileDrops"))
+						if(!tile.getWorld().isRemote && !cover.isEmpty() && tile.getWorld().getGameRules().getBoolean("doTileDrops"))
 						{
 							EntityItem entityitem = player.dropItem(cover.copy(), false);
 							if(entityitem != null)
