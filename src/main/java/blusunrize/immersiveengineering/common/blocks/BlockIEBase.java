@@ -49,7 +49,9 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	protected Set<BlockRenderLayer> renderLayers = Sets.newHashSet(BlockRenderLayer.SOLID);
 	protected Set<BlockRenderLayer>[] metaRenderLayers;
 	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
+	protected Map<Integer, Float> metaHardness = new HashMap<>();
 	protected Map<Integer, Integer> metaResistances = new HashMap<>();
+	protected boolean[] canHammerHarvest;
 	protected boolean[] metaNotNormalBlock;
 	private boolean opaqueCube = false;
 	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
@@ -61,6 +63,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.isMetaHidden = new boolean[this.enumValues.length];
 		this.hasFlavour = new boolean[this.enumValues.length];
 		this.metaRenderLayers = new Set[this.enumValues.length];
+		this.canHammerHarvest = new boolean[this.enumValues.length];
 
 		ArrayList<IProperty> propList = new ArrayList<IProperty>();
 		ArrayList<IUnlistedProperty> unlistedPropList = new ArrayList<IUnlistedProperty>();
@@ -243,6 +246,20 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		if(metaLightOpacities.containsKey(meta))
 			return metaLightOpacities.get(meta);
 		return super.getLightOpacity(state,w,pos);
+	}
+
+	public BlockIEBase<E> setMetaHardness(int meta, float hardness)
+	{
+		metaHardness.put(meta, hardness);
+		return this;
+	}
+	@Override
+	public float getBlockHardness(IBlockState state, World world, BlockPos pos)
+	{
+		int meta = getMetaFromState(state);
+		if(metaHardness.containsKey(meta))
+			return metaHardness.get(meta);
+		return super.getBlockHardness(state, world, pos);
 	}
 
 	public BlockIEBase<E> setMetaExplosionResistance(int meta, int resistance)
@@ -451,8 +468,22 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return super.eventReceived(state, worldIn, pos, eventID, eventParam);
 	}
 
+	public BlockIEBase<E> setMetaHammerHarvest(int meta)
+	{
+		canHammerHarvest[meta] = true;
+		return this;
+	}
+	public BlockIEBase<E> setHammerHarvest()
+	{
+		for(int i = 0; i < metaNotNormalBlock.length; i++)
+			canHammerHarvest[i] = true;
+		return this;
+	}
 	public boolean allowHammerHarvest(IBlockState blockState)
 	{
+		int meta = getMetaFromState(blockState);
+		if(meta>=0&&meta<canHammerHarvest.length)
+			return canHammerHarvest[meta];
 		return false;
 	}
 	public boolean allowWirecutterHarvest(IBlockState blockState)
