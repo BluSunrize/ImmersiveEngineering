@@ -35,6 +35,7 @@ tile.immersiveengineering.stone_decoration.concrete.name=Concrete
 tile.immersiveengineering.stone_decoration.concrete_tile.name=Concrete Tile
 tile.immersiveengineering.stone_decoration.concrete_leaded.name=Leaded Concrete
 tile.immersiveengineering.stone_decoration.insulating_glass.name=Insulating Glass
+tile.immersiveengineering.stone_decoration.concrete_sprayed.name=Quickdry Concrete
 tile.immersiveengineering.stone_decoration_slab.cokebrick.name=Coke Brick Slab
 tile.immersiveengineering.stone_decoration_slab.blastbrick.name=Blast Brick Slab
 tile.immersiveengineering.stone_decoration_slab.blastbrick_reinforced.name=Reinforced Blast Brick Slab
