@@ -15,7 +15,8 @@ public enum BlockTypes_StoneDecoration implements IStringSerializable, BlockIEBa
 	CONCRETE,
 	CONCRETE_TILE,
 	CONCRETE_LEADED,
-	INSULATING_GLASS;
+	INSULATING_GLASS,
+	CONCRETE_SPRAYED;
 	
 	@Override
 	public String getName()

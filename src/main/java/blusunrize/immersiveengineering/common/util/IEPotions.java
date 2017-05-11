@@ -101,7 +101,7 @@ public class IEPotions
 			else if(this==IEPotions.concreteFeet && !living.world.isRemote)
 			{
 				IBlockState state = living.world.getBlockState(living.getPosition());
-				if(state.getBlock()!=IEContent.blockStoneDecoration && state.getBlock()!=IEContent.blockStoneDecorationSlabs)
+				if(state.getBlock()!=IEContent.blockStoneDecoration && state.getBlock()!=IEContent.blockStoneDecorationSlabs && state.getBlock()!=IEContent.blockStoneDevice)
 				{
 					PotionEffect effect = living.getActivePotionEffect(this);
 					if(effect!=null)

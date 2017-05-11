@@ -73,6 +73,8 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -92,10 +94,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class IEContent
 {
@@ -209,9 +208,23 @@ public class IEContent
 		blockOre = (BlockIEBase)new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
 		blockStorage = (BlockIEBase)new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
 		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storage_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
+		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stone_decoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class)
+		{
+			@Override
+			public int quantityDropped(IBlockState state, int fortune, Random random)
+			{
+				if(getMetaFromState(state)==BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
+					return 0;
+				return super.quantityDropped(state, fortune, random);
+			}
+		}.setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
+		//Insulated Glass + Sprayed concrete are special
 		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
-		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stone_decoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stone_decoration_slab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
+		blockStoneDecoration.setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta);
+		int sprConcreteMeta = BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta();
+		blockStoneDecoration.setMetaHidden(sprConcreteMeta).setMetaBlockLayer(sprConcreteMeta, BlockRenderLayer.CUTOUT).setMetaLightOpacity(sprConcreteMeta, 0).setNotNormalBlock(sprConcreteMeta).setMetaHardness(sprConcreteMeta,.2f).setMetaHammerHarvest(sprConcreteMeta);
+
+		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stone_decoration_slab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8, sprConcreteMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
 		blockStoneStair_hempcrete = new BlockIEStairs("stone_decoration_stairs_hempcrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
 		blockStoneStair_concrete0 = new BlockIEStairs("stone_decoration_stairs_concrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
 		blockStoneStair_concrete1 = new BlockIEStairs("stone_decoration_stairs_concrete_tile", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
@@ -691,28 +704,31 @@ public class IEContent
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
 		});
 
-		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect(){
+		ChemthrowerHandler.registerEffect(fluidConcrete, new ChemthrowerEffect(){
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
-			{
-//				if(fluid.tag!=null)
-//				{
-//					List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluid.tag);
-//					for(PotionEffect e : effects)
-//					{
-//						PotionEffect newEffect = new PotionEffect(e.getPotion(),(int)Math.ceil(e.getDuration()*.05),e.getAmplifier());
-//						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
-//						target.addPotionEffect(newEffect);
-//					}
-//				}
-			}
+			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid){}
 			@Override
 			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 			{
-				world.setBlockState(mop.getBlockPos().offset(mop.sideHit), blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-//				mop.getBlockPos()
+				IBlockState hit = world.getBlockState(mop.getBlockPos());
+				if(hit.getBlock()==blockStoneDecoration && hit.getBlock().getMetaFromState(hit)==BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
+				{
+					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
+					if(!world.isAirBlock(pos))
+						return;
+					AxisAlignedBB aabb = new AxisAlignedBB(pos);
+					List<EntityChemthrowerShot> otherProjectiles = world.getEntitiesWithinAABB(EntityChemthrowerShot.class, aabb);
+					if(otherProjectiles.size() >= 8)
+					{
+						for(EntityChemthrowerShot shot : otherProjectiles)
+							shot.setDead();
+						world.setBlockState(pos, blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta()));
+						for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
+							living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet, Integer.MAX_VALUE));
+					}
+				}
 			}
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
