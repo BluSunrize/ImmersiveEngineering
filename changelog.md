@@ -1,3 +1,14 @@
+#####Version 0.11-59
+- Updated to Minecraft 1.11.2, still slightly buggy
+- added special chemthrower behaviour for fluid concrete. It's the GLOO cannon from Prey! :D
+- added compat for Forestry's fertilizer to be used in the cloche
+- changed balance on Drills: Heads have more durability, lubrication reduces wear, augers boost speed
+- fixed recipes for redstone ignoring conveyers
+- fixed render-crash with the Cloche
+- fixed nested configs not generating
+- fixed inventory texture for the LV connector
+- fixed cross-mod compat for the Cloche
+
 #####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
 - added Crafttweaker integration for the Mixer
