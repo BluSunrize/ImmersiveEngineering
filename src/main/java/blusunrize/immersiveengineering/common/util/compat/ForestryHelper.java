@@ -2,13 +2,21 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.tool.BelljarHandler;
+import blusunrize.immersiveengineering.api.tool.BelljarHandler.ItemFertilizerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.common.util.IEPotions;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+
+import javax.annotation.Nullable;
 
 public class ForestryHelper extends IECompatModule
 {
@@ -33,5 +41,20 @@ public class ForestryHelper extends IECompatModule
 		ChemthrowerHandler.registerFlammable("bio.ethanol");
 		ChemthrowerHandler.registerEffect("for.honey", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,60,1));
 		ChemthrowerHandler.registerEffect("juice", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,40,0));
+		final Item itemFertilizer = Item.REGISTRY.getObject(new ResourceLocation("forestry:fertilizer_compound"));
+		if(itemFertilizer!=null)
+			BelljarHandler.registerItemFertilizer(new ItemFertilizerHandler()
+			{
+				@Override
+				public boolean isValid(@Nullable ItemStack fertilizer)
+				{
+					return fertilizer!=null&&fertilizer.getItem()==itemFertilizer;
+				}
+				@Override
+				public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
+				{
+					return 1.5f;
+				}
+			});
 	}
 }
