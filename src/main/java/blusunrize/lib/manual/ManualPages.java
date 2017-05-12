@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -490,7 +491,7 @@ public abstract class ManualPages implements IManualPage
 						while(itValidate.hasNext())
 						{
 							ItemStack stVal = itValidate.next();
-							if(stVal.isEmpty() || stVal.getItem()==null || stVal.getDisplayName()==null)
+							if(stVal.isEmpty() || stVal.getItem()== Items.AIR || stVal.getDisplayName()==null)
 								itValidate.remove();
 						}
 					}

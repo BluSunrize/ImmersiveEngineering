@@ -16,6 +16,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -245,7 +246,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 				{
 					ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 					Item bitem = Item.getItemFromBlock(block);
-					if(bitem==null)
+					if(bitem== Items.AIR)
 						return ItemStack.EMPTY;
 					ItemStack itemstack = new ItemStack(bitem, 1, block.getMetaFromState(blockstate));
 					if (!itemstack.isEmpty())
@@ -265,7 +266,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 				}
 				else
 				{
-					block.harvestBlock(world, fakePlayer, pos, blockstate, world.getTileEntity(pos), null);
+					block.harvestBlock(world, fakePlayer, pos, blockstate, world.getTileEntity(pos), ItemStack.EMPTY);
 					world.playEvent(2001, pos, Block.getStateId(blockstate));
 				}
 			}

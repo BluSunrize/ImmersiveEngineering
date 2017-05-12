@@ -127,7 +127,7 @@ public class BelljarHandler
 	}
 	public interface ItemFertilizerHandler
 	{
-		boolean isValid(@Nullable ItemStack fertilizer);
+		boolean isValid(ItemStack fertilizer);
 		float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile);
 	}
 
@@ -282,7 +282,7 @@ public class BelljarHandler
 				if(growth>=.5)
 				{
 					ItemStack[] fruit = seedOutputMap.get(new ComparableItemStack(seed,false));
-					if(fruit!=null&&fruit.length>0&&fruit[0]!=null&&fruit[0].getItem()!=null)
+					if(fruit!=null&&fruit.length>0&&!fruit[0].isEmpty())
 					{
 						Block fruitBlock = Block.getBlockFromItem(fruit[0].getItem());
 						if(fruitBlock!=null)
@@ -380,7 +380,7 @@ public class BelljarHandler
 		{
 			final ItemStack bonemeal = new ItemStack(Items.DYE,1,15);
 			@Override
-			public boolean isValid(@Nullable ItemStack fertilizer)
+			public boolean isValid(ItemStack fertilizer)
 			{
 				return !fertilizer.isEmpty()&&OreDictionary.itemMatches(bonemeal,fertilizer,true);
 			}

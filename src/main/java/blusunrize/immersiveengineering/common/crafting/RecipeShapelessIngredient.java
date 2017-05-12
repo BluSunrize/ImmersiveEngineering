@@ -112,7 +112,7 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 				{
 					tool.setItemDamage(tool.getItemDamage() + 1);
 					if(tool.getItemDamage() > tool.getMaxDamage())
-						tool = null;
+						tool = ItemStack.EMPTY;
 					remains.set(i, tool);
 				}
 			}

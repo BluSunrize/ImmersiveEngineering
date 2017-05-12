@@ -1527,7 +1527,7 @@ public class ClientProxy extends CommonProxy
 	{
 		Item item = Item.getItemFromBlock(block);
 		FluidStateMapper mapper = new FluidStateMapper(fluid);
-		if(item != null)
+		if(item != Items.AIR)
 		{
 			ModelLoader.registerItemVariants(item);
 			ModelLoader.setCustomMeshDefinition(item, mapper);
