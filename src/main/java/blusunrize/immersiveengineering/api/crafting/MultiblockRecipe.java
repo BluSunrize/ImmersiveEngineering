@@ -94,7 +94,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 			for(int i=0; i<outputList.size(); i++)
 			{
 				ItemStack s = outputList.get(i);
-				ArrayList<ItemStack> list = Lists.newArrayList(s!=null&&!s.isEmpty()?s.copy():ItemStack.EMPTY);
+				ArrayList<ItemStack> list = Lists.newArrayList(!s.isEmpty()?s.copy():ItemStack.EMPTY);
 				this.jeiItemOutputList[i] = list;
 				this.jeiTotalItemOutputList.addAll(list);
 			}

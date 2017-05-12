@@ -135,7 +135,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 							}
 							if(startPos.add(xx, yy, zz).equals(getPos()))
 								s = this.getOriginalBlock();
-							if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
+							if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=Blocks.AIR)
 							{
 								if(startPos.add(xx, yy, zz).equals(getPos()))
 									world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));

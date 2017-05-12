@@ -590,12 +590,12 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			ItemStack stack = getStackInSlot(slot);
 			if(slot<9 && !stack.isEmpty())
 				if(stack.getCount() <= amount)
-					setInventorySlotContents(slot, null);
+					setInventorySlotContents(slot, ItemStack.EMPTY);
 				else
 				{
 					stack = stack.splitStack(amount);
 					if(stack.getCount() == 0)
-						setInventorySlotContents(slot, null);
+						setInventorySlotContents(slot, ItemStack.EMPTY);
 				}
 			return stack;
 		}
@@ -604,7 +604,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			ItemStack stack = getStackInSlot(slot);
 			if (!stack.isEmpty())
-				setInventorySlotContents(slot, null);
+				setInventorySlotContents(slot, ItemStack.EMPTY);
 			return stack;
 		}
 		@Override

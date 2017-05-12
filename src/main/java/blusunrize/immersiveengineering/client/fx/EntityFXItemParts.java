@@ -15,13 +15,13 @@ public class EntityFXItemParts extends EntityFXIEBase
 		this.item = item;
 		this.part = part;
 		this.particleMaxAge = 16;
-		if(!item.isEmpty() && item.getItem()!=null)
-		{
+//		if(!item.isEmpty() && item.getItem()!=null)
+//		{
 //			if(item.getItem() instanceof ItemBlock)
 //				this.particleIcon = Block.getBlockFromItem(item.getItem()).getIcon(0, item.getItemDamage());
 //			else
 //				this.particleIcon = item.getItem().getIcon(item, 0);
-		}
+//		}
 		this.posX = x;
 		this.posY = y;
 		this.posZ = z;
