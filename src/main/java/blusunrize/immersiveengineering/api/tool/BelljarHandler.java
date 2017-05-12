@@ -342,7 +342,7 @@ public class BelljarHandler
 
 	static
 	{
-		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT)), new ResourceLocation("minecraft:blocks/farmland_wet"));
+		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT),false), new ResourceLocation("minecraft:blocks/farmland_wet"));
 		registerHandler(cropHandler);
 		registerHandler(stemHandler);
 		registerHandler(stackingHandler);
