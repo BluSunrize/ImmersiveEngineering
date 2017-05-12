@@ -706,14 +706,17 @@ public class IEContent
 
 		ChemthrowerHandler.registerEffect(fluidConcrete, new ChemthrowerEffect(){
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid){}
+			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			{
+				hit(target.world, target.getPosition(), EnumFacing.UP);
+			}
 			@Override
 			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 			{
 				IBlockState hit = world.getBlockState(mop.getBlockPos());
-				if(hit.getBlock()==blockStoneDecoration && hit.getBlock().getMetaFromState(hit)==BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
+				if(hit.getBlock()!=blockStoneDecoration || hit.getBlock().getMetaFromState(hit)!=BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
 				{
 					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 					if(!world.isAirBlock(pos))
@@ -721,17 +724,21 @@ public class IEContent
 					AxisAlignedBB aabb = new AxisAlignedBB(pos);
 					List<EntityChemthrowerShot> otherProjectiles = world.getEntitiesWithinAABB(EntityChemthrowerShot.class, aabb);
 					if(otherProjectiles.size() >= 8)
-					{
-						for(EntityChemthrowerShot shot : otherProjectiles)
-							shot.setDead();
-						world.setBlockState(pos, blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta()));
-						for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
-							living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet, Integer.MAX_VALUE));
-					}
+						hit(world, pos, mop.sideHit);
 				}
 			}
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+			private void hit(World world, BlockPos pos, EnumFacing side)
+			{
+				AxisAlignedBB aabb = new AxisAlignedBB(pos);
+				List<EntityChemthrowerShot> otherProjectiles = world.getEntitiesWithinAABB(EntityChemthrowerShot.class, aabb);
+				for(EntityChemthrowerShot shot : otherProjectiles)
+					shot.setDead();
+				world.setBlockState(pos, blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta()));
+				for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
+					living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet, Integer.MAX_VALUE));
+			}
 		});
 
 		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,0));
