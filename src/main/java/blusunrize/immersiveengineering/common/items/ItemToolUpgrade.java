@@ -17,7 +17,7 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 
 	public ItemToolUpgrade()
 	{
-		super("toolupgrade", 1, "drill_waterproof","drill_speed","drill_damage","drill_capacity",
+		super("toolupgrade", 1, "drill_waterproof","drill_lube","drill_damage","drill_capacity",
 				"revolver_bayonet","revolver_magazine","revolver_electro",
 				"chemthrower_focus","railgun_scope","railgun_capacitors");
 	}
@@ -72,11 +72,12 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 			modifications.put("waterproof", true);
 			break;
 		case 1:
-			Integer mod = (Integer)modifications.get("speed");
-			modifications.put("speed", (mod==null?0:mod)+1);
+			modifications.put("oiled", true);
 			break;
 		case 2:
-			mod = (Integer)modifications.get("damage");
+			Float speed = (Float)modifications.get("speed");
+			modifications.put("speed", (speed==null?0:speed)+upgrade.getCount()*2f);
+			Integer mod = (Integer)modifications.get("damage");
 			modifications.put("damage", (mod==null?0:mod)+upgrade.getCount());
 			break;
 		case 3:
