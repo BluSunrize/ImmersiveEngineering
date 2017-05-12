@@ -352,7 +352,7 @@ item.immersiveengineering.drillhead.steel.name=Steel Drill Head
 item.immersiveengineering.skyhook.name=Engineer's Skyhook
 
 item.immersiveengineering.toolupgrade.drill_waterproof.name=Pressurized Air Tank
-item.immersiveengineering.toolupgrade.drill_speed.name=Advanced Lubrication System
+item.immersiveengineering.toolupgrade.drill_lube.name=Advanced Lubrication System
 item.immersiveengineering.toolupgrade.drill_damage.name=Additional Augers
 item.immersiveengineering.toolupgrade.drill_capacity.name=Large Tank
 item.immersiveengineering.toolupgrade.revolver_bayonet.name=Bayonet
@@ -730,8 +730,8 @@ desc.immersiveengineering.flavour.drillhead.damage=Attack Damage: %1$s
 desc.immersiveengineering.flavour.skyhook=A new form of travel
 
 desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=Allows the Mining Drill to operate under water
-desc.immersiveengineering.flavour.toolupgrade.drill_speed=Increases the digging speed of the Mining Drill
-desc.immersiveengineering.flavour.toolupgrade.drill_damage=Increases the attack damage of the Mining Drill, stacks up to 3
+desc.immersiveengineering.flavour.toolupgrade.drill_lube=Reduces the damage the Mining Drill's head sustains
+desc.immersiveengineering.flavour.toolupgrade.drill_damage=Increases the attack damage and digging speed of the Mining Drill, stacks up to 3
 desc.immersiveengineering.flavour.toolupgrade.drill_capacity=Increases the internal tank size of the Mining Drill and Chemical Thrower
 desc.immersiveengineering.flavour.toolupgrade.revolver_bayonet=Adds melee damage to the Revolver
 desc.immersiveengineering.flavour.toolupgrade.revolver_magazine=Increases the Revolver's magazine size

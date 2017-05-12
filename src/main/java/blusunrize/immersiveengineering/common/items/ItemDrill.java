@@ -310,7 +310,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 						return true;
 					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (EntityPlayer)living);
 				}
-				((IDrillHead)head.getItem()).damageHead(head, dmg);
+				if(!getUpgrades(stack).getBoolean("oiled") || world.rand.nextInt(4)==0)
+					((IDrillHead)head.getItem()).damageHead(head, dmg);
 				this.setHead(stack, head);
 				IFluidHandler handler = FluidUtil.getFluidHandler(stack);
 				handler.drain(1, true);
@@ -332,7 +333,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		{
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
+			{
 				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead) head.getItem()).getAttackDamage(head) + getUpgrades(stack).getInteger("damage"), 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, 0));
+			}
 		}
 		return multimap;
 	}
@@ -370,7 +374,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	{
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty() && !isDrillBroken(stack))
-			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+ItemNBTHelper.getInt(stack, "speed");
+			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+getUpgrades(stack).getFloat("speed");
 		return super.getStrVsBlock(stack, state);
 	}
 	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, IBlockState state, EntityPlayer player, ItemStack drill, ItemStack head, boolean inWorld)
