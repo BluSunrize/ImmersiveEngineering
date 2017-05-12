@@ -48,7 +48,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 				if (stack.getCount()>0)
 					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
 				else
-					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
 			}
 			return EnumActionResult.SUCCESS;
 		}

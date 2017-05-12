@@ -22,7 +22,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -136,6 +135,7 @@ public class ImmersiveEngineering
 					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
 			}
 		}
+		NameRemapper.init();
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
@@ -190,6 +190,11 @@ public class ImmersiveEngineering
 				IESaveData.setInstance(world.provider.getDimension(), worldData);
 			}
 		}
+	}
+
+	@Mod.EventHandler
+	public void remap(FMLMissingMappingsEvent ev) {
+		NameRemapper.remap(ev);
 	}
 
 	public static <T extends IForgeRegistryEntry<?>> T register(T object, String name)

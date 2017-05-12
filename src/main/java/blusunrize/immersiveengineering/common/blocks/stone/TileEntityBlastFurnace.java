@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -281,7 +282,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 						}
 						if(startPos.add(xx, yy, zz).equals(getPos()))
 							s = this.getOriginalBlock();
-						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
+						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!= Blocks.AIR)
 						{
 							if(startPos.add(xx, yy, zz).equals(getPos()))
 								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
