@@ -66,15 +66,15 @@
 			},
 			"concrete_sheet": {
 				"model": "carpet",
-				"textures": { "wool": "immersiveengineering:blocks/stone_decoration_concrete" }
+				"textures": { "wool": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }
 			},
 			"concrete_quarter": {
 				"model": "immersiveengineering:ie_quarter_block",
-				"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete" }
+				"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }
 			},
 			"concrete_threequarter": {
 				"model": "immersiveengineering:ie_three_quarter_block",
-				"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete" }
+				"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }
 			},
 			"coresample": {
 				"model": "immersiveengineering:coresample.obj"
