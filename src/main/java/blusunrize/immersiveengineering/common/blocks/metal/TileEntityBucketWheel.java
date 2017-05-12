@@ -101,7 +101,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 			if(!particleStack.isEmpty())
 			{
 				ImmersiveEngineering.proxy.spawnBucketWheelFX(this, particleStack);
-				particleStack = null;
+				particleStack = ItemStack.EMPTY;
 			}
 		}
 		else if (active&&world.getTotalWorldTime()%20==0)

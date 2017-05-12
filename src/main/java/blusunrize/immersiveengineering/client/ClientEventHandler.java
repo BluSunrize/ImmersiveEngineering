@@ -292,7 +292,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onRenderItemFrame(RenderItemInFrameEvent event)
 	{
-		if(event.getItem()!=null && event.getItem().getItem() instanceof ItemEngineersBlueprint)
+		if(!event.getItem().isEmpty() && event.getItem().getItem() instanceof ItemEngineersBlueprint)
 		{
 			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame().getPosition());
 
@@ -1037,7 +1037,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				chunkBorders = true;
 				break;
 			}
-		if(!chunkBorders && ClientUtils.mc().objectMouseOver!=null && ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK && ClientUtils.mc().objectMouseOver.getBlockPos()!=null && ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
+		if(!chunkBorders && ClientUtils.mc().objectMouseOver!=null && ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK && ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
 			chunkBorders = true;
 
 		if(chunkBorders)

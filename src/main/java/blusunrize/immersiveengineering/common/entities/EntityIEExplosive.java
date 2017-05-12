@@ -7,6 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -91,7 +92,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		if(this.block!=null && name==null)
 		{
 			ItemStack s = new ItemStack(this.block.getBlock(),1,this.block.getBlock().getMetaFromState(this.block));
-			if(!s.isEmpty() && s.getItem()!=null)
+			if(!s.isEmpty() && s.getItem()!= Items.AIR)
 				name = s.getDisplayName();
 		}
 		if(name!=null)

@@ -494,7 +494,7 @@ public class ApiUtils
 				amount -= taken;
 				itemstack.shrink(taken);
 				if(itemstack.getCount() <= 0)
-					player.setHeldItem(hand, null);
+					player.setHeldItem(hand, ItemStack.EMPTY);
 				if(amount<=0)
 					return;
 			}
@@ -508,7 +508,7 @@ public class ApiUtils
 				amount -= taken;
 				itemstack.shrink(taken);
 				if(itemstack.getCount() <= 0)
-					player.inventory.setInventorySlotContents(i, null);
+					player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 				if(amount<=0)
 					return;
 			}

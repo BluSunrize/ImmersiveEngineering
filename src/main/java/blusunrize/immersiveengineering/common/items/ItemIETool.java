@@ -219,7 +219,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				else
 				{
 					player.renderBrokenItemStack(stack);
-					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
 				}
 			}
 			return EnumActionResult.SUCCESS;
