@@ -1,6 +1,6 @@
 {
     "textures":[
-        "immersiveengineering:ctm/metalDecoration0_heavy_engineering.ctx",
-        "immersiveengineering:ctm/metalDecoration0_dark_frame.ctx"
+        "immersiveengineering:ctm/metal_decoration0_heavy_engineering.ctx",
+        "immersiveengineering:ctm/metal_decoration0_dark_frame.ctx"
     ]
 }
