@@ -1,5 +1,6 @@
 #####Version 0.11-59
 - Updated to Minecraft 1.11.2, still slightly buggy
+- added a migration system to allow loading 1.10 worlds into MC 1.11.2! (thanks Malte)
 - added special chemthrower behaviour for fluid concrete. It's the GLOO cannon from Prey! :D
 - added compat for Forestry's fertilizer to be used in the cloche
 - changed balance on Drills: Heads have more durability, lubrication reduces wear, augers boost speed
