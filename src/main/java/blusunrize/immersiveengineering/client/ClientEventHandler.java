@@ -307,7 +307,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					if(blueprint!=null)
 					{
 						GlStateManager.rotate(-i*45.0F, 0.0F, 0.0F, 1.0F);
-						ClientUtils.bindTexture("immersiveengineering:textures/models/blueprintFrame.png");
+						ClientUtils.bindTexture("immersiveengineering:textures/models/blueprint_frame.png");
 						GlStateManager.translate(-.5, .5,-.001);
 						ClientUtils.drawTexturedRect(.125f,-.875f, .75f,.75f, 1d,0d,1d,0d);
 						//Width depends on distance
@@ -588,7 +588,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					//				{
 					//					float dx = event.getResolution().getScaledWidth()-32-48;
 					//					float dy = event.getResolution().getScaledHeight()-40;
-					//					ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+					//					ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 					//					GL11.glColor4f(1, 1, 1, 1);
 					//					GL11.glPushMatrix();
 					//					GL11.glEnable(GL11.GL_BLEND);

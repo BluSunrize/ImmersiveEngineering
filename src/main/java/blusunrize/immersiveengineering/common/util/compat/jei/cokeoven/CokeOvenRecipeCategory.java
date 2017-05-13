@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe, CokeOvenRecipeWrapper>
 {
-	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/cokeOven.png");
+	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/coke_oven.png");
 	private final IDrawable tankOverlay;
 
 	public CokeOvenRecipeCategory(IGuiHelper helper)

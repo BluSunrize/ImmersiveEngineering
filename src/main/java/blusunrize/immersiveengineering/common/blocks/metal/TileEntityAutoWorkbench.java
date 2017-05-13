@@ -75,14 +75,16 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 			if(recipe!=null && !recipe.output.isEmpty())
 			{
 				NonNullList<ItemStack> query = NonNullList.withSize(16, ItemStack.EMPTY);
-				System.arraycopy(this.inventory,1, query,0, 16);
+				for (int i = 0;i<query.size();i++)
+					query.set(i, inventory.get(i+1));
 				int crafted = recipe.getMaxCrafted(query);
 				if(crafted>0)
 				{
 					if(this.addProcessToQueue(new MultiblockProcessInWorld(recipe, 0.78f, NonNullList.create()), true))
 					{
 						this.addProcessToQueue(new MultiblockProcessInWorld(recipe, 0.78f, recipe.consumeInputs(query,1)), false);
-						System.arraycopy(query,0, this.inventory,1, 16);
+						for (int i = 0;i<query.size();i++)
+							inventory.set(i+1, query.get(i));
 						this.markDirty();
 						this.markContainingBlockForUpdate(null);
 					}

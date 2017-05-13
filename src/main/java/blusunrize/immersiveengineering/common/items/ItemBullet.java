@@ -57,7 +57,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_casull")));
 
-		BulletHandler.registerBullet("armorPiercing", new BulletHandler.DamagingBullet(
+		BulletHandler.registerBullet("armor_piercing", new BulletHandler.DamagingBullet(
 				entities -> IEDamageSources.causePiercingDamage((EntityRevolvershot) entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_AP,
 				BulletHandler.emptyCasing,
@@ -78,7 +78,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			}
 		});
 
-		BulletHandler.registerBullet("HE", new BulletHandler.DamagingBullet(null, 0, BulletHandler.emptyCasing, new ResourceLocation("immersiveengineering:items/bullet_HE"))
+		BulletHandler.registerBullet("he", new BulletHandler.DamagingBullet(null, 0, BulletHandler.emptyCasing, new ResourceLocation("immersiveengineering:items/bullet_he"))
 		{
 			@Override
 			public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
@@ -86,6 +86,9 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
 			}
 		});
+		//legacy bullets should do the same as the modern ones
+		BulletHandler.registerBullet("armorPiercing", BulletHandler.getBullet("armor_piercing"));
+		BulletHandler.registerBullet("HE", BulletHandler.getBullet("he"));
 
 		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(
 				entities -> IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]),
@@ -162,6 +165,11 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		{
 			String s = "item.immersiveengineering.bullet.";
 			String key = ItemNBTHelper.getString(stack, "bullet");
+			// handle legacy bullets
+			if (key.equals("armorPiercing"))
+				key = "armor_piercing";
+			if (key.equals("HE"))
+				key = "he";
 			s += key;
 			IBullet bullet = BulletHandler.getBullet(key);
 			if(bullet != null)

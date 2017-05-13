@@ -489,7 +489,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 		if(stack.getItemDamage()==1)
 			return;
-		String uuid = "1501b168-941a-4c8f-a729-4d317fc2e717";//player.getUniqueID().toString();
+		String uuid = player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
 			ArrayList<SpecialRevolver> list = new ArrayList(specialRevolvers.get(uuid));

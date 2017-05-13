@@ -25,7 +25,7 @@ public class GuiButtonItem extends GuiButton
 	{
 		if(this.visible)
 		{
-			ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
 			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 			GlStateManager.enableBlend();
