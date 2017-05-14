@@ -86,9 +86,6 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
 			}
 		});
-		//legacy bullets should do the same as the modern ones
-		BulletHandler.registerBullet("armorPiercing", BulletHandler.getBullet("armor_piercing"));
-		BulletHandler.registerBullet("HE", BulletHandler.getBullet("he"));
 
 		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(
 				entities -> IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]),
@@ -166,10 +163,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			String s = "item.immersiveengineering.bullet.";
 			String key = ItemNBTHelper.getString(stack, "bullet");
 			// handle legacy bullets
-			if (key.equals("armorPiercing"))
-				key = "armor_piercing";
-			if (key.equals("HE"))
-				key = "he";
+			key = BulletHandler.handleLeagcyNames(key);
 			s += key;
 			IBullet bullet = BulletHandler.getBullet(key);
 			if(bullet != null)
