@@ -94,7 +94,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 			quads = ((IESmartObjModel) model).getQuads(state, null, 0, objState, texMap, true);
 		else
 			quads = model.getQuads(state, null, 0);
-		ClientUtils.renderModelTESR(quads, worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
+		ClientUtils.renderModelTESR(quads, worldRenderer, tile.getWorld(), tile.getPos(), false);
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();

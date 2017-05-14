@@ -33,10 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Timer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
@@ -1678,28 +1675,98 @@ public class ClientUtils
 		ret = (ret<<8)+(int)(255*rgb[2]);
 		return ret;
 	}
-	public static void renderModelTESR(List<BakedQuad> quads, VertexBuffer renderer, int brightness)
-	{
-		int l1 = (brightness >> 0x10) & 0xFFFF;
-		int l2 = brightness & 0xFFFF;
+	private static final float[][] quadCoords = new float[4][3];
+	private static final Vector3f side1 = new Vector3f();
+	private static final Vector3f side2 = new Vector3f();
+	private static final Vector3f normal = new Vector3f();
+	private static final int[][] neighbourBrightness = new int[2][6];
+	private static final float[][] normalizationFactors = new float[2][8];
+	public static void renderModelTESR(List<BakedQuad> quads, VertexBuffer renderer, World world, BlockPos pos, boolean useCached)
+	{//TODO include matrix transformations?, can I get normals for cheap somewhere?
+		if (!useCached) {
+			for (EnumFacing f : EnumFacing.VALUES) {
+				int val = world.getCombinedLight(pos.offset(f), 0);
+				neighbourBrightness[0][f.getIndex()] = (val >> 16) & 255;
+				neighbourBrightness[1][f.getIndex()] = val & 255;
+			}
+			for (int type = 0; type < 2; type++)
+				for (int i = 0; i < 8; i++) {//zyx = 421
+					float sSquared = 0;
+					if ((i & 1) != 0)
+						sSquared += scaledSquared(neighbourBrightness[type][5], 255F);
+					else
+						sSquared += scaledSquared(neighbourBrightness[type][4], 255F);
+					if ((i & 2) != 0)
+						sSquared += scaledSquared(neighbourBrightness[type][1], 255F);
+					else
+						sSquared += scaledSquared(neighbourBrightness[type][0], 255F);
+					if ((i & 4) != 0)
+						sSquared += scaledSquared(neighbourBrightness[type][3], 255F);
+					else
+						sSquared += scaledSquared(neighbourBrightness[type][2], 255F);
+					normalizationFactors[type][i] = (float) Math.sqrt(sSquared);
+				}
+		}
+		int localBrightness = world.getCombinedLight(pos, 0);
 		for (BakedQuad quad : quads)
 		{
 			int[] vData = quad.getVertexData();
 			VertexFormat format = quad.getFormat();
 			int size = format.getIntegerSize();
 			int uv = format.getUvOffsetById(0)/4;
+			for (int i = 0;i<4;i++) {
+				quadCoords[i][0] = Float.intBitsToFloat(vData[size*i]);
+				quadCoords[i][1] = Float.intBitsToFloat(vData[size*i+1]);
+				quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+2]);
+			}
+			side1.x = quadCoords[1][0]-quadCoords[0][0];
+			side1.y = quadCoords[1][1]-quadCoords[0][1];
+			side1.z = quadCoords[1][2]-quadCoords[0][2];
+			side2.x = quadCoords[2][0]-quadCoords[0][0];
+			side2.y = quadCoords[2][1]-quadCoords[0][1];
+			side2.z = quadCoords[2][2]-quadCoords[0][2];
+			Vector3f.cross(side1, side2, normal);
+			normal.normalise();
+			int l1 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (localBrightness>>16)&255);
+			int l2 = getLightValue(neighbourBrightness[1], normalizationFactors[1], localBrightness&255);
 			for (int i = 0; i < 4; ++i)
 			{
 				renderer
-						.pos(Float.intBitsToFloat(vData[size*i]),
-								Float.intBitsToFloat(vData[size*i+1]),
-								Float.intBitsToFloat(vData[size*i+2]))
+						.pos(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
 						.color(255, 255, 255, 255)
 						.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
 						.lightmap(l1, l2)
 						.endVertex();
 			}
-
 		}
+	}
+	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness) {
+		float sideBrightness;
+		byte type = 0;
+		if (normal.x>0)
+		{
+			sideBrightness = normal.x* neighbourBrightness[5];
+			type |= 1;
+		}
+		else
+			sideBrightness = -normal.x* neighbourBrightness[4];
+		if (normal.y>0)
+		{
+			sideBrightness += normal.y* neighbourBrightness[1];
+			type |= 2;
+		}
+		else
+			sideBrightness += -normal.y* neighbourBrightness[0];
+		if (normal.z>0)
+		{
+			sideBrightness += normal.z* neighbourBrightness[3];
+			type |= 4;
+		}
+		else
+			sideBrightness += -normal.z* neighbourBrightness[2];
+		return (int) ((localBrightness+sideBrightness/normalizationFactors[type])/2);
+	}
+	private static float scaledSquared(int val, float scale) {
+		return (val/scale)*(val/scale);
 	}
 }
