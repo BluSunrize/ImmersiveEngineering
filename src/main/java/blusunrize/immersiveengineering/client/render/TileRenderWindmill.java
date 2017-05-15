@@ -61,7 +61,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		VertexBuffer worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
-		ClientUtils.renderModelTESR(quads, worldRenderer, tile.getWorld(), blockPos, false);
+		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorld(), blockPos);
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();

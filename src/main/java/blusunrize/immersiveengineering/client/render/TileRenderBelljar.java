@@ -67,7 +67,6 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 
 		GlStateManager.enableCull();
 		IPlantHandler plantHandler = tile.getCurrentPlantHandler();
-		boolean firstRenderCall = true;
 		if(plantHandler!=null)
 		{
 			GlStateManager.pushMatrix();
@@ -97,8 +96,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 					{
 						GlStateManager.pushMatrix();
 						worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-						ClientUtils.renderModelTESR(plantQuadList, worldRenderer, tile.getWorld(), blockPos, !firstRenderCall);
-						firstRenderCall = false;
+						ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorld(), blockPos, false);
 						Tessellator.getInstance().draw();
 						GlStateManager.popMatrix();
 						GlStateManager.translate(0, 1, 0);
@@ -110,7 +108,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 
 		GlStateManager.depthMask(false);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		ClientUtils.renderModelTESR(quads.get(tile.getFacing()), worldRenderer, tile.getWorld(), blockPos, !firstRenderCall);
+		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), worldRenderer, tile.getWorld(), blockPos);
 		Tessellator.getInstance().draw();
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();

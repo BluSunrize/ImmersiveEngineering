@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -90,7 +89,7 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 		long randomLong = MathHelper.getPositionRandom(pos);
 		int light = world.getCombinedLight(pos, 0);
 		List<BakedQuad> quads = model.getQuads(state, null, randomLong);
-		ClientUtils.renderModelTESR(quads, worldRenderer, world, pos, !isFirst);
+		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
