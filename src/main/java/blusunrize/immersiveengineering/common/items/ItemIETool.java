@@ -37,8 +37,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -145,14 +143,12 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	//	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(stack.getItemDamage() == 0)
 		{
-			if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-				return EnumActionResult.PASS;
 			String[] permittedMultiblocks = null;
 			String[] interdictedMultiblocks = null;
 			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
@@ -200,7 +196,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction) && !(tile instanceof IConfigurableSides))
 				return RotationUtil.rotateBlock(world, pos, side) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 		}
-		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
+		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable)
 		{
 			TargetingInfo target = new TargetingInfo(side, hitX, hitY, hitZ);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(null, target);
@@ -208,18 +204,21 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 			if(!(tileEntity instanceof IImmersiveConnectable))
 				return EnumActionResult.PASS;
 
-			IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-			boolean cut = ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
-			IESaveData.setDirty(world.provider.getDimension());
-			if(cut)
+			if(!world.isRemote)
 			{
-				int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg") + 1;
-				if(nbtDamage < cutterMaxDamage)
-					ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
-				else
+				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
+				boolean cut = ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
+				IESaveData.setDirty(world.provider.getDimension());
+				if(cut)
 				{
-					player.renderBrokenItemStack(stack);
-					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
+					int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
+					if(nbtDamage < cutterMaxDamage)
+						ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
+					else
+					{
+						player.renderBrokenItemStack(stack);
+						player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
+					}
 				}
 			}
 			return EnumActionResult.SUCCESS;
