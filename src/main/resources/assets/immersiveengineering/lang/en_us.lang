@@ -527,7 +527,7 @@ item.banner.immersiveengineering_wolf.white=White Wolf
 #TINKERS CONSTRUCT COMPAT
 fluid.uranium=Molten Uranium
 fluid.constantan=Molten Constantan
-material.treated_wood.name=Treated Wood
+material.treatedwood.name=Treated Wood
 material.constantan.name=Constantan
 material.hemp.name=Hemp Fiber
 modifier.thermalinversion.name=Thermal Inversion
