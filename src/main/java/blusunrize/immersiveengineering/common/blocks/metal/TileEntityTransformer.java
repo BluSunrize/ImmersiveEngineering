@@ -322,6 +322,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if (state.getValue(IEProperties.BOOLEANS[1]))
 		{
 			onPost = true;
+			facing = side.getOpposite();
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 		}

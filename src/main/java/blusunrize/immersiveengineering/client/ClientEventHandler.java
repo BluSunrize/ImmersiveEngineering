@@ -161,6 +161,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
+		if(event.getItemStack()==null || event.getItemStack()==ItemStack.EMPTY)
+			return;
 		if(event.getItemStack().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
 			ShaderWrapper wrapper = event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
