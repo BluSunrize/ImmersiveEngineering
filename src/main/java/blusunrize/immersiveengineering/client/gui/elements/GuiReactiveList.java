@@ -101,7 +101,7 @@ public class GuiReactiveList extends GuiButton
 		GlStateManager.color(1, 1, 1);
 		if(needsSlider)
 		{
-			ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			this.drawTexturedModalRect(xPosition+width-6,yPosition, 16,136, 6,4);
 			this.drawTexturedModalRect(xPosition+width-6,yPosition+height-4, 16,144, 6,4);
 			for(int i=0;i<height-8; i+=2)

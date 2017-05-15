@@ -37,6 +37,7 @@ public class BulletHandler
 	}
 	public static IBullet getBullet(String name)
 	{
+		name = BulletHandler.handleLeagcyNames(name);
 		return registry.get(name);
 	}
 	public static String findRegistryName(IBullet bullet)
@@ -50,10 +51,20 @@ public class BulletHandler
 
 	public static ItemStack getBulletStack(String key)
 	{
+		key = handleLeagcyNames(key);
 		ItemStack stack = basicCartridge.copy();
 		stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setString("bullet", key);
 		return stack;
+	}
+
+	public static String handleLeagcyNames(final String key)
+	{
+		if (key.equals("armorPiercing"))
+			return "armor_piercing";
+		if (key.equals("HE"))
+			return "he";
+		return key;
 	}
 
 	public interface IBullet

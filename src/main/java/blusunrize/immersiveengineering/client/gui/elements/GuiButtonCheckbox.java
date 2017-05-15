@@ -7,7 +7,7 @@ public class GuiButtonCheckbox extends GuiButtonState
 {
 	public GuiButtonCheckbox(int buttonId, int x, int y, String name, boolean state)
 	{
-		super(buttonId, x,y, 8,8, name, state, "immersiveengineering:textures/gui/hudElements.png",0,128, -1);
+		super(buttonId, x,y, 8,8, name, state, "immersiveengineering:textures/gui/hud_elements.png",0,128, -1);
 	}
 
 	@Override

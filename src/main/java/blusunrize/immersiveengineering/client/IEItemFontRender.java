@@ -18,7 +18,7 @@ public class IEItemFontRender extends FontRenderer
 
 	static
 	{
-		unicodeReplacements.put((char) Integer.parseInt("260E", 16), new CharReplacement("immersiveengineering:textures/gui/hudElements.png", .5f, .75f, .5625f, .8125f));
+		unicodeReplacements.put((char) Integer.parseInt("260E", 16), new CharReplacement("immersiveengineering:textures/gui/hud_elements.png", .5f, .75f, .5625f, .8125f));
 	}
 
 	int[] backupColours;
