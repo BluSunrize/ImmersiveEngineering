@@ -18,7 +18,7 @@ public class GuiSliderIE extends GuiSlider
 	{
 		if(this.visible)
 		{
-			ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			FontRenderer fontrenderer = mc.fontRenderer;
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;

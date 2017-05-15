@@ -22,7 +22,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/workbench.png");
 	public WorkbenchRecipeCategory(IGuiHelper helper)
 	{
-		super("workbench","tile.immersiveengineering.woodenDevice0.workbench.name", helper.createDrawable(background, 0,0, 176,74), BlueprintCraftingRecipe.class, new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()),new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.AUTO_WORKBENCH.getMeta()));
+		super("workbench","tile.immersiveengineering.wooden_device0.workbench.name", helper.createDrawable(background, 0,0, 176,74), BlueprintCraftingRecipe.class, new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()),new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.AUTO_WORKBENCH.getMeta()));
 	}
 
 	@Override

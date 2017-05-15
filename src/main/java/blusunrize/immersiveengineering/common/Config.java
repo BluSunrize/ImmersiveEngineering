@@ -48,7 +48,10 @@ public class Config
 		public static int[] wireLength = new int[]{16, 16, 32, 32, 32, 32};
 
 		@Comment({"By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view.", "Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs"})
+		//TODO this is for TESR wires. Remove?
 		public static boolean increasedRenderboxes = true;
+		@Comment({"Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.", "Affects turrets and garden cloches"})
+		public static boolean disableFancyTESR = false;
 		@Comment({"Support for colourblind people, gives a text-based output on capacitor sides"})
 		public static boolean colourblindSupport = false;
 		@Comment({"Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things"})
@@ -259,7 +262,7 @@ public class Config
 			@Comment({"Generation config for Copper Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
 			@Mapped(mapClass = Config.class, mapName = "manual_intA")
 			public static int[] ore_copper = new int[]{8, 40, 72, 8, 100};
-			@Comment({"Generation config for Bauxite Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
+			@Comment({"Generation config for Bauxite Ore.", "Parameters: Vein sirenderze, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
 			@Mapped(mapClass = Config.class, mapName = "manual_intA")
 			public static int[] ore_bauxite = new int[]{4, 40, 85, 8, 100};
 			@Comment({"Generation config for Lead Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
