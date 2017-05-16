@@ -263,6 +263,8 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 				entity.motionY = 0;
 				entity.motionZ = 0;
 				conveyor.getWorld().spawnEntity(entity);
+				if(conveyor.conveyorBeltSubtype!=null)
+					conveyor.conveyorBeltSubtype.onItemDeployed(conveyor, entity, conveyor.facing);
 			}
 			return ItemStack.EMPTY;
 		}

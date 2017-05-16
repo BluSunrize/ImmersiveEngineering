@@ -329,6 +329,11 @@ public class ConveyorHandler
 			}
 		}
 
+		/**
+		 * Called when an item is inserted into the conveyor and deployed as an entity
+		 */
+		default void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing){	}
+
 		default void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
 		{
 			TileEntity inventoryTile = tile.getWorld().getTileEntity(tile.getPos().offset(facing).add(0, (conDir == ConveyorDirection.UP ? 1 : conDir == ConveyorDirection.DOWN ? -1 : 0), 0));
