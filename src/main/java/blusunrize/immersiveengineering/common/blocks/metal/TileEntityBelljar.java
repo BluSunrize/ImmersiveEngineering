@@ -457,9 +457,15 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			rl=BelljarHandler.getSoilTexture(inventory[0]);
 		if(rl==null)
 		{
-			IBlockState state = Utils.getStateFromItemStack(inventory[0]);
-			if(state!=null)
-				rl = ClientUtils.getSideTexture(state, EnumFacing.UP);
+			try
+			{
+				IBlockState state = Utils.getStateFromItemStack(inventory[0]);
+				if(state!=null)
+					rl = ClientUtils.getSideTexture(state, EnumFacing.UP);
+			}catch(Exception e)
+			{
+				rl = ClientUtils.getSideTexture(inventory[0], EnumFacing.UP);
+			}
 		}
 		if(rl==null && inventory[0]!=null && Utils.isFluidRelatedItemStack(inventory[0]))
 		{
