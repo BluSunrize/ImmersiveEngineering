@@ -71,11 +71,17 @@ public class ConveyorCovered extends ConveyorBasic
 	public ItemStack cover = null;
 
 	@Override
-	public void  onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
+	public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
 	{
 		super.onEntityCollision(tile, entity, facing);
 		if(entity instanceof EntityItem)
 			((EntityItem) entity).setPickupDelay(10);
+	}
+
+	@Override
+	public void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing)
+	{
+		entity.setPickupDelay(10);
 	}
 
 	@Override
