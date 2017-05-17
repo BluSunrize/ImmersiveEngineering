@@ -27,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -271,6 +272,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		if(formed && !worldObj.isRemote)
 		{
 			BlockPos startPos = this.getBlockPosForPos(0);
+			BlockPos mbOrigin = getPos().add(-offset[0], -offset[1], -offset[2]);
 			for(int yy=0;yy<structureDimensions[0];yy++)
 				for(int ll=0;ll<structureDimensions[1];ll++)
 					for(int ww=0;ww<structureDimensions[2];ww++)
@@ -283,10 +285,16 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						TileEntity te = worldObj.getTileEntity(pos);
 						if(te instanceof TileEntityMultiblockMetal)
 						{
-							s = ((TileEntityMultiblockMetal)te).getOriginalBlock();
-							((TileEntityMultiblockMetal)te).formed=false;
+							TileEntityMultiblockPart<?> part = (TileEntityMultiblockPart<?>) te;
+							Vec3i diff = pos.subtract(mbOrigin);
+							if (part.offset[0]!=diff.getX()||part.offset[1]!=diff.getY()||part.offset[2]!=diff.getZ())
+								continue;
+							else
+							{
+								s = part.getOriginalBlock();
+								part.formed = false;
+							}
 						}
-
 						if(pos.equals(getPos()))
 							s = this.getOriginalBlock();
 						IBlockState state = Utils.getStateFromItemStack(s);
