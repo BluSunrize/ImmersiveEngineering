@@ -79,7 +79,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 			if(tileEntity instanceof IRotationAcceptor)
 			{
 				IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
-				double power = turnSpeed*mod * 400;
+				double power = turnSpeed*mod * 800;
 				dynamo.inputRotation(Math.abs(power), facing);
 			}
 		}
