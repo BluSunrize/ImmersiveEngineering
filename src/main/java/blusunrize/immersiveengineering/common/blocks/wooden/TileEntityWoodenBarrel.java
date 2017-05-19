@@ -209,16 +209,17 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		return SideConfig.values()[this.sideConfig[side]+1];
 	}
 	@Override
-	public void toggleSide(int side)
+	public boolean toggleSide(int side, EntityPlayer p)
 	{
 		if(side!=0&&side!=1)
-			return;
+			return false ;
 		sideConfig[side]++;
 		if(sideConfig[side]>1)
 			sideConfig[side]=-1;
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+		return true;
 	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
