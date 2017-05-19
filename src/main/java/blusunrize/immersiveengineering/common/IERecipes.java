@@ -71,7 +71,7 @@ public class IERecipes
 		addOredictRecipe(componentSteel, "I I"," C ","I I", 'I',"ingotSteel",'C',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,10), " S ","SBS","BSB", 'B',"plankTreatedWood", 'S',"stickTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,11), "BB ","SSB","SS ", 'B',"plankTreatedWood", 'S',"stickTreatedWood");
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,12), new ItemStack(IEContent.itemMaterial,1,11),"fabricHemp","fabricHemp","fabricHemp","fabricHemp");
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,12), " CC","CCC"," C ", 'C',"fabricHemp");
 
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,13), "SS","IS","SS", 'I',"ingotCopper",'S',"stickTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,14), "III", 'I',"ingotSteel");
@@ -187,8 +187,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.TURNTABLE.getMeta()), "WIW", "RCR", 'I',"ingotIron", 'C',copperCoil, 'R',"dustRedstone", 'W',"plankTreatedWood");
 		addIngredientRecipe(new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.FLUID_SORTER.getMeta()), "WRW", "IBI", "WCW", 'I', "ingotIron", 'R', "dustRedstone", 'W', "plankTreatedWood", 'B',new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()), 'C',componentIron).allowQuarterTurn();
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WATERMILL.getMeta()), " P ","PIP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,10),'I',"ingotSteel");
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()), " P ","PIP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,11),'I',"ingotIron");
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta()), "PPP","PIP","PPP", 'P',new ItemStack(IEContent.itemMaterial,1,12),'I',"ingotSteel");
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()), "PPP","PIP","PPP", 'P',new ItemStack(IEContent.itemMaterial,1,11),'I',"ingotIron");
+//		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta()), "PPP","PIP","PPP", 'P',new ItemStack(IEContent.itemMaterial,1,12),'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.POST.getMeta()), "F","F","S", 'F',"fenceTreatedWood",'S',"bricksStone");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,4,BlockTypes_WoodenDevice1.WALLMOUNT.getMeta()), "WW","WS", 'W',"plankTreatedWood",'S',"stickTreatedWood");
 
@@ -204,8 +204,8 @@ public class IERecipes
 		//
 		//STONE DECORACTION
 		//
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,BlockTypes_StoneDecoration.COKEBRICK.getMeta()), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.CLAY_BALL,'B',"ingotBrick");
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,BlockTypes_StoneDecoration.BLASTBRICK.getMeta()), "NBN","BDB","NBN", 'D',Items.BLAZE_POWDER,'N',"ingotBrickNether",'B',"ingotBrick");
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,3,BlockTypes_StoneDecoration.COKEBRICK.getMeta()), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.CLAY_BALL,'B',"ingotBrick");
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,3,BlockTypes_StoneDecoration.BLASTBRICK.getMeta()), "NBN","BDB","NBN", 'D',Items.BLAZE_POWDER,'N',"ingotBrickNether",'B',"ingotBrick");
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta()), "P","B", 'P',"plateSteel",'B',new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta()));
 		addTwoWayStorageRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.COKE.getMeta()), new ItemStack(IEContent.itemMaterial,1,6));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,BlockTypes_StoneDecoration.HEMPCRETE.getMeta()), "CCC","HHH","CCC", 'C',Items.CLAY_BALL,'H',"fiberHemp");

@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRecipe, BlastFurnaceRecipeWrapper>
 {
-	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/blastFurnace.png");
+	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/blast_furnace.png");
 
 	public BlastFurnaceRecipeCategory(IGuiHelper helper)
 	{

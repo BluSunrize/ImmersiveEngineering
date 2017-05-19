@@ -34,12 +34,15 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe, Squ
 		guiItemStacks.init(0, true, 1, 22);
 		guiItemStacks.init(1, false, 84, 40);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
-
-		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		guiFluidStacks.init(0, false, 106,9, 16,47, 24000, false, tankOverlay);
-		guiFluidStacks.set(0, ingredients.getOutputs(FluidStack.class).get(0));
-		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+		if(ingredients.getOutputs(ItemStack.class).size()>0)
+			guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
+		if(ingredients.getOutputs(FluidStack.class).size()>0)
+		{
+			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
+			guiFluidStacks.init(0, false, 106, 9, 16, 47, 24000, false, tankOverlay);
+			guiFluidStacks.set(0, ingredients.getOutputs(FluidStack.class).get(0));
+			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+		}
 	}
 
 	@Override

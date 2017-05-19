@@ -36,13 +36,13 @@
 			"transform": "forge:default-block",
 			"custom": {"flip-v": true},
 			"transform": {
-				"scale": [ 0.0625, 0.0625, 0.0625 ],
-				"firstperson_righthand": { "translation": [ 0.25, 0, 0 ], "rotation": [{ "y": 90 }], "scale": [ 2, 2, 2 ] },
-				"firstperson_lefthand": { "translation": [ 0.25, 0, 0 ], "rotation": [{ "y": 90 }], "scale": [ 2, 2, 2 ] },
-				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 60 },{ "y": 37.5 }], "scale": [ 0.75, 0.75, 0.75 ] },
-				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 60 },{ "y": 37.5 }], "scale": [ 0.75, 0.75, 0.75 ] },
-				"fixed": { "scale": [ 1.5, 1.5, 1.5 ] },
-				"gui": { "scale": [ 1.25, 1.25, 1.25 ], "rotation": [{ "y": 215 }] }
+				"scale": [ 0.09375, 0.09375, 0.09375 ],
+				"firstperson_righthand": { "translation": [ 0.25, 0, 0 ], "rotation": [{ "y": -90 }], "scale": [ 2, 2, 2 ] },
+				"firstperson_lefthand": { "translation": [ 0.25, 0, 0 ], "rotation": [{ "y": -90 }], "scale": [ 2, 2, 2 ] },
+				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 60 },{ "y": -142.5 }], "scale": [ 0.75, 0.75, 0.75 ] },
+				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 60 },{ "y": -142.5 }], "scale": [ 0.75, 0.75, 0.75 ] },
+				"fixed": { "scale": [ 1.5, 1.5, 1.5 ], "rotation": [{ "y": 180 }] },
+				"gui": { "scale": [ 1.25, 1.25, 1.25 ], "rotation": [{ "y": 35 }] }
 			}
 		}],
 		"inventory,type=windmill_advanced": [{
