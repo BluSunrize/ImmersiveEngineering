@@ -13,7 +13,8 @@ public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.
 	CONCRETE_SHEET,
 	CONCRETE_QUARTER,
 	CONCRETE_THREEQUARTER,
-	CORESAMPLE;
+	CORESAMPLE,
+	ALLOY_SMELTER;
 
 	@Override
 	public String getName()
@@ -28,6 +29,6 @@ public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.
 	@Override
 	public boolean listForCreative()
 	{
-		return ordinal()>2&&ordinal()!=6;
+		return ordinal()>2&&ordinal()<6;
 	}
 }

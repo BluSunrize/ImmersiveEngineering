@@ -121,6 +121,24 @@ public class IngredientStack
 		return Collections.singletonList(stack);
 	}
 
+	public List<ItemStack> getSizedStackList()
+	{
+		List<ItemStack> list;
+		if(oreName!=null)
+		{
+			list = new ArrayList<ItemStack>();
+			for(ItemStack stack : OreDictionary.getOres(oreName))
+				list.add(ApiUtils.copyStackWithAmount(stack, inputSize));
+		}
+		else if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+			list = Collections.singletonList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid()));
+		else if(stackList!=null)
+			list = stackList;
+		else
+			list = Collections.singletonList(ApiUtils.copyStackWithAmount(stack, inputSize));
+		return list;
+	}
+
 	public ItemStack getRandomizedExampleStack(long rand)
 	{
 		ItemStack ret = stack;

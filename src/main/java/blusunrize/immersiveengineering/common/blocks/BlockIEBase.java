@@ -550,7 +550,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 
 				if(entityIn.motionY<0 && entityIn instanceof EntityPlayer && entityIn.isSneaking())
 				{
-					entityIn.motionY=.05;
+					entityIn.motionY=0;
 					return;
 				}
 				if(entityIn.isCollidedHorizontally)

@@ -1,0 +1,18 @@
+{
+	"elements": [{
+		"from": [ -16, 0, 0 ],
+		"to": [ 16, 32, 32 ],
+		"faces": {
+			"down": { "texture": "#bottom", "uv": [0,0,16,16] },
+			"up": { "texture": "#top", "uv": [0,0,16,16] },
+			"north": { "texture": "#north", "uv": [0,0,16,16] },
+			"south": { "texture": "#south", "uv": [0,0,16,16] },
+			"west": { "texture": "#west", "uv": [0,0,16,16] },
+			"east": { "texture": "#east", "uv": [0,0,16,16] }
+		}
+	}],
+	"textures":
+	{
+		"particle": "#top"
+	}
+}

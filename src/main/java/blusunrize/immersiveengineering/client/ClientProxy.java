@@ -43,10 +43,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDro
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCoresample;
+import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -528,6 +525,9 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.COKEBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockCokeOven.instance));
+		ManualHelper.addEntry("alloysmelter", ManualHelper.CAT_GENERAL,
+				new ManualPages.Crafting(ManualHelper.getManual(), "alloysmelter0", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.ALLOYBRICK.getMeta())),
+				new ManualPageMultiblock(ManualHelper.getManual(), "alloysmelter1", MultiblockAlloySmelter.instance));
 		ManualHelper.addEntry("blastfurnace", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "blastfurnace0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
@@ -1126,6 +1126,8 @@ public class ClientProxy extends CommonProxy
 				Object gui = null;
 				if(ID==Lib.GUIID_CokeOven && te instanceof TileEntityCokeOven)
 					gui = new GuiCokeOven(player.inventory, (TileEntityCokeOven) te);
+				if(ID==Lib.GUIID_AlloySmelter && te instanceof TileEntityAlloySmelter)
+					gui = new GuiAlloySmelter(player.inventory, (TileEntityAlloySmelter) te);
 				if(ID==Lib.GUIID_BlastFurnace && te instanceof TileEntityBlastFurnace)
 					gui = new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace) te);
 				if(ID==Lib.GUIID_WoodenCrate && te instanceof TileEntityWoodenCrate)

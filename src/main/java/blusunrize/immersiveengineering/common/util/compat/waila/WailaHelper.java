@@ -13,7 +13,7 @@ public class WailaHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		 FMLInterModComms.sendMessage("Waila", "register", "blusunrize.immersiveengineering.common.util.compat.waila.IEWailaDataProvider.callbackRegister");
+		 FMLInterModComms.sendMessage("waila", "register", "blusunrize.immersiveengineering.common.util.compat.waila.IEWailaDataProvider.callbackRegister");
 	}
 
 	@Override

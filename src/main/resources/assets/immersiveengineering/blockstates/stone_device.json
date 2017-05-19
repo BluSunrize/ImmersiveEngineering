@@ -45,6 +45,11 @@
 			"model": "immersiveengineering:ie_three_quarter_block",
 			"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }}],
 		"inventory,type=coresample": [{"model": "immersiveengineering:coresample.obj"}],
+		"inventory,type=alloy_smelter": [{
+			"model": "immersiveengineering:ie_two_cubed",
+			"textures": {"bottom": "immersiveengineering:blocks/stone_device_allloy_smelter_bottom", "top": "immersiveengineering:blocks/stone_device_allloy_smelter_top", "north": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "south": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "west": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "east": "immersiveengineering:blocks/stone_device_allloy_smelter_off" },
+			"transform": {"scale": 0.5}
+		}],
 		"type":
 		{
 			"coke_oven": {"textures": {
@@ -78,6 +83,20 @@
 			},
 			"coresample": {
 				"model": "immersiveengineering:coresample.obj"
+			},
+			"alloy_smelter": {
+				"model": "immersiveengineering:ie_two_cubed",
+				"textures": {
+					"bottom": "immersiveengineering:blocks/stone_device_allloy_smelter_bottom",
+					"top": "immersiveengineering:blocks/stone_device_allloy_smelter_top",
+					"north": "immersiveengineering:blocks/stone_device_allloy_smelter_side",
+					"south": "immersiveengineering:blocks/stone_device_allloy_smelter_side",
+					"west": "immersiveengineering:blocks/stone_device_allloy_smelter_side",
+					"east": "immersiveengineering:blocks/stone_device_allloy_smelter_side",
+					"sideOff": "immersiveengineering:blocks/stone_device_allloy_smelter_off",
+					"sideOn": "immersiveengineering:blocks/stone_device_allloy_smelter_on",
+					"particle": "immersiveengineering:blocks/stone_device_allloy_smelter_side"
+				}
 			}
 		},
 		"facing":

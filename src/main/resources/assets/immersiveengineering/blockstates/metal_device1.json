@@ -95,6 +95,7 @@
 				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": [ 1.5, 1.5, 1.5 ] }
 			}
 		}],
+		"inventory,type=turret_rail": [{}],
 		"type":
 		{
 			"blast_furnace_preheater": {
@@ -138,7 +139,8 @@
 			"turret_gun": {
 				"model": "immersiveengineering:metal_device/gun_turret.obj.ie",
 				"custom": { "flip-v": true }
-			}
+			},
+			"turret_rail": {}
 		},
 		"facing":
 		{

@@ -18,8 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 {
 	public BlockStoneDevice()
@@ -83,6 +81,8 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 				return new TileEntityBlastFurnaceAdvanced();
 			case 6:
 				return new TileEntityCoresample();
+			case 7:
+				return new TileEntityAlloySmelter();
 		}
 		return null;
 	}
