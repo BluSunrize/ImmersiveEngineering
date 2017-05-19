@@ -175,7 +175,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public int getFacingLimitation()
 	{
-		return 2;
+		return 6;
 	}
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
