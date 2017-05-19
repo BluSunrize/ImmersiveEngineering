@@ -268,7 +268,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public int getFacingLimitation()
 	{
-		return 2;
+		return 6;
 	}
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
