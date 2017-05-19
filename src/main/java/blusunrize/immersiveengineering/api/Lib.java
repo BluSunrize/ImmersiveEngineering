@@ -33,21 +33,22 @@ public class Lib
 	//Tiles
 	public static final int GUIID_Base_Tile = 0;
 	public static final int GUIID_CokeOven = GUIID_Base_Tile +0;
-	public static final int GUIID_BlastFurnace = GUIID_Base_Tile +1;
-	public static final int GUIID_WoodenCrate = GUIID_Base_Tile +2;
-	public static final int GUIID_Workbench = GUIID_Base_Tile +3;
-	public static final int GUIID_Assembler = GUIID_Base_Tile +4;
-	public static final int GUIID_Sorter = GUIID_Base_Tile +5;
-	public static final int GUIID_Squeezer = GUIID_Base_Tile +6;
-	public static final int GUIID_Fermenter = GUIID_Base_Tile +7;
-	public static final int GUIID_Refinery = GUIID_Base_Tile +8;
-	public static final int GUIID_ArcFurnace = GUIID_Base_Tile +9;
-	public static final int GUIID_AutoWorkbench = GUIID_Base_Tile +10;
-	public static final int GUIID_Mixer = GUIID_Base_Tile +11;
-	public static final int GUIID_Turret = GUIID_Base_Tile +12;
-	public static final int GUIID_FluidSorter = GUIID_Base_Tile +13;
-	public static final int GUIID_Belljar = GUIID_Base_Tile +14;
-	public static final int GUIID_ToolboxBlock = GUIID_Base_Tile +15;
+	public static final int GUIID_AlloySmelter = GUIID_Base_Tile +1;
+	public static final int GUIID_BlastFurnace = GUIID_Base_Tile +2;
+	public static final int GUIID_WoodenCrate = GUIID_Base_Tile +3;
+	public static final int GUIID_Workbench = GUIID_Base_Tile +4;
+	public static final int GUIID_Assembler = GUIID_Base_Tile +5;
+	public static final int GUIID_Sorter = GUIID_Base_Tile +6;
+	public static final int GUIID_Squeezer = GUIID_Base_Tile +7;
+	public static final int GUIID_Fermenter = GUIID_Base_Tile +8;
+	public static final int GUIID_Refinery = GUIID_Base_Tile +9;
+	public static final int GUIID_ArcFurnace = GUIID_Base_Tile +10;
+	public static final int GUIID_AutoWorkbench = GUIID_Base_Tile +11;
+	public static final int GUIID_Mixer = GUIID_Base_Tile +12;
+	public static final int GUIID_Turret = GUIID_Base_Tile +13;
+	public static final int GUIID_FluidSorter = GUIID_Base_Tile +14;
+	public static final int GUIID_Belljar = GUIID_Base_Tile +15;
+	public static final int GUIID_ToolboxBlock = GUIID_Base_Tile +16;
 	//Items
 	public static final int GUIID_Base_Item = 64;
 	public static final int GUIID_Manual = GUIID_Base_Item +0;

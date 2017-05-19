@@ -119,9 +119,9 @@ public class TConstructHelper extends IECompatModule
 	public void init()
 	{
 		if(ApiUtils.isExistingOreName("ingotAluBrass"))
-			IERecipes.addOreDictAlloyingRecipe("ingotAluBrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
-		IERecipes.addOreDictAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
-		IERecipes.addOreDictAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");
+			IERecipes.addOreDictArcAlloyingRecipe("ingotAluBrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
+		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
+		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");
 		//		ChemthrowerHandler.registerEffect("glue", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
 		ChemthrowerHandler.registerEffect("blueslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
 		ChemthrowerHandler.registerEffect("purpleslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,2));

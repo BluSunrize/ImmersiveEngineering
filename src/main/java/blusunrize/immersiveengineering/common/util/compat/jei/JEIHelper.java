@@ -3,7 +3,9 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
+import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter.AlloySmelterRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceFuelCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceRecipeCategory;
@@ -90,6 +92,7 @@ public class JEIHelper implements IModPlugin
 		slotDrawable = guiHelper.getSlotDrawable();
 		IERecipeCategory[] categories = {
 				new CokeOvenRecipeCategory(guiHelper),
+				new AlloySmelterRecipeCategory(guiHelper),
 				new BlastFurnaceRecipeCategory(guiHelper),
 				new BlastFurnaceFuelCategory(guiHelper),
 				new MetalPressRecipeCategory(guiHelper),
@@ -106,6 +109,7 @@ public class JEIHelper implements IModPlugin
 		modRegistry.addRecipeHandlers(categories);
 
 		modRegistry.addRecipes(new ArrayList(CokeOvenRecipe.recipeList));
+		modRegistry.addRecipes(new ArrayList(AlloyRecipe.recipeList));
 		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.recipeList));
 		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.blastFuels));
 		modRegistry.addRecipes(new ArrayList(MetalPressRecipe.recipeList.values()));
@@ -118,9 +122,11 @@ public class JEIHelper implements IModPlugin
 		modRegistry.addRecipes(new ArrayList(BottlingMachineRecipe.recipeList));
 		modRegistry.addRecipes(new ArrayList(MixerRecipe.recipeList));
 	}
-
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
 	{
+		final IRecipeRegistry registry = jeiRuntime.getRecipeRegistry();
+		ArcRecyclingThreadHandler.jeiAddFunc = recipe -> registry.addRecipe(recipe);
+		ArcRecyclingThreadHandler.jeiRemoveFunc = recipe -> registry.removeRecipe(recipe);
 	}
 }

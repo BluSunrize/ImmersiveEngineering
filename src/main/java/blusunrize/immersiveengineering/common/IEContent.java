@@ -422,6 +422,7 @@ public class IEContent
 		registerTile(TileEntityBlastFurnace.class);
 		registerTile(TileEntityBlastFurnaceAdvanced.class);
 		registerTile(TileEntityCoresample.class);
+		registerTile(TileEntityAlloySmelter.class);
 
 		registerTile(TileEntityWoodenCrate.class);
 		registerTile(TileEntityWoodenBarrel.class);
@@ -656,6 +657,8 @@ public class IEContent
 		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
 
+		IERecipes.initAlloySmeltingRecipes();
+
 		IERecipes.initCrusherRecipes();
 
 		IERecipes.initArcSmeltingRecipes();
@@ -848,6 +851,7 @@ public class IEContent
 
 		/**MULTIBLOCKS*/
 		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
+		MultiblockHandler.registerMultiblock(MultiblockAlloySmelter.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBlastFurnaceAdvanced.instance);
 		MultiblockHandler.registerMultiblock(MultiblockMetalPress.instance);

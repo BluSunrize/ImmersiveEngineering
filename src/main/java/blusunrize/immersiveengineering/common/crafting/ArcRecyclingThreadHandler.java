@@ -17,9 +17,13 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ArcRecyclingThreadHandler extends Thread
 {
+	public static Consumer<ArcFurnaceRecipe> jeiAddFunc = o -> {};
+	public static Consumer<ArcFurnaceRecipe> jeiRemoveFunc = o -> {};
+
 	static boolean hasProfiled = false;
 	public static List<ArcFurnaceRecipe> recipesToAdd = null;
 	private List<IRecipe> recipeList = null;
@@ -33,11 +37,15 @@ public class ArcRecyclingThreadHandler extends Thread
 		int r = 0;
 		if(hasProfiled)
 			while(prevRecipeIt.hasNext())
-				if("Recycling".equals(prevRecipeIt.next().specialRecipeType))
+			{
+				ArcFurnaceRecipe recipe = prevRecipeIt.next();
+				if("Recycling".equals(recipe.specialRecipeType))
 				{
 					prevRecipeIt.remove();
+					jeiRemoveFunc.accept(recipe);
 					r++;
 				}
+			}
 		IELogger.info("Arc Recycling: Removed "+r+" old recipes");
 		recipesToAdd = null;
 		new ArcRecyclingThreadHandler(CraftingManager.getInstance().getRecipeList()).start();
@@ -104,10 +112,10 @@ public class ArcRecyclingThreadHandler extends Thread
 		HashSet<String> finishedRecycles = new HashSet<String>();
 		List<ArcFurnaceRecipe> ret = new ArrayList<>();
 		for(RecyclingCalculation valid :  validated)
-			if(finishedRecycles.add(valid.stack.toString()))
+			if(finishedRecycles.add(valid.stack.toString()) && !valid.outputs.isEmpty())
 				ret.add(new ArcRecyclingRecipe(valid.outputs, valid.stack, 100, 512));
 		for(RecyclingCalculation invalid :  Sets.newHashSet(nonValidated.values()))
-			if(finishedRecycles.add(invalid.stack.toString()))
+			if(finishedRecycles.add(invalid.stack.toString()) && !invalid.outputs.isEmpty())
 			{
 //				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
 				ret.add(new ArcRecyclingRecipe(invalid.outputs, invalid.stack, 100, 512));

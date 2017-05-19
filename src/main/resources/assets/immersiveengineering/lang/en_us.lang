@@ -36,6 +36,7 @@ tile.immersiveengineering.stone_decoration.concrete_tile.name=Concrete Tile
 tile.immersiveengineering.stone_decoration.concrete_leaded.name=Leaded Concrete
 tile.immersiveengineering.stone_decoration.insulating_glass.name=Insulating Glass
 tile.immersiveengineering.stone_decoration.concrete_sprayed.name=Quickdry Concrete
+tile.immersiveengineering.stone_decoration.alloybrick.name=Kiln Brick
 tile.immersiveengineering.stone_decoration_slab.cokebrick.name=Coke Brick Slab
 tile.immersiveengineering.stone_decoration_slab.blastbrick.name=Blast Brick Slab
 tile.immersiveengineering.stone_decoration_slab.blastbrick_reinforced.name=Reinforced Blast Brick Slab
@@ -57,6 +58,7 @@ tile.immersiveengineering.stone_device.concrete_sheet.name=Concrete Sheet
 tile.immersiveengineering.stone_device.concrete_quarter.name=Concrete Panel
 tile.immersiveengineering.stone_device.concrete_threequarter.name=Concrete Chunk
 tile.immersiveengineering.stone_device.coresample.name=Core Sample
+tile.immersiveengineering.stone_device.alloy_smelter.name=Alloy Kiln
 
 tile.immersiveengineering.treated_wood.horizontal.name=Treated Wood Planks
 tile.immersiveengineering.treated_wood.vertical.name=Treated Wood Planks
@@ -1022,6 +1024,11 @@ ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
 ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will need to create in order to proceed with Immersive Engineering. Its functionality is simple, it will heat up coal or blocks of coal without supplying it with oxygen, creating Coal Coke, a carbon rich fuel. More importantly, this process creates §lCreosote Oil§r, which is used as a <link;treated_wood;§o§npreservative §o§nfor §o§nwood§r>. Similarly you can also burn wooden logs into charcoal with this oven, albeit with a smaller yield of creosote.
 ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
+
+ie.manual.entry.alloysmelter.name=Alloy Kiln
+ie.manual.entry.alloysmelter.subtext=Mixin' Metals
+ie.manual.entry.alloysmelter0=The Alloy Kiln is a simple furnace mate out of heatresistant sandstone and bricks. Within it, temperatures are high enough to allow metals to be melted into a fluid state and mixed, creating an <link;alloys;§o§nalloy§r>.<br>This allows the creation of important alloys like Electrum and Constantan without requiring tedious mixing of dusts.
+ie.manual.entry.alloysmelter1=To form the Kiln, arrange 8 of the Kiln Bricks in a 2x2x2 cube, as shown above, and rightclick one of the sides' blocks with an Engineer's Hammer.
 
 ie.manual.entry.treatedwood.name=Treated Wood
 ie.manual.entry.treatedwood.subtext=Highly Durable

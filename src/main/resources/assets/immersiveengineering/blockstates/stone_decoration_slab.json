@@ -23,6 +23,7 @@
 		"inventory,type=concrete_tile": [{"textures": {"all": "immersiveengineering:blocks/stone_decoration_concrete_tile"}}],
 		"inventory,type=concrete_leaded": [{"textures": {"all": "immersiveengineering:blocks/stone_decoration_concrete_leaded"}}],
 		"inventory,type=insulating_glass": [{"textures": {"all": "immersiveengineering:blocks/stone_decoration_insulating_glass"}}],
+		"inventory,type=alloybrick": [{"textures": {"all": "immersiveengineering:blocks/stone_decoration_alloybrick"}}],
 		"type":
 		{
 			"cokebrick": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_cokebrick" }},
@@ -33,7 +34,8 @@
 			"concrete": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete" }},
 			"concrete_tile": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete_tile" }},
 			"concrete_leaded": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete_leaded" }},
-			"insulating_glass": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_insulating_glass" }}
+			"insulating_glass": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_insulating_glass" }},
+			"alloybrick": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_alloybrick" }}
 		},
 		"slabtype":
 		{

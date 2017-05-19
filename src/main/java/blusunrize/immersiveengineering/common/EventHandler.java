@@ -259,7 +259,11 @@ public class EventHandler
 		}
 		if (event.phase==TickEvent.Phase.END && ArcRecyclingThreadHandler.recipesToAdd!=null)
 		{
-			ArcFurnaceRecipe.recipeList.addAll(ArcRecyclingThreadHandler.recipesToAdd);
+			for(ArcFurnaceRecipe recipe : ArcRecyclingThreadHandler.recipesToAdd)
+			{
+				ArcFurnaceRecipe.recipeList.add(recipe);
+				ArcRecyclingThreadHandler.jeiAddFunc.accept(recipe);
+			}
 			ArcRecyclingThreadHandler.recipesToAdd = null;
 		}
 		if(event.phase==TickEvent.Phase.END && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
