@@ -1292,7 +1292,7 @@ ie.manual.entry.drill0=The handheld, diesel-powered drill is a big advancement i
 ie.manual.entry.drill1=The §6Drill Head§r determines the base §6mining level§r, §6speed§r, and §6size§r, as well as the §6attack damage§r. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.
 ie.manual.entry.drill2=As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the Pressurized Air Tank Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.
 ie.manual.entry.drill3=The §6Advanced Lubrication System§r applies additional lubricant to the drill at a regular basis, decreasing the damage done to the drillhead.
-ie.manual.entry.drill4=By adding §6Additional Augers§r to the drill, its destructive potential is increased, increasing it's damage against living creatures and allowing it to run and dig faster. The upgrade stacks up to three times.
+ie.manual.entry.drill4=By adding §6Additional Augers§r to the drill, its destructive potential is increased, increasing its damage against living creatures and allowing it to run and dig faster.<br>The upgrade stacks up to three times.
 ie.manual.entry.drill5=The §6Large Fuel Tank§r allows the drill to store more fuel internally, extending the time you can use it before refilling.
 
 ie.manual.entry.revolver.name=Revolver

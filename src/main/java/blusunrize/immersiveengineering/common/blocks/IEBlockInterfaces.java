@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
@@ -160,14 +159,7 @@ public class IEBlockInterfaces
 	public interface IConfigurableSides
 	{
 		IEEnums.SideConfig getSideConfig(int side);
-		default boolean toggleSide(int side, EntityPlayer p)
-		{
-			toggleSide(side);
-			return true;
-		}
-		@Deprecated
-		default void toggleSide(int side)
-		{}
+		boolean toggleSide(int side, EntityPlayer p);
 	}
 
 	public interface ITileDrop
