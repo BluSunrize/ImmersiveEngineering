@@ -240,7 +240,7 @@ public class IEContent
 
 		blockWoodenDecoration = new BlockWoodenDecoration();
 		blockWoodenDevice0 = new BlockWoodenDevice0();
-		blockWoodenDevice1 = new BlockWoodenDevice1();
+		blockWoodenDevice1 = new BlockWoodenDevice1().setMetaHidden(BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta());
 		blockCrop = new BlockIECrop("hemp", PropertyEnum.create("type", BlockTypes_Hemp.class));
 		blockClothDevice = new BlockClothDevice();
 		blockFakeLight = new BlockFakeLight();
@@ -268,7 +268,7 @@ public class IEContent
 				"hemp_fiber", "hemp_fabric",
 				"coal_coke", "slag",
 				"component_iron", "component_steel",
-				"waterwheel_segment", "windmill_blade", "windmill_blade_advanced",
+				"waterwheel_segment", "windmill_blade", "windmill_sail",
 				"wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
 				"dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
 				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel");
@@ -546,7 +546,7 @@ public class IEContent
 		addBanner("bevels", "bvl", "plateIron");
 		addBanner("ornate", "orn", "dustSilver");
 		addBanner("treatedwood", "twd", "plankTreatedWood");
-		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()),new ItemStack(blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta())});
+		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta())});
 		if(!BulletHandler.homingCartridges.isEmpty())
 		{
 			ItemStack wolfpackCartridge = BulletHandler.getBulletStack("wolfpack");

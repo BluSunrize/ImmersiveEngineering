@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
@@ -110,7 +109,7 @@ public class IEBlockInterfaces
 		EnumFacing getFacing();
 		void setFacing(EnumFacing facing);
 		/**
-		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis, 5 = horizontal based on quadrant
+		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis, 5 = horizontal based on quadrant, 6 = horizontal preferring clicked side
 		 */
 		int getFacingLimitation();
 		default EnumFacing getFacingForPlacement(EntityLivingBase placer, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
@@ -145,6 +144,9 @@ public class IEBlockInterfaces
 						f = zFromMid < 0 ? EnumFacing.NORTH : EnumFacing.SOUTH;
 				}
 			}
+			else if(limit == 6)
+				f = side.getAxis()!=Axis.Y? side.getOpposite(): EnumFacing.getDirectionFromEntityLiving(pos, placer);
+
 			return mirrorFacingOnPlacement(placer)?f.getOpposite():f;
 		}
 		boolean mirrorFacingOnPlacement(EntityLivingBase placer);
@@ -160,14 +162,7 @@ public class IEBlockInterfaces
 	public interface IConfigurableSides
 	{
 		IEEnums.SideConfig getSideConfig(int side);
-		default boolean toggleSide(int side, EntityPlayer p)
-		{
-			toggleSide(side);
-			return true;
-		}
-		@Deprecated
-		default void toggleSide(int side)
-		{}
+		boolean toggleSide(int side, EntityPlayer p);
 	}
 
 	public interface ITileDrop

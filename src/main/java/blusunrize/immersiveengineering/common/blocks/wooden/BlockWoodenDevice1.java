@@ -290,8 +290,8 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 			return new TileEntityWatermill();
 		case WINDMILL:
 			return new TileEntityWindmill();
-		case WINDMILL_ADVANCED:
-			return new TileEntityWindmillAdvanced();
+//		case WINDMILL_ADVANCED:
+//			return new TileEntityWindmillAdvanced();
 		case POST:
 			return new TileEntityWoodenPost();
 		case WALLMOUNT:
