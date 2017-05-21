@@ -54,6 +54,9 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	protected boolean redstoneControlInverted = false;
 	public int controllingComputers = 0;
 	public boolean computerOn = true;
+	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
+	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
+	public long onlyLocalDissassembly = -1;
 
 	public TileEntityMultiblockMetal(IMultiblock mutliblockInstance, int[] structureDimensions, int energyCapacity, boolean redstoneControl)
 	{
@@ -274,23 +277,23 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			BlockPos startPos = this.getBlockPosForPos(0);
 			BlockPos mbOrigin = getPos().add(-offset[0], -offset[1], -offset[2]);
+			long time = world.getTotalWorldTime();
 			for(int yy=0;yy<structureDimensions[0];yy++)
 				for(int ll=0;ll<structureDimensions[1];ll++)
 					for(int ww=0;ww<structureDimensions[2];ww++)
 					{
 						int w = mirrored?-ww:ww;
 						BlockPos pos = startPos.offset(facing, ll).offset(facing.rotateY(), w).add(0, yy, 0);
-
 						ItemStack s = ItemStack.EMPTY;
 
 						TileEntity te = world.getTileEntity(pos);
 						if(te instanceof TileEntityMultiblockMetal)
 						{
-							TileEntityMultiblockPart<?> part = (TileEntityMultiblockPart<?>) te;
+							TileEntityMultiblockMetal part = (TileEntityMultiblockMetal) te;
 							Vec3i diff = pos.subtract(mbOrigin);
 							if (part.offset[0]!=diff.getX()||part.offset[1]!=diff.getY()||part.offset[2]!=diff.getZ())
 								continue;
-							else
+							else if (time!=part.onlyLocalDissassembly)
 							{
 								s = part.getOriginalBlock();
 								part.formed = false;
