@@ -20,8 +20,10 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
+import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.*;
@@ -581,6 +583,15 @@ public class EventHandler
 						event.setCost(event.getCost()+2);
 					event.getOutput().setStackDisplayName(event.getName());
 				}
+			}
+		}
+	}
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void breakLast(BlockEvent.BreakEvent event) {
+		if (event.getState().getBlock()==IEContent.blockMetalMultiblock) {
+			TileEntity te = event.getWorld().getTileEntity(event.getPos());
+			if (te instanceof TileEntityMultiblockMetal) {
+				((TileEntityMultiblockMetal) te).onlyLocalDissassembly = event.getWorld().getTotalWorldTime();
 			}
 		}
 	}
