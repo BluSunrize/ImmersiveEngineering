@@ -46,6 +46,7 @@ tile.immersiveengineering.stone_decoration_slab.concrete.name=Concrete Slab
 tile.immersiveengineering.stone_decoration_slab.concrete_tile.name=Concrete Tile Slab
 tile.immersiveengineering.stone_decoration_slab.concrete_leaded.name=Leaded Concrete Slab
 tile.immersiveengineering.stone_decoration_slab.insulating_glass.name=Insulating Glass Slab
+tile.immersiveengineering.stone_decoration_slab.alloybrick.name=Kiln Brick Slab
 tile.immersiveengineering.stone_decoration_stairs_hempcrete.name=Hempcrete Stairs
 tile.immersiveengineering.stone_decoration_stairs_concrete.name=Concrete Stairs
 tile.immersiveengineering.stone_decoration_stairs_concrete_tile.name=Concrete Tile Stairs
