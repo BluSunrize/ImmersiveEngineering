@@ -198,7 +198,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		if (!Utils.isHammer(heldItem))
 		{
 			active = !active;
-			world.playSound(getPos().getX(),getPos().getY(),getPos().getZ(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F,1, true);
+			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F,1);
 			if (wires>1)
 				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
 			world.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
