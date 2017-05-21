@@ -72,15 +72,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
-		if(Utils.isFluidRelatedItemStack(player.getHeldItem(EnumHand.MAIN_HAND)))
-		{
-			String s = null;
-			if(tank.getFluid()!=null)
-				s = tank.getFluid().getLocalizedName()+": "+tank.getFluidAmount()+"mB";
-			else
-				s = I18n.format(Lib.GUI+"empty");
-			return new String[]{s};
-		}
+
 		if(hammer && IEConfig.colourblindSupport && mop.sideHit.getAxis()==Axis.Y)
 		{
 			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
@@ -92,7 +84,14 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j)
 			};
 		}
-		return null;
+
+        String s = null;
+        if(tank.getFluid()!=null)
+            s = tank.getFluid().getLocalizedName()+": "+tank.getFluidAmount()+"mB";
+        else
+            s = I18n.format(Lib.GUI+"empty");
+        return new String[]{s};
+
 	}
 	@Override
 	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
