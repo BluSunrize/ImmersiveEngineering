@@ -48,7 +48,7 @@
 		"inventory,type=alloy_smelter": [{
 			"model": "immersiveengineering:ie_two_cubed",
 			"textures": {"bottom": "immersiveengineering:blocks/stone_device_allloy_smelter_bottom", "top": "immersiveengineering:blocks/stone_device_allloy_smelter_top", "north": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "south": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "west": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "east": "immersiveengineering:blocks/stone_device_allloy_smelter_off" },
-			"transform": {"scale": 0.5}
+			"transform": {"scale": 0.5, "translation": [ 0.25, -0.25, 0 ]}
 		}],
 		"type":
 		{
