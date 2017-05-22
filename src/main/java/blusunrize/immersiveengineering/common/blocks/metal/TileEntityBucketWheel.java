@@ -37,7 +37,11 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	public NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
 	public ItemStack particleStack = ItemStack.EMPTY;
-
+	private static final int[] size = {7, 1, 7};
+	public TileEntityBucketWheel()
+	{
+		super(size);
+	}
 	@Override
 	public ItemStack getOriginalBlock()
 	{
@@ -111,48 +115,6 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 			MessageTileSync sync = new MessageTileSync(this, nbt);
 			ImmersiveEngineering.packetHandler.sendToAllAround(sync, new TargetPoint(world.provider.getDimension(),
 					getPos().getX(), getPos().getY(), getPos().getZ(), 100));
-		}
-	}
-
-	@Override
-	public void disassemble()
-	{
-		super.invalidate();
-
-		if(formed && !world.isRemote)
-		{
-			BlockPos startPos = getPos().add(-offset[0], -offset[1], -offset[2]);
-
-			for(int w=-3;w<=3;w++)
-				for(int h=-3;h<=3;h++)
-				{
-					int xx = (facing==EnumFacing.SOUTH?-w: facing==EnumFacing.NORTH?w: 0);
-					int yy = h;
-					int zz = (facing==EnumFacing.EAST?-w: facing==EnumFacing.WEST?w: 0);
-					BlockPos pos = startPos.add(xx, yy, zz);
-					ItemStack s = ItemStack.EMPTY;
-					TileEntity te = world.getTileEntity(pos);
-					if(te instanceof TileEntityBucketWheel)
-					{
-						s = ((TileEntityBucketWheel)te).getOriginalBlock();
-						((TileEntityBucketWheel)te).formed=false;
-					}
-
-					if(pos.equals(getPos()))
-						s = this.getOriginalBlock();
-					IBlockState state = Utils.getStateFromItemStack(s);
-					if(state!=null)
-					{
-						if(pos.equals(getPos()))
-							world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
-						else
-						{
-							if(state.getBlock()==this.getBlockType())
-								world.setBlockToAir(pos);
-							world.setBlockState(pos, state);
-						}
-					}
-				}
 		}
 	}
 

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
@@ -588,10 +589,10 @@ public class EventHandler
 	}
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void breakLast(BlockEvent.BreakEvent event) {
-		if (event.getState().getBlock()==IEContent.blockMetalMultiblock) {
+		if (event.getState().getBlock() instanceof BlockIEMultiblock) {
 			TileEntity te = event.getWorld().getTileEntity(event.getPos());
-			if (te instanceof TileEntityMultiblockMetal) {
-				((TileEntityMultiblockMetal) te).onlyLocalDissassembly = event.getWorld().getTotalWorldTime();
+			if (te instanceof TileEntityMultiblockPart) {
+				((TileEntityMultiblockPart) te).onlyLocalDissassembly = event.getWorld().getTotalWorldTime();
 			}
 		}
 	}
