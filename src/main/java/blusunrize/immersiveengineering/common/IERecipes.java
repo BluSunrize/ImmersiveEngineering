@@ -80,10 +80,10 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,15), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,16), "I  ","II "," II", 'I',"ingotSteel");
 
-		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 20), "plateCopper", cutters).setToolDamageRecipe(1);
-		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 21), "plateElectrum", cutters).setToolDamageRecipe(1);
-		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 22), "plateAluminum", cutters).setToolDamageRecipe(1);
-		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 23), "plateSteel", cutters).setToolDamageRecipe(1);
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 4, 20), "plateCopper", cutters).setToolDamageRecipe(1);
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 4, 21), "plateElectrum", cutters).setToolDamageRecipe(1);
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 4, 22), "plateAluminum", cutters).setToolDamageRecipe(1);
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 4, 23), "plateSteel", cutters).setToolDamageRecipe(1);
 
 		//		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,14), "I","I", 'I',"ingotIron");
 		//		addOredrrictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
@@ -623,7 +623,7 @@ public class IERecipes
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("wire",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,4), 2400);
+						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),8), "ingot"+ore, new ItemStack(IEContent.itemMold,1,4), 2400);
 					}
 				}
 		if(registeredMoldBases.containsKey("plate"))
