@@ -1028,7 +1028,7 @@ ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in
 
 ie.manual.entry.alloysmelter.name=Alloy Kiln
 ie.manual.entry.alloysmelter.subtext=Mixin' Metals
-ie.manual.entry.alloysmelter0=The Alloy Kiln is a simple furnace made out of heat resistant sandstone and bricks. Within it, temperatures are high enough to allow metals to be melted into a fluid state and mixed, creating an <link;alloys;§o§nalloy§r>.<br>This allows the creation of important alloys like Electrum and Constantan without requiring  the tedious mixing of dusts.
+ie.manual.entry.alloysmelter0=The Alloy Kiln is a simple furnace made out of heat resistant sandstone and bricks. Within it, temperatures are high enough to allow metals to be melted into a fluid state and mixed, creating an <link;alloys;§o§nalloy§r>.<br>This allows the creation of important alloys like Electrum and Constantan without requiring the tedious mixing of dusts.
 ie.manual.entry.alloysmelter1=To form the Kiln, arrange 8 of the Kiln Bricks in a 2x2x2 cube, as shown above, and rightclick one of the sides' blocks with an Engineer's Hammer.
 
 ie.manual.entry.treatedwood.name=Treated Wood
