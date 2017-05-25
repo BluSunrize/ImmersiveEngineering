@@ -35,6 +35,7 @@ import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -581,7 +582,7 @@ public class IERecipes
 					else
 						out = Utils.copyStackWithAmount(out, out.getCount() / 2);
 					if(out != null && !out.isEmpty() && !arcBlacklist.contains(ore))
-						addArcRecipe(out, "dust"+ore, 100,512, null);
+						addArcRecipe(out, "dust"+ore, 100,512, ItemStack.EMPTY);
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 						addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "ingot"+ore, 3600, null,0);
 				}
@@ -734,7 +735,7 @@ public class IERecipes
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemDrillhead,1,OreDictionary.WILDCARD_VALUE));
 	}
 
-	public static ArcFurnaceRecipe addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
+	public static ArcFurnaceRecipe addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, @Nonnull ItemStack slag, Object... additives)
 	{
 		return ArcFurnaceRecipe.addRecipe(output, input, slag, time, energyPerTick, additives);
 	}
@@ -767,8 +768,8 @@ public class IERecipes
 	public static void addOreDictAlloyingRecipe(ItemStack out, String inputName, int time, int energyPerTick, Object... additives)
 	{
 		if(ApiUtils.isExistingOreName("ingot"+inputName))
-			ArcFurnaceRecipe.addRecipe(out, "ingot"+inputName, null, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
+			ArcFurnaceRecipe.addRecipe(out, "ingot"+inputName, ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
 		if(ApiUtils.isExistingOreName("dust"+inputName))
-			ArcFurnaceRecipe.addRecipe(out, "dust"+inputName, null, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
+			ArcFurnaceRecipe.addRecipe(out, "dust"+inputName, ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
 	}
 }

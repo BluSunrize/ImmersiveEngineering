@@ -768,19 +768,19 @@ public class IEContent
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost= IEConfig.Machines.heater_speedupConsumption;
 		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new DefaultFurnaceAdapter());
 
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.WHEAT_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.PUMPKIN_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.MELON_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), null, itemSeeds, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.WHEAT_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
 		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
 		Fluid fluidBlood = FluidRegistry.getFluid("blood");
 		if(fluidBlood!=null)
 			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood,5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
 
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.REEDS, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.MELON, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.APPLE, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, "cropPotato", 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.REEDS, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.MELON, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.APPLE, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, "cropPotato", 6400);
 
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8), 80);
 
