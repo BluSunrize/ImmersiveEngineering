@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +25,9 @@ public class FermenterRecipe extends MultiblockRecipe
 	
 	public final IngredientStack input;
 	public final FluidStack fluidOutput;
+	@Nonnull
 	public final ItemStack itemOutput;
-	public FermenterRecipe(FluidStack fluidOutput, ItemStack itemOutput, Object input, int energy)
+	public FermenterRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
 	{
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
@@ -44,7 +46,7 @@ public class FermenterRecipe extends MultiblockRecipe
 	}
 	
 	public static ArrayList<FermenterRecipe> recipeList = new ArrayList();
-	public static FermenterRecipe addRecipe(FluidStack fluidOutput, ItemStack itemOutput, Object input, int energy)
+	public static FermenterRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
 	{
 		FermenterRecipe r = new FermenterRecipe(fluidOutput, itemOutput, input, energy);
 		recipeList.add(r);
