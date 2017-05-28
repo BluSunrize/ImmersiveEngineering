@@ -9,6 +9,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * @author BluSunrize - 13.08.2015
@@ -52,6 +53,11 @@ public class IEApi
 	 */
 	public static List<Runnable> renderCacheClearers = new ArrayList<>();
 
+	/**
+	 * If one of the predicates in this list returns true for a given stack, it can't be placed in a crate or in the Engineer's toolbox
+	 */
+	public static List<Predicate<ItemStack>> forbiddenInCrates = new ArrayList<>();
+
 	public static ItemStack getPreferredOreStack(String oreName)
 	{
 		if(!oreOutputPreference.containsKey(oreName))
@@ -83,5 +89,12 @@ public class IEApi
 				}
 			}
 		return preferredStack.copy();
+	}
+	public static boolean isAllowedInCrate(ItemStack stack)
+	{
+		for (Predicate<ItemStack> check:forbiddenInCrates)
+			if (check.test(stack))
+				return false;
+		return true;
 	}
 }
