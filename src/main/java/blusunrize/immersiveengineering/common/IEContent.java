@@ -1,10 +1,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.MultiblockHandler;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
@@ -929,6 +926,19 @@ public class IEContent
 		//			if(rcCube!=null)
 		//				OreDictionary.registerOre("blockFuelCoke", new ItemStack(rcCube,1,0));
 		//		}
+
+		/*BLOCK ITEMS FROM CRATES*/
+		IEApi.forbiddenInCrates.add((stack)-> {
+			if (stack.getItem()==IEContent.itemToolbox)
+				return true;
+			if (stack.getItem()==IEContent.itemToolbox)
+				return true;
+			if (OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
+				return true;
+			if (OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
+				return true;
+			return false;
+		});
 	}
 
 	public static void postInit()

@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -97,14 +98,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		if(stack!=null)
-		{
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
-				return false;
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
-				return false;
-		}
-		return true;
+		return stack!=null&&IEApi.isAllowedInCrate(stack);
 	}
 	@Override
 	public int getSlotLimit(int slot)

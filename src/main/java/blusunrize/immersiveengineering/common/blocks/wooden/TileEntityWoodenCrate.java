@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -147,14 +148,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		if(stack!=null)
-		{
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
-				return false;
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
-				return false;
-		}
-		return true;
+		return IEApi.isAllowedInCrate(stack);
 	}
 	@Override
 	public int getSlotLimit(int slot)
