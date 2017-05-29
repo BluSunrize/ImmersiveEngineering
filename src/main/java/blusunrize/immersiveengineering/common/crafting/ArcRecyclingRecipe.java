@@ -18,7 +18,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	HashMap<ItemStack,Double> outputs;
 	public ArcRecyclingRecipe(HashMap<ItemStack,Double> outputs, Object input, int time, int energyPerTick)
 	{
-		super(null,input,null, time, energyPerTick);
+		super(null,input,ItemStack.EMPTY, time, energyPerTick);
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
 		this.outputList = NonNullList.create();
