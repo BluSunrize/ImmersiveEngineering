@@ -939,6 +939,8 @@ public class IEContent
 				return true;
 			return false;
 		});
+
+		TileEntityFluidPipe.initCovers();
 	}
 
 	public static void postInit()
