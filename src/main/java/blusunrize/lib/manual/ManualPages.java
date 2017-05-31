@@ -478,16 +478,16 @@ public abstract class ManualPages implements IManualPage
 				{
 					if(ingredientsPre[iO] instanceof List)
 					{
-						final java.util.function.Function<ItemStack, List<ItemStack>> subItemFunc = stack -> {
+						final java.util.function.Function<ItemStack, List<ItemStack>> subItemFunc = is -> {
 							List<ItemStack> slist = new ArrayList<>();
-							stack.getItem().getSubItems(stack.getItem(), stack.getItem().getCreativeTab(), slist);
+							is.getItem().getSubItems(is.getItem(), is.getItem().getCreativeTab(), slist);
 							return slist;
-						}
+						};
 						
 						ingredients[iO] = ((List<ItemStack>)ingredientsPre[iO]).stream()
-						.filter(stack -> stack != null && stack.getItem() != null)
-						.flatMap(stack -> stack.getMetadata() == OreDictionary.WILDCARD_VALUE ? subItemFunc.apply(stack).stream() : java.util.stream.Stream.of(stack))
-						.filter(stack -> stack.getDisplayName() != null)
+						.filter(is -> is != null && is.getItem() != null)
+						.flatMap(is -> is.getMetadata() == OreDictionary.WILDCARD_VALUE ? subItemFunc.apply(is).stream() : java.util.stream.Stream.of(is))
+						.filter(is -> is.getDisplayName() != null)
 						.collect(java.util.stream.Collectors.toList());
 					}
 					else
