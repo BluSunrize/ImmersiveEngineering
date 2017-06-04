@@ -32,6 +32,7 @@ public class CraftTweakerHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
+		MineTweakerAPI.registerClass(AlloySmelter.class);
 		MineTweakerAPI.registerClass(BlastFurnace.class);
 		MineTweakerAPI.registerClass(CokeOven.class);
 		MineTweakerAPI.registerClass(Crusher.class);
