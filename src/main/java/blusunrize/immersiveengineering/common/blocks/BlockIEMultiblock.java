@@ -40,9 +40,6 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)tileEntity;
 			if(!tile.formed && tile.pos==-1 && !tile.getOriginalBlock().isEmpty())
 				world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, tile.getOriginalBlock().copy()));
-
-			if(tileEntity instanceof IInventory)
-				InventoryHelper.dropInventoryItems(world, pos, (IInventory)tile);
 		}
 		if(tileEntity instanceof TileEntityMultiblockPart)
 			((TileEntityMultiblockPart)tileEntity).disassemble();

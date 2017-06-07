@@ -57,7 +57,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
 	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList();
 	public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList();
-	static{
+	public static void initCovers() {
 		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(
 				new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
 				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
@@ -605,7 +605,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				key += "0";
 		}
 		if(!pipeCover.isEmpty())
-			key += "scaf:" + pipeCover.getItem().getRegistryName();
+			key += "scaf:" + pipeCover;
 		return key;
 	}
 
