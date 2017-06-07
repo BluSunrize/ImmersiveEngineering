@@ -33,6 +33,8 @@ public class MysticalAgricultureHelper extends IECompatModule
 				for(Object type : c_Types.getEnumConstants())
 					if((Boolean)m_isEnabled.invoke(type))
 						addType(((IStringSerializable)type).getName());
+			for(int tier=1; tier<=5; tier++)
+				addInferiumType(tier);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -45,5 +47,14 @@ public class MysticalAgricultureHelper extends IECompatModule
 		Block blockCrop = Block.REGISTRY.getObject(new ResourceLocation("mysticalagriculture:"+type+"_crop"));
 		if(itemSeeds!=null && itemEssence!=null && blockCrop!=null)
 			BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemEssence),new ItemStack(itemSeeds)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
+	}
+
+	static void addInferiumType(int tier)
+	{
+		Item itemSeeds = Item.REGISTRY.getObject(new ResourceLocation(String.format("mysticalagriculture:tier%d_inferium_seeds", tier)));
+		Item itemEssence = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture:inferium_essence"));
+		Block blockCrop = Block.REGISTRY.getObject(new ResourceLocation(String.format("mysticalagriculture:tier%d_inferium_crop", tier)));
+		if(itemSeeds!=null && itemEssence!=null && blockCrop!=null)
+			BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemEssence, tier),new ItemStack(itemSeeds)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 	}
 }
