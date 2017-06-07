@@ -3,9 +3,16 @@
 - added a migration system to allow loading 1.10 worlds into MC 1.11.2! (thanks Malte)
 - added special chemthrower behaviour for fluid concrete. It's the GLOO cannon from Prey! :D
 - added compat for Forestry's fertilizer to be used in the cloche
+- added the Alloy Kiln!
+    - a small multiblock that allows earlygame alloying of metals
+    - also features Crafttweaker support (thanks primetoxinz)
+- added new textures for the Dynamo, copper ingots, wirecoils and coil blocks (thanks Mr. Hazard)
 - changed balance on Drills: Heads have more durability, lubrication reduces wear, augers boost speed
 - changed Turrets to use the improved Tile Renders (thanks Malte)
 - changed outputsize on Coke and Blastbrick recipes, reducing earlygame resource costs
+- changed the Windmills!
+    - new model (courtesy of Mr. Hazard)
+    - instead of having two types, they are now "upgraded" with sails
 - fixed recipes for redstone ignoring conveyers
 - fixed render-crash with the Cloche
 - fixed nested configs not generating
@@ -13,6 +20,11 @@
 - fixed cross-mod compat for the Cloche
 - fixed soil-texture getter for the cloche
 - fixed Covered Conveyors not protecting inserted items against pickup
+- fixed Improved Blast Furnace consuming too much fuel (thanks Malte)
+- fixed Multiblock disassemly code (thanks Malte)
+- fixed possible NBT overflows with toolboxes, crates, shulkerboxes, etc (thanks Malte)
+- fixed Fluid Pipe covers not initializing properly (thanks Malte)
+
 
 #####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
