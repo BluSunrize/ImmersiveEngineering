@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,13 +28,14 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public final String oreInputString;
 	public final IngredientStack[] additives;
 	public final ItemStack output;
+	@Nonnull
 	public final ItemStack slag;
 
 	public String specialRecipeType;
 	public static ArrayList<String> specialRecipeTypes = new ArrayList<String>();
 	public static ArrayList<ArcFurnaceRecipe> recipeList = new ArrayList<ArcFurnaceRecipe>();
 
-	public ArcFurnaceRecipe(ItemStack output, Object input, ItemStack slag, int time, int energyPerTick, Object... additives)
+	public ArcFurnaceRecipe(ItemStack output, Object input, @Nonnull ItemStack slag, int time, int energyPerTick, Object... additives)
 	{
 		this.output = output;
 		this.input = ApiUtils.createIngredientStack(input);
@@ -188,7 +190,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArcFurnaceRecipe addRecipe(ItemStack output, Object input, ItemStack slag, int time, int energyPerTick, Object... additives)
+	public static ArcFurnaceRecipe addRecipe(ItemStack output, Object input, @Nonnull ItemStack slag, int time, int energyPerTick, Object... additives)
 	{
 		ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(output, input, slag, time, energyPerTick, additives);
 		if(recipe.input!=null)

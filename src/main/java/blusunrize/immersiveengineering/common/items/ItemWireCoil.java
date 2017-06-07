@@ -82,8 +82,6 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 //	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
-//		if(!world.isRemote)
-		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof IImmersiveConnectable && ((IImmersiveConnectable)tileEntity).canConnect())
 			{
@@ -97,7 +95,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 
 				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target))
 				{
-					player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
+					if (!world.isRemote)
+						player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
 					return EnumActionResult.FAIL;
 				}
 
@@ -179,7 +178,6 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 					}
 				return EnumActionResult.SUCCESS;
 			}
-		}
 		return EnumActionResult.PASS;
 	}
 }
