@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +25,9 @@ public class SqueezerRecipe extends MultiblockRecipe
 	
 	public final IngredientStack input;
 	public final FluidStack fluidOutput;
+	@Nonnull
 	public final ItemStack itemOutput;
-	public SqueezerRecipe(FluidStack fluidOutput, ItemStack itemOutput, Object input, int energy)
+	public SqueezerRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
 	{
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
@@ -44,7 +46,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 	}
 	
 	public static ArrayList<SqueezerRecipe> recipeList = new ArrayList();
-	public static SqueezerRecipe addRecipe(FluidStack fluidOutput, ItemStack itemOutput, Object input, int energy)
+	public static SqueezerRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
 	{
 		SqueezerRecipe r = new SqueezerRecipe(fluidOutput, itemOutput, input, energy);
 		recipeList.add(r);

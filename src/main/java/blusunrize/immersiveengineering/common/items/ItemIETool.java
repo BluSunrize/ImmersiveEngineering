@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -16,10 +17,12 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.*;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -142,6 +146,70 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	//		return stack.getItemDamage()!=0;
 	//	}
 
+
+	@Override
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+	{
+		EnumActionResult ret =  tryFormMB(player, world, pos, side, hand);
+		if (world.isRemote&&ret!=EnumActionResult.PASS)
+			// If the client returns PASS, the server won't get notified
+			// We need the server to be notified, so we notify it manually
+			Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
+		return ret;
+	}
+
+	private EnumActionResult tryFormMB(EntityPlayer player, World world, BlockPos pos, EnumFacing side, EnumHand hand)
+	{
+		ItemStack stack = player.getHeldItem(hand);
+		if (stack.getMetadata() == 0)
+		{
+			String[] permittedMultiblocks = null;
+			String[] interdictedMultiblocks = null;
+			if (ItemNBTHelper.hasKey(stack, "multiblockPermission"))
+			{
+				NBTTagList list = stack.getTagCompound().getTagList("multiblockPermission", 8);
+				permittedMultiblocks = new String[list.tagCount()];
+				for (int i = 0; i < permittedMultiblocks.length; i++)
+					permittedMultiblocks[i] = list.getStringTagAt(i);
+			}
+			if (ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
+			{
+				NBTTagList list = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
+				interdictedMultiblocks = new String[list.tagCount()];
+				for (int i = 0; i < interdictedMultiblocks.length; i++)
+					interdictedMultiblocks[i] = list.getStringTagAt(i);
+			}
+			for (MultiblockHandler.IMultiblock mb : MultiblockHandler.getMultiblocks())
+				if (mb.isBlockTrigger(world.getBlockState(pos)))
+				{
+					boolean b = permittedMultiblocks == null;
+					if (permittedMultiblocks != null)
+						for (String s : permittedMultiblocks)
+							if (mb.getUniqueName().equalsIgnoreCase(s))
+							{
+								b = true;
+								continue;
+							}
+					if (!b)
+						break;
+					if (interdictedMultiblocks != null)
+						for (String s : interdictedMultiblocks)
+							if (mb.getUniqueName().equalsIgnoreCase(s))
+							{
+								b = false;
+								continue;
+							}
+					if (!b)
+						break;
+					if (MultiblockHandler.postMultiblockFormationEvent(player, mb, pos, stack).isCanceled())
+						continue;
+					if (mb.createStructure(world, pos, side, player))
+						return EnumActionResult.SUCCESS;
+				}
+		}
+		return EnumActionResult.PASS;
+	}
+
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -149,51 +217,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(stack.getItemDamage() == 0)
 		{
-			String[] permittedMultiblocks = null;
-			String[] interdictedMultiblocks = null;
-			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
-			{
-				NBTTagList list = stack.getTagCompound().getTagList("multiblockPermission", 8);
-				permittedMultiblocks = new String[list.tagCount()];
-				for(int i = 0; i < permittedMultiblocks.length; i++)
-					permittedMultiblocks[i] = list.getStringTagAt(i);
-			}
-			if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
-			{
-				NBTTagList list = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
-				interdictedMultiblocks = new String[list.tagCount()];
-				for(int i = 0; i < interdictedMultiblocks.length; i++)
-					interdictedMultiblocks[i] = list.getStringTagAt(i);
-			}
-			for(IMultiblock mb : MultiblockHandler.getMultiblocks())
-				if(mb.isBlockTrigger(world.getBlockState(pos)))
-				{
-					boolean b = permittedMultiblocks==null;
-					if(permittedMultiblocks != null)
-						for(String s : permittedMultiblocks)
-							if(mb.getUniqueName().equalsIgnoreCase(s))
-							{
-								b = true;
-								continue;
-							}
-					if(!b)
-						break;
-					if(interdictedMultiblocks != null)
-						for(String s : interdictedMultiblocks)
-							if(mb.getUniqueName().equalsIgnoreCase(s))
-							{
-								b = false;
-								continue;
-							}
-					if(!b)
-						break;
-					if(MultiblockHandler.postMultiblockFormationEvent(player, mb, pos, stack).isCanceled())
-						continue;
-					if(mb.createStructure(world, pos, side, player))
-						return EnumActionResult.SUCCESS;
-				}
-			TileEntity tile = world.getTileEntity(pos);
-			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction) && !(tile instanceof IConfigurableSides))
+			if(!(tileEntity instanceof IDirectionalTile) && !(tileEntity instanceof IHammerInteraction) && !(tileEntity instanceof IConfigurableSides))
 				return RotationUtil.rotateBlock(world, pos, side) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 		}
 		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable)
