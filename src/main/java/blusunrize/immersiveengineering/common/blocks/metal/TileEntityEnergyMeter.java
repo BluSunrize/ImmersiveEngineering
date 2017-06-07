@@ -2,11 +2,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -36,7 +33,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int lastEnergyPassed = 0;
 	public ArrayList<Integer> lastPackets = new ArrayList<Integer>(25);
-	public boolean dummy=true;
+	public boolean lower=true;
 	private int compVal = -1;
 
 	@Override
@@ -64,9 +61,11 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
+		if (!heldItem.isEmpty()&&heldItem.getItem() instanceof IWireCoil)
+			return false;
 		int transfer = getAveragePower();
 		int packets = lastPackets.size();
-		if(dummy)
+		if(lower)
 		{
 			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
@@ -84,7 +83,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		if (!world.isRemote&&((world.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal<0))
 			updateComparatorValues();
-		if(dummy || world.isRemote)
+		if(lower || world.isRemote)
 			return;
 		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
 		lastPackets.add(lastEnergyPassed);
@@ -96,7 +95,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnect()
 	{
-		return !dummy;
+		return true;
 	}
 
 	@Override
@@ -108,7 +107,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
-		if(dummy)
+		if(lower)
 		{
 			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
@@ -120,7 +119,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
-		if(dummy)
+		if(lower)
 		{
 			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
@@ -131,18 +130,27 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
+	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
+	{
+		if (lower)
+			return pos.up();
+		else
+			return pos;
+	}
+
+	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing.ordinal());
-		nbt.setBoolean("dummy", dummy);
+		nbt.setBoolean("dummy", lower);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = EnumFacing.values()[nbt.getInteger("facing")];
-		dummy = nbt.getBoolean("dummy");
+		lower = nbt.getBoolean("dummy");
 	}
 
 	@Override
@@ -169,27 +177,27 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean isDummy()
 	{
-		return !dummy;
+		return !lower;
 	}
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		world.setBlockState(pos.add(0,1,0), state);
-		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0,1,0))).dummy = false;
+		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0,1,0))).lower = false;
 		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0,1,0))).facing = this.facing;
 	}
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		for(int i=0; i<=1; i++)
-			if(world.getTileEntity(getPos().add(0,!dummy?-1:0,0).add(0,i,0)) instanceof TileEntityEnergyMeter)
-				world.setBlockToAir(getPos().add(0,!dummy?-1:0,0).add(0,i,0));
+			if(world.getTileEntity(getPos().add(0,!lower?-1:0,0).add(0,i,0)) instanceof TileEntityEnergyMeter)
+				world.setBlockToAir(getPos().add(0,!lower?-1:0,0).add(0,i,0));
 	}
 
 	public int getAveragePower()
 	{
 		TileEntityEnergyMeter te = this;
-		if(te.dummy)
+		if(te.lower)
 		{
 			TileEntity tmp = world.getTileEntity(getPos().add(0,1,0));
 			if(!(tmp instanceof TileEntityEnergyMeter))
@@ -217,7 +225,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(.1875f,-.625f,.1875f, .8125f,.8125f,.8125f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-		if(dummy)
+		if(lower)
 		{
 			list.set(0, list.get(0).offset(0,1,0));
 			list.add(new AxisAlignedBB(0,0,0, 1,.375f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
@@ -269,7 +277,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		int oldVal = compVal;
 		int maxTrans = 0;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, dummy?pos.up():pos);
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, lower?pos.up():pos);
 		if (conns==null)
 		{
 			compVal = 0;

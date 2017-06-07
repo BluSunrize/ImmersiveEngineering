@@ -89,7 +89,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 			boolean a = active;
 
 			if(burnTime>0)
-			{			
+			{
 				if(process>0)
 				{
 					int processSpeed = getProcessSpeed();
@@ -101,7 +101,8 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					else
 					{
 						BlastFurnaceRecipe recipe = getRecipe();
-						if (recipe!=null&&recipe.time!=processMax) {
+						if (recipe!=null&&recipe.time!=processMax)
+						{
 							processMax = 0;
 							process = 0;
 							active = false;
@@ -139,6 +140,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 						}
 						processMax=0;
 						active=false;
+						burnTime -= process;
 					}
 					BlastFurnaceRecipe recipe = getRecipe();
 					if(recipe!=null)
