@@ -37,7 +37,12 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
+	private static final int[] size = {2, 2, 2};
 
+	public TileEntityAlloySmelter()
+	{
+		super(size);
+	}
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
@@ -252,44 +257,6 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	}
 
 	@Override
-	public void disassemble()
-	{
-		if(formed && !world.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntityAlloySmelter))
-				return;
-
-			for(int yy=0;yy<=1;yy++)
-				for(int xx=0;xx<=1;xx++)
-					for(int zz=0;zz<=1;zz++)
-					{
-						ItemStack s = ItemStack.EMPTY;
-						BlockPos pos = startPos.up(yy).offset(facing,-zz).offset(facing.rotateYCCW(),xx);
-						TileEntity te = world.getTileEntity(pos);
-						if(te instanceof TileEntityAlloySmelter)
-						{
-							s = ((TileEntityAlloySmelter)te).getOriginalBlock();
-							((TileEntityAlloySmelter)te).formed=false;
-						}
-						if(pos.equals(getPos()))
-							s = this.getOriginalBlock();
-						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!= Blocks.AIR)
-						{
-							if(pos.equals(getPos()))
-								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
-							else
-							{
-								if(Block.getBlockFromItem(s.getItem())==IEContent.blockStoneDevice)
-									world.setBlockToAir(pos);
-								world.setBlockState(pos, Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-							}
-						}
-					}
-		}
-	}
-
-	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
@@ -330,5 +297,11 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 		if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return null;
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public BlockPos getOrigin()
+	{
+		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing, -1).offset(facing.rotateYCCW());
 	}
 }

@@ -33,7 +33,10 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 
 	ArrayList<BlockPos> fenceNet = null;
 	int height;
-
+	private static final int[] size = {3, 3, 3};
+	public TileEntityLightningrod() {
+		super(size);
+	}
 	@Override
 	public void update()
 	{
@@ -188,44 +191,6 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			s = MultiblockLightningrod.instance.getStructureManual()[pos/9][pos%9/3][pos%3];
 		}catch(Exception e){e.printStackTrace();}
 		return s.copy();
-	}
-
-	@Override
-	public void disassemble()
-	{
-		super.invalidate();
-		if(formed && !world.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntityLightningrod))
-				return;
-
-			for(int yy=-1;yy<=1;yy++)
-				for(int xx=-1;xx<=1;xx++)
-					for(int zz=-1;zz<=1;zz++)
-					{
-						ItemStack s = ItemStack.EMPTY;
-						TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
-						if(te instanceof TileEntityLightningrod)
-						{
-							s = ((TileEntityLightningrod)te).getOriginalBlock();
-							((TileEntityLightningrod)te).formed=false;
-						}
-						if(startPos.add(xx, yy, zz).equals(getPos()))
-							s = this.getOriginalBlock();
-						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!=null)
-						{
-							if(startPos.add(xx, yy, zz).equals(getPos()))
-								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
-							else
-							{
-								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblock)
-									world.setBlockToAir(startPos.add(xx, yy, zz));
-								world.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-							}
-						}
-					}
-		}
 	}
 
 	@Override
