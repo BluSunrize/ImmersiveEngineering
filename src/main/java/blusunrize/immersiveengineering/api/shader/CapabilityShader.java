@@ -11,6 +11,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
@@ -39,7 +40,8 @@ public class CapabilityShader
 			return shaderType;
 		}
 
-		public abstract void setShaderItem(ItemStack shader);
+		public abstract void setShaderItem(@Nonnull ItemStack shader);
+		@Nonnull
 		public abstract ItemStack getShaderItem();
 	}
 
@@ -80,6 +82,7 @@ public class CapabilityShader
 
 	public static class ShaderWrapper_Direct extends ShaderWrapper implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
 	{
+		@Nonnull
 		protected ItemStack shader = ItemStack.EMPTY;
 
 		public ShaderWrapper_Direct(String type)
@@ -88,11 +91,12 @@ public class CapabilityShader
 		}
 
 		@Override
-		public void setShaderItem(ItemStack shader)
+		public void setShaderItem(@Nonnull ItemStack shader)
 		{
 			this.shader = shader;
 		}
 		@Override
+		@Nonnull
 		public ItemStack getShaderItem()
 		{
 			return this.shader;
