@@ -36,7 +36,13 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
-
+	private static final int[] size = {3, 3, 3};
+	public TileEntityBlastFurnace() {
+		super(size);
+	}
+	public TileEntityBlastFurnace(int[] size) {
+		super(size);
+	}
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
@@ -263,40 +269,9 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	}
 
 	@Override
-	public void disassemble()
+	public BlockPos getOrigin()
 	{
-		if(formed && !world.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(world.getTileEntity(startPos) instanceof TileEntityBlastFurnace))
-				return;
-
-			for(int yy=-1;yy<=1;yy++)
-				for(int xx=-1;xx<=1;xx++)
-					for(int zz=-1;zz<=1;zz++)
-					{
-						ItemStack s = ItemStack.EMPTY;
-						TileEntity te = world.getTileEntity(startPos.add(xx, yy, zz));
-						if(te instanceof TileEntityBlastFurnace)
-						{
-							s = ((TileEntityBlastFurnace)te).getOriginalBlock();
-							((TileEntityBlastFurnace)te).formed=false;
-						}
-						if(startPos.add(xx, yy, zz).equals(getPos()))
-							s = this.getOriginalBlock();
-						if(!s.isEmpty() && Block.getBlockFromItem(s.getItem())!= Blocks.AIR)
-						{
-							if(startPos.add(xx, yy, zz).equals(getPos()))
-								world.spawnEntity(new EntityItem(world, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
-							else
-							{
-								if(Block.getBlockFromItem(s.getItem())==IEContent.blockStoneDevice)
-									world.setBlockToAir(startPos.add(xx, yy, zz));
-								world.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-							}
-						}
-					}
-		}
+		return getPos().add(-offset[0], -offset[1]-1, -offset[2]).offset(facing.getOpposite()).offset(facing.rotateYCCW());
 	}
 
 	@Override
