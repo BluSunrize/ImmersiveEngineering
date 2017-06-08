@@ -45,8 +45,6 @@ import java.util.List;
 
 public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IIEInternalFluxHandler, IHammerInteraction, IMirrorAble, IProcessTile
 {
-	/**H L W*/
-	protected final int[] structureDimensions;
 	public final FluxStorageAdvanced energyStorage;
 	protected final boolean hasRedstoneControl;
 	protected final IMultiblock mutliblockInstance;
@@ -56,7 +54,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	public TileEntityMultiblockMetal(IMultiblock mutliblockInstance, int[] structureDimensions, int energyCapacity, boolean redstoneControl)
 	{
-		this.structureDimensions = structureDimensions;
+		super(structureDimensions);
 		this.energyStorage = new FluxStorageAdvanced(energyCapacity);
 		this.hasRedstoneControl = redstoneControl;
 		this.mutliblockInstance = mutliblockInstance;
@@ -233,16 +231,6 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	//	=================================
 	//		POSITION MANAGEMENT
 	//	=================================
-	public BlockPos getBlockPosForPos(int targetPos)
-	{
-		int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
-		// dist = target position - current position
-		int distH = (targetPos/blocksPerLevel)-(pos/blocksPerLevel);
-		int distL = (targetPos%blocksPerLevel / structureDimensions[2])-(pos%blocksPerLevel / structureDimensions[2]);
-		int distW = (targetPos%structureDimensions[2])-(pos%structureDimensions[2]);
-		int w = mirrored?-distW:distW;
-		return getPos().offset(facing, distL).offset(facing.rotateY(), w).add(0, distH, 0);
-	}
 	public T getTileForPos(int targetPos)
 	{
 		BlockPos target = getBlockPosForPos(targetPos);
@@ -265,57 +253,6 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			s = this.mutliblockInstance.getStructureManual()[h][l][w];
 		}catch(Exception e){e.printStackTrace();}
 		return s!=null?s.copy():null;
-	}
-	@Override
-	public void disassemble()
-	{
-		if(formed && !worldObj.isRemote)
-		{
-			BlockPos startPos = this.getBlockPosForPos(0);
-			BlockPos mbOrigin = getPos().add(-offset[0], -offset[1], -offset[2]);
-			for(int yy=0;yy<structureDimensions[0];yy++)
-				for(int ll=0;ll<structureDimensions[1];ll++)
-					for(int ww=0;ww<structureDimensions[2];ww++)
-					{
-						int w = mirrored?-ww:ww;
-						BlockPos pos = startPos.offset(facing, ll).offset(facing.rotateY(), w).add(0, yy, 0);
-
-						ItemStack s = null;
-
-						TileEntity te = worldObj.getTileEntity(pos);
-						if(te instanceof TileEntityMultiblockMetal)
-						{
-							TileEntityMultiblockPart<?> part = (TileEntityMultiblockPart<?>) te;
-							Vec3i diff = pos.subtract(mbOrigin);
-							if (part.offset[0]!=diff.getX()||part.offset[1]!=diff.getY()||part.offset[2]!=diff.getZ())
-								continue;
-							else
-							{
-								s = part.getOriginalBlock();
-								part.formed = false;
-							}
-						}
-						if(pos.equals(getPos()))
-							s = this.getOriginalBlock();
-						IBlockState state = Utils.getStateFromItemStack(s);
-						if(state!=null)
-						{
-							if(pos.equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
-							else
-								replaceStructureBlock(pos, state, s, yy,ll,ww);
-						}
-					}
-		}
-	}
-	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
-	{
-		if(state.getBlock()==this.getBlockType())
-			worldObj.setBlockToAir(pos);
-		worldObj.setBlockState(pos, state);
-		TileEntity tile = worldObj.getTileEntity(pos);
-		if(tile instanceof ITileDrop)
-			((ITileDrop)tile).readOnPlacement(null, stack);
 	}
 
 	@Override

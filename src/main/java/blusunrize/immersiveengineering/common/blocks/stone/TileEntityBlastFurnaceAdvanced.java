@@ -17,7 +17,11 @@ import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 {
-	
+
+	private static final int[] size = {4, 3, 3};
+	public TileEntityBlastFurnaceAdvanced() {
+		super(size);
+	}
 	@Override
 	public void update()
 	{
@@ -112,44 +116,6 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		return i;
 	}
 
-	@Override
-	public void disassemble()
-	{
-		if(formed && !worldObj.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityBlastFurnaceAdvanced))
-				return;
-			
-			for(int yy=-1;yy<=2;yy++)
-				for(int xx=-1;xx<=1;xx++)
-					for(int zz=-1;zz<=1;zz++)
-						if(yy!=2 || (xx==0 && zz==0))
-						{
-							ItemStack s = null;
-							TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
-							if(te instanceof TileEntityBlastFurnaceAdvanced)
-							{
-								s = ((TileEntityBlastFurnaceAdvanced)te).getOriginalBlock();
-								((TileEntityBlastFurnaceAdvanced)te).formed=false;
-							}
-							if(startPos.add(xx, yy, zz).equals(getPos()))
-								s = this.getOriginalBlock();
-							if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-							{
-								if(startPos.add(xx, yy, zz).equals(getPos()))
-									worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
-								else
-								{
-									if(Block.getBlockFromItem(s.getItem())==IEContent.blockStoneDevice)
-										worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-									worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-								}
-							}
-						}
-		}
-	}
-	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{

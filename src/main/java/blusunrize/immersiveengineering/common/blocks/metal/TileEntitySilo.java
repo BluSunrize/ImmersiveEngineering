@@ -41,6 +41,10 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	private int masterCompOld;
 	private boolean forceUpdate = false;
 
+	private static final int[] size = {7, 3, 3};
+	public TileEntitySilo() {
+		super(size);
+	}
 	@Override
 	public void update()
 	{
@@ -135,44 +139,10 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		return pos==0||pos==2||pos==6||pos==8?new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()):new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
 	}
 
-	@Override
-	public void disassemble()
+	public BlockPos getOrigin()
 	{
-		super.invalidate();
-		if(formed && !worldObj.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntitySilo))
-				return;
-
-			for(int yy=0;yy<=6;yy++)
-				for(int xx=-1;xx<=1;xx++)
-					for(int zz=-1;zz<=1;zz++)
-					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
-						if(te instanceof TileEntitySilo)
-						{
-							s = ((TileEntitySilo)te).getOriginalBlock();
-							((TileEntitySilo)te).formed=false;
-						}
-						if(startPos.add(xx, yy, zz).equals(getPos()))
-							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-						{
-							if(startPos.add(xx, yy, zz).equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
-							else
-							{
-								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblock)
-									worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-								worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-							}
-						}
-					}
-		}
+		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing.rotateYCCW()).offset(facing.getOpposite());
 	}
-
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
 	@Override
