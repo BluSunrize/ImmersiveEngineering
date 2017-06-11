@@ -1,3 +1,20 @@
+#####Version 0.10-60
+- added Forestry's fertilizer to the Garden Cloche
+- changed recipe-output on coal- and blastbrick, reducing earlygame resource costs
+- changed balance on Drills:
+    - Heads have more durability
+    - Lubrication reduces wear
+    - Augers boost speed and damage
+- fixed the cloche exploding when planting Enderlilies
+- fixed Inferium seeds not working in the cloche (thanks SanAndreasP)
+- fixed recipe-wildcard handlign in the manual (thanks Landmaster)
+- fixed breakerswitch sound in Multiplayer
+- fixed attackspeed values for revolver and drill
+- fixed covered conveyors having a split second where they don't protect items from pickup
+- fixed recipes for redstone-ignoring conveyors not being NBT sensitive
+- Translations Added/Updated: ru_RU (lex1975), zh_CN (Jellyslime)
+
+
 #####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
 - added Crafttweaker integration for the Mixer
