@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -51,7 +50,7 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 		GlStateManager.rotate(tile.rotationYaw, 0,1,0);
 		GlStateManager.rotate(tile.rotationPitch, tile.facing.getFrontOffsetZ(),0,-tile.facing.getFrontOffsetX());
 
-		renderModelPart(blockRenderer, tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), "gun");
+		renderModelPart(blockRenderer, tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), true, "gun");
 		if(tile instanceof TileEntityTurretGun)
 		{
 			if(((TileEntityTurretGun)tile).cycleRender>0)
@@ -64,14 +63,15 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 
 				GlStateManager.translate(0, 0, cycle*.3125);
 			}
-			renderModelPart(blockRenderer, tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), "action");
+			renderModelPart(blockRenderer, tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), false, "action");
 		}
 
 		GlStateManager.popMatrix();
 	}
 
-	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, VertexBuffer worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
+	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, VertexBuffer worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
 	{
+		pos = pos.up();
 		if(state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));
 
@@ -89,8 +89,7 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 		long randomLong = MathHelper.getPositionRandom(pos);
 		int light = world.getCombinedLight(pos, 0);
 		List<BakedQuad> quads = model.getQuads(state, null, randomLong);
-		if (!quads.isEmpty())
-			ClientUtils.renderModelTESR(quads, worldRenderer, light);
+		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();

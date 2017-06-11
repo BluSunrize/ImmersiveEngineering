@@ -1159,27 +1159,4 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				((ModelVillager)model).villagerHead.showModel=true;
 		}
 	}
-
-	//====================================================================
-	//This stuff is necessary to work around a rendering issue with WAILA.
-	//====================================================================
-
-	boolean blendOn;
-	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void onRenderTickLowest(TickEvent.RenderTickEvent ev)
-	{
-		if (ev.phase!=Phase.START)
-			return;
-		if (blendOn)
-			GlStateManager.enableBlend();
-		else
-			GlStateManager.disableBlend();
-	}
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void onRenderTickHighest(TickEvent.RenderTickEvent ev)
-	{
-		if (ev.phase!=Phase.START)
-			return;
-		blendOn = GL11.glGetBoolean(GL11.GL_BLEND);
-	}
 }
