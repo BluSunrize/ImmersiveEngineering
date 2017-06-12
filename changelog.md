@@ -12,8 +12,7 @@
 - fixed attackspeed values for revolver and drill
 - fixed covered conveyors having a split second where they don't protect items from pickup
 - fixed recipes for redstone-ignoring conveyors not being NBT sensitive
-- Translations Added/Updated: ru_RU (lex1975), zh_CN (Jellyslime)
-
+- Translations Added/Updated: ru_RU (lex1975), zh_CN(Jellyslime)
 
 #####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
