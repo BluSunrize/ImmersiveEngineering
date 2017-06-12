@@ -1,5 +1,5 @@
 def mainVersion = "0.10"
-def buildNumber = "58"
+def buildNumber = "60"
 
 // For those who want the bleeding edge
 buildscript {
@@ -22,7 +22,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "${mainVersion}-${buildNumber}" + getBuildNumber();
+version = "${mainVersion}-${buildNumber}" + getBuildNumber()
 group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 

@@ -1,4 +1,4 @@
-#####Version 0.10-60
+#####Version 0.10-60 - BUILT
 - added Forestry's fertilizer to the Garden Cloche
 - changed recipe-output on coal- and blastbrick, reducing earlygame resource costs
 - changed balance on Drills:
