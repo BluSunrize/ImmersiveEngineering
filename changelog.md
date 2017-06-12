@@ -5,6 +5,7 @@
     - Heads have more durability
     - Lubrication reduces wear
     - Augers boost speed and damage
+- changed turret rendering to improve performance (thanks malte)
 - fixed the cloche exploding when planting Enderlilies
 - fixed Inferium seeds not working in the cloche (thanks SanAndreasP)
 - fixed recipe-wildcard handlign in the manual (thanks Landmaster)
@@ -12,6 +13,14 @@
 - fixed attackspeed values for revolver and drill
 - fixed covered conveyors having a split second where they don't protect items from pickup
 - fixed recipes for redstone-ignoring conveyors not being NBT sensitive
+- fixed Tesla Coils reading RS signals incorrectly, improved render (thanks malte)
+- fixed Improved Blast Furnace using up too much fuel (thanks malte)
+- fixed Multiblock's disassembly functions, improving them greatly (thanks malte)
+- fixed Current Transformer being derpy on interaction (thanks malte)
+- fixed possible NBT overflow issues with toolboxes and crates (thanks malte)
+- fixed pipe covers being broken (thanks malte)
+- fixed multiblocks not breaking properly to multi-break items (drill, TCon Hammer) (thanks malte)
+- fixed Itme Use functions (thanks malte)
 - Translations Added/Updated: ru_RU (lex1975), zh_CN(Jellyslime)
 
 #####Version 0.10-58 - BUILT
