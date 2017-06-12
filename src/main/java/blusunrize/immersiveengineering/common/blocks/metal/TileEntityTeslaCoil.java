@@ -115,7 +115,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					}
 				}
 			}
-			else if(worldObj.isRemote && worldObj.getTotalWorldTime()%128==(timeKey&127))
+			else if(!worldObj.isRemote && worldObj.getTotalWorldTime()%128==(timeKey&127))
 			{
 				//target up to 4 blocks away
 				double tV = (worldObj.rand.nextDouble()-.5)*8;
@@ -186,52 +186,8 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 						positiveFirst = !positiveFirst;
 					}
 				}
-
-				if(targetFound)
-				{
-					double tx = facing.getAxis()==Axis.X?tL:tH;
-					double ty = facing.getAxis()==Axis.Y?tL:tV;
-					double tz = facing.getAxis()==Axis.Y?tV:facing.getAxis()==Axis.X?tH:tL;
-
-					EnumFacing f = null;
-					if(facing.getAxis()==Axis.Y)
-					{
-						if(Math.abs(tz)>Math.abs(tx))
-							f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
-						else 
-							f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
-					}
-					else if(facing.getAxis()==Axis.Z)
-					{
-						if(Math.abs(ty)>Math.abs(tx))
-							f = ty<0?EnumFacing.DOWN:EnumFacing.UP;
-						else 
-							f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
-					}
-					else
-					{
-						if(Math.abs(ty)>Math.abs(tz))
-							f = ty<0?EnumFacing.DOWN:EnumFacing.UP;
-						else 
-							f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
-					}
-
-					double verticalOffset = 1+worldObj.rand.nextDouble()*.25;
-					Vec3d coilPos = new Vec3d(getPos()).addVector(.5,.5,.5);
-					//Vertical offset
-					coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
-					//offset to direction
-					if(f!=null)
-					{
-						coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
-						//random side offset
-						f = f.rotateAround(facing.getAxis());
-						double dShift = (worldObj.rand.nextDouble()-.5)*.75;
-						coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
-					}
-					effectMap.put(getPos(), new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx,ty,tz)));
-					worldObj.playSound(coilPos.xCoord,coilPos.yCoord,coilPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+worldObj.rand.nextFloat(), true);
-				}
+				if (targetFound)
+					sendFreePacket(tL, tH, tV);
 			}
 			this.markDirty();
 		}
@@ -241,6 +197,15 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("targetEntity", target.getEntityId());
+		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
+	}
+
+	protected void sendFreePacket(double tL, double tH, double tV)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setDouble("tL", tL);
+		tag.setDouble("tV", tV);
+		tag.setDouble("tH", tH);
 		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
 	}
 
@@ -298,7 +263,50 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					soundPos = coilPos;
 				}
 			}
+		} else if (message.hasKey("tL"))
+			initFreeStreamer(message.getDouble("tL"), message.getDouble("tV"), message.getDouble("tH"));
+	}
+
+	public void initFreeStreamer(double tL, double tV, double tH) {
+		double tx = facing.getAxis()==Axis.X?tL:tH;
+		double ty = facing.getAxis()==Axis.Y?tL:tV;
+		double tz = facing.getAxis()==Axis.Y?tV:facing.getAxis()==Axis.X?tH:tL;
+
+		EnumFacing f = null;
+		if(facing.getAxis()==Axis.Y)
+		{
+			if(Math.abs(tz)>Math.abs(tx))
+				f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
+			else
+				f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
 		}
+		else if(facing.getAxis()==Axis.Z)
+		{
+			if(Math.abs(ty)>Math.abs(tx))
+				f = ty<0?EnumFacing.DOWN:EnumFacing.UP;
+			else
+				f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
+		}
+		else
+		{
+			if(Math.abs(ty)>Math.abs(tz))
+				f = ty<0?EnumFacing.DOWN:EnumFacing.UP;
+			else
+				f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
+		}
+
+		double verticalOffset = 1+worldObj.rand.nextDouble()*.25;
+		Vec3d coilPos = new Vec3d(getPos()).addVector(.5,.5,.5);
+		//Vertical offset
+		coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
+		//offset to direction
+		coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
+		//random side offset
+		f = f.rotateAround(facing.getAxis());
+		double dShift = (worldObj.rand.nextDouble()-.5)*.75;
+		coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
+		effectMap.put(getPos(), new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx,ty,tz)));
+		worldObj.playSound(coilPos.xCoord,coilPos.yCoord,coilPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+worldObj.rand.nextFloat(), true);
 	}
 
 	@Override

@@ -33,7 +33,13 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
-
+	private static final int[] size = {3, 3, 3};
+	public TileEntityBlastFurnace() {
+		super(size);
+	}
+	public TileEntityBlastFurnace(int[] size) {
+		super(size);
+	}
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
@@ -86,7 +92,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 			boolean a = active;
 
 			if(burnTime>0)
-			{			
+			{
 				if(process>0)
 				{
 					int processSpeed = getProcessSpeed();
@@ -98,7 +104,8 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					else
 					{
 						BlastFurnaceRecipe recipe = getRecipe();
-						if (recipe!=null&&recipe.time!=processMax) {
+						if (recipe!=null&&recipe.time!=processMax)
+						{
 							processMax = 0;
 							process = 0;
 							active = false;
@@ -136,6 +143,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 						}
 						processMax=0;
 						active=false;
+						burnTime -= process;
 					}
 					BlastFurnaceRecipe recipe = getRecipe();
 					if(recipe!=null)
@@ -258,40 +266,9 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	}
 
 	@Override
-	public void disassemble()
+	public BlockPos getOrigin()
 	{
-		if(formed && !worldObj.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityBlastFurnace))
-				return;
-
-			for(int yy=-1;yy<=1;yy++)
-				for(int xx=-1;xx<=1;xx++)
-					for(int zz=-1;zz<=1;zz++)
-					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
-						if(te instanceof TileEntityBlastFurnace)
-						{
-							s = ((TileEntityBlastFurnace)te).getOriginalBlock();
-							((TileEntityBlastFurnace)te).formed=false;
-						}
-						if(startPos.add(xx, yy, zz).equals(getPos()))
-							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-						{
-							if(startPos.add(xx, yy, zz).equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
-							else
-							{
-								if(Block.getBlockFromItem(s.getItem())==IEContent.blockStoneDevice)
-									worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-								worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-							}
-						}
-					}
-		}
+		return getPos().add(-offset[0], -offset[1]-1, -offset[2]).offset(facing.getOpposite()).offset(facing.rotateYCCW());
 	}
 
 	@Override

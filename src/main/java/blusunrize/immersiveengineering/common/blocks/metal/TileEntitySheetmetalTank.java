@@ -36,6 +36,10 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	private int[] oldComps = new int[4];
 	private int masterCompOld;
 
+	private static final int[] size = {5, 3, 3};
+	public TileEntitySheetmetalTank() {
+		super(size);
+	}
 	//	@Override
 	//	public TileEntitySheetmetalTank master()
 	//	{
@@ -124,42 +128,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		return pos==0||pos==2||pos==6||pos==8?new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()):new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
 	}
 
-	@Override
-	public void disassemble()
+	public BlockPos getOrigin()
 	{
-		super.invalidate();
-		if(formed && !worldObj.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntitySheetmetalTank))
-				return;
-
-			for(int yy=0;yy<=4;yy++)
-				for(int xx=-1;xx<=1;xx++)
-					for(int zz=-1;zz<=1;zz++)
-					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
-						if(te instanceof TileEntitySheetmetalTank)
-						{
-							s = ((TileEntitySheetmetalTank)te).getOriginalBlock();
-							((TileEntitySheetmetalTank)te).formed=false;
-						}
-						if(startPos.add(xx, yy, zz).equals(getPos()))
-							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-						{
-							if(startPos.add(xx, yy, zz).equals(getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, s));
-							else
-							{
-								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblock)
-									worldObj.setBlockToAir(startPos.add(xx, yy, zz));
-								worldObj.setBlockState(startPos.add(xx, yy, zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-							}
-						}
-					}
-		}
+		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing.rotateYCCW()).offset(facing.getOpposite());
 	}
 
 	@Override

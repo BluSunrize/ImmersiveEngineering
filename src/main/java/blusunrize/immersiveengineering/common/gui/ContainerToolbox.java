@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
@@ -46,7 +47,7 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 	{
 		if(stack==null)
 			return true;
-		if(IEContent.itemToolbox.equals(stack.getItem()))
+		if(!IEApi.isAllowedInCrate(stack))
 			return false;
 		if(slotNumer<3)
 			return ToolboxHandler.isFood(stack);

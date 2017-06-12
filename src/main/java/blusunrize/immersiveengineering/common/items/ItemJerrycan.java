@@ -3,11 +3,13 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -50,28 +52,29 @@ public class ItemJerrycan extends ItemIEBase
 	@Override
 	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
-		if(!world.isRemote)
+		EnumActionResult ret = EnumActionResult.PASS;
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if (tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
 		{
-			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity!=null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null))
-			{
-				if(FluidUtil.interactWithFluidHandler(stack, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null), player))
-					return EnumActionResult.SUCCESS;
-				return EnumActionResult.FAIL;
-			}
+			if (FluidUtil.interactWithFluidHandler(stack, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null), player))
+				ret = EnumActionResult.SUCCESS;
 			else
+				ret = EnumActionResult.FAIL;
+		}
+		else
+		{
+			FluidStack fs = FluidUtil.getFluidContained(stack);
+			if (Utils.placeFluidBlock(world, pos.offset(side), fs))
 			{
-				FluidStack fs = FluidUtil.getFluidContained(stack);
-				if(Utils.placeFluidBlock(world, pos.offset(side), fs))
-				{
-					if(fs.amount<=0)
-						fs = null;
-					ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
-					return EnumActionResult.SUCCESS;
-				}
+				if (fs.amount <= 0)
+					fs = null;
+				ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
+				ret = EnumActionResult.SUCCESS;
 			}
 		}
-		return EnumActionResult.PASS;
+		if (ret!=EnumActionResult.PASS&&world.isRemote)
+			Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
+		return  ret;
 	}
 
 	@Override

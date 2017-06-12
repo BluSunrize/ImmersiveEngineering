@@ -36,6 +36,8 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 
 	private RedstoneWireNetwork wireNetwork = new RedstoneWireNetwork().add(this);
 	private boolean loaded = false;
+	// ONLY EVER USE THIS ON THE CLIENT! I don't want to sync the entire network...
+	private int outputClient = -1;
 
 	@Override
 	public void update()
@@ -54,6 +56,8 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		if(!isRSOutput() || side != this.facing.getOpposite())
 			return 0;
+		if (worldObj.isRemote)
+			return outputClient;
 		return wireNetwork != null ? wireNetwork.getPowerOutput(redstoneChannel) : 0;
 	}
 
@@ -62,6 +66,8 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		if(!isRSOutput())
 			return 0;
+		if (worldObj.isRemote)
+			return outputClient;
 		return wireNetwork != null ? wireNetwork.getPowerOutput(redstoneChannel) : 0;
 	}
 
@@ -88,6 +94,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		if (!isInvalid() && isRSOutput())
 		{
+			markDirty();
 			markContainingBlockForUpdate(null);
 			markBlockForUpdate(pos.offset(facing), null);
 		}
@@ -202,6 +209,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		nbt.setInteger("facing", facing.ordinal());
 		nbt.setInteger("ioMode", ioMode);
 		nbt.setInteger("redstoneChannel", redstoneChannel);
+		nbt.setInteger("output", wireNetwork != null ? wireNetwork.getPowerOutput(redstoneChannel) : 0);
 	}
 
 	@Override
@@ -211,6 +219,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 		ioMode = nbt.getInteger("ioMode");
 		redstoneChannel = nbt.getInteger("redstoneChannel");
+		outputClient = nbt.getInteger("output");
 	}
 
 	@Override

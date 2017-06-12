@@ -35,7 +35,10 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public int process = 0;
 	public int processMax = 0;
 	public boolean active = false;
-
+	private static final int[] size = {3, 3, 3};
+	public TileEntityCokeOven() {
+		super(size);
+	}
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
@@ -238,40 +241,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	public void disassemble()
+	public BlockPos getOrigin()
 	{
-		if(formed && !worldObj.isRemote)
-		{
-			BlockPos startPos = this.getPos().add(-offset[0],-offset[1],-offset[2]);
-			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityCokeOven))
-				return;
-
-			for(int yy=-1;yy<=1;yy++)
-				for(int xx=-1;xx<=1;xx++)
-					for(int zz=-1;zz<=1;zz++)
-					{
-						ItemStack s = null;
-						TileEntity te = worldObj.getTileEntity(startPos.add(xx, yy, zz));
-						if(te instanceof TileEntityCokeOven)
-						{
-							s = ((TileEntityCokeOven)te).getOriginalBlock();
-							((TileEntityCokeOven)te).formed=false;
-						}
-						if(startPos.add(xx, yy, zz).equals(this.getPos()))
-							s = this.getOriginalBlock();
-						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-						{
-							if(startPos.add(xx, yy, zz).equals(this.getPos()))
-								worldObj.spawnEntityInWorld(new EntityItem(worldObj, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, s));
-							else
-							{
-								if(Block.getBlockFromItem(s.getItem()) instanceof BlockIEMultiblock)
-									worldObj.setBlockToAir(startPos.add(xx,yy,zz));
-								worldObj.setBlockState(startPos.add(xx,yy,zz), Block.getBlockFromItem(s.getItem()).getStateFromMeta(s.getItemDamage()));
-							}
-						}
-					}
-		}
+		return getPos().add(-offset[0], -offset[1]-1, -offset[2]).offset(facing.getOpposite()).offset(facing.rotateYCCW());
 	}
 
 	@Override

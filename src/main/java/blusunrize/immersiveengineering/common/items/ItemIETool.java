@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.*;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -37,8 +39,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.HashSet;
 import java.util.List;
@@ -149,8 +149,6 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(stack.getItemDamage() == 0)
 		{
-			if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-				return EnumActionResult.PASS;
 			String[] permittedMultiblocks = null;
 			String[] interdictedMultiblocks = null;
 			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
@@ -192,79 +190,100 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 					if(MultiblockHandler.postMultiblockFormationEvent(player, mb, pos, stack).isCanceled())
 						continue;
 					if(mb.createStructure(world, pos, side, player))
+					{
+						if (world.isRemote)
+							Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
 						return EnumActionResult.SUCCESS;
+					}
 				}
 			TileEntity tile = world.getTileEntity(pos);
-			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction) && !(tile instanceof IConfigurableSides))
-				return RotationUtil.rotateBlock(world, pos, side) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction) && !(tile instanceof IConfigurableSides) && RotationUtil.rotateBlock(world, pos, side))
+			{
+				if (world.isRemote)
+					Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
+				return EnumActionResult.SUCCESS;
+			}
 		}
-		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
+		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable)
 		{
 			TargetingInfo target = new TargetingInfo(side, hitX, hitY, hitZ);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(null, target);
 			tileEntity = world.getTileEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable))
 				return EnumActionResult.PASS;
-
-			IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-			boolean cut = ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
-			IESaveData.setDirty(world.provider.getDimension());
-			if(cut)
+			if (!world.isRemote)
 			{
-				int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg") + 1;
-				if(nbtDamage < cutterMaxDamage)
-					ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
-				else
+				IImmersiveConnectable nodeHere = (IImmersiveConnectable) tileEntity;
+				boolean cut = ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
+				IESaveData.setDirty(world.provider.getDimension());
+				if (cut)
 				{
-					player.renderBrokenItemStack(stack);
-					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+					int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg") + 1;
+					if (nbtDamage < cutterMaxDamage)
+						ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
+					else
+					{
+						player.renderBrokenItemStack(stack);
+						player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+					}
 				}
 			}
+			else
+				Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
 			return EnumActionResult.SUCCESS;
 		}
-		else if(stack.getItemDamage() == 2 && !world.isRemote)
+		else if(stack.getItemDamage() == 2)
 		{
 			if(!player.isSneaking() && (tileEntity instanceof IFluxReceiver || tileEntity instanceof IFluxProvider))
 			{
-				int max = 0;
-				int stored = 0;
-				if(tileEntity instanceof IFluxReceiver)
+				if (!world.isRemote)
 				{
-					max = ((IFluxReceiver) tileEntity).getMaxEnergyStored(side);
-					stored = ((IFluxReceiver) tileEntity).getEnergyStored(side);
+					int max = 0;
+					int stored = 0;
+					if (tileEntity instanceof IFluxReceiver)
+					{
+						max = ((IFluxReceiver) tileEntity).getMaxEnergyStored(side);
+						stored = ((IFluxReceiver) tileEntity).getEnergyStored(side);
+					} else
+					{
+						max = ((IFluxProvider) tileEntity).getMaxEnergyStored(side);
+						stored = ((IFluxProvider) tileEntity).getEnergyStored(side);
+					}
+					if (max > 0)
+						ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO + "energyStorage", stored, max));
 				}
 				else
-				{
-					max = ((IFluxProvider) tileEntity).getMaxEnergyStored(side);
-					stored = ((IFluxProvider) tileEntity).getEnergyStored(side);
-				}
-				if(max > 0)
-					ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO + "energyStorage", stored, max));
+					Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
 				return EnumActionResult.SUCCESS;
 			}
 			if(player.isSneaking() && tileEntity instanceof IImmersiveConnectable)
 			{
-				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
-					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ()});
-				else
+				if (!world.isRemote)
 				{
-					int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
-					BlockPos linkPos = new BlockPos(array[1], array[2], array[3]);
-					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
-					if(array[0] == world.provider.getDimension())
+					if (!ItemNBTHelper.hasKey(stack, "linkingPos"))
+						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ()});
+					else
 					{
-						IImmersiveConnectable nodeHere = (IImmersiveConnectable) tileEntity;
-						IImmersiveConnectable nodeLink = (IImmersiveConnectable) tileEntityLinkingPos;
-						if(nodeLink != null)
+						int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
+						BlockPos linkPos = new BlockPos(array[1], array[2], array[3]);
+						TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
+						if (array[0] == world.provider.getDimension())
 						{
-							Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
-							for(AbstractConnection con : connections)
-								if(Utils.toCC(nodeHere).equals(con.end))
-									player.addChatComponentMessage(new TextComponentTranslation(Lib.CHAT_INFO + "averageLoss", Utils.formatDouble(con.getAverageLossRate() * 100, "###.000")));
+							IImmersiveConnectable nodeHere = (IImmersiveConnectable) tileEntity;
+							IImmersiveConnectable nodeLink = (IImmersiveConnectable) tileEntityLinkingPos;
+							if (nodeLink != null)
+							{
+								Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
+								for (AbstractConnection con : connections)
+									if (Utils.toCC(nodeHere).equals(con.end))
+										player.addChatComponentMessage(new TextComponentTranslation(Lib.CHAT_INFO + "averageLoss", Utils.formatDouble(con.getAverageLossRate() * 100, "###.000")));
+							}
 						}
+						ItemNBTHelper.remove(stack, "linkingPos");
 					}
-					ItemNBTHelper.remove(stack, "linkingPos");
 				}
+				else
+					Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
 				return EnumActionResult.SUCCESS;
 			}
 		}

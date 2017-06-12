@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import invtweaks.api.container.ChestContainer;
@@ -19,9 +20,7 @@ public class ContainerCrate extends ContainerIEBase
 				@Override
 				public boolean isItemValid(ItemStack stack)
 				{
-					if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0,1,0), stack, true))
-						return false;
-					return !OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true);
+					return IEApi.isAllowedInCrate(stack);
 				}
 			});
 		this.slotCount=tile.getInventory().length;
