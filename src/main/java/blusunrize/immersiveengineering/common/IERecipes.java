@@ -4,10 +4,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -206,8 +203,8 @@ public class IERecipes
 		//
 		//STONE DECORACTION
 		//
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,BlockTypes_StoneDecoration.COKEBRICK.getMeta()), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.CLAY_BALL,'B',"ingotBrick");
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,BlockTypes_StoneDecoration.BLASTBRICK.getMeta()), "NBN","BDB","NBN", 'D',Items.BLAZE_POWDER,'N',"ingotBrickNether",'B',"ingotBrick");
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,3,BlockTypes_StoneDecoration.COKEBRICK.getMeta()), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.CLAY_BALL,'B',"ingotBrick");
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,3,BlockTypes_StoneDecoration.BLASTBRICK.getMeta()), "NBN","BDB","NBN", 'D',Items.BLAZE_POWDER,'N',"ingotBrickNether",'B',"ingotBrick");
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta()), "P","B", 'P',"plateSteel",'B',new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta()));
 		addTwoWayStorageRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.COKE.getMeta()), new ItemStack(IEContent.itemMaterial,1,6));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,BlockTypes_StoneDecoration.HEMPCRETE.getMeta()), "CCC","HHH","CCC", 'C',Items.CLAY_BALL,'H',"fiberHemp");
@@ -320,8 +317,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.BELLJAR.getMeta()), " L ","G G","WCW", 'L',new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.LANTERN.getMeta()), 'G',"blockGlass", 'W',"plankTreatedWood", 'C',componentIron);
 
 		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', Items.LEATHER);
-		addShapelessOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1), baseConveyor);
-		addShapelessOredictRecipe(baseConveyor, Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1));
+		addShapelessIngredientRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1), new IngredientStack(baseConveyor).setUseNBT(true));
+		addShapelessIngredientRecipe(baseConveyor, new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1)).setUseNBT(true));
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper"), 1), "C", "H", 'C', baseConveyor, 'H', Blocks.IRON_TRAPDOOR);
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical"), 3), "CI", "C ", "CI", 'C', baseConveyor, 'I', "ingotIron");
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":splitter"), 3), "CIC", " C ", 'C', baseConveyor, 'I', "ingotIron");

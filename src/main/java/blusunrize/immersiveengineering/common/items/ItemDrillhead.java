@@ -34,8 +34,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		super("drillhead", 1, "steel","iron");
 		perms = new DrillHeadPerm[this.subNames.length];
 		//Maximal damage is slightly proportionate to pickaxes
-		addPerm(0, new DrillHeadPerm("ingotSteel",3,1,3,10,7,8000,"immersiveengineering:items/drill_diesel"));
-		addPerm(1, new DrillHeadPerm("ingotIron",2,1,2,9,6,4000,"immersiveengineering:items/drill_iron"));
+		addPerm(0, new DrillHeadPerm("ingotSteel",3,1,3,10,7,10000,"immersiveengineering:items/drill_diesel"));
+		addPerm(1, new DrillHeadPerm("ingotIron",2,1,2,9,6,6000,"immersiveengineering:items/drill_iron"));
 	}
 
 	public DrillHeadPerm[] perms;

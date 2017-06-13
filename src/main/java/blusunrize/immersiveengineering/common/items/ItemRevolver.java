@@ -192,7 +192,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		{
 			double melee = getUpgrades(stack).getDouble("melee");
 			if(melee != 0)
+			{
 				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
+			}
 			double speed = getUpgrades(stack).getDouble("speed");
 			if(speed != 0)
 				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, 1));

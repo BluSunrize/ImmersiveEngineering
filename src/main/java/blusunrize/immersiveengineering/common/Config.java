@@ -48,7 +48,10 @@ public class Config
 		public static int[] wireLength = new int[]{16, 16, 32, 32, 32, 32};
 
 		@Comment({"By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view.", "Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs"})
+		//TODO this is for TESR wires. Remove?
 		public static boolean increasedRenderboxes = true;
+		@Comment({"Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.", "Affects turrets and garden cloches"})
+		public static boolean disableFancyTESR = false;
 		@Comment({"Support for colourblind people, gives a text-based output on capacitor sides"})
 		public static boolean colourblindSupport = false;
 		@Comment({"Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things"})

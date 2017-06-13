@@ -32,6 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -260,6 +261,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		fertilizerAmount = nbt.getInteger("fertilizerAmount");
 		fertilizerMod = nbt.getFloat("fertilizerMod");
 		growth = nbt.getFloat("growth");
+		renderBB = null;
 	}
 
 	@Override
@@ -457,9 +459,15 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			rl=BelljarHandler.getSoilTexture(inventory[0]);
 		if(rl==null)
 		{
-			IBlockState state = Utils.getStateFromItemStack(inventory[0]);
-			if(state!=null)
-				rl = ClientUtils.getSideTexture(state, EnumFacing.UP);
+			try
+			{
+				IBlockState state = Utils.getStateFromItemStack(inventory[0]);
+				if(state!=null)
+					rl = ClientUtils.getSideTexture(state, EnumFacing.UP);
+			}catch(Exception e)
+			{
+				rl = ClientUtils.getSideTexture(inventory[0], EnumFacing.UP);
+			}
 		}
 		if(rl==null && inventory[0]!=null && Utils.isFluidRelatedItemStack(inventory[0]))
 		{
@@ -495,5 +503,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		if(facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==EnumFacing.UP))
 			return energyWrapper;
 		return null;
+	}
+	AxisAlignedBB renderBB;
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		if (renderBB==null)
+			renderBB = new AxisAlignedBB(0, 0, 0, 1, 2, 1).offset(pos);
+		return renderBB;
 	}
 }

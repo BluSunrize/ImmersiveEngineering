@@ -263,6 +263,8 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 				entity.motionY = 0;
 				entity.motionZ = 0;
 				conveyor.getWorld().spawnEntityInWorld(entity);
+				if(conveyor.conveyorBeltSubtype!=null)
+					conveyor.conveyorBeltSubtype.onItemDeployed(conveyor, entity, conveyor.facing);
 			}
 			return null;
 		}
@@ -272,6 +274,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		{
 			return null;
 		}
+
 		@Override
 		public void setStackInSlot(int slot, ItemStack stack)
 		{

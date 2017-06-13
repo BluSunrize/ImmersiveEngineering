@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -33,10 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Timer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
@@ -1678,8 +1676,139 @@ public class ClientUtils
 		ret = (ret<<8)+(int)(255*rgb[2]);
 		return ret;
 	}
-	public static void renderModelTESR(List<BakedQuad> quads, VertexBuffer renderer, int brightness)
+	// variables for fancy TESR models, external to reduce allocations
+
+	// The coordinates for each vertex of a quad
+	private static final float[][] quadCoords = new float[4][3];
+	// one diagonal of a quad. Used to calculate the normal of that quad
+	private static final Vector3f side1 = new Vector3f();
+	// and the other one
+	private static final Vector3f side2 = new Vector3f();
+	// and the normal of that quad
+	private static final Vector3f normal = new Vector3f();
+	// the brighnesses of the surrounding blocks. the first dimension indicates block (1) vs sky (0) light
+	// These are used to create different light direction vectors depending on the direction of a quads normal vector.
+	private static final int[][] neighbourBrightness = new int[2][6];
+	// The light vectors created from neighbourBrightness aren't "normalized" (to length 255), the length needs to be divided by this factor to normalize it.
+	// The indices are generated as follows: a 1 bit indicates a positive facing normal, a 0 a negative one. 1=x, 2=y, 4=z
+	private static final float[][] normalizationFactors = new float[2][8];
+
+	/**
+	 * Renders the given quads. Uses the local and neighbour brightnesses to calculate lighting
+	 * @param quads the quads to render
+	 * @param renderer the VertexBuffer to render to
+	 * @param world the world the model is in. Will be used to obtain lighting information
+	 * @param pos the position that this model is in. Use the position the the quads are actually in, not the rendering block
+	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
+	 */
+	public static void renderModelTESRFancy(List<BakedQuad> quads, VertexBuffer renderer, World world, BlockPos pos, boolean useCached)
+	{//TODO include matrix transformations?, cache normals?
+		if (Config.IEConfig.disableFancyTESR)
+			renderModelTESRFast(quads, renderer, world, pos);
+		else
+		{
+			if (!useCached)
+			{
+				// Calculate surrounding brighness and split into block and sky light
+				for (EnumFacing f : EnumFacing.VALUES)
+				{
+					int val = world.getCombinedLight(pos.offset(f), 0);
+					neighbourBrightness[0][f.getIndex()] = (val >> 16) & 255;
+					neighbourBrightness[1][f.getIndex()] = val & 255;
+				}
+				// calculate the different correction factors for all 8 possible light vectors
+				for (int type = 0; type < 2; type++)
+					for (int i = 0; i < 8; i++)
+					{
+						float sSquared = 0;
+						if ((i & 1) != 0)
+							sSquared += scaledSquared(neighbourBrightness[type][5], 255F);
+						else
+							sSquared += scaledSquared(neighbourBrightness[type][4], 255F);
+						if ((i & 2) != 0)
+							sSquared += scaledSquared(neighbourBrightness[type][1], 255F);
+						else
+							sSquared += scaledSquared(neighbourBrightness[type][0], 255F);
+						if ((i & 4) != 0)
+							sSquared += scaledSquared(neighbourBrightness[type][3], 255F);
+						else
+							sSquared += scaledSquared(neighbourBrightness[type][2], 255F);
+						normalizationFactors[type][i] = (float) Math.sqrt(sSquared);
+					}
+			}
+			int localBrightness = world.getCombinedLight(pos, 0);
+			for (BakedQuad quad : quads)
+			{
+				int[] vData = quad.getVertexData();
+				VertexFormat format = quad.getFormat();
+				int size = format.getIntegerSize();
+				int uv = format.getUvOffsetById(0) / 4;
+				// extract position info from the quad
+				for (int i = 0; i < 4; i++)
+				{
+					quadCoords[i][0] = Float.intBitsToFloat(vData[size * i]);
+					quadCoords[i][1] = Float.intBitsToFloat(vData[size * i + 1]);
+					quadCoords[i][2] = Float.intBitsToFloat(vData[size * i + 2]);
+				}
+				//generate the normal vector
+				side1.x = quadCoords[1][0] - quadCoords[3][0];
+				side1.y = quadCoords[1][1] - quadCoords[3][1];
+				side1.z = quadCoords[1][2] - quadCoords[3][2];
+				side2.x = quadCoords[2][0] - quadCoords[0][0];
+				side2.y = quadCoords[2][1] - quadCoords[0][1];
+				side2.z = quadCoords[2][2] - quadCoords[0][2];
+				Vector3f.cross(side1, side2, normal);
+				normal.normalise();
+				// calculate the final light values and do the rendering
+				int l1 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (localBrightness >> 16) & 255);
+				int l2 = getLightValue(neighbourBrightness[1], normalizationFactors[1], localBrightness & 255);
+				for (int i = 0; i < 4; ++i)
+				{
+					renderer
+							.pos(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
+							.color(255, 255, 255, 255)
+							.tex(Float.intBitsToFloat(vData[size * i + uv]), Float.intBitsToFloat(vData[size * i + uv + 1]))
+							.lightmap(l1, l2)
+							.endVertex();
+				}
+			}
+		}
+	}
+	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness) {
+		//calculate the dot product between the required light vector and the normal of the quad
+		// quad brightness is proportional to this value, see https://github.com/ssloy/tinyrenderer/wiki/Lesson-2:-Triangle-rasterization-and-back-face-culling#flat-shading-render
+		float sideBrightness;
+		byte type = 0;
+		if (normal.x>0)
+		{
+			sideBrightness = normal.x* neighbourBrightness[5];
+			type |= 1;
+		}
+		else
+			sideBrightness = -normal.x* neighbourBrightness[4];
+		if (normal.y>0)
+		{
+			sideBrightness += normal.y* neighbourBrightness[1];
+			type |= 2;
+		}
+		else
+			sideBrightness += -normal.y* neighbourBrightness[0];
+		if (normal.z>0)
+		{
+			sideBrightness += normal.z* neighbourBrightness[3];
+			type |= 4;
+		}
+		else
+			sideBrightness += -normal.z* neighbourBrightness[2];
+		// the final light value is the aritmethic mean of the local brighness and the normalized "dot-product-brightness"
+		return (int) ((localBrightness+sideBrightness/normalizationFactors[type])/2);
+	}
+	private static float scaledSquared(int val, float scale) {
+		return (val/scale)*(val/scale);
+	}
+	public static void renderModelTESRFast(List<BakedQuad> quads, VertexBuffer renderer, World world, BlockPos pos)
 	{
+		int brightness = world.getCombinedLight(pos, 0);
 		int l1 = (brightness >> 0x10) & 0xFFFF;
 		int l2 = brightness & 0xFFFF;
 		for (BakedQuad quad : quads)

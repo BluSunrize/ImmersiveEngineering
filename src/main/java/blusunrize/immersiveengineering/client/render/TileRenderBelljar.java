@@ -19,6 +19,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +84,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 					if(plantQuadList==null)
 					{
 						IBakedModel plantModel = blockRenderer.getModelForState(s);
-						plantQuadList = plantModel.getQuads(s,null,0);
+						plantQuadList = new ArrayList<BakedQuad>(plantModel.getQuads(s,null,0));
 						for(EnumFacing f : EnumFacing.values())
 							plantQuadList.addAll(plantModel.getQuads(s,f,0));
 						plantQuads.put(s, plantQuadList);
@@ -92,7 +93,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 					{
 						GlStateManager.pushMatrix();
 						worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-						ClientUtils.renderModelTESR(plantQuadList, worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
+						ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorld(), blockPos, false);
 						Tessellator.getInstance().draw();
 						GlStateManager.popMatrix();
 						GlStateManager.translate(0, 1, 0);
@@ -104,7 +105,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 
 		GlStateManager.depthMask(false);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		ClientUtils.renderModelTESR(quads.get(tile.getFacing()), worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
+		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), worldRenderer, tile.getWorld(), blockPos);
 		Tessellator.getInstance().draw();
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();

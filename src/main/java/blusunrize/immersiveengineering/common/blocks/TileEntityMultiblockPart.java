@@ -2,13 +2,20 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -27,6 +34,15 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	public int[] offset = {0,0,0};
 	public boolean mirrored = false;
 	public EnumFacing facing = EnumFacing.NORTH;
+	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
+	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
+	public long onlyLocalDissassembly = -1;
+	/**H L W*/
+	protected final int[] structureDimensions;
+	protected TileEntityMultiblockPart(int[] structureDimensions)
+	{
+		this.structureDimensions = structureDimensions;
+	}
 
 	@Override
 	public EnumFacing getFacing()
@@ -239,5 +255,67 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		return offset[0]!=0 || offset[1]!=0 || offset[2]!=0;
 	}
 	public abstract ItemStack getOriginalBlock();
-	public abstract void disassemble();
+	public void disassemble()
+	{
+		if(formed && !worldObj.isRemote)
+		{
+			BlockPos startPos = getOrigin();
+			BlockPos masterPos = getPos().add(-offset[0], -offset[1], -offset[2]);
+			long time = worldObj.getTotalWorldTime();
+			for(int yy=0;yy<structureDimensions[0];yy++)
+				for(int ll=0;ll<structureDimensions[1];ll++)
+					for(int ww=0;ww<structureDimensions[2];ww++)
+					{
+						int w = mirrored?-ww:ww;
+						BlockPos pos = startPos.offset(facing, ll).offset(facing.rotateY(), w).add(0, yy, 0);
+						ItemStack s = null;
+
+						TileEntity te = worldObj.getTileEntity(pos);
+						if(te instanceof TileEntityMultiblockPart)
+						{
+							TileEntityMultiblockPart part = (TileEntityMultiblockPart) te;
+							Vec3i diff = pos.subtract(masterPos);
+							if (part.offset[0]!=diff.getX()||part.offset[1]!=diff.getY()||part.offset[2]!=diff.getZ())
+								continue;
+							else if (time!=part.onlyLocalDissassembly)
+							{
+								s = part.getOriginalBlock();
+								part.formed = false;
+							}
+						}
+						if(pos.equals(getPos()))
+							s = this.getOriginalBlock();
+						IBlockState state = Utils.getStateFromItemStack(s);
+						if(state!=null)
+						{
+							if(pos.equals(getPos()))
+								worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
+							else
+								replaceStructureBlock(pos, state, s, yy,ll,ww);
+						}
+					}
+		}
+	}
+	public BlockPos getOrigin() {
+		return getBlockPosForPos(0);
+	}
+	public BlockPos getBlockPosForPos(int targetPos)
+	{
+		int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
+		// dist = target position - current position
+		int distH = (targetPos/blocksPerLevel)-(pos/blocksPerLevel);
+		int distL = (targetPos%blocksPerLevel / structureDimensions[2])-(pos%blocksPerLevel / structureDimensions[2]);
+		int distW = (targetPos%structureDimensions[2])-(pos%structureDimensions[2]);
+		int w = mirrored?-distW:distW;
+		return getPos().offset(facing, distL).offset(facing.rotateY(), w).add(0, distH, 0);
+	}
+	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	{
+		if(state.getBlock()==this.getBlockType())
+			worldObj.setBlockToAir(pos);
+		worldObj.setBlockState(pos, state);
+		TileEntity tile = worldObj.getTileEntity(pos);
+		if(tile instanceof ITileDrop)
+			((ITileDrop)tile).readOnPlacement(null, stack);
+	}
 }
