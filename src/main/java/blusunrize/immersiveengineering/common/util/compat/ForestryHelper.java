@@ -41,7 +41,7 @@ public class ForestryHelper extends IECompatModule
 		ChemthrowerHandler.registerFlammable("bio.ethanol");
 		ChemthrowerHandler.registerEffect("for.honey", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,60,1));
 		ChemthrowerHandler.registerEffect("juice", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,40,0));
-		final Item itemFertilizer = Item.REGISTRY.getObject(new ResourceLocation("forestry:fertilizer_compound"));
+		final Item itemFertilizer = Item.REGISTRY.getObject(new ResourceLocation("forestry:fertilizerCompound"));
 		if(itemFertilizer!=null)
 			BelljarHandler.registerItemFertilizer(new ItemFertilizerHandler()
 			{
