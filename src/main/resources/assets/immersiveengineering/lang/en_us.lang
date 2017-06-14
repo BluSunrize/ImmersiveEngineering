@@ -629,8 +629,9 @@ chat.immersiveengineering.info.coresample.mineral=%1$s-Vein
 chat.immersiveengineering.info.coresample.noMineral=No Mineral
 chat.immersiveengineering.info.coresample.yield=Expected Yield: %1$s Ores
 chat.immersiveengineering.info.coresample.infinite=Unlimited Yield
-chat.immersiveengineering.info.coresample.timestamp=Sample Taken: %1$s
-chat.immersiveengineering.info.coresample.noTimestamp=Sample Taken: %1$s ago
+chat.immersiveengineering.info.coresample.timestamp=Sample taken %1$s ago
+chat.immersiveengineering.info.coresample.noTimestamp=Sample taken at some unknown time
+chat.immersiveengineering.info.coresample.timezone=This sample was taken in a different timezone/dimension
 chat.immersiveengineering.info.coresample.mapFail=The sample is not within the borders of this map
 
 desc.immersiveengineering.info.reqMaterial=Required Materials:
