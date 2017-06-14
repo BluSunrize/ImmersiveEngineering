@@ -50,7 +50,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.ContainerShulkerBox;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -939,7 +938,7 @@ public class IEContent
 			);
 			career_electrician.addTrade(3,
 					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 22), new EntityVillager.PriceInfo(4, 8)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-2, -1)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 2), new EntityVillager.PriceInfo(-2, -1)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 6), new EntityVillager.PriceInfo(8, 12))
 			);
 			career_electrician.addTrade(4,
@@ -995,9 +994,7 @@ public class IEContent
 				return true;
 			if (OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
 				return true;
-			if (stack.getItem() instanceof ItemShulkerBox)
-				return true;
-			return false;
+			return stack.getItem() instanceof ItemShulkerBox;
 		});
 
 		TileEntityFluidPipe.initCovers();
