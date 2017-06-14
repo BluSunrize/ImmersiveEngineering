@@ -138,6 +138,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		markDirty();
 		wireNetwork.updateValues();
 		onChange();
+		this.markContainingBlockForUpdate(null);
 		worldObj.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 		return true;
 	}
