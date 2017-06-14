@@ -9,10 +9,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
+
 public class InventoryShader implements IInventory
 {
 	private ShaderWrapper wrapper;
 	private Container container;
+	@Nonnull
 	public ItemStack shader;
 	private String name;
 
@@ -48,7 +51,7 @@ public class InventoryShader implements IInventory
 		if(!this.shader.isEmpty())
 		{
 			ItemStack itemstack = this.shader.copy();
-			this.shader = null;
+			this.shader = ItemStack.EMPTY;
 			return itemstack;
 		}
 		return ItemStack.EMPTY;
@@ -63,7 +66,7 @@ public class InventoryShader implements IInventory
 			if(shader.getCount()<=j)
 			{
 				itemstack = this.shader.copy();
-				this.shader = null;
+				this.shader = ItemStack.EMPTY;
 				this.markDirty();
 				this.container.onCraftMatrixChanged(this);
 				return itemstack;
@@ -71,7 +74,7 @@ public class InventoryShader implements IInventory
 			itemstack = this.shader.splitStack(j);
 
 			if(shader.getCount()==0)
-				this.shader = null;
+				this.shader = ItemStack.EMPTY;
 			this.container.onCraftMatrixChanged(this);
 			return itemstack;
 		}
