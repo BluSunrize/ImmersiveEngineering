@@ -73,7 +73,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			return;
 		if(turnCooldown > 0)
 			turnCooldown--;
-		//ToDo: I don't even know what this is for. I need Malte to explain that .-.
+		// Needed for CC floodlight compat, specifically the waiting function
+		// Commented out since there is no CC compat right now
 //		if(turnCooldown == 0)
 //			notifyAll();
 		boolean b = active;
