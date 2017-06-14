@@ -9,11 +9,13 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -22,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -54,9 +57,15 @@ public class ItemCoresample extends ItemIEBase
 			}
 			else
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.noMineral"));
-
 			int[] coords = ItemNBTHelper.getIntArray(stack, "coords");
+			boolean singleplayer = Minecraft.getMinecraft().isSingleplayer();
 			World world = DimensionManager.getWorld(coords[0]);
+			if (world==null)
+			{
+				World clientWorld = Minecraft.getMinecraft().world;
+				if (clientWorld!=null&&clientWorld.provider.getDimension()==coords[0])
+					world = clientWorld;
+			}
 			String s0 = (coords[1]*16)+", "+(coords[2]*16);
 			String s1 = (coords[1]*16+16)+", "+(coords[2]*16+16);
 			String s2;
@@ -77,7 +86,8 @@ public class ItemCoresample extends ItemIEBase
 			else if(ItemNBTHelper.hasKey(stack, "depletion"))
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.yield", ExcavatorHandler.mineralVeinCapacity-ItemNBTHelper.getInt(stack, "depletion")));
 
-			if(ItemNBTHelper.hasKey(stack, "timestamp") && world!=null)
+			boolean hasStamp = ItemNBTHelper.hasKey(stack, "timestamp");
+			if(hasStamp && world!=null)
 			{
 				long timestamp = ItemNBTHelper.getLong(stack, "timestamp");
 				long dist = world.getTotalWorldTime()-timestamp;
@@ -86,6 +96,8 @@ public class ItemCoresample extends ItemIEBase
 				else
 					list.add(I18n.format(Lib.CHAT_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, ClientUtils.TimestampFormat.DHM)));
 			}
+			else if (hasStamp)
+				list.add(I18n.format(Lib.CHAT_INFO+"coresample.timezone"));
 			else
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.noTimestamp"));
 		}
