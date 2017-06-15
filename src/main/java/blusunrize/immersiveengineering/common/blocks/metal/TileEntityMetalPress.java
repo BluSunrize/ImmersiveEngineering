@@ -59,11 +59,11 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			float pressTime = 3.75f*tick;
 			float fProcess = process.processTick*tick;
 			if(fProcess>=transportTime && fProcess<transportTime+tick)
-				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
+				worldObj.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F,1);
 			if(fProcess>=(transportTime+pressTime) && fProcess<(transportTime+pressTime+tick))
-				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_smash, SoundCategory.BLOCKS, .3f,1, true);
+				worldObj.playSound(null, getPos(), IESounds.metalpress_smash, SoundCategory.BLOCKS, .3F,1);
 			if(fProcess>=(1-transportTime) && fProcess<(1-transportTime+tick))
-				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
+				worldObj.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F,1);
 		}
 	}
 
