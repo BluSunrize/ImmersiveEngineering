@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -17,22 +18,22 @@ public class RecipePowerpack implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
-		ItemStack earmuffs = ItemStack.EMPTY;
+		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(earmuffs.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
-					earmuffs = stackInSlot;
+				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+					powerpack = stackInSlot;
 				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor) stackInSlot.getItem()).armorType == EntityEquipmentSlot.CHEST && !ImmersiveEngineering.proxy.armorHasCustomModel(stackInSlot))
 					armor = stackInSlot;
 				else
 					return false;
 		}
-		if(!earmuffs.isEmpty() && !armor.isEmpty())
+		if(!powerpack.isEmpty() && !armor.isEmpty())
 			return true;
-		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, "IE:Earmuffs") && earmuffs.isEmpty())
+		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack) && powerpack.isEmpty())
 			return true;
 		return false;
 	}
@@ -40,28 +41,29 @@ public class RecipePowerpack implements IRecipe
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
-		ItemStack earmuffs = ItemStack.EMPTY;
+		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(earmuffs.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
-					earmuffs = stackInSlot;
+				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+					powerpack = stackInSlot;
 				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.CHEST && !ImmersiveEngineering.proxy.armorHasCustomModel(stackInSlot))
 					armor = stackInSlot;
 		}
 
-		if(!earmuffs.isEmpty() && !armor.isEmpty())
+		if(!powerpack.isEmpty() && !armor.isEmpty())
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.setItemStack(output, "IE:Powerpack", earmuffs.copy());
+			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, powerpack.copy());
+
 			return output;
 		}
-		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, "IE:Powerpack"))
+		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.remove(output, "IE:Powerpack");
+			ItemNBTHelper.remove(output, Lib.NBT_Powerpack);
 			return output;
 		}
 		return ItemStack.EMPTY;
@@ -85,8 +87,8 @@ public class RecipePowerpack implements IRecipe
 		for(int i=0;i<remaining.size();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty() && ItemNBTHelper.hasKey(stackInSlot, "IE:Powerpack"))
-				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, "IE:Powerpack"));
+			if(!stackInSlot.isEmpty() && ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Powerpack))
+				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Powerpack));
 		}
 		return remaining;
 	}

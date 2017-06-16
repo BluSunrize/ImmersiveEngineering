@@ -11,12 +11,15 @@ import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -69,9 +72,9 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	{
 		if(renderPass==1)
 			return 0xffffff;
-		if(!ItemNBTHelper.hasKey(stack, "IE:EarmuffColour"))
+		if(!ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
 			return 0x486c94;
-		return ItemNBTHelper.getInt(stack, "IE:EarmuffColour");
+		return ItemNBTHelper.getInt(stack, Lib.NBT_EarmuffColour);
 	}
 	@Override
 	public boolean hasColor(ItemStack stack)
@@ -81,20 +84,20 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	@Override
 	public int getColor(ItemStack stack)
 	{
-		if(!ItemNBTHelper.hasKey(stack, "IE:EarmuffColour"))
+		if(!ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
 			return 0x486c94;
-		return ItemNBTHelper.getInt(stack, "IE:EarmuffColour");
+		return ItemNBTHelper.getInt(stack, Lib.NBT_EarmuffColour);
 	}
 	@Override
     public void removeColor(ItemStack stack)
     {
-		if(ItemNBTHelper.hasKey(stack, "IE:EarmuffColour"))
-			ItemNBTHelper.remove(stack, "IE:EarmuffColour");
+		if(ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
+			ItemNBTHelper.remove(stack, Lib.NBT_EarmuffColour);
     }
 	@Override
     public void setColor(ItemStack stack, int color)
     {
-		ItemNBTHelper.setInt(stack, "IE:EarmuffColour", color);
+		ItemNBTHelper.setInt(stack, Lib.NBT_EarmuffColour, color);
     }
 
 	@Override
@@ -122,6 +125,12 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	//		}
 	//		return stack;
 	//	}
+
+	@Override
+	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
+	{
+		return HashMultimap.create();
+	}
 
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)

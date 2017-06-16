@@ -107,7 +107,6 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 			
 		case 9:
 			modifications.put("speed", 1f);
-			modifications.put("capacity", 4000);
 			break;
 		}
 	}

@@ -7,11 +7,14 @@ import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -79,10 +82,19 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 		int energy = getEnergyStored(itemStack);
 		if(energy>0)
 		{
+			int pre = energy;
 			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot)))
 					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
+			if(pre!=energy)
+				EnergyHelper.extractFlux(itemStack, pre-energy, false);
 		}
+	}
+
+	@Override
+	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
+	{
+		return HashMultimap.create();
 	}
 
 	@Override
@@ -103,7 +115,7 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
-		return 16000;
+		return 100000;
 	}
 	@Override
 	public  ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
