@@ -151,6 +151,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[2]), "A A", "AAA", "AAA", 'A', "plateAluminum");
 		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[3]), "AAA", "A A", 'A', "plateAluminum");
 
+		GameRegistry.addRecipe(new RecipePowerpack());
+		RecipeSorter.register(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack.class, Category.SHAPELESS, "after:forge:shapelessore");
+
 		addOredictRecipe(new ItemStack(IEContent.itemFluorescentTube), "GEG", "GgG", "GgG", 'G', "blockGlass", 'E', new ItemStack(IEContent.itemGraphiteElectrode), 'g', "dustGlowstone");
 
 		//

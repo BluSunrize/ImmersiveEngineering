@@ -47,6 +47,19 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 				GlStateManager.popMatrix();
 			}
 		}
+
+		if(!living.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty() && ItemNBTHelper.hasKey(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST), "IE:Powerpack"))
+		{
+			ItemStack powerpack = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST), "IE:Powerpack");
+			if(!powerpack.isEmpty())
+			{
+				GlStateManager.pushMatrix();
+				ModelBiped model = IEContent.itemPowerpack.getArmorModel(living, powerpack, EntityEquipmentSlot.CHEST, null);
+				ClientUtils.bindTexture(IEContent.itemPowerpack.getArmorTexture(powerpack, living, EntityEquipmentSlot.CHEST, null));
+				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
+				GlStateManager.popMatrix();
+			}
+		}
 	}
 
 	@Override

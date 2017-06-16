@@ -385,6 +385,7 @@ item.immersiveengineering.faraday_suit_chest.name=Faraday Chestplate
 item.immersiveengineering.faraday_suit_legs.name=Faraday Leggings
 item.immersiveengineering.faraday_suit_feet.name=Faraday Boots
 item.immersiveengineering.fluorescent_tube.name=Fluorescent Tube
+item.immersiveengineering.powerpack.name=Capacitor Backpack
 
 #CREATIVE
 itemGroup.immersiveengineering=Immersive Engineering
