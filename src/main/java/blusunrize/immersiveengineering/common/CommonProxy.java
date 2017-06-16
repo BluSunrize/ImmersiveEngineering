@@ -166,6 +166,10 @@ public class CommonProxy implements IGuiHandler
 	public void drawSpecificFluidPipe(String configuration)
 	{
 	}
+	public boolean armorHasCustomModel(ItemStack stack)
+	{
+		return false;
+	}
 
 	public boolean drawConveyorInGui(String conveyor, EnumFacing facing)
 	{

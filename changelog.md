@@ -1,5 +1,5 @@
 #####Version 0.11-59
-- Updated to Minecraft 1.11.2, still slightly buggy
+- Updated to Minecraft 1.11.2 and all the bugfixes that came with it! (thanks AtomicBlom and Malte for all the help <3)
 - added a migration system to allow loading 1.10 worlds into MC 1.11.2! (thanks Malte)
 - added special chemthrower behaviour for fluid concrete. It's the GLOO cannon from Prey! :D
 - added compat for Forestry's fertilizer to be used in the cloche
@@ -7,12 +7,14 @@
     - a small multiblock that allows earlygame alloying of metals
     - also features Crafttweaker support (thanks primetoxinz)
 - added new textures for the Dynamo, copper ingots, wirecoils and coil blocks (thanks Mr. Hazard)
+- added the Capacitor Backpack! Supplies your items with power!
 - changed balance on Drills: Heads have more durability, lubrication reduces wear, augers boost speed
 - changed Turrets to use the improved Tile Renders (thanks Malte)
 - changed outputsize on Coke and Blastbrick recipes, reducing earlygame resource costs
 - changed the Windmills!
     - new model (courtesy of Mr. Hazard)
     - instead of having two types, they are now "upgraded" with sails
+- changed produce&seed output for wheat and beetroot in the Cloche
 - fixed recipes for redstone ignoring conveyers
 - fixed render-crash with the Cloche
 - fixed nested configs not generating
@@ -21,10 +23,10 @@
 - fixed soil-texture getter for the cloche
 - fixed Covered Conveyors not protecting inserted items against pickup
 - fixed Improved Blast Furnace consuming too much fuel (thanks Malte)
-- fixed Multiblock disassemly code (thanks Malte)
+- fixed Multiblock disassemly code, specifically regarding multi-break-tools like Drills or TCon Hammers (thanks Malte)
 - fixed possible NBT overflows with toolboxes, crates, shulkerboxes, etc (thanks Malte)
 - fixed Fluid Pipe covers not initializing properly (thanks Malte)
-
+- fixed recipe-wildcard handling in the manual (thanks Landmaster)
 
 #####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.

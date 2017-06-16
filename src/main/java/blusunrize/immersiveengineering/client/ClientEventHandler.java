@@ -176,6 +176,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			if(!earmuffs.isEmpty())
 				event.getToolTip().add(TextFormatting.GRAY+earmuffs.getDisplayName());
 		}
+		if(ItemNBTHelper.hasKey(event.getItemStack(),"IE:Powerpack"))
+		{
+			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), "IE:Powerpack");
+			if(!powerpack.isEmpty())
+				event.getToolTip().add(TextFormatting.GRAY+powerpack.getDisplayName());
+		}
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace

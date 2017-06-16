@@ -69,6 +69,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRedstone;
@@ -92,6 +93,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -1394,6 +1396,24 @@ public class ClientProxy extends CommonProxy
 //			model = ((ISmartBlockModel) model).handleBlockState(state);
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
 		GlStateManager.popMatrix();
+	}
+	static Map<String, Boolean> hasArmorModel = new HashMap<>();
+	@Override
+	public boolean armorHasCustomModel(ItemStack stack)
+	{
+		if(!stack.isEmpty() && stack.getItem() instanceof ItemArmor)
+		{
+			Boolean b = hasArmorModel.get(stack.getUnlocalizedName());
+			if(b==null)
+				try
+				{
+					ModelBiped model = stack.getItem().getArmorModel(ClientUtils.mc().player, stack, ((ItemArmor)stack.getItem()).getEquipmentSlot(), null);
+					b = model!=null&&model.getClass()!=ModelBiped.class; //Model isn't a base Biped
+					hasArmorModel.put(stack.getUnlocalizedName(), b);
+				}catch(Exception e){}
+			return b==null?false:b;
+		}
+		return false;
 	}
 
 	@Override

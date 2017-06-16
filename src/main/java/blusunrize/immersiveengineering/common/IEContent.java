@@ -161,6 +161,7 @@ public class IEContent
 	public static ItemIEBase itemGraphiteElectrode;
 	public static ItemFaradaySuit[] itemsFaradaySuit = new ItemFaradaySuit[4];
 	public static ItemIEBase itemFluorescentTube;
+	public static Item itemPowerpack;
 
 	public static ItemIEBase itemFakeIcons;
 
@@ -302,6 +303,7 @@ public class IEContent
 		for(int i = 0; i < itemsFaradaySuit.length; i++)
 			itemsFaradaySuit[i] = new ItemFaradaySuit(EntityEquipmentSlot.values()[2+i]);
 		itemFluorescentTube = new ItemFluorescentTube();
+		itemPowerpack = new ItemPowerpack();
 
 		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky")
 		{

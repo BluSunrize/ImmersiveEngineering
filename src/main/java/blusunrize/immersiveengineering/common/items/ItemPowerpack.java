@@ -1,0 +1,127 @@
+package blusunrize.immersiveengineering.common.items;
+
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.ClientProxy;
+import blusunrize.immersiveengineering.client.models.ModelPowerpack;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+
+/**
+ * @author BluSunrize
+ * @since 15.06.2017
+ */
+public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergyItem
+{
+	public ItemPowerpack()
+	{
+		super(ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.CHEST);
+		String name = "powerpack";
+		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
+		this.setCreativeTab(ImmersiveEngineering.creativeTab);
+		ImmersiveEngineering.register(this, name);
+		IEContent.registeredIEItems.add(this);
+	}
+
+	@Override
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
+	{
+		return "immersiveengineering:textures/models/powerpack.png";
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
+	{
+		return ModelPowerpack.getModel();
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	{
+		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
+		list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public FontRenderer getFontRenderer(ItemStack stack)
+	{
+		return ClientProxy.itemFont;
+	}
+
+	@Override
+	public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack)
+	{
+		int energy = getEnergyStored(itemStack);
+		if(energy>0)
+		{
+			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
+				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot)))
+					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
+		}
+	}
+
+	@Override
+	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
+	{
+		return new ArmorProperties(0,0,0);
+	}
+	@Override
+	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
+	{
+		return 0;
+	}
+	@Override
+	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot)
+	{
+	}
+
+	@Override
+	public int getMaxEnergyStored(ItemStack container)
+	{
+		return 16000;
+	}
+	@Override
+	public  ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+	{
+		return new ICapabilityProvider()
+		{
+			final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+			{
+				return capability==CapabilityEnergy.ENERGY;
+			}
+			@Nullable
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+			{
+				return capability==CapabilityEnergy.ENERGY?(T)energyStorage:null;
+			}
+		};
+	}
+}

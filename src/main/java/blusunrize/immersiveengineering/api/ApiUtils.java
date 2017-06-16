@@ -314,14 +314,19 @@ public class ApiUtils
 		if(vertical)
 			return new Vec3d[]{new Vec3d(start.xCoord, start.yCoord, start.zCoord), new Vec3d(end.xCoord, end.yCoord, end.zCoord)};
 
+		return getConnectionCatenary(start, end, connection.cableType.getSlack());
+	}
+
+	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
+	{
 		double dx = (end.xCoord)-(start.xCoord);
 		double dy = (end.yCoord)-(start.yCoord);
 		double dz = (end.zCoord)-(start.zCoord);
 		double dw = Math.sqrt(dx*dx + dz*dz);
-		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * connection.cableType.getSlack();
+		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * slack;
 		double l = 0;
 		int limiter = 0;
-		while(!vertical && limiter<300)
+		while(limiter<300)
 		{
 			limiter++;
 			l += 0.01;

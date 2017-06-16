@@ -259,4 +259,73 @@ public class EnergyHelper
 			};
 		}
 	}
+
+	public interface IIEEnergyItem extends IFluxContainerItem, IEnergyContainerItem
+	{
+		@Override
+		default int receiveEnergy(ItemStack container, int energy, boolean simulate)
+		{
+			return ItemNBTHelper.insertFluxItem(container, energy, getMaxEnergyStored(container), simulate);
+		}
+		@Override
+		default int extractEnergy(ItemStack container, int energy, boolean simulate)
+		{
+			return ItemNBTHelper.extractFluxFromItem(container, energy, simulate);
+		}
+		@Override
+		default int getEnergyStored(ItemStack container)
+		{
+			return ItemNBTHelper.getFluxStoredInItem(container);
+		}
+	}
+
+	public static class ItemEnergyStorage implements IEnergyStorage
+	{
+		ItemStack stack;
+		IIEEnergyItem ieEnergyItem;
+
+		public ItemEnergyStorage(ItemStack item)
+		{
+			assert(item.getItem() instanceof IIEEnergyItem);
+			this.stack = item;
+			this.ieEnergyItem = (IIEEnergyItem)item.getItem();
+		}
+
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate)
+		{
+			return this.ieEnergyItem.receiveEnergy(stack, maxReceive, simulate);
+		}
+
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate)
+		{
+			return this.ieEnergyItem.extractEnergy(stack, maxExtract, simulate);
+		}
+
+		@Override
+		public int getEnergyStored()
+		{
+			return this.ieEnergyItem.getEnergyStored(stack);
+		}
+
+		@Override
+		public int getMaxEnergyStored()
+		{
+			return this.ieEnergyItem.getMaxEnergyStored(stack);
+		}
+
+		@Override
+		public boolean canExtract()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean canReceive()
+		{
+			return true;
+		}
+	}
+
 }
