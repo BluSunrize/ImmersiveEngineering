@@ -75,8 +75,19 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	@Override
 	public void update()
 	{
-		if(dummy!=0 || worldObj.isBlockIndirectlyGettingPowered(getPos())>0)
+		if(dummy!=0)
 			return;
+		if (worldObj.isRemote && !renderActive)
+			return;
+		if (worldObj.isBlockIndirectlyGettingPowered(getPos())!=0)
+		{
+			if (renderActive)
+			{
+				renderActive = false;
+				sendSyncPacket(0);
+			}
+			return;
+		}
 		if(getWorld().isRemote)
 		{
 			if(energyStorage.getEnergyStored()>IEConfig.Machines.belljar_consumption && fertilizerAmount>0 && renderActive)
