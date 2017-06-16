@@ -135,9 +135,10 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				ItemStack output = pattern.inv.get(9).copy();
 				ArrayList<ItemStack> queryList = new ArrayList<>();//List of all available inputs in the inventory
 				for(NonNullList<ItemStack> bufferedStacks : outputBuffer)
-					for(ItemStack stack : bufferedStacks)
-						if(!stack.isEmpty())
-							queryList.add(stack.copy());
+					if(bufferedStacks!=null)
+						for(ItemStack stack : bufferedStacks)
+							if(!stack.isEmpty())
+								queryList.add(stack.copy());
 				for(ItemStack stack : this.inventory)
 					if(!stack.isEmpty())
 						queryList.add(stack.copy());
