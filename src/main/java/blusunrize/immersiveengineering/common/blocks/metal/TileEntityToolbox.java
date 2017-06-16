@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.state.IBlockState;
@@ -14,6 +15,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -22,7 +24,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 
@@ -31,6 +32,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public String name;
 	private EnumFacing facing = EnumFacing.NORTH;
+	private NBTTagList enchantments;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -38,6 +40,8 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 		if(nbt.hasKey("name"))
 			this.name = nbt.getString("name");
+		if(nbt.hasKey("enchantments"))
+			this.enchantments = nbt.getTagList("enchantments", 10);
 		if(!descPacket)
 			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 27);
 	}
@@ -47,6 +51,8 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		nbt.setInteger("facing", facing.ordinal());
 		if(this.name!=null)
 			nbt.setString("name", this.name);
+		if(this.enchantments!=null)
+			nbt.setTag("enchantments", this.enchantments);
 		if(!descPacket)
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
 	}
@@ -119,6 +125,8 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		((ItemInternalStorage)IEContent.itemToolbox).setContainedItems(stack, inventory);
 		if(this.name!=null)
 			stack.setStackDisplayName(this.name);
+		if(enchantments!=null)
+			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
 	}
 	@Override
@@ -129,6 +137,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 			this.inventory = ((ItemInternalStorage)stack.getItem()).getContainedItems(stack);
 			if(stack.hasDisplayName())
 				this.name = stack.getDisplayName();
+			enchantments = stack.getEnchantmentTagList();
 		}
 	}
 	@Override

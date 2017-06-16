@@ -2,11 +2,11 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -31,7 +31,6 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -43,12 +42,15 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
 	public String name;
+	private NBTTagList enchantments;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		if(nbt.hasKey("name"))
 			this.name = nbt.getString("name");
+		if(nbt.hasKey("enchantments"))
+			this.enchantments = nbt.getTagList("enchantments", 10);
 		if(!descPacket)
 		{
 			if(nbt.hasKey("lootTable", 8))
@@ -62,6 +64,8 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	{
 		if(this.name!=null)
 			nbt.setString("name", this.name);
+		if(this.enchantments!=null)
+			nbt.setTag("enchantments", this.enchantments);
 		if(!descPacket)
 		{
 			if(lootTable!=null)
@@ -172,6 +176,8 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			stack.setTagCompound(tag);
 		if(this.name!=null)
 			stack.setStackDisplayName(this.name);
+		if(enchantments!=null)
+			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
 	}
 	@Override
@@ -182,6 +188,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			readCustomNBT(stack.getTagCompound(), false);
 			if(stack.hasDisplayName())
 				this.name = stack.getDisplayName();
+			enchantments = stack.getEnchantmentTagList();
 		}
 	}
 	@Override
