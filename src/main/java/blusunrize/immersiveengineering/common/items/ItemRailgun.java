@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
@@ -12,12 +11,9 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.base.Optional;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -37,13 +33,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 import java.util.List;
 
-public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerItem,IEnergyContainerItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
+public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
 {
 	public ItemRailgun()
 	{
@@ -104,18 +101,17 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 	{
 		return new ICapabilityProvider()
 		{
-			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
+			final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
+			final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 			{
-				return capability== CapabilityShader.SHADER_CAPABILITY;
+				return capability==CapabilityShader.SHADER_CAPABILITY||capability==CapabilityEnergy.ENERGY;
 			}
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 			{
-				if(capability==CapabilityShader.SHADER_CAPABILITY)
-					return (T)shaders;
-				return null;
+				return capability==CapabilityShader.SHADER_CAPABILITY?(T)shaders: capability==CapabilityEnergy.ENERGY?(T)energyStorage: null;
 			}
 		};
 	}
@@ -280,24 +276,9 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 	}
 
 	@Override
-	public int receiveEnergy(ItemStack container, int energy, boolean simulate)
-	{
-		return ItemNBTHelper.insertFluxItem(container, energy, getMaxEnergyStored(container), simulate);
-	}
-	@Override
-	public int extractEnergy(ItemStack container, int energy, boolean simulate)
-	{
-		return ItemNBTHelper.extractFluxFromItem(container, energy, simulate);
-	}
-	@Override
-	public int getEnergyStored(ItemStack container)
-	{
-		return ItemNBTHelper.getFluxStoredInItem(container);
-	}
-	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
-		return 8000+this.getUpgrades(container).getInteger("capacity");
+		return 1600;
 	}
 
 

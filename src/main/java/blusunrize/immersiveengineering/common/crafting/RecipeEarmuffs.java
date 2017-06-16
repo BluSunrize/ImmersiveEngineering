@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -16,7 +17,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class RecipeEarmuffs implements IRecipe
@@ -42,7 +42,7 @@ public class RecipeEarmuffs implements IRecipe
 		}
 		if(!earmuffs.isEmpty() && (!armor.isEmpty() ||!list.isEmpty()))
 			return true;
-		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, "IE:Earmuffs") && earmuffs.isEmpty() && list.isEmpty())
+		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, Lib.NBT_Earmuffs) && earmuffs.isEmpty() && list.isEmpty())
 			return true;
 		return false;
 	}
@@ -102,22 +102,22 @@ public class RecipeEarmuffs implements IRecipe
 				b = (int)((float)b * colourMod / highestColour);
 				int newColour = (r << 8) + g;
 				newColour = (newColour << 8) + b;
-				ItemNBTHelper.setInt(earmuffs, "IE:EarmuffColour", newColour);
+				ItemNBTHelper.setInt(earmuffs, Lib.NBT_EarmuffColour, newColour);
 			}
 			ItemStack output;
 			if(!armor.isEmpty())
 			{
 				output = armor.copy();
-				ItemNBTHelper.setItemStack(output, "IE:Earmuffs", earmuffs.copy());
+				ItemNBTHelper.setItemStack(output, Lib.NBT_Earmuffs, earmuffs.copy());
 			}
 			else
 				output = earmuffs.copy();
 			return output;
 		}
-		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, "IE:Earmuffs"))
+		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, Lib.NBT_Earmuffs))
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.remove(output, "IE:Earmuffs");
+			ItemNBTHelper.remove(output, Lib.NBT_Earmuffs);
 			return output;
 		}
 		return ItemStack.EMPTY;
@@ -141,8 +141,8 @@ public class RecipeEarmuffs implements IRecipe
 		for(int i=0;i<remaining.size();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty() && ItemNBTHelper.hasKey(stackInSlot, "IE:Earmuffs"))
-				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, "IE:Earmuffs"));
+			if(!stackInSlot.isEmpty() && ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Earmuffs))
+				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Earmuffs));
 		}
 		return remaining;
 	}

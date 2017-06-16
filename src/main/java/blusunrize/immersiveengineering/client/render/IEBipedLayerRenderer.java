@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -33,7 +34,7 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 
 		if(!living.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty() && ItemNBTHelper.hasKey(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), "IE:Earmuffs"))
 		{
-			ItemStack earmuffs = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), "IE:Earmuffs");
+			ItemStack earmuffs = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
 			{
 				GlStateManager.pushMatrix();
@@ -50,7 +51,7 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 
 		if(!living.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty() && ItemNBTHelper.hasKey(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST), "IE:Powerpack"))
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST), "IE:Powerpack");
+			ItemStack powerpack = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
 				GlStateManager.pushMatrix();

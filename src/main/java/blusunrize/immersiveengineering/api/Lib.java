@@ -54,7 +54,11 @@ public class Lib
 	public static final int GUIID_Manual = GUIID_Base_Item +0;
 	public static final int GUIID_Revolver = GUIID_Base_Item +1;
 	public static final int GUIID_Toolbox = GUIID_Base_Item +2;
-	
+
+	public static final String NBT_Earmuffs = "IE:Earmuffs";
+	public static final String NBT_EarmuffColour = "IE:EarmuffColour";
+	public static final String NBT_Powerpack = "IE:Powerpack";
+
 	public static final int colour_nixieTubeText = 0xff9900;
 	
 	public static String DMG_RevolverCasull="ieRevolver_casull";

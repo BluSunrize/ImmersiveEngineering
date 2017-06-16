@@ -26,10 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.*;
-import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
@@ -170,17 +167,20 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			if(!shader.isEmpty())
 				event.getToolTip().add(TextFormatting.DARK_GRAY + shader.getDisplayName());
 		}
-		if(ItemNBTHelper.hasKey(event.getItemStack(),"IE:Earmuffs"))
+		if(ItemNBTHelper.hasKey(event.getItemStack(),Lib.NBT_Earmuffs))
 		{
-			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), "IE:Earmuffs");
+			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
 				event.getToolTip().add(TextFormatting.GRAY+earmuffs.getDisplayName());
 		}
-		if(ItemNBTHelper.hasKey(event.getItemStack(),"IE:Powerpack"))
+		if(ItemNBTHelper.hasKey(event.getItemStack(),Lib.NBT_Powerpack))
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), "IE:Powerpack");
+			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
+			{
 				event.getToolTip().add(TextFormatting.GRAY+powerpack.getDisplayName());
+				event.getToolTip().add(TextFormatting.GRAY.toString()+EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF");
+			}
 		}
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null
@@ -207,8 +207,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		if(ClientUtils.mc().player!=null && !ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty())
 		{
 			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-			if(ItemNBTHelper.hasKey(earmuffs, "IE:Earmuffs"))
-				earmuffs = ItemNBTHelper.getItemStack(earmuffs, "IE:Earmuffs");
+			if(ItemNBTHelper.hasKey(earmuffs, Lib.NBT_Earmuffs))
+				earmuffs = ItemNBTHelper.getItemStack(earmuffs, Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty() && IEContent.itemEarmuffs.equals(earmuffs.getItem()) && !ItemNBTHelper.getBoolean(earmuffs,"IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
 				for(String blacklist : IEConfig.Tools.earDefenders_SoundBlacklist)

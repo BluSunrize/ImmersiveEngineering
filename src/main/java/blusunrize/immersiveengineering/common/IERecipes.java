@@ -151,6 +151,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[2]), "A A", "AAA", "AAA", 'A', "plateAluminum");
 		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[3]), "AAA", "A A", 'A', "plateAluminum");
 
+		addOredictRecipe(new ItemStack(IEContent.itemPowerpack), "LBL","WCW", 'L',"leather",'B',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()),'C',new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),'W',new ItemStack(IEContent.itemWireCoil,1,0));
 		GameRegistry.addRecipe(new RecipePowerpack());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack.class, Category.SHAPELESS, "after:forge:shapelessore");
 

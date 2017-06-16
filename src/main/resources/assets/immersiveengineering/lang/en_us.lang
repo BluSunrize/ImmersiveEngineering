@@ -743,7 +743,7 @@ desc.immersiveengineering.flavour.toolupgrade.revolver_magazine=Increases the Re
 desc.immersiveengineering.flavour.toolupgrade.revolver_electro=Revolver shots inflict shock damage
 desc.immersiveengineering.flavour.toolupgrade.chemthrower_focus=Decreases spread and increases range of the Chemical Thrower
 desc.immersiveengineering.flavour.toolupgrade.railgun_scope=Allows Railgun to zoom in
-desc.immersiveengineering.flavour.toolupgrade.railgun_capacitors=Reduces charge time and increases energy storage of the Railgun
+desc.immersiveengineering.flavour.toolupgrade.railgun_capacitors=Reduces charge time of the Railgun
 
 gui.immersiveengineering.empty=Empty
 gui.immersiveengineering.blastFurnace=Blast Furnace
@@ -1041,7 +1041,7 @@ ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransform
 
 ie.manual.entry.concrete.name=Concrete
 ie.manual.entry.concrete.subtext=Fortress Material
-ie.manual.entry.concrete0=Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for the excess slag produced by the <link;blastfurnace;§n§oBlast §n§oFurnace§r>. 
+ie.manual.entry.concrete0=Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for the excess slag produced by the <link;blastfurnace;§n§oBlast §n§oFurnace§r>.
 
 ie.manual.entry.balloon.name=Balloon
 ie.manual.entry.balloon.subtext=...just make 99 of them
@@ -1075,7 +1075,7 @@ ie.manual.entry.toolbox1=Sneaking and right-clicking allows the toolbox to be pl
 ie.manual.entry.graphite.name=Graphite
 ie.manual.entry.graphite.subtext=Coal stuff
 ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;squeezer;§o§nIndustrial §o§nSqueezer§r>. That dust can then be smelted into an ingot.
-ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager. You can also create electrodes in the metal press, using the rod mold on 4 ingots, but the electrodes crafted this way have less durability. 
+ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager. You can also create electrodes in the metal press, using the rod mold on 4 ingots, but the electrodes crafted this way have less durability.
 
 ie.manual.entry.wiring.name=Basic Wiring
 ie.manual.entry.wiring.subtext=Bzzzt!
@@ -1135,7 +1135,7 @@ ie.manual.entry.improvedBlastfurnace3=Blast Furnace Preheaters are used to heat 
 ie.manual.entry.metalconstruction.name=Metal Constructions
 ie.manual.entry.metalconstruction.subtext=Riveting
 ie.manual.entry.metalconstruction0=Apart from Treated Wood, processed metals make for common construction blocks. You can craft almost any metal into blocks and slabs, or hammer iron ingots into a sheetmetal block.
-ie.manual.entry.metalconstruction1=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
+ie.manual.entry.metalconstruction1=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays.
 ie.manual.entry.metalconstruction2=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
 
 ie.manual.entry.lighting.name=Engineered Lighting
@@ -1165,7 +1165,7 @@ ie.manual.entry.silo2=A comparator attached to the bottom center block will it e
 
 ie.manual.entry.metalbarrel.name=Metal Barrel
 ie.manual.entry.metalbarrel.subtext=Doesn't roll
-ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids. 
+ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids.
 
 ie.manual.entry.assembler.name=Assembler
 ie.manual.entry.assembler.subtext=Some assembly required
@@ -1208,7 +1208,7 @@ ie.manual.entry.workbench0=Over the course of your Engineering career you may co
 ie.manual.entry.blueprints.name=Engineer's Blueprints
 ie.manual.entry.blueprints.subtext=RTFM
 ie.manual.entry.blueprints0=There are certain items which are very complex in their construction and require more than just a simple block of wood with a grid on it. These items will need to be created under the instructions of precise Blueprints on an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br><br>Should you come across an Engineer's Blueprint (or maybe even create one yourself), you can place it in the slot of the Engineer's Workbench.
-ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you insert the required materials into the 6 slots in the middle, and retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item. 
+ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you insert the required materials into the 6 slots in the middle, and retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item.
 
 ie.manual.entry.mixer.name=Mixer
 ie.manual.entry.mixer.subtext=Vats of Cookie Dough!
@@ -1238,7 +1238,7 @@ ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
 ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link;biodiesel;§o§nBiodiesel§r> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
 ie.manual.entry.dieselgen1=The structure is built from Engineering, Generator and Radiator blocks as well as Fluid Pipes and Scaffolding. Arrange them in the shape shown above and rightclick the central generator with an Engineer's Hammer.
 ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connections on the top. The <config;i;dieselGen_output>Flux/t the generator outputs will be split between all connected points.<br>The small terminal on the side will turn off the generator if supplied with a redstone signal, this behavior can be inverted by use of the Engineer's Hammer.
-ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
+ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn.
 
 ie.manual.entry.biodiesel.name=Biodiesel
 ie.manual.entry.biodiesel.subtext=Green power!
@@ -1315,8 +1315,8 @@ ie.manual.entry.revolver4=The §6Amplifying Electron Tubes§r apply an electric 
 
 ie.manual.entry.bullets.name=Revolver Cartridges
 ie.manual.entry.bullets.subtext=
-ie.manual.entry.bullets0=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else. 
-ie.manual.entry.bullets1=§lEmpty §lCasings§r and §lShells§r are the basis for every projectile. Empty Casings can also be crafted in the <link;metalPress;§o§nMetal §o§nPress§r>, using the appropriate mold, at a greatly reduced cost. 
+ie.manual.entry.bullets0=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else.
+ie.manual.entry.bullets1=§lEmpty §lCasings§r and §lShells§r are the basis for every projectile. Empty Casings can also be crafted in the <link;metalPress;§o§nMetal §o§nPress§r>, using the appropriate mold, at a greatly reduced cost.
 ie.manual.entry.bullets_casull=§lCasull §lCartridges§r are created with a "Common Projectiles" blueprint. They are a simple lead projectile inflicting medium damage.
 ie.manual.entry.bullets_armorPiercing=§lArmor-Piercing §lCartridges§r are created with the same blueprint. They do the same amount of damage but penetrate armor by sheer kinetic force.
 ie.manual.entry.bullets_buckshot=§lBuckshot §lCartridges§r, created with the aformentioned blueprint, are filled with multiple small projectiles that are fired out in a cone shape. This cartridge is highly effective at short range.
@@ -1330,7 +1330,7 @@ ie.manual.entry.bullets_wolfpack=§lWolfpack §lCartridges§r are a collection o
 ie.manual.entry.chemthrower.name=Chemical Thrower
 ie.manual.entry.chemthrower.subtext=BURN ALL THE THINGS!
 ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propels fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
-ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The §6Large Tank§r increases the fluid capacity of the Chemical Thrower by 2000 mb. 
+ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The §6Large Tank§r increases the fluid capacity of the Chemical Thrower by 2000 mb.
 ie.manual.entry.chemthrower2=The §6Focused Nozzle§r decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
 
 ie.manual.entry.skyhook.name=Engineer's Skyhook
@@ -1351,11 +1351,16 @@ ie.manual.entry.shaderList.noInfo=You have not unlocked this shader yet!
 ie.manual.entry.shaderList.unlock=Unlock this shader
 ie.manual.entry.shaderList.order=Acquire:
 
+ie.manual.entry.powerpack.name=Capacitor Backpack
+ie.manual.entry.powerpack.subtext=Do....Ray....Egon!
+ie.manual.entry.powerpack0=Energy storage takes space and some heavy weight components. As such, storing large amounts of energy in each tool individually is inefficient and makes them akward to wield.<br>The Capacitor Backpack acts as a compromise, offering a centralized storage of energy for any powered tools to tap into.
+ie.manual.entry.powerpack1=The backpack charges any tools held in main- or offhand as well as any armorpieces you are wearing.<br>The capacitor can be worn on your back like a piece of chest armor, or you may attach it to most common sets of armor in order to gain the benefit of a power-supply as well as protection.
+
 ie.manual.entry.railgun.name=Railgun
 ie.manual.entry.railgun.subtext=Velocitas Eradico
 ie.manual.entry.railgun0=The Railgun (or more accurately the Portable Induction Catapult) is a marvel of engineering. It consists of two rails through which an electric current flows and accelerates a sled, and by that, a projectile.<br>The process is energy intensive but will accelerate various projectiles to high speeds.
-ie.manual.entry.railgun1=To launch a projectile from your inventory, click and hold the use button till the charge level reaches 99, then release.<br><br>Valid projectiles include, for instance, §6iron§r and §6steel rods§r<config;b;literalRailGun;, §6rebar§r and almost §6every rail§r from Railcraft;>, as well as §6graphite electrodes§r.
-ie.manual.entry.railgun2=As with other IE tools, the railgun can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> and be customized with <link;shader;§o§nShaders§r>.<br><br>The §6Additional Capacitors§r increase the energy storage of the railgun and also greatly reduce its charge time.
+ie.manual.entry.railgun1=To launch a projectile from your inventory, click and hold the use button till the charge level reaches 99, then release.<br><br>Valid projectiles include, for instance, §6iron§r and §6steel rods§r<config;b;literalRailGun;, §6rebar§r and almost §6every rail§r from Railcraft;>, as well as §6graphite electrodes§r.<br><br>Due to the low internal energy storage, it is recommended to use the Railgun along with a <link;powerpack;§o§nCapacitor §o§nBackpack§r>.
+ie.manual.entry.railgun2=As with other IE tools, the railgun can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> and be customized with <link;shader;§o§nShaders§r>.<br><br>The §6Additional Capacitors§r greatly reduce the railgun's charge time.
 ie.manual.entry.railgun3=The §6Precision Scope§r allows you to zoom in with the railgun. Sneak to use the scope and use the mouse wheel to switch between magnification levels.
 
 ie.manual.entry.razorwire.name=Razorwire
@@ -1399,7 +1404,7 @@ ie.manual.entry.mineralsDimInvalid=§l%1$s§r is a mineral vein that can be foun
 ie.manual.entry.mineralsDimAny=§l%1$s§r is a mineral vein that can be found in any Dimension.
 
 ie.manual.entry.arcfurnace.name=Arc Furnace
-ie.manual.entry.arcfurnace.subtext=Not a reactor 
+ie.manual.entry.arcfurnace.subtext=Not a reactor
 ie.manual.entry.arcfurnace0=The Arc Furnace is a massive structure used to quickly smelt metals. It consists of a steel vat topped by electrodes which heat up the metal.
 ie.manual.entry.arcfurnace1=The furnace excels at smelting ores and creating steel due to its high speed and its ability to process multiple items at the same time, but it is also complex in its workings and will require maintenance in order to continue functioning.<br>Slag must be removed from the machine or it will cease to function, and degrading electrodes need to be replaced over time.
 ie.manual.entry.arcfurnace2=To form the structure, assemble it as shown on the first page, then click the cauldron with an Engineer's Hammer.<br><br>Energy is input through the three connectors at the back, and supplying the control panel at the front with a redstone signal will turn off the machine. Right-clicking the panel, 'bucket' or vat will open the interface.
@@ -1423,7 +1428,7 @@ ie.manual.entry.computer.general3=§lFluid stacks§r: A fluid stack represents s
 ie.manual.entry.computer.general4=§lFluid tanks§r are similar to fluid stacks, with the difference that this fluid is inside a tank. The returned table has the same entries as the table for a fluid stack. Additionally the capacity of the tank the fluid is in is stored in the entry §lcapacity§r
 
 ie.manual.entry.computer.arcfurnace.name=Arc Furnace ☎
-ie.manual.entry.computer.arcfurnace.subtext=Not a reactor 
+ie.manual.entry.computer.arcfurnace.subtext=Not a reactor
 ie.manual.entry.computer.arcFurnace0=§lsetEnabled(boolean active)§r: allows or disallows the arc furnace to operate, as if a redstone signal was applied to the control panel<br>§lisActive()§r: returns a boolean that is true if the arc furnace is currently processing something and false otherwise<br>§lgetInputStack(int slot)§r:returns the stack in the specified input slot (1-12). The table additionally has the keys §lprogress§r and §lmaxProgress§r to store the current progress and the progress at which it will be finished on the
 ie.manual.entry.computer.arcFurnace1=specified slot (both values in ticks)<br>§lgetOutputStack(int slot)§r:returns the stack in the specified output slot(1-6)<br>§lgetAdditiveStack(int slot)§r: returns the stack in the specified additive slot (1-4)<br>§lgetSlagStack()§r: returns the stack in the slag slot<br>§lhasElectrodes()§r:returns a boolean indicating whether all 3 electrodes in the arc furnace are valid<br>§lgetElectrode(int slot)§r: returns the item stack of the specified electrode (1-4)
 ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this arc furnace<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this arc furnace
@@ -1436,7 +1441,7 @@ ie.manual.entry.computer.bottlingmachine1=§lgetTank()§r: returns the contents 
 
 
 ie.manual.entry.computer.sampleDrill.name=Core Sample Drill ☎
-ie.manual.entry.computer.sampleDrill.subtext=Guaranteed representative samples 
+ie.manual.entry.computer.sampleDrill.subtext=Guaranteed representative samples
 ie.manual.entry.computer.sampleDrill0=The sample drill can be connected to a computer on its bottom block.<br>§lgetSampleProgress()§r: returns the current sample progress, 1 means that the sampling is finished, 0 means that the sampling hasn't started yet<br>§lisSamplingFinished()§r: returns true if the drill has finished sampling, otherwise it returns false<br>§lgetVeinUnlocalizedName()§r: returns the unlocalized name of the found vein
 ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r: returns the localized name of the found vein<br>§lgetVeinIntegrity()§r: returns the integrity of the vein, 1 represents a full vein, 0 an empty vein and -1 an infinite vein<br>§lgetEnergyStored()§r: returns the amount of energy stored in the drill<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this drill
 
