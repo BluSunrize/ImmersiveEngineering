@@ -347,10 +347,10 @@ public class BelljarHandler
 		registerHandler(stemHandler);
 		registerHandler(stackingHandler);
 
-		cropHandler.register(new ItemStack(Items.WHEAT_SEEDS), new ItemStack[]{new ItemStack(Items.WHEAT),new ItemStack(Items.WHEAT_SEEDS,2)}, new ItemStack(Blocks.DIRT), Blocks.WHEAT.getDefaultState());
+		cropHandler.register(new ItemStack(Items.WHEAT_SEEDS), new ItemStack[]{new ItemStack(Items.WHEAT, 2),new ItemStack(Items.WHEAT_SEEDS,1)}, new ItemStack(Blocks.DIRT), Blocks.WHEAT.getDefaultState());
 		cropHandler.register(new ItemStack(Items.POTATO), new ItemStack[]{new ItemStack(Items.POTATO,2)}, new ItemStack(Blocks.DIRT), Blocks.POTATOES.getDefaultState());
 		cropHandler.register(new ItemStack(Items.CARROT), new ItemStack[]{new ItemStack(Items.CARROT,2)}, new ItemStack(Blocks.DIRT), Blocks.CARROTS.getDefaultState());
-		cropHandler.register(new ItemStack(Items.BEETROOT_SEEDS), new ItemStack[]{new ItemStack(Items.BEETROOT),new ItemStack(Items.BEETROOT_SEEDS,2)}, new ItemStack(Blocks.DIRT), Blocks.BEETROOTS.getDefaultState());
+		cropHandler.register(new ItemStack(Items.BEETROOT_SEEDS), new ItemStack[]{new ItemStack(Items.BEETROOT,2),new ItemStack(Items.BEETROOT_SEEDS,1)}, new ItemStack(Blocks.DIRT), Blocks.BEETROOTS.getDefaultState());
 		cropHandler.register(new ItemStack(Items.NETHER_WART), new ItemStack[]{new ItemStack(Items.NETHER_WART,2)}, new ItemStack(Blocks.SOUL_SAND), Blocks.NETHER_WART.getDefaultState());
 
 		stemHandler.register(new ItemStack(Items.PUMPKIN_SEEDS), new ItemStack[]{new ItemStack(Blocks.PUMPKIN)}, new ItemStack(Blocks.DIRT), Blocks.PUMPKIN_STEM.getDefaultState());
