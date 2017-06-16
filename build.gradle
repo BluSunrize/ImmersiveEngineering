@@ -22,7 +22,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "${mainVersion}-${buildNumber}" + getBuildNumber();
+version = "${mainVersion}-${buildNumber}" + getBuildNumber()
 group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 
@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "13.20.0.2282"
+    version = "13.20.0.2315"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
@@ -70,10 +70,10 @@ repositories {
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
-    maven { //IC2
-        name = "ic2"
-        url = "http://maven.ic2.player.to/"
-    }
+//    maven { //IC2
+//        name = "ic2"
+//        url = "http://maven.ic2.player.to/"
+//    }
 }
 
 dependencies {
@@ -86,7 +86,7 @@ dependencies {
     deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
 //    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
-    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+'
+//    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+'
 
 }
 
