@@ -70,10 +70,10 @@ repositories {
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
-    maven { //IC2
-        name = "ic2"
-        url = "http://maven.ic2.player.to/"
-    }
+//    maven { //IC2
+//        name = "ic2"
+//        url = "http://maven.ic2.player.to/"
+//    }
 }
 
 dependencies {
@@ -90,7 +90,7 @@ dependencies {
     deobfCompile "com.github.mcjty:compatlayer:1.10-0.+"//1.10-0.2.2
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.1x-1.+"//1.1x-1.4.4-55
     deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.+"//17.68
-    deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
+//    deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
 }
 
 jar {
