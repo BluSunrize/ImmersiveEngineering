@@ -10,6 +10,7 @@
 - fixed missing sounds for Metal Press and other things
 - fixed Charging Station having a broken mesh on the bottom
 - fixed Villagers trading MV wirecoils twice
+- fixed logic and effects for the Grunt Birthday Party achievement
 
 #####Version 0.10-60 - BUILT
 - added Forestry's fertilizer to the Garden Cloche
