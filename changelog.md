@@ -1,4 +1,7 @@
-#####Version 0.11-59
+#####Version 0.11-62 - BUILT
+- official 1.11.2 release, same changelog as build 59
+
+#####Version 0.11-59 - UNRELEASED
 - Updated to Minecraft 1.11.2 and all the bugfixes that came with it! (thanks AtomicBlom and Malte for all the help <3)
 - added a migration system to allow loading 1.10 worlds into MC 1.11.2! (thanks Malte)
 - added special chemthrower behaviour for fluid concrete. It's the GLOO cannon from Prey! :D
@@ -19,7 +22,7 @@
 - changed produce&seed output for wheat and beetroot in the Cloche
 - changed Toolboxes and Wooden Crates to keep their enchantments on placement
 - changed Railgun to store less energy (so the Capacitor Backpack actually has a reason to exist), buffed its damage by 50%
-- changed Redstone Connectors to properly connect to Redstone Dust
+- changed Redstone Connectors to properly connect to Redstone Dust (thanks Malte)
 - fixed recipes for redstone ignoring conveyers
 - fixed render-crash with the Cloche
 - fixed nested configs not generating
