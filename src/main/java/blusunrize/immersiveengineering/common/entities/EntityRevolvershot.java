@@ -1,11 +1,13 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageBirthdayParty;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -24,6 +26,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -259,11 +262,12 @@ public class EntityRevolvershot extends Entity
 			IBullet bullet = BulletHandler.getBullet(bulletType);
 			if(bullet != null)
 				bullet.onHitTarget(world, mop, this.shootingEntity, this, headshot);
-			if(headshot && mop.entityHit instanceof EntityAgeable && ((EntityAgeable)mop.entityHit).isChild())
+			if(headshot && mop.entityHit instanceof EntityAgeable && ((EntityAgeable)mop.entityHit).isChild() && ((EntityLivingBase)mop.entityHit).getHealth()<=0)
 			{
 				if(this.shootingEntity instanceof EntityPlayer)
 					((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
-				this.playSound(IESounds.birthdayParty, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+				world.playSound(null, posX,posY,posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+				ImmersiveEngineering.packetHandler.sendToDimension(new MessageBirthdayParty((EntityLivingBase)mop.entityHit), world.provider.getDimension());
 			}
 		}
 		if(!this.world.isRemote)
