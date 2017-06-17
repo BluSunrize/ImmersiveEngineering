@@ -40,6 +40,12 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	}
 
 	@Override
+	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	{
+		return state.getValue(property)==BlockTypes_Connector.CONNECTOR_REDSTONE;
+	}
+
+	@Override
 	public boolean useCustomStateMapper()
 	{
 		return true;
