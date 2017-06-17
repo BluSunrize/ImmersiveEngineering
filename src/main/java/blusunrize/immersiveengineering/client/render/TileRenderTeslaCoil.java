@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil.LightningAnimation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -24,9 +23,7 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 			return;
 		Iterator<LightningAnimation> animationIt = TileEntityTeslaCoil.effectMap.get(tile.getPos()).iterator();
 
-		float oldBX = OpenGlHelper.lastBrightnessX;
-		float oldBY = OpenGlHelper.lastBrightnessY;
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238, 238);
+		setLightmapDisabled(true);
 		GL11.glPushAttrib(GL11.GL_LIGHTING);
 		GlStateManager.disableLighting();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -59,7 +56,7 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 				animationIt.remove();
 		}
 		GL11.glPopAttrib();
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, oldBX, oldBY);
+		setLightmapDisabled(false);
 	}
 	
 	public static void drawAnimation(LightningAnimation animation, double tileX, double tileY, double tileZ, float[] rgba, float lineWidth)

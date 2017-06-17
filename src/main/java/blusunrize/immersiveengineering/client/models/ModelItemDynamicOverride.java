@@ -101,9 +101,9 @@ public class ModelItemDynamicOverride implements IPerspectiveAwareModel
 		return Pair.of(this, TRSRTransformation.identity().getMatrix());
 	}
 
+	public static final HashMap<String, IBakedModel> modelCache = new HashMap();
 	static ItemOverrideList dynamicOverrides = new ItemOverrideList(new ArrayList())
 	{
-		HashMap<String, IBakedModel> modelCache = new HashMap();
 
 		@Override
 		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
