@@ -70,6 +70,13 @@ repositories {
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
+    repositories {//Curseforge for IC2 while their server is offline
+        //TODO remove this once IC2's build server is back online
+        maven {
+            name = "CurseForge"
+            url = "https://minecraft.curseforge.com/api/maven/"
+        }
+    }
 //    maven { //IC2
 //        name = "ic2"
 //        url = "http://maven.ic2.player.to/"
@@ -85,6 +92,7 @@ dependencies {
     deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+"
     deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
+    compile 'industrial-craft:industrialcraft-2:release:ex111'
 //    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
 //    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+'
 
