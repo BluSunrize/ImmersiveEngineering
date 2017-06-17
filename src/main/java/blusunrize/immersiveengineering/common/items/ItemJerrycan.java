@@ -58,13 +58,25 @@ public class ItemJerrycan extends ItemIEBase
 			if(tileEntity!=null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null))
 			{
 				FluidActionResult fluidActionResult = FluidUtil.interactWithFluidHandler(stack, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null), player);
-				if(fluidActionResult.isSuccess()) {
+				if (fluidActionResult.isSuccess())
+				{
 					player.setHeldItem(hand, fluidActionResult.getResult());
 					return EnumActionResult.SUCCESS;
 				}
 				return EnumActionResult.FAIL;
 			}
-			else
+		}
+		return EnumActionResult.PASS;
+	}
+
+	@Override
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	{
+		if (!world.isRemote)
+		{
+			ItemStack stack = player.getHeldItem(hand);
+			TileEntity tileEntity = world.getTileEntity(pos);
+			if (tileEntity == null || !tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
 			{
 				FluidStack fs = FluidUtil.getFluidContained(stack);
 				if(Utils.placeFluidBlock(world, pos.offset(side), fs))
