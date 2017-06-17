@@ -81,6 +81,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("nugget", new Integer[]{1,9});
 		IEApi.prefixToIngotMap.put("block", new Integer[]{9,1});
 		IEApi.prefixToIngotMap.put("plate", new Integer[]{1,1});
+		IEApi.prefixToIngotMap.put("wire", new Integer[]{1,1});
 		IEApi.prefixToIngotMap.put("gear", new Integer[]{4,1});
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{5,3});

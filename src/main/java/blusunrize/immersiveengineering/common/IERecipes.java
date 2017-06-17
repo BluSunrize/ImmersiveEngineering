@@ -84,6 +84,10 @@ public class IERecipes
 		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 22), "plateAluminum", cutters).setToolDamageRecipe(1);
 		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 23), "plateSteel", cutters).setToolDamageRecipe(1);
 
+		addShapelessOredictRecipe(new ItemStack(Items.GUNPOWDER,4), "dustSaltpeter","dustSaltpeter","dustSaltpeter","dustSaltpeter","dustSulfur","charcoal");
+		if(OreDictionary.doesOreNameExist("dustCharcoal"))
+			addShapelessOredictRecipe(new ItemStack(Items.GUNPOWDER,4), "dustSaltpeter","dustSaltpeter","dustSaltpeter","dustSaltpeter","dustSulfur","dustCharcoal");
+
 		//		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,14), "I","I", 'I',"ingotIron");
 		//		addOredrrictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
 
@@ -484,6 +488,7 @@ public class IERecipes
 		//		CrusherRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,18), "gemQuartz", 4800);
 
 		oreOutputModifier.put("Lapis", new ItemStack(Items.DYE,9,4));
+		oreOutputSecondaries.put("Lapis", new Object[]{"dustSulfur",.15f});
 		oreOutputModifier.put("Diamond", new ItemStack(Items.DIAMOND,2));
 		oreOutputModifier.put("Redstone", new ItemStack(Items.REDSTONE,6));
 		oreOutputSecondaries.put("Redstone", new Object[]{"crystalCinnabar",.25f});
@@ -510,9 +515,10 @@ public class IERecipes
 		addCrusherRecipe(new ItemStack(Blocks.SAND), Blocks.GRAVEL, 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "itemSlag", 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "blockGlass", 3200);
+		addCrusherRecipe(new ItemStack(Blocks.SAND,2), "sandstone", 1600, new ItemStack(IEContent.itemMaterial,1,24),.5f);
 		addCrusherRecipe(new ItemStack(Items.QUARTZ,4), "blockQuartz", 3200);
 		addCrusherRecipe(new ItemStack(Items.GLOWSTONE_DUST,4), "glowstone", 3200);
-		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER,4), "rodBlaze", 3200, "dustSulfur",.5f);
+		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER,4), "rodBlaze", 3200, new ItemStack(IEContent.itemMaterial,1,25),.5f);
 		addCrusherRecipe(new ItemStack(Items.DYE,6,15), Items.BONE, 3200);
 		addCrusherRecipe(new ItemStack(IEContent.itemMaterial,1,17), "fuelCoke", 2400);
 		addCrusherRecipe(new ItemStack(IEContent.itemMaterial, 9, 17), "blockFuelCoke", 4800);
@@ -767,14 +773,14 @@ public class IERecipes
 		addOreDictArcAlloyingRecipe("ingotRedAlloy",1, "Copper", 100,512, "dustRedstone","dustRedstone","dustRedstone","dustRedstone");
 
 		//Recycling
+		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE));
+		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemDrillhead,1,OreDictionary.WILDCARD_VALUE));
+
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration0,1,OreDictionary.WILDCARD_VALUE));
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration1,1,OreDictionary.WILDCARD_VALUE));
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration2,1,OreDictionary.WILDCARD_VALUE));
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDevice0,1,OreDictionary.WILDCARD_VALUE));
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDevice1,1,OreDictionary.WILDCARD_VALUE));
-
-		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE));
-		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemDrillhead,1,OreDictionary.WILDCARD_VALUE));
 	}
 
 	public static ArcFurnaceRecipe addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, @Nonnull ItemStack slag, Object... additives)
