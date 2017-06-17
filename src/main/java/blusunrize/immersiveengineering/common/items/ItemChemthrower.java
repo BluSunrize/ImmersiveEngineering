@@ -127,9 +127,9 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 				if(count%4==0)
 				{
 					if(ignite)
-						player.worldObj.playSound(null, player.posX, player.posY, player.posZ, IESounds.sprayFire, SoundCategory.PLAYERS, .5f, 1.5f);
+						player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.sprayFire, SoundCategory.PLAYERS, .5f, 1.5f);
 					else
-						player.worldObj.playSound(null, player.posX, player.posY, player.posZ, IESounds.spray, SoundCategory.PLAYERS, .5f, .75f);
+						player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spray, SoundCategory.PLAYERS, .5f, .75f);
 				}
 			}
 			else
