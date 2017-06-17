@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.tool.BelljarHandler;
+import blusunrize.immersiveengineering.api.tool.BelljarHandler.ItemFertilizerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Damage;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
@@ -12,9 +14,12 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -90,6 +95,22 @@ public class ThermalFoundationHelper extends IECompatModule
 			}
 		});
 		ChemthrowerHandler.registerEffect("mana", new ChemthrowerEffect_RandomTeleport(null,0, .01f));
+
+		final Item itemPhyto = Item.REGISTRY.getObject(new ResourceLocation("thermalfoundation:fertilizer"));
+		if(itemPhyto!=null)
+			BelljarHandler.registerItemFertilizer(new ItemFertilizerHandler()
+			{
+				@Override
+				public boolean isValid(@Nullable ItemStack fertilizer)
+				{
+					return !fertilizer.isEmpty()&&fertilizer.getItem()==itemPhyto;
+				}
+				@Override
+				public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
+				{
+					return 1.5f+(.25f*fertilizer.getMetadata());
+				}
+			});
 	}
 
 	@Override
