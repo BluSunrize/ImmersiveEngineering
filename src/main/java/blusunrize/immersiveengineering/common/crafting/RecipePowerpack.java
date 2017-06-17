@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -26,7 +27,7 @@ public class RecipePowerpack implements IRecipe
 			if(!stackInSlot.isEmpty())
 				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
-				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor) stackInSlot.getItem()).armorType == EntityEquipmentSlot.CHEST && !ImmersiveEngineering.proxy.armorHasCustomModel(stackInSlot))
+				else if(armor.isEmpty() && isValidArmor(stackInSlot))
 					armor = stackInSlot;
 				else
 					return false;
@@ -49,7 +50,7 @@ public class RecipePowerpack implements IRecipe
 			if(!stackInSlot.isEmpty())
 				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
-				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.CHEST && !ImmersiveEngineering.proxy.armorHasCustomModel(stackInSlot))
+				else if(armor.isEmpty() && isValidArmor(stackInSlot))
 					armor = stackInSlot;
 		}
 
@@ -91,5 +92,16 @@ public class RecipePowerpack implements IRecipe
 				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Powerpack));
 		}
 		return remaining;
+	}
+
+	private boolean isValidArmor(ItemStack stack)
+	{
+		if(!(stack.getItem() instanceof ItemArmor) || ((ItemArmor)stack.getItem()).armorType!=EntityEquipmentSlot.CHEST)
+			return false;
+		String regName = stack.getItem().getRegistryName().toString();
+		for(String s : Config.IEConfig.Tools.powerpack_whitelist)
+			if(regName.equals(s))
+				return true;
+		return !ImmersiveEngineering.proxy.armorHasCustomModel(stack);
 	}
 }
