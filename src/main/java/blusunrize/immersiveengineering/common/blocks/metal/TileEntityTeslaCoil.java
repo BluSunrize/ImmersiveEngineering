@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -257,7 +258,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
 				}
 
-				effectMap.put(getPos(), new LightningAnimation(coilPos,(EntityLivingBase)target));
+				addAnimation(new LightningAnimation(coilPos,(EntityLivingBase)target));
 				synchronized (this)
 				{
 					soundPos = coilPos;
@@ -305,8 +306,13 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		f = f.rotateAround(facing.getAxis());
 		double dShift = (world.rand.nextDouble()-.5)*.75;
 		coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
-		effectMap.put(getPos(), new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx,ty,tz)));
+		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx,ty,tz)));
 		world.playSound(coilPos.xCoord,coilPos.yCoord,coilPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+world.rand.nextFloat(), true);
+	}
+
+	private void addAnimation(LightningAnimation ani)
+	{
+		Minecraft.getMinecraft().addScheduledTask(()->effectMap.put(getPos(),ani));
 	}
 
 	@Override
