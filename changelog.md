@@ -9,6 +9,7 @@
 - added new textures for the Dynamo, copper ingots, wirecoils and coil blocks (thanks Mr. Hazard)
 - added the Capacitor Backpack! Supplies your items with power!
 - added Thermal Foundation's Phyto-Grow as a valid Cloche fertilizer
+- added Sulfur & Saltpeter dust to make gunpower. Better texture and more uses soon!
 - changed balance on Drills: Heads have more durability, lubrication reduces wear, augers boost speed
 - changed Turrets to use the improved Tile Renders (thanks Malte)
 - changed outputsize on Coke and Blastbrick recipes, reducing earlygame resource costs
@@ -35,7 +36,7 @@
 - fixed missing sounds for Metal Press and other things
 - fixed JEI display for the Crusher to show secondary output percentages
 - fixed Jerrycan/Sheetmetal Tank interaction (thanks Malte)
-
+- fixed Arc Furnace not recycling wire coils because wire was an unknown resource
 
 #####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.

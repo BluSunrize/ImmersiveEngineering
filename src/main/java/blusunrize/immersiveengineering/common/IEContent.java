@@ -270,7 +270,8 @@ public class IEContent
 				"waterwheel_segment", "windmill_blade", "windmill_sail",
 				"wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
 				"dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
-				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel");
+				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel",
+				"dust_saltpeter","dust_sulfur");
 		itemMetal = new ItemIEBase("metal", 64,
 				"ingot_copper", "ingot_aluminum", "ingot_lead", "ingot_silver", "ingot_nickel", "ingot_uranium", "ingot_constantan", "ingot_electrum", "ingot_steel",
 				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
@@ -350,6 +351,8 @@ public class IEContent
 		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial,1,21));
 		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial,1,22));
 		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial,1,23));
+		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial,1,24));
+		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial,1,25));
 
 		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs,1,OreDictionary.WILDCARD_VALUE));
