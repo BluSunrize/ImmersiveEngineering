@@ -27,7 +27,7 @@ public class ForestryHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		FMLInterModComms.sendMessage("forestry", "add-backpack-items", String.format("forester@%s:%s", ImmersiveEngineering.instance, "seed"));
+		FMLInterModComms.sendMessage("forestry", "add-backpack-items", String.format("forester@%s:%s", ImmersiveEngineering.MODID, "seed"));
 	}
 	@Override
 	public void postInit()
