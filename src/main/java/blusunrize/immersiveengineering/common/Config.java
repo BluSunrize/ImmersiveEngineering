@@ -343,6 +343,8 @@ public class Config
 			public static int railgun_consumption = 800;
 			@Comment({"A modifier for the damage of all projectiles fired by the Railgun"})
 			public static float railgun_damage = 1f;
+			@Comment({"A whitelist of armor pieces to allow attachign the capacitor backpack, formatting: [mod id]:[item name]"})
+			public static String[] powerpack_whitelist = new String[]{};
 		}
 	}
 
