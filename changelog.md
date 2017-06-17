@@ -8,6 +8,7 @@
     - also features Crafttweaker support (thanks primetoxinz)
 - added new textures for the Dynamo, copper ingots, wirecoils and coil blocks (thanks Mr. Hazard)
 - added the Capacitor Backpack! Supplies your items with power!
+- added Thermal Foundation's Phyto-Grow as a valid Cloche fertilizer
 - changed balance on Drills: Heads have more durability, lubrication reduces wear, augers boost speed
 - changed Turrets to use the improved Tile Renders (thanks Malte)
 - changed outputsize on Coke and Blastbrick recipes, reducing earlygame resource costs
@@ -15,6 +16,9 @@
     - new model (courtesy of Mr. Hazard)
     - instead of having two types, they are now "upgraded" with sails
 - changed produce&seed output for wheat and beetroot in the Cloche
+- changed Toolboxes and Wooden Crates to keep their enchantments on placement
+- changed Railgun to store less energy (so the Capacitor Backpack actually has a reason to exist), buffed its damage by 50%
+- changed Redstone Connectors to properly connect to Redstone Dust
 - fixed recipes for redstone ignoring conveyers
 - fixed render-crash with the Cloche
 - fixed nested configs not generating
@@ -27,6 +31,11 @@
 - fixed possible NBT overflows with toolboxes, crates, shulkerboxes, etc (thanks Malte)
 - fixed Fluid Pipe covers not initializing properly (thanks Malte)
 - fixed recipe-wildcard handling in the manual (thanks Landmaster)
+- fixed logic and effects for the Grunt Birthday Party achievement
+- fixed missing sounds for Metal Press and other things
+- fixed JEI display for the Crusher to show secondary output percentages
+- fixed Jerrycan/Sheetmetal Tank interaction (thanks Malte)
+
 
 #####Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
