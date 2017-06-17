@@ -188,8 +188,8 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		if(this.extractEnergy(stack, energy, true)==energy && !findAmmo(player).isEmpty())
 		{
 			player.setActiveHand(hand);
-			player.playSound(getChargeTime(stack) <= 20 ? IESounds.chargeFast : IESounds.chargeSlow, 1.5f, 1);
-			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+			player.world.playSound(null, player.posX, player.posY, player.posZ, getChargeTime(stack) <= 20 ? IESounds.chargeFast : IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
+			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
@@ -198,7 +198,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	{
 		int inUse = this.getMaxItemUseDuration(stack)-count;
 		if(inUse>getChargeTime(stack) && inUse%20 == user.getRNG().nextInt(20))
-			user.playSound(IESounds.spark, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
+			user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.spark, SoundCategory.PLAYERS, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
 	}
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase user, int timeLeft)
@@ -223,7 +223,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 					ammo.shrink(1);
 					if(ammo.getCount()<=0)
 						((EntityPlayer)user).inventory.deleteStack(ammo);
-					user.playSound(IESounds.railgunFire, 1, .5f + (.5f * user.getRNG().nextFloat()));
+					user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.railgunFire, SoundCategory.PLAYERS,1, .5f + (.5f * user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if (!world.isRemote)
 						user.world.spawnEntity(shot);
