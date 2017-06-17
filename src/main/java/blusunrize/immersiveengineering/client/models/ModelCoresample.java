@@ -49,7 +49,7 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 	{
 		this(null);
 	}
-	static HashMap<String, ModelCoresample> modelCache = new HashMap();
+	public static final HashMap<String, ModelCoresample> modelCache = new HashMap<>();
 //	@Override
 //	public List<BakedQuad> getFaceQuads(EnumFacing p_177551_1_)
 //	{

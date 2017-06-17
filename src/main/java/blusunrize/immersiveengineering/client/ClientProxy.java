@@ -1541,6 +1541,8 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(TileRenderBelljar::reset);
 		IEApi.renderCacheClearers.add(TileRenderWatermill::reset);
 		IEApi.renderCacheClearers.add(TileRenderWindmill::reset);
+		IEApi.renderCacheClearers.add(ModelCoresample.modelCache::clear);
+		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
 	}
 	@Override
 	public void clearRenderCaches()
