@@ -24,6 +24,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -263,7 +264,7 @@ public class EntityRevolvershot extends Entity
 			{
 				if(this.shootingEntity instanceof EntityPlayer)
 					((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
-				this.playSound(IESounds.birthdayParty, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+				worldObj.playSound(null, posX,posY,posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
 			}
 		}
 		if(!this.worldObj.isRemote)

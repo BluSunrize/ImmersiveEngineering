@@ -24,10 +24,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -129,9 +126,9 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 				if(count%4==0)
 				{
 					if(ignite)
-						player.playSound(IESounds.sprayFire, .5f, 1.5f);
+						player.worldObj.playSound(null, player.posX, player.posY, player.posZ, IESounds.sprayFire, SoundCategory.PLAYERS, .5f, 1.5f);
 					else
-						player.playSound(IESounds.spray, .5f, .75f);
+						player.worldObj.playSound(null, player.posX, player.posY, player.posZ, IESounds.spray, SoundCategory.PLAYERS, .5f, .75f);
 				}
 			}
 			else

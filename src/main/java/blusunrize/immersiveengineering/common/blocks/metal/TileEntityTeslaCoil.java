@@ -306,7 +306,8 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		double dShift = (worldObj.rand.nextDouble()-.5)*.75;
 		coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
 		effectMap.put(getPos(), new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx,ty,tz)));
-		worldObj.playSound(coilPos.xCoord,coilPos.yCoord,coilPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+worldObj.rand.nextFloat(), true);
+
+		worldObj.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + worldObj.rand.nextFloat());
 	}
 
 	@Override

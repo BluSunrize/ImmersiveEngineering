@@ -1,3 +1,16 @@
+#####Version 0.10-61
+- changed Toolboxes and Wooden Crates to keep their enchantments on placement
+- changed seed & produce outputs of wheat and beetroot in the cloche
+- fixed the coke oven dropping additional items (thanks Malte)
+- fixed formatting issues on the lang file (thanks Malte)
+- fixed Cloche having broken RS integration (thanks Malte)
+- fixed Redstone connectors not updating their colour
+- fixed timestamp issue on Coresamples (thanks Malte)
+- fixed Tesla Coils deleting blocks on placement (thanks Malte)
+- fixed missing sounds for Metal Press and other things
+- fixed Charging Station having a broken mesh on the bottom
+- fixed Villagers trading MV wirecoils twice
+
 #####Version 0.10-60 - BUILT
 - added Forestry's fertilizer to the Garden Cloche
 - changed recipe-output on coal- and blastbrick, reducing earlygame resource costs

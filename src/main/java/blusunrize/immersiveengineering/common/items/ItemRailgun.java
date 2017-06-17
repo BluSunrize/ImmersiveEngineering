@@ -31,10 +31,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -194,7 +191,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 		if(this.extractEnergy(stack, energy, true)==energy && findAmmo(player)!=null)
 		{
 			player.setActiveHand(hand);
-			player.playSound(getChargeTime(stack) <= 20 ? IESounds.chargeFast : IESounds.chargeSlow, 1.5f, 1);
+			player.worldObj.playSound(null, player.posX, player.posY, player.posZ, getChargeTime(stack) <= 20 ? IESounds.chargeFast : IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
 			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult(EnumActionResult.PASS, stack);
@@ -204,7 +201,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 	{
 		int inUse = this.getMaxItemUseDuration(stack)-count;
 		if(inUse>getChargeTime(stack) && inUse%20 == user.getRNG().nextInt(20))
-			user.playSound(IESounds.spark, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
+			user.worldObj.playSound(null, user.posX, user.posY, user.posZ, IESounds.spark, SoundCategory.PLAYERS, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
 	}
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase user, int timeLeft)
@@ -229,7 +226,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 					ammo.stackSize--;
 					if(ammo.stackSize<=0)
 						((EntityPlayer)user).inventory.deleteStack(ammo);
-					user.playSound(IESounds.railgunFire, 1, .5f + (.5f * user.getRNG().nextFloat()));
+					user.worldObj.playSound(null, user.posX, user.posY, user.posZ, IESounds.railgunFire, SoundCategory.PLAYERS,1, .5f + (.5f * user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if (!world.isRemote)
 						user.worldObj.spawnEntityInWorld(shot);
