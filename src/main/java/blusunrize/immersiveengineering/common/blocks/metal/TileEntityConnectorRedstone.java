@@ -11,11 +11,13 @@ import blusunrize.immersiveengineering.api.energy.wires.redstone.IRedstoneConnec
 import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneWireNetwork;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -74,7 +76,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	@Override
 	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
 	{
-		return false;
+		return true;
 	}
 
 	@Override
@@ -115,11 +117,22 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public void updateInput(byte[] signals)
 	{
 		if (isRSInput())
-		{
-			int val = world.isBlockIndirectlyGettingPowered(pos);
-			signals[redstoneChannel] = (byte) Math.max(val, signals[redstoneChannel]);
-		}
+			signals[redstoneChannel] = (byte) Math.max(getLocalRS(), signals[redstoneChannel]);
 		rsDirty = false;
+	}
+	private int getLocalRS()
+	{
+		int val = world.isBlockIndirectlyGettingPowered(pos);
+		if (val == 0)
+		{
+			for (EnumFacing f:EnumFacing.HORIZONTALS)
+			{
+				IBlockState state = world.getBlockState(pos.offset(f));
+				if (state.getBlock()== Blocks.REDSTONE_WIRE&&state.getValue(BlockRedstoneWire.POWER)>val)
+					val = state.getValue(BlockRedstoneWire.POWER);
+			}
+		}
+		return val;
 	}
 
 	public boolean isRSOutput()
