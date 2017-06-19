@@ -49,9 +49,11 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -83,6 +85,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 import java.util.*;
 
@@ -685,6 +688,39 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					}
 				}
 			}
+		}
+	}
+
+	@SubscribeEvent()
+	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
+	{
+		if(event.getEntity() instanceof EntityLivingBase && ((EntityLivingBase)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
+		{
+			PotionEffect effect = ((EntityLivingBase)event.getEntity()).getActivePotionEffect(IEPotions.flashed);
+			int timeLeft = effect.getDuration();
+			float saturation = 1-timeLeft/(float)(80+40*effect.getAmplifier());//Total Time =  4s + 2s per amplifier
+
+			float f1 = 2.5f+15.0F*saturation;
+			if(timeLeft<20)
+				f1 += (event.getFarPlaneDistance()/4) * (1-timeLeft/20f);
+
+			GlStateManager.setFog(GlStateManager.FogMode.LINEAR);
+			GlStateManager.setFogStart(f1 * 0.25F);
+			GlStateManager.setFogEnd(f1);
+			GlStateManager.setFogDensity(.125f);
+
+			if(GLContext.getCapabilities().GL_NV_fog_distance)
+				GlStateManager.glFogi(34138, 34139);
+		}
+	}
+	@SubscribeEvent()
+	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
+	{
+		if(event.getEntity() instanceof EntityLivingBase && ((EntityLivingBase)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
+		{
+			event.setRed(1);
+			event.setGreen(1);
+			event.setBlue(1);
 		}
 	}
 
