@@ -120,20 +120,25 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	@Override
 	public  ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return new ICapabilityProvider()
-		{
-			final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+		if (!stack.isEmpty())
+			return new ICapabilityProvider()
 			{
-				return capability==CapabilityEnergy.ENERGY;
-			}
-			@Nullable
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
-			{
-				return capability==CapabilityEnergy.ENERGY?(T)energyStorage:null;
-			}
-		};
+				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
+
+				@Override
+				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+				{
+					return capability == CapabilityEnergy.ENERGY;
+				}
+
+				@Nullable
+				@Override
+				public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+				{
+					return capability == CapabilityEnergy.ENERGY ? (T) energyStorage : null;
+				}
+			};
+		else
+			return super.initCapabilities(stack, nbt);
 	}
 }
