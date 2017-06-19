@@ -20,6 +20,7 @@ public class IEPotions
 	public static Potion sticky;
 	public static Potion stunned;
 	public static Potion concreteFeet;
+	public static Potion flashed;
 
 	public static void init()
 	{
@@ -29,8 +30,9 @@ public class IEPotions
 		sticky = new IEPotion(new ResourceLocation("ie.sticky"), true,0x9c6800,0, false,3, true,true).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
 		stunned = new IEPotion(new ResourceLocation("ie.stunned"), true,0x624a98,0, false,4, true,true).setPotionName("immersiveengineering.potion.stunned");
 		concreteFeet = new IEPotion(new ResourceLocation("ie.concreteFeet"), true,0x624a98,0, false,5, true,true).setPotionName("immersiveengineering.potion.concreteFeet").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
+		flashed = new IEPotion(new ResourceLocation("ie.flashed"), true,0x624a98,0, false,6, true,true).setPotionName("immersiveengineering.potion.flashed").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
 
-		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky,stunned,concreteFeet};
+		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky,stunned,concreteFeet,flashed};
 	}
 
 	public static class IEPotion extends Potion
