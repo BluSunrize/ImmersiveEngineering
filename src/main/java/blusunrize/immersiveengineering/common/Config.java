@@ -262,7 +262,7 @@ public class Config
 			@Comment({"Generation config for Copper Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
 			@Mapped(mapClass = Config.class, mapName = "manual_intA")
 			public static int[] ore_copper = new int[]{8, 40, 72, 8, 100};
-			@Comment({"Generation config for Bauxite Ore.", "Parameters: Vein sirenderze, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
+			@Comment({"Generation config for Bauxite Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
 			@Mapped(mapClass = Config.class, mapName = "manual_intA")
 			public static int[] ore_bauxite = new int[]{4, 40, 85, 8, 100};
 			@Comment({"Generation config for Lead Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
