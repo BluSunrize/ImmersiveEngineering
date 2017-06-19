@@ -99,21 +99,26 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return new ICapabilityProvider()
-		{
-			final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-			final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
-			@Override
-			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+		if (!stack.isEmpty())
+			return new ICapabilityProvider()
 			{
-				return capability==CapabilityShader.SHADER_CAPABILITY||capability==CapabilityEnergy.ENERGY;
-			}
-			@Override
-			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-			{
-				return capability==CapabilityShader.SHADER_CAPABILITY?(T)shaders: capability==CapabilityEnergy.ENERGY?(T)energyStorage: null;
-			}
-		};
+				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
+				final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
+
+				@Override
+				public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+				{
+					return capability == CapabilityShader.SHADER_CAPABILITY || capability == CapabilityEnergy.ENERGY;
+				}
+
+				@Override
+				public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+				{
+					return capability == CapabilityShader.SHADER_CAPABILITY ? (T) shaders : capability == CapabilityEnergy.ENERGY ? (T) energyStorage : null;
+				}
+			};
+		else
+			return super.initCapabilities(stack, nbt);
 	}
 
 	@Override
