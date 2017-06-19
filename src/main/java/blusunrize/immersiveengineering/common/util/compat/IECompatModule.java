@@ -38,7 +38,7 @@ public abstract class IECompatModule
 		moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
 		moduleClasses.put("ic2", IC2Helper.class);
 		moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
-		moduleClasses.put("ppencomputers", OCHelper.class);
+		moduleClasses.put("opencomputers", OCHelper.class);
 		moduleClasses.put("theoneprobe", OneProbeHelper.class);
 		moduleClasses.put("tconstruct", TConstructHelper.class);
 		moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
