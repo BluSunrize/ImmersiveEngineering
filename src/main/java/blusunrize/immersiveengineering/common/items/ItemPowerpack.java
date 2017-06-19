@@ -84,7 +84,7 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 		{
 			int pre = energy;
 			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
-				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot)))
+				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot)) && !(player.getItemStackFromSlot(slot).getItem() instanceof ItemPowerpack))
 					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
 			if(pre!=energy)
 				EnergyHelper.extractFlux(itemStack, pre-energy, false);
