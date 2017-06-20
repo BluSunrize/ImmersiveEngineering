@@ -155,17 +155,17 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 						if(queries[i] != null)
 						{
 							AssemblerHandler.RecipeQuery recipeQuery = queries[i];
-							Optional<ItemStack> taken = null;
+							Optional<ItemStack> taken = Optional.absent();
 							for(int j = 0; j < outputBuffer.length; j++)
-							{
-								taken = consumeItem(recipeQuery.query, recipeQuery.querySize, outputBuffer[j], outputList);
-								if(taken != null)
-									break;
-							}
-							if(taken == null)
+								if (outputBuffer[j]!=null)
+								{
+									taken = consumeItem(recipeQuery.query, recipeQuery.querySize, outputBuffer[j], outputList);
+									if (taken.isPresent())
+										break;
+								}
+							if(!taken.isPresent())
 								taken = this.consumeItem(recipeQuery.query, recipeQuery.querySize, inventory, outputList);
-							if(taken != null)
-								gridItems.set(i, taken.orNull());
+							gridItems.set(i, taken.or(ItemStack.EMPTY));
 						}
 					NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
 					for(ItemStack rem : remainingItems)
@@ -239,7 +239,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					this.markContainingBlockForUpdate(null);
 					return Optional.absent();
 				}
-		Optional<ItemStack> ret = null;
+		Optional<ItemStack> ret = Optional.absent();
 		for(int i = 0; i< inventory.size(); i++)
 			if(!inventory.get(i).isEmpty() && Utils.stackMatchesObject(inventory.get(i), query, true))
 			{
@@ -255,9 +255,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				if(querySize <= 0)
 					break;
 			}
-		if(query == null || querySize <= 0)
+		if(querySize <= 0)
 			return ret;
-		return null;
+		return Optional.absent();
 	}
 	public boolean hasIngredients(CrafterPatternInventory pattern, ArrayList<ItemStack> queryList)
 	{
