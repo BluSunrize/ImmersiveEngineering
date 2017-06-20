@@ -48,7 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("deprecation")
 public class IESmartObjModel extends OBJBakedModel
 {
-	public static Map<ComparableItemStack, IBakedModel> cachedBakedItemModels = new ConcurrentHashMap<ComparableItemStack, IBakedModel>();
+	public static Map<ComparableItemStack, IESmartObjModel> cachedBakedItemModels = new ConcurrentHashMap<>();
 	public static HashMap<ExtBlockstateAdapter, List<BakedQuad>> modelCache = new HashMap<>();
 	IBakedModel baseModel;
 	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
@@ -56,6 +56,7 @@ public class IESmartObjModel extends OBJBakedModel
 	TextureAtlasSprite tempSprite;
 	ItemStack tempStack = ItemStack.EMPTY;
 	IBlockState tempState;
+	EntityLivingBase tempEntity;
 	VertexFormat format;
 	Map<String, String> texReplace = null;
 
@@ -72,27 +73,28 @@ public class IESmartObjModel extends OBJBakedModel
 	{
 		if(transformationMap==null || transformationMap.isEmpty())
 			return super.handlePerspective(cameraTransformType);
-		//		Matrix4 matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
 		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy():new Matrix4();
-		if(!this.tempStack.isEmpty() && this.tempStack.getItem() instanceof IOBJModelCallback)
-			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix);
 
+		if(!this.tempStack.isEmpty() && this.tempStack.getItem() instanceof IOBJModelCallback)
+			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix, tempEntity);
+
+//		Matrix4 matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
 		//Dynamic stuff to use when figurign out positioning for new items!
-		//FP_R
-//		if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
-//			matrix = new Matrix4().rotate(Math.toRadians(-90), 0,1,0).scale(.1875, .25, .25).translate(-.5, .4375, .5);
+//		if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)//FP_R
+//			matrix = new Matrix4().rotate(Math.toRadians(90), 0,1,0).rotate(.1,1,0,0).translate(.5, .125, .5);
 //		else if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)//FP_L
-//			matrix = new Matrix4().rotate(Math.toRadians(90), 0,1,0).scale(.1875, .25, .25).translate(.45, .4375, .5);
+//			matrix = new Matrix4().rotate(Math.toRadians(-90), 0,1,0).rotate(-.1,1,0,0).translate(-.5, .125, .5);
 //		else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND) //TP_R
-//			matrix = new Matrix4().translate(-.125, .125,-.125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0,1,0).rotate(Math.toRadians(-10), 0,0,1);
+//			matrix = new Matrix4().translate(.59375, .375,.75);
 //		else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND) //TP_L
-//			matrix = new Matrix4().translate(.0, .0625,-.125).scale(.125, .125, .125).rotate(Math.toRadians(90), 0,1,0).rotate(Math.toRadians(0), 0,0,1);
+//			matrix = new Matrix4().rotate(3.14159, 0,1,0).translate(-.59375, .375,.25);
 //		else if(cameraTransformType==TransformType.FIXED) //FIXED
-//			matrix = new Matrix4().translate(.1875, -.0781225, -.15625).scale(.2, .2, .2).rotate(Math.toRadians(-40), 0,1,0).rotate(Math.toRadians(-35), 0,0,1);
+//			matrix = new Matrix4().rotate(1.57079, 0,1,0).scale(.75f,.75f,.75f).translate(.375, .5, .5);
 //		else if(cameraTransformType==TransformType.GUI) //INV
-//			matrix = new Matrix4().translate(-.25, 0,-.0625).scale(.1875, .1875, .1875).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1);
+//			matrix = new Matrix4().translate(.5, .3125,0).scale(.75,.625,.75).rotate(0.78539, 0,1,0).rotate(-0.13089, 0,0,1);
 //		else //GROUND
-//			matrix = new Matrix4().translate(.125, 0, .0625).scale(.125, .125, .125);
+//			matrix = new Matrix4().translate(.125, .125, .125).scale(.25, .25, .25);
+
 		return Pair.of(this, matrix.toMatrix4f());
 	}
 
@@ -115,7 +117,11 @@ public class IESmartObjModel extends OBJBakedModel
 			if(comp == null)
 				return originalModel;
 			if(cachedBakedItemModels.containsKey(comp))
-				return cachedBakedItemModels.get(comp);
+			{
+				IESmartObjModel model = cachedBakedItemModels.get(comp);
+				model.tempEntity = entity;
+				return model;
+			}
 			if(!(originalModel instanceof IESmartObjModel))
 				return originalModel;
 			IESmartObjModel model = (IESmartObjModel)originalModel;
@@ -152,6 +158,7 @@ public class IESmartObjModel extends OBJBakedModel
 			builder.put("missingno", missing);
 			IESmartObjModel bakedModel = new IESmartObjModel(model.baseModel, model.getModel(), model.getState(), model.getFormat(), builder.build(), transformationMap);
 			bakedModel.tempStack = stack;
+			bakedModel.tempEntity = entity;
 			cachedBakedItemModels.put(comp, bakedModel);
 			return bakedModel;
 		}
@@ -177,7 +184,7 @@ public class IESmartObjModel extends OBJBakedModel
 		return getQuads(blockState, side, rand, objState, tex, false);
 	}
 	public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand, OBJState objstate, Map<String, String> tex,
-			boolean addAnimationAndTex)
+									boolean addAnimationAndTex)
 	{
 		texReplace = tex;
 		this.tempState = blockState;
