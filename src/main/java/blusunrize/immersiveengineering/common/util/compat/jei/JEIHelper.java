@@ -23,6 +23,7 @@ import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -72,25 +73,15 @@ public class JEIHelper implements IModPlugin
 	public void registerIngredients(IModIngredientRegistration registry)
 	{
 	}
-
+	IERecipeCategory[] categories;
 	@Override
-	public void register(IModRegistry registryIn)
+	public void registerCategories(IRecipeCategoryRegistration registry)
 	{
-		modRegistry = registryIn;
-		jeiHelpers = modRegistry.getJeiHelpers();
-		//Blacklist
-		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockCrop,1,OreDictionary.WILDCARD_VALUE));
-		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.itemFakeIcons,1,OreDictionary.WILDCARD_VALUE));
-		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockStoneDevice,1,OreDictionary.WILDCARD_VALUE));
-		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockMetalMultiblock,1,OreDictionary.WILDCARD_VALUE));
-
-		modRegistry.getRecipeTransferRegistry().addRecipeTransferHandler(new AssemblerRecipeTransferHandler(), VanillaRecipeCategoryUid.CRAFTING);
-		modRegistry.addRecipeCategoryCraftingItem(new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ASSEMBLER.getMeta()), VanillaRecipeCategoryUid.CRAFTING);
-
+		jeiHelpers = registry.getJeiHelpers();
 		//Recipes
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 		slotDrawable = guiHelper.getSlotDrawable();
-		IERecipeCategory[] categories = {
+		categories = new IERecipeCategory[] {
 				new CokeOvenRecipeCategory(guiHelper),
 				new AlloySmelterRecipeCategory(guiHelper),
 				new BlastFurnaceRecipeCategory(guiHelper),
@@ -105,7 +96,24 @@ public class JEIHelper implements IModPlugin
 				new BottlingMachineRecipeCategory(guiHelper),
 				new MixerRecipeCategory(guiHelper)
 		};
-		modRegistry.addRecipeCategories(categories);
+		registry.addRecipeCategories(categories);
+	}
+
+	@Override
+	public void register(IModRegistry registryIn)
+	{
+		modRegistry = registryIn;
+		//Blacklist
+		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockCrop,1,OreDictionary.WILDCARD_VALUE));
+		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.itemFakeIcons,1,OreDictionary.WILDCARD_VALUE));
+		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockStoneDevice,1,OreDictionary.WILDCARD_VALUE));
+		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockMetalMultiblock,1,OreDictionary.WILDCARD_VALUE));
+
+		modRegistry.getRecipeTransferRegistry().addRecipeTransferHandler(new AssemblerRecipeTransferHandler(), VanillaRecipeCategoryUid.CRAFTING);
+		modRegistry.addRecipeCategoryCraftingItem(new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ASSEMBLER.getMeta()), VanillaRecipeCategoryUid.CRAFTING);
+
+		for (IERecipeCategory<?, ?> cat:categories)
+			cat.addCatalysts(registryIn);
 		modRegistry.addRecipeHandlers(categories);
 
 		modRegistry.addRecipes(new ArrayList(CokeOvenRecipe.recipeList));

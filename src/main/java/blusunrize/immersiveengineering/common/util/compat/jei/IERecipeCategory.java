@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import mezz.jei.api.IModRegistry;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeHandler;
@@ -19,6 +21,7 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 	public String localizedName;
 	private final IDrawable background;
 	private final Class<T> recipeClass;
+	private final ItemStack[] displayStacks;
 
 	public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> recipeClass, ItemStack... displayStacks)
 	{
@@ -26,8 +29,13 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 		this.localizedName = I18n.format(localKey);
 		this.background = background;
 		this.recipeClass = recipeClass;
+		this.displayStacks = displayStacks;
+	}
+
+	public void addCatalysts(IModRegistry registry)
+	{
 		for(ItemStack stack : displayStacks)
-			JEIHelper.modRegistry.addRecipeCategoryCraftingItem(stack, getUid());
+			registry.addRecipeCategoryCraftingItem(stack, getUid());
 	}
 
 	@Nullable
@@ -82,5 +90,11 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 	public boolean isRecipeValid(T recipe)
 	{
 		return true;
+	}
+
+	@Override
+	public String getModName()
+	{
+		return ImmersiveEngineering.MODNAME;
 	}
 }
