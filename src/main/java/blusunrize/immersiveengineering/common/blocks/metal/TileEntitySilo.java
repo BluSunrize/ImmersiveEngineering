@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
@@ -7,8 +8,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +23,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> implements IComparatorOverride //IDeepStorageUnit
@@ -239,7 +237,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		return super.getCapability(capability, facing);
 	}
 
-	public static class SiloInventoryHandler implements IItemHandlerModifiable
+	public static class SiloInventoryHandler implements IItemHandler
 	{
 		TileEntitySilo silo;
 		public SiloInventoryHandler(TileEntitySilo silo)
@@ -255,7 +253,13 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			return slot==0?Utils.copyStackWithAmount(silo.identStack,Math.min(silo.storageAmount,1)):Utils.copyStackWithAmount(silo.identStack,Math.min(silo.storageAmount,64));
+			if (slot==0)
+				return ItemStack.EMPTY;
+			else
+			{
+				int maxSize = Math.min(silo.storageAmount, silo.identStack.getMaxStackSize());
+				return ApiUtils.copyStackWithAmount(silo.identStack, maxSize);
+			}
 		}
 
 		@Override
@@ -290,10 +294,10 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 			if(slot!=1 || silo.storageAmount<1 || amount<1 || silo.identStack.isEmpty())
 				return ItemStack.EMPTY;
 			ItemStack out;
-			if(silo.identStack.getCount() > amount)
+			if(silo.storageAmount >= amount)
 				out = Utils.copyStackWithAmount(silo.identStack, amount);
 			else
-				out = silo.identStack.copy();
+				out = Utils.copyStackWithAmount(silo.identStack, silo.storageAmount);
 			if(!simulate)
 			{
 				silo.updateComparatorValuesPart1();
@@ -308,13 +312,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		}
 
 		@Override
-		public int getSlotLimit(int slot) {
-			return 64;
-		}
-
-		@Override
-		public void setStackInSlot(int slot, ItemStack stack)
+		public int getSlotLimit(int slot)
 		{
+			return 64;
 		}
 	}
 
