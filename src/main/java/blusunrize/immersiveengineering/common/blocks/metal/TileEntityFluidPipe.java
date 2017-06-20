@@ -16,7 +16,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -259,13 +258,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
 		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Matrix4 handlePerspective(IBlockState Object, TransformType cameraTransformType, Matrix4 perspective)
-	{
-		return perspective;
 	}
 
 	@Override

@@ -353,7 +353,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
-	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective)
+	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective, EntityLivingBase entity)
 	{
 		//		if(stack.)
 //		if(ItemNBTHelper.getBoolean(stack, "inUse"))
