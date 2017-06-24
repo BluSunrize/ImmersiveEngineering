@@ -42,7 +42,11 @@ public class ItemNBTHelper
 	}
 	public static void modifyInt(ItemStack stack, String key, int mod)
 	{
-		getTag(stack).setInteger(key, getTag(stack).getInteger(key)+mod);
+		modifyInt(getTag(stack), key, mod);
+	}
+	public static void modifyInt(NBTTagCompound tagCompound, String key, int mod)
+	{
+		tagCompound.setInteger(key, tagCompound.getInteger(key)+mod);
 	}
 	public static int getInt(ItemStack stack, String key)
 	{
@@ -79,6 +83,10 @@ public class ItemNBTHelper
 	public static void setFloat(ItemStack stack, String key, float val)
 	{
 		getTag(stack).setFloat(key, val);
+	}
+	public static void modifyFloat(NBTTagCompound tagCompound, String key, float mod)
+	{
+		tagCompound.setFloat(key, tagCompound.getFloat(key)+mod);
 	}
 	public static float getFloat(ItemStack stack, String key)
 	{
