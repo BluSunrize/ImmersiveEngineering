@@ -214,6 +214,15 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875,0,0).scale(.1875,.1875,.1875).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.1875, 0, 0, 1))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125,.125,.0625).scale(.125,.125,.125)));
 
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemShield), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/shield.obj")
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(90), 0,1,0).rotate(.1,1,0,0).translate(.5, .125, .5))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0,1,0).rotate(-.1,1,0,0).translate(-.5, .125, .5))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.59375, .375,.75))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().rotate(3.14159, 0,1,0).translate(-.59375, .375,.25))
+				.setTransformations(TransformType.FIXED, new Matrix4().rotate(1.57079, 0,1,0).scale(.75f,.75f,.75f).translate(.375, .5, .5))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.375, .375,0).scale(.75,.625,.75).rotate(-2.35619, 0,1,0).rotate(0.13089, 0,0,1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .125, .125).scale(.25, .25, .25)));
+
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory<EntityRevolvershot>(){
 			@Override

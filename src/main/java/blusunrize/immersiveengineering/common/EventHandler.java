@@ -408,10 +408,10 @@ public class EventHandler
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			ItemStack activeStack = player.getActiveItemStack();
-			if(!activeStack.isEmpty() && activeStack.getItem() instanceof ItemIEShield && event.getAmount()>=3)
+			if(!activeStack.isEmpty() && activeStack.getItem() instanceof ItemIEShield && event.getAmount()>=3 && Utils.canBlockDamageSource(player, event.getSource()))
 			{
 				float amount = event.getAmount();
-				((ItemIEShield)activeStack.getItem()).damageShield(activeStack, player, 1+(int)Math.floor(amount), event.getSource(), amount);
+				((ItemIEShield)activeStack.getItem()).damageShield(activeStack, player, 1+(int)Math.floor(amount), event.getSource(), amount, event);
 				if(activeStack.isEmpty())
 				{
 					EnumHand hand = player.getActiveHand();

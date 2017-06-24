@@ -34,14 +34,12 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.*;
@@ -335,11 +333,118 @@ public class Utils
 		return true;
 	}
 
+	public static List<EntityLivingBase> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)
+	{
+		double length = dir.lengthVector();
+		Vec3d dirNorm = dir.normalize();
+		double radius = Math.tan(spreadAngle/2)*length;
+
+		Vec3d endLow = start.add(dir).subtract(radius,radius,radius);
+		Vec3d endHigh = start.add(dir).addVector(radius,radius,radius);
+
+		AxisAlignedBB box = new AxisAlignedBB(minInArray(start.xCoord,endLow.xCoord,endHigh.xCoord), minInArray(start.yCoord,endLow.yCoord,endHigh.yCoord), minInArray(start.zCoord,endLow.zCoord,endHigh.zCoord),
+				maxInArray(start.xCoord,endLow.xCoord,endHigh.xCoord), maxInArray(start.yCoord,endLow.yCoord,endHigh.yCoord), maxInArray(start.zCoord,endLow.zCoord,endHigh.zCoord));
+
+		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
+		Iterator<EntityLivingBase> iterator = list.iterator();
+		while(iterator.hasNext())
+		{
+			EntityLivingBase e = iterator.next();
+			if(!isPointInCone(start, dirNorm, radius, length, truncationLength, e.getPositionVector().subtract(start)))
+				iterator.remove();
+		}
+		return list;
+	}
+
+	public static boolean isPointInConeByAngle(Vec3d start, Vec3d normDirection, double aperture, double length, Vec3d relativePoint)
+	{
+		return isPointInCone(start, normDirection, Math.tan(aperture/2)*length, length, 0, relativePoint);
+	}
+	public static boolean isPointInCone(Vec3d start, Vec3d normDirection, double radius, double length, Vec3d relativePoint)
+	{
+		return isPointInCone(start, normDirection, radius, length, 0, relativePoint);
+	}
+	public static boolean isPointInConeByAngle(Vec3d start, Vec3d normDirection, float aperture, double length, float truncationLength, Vec3d relativePoint)
+	{
+		return isPointInCone(start, normDirection, Math.tan(aperture/2)*length, length, truncationLength, relativePoint);
+	}
+	/**
+	 * Checks if  point is contained within a cone in 3D space
+	 *
+	 * @param start tip of the cone
+	 * @param normDirection normalized (length==1) vector, direction of cone
+	 * @param radius radius at the end of the cone
+	 * @param length length of the cone
+	 * @param truncationLength optional lenght at which the cone is truncated (flat tip)
+	 * @param relativePoint point to be checked, relative to {@code start}
+	 */
+	public static boolean isPointInCone(Vec3d start, Vec3d normDirection, double radius, double length, float truncationLength, Vec3d relativePoint)
+	{
+		double projectedDist = relativePoint.dotProduct(normDirection); //Orthogonal projection, establishing point's distance on cone direction vector
+		if(projectedDist<truncationLength || projectedDist>length) //If projected distance is before truncation or beyond length, point not contained
+			return false;
+
+		double radiusAtDist = projectedDist/length * radius; //Radius of the cone at the projected distance
+		Vec3d orthVec = relativePoint.subtract(normDirection.scale(projectedDist)); //Orthogonal vector between point and cone direction
+
+		return orthVec.lengthSquared()<(radiusAtDist*radiusAtDist); //Check if Vector's length is shorter than radius -> point in cone
+	}
+	public static boolean isPointInTriangle(Vec3d tA, Vec3d tB, Vec3d tC, Vec3d point)
+	{
+		//Distance vectors to A (focuspoint of triangle)
+		Vec3d v0 = tC.subtract(tA);
+		Vec3d v1 = tB.subtract(tA);
+		Vec3d v2 = point.subtract(tA);
+
+		return isPointInTriangle(v0, v1, v2);
+	}
+	private static boolean isPointInTriangle(Vec3d leg0, Vec3d leg1, Vec3d targetVec)
+	{
+		//Dot products
+		double dot00 = leg0.dotProduct(leg0);
+		double dot01 = leg0.dotProduct(leg1);
+		double dot02 = leg0.dotProduct(targetVec);
+		double dot11 = leg1.dotProduct(leg1);
+		double dot12 = leg1.dotProduct(targetVec);
+
+		//Barycentric coordinates
+		double invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+		double u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+		double v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+		return (u >= 0) && (v >= 0) && (u + v < 1);
+	}
+	private static Vec3d getVectorForRotation(float pitch, float yaw)
+	{
+		float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
+		float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
+		float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+		float f3 = MathHelper.sin(-pitch * 0.017453292F);
+		return new Vec3d((double)(f1 * f2), (double)f3, (double)(f * f2));
+	}
+
 	public static boolean isHammer(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return false;
 		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER);
+	}
+
+	public static boolean canBlockDamageSource(EntityLivingBase entity, DamageSource damageSourceIn)
+	{
+		if(!damageSourceIn.isUnblockable() && entity.isActiveItemStackBlocking())
+		{
+			Vec3d vec3d = damageSourceIn.getDamageLocation();
+			if(vec3d != null)
+			{
+				Vec3d vec3d1 = entity.getLook(1.0F);
+				Vec3d vec3d2 = vec3d.subtractReverse(entity.getPositionVector()).normalize();
+				vec3d2 = new Vec3d(vec3d2.xCoord, 0.0D, vec3d2.zCoord);
+				if(vec3d2.dotProduct(vec3d1) < 0)
+					return true;
+			}
+		}
+		return false;
 	}
 
 	public static Vec3d getFlowVector(World world, BlockPos pos)
@@ -405,6 +510,25 @@ public class Utils
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
+	}
+
+	public static double minInArray(double... f)
+	{
+		if(f.length<1)
+			return 0;
+		double min = f[0];
+		for(int i=1; i<f.length; i++)
+			min = Math.min(min, f[i]);
+		return min;
+	}
+	public static double maxInArray(double... f)
+	{
+		if(f.length<1)
+			return 0;
+		double max = f[0];
+		for(int i=1; i<f.length; i++)
+			max = Math.max(max, f[i]);
+		return max;
 	}
 
 	public static boolean isVecInEntityHead(EntityLivingBase entity, Vec3d vec)
