@@ -514,7 +514,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						GlStateManager.popMatrix();
 					} else if(equipped.getItem() instanceof ItemRailgun)
 					{
-						int duration = 72000 - player.getItemInUseCount();
+						int duration = 72000 - (player.isHandActive()&&player.getActiveHand()==hand?player.getItemInUseCount():0);
 						int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
 						int chargeLevel = duration < 72000 ? Math.min(99, (int)(duration / (float)chargeTime * 100)) : 0;
 						float scale = 2f;
@@ -556,7 +556,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						{
 							FluidStack fuel = FluidUtil.getFluidContained(equipped);
 							int amount = fuel != null ? fuel.amount : 0;
-							if(!drill && player.isHandActive())
+							if(!drill && player.isHandActive() && player.getActiveHand()==hand)
 							{
 								int use = player.getItemInUseMaxCount();
 								amount -= use * IEConfig.Tools.chemthrower_consumption;
