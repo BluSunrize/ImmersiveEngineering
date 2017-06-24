@@ -1,28 +1,39 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
+import blusunrize.immersiveengineering.common.util.IEPotions;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class ItemIEShield extends ItemIEBase implements IOBJModelCallback<ItemStack>
+public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, IOBJModelCallback<ItemStack>
 {
 	public ItemIEShield()
 	{
-		super("shield", 1);
-		this.addPropertyOverride(new ResourceLocation("blocking"), (stack, worldIn, entityIn) -> entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F);
+		super("shield", 1, "SHIELD");
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, ItemArmor.DISPENSER_BEHAVIOR);
 	}
 
@@ -32,9 +43,33 @@ public class ItemIEShield extends ItemIEBase implements IOBJModelCallback<ItemSt
 	{
 	}
 
-	public void damageShield(ItemStack stack, EntityPlayer player, int damage, DamageSource source, float amount)
+	public void damageShield(ItemStack stack, EntityPlayer player, int damage, DamageSource source, float amount, LivingAttackEvent event)
 	{
+		if(getUpgrades(stack).getBoolean("flash"))
+		{
+			Vec3d look = player.getLookVec();
+			//Offsets Player position by look backwards, then truncates cone at 1
+			List<EntityLivingBase> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVector().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
+			for(EntityLivingBase t : targets)
+				if(!player.equals(t))
+					t.addPotionEffect(new PotionEffect(IEPotions.flashed,100,1));
+		}
+		if(getUpgrades(stack).getBoolean("shock"))
+		{
+			if(event.getSource().isProjectile() && event.getSource().getSourceOfDamage()!=null)
+			{
+				Entity projectile = event.getSource().getSourceOfDamage();
+				projectile.setDead();
+				player.world.playSound(null, projectile.posX,projectile.posY,projectile.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F,0.5F+player.world.rand.nextFloat());
+				event.setCanceled(true);
+			}
+		}
+	}
 
+	@Override
+	public int getMaxEnergyStored(ItemStack container)
+	{
+		return (getUpgrades(container).getBoolean("flash")||getUpgrades(container).getBoolean("shock"))?1600:0;
 	}
 
 	@Override
@@ -63,6 +98,10 @@ public class ItemIEShield extends ItemIEBase implements IOBJModelCallback<ItemSt
 	@Override
 	public boolean shouldRenderGroup(ItemStack object, String group)
 	{
+		if("flash".equals(group))
+			return getUpgrades(object).getBoolean("flash");
+		else if("shock".equals(group))
+			return getUpgrades(object).getBoolean("shock");
 		return true;
 	}
 	@Override
@@ -84,5 +123,27 @@ public class ItemIEShield extends ItemIEBase implements IOBJModelCallback<ItemSt
 					perspective.rotate(-0.52359, 1, 0, 0).rotate(0.78539, 0, 1, 0).translate(.1875, .3125, .5625);
 			}
 		return perspective;
+	}
+
+	@Override
+	public boolean canModify(ItemStack stack)
+	{
+		return true;
+	}
+	@Override
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
+	{
+		return new Slot[]
+				{
+						new IESlot.Upgrades(container, invItem,0, 80,32, "SHIELD", stack, true),
+						new IESlot.Upgrades(container, invItem,1,100,32, "SHIELD", stack, true)
+//						new IESlot.Upgrades(container, invItem,2,100,32, "SHIELD", stack, true)
+				};
+
+	}
+	@Override
+	public int getInternalSlots(ItemStack stack)
+	{
+		return 2;
 	}
 }

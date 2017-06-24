@@ -700,7 +700,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			int timeLeft = effect.getDuration();
 			float saturation = 1-timeLeft/(float)(80+40*effect.getAmplifier());//Total Time =  4s + 2s per amplifier
 
-			float f1 = 2.5f+15.0F*saturation;
+			float f1 = -2.5f+15.0F*saturation;
 			if(timeLeft<20)
 				f1 += (event.getFarPlaneDistance()/4) * (1-timeLeft/20f);
 
