@@ -12,8 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.HashMap;
-
 public abstract class ItemUpgradeableTool extends ItemInternalStorage implements IUpgradeableTool
 {
 	String upgradeType;
@@ -50,7 +48,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	{
 		clearUpgrades(stack);
 		NonNullList<ItemStack> inv = getContainedItems(stack);
-		HashMap<String, Object> map = new HashMap<String, Object>();
+		NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
 		for(int i=0; i<inv.size(); i++)//start at 1, 0 is the drill
 		{
 			ItemStack u = inv.get(i);
@@ -58,29 +56,8 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 			{
 				IUpgrade upg = (IUpgrade)u.getItem();
 				if(upg.getUpgradeTypes(u).contains(upgradeType) && upg.canApplyUpgrades(stack, u))
-					upg.applyUpgrades(stack, u, map);
+					upg.applyUpgrades(stack, u, upgradeTag);
 			}
-		}
-		NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
-		for(String key : map.keySet())
-		{
-			Object o = map.get(key);
-			if(o instanceof Byte)
-				upgradeTag.setByte(key, (Byte)o);
-			else if(o instanceof byte[])
-				upgradeTag.setByteArray(key, (byte[])o);
-			else if(o instanceof Boolean)
-				upgradeTag.setBoolean(key, (Boolean)o);
-			else if(o instanceof Integer)
-				upgradeTag.setInteger(key, (Integer)o);
-			else if(o instanceof int[])
-				upgradeTag.setIntArray(key, (int[])o);
-			else if(o instanceof Float)
-				upgradeTag.setFloat(key, (Float)o);
-			else if(o instanceof Double)
-				upgradeTag.setDouble(key, (Double)o);
-			else if(o instanceof String)
-				upgradeTag.setString(key, (String)o);
 		}
 		ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
 		finishUpgradeRecalculation(stack);
