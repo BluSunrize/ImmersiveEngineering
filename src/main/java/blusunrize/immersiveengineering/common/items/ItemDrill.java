@@ -21,7 +21,6 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -207,12 +206,6 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			}
 		}
 		return transform;
-	}
-	@SideOnly(Side.CLIENT)
-	@Override
-	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective)
-	{
-		return perspective;
 	}
 
 	@Override
