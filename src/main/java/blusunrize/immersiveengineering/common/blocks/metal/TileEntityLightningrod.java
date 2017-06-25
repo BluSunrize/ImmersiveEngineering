@@ -9,9 +9,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningrod;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.IEnergyProvider;
-import net.minecraft.block.Block;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -62,13 +60,13 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				fenceNet = null;
 			if(fenceNet==null)
 				fenceNet = this.getFenceNet();
-			if(fenceNet!=null && world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127) && ( world.isThundering() || (world.isRaining()&&world.rand.nextInt(10)==0) ))
+			if(fenceNet!=null && world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127) && ( world.isThundering() || (world.isRaining()&&Utils.RAND.nextInt(10)==0) ))
 			{
 				int i = this.height + this.fenceNet.size();
-				if(world.rand.nextInt(4096*world.getHeight())<i*(getPos().getY()+i))
+				if(Utils.RAND.nextInt(4096*world.getHeight())<i*(getPos().getY()+i))
 				{
 					this.energyStorage.setEnergy(IEConfig.Machines.lightning_output);
-					BlockPos pos = fenceNet.get(world.rand.nextInt(fenceNet.size()));
+					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
 					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(world, pos.getX(),pos.getY(),pos.getZ(), true);
 					world.addWeatherEffect(entityLightningBolt);
 					world.spawnEntity(entityLightningBolt);

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFl
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -303,7 +304,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 						return true;
 					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (EntityPlayer)living);
 				}
-				if(!getUpgrades(stack).getBoolean("oiled") || world.rand.nextInt(4)==0)
+				if(!getUpgrades(stack).getBoolean("oiled") || Utils.RAND.nextInt(4)==0)
 					((IDrillHead)head.getItem()).damageHead(head, dmg);
 				this.setHead(stack, head);
 				IFluidHandler handler = FluidUtil.getFluidHandler(stack);

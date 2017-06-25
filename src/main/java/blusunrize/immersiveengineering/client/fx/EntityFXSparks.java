@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.fx;
 
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.world.World;
 
 public class EntityFXSparks extends EntityFXIEBase
@@ -14,7 +15,7 @@ public class EntityFXSparks extends EntityFXIEBase
 		this.motionX = mx;
 		this.motionY = my;
 		this.motionZ = mz;
-		this.setParticleTextureIndex(world.rand.nextInt(3));
+		this.setParticleTextureIndex(Utils.RAND.nextInt(3));
 	}
 
 	@Override

@@ -419,7 +419,7 @@ public class EventHandler
 					player.setHeldItem(hand, ItemStack.EMPTY);
 
 					player.resetActiveHand();
-					player.playSound(SoundEvents.ITEM_SHIELD_BREAK, .8f, .8f+player.getEntityWorld().rand.nextFloat()*.4f);
+					player.playSound(SoundEvents.ITEM_SHIELD_BREAK, .8f, .8f+Utils.RAND.nextFloat()*.4f);
 				}
 			}
 		}

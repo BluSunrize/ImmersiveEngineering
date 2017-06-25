@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
 import net.minecraft.entity.EntityLivingBase;
@@ -227,11 +228,11 @@ public class ChemthrowerHandler
 		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			super.applyToEntity(target, shooter, thrower, fluid);
-			if(target.world.rand.nextFloat()<chance)
+			if(Utils.RAND.nextFloat()<chance)
 			{
-				double x = target.posX - 8 + target.world.rand.nextInt(17);
-				double y = target.posY + target.world.rand.nextInt(8);
-				double z = target.posZ - 8 + target.world.rand.nextInt(17);
+				double x = target.posX - 8 + Utils.RAND.nextInt(17);
+				double y = target.posY + Utils.RAND.nextInt(8);
+				double z = target.posZ - 8 + Utils.RAND.nextInt(17);
 				if(!target.world.getBlockState(new BlockPos(x,y,z)).getMaterial().isSolid())
 				{
 					EnderTeleportEvent event = new EnderTeleportEvent(target, x, y, z, 0);

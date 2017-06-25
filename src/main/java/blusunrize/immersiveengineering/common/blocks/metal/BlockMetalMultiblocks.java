@@ -106,13 +106,13 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	//						ItemStack stack = ((IInventory)master).getStackInSlot(i);
 	//						if(stack!=null)
 	//						{
-	//							float fx = world.rand.nextFloat() * 0.8F + 0.1F;
-	//							float fz = world.rand.nextFloat() * 0.8F + 0.1F;
+	//							float fx = Utils.RAND.nextFloat() * 0.8F + 0.1F;
+	//							float fz = Utils.RAND.nextFloat() * 0.8F + 0.1F;
 	//
 	//							EntityItem entityitem = new EntityItem(world, x+fx, y+.5, z+fz, stack);
-	//							entityitem.motionX = world.rand.nextGaussian()*.05;
-	//							entityitem.motionY = world.rand.nextGaussian()*.05+.2;
-	//							entityitem.motionZ = world.rand.nextGaussian()*.05;
+	//							entityitem.motionX = Utils.RAND.nextGaussian()*.05;
+	//							entityitem.motionY = Utils.RAND.nextGaussian()*.05+.2;
+	//							entityitem.motionZ = Utils.RAND.nextGaussian()*.05;
 	//							if(stack.hasTagCompound())
 	//								entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
 	//							world.spawnEntity(entityitem);
