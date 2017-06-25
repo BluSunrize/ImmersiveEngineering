@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecor
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
+import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
@@ -40,6 +41,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -56,14 +58,12 @@ import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -400,6 +400,31 @@ public class EventHandler
 			event.getDrops().add(new EntityItem(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
 		}
 	}
+
+	@SubscribeEvent
+	public void onLivingAttacked(LivingAttackEvent event)
+	{
+		if(event.getEntityLiving() instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			ItemStack activeStack = player.getActiveItemStack();
+			if(!activeStack.isEmpty() && activeStack.getItem() instanceof ItemIEShield && event.getAmount()>=3 && Utils.canBlockDamageSource(player, event.getSource()))
+			{
+				float amount = event.getAmount();
+				((ItemIEShield)activeStack.getItem()).damageShield(activeStack, player, 1+(int)Math.floor(amount), event.getSource(), amount, event);
+				if(activeStack.isEmpty())
+				{
+					EnumHand hand = player.getActiveHand();
+					ForgeEventFactory.onPlayerDestroyItem(player, activeStack, hand);
+					player.setHeldItem(hand, ItemStack.EMPTY);
+
+					player.resetActiveHand();
+					player.playSound(SoundEvents.ITEM_SHIELD_BREAK, .8f, .8f+player.getEntityWorld().rand.nextFloat()*.4f);
+				}
+			}
+		}
+	}
+
 
 	@SubscribeEvent(priority=EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)

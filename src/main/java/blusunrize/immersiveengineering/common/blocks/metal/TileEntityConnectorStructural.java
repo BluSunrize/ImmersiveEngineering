@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Optional;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -119,12 +118,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 		transform = Optional.of( new TRSRTransformation(mat.toMatrix4f()));
 		return transform;
 	}
-	@Override
-	public Matrix4 handlePerspective(IBlockState Object, TransformType cameraTransformType, Matrix4 perspective)
-	{
-		return perspective;
-	}
-	
+
 	@Override
 	public String getCacheKey(IBlockState object)
 	{
