@@ -62,7 +62,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		{
 			if (world.isRemote && soundPos!=null)
 			{
-				world.playSound(soundPos.xCoord,soundPos.yCoord,soundPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+ Utils.RAND.nextFloat(), true);
+				world.playSound(soundPos.x,soundPos.y,soundPos.z, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+ Utils.RAND.nextFloat(), true);
 				soundPos = null;
 			}
 		}
@@ -85,7 +85,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				for (Entity e:targetsAll)
 					if (e instanceof ITeslaEntity)
 						((ITeslaEntity) e).onHit(this, lowPower);
-			List<Entity> targets = targetsAll.stream().filter((e)->(e instanceof EntityLivingBase&&aabbSmall.intersectsWith(e.getEntityBoundingBox()))).collect(Collectors.toList());
+			List<Entity> targets = targetsAll.stream().filter((e)->(e instanceof EntityLivingBase&&aabbSmall.intersects(e.getEntityBoundingBox()))).collect(Collectors.toList());
 			if(!targets.isEmpty())
 			{
 				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.Machines.teslacoil_damage, lowPower);
@@ -524,7 +524,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			double points = 12;
 			for(int i=0; i<points; i++)
 			{
-				Vec3d sub = startPos.addVector(dist.xCoord/points*i, dist.yCoord/points*i, dist.zCoord/points*i);
+				Vec3d sub = startPos.addVector(dist.x/points*i, dist.y/points*i, dist.z/points*i);
 				//distance to the middle point and by that, distance from the start and end. -1 is start, 1 is end
 				double fixPointDist=  (i-points/2)/(points/2);
 				//Randomization modifier, closer to start/end means smaller divergence
@@ -535,14 +535,14 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				if(fixPointDist<0)
 				{
 					offY+=.75*mod*(.75+fixPointDist);//Closer to the coil should arc upwards
-					offX = (sub.xCoord-startPos.xCoord)<0?-Math.abs(offX):Math.abs(offX);
-					offZ = (sub.zCoord-startPos.zCoord)<0?-Math.abs(offZ):Math.abs(offZ);
+					offX = (sub.x-startPos.x)<0?-Math.abs(offX):Math.abs(offX);
+					offZ = (sub.z-startPos.z)<0?-Math.abs(offZ):Math.abs(offZ);
 				}
 				else 
 				{
-					offY = Math.min(end.yCoord+1*(1-fixPointDist)*-Math.signum(dist.yCoord), offY);//final points should be higher/lower than end, depending on if lightning goes up or down
-					offX = Math.abs(offX)*(end.xCoord-sub.xCoord);
-					offZ = Math.abs(offZ)*(end.zCoord-sub.zCoord);
+					offY = Math.min(end.y+1*(1-fixPointDist)*-Math.signum(dist.y), offY);//final points should be higher/lower than end, depending on if lightning goes up or down
+					offX = Math.abs(offX)*(end.x-sub.x);
+					offZ = Math.abs(offZ)*(end.z-sub.z);
 				}
 				subPoints.add(sub.addVector(offX,offY,offZ));
 			}
