@@ -130,9 +130,9 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 										&& !world.isAirBlock(lowGroundPos.offset(facing, 1))
 										&& !world.isAirBlock(lowGroundPos))
 								{
-									ItemStack ore = mineral.getRandomOre(world.rand);
-									float configChance = world.rand.nextFloat();
-									float failChance = world.rand.nextFloat();
+									ItemStack ore = mineral.getRandomOre(Utils.RAND);
+									float configChance = Utils.RAND.nextFloat();
+									float failChance = Utils.RAND.nextFloat();
 									if(!ore.isEmpty() && configChance> IEConfig.Machines.excavator_fail_chance && failChance>mineral.failChance)
 									{
 										wheel.digStacks.set(targetDown, ore);

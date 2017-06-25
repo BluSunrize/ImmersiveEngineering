@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
-import net.minecraft.block.Block;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.SoundType;
@@ -205,9 +205,8 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		int meta = this.getMetaFromState(state);
 		if(meta>=4)
 		{
-			Random rand = world instanceof World ? ((World)world).rand : RANDOM;
 			for (int i=0; i<3+fortune; ++i)
-				if(rand.nextInt(8) <= meta)
+				if(Utils.RAND.nextInt(8) <= meta)
 					ret.add(new ItemStack(IEContent.itemMaterial,1,4));
 			ret.add(new ItemStack(IEContent.itemSeeds,1,0));
 		}

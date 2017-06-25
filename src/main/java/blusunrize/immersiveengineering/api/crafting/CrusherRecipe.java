@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,7 +50,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		list.add(output);
 		if(secondaryOutput != null && secondaryChance != null)
 			for(int i = 0; i < secondaryOutput.length; i++)
-				if(tile.getWorld().rand.nextFloat() < secondaryChance[i])
+				if(Utils.RAND.nextFloat() < secondaryChance[i])
 					list.add(secondaryOutput[i]);
 		return list;
 	}

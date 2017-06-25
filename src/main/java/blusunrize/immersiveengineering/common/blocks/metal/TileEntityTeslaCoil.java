@@ -11,13 +11,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
-import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.state.IBlockState;
@@ -65,7 +62,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		{
 			if (world.isRemote && soundPos!=null)
 			{
-				world.playSound(soundPos.xCoord,soundPos.yCoord,soundPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+world.rand.nextFloat(), true);
+				world.playSound(soundPos.xCoord,soundPos.yCoord,soundPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+ Utils.RAND.nextFloat(), true);
 				soundPos = null;
 			}
 		}
@@ -92,7 +89,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			if(!targets.isEmpty())
 			{
 				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.Machines.teslacoil_damage, lowPower);
-				int randomTarget = world.rand.nextInt(targets.size());
+				int randomTarget = Utils.RAND.nextInt(targets.size());
 				EntityLivingBase target = (EntityLivingBase) targets.get(randomTarget);
 				if(target!=null)
 				{
@@ -119,8 +116,8 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			else if(!world.isRemote && world.getTotalWorldTime()%128==(timeKey&127))
 			{
 				//target up to 4 blocks away
-				double tV = (world.rand.nextDouble()-.5)*8;
-				double tH = (world.rand.nextDouble()-.5)*8;
+				double tV = (Utils.RAND.nextDouble()-.5)*8;
+				double tH = (Utils.RAND.nextDouble()-.5)*8;
 				if (lowPower)
 				{
 					tV/=2;
@@ -154,7 +151,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				}
 				else
 				{
-					boolean positiveFirst = world.rand.nextBoolean();
+					boolean positiveFirst = Utils.RAND.nextBoolean();
 					for(int i=0; i<2; i++)
 					{
 						for(int ll=0;ll<=6;ll++)
@@ -244,7 +241,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					else 
 						f = dz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
 				}
-				double verticalOffset = 1+world.rand.nextDouble()*.25;
+				double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
 				Vec3d coilPos = new Vec3d(getPos()).addVector(.5,.5,.5);
 				//Vertical offset
 				coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
@@ -254,7 +251,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
 					//random side offset
 					f = f.rotateAround(facing.getAxis());
-					double dShift = (world.rand.nextDouble()-.5)*.75;
+					double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 					coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
 				}
 
@@ -296,7 +293,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
 		}
 
-		double verticalOffset = 1+world.rand.nextDouble()*.25;
+		double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
 		Vec3d coilPos = new Vec3d(getPos()).addVector(.5,.5,.5);
 		//Vertical offset
 		coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
@@ -304,10 +301,10 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
 		//random side offset
 		f = f.rotateAround(facing.getAxis());
-		double dShift = (world.rand.nextDouble()-.5)*.75;
+		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 		coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
 		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx,ty,tz)));
-		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + world.rand.nextFloat());
+		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
 	}
 
 	private void addAnimation(LightningAnimation ani)

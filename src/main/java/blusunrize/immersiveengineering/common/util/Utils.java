@@ -68,6 +68,8 @@ import static java.lang.Math.min;
 
 public class Utils
 {
+	public static final Random RAND = new Random();
+
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
 		if(!ApiUtils.isExistingOreName(oreName))

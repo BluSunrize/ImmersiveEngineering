@@ -44,7 +44,7 @@ public class MessageBirthdayParty implements IMessage
 				Entity entity = world.getEntityByID(message.entityId);
 				if(entity!=null&&entity instanceof EntityLivingBase)
 				{
-					world.makeFireworks(entity.posX, entity.posY, entity.posZ, 0, 0, 0, Utils.getRandomFireworkExplosion(world.rand, 4));
+					world.makeFireworks(entity.posX, entity.posY, entity.posZ, 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
 					entity.getEntityData().setBoolean("headshot", true);
 				}
 			}

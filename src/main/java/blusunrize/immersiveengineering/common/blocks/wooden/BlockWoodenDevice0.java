@@ -258,10 +258,10 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//		if(metadata==0 || metadata==4 || metadata==6)
 	//			return ret;
 	//
-	//		int count = quantityDropped(metadata, fortune, world.rand);
+	//		int count = quantityDropped(metadata, fortune, Utils.RAND);
 	//		for(int i = 0; i < count; i++)
 	//		{
-	//			Item item = getItemDropped(metadata, world.rand, fortune);
+	//			Item item = getItemDropped(metadata, Utils.RAND, fortune);
 	//			if (item != null)
 	//			{
 	//				ret.add(new ItemStack(item, 1, damageDropped(metadata)));
@@ -342,13 +342,13 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//					ItemStack stack = tile.getStackInSlot(i);
 	//					if(stack!=null)
 	//					{
-	//						float fx = world.rand.nextFloat() * 0.8F + 0.1F;
-	//						float fz = world.rand.nextFloat() * 0.8F + 0.1F;
+	//						float fx = Utils.RAND.nextFloat() * 0.8F + 0.1F;
+	//						float fz = Utils.RAND.nextFloat() * 0.8F + 0.1F;
 	//
 	//						EntityItem entityitem = new EntityItem(world, x+fx, y+.5, z+fz, stack);
-	//						entityitem.motionX = world.rand.nextGaussian()*.05;
-	//						entityitem.motionY = world.rand.nextGaussian()*.05+.2;
-	//						entityitem.motionZ = world.rand.nextGaussian()*.05;
+	//						entityitem.motionX = Utils.RAND.nextGaussian()*.05;
+	//						entityitem.motionY = Utils.RAND.nextGaussian()*.05+.2;
+	//						entityitem.motionZ = Utils.RAND.nextGaussian()*.05;
 	//						if(stack.hasTagCompound())
 	//							entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
 	//						world.spawnEntity(entityitem);

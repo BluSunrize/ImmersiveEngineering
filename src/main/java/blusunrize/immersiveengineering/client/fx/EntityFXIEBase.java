@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.fx;
 
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -30,7 +31,7 @@ public abstract class EntityFXIEBase extends Particle
 		this.motionX = mx;
 		this.motionY = my;
 		this.motionZ = mz;
-		this.setParticleTextureIndex(world.rand.nextInt(3));
+		this.setParticleTextureIndex(Utils.RAND.nextInt(3));
 	}
 
 	@Override

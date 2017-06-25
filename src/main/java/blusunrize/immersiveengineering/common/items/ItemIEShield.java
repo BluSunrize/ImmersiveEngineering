@@ -111,7 +111,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			if(b)
 			{
 				getUpgrades(stack).setInteger("shock_cooldown",40);
-				player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F, 0.5F+player.world.rand.nextFloat());
+				player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
 			}
 		}
 	}

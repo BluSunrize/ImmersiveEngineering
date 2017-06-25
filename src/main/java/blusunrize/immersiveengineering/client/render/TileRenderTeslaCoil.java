@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil.LightningAnimation;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -31,7 +32,7 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 		{
 			LightningAnimation animation = animationIt.next();
 			if(animation.shoudlRecalculateLightning())
-				animation.createLightning(tile.getWorld().rand);
+				animation.createLightning(Utils.RAND);
 
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(x, y, z);

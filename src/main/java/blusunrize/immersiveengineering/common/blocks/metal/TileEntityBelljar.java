@@ -92,7 +92,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 					}
 					else
 						renderGrowth = handler.resetGrowth(inventory.get(1), inventory.get(0), renderGrowth, this, true);
-					if(getWorld().rand.nextInt(8)==0)
+					if(Utils.RAND.nextInt(8)==0)
 					{
 						double partX = getPos().getX()+.5;
 						double partY = getPos().getY()+2.6875;

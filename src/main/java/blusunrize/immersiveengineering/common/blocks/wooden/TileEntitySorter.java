@@ -44,7 +44,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 			if(validOutputs[0].length>0)
 			{
-				int rand = world.rand.nextInt(validOutputs[0].length);
+				int rand = Utils.RAND.nextInt(validOutputs[0].length);
 				stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[0][rand]), simulate);
 				if(!stack.isEmpty())
 					for(int i=0; i<validOutputs[0].length; i++)
@@ -60,7 +60,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			{
 				if(!simulate)
 				{
-					int rand = world.rand.nextInt(validOutputs[1].length);
+					int rand = Utils.RAND.nextInt(validOutputs[1].length);
 					EnumFacing fd = EnumFacing.getFront(validOutputs[1][rand]);
 					EntityItem ei = new EntityItem(world, getPos().getX()+.5+fd.getFrontOffsetX(), getPos().getY()+.5+fd.getFrontOffsetY(), getPos().getZ()+.5+fd.getFrontOffsetZ(), stack.copy());
 					ei.motionX = (0.075F * fd.getFrontOffsetX());
@@ -72,7 +72,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			}
 			if(validOutputs[2].length>0)
 			{
-				int rand = world.rand.nextInt(validOutputs[2].length);
+				int rand = Utils.RAND.nextInt(validOutputs[2].length);
 				stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[2][rand]), simulate);
 				if(!stack.isEmpty())
 					for(int i=0; i<validOutputs[2].length; i++)
@@ -88,7 +88,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			{
 				if(!simulate)
 				{
-					int rand = world.rand.nextInt(validOutputs[3].length);
+					int rand = Utils.RAND.nextInt(validOutputs[3].length);
 					EnumFacing fd = EnumFacing.getFront(validOutputs[1][rand]);
 					EntityItem ei = new EntityItem(world, getPos().getX()+.5+fd.getFrontOffsetX(), getPos().getY()+.5+fd.getFrontOffsetY(), getPos().getZ()+.5+fd.getFrontOffsetZ(), stack.copy());
 					ei.motionX = (0.075F * fd.getFrontOffsetX());

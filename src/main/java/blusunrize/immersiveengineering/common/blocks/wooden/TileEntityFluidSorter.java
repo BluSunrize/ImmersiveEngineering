@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -32,14 +33,14 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 			IFluidHandler[][] validOutputs = getValidOutputs(inputSide, stack, true);
 			if(validOutputs[0].length>0)
 			{
-				int rand = world.rand.nextInt(validOutputs[0].length);
+				int rand = Utils.RAND.nextInt(validOutputs[0].length);
 				int accepted = validOutputs[0][rand].fill(stack.copy(), doFill);
 				if(accepted>0)
 					return accepted;
 			}
 			if(validOutputs[1].length>0)
 			{
-				int rand = world.rand.nextInt(validOutputs[1].length);
+				int rand = Utils.RAND.nextInt(validOutputs[1].length);
 				int accepted = validOutputs[1][rand].fill(stack.copy(), doFill);
 				if(accepted>0)
 					return accepted;

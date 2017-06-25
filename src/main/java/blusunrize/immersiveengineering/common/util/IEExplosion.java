@@ -54,9 +54,9 @@ public class IEExplosion extends Explosion
 
 //			if(spawnParticles)
 			{
-				double d0 = (double)((float)pos.getX() + this.world.rand.nextFloat());
-				double d1 = (double)((float)pos.getY() + this.world.rand.nextFloat());
-				double d2 = (double)((float)pos.getZ() + this.world.rand.nextFloat());
+				double d0 = (double)((float)pos.getX() + Utils.RAND.nextFloat());
+				double d1 = (double)((float)pos.getY() + Utils.RAND.nextFloat());
+				double d2 = (double)((float)pos.getZ() + Utils.RAND.nextFloat());
 				double d3 = d0 - this.explosionX;
 				double d4 = d1 - this.explosionY;
 				double d5 = d2 - this.explosionZ;
@@ -65,7 +65,7 @@ public class IEExplosion extends Explosion
 				d4 = d4 / d6;
 				d5 = d5 / d6;
 				double d7 = 0.5D / (d6 / (double)this.explosionSize + 0.1D);
-				d7 = d7 * (double)(this.world.rand.nextFloat() * this.world.rand.nextFloat() + 0.3F);
+				d7 = d7 * (double)(Utils.RAND.nextFloat() * Utils.RAND.nextFloat() + 0.3F);
 				d3 = d3 * d7;
 				d4 = d4 * d7;
 				d5 = d5 * d7;
@@ -102,7 +102,7 @@ public class IEExplosion extends Explosion
                         d0 = d0 / d3;
                         d1 = d1 / d3;
                         d2 = d2 / d3;
-                        float f = this.explosionSize * (0.7F + this.world.rand.nextFloat() * 0.6F);
+                        float f = this.explosionSize * (0.7F + Utils.RAND.nextFloat() * 0.6F);
                         double d4 = this.explosionX;
                         double d6 = this.explosionY;
                         double d8 = this.explosionZ;
@@ -181,7 +181,7 @@ public class IEExplosion extends Explosion
 	@Override
 	public void doExplosionB(boolean spawnParticles)
 	{
-		this.world.playSound(this.explosionX, this.explosionY, this.explosionZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F, true);
+		this.world.playSound(this.explosionX, this.explosionY, this.explosionZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F + (Utils.RAND.nextFloat() - Utils.RAND.nextFloat()) * 0.2F) * 0.7F, true);
 
 		if(this.explosionSize >= 2.0F && this.isSmoking)
 			this.world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
@@ -196,9 +196,9 @@ public class IEExplosion extends Explosion
 //
 //				if(spawnParticles)
 //				{
-//					double d0 = (double)((float)blockpos.getX() + this.world.rand.nextFloat());
-//					double d1 = (double)((float)blockpos.getY() + this.world.rand.nextFloat());
-//					double d2 = (double)((float)blockpos.getZ() + this.world.rand.nextFloat());
+//					double d0 = (double)((float)blockpos.getX() + this.Utils.RAND.nextFloat());
+//					double d1 = (double)((float)blockpos.getY() + this.Utils.RAND.nextFloat());
+//					double d2 = (double)((float)blockpos.getZ() + this.Utils.RAND.nextFloat());
 //					double d3 = d0 - this.explosionX;
 //					double d4 = d1 - this.explosionY;
 //					double d5 = d2 - this.explosionZ;
@@ -207,7 +207,7 @@ public class IEExplosion extends Explosion
 //					d4 = d4 / d6;
 //					d5 = d5 / d6;
 //					double d7 = 0.5D / (d6 / (double)this.explosionSize + 0.1D);
-//					d7 = d7 * (double)(this.world.rand.nextFloat() * this.world.rand.nextFloat() + 0.3F);
+//					d7 = d7 * (double)(this.Utils.RAND.nextFloat() * this.Utils.RAND.nextFloat() + 0.3F);
 //					d3 = d3 * d7;
 //					d4 = d4 * d7;
 //					d5 = d5 * d7;

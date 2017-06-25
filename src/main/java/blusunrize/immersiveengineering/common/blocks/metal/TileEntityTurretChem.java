@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
@@ -75,7 +76,7 @@ public class TileEntityTurretChem extends TileEntityTurret
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&this.ignite;
 				for(int i = 0; i < split; i++)
 				{
-					Vec3d vecDir = v.addVector(world.rand.nextGaussian()*scatter, world.rand.nextGaussian()*scatter, world.rand.nextGaussian()*scatter);
+					Vec3d vecDir = v.addVector(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
 					EntityChemthrowerShot chem = new EntityChemthrowerShot(world, getPos().getX()+.5+v.xCoord*0.875,getPos().getY()+1.5+v.yCoord*0.875,getPos().getZ()+.5+v.zCoord*0.875, 0,0,0, fs);
 					chem.motionX = vecDir.xCoord*range;
 					chem.motionY = vecDir.yCoord*range;
