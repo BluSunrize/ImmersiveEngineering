@@ -74,7 +74,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 				for(int i=0; i<20; i++)
 				{
 					Vec3d v = new Vec3d(Utils.RAND.nextDouble()-.5,Utils.RAND.nextDouble()-.5,Utils.RAND.nextDouble()-.5);
-					ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
+					ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x,posY+v.y,posZ+v.z, v.x/10,v.y/10,v.z/10, 1, r,g,b);
 				}
 		}
 		if(ticksExisted==40)
@@ -88,7 +88,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 			for(int i=0; i<80; i++)
 			{
 				Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1);
-				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
+				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x,posY+v.y,posZ+v.z, v.x/10,v.y/10,v.z/10, 1, r,g,b);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 			for(int i=0; i<80; i++)
 			{
 				Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1);
-				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
+				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x,posY+v.y,posZ+v.z, v.x/10,v.y/10,v.z/10, 1, r,g,b);
 			}
 		}
 		this.setDead();

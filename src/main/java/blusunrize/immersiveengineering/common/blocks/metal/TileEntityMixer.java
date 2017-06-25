@@ -96,9 +96,9 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 						float angleRad = (float)Math.toRadians(animation_agitator);
 						partPos = partPos.addVector(r*Math.cos(angleRad),0,r*Math.sin(angleRad));
 						if(Utils.RAND.nextBoolean())
-							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.xCoord,partPos.yCoord,partPos.zCoord, 0,0,0);
+							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.x,partPos.y,partPos.z, 0,0,0);
 						else
-							ImmersiveEngineering.proxy.spawnFluidSplashFX(world, fs, partPos.xCoord,partPos.yCoord,partPos.zCoord, 0,0,0);
+							ImmersiveEngineering.proxy.spawnFluidSplashFX(world, fs, partPos.x,partPos.y,partPos.z, 0,0,0);
 					}
 				}
 				animation_agitator = (animation_agitator+9)%360;
