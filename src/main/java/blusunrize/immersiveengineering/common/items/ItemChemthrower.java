@@ -115,10 +115,10 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 				for(int i=0; i<split; i++)
 				{
 					Vec3d vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
-					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.world, player, vecDir.xCoord*0.25,vecDir.yCoord*0.25,vecDir.zCoord*0.25, fs);
-					chem.motionX = vecDir.xCoord*range;
-					chem.motionY = vecDir.yCoord*range;
-					chem.motionZ = vecDir.zCoord*range;
+					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.world, player, vecDir.x*0.25,vecDir.y*0.25,vecDir.z*0.25, fs);
+					chem.motionX = vecDir.x*range;
+					chem.motionY = vecDir.y*range;
+					chem.motionZ = vecDir.z*range;
 					if(ignite)
 						chem.setFire(10);
 					if(!player.world.isRemote)

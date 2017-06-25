@@ -103,8 +103,8 @@ public class TileEntityTurretGun extends TileEntityTurret
 							double cY = getPos().getY()+1.375;
 							double cZ = getPos().getZ()+.5;
 							Vec3d vCasing = vec.rotateYaw(-1.57f);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, cX+vCasing.xCoord, cY+vCasing.yCoord, cZ+vCasing.zCoord, 0,0,0, 1,0);
-							EntityItem entCasing = new EntityItem(world, cX+vCasing.xCoord, cY+vCasing.yCoord, cZ+vCasing.zCoord, casing.copy());
+							world.spawnParticle(EnumParticleTypes.REDSTONE, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0,0,0, 1,0);
+							EntityItem entCasing = new EntityItem(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
 							entCasing.motionX = 0;
 							entCasing.motionY = -0.01;
 							entCasing.motionZ = 0;
@@ -132,10 +132,10 @@ public class TileEntityTurretGun extends TileEntityTurret
 
 	EntityRevolvershot getBulletEntity(World world, Vec3d vecDir, IBullet type)
 	{
-		EntityRevolvershot bullet = new EntityRevolvershot(world, getPos().getX()+.5+vecDir.xCoord,getPos().getY()+1.375+vecDir.yCoord,getPos().getZ()+.5+vecDir.zCoord, 0,0,0, type);
-		bullet.motionX = vecDir.xCoord;
-		bullet.motionY = vecDir.yCoord;
-		bullet.motionZ = vecDir.zCoord;
+		EntityRevolvershot bullet = new EntityRevolvershot(world, getPos().getX()+.5+vecDir.x,getPos().getY()+1.375+vecDir.y,getPos().getZ()+.5+vecDir.z, 0,0,0, type);
+		bullet.motionX = vecDir.x;
+		bullet.motionY = vecDir.y;
+		bullet.motionZ = vecDir.z;
 		return bullet;
 	}
 

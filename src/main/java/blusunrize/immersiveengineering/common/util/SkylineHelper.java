@@ -63,29 +63,29 @@ public class SkylineHelper
 
 		Vec3d[] steps = getConnectionCatenary(connection,vStart,vEnd);
 
-		double dx = (steps[0].xCoord-vStart.xCoord);
-		double dy = (steps[0].yCoord-vStart.yCoord);
-		double dz = (steps[0].zCoord-vStart.zCoord);
+		double dx = (steps[0].x-vStart.x);
+		double dy = (steps[0].y-vStart.y);
+		double dz = (steps[0].z-vStart.z);
 		double d = 1;//connection.length;
 		//						Math.sqrt(dx*dx+dz*dz+dy*dy);
 
 		//		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
 //		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
 
-		EntitySkylineHook hook = new EntitySkylineHook(player.world, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
+		EntitySkylineHook hook = new EntitySkylineHook(player.world, vStart.x,vStart.y,vStart.z, connection, cc0, steps);
 		float speed = 1;
 		if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
 			speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
 		Vec3d moveVec = getSubMovementVector(vStart, steps[0], speed);
-		hook.motionX = moveVec.xCoord;//*speed;
-		hook.motionY = moveVec.yCoord;//*speed;
-		hook.motionZ = moveVec.zCoord;//*speed;
-		//		hook.motionX = (steps[0].xCoord-cc1.posX)*.5f;
-		//		hook.motionY = (steps[0].yCoord-cc1.posY)*.5f;
-		//		hook.motionZ = (steps[0].zCoord-cc1.posZ)*.5f;
+		hook.motionX = moveVec.x;//*speed;
+		hook.motionY = moveVec.y;//*speed;
+		hook.motionZ = moveVec.z;//*speed;
+		//		hook.motionX = (steps[0].x-cc1.posX)*.5f;
+		//		hook.motionY = (steps[0].y-cc1.posY)*.5f;
+		//		hook.motionZ = (steps[0].z-cc1.posZ)*.5f;
 
 		//		for(Vec3 v : steps)
-		//			living.world.spawnParticle("smoke", v.xCoord,v.yCoord,v.zCoord, 0,0,0 );
+		//			living.world.spawnParticle("smoke", v.x,v.y,v.z, 0,0,0 );
 
 		if(!player.world.isRemote)
 			player.world.spawnEntity(hook);
@@ -99,11 +99,11 @@ public class SkylineHelper
 		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
 
 		if(vertical)
-			return new Vec3d[]{new Vec3d(end.xCoord, end.yCoord, end.zCoord)};
+			return new Vec3d[]{new Vec3d(end.x, end.y, end.z)};
 
-		double dx = (end.xCoord)-(start.xCoord);
-		double dy = (end.yCoord)-(start.yCoord);
-		double dz = (end.zCoord)-(start.zCoord);
+		double dx = (end.x)-(start.x);
+		double dy = (end.y)-(start.y);
+		double dz = (end.z)-(start.z);
 		double dw = Math.sqrt(dx*dx + dz*dz);
 		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * connection.cableType.getSlack();
 		double l = 0;
@@ -128,16 +128,16 @@ public class SkylineHelper
 			double x1 = 0 + dx * n1;
 			double z1 = 0 + dz * n1;
 			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-			vex[i] = new Vec3d(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
+			vex[i] = new Vec3d(start.x+x1, start.y+y1, start.z+z1);
 		}
 		return vex;
 	}
 
 	public static Vec3d getSubMovementVector(Vec3d start, Vec3d target, float speed)
 	{
-		Vec3d movementVec = new Vec3d(target.xCoord-start.xCoord, target.yCoord-start.yCoord, target.zCoord-start.zCoord);
+		Vec3d movementVec = new Vec3d(target.x-start.x, target.y-start.y, target.z-start.z);
 		int lPixel = (int)Math.max(1, (movementVec.lengthVector()/(.125*speed)));
-		return new Vec3d(movementVec.xCoord/lPixel, movementVec.yCoord/lPixel, movementVec.zCoord/lPixel);
+		return new Vec3d(movementVec.x/lPixel, movementVec.y/lPixel, movementVec.z/lPixel);
 	}
 	public static boolean isInBlock(EntityPlayer player, World w)
 	{
@@ -150,7 +150,7 @@ public class SkylineHelper
 				for (int zOff = 0;zOff<2;zOff++)
 				{
 					Vec3d v = new Vec3d(init.getX()+xOff, init.getY()+yOff, init.getZ()+zOff);
-					if (hitbox.isVecInside(v)&&!w.isAirBlock(new BlockPos(v)))
+					if (hitbox.contains(v)&&!w.isAirBlock(new BlockPos(v)))
 						return true;
 				}
 		return false;

@@ -42,12 +42,12 @@ public class GuiClickableList extends GuiButton
 		boolean uni = fr.getUnicodeFlag();
 		fr.setUnicodeFlag(true);
 
-		int mmY = my-this.yPosition;
+		int mmY = my-this.y;
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(textScale, textScale, textScale);
-		GlStateManager.translate(xPosition/textScale, yPosition/textScale, 0);
+		GlStateManager.translate(x/textScale, y/textScale, 0);
 		GlStateManager.color(1, 1, 1);
-		this.hovered = mx>=xPosition&&mx<xPosition+width && my>=yPosition&&my<yPosition+height;
+		this.hovered = mx>=x&&mx<x+width && my>=y&&my<y+height;
 		for(int i=0; i<Math.min(perPage, entries.length); i++)
 		{
 			int col = gui.manual.getTextColour();
@@ -67,14 +67,14 @@ public class GuiClickableList extends GuiButton
 		{
 			int h1 = offset*getFontHeight();
 			int h2 = height-8-maxOffset*getFontHeight();
-			this.drawGradientRect(xPosition+width, yPosition+h1, xPosition+width+8, yPosition+h1+h2, 0x0a000000, 0x0a000000);
-			this.drawGradientRect(xPosition+width+1, yPosition+h1, xPosition+width+6, yPosition+h1+h2, 0x28000000, 0x28000000);
+			this.drawGradientRect(x+width, y+h1, x+width+8, y+h1+h2, 0x0a000000, 0x0a000000);
+			this.drawGradientRect(x+width+1, y+h1, x+width+6, y+h1+h2, 0x28000000, 0x28000000);
 			if(offset > 0)
-				this.drawGradientRect(xPosition+width, yPosition, xPosition+width+8, yPosition+h1, 0x0a000000, 0x0a000000);
+				this.drawGradientRect(x+width, y, x+width+8, y+h1, 0x0a000000, 0x0a000000);
 			if(offset < maxOffset)
 			{
 				int h3 = (maxOffset-offset)*getFontHeight();
-				this.drawGradientRect(xPosition+width, yPosition+height-8-h3, xPosition+width+8, yPosition+height-8, 0x0a000000, 0x11000000);
+				this.drawGradientRect(x+width, y+height-8-h3, x+width+8, y+height-8, 0x0a000000, 0x11000000);
 			}
 		}
 
@@ -100,7 +100,7 @@ public class GuiClickableList extends GuiButton
 		selectedOption=-1;
 		if(b)
 		{
-			int mmY = my-this.yPosition;
+			int mmY = my-this.y;
 			for(int i=0; i<Math.min(perPage, entries.length); i++)
 				if(mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
 					selectedOption=offset+i;

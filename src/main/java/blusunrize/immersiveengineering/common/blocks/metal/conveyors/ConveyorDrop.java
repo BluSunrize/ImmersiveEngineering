@@ -31,14 +31,14 @@ public class ConveyorDrop extends ConveyorBasic
 		{
 			if(!tile.getWorld().isRemote)
 			{
-				ItemStack stack = entity.getEntityItem();
+				ItemStack stack = entity.getItem();
 				if(!stack.isEmpty())
 				{
 					ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.UP);
 					if(ret.isEmpty())
 						entity.setDead();
 					else if(ret.getCount() < stack.getCount())
-						entity.setEntityItemStack(ret);
+						entity.setItem(ret);
 				}
 			}
 		}

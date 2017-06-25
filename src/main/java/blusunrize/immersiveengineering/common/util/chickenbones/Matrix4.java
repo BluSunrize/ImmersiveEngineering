@@ -399,9 +399,9 @@ public class Matrix4
 	}
 	private Vec3d mult3x3(Vec3d vec)
 	{
-		double x = m00 * vec.xCoord + m01 * vec.yCoord + m02 * vec.zCoord;
-		double y = m10 * vec.xCoord + m11 * vec.yCoord + m12 * vec.zCoord;
-		double z = m20 * vec.xCoord + m21 * vec.yCoord + m22 * vec.zCoord;
+		double x = m00 * vec.x + m01 * vec.y + m02 * vec.z;
+		double y = m10 * vec.x + m11 * vec.y + m12 * vec.z;
+		double z = m20 * vec.x + m21 * vec.y + m22 * vec.z;
 		return new Vec3d(x,y,z);
 	}
 	public Vec3d apply(Vec3d vec)

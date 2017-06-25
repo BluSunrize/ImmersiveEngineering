@@ -27,13 +27,13 @@ public class GuiButtonState extends GuiButtonIE
 			ClientUtils.bindTexture(texture);
 			FontRenderer fontrenderer = mc.fontRenderer;
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
 			int u = texU + (!state?0: offsetDir==0?width: offsetDir==2?-width: 0);
 			int v = texV + (!state?0: offsetDir==1?height: offsetDir==3?-height: 0);
-			this.drawTexturedModalRect(xPosition,yPosition, u,v, width,height);
+			this.drawTexturedModalRect(x,y, u,v, width,height);
 			this.mouseDragged(mc, mouseX, mouseY);
 			if(displayString!=null && !displayString.isEmpty())
 			{
@@ -42,7 +42,7 @@ public class GuiButtonState extends GuiButtonIE
 					txtCol = 0xA0A0A0;
 				else if(this.hovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
-				this.drawString(fontrenderer, displayString, xPosition+textOffset[0], yPosition+textOffset[1], txtCol);
+				this.drawString(fontrenderer, displayString, x+textOffset[0], y+textOffset[1], txtCol);
 			}
 		}
 	}

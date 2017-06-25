@@ -27,11 +27,11 @@ public class GuiButtonItem extends GuiButton
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
-			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-			this.drawTexturedModalRect(xPosition,yPosition, 24+(state?18:0),128, width,height);
+			this.drawTexturedModalRect(x,y, 24+(state?18:0),128, width,height);
 			this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())
@@ -42,7 +42,7 @@ public class GuiButtonItem extends GuiButton
 				FontRenderer font = item.getItem().getFontRenderer(item);
 				if(font==null)
 					font = mc.fontRenderer;
-				itemRender.renderItemAndEffectIntoGUI(item, xPosition+1, yPosition+1);
+				itemRender.renderItemAndEffectIntoGUI(item, x+1, y+1);
 				this.zLevel = 0.0F;
 				itemRender.zLevel = 0.0F;
 
@@ -51,7 +51,7 @@ public class GuiButtonItem extends GuiButton
 					RenderHelper.enableStandardItemLighting();
 					GlStateManager.disableLighting();
 					GlStateManager.disableDepth();
-					ClientUtils.drawColouredRect(xPosition+1, yPosition+1, 16, 16, 0x77444444);
+					ClientUtils.drawColouredRect(x+1, y+1, 16, 16, 0x77444444);
 					GlStateManager.enableLighting();
 					GlStateManager.enableDepth();
 				}

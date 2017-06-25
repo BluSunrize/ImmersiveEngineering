@@ -344,8 +344,8 @@ public class Utils
 		Vec3d endLow = start.add(dir).subtract(radius,radius,radius);
 		Vec3d endHigh = start.add(dir).addVector(radius,radius,radius);
 
-		AxisAlignedBB box = new AxisAlignedBB(minInArray(start.xCoord,endLow.xCoord,endHigh.xCoord), minInArray(start.yCoord,endLow.yCoord,endHigh.yCoord), minInArray(start.zCoord,endLow.zCoord,endHigh.zCoord),
-				maxInArray(start.xCoord,endLow.xCoord,endHigh.xCoord), maxInArray(start.yCoord,endLow.yCoord,endHigh.yCoord), maxInArray(start.zCoord,endLow.zCoord,endHigh.zCoord));
+		AxisAlignedBB box = new AxisAlignedBB(minInArray(start.x,endLow.x,endHigh.x), minInArray(start.y,endLow.y,endHigh.y), minInArray(start.z,endLow.z,endHigh.z),
+				maxInArray(start.x,endLow.x,endHigh.x), maxInArray(start.y,endLow.y,endHigh.y), maxInArray(start.z,endLow.z,endHigh.z));
 
 		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
 		Iterator<EntityLivingBase> iterator = list.iterator();
@@ -441,7 +441,7 @@ public class Utils
 			{
 				Vec3d vec3d1 = entity.getLook(1.0F);
 				Vec3d vec3d2 = vec3d.subtractReverse(entity.getPositionVector()).normalize();
-				vec3d2 = new Vec3d(vec3d2.xCoord, 0.0D, vec3d2.zCoord);
+				vec3d2 = new Vec3d(vec3d2.x, 0.0D, vec3d2.z);
 				if(vec3d2.dotProduct(vec3d1) < 0)
 					return true;
 			}
@@ -490,7 +490,7 @@ public class Utils
 			for(EnumFacing enumfacing1 : EnumFacing.Plane.HORIZONTAL)
 			{
 				BlockPos blockpos1 = pos.offset(enumfacing1);
-				if(block.isBlockSolid(world, blockpos1, enumfacing1) || block.isBlockSolid(world, blockpos1.up(), enumfacing1))
+				if(block.causesDownwardCurrent(world, blockpos1, enumfacing1) || block.causesDownwardCurrent(world, blockpos1.up(), enumfacing1))
 				{
 					vec3 = vec3.normalize().addVector(0.0D, -6.0D, 0.0D);
 					break;
@@ -511,7 +511,7 @@ public class Utils
 	}
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
-		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
+		return vec0.addVector(vec1.x,vec1.y,vec1.z);
 	}
 
 	public static double minInArray(double... f)
@@ -537,7 +537,7 @@ public class Utils
 	{
 		if(entity.height/entity.width<2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
-		double d = vec.yCoord-(entity.posY+entity.getEyeHeight());
+		double d = vec.y-(entity.posY+entity.getEyeHeight());
 		return Math.abs(d) < .25;
 	}
 
@@ -959,53 +959,53 @@ public class Utils
 		HashSet<BlockPos> ret = new HashSet<BlockPos>();
 		HashSet<BlockPos> checked = new HashSet<BlockPos>();
 		// x
-		if (start.xCoord>end.xCoord)
+		if (start.x>end.x)
 		{
 			Vec3d tmp = start;
 			start = end;
 			end = tmp;
 		}
-		double min = start.xCoord;
-		double dif =end.xCoord-min;
-		double lengthAdd = Math.ceil(min)-start.xCoord;
+		double min = start.x;
+		double dif =end.x-min;
+		double lengthAdd = Math.ceil(min)-start.x;
 		Vec3d mov = start.subtract(end);
-		if (mov.xCoord!=0)
+		if (mov.x!=0)
 		{
-			mov = scalarProd(mov, 1 / mov.xCoord);
+			mov = scalarProd(mov, 1 / mov.x);
 			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.DIAMOND_ORE);
 		}
 		// y
-		if (mov.yCoord!=0)
+		if (mov.y!=0)
 		{
-			if (start.yCoord>end.yCoord)
+			if (start.y>end.y)
 			{
 				Vec3d tmp = start;
 				start = end;
 				end = tmp;
 			}
-			min = start.yCoord;
-			dif = end.yCoord-min;
-			lengthAdd = Math.ceil(min)-start.yCoord;
+			min = start.y;
+			dif = end.y-min;
+			lengthAdd = Math.ceil(min)-start.y;
 			mov = start.subtract(end);
-			mov = scalarProd(mov, 1/mov.yCoord);
+			mov = scalarProd(mov, 1/mov.y);
 
 			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.IRON_ORE);
 		}
 
 		// z
-		if (mov.zCoord!=0)
+		if (mov.z!=0)
 		{
-			if (start.zCoord>end.zCoord)
+			if (start.z>end.z)
 			{
 				Vec3d tmp = start;
 				start = end;
 				end = tmp;
 			}
-			min = start.zCoord;
-			dif = end.zCoord - min;
-			lengthAdd = Math.ceil(min)-start.zCoord;
+			min = start.z;
+			dif = end.z - min;
+			lengthAdd = Math.ceil(min)-start.z;
 			mov = start.subtract(end);
-			mov = scalarProd(mov, 1 / mov.zCoord);
+			mov = scalarProd(mov, 1 / mov.z);
 
 			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.GOLD_ORE);
 		}
@@ -1026,8 +1026,8 @@ public class Utils
 			Vec3d posVeryPrev = addVectors(start,
 					scalarProd(mov, i - 1 + lengthAdd-standartOff));
 
-			BlockPos blockPos = new BlockPos((int) Math.floor(pos.xCoord),
-					(int) Math.floor(pos.yCoord), (int) Math.floor(pos.zCoord));
+			BlockPos blockPos = new BlockPos((int) Math.floor(pos.x),
+					(int) Math.floor(pos.y), (int) Math.floor(pos.z));
 			Block b;
 			IBlockState state;
 			if (!checked.contains(blockPos)&&i + lengthAdd+standartOff<dif)
@@ -1040,7 +1040,7 @@ public class Utils
 				//					world.setBlockState(blockPos, tmp);
 				checked.add(blockPos);
 			}
-			blockPos = new BlockPos((int) Math.floor(posPrev.xCoord), (int) Math.floor(posPrev.yCoord), (int) Math.floor(posPrev.zCoord));
+			blockPos = new BlockPos((int) Math.floor(posPrev.x), (int) Math.floor(posPrev.y), (int) Math.floor(posPrev.z));
 			if (!checked.contains(blockPos)&&i + lengthAdd-standartOff<dif)
 			{
 				state = world.getBlockState(blockPos);
@@ -1055,19 +1055,19 @@ public class Utils
 	}
 	public static Vec3d scalarProd(Vec3d v, double s)
 	{
-		return new Vec3d(v.xCoord*s, v.yCoord*s, v.zCoord*s);
+		return new Vec3d(v.x*s, v.y*s, v.z*s);
 	}
 	public static BlockPos rayTraceForFirst(Vec3d start, Vec3d end, World w, Set<BlockPos> ignore)
 	{
 		HashSet<BlockPos> trace = rayTrace(start, end, w);
 		for (BlockPos cc:ignore)
 			trace.remove(cc);
-		if (start.xCoord!=end.xCoord)
-			trace = findMinOrMax(trace, start.xCoord>end.xCoord, 0);
-		if (start.yCoord!=end.yCoord)
-			trace = findMinOrMax(trace, start.yCoord>end.yCoord, 0);
-		if (start.zCoord!=end.zCoord)
-			trace = findMinOrMax(trace, start.zCoord>end.zCoord, 0);
+		if (start.x!=end.x)
+			trace = findMinOrMax(trace, start.x>end.x, 0);
+		if (start.y!=end.y)
+			trace = findMinOrMax(trace, start.y>end.y, 0);
+		if (start.z!=end.z)
+			trace = findMinOrMax(trace, start.z>end.z, 0);
 		if (trace.size()>0)
 		{
 			BlockPos ret = trace.iterator().next();

@@ -140,7 +140,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 
 	public double getPower()
 	{
-		return facing.getAxis()==Axis.Z?-getRotationVec().xCoord:getRotationVec().zCoord;
+		return facing.getAxis()==Axis.Z?-getRotationVec().x:getRotationVec().z;
 	}
 	public void resetRotationVec()
 	{
@@ -196,9 +196,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?3:0),-1,(facing.getAxis()==Axis.Z?0:3))));
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?2:0),-2,(facing.getAxis()==Axis.Z?0:2))));
 		if(facing.getAxis()==Axis.Z)
-			dir = dir.addVector(dirNeg.yCoord-dirPos.yCoord,0,0);
+			dir = dir.addVector(dirNeg.y-dirPos.y,0,0);
 		else
-			dir = dir.addVector(0,0,dirNeg.yCoord-dirPos.yCoord);
+			dir = dir.addVector(0,0,dirNeg.y-dirPos.y);
 		return dir;
 	}
 

@@ -73,14 +73,14 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 				{
 					if(contact && inventoryTile!=null && !(inventoryTile instanceof TileEntityConveyorBelt))
 					{
-						ItemStack stack = ((EntityItem)entity).getEntityItem();
+						ItemStack stack = ((EntityItem)entity).getItem();
 						if(!stack.isEmpty())
 						{
 							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.DOWN);
 							if(ret.isEmpty())
 								entity.setDead();
 							else if(ret.getCount()<stack.getCount())
-								((EntityItem)entity).setEntityItemStack(ret);
+								((EntityItem)entity).setItem(ret);
 						}
 					}
 				}

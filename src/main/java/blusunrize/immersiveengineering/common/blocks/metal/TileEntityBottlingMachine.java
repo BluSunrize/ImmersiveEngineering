@@ -179,7 +179,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 			TileEntityBottlingMachine master = master();
 			if(master==null)
 				return;
-			ItemStack stack = ((EntityItem)entity).getEntityItem();
+			ItemStack stack = ((EntityItem)entity).getItem();
 			if(stack.isEmpty())
 				return;
 

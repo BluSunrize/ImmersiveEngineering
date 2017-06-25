@@ -34,7 +34,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Timer;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
@@ -98,9 +101,9 @@ public class ClientUtils
 			startOffset = new Vec3d(.5, .5, .5);
 		if(endOffset == null)
 			endOffset = new Vec3d(.5, .5, .5);
-		double dx = (connection.end.getX() + endOffset.xCoord) - (connection.start.getX() + startOffset.xCoord);
-		double dy = (connection.end.getY() + endOffset.yCoord) - (connection.start.getY() + startOffset.yCoord);
-		double dz = (connection.end.getZ() + endOffset.zCoord) - (connection.start.getZ() + startOffset.zCoord);
+		double dx = (connection.end.getX() + endOffset.x) - (connection.start.getX() + startOffset.x);
+		double dy = (connection.end.getY() + endOffset.y) - (connection.start.getY() + startOffset.y);
+		double dz = (connection.end.getZ() + endOffset.z) - (connection.start.getZ() + startOffset.z);
 		double dw = Math.sqrt(dx * dx + dz * dz);
 		double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
 		World world = ((TileEntity) start).getWorld();
@@ -111,7 +114,7 @@ public class ClientUtils
 
 		Vec3d[] vertex = connection.getSubVertices(world);
 		//		Vec3 initPos = new Vec3(connection.start.getX()+startOffset.xCoord, connection.start.getY()+startOffset.yCoord, connection.start.getZ()+startOffset.zCoord);
-		Vec3d initPos = new Vec3d(startOffset.xCoord, startOffset.yCoord, startOffset.zCoord);
+		Vec3d initPos = new Vec3d(startOffset.x, startOffset.y, startOffset.z);
 
 		double uMin = sprite.getMinU();
 		double uMax = sprite.getMaxU();
@@ -131,7 +134,7 @@ public class ClientUtils
 		{
 			//			double uShift = Math.abs(dy)/ * uD;
 			//			worldrenderer.pos(x, y, z)
-			worldrenderer.setTranslation(initPos.xCoord, initPos.yCoord, initPos.zCoord);
+			worldrenderer.setTranslation(initPos.x, initPos.y, initPos.z);
 
 			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
 			worldrenderer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
@@ -188,25 +191,25 @@ public class ClientUtils
 					u1 = uMin;
 					u0 = uMax;
 				}
-				worldrenderer.pos(v0.xCoord, v0.yCoord + radius, v0.zCoord).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord, v1.yCoord + radius, v1.zCoord).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord, v1.yCoord - radius, v1.zCoord).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord, v0.yCoord - radius, v0.zCoord).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v1.xCoord, v1.yCoord + radius, v1.zCoord).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord, v0.yCoord + radius, v0.zCoord).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord, v0.yCoord - radius, v0.zCoord).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord, v1.yCoord - radius, v1.zCoord).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v0.xCoord - radius * rmodx, v0.yCoord, v0.zCoord + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord - radius * rmodx, v1.yCoord, v1.zCoord + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord + radius * rmodx, v1.yCoord, v1.zCoord - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord + radius * rmodx, v0.yCoord, v0.zCoord - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v1.xCoord - radius * rmodx, v1.yCoord, v1.zCoord + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord - radius * rmodx, v0.yCoord, v0.zCoord + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord + radius * rmodx, v0.yCoord, v0.zCoord - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord + radius * rmodx, v1.yCoord, v1.zCoord - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
 			}
 		}
@@ -1364,9 +1367,9 @@ public class ClientUtils
 				boolean fading = i==max-1;
 				List<BakedQuad> curr = ret[fading?1:0];
 				int j = i - 1;
-				Vector3f here = new Vector3f((float) f[i].xCoord, (float) f[i].yCoord, (float) f[i].zCoord);
+				Vector3f here = new Vector3f((float) f[i].x, (float) f[i].y, (float) f[i].z);
 				Vector3f.sub(here, start, here);
-				Vector3f there = new Vector3f((float) f[j].xCoord, (float) f[j].yCoord, (float) f[j].zCoord);
+				Vector3f there = new Vector3f((float) f[j].x, (float) f[j].y, (float) f[j].z);
 				Vector3f.sub(there, start, there);
 				if (fading)
 				{
@@ -1548,11 +1551,11 @@ public class ClientUtils
 	}
 	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end)
 	{
-		if (((int)Math.floor(start.xCoord/16))!=((int)Math.floor(end.xCoord/16)))
+		if (((int)Math.floor(start.x/16))!=((int)Math.floor(end.x/16)))
 			return true;
-		if (((int)Math.floor(start.yCoord/16))!=((int)Math.floor(end.yCoord/16)))
+		if (((int)Math.floor(start.y/16))!=((int)Math.floor(end.y/16)))
 			return true;
-		return ((int)Math.floor(start.zCoord / 16)) != ((int)Math.floor(end.zCoord / 16));
+		return ((int)Math.floor(start.z/ 16)) != ((int)Math.floor(end.z / 16));
 	}
 
 	public static void renderQuads(Collection<BakedQuad> quads, float brightness, float red, float green, float blue)

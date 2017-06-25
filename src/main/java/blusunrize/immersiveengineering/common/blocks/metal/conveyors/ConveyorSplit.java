@@ -133,7 +133,7 @@ public class ConveyorSplit extends ConveyorBasic
 		{
 			double sideMove = Math.pow(1 + distNext, 0.1) * .2;
 			if(distNext < .8)
-				vec = new Vec3d(facing.getAxis() == Axis.X ? 0 : vec.xCoord, vec.yCoord, facing.getAxis() == Axis.Z ? 0 : vec.zCoord);
+				vec = new Vec3d(facing.getAxis() == Axis.X ? 0 : vec.x, vec.y, facing.getAxis() == Axis.Z ? 0 : vec.z);
 			vec = vec.addVector(redirect.getFrontOffsetX() * sideMove, 0, redirect.getFrontOffsetZ() * sideMove);
 		}
 		return vec;

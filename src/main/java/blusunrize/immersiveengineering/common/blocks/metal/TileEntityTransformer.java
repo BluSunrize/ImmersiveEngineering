@@ -385,7 +385,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
-		return box.expand(.002, .002, .002).isVecInside(mop.hitVec);
+		return box.expand(.002, .002, .002).contains(mop.hitVec);
 	}
 	@Override
 	public Set<BlockPos> getIgnored(IImmersiveConnectable other)

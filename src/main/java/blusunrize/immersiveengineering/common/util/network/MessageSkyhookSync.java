@@ -59,9 +59,9 @@ public class MessageSkyhookSync implements IMessage
 		buf.writeInt(subPoints.length);
 		for(Vec3d v : subPoints)
 		{
-			buf.writeDouble(v.xCoord);
-			buf.writeDouble(v.yCoord);
-			buf.writeDouble(v.zCoord);
+			buf.writeDouble(v.x);
+			buf.writeDouble(v.y);
+			buf.writeDouble(v.z);
 		}
 		buf.writeInt(targetPoint);
 	}

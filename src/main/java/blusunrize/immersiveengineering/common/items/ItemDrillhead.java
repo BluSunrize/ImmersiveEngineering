@@ -196,9 +196,9 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		
 		if(diameter%2==0)//even numbers
 		{
-			float hx = (float)mop.hitVec.xCoord-mop.getBlockPos().getX();
-			float hy = (float)mop.hitVec.yCoord-mop.getBlockPos().getY();
-			float hz = (float)mop.hitVec.zCoord-mop.getBlockPos().getZ();
+			float hx = (float)mop.hitVec.x-mop.getBlockPos().getX();
+			float hy = (float)mop.hitVec.y-mop.getBlockPos().getY();
+			float hz = (float)mop.hitVec.z-mop.getBlockPos().getZ();
 			if((side.getAxis()==Axis.Y&&hx<.5)||(side.getAxis()==Axis.Z&&hx<.5))
 				startPos = startPos.add(-diameter/2,0,0);
 			if(side.getAxis()!=Axis.Y&&hy<.5)

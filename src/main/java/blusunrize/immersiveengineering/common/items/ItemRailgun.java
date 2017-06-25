@@ -224,7 +224,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 				{
 					Vec3d vec = user.getLookVec();
 					float speed = 20;
-					EntityRailgunShot shot = new EntityRailgunShot(user.world, user, vec.xCoord * speed, vec.yCoord * speed, vec.zCoord * speed, Utils.copyStackWithAmount(ammo, 1));
+					EntityRailgunShot shot = new EntityRailgunShot(user.world, user, vec.x * speed, vec.y * speed, vec.z * speed, Utils.copyStackWithAmount(ammo, 1));
 					ammo.shrink(1);
 					if(ammo.getCount()<=0)
 						((EntityPlayer)user).inventory.deleteStack(ammo);

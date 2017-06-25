@@ -326,10 +326,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	EntityRevolvershot getBullet(EntityPlayer player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
 	{
-		EntityRevolvershot bullet = new EntityRevolvershot(player.world, player, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, type, stack);
-		bullet.motionX = vecDir.xCoord;
-		bullet.motionY = vecDir.yCoord;
-		bullet.motionZ = vecDir.zCoord;
+		EntityRevolvershot bullet = new EntityRevolvershot(player.world, player, vecDir.x * 1.5, vecDir.y * 1.5, vecDir.z * 1.5, type, stack);
+		bullet.motionX = vecDir.x;
+		bullet.motionY = vecDir.y;
+		bullet.motionZ = vecDir.z;
 		bullet.bulletElectro = electro;
 		return bullet;
 	}

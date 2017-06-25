@@ -41,11 +41,11 @@ public class CommandMineral extends IESubCommand
 				sender.sendMessage(new TextComponentString(s));
 				break;
 			case "get":
-				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(), coords.chunkXPos, coords.chunkZPos);
+				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(), coords.x, coords.z);
 				sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get", TextFormatting.GOLD+(info.mineral!=null?info.mineral.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(""+info.depletion)+ TextFormatting.RESET));
 				break;
 			case "set":
-				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
+				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.x,coords.z);
 				if(args.length<3)
 				{
 					sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.clear",info.mineralOverride!=null?info.mineralOverride.name:"null"));
@@ -67,7 +67,7 @@ public class CommandMineral extends IESubCommand
 				IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 				break;
 			case "setDepletion":
-				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
+				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.x,coords.z);
 				if(args.length<3)
 				{
 					String h = I18n.translateToLocal(getHelp(".setDepletion"));

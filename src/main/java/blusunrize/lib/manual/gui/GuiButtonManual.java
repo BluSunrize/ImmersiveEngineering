@@ -34,18 +34,18 @@ public class GuiButtonManual extends GuiButton
 		{
 			ManualUtils.bindTexture(gui.texture);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = mx>=this.xPosition&&mx<(this.xPosition+this.width) && my>=this.yPosition&&my<(this.yPosition+this.height);
+			this.hovered = mx>=this.x&&mx<(this.x+this.width) && my>=this.y&&my<(this.y+this.height);
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 			int col = colour[hovered?1:0];
-			this.drawGradientRect(xPosition,yPosition, xPosition+width,yPosition+height, col,col);
+			this.drawGradientRect(x,y, x+width,y+height, col,col);
 			int txtCol = textColour[hovered?1:0];
 			boolean uni = gui.manual.fontRenderer.getUnicodeFlag();
 			gui.manual.fontRenderer.setUnicodeFlag(true);
 			int sw = gui.manual.fontRenderer.getStringWidth(displayString);
-			gui.manual.fontRenderer.drawString(displayString, xPosition+width/2-sw/2, yPosition+height/2-gui.manual.fontRenderer.FONT_HEIGHT/2, txtCol);
+			gui.manual.fontRenderer.drawString(displayString, x+width/2-sw/2, y+height/2-gui.manual.fontRenderer.FONT_HEIGHT/2, txtCol);
 			gui.manual.fontRenderer.setUnicodeFlag(uni);
 			this.mouseDragged(mc, mx, my);
 		}
