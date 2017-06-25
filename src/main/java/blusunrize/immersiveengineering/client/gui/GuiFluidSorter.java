@@ -46,7 +46,7 @@ public class GuiFluidSorter extends GuiContainer
 		for(GuiButton button : this.buttonList)
 		{
 			if(button instanceof ButtonSorter)
-				if(mx>button.xPosition&&mx<button.xPosition+18 && my>button.yPosition&&my<button.yPosition+18)
+				if(mx>button.x&&mx<button.x+18 && my>button.y&&my<button.y+18)
 				{
 					int type = ((ButtonSorter)button).type;
 					String[] split = I18n.format(Lib.DESC_INFO+"filter.nbt").split("<br>");

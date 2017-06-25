@@ -24,7 +24,7 @@ public class GuiButtonManualNavigation extends GuiButton
 		{
 			ManualUtils.bindTexture(gui.texture);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = mx>=this.xPosition&&mx<(this.xPosition+this.width) && my>=this.yPosition&&my<(this.yPosition+this.height);
+			this.hovered = mx>=this.x&&mx<(this.x+this.width) && my>=this.y&&my<(this.y+this.height);
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -32,7 +32,7 @@ public class GuiButtonManualNavigation extends GuiButton
 			int v = 216+( type==0?0: type==1?10: type==2?(16-height): type==3?0: type==4||type==5?10:  0 );
 			if(hovered)
 				v+=20;
-			this.drawTexturedModalRect(this.xPosition, this.yPosition, u, v, width, height);
+			this.drawTexturedModalRect(this.x, this.y, u, v, width, height);
 			this.mouseDragged(mc, mx, my);
 		}
 	}

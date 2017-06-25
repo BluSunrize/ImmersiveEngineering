@@ -34,13 +34,13 @@ public class GuiButtonManualLink extends GuiButton
 	@Override
 	public void drawButton(Minecraft mc, int mx, int my)
 	{
-		this.hovered = mx >= this.xPosition && my >= this.yPosition && mx < this.xPosition + this.width && my < this.yPosition + this.height;
+		this.hovered = mx >= this.x && my >= this.y && mx < this.x + this.width && my < this.y + this.height;
 		if(hovered)
 		{
 			FontRenderer font = gui.manual.fontRenderer;
 			boolean uni = font.getUnicodeFlag();
 			font.setUnicodeFlag(true);
-			font.drawString(localized, xPosition, yPosition, gui.manual.getHighlightColour());
+			font.drawString(localized, x, y, gui.manual.getHighlightColour());
 			font.setUnicodeFlag(false);
 			gui.drawHoveringText(Arrays.asList(gui.manual.formatEntryName(key)+", "+(pageLinked+1)), mx+8,my+4, font);
 			font.setUnicodeFlag(uni);

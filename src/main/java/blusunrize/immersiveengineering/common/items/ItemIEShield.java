@@ -95,17 +95,17 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		if(getUpgrades(stack).getBoolean("shock") && getUpgrades(stack).getInteger("shock_cooldown")<=0)
 		{
 			boolean b = false;
-			if(event.getSource().isProjectile() && event.getSource().getSourceOfDamage()!=null)
+			if(event.getSource().isProjectile() && event.getSource().getImmediateSource()!=null)
 			{
-				Entity projectile = event.getSource().getSourceOfDamage();
+				Entity projectile = event.getSource().getImmediateSource();
 				projectile.setDead();
 				event.setCanceled(true);
 				b = true;
 			}
-			if(event.getSource().getEntity()!=null && event.getSource().getEntity() instanceof EntityLivingBase && event.getSource().getEntity().getDistanceSqToEntity(player)<4)
+			if(event.getSource().getTrueSource()!=null && event.getSource().getTrueSource() instanceof EntityLivingBase && event.getSource().getTrueSource().getDistanceSqToEntity(player)<4)
 			{
 				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
-				dmgsrc.apply(event.getSource().getEntity());
+				dmgsrc.apply(event.getSource().getTrueSource());
 				b = true;
 			}
 			if(b)

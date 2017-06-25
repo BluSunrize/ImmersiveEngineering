@@ -300,12 +300,12 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			if(master==null)
 				return;
 			Vec3d center = new Vec3d(master.getPos()).addVector(.5,.75,.5);
-			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.xCoord-1.0625,center.yCoord,center.zCoord-1.0625, center.xCoord+1.0625,center.yCoord+1.25,center.zCoord+1.0625);
-			if(!entity.getEntityBoundingBox().intersectsWith(crusherInternal))
+			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625,center.y,center.z-1.0625, center.x+1.0625,center.y+1.25,center.z+1.0625);
+			if(!entity.getEntityBoundingBox().intersects(crusherInternal))
 				return;
-			if(entity instanceof EntityItem && !((EntityItem)entity).getEntityItem().isEmpty())
+			if(entity instanceof EntityItem && !((EntityItem)entity).getItem().isEmpty())
 			{
-				ItemStack stack = ((EntityItem)entity).getEntityItem();
+				ItemStack stack = ((EntityItem)entity).getItem();
 				if(stack.isEmpty())
 					return;
 				CrusherRecipe recipe = master.findRecipeForInsertion(stack);

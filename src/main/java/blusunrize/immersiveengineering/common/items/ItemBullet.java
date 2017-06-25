@@ -509,17 +509,17 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			{
 				float angle = i * (360f / split);
 				Matrix4 matrix = new Matrix4();
-				matrix.rotate(angle, v.xCoord, v.yCoord, v.zCoord);
+				matrix.rotate(angle, v.x, v.y, v.z);
 				Vec3d vecDir = new Vec3d(0, 1, 0);
 				vecDir = matrix.apply(vecDir);
 
-				EntityWolfpackShot bullet = shooter!=null?new EntityWolfpackShot(world, shooter, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, this, null) : new EntityWolfpackShot(world, 0,0,0, 0,0,0, this);
+				EntityWolfpackShot bullet = shooter!=null?new EntityWolfpackShot(world, shooter, vecDir.x * 1.5, vecDir.y * 1.5, vecDir.z * 1.5, this, null) : new EntityWolfpackShot(world, 0,0,0, 0,0,0, this);
 				if(target.entityHit instanceof EntityLivingBase)
 					bullet.targetOverride = (EntityLivingBase)target.entityHit;
-				bullet.setPosition(target.hitVec.xCoord + vecDir.xCoord, target.hitVec.yCoord + vecDir.yCoord, target.hitVec.zCoord + vecDir.zCoord);
-				bullet.motionX = vecDir.xCoord * .375;
-				bullet.motionY = vecDir.yCoord * .375;
-				bullet.motionZ = vecDir.zCoord * .375;
+				bullet.setPosition(target.hitVec.x + vecDir.x, target.hitVec.y + vecDir.y, target.hitVec.z + vecDir.z);
+				bullet.motionX = vecDir.x * .375;
+				bullet.motionY = vecDir.y * .375;
+				bullet.motionZ = vecDir.z * .375;
 				world.spawnEntity(bullet);
 			}
 		}

@@ -304,7 +304,7 @@ public class ApiUtils
 	}
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
-		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
+		return vec0.addVector(vec1.x,vec1.y,vec1.z);
 	}
 
 	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
@@ -312,16 +312,16 @@ public class ApiUtils
 		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
 
 		if(vertical)
-			return new Vec3d[]{new Vec3d(start.xCoord, start.yCoord, start.zCoord), new Vec3d(end.xCoord, end.yCoord, end.zCoord)};
+			return new Vec3d[]{new Vec3d(start.x, start.y, start.z), new Vec3d(end.x, end.y, end.z)};
 
 		return getConnectionCatenary(start, end, connection.cableType.getSlack());
 	}
 
 	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
 	{
-		double dx = (end.xCoord)-(start.xCoord);
-		double dy = (end.yCoord)-(start.yCoord);
-		double dz = (end.zCoord)-(start.zCoord);
+		double dx = (end.x)-(start.x);
+		double dy = (end.y)-(start.y);
+		double dz = (end.z)-(start.z);
 		double dw = Math.sqrt(dx*dx + dz*dz);
 		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * slack;
 		double l = 0;
@@ -339,16 +339,16 @@ public class ApiUtils
 
 		Vec3d[] vex = new Vec3d[vertices+1];
 
-		vex[0] = new Vec3d(start.xCoord, start.yCoord, start.zCoord);
+		vex[0] = new Vec3d(start.x, start.y, start.z);
 		for(int i=1; i<vertices; i++)
 		{
 			float n1 = i/(float)vertices;
 			double x1 = 0 + dx * n1;
 			double z1 = 0 + dz * n1;
 			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-			vex[i] = new Vec3d(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
+			vex[i] = new Vec3d(start.x+x1, start.y+y1, start.z+z1);
 		}
-		vex[vertices] = new Vec3d(end.xCoord, end.yCoord, end.zCoord);
+		vex[vertices] = new Vec3d(end.x, end.y, end.z);
 
 		return vex;
 	}

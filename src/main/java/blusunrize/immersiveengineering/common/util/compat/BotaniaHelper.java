@@ -129,8 +129,8 @@ public class BotaniaHelper extends IECompatModule
 			event.getEntityLiving().writeEntityToNBT(tag);
 			if(tag.getBoolean("hardMode"))
 				for(EntityItem item : event.getDrops())
-					if(item != null && !item.getEntityItem().isEmpty() && IEContent.itemShaderBag.equals(item.getEntityItem().getItem()))
-						ItemNBTHelper.setString(item.getEntityItem(), "rarity", "RELIC");
+					if(item != null && !item.getItem().isEmpty() && IEContent.itemShaderBag.equals(item.getItem().getItem()))
+						ItemNBTHelper.setString(item.getItem(), "rarity", "RELIC");
 		}
 	}
 
@@ -171,7 +171,7 @@ public class BotaniaHelper extends IECompatModule
 			if(special != null)
 			{
 				GlStateManager.pushMatrix();
-				((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getEntityItem(), special);
+				((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getItem(), special);
 				GlStateManager.translate(-.16, 1.45, -.2);
 				GlStateManager.rotate(-90, 0, 1, 0);
 				GlStateManager.rotate(15, 0, 0, 1);

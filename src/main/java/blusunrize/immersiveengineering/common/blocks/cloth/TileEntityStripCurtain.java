@@ -64,7 +64,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 		{
 			AxisAlignedBB aabb = bounds[ceilingAttached ? (facing.getAxis() == Axis.Z ? 4 : 5) : ((facing.ordinal() - 2) % 4)];
 			aabb = new AxisAlignedBB(aabb.minX, aabb.minY - .8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
-			if(entity.getEntityBoundingBox().intersectsWith(aabb))
+			if(entity.getEntityBoundingBox().intersects(aabb))
 			{
 				redstoneSignal = 15;
 				markDirty();

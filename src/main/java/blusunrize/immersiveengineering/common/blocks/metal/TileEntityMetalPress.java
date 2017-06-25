@@ -142,12 +142,12 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(pos==3 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem && !((EntityItem)entity).getEntityItem().isEmpty())
+		if(pos==3 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem && !((EntityItem)entity).getItem().isEmpty())
 		{
 			TileEntityMetalPress master = master();
 			if(master==null)
 				return;
-			ItemStack stack = ((EntityItem)entity).getEntityItem();
+			ItemStack stack = ((EntityItem)entity).getItem();
 			if(stack.isEmpty())
 				return;
 			IMultiblockRecipe recipe = master.findRecipeForInsertion(stack);

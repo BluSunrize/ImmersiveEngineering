@@ -233,12 +233,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
-		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range), world, ignore);
+		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec,light), light.addVector(vec.x*range,vec.y*range,vec.z*range), world, ignore);
 		double maxDistance = hit!=null?new Vec3d(hit).addVector(.5,.75,.5).squareDistanceTo(light):range*range;
 		for(int i=1+offset; i<=range; i++)
 		{
-			BlockPos target = getPos().add(Math.round(vec.xCoord*i), Math.round(vec.yCoord*i), Math.round(vec.zCoord*i));
-			double dist = (vec.xCoord*i*vec.xCoord*i)+(vec.yCoord*i*vec.yCoord*i)+(vec.zCoord*i*vec.zCoord*i);
+			BlockPos target = getPos().add(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));
+			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist>maxDistance)
 				break;
 			if(target.getY()>255||target.getY()<0)

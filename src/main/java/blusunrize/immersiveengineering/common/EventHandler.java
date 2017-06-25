@@ -217,7 +217,7 @@ public class EventHandler
 				{
 					continue;
 				}
-				World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
+				World world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
 				if (world==null) {
 					ImmersiveNetHandler.INSTANCE.directConnections.remove(dim);
 					continue;
@@ -242,7 +242,7 @@ public class EventHandler
 					continue;
 				}
 				DimensionBlockPos p = e.getKey();
-				World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(p.dimension);
+				World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(p.dimension);
 				if (w!=null&&w.isBlockLoaded(p))
 					toRemove.add(p);
 				if (validateConnections&&w==null)
@@ -277,7 +277,7 @@ public class EventHandler
 				{
 					if(event.world instanceof WorldServer)
 						for(Vec3d vec : e.getKey().getSubVertices(event.world))
-							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME, false, vec.xCoord,vec.yCoord,vec.zCoord, 0, 0,.02,0, 1, new int[0]);
+							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME, false, vec.x,vec.y,vec.z, 0, 0,.02,0, 1, new int[0]);
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.getDimension()).clear();
@@ -302,7 +302,7 @@ public class EventHandler
 					Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
 					if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 					{
-						World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(curr.getLeft());
+						World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(curr.getLeft());
 						if(w!=null)
 						{
 							IBlockState state = w.getBlockState(curr.getRight());
@@ -379,8 +379,8 @@ public class EventHandler
 			if(crusher!=null)
 			{
 				for(EntityItem item: event.getDrops())
-					if(item!=null && !item.getEntityItem().isEmpty())
-						crusher.doProcessOutput(item.getEntityItem());
+					if(item!=null && !item.getItem().isEmpty())
+						crusher.doProcessOutput(item.getItem());
 				crusherMap.remove(event.getEntityLiving().getUniqueID());
 				event.setCanceled(true);
 			}
@@ -541,7 +541,7 @@ public class EventHandler
 							event.player.addStat(achievement);
 							break;
 						}
-				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.theItemStack, achievement.checkNBT&&achievement.theItemStack.hasTagCompound()))
+				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.icon, achievement.checkNBT&&achievement.icon.hasTagCompound()))
 					event.player.addStat(achievement);
 			}
 	}
@@ -561,7 +561,7 @@ public class EventHandler
 							break;
 						}
 				}
-				else if(OreDictionary.itemMatches(achievement.theItemStack, event.getItemInHand(), achievement.checkNBT))
+				else if(OreDictionary.itemMatches(achievement.icon, event.getItemInHand(), achievement.checkNBT))
 					event.getPlayer().addStat(achievement);
 			}
 	}

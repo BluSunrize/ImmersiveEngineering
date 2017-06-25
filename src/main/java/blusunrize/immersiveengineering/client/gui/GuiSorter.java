@@ -39,7 +39,7 @@ public class GuiSorter extends GuiContainer
 		for(GuiButton button : this.buttonList)
 		{
 			if(button instanceof ButtonSorter)
-				if(mx>button.xPosition&&mx<button.xPosition+18 && my>button.yPosition&&my<button.yPosition+18)
+				if(mx>button.x&&mx<button.x+18 && my>button.y&&my<button.y+18)
 				{
 					ArrayList<String> tooltip = new ArrayList<String>();
 					int type = ((ButtonSorter)button).type;
@@ -119,11 +119,11 @@ public class GuiSorter extends GuiContainer
 			if (this.visible)
 			{
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				this.hovered = mx >= this.xPosition && my >= this.yPosition && mx < this.xPosition + this.width && my < this.yPosition + this.height;
+				this.hovered = mx >= this.x && my >= this.y && mx < this.x + this.width && my < this.y + this.height;
 				GL11.glEnable(GL11.GL_BLEND);
 				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				this.drawTexturedModalRect(this.xPosition, this.yPosition, 176+type*18,(active?3:21), this.width, this.height);
+				this.drawTexturedModalRect(this.x, this.y, 176+type*18,(active?3:21), this.width, this.height);
 				this.mouseDragged(mc, mx, my);
 			}
 		}

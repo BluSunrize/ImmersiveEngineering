@@ -42,9 +42,9 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 						motionY*(1-redirectionSpeed)+ ((target.posY+target.height/2)-this.posY)*redirectionSpeed,
 						motionZ*(1-redirectionSpeed)+ (target.posZ-this.posZ)*redirectionSpeed).normalize();
 
-				this.motionX = newMotion.xCoord;
-				this.motionY = newMotion.yCoord;
-				this.motionZ = newMotion.zCoord;
+				this.motionX = newMotion.x;
+				this.motionY = newMotion.y;
+				this.motionZ = newMotion.z;
 			}
 		}
 	}

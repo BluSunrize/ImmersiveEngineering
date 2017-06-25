@@ -43,6 +43,8 @@ import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -896,7 +898,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
 	{
-		if(event.getSubID()==0 && event.getTarget().typeOfHit== RayTraceResult.Type.BLOCK)
+		if(event.getSubID()==0 && event.getTarget().typeOfHit== Type.BLOCK)
 		{
 			float f1 = 0.002F;
 			double px = -TileEntityRendererDispatcher.staticPlayerX;
@@ -913,7 +915,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				if(boxes!=null && !boxes.isEmpty())
 				{
 					GlStateManager.enableBlend();
-					GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+					GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 					GlStateManager.glLineWidth(2.0F);
 					GlStateManager.disableTexture2D();
 					GlStateManager.depthMask(false);
@@ -943,7 +945,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				BlockPos pos = event.getTarget().getBlockPos();
 
 				GlStateManager.enableBlend();
-				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 				GlStateManager.glLineWidth(2.0F);
 				GlStateManager.disableTexture2D();
 				GlStateManager.depthMask(false);
@@ -982,7 +984,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				if(targetedBB != null)
 					targetedBB = targetedBB.offset(-pos.getX(), -pos.getY(), -pos.getZ());
 				GlStateManager.enableBlend();
-				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 				GlStateManager.glLineWidth(2.0F);
 				GlStateManager.disableTexture2D();
 				GlStateManager.depthMask(false);
@@ -1024,9 +1026,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				vertexbuffer.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
 				tessellator.draw();
 
-				float xFromMid = side.getAxis() == Axis.X ? 0 : (float) event.getTarget().hitVec.xCoord - pos.getX() - .5f;
-				float yFromMid = side.getAxis() == Axis.Y ? 0 : (float) event.getTarget().hitVec.yCoord - pos.getY() - .5f;
-				float zFromMid = side.getAxis() == Axis.Z ? 0 : (float) event.getTarget().hitVec.zCoord - pos.getZ() - .5f;
+				float xFromMid = side.getAxis() == Axis.X ? 0 : (float) event.getTarget().hitVec.x - pos.getX() - .5f;
+				float yFromMid = side.getAxis() == Axis.Y ? 0 : (float) event.getTarget().hitVec.y - pos.getY() - .5f;
+				float zFromMid = side.getAxis() == Axis.Z ? 0 : (float) event.getTarget().hitVec.z - pos.getZ() - .5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3d dir = new Vec3d(max == Math.abs(xFromMid) ? Math.signum(xFromMid) : 0, max == Math.abs(yFromMid) ? Math.signum(yFromMid) : 0, max == Math.abs(zFromMid) ? Math.signum(zFromMid) : 0);
 				if(dir != null)
@@ -1113,7 +1115,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		directionVec = directionVec.normalize();
 		double angle = Math.acos(defaultDir.dotProduct(directionVec));
 		Vec3d axis = defaultDir.crossProduct(directionVec);
-		mat.rotate(angle, axis.xCoord, axis.yCoord, axis.zCoord);
+		mat.rotate(angle, axis.x, axis.y, axis.z);
 		if(side != null)
 		{
 			if(side.getAxis() == Axis.Z)
@@ -1125,17 +1127,17 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).addVector(.5, .5, .5);
 			if(side != null && targetedBB != null)
-				vec = new Vec3d(side == EnumFacing.WEST ? targetedBB.minX - .002 : side == EnumFacing.EAST ? targetedBB.maxX + .002 : vec.xCoord, side == EnumFacing.DOWN ? targetedBB.minY - .002 : side == EnumFacing.UP ? targetedBB.maxY + .002 : vec.yCoord, side == EnumFacing.NORTH ? targetedBB.minZ - .002 : side == EnumFacing.SOUTH ? targetedBB.maxZ + .002 : vec.zCoord);
+				vec = new Vec3d(side == EnumFacing.WEST ? targetedBB.minX - .002 : side == EnumFacing.EAST ? targetedBB.maxX + .002 : vec.x, side == EnumFacing.DOWN ? targetedBB.minY - .002 : side == EnumFacing.UP ? targetedBB.maxY + .002 : vec.y, side == EnumFacing.NORTH ? targetedBB.minZ - .002 : side == EnumFacing.SOUTH ? targetedBB.maxZ + .002 : vec.z);
 			translatedPositions[i] = vec;
 		}
 
 		vertexbuffer.begin(6, DefaultVertexFormats.POSITION_COLOR);
 		for(Vec3d point : translatedPositions)
-			vertexbuffer.pos(point.xCoord, point.yCoord, point.zCoord).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+			vertexbuffer.pos(point.x, point.y, point.z).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		tessellator.draw();
 		vertexbuffer.begin(2, DefaultVertexFormats.POSITION_COLOR);
 		for(Vec3d point : translatedPositions)
-			vertexbuffer.pos(point.xCoord, point.yCoord, point.zCoord).color(0, 0, 0, 0.4F).endVertex();
+			vertexbuffer.pos(point.x, point.y, point.z).color(0, 0, 0, 0.4F).endVertex();
 		tessellator.draw();
 	}
 

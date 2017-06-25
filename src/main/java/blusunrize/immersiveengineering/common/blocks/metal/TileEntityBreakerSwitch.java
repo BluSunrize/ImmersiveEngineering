@@ -145,7 +145,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	protected void calculateLeftConn(Matrix4 transform)
 	{
 		Vec3d leftVec = transform.apply(new Vec3d(-1, .5, .5)).subtract(0, .5, .5);
-		EnumFacing dir = EnumFacing.getFacingFromVector((float) leftVec.xCoord, (float) leftVec.yCoord, (float) leftVec.zCoord);
+		EnumFacing dir = EnumFacing.getFacingFromVector((float) leftVec.x, (float) leftVec.y, (float) leftVec.z);
 		int maxDiff = Integer.MIN_VALUE;
 		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if (conns!=null)
@@ -272,8 +272,8 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return new float[]{(float) start.xCoord, (float) start.yCoord, (float) start.zCoord,
-				(float) end.xCoord, (float) end.yCoord, (float) end.zCoord};
+		return new float[]{(float) start.x, (float) start.y, (float) start.z,
+				(float) end.x, (float) end.y, (float) end.z};
 	}
 
 	@Override

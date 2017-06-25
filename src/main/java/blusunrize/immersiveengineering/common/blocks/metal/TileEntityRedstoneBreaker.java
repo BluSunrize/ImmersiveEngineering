@@ -44,8 +44,8 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return new float[]{(float) start.xCoord, (float) start.yCoord, (float) start.zCoord,
-				(float) end.xCoord, (float) end.yCoord, (float) end.zCoord};
+		return new float[]{(float) start.x, (float) start.y, (float) start.z,
+				(float) end.x, (float) end.y, (float) end.z};
 	}
 
 	@Override

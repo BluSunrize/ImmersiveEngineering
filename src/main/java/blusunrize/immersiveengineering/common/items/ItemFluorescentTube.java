@@ -40,7 +40,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 			{
 				ItemStack stack = player.getHeldItem(hand);
 				Vec3d look = player.getLookVec();
-				float angle = (float) Math.toDegrees(Math.atan2(look.xCoord, look.zCoord));
+				float angle = (float) Math.toDegrees(Math.atan2(look.x, look.z));
 				EntityFluorescentTube tube = new EntityFluorescentTube(world, stack.copy(), angle);
 				tube.setPosition(pos.getX()+hitX, pos.getY()+1.5, pos.getZ()+hitZ);
 				world.spawnEntity(tube);

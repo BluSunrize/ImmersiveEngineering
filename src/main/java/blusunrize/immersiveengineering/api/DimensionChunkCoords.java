@@ -22,21 +22,21 @@ public class DimensionChunkCoords extends ChunkPos
         else
         {
         	DimensionChunkCoords coordPair = (DimensionChunkCoords)o;
-            return this.dimension==coordPair.dimension && this.chunkXPos==coordPair.chunkXPos && this.chunkZPos==coordPair.chunkZPos;
+            return this.dimension==coordPair.dimension && this.x==coordPair.x && this.z==coordPair.z;
         }
     }
 	@Override
     public String toString()
     {
-        return "[dim:"+ this.dimension+ "; " +this.chunkXPos+ ", " +this.chunkZPos + "]";
+        return "[dim:"+ this.dimension+ "; " +this.x+ ", " +this.z + "]";
     }
 
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("dim", dimension);
-		tag.setInteger("x", this.chunkXPos);
-		tag.setInteger("z", this.chunkZPos);
+		tag.setInteger("x", this.x);
+		tag.setInteger("z", this.z);
 		return tag;
 	}
 	public static DimensionChunkCoords readFromNBT(NBTTagCompound tag)

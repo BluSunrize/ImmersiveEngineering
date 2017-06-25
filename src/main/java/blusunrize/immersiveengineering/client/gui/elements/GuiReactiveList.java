@@ -96,28 +96,28 @@ public class GuiReactiveList extends GuiButton
 		boolean uni = fr.getUnicodeFlag();
 		fr.setUnicodeFlag(unicode);
 
-		int mmY = my-this.yPosition;
+		int mmY = my-this.y;
 		int strWidth = width-padding[2]-padding[3]-(needsSlider?6:0);
 		GlStateManager.color(1, 1, 1);
 		if(needsSlider)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-			this.drawTexturedModalRect(xPosition+width-6,yPosition, 16,136, 6,4);
-			this.drawTexturedModalRect(xPosition+width-6,yPosition+height-4, 16,144, 6,4);
+			this.drawTexturedModalRect(x+width-6,y, 16,136, 6,4);
+			this.drawTexturedModalRect(x+width-6,y+height-4, 16,144, 6,4);
 			for(int i=0;i<height-8; i+=2)
-				this.drawTexturedModalRect(xPosition+width-6,yPosition+4+i, 16,141, 6,2);
+				this.drawTexturedModalRect(x+width-6,y+4+i, 16,141, 6,2);
 
 			int sliderSize = Math.max(6,height-maxOffset*fr.FONT_HEIGHT);
 			float silderShift = (height-sliderSize)/(float)maxOffset * offset;
 
-			this.drawTexturedModalRect(xPosition+width-5,yPosition+silderShift+1, 20,129, 4,2);
-			this.drawTexturedModalRect(xPosition+width-5,yPosition+silderShift+sliderSize-4, 20,132, 4,3);
+			this.drawTexturedModalRect(x+width-5,y+silderShift+1, 20,129, 4,2);
+			this.drawTexturedModalRect(x+width-5,y+silderShift+sliderSize-4, 20,132, 4,3);
 			for(int i=0;i<sliderSize-7; i++)
-				this.drawTexturedModalRect(xPosition+width-5,yPosition+silderShift+3+i, 20,131, 4,1);
+				this.drawTexturedModalRect(x+width-5,y+silderShift+3+i, 20,131, 4,1);
 		}
 
 		GlStateManager.scale(textScale,textScale,1);
-		this.hovered = mx>=xPosition&&mx<xPosition+width && my>=yPosition&&my<yPosition+height;
+		this.hovered = mx>=x&&mx<x+width && my>=y&&my<y+height;
 		boolean hasTarget = false;
 		for(int i=0; i<Math.min(perPage, entries.length); i++)
 		{
@@ -149,8 +149,8 @@ public class GuiReactiveList extends GuiButton
 				}
 				s = fr.trimStringToWidth(s, strWidth);
 			}
-			float tx = ((xPosition+padding[2])/textScale);
-			float ty = ((yPosition+padding[0]+(fr.FONT_HEIGHT*i))/textScale);
+			float tx = ((x+padding[2])/textScale);
+			float ty = ((y+padding[0]+(fr.FONT_HEIGHT*i))/textScale);
 			GlStateManager.translate(tx, ty, 0);
 			fr.drawString(s, 0,0, col, false);
 			GlStateManager.translate(-tx, -ty, 0);
@@ -185,7 +185,7 @@ public class GuiReactiveList extends GuiButton
 		selectedOption=-1;
 		if(b)
 		{
-			int mmY = my-this.yPosition;
+			int mmY = my-this.y;
 			for(int i=0; i<Math.min(perPage, entries.length); i++)
 				if(mmY>=i*fr.FONT_HEIGHT && mmY<(i+1)*fr.FONT_HEIGHT)
 					selectedOption=offset+i;

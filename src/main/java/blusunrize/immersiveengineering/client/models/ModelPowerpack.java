@@ -233,16 +233,16 @@ public class ModelPowerpack extends ModelIEArmorBase
 					worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
 					for(Vec3d v : vex)
 					{
-						worldrenderer.pos((right?-v.xCoord:v.xCoord)-.015625, -v.yCoord, v.zCoord).tex(vStep*i,0).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
-						worldrenderer.pos((right?-v.xCoord:v.xCoord)+.015625, -v.yCoord, v.zCoord).tex(vStep*i++,1).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x:v.x)-.015625, -v.y, v.z).tex(vStep*i,0).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x:v.x)+.015625, -v.y, v.z).tex(vStep*i++,1).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
 					}
 					tes.draw();
 					worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
 					i=0;
 					for(Vec3d v : vex)
 					{
-						worldrenderer.pos((right?-v.xCoord:v.xCoord), -v.yCoord-.015625, v.zCoord).tex(vStep*i,0).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
-						worldrenderer.pos((right?-v.xCoord:v.xCoord), -v.yCoord+.015625, v.zCoord).tex(vStep*i++,1).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x:v.x), -v.y-.015625, v.z).tex(vStep*i,0).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x:v.x), -v.y+.015625, v.z).tex(vStep*i++,1).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
 					}
 					tes.draw();
 				}

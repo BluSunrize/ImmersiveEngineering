@@ -123,7 +123,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		if(iblockstate.getMaterial() != Material.AIR)
 		{
 			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(iblockstate, this.world, blockpos);
-			if(axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
+			if(axisalignedbb != null && axisalignedbb.contains(new Vec3d(this.posX, this.posY, this.posZ)))
 				this.inGround = true;
 		}
 
@@ -163,14 +163,14 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 			currentPos = new Vec3d(this.posX, this.posY, this.posZ);
 
 			if(mop != null)
-				nextPos = new Vec3d(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
+				nextPos = new Vec3d(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z);
 			else
 				nextPos = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
 			if(mop==null || mop.entityHit==null)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+				List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 				double d0 = 0.0D;
 				for (int i = 0; i < list.size(); ++i)
 				{
@@ -218,9 +218,9 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 					IBlockState state = this.world.getBlockState(mop.getBlockPos());
 					this.inBlock = state.getBlock();
 					this.inMeta = inBlock.getMetaFromState(state);
-					this.motionX = mop.hitVec.xCoord - this.posX;
-					this.motionY = mop.hitVec.yCoord - this.posY;
-					this.motionZ = mop.hitVec.zCoord - this.posZ;
+					this.motionX = mop.hitVec.x - this.posX;
+					this.motionY = mop.hitVec.y - this.posY;
+					this.motionZ = mop.hitVec.z - this.posZ;
 					float f2 = MathHelper.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
 					this.posX -= this.motionX / (double)f2 * 0.05000000074505806D;
 					this.posY -= this.motionY / (double)f2 * 0.05000000074505806D;

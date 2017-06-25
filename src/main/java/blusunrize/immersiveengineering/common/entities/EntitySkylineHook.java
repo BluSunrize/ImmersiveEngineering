@@ -104,9 +104,9 @@ public class EntitySkylineHook extends Entity
 			IELogger.debug("dist: "+dist);
 			if(dist<=0)
 			{
-				this.posX = subPoints[targetPoint].xCoord;
-				this.posY = subPoints[targetPoint].yCoord;
-				this.posZ = subPoints[targetPoint].zCoord;
+				this.posX = subPoints[targetPoint].x;
+				this.posY = subPoints[targetPoint].y;
+				this.posZ = subPoints[targetPoint].z;
 				targetPoint++;
 				if (player instanceof EntityPlayerMP)
 					ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
@@ -117,9 +117,9 @@ public class EntitySkylineHook extends Entity
 			if(player!=null && !player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
 				speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
 			Vec3d moveVec = SkylineHelper.getSubMovementVector(new Vec3d(posX, posY, posZ), subPoints[targetPoint], speed);
-			motionX = moveVec.xCoord;//*speed;
-			motionY = moveVec.yCoord;//*speed;
-			motionZ = moveVec.zCoord;//*speed;
+			motionX = moveVec.x;//*speed;
+			motionY = moveVec.y;//*speed;
+			motionZ = moveVec.z;//*speed;
 		}
 
 		if(target!=null&&targetPoint==subPoints.length-1)

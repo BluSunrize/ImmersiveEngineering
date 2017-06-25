@@ -304,9 +304,9 @@ public class ConveyorHandler
 				Vec3d vec = this.getDirection(tile, entity, facing);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
-				entity.motionX = vec.xCoord;
-				entity.motionY = vec.yCoord;
-				entity.motionZ = vec.zCoord;
+				entity.motionX = vec.x;
+				entity.motionY = vec.y;
+				entity.motionZ = vec.z;
 				double distX = Math.abs(pos.offset(facing).getX() + .5 - entity.posX);
 				double distZ = Math.abs(pos.offset(facing).getZ() + .5 - entity.posZ);
 				double treshold = .9;
@@ -342,14 +342,14 @@ public class ConveyorHandler
 			{
 				if(contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile))
 				{
-					ItemStack stack = entity.getEntityItem();
+					ItemStack stack = entity.getItem();
 					if(!stack.isEmpty())
 					{
 						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, facing.getOpposite());
 						if(ret.isEmpty())
 							entity.setDead();
 						else if(ret.getCount() < stack.getCount())
-							entity.setEntityItemStack(ret);
+							entity.setItem(ret);
 					}
 				}
 			}

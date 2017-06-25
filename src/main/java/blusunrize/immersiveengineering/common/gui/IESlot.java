@@ -339,7 +339,7 @@ public abstract class IESlot extends Slot
 
 		@Override
 		@SideOnly(Side.CLIENT)
-		public boolean canBeHovered()
+		public boolean isEnabled()
 		{
 			return this.getHasStack();
 		}
@@ -364,7 +364,7 @@ public abstract class IESlot extends Slot
 							player.addStat(achievement);
 							break;
 						}
-				} else if(ApiUtils.stackMatchesObject(stack, achievement.theItemStack, achievement.checkNBT&&achievement.theItemStack.hasTagCompound()))
+				} else if(ApiUtils.stackMatchesObject(stack, achievement.icon, achievement.checkNBT&&achievement.icon.hasTagCompound()))
 					player.addStat(achievement);
 			}
 			this.inventory.markDirty();

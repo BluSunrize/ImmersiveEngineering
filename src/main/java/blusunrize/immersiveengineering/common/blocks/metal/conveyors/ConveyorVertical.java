@@ -182,9 +182,9 @@ public class ConveyorVertical extends ConveyorBasic
 			else
 				entity.fallDistance *= .9;
 			Vec3d vec = getDirection(tile, entity, facing);
-			entity.motionX = vec.xCoord;
-			entity.motionY = vec.yCoord;
-			entity.motionZ = vec.zCoord;
+			entity.motionX = vec.x;
+			entity.motionY = vec.y;
+			entity.motionZ = vec.z;
 
 			if(!contact)
 				ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile) tile);
@@ -204,14 +204,14 @@ public class ConveyorVertical extends ConveyorBasic
 				{
 					if(contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile))
 					{
-						ItemStack stack = ((EntityItem) entity).getEntityItem();
+						ItemStack stack = ((EntityItem) entity).getItem();
 						if(!stack.isEmpty())
 						{
 							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.DOWN);
 							if(ret.isEmpty())
 								entity.setDead();
 							else if(ret.getCount() < stack.getCount())
-								((EntityItem) entity).setEntityItemStack(ret);
+								((EntityItem) entity).setItem(ret);
 						}
 					}
 				}
