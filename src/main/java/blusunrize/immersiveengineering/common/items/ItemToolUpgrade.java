@@ -19,7 +19,7 @@ import java.util.function.BiPredicate;
 
 public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 
-	private enum ToolUpgrades
+	public enum ToolUpgrades
 	{
 		DRILL_WATERPROOF(ImmutableSet.of("DRILL"), (upgrade, modifications)-> modifications.setBoolean("waterproof", true)),
 		DRILL_LUBE(ImmutableSet.of("DRILL"), (upgrade, modifications)-> modifications.setBoolean("oiled", true)),
@@ -35,7 +35,8 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 		RAILGUN_SCOPE(ImmutableSet.of("RAILGUN"), (upgrade, modifications)-> modifications.setBoolean("scope",true)),
 		RAILGUN_CAPACITORS(ImmutableSet.of("RAILGUN"), (upgrade, modifications)-> modifications.setFloat("speed",1f)),
 		SHIELD_FLASH(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("flash",true)),
-		SHIELD_SHOCK(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("shock",true));
+		SHIELD_SHOCK(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("shock",true)),
+		SHIELD_MAGNET(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("magnet",true));
 
 		private ImmutableSet<String> toolset;
 		private int stackSize=1;

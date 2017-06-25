@@ -366,6 +366,9 @@ item.immersiveengineering.toolupgrade.revolver_electro.name=Amplifier Electron T
 item.immersiveengineering.toolupgrade.chemthrower_focus.name=Focused Nozzle
 item.immersiveengineering.toolupgrade.railgun_scope.name=Precision Scope
 item.immersiveengineering.toolupgrade.railgun_capacitors.name=Additional Capacitors
+item.immersiveengineering.toolupgrade.shield_flash.name=Flashbulb
+item.immersiveengineering.toolupgrade.shield_shock.name=Shock Emitters
+item.immersiveengineering.toolupgrade.shield_magnet.name=Magnetic Glove
 
 item.immersiveengineering.blueprint.name=Engineer's Blueprint
 item.immersiveengineering.mold.plate.name=Metal Press Mold: Plate
@@ -388,6 +391,7 @@ item.immersiveengineering.faraday_suit_legs.name=Faraday Leggings
 item.immersiveengineering.faraday_suit_feet.name=Faraday Boots
 item.immersiveengineering.fluorescent_tube.name=Fluorescent Tube
 item.immersiveengineering.powerpack.name=Capacitor Backpack
+item.immersiveengineering.shield.name=Heavy Plated Shield
 
 #CREATIVE
 itemGroup.immersiveengineering=Immersive Engineering
@@ -550,6 +554,8 @@ entity.Villager.immersiveengineering.engineer=Structural Engineer
 entity.Villager.immersiveengineering.machinist=Machinist
 entity.Villager.immersiveengineering.electrician=Electrician
 entity.Villager.immersiveengineering.outfitter=Outfitter
+
+key.immersiveengineering.magnetEquip=Magnetic Shield Glove (doubletap)
 
 desc.immersiveengineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.immersiveengineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
@@ -746,6 +752,9 @@ desc.immersiveengineering.flavour.toolupgrade.revolver_electro=Revolver shots in
 desc.immersiveengineering.flavour.toolupgrade.chemthrower_focus=Decreases spread and increases range of the Chemical Thrower
 desc.immersiveengineering.flavour.toolupgrade.railgun_scope=Allows Railgun to zoom in
 desc.immersiveengineering.flavour.toolupgrade.railgun_capacitors=Reduces charge time of the Railgun
+desc.immersiveengineering.flavour.toolupgrade.shield_flash=Produces a blinding flash
+desc.immersiveengineering.flavour.toolupgrade.shield_shock=Shocks attackers and vapourizes projectiles
+desc.immersiveengineering.flavour.toolupgrade.shield_magnet=Equips the shield at the press of a button
 
 gui.immersiveengineering.empty=Empty
 gui.immersiveengineering.blastFurnace=Blast Furnace
@@ -1069,6 +1078,13 @@ ie.manual.entry.earmuffs.name=Ear Defenders
 ie.manual.entry.earmuffs.subtext=LOUD NOISES!
 ie.manual.entry.earmuffs0=Ear Defenders are devices for protecting your hearing. They are quite important for engineers that work in close proximity to <link;dieselgen;§o§nDiesel §o§nGenerators§r;> or other loud machinery.<br>While wearing Ear Defenders, all noises are reduced by 90%%.
 ie.manual.entry.earmuffs1=Placing the Ear Defenders in the <link;workbench;§o§nEngineer's §o§nWorkbench§r;> allows you to specify which types of noises you want cancelled and by how much their volume should be reduced.<br>You can dye them like you would leather armor.<br>Crafting them with any other helmet will attach the defenders to that piece of equipment, crafting the helmet alone will remove the defenders again, to allow further customizing.
+
+ie.manual.entry.shield.name=Heavy Plated Shield
+ie.manual.entry.shield.subtext=
+ie.manual.entry.shield0=The Heavy Plated Shield is a direct upgrade to the normal wooden shields you might be acquainted with. In similar fashion, this shield will block most incoming damage from the front, but its durability has been increased considerably, and it sports the ability to be upgraded.
+ie.manual.entry.shield1=The §6Flashbulb§r upgrade adds a bright lightbulb and reflector screen to the shield. Upon being attacked, the device will produce a bright, blinding flash, disorienting everyone in front of the user.
+ie.manual.entry.shield2=Adding §6Shock Emitters§r to the shield allows you to retaliate against attacking enemies. When the shield is struck, it will emit a shock, inflicting minor damage to the aggressor. Additionally, it will vapourize projectiles rather than just stopping them.
+ie.manual.entry.shield3=The §6Magnetic Glove§r serves as an easy way to access the shield when threatened. With this upgrade equipped, simply double-tapping the §l<keybind;key.immersiveengineering.magnetEquip>§r Key will have you retrieve the shield from your inventory and place it in your offhand slot.
 
 ie.manual.entry.toolbox.name=Engineer's Toolbox
 ie.manual.entry.toolbox.subtext=The Engineer's Handbag

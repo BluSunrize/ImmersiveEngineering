@@ -53,6 +53,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -91,6 +92,9 @@ import java.util.*;
 
 public class ClientEventHandler implements IResourceManagerReloadListener
 {
+	private boolean shieldToggleButton = false;
+	private int shieldToggleTimer = 0;
+
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
@@ -140,6 +144,46 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				if(line!=null&&connector!=null)
 					skyhookGrabableConnections.add(line);
 			}
+		}
+
+		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
+		{
+			if(this.shieldToggleTimer > 0)
+				this.shieldToggleTimer--;
+			if(ClientProxy.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
+				if(this.shieldToggleTimer <= 0)
+					this.shieldToggleTimer = 7;
+				else
+				{
+					EntityPlayer player = event.player;
+					ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
+					if(!held.isEmpty() && held.getItem() instanceof ItemIEShield)
+					{
+						if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet") && ((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
+						{
+							int prevSlot = ((ItemIEShield)held.getItem()).getUpgrades(held).getInteger("prevSlot");
+							ItemStack s = player.inventory.mainInventory.get(prevSlot);
+							player.inventory.mainInventory.set(prevSlot, held);
+							player.setHeldItem(EnumHand.OFF_HAND, s);
+							((ItemIEShield)held.getItem()).getUpgrades(held).removeTag("prevSlot");
+						}
+					}
+					else
+					{
+						for(int i=0; i<player.inventory.mainInventory.size(); i++)
+						{
+							ItemStack s = player.inventory.mainInventory.get(i);
+							if(!s.isEmpty() && s.getItem() instanceof ItemIEShield && ((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+							{
+								((ItemIEShield)s.getItem()).getUpgrades(s).setInteger("prevSlot",i);
+								player.inventory.mainInventory.set(i, held);
+								player.setHeldItem(EnumHand.OFF_HAND, s);
+							}
+						}
+					}
+				}
+			if(this.shieldToggleButton!=ClientUtils.mc().gameSettings.keyBindBack.isKeyDown())
+				this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
 		}
 //		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
 //		{
@@ -594,6 +638,41 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 						}
 						GL11.glPopMatrix();
+					}
+					else if(equipped.getItem() instanceof ItemIEShield)
+					{
+						NBTTagCompound upgrades = ((ItemIEShield)equipped.getItem()).getUpgrades(equipped);
+						if(!upgrades.hasNoTags())
+						{
+							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
+							GL11.glColor4f(1, 1, 1, 1);
+							boolean boundLeft = (player.getPrimaryHand()==EnumHandSide.RIGHT)==(hand==EnumHand.OFF_HAND);
+							float dx = boundLeft?16: (event.getResolution().getScaledWidth()-16-64);
+							float dy = event.getResolution().getScaledHeight();
+							GL11.glPushMatrix();
+							GL11.glTranslated(dx, dy, 0);
+							ClientUtils.drawTexturedRect(0, -22, 64, 22, 0, 64/256f, 176/256f, 198/256f);
+
+							if(upgrades.getBoolean("flash"))
+							{
+								ClientUtils.drawTexturedRect(11, -38, 16, 16, 11/256f, 27/256f, 160/256f, 176/256f);
+								if(upgrades.hasKey("flash_cooldown"))
+								{
+									float h = upgrades.getInteger("flash_cooldown")/40f*16;
+									ClientUtils.drawTexturedRect(11, -22-h, 16, h, 11/256f, 27/256f, (214-h)/256f, 214/256f);
+								}
+							}
+							if(upgrades.getBoolean("shock"))
+							{
+								ClientUtils.drawTexturedRect(40, -38, 12, 16, 40/256f, 52/256f, 160/256f, 176/256f);
+								if(upgrades.hasKey("shock_cooldown"))
+								{
+									float h = upgrades.getInteger("shock_cooldown")/40f*16;
+									ClientUtils.drawTexturedRect(40, -22-h, 12, h, 40/256f, 52/256f, (214-h)/256f, 214/256f);
+								}
+							}
+							GL11.glPopMatrix();
+						}
 					}
 					//				else if(equipped.getItem() instanceof ItemRailgun)
 					//				{

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDev
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice1;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
@@ -117,16 +118,20 @@ public class IERecipes
 
 		addOredictRecipe(new ItemStack(IEContent.itemRailgun,1,0), " HG","CBH","BC ", 'C',electrumCoil, 'H',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta()), 'B',new ItemStack(IEContent.itemMaterial,1,14), 'G',woodenGrip);
 
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,0), "BI ","IBI"," IC", 'B',Items.BUCKET, 'I',"dyeBlue", 'C',componentIron);
-		addIngredientRecipe(new ItemStack(IEContent.itemToolUpgrades, 1, 1), "BI ", "IBI", " IC", 'B', new FluidStack(IEContent.fluidPlantoil, 1000), 'I', "ingotIron", 'C', componentIron);
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,2), "SSS"," C ", 'S',"ingotSteel", 'C',componentSteel);
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,3), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.BUCKET, 'O',"dyeRed");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,4), "SI","IW", 'S',Items.IRON_SWORD, 'I',"ingotSteel", 'W',"plankTreatedWood");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,5), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,6), " G ","GEG","GEG", 'E',electrumCoil, 'G',"blockGlass");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,7), " SS","PPH"," SS", 'P',new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()), 'H',Blocks.HOPPER, 'S',"ingotSteel");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,8), "GC ","C C"," CG", 'G',"paneGlassColorless", 'C',"ingotCopper");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,9), "WWW","HHH", 'W',new ItemStack(IEContent.itemWireCoil,1,2), 'H',new ItemStack(IEContent.blockMetalDevice0,1,2));
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.DRILL_WATERPROOF.ordinal()), "BI ","IBI"," IC", 'B',Items.BUCKET, 'I',"dyeBlue", 'C',componentIron);
+		addIngredientRecipe(new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_LUBE.ordinal()), "BI ", "IBI", " IC", 'B', new FluidStack(IEContent.fluidPlantoil, 1000), 'I', "ingotIron", 'C', componentIron);
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_DAMAGE.ordinal()), "SSS"," C ", 'S',"ingotSteel", 'C',componentSteel);
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_CAPACITY.ordinal()), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.BUCKET, 'O',"dyeRed");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_BAYONET.ordinal()), "SI","IW", 'S',Items.IRON_SWORD, 'I',"ingotSteel", 'W',"plankTreatedWood");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_MAGAZINE.ordinal()), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_ELECTRO.ordinal()), " G ","GEG","GEG", 'E',electrumCoil, 'G',"blockGlass");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.CHEMTHROWER_FOCUS.ordinal()), " SS","PPH"," SS", 'P',new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()), 'H',Blocks.HOPPER, 'S',"ingotSteel");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.RAILGUN_SCOPE.ordinal()), "GC ","C C"," CG", 'G',"paneGlassColorless", 'C',"ingotCopper");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.RAILGUN_CAPACITORS.ordinal()), "WWW","HHH", 'W',new ItemStack(IEContent.itemWireCoil,1,2), 'H',new ItemStack(IEContent.blockMetalDevice0,1,2));
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_FLASH.ordinal()), "AGA","GEG", 'A',"plateAluminum", 'G',"paneGlass", 'E',new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_ELECTRO.ordinal()));
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_SHOCK.ordinal()), "CRC","CRC","CRC", 'C',new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_LV.getMeta()), 'R',"stickIron");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_MAGNET.ordinal()), "  L","LC ","LIL", 'L',"leather",'C',new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.COIL_LV.getMeta()), 'I',"ingotIron");
+
 
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,15), "dustCopper","dustNickel");
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,16), "dustSilver","dustGold");
@@ -160,6 +165,8 @@ public class IERecipes
 		RecipeSorter.register(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		addOredictRecipe(new ItemStack(IEContent.itemFluorescentTube), "GEG", "GgG", "GgG", 'G', "blockGlass", 'E', new ItemStack(IEContent.itemGraphiteElectrode), 'g', "dustGlowstone");
+
+		addOredictRecipe(new ItemStack(IEContent.itemShield), "PTP","PSP","PTP", 'P',"plateSteel",'T',"plankTreatedWood",'S',Items.SHIELD);
 
 		//
 		//TREATED WOOD
@@ -327,7 +334,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TURRET_GUN.getMeta()), " S "," GL","XBR", 'S',new ItemStack(IEContent.itemToolUpgrades,1,8), 'G',new ItemStack(IEContent.itemRevolver),'L',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()), 'B',new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.TURNTABLE.getMeta()),'R',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),'X',new ItemStack(IEContent.itemToolUpgrades,1,5));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.BELLJAR.getMeta()), " L ","G G","WCW", 'L',new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.LANTERN.getMeta()), 'G',"blockGlass", 'W',"plankTreatedWood", 'C',componentIron);
 
-		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', Items.LEATHER);
+		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', "leather");
 		addShapelessIngredientRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1), new IngredientStack(baseConveyor).setUseNBT(true));
 		addShapelessIngredientRecipe(baseConveyor, new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1)).setUseNBT(true));
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper"), 1), "C", "H", 'C', baseConveyor, 'H', Blocks.IRON_TRAPDOOR);
