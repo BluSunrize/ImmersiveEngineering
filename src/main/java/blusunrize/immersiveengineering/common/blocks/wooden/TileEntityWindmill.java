@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -75,7 +76,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(pos.offset(facing));
+			TileEntity tileEntity = Utils.getExistingTileEntity(world, pos.offset(facing));
 			if(tileEntity instanceof IRotationAcceptor)
 			{
 				IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
@@ -109,7 +110,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 				for(int dd=1;dd<8;dd++)
 				{
 					BlockPos pos = getPos().add(0, hh, 0).offset(facing.getOpposite(), dd).offset(facing.rotateY(), ww);
-					if(world.isAirBlock(pos))
+					if(!world.isBlockLoaded(pos) || world.isAirBlock(pos))
 						turnSpeed ++;
 					else if(world.getTileEntity(pos) instanceof TileEntityWindmill)
 					{

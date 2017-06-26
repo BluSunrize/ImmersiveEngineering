@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTil
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,6 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,10 +162,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 			}
 		}
 	}
+	@Nullable
 	TileEntity getEnergyOutput(int w)
 	{
-		TileEntity eTile = world.getTileEntity(this.getBlockPosForPos(16+w).add(0,1,0));
-		if(EnergyHelper.isFluxReceiver(eTile, EnumFacing.DOWN))
+		BlockPos outPos = this.getBlockPosForPos(16 + w).add(0, 1, 0);
+		TileEntity eTile = Utils.getExistingTileEntity(world, outPos);
+		if (EnergyHelper.isFluxReceiver(eTile, EnumFacing.DOWN))
 			return eTile;
 		return null;
 	}

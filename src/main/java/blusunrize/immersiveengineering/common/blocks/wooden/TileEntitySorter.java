@@ -190,7 +190,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 					}
 					if(allowed)
 					{
-						TileEntity inventory = this.world.getTileEntity(getPos().offset(side));
+						TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
 						if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
 							validFilteredInvOuts.add(side.ordinal());
 						else if(allowThrowing)
@@ -198,7 +198,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 					}
 					else if(allowUnmapped&&unmapped)
 					{
-						TileEntity inventory = this.world.getTileEntity(getPos().offset(side));
+						TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
 						if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
 							validUnfilteredInvOuts.add(side.ordinal());
 						else if(allowThrowing)
@@ -231,7 +231,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	//	}
 	public ItemStack outputItemToInv(ItemStack stack, EnumFacing side, boolean simulate)
 	{
-		TileEntity inventory = this.world.getTileEntity(getPos().offset(side));
+		TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
 		return Utils.insertStackIntoInventory(inventory, stack, side.getOpposite(), simulate);
 	}
 

@@ -144,12 +144,12 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 			if(!inventory.get(8).isEmpty() && world.getTotalWorldTime()%8==0)
 			{
 				BlockPos outputPos = this.getPos().offset(fw);
-				TileEntity outputTile = this.world.getTileEntity(outputPos);
-				if(outputTile != null)
+				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
+				if (outputTile != null)
 				{
 					ItemStack stack = Utils.copyStackWithAmount(inventory.get(8), 1);
 					stack = Utils.insertStackIntoInventory(outputTile, stack, fw.getOpposite());
-					if(stack.isEmpty())
+					if (stack.isEmpty())
 					{
 						this.inventory.get(8).shrink(1);
 						if (this.inventory.get(8).getCount() <= 0)

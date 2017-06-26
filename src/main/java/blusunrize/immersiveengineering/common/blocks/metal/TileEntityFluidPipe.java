@@ -110,9 +110,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		while(!openList.isEmpty() && closedList.size()<1024)
 		{
 			BlockPos next = openList.get(0);
-			if(world.isBlockLoaded(next))
-			{
-				TileEntity pipeTile = world.getTileEntity(next);
+				TileEntity pipeTile = Utils.getExistingTileEntity(world, next);
 				if(!closedList.contains(next) && (pipeTile instanceof IFluidPipe))
 				{
 					if(pipeTile instanceof TileEntityFluidPipe)
@@ -125,9 +123,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 						{
 							BlockPos nextPos = next.offset(fd);
-							if(world.isBlockLoaded(nextPos))
-							{
-								TileEntity adjacentTile = world.getTileEntity(nextPos);
+								TileEntity adjacentTile = Utils.getExistingTileEntity(world, nextPos);
 								if(adjacentTile!=null)
 									if(adjacentTile instanceof TileEntityFluidPipe)
 										openList.add(nextPos);
@@ -138,10 +134,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 										if(tankInfo != null && tankInfo.length > 0)
 											fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
 									}
-							}
 						}
 					}
-				}
 			}
 			openList.remove(0);
 		}
@@ -408,7 +402,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			//			TileEntity con = world.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			EnumFacing dir = EnumFacing.getFront(i);
-			TileEntity con = world.getTileEntity(getPos().offset(dir));
+			TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(dir));
 			connections <<= 1;
 			if(sideConfig[i]==0 && con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
@@ -428,13 +422,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			//			TileEntity con = world.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			EnumFacing dir = EnumFacing.getFront(i);
-			TileEntity con = world.getTileEntity(getPos().offset(dir));
+			TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(dir));
 			connections <<= 1;
-			if(con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
+			if (con != null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
 				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
 				tankInfo = handler.getTankProperties();
-				if(tankInfo!=null && tankInfo.length>0)
+				if (tankInfo != null && tankInfo.length > 0)
 					connections |= 1;
 			}
 		}

@@ -4,8 +4,6 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +26,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		super.update();
 		if(!world.isRemote && world.getTotalWorldTime()%8==0 && !isDummy())
 		{
-			TileEntity inventoryFront = this.world.getTileEntity(getPos().offset(facing,2).add(0,-1,0));
+			TileEntity inventoryFront = Utils.getExistingTileEntity(world, getPos().offset(facing,2).add(0,-1,0));
 			if(!this.inventory.get(2).isEmpty())
 			{
 				ItemStack stack = this.inventory.get(2);
@@ -36,7 +34,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 					stack = Utils.insertStackIntoInventory(inventoryFront, stack, facing.getOpposite());
 				this.inventory.set(2, stack);
 			}
-			TileEntity inventoryBack = this.world.getTileEntity(getPos().offset(facing,-2).add(0,-1,0));
+			TileEntity inventoryBack = Utils.getExistingTileEntity(world, getPos().offset(facing,-2).add(0,-1,0));
 			if(!this.inventory.get(3).isEmpty())
 			{
 				ItemStack stack = this.inventory.get(3);
@@ -107,10 +105,11 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		{
 			EnumFacing phf = j==0?facing.rotateY():facing.rotateYCCW();
 			BlockPos pos = getPos().add(0,-1,0).offset(phf,2);
-			if(world.getTileEntity(pos) instanceof TileEntityBlastFurnacePreheater)
+			TileEntity te = Utils.getExistingTileEntity(world, pos);
+			if(te instanceof TileEntityBlastFurnacePreheater)
 			{
-				if( ((TileEntityBlastFurnacePreheater)world.getTileEntity(pos)).facing==phf.getOpposite())
-					i += ((TileEntityBlastFurnacePreheater)world.getTileEntity(pos)).doSpeedup();
+				if(((TileEntityBlastFurnacePreheater) te).facing==phf.getOpposite())
+					i += ((TileEntityBlastFurnacePreheater)te).doSpeedup();
 			}
 		}
 		return i;

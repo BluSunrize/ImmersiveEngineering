@@ -127,7 +127,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		state = super.getActualState(state, world, pos);
-		TileEntity tile = world.getTileEntity(pos);
+//		TileEntity tile = world.getTileEntity(pos);
 //		if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical))
 //		{
 //			for(int i=0; i<IEProperties.CONVEYORWALLS.length; i++)

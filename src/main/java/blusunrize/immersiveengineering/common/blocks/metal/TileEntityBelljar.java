@@ -192,18 +192,18 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			if(world.getTotalWorldTime()%8==0)
 			{
 				BlockPos outputPos = getPos().up().offset(facing.getOpposite());
-				TileEntity outputTile = this.world.getTileEntity(outputPos);
-				if(outputTile!=null)
-					for(int j=3; j<7; j++)
-						if(!inventory.get(j).isEmpty())
+				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
+				if (outputTile != null)
+					for (int j = 3; j < 7; j++)
+						if (!inventory.get(j).isEmpty())
 						{
 							int out = Math.min(inventory.get(j).getCount(), 16);
 							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j), out);
 							stack = Utils.insertStackIntoInventory(outputTile, stack, facing);
-							if(!stack.isEmpty())
+							if (!stack.isEmpty())
 								out -= stack.getCount();
 							this.inventory.get(j).shrink(out);
-							if((inventory.get(j).getCount()) <= 0)
+							if ((inventory.get(j).getCount()) <= 0)
 								this.inventory.set(j, ItemStack.EMPTY);
 						}
 			}

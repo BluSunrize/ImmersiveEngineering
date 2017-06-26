@@ -64,24 +64,24 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		super.update();
 
-		if(!world.isRemote && !isDummy() && !isRSDisabled() && energyStorage.getEnergyStored() > 0)
+		if (!world.isRemote && !isDummy() && !isRSDisabled() && energyStorage.getEnergyStored() > 0)
 		{
-			if(this.tickedProcesses > 0)
-				for(int i = 23; i < 26; i++)
-					if(this.inventory.get(i).attemptDamageItem(1, Utils.RAND))
+			if (this.tickedProcesses > 0)
+				for (int i = 23; i < 26; i++)
+					if (this.inventory.get(i).attemptDamageItem(1, Utils.RAND))
 					{
 						this.inventory.set(i, ItemStack.EMPTY);
 						//						updateClient = true;
 						//						update = true;
 					}
 
-			if(this.processQueue.size() < this.getProcessQueueMaxLength())
+			if (this.processQueue.size() < this.getProcessQueueMaxLength())
 			{
 				Set<Integer> usedInvSlots = new HashSet<Integer>();
 				//			final int[] usedInvSlots = new int[8];
-				for(MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
-					if(process instanceof MultiblockProcessInMachine)
-						for(int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).inputSlots)
+				for (MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
+					if (process instanceof MultiblockProcessInMachine)
+						for (int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>) process).inputSlots)
 							usedInvSlots.add(i);
 
 				//			Integer[] preferredSlots = new Integer[]{0,1,2,3,4,5,6,7};
@@ -92,10 +92,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				//					return Integer.compare(usedInvSlots[arg0],usedInvSlots[arg1]);
 				//				}});
 				NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
-				for(int i = 0; i < 4; i++)
+				for (int i = 0; i < 4; i++)
 					additives.set(i, !inventory.get(12 + i).isEmpty() ? inventory.get(12 + i).copy() : ItemStack.EMPTY);
-				for(int slot = 0; slot < 12; slot++)
-					if(!usedInvSlots.contains(slot))
+				for (int slot = 0; slot < 12; slot++)
+					if (!usedInvSlots.contains(slot))
 					{
 						ItemStack stack = this.getInventory().get(slot);
 						//				if(stack!=null)
@@ -103,14 +103,14 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 						//					stack = stack.copy();
 						////					stack.stackSize-=usedInvSlots[slot];
 						//				}
-						if(!stack.isEmpty() && stack.getCount() > 0)
+						if (!stack.isEmpty() && stack.getCount() > 0)
 						{
 							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
 
-							if(recipe != null)
+							if (recipe != null)
 							{
 								MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, slot, 12, 13, 14, 15);
-								if(this.addProcessToQueue(process, true))
+								if (this.addProcessToQueue(process, true))
 								{
 									this.addProcessToQueue(process, false);
 									usedInvSlots.add(slot);
@@ -121,35 +121,35 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					}
 			}
 
-			if(world.getTotalWorldTime()%8==0)
+			if (world.getTotalWorldTime() % 8 == 0)
 			{
-				BlockPos outputPos = this.getBlockPosForPos(2).offset(facing,-1);
-				TileEntity outputTile = this.world.getTileEntity(outputPos);
-				if(outputTile!=null)
-					for(int j=16; j<22; j++)
-						if(!inventory.get(j).isEmpty())
+				BlockPos outputPos = this.getBlockPosForPos(2).offset(facing, -1);
+				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
+				if (outputTile != null)
+					for (int j = 16; j < 22; j++)
+						if (!inventory.get(j).isEmpty())
 						{
-							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j),1);
+							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j), 1);
 							stack = Utils.insertStackIntoInventory(outputTile, stack, facing.getOpposite());
-							if(stack.isEmpty()) {
+							if (stack.isEmpty())
+							{
 								this.inventory.get(j).shrink(1);
 								if (this.inventory.get(j).getCount() <= 0)
 									this.inventory.set(j, ItemStack.EMPTY);
 							}
 						}
-
 				outputPos = this.getBlockPosForPos(22).offset(facing);
-				outputTile = this.world.getTileEntity(outputPos);
-				if(outputTile!=null)
-					if(!inventory.get(22).isEmpty())
+				outputTile = Utils.getExistingTileEntity(world, outputPos);
+				if (outputTile != null)
+					if (!inventory.get(22).isEmpty())
 					{
 						int out = Math.min(inventory.get(22).getCount(), 16);
 						ItemStack stack = Utils.copyStackWithAmount(inventory.get(22), out);
 						stack = Utils.insertStackIntoInventory(outputTile, stack, facing);
-						if(!stack.isEmpty())
+						if (!stack.isEmpty())
 							out -= stack.getCount();
 						this.inventory.get(22).shrink(out);
-						if(this.inventory.get(22).getCount() <= 0)
+						if (this.inventory.get(22).getCount() <= 0)
 							this.inventory.set(22, ItemStack.EMPTY);
 					}
 			}

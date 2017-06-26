@@ -63,7 +63,7 @@ public class RedstoneWireNetwork
 							node = connection.end;
 						if(!node.equals(removedCC))
 						{
-							TileEntity nodeTile = connector.getConnectorWorld().getTileEntity(node);
+							TileEntity nodeTile = Utils.getExistingTileEntity(connector.getConnectorWorld(), node);
 							if(nodeTile instanceof IRedstoneConnector)
 								if(connector.getNetwork() != ((IRedstoneConnector) nodeTile).getNetwork())
 									connector.getNetwork().mergeNetwork(((IRedstoneConnector) nodeTile).getNetwork());

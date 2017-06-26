@@ -3,10 +3,8 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -238,7 +236,8 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
 			return (T)this;
-		TileEntity te = world.getTileEntity(getPos().add(-offset[0],-offset[1],-offset[2]));
+		BlockPos masterPos = getPos().add(-offset[0],-offset[1],-offset[2]);
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
 		return this.getClass().isInstance(te)?(T)te: null;
 	}
 	public void updateMasterBlock(IBlockState state, boolean blockUpdate)

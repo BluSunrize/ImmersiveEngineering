@@ -71,29 +71,29 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			for(EnumFacing f : EnumFacing.values())
 				if(sideConfig[f.ordinal()]==0)
 				{
-					TileEntity tile = world.getTileEntity(getPos().offset(f));
-					if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
+					BlockPos output = getPos().offset(f);
+					TileEntity tile = Utils.getExistingTileEntity(world, output);
+					if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 					{
 						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
 						FluidStack drain = handler.drain(500, false);
-						if(drain == null || drain.amount <= 0)
+						if (drain == null || drain.amount <= 0)
 							continue;
 						int out = this.outputFluid(drain, false);
 						handler.drain(out, true);
-					}
-					else if(world.getTotalWorldTime()%20==((getPos().getX()^getPos().getZ())&19) && world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER && IEConfig.Machines.pump_infiniteWater && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true)>= IEConfig.Machines.pump_consumption)
+					} else if (world.getTotalWorldTime() % 20 == ((getPos().getX() ^ getPos().getZ()) & 19) && world.getBlockState(getPos().offset(f)).getBlock() == Blocks.WATER && IEConfig.Machines.pump_infiniteWater && tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false) == 1000 && this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
 					{
 						int connectedSources = 0;
-						for(EnumFacing f2 : EnumFacing.HORIZONTALS)
+						for (EnumFacing f2 : EnumFacing.HORIZONTALS)
 						{
 							IBlockState waterState = world.getBlockState(getPos().offset(f).offset(f2));
-							if(waterState.getBlock()==Blocks.WATER && Blocks.WATER.getMetaFromState(waterState)==0)
+							if (waterState.getBlock() == Blocks.WATER && Blocks.WATER.getMetaFromState(waterState) == 0)
 								connectedSources++;
 						}
-						if(connectedSources>1)
+						if (connectedSources > 1)
 						{
 							this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, false);
-							this.tank.fill(new FluidStack(FluidRegistry.WATER,1000), true);
+							this.tank.fill(new FluidStack(FluidRegistry.WATER, 1000), true);
 						}
 					}
 				}
@@ -194,7 +194,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		for(EnumFacing f : EnumFacing.values())
 			if(sideConfig[f.ordinal()]==1)
 			{
-				TileEntity tile = world.getTileEntity(getPos().offset(f));
+				TileEntity tile = Utils.getExistingTileEntity(world, getPos().offset(f));
 				if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
 					IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());

@@ -158,7 +158,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 					for(int xx=-1;xx<=1;xx++)
 						for(int zz=-1;zz<=1;zz++)
 						{
-							tileEntity = world.getTileEntity(getPos().add(xx, yy, zz));
+							tileEntity = Utils.getExistingTileEntity(world, getPos().add(xx, yy, zz));
 							if(tileEntity!=null)
 								tileEntity.markDirty();
 							this.markBlockForUpdate(getPos().add(xx, yy, zz), null);

@@ -44,16 +44,16 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			{
 				TileEntity tileEntity;
 				for(EnumFacing f : EnumFacing.HORIZONTALS)
-				{
-					tileEntity = world.getTileEntity(getPos().offset(f,2));
-					if(tileEntity instanceof IFluxReceiver)
-					{
-						IFluxReceiver ifr = (IFluxReceiver) tileEntity;
-						int accepted = ifr.receiveEnergy(f.getOpposite(), energyStorage.getEnergyStored(), true);
-						int extracted = energyStorage.extractEnergy(accepted, false);
-						ifr.receiveEnergy(f.getOpposite(), extracted, false);
-					}
-				}
+						{
+							tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f,2));
+							if(tileEntity instanceof IFluxReceiver)
+							{
+								IFluxReceiver ifr = (IFluxReceiver) tileEntity;
+								int accepted = ifr.receiveEnergy(f.getOpposite(), energyStorage.getEnergyStored(), true);
+								int extracted = energyStorage.extractEnergy(accepted, false);
+								ifr.receiveEnergy(f.getOpposite(), extracted, false);
+							}
+						}
 			}
 
 			if(world.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))

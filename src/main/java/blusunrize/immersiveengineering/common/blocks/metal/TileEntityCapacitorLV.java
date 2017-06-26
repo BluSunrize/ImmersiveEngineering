@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 
 import javax.annotation.Nonnull;
@@ -63,7 +65,8 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		if(this.sideConfig[side] != SideConfig.OUTPUT)
 			return;
 		EnumFacing fd = EnumFacing.getFront(side);
-		TileEntity tileEntity = world.getTileEntity(getPos().offset(fd));
+		BlockPos outPos = getPos().offset(fd);
+		TileEntity tileEntity = Utils.getExistingTileEntity(world, outPos);
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
 		this.energyStorage.modifyEnergyStored(-EnergyHelper.insertFlux(tileEntity, fd.getOpposite(), out, false));
 	}

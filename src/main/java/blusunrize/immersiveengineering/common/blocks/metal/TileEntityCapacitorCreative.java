@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -44,13 +45,10 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	@Override
 	protected void transferEnergy(int side)
 	{
-		if(sideConfig[side]!=SideConfig.OUTPUT)
+		if (sideConfig[side] != SideConfig.OUTPUT)
 			return;
 		EnumFacing to = EnumFacing.getFront(side);
-		if (world.isBlockLoaded(pos.offset(to)));
-		{
-			TileEntity te = world.getTileEntity(pos.offset(to));
-			EnergyHelper.insertFlux(te, to.getOpposite(), Integer.MAX_VALUE, false);
-		}
+		TileEntity te = Utils.getExistingTileEntity(world, pos.offset(to));
+		EnergyHelper.insertFlux(te, to.getOpposite(), Integer.MAX_VALUE, false);
 	}
 }

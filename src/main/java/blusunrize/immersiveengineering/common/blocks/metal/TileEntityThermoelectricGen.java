@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
@@ -49,9 +50,9 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 
 	public void outputEnergy(int amount)
 	{
-		for(EnumFacing fd : EnumFacing.VALUES)
+		for (EnumFacing fd : EnumFacing.VALUES)
 		{
-			TileEntity te = world.getTileEntity(getPos().offset(fd));
+			TileEntity te = Utils.getExistingTileEntity(world, getPos().offset(fd));
 			amount -= EnergyHelper.insertFlux(te, fd.getOpposite(), amount, false);
 		}
 	}

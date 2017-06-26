@@ -308,7 +308,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		if(dummy)
 		{
-			TileEntity te = world.getTileEntity(getPos().offset(facing,-1));
+			TileEntity te = world.getTileEntity(getPos().offset(facing,-1));//TODO is this a bug?
 			if(te instanceof TileEntityTurret)
 				return ((TileEntityTurret)te).hammerUseSide(side, player, hitX, hitY, hitZ);
 			return false;
