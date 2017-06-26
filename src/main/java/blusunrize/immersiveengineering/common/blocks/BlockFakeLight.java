@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -110,7 +111,7 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 					return;
 				}
 				BlockPos floodlightPos = new BlockPos(floodlightCoords[0], floodlightCoords[1], floodlightCoords[2]);
-				TileEntity tile = world.getTileEntity(floodlightPos);
+				TileEntity tile = Utils.getExistingTileEntity(world, floodlightPos);
 				if( !(tile instanceof TileEntityFloodlight) || !((TileEntityFloodlight)tile).active)
 				{
 					world.setBlockToAir(getPos());

@@ -12,9 +12,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBool
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -183,11 +180,11 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					for(int xx=-1;xx<=1;xx++)
 						for(int zz=-1;zz<=1;zz++)
 						{
-							tileEntity = world.getTileEntity(getPos().add(xx, yy, zz));
-							if(tileEntity!=null)
+							tileEntity = Utils.getExistingTileEntity(world, getPos().add(xx, yy, zz));
+							if (tileEntity != null)
 								tileEntity.markDirty();
 							markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							world.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1,active?1:0);
+							world.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1, active ? 1 : 0);
 						}
 			}
 		}

@@ -21,14 +21,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -137,9 +135,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean isEnergyOutput()
 	{
+		BlockPos outPos = getPos().offset(facing);
 		if(isRelay())
 			return false;
-		TileEntity tile = world.getTileEntity(getPos().offset(facing));
+		TileEntity tile = Utils.getExistingTileEntity(world, outPos);
 		return EnergyHelper.isFluxReceiver(tile, facing.getOpposite());
 	}
 	@Override
@@ -152,7 +151,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return 0;
 		int toAccept = Math.min(acceptanceLeft, amount);
 
-		TileEntity capacitor = world.getTileEntity(getPos().offset(facing));
+		TileEntity capacitor = Utils.getExistingTileEntity(world, getPos().offset(facing));
 		int ret = EnergyHelper.insertFlux(capacitor, facing.getOpposite(), toAccept, simulate);
 		//		if(capacitor instanceof IFluxReceiver && ((IFluxReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
 		//		{

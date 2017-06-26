@@ -20,6 +20,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class TileEntityWatermill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
@@ -59,18 +60,18 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		}
 		prevRotation = rotation;
 
-		TileEntity acc = world.getTileEntity(getPos().offset(facing.getOpposite()));
+		TileEntity acc = Utils.getExistingTileEntity(world, getPos().offset(facing.getOpposite()));
 		if(!multiblock&&acc instanceof IRotationAcceptor)
 		{
 			double power = getPower();
 			int l=1;
-			TileEntity tileEntity = world.getTileEntity(getPos().offset(facing, l));
+			TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(facing, l));
 			while (l<3
 					&& canUse(tileEntity))
 			{
 				power += ((TileEntityWatermill)tileEntity).getPower();
 				l++;
-				tileEntity = world.getTileEntity(getPos().offset(facing, l));
+				tileEntity = Utils.getExistingTileEntity(world, getPos().offset(facing, l));
 			}
 
 			perTick = 1f/1440 * power/l;
@@ -109,7 +110,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		if(multiblock)
 			multiblock=false;
 	}
-	private boolean canUse(TileEntity tileEntity)
+	private boolean canUse(@Nullable TileEntity tileEntity)
 	{
 		return tileEntity instanceof TileEntityWatermill
 				&& ((TileEntityWatermill)tileEntity).offset[0]==0

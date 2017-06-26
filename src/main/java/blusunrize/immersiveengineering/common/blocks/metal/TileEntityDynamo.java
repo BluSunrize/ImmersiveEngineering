@@ -8,10 +8,12 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,7 +30,8 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 		int output = (int) (IEConfig.Machines.dynamo_output * rotation);
 		for(EnumFacing fd : EnumFacing.VALUES)
 		{
-			TileEntity te = world.getTileEntity(getPos().offset(fd));
+			BlockPos outputPos = getPos().offset(fd);
+			TileEntity te = Utils.getExistingTileEntity(world, outputPos);
 			output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
 		}
 	}

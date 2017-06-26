@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -214,7 +215,7 @@ public class ConveyorHandler
 				return true;
 			EnumFacing side = wall == 0 ? facing.rotateYCCW() : facing.rotateY();
 			BlockPos pos = tile.getPos().offset(side);
-			TileEntity te = tile.getWorld().getTileEntity(pos);
+			TileEntity te = Utils.getExistingTileEntity(tile.getWorld(), pos);
 			if(te instanceof IConveyorAttachable)
 			{
 				boolean b = false;
@@ -227,7 +228,7 @@ public class ConveyorHandler
 			}
 			else
 			{
-				te = tile.getWorld().getTileEntity(pos.add(0, -1, 0));
+				te = Utils.getExistingTileEntity(tile.getWorld(), pos.add(0, -1, 0));
 				if(te instanceof IConveyorAttachable)
 				{
 					int b = 0;
@@ -318,8 +319,12 @@ public class ConveyorHandler
 				}
 				if(!contact)
 					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile) tile);
-				else if(!(tile.getWorld().getTileEntity(tile.getPos().offset(facing)) instanceof IConveyorTile))
-					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
+				else
+				{
+					BlockPos nextPos = tile.getPos().offset(facing);
+					if(!(Utils.getExistingTileEntity(tile.getWorld(), nextPos) instanceof IConveyorTile))
+						ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
+				}
 
 				if(entity instanceof EntityItem)
 				{
@@ -336,23 +341,26 @@ public class ConveyorHandler
 
 		default void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
 		{
-			TileEntity inventoryTile = tile.getWorld().getTileEntity(tile.getPos().offset(facing).add(0, (conDir == ConveyorDirection.UP ? 1 : conDir == ConveyorDirection.DOWN ? -1 : 0), 0));
+			BlockPos invPos = tile.getPos().offset(facing).add(0, (conDir == ConveyorDirection.UP ? 1 : conDir == ConveyorDirection.DOWN ? -1 : 0), 0);
+			World world = tile.getWorld();
+			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
 			boolean contact = facing.getAxis() == Axis.Z ? distZ < .7 : distX < .7;
-			if(!tile.getWorld().isRemote)
+			if (!tile.getWorld().isRemote)
 			{
-				if(contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile))
+				if (contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile))
 				{
 					ItemStack stack = entity.getItem();
-					if(!stack.isEmpty())
+					if (!stack.isEmpty())
 					{
 						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, facing.getOpposite());
-						if(ret.isEmpty())
+						if (ret.isEmpty())
 							entity.setDead();
-						else if(ret.getCount() < stack.getCount())
+						else if (ret.getCount() < stack.getCount())
 							entity.setItem(ret);
 					}
 				}
 			}
+
 		}
 
 		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);

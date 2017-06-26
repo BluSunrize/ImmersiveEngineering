@@ -92,9 +92,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 				ItemStack output = !process.items.get(1).isEmpty() ? process.items.get(1) : process.items.get(0);
 				EnumFacing outDir = mirrored?facing.rotateYCCW():facing.rotateY();
 				BlockPos outPos = getBlockPosForPos(8).offset(outDir);
-				TileEntity inventoryTile = this.world.getTileEntity(outPos);
-				if(inventoryTile!=null)
-					output = Utils.insertStackIntoInventory(inventoryTile, output, outDir.getOpposite());
+					TileEntity inventoryTile = Utils.getExistingTileEntity(world, outPos);
+					if (inventoryTile != null)
+						output = Utils.insertStackIntoInventory(inventoryTile, output, outDir.getOpposite());
 				if(!output.isEmpty())
 					Utils.dropStackAtPos(world, outPos, output, outDir);
 				processIterator.remove();

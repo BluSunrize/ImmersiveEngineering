@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBool
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -39,25 +40,25 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 				active=false;
 			if(energyStorage.getEnergyStored()>3200||a)
 				for(EnumFacing fd : EnumFacing.VALUES)
-				{
-					TileEntity tileEntity = world.getTileEntity(getPos().offset(fd));
-					int consumed = 0;
-					if(tileEntity!=null)
-						if(tileEntity instanceof IExternalHeatable)
-							consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
-						else
-						{
-							ExternalHeaterHandler.HeatableAdapter adapter = ExternalHeaterHandler.getHeatableAdapter(tileEntity.getClass());
-							if(adapter!=null)
-								consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), redstonePower);
-						}
-					if(consumed>0)
 					{
-						this.energyStorage.extractEnergy(consumed, false);
-						if(!active)
-							active = true;
+						TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
+						int consumed = 0;
+						if(tileEntity!=null)
+							if(tileEntity instanceof IExternalHeatable)
+								consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
+							else
+							{
+								ExternalHeaterHandler.HeatableAdapter adapter = ExternalHeaterHandler.getHeatableAdapter(tileEntity.getClass());
+								if(adapter!=null)
+									consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), redstonePower);
+							}
+						if(consumed>0)
+						{
+							this.energyStorage.extractEnergy(consumed, false);
+							if(!active)
+								active = true;
+						}
 					}
-				}
 			if(active!=a)
 			{
 				this.markDirty();

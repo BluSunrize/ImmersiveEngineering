@@ -115,7 +115,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 				}
 				if(allowed || (allowUnmapped&&unmapped))
 				{
-					TileEntity tile = world.getTileEntity(getPos().offset(side));
+					TileEntity tile = Utils.getExistingTileEntity(world, getPos().offset(side));
 					if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 					{
 						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());

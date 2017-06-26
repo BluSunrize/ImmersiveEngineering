@@ -55,7 +55,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 			for(EnumFacing f : EnumFacing.values())
 				if(f!=EnumFacing.UP)
 				{
-					TileEntity inventory = this.world.getTileEntity(getPos().offset(f));
+					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(f));
 					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
 					stack = Utils.insertStackIntoInventory(inventory, stack, f.getOpposite());
 					if(stack.isEmpty())

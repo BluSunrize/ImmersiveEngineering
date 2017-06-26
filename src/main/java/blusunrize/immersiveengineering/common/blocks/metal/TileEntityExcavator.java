@@ -62,9 +62,9 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		super.update();
 		if(isDummy())
 			return;
-		if(!world.isRemote)
+		BlockPos wheelPos = this.getBlockPosForPos(31);
+		if(!world.isRemote && world.isBlockLoaded(wheelPos))
 		{
-			BlockPos wheelPos = this.getBlockPosForPos(31);
 			TileEntity center = world.getTileEntity(wheelPos);
 
 			if(center instanceof TileEntityBucketWheel)

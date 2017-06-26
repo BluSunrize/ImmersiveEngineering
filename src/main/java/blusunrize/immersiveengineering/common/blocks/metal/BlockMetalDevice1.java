@@ -386,6 +386,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 					if (here.sideConfig[i]==-1)
 					{
 						EnumFacing f = EnumFacing.VALUES[i];
+
 						TileEntity there = world.getTileEntity(pos.offset(f));
 						if (there instanceof TileEntityFluidPipe)
 							((TileEntityFluidPipe) there).toggleSide(f.getOpposite().ordinal());

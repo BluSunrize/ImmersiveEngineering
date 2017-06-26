@@ -150,7 +150,8 @@ public class ConveyorVertical extends ConveyorBasic
 			}
 		}
 		//Little boost at the top of a conveyor to help players and minecarts to get off
-		if(contact && !(conveyorTile.getWorld().getTileEntity(conveyorTile.getPos().add(0, 1, 0)) instanceof IConveyorTile))
+		BlockPos upForward = conveyorTile.getPos().add(0, 1, 0);
+		if(contact && !(Utils.getExistingTileEntity(conveyorTile.getWorld(), upForward) instanceof IConveyorTile))
 			vY *= 2.25;
 		return new Vec3d(vX, vY, vZ);
 	}

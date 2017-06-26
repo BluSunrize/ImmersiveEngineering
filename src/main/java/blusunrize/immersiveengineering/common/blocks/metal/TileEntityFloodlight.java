@@ -130,7 +130,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			while(it.hasNext() && timeout++<16)
 			{
 				BlockPos cc = it.next();
-				if(world.getTileEntity(cc) instanceof TileEntityFakeLight)
+				if(Utils.getExistingTileEntity(world, cc) instanceof TileEntityFakeLight)
 					world.setBlockToAir(cc);
 				it.remove();
 			}
