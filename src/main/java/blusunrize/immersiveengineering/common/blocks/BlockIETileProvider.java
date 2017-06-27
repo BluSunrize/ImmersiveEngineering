@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -343,7 +344,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+//	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
