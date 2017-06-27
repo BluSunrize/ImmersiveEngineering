@@ -31,10 +31,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityArcFurnace,ArcFurnaceRecipe> implements ISoundTile,IGuiTile, IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
@@ -503,7 +500,44 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			return true;
 		return super.hasCapability(capability, facing);
 	}
-	IItemHandler inputHandler = new IEInventoryHandler(12, this, 0, true,false);
+	IItemHandler inputHandler = new IEInventoryHandler(12, this, 0, true,false)
+	{
+		//ignore the given slot and spread it out
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if (stack.isEmpty())
+				return stack;
+			stack = stack.copy();
+			List<Integer> possibleSlots = new ArrayList<>(12);
+			for (int i = 0; i < 12; i++)
+			{
+				ItemStack here = inventory.get(i);
+				if (here.isEmpty())
+				{
+					if (!simulate)
+						inventory.set(i, stack);
+					return ItemStack.EMPTY;
+				}
+				else if (ItemHandlerHelper.canItemStacksStack(stack, here) && here.getCount() < here.getMaxStackSize())
+				{
+					possibleSlots.add(i);
+				}
+			}
+			Collections.sort(possibleSlots, (a, b) -> Integer.compare(inventory.get(a).getCount(), inventory.get(b).getCount()));
+			for (int i : possibleSlots)
+			{
+				ItemStack here = inventory.get(i);
+				int fillCount = Math.min(here.getMaxStackSize() - here.getCount(), stack.getCount());
+				if (!simulate)
+					here.grow(fillCount);
+				stack.shrink(fillCount);
+				if (stack.isEmpty())
+					return ItemStack.EMPTY;
+			}
+			return stack;
+		}
+	};
 	IItemHandler additiveHandler = new IEInventoryHandler(4, this, 12, true,false);
 	IItemHandler outputHandler = new IEInventoryHandler(6, this, 16, false,true);
 	IItemHandler slagHandler = new IEInventoryHandler(1, this, 22, false,true);
