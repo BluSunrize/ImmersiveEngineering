@@ -98,6 +98,8 @@ public class RecipePowerpack implements IRecipe
 	{
 		if(!(stack.getItem() instanceof ItemArmor) || ((ItemArmor)stack.getItem()).armorType!=EntityEquipmentSlot.CHEST)
 			return false;
+		if (stack.getItem()==IEContent.itemPowerpack||ItemNBTHelper.hasKey(stack, Lib.NBT_Powerpack))
+			return false;
 		String regName = stack.getItem().getRegistryName().toString();
 		for(String s : Config.IEConfig.Tools.powerpack_whitelist)
 			if(regName.equals(s))
