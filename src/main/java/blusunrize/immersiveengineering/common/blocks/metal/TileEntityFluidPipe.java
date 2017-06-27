@@ -595,19 +595,69 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return key;
 	}
 
+	// Lowest 6 bits are conns, bits 8 to 14 (1&(b>>8)) ore conn style
+	private static short getConnectionsFromKey(String key)
+	{
+		short ret = 0;
+		for(int i=0; i<6; i++)
+		{
+			char c = key.charAt(i);
+			switch (c)
+			{
+				case '0':
+					//NOP
+					break;
+				case '2':
+					ret |= (1<<i)|(1<<(i+8));
+					break;
+				case '1':
+					ret |= (1<<i);
+					break;
+			}
+		}
+		return ret;
+	}
+
+	private static int getConnectionStyle(int dir, short conns)
+	{
+		return 1&(conns>>(dir+8));
+	}
+
 	@Override
 	public OBJState getOBJState()
 	{
 		byte connections = getConnectionByte();
 		String key = getRenderCacheKey();
+		return getStateFromKey(key);
+	}
+
+	//	@Override
+//	public HashMap<String, String> getTextureReplacements()
+//	{
+//		if(pipeCover!=null)
+//		{
+//			HashMap<String,String> map = new HashMap<String,String>();
+////			map.put("cover","minecraft:blocks/stone");
+//			Block b = Block.getBlockFromItem(pipeCover.getItem());
+//			IBlockState state = b!=null?b.getStateFromMeta(pipeCover.getMetadata()): Blocks.STONE.getDefaultState();
+//			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+//			if(model!=null && model.getParticleTexture()!=null)
+//				map.put("cover", model.getParticleTexture().getIconName());
+//
+//			return map;
+//		}
+//		return null;
+//	}
+	public static OBJState getStateFromKey(String key)
+	{
 		if(!cachedOBJStates.containsKey(key))
 		{
 			ArrayList<String> parts = new ArrayList();
 			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrix());//new Matrix4();
-
+			short connections = getConnectionsFromKey(key);
 //			if(pipeCover!=null)
 //				parts.add("cover");
-			int totalConnections = Integer.bitCount(connections);
+			int totalConnections = Integer.bitCount(connections&255);
 			boolean straightY = (connections&3)==3;
 			boolean straightZ = (connections&12)==12;
 			boolean straightX = (connections&48)==48;
@@ -636,25 +686,25 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 					if(straightY)
 					{
 						parts.add("pipe_y");
-						if(getConnectionStyle(0)==1)
+						if(getConnectionStyle(0, connections)==1)
 							parts.add("con_yMin");
-						if(getConnectionStyle(1)==1)
+						if(getConnectionStyle(1, connections)==1)
 							parts.add("con_yMax");
 					}
 					else if(straightZ)
 					{
 						parts.add("pipe_z");
-						if(getConnectionStyle(2)==1)
+						if(getConnectionStyle(2, connections)==1)
 							parts.add("con_zMin");
-						if(getConnectionStyle(3)==1)
+						if(getConnectionStyle(3, connections)==1)
 							parts.add("con_zMax");
 					}
 					else if(straightX)
 					{
 						parts.add("pipe_x");
-						if(getConnectionStyle(4)==1)
+						if(getConnectionStyle(4, connections)==1)
 							parts.add("con_xMin");
-						if(getConnectionStyle(5)==1)
+						if(getConnectionStyle(5, connections)==1)
 							parts.add("con_xMax");
 					}
 					else
@@ -838,272 +888,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 					parts.add("con_xMin");
 					parts.add("con_xMax");
 
-					break;
-			}
-			//			connetionParts
-			//			for(int i=0; i<6; i++)
-			//				if(((TileEntityFluidPipe)tile).getConnectionStyle(i)==1)
-			//					connectionCaps.add(CONNECTIONS[i]);
-
-			Matrix4 tempMatr = new Matrix4();
-			tempMatr.m03 = tempMatr.m13 = tempMatr.m23 = .5f;
-			rotationMatrix.leftMultiply(tempMatr);
-			tempMatr.invert();
-			rotationMatrix = rotationMatrix.multiply(tempMatr);
-
-			cachedOBJStates.put(key, new OBJState(parts, true, new TRSRTransformation(rotationMatrix.toMatrix4f())));
-		}
-		return cachedOBJStates.get(key);
-	}
-
-	//	@Override
-//	public HashMap<String, String> getTextureReplacements()
-//	{
-//		if(pipeCover!=null)
-//		{
-//			HashMap<String,String> map = new HashMap<String,String>();
-////			map.put("cover","minecraft:blocks/stone");
-//			Block b = Block.getBlockFromItem(pipeCover.getItem());
-//			IBlockState state = b!=null?b.getStateFromMeta(pipeCover.getMetadata()): Blocks.STONE.getDefaultState();
-//			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-//			if(model!=null && model.getParticleTexture()!=null)
-//				map.put("cover", model.getParticleTexture().getIconName());
-//
-//			return map;
-//		}
-//		return null;
-//	}
-	public static OBJState getStateFromKey(String key)
-	{
-		if(!cachedOBJStates.containsKey(key))
-		{
-			ArrayList<String> parts = new ArrayList();
-			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrix());//new Matrix4();
-
-			byte connections = (byte)Integer.parseInt(key.replace("2","1"), 2);
-			int totalConnections = Integer.bitCount(connections);
-			boolean straightY = (connections&3)==3;
-			boolean straightZ = (connections&12)==12;
-			boolean straightX = (connections&48)==48;
-			switch(totalConnections)
-			{
-				case 0://stub
-					parts.add("center");
-					break;
-				case 1://stopper
-					parts.add("stopper");
-
-					//default: y-
-					if((connections&2)!=0)//y+
-						rotationMatrix.rotate(Math.PI, 0,0,1);
-					else if((connections&4)!=0)//z-
-						rotationMatrix.rotate(Math.PI/2, 1,0,0);
-					else if((connections&8)!=0)//z+
-						rotationMatrix.rotate(-Math.PI/2, 1,0,0);
-					else if((connections&16)!=0)//x-
-						rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-					else if((connections&32)!=0)//x+
-						rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					parts.add("con_yMin");
-					break;
-				case 2://straight or curve
-					if(straightY)
-					{
-						parts.add("pipe_y");
-						if(key.charAt(5)=='2')
-							parts.add("con_yMin");
-						if(key.charAt(4)==1)
-							parts.add("con_yMax");
-					}
-					else if(straightZ)
-					{
-						parts.add("pipe_z");
-						if(key.charAt(3)=='2')
-							parts.add("con_zMin");
-						if(key.charAt(2)=='2')
-							parts.add("con_zMax");
-					}
-					else if(straightX)
-					{
-						parts.add("pipe_x");
-						if(key.charAt(1)=='2')
-							parts.add("con_xMin");
-						if(key.charAt(0)=='2')
-							parts.add("con_xMax");
-					}
-					else
-					{
-						parts.add("curve");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						byte connectTo = (byte)(connections&60);
-						if((connections&3)!=0)//curve to top or bottom
-						{
-							if(connectTo==16)//x-
-								rotationMatrix.rotate(Math.PI/2, 0,1,0);
-							else if(connectTo==32)//x+
-								rotationMatrix.rotate(-Math.PI/2, 0,1,0);
-							else if(connectTo==8)//z+
-								rotationMatrix.rotate(Math.PI, 0,1,0);
-							if((connections&2)!=0)//flip to top
-								rotationMatrix.rotate(Math.PI, 0,0,1);
-
-							//default: Curve to z-
-						}
-						else//curve to horizontal
-						{
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-							if(connectTo==40)//z+ to x+
-								rotationMatrix.rotate(Math.PI, 1,0,0);
-							else if(connectTo==24)//z+ to x-
-								rotationMatrix.rotate(-Math.PI/2, 1,0,0);
-							else if(connectTo==36)//z- to x+
-								rotationMatrix.rotate(Math.PI/2, 1,0,0);
-							//default: z- to x-
-						}
-					}
-					break;
-				case 3://tcross or tcurve
-					if(straightX||straightZ||straightY)//has straight connect
-					{
-						parts.add("tcross");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						parts.add("con_zMax");
-						if(straightX)
-						{
-							rotationMatrix.rotate(Math.PI/2, 0,1,0);
-							if((connections&4)!=0)//z-
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
-							else if((connections&8)!=0)//z+
-								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-							else if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI, 0,0,1);
-							//default: Curve to y-
-						}
-						else if(straightY)
-						{
-							rotationMatrix.rotate(Math.PI/2, 1,0,0);
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-							else if((connections&32)!=0)//x+
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
-							else if((connections&8)!=0)//z+
-								rotationMatrix.rotate(Math.PI, 0,0,1);
-							//default: Curve to z-
-						}
-						else //default:z straight
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-							else if((connections&32)!=0)//x+
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
-							else if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI, 0,0,1);
-							//default: Curve to y-
-						}
-					}
-					else //tcurve
-					{
-						parts.add("tcurve");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						parts.add("con_xMax");
-						//default y-, z-, x+
-						if((connections&8)!=0)//z+
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI, 0,1,0);
-							else
-								rotationMatrix.rotate(-Math.PI/2, 0,1,0);
-						}
-						else//z-
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						}
-						if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					}
-					break;
-				case 4://cross or complex tcross
-					boolean cross = (straightX&&straightZ)||(straightX&&straightY)||(straightZ&&straightY);
-					if(cross)
-					{
-						parts.add("cross");
-						parts.add("con_yMin");
-						parts.add("con_yMax");
-						parts.add("con_zMin");
-						parts.add("con_zMax");
-						if(!straightY)//x and z
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						else if(straightX)//x and y
-							rotationMatrix.rotate(Math.PI/2, 0,1,0);
-					}
-					else
-					{
-						parts.add("tcross2");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						parts.add("con_zMax");
-						parts.add("con_xMax");
-						if(straightZ)
-						{
-							//default y- z+- x+
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI, 0,1,0);
-							if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						}
-						else if(straightY)
-						{
-							//default y+- z- x+
-							if((connections&8)!=0)//z+
-							{
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
-								if((connections&16)!=0)//x-
-									rotationMatrix.rotate(Math.PI/2, 0,0,1);
-							}
-							else if((connections&16)!=0)//x-
-								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						}
-						else
-						{
-							rotationMatrix.rotate(Math.PI/2, 0,1,0);
-							//default y- z- x+-
-							if((connections&8)!=0)//z+
-								rotationMatrix.rotate(Math.PI, 0,1,0);
-							if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						}
-					}
-					break;
-				case 5://complete tcross
-					parts.add("tcross3");
-					parts.add("con_yMin");
-					parts.add("con_yMax");
-					parts.add("con_zMin");
-					parts.add("con_zMax");
-					parts.add("con_xMax");
-					//default y+- z+- x+
-					if(straightZ)
-					{
-						if(straightY)
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI, 0,1,0);
-						}
-						else if(straightX)
-							rotationMatrix.rotate(((connections&2)!=0)?(Math.PI/2):(-Math.PI/2), 0,0,1);
-					}
-					else if(straightX)
-					{
-						rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						if((connections&8)!=0)//z+
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-					}
-					break;
-				case 6://Full Crossing
 					break;
 			}
 			//			connetionParts
