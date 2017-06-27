@@ -315,7 +315,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						cycled.set(i-1, bullets.get(i));
 					cycled.set(cycled.size() -1, bullets.get(0));
 					setBullets(revolver, cycled);
-					ItemNBTHelper.setInt(revolver, "cooldown", 10);
+					ItemNBTHelper.setInt(revolver, "cooldown", 15);
 					return new ActionResult(EnumActionResult.SUCCESS, revolver);
 				}
 			}
