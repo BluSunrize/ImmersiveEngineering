@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -355,9 +356,11 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//		}
 	//	}
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+//	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		super.onNeighborChange(world, pos, neighbor);
+//		super.onNeighborChange(world, pos, fromPos);
+		super.neighborChanged(state, world, pos, block, fromPos);
 		if (world.getBlockState(pos).getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
 			TileEntityFluidPipe.indirectConnections.clear();
 	}

@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -23,7 +24,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDevice0>
@@ -146,12 +146,14 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbour)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+//	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbour)
 	{
-		super.onNeighborChange(world, pos, neighbour);
+//		super.onNeighborChange(world, pos, neighbour);
+		super.neighborChanged(state, world, pos, block, fromPos);
 		int explosivesType = this.getExplosivesType(world.getBlockState(pos));
-		if(world instanceof World && explosivesType>=0 && ((World)world).isBlockPowered(pos))
-			this.doExplosion((World)world, pos, world.getBlockState(pos), null, explosivesType);
+		if(world instanceof World && explosivesType>=0 && world.isBlockPowered(pos))
+			this.doExplosion(world, pos, world.getBlockState(pos), null, explosivesType);
 	}
 	@Override
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
