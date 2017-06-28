@@ -69,9 +69,19 @@ public class MultiblockRefinery implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		if(iterator>=5&&iterator<10)
+		if (iterator==5)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000020");
+			return true;
+		}
+		else if (iterator==9)
+		{
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000002");
+			return true;
+		}
+		else if(iterator>5&&iterator<9)
+		{
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000022");
 			return true;
 		}
 		return false;

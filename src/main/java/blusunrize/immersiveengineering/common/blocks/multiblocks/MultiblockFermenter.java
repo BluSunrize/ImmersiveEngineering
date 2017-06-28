@@ -74,7 +74,7 @@ public class MultiblockFermenter implements IMultiblock
 		}
 		if(iterator==5)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000001");
 			return true;
 		}
 		return false;
