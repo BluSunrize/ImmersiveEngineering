@@ -57,7 +57,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 					BlockPos targetPos = lowestLayer.poll();
 					IBlockState state = getWorld().getBlockState(targetPos);
 					if((state.getBlock().isAir(state,getWorld(),targetPos) || !state.getMaterial().isSolid()) && !isFullFluidBlock(targetPos, state))
-					if(this.tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
+					if(tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
 					{
 						tank.drain(Fluid.BUCKET_VOLUME, true);
 						addConnectedSpaces(targetPos);
@@ -204,6 +204,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		sideConfig[side]++;
 		if(sideConfig[side]>1)
 			sideConfig[side]=-1;
+		prepareAreaCheck();
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
 		getWorld().addBlockEvent(getPos(), this.getBlockType(), 0, 0);
