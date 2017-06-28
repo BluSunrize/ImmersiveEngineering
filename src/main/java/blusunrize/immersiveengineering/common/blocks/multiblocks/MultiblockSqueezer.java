@@ -73,7 +73,7 @@ public class MultiblockSqueezer implements IMultiblock
 		}
 		if(iterator==5)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000002");
 			return true;
 		}
 		return false;

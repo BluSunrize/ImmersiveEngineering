@@ -67,17 +67,17 @@ public class MultiblockMixer implements IMultiblock
 	{
 		if(iterator==1)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("002200");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000200");
 			return true;
 		}
 		if(iterator==3)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000020");
 			return true;
 		}
 		if(iterator==4)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("100110");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("022002");
 			return true;
 		}
 		return false;
