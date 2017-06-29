@@ -272,7 +272,7 @@ public class IEContent
 				"wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
 				"dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
 				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel",
-				"dust_saltpeter","dust_sulfur");
+				"dust_saltpeter","dust_sulfur", "electron_tube");
 		itemMetal = new ItemIEBase("metal", 64,
 				"ingot_copper", "ingot_aluminum", "ingot_lead", "ingot_silver", "ingot_nickel", "ingot_uranium", "ingot_constantan", "ingot_electrum", "ingot_steel",
 				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",

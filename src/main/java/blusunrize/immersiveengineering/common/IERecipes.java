@@ -58,6 +58,7 @@ public class IERecipes
 		ItemStack componentIron = new ItemStack(IEContent.itemMaterial,1,8);
 		ItemStack componentSteel = new ItemStack(IEContent.itemMaterial,1,9);
 		ItemStack woodenGrip = new ItemStack(IEContent.itemMaterial,1,13);
+		ItemStack elecTube = new ItemStack(IEContent.itemMaterial,1,26);
 		String[] woodenSticks = new String[]{"stickWood", "stickTreatedWood"};
 		String[] metalSticks = new String[]{"stickIron", "stickAluminum", "stickSteel"};
 		ItemStack[] cutters = new ItemStack[]{new ItemStack(IEContent.itemTool, 1, 1), new ItemStack(Items.SHEARS, 1, OreDictionary.WILDCARD_VALUE)};
@@ -69,8 +70,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,3), "I","I", 'I',"ingotAluminum");
 		addShapelessOredictRecipe(new ItemStack(Items.STRING), "fiberHemp","fiberHemp","fiberHemp");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,5), "HHH","HSH","HHH", 'H',"fiberHemp", 'S',"stickWood");
-		addOredictRecipe(componentIron, "I I"," C ","I I", 'I',"ingotIron",'C',"ingotCopper");
-		addOredictRecipe(componentSteel, "I I"," C ","I I", 'I',"ingotSteel",'C',"ingotCopper");
+		addOredictRecipe(componentIron, "I I"," C ","I I", 'I',"plateIron",'C',"ingotCopper");
+		addOredictRecipe(componentSteel, "I I"," C ","I I", 'I',"plateSteel",'C',"ingotCopper");
+
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,10), " S ","SBS","BSB", 'B',"plankTreatedWood", 'S',"stickTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,11), "BB ","SSB","SS ", 'B',"plankTreatedWood", 'S',"stickTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,12), " CC","CCC"," C ", 'C',"fabricHemp");
@@ -124,7 +126,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_CAPACITY.ordinal()), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.BUCKET, 'O',"dyeRed");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_BAYONET.ordinal()), "SI","IW", 'S',Items.IRON_SWORD, 'I',"ingotSteel", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_MAGAZINE.ordinal()), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_ELECTRO.ordinal()), " G ","GEG","GEG", 'E',electrumCoil, 'G',"blockGlass");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_ELECTRO.ordinal()), "RWR","TTT", 'R',"stickSteel", 'W',"wireCopper", 'T',elecTube);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.CHEMTHROWER_FOCUS.ordinal()), " SS","PPH"," SS", 'P',new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()), 'H',Blocks.HOPPER, 'S',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.RAILGUN_SCOPE.ordinal()), "GC ","C C"," CG", 'G',"paneGlassColorless", 'C',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.RAILGUN_CAPACITORS.ordinal()), "WWW","HHH", 'W',new ItemStack(IEContent.itemWireCoil,1,2), 'H',new ItemStack(IEContent.blockMetalDevice0,1,2));
@@ -324,15 +326,15 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.DYNAMO.getMeta()), "RCR","III", 'C',copperCoil,'I',"ingotIron",'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()), "III","CBC","CCC", 'I',"ingotSteel",'C',"plateConstantan",'B',copperCoil);
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,3, BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta()), " I ","PGP","IRI", 'P',"paneGlass",'I',"plateIron",'G',"glowstone",'R',"dustRedstone");
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,3, BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta()), " I ","PTP","IRI", 'P',"paneGlass",'I',"plateIron",'T',elecTube,'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.CHARGING_STATION.getMeta()), "IMI","GGG","WCW", 'M',new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_MV.getMeta()), 'I',"ingotIron", 'G',"blockGlass", 'C',copperCoil, 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,8, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()), "PPP","   ","PPP", 'P',"plateIron");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), "SFS","SFS","BFB", 'F',"fenceSteel",'S',"scaffoldingSteel",'B',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TESLA_COIL.getMeta()), "III"," C ","MCM", 'I',"ingotAluminum",'C',copperCoil,'M',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()));
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta()), "III","PGC","ILI", 'I',"ingotIron",'P',"paneGlass",'G',"glowstone",'C',copperCoil,'L',componentIron);
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta()), "III","PTC","ILI", 'I',"ingotIron",'P',"paneGlass",'T',elecTube,'C',copperCoil,'L',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TURRET_CHEM.getMeta()), " S "," GL","XBR", 'S',new ItemStack(IEContent.itemToolUpgrades,1,8), 'G',new ItemStack(IEContent.itemChemthrower),'L',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()), 'B',new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.TURNTABLE.getMeta()),'R',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),'X',new ItemStack(IEContent.blockMetalDevice0,1, BlockTypes_MetalDevice0.BARREL.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TURRET_GUN.getMeta()), " S "," GL","XBR", 'S',new ItemStack(IEContent.itemToolUpgrades,1,8), 'G',new ItemStack(IEContent.itemRevolver),'L',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()), 'B',new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.TURNTABLE.getMeta()),'R',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),'X',new ItemStack(IEContent.itemToolUpgrades,1,5));
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.BELLJAR.getMeta()), " L ","G G","WCW", 'L',new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.LANTERN.getMeta()), 'G',"blockGlass", 'W',"plankTreatedWood", 'C',componentIron);
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.BELLJAR.getMeta()), "GTG","G G","WCW", 'T',elecTube, 'G',"blockGlass", 'W',"plankTreatedWood", 'C',componentIron);
 
 		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', "leather");
 		addShapelessIngredientRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled"), 1), new IngredientStack(baseConveyor).setUseNBT(true));
@@ -386,6 +388,14 @@ public class IERecipes
 
 	public static void initBlueprintRecipes()
 	{
+		//
+		//MATERIALS
+		//
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,8), "plateIron","plateIron","ingotCopper");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,9), "plateSteel","plateSteel","ingotCopper");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,3,26), "blockGlass","wireCopper","wireCopper","dustRedstone");
+		addOredictRecipe(ItemEngineersBlueprint.getTypedBlueprint("components"), "JKL","DDD","PPP", 'J',"ingotCopper",'K',"ingotAluminum",'L',"ingotIron", 'D',"dyeBlue",'P',Items.PAPER);
+
 		//
 		//BULLETS
 		//
