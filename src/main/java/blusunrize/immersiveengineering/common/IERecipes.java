@@ -125,11 +125,11 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_CAPACITY.ordinal()), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.BUCKET, 'O',"dyeRed");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_BAYONET.ordinal()), "SI","IW", 'S',Items.IRON_SWORD, 'I',"ingotSteel", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_MAGAZINE.ordinal()), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_ELECTRO.ordinal()), "RWR","TTT", 'R',"stickSteel", 'W',"wireCopper", 'T',elecTube);
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_ELECTRO.ordinal()), "TTT","RWR", 'T',elecTube, 'R',"stickSteel", 'W',"wireCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.CHEMTHROWER_FOCUS.ordinal()), " SS","PPH"," SS", 'P',new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()), 'H',Blocks.HOPPER, 'S',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.RAILGUN_SCOPE.ordinal()), "GC ","C C"," CG", 'G',"paneGlassColorless", 'C',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.RAILGUN_CAPACITORS.ordinal()), "WWW","HHH", 'W',new ItemStack(IEContent.itemWireCoil,1,2), 'H',new ItemStack(IEContent.blockMetalDevice0,1,2));
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_FLASH.ordinal()), "AGA","GEG", 'A',"plateAluminum", 'G',"paneGlass", 'E',new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_ELECTRO.ordinal()));
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_FLASH.ordinal()), "AGA","GTG", 'A',"plateAluminum", 'G',"paneGlass", 'T',elecTube);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_SHOCK.ordinal()), "CRC","CRC","CRC", 'C',new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_LV.getMeta()), 'R',"stickIron");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_MAGNET.ordinal()), "  L","LC ","LIL", 'L',"leather",'C',new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.COIL_LV.getMeta()), 'I',"ingotIron");
 
