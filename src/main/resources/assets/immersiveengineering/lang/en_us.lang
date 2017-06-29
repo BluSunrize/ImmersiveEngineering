@@ -293,6 +293,7 @@ item.immersiveengineering.material.wire_aluminum.name=Aluminium Wire
 item.immersiveengineering.material.wire_steel.name=Steel Wire
 item.immersiveengineering.material.dust_saltpeter.name=Nitrate Dust
 item.immersiveengineering.material.dust_sulfur.name=Sulfur Dust
+item.immersiveengineering.material.electron_tube.name=Electron Tube
 
 item.immersiveengineering.seed.hemp.name=Industrial Hemp Seeds
 
@@ -648,6 +649,7 @@ desc.immersiveengineering.info.chance=Chance:
 
 desc.immersiveengineering.info.blueprint.creates0=Created Items: §6Hold Shift§r
 desc.immersiveengineering.info.blueprint.creates1=Created Items:
+desc.immersiveengineering.info.blueprint.components=Crafting Components
 desc.immersiveengineering.info.blueprint.bullet=Common Projectiles
 desc.immersiveengineering.info.blueprint.specialBullet=Specialized Projectiles
 desc.immersiveengineering.info.blueprint.electrode=Arc Furnace Electrodes
