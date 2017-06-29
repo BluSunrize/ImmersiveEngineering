@@ -293,7 +293,7 @@ item.immersiveengineering.material.wire_aluminum.name=Aluminium Wire
 item.immersiveengineering.material.wire_steel.name=Steel Wire
 item.immersiveengineering.material.dust_saltpeter.name=Nitrate Dust
 item.immersiveengineering.material.dust_sulfur.name=Sulfur Dust
-item.immersiveengineering.material.electron_tube.name=Electron Tube
+item.immersiveengineering.material.electron_tube.name=Vacuum Tube
 
 item.immersiveengineering.seed.hemp.name=Industrial Hemp Seeds
 

@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -32,7 +31,7 @@ public class RecipePowerpack implements IRecipe
 				else
 					return false;
 		}
-		if(!powerpack.isEmpty() && !armor.isEmpty())
+		if(!powerpack.isEmpty() && !armor.isEmpty() && !ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 			return true;
 		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack) && powerpack.isEmpty())
 			return true;
@@ -54,7 +53,7 @@ public class RecipePowerpack implements IRecipe
 					armor = stackInSlot;
 		}
 
-		if(!powerpack.isEmpty() && !armor.isEmpty())
+		if(!powerpack.isEmpty() && !armor.isEmpty() && !ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 		{
 			ItemStack output = armor.copy();
 			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, powerpack.copy());
@@ -98,12 +97,15 @@ public class RecipePowerpack implements IRecipe
 	{
 		if(!(stack.getItem() instanceof ItemArmor) || ((ItemArmor)stack.getItem()).armorType!=EntityEquipmentSlot.CHEST)
 			return false;
-		if (stack.getItem()==IEContent.itemPowerpack||ItemNBTHelper.hasKey(stack, Lib.NBT_Powerpack))
+		if (stack.getItem()==IEContent.itemPowerpack)
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
 		for(String s : Config.IEConfig.Tools.powerpack_whitelist)
 			if(regName.equals(s))
 				return true;
-		return !ImmersiveEngineering.proxy.armorHasCustomModel(stack);
+		for(String s : Config.IEConfig.Tools.powerpack_blacklist)
+			if(regName.equals(s))
+				return false;
+		return true;
 	}
 }
