@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import com.google.common.collect.Lists;
@@ -30,7 +29,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 24, 16);
-		guiItemStacks.set(0, Lists.newArrayList(ItemEngineersBlueprint.getTypedBlueprint(recipeWrapper.blueprintCategory)));
+		guiItemStacks.set(0, Lists.newArrayList(BlueprintCraftingRecipe.getTypedBlueprint(recipeWrapper.blueprintCategory)));
 		for(int i=0; i<recipeWrapper.recipeInputs.length; i++)
 		{
 			guiItemStacks.init(1+i, true, 80+i%2*18, 20+i/2*18);

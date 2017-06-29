@@ -1000,7 +1000,8 @@ ie.manual.entry.updateNews_40=Dear Engineer!<br><br>The past update has brought 
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
 ie.manual.category.energy.name=Power, wires, generators
-ie.manual.category.machines.name=Tools and Simple Machines
+ie.manual.category.tools.name=Tools
+ie.manual.category.machines.name=Simple Machines
 ie.manual.category.heavymachines.name=Heavy Machinery
 
 ie.manual.entry.introduction.name=Introduction
@@ -1029,6 +1030,12 @@ ie.manual.entry.alloys0=Mixing dusts creates an alloy blend that can then be sme
 ie.manual.entry.plates.name=Metal Plates
 ie.manual.entry.plates.subtext=Flat as a flounder
 ie.manual.entry.plates0=Metal Plates are a crafting material required for the creation of some machines or blocks. They are made by hammering an ingot with an Engineer's Hammer or in a <link;metalPress;§o§nMetal §o§nPress§r>.
+
+ie.manual.entry.components.name=Crafting Components
+ie.manual.entry.components.subtext=
+ie.manual.entry.components0=Many machines and tools are constructed from various sub-components. Some of these you will have to use on a regular basis, which is why they have their own entry in this manual. The §6Iron§r and §6Steel Mechanical Components§r are integral to the majority of Multiblocks and machinery.
+ie.manual.entry.components1=As you will find yourself creating these components more frequently, it may be advisable to draft a <link;blueprint;§o§nBlueprint§r> for them. Using this blueprint in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> will allow you to construct the components at a reduced cost.<br>The workbench recipes are found on the following page.
+ie.manual.entry.components2=Another, albeit less frequently used component are §6Vacuum Tubes§r. These glass tubes are used as elements in electronic machinery and used in <link;lighting;§o§nlight emitting devices§r>.
 
 ie.manual.entry.hemp.name=Industrial Hemp
 ie.manual.entry.hemp.subtext=530 fabric it

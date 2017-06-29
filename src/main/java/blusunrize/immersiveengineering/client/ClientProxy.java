@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
@@ -48,9 +49,12 @@ import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.items.ItemDrillhead;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
+import blusunrize.immersiveengineering.common.items.ItemIEBase;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
+import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -562,8 +566,9 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
 		handleMineralManual();
-		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", ItemEngineersBlueprint.getTypedBlueprint("electrode")));
-		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2"));
+		ManualHelper.addEntry("components", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9)), new ManualPages.Crafting(ManualHelper.getManual(), "components1", BlueprintCraftingRecipe.getTypedBlueprint("components")), new ManualPageBlueprint(ManualHelper.getManual(), "components2", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,26)));
+		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.ItemDisplay(ManualHelper.getManual(), "graphite0", new ItemStack(IEContent.itemMaterial,1,18),new ItemStack(IEContent.itemMaterial,1,19)),new ManualPageBlueprint(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemGraphiteElectrode)));
+		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.Text(ManualHelper.getManual(), "shader2"));
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
 		pages = new ArrayList<IManualPage>();
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
@@ -686,6 +691,56 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod0", MultiblockLightningrod.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "lightningrod1"));
 
+		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
+		tempItemList = NonNullList.create();
+		for(int i=0; i<16; i++)
+			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour",EnumDyeColor.byDyeDamage(i).getMapColor().colorValue));
+		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_TOOLS,
+				new ManualPages.Crafting(ManualHelper.getManual(), "earmuffs0", new ItemStack(IEContent.itemEarmuffs)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1",(Object[])new PositionedItemStack[][]{
+						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(new ItemStack(Items.DYE,1,OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList,78,0)},
+						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.LEATHER_HELMET),new ItemStack(Items.IRON_HELMET)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.LEATHER_HELMET),"IE:Earmuffs",true),ItemNBTHelper.stackWithData(new ItemStack(Items.IRON_HELMET),"IE:Earmuffs",true)),78,0)}}));
+		ManualHelper.addEntry("toolbox", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "toolbox0", new ItemStack(IEContent.itemToolbox)), new ManualPages.Text(ManualHelper.getManual(), "toolbox1"));
+		ManualHelper.addEntry("shield", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "shield0", new ItemStack(IEContent.itemShield)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "shield1", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_FLASH.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "shield2", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_SHOCK.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "shield3", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_MAGNET.ordinal())));
+		ManualHelper.addEntry("drill", ManualHelper.CAT_TOOLS,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,13)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill2", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_WATERPROOF.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill3", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_LUBE.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill4", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_DAMAGE.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill5", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_CAPACITY.ordinal())));
+		ManualHelper.addEntry("revolver", ManualHelper.CAT_TOOLS,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver,1,0), new ItemStack(IEContent.itemMaterial,1,13),new ItemStack(IEContent.itemMaterial,1,14),new ItemStack(IEContent.itemMaterial,1,15),new ItemStack(IEContent.itemMaterial,1,16)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver,1,1)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_BAYONET.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_MAGAZINE.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_ELECTRO.ordinal())));
+		pages = new ArrayList<IManualPage>();
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", BlueprintCraftingRecipe.getTypedBlueprint("bullet")));
+		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1), new ItemStack(IEContent.itemMold,1,3)));
+		for(String key : BulletHandler.registry.keySet())
+			if(BulletHandler.registry.get(key).isProperCartridge())
+				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, BulletHandler.getBulletStack(key)));
+		ManualHelper.addEntry("bullets", ManualHelper.CAT_TOOLS, pages.toArray(new IManualPage[pages.size()]));
+		ManualHelper.addEntry("skyhook", ManualHelper.CAT_TOOLS,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial, 1, 13)),
+				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
+		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_TOOLS,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,13), new ItemStack(IEContent.itemToolUpgrades,1,0)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.DRILL_CAPACITY.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.CHEMTHROWER_FOCUS.ordinal())));
+		ManualHelper.addEntry("powerpack", ManualHelper.CAT_TOOLS,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "powerpack0", new ItemStack(IEContent.itemPowerpack)),
+				new ManualPages.Text(ManualHelper.getManual(), "powerpack1"));
+		ManualHelper.addEntry("railgun", ManualHelper.CAT_TOOLS,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "railgun0", new ItemStack(IEContent.itemRailgun,1,0), new ItemStack(IEContent.itemMaterial,1,13)),
+				new ManualPages.Text(ManualHelper.getManual(), "railgun1"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.RAILGUN_CAPACITORS.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.RAILGUN_SCOPE.ordinal())));
+
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"),ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":uncontrolled")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
@@ -722,55 +777,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "teslaCoil2", new ItemStack(IEContent.itemsFaradaySuit[0]), new ItemStack(IEContent.itemsFaradaySuit[1]), new ItemStack(IEContent.itemsFaradaySuit[2]), new ItemStack(IEContent.itemsFaradaySuit[3]), new ItemStack(IEContent.itemFluorescentTube)),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil3"),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil4"));
-		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
-		tempItemList = NonNullList.create();
-		for(int i=0; i<16; i++)
-			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour",EnumDyeColor.byDyeDamage(i).getMapColor().colorValue));
-		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "earmuffs0", new ItemStack(IEContent.itemEarmuffs)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1",(Object[])new PositionedItemStack[][]{
-						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(new ItemStack(Items.DYE,1,OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList,78,0)},
-						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.LEATHER_HELMET),new ItemStack(Items.IRON_HELMET)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.LEATHER_HELMET),"IE:Earmuffs",true),ItemNBTHelper.stackWithData(new ItemStack(Items.IRON_HELMET),"IE:Earmuffs",true)),78,0)}}));
-		ManualHelper.addEntry("toolbox", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "toolbox0", new ItemStack(IEContent.itemToolbox)), new ManualPages.Text(ManualHelper.getManual(), "toolbox1"));
-		ManualHelper.addEntry("shield", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "shield0", new ItemStack(IEContent.itemShield)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "shield1", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_FLASH.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "shield2", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_SHOCK.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "shield3", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_MAGNET.ordinal())));
-		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill2", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_WATERPROOF.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill3", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_LUBE.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill4", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_DAMAGE.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill5", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_CAPACITY.ordinal())));
-		ManualHelper.addEntry("revolver", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver,1,0), new ItemStack(IEContent.itemMaterial,1,7),new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,10)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver,1,1)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_BAYONET.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_MAGAZINE.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_ELECTRO.ordinal())));
-		pages = new ArrayList<IManualPage>();
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", ItemEngineersBlueprint.getTypedBlueprint("bullet")));
-		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1), new ItemStack(IEContent.itemMold,1,3)));
-		for(String key : BulletHandler.registry.keySet())
-			if(BulletHandler.registry.get(key).isProperCartridge())
-				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, BulletHandler.getBulletStack(key)));
-		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
-		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial, 1, 9)),
-				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
-		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,9), new ItemStack(IEContent.itemToolUpgrades,1,0)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.DRILL_CAPACITY.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.CHEMTHROWER_FOCUS.ordinal())));
-		ManualHelper.addEntry("powerpack", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "powerpack0", new ItemStack(IEContent.itemPowerpack)),
-				new ManualPages.Text(ManualHelper.getManual(), "powerpack1"));
-		ManualHelper.addEntry("railgun", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "railgun0", new ItemStack(IEContent.itemRailgun,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
-				new ManualPages.Text(ManualHelper.getManual(), "railgun1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.RAILGUN_CAPACITORS.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.RAILGUN_SCOPE.ordinal())));
 		ManualHelper.addEntry("razorwire", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "razorwire0", new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())));
 		ManualHelper.addEntry("turret", ManualHelper.CAT_MACHINES,

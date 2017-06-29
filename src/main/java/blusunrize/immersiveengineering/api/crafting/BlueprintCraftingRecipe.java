@@ -1,10 +1,11 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,6 +28,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
+	public static Item itemBlueprint;
 
 	public static ArrayList<String> blueprintCategories = new ArrayList<String>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
@@ -50,6 +52,13 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		//Time and energy values are for the automatic workbench
 		this.totalProcessEnergy = (int)Math.floor(23040*energyModifier);
 		this.totalProcessTime = (int)Math.floor(180*timeModifier);
+	}
+
+	public static ItemStack getTypedBlueprint(String type)
+	{
+		ItemStack stack = new ItemStack(itemBlueprint,1,0);
+		ItemNBTHelper.setString(stack, "blueprint", type);
+		return stack;
 	}
 
 	public boolean matchesRecipe(NonNullList<ItemStack> query)

@@ -290,6 +290,7 @@ public class IEContent
 		itemJerrycan = new ItemJerrycan();
 		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bullet_casing", "wire").setMetaHidden(1);
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
+		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
 		itemChemthrower = new ItemChemthrower();
@@ -921,7 +922,7 @@ public class IEContent
 			career_machinist.addTrade(3,
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
-					new IEVillagerTrades.ItemstackForEmerald(ItemEngineersBlueprint.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
+					new IEVillagerTrades.ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
 			);
 			career_machinist.addTrade(4,
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 0), new EntityVillager.PriceInfo(28, 40)),
@@ -929,7 +930,7 @@ public class IEContent
 			);
 			career_machinist.addTrade(5,
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 1), new EntityVillager.PriceInfo(32, 48)),
-					new IEVillagerTrades.ItemstackForEmerald(ItemEngineersBlueprint.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
+					new IEVillagerTrades.ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
 			);
 
 			VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".electrician");

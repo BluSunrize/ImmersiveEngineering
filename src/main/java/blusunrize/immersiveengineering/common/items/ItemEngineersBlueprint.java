@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -28,13 +27,6 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	public ItemEngineersBlueprint()
 	{
 		super("blueprint", 1, null);
-	}
-
-	public static ItemStack getTypedBlueprint(String type)
-	{
-		ItemStack stack = new ItemStack(IEContent.itemBlueprint,1,0);
-		ItemNBTHelper.setString(stack, "blueprint", type);
-		return stack;
 	}
 
 	@Override
