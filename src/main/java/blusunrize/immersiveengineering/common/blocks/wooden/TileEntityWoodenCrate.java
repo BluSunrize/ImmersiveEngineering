@@ -142,6 +142,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 				int slot = listSlots.remove(listSlots.size() - 1).intValue();
 				inventory.set(slot, itemstack);
 			}
+			this.markDirty();
 		}
 	}
 
