@@ -1,4 +1,4 @@
-#####Version 0.11-63
+#####Version 0.11-63 - BUILT
 - added the Heavy Plated Shield!
     - it protects like a normal shield
     - it has awesome upgrades
