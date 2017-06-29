@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDec
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice1;
 import blusunrize.immersiveengineering.common.crafting.*;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -106,7 +105,7 @@ public class IERecipes
 
 		addOredictRecipe(new ItemStack(IEContent.itemBullet,5,0), "I I","I I"," I ", 'I',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemBullet,5,1), "PDP","PDP"," I ", 'I',"ingotCopper",'P',Items.PAPER,'D',"dyeRed");
-		addOredictRecipe(ItemEngineersBlueprint.getTypedBlueprint("bullet"), "JKL","DDD","PPP", 'J',Items.GUNPOWDER,'K',"ingotCopper",'L',Items.GUNPOWDER, 'D',"dyeBlue",'P',Items.PAPER);
+		addOredictRecipe(BlueprintCraftingRecipe.getTypedBlueprint("bullet"), "JKL","DDD","PPP", 'J',Items.GUNPOWDER,'K',"ingotCopper",'L',Items.GUNPOWDER, 'D',"dyeBlue",'P',Items.PAPER);
 		addOredictRecipe(new ItemStack(IEContent.itemMold,1,3), " P ","PCP"," P ", 'P',"plateSteel",'C',new ItemStack(IEContent.itemBullet,1,0));
 		MetalPressRecipe.addRecipe(new ItemStack(IEContent.itemBullet,2,0),"ingotCopper",new ItemStack(IEContent.itemMold,1,3), 2400);
 
@@ -394,7 +393,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,8), "plateIron","plateIron","ingotCopper");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,9), "plateSteel","plateSteel","ingotCopper");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,3,26), "blockGlass","wireCopper","wireCopper","dustRedstone");
-		addOredictRecipe(ItemEngineersBlueprint.getTypedBlueprint("components"), "JKL","DDD","PPP", 'J',"ingotCopper",'K',"ingotAluminum",'L',"ingotIron", 'D',"dyeBlue",'P',Items.PAPER);
+		addOredictRecipe(BlueprintCraftingRecipe.getTypedBlueprint("components"), "JKL","DDD","PPP", 'J',"ingotCopper",'K',"ingotAluminum",'L',"ingotIron", 'D',"dyeBlue",'P',Items.PAPER);
 
 		//
 		//BULLETS
@@ -458,7 +457,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.EMERALD,1,18));
 
 		if(IEConfig.Machines.arcfurnace_electrodeCrafting)
-			addOredictRecipe(ItemEngineersBlueprint.getTypedBlueprint("electrode"), "GGG","GDG","GPG", 'G',"ingotHOPGraphite", 'D',"dyeBlue",'P',Items.PAPER);
+			addOredictRecipe(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), "GGG","GDG","GPG", 'G',"ingotHOPGraphite", 'D',"dyeBlue",'P',Items.PAPER);
 	}
 
 	public static void initFurnaceRecipes()

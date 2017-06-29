@@ -13,6 +13,7 @@ public class ManualHelper
 	public static String CAT_CONSTRUCTION = "construction";
 	public static String CAT_ENERGY = "energy";
 	public static String CAT_MACHINES = "machines";
+	public static String CAT_TOOLS = "tools";
 	public static String CAT_HEAVYMACHINES = "heavymachines";
 	public static String CAT_UPDATE = "update";
 	

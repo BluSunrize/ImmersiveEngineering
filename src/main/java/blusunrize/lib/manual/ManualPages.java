@@ -1,6 +1,5 @@
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
@@ -33,11 +32,13 @@ public abstract class ManualPages implements IManualPage
 	protected ManualInstance manual;
 	protected String text;
 	protected String localizedText;
+
 	public ManualPages(ManualInstance manual, String text)
 	{
-		this.manual=manual;
-		this.text=text;
+		this.manual = manual;
+		this.text = text;
 	}
+
 	@Override
 	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
@@ -46,19 +47,20 @@ public abstract class ManualPages implements IManualPage
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(true);
 			this.localizedText = manual.formatText(text);
-			this.localizedText = addLinks(manual, gui, this.localizedText, x,y, 120, pageButtons);
+			this.localizedText = addLinks(manual, gui, this.localizedText, x, y, 120, pageButtons);
 			if(this.localizedText==null)
-				this.localizedText="";
+				this.localizedText = "";
 			manual.fontRenderer.setUnicodeFlag(uni);
 		}
 	}
+
 	@Override
 	public void buttonPressed(GuiManual gui, GuiButton button)
 	{
-		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null)
+		if(button instanceof GuiButtonManualLink&&GuiManual.activeManual!=null)
 		{
-			if(GuiManual.previousSelectedEntry.size()>0)
-				GuiManual.previousSelectedEntry.add(0,GuiManual.getSelectedEntry());
+			if(GuiManual.previousSelectedEntry.size() > 0)
+				GuiManual.previousSelectedEntry.add(0, GuiManual.getSelectedEntry());
 			else
 				GuiManual.previousSelectedEntry.add(GuiManual.getSelectedEntry());
 			GuiManual.setSelectedEntry(((GuiButtonManualLink)button).key);
@@ -66,15 +68,18 @@ public abstract class ManualPages implements IManualPage
 			GuiManual.activeManual.initGui();
 		}
 	}
+
 	@Override
 	public ManualInstance getManualHelper()
 	{
 		return manual;
 	}
+
 	@Override
 	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button)
 	{
 	}
+
 	//	@Override
 	//	public void buttonPressed(GuiManual gui, GuiButton button)
 	//	{
@@ -94,14 +99,14 @@ public abstract class ManualPages implements IManualPage
 	{
 		public Text(ManualInstance manual, String text)
 		{
-			super(manual,text);
+			super(manual, text);
 		}
 
 		@Override
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y, 120, manual.getTextColour());
 			GlStateManager.enableBlend();
 			//				manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
 		}
@@ -117,23 +122,25 @@ public abstract class ManualPages implements IManualPage
 	{
 		String[] resources;
 		int[][] sizing;
+
 		public Image(ManualInstance helper, String text, String... images)
 		{
-			super(helper,text);
+			super(helper, text);
 			resources = new String[images.length];
 			sizing = new int[images.length][4];
-			for(int i=0; i<images.length; i++)
+			for(int i = 0; i < images.length; i++)
 			{
 				String[] split = images[i].split(";");
-				if(split.length<5)
+				if(split.length < 5)
 					continue;
 				resources[i] = split[0];
-				try{
+				try
+				{
 					sizing[i][0] = Integer.parseInt(split[1]);
 					sizing[i][1] = Integer.parseInt(split[2]);
 					sizing[i][2] = Integer.parseInt(split[3]);
 					sizing[i][3] = Integer.parseInt(split[4]);
-				}catch(Exception e)
+				} catch(Exception e)
 				{
 					e.printStackTrace();
 				}
@@ -144,7 +151,7 @@ public abstract class ManualPages implements IManualPage
 		public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 		{
 			int yOff = 0;
-			for(int i=0; i<resources.length; i++)
+			for(int i = 0; i < resources.length; i++)
 				if(resources[i]!=null&&!resources[i].isEmpty())
 					yOff += sizing[i][3]+5;
 			super.initPage(gui, x, y+yOff, pageButtons);
@@ -154,29 +161,29 @@ public abstract class ManualPages implements IManualPage
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
 			int yOff = 0;
-			for(int i=0; i<resources.length; i++)
+			for(int i = 0; i < resources.length; i++)
 				if(resources[i]!=null&&!resources[i].isEmpty())
 				{
 					int xOff = 60-sizing[i][2]/2;
-					gui.drawGradientRect(x+xOff-2,y+yOff-2,x+xOff+sizing[i][2]+2,y+yOff+sizing[i][3]+2, 0xffeaa74c,0xfff6b059);
-					gui.drawGradientRect(x+xOff-1,y+yOff-1,x+xOff+sizing[i][2]+1,y+yOff+sizing[i][3]+1, 0xffc68e46,0xffbe8844);
+					gui.drawGradientRect(x+xOff-2, y+yOff-2, x+xOff+sizing[i][2]+2, y+yOff+sizing[i][3]+2, 0xffeaa74c, 0xfff6b059);
+					gui.drawGradientRect(x+xOff-1, y+yOff-1, x+xOff+sizing[i][2]+1, y+yOff+sizing[i][3]+1, 0xffc68e46, 0xffbe8844);
 					yOff += sizing[i][3]+5;
 				}
-			String lastResource="";
+			String lastResource = "";
 			yOff = 0;
-			for(int i=0; i<resources.length; i++)
+			for(int i = 0; i < resources.length; i++)
 				if(resources[i]!=null&&!resources[i].isEmpty())
 				{
 					if(resources[i]!=lastResource)
 						ManualUtils.bindTexture(resources[i]);
 					int xOff = 60-sizing[i][2]/2;
-					ManualUtils.drawTexturedRect(x+xOff,y+yOff,sizing[i][2],sizing[i][3], (sizing[i][0])/256f,(sizing[i][0]+sizing[i][2])/256f, (sizing[i][1])/256f,(sizing[i][1]+sizing[i][3])/256f);
+					ManualUtils.drawTexturedRect(x+xOff, y+yOff, sizing[i][2], sizing[i][3], (sizing[i][0])/256f, (sizing[i][0]+sizing[i][2])/256f, (sizing[i][1])/256f, (sizing[i][1]+sizing[i][3])/256f);
 					yOff += sizing[i][3]+5;
 					lastResource = resources[i];
 				}
 
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOff, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y+yOff, 120, manual.getTextColour());
 			//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOff, 120, manual.getTextColour());
 		}
 
@@ -195,11 +202,12 @@ public abstract class ManualPages implements IManualPage
 		int[] bars;
 		//		int[] barsH;
 		boolean horizontalBars = false;
+
 		public Table(ManualInstance manual, String text, String[][] table, boolean horizontalBars)
 		{
-			super(manual,text);
+			super(manual, text);
 			this.table = table;
-			this.horizontalBars=horizontalBars;
+			this.horizontalBars = horizontalBars;
 		}
 
 		@Override
@@ -207,36 +215,37 @@ public abstract class ManualPages implements IManualPage
 		{
 			super.initPage(gui, x, y, pageButtons);
 			manual.fontRenderer.setUnicodeFlag(true);
-			int l = localizedText!=null?manual.fontRenderer.listFormattedStringToWidth(localizedText, 120).size():0;
+			int l = localizedText!=null?manual.fontRenderer.listFormattedStringToWidth(localizedText, 120).size(): 0;
 			textHeight = l*manual.fontRenderer.FONT_HEIGHT+6;
-			try{
+			try
+			{
 				if(table!=null)
 				{
 					localizedTable = new String[table.length][];
 
 					bars = new int[1];
-					for(int i=0; i<table.length; i++)
+					for(int i = 0; i < table.length; i++)
 					{
 						localizedTable[i] = new String[table[i].length];
-						for(int j=0; j<table[i].length; j++)
-							if(table[i][j] != null)
+						for(int j = 0; j < table[i].length; j++)
+							if(table[i][j]!=null)
 								localizedTable[i][j] = I18n.format(table[i][j]);
 
 						if(table[i].length-1 > bars.length)
 						{
 							int[] newBars = new int[table[i].length-1];
-							System.arraycopy(bars,0, newBars,0, bars.length);
+							System.arraycopy(bars, 0, newBars, 0, bars.length);
 							bars = newBars;
 						}
-						for(int j=0; j<table[i].length-1; j++)
+						for(int j = 0; j < table[i].length-1; j++)
 						{
 							int fl = manual.fontRenderer.getStringWidth(localizedTable[i][j]);
-							if(fl>bars[j])
-								bars[j]=fl;
+							if(fl > bars[j])
+								bars[j] = fl;
 						}
 					}
 				}
-			}catch(Exception e)
+			} catch(Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -247,41 +256,41 @@ public abstract class ManualPages implements IManualPage
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y, 120, manual.getTextColour());
 			//			manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
 
 			if(localizedTable!=null)
 			{
 				int col = manual.getHighlightColour()|0xff000000;
-				gui.drawGradientRect(x,y+textHeight-2,x+120,y+textHeight-1, col,col);
-				int[] textOff = new int[bars!=null?bars.length:0];
+				gui.drawGradientRect(x, y+textHeight-2, x+120, y+textHeight-1, col, col);
+				int[] textOff = new int[bars!=null?bars.length: 0];
 
 				//				gui.drawGradientRect(x,y+textHeight+yOff-2,x+120,y+textHeight+yOff-1,  manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
 				if(bars!=null)
 				{
 					int xx = x;
-					for(int i=0; i<bars.length; i++)
+					for(int i = 0; i < bars.length; i++)
 					{
 						xx += bars[i]+4;
 
 						//						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+yOff, col,col);
 						//						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+(manual.fontRenderer.FONT_HEIGHT+1)*localizedTable.length, col,col);
-						xx+=4;
+						xx += 4;
 						textOff[i] = xx;
 					}
 				}
 
 				int yOff = 0;
-				for(int i=0; i<localizedTable.length; i++)
-					if(localizedTable[i] != null)
+				for(int i = 0; i < localizedTable.length; i++)
+					if(localizedTable[i]!=null)
 						for(int j = 0; j < localizedTable[i].length; j++)
-							if(localizedTable[i][j] != null)
+							if(localizedTable[i][j]!=null)
 							{
-								int xx = textOff.length > 0 && j > 0 ? textOff[j - 1] : x;
-								int w = Math.max(10, 120 - (j > 0 ? textOff[j - 1] - x : 0));
-								ManualUtils.drawSplitString(manual.fontRenderer, localizedTable[i][j], xx, y + textHeight + yOff, w, manual.getTextColour());
+								int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
+								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
+								ManualUtils.drawSplitString(manual.fontRenderer, localizedTable[i][j], xx, y+textHeight+yOff, w, manual.getTextColour());
 								//							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
-								if(j != 0)
+								if(j!=0)
 								{
 									int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
 
@@ -289,17 +298,17 @@ public abstract class ManualPages implements IManualPage
 									{
 										float scale = .5f;
 										GL11.glScalef(1, scale, 1);
-										gui.drawGradientRect(x, (int) ((y + textHeight + yOff + l * manual.fontRenderer.FONT_HEIGHT) / scale), x + 120, (int) ((y + textHeight + yOff + l * manual.fontRenderer.FONT_HEIGHT) / scale + 1), manual.getTextColour() | 0xff000000, manual.getTextColour() | 0xff000000);
-										GL11.glScalef(1, 1 / scale, 1);
+										gui.drawGradientRect(x, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale), x+120, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale+1), manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
+										GL11.glScalef(1, 1/scale, 1);
 									}
 
-									yOff += l * (manual.fontRenderer.FONT_HEIGHT + 1);
+									yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
 								}
 							}
 
 				if(bars!=null)
-					for(int i=0; i<bars.length; i++)
-						gui.drawGradientRect(textOff[i]-4,y+textHeight-4,textOff[i]-3,y+textHeight+yOff, col,col);
+					for(int i = 0; i < bars.length; i++)
+						gui.drawGradientRect(textOff[i]-4, y+textHeight-4, textOff[i]-3, y+textHeight+yOff, col, col);
 			}
 		}
 
@@ -314,14 +323,23 @@ public abstract class ManualPages implements IManualPage
 	{
 		NonNullList<ItemStack> stacks;
 
-		public ItemDisplay(ManualInstance manual, String text, ItemStack... stacks) {
-			this(manual, text, Utils.createNonNullItemStackListFromArray(stacks));
+		static NonNullList<ItemStack> parseArray(ItemStack... stacks)
+		{
+			NonNullList<ItemStack> list = NonNullList.withSize(stacks.length, ItemStack.EMPTY);
+			for(int i = 0; i < stacks.length; i++)
+				list.set(i, stacks[i]);
+			return list;
+		}
+
+		public ItemDisplay(ManualInstance manual, String text, ItemStack... stacks)
+		{
+			this(manual, text, parseArray(stacks));
 		}
 
 		public ItemDisplay(ManualInstance manual, String text, NonNullList<ItemStack> stacks)
 		{
-			super(manual,text);
-			this.stacks=stacks;
+			super(manual, text);
+			this.stacks = stacks;
 		}
 
 		@Override
@@ -329,13 +347,13 @@ public abstract class ManualPages implements IManualPage
 		{
 			int length = stacks.size();
 			int yOffset = 0;
-			if(length>0)
+			if(length > 0)
 			{
-				float scale = length>7?1f: length>4?1.5f: 2f;
+				float scale = length > 7?1f: length > 4?1.5f: 2f;
 				int line0 = (int)(8/scale);
 				int line1 = line0-1;
 				int lineSum = line0+line1;
-				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
+				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0 > 0?1: 0);
 				float equalPerLine = length/(float)lines;
 				line1 = (int)Math.floor(equalPerLine);
 				line0 = (int)Math.ceil(equalPerLine);
@@ -353,49 +371,49 @@ public abstract class ManualPages implements IManualPage
 			ItemStack highlighted = ItemStack.EMPTY;
 			int yOffset = 0;
 			int length = stacks.size();
-			if(length>0)
+			if(length > 0)
 			{
-				float scale = length>8?1f: length>3?1.5f: 2f;
+				float scale = length > 8?1f: length > 3?1.5f: 2f;
 				int line0 = (int)(7.5/scale);
 				int line1 = line0-1;
 				int lineSum = line0+line1;
-				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
+				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0 > 0?1: 0);
 				float equalPerLine = length/(float)lines;
 				line1 = (int)Math.floor(equalPerLine);
 				line0 = (int)Math.ceil(equalPerLine);
 				lineSum = line0+line1;
 				int lastLines = length%lineSum;
 				int lastLine = lastLines==line0?line0: lastLines==0?line1: lastLines%line0;
-				GL11.glScalef(scale,scale,scale);
+				GL11.glScalef(scale, scale, scale);
 				/**
 				 RenderItem.getInstance().renderWithColor=true;
 				 */
 				yOffset = lines*(int)(18*scale);
-				for(int line=0; line<lines; line++)
+				for(int line = 0; line < lines; line++)
 				{
-					int perLine = line==lines-1?lastLine: line%2==0?line0:line1;
-					if(line==0 && perLine>length)
+					int perLine = line==lines-1?lastLine: line%2==0?line0: line1;
+					if(line==0&&perLine > length)
 						perLine = length;
 					int w2 = perLine*(int)(18*scale)/2;
-					for(int i=0; i<perLine; i++)
+					for(int i = 0; i < perLine; i++)
 					{
 						int item = line/2*lineSum+line%2*line0+i;
-						if(item>=length)
+						if(item >= length)
 							break;
-						int xx = x+60-w2 + (int)(i*18*scale);
-						int yy = y+(lines<2?4:0)+line*(int)(18*scale);
-						ManualUtils.renderItem().renderItemAndEffectIntoGUI(stacks.get(item), (int)(xx/scale),(int)(yy/scale));
-						if(mx>=xx&&mx<xx+(16*scale) && my>=yy&&my<yy+(16*scale))
+						int xx = x+60-w2+(int)(i*18*scale);
+						int yy = y+(lines < 2?4: 0)+line*(int)(18*scale);
+						ManualUtils.renderItem().renderItemAndEffectIntoGUI(stacks.get(item), (int)(xx/scale), (int)(yy/scale));
+						if(mx >= xx&&mx < xx+(16*scale)&&my >= yy&&my < yy+(16*scale))
 							highlighted = stacks.get(item);
 					}
 				}
-				GL11.glScalef(1/scale,1/scale,1/scale);
+				GL11.glScalef(1/scale, 1/scale, 1/scale);
 			}
 			RenderHelper.disableStandardItemLighting();
 			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 			GlStateManager.enableBlend();
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOffset, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y+yOffset, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
 			if(!highlighted.isEmpty())
@@ -419,12 +437,13 @@ public abstract class ManualPages implements IManualPage
 		ArrayListMultimap<Object, PositionedItemStack[]> recipes = ArrayListMultimap.create();
 		int recipePage[];
 		int yOff[];
+
 		public Crafting(ManualInstance manual, String text, Object... stacks)
 		{
-			super(manual,text);
-			this.stacks=stacks;
-			this.recipePage=new int[stacks.length];
-			this.yOff=new int[stacks.length];
+			super(manual, text);
+			this.stacks = stacks;
+			this.recipePage = new int[stacks.length];
+			this.yOff = new int[stacks.length];
 			recalculateCraftingRecipes();
 		}
 
@@ -436,11 +455,11 @@ public abstract class ManualPages implements IManualPage
 			for(Object o : cmRecipes)
 				if(o instanceof IRecipe)
 				{
-					for(int iStack=0; iStack<stacks.length; iStack++)
+					for(int iStack = 0; iStack < stacks.length; iStack++)
 					{
 						Object stack = stacks[iStack];
 						if(stack instanceof ItemStack[])
-							for(ItemStack subStack: (ItemStack[])stack)
+							for(ItemStack subStack : (ItemStack[])stack)
 								checkRecipe((IRecipe)o, stack, subStack, iStack);
 						else
 							checkRecipe((IRecipe)o, stack, stack, iStack);
@@ -450,39 +469,35 @@ public abstract class ManualPages implements IManualPage
 
 		void checkRecipe(IRecipe rec, Object key, Object stack, int iStack)
 		{
-			if(!rec.getRecipeOutput().isEmpty() && ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
+			if(!rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
 			{
-				Object[] ingredientsPre=null;
-				int w=0;
-				int h=0;
+				Object[] ingredientsPre = null;
+				int w = 0;
+				int h = 0;
 				if(rec instanceof ShapelessRecipes)
 				{
 					ingredientsPre = ((ShapelessRecipes)rec).recipeItems.toArray();
-					w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-					h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-				}
-				else if(rec instanceof ShapelessOreRecipe)
+					w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
+					h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
+				} else if(rec instanceof ShapelessOreRecipe)
 				{
 					ingredientsPre = ((ShapelessOreRecipe)rec).getInput().toArray();
-					w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-					h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-				}
-				else if(rec instanceof ShapedOreRecipe)
+					w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
+					h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
+				} else if(rec instanceof ShapedOreRecipe)
 				{
 					ingredientsPre = ((ShapedOreRecipe)rec).getInput();
 					w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "width");
 					h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "height");
-				}
-				else if(rec instanceof ShapedRecipes)
+				} else if(rec instanceof ShapedRecipes)
 				{
 					ingredientsPre = ((ShapedRecipes)rec).recipeItems;
 					w = ((ShapedRecipes)rec).recipeWidth;
 					h = ((ShapedRecipes)rec).recipeHeight;
-				}
-				else
+				} else
 					return;
 				Object[] ingredients = new Object[ingredientsPre.length];
-				for(int iO=0; iO<ingredientsPre.length; iO++)
+				for(int iO = 0; iO < ingredientsPre.length; iO++)
 				{
 					if(ingredientsPre[iO] instanceof List)
 					{
@@ -491,45 +506,44 @@ public abstract class ManualPages implements IManualPage
 							is.getItem().getSubItems(is.getItem(), is.getItem().getCreativeTab(), slist);
 							return slist;
 						};
-						
+
 						ingredients[iO] = ((List<ItemStack>)ingredientsPre[iO]).stream()
-								.filter(is -> !is.isEmpty() && is.getItem() != Items.AIR)
-								.flatMap(is -> is.getMetadata() == OreDictionary.WILDCARD_VALUE ? subItemFunc.apply(is).stream() : java.util.stream.Stream.of(is))
-								.filter(is -> is.getDisplayName() != null)
+								.filter(is -> !is.isEmpty()&&is.getItem()!=Items.AIR)
+								.flatMap(is -> is.getMetadata()==OreDictionary.WILDCARD_VALUE?subItemFunc.apply(is).stream(): java.util.stream.Stream.of(is))
+								.filter(is -> is.getDisplayName()!=null)
 								.collect(java.util.stream.Collectors.toList());
-					}
-					else
+					} else
 						ingredients[iO] = ingredientsPre[iO];
 				}
 				if(ingredients!=null)
 				{
 					PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
 					int xBase = (120-(w+2)*18)/2;
-					for(int hh=0; hh<h; hh++)
-						for(int ww=0; ww<w; ww++)
-							if(hh*w+ww<ingredients.length)
-								pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
+					for(int hh = 0; hh < h; hh++)
+						for(int ww = 0; ww < w; ww++)
+							if(hh*w+ww < ingredients.length)
+								pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18, hh*18);
 					pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
 					this.recipes.put(key, pIngredients);
 				}
-				if(h*18>yOff[iStack])
-					yOff[iStack]=h*18;
+				if(h*18 > yOff[iStack])
+					yOff[iStack] = h*18;
 			}
 		}
 
 		@Override
 		public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 		{
-			int i=1;
-			int yyOff=0;
+			int i = 1;
+			int yyOff = 0;
 			for(Object stack : this.stacks)
 			{
-				if(this.recipes.get(stack).size()>1)
+				if(this.recipes.get(stack).size() > 1)
 				{
-					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 8,10, 0));
-					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 8,10, 1));
+					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+0, x-2, y+yyOff+yOff[i-1]/2-3, 8, 10, 0));
+					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+1, x+122-16, y+yyOff+yOff[i-1]/2-3, 8, 10, 1));
 				}
-				if(this.recipes.get(stack).size()>0)
+				if(this.recipes.get(stack).size() > 0)
 					yyOff += yOff[i-1]+8;
 				i++;
 			}
@@ -544,38 +558,38 @@ public abstract class ManualPages implements IManualPage
 
 			int totalYOff = 0;
 			ItemStack highlighted = ItemStack.EMPTY;
-			for(int i=0; i<stacks.length; i++)
+			for(int i = 0; i < stacks.length; i++)
 			{
 				Object stack = stacks[i];
 				List<PositionedItemStack[]> rList = this.recipes.get(stack);
-				if(!rList.isEmpty() && recipePage[i]>=0 && recipePage[i]<this.recipes.size())
+				if(!rList.isEmpty()&&recipePage[i] >= 0&&recipePage[i] < this.recipes.size())
 				{
-					int maxX=0;
+					int maxX = 0;
 					for(PositionedItemStack pstack : rList.get(recipePage[i]))
 						if(pstack!=null)
 						{
-							if(pstack.x>maxX)
-								maxX=pstack.x;
-							gui.drawGradientRect(x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16,y+totalYOff+pstack.y+16, 0x33666666,0x33666666);
+							if(pstack.x > maxX)
+								maxX = pstack.x;
+							gui.drawGradientRect(x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666, 0x33666666);
 						}
 					ManualUtils.bindTexture(manual.texture);
-					ManualUtils.drawTexturedRect(x+maxX-17,y+totalYOff+yOff[i]/2-5, 16,10, 0/256f,16/256f, 226/256f,236/256f);
+					ManualUtils.drawTexturedRect(x+maxX-17, y+totalYOff+yOff[i]/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 
 					totalYOff += yOff[i]+8;
 				}
 			}
 
-			totalYOff=0;
+			totalYOff = 0;
 			GL11.glTranslated(0, 0, 300);
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(false);
 			/**
 			 RenderItem.getInstance().renderWithColor=true;*/
-			for(int i=0; i<stacks.length; i++)
+			for(int i = 0; i < stacks.length; i++)
 			{
 				Object stack = stacks[i];
 				List<PositionedItemStack[]> rList = this.recipes.get(stack);
-				if(!rList.isEmpty() && recipePage[i]>=0 && recipePage[i]<this.recipes.size())
+				if(!rList.isEmpty()&&recipePage[i] >= 0&&recipePage[i] < this.recipes.size())
 				{
 					for(PositionedItemStack pstack : rList.get(recipePage[i]))
 						if(pstack!=null)
@@ -583,7 +597,7 @@ public abstract class ManualPages implements IManualPage
 							{
 								ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
 								ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y, null);
-								if(mx>=x+pstack.x&&mx<x+pstack.x+16 && my>=y+totalYOff+pstack.y&&my<y+totalYOff+pstack.y+16)
+								if(mx >= x+pstack.x&&mx < x+pstack.x+16&&my >= y+totalYOff+pstack.y&&my < y+totalYOff+pstack.y+16)
 									highlighted = pstack.getStack();
 							}
 					totalYOff += yOff[i]+8;
@@ -597,7 +611,7 @@ public abstract class ManualPages implements IManualPage
 
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+totalYOff-2, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y+totalYOff-2, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
 			if(!highlighted.isEmpty())
@@ -611,40 +625,38 @@ public abstract class ManualPages implements IManualPage
 		{
 			super.buttonPressed(gui, button);
 			int r = button.id/100-1;
-			if(r>=0 && r<stacks.length)
+			if(r >= 0&&r < stacks.length)
 			{
 				if(button.id%100==0)
 					recipePage[r]--;
 				else
 					recipePage[r]++;
 
-				if(recipePage[r]>=this.recipes.get(stacks[r]).size())
-					recipePage[r]=0;
-				if(recipePage[r]<0)
-					recipePage[r]=this.recipes.get(stacks[r]).size()-1;
+				if(recipePage[r] >= this.recipes.get(stacks[r]).size())
+					recipePage[r] = 0;
+				if(recipePage[r] < 0)
+					recipePage[r] = this.recipes.get(stacks[r]).size()-1;
 			}
 		}
 
 		@Override
 		public boolean listForSearch(String searchTag)
 		{
-			for(Object stack: stacks)
+			for(Object stack : stacks)
 			{
 				if(stack instanceof ItemStack[])
 				{
-					for(ItemStack subStack: (ItemStack[])stack)
+					for(ItemStack subStack : (ItemStack[])stack)
 						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-				}
-				else if(stack instanceof ItemStack)
+				} else if(stack instanceof ItemStack)
 				{
 					if(((ItemStack)stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 						return true;
-				}
-				else if(stack instanceof String)
+				} else if(stack instanceof String)
 				{
 					if(ManualUtils.isExistingOreName((String)stack))
-						for(ItemStack subStack: OreDictionary.getOres((String)stack))
+						for(ItemStack subStack : OreDictionary.getOres((String)stack))
 							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
 				}
@@ -659,9 +671,10 @@ public abstract class ManualPages implements IManualPage
 		ArrayList<PositionedItemStack[]> recipes = new ArrayList();
 		int recipePage;
 		int yOff;
+
 		public CraftingMulti(ManualInstance manual, String text, Object... stacks)
 		{
-			super(manual,text);
+			super(manual, text);
 			this.stacks = stacks;
 			recalculateCraftingRecipes();
 		}
@@ -670,59 +683,54 @@ public abstract class ManualPages implements IManualPage
 		public void recalculateCraftingRecipes()
 		{
 			this.recipes.clear();
-			if(stacks!=null&&stacks.length>0&&stacks[0] instanceof PositionedItemStack[])
+			if(stacks!=null&&stacks.length > 0&&stacks[0] instanceof PositionedItemStack[])
 			{
 				for(PositionedItemStack[] pisA : (PositionedItemStack[][])stacks)
 				{
 					for(PositionedItemStack pis : pisA)
-						if(pis!=null && pis.y+18>yOff)
-							yOff=pis.y+18;
+						if(pis!=null&&pis.y+18 > yOff)
+							yOff = pis.y+18;
 					this.recipes.add(pisA);
 				}
-			}
-			else
+			} else
 			{
 				List cmRecipes = CraftingManager.getInstance().getRecipeList();
 				for(Object o : cmRecipes)
 					if(o instanceof IRecipe)
 					{
-						for(int iStack=0; iStack<stacks.length; iStack++)
+						for(int iStack = 0; iStack < stacks.length; iStack++)
 						{
 							Object stack = stacks[iStack];
-							if(!((IRecipe)o).getRecipeOutput().isEmpty() && ManualUtils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
+							if(!((IRecipe)o).getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
 							{
 								IRecipe r = (IRecipe)o;
-								Object[] ingredientsPre=null;
-								int w=0;
-								int h=0;
+								Object[] ingredientsPre = null;
+								int w = 0;
+								int h = 0;
 								if(r instanceof ShapelessRecipes)
 								{
 									ingredientsPre = ((ShapelessRecipes)r).recipeItems.toArray();
-									w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-									h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-								}
-								else if(r instanceof ShapelessOreRecipe)
+									w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
+									h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
+								} else if(r instanceof ShapelessOreRecipe)
 								{
 									ingredientsPre = ((ShapelessOreRecipe)r).getInput().toArray();
-									w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-									h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-								}
-								else if(r instanceof ShapedOreRecipe)
+									w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
+									h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
+								} else if(r instanceof ShapedOreRecipe)
 								{
 									ingredientsPre = ((ShapedOreRecipe)r).getInput();
 									w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "width");
 									h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "height");
-								}
-								else if(r instanceof ShapedRecipes)
+								} else if(r instanceof ShapedRecipes)
 								{
 									ingredientsPre = ((ShapedRecipes)r).recipeItems;
 									w = ((ShapedRecipes)r).recipeWidth;
 									h = ((ShapedRecipes)r).recipeHeight;
-								}
-								else
+								} else
 									continue;
 								Object[] ingredients = new Object[ingredientsPre.length];
-								for(int iO=0; iO<ingredientsPre.length; iO++)
+								for(int iO = 0; iO < ingredientsPre.length; iO++)
 								{
 									if(ingredientsPre[iO] instanceof List)
 									{
@@ -731,29 +739,28 @@ public abstract class ManualPages implements IManualPage
 										while(itValidate.hasNext())
 										{
 											ItemStack stVal = itValidate.next();
-											if(stVal.isEmpty() || stVal.getItem()==null || stVal.getDisplayName()==null)
+											if(stVal.isEmpty()||stVal.getItem()==null||stVal.getDisplayName()==null)
 												itValidate.remove();
 										}
-									}
-									else
+									} else
 										ingredients[iO] = ingredientsPre[iO];
 								}
 								if(ingredients!=null)
 								{
 									PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
 									int xBase = (120-(w+2)*18)/2;
-									for(int hh=0; hh<h; hh++)
-										for(int ww=0; ww<w; ww++)
-											if(hh*w+ww<ingredients.length)
-												pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
+									for(int hh = 0; hh < h; hh++)
+										for(int ww = 0; ww < w; ww++)
+											if(hh*w+ww < ingredients.length)
+												pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18, hh*18);
 									pIngredients[pIngredients.length-1] = new PositionedItemStack(((IRecipe)o).getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
-									if(iStack<this.recipes.size())
-										this.recipes.add(iStack,pIngredients);
+									if(iStack < this.recipes.size())
+										this.recipes.add(iStack, pIngredients);
 									else
 										this.recipes.add(pIngredients);
 								}
-								if(h*18>yOff)
-									yOff=h*18;
+								if(h*18 > yOff)
+									yOff = h*18;
 							}
 						}
 					}
@@ -763,10 +770,10 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 		{
-			if(this.recipes.size()>1)
+			if(this.recipes.size() > 1)
 			{
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100+0, x-2,y+yOff/2-3, 8,10, 0));
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100+1, x+122-16,y+yOff/2-3, 8,10, 1));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 100+0, x-2, y+yOff/2-3, 8, 10, 0));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 100+1, x+122-16, y+yOff/2-3, 8, 10, 1));
 			}
 			super.initPage(gui, x, y+yOff+2, pageButtons);
 		}
@@ -779,18 +786,18 @@ public abstract class ManualPages implements IManualPage
 
 			ItemStack highlighted = ItemStack.EMPTY;
 
-			if(!recipes.isEmpty() && recipePage>=0 && recipePage<this.recipes.size())
+			if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 			{
-				int maxX=0;
+				int maxX = 0;
 				for(PositionedItemStack pstack : recipes.get(recipePage))
 					if(pstack!=null)
 					{
-						if(pstack.x>maxX)
-							maxX=pstack.x;
-						gui.drawGradientRect(x+pstack.x, y+pstack.y, x+pstack.x+16,y+pstack.y+16, 0x33666666,0x33666666);
+						if(pstack.x > maxX)
+							maxX = pstack.x;
+						gui.drawGradientRect(x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666, 0x33666666);
 					}
 				ManualUtils.bindTexture(manual.texture);
-				ManualUtils.drawTexturedRect(x+maxX-17,y+yOff/2-5, 16,10, 0/256f,16/256f, 226/256f,236/256f);
+				ManualUtils.drawTexturedRect(x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 
 			}
 
@@ -798,7 +805,7 @@ public abstract class ManualPages implements IManualPage
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(false);
 			/**RenderItem.getInstance().renderWithColor=true;*/
-			if(!recipes.isEmpty() && recipePage>=0 && recipePage<this.recipes.size())
+			if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 			{
 				for(PositionedItemStack pstack : recipes.get(recipePage))
 					if(pstack!=null)
@@ -807,7 +814,7 @@ public abstract class ManualPages implements IManualPage
 							ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+pstack.y);
 							ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer, pstack.getStack(), x+pstack.x, y+pstack.y, null);
 
-							if(mx>=x+pstack.x&&mx<x+pstack.x+16 && my>=y+pstack.y&&my<y+pstack.y+16)
+							if(mx >= x+pstack.x&&mx < x+pstack.x+16&&my >= y+pstack.y&&my < y+pstack.y+16)
 								highlighted = pstack.getStack();
 						}
 			}
@@ -819,7 +826,7 @@ public abstract class ManualPages implements IManualPage
 
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOff+2, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y+yOff+2, 120, manual.getTextColour());
 			//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOff+2, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
@@ -838,26 +845,25 @@ public abstract class ManualPages implements IManualPage
 			else
 				recipePage++;
 
-			if(recipePage>=this.recipes.size())
-				recipePage=0;
-			if(recipePage<0)
-				recipePage=this.recipes.size()-1;
+			if(recipePage >= this.recipes.size())
+				recipePage = 0;
+			if(recipePage < 0)
+				recipePage = this.recipes.size()-1;
 		}
 
 		@Override
 		public boolean listForSearch(String searchTag)
 		{
-			for(PositionedItemStack[] recipe: this.recipes)
-				for(PositionedItemStack stack: recipe)
+			for(PositionedItemStack[] recipe : this.recipes)
+				for(PositionedItemStack stack : recipe)
 				{
 					if(stack.stack instanceof ItemStack[])
 					{
-						for(ItemStack subStack: (ItemStack[])stack.stack)
+						for(ItemStack subStack : (ItemStack[])stack.stack)
 							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
-					}
-					else if(stack.stack instanceof List)
-						for(ItemStack subStack: (List<ItemStack>)stack.stack)
+					} else if(stack.stack instanceof List)
+						for(ItemStack subStack : (List<ItemStack>)stack.stack)
 						{
 							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
@@ -866,11 +872,10 @@ public abstract class ManualPages implements IManualPage
 					{
 						if(((ItemStack)stack.stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-					}
-					else if(stack.stack instanceof String)
+					} else if(stack.stack instanceof String)
 					{
 						if(ManualUtils.isExistingOreName((String)stack.stack))
-							for(ItemStack subStack: OreDictionary.getOres((String)stack.stack))
+							for(ItemStack subStack : OreDictionary.getOres((String)stack.stack))
 								if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 									return true;
 					}
@@ -883,20 +888,20 @@ public abstract class ManualPages implements IManualPage
 	{
 		List<String[]> repList = new ArrayList<String[]>();
 		int start;
-		int overflow=0;
-		while( (start=text.indexOf("<link"))>=0 && overflow<50)
+		int overflow = 0;
+		while((start = text.indexOf("<link")) >= 0&&overflow < 50)
 		{
 			overflow++;
 			int end = text.indexOf(">", start);
 			String rep = text.substring(start, end+1);
-			String[] segment = rep.substring(0,rep.length()-1).split(";");
-			if(segment.length<3)
+			String[] segment = rep.substring(0, rep.length()-1).split(";");
+			if(segment.length < 3)
 				break;
-			String page = segment.length>3?segment[3]:"0";
+			String page = segment.length > 3?segment[3]: "0";
 			String result = segment[2];
 			String[] resultParts = result.split(" ");
 			for(String part : resultParts)
-				repList.add(new String[]{part,segment[1],page});
+				repList.add(new String[]{part, segment[1], page});
 			text = text.replaceFirst(rep, result);
 		}
 
@@ -907,20 +912,23 @@ public abstract class ManualPages implements IManualPage
 		while(itRep.hasNext())
 		{
 			String[] rep = itRep.next();
-			for(int yOff = 0; yOff<list.size(); yOff++)
+			for(int yOff = 0; yOff < list.size(); yOff++)
 			{
 				String s = list.get(yOff);
-				if((start=s.indexOf(rep[0]))>=0)
+				if((start = s.indexOf(rep[0])) >= 0)
 				{
-					int bx = helper.fontRenderer.getStringWidth(s.substring(0,start));
+					int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
 					int by = yOff*helper.fontRenderer.FONT_HEIGHT;
 					String bkey = rep[1];
 					int bw = helper.fontRenderer.getStringWidth(rep[0]);
 					int bpage = 0;
-					try{
+					try
+					{
 						bpage = Integer.parseInt(rep[2]);
-					}catch(Exception e){}
-					pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx,y+by, bw,(int)(helper.fontRenderer.FONT_HEIGHT*1.5), bkey, rep[0], bpage));
+					} catch(Exception e)
+					{
+					}
+					pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx, y+by, bw, (int)(helper.fontRenderer.FONT_HEIGHT*1.5), bkey, rep[0], bpage));
 					break;
 				}
 			}
@@ -933,14 +941,16 @@ public abstract class ManualPages implements IManualPage
 		public Object stack;
 		public int x;
 		public int y;
+
 		public PositionedItemStack(Object stack, int x, int y)
 		{
-			this.stack=stack;
-			this.x=x;
-			this.y=y;
+			this.stack = stack;
+			this.x = x;
+			this.y = y;
 		}
 
 		public ArrayList<ItemStack> displayList;
+
 		public ItemStack getStack()
 		{
 			if(displayList==null)
@@ -952,13 +962,11 @@ public abstract class ManualPages implements IManualPage
 					{
 						NonNullList<ItemStack> list = NonNullList.create();
 						((ItemStack)stack).getItem().getSubItems(((ItemStack)stack).getItem(), ((ItemStack)stack).getItem().getCreativeTab(), list);
-						if(list.size()>0)
+						if(list.size() > 0)
 							displayList.addAll(list);
-					}
-					else
+					} else
 						displayList.add((ItemStack)stack);
-				}
-				else if(stack instanceof List && !((List)stack).isEmpty())
+				} else if(stack instanceof List&&!((List)stack).isEmpty())
 				{
 					for(ItemStack subStack : (List<ItemStack>)this.stack)
 					{
@@ -966,18 +974,17 @@ public abstract class ManualPages implements IManualPage
 						{
 							NonNullList<ItemStack> list = NonNullList.create();
 							subStack.getItem().getSubItems(subStack.getItem(), subStack.getItem().getCreativeTab(), list);
-							if(list.size()>0)
+							if(list.size() > 0)
 								displayList.addAll(list);
-						}
-						else
+						} else
 							displayList.add(subStack);
 					}
 				}
 			}
-			if(displayList==null || displayList.isEmpty())
+			if(displayList==null||displayList.isEmpty())
 				return ItemStack.EMPTY;
 
-			int perm = (int) (System.nanoTime()/1000000000 % displayList.size());
+			int perm = (int)(System.nanoTime()/1000000000%displayList.size());
 			return displayList.get(perm);
 		}
 	}
