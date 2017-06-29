@@ -50,7 +50,9 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		String key = ItemNBTHelper.getString(stack,"blueprint");
 		if(key != null && !key.isEmpty() && BlueprintCraftingRecipe.blueprintCategories.contains(key))
 		{
-			list.add(I18n.format(Lib.DESC_INFO + "blueprint." + key));
+			String formatKey = Lib.DESC_INFO + "blueprint." + key;
+			String formatted = I18n.format(formatKey);
+			list.add(formatKey.equals(formatted)?key:formatted);
 			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			{
 				list.add(I18n.format(Lib.DESC_INFO + "blueprint.creates1"));
