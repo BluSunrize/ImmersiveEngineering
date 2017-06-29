@@ -251,10 +251,10 @@ public class ModelPowerpack extends ModelIEArmorBase
 	}
 
 	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");
-	static final Cache<String,  Vec3d[]> catenaryCacheLeft = CacheBuilder.newBuilder()
+	public static final Cache<String,  Vec3d[]> catenaryCacheLeft = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
-	static final Cache<String,  Vec3d[]> catenaryCacheRight = CacheBuilder.newBuilder()
+	public static final Cache<String,  Vec3d[]> catenaryCacheRight = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
 

@@ -18,7 +18,7 @@ public class ComparableItemStack
 	{
 		if(stack==null)
 			throw new RuntimeException("You cannot instantiate a ComparableItemStack with null for an Item!");
-		this.stack = stack;
+		this.stack = stack.copy();
 		if(matchOre)
 		{
 			int[] oids = OreDictionary.getOreIDs(stack);

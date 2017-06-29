@@ -1564,7 +1564,7 @@ public class ClientProxy extends CommonProxy
 	static
 	{
 		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
-		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
+		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
 		IEApi.renderCacheClearers.add(ConnModelReal.cache::clear);
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::clear);
@@ -1574,6 +1574,8 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(TileRenderWindmill::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
+		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
+		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
 	}
 	@Override
 	public void clearRenderCaches()
