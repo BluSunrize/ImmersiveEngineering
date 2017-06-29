@@ -80,6 +80,7 @@ public class IEAchievements
 		craftHeater = new AchievementIE("craftHeater", -2, 4, new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()), openManual).setNormalCrafting();
 		craftPump = new AchievementIE("craftPump", 2, 4, new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()), openManual).setNormalCrafting();
 		placeFloodlight = new AchievementIE("placeFloodlight", -1, 5, new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta()), openManual).setPlacement();
+		craftWorkbench = new AchievementIE("craftWorkbench", 1, 5, new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()), openManual).setNormalCrafting();
 
 		mbImprovedBlastFurnace = new AchievementIE("mbImprovedBlastFurnace", 6, -3, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta()), makeSteel).setSpecial();
 		mbMetalPress = new AchievementIE("mbMetalPress", 6, -2, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()), makeSteel).setSpecial();
@@ -89,9 +90,7 @@ public class IEAchievements
 		mbExcavator = new AchievementIE("mbExcavator", 6, 1, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.EXCAVATOR.getMeta()), craftHammer).setSpecial();
 		mbArcFurnace = new AchievementIE("mbArcFurnace", 6, 2, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()), craftHammer).setSpecial();
 
-		craftWorkbench = new AchievementIE("craftWorkbench", 2, -3, new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()), makeSteel).setNormalCrafting();
-
-		craftRevolver = new AchievementIE("craftRevolver", 3, -6, IEContent.itemRevolver, craftWorkbench).setNormalCrafting();
+		craftRevolver = new AchievementIE("craftRevolver", 3, -6, IEContent.itemRevolver, makeSteel).setNormalCrafting();
 		NonNullList<ItemStack> upgrades = NonNullList.withSize(20, ItemStack.EMPTY);
 		upgrades.set(18, new ItemStack(IEContent.itemToolUpgrades,1,5));
 		upgrades.set(19, new ItemStack(IEContent.itemToolUpgrades,1,6));
@@ -104,7 +103,7 @@ public class IEAchievements
 
 		ItemStack drill = new ItemStack(IEContent.itemDrill);
 		((ItemDrill)IEContent.itemDrill).setHead(drill, new ItemStack(IEContent.itemDrillhead));
-		craftDrill = new AchievementIE("craftDrill", 1, -6, drill, craftWorkbench).setNormalCrafting();
+		craftDrill = new AchievementIE("craftDrill", 1, -6, drill, makeSteel).setNormalCrafting();
 		upgrades = NonNullList.withSize(4, ItemStack.EMPTY);
 		upgrades.set(0, new ItemStack(IEContent.itemDrillhead));
 		upgrades.set(1, new ItemStack(IEContent.itemToolUpgrades,1,0));
@@ -115,15 +114,15 @@ public class IEAchievements
 		((ItemDrill)IEContent.itemDrill).recalculateUpgrades(drill2);
 		upgradeDrill = new AchievementIE("upgradeDrill", 0, -6, drill2, craftDrill);
 
-		craftSkyhook = new AchievementIE("craftSkyhook", 1, -5, IEContent.itemSkyhook, craftWorkbench).setNormalCrafting();
+		craftSkyhook = new AchievementIE("craftSkyhook", 1, -5, IEContent.itemSkyhook, makeSteel).setNormalCrafting();
 		ItemStack hook = new ItemStack(IEContent.itemSkyhook);
 		hook.addEnchantment(Enchantments.UNBREAKING, 1);
 		//skyhookPro = new AchievementIE("skyhookPro", 0, -5, hook, craftSkyhook);
 
 
-		craftChemthrower = new AchievementIE("craftChemthrower", 3, -5, IEContent.itemChemthrower, craftWorkbench).setNormalCrafting();
+		craftChemthrower = new AchievementIE("craftChemthrower", 3, -5, IEContent.itemChemthrower, makeSteel).setNormalCrafting();
 
-		craftRailgun = new AchievementIE("craftRailgun", 1, -7, IEContent.itemRailgun, craftWorkbench).setNormalCrafting();
+		craftRailgun = new AchievementIE("craftRailgun", 1, -7, IEContent.itemRailgun, makeSteel).setNormalCrafting();
 
 		secret_birthdayParty = new AchievementIE("secret_birthdayParty", -4,-1, new ItemStack(IEContent.itemFakeIcons,1,0), null).setSpecial();
 		secret_luckOfTheDraw = new AchievementIE("secret_luckOfTheDraw", -4, 1, new ItemStack(IEContent.itemFakeIcons,1,1), null).setSpecial();
