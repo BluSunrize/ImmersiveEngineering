@@ -1,3 +1,31 @@
+#####Version 0.11-63
+- added the Heavy Plated Shield!
+    - it protects like a normal shield
+    - it has awesome upgrades
+- added Vacuum Tubes as a new mid-game crafting material
+- added a manual entry for the new components
+- added Crafttweaker integration for Blueprint recipes
+- changed/fixed HUD displays for Railgun, Chemthrower and Revolver
+- changed Turrets to be interactable from the top block (thanks Malte)
+- changed Arc Furance to distribute inputs evenly again (thanks Malte)
+- changed Sulfur and Saltpeter textures to be Hazards instead of my terrible ones
+- changed recipes for Mechanical components, added Bluepritns for reduced cost
+- changed JEI integration to use newer JEI methods
+- fixed Redstone connectors not properly accepting signals (thanks Malte)
+- fixed OC compat not loading due to incorrect mod ID (thanks Malte)
+- fixed Capacitor Backpack potentially charging itself
+- fixed crashes with Capacitor Backpack and Railgun interacting with capabilities (thanks Malte)
+- fixed localization file getting screwed up to ASCII
+- fixed up interacton between Silos and RefinedStorage (thanks Malte)
+- fixed ghostloading messing up randomizers for a lot of stuff (thanks Malte)
+- fixed a plethora of ghostloading issues (thanks Malte)
+- fixed Capacitor Backpacks being all-around derpy when crafting (thanks Malte)
+- fixed broken Pipe renders (thanks Malte)
+- fixed Turntable not reacting to redstone signals
+- fixed Fluid Outlet outputtign through closed sides
+- fixed render issues with the charging station (thanks Malte)
+- fixed (possibly) Wooden Crates in villages losing their contents on pickup
+
 #####Version 0.11-62 - BUILT
 - official 1.11.2 release, same changelog as build 59
 
