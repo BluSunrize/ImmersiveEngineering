@@ -35,6 +35,7 @@ public class CraftTweakerHelper extends IECompatModule
 		MineTweakerAPI.registerClass(AlloySmelter.class);
 		MineTweakerAPI.registerClass(BlastFurnace.class);
 		MineTweakerAPI.registerClass(CokeOven.class);
+		MineTweakerAPI.registerClass(Blueprint.class);
 		MineTweakerAPI.registerClass(Crusher.class);
 		MineTweakerAPI.registerClass(Squeezer.class);
 		MineTweakerAPI.registerClass(Fermenter.class);

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.liquid.ILiquidStack;
@@ -41,7 +42,7 @@ public class Refinery
 		public void apply()
 		{
 			RefineryRecipe.recipeList.add(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -54,7 +55,7 @@ public class Refinery
 		public void undo()
 		{
 			RefineryRecipe.recipeList.remove(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -103,7 +104,7 @@ public class Refinery
 				if(r != null && r.output.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
-					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
+					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}
@@ -117,7 +118,7 @@ public class Refinery
 					if(recipe != null)
 					{
 						RefineryRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 

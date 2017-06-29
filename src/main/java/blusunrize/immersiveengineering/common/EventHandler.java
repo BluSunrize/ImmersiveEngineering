@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import net.minecraft.block.material.Material;
@@ -266,7 +267,7 @@ public class EventHandler
 			for(ArcFurnaceRecipe recipe : ArcRecyclingThreadHandler.recipesToAdd)
 			{
 				ArcFurnaceRecipe.recipeList.add(recipe);
-				ArcRecyclingThreadHandler.jeiAddFunc.accept(recipe);
+				IECompatModule.jeiAddFunc.accept(recipe);
 			}
 			ArcRecyclingThreadHandler.recipesToAdd = null;
 		}

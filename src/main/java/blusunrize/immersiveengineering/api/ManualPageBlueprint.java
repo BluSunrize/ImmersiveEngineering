@@ -68,7 +68,6 @@ public class ManualPageBlueprint extends ManualPages
 	@Override
 	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
-		recalculateCraftingRecipes();
 		if(this.recipes.size() > 1)
 		{
 			pageButtons.add(new GuiButtonManualNavigation(gui, 100+0, x-2, y+yOff/2-3, 8, 10, 0));

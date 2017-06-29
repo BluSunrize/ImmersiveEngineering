@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Sets;
 import net.minecraft.item.*;
@@ -17,13 +18,9 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class ArcRecyclingThreadHandler extends Thread
 {
-	public static Consumer<ArcFurnaceRecipe> jeiAddFunc = o -> {};
-	public static Consumer<ArcFurnaceRecipe> jeiRemoveFunc = o -> {};
-
 	static boolean hasProfiled = false;
 	public static List<ArcFurnaceRecipe> recipesToAdd = null;
 	private List<IRecipe> recipeList = null;
@@ -42,7 +39,7 @@ public class ArcRecyclingThreadHandler extends Thread
 				if("Recycling".equals(recipe.specialRecipeType))
 				{
 					prevRecipeIt.remove();
-					jeiRemoveFunc.accept(recipe);
+					IECompatModule.jeiRemoveFunc.accept(recipe);
 					r++;
 				}
 			}

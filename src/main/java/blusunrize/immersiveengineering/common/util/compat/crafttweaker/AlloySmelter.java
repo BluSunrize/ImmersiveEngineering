@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -38,7 +39,7 @@ public class AlloySmelter
         public void apply()
         {
             AlloyRecipe.recipeList.add(recipe);
-            MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+            IECompatModule.jeiAddFunc.accept(recipe);
         }
 
         @Override
@@ -51,7 +52,7 @@ public class AlloySmelter
         public void undo()
         {
             AlloyRecipe.recipeList.remove(recipe);
-            MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+            IECompatModule.jeiRemoveFunc.accept(recipe);
         }
 
         @Override
@@ -94,7 +95,7 @@ public class AlloySmelter
         {
             removedRecipes = AlloyRecipe.removeRecipes(output);
             for(AlloyRecipe recipe : removedRecipes)
-                MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+                IECompatModule.jeiRemoveFunc.accept(recipe);
         }
 
         @Override
@@ -105,7 +106,7 @@ public class AlloySmelter
                     if(recipe != null)
                     {
                         AlloyRecipe.recipeList.add(recipe);
-                        MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+                        IECompatModule.jeiAddFunc.accept(recipe);
                     }
         }
 

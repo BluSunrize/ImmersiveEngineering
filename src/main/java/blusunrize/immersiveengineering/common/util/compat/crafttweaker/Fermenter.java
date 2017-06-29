@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -44,7 +45,7 @@ public class Fermenter
 		public void apply()
 		{
 			FermenterRecipe.recipeList.add(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -57,7 +58,7 @@ public class Fermenter
 		public void undo()
 		{
 			FermenterRecipe.recipeList.remove(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -110,7 +111,7 @@ public class Fermenter
 				if(r != null && r.fluidOutput != null && r.fluidOutput.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
-					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
+					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}
@@ -124,7 +125,7 @@ public class Fermenter
 					if(recipe != null)
 					{
 						FermenterRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 
@@ -180,7 +181,7 @@ public class Fermenter
 				if(r != null && OreDictionary.itemMatches(output, r.itemOutput, false))
 				{
 					removedRecipes.add(r);
-					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
+					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}
@@ -194,7 +195,7 @@ public class Fermenter
 					if(recipe != null)
 					{
 						FermenterRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 
@@ -250,7 +251,7 @@ public class Fermenter
 				if(r != null && r.input.matchesItemStack(input))
 				{
 					removedRecipes.add(r);
-					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
+					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}
@@ -264,7 +265,7 @@ public class Fermenter
 					if(recipe != null)
 					{
 						FermenterRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 

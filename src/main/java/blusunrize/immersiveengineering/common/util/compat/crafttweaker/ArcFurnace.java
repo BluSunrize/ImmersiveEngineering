@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -47,7 +48,7 @@ public class ArcFurnace
 		public void apply()
 		{
 			ArcFurnaceRecipe.recipeList.add(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -60,7 +61,7 @@ public class ArcFurnace
 		public void undo()
 		{
 			ArcFurnaceRecipe.recipeList.remove(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -103,7 +104,7 @@ public class ArcFurnace
 		{
 			removedRecipes = ArcFurnaceRecipe.removeRecipes(output);
 			for(ArcFurnaceRecipe recipe : removedRecipes)
-				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -114,7 +115,7 @@ public class ArcFurnace
 					if(recipe != null)
 					{
 						ArcFurnaceRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -49,7 +50,7 @@ public class Crusher
 		public void apply()
 		{
 			CrusherRecipe.recipeList.add(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -62,7 +63,7 @@ public class Crusher
 		public void undo()
 		{
 			CrusherRecipe.recipeList.remove(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -105,7 +106,7 @@ public class Crusher
 		{
 			removedRecipes = CrusherRecipe.removeRecipes(output);
 			for(CrusherRecipe recipe : removedRecipes)
-				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -116,7 +117,7 @@ public class Crusher
 					if(recipe != null)
 					{
 						CrusherRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 
