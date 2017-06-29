@@ -11,6 +11,7 @@
 - changed Sulfur and Saltpeter textures to be Hazards instead of my terrible ones
 - changed recipes for Mechanical components, added Bluepritns for reduced cost
 - changed JEI integration to use newer JEI methods
+- changed Engineer's Workbench to no longer be part of IE's main achievement progression
 - fixed Redstone connectors not properly accepting signals (thanks Malte)
 - fixed OC compat not loading due to incorrect mod ID (thanks Malte)
 - fixed Capacitor Backpack potentially charging itself

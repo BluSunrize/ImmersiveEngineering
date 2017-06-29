@@ -1032,7 +1032,7 @@ ie.manual.entry.plates.subtext=Flat as a flounder
 ie.manual.entry.plates0=Metal Plates are a crafting material required for the creation of some machines or blocks. They are made by hammering an ingot with an Engineer's Hammer or in a <link;metalPress;§o§nMetal §o§nPress§r>.
 
 ie.manual.entry.components.name=Crafting Components
-ie.manual.entry.components.subtext=
+ie.manual.entry.components.subtext=Integral Pieces
 ie.manual.entry.components0=Many machines and tools are constructed from various sub-components. Some of these you will have to use on a regular basis, which is why they have their own entry in this manual. The §6Iron§r and §6Steel Mechanical Components§r are integral to the majority of Multiblocks and machinery.
 ie.manual.entry.components1=As you will find yourself creating these components more frequently, it may be advisable to draft a <link;blueprint;§o§nBlueprint§r> for them. Using this blueprint in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> will allow you to construct the components at a reduced cost.<br>The workbench recipes are found on the following page.
 ie.manual.entry.components2=Another, albeit less frequently used component are §6Vacuum Tubes§r. These glass tubes are used as elements in electronic machinery and used in <link;lighting;§o§nlight emitting devices§r>.
@@ -1089,7 +1089,7 @@ ie.manual.entry.earmuffs0=Ear Defenders are devices for protecting your hearing.
 ie.manual.entry.earmuffs1=Placing the Ear Defenders in the <link;workbench;§o§nEngineer's §o§nWorkbench§r;> allows you to specify which types of noises you want cancelled and by how much their volume should be reduced.<br>You can dye them like you would leather armor.<br>Crafting them with any other helmet will attach the defenders to that piece of equipment, crafting the helmet alone will remove the defenders again, to allow further customizing.
 
 ie.manual.entry.shield.name=Heavy Plated Shield
-ie.manual.entry.shield.subtext=
+ie.manual.entry.shield.subtext=One Man Phalanx
 ie.manual.entry.shield0=The Heavy Plated Shield is a direct upgrade to the normal wooden shields you might be acquainted with. In similar fashion, this shield will block most incoming damage from the front, but its durability has been increased considerably, and it sports the ability to be upgraded.
 ie.manual.entry.shield1=The §6Flashbulb§r upgrade adds a bright lightbulb and reflector screen to the shield. Upon being attacked, the device will produce a bright, blinding flash, disorienting everyone in front of the user.
 ie.manual.entry.shield2=Adding §6Shock Emitters§r to the shield allows you to retaliate against attacking enemies. When the shield is struck, it will emit a shock, inflicting minor damage to the aggressor. Additionally, it will vapourize projectiles rather than just stopping them.
