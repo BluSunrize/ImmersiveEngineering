@@ -94,11 +94,11 @@ public abstract class TileEntityIEBase extends TileEntity
 		return oldState.getValue(type) != newState.getValue(type);
 	}
 
-	public void markContainingBlockForUpdate(IBlockState newState)
+	public void markContainingBlockForUpdate(@Nullable IBlockState newState)
 	{
 		markBlockForUpdate(getPos(), newState);
 	}
-	public void markBlockForUpdate(BlockPos pos, IBlockState newState)
+	public void markBlockForUpdate(BlockPos pos, @Nullable IBlockState newState)
 	{
 		IBlockState state = world.getBlockState(getPos());
 		if(newState==null)

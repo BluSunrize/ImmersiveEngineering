@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Optional;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -43,12 +45,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.vecmath.Matrix4f;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
 public class IESmartObjModel extends OBJBakedModel
 {
-	public static Map<ComparableItemStack, IESmartObjModel> cachedBakedItemModels = new ConcurrentHashMap<>();
+	public static Cache<ComparableItemStack, IBakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
+			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 	public static HashMap<ExtBlockstateAdapter, List<BakedQuad>> modelCache = new HashMap<>();
 	IBakedModel baseModel;
 	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
@@ -116,51 +120,57 @@ public class IESmartObjModel extends OBJBakedModel
 			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack);
 			if(comp == null)
 				return originalModel;
-			if(cachedBakedItemModels.containsKey(comp))
+			try
 			{
-				IESmartObjModel model = cachedBakedItemModels.get(comp);
-				model.tempEntity = entity;
-				return model;
-			}
-			if(!(originalModel instanceof IESmartObjModel))
-				return originalModel;
-			IESmartObjModel model = (IESmartObjModel)originalModel;
-
-			ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
-			builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
-			TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
-
-			for (String s : model.getModel().getMatLib().getMaterialNames())
-			{
-				TextureAtlasSprite sprite = null;
-				if(stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+				IBakedModel model = cachedBakedItemModels.get(comp, () ->
 				{
-					ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-					ItemStack shader = wrapper.getShaderItem();
-					if (!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
+					if (!(originalModel instanceof IESmartObjModel))
+						return originalModel;
+					IESmartObjModel newModel = (IESmartObjModel) originalModel;
+
+					ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
+					builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
+					TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
+
+					for (String s : newModel.getModel().getMatLib().getMaterialNames())
 					{
-						ShaderCase sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
-						if(sCase!=null)
+						TextureAtlasSprite sprite = null;
+						if (stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 						{
-							ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
-							sprite = ClientUtils.getSprite(rl);
+							ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+							ItemStack shader = wrapper.getShaderItem();
+							if (!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
+							{
+								ShaderCase sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
+								if (sCase != null)
+								{
+									ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
+									sprite = ClientUtils.getSprite(rl);
+								}
+							}
 						}
+						if (sprite == null && stack.getItem() instanceof IOBJModelCallback)
+							sprite = ((IOBJModelCallback) stack.getItem()).getTextureReplacement(stack, s);
+						if (sprite == null)
+							sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(newModel.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
+						if (sprite == null)
+							sprite = missing;
+						builder.put(s, sprite);
 					}
-				}
-				if (sprite == null && stack.getItem() instanceof IOBJModelCallback)
-					sprite = ((IOBJModelCallback) stack.getItem()).getTextureReplacement(stack, s);
-				if (sprite == null)
-					sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(model.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-				if (sprite == null)
-					sprite = missing;
-				builder.put(s, sprite);
+					builder.put("missingno", missing);
+					IESmartObjModel bakedModel = new IESmartObjModel(newModel.baseModel, newModel.getModel(), newModel.getState(), newModel.getFormat(), builder.build(), transformationMap);
+					bakedModel.tempStack = stack;
+					bakedModel.tempEntity = entity;
+					return bakedModel;
+				});
+
+				if (model instanceof IESmartObjModel)
+					((IESmartObjModel) model).tempEntity = entity;
+				return model;
+			} catch (ExecutionException e)
+			{
+				throw new RuntimeException(e.getCause());
 			}
-			builder.put("missingno", missing);
-			IESmartObjModel bakedModel = new IESmartObjModel(model.baseModel, model.getModel(), model.getState(), model.getFormat(), builder.build(), transformationMap);
-			bakedModel.tempStack = stack;
-			bakedModel.tempEntity = entity;
-			cachedBakedItemModels.put(comp, bakedModel);
-			return bakedModel;
 		}
 	};
 
