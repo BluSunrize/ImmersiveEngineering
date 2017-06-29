@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -41,7 +42,7 @@ public class BlastFurnace
 		public void apply()
 		{
 			BlastFurnaceRecipe.recipeList.add(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -54,7 +55,7 @@ public class BlastFurnace
 		public void undo()
 		{
 			BlastFurnaceRecipe.recipeList.remove(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -97,7 +98,7 @@ public class BlastFurnace
 		{
 			removedRecipes = BlastFurnaceRecipe.removeRecipes(output);
 			for(BlastFurnaceRecipe recipe : removedRecipes)
-				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -108,7 +109,7 @@ public class BlastFurnace
 					if(recipe != null)
 					{
 						BlastFurnaceRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 
@@ -164,7 +165,7 @@ public class BlastFurnace
 		public void apply()
 		{
 			fuelRecipeKey = BlastFurnaceRecipe.addBlastFuel(fuel, burnTime);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(fuelRecipeKey);
+			IECompatModule.jeiAddFunc.accept(fuelRecipeKey);
 		}
 
 		@Override
@@ -177,7 +178,7 @@ public class BlastFurnace
 		public void undo()
 		{
 			BlastFurnaceRecipe.blastFuels.remove(fuelRecipeKey);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(fuelRecipeKey);
+			IECompatModule.jeiRemoveFunc.accept(fuelRecipeKey);
 		}
 
 		@Override
@@ -225,7 +226,7 @@ public class BlastFurnace
 				if(e.input.matchesItemStack(stack))
 				{
 					removed = e;
-					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(removed);
+					IECompatModule.jeiRemoveFunc.accept(removed);
 					it.remove();
 					break;
 				}
@@ -238,7 +239,7 @@ public class BlastFurnace
 			if(removed != null)
 			{
 				BlastFurnaceRecipe.blastFuels.add(removed);
-				MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(removed);
+				IECompatModule.jeiAddFunc.accept(removed);
 			}
 		}
 

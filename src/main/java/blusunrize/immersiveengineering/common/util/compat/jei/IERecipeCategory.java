@@ -4,18 +4,17 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements IRecipeCategory<W>, IRecipeHandler<T>
+public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements IRecipeCategory<W>, IRecipeWrapperFactory<T>
 {
 	public String uniqueName;
 	public String localizedName;
@@ -74,19 +73,19 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 		return Collections.emptyList();
 	}
 
-	@Override
+//	@Override
 	public Class<T> getRecipeClass()
 	{
 		return this.recipeClass;
 	}
 
-	@Override
-	public String getRecipeCategoryUid(@Nonnull T recipe)
+//	@Override
+	public String getRecipeCategoryUid()
 	{
 		return "ie."+uniqueName;
 	}
 
-	@Override
+//	@Override
 	public boolean isRecipeValid(T recipe)
 	{
 		return true;

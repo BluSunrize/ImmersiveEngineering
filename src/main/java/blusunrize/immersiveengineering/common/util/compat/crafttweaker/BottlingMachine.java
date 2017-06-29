@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -39,7 +40,7 @@ public class BottlingMachine
 		public void apply()
 		{
 			BottlingMachineRecipe.recipeList.add(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -52,7 +53,7 @@ public class BottlingMachine
 		public void undo()
 		{
 			BottlingMachineRecipe.recipeList.remove(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -95,7 +96,7 @@ public class BottlingMachine
 		{
 			removedRecipes = BottlingMachineRecipe.removeRecipes(output);
 			for(BottlingMachineRecipe recipe : removedRecipes)
-				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -106,7 +107,7 @@ public class BottlingMachine
 					if(recipe != null)
 					{
 						BottlingMachineRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 

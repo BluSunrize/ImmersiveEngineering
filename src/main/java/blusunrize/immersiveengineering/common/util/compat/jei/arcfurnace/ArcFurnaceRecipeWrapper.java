@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import org.objectweb.asm.ClassWriter;
@@ -66,8 +65,8 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 			if(subWrapper!=null)
 			{
 				dynamicSubclasses.put(subtype, subWrapper);
-				ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(JEIHelper.jeiHelpers.getGuiHelper(), subtype, subWrapper);
 				//Can't add Categories dynamically anymore =c
+				//ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(JEIHelper.jeiHelpers.getGuiHelper(), subtype, subWrapper);
 				//JEIHelper.modRegistry.addRecipeCategories(cat);
 				//JEIHelper.modRegistry.addRecipeHandlers(cat);
 				return subWrapper;

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -38,7 +39,7 @@ public class CokeOven
 		public void apply()
 		{
 			CokeOvenRecipe.recipeList.add(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -51,7 +52,7 @@ public class CokeOven
 		public void undo()
 		{
 			CokeOvenRecipe.recipeList.remove(recipe);
-			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -94,7 +95,7 @@ public class CokeOven
 		{
 			removedRecipes = CokeOvenRecipe.removeRecipes(output);
 			for(CokeOvenRecipe recipe : removedRecipes)
-				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -105,7 +106,7 @@ public class CokeOven
 					if(recipe != null)
 					{
 						CokeOvenRecipe.recipeList.add(recipe);
-						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}
 

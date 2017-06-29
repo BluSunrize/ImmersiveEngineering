@@ -13,11 +13,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public abstract class IECompatModule
 {
 	public static HashMap<String, Class<? extends IECompatModule>> moduleClasses = new HashMap<String, Class<? extends IECompatModule>>();
 	public static Set<IECompatModule> modules = new HashSet<IECompatModule>();
+
+	public static Consumer<Object> jeiAddFunc = o -> {};
+	public static Consumer<Object> jeiRemoveFunc = o -> {};
 
 	static
 	{

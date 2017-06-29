@@ -15,20 +15,16 @@ import net.minecraft.item.ItemStack;
 
 public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe, ArcFurnaceRecipeWrapper>
 {
-	private final String subType;
 	//	static ItemStack arcFurnaceStack;
-	public ArcFurnaceRecipeCategory(IGuiHelper helper, String recipeType, Class recipeClass)
+	public ArcFurnaceRecipeCategory(IGuiHelper helper, Class recipeClass)
 	{
-		super("arcFurnace"+(recipeType!=null?"."+recipeType: ""), "tile.immersiveengineering.metal_multiblock.arc_furnace.name", helper.createBlankDrawable(140, 50), recipeClass, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
-		subType = recipeType;
-		if(recipeType!=null)
-			this.localizedName += " - "+recipeType;
+		super("arcFurnace", "tile.immersiveengineering.metal_multiblock.arc_furnace.name", helper.createBlankDrawable(140, 50), recipeClass, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
 		//		arcFurnaceStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
 	}
 
 	public ArcFurnaceRecipeCategory(IGuiHelper helper)
 	{
-		this(helper, null, ArcFurnaceRecipe.class);
+		this(helper, ArcFurnaceRecipe.class);
 	}
 
 	@Override
