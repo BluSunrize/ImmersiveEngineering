@@ -34,8 +34,11 @@ import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
+import blusunrize.immersiveengineering.common.util.IEPotions;
+import blusunrize.immersiveengineering.common.util.IEVillagerTrades;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import net.minecraft.block.Block;
@@ -633,9 +636,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(RecipeShapedIngredient recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().length];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients()[i]);
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
 				return query;
 			}
 		});
@@ -879,7 +882,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
 
 		/**ACHIEVEMENTS*/
-		IEAchievements.init();
+//		IEAchievements.init();
 
 		/**VILLAGE*/
 		VillagerRegistry villageRegistry = VillagerRegistry.instance();
