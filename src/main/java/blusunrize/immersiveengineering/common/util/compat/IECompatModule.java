@@ -2,9 +2,6 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerHelper;
-import blusunrize.immersiveengineering.common.util.compat.opencomputers.OCHelper;
-import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,7 +30,7 @@ public abstract class IECompatModule
 		moduleClasses.put("botania", BotaniaHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
-		moduleClasses.put("crafttweaker", CraftTweakerHelper.class);
+//		moduleClasses.put("crafttweaker", CraftTweakerHelper.class); ToDo: Craftweaker
 		moduleClasses.put("denseores", DenseOresHelper.class);
 		moduleClasses.put("enderio", EnderIOHelper.class);
 		moduleClasses.put("extrautils2", ExtraUtilsHelper.class);
@@ -42,13 +39,13 @@ public abstract class IECompatModule
 		moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
 		moduleClasses.put("ic2", IC2Helper.class);
 		moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
-		moduleClasses.put("opencomputers", OCHelper.class);
+//		moduleClasses.put("opencomputers", OCHelper.class); ToDo: OpenComputers
 		moduleClasses.put("theoneprobe", OneProbeHelper.class);
-		moduleClasses.put("tconstruct", TConstructHelper.class);
+//		moduleClasses.put("tconstruct", TConstructHelper.class); ToDo: TConstruct
 		moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
 		moduleClasses.put("thaumcraft", ThaumcraftHelper.class);
 		moduleClasses.put("railcraft", RailcraftHelper.class);
-		moduleClasses.put("waila", WailaHelper.class);
+//		moduleClasses.put("waila", WailaHelper.class); ToDo: WAILA
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
