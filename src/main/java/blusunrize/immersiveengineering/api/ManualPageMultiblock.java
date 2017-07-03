@@ -213,7 +213,7 @@ public class ManualPageMultiblock extends ManualPages
 									{
 										IBlockState state = blockAccess.getBlockState(pos);
 										Tessellator tessellator = Tessellator.getInstance();
-										VertexBuffer buffer = tessellator.getBuffer();
+										BufferBuilder buffer = tessellator.getBuffer();
 										buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 										openBuffer = true;
 										blockRender.renderBlock(state, pos, blockAccess, buffer);

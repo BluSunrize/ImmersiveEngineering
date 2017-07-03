@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.api;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -26,9 +26,10 @@ public class DirectionalBlockPos extends BlockPos
 		this.direction = direction;
 	}
 
+	@Override
 	public String toString()
 	{
-	     return Objects.toStringHelper(this).add("x", this.getX()).add("y", this.getY()).add("z", this.getZ()).add("direction", this.direction.toString()).toString();
+	     return MoreObjects.toStringHelper(this).add("x", this.getX()).add("y", this.getY()).add("z", this.getZ()).add("direction", this.direction.toString()).toString();
 	}
 
 	public TileEntity getTile(World world)

@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.api;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class IEApi
 		for(ItemStack stack : list)
 			if(!stack.isEmpty())
 			{
-				ResourceLocation rl = GameData.getItemRegistry().getNameForObject(stack.getItem());
+				ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
 				if(rl!=null)
 				{
 					String modId = rl.getResourceDomain();
