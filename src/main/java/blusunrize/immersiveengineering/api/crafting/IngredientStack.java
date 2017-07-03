@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeModContainer;
@@ -10,6 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.OreIngredient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,15 +173,15 @@ public class IngredientStack
 			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
 		return ret;
 	}
-	public Object getShapedRecipeInput()
+	public Ingredient toRecipeIngredient()
 	{
-		Object ret = stack;
-		if(ret==ItemStack.EMPTY&&stackList!=null&&stackList.size()>0)
-			ret = stackList;
-		if(ret==ItemStack.EMPTY&&oreName!=null)
-			ret = OreDictionary.getOres(oreName);
-		if(ret==ItemStack.EMPTY&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
-			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
+		Ingredient ret = stack!=null?Ingredient.fromStacks(stack):null;
+		if(ret==null&&stackList!=null&&stackList.size()>0)
+			ret = ApiUtils.createIngredientFromList(stackList);
+		if(ret==null&&oreName!=null)
+			ret = new OreIngredient(oreName);
+		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+			ret = new IngredientFluidStack(fluid);
 		return ret;
 	}
 

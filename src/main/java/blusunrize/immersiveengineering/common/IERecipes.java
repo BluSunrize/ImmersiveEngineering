@@ -348,15 +348,19 @@ public class IERecipes
 
 		//		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 1,BlockMetalMultiblocks.META_lightningRod), "IFI","CBC","IHI", 'I',"ingotSteel",'F',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_fence),'B',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevice.META_capacitorHV),'C',electrumCoil,'H',hvCoil);
 	}
+	public static ResourceLocation getRecipeGroup(ItemStack stack)
+	{
+		return new ResourceLocation(ImmersiveEngineering.MODID+":"+stack.getUnlocalizedName());
+	}
 	public static ShapedOreRecipe addOredictRecipe(ItemStack output, Object... recipe)
 	{
-		ShapedOreRecipe sor = new ShapedOreRecipe(new ResourceLocation(ImmersiveEngineering.MODID+":"+output.getUnlocalizedName()), output, recipe);
+		ShapedOreRecipe sor = new ShapedOreRecipe(getRecipeGroup(output), output, recipe);
 		ForgeRegistries.RECIPES.register(sor);
 		return sor;
 	}
 	public static void addShapelessOredictRecipe(ItemStack output, Object... recipe)
 	{
-		ForgeRegistries.RECIPES.register(new ShapelessOreRecipe(new ResourceLocation(ImmersiveEngineering.MODID+":"+output.getUnlocalizedName()), output, recipe));
+		ForgeRegistries.RECIPES.register(new ShapelessOreRecipe(getRecipeGroup(output), output, recipe));
 	}
 	public static void addTwoWayStorageRecipe(ItemStack storage, ItemStack component)
 	{
@@ -375,14 +379,14 @@ public class IERecipes
 
 	public static RecipeShapedIngredient addIngredientRecipe(ItemStack output, Object... recipe)
 	{
-		RecipeShapedIngredient r = new RecipeShapedIngredient(output, recipe);
+		RecipeShapedIngredient r = new RecipeShapedIngredient(getRecipeGroup(output), output, recipe);
 		ForgeRegistries.RECIPES.register(r);
 		return r;
 	}
 
 	public static RecipeShapelessIngredient addShapelessIngredientRecipe(ItemStack output, Object... recipe)
 	{
-		RecipeShapelessIngredient r = new RecipeShapelessIngredient(output, recipe);
+		RecipeShapelessIngredient r = new RecipeShapelessIngredient(getRecipeGroup(output), output, recipe);
 		ForgeRegistries.RECIPES.register(r);
 		return r;
 	}
@@ -654,13 +658,13 @@ public class IERecipes
 					}
 				}
 		if(registeredMoldBases.containsKey("plate"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 0), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("plate")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_plate"), new ItemStack(IEContent.itemMold, 1, 0), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("plate")));
 		if(registeredMoldBases.containsKey("gear"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 1), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("gear")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_gear"), new ItemStack(IEContent.itemMold, 1, 1), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("gear")));
 		if(registeredMoldBases.containsKey("rod"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("rod")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_rod"), new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("rod")));
 		if(registeredMoldBases.containsKey("wire"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("wire")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_wire"), new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("wire")));
 		Config.manual_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 

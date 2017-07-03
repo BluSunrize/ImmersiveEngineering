@@ -13,7 +13,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-public class RecipePowerpack implements IRecipe
+public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
@@ -70,10 +70,11 @@ public class RecipePowerpack implements IRecipe
 	}
 
 	@Override
-	public int getRecipeSize()
+	public boolean canFit(int width, int height)
 	{
-		return 10;
+		return width>=2 && height>=2;
 	}
+
 	@Override
 	public ItemStack getRecipeOutput()
 	{

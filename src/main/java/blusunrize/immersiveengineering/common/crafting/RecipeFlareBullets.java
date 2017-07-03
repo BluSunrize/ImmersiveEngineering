@@ -17,7 +17,7 @@ import net.minecraftforge.common.ForgeHooks;
 
 import java.util.List;
 
-public class RecipeFlareBullets implements IRecipe
+public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
@@ -99,10 +99,11 @@ public class RecipeFlareBullets implements IRecipe
 	}
 
 	@Override
-	public int getRecipeSize()
+	public boolean canFit(int width, int height)
 	{
-		return 10;
+		return width>=2 && height>=2;
 	}
+
 	@Override
 	public ItemStack getRecipeOutput()
 	{
