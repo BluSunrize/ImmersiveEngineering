@@ -121,7 +121,6 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.input.Keyboard;
 
@@ -273,7 +272,7 @@ public class ClientProxy extends CommonProxy
 		for(Block block : IEContent.registeredIEBlocks)
 		{
 			Item blockItem = Item.getItemFromBlock(block);
-			final ResourceLocation loc = GameData.getBlockRegistry().getNameForObject(block);
+			final ResourceLocation loc = Block.REGISTRY.getNameForObject(block);
 			if(block instanceof IIEMetaBlock)
 			{
 				IIEMetaBlock ieMetaBlock = (IIEMetaBlock) block;
@@ -339,7 +338,7 @@ public class ClientProxy extends CommonProxy
 				}
 			} else
 			{
-				final ResourceLocation loc = GameData.getItemRegistry().getNameForObject(item);
+				final ResourceLocation loc = Item.REGISTRY.getNameForObject(item);
 				ModelBakery.registerItemVariants(item, loc);
 				ModelLoader.setCustomMeshDefinition(item, new ItemMeshDefinition()
 				{
@@ -694,7 +693,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
 		tempItemList = NonNullList.create();
 		for(int i=0; i<16; i++)
-			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour",EnumDyeColor.byDyeDamage(i).getMapColor().colorValue));
+			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour",EnumDyeColor.byDyeDamage(i).getColorValue()));
 		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_TOOLS,
 				new ManualPages.Crafting(ManualHelper.getManual(), "earmuffs0", new ItemStack(IEContent.itemEarmuffs)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1",(Object[])new PositionedItemStack[][]{
