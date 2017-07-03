@@ -56,8 +56,8 @@ public abstract class IESlot extends Slot
 		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
 			ItemStack result = super.onTake(player, stack);
-			if(player!=null && (this.container instanceof ContainerBlastFurnace || this.container instanceof ContainerArcFurnace) && ApiUtils.compareToOreName(stack, "ingotSteel"))
-				player.addStat(IEAchievements.makeSteel);
+//			if(player!=null && (this.container instanceof ContainerBlastFurnace || this.container instanceof ContainerArcFurnace) && ApiUtils.compareToOreName(stack, "ingotSteel"))
+//				player.addStat(IEAchievements.makeSteel); ToDo: Achievement
 			return result;
 		}
 	}
@@ -361,11 +361,12 @@ public abstract class IESlot extends Slot
 					for(ItemStack trigger : achievement.triggerItems)
 						if(ApiUtils.stackMatchesObject(stack, trigger, achievement.checkNBT&&trigger.hasTagCompound()))
 						{
-							player.addStat(achievement);
+//							player.addStat(achievement); ToDo: Achievement
 							break;
 						}
-				} else if(ApiUtils.stackMatchesObject(stack, achievement.icon, achievement.checkNBT&&achievement.icon.hasTagCompound()))
-					player.addStat(achievement);
+				}
+//				else if(ApiUtils.stackMatchesObject(stack, achievement.icon, achievement.checkNBT&&achievement.icon.hasTagCompound()))
+//					player.addStat(achievement); ToDo: Achievement
 			}
 			this.inventory.markDirty();
 			return super.onTake(player, stack);
