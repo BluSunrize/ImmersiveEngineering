@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
-import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.item.IIngredient;
@@ -43,16 +40,6 @@ public class CraftTweakerHelper extends IECompatModule
 		CraftTweakerAPI.registerClass(BottlingMachine.class);
 		CraftTweakerAPI.registerClass(MetalPress.class);
 		CraftTweakerAPI.registerClass(Mixer.class);
-		try
-		{
-//			MineTweakerImplementationAPI.onPostReload(new ExcavatorEventHandler());
-		} catch(Exception e)
-		{
-			IELogger.error("[CRITICAL] YOU ARE USING AN OUTDATED VERSION OF MINETWEAKER");
-			IELogger.error("[CRITICAL] IE requires version 3.0.10b or later to function correctly!");
-			IELogger.error("[CRITICAL] The use of an outdated version will cause major issues!!!!");
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -99,16 +86,4 @@ public class CraftTweakerHelper extends IECompatModule
 		}
 		return (FluidStack) iStack.getInternal();
 	}
-// ToDo: Ask Jared
-//	public static class ExcavatorEventHandler implements IEventHandler<ReloadEvent>
-//	{
-//		@Override
-//		public void handle(ReloadEvent event)
-//		{
-//			ExcavatorHandler.recalculateChances(false);
-//			if(ManualHelper.ieManualInstance != null)
-//				ManualHelper.ieManualInstance.recalculateAllRecipes();
-//		}
-//	}
-
 }

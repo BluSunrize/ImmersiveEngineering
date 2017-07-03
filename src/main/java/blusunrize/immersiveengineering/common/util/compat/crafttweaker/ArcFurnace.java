@@ -2,10 +2,10 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.IUndoableAction;
-import minetweaker.CraftTweakerAPI;
-import minetweaker.api.item.IIngredient;
-import minetweaker.api.item.IItemStack;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -35,7 +35,7 @@ public class ArcFurnace
 		CraftTweakerAPI.apply(new Add(r));
 	}
 
-	private static class Add implements IUndoableAction
+	private static class Add implements IAction
 	{
 		private final ArcFurnaceRecipe recipe;
 
@@ -52,34 +52,9 @@ public class ArcFurnace
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			ArcFurnaceRecipe.recipeList.remove(recipe);
-			IECompatModule.jeiRemoveFunc.accept(recipe);
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding ArcFurnace Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing ArcFurnace Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
@@ -89,7 +64,7 @@ public class ArcFurnace
 		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
-	private static class Remove implements IUndoableAction
+	private static class Remove implements IAction
 	{
 		private final ItemStack output;
 		List<ArcFurnaceRecipe> removedRecipes;
@@ -108,39 +83,9 @@ public class ArcFurnace
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(ArcFurnaceRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						ArcFurnaceRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing ArcFurnace Recipe for " + output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding ArcFurnace Recipe for " + output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 }
