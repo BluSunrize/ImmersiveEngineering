@@ -25,9 +25,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -50,7 +50,7 @@ public class IERecipes
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shapelessIngredient", RecipeShapelessIngredient.class, Category.SHAPELESS, "after:forge:shapedore");
 		RecipeSorter.register(ImmersiveEngineering.MODID+":banners", RecipeBannerAdvanced.class, Category.SHAPELESS, "after:forge:shapelessore");
 		RecipeSorter.register(ImmersiveEngineering.MODID+":RGBColour", RecipeRGBColouration.class, Category.SHAPELESS, "after:forge:shapelessore");
-		ForgeRegistries.RECIPES.register(new RecipeBannerAdvanced());
+		ForgeRegistries.RECIPES.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
 
 		ItemStack copperCoil = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_LV.getMeta());
 		ItemStack electrumCoil = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_MV.getMeta());
@@ -59,9 +59,10 @@ public class IERecipes
 		ItemStack componentSteel = new ItemStack(IEContent.itemMaterial,1,9);
 		ItemStack woodenGrip = new ItemStack(IEContent.itemMaterial,1,13);
 		ItemStack elecTube = new ItemStack(IEContent.itemMaterial,1,26);
-		String[] woodenSticks = new String[]{"stickWood", "stickTreatedWood"};
-		String[] metalSticks = new String[]{"stickIron", "stickAluminum", "stickSteel"};
-		ItemStack[] cutters = new ItemStack[]{new ItemStack(IEContent.itemTool, 1, 1), new ItemStack(Items.SHEARS, 1, OreDictionary.WILDCARD_VALUE)};
+		Ingredient woodenSticks = new IngredientMultiOre("stickWood", "stickTreatedWood");
+		Ingredient metalSticks = new IngredientMultiOre("stickIron", "stickAluminum", "stickSteel");
+//		ItemStack[] cutters = new ItemStack[]{new ItemStack(IEContent.itemTool, 1, 1), new ItemStack(Items.SHEARS, 1, OreDictionary.WILDCARD_VALUE)};
+		Ingredient cutters = Ingredient.fromStacks(new ItemStack(IEContent.itemTool, 1, 1), new ItemStack(Items.SHEARS, 1, OreDictionary.WILDCARD_VALUE));
 		ItemStack baseConveyor = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor");
 
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,0), "W","W", 'W',"plankTreatedWood");
@@ -101,7 +102,7 @@ public class IERecipes
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemTool,1,3), Items.BOOK,Blocks.LEVER);
 		addOredictRecipe(new ItemStack(IEContent.itemRevolver,1,0), " I ","BDH","GIG", 'I',"ingotIron",'B',new ItemStack(IEContent.itemMaterial,1,14),'D',new ItemStack(IEContent.itemMaterial,1,15),'G',woodenGrip,'H',new ItemStack(IEContent.itemMaterial,1,16)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.itemRevolver,1,1), "  I","IIS","  I", 'I',"ingotIron",'S',"ingotSteel");
-		ForgeRegistries.RECIPES.register(new RecipeRevolver());
+		ForgeRegistries.RECIPES.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
 		RecipeSorter.register(ImmersiveEngineering.MODID+":revolverLoop", RecipeRevolver.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		addOredictRecipe(new ItemStack(IEContent.itemBullet,5,0), "I I","I I"," I ", 'I',"ingotCopper");
@@ -121,7 +122,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemRailgun,1,0), " HG","CBH","BC ", 'C',electrumCoil, 'H',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta()), 'B',new ItemStack(IEContent.itemMaterial,1,14), 'G',woodenGrip);
 
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.DRILL_WATERPROOF.ordinal()), "BI ","IBI"," IC", 'B',Items.BUCKET, 'I',"dyeBlue", 'C',componentIron);
-		addIngredientRecipe(new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_LUBE.ordinal()), "BI ", "IBI", " IC", 'B', new FluidStack(IEContent.fluidPlantoil, 1000), 'I', "ingotIron", 'C', componentIron);
+		addIngredientRecipe(new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_LUBE.ordinal()), "BI ", "IBI", " IC", 'B', new IngredientFluidStack(IEContent.fluidPlantoil, 1000), 'I', "ingotIron", 'C', componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_DAMAGE.ordinal()), "SSS"," C ", 'S',"ingotSteel", 'C',componentSteel);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_CAPACITY.ordinal()), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.BUCKET, 'O',"dyeRed");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.REVOLVER_BAYONET.ordinal()), "SI","IW", 'S',Items.IRON_SWORD, 'I',"ingotSteel", 'W',"plankTreatedWood");
@@ -146,15 +147,15 @@ public class IERecipes
 		addIngredientRecipe(new ItemStack(IEContent.itemWireCoil, 4, 5), " I ", "ASA", " I ", 'I', "dustRedstone", 'A', "wireAluminum", 'S', woodenSticks).allowQuarterTurn();
 
 		addOredictRecipe(new ItemStack(IEContent.itemJerrycan), " II","IBB","IBB", 'I',"plateIron",'B',Items.BUCKET);
-		ForgeRegistries.RECIPES.register(new RecipeJerrycan());
+		ForgeRegistries.RECIPES.register(new RecipeJerrycan().setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
 		RecipeSorter.register(ImmersiveEngineering.MODID+":jerrycan", RecipeJerrycan.class, Category.SHAPELESS, "after:forge:shapelessore");
 		addOredictRecipe(new ItemStack(IEContent.itemToolbox), "PPP","RCR", 'P',"plateAluminum",'C',new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.CRATE.getMeta()),'R',"dyeRed");
 
-		ForgeRegistries.RECIPES.register(new RecipeShaderBags());
+		ForgeRegistries.RECIPES.register(new RecipeShaderBags().setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shaderbags", RecipeShaderBags.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		addOredictRecipe(new ItemStack(IEContent.itemEarmuffs), " S ","S S","W W", 'S',"stickIron",'W',new ItemStack(Blocks.WOOL,1,OreDictionary.WILDCARD_VALUE));
-		ForgeRegistries.RECIPES.register(new RecipeEarmuffs());
+		ForgeRegistries.RECIPES.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
 		RecipeSorter.register(ImmersiveEngineering.MODID+":earmuffs", RecipeEarmuffs.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[0]), "A A", "A A", 'A', "plateAluminum");
@@ -163,7 +164,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[3]), "AAA", "A A", 'A', "plateAluminum");
 
 		addOredictRecipe(new ItemStack(IEContent.itemPowerpack), "LBL","WCW", 'L',"leather",'B',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()),'C',new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),'W',new ItemStack(IEContent.itemWireCoil,1,0));
-		ForgeRegistries.RECIPES.register(new RecipePowerpack());
+		ForgeRegistries.RECIPES.register(new RecipePowerpack().setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
 		RecipeSorter.register(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		addOredictRecipe(new ItemStack(IEContent.itemFluorescentTube), "GEG", "GgG", "GgG", 'G', "blockGlass", 'E', new ItemStack(IEContent.itemGraphiteElectrode), 'g', "dustGlowstone");
@@ -173,7 +174,7 @@ public class IERecipes
 		//
 		//TREATED WOOD
 		//
-		addIngredientRecipe(new ItemStack(IEContent.blockTreatedWood, 8, 0), "WWW", "WCW", "WWW", 'W', "plankWood", 'C', new FluidStack(IEContent.fluidCreosote, 1000));
+		addIngredientRecipe(new ItemStack(IEContent.blockTreatedWood, 8, 0), "WWW", "WCW", "WWW", 'W', "plankWood", 'C', new IngredientFluidStack(IEContent.fluidCreosote, 1000));
 		for(int i=0; i<IEContent.blockTreatedWood.enumValues.length; i++)
 		{
 			addShapelessOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1, i==IEContent.blockTreatedWood.enumValues.length-1?0:i+1), new ItemStack(IEContent.blockTreatedWood,1,i));
@@ -218,7 +219,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockClothDevice,2,BlockTypes_ClothDevice.BALLOON.getMeta()), " F ","FTF"," S ", 'F',"fabricHemp", 'T',"torch", 'S',"slabTreatedWood");
 		addIngredientRecipe(new ItemStack(IEContent.blockClothDevice,3,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta()), "SSS","FFF","FFF", 'S',metalSticks, 'F',"fabricHemp");
 		final ItemStack stripCurtain = new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
-		ForgeRegistries.RECIPES.register(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ));
+		ForgeRegistries.RECIPES.register(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ).setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
 
 		//
 		//STONE DECORACTION
@@ -230,8 +231,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,BlockTypes_StoneDecoration.HEMPCRETE.getMeta()), "CCC","HHH","CCC", 'C',Items.CLAY_BALL,'H',"fiberHemp");
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,BlockTypes_StoneDecoration.ALLOYBRICK.getMeta()), "SB","BS", 'S',"sandstone",'B',"ingotBrick");
 
-		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 8, BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS", "GBG", "SCS", 'C', Items.CLAY_BALL, 'S', "sand", 'G', Blocks.GRAVEL, 'B', new FluidStack(FluidRegistry.WATER,1000)).allowQuarterTurn();
-		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 12, BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS", "GBG", "SCS", 'C', Items.CLAY_BALL, 'S', "itemSlag", 'G', Blocks.GRAVEL, 'B', new FluidStack(FluidRegistry.WATER,1000)).allowQuarterTurn();
+		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 8, BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS", "GBG", "SCS", 'C', Items.CLAY_BALL, 'S', "sand", 'G', Blocks.GRAVEL, 'B', new IngredientFluidStack(FluidRegistry.WATER,1000)).allowQuarterTurn();
+		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 12, BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS", "GBG", "SCS", 'C', Items.CLAY_BALL, 'S', "itemSlag", 'G', Blocks.GRAVEL, 'B', new IngredientFluidStack(FluidRegistry.WATER,1000)).allowQuarterTurn();
 		addShapelessOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()), new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,4,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()), "CC","CC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta()), "P", "B", 'P', "plateLead", 'B', new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE.getMeta()));
@@ -278,7 +279,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()), "IGI","CCC","IGI", 'I',"ingotIron",'C',"ingotCopper",'G',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()), "IGI","PEP","IGI", 'I',"ingotSteel",'E',"ingotElectrum",'G',componentSteel,'P',Blocks.PISTON);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.GENERATOR.getMeta()), "III","EDE","III", 'I',"ingotSteel",'E',"ingotElectrum",'D',new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.DYNAMO.getMeta()));
-		addIngredientRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RADIATOR.getMeta()), "ICI", "CBC", "ICI", 'I', "ingotSteel", 'C', "ingotCopper", 'B', new FluidStack(FluidRegistry.WATER,1000)).allowEighthTurn();
+		addIngredientRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RADIATOR.getMeta()), "ICI", "CBC", "ICI", 'I', "ingotSteel", 'C', "ingotCopper", 'B', new IngredientFluidStack(FluidRegistry.WATER,1000)).allowEighthTurn();
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration1, 3, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()), "IRI","IRI", 'I',"ingotSteel",'R',"stickSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration1, 6, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()), "III"," R ","R R", 'I',"ingotSteel",'R',"stickSteel");
@@ -355,12 +356,13 @@ public class IERecipes
 	public static ShapedOreRecipe addOredictRecipe(ItemStack output, Object... recipe)
 	{
 		ShapedOreRecipe sor = new ShapedOreRecipe(getRecipeGroup(output), output, recipe);
-		ForgeRegistries.RECIPES.register(sor);
+		ForgeRegistries.RECIPES.register(sor.setRegistryName(sor.getGroup()));
 		return sor;
 	}
 	public static void addShapelessOredictRecipe(ItemStack output, Object... recipe)
 	{
-		ForgeRegistries.RECIPES.register(new ShapelessOreRecipe(getRecipeGroup(output), output, recipe));
+		ShapelessOreRecipe sor = new ShapelessOreRecipe(getRecipeGroup(output), output, recipe);
+		ForgeRegistries.RECIPES.register(sor.setRegistryName(sor.getGroup()));
 	}
 	public static void addTwoWayStorageRecipe(ItemStack storage, ItemStack component)
 	{
@@ -380,14 +382,14 @@ public class IERecipes
 	public static RecipeShapedIngredient addIngredientRecipe(ItemStack output, Object... recipe)
 	{
 		RecipeShapedIngredient r = new RecipeShapedIngredient(getRecipeGroup(output), output, recipe);
-		ForgeRegistries.RECIPES.register(r);
+		ForgeRegistries.RECIPES.register(r.setRegistryName(r.getGroup()));
 		return r;
 	}
 
 	public static RecipeShapelessIngredient addShapelessIngredientRecipe(ItemStack output, Object... recipe)
 	{
 		RecipeShapelessIngredient r = new RecipeShapelessIngredient(getRecipeGroup(output), output, recipe);
-		ForgeRegistries.RECIPES.register(r);
+		ForgeRegistries.RECIPES.register(r.setRegistryName(r.getGroup()));
 		return r;
 	}
 
@@ -433,7 +435,7 @@ public class IERecipes
 		//Potion
 		bullet = BulletHandler.getBulletStack("potion");
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Items.GLASS_BOTTLE);
-		ForgeRegistries.RECIPES.register(new RecipePotionBullets());
+		ForgeRegistries.RECIPES.register(new RecipePotionBullets().setRegistryName(ImmersiveEngineering.MODID, "bullet_potion"));
 		RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 		//Flare
 		bullet = BulletHandler.getBulletStack("flare");
@@ -443,7 +445,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeGreen");
 		ItemNBTHelper.setInt(bullet, "flareColour", 0xffff82);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
-		ForgeRegistries.RECIPES.register(new RecipeFlareBullets());
+		ForgeRegistries.RECIPES.register(new RecipeFlareBullets().setRegistryName(ImmersiveEngineering.MODID, "potion_flare"));
 		RecipeSorter.register(ImmersiveEngineering.MODID+":flareBullet", RecipeFlareBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		//Wolfpack
@@ -658,13 +660,13 @@ public class IERecipes
 					}
 				}
 		if(registeredMoldBases.containsKey("plate"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_plate"), new ItemStack(IEContent.itemMold, 1, 0), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("plate")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_plate"), new ItemStack(IEContent.itemMold, 1, 0), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("plate"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_plate"));
 		if(registeredMoldBases.containsKey("gear"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_gear"), new ItemStack(IEContent.itemMold, 1, 1), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("gear")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_gear"), new ItemStack(IEContent.itemMold, 1, 1), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("gear"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_gear"));
 		if(registeredMoldBases.containsKey("rod"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_rod"), new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("rod")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_rod"), new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("rod"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_rod"));
 		if(registeredMoldBases.containsKey("wire"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_wire"), new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("wire")));
+			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_wire"), new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("wire"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_wire"));
 		Config.manual_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 

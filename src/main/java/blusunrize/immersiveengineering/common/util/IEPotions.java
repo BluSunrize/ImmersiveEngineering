@@ -11,6 +11,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class IEPotions
 {
@@ -52,7 +53,7 @@ public class IEPotions
 			this.halfTickRateWIthAmplifier = halveTick;
 			this.setIconIndex(icon%8, icon/8);
 
-			REGISTRY.register(-1, resource, this);
+			ForgeRegistries.POTIONS.register(this.setRegistryName(resource));
 		}
 
 		@Override
