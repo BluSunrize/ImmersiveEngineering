@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.client.fx;
 
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -41,7 +41,7 @@ public class EntityFXItemParts extends EntityFXIEBase
 		return "itemParts";
 	}
 	@Override
-	public void tessellateFromQueue(VertexBuffer worldRendererIn)
+	public void tessellateFromQueue(BufferBuilder worldRendererIn)
 	{
 		if(!item.isEmpty() && item.getItem()!=null && this.particleTexture!=null)
 		{
