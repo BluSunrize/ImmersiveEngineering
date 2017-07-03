@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.UniversalBucket;
@@ -18,7 +19,12 @@ public class IngredientFluidStack extends Ingredient
 
 	public IngredientFluidStack(FluidStack fluid)
 	{
+		super(0);
 		this.fluid = fluid;
+	}
+	public IngredientFluidStack(Fluid fluid, int amount)
+	{
+		this(new FluidStack(fluid, amount));
 	}
 
 	ItemStack[] cachedStacks;
