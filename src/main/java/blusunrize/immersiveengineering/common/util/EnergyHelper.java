@@ -2,10 +2,10 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
-import cofh.api.energy.IEnergyConnection;
-import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
+import cofh.redstoneflux.api.IEnergyConnection;
+import cofh.redstoneflux.api.IEnergyContainerItem;
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -113,7 +113,7 @@ public class EnergyHelper
 			return false;
 		if(tile instanceof IFluxReceiver && ((IFluxReceiver)tile).canConnectEnergy(facing))
 			return true;
-		if(tile instanceof IEnergyReceiver && ((IEnergyReceiver)tile).canConnectEnergy(facing))
+		if(tile instanceof IEnergyReceiver&& ((IEnergyReceiver)tile).canConnectEnergy(facing))
 			return true;
 		if(tile.hasCapability(CapabilityEnergy.ENERGY, facing))
 			return tile.getCapability(CapabilityEnergy.ENERGY, facing).canReceive();
