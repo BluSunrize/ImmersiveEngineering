@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "13.20.0.2315"
+    version = "14.21.0.2385"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
@@ -40,7 +40,8 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20170612"
+    mappings = "snapshot_20170628"
+    useDepAts = true
     //"snapshot_20160518" 1.9
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
@@ -80,20 +81,27 @@ repositories {
         name = "ic2"
         url = "http://maven.ic2.player.to/"
     }
+    maven { // Redstone Flux
+        name 'CoFH Maven'
+        url "http://maven.covers1624.net/"
+    }
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.11.2:4.5.+"
-    deobfCompile "slimeknights.mantle:Mantle:1.11.2-1.2.+"
-    deobfCompile "com.github.mcjty:compatlayer:1.11-0.+"//1.10-0.2.2
-    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.1x-1.+"//1.1x-1.4.4-55
-    deobfCompile "MineTweaker3:MineTweaker3-MC1112-Main:1.11.2-3.0.+"//17.68
-    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+"
-    deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+"
-    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
+    deobfCompile "mezz.jei:jei_1.12:4.+"
+    deobfCompile "cofh:RedstoneFlux:1.12-2.+:universal"
+//    compile "cofh:RedstoneFlux:1.12-2.+"
+    deobfCompile "slimeknights.mantle:Mantle:1.12-1.2.+"
+//    deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+" ToDo when TCon updates
+//    deobfCompile "com.github.mcjty:compatlayer:1.11-0.+"//1.10-0.2.2 ToDo?
+    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
+//    deobfCompile "MineTweaker3:MineTweaker3-MC1112-Main:1.11.2-3.0.+"//17.68 ToDo?
+    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
+//    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+" ToDo?
+//    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2" ToDo!!
 //    compile 'industrial-craft:industrialcraft-2:release:ex111'
 //    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
-    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+'
+    deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.+'
 
 }
 
