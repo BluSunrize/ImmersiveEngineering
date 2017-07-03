@@ -901,13 +901,7 @@ public class Utils
 
 	public static IRecipe findRecipe(InventoryCrafting crafting, World world)
 	{
-		for (int i=0; i<CraftingManager.getInstance().getRecipeList().size(); i++)
-		{
-			IRecipe irecipe = CraftingManager.getInstance().getRecipeList().get(i);
-			if(irecipe.matches(crafting, world))
-				return irecipe;
-		}
-		return null;
+		return CraftingManager.findMatchingRecipe(crafting, world);
 	}
 
 	public static NonNullList<ItemStack> createNonNullItemStackListFromArray(ItemStack[] stacks)
@@ -1213,7 +1207,7 @@ public class Utils
 		Collections.shuffle(stacks, rand);
 	}
 	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(LootEntry.class, new LootEntry.Serializer()).registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
-	public static LootTable loadBuiltinLootTable(ResourceLocation resource)
+	public static LootTable loadBuiltinLootTable(ResourceLocation resource, LootTableManager lootTableManager)
 	{
 		URL url = Utils.class.getResource("/assets/" + resource.getResourceDomain() + "/loot_tables/" + resource.getResourcePath() + ".json");
 		if(url==null)
@@ -1233,7 +1227,7 @@ public class Utils
 
 			try
 			{
-				return net.minecraftforge.common.ForgeHooks.loadLootTable(GSON_INSTANCE, resource, s, false);
+				return net.minecraftforge.common.ForgeHooks.loadLootTable(GSON_INSTANCE, resource, s, false, lootTableManager);
 			} catch(JsonParseException jsonparseexception)
 			{
 //				IELogger.error(("Failed to load loot table " + resource.toString() + " from " + url.toString()));
