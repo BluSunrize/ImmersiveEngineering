@@ -7,7 +7,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -63,9 +62,9 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 	}
 
 	@Override
-	public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		super.getSubBlocks(item, tab, list);
+		super.getSubBlocks(tab, list);
 	}
 
 	@Override
