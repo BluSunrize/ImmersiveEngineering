@@ -83,6 +83,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -312,7 +313,7 @@ public class IEContent
 		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky")
 		{
 			@Override
-			public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+			public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 			{
 			}
 		};
@@ -584,9 +585,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(ShapedRecipes recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.length];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.recipeItems[i]);
+					query[i] = AssemblerHandler.createQuery(recipe.recipeItems.get(i));
 				return query;
 			}
 		});
@@ -608,9 +609,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(ShapedOreRecipe recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getInput().length];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getInput()[i]);
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
 				return query;
 			}
 		});
@@ -620,9 +621,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(ShapelessOreRecipe recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getInput().size()];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getInput().get(i));
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
 				return query;
 			}
 		});
@@ -890,7 +891,7 @@ public class IEContent
 		if(IEConfig.enableVillagers)
 		{
 			villagerProfession_engineer = new VillagerRegistry.VillagerProfession(ImmersiveEngineering.MODID + ":engineer", "immersiveengineering:textures/models/villager_engineer.png", "immersiveengineering:textures/models/villager_engineer_zombie.png");
-			villageRegistry.register(villagerProfession_engineer);
+			ForgeRegistries.VILLAGER_PROFESSIONS.register(villagerProfession_engineer);
 
 			VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".engineer");
 			career_engineer.addTrade(1,
