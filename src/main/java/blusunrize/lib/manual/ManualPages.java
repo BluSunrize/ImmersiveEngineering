@@ -8,14 +8,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.*;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -451,81 +446,53 @@ public abstract class ManualPages implements IManualPage
 		public void recalculateCraftingRecipes()
 		{
 			this.recipes.clear();
-			List cmRecipes = CraftingManager.getInstance().getRecipeList();
-			for(Object o : cmRecipes)
-				if(o instanceof IRecipe)
+			Iterator<IRecipe> itRecipes = CraftingManager.REGISTRY.iterator();
+			while(itRecipes.hasNext())
+			{
+				IRecipe recipe = itRecipes.next();
+				for(int iStack = 0; iStack < stacks.length; iStack++)
 				{
-					for(int iStack = 0; iStack < stacks.length; iStack++)
-					{
-						Object stack = stacks[iStack];
-						if(stack instanceof ItemStack[])
-							for(ItemStack subStack : (ItemStack[])stack)
-								checkRecipe((IRecipe)o, stack, subStack, iStack);
-						else
-							checkRecipe((IRecipe)o, stack, stack, iStack);
-					}
+					Object stack = stacks[iStack];
+					if(stack instanceof ItemStack[])
+						for(ItemStack subStack : (ItemStack[])stack)
+							checkRecipe(recipe, stack, subStack, iStack);
+					else
+						checkRecipe(recipe, stack, stack, iStack);
 				}
+			}
 		}
 
 		void checkRecipe(IRecipe rec, Object key, Object stack, int iStack)
 		{
 			if(!rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
 			{
-				Object[] ingredientsPre = null;
+				NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
 				int w = 0;
 				int h = 0;
-				if(rec instanceof ShapelessRecipes)
+				if(rec instanceof ShapelessRecipes||rec instanceof ShapelessOreRecipe)
 				{
-					ingredientsPre = ((ShapelessRecipes)rec).recipeItems.toArray();
-					w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
-					h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
-				} else if(rec instanceof ShapelessOreRecipe)
-				{
-					ingredientsPre = ((ShapelessOreRecipe)rec).getInput().toArray();
-					w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
-					h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
+					ingredientsPre = ((ShapelessRecipes)rec).recipeItems;
+					w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
+					h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
 				} else if(rec instanceof ShapedOreRecipe)
 				{
-					ingredientsPre = ((ShapedOreRecipe)rec).getInput();
-					w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "width");
-					h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "height");
+					w = ((ShapedOreRecipe)rec).getWidth();
+					h = ((ShapedOreRecipe)rec).getHeight();
 				} else if(rec instanceof ShapedRecipes)
 				{
-					ingredientsPre = ((ShapedRecipes)rec).recipeItems;
 					w = ((ShapedRecipes)rec).recipeWidth;
 					h = ((ShapedRecipes)rec).recipeHeight;
 				} else
 					return;
-				Object[] ingredients = new Object[ingredientsPre.length];
-				for(int iO = 0; iO < ingredientsPre.length; iO++)
-				{
-					if(ingredientsPre[iO] instanceof List)
-					{
-						final java.util.function.Function<ItemStack, List<ItemStack>> subItemFunc = is -> {
-							NonNullList<ItemStack> slist = NonNullList.create();
-							is.getItem().getSubItems(is.getItem(), is.getItem().getCreativeTab(), slist);
-							return slist;
-						};
 
-						ingredients[iO] = ((List<ItemStack>)ingredientsPre[iO]).stream()
-								.filter(is -> !is.isEmpty()&&is.getItem()!=Items.AIR)
-								.flatMap(is -> is.getMetadata()==OreDictionary.WILDCARD_VALUE?subItemFunc.apply(is).stream(): java.util.stream.Stream.of(is))
-								.filter(is -> is.getDisplayName()!=null)
-								.collect(java.util.stream.Collectors.toList());
-					} else
-						ingredients[iO] = ingredientsPre[iO];
-				}
-				if(ingredients!=null)
-				{
-					PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
-					int xBase = (120-(w+2)*18)/2;
-					for(int hh = 0; hh < h; hh++)
-						for(int ww = 0; ww < w; ww++)
-							if(hh*w+ww < ingredients.length)
-								pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18, hh*18);
-					pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
-					this.recipes.put(key, pIngredients);
-				}
+				PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
+				int xBase = (120-(w+2)*18)/2;
+				for(int hh = 0; hh < h; hh++)
+					for(int ww = 0; ww < w; ww++)
+						if(hh*w+ww < ingredientsPre.size())
+							pIngredients[hh*w+ww] = new PositionedItemStack(ingredientsPre.get(hh*w+ww), xBase+ww*18, hh*18);
+				pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
+				this.recipes.put(key, pIngredients);
 				if(h*18 > yOff[iStack])
 					yOff[iStack] = h*18;
 			}
@@ -694,76 +661,50 @@ public abstract class ManualPages implements IManualPage
 				}
 			} else
 			{
-				List cmRecipes = CraftingManager.getInstance().getRecipeList();
-				for(Object o : cmRecipes)
-					if(o instanceof IRecipe)
+
+				Iterator<IRecipe> itRecipes = CraftingManager.REGISTRY.iterator();
+				while(itRecipes.hasNext())
+				{
+					IRecipe recipe = itRecipes.next();
+					for(int iStack = 0; iStack < stacks.length; iStack++)
 					{
-						for(int iStack = 0; iStack < stacks.length; iStack++)
+						Object stack = stacks[iStack];
+						if(!recipe.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(recipe.getRecipeOutput(), stack))
 						{
-							Object stack = stacks[iStack];
-							if(!((IRecipe)o).getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
+							NonNullList<Ingredient> ingredientsPre = recipe.getIngredients();
+							int w;
+							int h;
+							if(recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe)
 							{
-								IRecipe r = (IRecipe)o;
-								Object[] ingredientsPre = null;
-								int w = 0;
-								int h = 0;
-								if(r instanceof ShapelessRecipes)
-								{
-									ingredientsPre = ((ShapelessRecipes)r).recipeItems.toArray();
-									w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
-									h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
-								} else if(r instanceof ShapelessOreRecipe)
-								{
-									ingredientsPre = ((ShapelessOreRecipe)r).getInput().toArray();
-									w = ingredientsPre.length > 6?3: ingredientsPre.length > 1?2: 1;
-									h = ingredientsPre.length > 4?3: ingredientsPre.length > 2?2: 1;
-								} else if(r instanceof ShapedOreRecipe)
-								{
-									ingredientsPre = ((ShapedOreRecipe)r).getInput();
-									w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "width");
-									h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "height");
-								} else if(r instanceof ShapedRecipes)
-								{
-									ingredientsPre = ((ShapedRecipes)r).recipeItems;
-									w = ((ShapedRecipes)r).recipeWidth;
-									h = ((ShapedRecipes)r).recipeHeight;
-								} else
-									continue;
-								Object[] ingredients = new Object[ingredientsPre.length];
-								for(int iO = 0; iO < ingredientsPre.length; iO++)
-								{
-									if(ingredientsPre[iO] instanceof List)
-									{
-										ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
-										Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
-										while(itValidate.hasNext())
-										{
-											ItemStack stVal = itValidate.next();
-											if(stVal.isEmpty()||stVal.getItem()==null||stVal.getDisplayName()==null)
-												itValidate.remove();
-										}
-									} else
-										ingredients[iO] = ingredientsPre[iO];
-								}
-								if(ingredients!=null)
-								{
-									PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
-									int xBase = (120-(w+2)*18)/2;
-									for(int hh = 0; hh < h; hh++)
-										for(int ww = 0; ww < w; ww++)
-											if(hh*w+ww < ingredients.length)
-												pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18, hh*18);
-									pIngredients[pIngredients.length-1] = new PositionedItemStack(((IRecipe)o).getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
-									if(iStack < this.recipes.size())
-										this.recipes.add(iStack, pIngredients);
-									else
-										this.recipes.add(pIngredients);
-								}
-								if(h*18 > yOff)
-									yOff = h*18;
-							}
+								w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
+								h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
+							} else if(recipe instanceof ShapedOreRecipe)
+							{
+								w = ((ShapedOreRecipe)recipe).getWidth();
+								h = ((ShapedOreRecipe)recipe).getHeight();
+							} else if(recipe instanceof ShapedRecipes)
+							{
+								w = ((ShapedRecipes)recipe).getWidth();
+								h = ((ShapedRecipes)recipe).getHeight();
+							} else
+								continue;
+
+							PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
+							int xBase = (120-(w+2)*18)/2;
+							for(int hh = 0; hh < h; hh++)
+								for(int ww = 0; ww < w; ww++)
+									if(hh*w+ww < ingredientsPre.size())
+										pIngredients[hh*w+ww] = new PositionedItemStack(ingredientsPre.get(hh*w+ww), xBase+ww*18, hh*18);
+							pIngredients[pIngredients.length-1] = new PositionedItemStack(recipe.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
+							if(iStack < this.recipes.size())
+								this.recipes.add(iStack, pIngredients);
+							else
+								this.recipes.add(pIngredients);
+							if(h*18 > yOff)
+								yOff = h*18;
 						}
 					}
+				}
 			}
 		}
 
@@ -961,19 +902,33 @@ public abstract class ManualPages implements IManualPage
 					if(((ItemStack)stack).getItemDamage()==OreDictionary.WILDCARD_VALUE)
 					{
 						NonNullList<ItemStack> list = NonNullList.create();
-						((ItemStack)stack).getItem().getSubItems(((ItemStack)stack).getItem(), ((ItemStack)stack).getItem().getCreativeTab(), list);
+						((ItemStack)stack).getItem().getSubItems(((ItemStack)stack).getItem().getCreativeTab(), list);
 						if(list.size() > 0)
 							displayList.addAll(list);
 					} else
 						displayList.add((ItemStack)stack);
-				} else if(stack instanceof List&&!((List)stack).isEmpty())
+				} else if(stack instanceof Ingredient)
+				{
+					for(ItemStack subStack : ((Ingredient)stack).getMatchingStacks())
+					{
+						if(subStack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
+						{
+							NonNullList<ItemStack> list = NonNullList.create();
+							subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
+							if(list.size() > 0)
+								displayList.addAll(list);
+						} else
+							displayList.add(subStack);
+					}
+				}
+				else if(stack instanceof List&&!((List)stack).isEmpty())
 				{
 					for(ItemStack subStack : (List<ItemStack>)this.stack)
 					{
 						if(subStack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
 						{
 							NonNullList<ItemStack> list = NonNullList.create();
-							subStack.getItem().getSubItems(subStack.getItem(), subStack.getItem().getCreativeTab(), list);
+							subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
 							if(list.size() > 0)
 								displayList.addAll(list);
 						} else
