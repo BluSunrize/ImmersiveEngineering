@@ -26,7 +26,7 @@ public class ItemIEBase extends Item implements IColouredItem
 		this.itemName = name;
 		this.subNames = subNames!=null&&subNames.length>0?subNames:null;
 		this.isMetaHidden = new boolean[this.subNames!=null?this.subNames.length:1];
-		ImmersiveEngineering.registerItem(this, name);
+//		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 

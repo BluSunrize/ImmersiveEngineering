@@ -43,7 +43,7 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 		String name = "earmuffs";
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		ImmersiveEngineering.registerItem(this, name);
+//		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 

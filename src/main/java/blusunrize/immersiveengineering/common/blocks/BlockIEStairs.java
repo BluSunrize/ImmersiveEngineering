@@ -21,8 +21,9 @@ public class BlockIEStairs extends BlockStairs
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.useNeighborBrightness = true;
 		this.explosionResistance = this.blockResistance/5f;
-		ImmersiveEngineering.registerBlock(this, ItemBlockIEStairs.class, name);
+//		ImmersiveEngineering.registerBlock(this, ItemBlockIEStairs.class, name);
 		IEContent.registeredIEBlocks.add(this);
+		IEContent.registeredIEItems.add(new ItemBlockIEStairs(this));
 	}
 	
 	public BlockIEStairs setFlammable(boolean b)

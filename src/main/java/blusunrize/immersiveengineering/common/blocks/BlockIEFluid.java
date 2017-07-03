@@ -29,8 +29,9 @@ public class BlockIEFluid extends BlockFluidClassic
 		super(fluid, material);
 		this.setUnlocalizedName(ImmersiveEngineering.MODID + "." + name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		ImmersiveEngineering.registerBlock(this, ItemBlock.class, name);
+//		ImmersiveEngineering.registerBlock(this, ItemBlock.class, name);
 		IEContent.registeredIEBlocks.add(this);
+		IEContent.registeredIEItems.add(new ItemBlock(this));
 	}
 
 	public BlockIEFluid setFlammability(int flammability, int fireSpread)

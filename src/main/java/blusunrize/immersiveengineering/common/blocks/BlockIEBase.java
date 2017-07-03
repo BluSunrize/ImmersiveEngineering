@@ -86,8 +86,12 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.setUnlocalizedName(registryName.replace(':', '.'));
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.adjustSound();
-		ImmersiveEngineering.registerBlockByFullName(this, itemBlock, registryName);
+
+//		ImmersiveEngineering.registerBlockByFullName(this, itemBlock, registryName);
 		IEContent.registeredIEBlocks.add(this);
+		try{
+			IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class).newInstance(this));
+		}catch(Exception e){e.printStackTrace();}
 		lightOpacity = 255;
 	}
 
