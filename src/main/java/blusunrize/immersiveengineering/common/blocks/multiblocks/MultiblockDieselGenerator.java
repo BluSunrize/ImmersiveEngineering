@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -171,7 +170,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
-			player.addStat(IEAchievements.mbDieselGen);
+//			player.addStat(IEAchievements.mbDieselGen); ToDo: Achievement
 		}
 		return b;
 	}

@@ -9,7 +9,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecor
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -166,7 +165,7 @@ public class MultiblockExcavator implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
-			player.addStat(IEAchievements.mbExcavator);
+//			player.addStat(IEAchievements.mbExcavator); ToDo: Achievement
 			
 			BlockPos wheelPos = pos.offset(side,4);
 			if(MultiblockBucketWheel.instance.isBlockTrigger(world.getBlockState(wheelPos)))

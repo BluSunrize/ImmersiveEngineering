@@ -22,7 +22,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
@@ -249,10 +248,8 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 				return true;
 			}
 
-		FluidActionResult fluidActionResult = FluidUtil.interactWithFluidHandler(heldItem, tank, player);
-		if(fluidActionResult.isSuccess())
+		if(FluidUtil.interactWithFluidHandler(player, hand, tank))
 		{
-			player.setHeldItem(hand, fluidActionResult.getResult());
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
 			return true;

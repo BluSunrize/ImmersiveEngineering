@@ -7,7 +7,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -167,7 +166,7 @@ public class MultiblockMetalPress implements IMultiblock
 					world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 				}
 			}
-		player.addStat(IEAchievements.mbMetalPress);
+//		player.addStat(IEAchievements.mbMetalPress); ToDo: Achievement
 		return true;
 	}
 
