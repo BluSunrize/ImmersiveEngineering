@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
@@ -111,7 +113,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(I18n.format(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
 	}

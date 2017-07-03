@@ -10,11 +10,11 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -33,6 +33,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFluidItem, ITool
@@ -43,7 +44,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
@@ -69,7 +70,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-		player.addStat(IEAchievements.craftChemthrower);
+//		player.addStat(IEAchievements.craftChemthrower); ToDo: Achievement
 		//No upgrade achievement yet
 //		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
 //			player.addStat(IEAchievements.upgradeChemthrower);

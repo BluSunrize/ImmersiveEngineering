@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -25,6 +25,7 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemJerrycan extends ItemIEBase
@@ -36,7 +37,7 @@ public class ItemJerrycan extends ItemIEBase
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		FluidStack fs = FluidUtil.getFluidContained(stack);
 		if(fs!=null)
@@ -57,10 +58,8 @@ public class ItemJerrycan extends ItemIEBase
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity!=null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null))
 			{
-				FluidActionResult fluidActionResult = FluidUtil.interactWithFluidHandler(stack, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null), player);
-				if (fluidActionResult.isSuccess())
+				if(FluidUtil.interactWithFluidHandler(player, hand, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)))
 				{
-					player.setHeldItem(hand, fluidActionResult.getResult());
 					return EnumActionResult.SUCCESS;
 				}
 				return EnumActionResult.FAIL;

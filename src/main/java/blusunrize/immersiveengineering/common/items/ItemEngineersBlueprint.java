@@ -7,18 +7,19 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		String key = ItemNBTHelper.getString(stack,"blueprint");
 		if(key != null && !key.isEmpty() && BlueprintCraftingRecipe.blueprintCategories.contains(key))
@@ -60,7 +61,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for(String key : BlueprintCraftingRecipe.blueprintCategories)
 		{

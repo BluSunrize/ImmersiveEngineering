@@ -14,14 +14,17 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
-import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -35,7 +38,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -47,6 +49,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IGuiItem
@@ -129,7 +132,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
@@ -142,7 +145,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		//		}
 	}
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		if(stack.getItemDamage()!=1)
 		{
@@ -540,9 +543,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-		player.addStat(IEAchievements.craftRevolver);
-		if(!contents.get(18).isEmpty()&&!contents.get(19).isEmpty())
-			player.addStat(IEAchievements.upgradeRevolver);
+//		player.addStat(IEAchievements.craftRevolver); ToDo: Achievement
+//		if(!contents.get(18).isEmpty()&&!contents.get(19).isEmpty())
+//			player.addStat(IEAchievements.upgradeRevolver);
 	}
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();

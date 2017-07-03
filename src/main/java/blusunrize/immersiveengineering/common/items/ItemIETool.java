@@ -1,9 +1,7 @@
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
-import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -17,14 +15,17 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RotationUtil;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -65,7 +66,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		if(ItemNBTHelper.hasKey(stack, "linkingPos"))
 		{
@@ -102,7 +103,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				}
 			}
 		}
-		if(adv && stack.getItemDamage()<2)
+		if(flag.isAdvanced() && stack.getItemDamage()<2)
 		{
 			int nbtDamage = ItemNBTHelper.getInt(stack, stack.getItemDamage()==0?"hammerDmg":"cutterDmg");
 			int maxDamage = stack.getItemDamage()==0?hammerMaxDamage:cutterMaxDamage;
@@ -314,7 +315,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		ItemStack stack = player.getHeldItem(hand);
 		if(stack.getItemDamage()==3)
 		{
-			player.addStat(IEAchievements.openManual);
+//			player.addStat(IEAchievements.openManual); ToDo: Achievement
 			if(world.isRemote)
 				CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
 			return new ActionResult(EnumActionResult.SUCCESS, stack);

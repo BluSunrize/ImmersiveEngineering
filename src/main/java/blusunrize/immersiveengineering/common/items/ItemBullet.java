@@ -15,12 +15,16 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemLingeringPotion;
+import net.minecraft.item.ItemPotion;
+import net.minecraft.item.ItemSplashPotion;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
@@ -35,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +128,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		list.add(new ItemStack(this, 1, 0));
 		list.add(new ItemStack(this, 1, 1));
@@ -145,14 +150,14 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		if(stack.getItemDamage() == 2)
 		{
 			String key = ItemNBTHelper.getString(stack, "bullet");
 			IBullet bullet = BulletHandler.getBullet(key);
 			if(bullet != null)
-				bullet.addTooltip(stack, player, list, advanced);
+				bullet.addTooltip(stack, world, list, flag);
 		}
 	}
 	@Override
@@ -372,7 +377,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 
 		@Override
-		public void addTooltip(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+		public void addTooltip(ItemStack stack, World world, List<String> list, ITooltipFlag flag)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
 			if(!pot.isEmpty() && pot.getItem() instanceof ItemPotion)
@@ -430,7 +435,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public void addTooltip(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+		public void addTooltip(ItemStack stack, World world, List<String> list, ITooltipFlag flag)
 		{
 			if(stack.getItem() instanceof IColouredItem)
 			{
