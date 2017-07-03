@@ -9,13 +9,11 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Sets;
 import net.minecraft.item.*;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.*;
 
@@ -45,7 +43,7 @@ public class ArcRecyclingThreadHandler extends Thread
 			}
 		IELogger.info("Arc Recycling: Removed "+r+" old recipes");
 		recipesToAdd = null;
-		new ArcRecyclingThreadHandler(CraftingManager.getInstance().getRecipeList()).start();
+		new ArcRecyclingThreadHandler(ForgeRegistries.RECIPES.getValues()).start();
 	}
 	@Override
 	public void run() {
@@ -169,15 +167,7 @@ public class ArcRecyclingThreadHandler extends Thread
 
 	public static RecyclingCalculation getRecycleCalculation(ItemStack stack, IRecipe recipe)
 	{
-		Object[] inputs = null;
-		if(recipe instanceof ShapedOreRecipe)
-			inputs = ((ShapedOreRecipe)recipe).getInput();
-		else if(recipe instanceof ShapelessOreRecipe)
-			inputs = ((ShapelessOreRecipe)recipe).getInput().toArray();
-		else if(recipe instanceof ShapedRecipes)
-			inputs = ((ShapedRecipes)recipe).recipeItems;
-		else if(recipe instanceof ShapelessRecipes)
-			inputs = ((ShapelessRecipes)recipe).recipeItems.toArray();
+		NonNullList<Ingredient> inputs = recipe.getIngredients();
 
 		if(inputs!=null)
 		{
