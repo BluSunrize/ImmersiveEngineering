@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.client.fx;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -35,7 +35,7 @@ public abstract class EntityFXIEBase extends Particle
 	}
 
 	@Override
-	public void renderParticle(VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, float f3, float f4, float f5, float f6, float f7)
+	public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float f3, float f4, float f5, float f6, float f7)
 	{
 		this.partialTicks=partialTicks;
 		this.f3=f3;
@@ -59,7 +59,7 @@ public abstract class EntityFXIEBase extends Particle
 	{
 		return vanillaParticleTextures;
 	}
-	public void tessellateFromQueue(VertexBuffer worldRendererIn)
+	public void tessellateFromQueue(BufferBuilder worldRendererIn)
 	{
 		float f6 = (float)this.particleTextureIndexX / 16.0F;
 		float f7 = f6 + 0.0624375F;

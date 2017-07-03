@@ -14,7 +14,7 @@ public class GuiSliderIE extends GuiSlider
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY)
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{

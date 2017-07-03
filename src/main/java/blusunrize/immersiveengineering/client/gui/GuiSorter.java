@@ -114,7 +114,7 @@ public class GuiSorter extends GuiContainer
 		}
 
 		@Override
-		public void drawButton(Minecraft mc, int mx, int my)
+		public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
 		{
 			if (this.visible)
 			{
