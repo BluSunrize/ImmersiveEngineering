@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -181,8 +180,8 @@ public class EntitySkylineHook extends Entity
 			double dy = this.posY-this.prevPosY;
 			double dz = this.posZ-this.prevPosZ;
 			int distTrvl = Math.round(MathHelper.sqrt(dx*dx + dy*dy + dz*dz) * 100.0F);
-			if(distTrvl>0)
-				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
+//			if(distTrvl>0)
+//				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
 			if (!world.isRemote&&SkylineHelper.isInBlock(player, world))
 			{
 //				setDead();
