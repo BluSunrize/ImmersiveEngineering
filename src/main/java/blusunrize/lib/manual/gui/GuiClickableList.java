@@ -36,7 +36,7 @@ public class GuiClickableList extends GuiButton
 		return (int) (gui.manual.fontRenderer.FONT_HEIGHT*textScale);
 	}
 	@Override
-	public void drawButton(Minecraft mc, int mx, int my)
+	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
 	{
 		FontRenderer fr = gui.manual.fontRenderer;
 		boolean uni = fr.getUnicodeFlag();
