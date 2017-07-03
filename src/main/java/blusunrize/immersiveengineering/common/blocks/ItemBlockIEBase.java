@@ -8,10 +8,10 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,9 +43,9 @@ public class ItemBlockIEBase extends ItemBlock
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList)
 	{
-		this.block.getSubBlocks(item, tab, itemList);
+		this.block.getSubBlocks(tab, itemList);
 	}
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
@@ -60,22 +61,22 @@ public class ItemBlockIEBase extends ItemBlock
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advInfo)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
 	{
 		if(((BlockIEBase)block).hasFlavour(stack))
 		{
 			String subName = ((BlockIEBase)this.block).getStateFromMeta(stack.getItemDamage()).getValue(((BlockIEBase)this.block).property).toString().toLowerCase(Locale.US);
 			String flavourKey = Lib.DESC_FLAVOUR+((BlockIEBase)this.block).name+"."+subName;
-			list.add(TextFormatting.GRAY.toString()+ I18n.format(flavourKey));
+			tooltip.add(TextFormatting.GRAY.toString()+ I18n.format(flavourKey));
 		}
-		super.addInformation(stack, player, list, advInfo);
+		super.addInformation(stack, world, tooltip, tooltipFlag);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			list.add(I18n.format("desc.immersiveengineering.info.energyStored", ItemNBTHelper.getInt(stack, "energyStorage")));
+			tooltip.add(I18n.format("desc.immersiveengineering.info.energyStored", ItemNBTHelper.getInt(stack, "energyStorage")));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
-				list.add(fs.getLocalizedName()+": "+fs.amount+"mB");
+				tooltip.add(fs.getLocalizedName()+": "+fs.amount+"mB");
 		}
 	}
 
