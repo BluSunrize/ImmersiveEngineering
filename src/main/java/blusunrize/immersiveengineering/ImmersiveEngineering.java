@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -15,18 +14,18 @@ import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.*;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -34,15 +33,15 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[13.20.0.2259,);after:jei@[4.3,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[14.21.0.2385,);after:jei@[4.3,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
@@ -126,15 +125,17 @@ public class ImmersiveEngineering
 		{
 			if(message.key.equals("fluidpipeCover") && message.isFunctionMessage())
 			{
-				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
-				if(opFunc.isPresent())
-					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
+//				ToDo Figure this out
+//				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
+//				if(opFunc.isPresent())
+//					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
 			}
 			else if(message.key.equals("fluidpipeCoverClimb") && message.isFunctionMessage())
 			{
-				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
-				if(opFunc.isPresent())
-					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
+//				ToDo Figure this out
+//				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
+//				if(opFunc.isPresent())
+//					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
 			}
 		}
 		NameRemapper.init();
@@ -195,23 +196,25 @@ public class ImmersiveEngineering
 	}
 
 	@Mod.EventHandler
-	public void remap(FMLMissingMappingsEvent ev) {
+	public void remap(MissingMappings ev) {
 		NameRemapper.remap(ev);
 	}
 
-	public static <T extends IForgeRegistryEntry<?>> T register(T object, String name)
+	public static Item registerItem(Item item, String name)
 	{
-		return registerByFullName(object, MODID+":"+name);
+		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(MODID+":"+name)));
+		return item;
 	}
-	public static <T extends IForgeRegistryEntry<?>> T registerByFullName(T object, String name)
+	public static Item registerItemByFullName(Item item, String name)
 	{
-		object.setRegistryName(new ResourceLocation(name));
-		return GameRegistry.register(object);
+		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(name)));
+		return item;
 	}
 	public static Block registerBlockByFullName(Block block, ItemBlock itemBlock, String name)
 	{
-		block = registerByFullName(block, name);
-		registerByFullName(itemBlock, name);
+		ResourceLocation rl = new ResourceLocation(name);
+		ForgeRegistries.BLOCKS.register(block.setRegistryName(rl));
+		ForgeRegistries.ITEMS.register(itemBlock.setRegistryName(rl));
 		return block;
 	}
 	public static Block registerBlockByFullName(Block block, Class<? extends ItemBlock> itemBlock, String name)

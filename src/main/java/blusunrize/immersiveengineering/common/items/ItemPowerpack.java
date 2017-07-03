@@ -12,6 +12,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -47,7 +48,7 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 		String name = "powerpack";
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		ImmersiveEngineering.register(this, name);
+		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
@@ -65,7 +66,7 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
 		list.add(I18n.format(Lib.DESC+"info.energyStored", stored));

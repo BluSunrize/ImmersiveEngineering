@@ -10,17 +10,18 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,6 +115,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
 
 		addShader("Dominator", 1, EnumRarity.UNCOMMON, 0xff4c311f,0xff2a2c36,0xff5bfffb,0xff2a2c36, "1_3",true,0xff2a2c36).setInfo(null,"Psycho-Pass","dominator");
+
+		addShader("Waaagh", 5, EnumRarity.EPIC, 0xffa3352d,0xffa3352d,0xff2f2f2f,0xff777777, "1_7",true,0xffffffff).setInfo(null,"Warhammer 40k","waaagh");
 	}
 
 	@Override
@@ -169,7 +172,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(I18n.format("Level: "+this.getRarity(stack).rarityColor+this.getRarity(stack).rarityName));
 		if(!GuiScreen.isShiftKeyDown())
@@ -202,11 +205,11 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for(String key : ShaderRegistry.shaderRegistry.keySet())
 		{
-			ItemStack s = new ItemStack(item);
+			ItemStack s = new ItemStack(this);
 			ItemNBTHelper.setString(s, "shader_name", key);
 			list.add(s);
 		}

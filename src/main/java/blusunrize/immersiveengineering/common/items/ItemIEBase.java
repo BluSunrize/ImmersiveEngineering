@@ -10,9 +10,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
 public class ItemIEBase extends Item implements IColouredItem
 {
 	public String itemName;
@@ -29,7 +26,7 @@ public class ItemIEBase extends Item implements IColouredItem
 		this.itemName = name;
 		this.subNames = subNames!=null&&subNames.length>0?subNames:null;
 		this.isMetaHidden = new boolean[this.subNames!=null?this.subNames.length:1];
-		ImmersiveEngineering.register(this, name);
+		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
@@ -39,7 +36,7 @@ public class ItemIEBase extends Item implements IColouredItem
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(getSubNames()!=null)
 		{

@@ -5,10 +5,10 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +24,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook"));
 	}
@@ -146,7 +147,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-		player.addStat(IEAchievements.craftSkyhook);
+//		player.addStat(IEAchievements.craftSkyhook); ToDo: Achievement
 	}
 
 	@Override

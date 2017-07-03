@@ -4,14 +4,13 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemGraphiteElectrode extends ItemIEBase
@@ -23,12 +22,7 @@ public class ItemGraphiteElectrode extends ItemIEBase
 		electrodeMaxDamage = IEConfig.Machines.arcfurnace_electrodeDamage;
 	}
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
-	{
-		super.getSubItems(item, tab, list);
-	}
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		float integrity = 100-(float)getDurabilityForDisplay(stack)*100f;
 		list.add( String.format("%s %.2f %%", I18n.format(Lib.DESC_INFO+"electrodeIntegrity"),integrity) );
