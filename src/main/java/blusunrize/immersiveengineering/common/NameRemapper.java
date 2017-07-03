@@ -1,19 +1,12 @@
 package blusunrize.immersiveengineering.common;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.event.RegistryEvent.MissingMappings;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class NameRemapper {
-	private final static String mappings = "woodendecoration:wooden_decoration\n" +
+	private static final String mappings = "woodendecoration:wooden_decoration\n" +
 			"storageslab:storage_slab\n" +
 			"stonedecorationstairs_concrete_leaded:stone_decoration_stairs_concrete_leaded\n" +
 			"fakelight:fake_light\n" +
@@ -46,7 +39,7 @@ public class NameRemapper {
 			"faradaysuit_legs:faraday_suit_legs\n" +
 			"graphiteelectrode:graphite_electrode\n" +
 			"faradaysuit_chest:faraday_suit_chest";
-	private final static Map<String, String> nameMap = new HashMap<>();
+	private static final Map<String, String> nameMap = new HashMap<>();
 
 	public static void init() {
 		String[] lines = mappings.split("\n");
@@ -58,31 +51,32 @@ public class NameRemapper {
 		}
 	}
 
-	public static void remap(FMLMissingMappingsEvent ev) {
-		for (FMLMissingMappingsEvent.MissingMapping miss : ev.get()) {
-			String newName = nameMap.get(miss.resourceLocation.getResourcePath());
-			if (newName != null) {
-				ResourceLocation newLoc = new ResourceLocation(ImmersiveEngineering.MODID, newName);
-				if (miss.type == GameRegistry.Type.ITEM) {
-					Item item = Item.REGISTRY.getObject(newLoc);
-					if (item != null) {
-						IELogger.info("Successfully remapped item " + miss.resourceLocation);
-						miss.remap(item);
-					} else {
-						miss.warn();
-					}
-				} else {
-					Block item = Block.REGISTRY.getObject(newLoc);
-					if (item != Blocks.AIR) {
-						IELogger.info("Successfully remapped block " + miss.resourceLocation);
-						miss.remap(item);
-					} else {
-						miss.warn();
-					}
-				}
-			} else {
-				IELogger.error("Couldn't remap " + miss.resourceLocation);
-			}
-		}
+	public static void remap(MissingMappings ev) {
+//		ToDo remapper
+//		for (MissingMappings.Mapping miss : ev.getMappings()) {
+//			String newName = nameMap.get(miss.resourceLocation.getResourcePath());
+//			if (newName != null) {
+//				ResourceLocation newLoc = new ResourceLocation(ImmersiveEngineering.MODID, newName);
+//				if (miss.type == GameRegistry.Type.ITEM) {
+//					Item item = Item.REGISTRY.getObject(newLoc);
+//					if (item != null) {
+//						IELogger.info("Successfully remapped item " + miss.resourceLocation);
+//						miss.remap(item);
+//					} else {
+//						miss.warn();
+//					}
+//				} else {
+//					Block item = Block.REGISTRY.getObject(newLoc);
+//					if (item != Blocks.AIR) {
+//						IELogger.info("Successfully remapped block " + miss.resourceLocation);
+//						miss.remap(item);
+//					} else {
+//						miss.warn();
+//					}
+//				}
+//			} else {
+//				IELogger.error("Couldn't remap " + miss.resourceLocation);
+//			}
+//		}
 	}
 }
