@@ -23,7 +23,7 @@ import java.util.List;
 public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMetalPress>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityMetalPress te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityMetalPress te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -38,7 +38,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();

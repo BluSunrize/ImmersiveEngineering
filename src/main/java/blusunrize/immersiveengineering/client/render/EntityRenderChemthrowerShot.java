@@ -2,9 +2,9 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -51,7 +51,7 @@ public class EntityRenderChemthrowerShot extends Render
 			float b = (colour&255)/255f;
 			ClientUtils.bindAtlas();
 			GlStateManager.scale(.25f, .25f, .25f);
-			VertexBuffer worldrenderer = ClientUtils.tes().getBuffer();
+			BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
 			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 			worldrenderer.pos(-.25,-.25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4)).color(r,g,b,a).endVertex();
 			worldrenderer.pos( .25,-.25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4)).color(r,g,b,a).endVertex();

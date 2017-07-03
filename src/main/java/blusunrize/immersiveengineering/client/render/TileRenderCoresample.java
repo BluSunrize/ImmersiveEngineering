@@ -10,7 +10,7 @@ import net.minecraft.util.EnumFacing;
 public class TileRenderCoresample extends TileEntitySpecialRenderer<TileEntityCoresample>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityCoresample tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityCoresample tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false) || tile.coresample==null)
 			return;

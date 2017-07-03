@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -17,6 +16,7 @@ import net.minecraftforge.common.model.IModelState;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 
 public class ConnLoader implements ICustomModelLoader
 {
@@ -164,7 +164,7 @@ public class ConnLoader implements ICustomModelLoader
 				IModel model = ModelLoaderRegistry.getModel(base);
 				if (model instanceof OBJModel)
 				{
-					model = ((OBJModel) model).retexture(texReplace);
+					model = model.retexture(texReplace);
 					OBJModel obj = (OBJModel) model;
 					model = obj.process(ImmutableMap.of("flip-v", "true"));
 				}

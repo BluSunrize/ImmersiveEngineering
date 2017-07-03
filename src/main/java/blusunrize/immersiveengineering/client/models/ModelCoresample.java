@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -35,7 +34,7 @@ import javax.vecmath.Matrix4f;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
+public class ModelCoresample implements IBakedModel
 {
 	Set<BakedQuad> bakedQuads;
 	static List<BakedQuad> emptyQuads = Lists.newArrayList();

@@ -32,7 +32,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 	private static HashMap<IBlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
 	@Override
-	public void renderTileEntityAt(TileEntityBelljar tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityBelljar tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(tile.dummy!=0 || !tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -62,7 +62,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 		else
 			GlStateManager.shadeModel(7424);
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		VertexBuffer worldRenderer = Tessellator.getInstance().getBuffer();
+		BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
 
 
 		GlStateManager.enableCull();

@@ -19,7 +19,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 {
 	private static List<BakedQuad> quads;
 	@Override
-	public void renderTileEntityAt(TileEntityWatermill tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityWatermill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if (tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -46,7 +46,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 		GlStateManager.rotate(rot, 0, 1, 0);
 		RenderHelper.disableStandardItemLighting();
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
 		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorld(), tile.getPos());

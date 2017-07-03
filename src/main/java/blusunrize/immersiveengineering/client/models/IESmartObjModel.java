@@ -11,7 +11,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -281,19 +280,19 @@ public class IESmartObjModel extends OBJBakedModel
 					if(!sCase.renderModelPartForPass(shader, tempStack, g.getName(), pass))
 						continue;
 				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
-				Optional<TRSRTransformation> transform = Optional.absent();
+				Optional<TRSRTransformation> transform = Optional.empty();
 				if(this.getState() instanceof OBJState)
 				{
 					OBJState state = (OBJState)this.getState();
 					if(state.parent != null)
-						transform = state.parent.apply(Optional.absent());
+						transform = state.parent.apply(Optional.empty());
 					if(callback != null)
 						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
 					if(state.getGroupsWithVisibility(true).contains(g.getName()))
 						faces.addAll(g.applyTransform(transform));
 				} else
 				{
-					transform = getState().apply(Optional.absent());
+					transform = getState().apply(Optional.empty());
 					if(callback != null)
 						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
 					faces.addAll(g.applyTransform(transform));
