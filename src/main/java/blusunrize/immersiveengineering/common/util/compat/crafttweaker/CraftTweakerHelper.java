@@ -4,15 +4,12 @@ import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.MineTweakerAPI;
-import minetweaker.MineTweakerImplementationAPI;
-import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
-import minetweaker.api.item.IIngredient;
-import minetweaker.api.item.IItemStack;
-import minetweaker.api.item.IngredientStack;
-import minetweaker.api.liquid.ILiquidStack;
-import minetweaker.api.oredict.IOreDictEntry;
-import minetweaker.util.IEventHandler;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.item.IngredientStack;
+import crafttweaker.api.liquid.ILiquidStack;
+import crafttweaker.api.oredict.IOreDictEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -32,23 +29,23 @@ public class CraftTweakerHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
-		MineTweakerAPI.registerClass(AlloySmelter.class);
-		MineTweakerAPI.registerClass(BlastFurnace.class);
-		MineTweakerAPI.registerClass(CokeOven.class);
-		MineTweakerAPI.registerClass(Blueprint.class);
-		MineTweakerAPI.registerClass(Crusher.class);
-		MineTweakerAPI.registerClass(Squeezer.class);
-		MineTweakerAPI.registerClass(Fermenter.class);
-		MineTweakerAPI.registerClass(Refinery.class);
-		MineTweakerAPI.registerClass(ArcFurnace.class);
-		MineTweakerAPI.registerClass(Excavator.class);
-		MineTweakerAPI.registerClass(Excavator.MTMineralMix.class);
-		MineTweakerAPI.registerClass(BottlingMachine.class);
-		MineTweakerAPI.registerClass(MetalPress.class);
-		MineTweakerAPI.registerClass(Mixer.class);
+		CraftTweakerAPI.registerClass(AlloySmelter.class);
+		CraftTweakerAPI.registerClass(BlastFurnace.class);
+		CraftTweakerAPI.registerClass(CokeOven.class);
+		CraftTweakerAPI.registerClass(Blueprint.class);
+		CraftTweakerAPI.registerClass(Crusher.class);
+		CraftTweakerAPI.registerClass(Squeezer.class);
+		CraftTweakerAPI.registerClass(Fermenter.class);
+		CraftTweakerAPI.registerClass(Refinery.class);
+		CraftTweakerAPI.registerClass(ArcFurnace.class);
+		CraftTweakerAPI.registerClass(Excavator.class);
+		CraftTweakerAPI.registerClass(Excavator.MTMineralMix.class);
+		CraftTweakerAPI.registerClass(BottlingMachine.class);
+		CraftTweakerAPI.registerClass(MetalPress.class);
+		CraftTweakerAPI.registerClass(Mixer.class);
 		try
 		{
-			MineTweakerImplementationAPI.onPostReload(new ExcavatorEventHandler());
+//			MineTweakerImplementationAPI.onPostReload(new ExcavatorEventHandler());
 		} catch(Exception e)
 		{
 			IELogger.error("[CRITICAL] YOU ARE USING AN OUTDATED VERSION OF MINETWEAKER");
@@ -102,16 +99,16 @@ public class CraftTweakerHelper extends IECompatModule
 		}
 		return (FluidStack) iStack.getInternal();
 	}
-
-	public static class ExcavatorEventHandler implements IEventHandler<ReloadEvent>
-	{
-		@Override
-		public void handle(ReloadEvent event)
-		{
-			ExcavatorHandler.recalculateChances(false);
-			if(ManualHelper.ieManualInstance != null)
-				ManualHelper.ieManualInstance.recalculateAllRecipes();
-		}
-	}
+// ToDo: Ask Jared
+//	public static class ExcavatorEventHandler implements IEventHandler<ReloadEvent>
+//	{
+//		@Override
+//		public void handle(ReloadEvent event)
+//		{
+//			ExcavatorHandler.recalculateChances(false);
+//			if(ManualHelper.ieManualInstance != null)
+//				ManualHelper.ieManualInstance.recalculateAllRecipes();
+//		}
+//	}
 
 }

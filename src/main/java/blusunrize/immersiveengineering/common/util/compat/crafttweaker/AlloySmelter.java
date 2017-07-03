@@ -2,10 +2,9 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IIngredient;
-import minetweaker.api.item.IItemStack;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -23,7 +22,7 @@ public class AlloySmelter
             return;
 
         AlloyRecipe r = new AlloyRecipe(CraftTweakerHelper.toStack(output), oFirst, oSecond, time);
-        MineTweakerAPI.apply(new Add(r));
+        CraftTweakerAPI.apply(new Add(r));
     }
 
     private static class Add implements IUndoableAction
@@ -77,7 +76,7 @@ public class AlloySmelter
     @ZenMethod
     public static void removeRecipe(IItemStack output)
     {
-        MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+        CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
     }
 
     private static class Remove implements IUndoableAction

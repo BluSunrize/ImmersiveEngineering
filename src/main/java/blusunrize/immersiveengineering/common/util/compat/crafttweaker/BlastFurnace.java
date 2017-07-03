@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
@@ -26,7 +26,7 @@ public class BlastFurnace
 			return;
 
 		BlastFurnaceRecipe r = new BlastFurnaceRecipe(CraftTweakerHelper.toStack(output), oInput, time, CraftTweakerHelper.toStack(slag));
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -80,7 +80,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IUndoableAction
@@ -146,7 +146,7 @@ public class BlastFurnace
 		if(oInput == null)
 			return;
 
-		MineTweakerAPI.apply(new AddFuel(oInput, time));
+		CraftTweakerAPI.apply(new AddFuel(oInput, time));
 	}
 
 	private static class AddFuel implements IUndoableAction
@@ -203,7 +203,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void removeFuel(IItemStack output)
 	{
-		MineTweakerAPI.apply(new RemoveFuel(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new RemoveFuel(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class RemoveFuel implements IUndoableAction
