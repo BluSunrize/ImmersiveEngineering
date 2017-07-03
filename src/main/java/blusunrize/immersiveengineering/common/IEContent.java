@@ -82,9 +82,12 @@ import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -98,9 +101,12 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import javax.annotation.Nullable;
 import java.util.*;
 
+@Mod.EventBusSubscriber
 public class IEContent
 {
 	public static ArrayList<Block> registeredIEBlocks = new ArrayList<Block>();
+	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
+
 	public static BlockIEBase blockOre;
 	public static BlockIEBase blockStorage;
 	public static BlockIESlab blockStorageSlabs;
@@ -140,7 +146,6 @@ public class IEContent
 	public static BlockIEFluid blockFluidBiodiesel;
 	public static BlockIEFluid blockFluidConcrete;
 
-	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
 	public static ItemIEBase itemMaterial;
 	public static ItemIEBase itemMetal;
 	public static ItemIEBase itemTool;
@@ -181,8 +186,8 @@ public class IEContent
 
 	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
-	public static void preInit()
-	{
+	static {
+
 		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000);
 		if(!FluidRegistry.registerFluid(fluidCreosote))
 			fluidCreosote = FluidRegistry.getFluid("creosote");
@@ -266,7 +271,6 @@ public class IEContent
 		blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
 		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
 
-
 		itemMaterial = new ItemIEBase("material", 64,
 				"stick_treated", "stick_iron", "stick_steel", "stick_aluminum",
 				"hemp_fiber", "hemp_fabric",
@@ -320,20 +324,24 @@ public class IEContent
 			{
 			}
 		};
+	}
 
-		//		blockMetalDevice = new BlockMetalDevices();
-		//		blockMetalDevice2 = new BlockMetalDevices2();
-		//		blockMetalDecoration = new BlockMetalDecoration();
-		//		blockMetalMultiblocks = new BlockMetalMultiblocks();
-		//		blockWoodenDevice = new BlockWoodenDevices().setFlammable(true);
-		//		blockWoodenDecoration = new BlockWoodenDecoration().setFlammable(true);
-		//		blockStoneDevice = new BlockStoneDevices();
-		//		blockStoneDecoration = new BlockStoneDecoration();
-		//		blockConcreteStair = new BlockIEStairs("concreteStairs",blockStoneDecoration,4);
-		//		blockConcreteTileStair = new BlockIEStairs("concreteTileStairs",blockStoneDecoration,5);
-		//		blockClothDevice = new BlockClothDevices();
-		//
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> event)
+	{
+		for(Block block : registeredIEBlocks)
+			event.getRegistry().register(block.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID,block.getUnlocalizedName().replaceFirst(".",":"))));
+	}
 
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> event)
+	{
+		for(Item item : registeredIEItems)
+			event.getRegistry().register(item.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID,item.getUnlocalizedName().replaceFirst(".",":"))));
+	}
+
+	public static void preInit()
+	{
 		//Ore Dict
 		registerToOreDict("ore", blockOre);
 		registerToOreDict("block", blockStorage);

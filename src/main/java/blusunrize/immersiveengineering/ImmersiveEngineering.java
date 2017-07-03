@@ -17,12 +17,8 @@ import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent.MissingMappings;
@@ -33,7 +29,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -85,11 +80,11 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{5,3});
 		IECompatModule.doModulesPreInit();
-		proxy.preInitEnd();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
+		proxy.preInitEnd();
 		IEContent.init();
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		GameRegistry.registerWorldGenerator(ieWorldGen, 0);
@@ -200,37 +195,37 @@ public class ImmersiveEngineering
 		NameRemapper.remap(ev);
 	}
 
-	public static Item registerItem(Item item, String name)
-	{
-		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(MODID+":"+name)));
-		return item;
-	}
-	public static Item registerItemByFullName(Item item, String name)
-	{
-		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(name)));
-		return item;
-	}
-	public static Block registerBlockByFullName(Block block, ItemBlock itemBlock, String name)
-	{
-		ResourceLocation rl = new ResourceLocation(name);
-		ForgeRegistries.BLOCKS.register(block.setRegistryName(rl));
-		ForgeRegistries.ITEMS.register(itemBlock.setRegistryName(rl));
-		return block;
-	}
-	public static Block registerBlockByFullName(Block block, Class<? extends ItemBlock> itemBlock, String name)
-	{
-		try{
-			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), name);
-		}catch(Exception e){e.printStackTrace();}
-		return null;
-	}
-	public static Block registerBlock(Block block, Class<? extends ItemBlock> itemBlock, String name)
-	{
-		try{
-			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), MODID+":"+name);
-		}catch(Exception e){e.printStackTrace();}
-		return null;
-	}
+//	public static Item registerItem(Item item, String name)
+//	{
+//		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(MODID+":"+name)));
+//		return item;
+//	}
+//	public static Item registerItemByFullName(Item item, String name)
+//	{
+//		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(name)));
+//		return item;
+//	}
+//	public static Block registerBlockByFullName(Block block, ItemBlock itemBlock, String name)
+//	{
+//		ResourceLocation rl = new ResourceLocation(name);
+//		ForgeRegistries.BLOCKS.register(block.setRegistryName(rl));
+//		ForgeRegistries.ITEMS.register(itemBlock.setRegistryName(rl));
+//		return block;
+//	}
+//	public static Block registerBlockByFullName(Block block, Class<? extends ItemBlock> itemBlock, String name)
+//	{
+//		try{
+//			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), name);
+//		}catch(Exception e){e.printStackTrace();}
+//		return null;
+//	}
+//	public static Block registerBlock(Block block, Class<? extends ItemBlock> itemBlock, String name)
+//	{
+//		try{
+//			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), MODID+":"+name);
+//		}catch(Exception e){e.printStackTrace();}
+//		return null;
+//	}
 
 
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)

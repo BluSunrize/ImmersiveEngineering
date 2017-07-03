@@ -26,7 +26,7 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.setMaxStackSize(1);
-		ImmersiveEngineering.registerItem(this, name);
+//		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 	
