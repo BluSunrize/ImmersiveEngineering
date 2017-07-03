@@ -193,7 +193,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		int heldDye = Utils.getDye(heldItem);
 		if(heldDye==-1)
 			return false;
-		heldDye = EnumDyeColor.byMetadata(15-heldDye).getMapColor().colorValue;
+		heldDye = EnumDyeColor.byMetadata(15-heldDye).getColorValue();
 		if(target==0)
 		{
 			if(colour0==heldDye)

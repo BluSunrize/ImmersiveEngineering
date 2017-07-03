@@ -11,7 +11,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecor
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -212,7 +211,7 @@ public class MultiblockArcFurnace implements IMultiblock
 								world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 							}
 						}
-			player.addStat(IEAchievements.mbArcFurnace);
+//			player.addStat(IEAchievements.mbArcFurnace); ToDo: Achievement
 		}
 		return b;
 	}

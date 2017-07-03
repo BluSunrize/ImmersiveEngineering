@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -104,7 +103,7 @@ public class MultiblockBlastFurnace implements IMultiblock
 						world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 					}
 				}
-		player.addStat(IEAchievements.blastfurnace);
+//		player.addStat(IEAchievements.blastfurnace); ToDo: Achievement
 		return true;
 	}
 

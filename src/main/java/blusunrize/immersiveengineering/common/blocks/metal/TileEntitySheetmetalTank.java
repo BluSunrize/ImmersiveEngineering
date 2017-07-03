@@ -10,19 +10,19 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -125,6 +125,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		return pos==0||pos==2||pos==6||pos==8?new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()):new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
 	}
 
+	@Override
 	public BlockPos getOrigin()
 	{
 		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing.rotateYCCW()).offset(facing.getOpposite());
@@ -155,10 +156,8 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		TileEntitySheetmetalTank master = this.master();
 		if(master!=null)
 		{
-			FluidActionResult fluidActionResult = FluidUtil.interactWithFluidHandler(heldItem, master.tank, player);
-			if(fluidActionResult.isSuccess())
+			if(FluidUtil.interactWithFluidHandler(player, hand, master.tank))
 			{
-				player.setHeldItem(hand, fluidActionResult.getResult());
 				this.updateMasterBlock(null, true);
 				return true;
 			}
