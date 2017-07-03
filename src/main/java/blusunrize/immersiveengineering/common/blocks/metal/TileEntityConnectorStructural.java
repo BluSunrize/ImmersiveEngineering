@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.base.Optional;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +15,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.Optional;
 
 public class TileEntityConnectorStructural extends TileEntityConnectorLV implements IHammerInteraction, IOBJModelCallback<IBlockState>
 {

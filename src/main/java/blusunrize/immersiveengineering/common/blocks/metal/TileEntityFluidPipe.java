@@ -282,7 +282,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public com.google.common.base.Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, com.google.common.base.Optional<TRSRTransformation> transform)
+	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		return transform;
 	}
