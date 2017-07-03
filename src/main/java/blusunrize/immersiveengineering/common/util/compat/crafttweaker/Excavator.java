@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import minetweaker.IUndoableAction;
-import minetweaker.CraftTweakerAPI;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
 import stanhebben.zenscript.annotations.*;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class Excavator
 		CraftTweakerAPI.apply(new AddMineral(name, mineralWeight, (float)failChance, ores, fChances, dimensionWhitelist, blacklist));
 	}
 
-	private static class AddMineral implements IUndoableAction
+	private static class AddMineral implements IAction
 	{
 		private final String name;
 		private final int mineralWeight;
@@ -58,39 +58,9 @@ public class Excavator
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			Iterator<Entry<MineralMix, Integer>> it = ExcavatorHandler.mineralList.entrySet().iterator();
-			while(it.hasNext())
-			{
-				Entry<MineralMix, Integer> e = it.next();
-				if(e.getKey().name.equalsIgnoreCase(name))
-					it.remove();
-			}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding MineralMix: " + name + " with weight " + mineralWeight;
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing MineralMix: " + name;
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
@@ -100,7 +70,7 @@ public class Excavator
 		CraftTweakerAPI.apply(new RemoveMineral(name));
 	}
 
-	private static class RemoveMineral implements IUndoableAction
+	private static class RemoveMineral implements IAction
 	{
 		private final String name;
 
@@ -133,45 +103,9 @@ public class Excavator
 		}
 
 		@Override
-		public void undo()
-		{
-			if(mix != null && weight != null)
-				for(int i = 0; i < mix.size(); i++)
-				{
-					boolean exists = false;
-					for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
-						if(mm != null && mix.get(i).name.equalsIgnoreCase(mm.name))
-						{
-							exists = true;
-							break;
-						}
-					if(!exists)
-						ExcavatorHandler.mineralList.put(mix.get(i), weight.get(i));
-				}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing MineralMix: " + name;
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding MineralMix: " + name;
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 

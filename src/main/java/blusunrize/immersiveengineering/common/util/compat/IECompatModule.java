@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,7 +31,7 @@ public abstract class IECompatModule
 		moduleClasses.put("botania", BotaniaHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
-//		moduleClasses.put("crafttweaker", CraftTweakerHelper.class); ToDo: Craftweaker
+		moduleClasses.put("crafttweaker", CraftTweakerHelper.class);
 		moduleClasses.put("denseores", DenseOresHelper.class);
 		moduleClasses.put("enderio", EnderIOHelper.class);
 		moduleClasses.put("extrautils2", ExtraUtilsHelper.class);

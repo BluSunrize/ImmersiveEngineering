@@ -2,11 +2,11 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.IUndoableAction;
-import minetweaker.CraftTweakerAPI;
-import minetweaker.api.item.IIngredient;
-import minetweaker.api.item.IItemStack;
-import minetweaker.api.liquid.ILiquidStack;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.liquid.ILiquidStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -32,7 +32,7 @@ public class Squeezer
 		CraftTweakerAPI.apply(new Add(r));
 	}
 
-	private static class Add implements IUndoableAction
+	private static class Add implements IAction
 	{
 		private final SqueezerRecipe recipe;
 
@@ -49,38 +49,11 @@ public class Squeezer
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			SqueezerRecipe.recipeList.remove(recipe);
-			IECompatModule.jeiRemoveFunc.accept(recipe);
-		}
-
-		@Override
 		public String describe()
 		{
 			String fluid = recipe.fluidOutput != null ? recipe.fluidOutput.getLocalizedName() : "null";
 			String out = !recipe.itemOutput.isEmpty() ? recipe.itemOutput.getDisplayName() : "null";
 			return "Adding Squeezer Recipe for Fluid " + fluid + " and Item " + out;
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			String fluid = recipe.fluidOutput != null ? recipe.fluidOutput.getLocalizedName() : "null";
-			String out = !recipe.itemOutput.isEmpty() ? recipe.itemOutput.getDisplayName() : "null";
-			return "Removing Squeezer Recipe for Fluid " + fluid + " and Item " + out;
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
@@ -91,7 +64,7 @@ public class Squeezer
 			CraftTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(fluid)));
 	}
 
-	private static class RemoveFluid implements IUndoableAction
+	private static class RemoveFluid implements IAction
 	{
 		private final FluidStack output;
 		ArrayList<SqueezerRecipe> removedRecipes = new ArrayList<SqueezerRecipe>();
@@ -118,39 +91,9 @@ public class Squeezer
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(SqueezerRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						SqueezerRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Squeezer Recipes for Fluid " + output.getLocalizedName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Squeezer Recipes for Fluid " + output.getLocalizedName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 
@@ -161,7 +104,7 @@ public class Squeezer
 			CraftTweakerAPI.apply(new RemoveStack(CraftTweakerHelper.toStack(stack)));
 	}
 
-	private static class RemoveStack implements IUndoableAction
+	private static class RemoveStack implements IAction
 	{
 		private final ItemStack output;
 		ArrayList<SqueezerRecipe> removedRecipes = new ArrayList<SqueezerRecipe>();
@@ -188,39 +131,9 @@ public class Squeezer
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(SqueezerRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						SqueezerRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Squeezer Recipes for ItemStack " + output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Squeezer Recipes for ItemStack " + output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 
@@ -231,7 +144,7 @@ public class Squeezer
 			CraftTweakerAPI.apply(new RemoveByInput(CraftTweakerHelper.toStack(stack)));
 	}
 
-	private static class RemoveByInput implements IUndoableAction
+	private static class RemoveByInput implements IAction
 	{
 		private final ItemStack input;
 		ArrayList<SqueezerRecipe> removedRecipes = new ArrayList<SqueezerRecipe>();
@@ -258,39 +171,9 @@ public class Squeezer
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(SqueezerRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						SqueezerRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Squeezer Recipes for input " + input.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Squeezer Recipes for input " + input.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 }

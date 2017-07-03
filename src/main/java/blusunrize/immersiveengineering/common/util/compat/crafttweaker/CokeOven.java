@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
@@ -25,7 +26,7 @@ public class CokeOven
 		CraftTweakerAPI.apply(new Add(r));
 	}
 
-	private static class Add implements IUndoableAction
+	private static class Add implements IAction
 	{
 		private final CokeOvenRecipe recipe;
 
@@ -42,34 +43,9 @@ public class CokeOven
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			CokeOvenRecipe.recipeList.remove(recipe);
-			IECompatModule.jeiRemoveFunc.accept(recipe);
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding Coke Oven Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing Coke Oven Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
@@ -79,7 +55,7 @@ public class CokeOven
 		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
-	private static class Remove implements IUndoableAction
+	private static class Remove implements IAction
 	{
 		private final ItemStack output;
 		List<CokeOvenRecipe> removedRecipes;
@@ -98,39 +74,9 @@ public class CokeOven
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(CokeOvenRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						CokeOvenRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Coke Oven Recipe for " + output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Coke Oven Recipe for " + output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 }
