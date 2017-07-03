@@ -330,14 +330,21 @@ public class IEContent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
 		for(Block block : registeredIEBlocks)
-			event.getRegistry().register(block.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID,block.getUnlocalizedName().replaceFirst(".",":"))));
+			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getUnlocalizedName())));
 	}
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
 		for(Item item : registeredIEItems)
-			event.getRegistry().register(item.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID,item.getUnlocalizedName().replaceFirst(".",":"))));
+			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getUnlocalizedName())));
+	}
+
+	private static ResourceLocation createRegistryName(String unlocalized)
+	{
+		unlocalized = unlocalized.substring(unlocalized.indexOf("immersive"));
+		unlocalized = unlocalized.replaceFirst("\\.", ":");
+		return new ResourceLocation(unlocalized);
 	}
 
 	public static void preInit()
