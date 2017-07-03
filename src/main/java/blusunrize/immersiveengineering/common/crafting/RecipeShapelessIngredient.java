@@ -19,7 +19,17 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 
 	public RecipeShapelessIngredient(ResourceLocation group, ItemStack result, Object... recipe)
 	{
-		super(group, result, recipe);
+		super(group, result, wrapIngredients(recipe));
+	}
+	private static Object[] wrapIngredients(Object... recipe)
+	{
+		Object[] out = new Object[recipe.length];
+		for(int i=0; i<recipe.length; i++)
+			if(recipe[i] instanceof IngredientStack)
+				out[i] = new IngredientIngrStack((IngredientStack)recipe[i]);
+			else
+				out[i] = recipe[i];
+		return out;
 	}
 
 	public RecipeShapelessIngredient setNBTCopyTargetRecipe(int slot)
