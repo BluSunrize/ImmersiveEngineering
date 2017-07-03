@@ -106,6 +106,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -119,6 +120,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -132,6 +134,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 @SuppressWarnings("deprecation")
+@Mod.EventBusSubscriber
 public class ClientProxy extends CommonProxy
 {
 	public static TextureMap revolverTextureMap;
@@ -148,6 +151,8 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(IEOBJLoader.instance);
 		OBJLoader.INSTANCE.addDomain("immersiveengineering");
 		IEOBJLoader.instance.addDomain("immersiveengineering");
+		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(ImmersiveModelRegistry.instance);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemBullet, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement()
 		{
@@ -265,17 +270,21 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 	}
-	@Override
-	public void preInitEnd()
+
+
+	@SubscribeEvent
+	public static void registerModels(ModelRegistryEvent evt)
 	{
 		//Going through registered stuff at the end of preInit, because of compat modules possibly adding items
 		for(Block block : IEContent.registeredIEBlocks)
 		{
-			Item blockItem = Item.getItemFromBlock(block);
 			final ResourceLocation loc = Block.REGISTRY.getNameForObject(block);
+			Item blockItem = Item.getItemFromBlock(block);
+			if(blockItem==null)
+				throw new RuntimeException("ITEMBLOCK FOR "+loc+" : "+block+" IS NULL");
 			if(block instanceof IIEMetaBlock)
 			{
-				IIEMetaBlock ieMetaBlock = (IIEMetaBlock) block;
+				IIEMetaBlock ieMetaBlock = (IIEMetaBlock)block;
 				if(ieMetaBlock.useCustomStateMapper())
 					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.getStateMapper(ieMetaBlock));
 				ModelLoader.setCustomMeshDefinition(blockItem, new ItemMeshDefinition()
@@ -289,23 +298,23 @@ public class ClientProxy extends CommonProxy
 				for(int meta = 0; meta < ieMetaBlock.getMetaEnums().length; meta++)
 				{
 					String location = loc.toString();
-					String prop = ieMetaBlock.appendPropertiesToState() ? ("inventory," + ieMetaBlock.getMetaProperty().getName() + "=" + ieMetaBlock.getMetaEnums()[meta].toString().toLowerCase(Locale.US)) : null;
+					String prop = ieMetaBlock.appendPropertiesToState()?("inventory,"+ieMetaBlock.getMetaProperty().getName()+"="+ieMetaBlock.getMetaEnums()[meta].toString().toLowerCase(Locale.US)): null;
 					if(ieMetaBlock.useCustomStateMapper())
 					{
 						String custom = ieMetaBlock.getCustomStateMapping(meta, true);
-						if(custom != null)
-							location += "_" + custom;
+						if(custom!=null)
+							location += "_"+custom;
 					}
 					try
 					{
 						ModelLoader.setCustomModelResourceLocation(blockItem, meta, new ModelResourceLocation(location, prop));
 					} catch(NullPointerException npe)
 					{
-						throw new RuntimeException("WELP! apparently " + ieMetaBlock + " lacks an item!", npe);
+						throw new RuntimeException("WELP! apparently "+ieMetaBlock+" lacks an item!", npe);
 					}
 				}
 			} else if(block instanceof BlockIEFluid)
-				mapFluidState(block, ((BlockIEFluid) block).getFluid());
+				mapFluidState(block, ((BlockIEFluid)block).getFluid());
 			else
 				ModelLoader.setCustomModelResourceLocation(blockItem, 0, new ModelResourceLocation(loc, "inventory"));
 		}
@@ -314,12 +323,12 @@ public class ClientProxy extends CommonProxy
 		{
 			if(item instanceof ItemIEBase)
 			{
-				ItemIEBase ieMetaItem = (ItemIEBase) item;
-				if(ieMetaItem.registerSubModels && ieMetaItem.getSubNames() != null && ieMetaItem.getSubNames().length > 0)
+				ItemIEBase ieMetaItem = (ItemIEBase)item;
+				if(ieMetaItem.registerSubModels&&ieMetaItem.getSubNames()!=null&&ieMetaItem.getSubNames().length > 0)
 				{
 					for(int meta = 0; meta < ieMetaItem.getSubNames().length; meta++)
 					{
-						ResourceLocation loc = new ResourceLocation("immersiveengineering", ieMetaItem.itemName + "/" + ieMetaItem.getSubNames()[meta]);
+						ResourceLocation loc = new ResourceLocation("immersiveengineering", ieMetaItem.itemName+"/"+ieMetaItem.getSubNames()[meta]);
 						ModelBakery.registerItemVariants(ieMetaItem, loc);
 						ModelLoader.setCustomModelResourceLocation(ieMetaItem, meta, new ModelResourceLocation(loc, "inventory"));
 					}
@@ -350,8 +359,11 @@ public class ClientProxy extends CommonProxy
 				});
 			}
 		}
+	}
 
-
+	@Override
+	public void preInitEnd()
+	{
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
 				compat.clientPreInit();
@@ -363,8 +375,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void init()
 	{
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(ImmersiveModelRegistry.instance);
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(handler);
