@@ -467,11 +467,10 @@ public abstract class ManualPages implements IManualPage
 			if(!rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
 			{
 				NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
-				int w = 0;
-				int h = 0;
+				int w;
+				int h;
 				if(rec instanceof ShapelessRecipes||rec instanceof ShapelessOreRecipe)
 				{
-					ingredientsPre = ((ShapelessRecipes)rec).recipeItems;
 					w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
 					h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
 				} else if(rec instanceof ShapedOreRecipe)
