@@ -91,7 +91,7 @@ public class IEPotions
 			if(this==IEPotions.slippery)
 			{
 				if(living.onGround)
-					living.moveRelative(0,1, 0.005F);
+					living.moveRelative(0,0,1, 0.005F);
 				EntityEquipmentSlot hand = living.getRNG().nextBoolean()?EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND;
 				if(!living.world.isRemote && living.getRNG().nextInt(300)==0 && !living.getItemStackFromSlot(hand).isEmpty())
 				{
