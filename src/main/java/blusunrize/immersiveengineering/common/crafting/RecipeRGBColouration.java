@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class RecipeRGBColouration implements IRecipe
+public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	final Predicate<ItemStack> predicate;
 	final Function<ItemStack, Integer> colourGetter;
@@ -107,10 +107,11 @@ public class RecipeRGBColouration implements IRecipe
 	}
 
 	@Override
-	public int getRecipeSize()
+	public boolean canFit(int width, int height)
 	{
-		return 10;
+		return width>=2 && height>=2;
 	}
+
 	@Override
 	public ItemStack getRecipeOutput()
 	{
