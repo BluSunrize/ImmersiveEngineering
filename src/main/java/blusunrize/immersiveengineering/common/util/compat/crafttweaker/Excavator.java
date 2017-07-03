@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import stanhebben.zenscript.annotations.*;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Excavator
 		float[] fChances = new float[chances.length];
 		for(int i = 0; i < chances.length; i++)
 			fChances[i] = (float)chances[i];
-		MineTweakerAPI.apply(new AddMineral(name, mineralWeight, (float)failChance, ores, fChances, dimensionWhitelist, blacklist));
+		CraftTweakerAPI.apply(new AddMineral(name, mineralWeight, (float)failChance, ores, fChances, dimensionWhitelist, blacklist));
 	}
 
 	private static class AddMineral implements IUndoableAction
@@ -97,7 +97,7 @@ public class Excavator
 	@ZenMethod
 	public static void removeMineral(String name)
 	{
-		MineTweakerAPI.apply(new RemoveMineral(name));
+		CraftTweakerAPI.apply(new RemoveMineral(name));
 	}
 
 	private static class RemoveMineral implements IUndoableAction

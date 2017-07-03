@@ -5,7 +5,7 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
@@ -32,7 +32,7 @@ public class MetalPress
 			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, sMold, energy);
 			if(inputSize > 0)
 				r.setInputSize(inputSize);
-			MineTweakerAPI.apply(new Add(r));
+			CraftTweakerAPI.apply(new Add(r));
 		}
 	}
 
@@ -87,7 +87,7 @@ public class MetalPress
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IUndoableAction
@@ -148,7 +148,7 @@ public class MetalPress
 	@ZenMethod
 	public static void removeRecipeByMold(IItemStack mold)
 	{
-		MineTweakerAPI.apply(new RemoveByMold(CraftTweakerHelper.toStack(mold)));
+		CraftTweakerAPI.apply(new RemoveByMold(CraftTweakerHelper.toStack(mold)));
 	}
 
 	private static class RemoveByMold implements IUndoableAction

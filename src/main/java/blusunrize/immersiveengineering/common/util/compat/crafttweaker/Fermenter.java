@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.liquid.ILiquidStack;
@@ -29,7 +29,7 @@ public class Fermenter
 			return;
 
 		FermenterRecipe r = new FermenterRecipe(CraftTweakerHelper.toFluidStack(fluid), CraftTweakerHelper.toStack(output), CraftTweakerHelper.toObject(input), energy);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -88,7 +88,7 @@ public class Fermenter
 	public static void removeFluidRecipe(ILiquidStack fluid)
 	{
 		if(CraftTweakerHelper.toFluidStack(fluid) != null)
-			MineTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(fluid)));
+			CraftTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(fluid)));
 	}
 
 	private static class RemoveFluid implements IUndoableAction
@@ -158,7 +158,7 @@ public class Fermenter
 	public static void removeItemRecipe(IItemStack stack)
 	{
 		if(!CraftTweakerHelper.toStack(stack).isEmpty())
-			MineTweakerAPI.apply(new RemoveStack(CraftTweakerHelper.toStack(stack)));
+			CraftTweakerAPI.apply(new RemoveStack(CraftTweakerHelper.toStack(stack)));
 	}
 
 	private static class RemoveStack implements IUndoableAction
@@ -228,7 +228,7 @@ public class Fermenter
 	public static void removeByInput(IItemStack stack)
 	{
 		if(CraftTweakerHelper.toStack(stack) != null)
-			MineTweakerAPI.apply(new RemoveByInput(CraftTweakerHelper.toStack(stack)));
+			CraftTweakerAPI.apply(new RemoveByInput(CraftTweakerHelper.toStack(stack)));
 	}
 
 	private static class RemoveByInput implements IUndoableAction

@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
@@ -22,19 +22,19 @@ public class Crusher
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput == null)
 		{
-			MineTweakerAPI.getLogger().logError("Did not add crusher recipe for " + output.getDisplayName() + ", input was null");
+			CraftTweakerAPI.getLogger().logError("Did not add crusher recipe for " + output.getDisplayName() + ", input was null");
 			return;
 		}
 
 		CrusherRecipe r = new CrusherRecipe(CraftTweakerHelper.toStack(output), oInput, energy);
 		if(r.input == null)
 		{
-			MineTweakerAPI.getLogger().logError("Did not add crusher recipe for " + output.getDisplayName() + ", converted input was null");
+			CraftTweakerAPI.getLogger().logError("Did not add crusher recipe for " + output.getDisplayName() + ", converted input was null");
 			return;
 		}
 		if(secondaryOutput != null)
 			r.addToSecondaryOutput(CraftTweakerHelper.toStack(secondaryOutput), (float)secondaryChance);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -88,7 +88,7 @@ public class Crusher
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IUndoableAction

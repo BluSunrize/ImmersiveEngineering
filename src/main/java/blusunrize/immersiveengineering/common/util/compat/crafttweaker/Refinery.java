@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.liquid.ILiquidStack;
 import net.minecraftforge.fluids.FluidStack;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -26,7 +26,7 @@ public class Refinery
 			return;
 
 		RefineryRecipe r = new RefineryRecipe(fOut, fIn0, fIn1, energy);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -81,7 +81,7 @@ public class Refinery
 	public static void removeRecipe(ILiquidStack output)
 	{
 		if(CraftTweakerHelper.toFluidStack(output) != null)
-			MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toFluidStack(output)));
+			CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toFluidStack(output)));
 	}
 
 	private static class Remove implements IUndoableAction

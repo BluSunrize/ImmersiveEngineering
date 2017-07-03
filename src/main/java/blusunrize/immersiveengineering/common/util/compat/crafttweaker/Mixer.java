@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.liquid.ILiquidStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -28,7 +28,7 @@ public class Mixer
 		}
 
 		MixerRecipe r = new MixerRecipe(CraftTweakerHelper.toFluidStack(output), CraftTweakerHelper.toFluidStack(fluidInput), adds, energy);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -83,7 +83,7 @@ public class Mixer
 	public static void removeRecipe(ILiquidStack output)
 	{
 		if(CraftTweakerHelper.toFluidStack(output) != null)
-			MineTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(output)));
+			CraftTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(output)));
 	}
 
 	private static class RemoveFluid implements IUndoableAction

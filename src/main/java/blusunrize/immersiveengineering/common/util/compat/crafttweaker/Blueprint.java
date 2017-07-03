@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
@@ -25,7 +25,7 @@ public class Blueprint
 			for(int i = 0; i < inputs.length; i++)
 				oInputs[i] = CraftTweakerHelper.toObject(inputs[i]);
 		BlueprintCraftingRecipe r = new BlueprintCraftingRecipe(category, CraftTweakerHelper.toStack(output), oInputs);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -45,7 +45,7 @@ public class Blueprint
 			if(!BlueprintCraftingRecipe.blueprintCategories.contains(recipe.blueprintCategory))
 				BlueprintCraftingRecipe.blueprintCategories.add(recipe.blueprintCategory);
 			BlueprintCraftingRecipe.recipeList.put(recipe.blueprintCategory, recipe);
-//			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+//			CraftTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
@@ -61,7 +61,7 @@ public class Blueprint
 			BlueprintCraftingRecipe.recipeList.remove(recipe.blueprintCategory, recipe);
 			if(BlueprintCraftingRecipe.recipeList.get(recipe.blueprintCategory).isEmpty())
 				BlueprintCraftingRecipe.blueprintCategories.remove(recipe.blueprintCategory);
-//			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
+//			CraftTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 			IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
@@ -87,7 +87,7 @@ public class Blueprint
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IUndoableAction
@@ -115,7 +115,7 @@ public class Blueprint
 					if(OreDictionary.itemMatches(ir.output, output, true))
 					{
 						removedRecipes.add(ir);
-//						MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ir);
+//						CraftTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ir);
 						IECompatModule.jeiRemoveFunc.accept(ir);
 						it.remove();
 					}
@@ -135,7 +135,7 @@ public class Blueprint
 						if(!BlueprintCraftingRecipe.blueprintCategories.contains(recipe.blueprintCategory))
 							BlueprintCraftingRecipe.blueprintCategories.add(recipe.blueprintCategory);
 						BlueprintCraftingRecipe.recipeList.put(recipe.blueprintCategory, recipe);
-//						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+//						CraftTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 						IECompatModule.jeiAddFunc.accept(recipe);
 					}
 		}

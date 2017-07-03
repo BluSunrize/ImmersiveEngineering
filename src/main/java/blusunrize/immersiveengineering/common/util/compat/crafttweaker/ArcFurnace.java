@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
@@ -32,7 +32,7 @@ public class ArcFurnace
 		ArcFurnaceRecipe r = new ArcFurnaceRecipe(CraftTweakerHelper.toStack(output), oInput, CraftTweakerHelper.toStack(slag), time, energyPerTick, adds);
 		if(specialRecipeType != null)
 			r.setSpecialRecipeType(specialRecipeType);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -86,7 +86,7 @@ public class ArcFurnace
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IUndoableAction

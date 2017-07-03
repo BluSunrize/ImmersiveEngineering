@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.CraftTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.liquid.ILiquidStack;
@@ -24,7 +24,7 @@ public class BottlingMachine
 			return;
 
 		BottlingMachineRecipe r = new BottlingMachineRecipe(CraftTweakerHelper.toStack(output), oInput, CraftTweakerHelper.toFluidStack(fluid));
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
 	private static class Add implements IUndoableAction
@@ -78,7 +78,7 @@ public class BottlingMachine
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IUndoableAction
