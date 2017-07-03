@@ -26,7 +26,7 @@ import java.util.List;
 public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityTurret tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityTurret tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -40,9 +40,9 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
-		//Initialize Tesselator and VertexBuffer
+		//Initialize Tesselator and BufferBuilder
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
@@ -69,7 +69,7 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 		GlStateManager.popMatrix();
 	}
 
-	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, VertexBuffer worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
+	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
 	{
 		pos = pos.up();
 		if(state instanceof IExtendedBlockState)

@@ -4,9 +4,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil.LightningAnimation;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.Vec3d;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTeslaCoil>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityTeslaCoil tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityTeslaCoil tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -65,7 +65,7 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 		GlStateManager.color(rgba[0],rgba[1],rgba[2],rgba[3]);
 		GL11.glLineWidth(lineWidth);
 		Tessellator tes = ClientUtils.tes();
-		VertexBuffer worldrenderer = tes.getBuffer();
+		BufferBuilder worldrenderer = tes.getBuffer();
 		worldrenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
 		List<Vec3d> subs = animation.subPoints;
 		worldrenderer.pos(animation.startPos.x-tileX,animation.startPos.y-tileY,animation.startPos.z-tileZ).endVertex();

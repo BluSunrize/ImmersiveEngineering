@@ -22,7 +22,7 @@ import java.util.List;
 public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityArcFurnace>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityArcFurnace te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityArcFurnace te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -52,7 +52,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(renderedParts, true));
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();

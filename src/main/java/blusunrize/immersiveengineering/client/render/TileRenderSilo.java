@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
 {
 	@Override
-	public void renderTileEntityAt(TileEntitySilo tile, double x, double y, double z, float f, int destroyStage)
+	public void render(TileEntitySilo tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!tile.formed || tile.pos!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;

@@ -3,9 +3,9 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -42,7 +42,7 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 			float partialTicks)
 	{
 		Tessellator tes = Tessellator.getInstance();
-		VertexBuffer wr = tes.getBuffer();
+		BufferBuilder wr = tes.getBuffer();
 		GlStateManager.enableRescaleNormal();
 		ClientUtils.bindAtlas();
 		if (entity.active)

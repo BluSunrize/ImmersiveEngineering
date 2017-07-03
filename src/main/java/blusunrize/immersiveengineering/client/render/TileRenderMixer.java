@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 public class TileRenderMixer extends TileEntitySpecialRenderer<TileEntityMixer>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityMixer te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityMixer te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -33,7 +33,7 @@ public class TileRenderMixer extends TileEntitySpecialRenderer<TileEntityMixer>
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();

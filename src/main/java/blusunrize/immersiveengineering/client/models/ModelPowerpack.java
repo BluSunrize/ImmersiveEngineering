@@ -8,9 +8,9 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -226,7 +226,7 @@ public class ModelPowerpack extends ModelIEArmorBase
 					float vStep = 1f/vex.length;
 					int i=0;
 					Tessellator tes = ClientUtils.tes();
-					VertexBuffer worldrenderer = tes.getBuffer();
+					BufferBuilder worldrenderer = tes.getBuffer();
 
 //					float[] colour = {.7f,.42f,.25f,1};
 					float[] colour = {.93f,.63f,.27f,1};

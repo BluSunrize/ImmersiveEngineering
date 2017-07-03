@@ -32,8 +32,8 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		instances.put(this, true);
 	}
 	@Override
-	public void renderTileEntityAt(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage)
-	//	public void renderTileEntityFast(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer vertexBuffer)
+	public void render(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	//	public void renderTileEntityFast(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder BufferBuilder)
 	{
 		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -72,7 +72,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 
 		RenderHelper.disableStandardItemLighting();
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
 		ClientUtils.renderModelTESRFast(quads[tile.sails], worldRenderer, tile.getWorld(), blockPos);

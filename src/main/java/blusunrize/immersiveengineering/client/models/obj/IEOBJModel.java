@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,6 +11,7 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 
 import java.lang.reflect.Field;
+import java.util.function.Function;
 
 public class IEOBJModel extends OBJModel
 {

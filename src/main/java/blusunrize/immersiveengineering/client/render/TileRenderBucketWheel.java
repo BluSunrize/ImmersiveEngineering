@@ -32,7 +32,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 {
 	private static IBakedModel model = null;
 	@Override
-	public void renderTileEntityAt(TileEntityBucketWheel tile, double x, double y, double z, float f, int destroyStage)
+	public void render(TileEntityBucketWheel tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!tile.formed || !tile.getWorld().isBlockLoaded(tile.getPos(), false) || tile.isDummy())
 			return;
@@ -81,12 +81,12 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		}
 		float dir = tile.facing == EnumFacing.SOUTH ? 90 : tile.facing == EnumFacing.NORTH ? -90 : tile.facing == EnumFacing.EAST ? 180 : 0;
 		GlStateManager.rotate(dir, 0, 1, 0);
-		float rot = tile.rotation + (float)(tile.active ? IEConfig.Machines.excavator_speed * f : 0);
+		float rot = tile.rotation + (float)(tile.active ? IEConfig.Machines.excavator_speed * partialTicks : 0);
 		GlStateManager.rotate(rot, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
 		List<BakedQuad> quads;
