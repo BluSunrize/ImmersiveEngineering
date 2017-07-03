@@ -10,8 +10,8 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -23,6 +23,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice>
@@ -52,7 +53,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 //        return 16777215;
 //    }
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
 	{
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 		{

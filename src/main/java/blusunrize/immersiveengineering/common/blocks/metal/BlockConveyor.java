@@ -11,9 +11,9 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
@@ -94,7 +95,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
 	{
 		String flavourKey = getUnlocalizedName(stack)+".flavour";
 		if(I18n.canTranslate(flavourKey))
