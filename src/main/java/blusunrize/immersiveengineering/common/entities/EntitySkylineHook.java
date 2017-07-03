@@ -322,13 +322,13 @@ public class EntitySkylineHook extends Entity
 		return 0.0F;
 	}
 	@Override
-	public float getBrightness(float p_70013_1_)
+	public float getBrightness()
 	{
 		return 1.0F;
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
-	public int getBrightnessForRender(float p_70070_1_)
+	public int getBrightnessForRender()
 	{
 		return 15728880;
 	}

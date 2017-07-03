@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageBirthdayParty;
@@ -264,8 +263,8 @@ public class EntityRevolvershot extends Entity
 				bullet.onHitTarget(world, mop, this.shootingEntity, this, headshot);
 			if(headshot && mop.entityHit instanceof EntityAgeable && ((EntityAgeable)mop.entityHit).isChild() && ((EntityLivingBase)mop.entityHit).getHealth()<=0)
 			{
-				if(this.shootingEntity instanceof EntityPlayer)
-					((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
+//				if(this.shootingEntity instanceof EntityPlayer) ToDo: Achievement
+//					((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
 				world.playSound(null, posX,posY,posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
 				ImmersiveEngineering.packetHandler.sendToDimension(new MessageBirthdayParty((EntityLivingBase)mop.entityHit), world.provider.getDimension());
 			}
@@ -447,13 +446,13 @@ public class EntityRevolvershot extends Entity
 		return 1.0F;
 	}
 	@Override
-	public float getBrightness(float p_70013_1_)
+	public float getBrightness()
 	{
 		return 1.0F;
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
-	public int getBrightnessForRender(float p_70070_1_)
+	public int getBrightnessForRender()
 	{
 		return 15728880;
 	}
