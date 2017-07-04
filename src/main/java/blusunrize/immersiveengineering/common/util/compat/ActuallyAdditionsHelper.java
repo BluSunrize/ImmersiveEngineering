@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
+import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import net.minecraft.block.Block;
@@ -30,6 +32,8 @@ public class ActuallyAdditionsHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
+		Fluid fluidEthanol = FluidRegistry.getFluid("ethanol");
+		Fluid fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
 
 		Item coffeeSeeds = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions:item_coffee_seed"));
 		Item coffeeBeans = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions:item_coffee_beans"));
@@ -40,8 +44,10 @@ public class ActuallyAdditionsHelper extends IECompatModule
 		Item riceSeeds = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions:item_rice_seed"));
 		Item food = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions:item_food"));
 		Block riceBlock = Block.REGISTRY.getObject(new ResourceLocation("actuallyadditions:block_rice"));
-		if(riceSeeds!=null && food!=null && riceBlock!=null)
+		if(riceSeeds!=null && food!=null && riceBlock!=null) {
 			BelljarHandler.cropHandler.register(new ItemStack(riceSeeds), new ItemStack[]{new ItemStack(food,2,16), new ItemStack(riceSeeds)}, new ItemStack(Blocks.DIRT), riceBlock.getDefaultState());
+			FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, new ItemStack(food, 1, 16), 6400);
+		}
 
 		Item canolaSeeds = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions:item_canola_seed"));
 		Item misc = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions:item_misc"));
@@ -53,5 +59,17 @@ public class ActuallyAdditionsHelper extends IECompatModule
 		Block flaxBlock = Block.REGISTRY.getObject(new ResourceLocation("actuallyadditions:block_flax"));
 		if(flaxSeeds!=null && flaxBlock!=null)
 			BelljarHandler.cropHandler.register(new ItemStack(flaxSeeds), new ItemStack[]{new ItemStack(Items.STRING,4), new ItemStack(flaxSeeds)}, new ItemStack(Blocks.DIRT), flaxBlock.getDefaultState());
+		
+		Fluid canolaOil = FluidRegistry.getFluid("canolaoil");
+		if(canolaOil!=null) {
+			RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(canolaOil,8),new FluidStack(fluidEthanol,8), 80);
+		}
+		
+		Fluid oil = FluidRegistry.getFluid("oil");
+		if( oil != null){
+			RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(oil, 8) ,new FluidStack(fluidEthanol,0), 80);
+		}
+		
+		
 	}
 }
