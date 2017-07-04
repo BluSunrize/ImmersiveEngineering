@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.*;
@@ -62,6 +63,8 @@ public class ImmersiveEngineering
 		Config.preInit(event);
 		IEContent.preInit();
 		proxy.preInit();
+
+		IEAdvancements.preInit();
 
 		WireType.wireLossRatio = IEConfig.wireLossRatio;
 		WireType.wireTransferRate = IEConfig.wireTransferRate;

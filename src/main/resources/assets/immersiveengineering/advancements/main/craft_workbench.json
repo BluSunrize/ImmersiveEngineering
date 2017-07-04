@@ -1,14 +1,14 @@
 {
 	"display": {
 		"icon": {
-			"item": "immersiveengineering:tool",
-			"data": 0
+			"item": "immersiveengineering:wooden_device0",
+			"data": 2
 		},
 		"title": {
-			"translate": "advancement.immersiveengineering:craftHammer"
+			"translate": "advancement.immersiveengineering:craftWorkbench"
 		},
 		"description": {
-			"translate": "advancement.immersiveengineering:craftHammer.desc"
+			"translate": "advancement.immersiveengineering:craftWorkbench.desc"
 		}
 	},
 	"parent": "immersiveengineering:main/root",
@@ -18,8 +18,8 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "immersiveengineering:tool",
-						"data": 0
+						"item": "immersiveengineering:wooden_device0",
+						"data": 2
 					}
 				]
 			}
