@@ -11,7 +11,7 @@
 			"translate": "advancement.immersiveengineering:placeWindmill.desc"
 		}
 	},
-	"parent": "immersiveengineering:main/open_manual",
+	"parent": "immersiveengineering:main/root",
 	"criteria": {
 		"place_windmill": {
 			"trigger": "minecraft:placed_block",

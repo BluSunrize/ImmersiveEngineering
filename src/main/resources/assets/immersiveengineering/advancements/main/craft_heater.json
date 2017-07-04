@@ -1,14 +1,14 @@
 {
 	"display": {
 		"icon": {
-			"item": "immersiveengineering:tool",
-			"data": 0
+			"item": "immersiveengineering:metal_device1",
+			"data": 1
 		},
 		"title": {
-			"translate": "advancement.immersiveengineering:craftHammer"
+			"translate": "advancement.immersiveengineering:craftHeater"
 		},
 		"description": {
-			"translate": "advancement.immersiveengineering:craftHammer.desc"
+			"translate": "advancement.immersiveengineering:craftHeater.desc"
 		}
 	},
 	"parent": "immersiveengineering:main/root",
@@ -18,8 +18,8 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "immersiveengineering:tool",
-						"data": 0
+						"item": "immersiveengineering:metal_device1",
+						"data": 1
 					}
 				]
 			}

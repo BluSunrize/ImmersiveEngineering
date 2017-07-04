@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:drill"
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:craftDrill"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:craftDrill.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/craft_workbench",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:drill"
+					}
+				]
+			}
+		}
+	}
+}

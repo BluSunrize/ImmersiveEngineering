@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:railgun"
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:craftRailgun"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:craftRailgun.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/craft_workbench",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:railgun"
+					}
+				]
+			}
+		}
+	}
+}

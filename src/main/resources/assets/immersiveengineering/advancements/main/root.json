@@ -5,12 +5,12 @@
 			"data": 3
 		},
 		"title": {
-			"translate": "itemGroup.immersiveengineering"
+			"translate": "advancement.immersiveengineering:root"
 		},
 		"description": {
-			"translate": "immersiveengineering.desc"
+			"translate": "advancement.immersiveengineering:root.desc"
 		},
-		"background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+		"background": "immersiveengineering:textures/blocks/treated_wood.png",
 		"show_toast": false,
 		"announce_to_chat": false
 	},
