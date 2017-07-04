@@ -1,0 +1,30 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:tool",
+			"data": 3
+		},
+		"title": {
+			"translate": "itemGroup.immersiveengineering"
+		},
+		"description": {
+			"translate": "immersiveengineering.desc"
+		},
+		"background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+		"show_toast": false,
+		"announce_to_chat": false
+	},
+	"criteria": {
+		"hold_manual": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:tool",
+						"data": 3
+					}
+				]
+			}
+		}
+	}
+}

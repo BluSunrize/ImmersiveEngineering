@@ -1,0 +1,21 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:tool",
+			"data": 3
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:openManual"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:openManual.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/root",
+	"__comment": "Triggered in Code",
+	"criteria": {
+		"open_manual": {
+			"trigger": "minecraft:impossible"
+		}
+	}
+}
