@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.client;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelCoresample;
@@ -40,7 +39,6 @@ public class ImmersiveModelRegistry
 	@SubscribeEvent
 	public void onModelBakeEvent(ModelBakeEvent event)
 	{
-		System.out.println("IE~BAKING");
 		for(Map.Entry<ModelResourceLocation, ItemModelReplacement> entry : itemModelReplacements.entrySet())
 		{
 			Object object = event.getModelRegistry().getObject(entry.getKey());
@@ -56,9 +54,6 @@ public class ImmersiveModelRegistry
 				}
 			}
 		}
-		for(ModelResourceLocation mrl : event.getModelRegistry().getKeys())
-			if(ImmersiveEngineering.MODID.equals(mrl.getResourceDomain()))
-				System.out.println("IE~BAKE: "+mrl);
 
 		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", IEContent.itemCoresample.itemName), "inventory");
 		event.getModelRegistry().putObject(mLoc, new ModelCoresample());
