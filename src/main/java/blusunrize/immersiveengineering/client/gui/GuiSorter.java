@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiSorter extends GuiIEBase
+public class GuiSorter extends GuiIEContainerBase
 {
 	TileEntitySorter tile;
 	public GuiSorter(InventoryPlayer inventoryPlayer, TileEntitySorter tile)

@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GuiAutoWorkbench extends GuiIEBase
+public class GuiAutoWorkbench extends GuiIEContainerBase
 {
 	TileEntityAutoWorkbench tile;
 	public GuiAutoWorkbench(InventoryPlayer inventoryPlayer, TileEntityAutoWorkbench tile )

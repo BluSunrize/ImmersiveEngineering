@@ -28,7 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiModWorkbench extends GuiIEBase
+public class GuiModWorkbench extends GuiIEContainerBase
 {
 	TileEntityModWorkbench workbench;
 	public GuiModWorkbench(InventoryPlayer inventoryPlayer, TileEntityModWorkbench tile )

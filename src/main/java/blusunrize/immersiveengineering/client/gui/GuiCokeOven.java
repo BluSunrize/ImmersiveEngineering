@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiCokeOven extends GuiIEBase
+public class GuiCokeOven extends GuiIEContainerBase
 {
 	TileEntityCokeOven tile;
 	public GuiCokeOven(InventoryPlayer inventoryPlayer, TileEntityCokeOven tile)

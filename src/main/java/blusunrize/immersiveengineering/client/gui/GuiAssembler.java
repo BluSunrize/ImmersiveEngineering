@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiAssembler extends GuiIEBase
+public class GuiAssembler extends GuiIEContainerBase
 {
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public TileEntityAssembler tile;

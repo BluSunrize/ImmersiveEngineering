@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GuiFluidSorter extends GuiIEBase
+public class GuiFluidSorter extends GuiIEContainerBase
 {
 	TileEntityFluidSorter tile;
 	InventoryPlayer playerInventory;

@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiToolboxBlock extends GuiIEBase
+public class GuiToolboxBlock extends GuiIEContainerBase
 {
 	public GuiToolboxBlock(InventoryPlayer inventoryPlayer, TileEntityToolbox toolbox)
 	{
