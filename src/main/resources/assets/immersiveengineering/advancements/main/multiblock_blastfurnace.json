@@ -19,6 +19,12 @@
 			"conditions": {
 				"multiblock": "IE:BlastFurnace"
 			}
+		},
+		"form_improvedblastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:BlastFurnaceAdvanced"
+			}
 		}
 	}
 }

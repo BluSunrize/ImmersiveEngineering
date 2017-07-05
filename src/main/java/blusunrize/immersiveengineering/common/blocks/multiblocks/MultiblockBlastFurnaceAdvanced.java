@@ -132,8 +132,6 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 						}
 					}
-//		player.addStat(IEAchievements.blastfurnace); ToDo: Achievement
-//		player.addStat(IEAchievements.mbImprovedBlastFurnace); ToDo: Achievement
 		return true;
 	}
 

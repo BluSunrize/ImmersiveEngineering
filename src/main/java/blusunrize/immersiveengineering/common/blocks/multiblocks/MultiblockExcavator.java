@@ -165,8 +165,7 @@ public class MultiblockExcavator implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
-//			player.addStat(IEAchievements.mbExcavator); ToDo: Achievement
-			
+
 			BlockPos wheelPos = pos.offset(side,4);
 			if(MultiblockBucketWheel.instance.isBlockTrigger(world.getBlockState(wheelPos)))
 				MultiblockBucketWheel.instance.createStructure(world, wheelPos, side.rotateYCCW(), player);

@@ -73,7 +73,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -525,45 +524,6 @@ public class EventHandler
 				}
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public void onItemCrafted(ItemCraftedEvent event)
-	{
-//		if(event.player!=null) ToDo: Achievement
-//			for(IEAchievements.AchievementIE achievement : IEAchievements.normalCraftingAchievements)
-//			{
-//				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
-//				{
-//					for(ItemStack trigger : achievement.triggerItems)
-//						if(ApiUtils.stackMatchesObject(event.crafting, trigger, achievement.checkNBT&&trigger.hasTagCompound()))
-//						{
-//							event.player.addStat(achievement);
-//							break;
-//						}
-//				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.icon, achievement.checkNBT&&achievement.icon.hasTagCompound()))
-//					event.player.addStat(achievement);
-//			}
-	}
-
-	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void onBlockPlaced(BlockEvent.PlaceEvent event)
-	{
-//		if(event.getPlayer() !=null && !event.isCanceled()) ToDo: Achievement
-//			for(IEAchievements.AchievementIE achievement : IEAchievements.placementAchievements)
-//			{
-//				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
-//				{
-//					for(ItemStack trigger : achievement.triggerItems)
-//						if(OreDictionary.itemMatches(trigger, event.getItemInHand(), achievement.checkNBT))
-//						{
-//							event.getPlayer().addStat(achievement);
-//							break;
-//						}
-//				}
-//				else if(OreDictionary.itemMatches(achievement.icon, event.getItemInHand(), achievement.checkNBT))
-//					event.getPlayer().addStat(achievement);
-//			}
 	}
 
 	@SubscribeEvent()

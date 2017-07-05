@@ -103,7 +103,6 @@ public class MultiblockBlastFurnace implements IMultiblock
 						world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 					}
 				}
-//		player.addStat(IEAchievements.blastfurnace); ToDo: Achievement
 		return true;
 	}
 

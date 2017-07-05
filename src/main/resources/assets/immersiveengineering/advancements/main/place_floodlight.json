@@ -11,7 +11,7 @@
 			"translate": "advancement.immersiveengineering:placeFloodlight.desc"
 		}
 	},
-	"parent": "immersiveengineering:main/root",
+	"parent": "immersiveengineering:main/connect_wire",
 	"criteria": {
 		"place_floodlight": {
 			"trigger": "minecraft:placed_block",

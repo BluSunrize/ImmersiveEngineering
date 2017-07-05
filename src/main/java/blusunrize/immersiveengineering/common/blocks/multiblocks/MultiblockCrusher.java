@@ -163,7 +163,6 @@ public class MultiblockCrusher implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
-//			player.addStat(IEAchievements.mbCrusher); ToDo: Achievement
 		}
 		return b;
 	}
