@@ -23,7 +23,7 @@ public class ItemShaderBag extends ItemIEBase
 		super("shader_bag", 64);
 	}
 
-//	@Override
+	//	@Override
 //	@SideOnly(Side.CLIENT)
 //	public int getColorFromItemStack(ItemStack stack, int pass)
 //	{
@@ -32,9 +32,9 @@ public class ItemShaderBag extends ItemIEBase
 //	}
 	@Override
 	public boolean hasCustomItemColours()
-{
-	return true;
-}
+	{
+		return true;
+	}
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
@@ -45,13 +45,14 @@ public class ItemShaderBag extends ItemIEBase
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for(int i=ShaderRegistry.sortedRarityMap.size()-1; i>=0; i--)
-		{
-			EnumRarity rarity = ShaderRegistry.sortedRarityMap.get(i);
-			ItemStack s = new ItemStack(this);
-			ItemNBTHelper.setString(s, "rarity", rarity.toString());
-			list.add(s);
-		}
+		if(this.isInCreativeTab(tab))
+			for(int i=ShaderRegistry.sortedRarityMap.size()-1; i>=0; i--)
+			{
+				EnumRarity rarity = ShaderRegistry.sortedRarityMap.get(i);
+				ItemStack s = new ItemStack(this);
+				ItemNBTHelper.setString(s, "rarity", rarity.toString());
+				list.add(s);
+			}
 	}
 
 	@Override

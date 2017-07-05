@@ -130,15 +130,18 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		list.add(new ItemStack(this, 1, 0));
-		list.add(new ItemStack(this, 1, 1));
-		for(Map.Entry<String, IBullet> entry : BulletHandler.registry.entrySet())
-			if(entry.getValue().isProperCartridge())
-			{
-				ItemStack s = new ItemStack(this, 1, 2);
-				ItemNBTHelper.setString(s, "bullet", entry.getKey());
-				list.add(s);
-			}
+		if(this.isInCreativeTab(tab))
+		{
+			list.add(new ItemStack(this, 1, 0));
+			list.add(new ItemStack(this, 1, 1));
+			for(Map.Entry<String, IBullet> entry : BulletHandler.registry.entrySet())
+				if(entry.getValue().isProperCartridge())
+				{
+					ItemStack s = new ItemStack(this, 1, 2);
+					ItemNBTHelper.setString(s, "bullet", entry.getKey());
+					list.add(s);
+				}
+		}
 	}
 
 	@Override

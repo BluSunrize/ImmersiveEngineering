@@ -38,14 +38,15 @@ public class ItemIEBase extends Item implements IColouredItem
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		if(getSubNames()!=null)
-		{
-			for(int i=0;i<getSubNames().length;i++)
-				if(!isMetaHidden(i))
-					list.add(new ItemStack(this,1,i));
-		}
-		else
-			list.add(new ItemStack(this));
+		if(this.isInCreativeTab(tab))
+			if(getSubNames()!=null)
+			{
+				for(int i=0;i<getSubNames().length;i++)
+					if(!isMetaHidden(i))
+						list.add(new ItemStack(this,1,i));
+			}
+			else
+				list.add(new ItemStack(this));
 
 	}
 	@Override
@@ -77,7 +78,7 @@ public class ItemIEBase extends Item implements IColouredItem
 	{
 		return this.isMetaHidden[Math.max(0, Math.min(meta, this.isMetaHidden.length-1))];
 	}
-	
+
 	public ItemIEBase setRegisterSubModels(boolean register)
 	{
 		this.registerSubModels = register;

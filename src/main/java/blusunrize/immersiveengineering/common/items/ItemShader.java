@@ -207,12 +207,13 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for(String key : ShaderRegistry.shaderRegistry.keySet())
-		{
-			ItemStack s = new ItemStack(this);
-			ItemNBTHelper.setString(s, "shader_name", key);
-			list.add(s);
-		}
+		if(this.isInCreativeTab(tab))
+			for(String key : ShaderRegistry.shaderRegistry.keySet())
+			{
+				ItemStack s = new ItemStack(this);
+				ItemNBTHelper.setString(s, "shader_name", key);
+				list.add(s);
+			}
 	}
 
 	@Override
