@@ -4,10 +4,10 @@
 			"item": "immersiveengineering:wirecoil"
 		},
 		"title": {
-			"translate": "advancement.immersiveengineering:upgradeRevolver"
+			"translate": "advancement.immersiveengineering:connectWire"
 		},
 		"description": {
-			"translate": "advancement.immersiveengineering:upgradeRevolver.desc"
+			"translate": "advancement.immersiveengineering:connectWire.desc"
 		}
 	},
 	"parent": "immersiveengineering:main/root",
