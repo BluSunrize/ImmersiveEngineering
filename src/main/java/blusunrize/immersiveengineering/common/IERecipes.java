@@ -351,7 +351,11 @@ public class IERecipes
 	}
 	public static ResourceLocation getRecipeGroup(ItemStack stack)
 	{
-		return new ResourceLocation(ImmersiveEngineering.MODID+":"+stack.getUnlocalizedName());
+		String s = stack.getUnlocalizedName();
+		int idx = s.lastIndexOf(":");
+		if(idx>=0)
+			s = s.substring(idx+1);
+		return new ResourceLocation(ImmersiveEngineering.MODID,s);
 	}
 	public static ShapedOreRecipe addOredictRecipe(ItemStack output, Object... recipe)
 	{
