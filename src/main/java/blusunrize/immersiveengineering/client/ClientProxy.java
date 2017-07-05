@@ -1098,7 +1098,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@SubscribeEvent
-	public void textureStich(TextureStitchEvent.Pre event)
+	public void textureStichPre(TextureStitchEvent.Pre event)
 	{
 		IELogger.info("Stitching Revolver Textures!");
 		((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.getMap());
@@ -1135,6 +1135,10 @@ public class ClientProxy extends CommonProxy
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPotion.getFlowing());
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
 
+	}
+	@SubscribeEvent
+	public void textureStichPost(TextureStitchEvent.Post event)
+	{
 		clearRenderCaches();
 	}
 
