@@ -18,5 +18,8 @@
 		"code_trigger": {
 			"trigger": "minecraft:impossible"
 		}
+	},
+	"rewards": {
+		"loot": ["immersiveengineering:advancements/shaders"]
 	}
 }
