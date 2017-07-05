@@ -110,6 +110,15 @@ jar {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            exclude 'blusunrize/immersiveengineering/common/util/compat/opencomputers/**'
+            exclude 'blusunrize/immersiveengineering/common/util/compat/waila/**'
+        }
+    }
+}
+
 processResources
 {
     // this will ensure that this task is redone when the versions change.
