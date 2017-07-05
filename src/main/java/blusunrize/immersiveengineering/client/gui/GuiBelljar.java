@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar;
 import blusunrize.immersiveengineering.common.gui.ContainerBelljar;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -14,7 +13,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import java.util.ArrayList;
 
-public class GuiBelljar extends GuiContainer
+public class GuiBelljar extends GuiIEBase
 {
 	TileEntityBelljar tile;
 	public GuiBelljar(InventoryPlayer inventoryPlayer, TileEntityBelljar tile )
