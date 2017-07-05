@@ -10,7 +10,6 @@ import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -22,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiAssembler extends GuiContainer
+public class GuiAssembler extends GuiIEBase
 {
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public TileEntityAssembler tile;

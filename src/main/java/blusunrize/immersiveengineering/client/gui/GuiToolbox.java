@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiToolbox extends GuiContainer
+public class GuiToolbox extends GuiIEBase
 {
 	public GuiToolbox(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack toolbox)
 	{

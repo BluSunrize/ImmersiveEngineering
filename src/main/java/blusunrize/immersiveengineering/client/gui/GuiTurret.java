@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.gui.ContainerTurret;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -25,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GuiTurret extends GuiContainer
+public class GuiTurret extends GuiIEBase
 {
 	public TileEntityTurret tile;
 	private GuiTextField nameField;

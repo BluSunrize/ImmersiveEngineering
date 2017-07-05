@@ -10,7 +10,6 @@ import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -20,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GuiAutoWorkbench extends GuiContainer
+public class GuiAutoWorkbench extends GuiIEBase
 {
 	TileEntityAutoWorkbench tile;
 	public GuiAutoWorkbench(InventoryPlayer inventoryPlayer, TileEntityAutoWorkbench tile )

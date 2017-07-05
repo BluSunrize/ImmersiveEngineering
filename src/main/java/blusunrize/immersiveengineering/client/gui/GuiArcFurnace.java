@@ -5,14 +5,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.ContainerArcFurnace;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import java.util.ArrayList;
 
-public class GuiArcFurnace extends GuiContainer
+public class GuiArcFurnace extends GuiIEBase
 {
 	TileEntityArcFurnace tile;
 	public GuiArcFurnace(InventoryPlayer inventoryPlayer, TileEntityArcFurnace tile)

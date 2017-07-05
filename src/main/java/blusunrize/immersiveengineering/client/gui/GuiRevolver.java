@@ -3,14 +3,13 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-public class GuiRevolver extends GuiContainer
+public class GuiRevolver extends GuiIEBase
 {
 	int bullets = 0;
 	public GuiRevolver(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack revolver)
