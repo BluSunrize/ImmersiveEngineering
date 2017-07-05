@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
@@ -11,6 +12,9 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementManager;
+import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -42,6 +46,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
@@ -539,6 +544,18 @@ public class Utils
 			return false;
 		double d = vec.y-(entity.posY+entity.getEyeHeight());
 		return Math.abs(d) < .25;
+	}
+
+	public static void unlockIEAdvancement(EntityPlayer player, String name)
+	{
+		if(player instanceof EntityPlayerMP)
+		{
+			PlayerAdvancements advancements = ((EntityPlayerMP)player).getAdvancements();
+			AdvancementManager manager = ((WorldServer)player.getEntityWorld()).getAdvancementManager();
+			Advancement advancement = manager.getAdvancement(new ResourceLocation(ImmersiveEngineering.MODID, name));
+			if(advancement!=null)
+				advancements.grantCriterion(advancement, "code_trigger");
+		}
 	}
 
 	public static NBTTagCompound getRandomFireworkExplosion(Random rand, int preType)
