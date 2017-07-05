@@ -26,5 +26,11 @@
 				"multiblock": "IE:BlastFurnaceAdvanced"
 			}
 		}
-	}
+	},
+	"requirements": [
+		[
+			"form_blastfurnace",
+			"form_improvedblastfurnace"
+		]
+	]
 }
