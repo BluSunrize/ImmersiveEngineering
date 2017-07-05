@@ -349,15 +349,33 @@ public class IEContent
 
 	public static void preInit()
 	{
-		//Ore Dict
+		/**CONVEYORS*/
+		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
+			NBTTagCompound data = entity.getEntityData();
+			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
+				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
+		}, (entity, iConveyorTile) -> {
+			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
+		});
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
+
+		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+	}
+
+	public static void init()
+	{
+		/**ORE DICTIONARY*/
 		registerToOreDict("ore", blockOre);
 		registerToOreDict("block", blockStorage);
 		registerToOreDict("slab", blockStorageSlabs);
 		registerToOreDict("blockSheetmetal", blockSheetmetal);
 		registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
 		registerToOreDict("", itemMetal);
-//		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,6),new ItemStack(itemMetal,1,15),new ItemStack(itemMetal,1,26),new ItemStack(itemMetal,1,36), new ItemStack(blockStorage,1,6),new ItemStack(blockStorageSlabs,1,6), new ItemStack(blockSheetmetal,1,6),new ItemStack(blockSheetmetalSlabs,1,6));
-		//		OreDictionary.registerOre("seedIndustrialHemp", new ItemStack(itemSeeds));
 		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial,1,0));
 		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,1));
 		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,2));
@@ -394,21 +412,12 @@ public class IEContent
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.STONEBRICK));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ICE));
-//		OreDictionary.registerOre("blockFrostedIce", new ItemStack(Blocks.FROSTED_ICE));
 		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.PACKED_ICE));
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.CRAFTING_TABLE));
 		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.BLAZE_ROD));
 		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL,1,1));
-		//Fluid Containers
-//		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,0), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,1), new ItemStack(Items.BUCKET));
-//		FluidContainerRegistry.registerFluidContainer(fluidPlantoil, new ItemStack(itemFluidContainers,1,2), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidPlantoil, new ItemStack(itemFluidContainers,1,3), new ItemStack(Items.BUCKET));
-//		FluidContainerRegistry.registerFluidContainer(fluidEthanol, new ItemStack(itemFluidContainers,1,4), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidEthanol, new ItemStack(itemFluidContainers,1,5), new ItemStack(Items.BUCKET));
-//		FluidContainerRegistry.registerFluidContainer(fluidBiodiesel, new ItemStack(itemFluidContainers,1,6), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidBiodiesel, new ItemStack(itemFluidContainers,1,7), new ItemStack(Items.BUCKET));
-		//		//Mining
+
+		/**MINING LEVELS*/
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.LEAD.getMeta()));
@@ -425,6 +434,7 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
 
+		/**WORLDGEN*/
 		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
@@ -432,11 +442,6 @@ public class IEContent
 		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
 
-		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
-	}
-
-	public static void init()
-	{
 		/**TILEENTITIES*/
 		registerTile(TileEntityIESlab.class);
 
@@ -521,10 +526,7 @@ public class IEContent
 		registerTile(TileEntityArcFurnace.class);
 		registerTile(TileEntityLightningrod.class);
 		registerTile(TileEntityMixer.class);
-		//
 		//		registerTile(TileEntitySkycrateDispenser.class);
-		//		registerTile(TileEntityFloodlight.class);
-		//
 		registerTile(TileEntityFakeLight.class);
 
 
@@ -580,21 +582,6 @@ public class IEContent
 			addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
 			addBanner("wolf", "wlf", wolfpackCartridge, 0,0);
 		}
-
-		/**CONVEYORS*/
-		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
-			NBTTagCompound data = entity.getEntityData();
-			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
-				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
-		}, (entity, iConveyorTile) -> {
-			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
 
 		/**ASSEMBLER RECIPE ADAPTERS*/
 		//Shaped
