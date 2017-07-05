@@ -194,7 +194,7 @@ public class ImmersiveEngineering
 	}
 
 	@Mod.EventHandler
-	public void remap(MissingMappings ev) {
+	public void remap(MissingMappings<?> ev) {
 		NameRemapper.remap(ev);
 	}
 
