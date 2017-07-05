@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -36,6 +37,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[14.21.0.2385,);after:jei@[4.3,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
 public class ImmersiveEngineering
@@ -123,17 +126,15 @@ public class ImmersiveEngineering
 		{
 			if(message.key.equals("fluidpipeCover") && message.isFunctionMessage())
 			{
-//				ToDo Figure this out
-//				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
-//				if(opFunc.isPresent())
-//					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
+				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
+				if(opFunc.isPresent())
+					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
 			}
 			else if(message.key.equals("fluidpipeCoverClimb") && message.isFunctionMessage())
 			{
-//				ToDo Figure this out
-//				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
-//				if(opFunc.isPresent())
-//					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
+				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
+				if(opFunc.isPresent())
+					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
 			}
 		}
 		NameRemapper.init();
