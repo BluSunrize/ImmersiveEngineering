@@ -1,0 +1,24 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal_multiblock",
+			"data": 13
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:mbArcFurnace"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:mbArcFurnace.desc"
+		},
+		"frame": "challenge"
+	},
+	"parent": "immersiveengineering:main/make_steel",
+	"criteria": {
+		"form_blastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:ArcFurnace"
+			}
+		}
+	}
+}
