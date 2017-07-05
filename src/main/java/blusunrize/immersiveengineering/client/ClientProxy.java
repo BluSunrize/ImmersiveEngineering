@@ -1134,6 +1134,8 @@ public class ClientProxy extends CommonProxy
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPotion.getStill());
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPotion.getFlowing());
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
+
+		clearRenderCaches();
 	}
 
 	@Override
