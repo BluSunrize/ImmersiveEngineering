@@ -40,8 +40,6 @@ public class Blueprint
 		@Override
 		public void apply()
 		{
-			System.out.println("NOTIFICATION_IE: ADDING RECIPE FOR"+recipe.output);
-
 			if(!BlueprintCraftingRecipe.blueprintCategories.contains(recipe.blueprintCategory))
 				BlueprintCraftingRecipe.blueprintCategories.add(recipe.blueprintCategory);
 			BlueprintCraftingRecipe.recipeList.put(recipe.blueprintCategory, recipe);
