@@ -263,8 +263,8 @@ public class EntityRevolvershot extends Entity
 				bullet.onHitTarget(world, mop, this.shootingEntity, this, headshot);
 			if(headshot && mop.entityHit instanceof EntityAgeable && ((EntityAgeable)mop.entityHit).isChild() && ((EntityLivingBase)mop.entityHit).getHealth()<=0)
 			{
-//				if(this.shootingEntity instanceof EntityPlayer) ToDo: Achievement
-//					((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
+				if(this.shootingEntity instanceof EntityPlayer)
+					Utils.unlockIEAdvancement((EntityPlayer)this.shootingEntity, "main/secret_birthdayparty");
 				world.playSound(null, posX,posY,posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
 				ImmersiveEngineering.packetHandler.sendToDimension(new MessageBirthdayParty((EntityLivingBase)mop.entityHit), world.provider.getDimension());
 			}

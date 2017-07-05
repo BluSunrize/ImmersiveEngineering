@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -83,8 +84,8 @@ public class ItemShaderBag extends ItemIEBase
 					return new ActionResult(EnumActionResult.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(IEContent.itemShader);
 				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
-//				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity())<=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC) && ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity())>=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
-//					player.addStat(IEAchievements.secret_luckOfTheDraw); ToDo: Achievement
+				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity())<=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC) && ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity())>=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
+					Utils.unlockIEAdvancement(player, "secret_luckofthedraw");
 				stack.shrink(1);
 				if(stack.getCount()<=0)
 					return new ActionResult(EnumActionResult.SUCCESS, shaderItem);

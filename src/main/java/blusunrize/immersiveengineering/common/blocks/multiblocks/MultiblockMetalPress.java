@@ -166,7 +166,6 @@ public class MultiblockMetalPress implements IMultiblock
 					world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 				}
 			}
-//		player.addStat(IEAchievements.mbMetalPress); ToDo: Achievement
 		return true;
 	}
 

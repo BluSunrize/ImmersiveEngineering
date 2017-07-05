@@ -280,9 +280,9 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-//		player.addStat(IEAchievements.craftRailgun); ToDo: Achievement
-		//		if(contents[18]!=null&&contents[19]!=null)
-		//			player.triggerAchievement(IEAchievements.upgradeRailgun);
+//		ToDo: Make an Upgrade Advancement?
+//		if(contents[18]!=null&&contents[19]!=null)
+//			Utils.unlockIEAdvancement(player, "upgrade_railgun");
 	}
 
 	@Override
@@ -363,7 +363,6 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		//		if(stack.)
 //		if(ItemNBTHelper.getBoolean(stack, "inUse"))
 //		{
-//			//ToDo: Accoutn for hands
 //			if (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
 //				perspective = perspective.translate(-.75, -2, -.5).rotate(Math.toRadians(-78), 0, 0, 1);
 //			else

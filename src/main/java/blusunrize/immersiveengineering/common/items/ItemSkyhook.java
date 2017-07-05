@@ -147,7 +147,6 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-//		player.addStat(IEAchievements.craftSkyhook); ToDo: Achievement
 	}
 
 	@Override

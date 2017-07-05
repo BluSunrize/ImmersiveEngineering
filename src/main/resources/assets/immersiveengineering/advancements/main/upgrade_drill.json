@@ -19,6 +19,6 @@
 		}
 	},
 	"rewards": {
-		"loot": ["immersiveengineering:advancements/shaders"]
+		"loot": ["immersiveengineering:advancements/shader_rare"]
 	}
 }

@@ -11,7 +11,7 @@
 			"translate": "advancement.immersiveengineering:craftHeater.desc"
 		}
 	},
-	"parent": "immersiveengineering:main/root",
+	"parent": "immersiveengineering:main/connect_wire",
 	"criteria": {
 		"craft_hammer": {
 			"trigger": "minecraft:inventory_changed",

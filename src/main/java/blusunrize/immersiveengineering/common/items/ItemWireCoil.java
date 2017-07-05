@@ -156,7 +156,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 										nodeHere.connectCable(type, target, nodeLink);
 										nodeLink.connectCable(type, targetLink, nodeHere);
 										IESaveData.setDirty(world.provider.getDimension());
-//										player.addStat(IEAchievements.connectWire); ToDo: Achievement
+										Utils.unlockIEAdvancement(player, "main/connect_wire");
 
 										if(!player.capabilities.isCreativeMode)
 											stack.shrink(1);

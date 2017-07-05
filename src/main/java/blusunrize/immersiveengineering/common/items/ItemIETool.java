@@ -321,7 +321,6 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		ItemStack stack = player.getHeldItem(hand);
 		if(stack.getItemDamage()==3)
 		{
-//			player.addStat(IEAchievements.openManual); ToDo: Achievement
 			if(world.isRemote)
 				CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
 			return new ActionResult(EnumActionResult.SUCCESS, stack);

@@ -156,7 +156,6 @@ public class MultiblockSilo implements IMultiblock
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
 				}
-//		player.addStat(IEAchievements.mbSilo); ToDo: Achievement
 		return true;
 	}
 
