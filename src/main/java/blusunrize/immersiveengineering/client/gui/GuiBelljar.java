@@ -13,7 +13,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import java.util.ArrayList;
 
-public class GuiBelljar extends GuiIEBase
+public class GuiBelljar extends GuiIEContainerBase
 {
 	TileEntityBelljar tile;
 	public GuiBelljar(InventoryPlayer inventoryPlayer, TileEntityBelljar tile )

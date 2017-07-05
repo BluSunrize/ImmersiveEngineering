@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiMixer extends GuiIEBase
+public class GuiMixer extends GuiIEContainerBase
 {
 	TileEntityMixer tile;
 	public GuiMixer(InventoryPlayer inventoryPlayer, TileEntityMixer tile)

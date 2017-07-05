@@ -6,9 +6,9 @@ import net.minecraft.inventory.Container;
 /**
  * @author BluSunrize - 05.07.2017
  */
-public abstract class GuiIEBase extends GuiContainer
+public abstract class GuiIEContainerBase extends GuiContainer
 {
-	public GuiIEBase(Container inventorySlotsIn)
+	public GuiIEContainerBase(Container inventorySlotsIn)
 	{
 		super(inventorySlotsIn);
 	}

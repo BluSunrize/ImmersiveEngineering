@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-public class GuiRevolver extends GuiIEBase
+public class GuiRevolver extends GuiIEContainerBase
 {
 	int bullets = 0;
 	public GuiRevolver(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack revolver)

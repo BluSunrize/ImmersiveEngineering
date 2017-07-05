@@ -6,7 +6,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
 
-public class GuiBlastFurnace extends GuiIEBase
+public class GuiBlastFurnace extends GuiIEContainerBase
 {
 	TileEntityBlastFurnace tile;
 	public GuiBlastFurnace(InventoryPlayer inventoryPlayer, TileEntityBlastFurnace tile)

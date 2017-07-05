@@ -6,7 +6,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerAlloySmelter;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
 
-public class GuiAlloySmelter extends GuiIEBase
+public class GuiAlloySmelter extends GuiIEContainerBase
 {
 	TileEntityAlloySmelter tile;
 	public GuiAlloySmelter(InventoryPlayer inventoryPlayer, TileEntityAlloySmelter tile)

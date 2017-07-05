@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GuiTurret extends GuiIEBase
+public class GuiTurret extends GuiIEContainerBase
 {
 	public TileEntityTurret tile;
 	private GuiTextField nameField;

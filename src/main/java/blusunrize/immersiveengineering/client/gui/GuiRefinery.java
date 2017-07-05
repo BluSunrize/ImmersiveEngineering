@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiRefinery extends GuiIEBase
+public class GuiRefinery extends GuiIEContainerBase
 {
 	TileEntityRefinery tile;
 	public GuiRefinery(InventoryPlayer inventoryPlayer, TileEntityRefinery tile)

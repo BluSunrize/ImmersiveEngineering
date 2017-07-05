@@ -6,7 +6,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerCrate;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
 
-public class GuiCrate extends GuiIEBase
+public class GuiCrate extends GuiIEContainerBase
 {
 	public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile )
 	{

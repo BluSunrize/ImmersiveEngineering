@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiToolbox extends GuiIEBase
+public class GuiToolbox extends GuiIEContainerBase
 {
 	public GuiToolbox(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack toolbox)
 	{

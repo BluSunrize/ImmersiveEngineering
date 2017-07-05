@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiFermenter extends GuiIEBase
+public class GuiFermenter extends GuiIEContainerBase
 {
 	TileEntityFermenter tile;
 	public GuiFermenter(InventoryPlayer inventoryPlayer, TileEntityFermenter tile)

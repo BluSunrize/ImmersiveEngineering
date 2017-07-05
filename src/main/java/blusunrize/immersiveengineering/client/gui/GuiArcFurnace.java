@@ -11,7 +11,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import java.util.ArrayList;
 
-public class GuiArcFurnace extends GuiIEBase
+public class GuiArcFurnace extends GuiIEContainerBase
 {
 	TileEntityArcFurnace tile;
 	public GuiArcFurnace(InventoryPlayer inventoryPlayer, TileEntityArcFurnace tile)

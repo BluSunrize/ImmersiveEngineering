@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiSqueezer extends GuiIEBase
+public class GuiSqueezer extends GuiIEContainerBase
 {
 	TileEntitySqueezer tile;
 	public GuiSqueezer(InventoryPlayer inventoryPlayer, TileEntitySqueezer tile)
