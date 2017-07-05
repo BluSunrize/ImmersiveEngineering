@@ -134,8 +134,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for(int i=0;i<2;i++)
-			list.add(new ItemStack(this,1,i));
+		if(this.isInCreativeTab(tab))
+			for(int i=0;i<2;i++)
+				list.add(new ItemStack(this,1,i));
 		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
 		//		{
 		//			ItemStack stack = new ItemStack(this,1,0);
@@ -543,9 +544,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-//		player.addStat(IEAchievements.craftRevolver); ToDo: Achievement
-//		if(!contents.get(18).isEmpty()&&!contents.get(19).isEmpty())
-//			player.addStat(IEAchievements.upgradeRevolver);
+		if(!contents.get(18).isEmpty()&&!contents.get(19).isEmpty())
+			Utils.unlockIEAdvancement(player, "main/upgrade_revolver");
 	}
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();

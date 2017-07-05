@@ -45,7 +45,8 @@ public class ItemBlockIEBase extends ItemBlock
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList)
 	{
-		this.block.getSubBlocks(tab, itemList);
+		if(this.isInCreativeTab(tab))
+			this.block.getSubBlocks(tab, itemList);
 	}
 	@Override
 	public String getUnlocalizedName(ItemStack stack)

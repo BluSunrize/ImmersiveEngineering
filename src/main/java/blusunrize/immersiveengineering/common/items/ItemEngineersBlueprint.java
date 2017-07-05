@@ -63,12 +63,13 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for(String key : BlueprintCraftingRecipe.blueprintCategories)
-		{
-			ItemStack stack = new ItemStack(this);
-			ItemNBTHelper.setString(stack, "blueprint", key);
-			list.add(stack);
-		}
+		if(this.isInCreativeTab(tab))
+			for(String key : BlueprintCraftingRecipe.blueprintCategories)
+			{
+				ItemStack stack = new ItemStack(this);
+				ItemNBTHelper.setString(stack, "blueprint", key);
+				list.add(stack);
+			}
 	}
 
 	@Override

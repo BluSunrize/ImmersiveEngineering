@@ -74,12 +74,13 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for(int i=0;i<getSubNames().length;i++)
-		{
-			ItemStack s = new ItemStack(this,1,i);
-			if(ApiUtils.isExistingOreName(getHeadPerm(s).repairMaterial))
-				list.add(s);
-		}
+		if(this.isInCreativeTab(tab))
+			for(int i=0;i<getSubNames().length;i++)
+			{
+				ItemStack s = new ItemStack(this,1,i);
+				if(ApiUtils.isExistingOreName(getHeadPerm(s).repairMaterial))
+					list.add(s);
+			}
 
 	}
 
@@ -194,7 +195,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 			maxHardness = state.getPlayerRelativeBlockHardness(player, world, startPos)*0.6F;
 		if(maxHardness<0)
 			maxHardness = 0;
-		
+
 		if(diameter%2==0)//even numbers
 		{
 			float hx = (float)mop.hitVec.x-mop.getBlockPos().getX();

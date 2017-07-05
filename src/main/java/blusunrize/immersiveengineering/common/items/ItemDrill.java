@@ -79,9 +79,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return new Slot[]
 				{
 						new IESlot.DrillHead(container, invItem,0, 98,22),
-						new IESlot.Upgrades(container, invItem,1,  78,42, "DRILL", stack, true),
+						new IESlot.Upgrades(container, invItem,1,  78,52, "DRILL", stack, true),
 						new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
-						new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true)
+						new IESlot.Upgrades(container, invItem,3, 118,52, "DRILL", stack, true)
 				};
 	}
 	@Override
@@ -229,9 +229,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-//		player.addStat(IEAchievements.craftDrill); ToDo: Achievement
-//		if(!contents.get(0).isEmpty() && !contents.get(1).isEmpty() && !contents.get(2).isEmpty() && !contents.get(3).isEmpty())
-//			player.addStat(IEAchievements.upgradeDrill);
+		if(!contents.get(0).isEmpty() && !contents.get(1).isEmpty() && !contents.get(2).isEmpty() && !contents.get(3).isEmpty())
+			Utils.unlockIEAdvancement(player, "main/upgrade_drill");
 	}
 
 	/*INVENTORY STUFF*/
