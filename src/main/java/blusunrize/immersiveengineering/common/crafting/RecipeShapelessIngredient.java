@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -98,7 +99,7 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	@Override
 	public boolean matches(InventoryCrafting matrix, World world)
 	{
-		ArrayList<IngredientStack> required = new ArrayList(getIngredients());
+		ArrayList<Ingredient> required = new ArrayList(getIngredients());
 
 		for(int i = 0; i < matrix.getSizeInventory(); i++)
 		{
@@ -106,11 +107,11 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 			if(!slot.isEmpty())
 			{
 				boolean inRecipe = false;
-				Iterator<IngredientStack> iterator = required.iterator();
+				Iterator<Ingredient> iterator = required.iterator();
 				while(iterator.hasNext())
 				{
-					IngredientStack next = iterator.next();
-					if(next.matchesItemStack(slot))
+					Ingredient next = iterator.next();
+					if(next.apply(slot))
 					{
 						inRecipe = true;
 						iterator.remove();
