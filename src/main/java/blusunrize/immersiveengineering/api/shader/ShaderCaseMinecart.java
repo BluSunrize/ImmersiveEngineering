@@ -16,18 +16,24 @@ public class ShaderCaseMinecart extends ShaderCase
 	public ShaderCaseMinecart(ShaderLayer... layers)
 	{
 		super(layers);
-		mirrorSideForPass = new boolean[getLayers().length];
-		renderSides = new boolean[getLayers().length][7];
-		for(int i=0; i<mirrorSideForPass.length; i++)
-		{
-			mirrorSideForPass[i] = true;
-			for(int j=0; j<7; j++)
-				renderSides[i][j] = true;
-		}
+		initBooleans();
 	}
 	public ShaderCaseMinecart(Collection<ShaderLayer> layers)
 	{
 		super(layers);
+		initBooleans();
+	}
+
+	@Override
+	public ShaderCase addLayers(ShaderLayer... addedLayers)
+	{
+		ShaderCase sCase = super.addLayers(addedLayers);
+		initBooleans();
+		return sCase;
+	}
+
+	private void initBooleans()
+	{
 		mirrorSideForPass = new boolean[getLayers().length];
 		renderSides = new boolean[getLayers().length][7];
 		for(int i=0; i<mirrorSideForPass.length; i++)
