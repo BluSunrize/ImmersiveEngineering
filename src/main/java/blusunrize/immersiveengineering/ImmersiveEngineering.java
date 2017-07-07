@@ -86,6 +86,8 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{5,3});
 		IECompatModule.doModulesPreInit();
+
+		new ThreadContributorSpecialsDownloader();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -145,7 +147,6 @@ public class ImmersiveEngineering
 		IEContent.postInit();
 		ExcavatorHandler.recalculateChances(true);
 		proxy.postInit();
-		new ThreadContributorSpecialsDownloader();
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
 		ShaderRegistry.compileWeight();
