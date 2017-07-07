@@ -557,7 +557,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 						}
 
-						float cooldown = 1-ItemNBTHelper.getInt(equipped, "cooldown")/15f;
+						int cd = ((ItemRevolver)equipped.getItem()).getShootCooldown(equipped);
+						float cdMax = ((ItemRevolver)equipped.getItem()).getMaxShootCooldown(equipped);
+						float cooldown = 1-cd/cdMax;
 						if(cooldown>0)
 						{
 							GlStateManager.scale(2, 2, 1);

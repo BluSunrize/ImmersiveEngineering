@@ -319,7 +319,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						cycled.set(i-1, bullets.get(i));
 					cycled.set(cycled.size() -1, bullets.get(0));
 					setBullets(revolver, cycled);
-					ItemNBTHelper.setInt(revolver, "cooldown", 15);
+					ItemNBTHelper.setInt(revolver, "cooldown", getMaxShootCooldown(revolver));
 					return new ActionResult(EnumActionResult.SUCCESS, revolver);
 				}
 			}
@@ -336,6 +336,15 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		bullet.motionZ = vecDir.z;
 		bullet.bulletElectro = electro;
 		return bullet;
+	}
+
+	public int getShootCooldown(ItemStack stack)
+	{
+		return ItemNBTHelper.getInt(stack, "cooldown");
+	}
+	public int getMaxShootCooldown(ItemStack stack)
+	{
+		return 15;
 	}
 
 	public boolean isEmpty(ItemStack stack)
