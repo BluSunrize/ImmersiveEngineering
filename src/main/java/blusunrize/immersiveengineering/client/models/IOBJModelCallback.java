@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import jline.internal.Nullable;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,6 +10,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
