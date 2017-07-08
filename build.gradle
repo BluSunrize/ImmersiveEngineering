@@ -80,12 +80,15 @@ repositories {
         name = "ic2"
         url = "http://maven.ic2.player.to/"
     }
+    maven { // Redstone Flux
+        name 'CoFH Maven'
+        url "http://maven.covers1624.net/"
+    }
 }
 
 dependencies {
     deobfCompile "mezz.jei:jei_1.12:4.+"
     deobfCompile "cofh:RedstoneFlux:1.12-2.+:universal"
-//    compile "cofh:RedstoneFlux:1.12-2.+"
     deobfCompile "slimeknights.mantle:Mantle:1.12-1.2.+"
 //    deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+" ToDo when TCon updates
 //    deobfCompile "com.github.mcjty:compatlayer:1.11-0.+"//1.10-0.2.2 ToDo?
