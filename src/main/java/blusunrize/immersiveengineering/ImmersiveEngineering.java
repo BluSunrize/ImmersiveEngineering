@@ -139,7 +139,6 @@ public class ImmersiveEngineering
 					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
 			}
 		}
-		NameRemapper.init();
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)

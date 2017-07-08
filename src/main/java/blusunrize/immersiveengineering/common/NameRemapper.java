@@ -11,52 +11,48 @@ import java.util.Map;
 
 public class NameRemapper
 {
-	private static final String mappings = "woodendecoration:wooden_decoration\n"+
-			"storageslab:storage_slab\n"+
-			"stonedecorationstairs_concrete_leaded:stone_decoration_stairs_concrete_leaded\n"+
-			"fakelight:fake_light\n"+
-			"woodendevice0:wooden_device0\n"+
-			"woodendevice1:wooden_device1\n"+
-			"stonedecoration:stone_decoration\n"+
-			"metalmultiblock:metal_multiblock\n"+
-			"clothdevice:cloth_device\n"+
-			"stonedecorationstairs_concrete:stone_decoration_stairs_concrete\n"+
-			"treatedwoodstairs2:treated_wood_stairs2\n"+
-			"treatedwoodstairs1:treated_wood_stairs1\n"+
-			"treatedwoodstairs0:treated_wood_stairs0\n"+
-			"stonedevice:stone_device\n"+
-			"sheetmetalslab:sheetmetal_slab\n"+
-			"treatedwoodslab:treated_wood_slab\n"+
-			"metaldevice0:metal_device0\n"+
-			"metaldevice1:metal_device1\n"+
-			"stonedecorationstairs_concrete_tile:stone_decoration_stairs_concrete_tile\n"+
-			"metaldecoration1:metal_decoration1\n"+
-			"metaldecoration2:metal_decoration2\n"+
-			"metaldecoration0:metal_decoration0\n"+
-			"treatedwood:treated_wood\n"+
-			"stonedecorationslab:stone_decoration_slab\n"+
-			"stonedecorationstairs_hempcrete:stone_decoration_stairs_hempcrete\n"+
-			"faradaysuit_feet:faraday_suit_feet\n"+
-			"faradaysuit_head:faraday_suit_head\n"+
-			"fakeicon:fake_icon\n"+
-			"fluorescenttube:fluorescent_tube\n"+
-			"shaderbag:shader_bag\n"+
-			"faradaysuit_legs:faraday_suit_legs\n"+
-			"graphiteelectrode:graphite_electrode\n"+
-			"faradaysuit_chest:faraday_suit_chest";
 	private static final Map<String, String> nameMap = new HashMap<>();
-
-	public static void init()
-	{
-		String[] lines = mappings.split("\n");
-		for(String l : lines)
-		{
-			String[] mapping = l.split(":");
-			if(mapping.length==2)
-			{
-				nameMap.put(mapping[0], mapping[1]);
-			}
-		}
+	static{
+		nameMap.put("woodendecoration", "wooden_decoration");
+		nameMap.put("storageslab", "storage_slab");
+		nameMap.put("stonedecorationstairs_concrete_leaded", "stone_decoration_stairs_concrete_leaded");
+		nameMap.put("fakelight", "fake_light");
+		nameMap.put("woodendevice0", "wooden_device0");
+		nameMap.put("woodendevice1", "wooden_device1");
+		nameMap.put("stonedecoration", "stone_decoration");
+		nameMap.put("metalmultiblock", "metal_multiblock");
+		nameMap.put("clothdevice", "cloth_device");
+		nameMap.put("stonedecorationstairs_concrete", "stone_decoration_stairs_concrete");
+		nameMap.put("treatedwoodstairs2", "treated_wood_stairs2");
+		nameMap.put("treatedwoodstairs1", "treated_wood_stairs1");
+		nameMap.put("treatedwoodstairs0", "treated_wood_stairs0");
+		nameMap.put("stonedevice", "stone_device");
+		nameMap.put("sheetmetalslab", "sheetmetal_slab");
+		nameMap.put("treatedwoodslab", "treated_wood_slab");
+		nameMap.put("metaldevice0", "metal_device0");
+		nameMap.put("metaldevice1", "metal_device1");
+		nameMap.put("stonedecorationstairs_concrete_tile", "stone_decoration_stairs_concrete_tile");
+		nameMap.put("metaldecoration1", "metal_decoration1");
+		nameMap.put("metaldecoration2", "metal_decoration2");
+		nameMap.put("metaldecoration0", "metal_decoration0");
+		nameMap.put("treatedwood", "treated_wood");
+		nameMap.put("stonedecorationslab", "stone_decoration_slab");
+		nameMap.put("stonedecorationstairs_hempcrete", "stone_decoration_stairs_hempcrete");
+		nameMap.put("faradaysuit_feet", "faraday_suit_feet");
+		nameMap.put("faradaysuit_head", "faraday_suit_head");
+		nameMap.put("fakeicon", "fake_icon");
+		nameMap.put("fluorescenttube", "fluorescent_tube");
+		nameMap.put("shaderbag", "shader_bag");
+		nameMap.put("faradaysuit_legs", "faraday_suit_legs");
+		nameMap.put("graphiteelectrode", "graphite_electrode");
+		nameMap.put("faradaysuit_chest", "faraday_suit_chest");
+		nameMap.put(ImmersiveEngineering.MODID+"flammable", "flammable");
+		nameMap.put(ImmersiveEngineering.MODID+"slippery", "slippery");
+		nameMap.put(ImmersiveEngineering.MODID+"conductive", "conductive");
+		nameMap.put(ImmersiveEngineering.MODID+"sticky", "sticky");
+		nameMap.put(ImmersiveEngineering.MODID+"stunned", "stunned");
+		nameMap.put(ImmersiveEngineering.MODID+"concreteFeet", "concreteFeet");
+		nameMap.put(ImmersiveEngineering.MODID+"flashed", "flashed");
 	}
 
 	public static void remap(MissingMappings<?> ev)
