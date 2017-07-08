@@ -12,7 +12,7 @@
 }
 {
   "uuid":["c550906b-cde3-4d90-97c8-24d9a0ac773e"],
-  "tag":"tesla","flavour":"","baseUpgrades":{},"renderAdditions":[]
+  "tag":"tesla","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":[]
 }
 
 {
@@ -90,7 +90,7 @@
     "1c1a9096-4e85-4bc0-8833-8cd14df6a785",
     "cf87494f-a615-4ae3-a459-da95ac828b79"
   ],
-  "tag":"patreonBlu_0","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment"]
+  "tag":"patreonBlu_0","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":["bayonet_attachment"]
 }
 
 {
@@ -106,5 +106,5 @@
     "a9c3fc13-9c75-4fb6-8dff-2274ca4e8db2",
     "23759da1-84f2-4f92-98e7-8baf661aa083"
   ],
-  "tag":"patreonBlu_1","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment","dev_scope"]
+  "tag":"patreonBlu_1","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":["bayonet_attachment","dev_scope"]
 }
