@@ -80,10 +80,6 @@ repositories {
         name = "ic2"
         url = "http://maven.ic2.player.to/"
     }
-    maven { // Redstone Flux
-        name 'CoFH Maven'
-        url "http://maven.covers1624.net/"
-    }
 }
 
 dependencies {

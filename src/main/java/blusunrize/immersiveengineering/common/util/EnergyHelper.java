@@ -2,10 +2,6 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
-import cofh.redstoneflux.api.IEnergyConnection;
-import cofh.redstoneflux.api.IEnergyContainerItem;
-import cofh.redstoneflux.api.IEnergyProvider;
-import cofh.redstoneflux.api.IEnergyReceiver;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -28,8 +24,6 @@ public class EnergyHelper
 			return false;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return true;
-		if(stack.getItem() instanceof IEnergyContainerItem)
-			return true;
 		return stack.hasCapability(CapabilityEnergy.ENERGY, null);
 	}
 	public static int getEnergyStored(ItemStack stack)
@@ -38,8 +32,6 @@ public class EnergyHelper
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).getEnergyStored(stack);
-		if(stack.getItem() instanceof IEnergyContainerItem)
-			return ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack);
 		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).getEnergyStored();
 		return 0;
@@ -50,8 +42,6 @@ public class EnergyHelper
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).getMaxEnergyStored(stack);
-		if(stack.getItem() instanceof IEnergyContainerItem)
-			return ((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack);
 		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).getMaxEnergyStored();
 		return 0;
@@ -62,8 +52,6 @@ public class EnergyHelper
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).receiveEnergy(stack, energy, simulate);
-		if(stack.getItem() instanceof IEnergyContainerItem)
-			return ((IEnergyContainerItem)stack.getItem()).receiveEnergy(stack, energy, simulate);
 		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(energy, simulate);
 		return 0;
@@ -74,8 +62,6 @@ public class EnergyHelper
 			return 0;
 		if(stack.getItem() instanceof IFluxContainerItem)
 			return ((IFluxContainerItem)stack.getItem()).extractEnergy(stack, energy, simulate);
-		if(stack.getItem() instanceof IEnergyContainerItem)
-			return ((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, energy, simulate);
 		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(energy, simulate);
 		return 0;
@@ -113,8 +99,6 @@ public class EnergyHelper
 			return false;
 		if(tile instanceof IFluxReceiver && ((IFluxReceiver)tile).canConnectEnergy(facing))
 			return true;
-		if(tile instanceof IEnergyReceiver&& ((IEnergyReceiver)tile).canConnectEnergy(facing))
-			return true;
 		if(tile.hasCapability(CapabilityEnergy.ENERGY, facing))
 			return tile.getCapability(CapabilityEnergy.ENERGY, facing).canReceive();
 		return false;
@@ -126,14 +110,12 @@ public class EnergyHelper
 			return 0;
 		if(tile instanceof IFluxReceiver && ((IFluxReceiver)tile).canConnectEnergy(facing))
 			return ((IFluxReceiver)tile).receiveEnergy(facing, energy, simulate);
-		if(tile instanceof IEnergyReceiver && ((IEnergyReceiver)tile).canConnectEnergy(facing))
-			return ((IEnergyReceiver)tile).receiveEnergy(facing, energy, simulate);
 		if(tile.hasCapability(CapabilityEnergy.ENERGY, facing))
 			return tile.getCapability(CapabilityEnergy.ENERGY, facing).receiveEnergy(energy, simulate);
 		return 0;
 	}
 
-	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IEnergyReceiver, IFluxProvider, IEnergyProvider
+	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IFluxProvider
 	{
 		@Nonnull FluxStorage getFluxStorage();
 
@@ -175,7 +157,7 @@ public class EnergyHelper
 		}
 	}
 
-	public interface IIEInternalFluxConnector extends IFluxConnection, IEnergyConnection
+	public interface IIEInternalFluxConnector extends IFluxConnection
 	{
 		@Nonnull SideConfig getEnergySideConfig(@Nullable EnumFacing facing);
 
@@ -260,7 +242,7 @@ public class EnergyHelper
 		}
 	}
 
-	public interface IIEEnergyItem extends IFluxContainerItem, IEnergyContainerItem
+	public interface IIEEnergyItem extends IFluxContainerItem
 	{
 		@Override
 		default int receiveEnergy(ItemStack container, int energy, boolean simulate)
