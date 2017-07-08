@@ -844,6 +844,8 @@ public class IEContent
 		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
 		if(OreDictionary.doesOreNameExist("oreSulfur"))
 			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "oreSulfur"}, new float[]{.5f, .5f});
+		else
+			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "dustSulfur"}, new float[]{.5f, .5f});
 		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum","oreTitanium","denseoreAluminum"}, new float[]{.90f,.05f,.05f});
 		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper","oreGold","oreNickel","denseoreCopper"}, new float[]{.65f,.25f,.05f,.05f});
 		if(OreDictionary.doesOreNameExist("oreTin"))
@@ -858,7 +860,10 @@ public class IEContent
 		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead","oreSilver","oreSulfur","denseoreLead","denseoreSilver"}, new float[]{.40f,.40f,.1f,.05f,.05f});
 		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead","oreSilver","denseoreLead"}, new float[]{.55f,.4f,.05f});
 		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver","oreLead","denseoreSilver"}, new float[]{.55f,.4f,.05f});
-		ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
+		if(OreDictionary.doesOreNameExist("oreSulfur"))
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
+		else
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","dustSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal","denseoreCoal","oreDiamond","oreEmerald"}, new float[]{.92f,.1f,.015f,.015f});
 
 		/**MULTIBLOCKS*/
