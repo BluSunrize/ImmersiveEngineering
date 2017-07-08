@@ -1,3 +1,18 @@
+#####Version 0.12-64
+- Updated to Minecraft 1.12, fixed a lot of the issues resulting from this update
+    - NOTE: Currently, IE's vanilla crafting recipes are not yet JSONs. This will probably change in future releases.
+    - NOTE ALSO: Update may be a bit unstable. Feel free to report issues on github.
+- added Advancements to replace Achievements, some even give rewards!
+- added a custom trigger to detect formation of multiblocks
+- added two new Shaders: WAAAGH! and Lusus Naturae
+- added a super fancy spinning animation to Revolvers that use a specific skin.
+    - atm limited to two exclusive skins, may be expanded in future.
+- changed holding animations for Revolver, Drill, Chemthrower and Railgun
+    - has a config option in case it conflicts with other animation mods
+- changed certain Mineral Veins to output Sulfur Dust
+- changed OneProbe integration a tiny bit, showing SideConfigs on Barrels, Capacitors, etc.
+- fixed Minecart shaders crashing with layer counts over the default
+
 #####Version 0.11-63 - BUILT
 - added the Heavy Plated Shield!
     - it protects like a normal shield
