@@ -1,5 +1,8 @@
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.common.items.ItemChemthrower;
+import blusunrize.immersiveengineering.common.items.ItemDrill;
+import blusunrize.immersiveengineering.common.items.ItemRailgun;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.entity.Entity;
@@ -46,32 +49,40 @@ public class ModelIEPlayer extends ModelPlayer
 				ItemStack heldItem = player.getHeldItem(hand);
 				if(!heldItem.isEmpty())
 				{
-					ArmPose twohanded = null;
-//				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemChemthrower), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemDrill), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun), heldItem, true))
-//					twohanded = ArmPose.BLOCK;
-//				if(twohanded!=null && event.getEntity().getHeldItem(hand==EnumHand.MAIN_HAND?EnumHand.OFF_HAND:EnumHand.MAIN_HAND).isEmpty())
-//				{
-//					if(model instanceof ModelBiped)
-//					{
-//						if(hand==EnumHand.MAIN_HAND)
-//							((ModelBiped) model).leftArmPose = twohanded;
-//						else
-//							((ModelBiped) model).rightArmPose = twohanded;
-//					}
-//				}
-//				ModelBase model = event.getRenderer().getMainModel();
 					boolean right = (hand==EnumHand.MAIN_HAND) == (player.getPrimaryHand()==EnumHandSide.RIGHT);
 					if(heldItem.getItem() instanceof ItemRevolver)
+					{
 						if(right)
 						{
-							this.bipedRightArm.rotateAngleX = (float)Math.toRadians(-80);
-							this.bipedRightArm.rotateAngleY = (float)Math.toRadians(-5);
+							this.bipedRightArm.rotateAngleX = -1.39626f;
+							this.bipedRightArm.rotateAngleY = .08726f;
+						} else
+						{
+							this.bipedLeftArm.rotateAngleX = -1.39626f;
+							this.bipedLeftArm.rotateAngleY = .08726f;
+						}
+					}
+					else if(heldItem.getItem() instanceof ItemDrill ||heldItem.getItem() instanceof ItemChemthrower)
+					{
+						if(right)
+						{
+							this.bipedLeftArm.rotateAngleX = -.87266f;
+							this.bipedLeftArm.rotateAngleY = .52360f;
 						}
 						else
 						{
-							this.bipedLeftArm.rotateAngleX = (float)Math.toRadians(-80);
-							this.bipedLeftArm.rotateAngleY = (float)Math.toRadians(5);
+							this.bipedRightArm.rotateAngleX = -.87266f;
+							this.bipedRightArm.rotateAngleY = -0.52360f;
 						}
+					}
+					else if(heldItem.getItem() instanceof ItemRailgun)
+					{
+						if(right)
+							this.bipedRightArm.rotateAngleX = -.87266f;
+						else
+							this.bipedLeftArm.rotateAngleX = -.87266f;
+					}
+
 				}
 			}
 		}
