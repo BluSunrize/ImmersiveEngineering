@@ -395,6 +395,28 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		return 0;
 	}
 
+	@Override
+	public int[] getCurrentProcessesStep()
+	{
+		TileEntityCrusher master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesStep();
+		int[] ia = new int[processQueue.size()>0?1:0];
+		for(int i=0; i<ia.length; i++)
+			ia[i] = processQueue.get(i).processTick;
+		return ia;
+	}
+	@Override
+	public int[] getCurrentProcessesMax()
+	{
+		TileEntityCrusher master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesMax();
+		int[] ia = new int[processQueue.size()>0?1:0];
+		for(int i=0; i<ia.length; i++)
+			ia[i] = processQueue.get(i).maxTicks;
+		return ia;
+	}
 
 	@Override
 	public NonNullList<ItemStack> getInventory()
