@@ -109,6 +109,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
 				return true;
 		}
+		if(ItemNBTHelper.hasKey(oldStack, "elite") || ItemNBTHelper.hasKey(newStack, "elite"))
+			if(!ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite")))
+				return true;
 		return super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
 	}
 
