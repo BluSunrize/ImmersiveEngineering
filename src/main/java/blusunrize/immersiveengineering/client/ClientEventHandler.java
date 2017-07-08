@@ -15,8 +15,10 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
+import blusunrize.immersiveengineering.client.models.ModelIEPlayer;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -39,7 +41,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelBiped.ArmPose;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.*;
@@ -1282,27 +1284,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=false;
 		}
-		for(EnumHand hand : EnumHand.values())
-		{
-			ItemStack heldItem = event.getEntity().getHeldItem(hand);
-			if(!heldItem.isEmpty())
-			{
-				ArmPose twohanded = null;
-				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemChemthrower), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemDrill), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun), heldItem, true))
-					twohanded = ArmPose.BLOCK;
-				if(twohanded!=null && event.getEntity().getHeldItem(hand==EnumHand.MAIN_HAND?EnumHand.OFF_HAND:EnumHand.MAIN_HAND).isEmpty())
-				{
-					ModelBase model = event.getRenderer().getMainModel();
-					if(model instanceof ModelBiped)
-					{
-						if(hand==EnumHand.MAIN_HAND)
-							((ModelBiped) model).leftArmPose = twohanded;
-						else
-							((ModelBiped) model).rightArmPose = twohanded;
-					}
-				}
-			}
-		}
+		//Replaces vanilla model with IE's fancy one, provided the config allows it
+		if(Config.IEConfig.fancyItemHolding && !(event.getRenderer().getMainModel() instanceof ModelIEPlayer) && event.getRenderer().getMainModel() instanceof ModelPlayer)
+			event.getRenderer().mainModel = new ModelIEPlayer((ModelPlayer)event.getRenderer().mainModel);
+
 	}
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)
