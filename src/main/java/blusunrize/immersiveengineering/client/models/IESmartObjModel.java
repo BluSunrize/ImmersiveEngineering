@@ -164,7 +164,10 @@ public class IESmartObjModel extends OBJBakedModel
 				});
 
 				if (model instanceof IESmartObjModel)
+				{
+					((IESmartObjModel) model).tempStack = stack;
 					((IESmartObjModel) model).tempEntity = entity;
+				}
 				return model;
 			} catch (ExecutionException e)
 			{
