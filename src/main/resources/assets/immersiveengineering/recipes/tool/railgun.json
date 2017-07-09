@@ -1,0 +1,28 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:railgun"
+  },
+  "pattern": [
+    " HG",
+    "CBH",
+    "BC "
+  ],
+  "key": {
+    "C": {
+      "item": "immersiveengineering:metal_decoration0",
+      "data": 1
+    },
+    "H": {
+      "item": "immersiveengineering:metal_device0",
+      "data": 2
+    },
+    "B": {
+      "item": "immersiveengineering:material",
+      "data": 14
+    },
+    "G": {
+      "item": "#woodenGrip"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:jerrycan"
+  },
+  "pattern": [
+    " II",
+    "IBB",
+    "IBB"
+  ],
+  "key": {
+    "I": {
+      "item": "#plateIron"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  }
+}

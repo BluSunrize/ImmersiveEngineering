@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 4
+  },
+  "pattern": [
+    "SI",
+    "IW"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "W": {
+      "item": "#plankTreatedWood"
+    }
+  }
+}

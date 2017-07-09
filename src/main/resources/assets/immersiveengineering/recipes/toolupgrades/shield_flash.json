@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 10
+  },
+  "pattern": [
+    "AGA",
+    "GTG"
+  ],
+  "key": {
+    "A": {
+      "item": "#plateAluminum"
+    },
+    "G": {
+      "item": "#paneGlass"
+    },
+    "T": {
+      "item": "#elecTube"
+    }
+  }
+}

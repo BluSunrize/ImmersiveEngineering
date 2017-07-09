@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 12
+  },
+  "pattern": [
+    "  L",
+    "LC ",
+    "LIL"
+  ],
+  "key": {
+    "L": {
+      "item": "#leather"
+    },
+    "C": {
+      "item": "immersiveengineering:metal_decoration0",
+      "data": 0
+    },
+    "I": {
+      "item": "#ingotIron"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 2
+  },
+  "pattern": [
+    "SSS",
+    " C "
+  ],
+  "key": {
+    "S": {
+      "item": "#ingotSteel"
+    },
+    "C": {
+      "item": "#componentSteel"
+    }
+  }
+}

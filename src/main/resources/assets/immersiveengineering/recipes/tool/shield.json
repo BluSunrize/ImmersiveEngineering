@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:shield"
+  },
+  "pattern": [
+    "PTP",
+    "PSP",
+    "PTP"
+  ],
+  "key": {
+    "P": {
+      "item": "#plateSteel"
+    },
+    "T": {
+      "item": "#plankTreatedWood"
+    },
+    "S": {
+      "item": "minecraft:shield"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wooden_device0",
+    "data": 6
+  },
+  "pattern": [
+    "WIW",
+    "RCR"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "C": {
+      "item": "#copperCoil"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    },
+    "W": {
+      "item": "#plankTreatedWood"
+    }
+  }
+}

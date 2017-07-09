@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 1,
+    "count": 3
+  },
+  "pattern": [
+    "NBN",
+    "BDB",
+    "NBN"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:blaze_powder"
+    },
+    "N": {
+      "item": "#ingotBrickNether"
+    },
+    "B": {
+      "item": "#ingotBrick"
+    }
+  }
+}

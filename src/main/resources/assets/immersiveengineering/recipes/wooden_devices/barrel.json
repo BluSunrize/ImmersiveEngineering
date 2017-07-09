@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wooden_device0",
+    "data": 1
+  },
+  "pattern": [
+    "SSS",
+    "W W",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "#plankTreatedWood"
+    },
+    "S": {
+      "item": "#slabTreatedWood"
+    }
+  }
+}

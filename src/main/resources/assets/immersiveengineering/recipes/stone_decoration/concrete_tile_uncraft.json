@@ -1,0 +1,13 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 5
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:stone_decoration",
+      "data": 6
+    }
+  ]
+}

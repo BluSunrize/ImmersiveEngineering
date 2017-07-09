@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wirecoil",
+    "data": 5,
+    "count": 4
+  },
+  "pattern": [
+    " I ",
+    "ASA",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "item": "#dustRedstone"
+    },
+    "A": {
+      "item": "#wireAluminum"
+    },
+    "S": {
+      "item": "#listWoodenSticks"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 7
+  },
+  "pattern": [
+    " SS",
+    "PPH",
+    " SS"
+  ],
+  "key": {
+    "P": {
+      "item": "immersiveengineering:metal_device1",
+      "data": 6
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "S": {
+      "item": "#ingotSteel"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 11
+  },
+  "pattern": [
+    "CRC",
+    "CRC",
+    "CRC"
+  ],
+  "key": {
+    "C": {
+      "item": "immersiveengineering:connector",
+      "data": 0
+    },
+    "R": {
+      "item": "#stickIron"
+    }
+  }
+}

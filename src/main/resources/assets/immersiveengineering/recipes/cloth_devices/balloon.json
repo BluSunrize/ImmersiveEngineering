@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:cloth_device",
+    "data": 1,
+    "count": 2
+  },
+  "pattern": [
+    " F ",
+    "FTF",
+    " S "
+  ],
+  "key": {
+    "F": {
+      "item": "#fabricHemp"
+    },
+    "T": {
+      "item": "#torch"
+    },
+    "S": {
+      "item": "#slabTreatedWood"
+    }
+  }
+}

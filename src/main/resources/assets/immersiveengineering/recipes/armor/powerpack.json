@@ -1,0 +1,27 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:powerpack"
+  },
+  "pattern": [
+    "LBL",
+    "WCW"
+  ],
+  "key": {
+    "L": {
+      "item": "#leather"
+    },
+    "B": {
+      "item": "immersiveengineering:metal_device0",
+      "data": 0
+    },
+    "C": {
+      "item": "immersiveengineering:connector",
+      "data": 0
+    },
+    "W": {
+      "item": "immersiveengineering:wirecoil",
+      "data": 0
+    }
+  }
+}

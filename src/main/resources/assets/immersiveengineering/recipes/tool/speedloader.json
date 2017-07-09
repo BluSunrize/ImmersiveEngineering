@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:revolver",
+    "data": 1
+  },
+  "pattern": [
+    "  I",
+    "IIS",
+    "  I"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "S": {
+      "item": "#ingotSteel"
+    }
+  }
+}

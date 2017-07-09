@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:skyhook"
+  },
+  "pattern": [
+    "II ",
+    "IC ",
+    " GG"
+  ],
+  "key": {
+    "C": {
+      "item": "#componentIron"
+    },
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "G": {
+      "item": "#woodenGrip"
+    }
+  }
+}
