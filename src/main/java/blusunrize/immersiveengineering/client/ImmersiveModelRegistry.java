@@ -25,7 +25,6 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,7 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("deprecation")
-@Mod.EventBusSubscriber
 @SideOnly(Side.CLIENT)
 public class ImmersiveModelRegistry
 {

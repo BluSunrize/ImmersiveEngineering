@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[14.21.0.2385,);after:jei@[4.3,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[14.21.1.2404,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
