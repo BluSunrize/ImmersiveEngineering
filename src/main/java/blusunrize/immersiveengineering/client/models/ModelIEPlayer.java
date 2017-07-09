@@ -85,6 +85,8 @@ public class ModelIEPlayer extends ModelPlayer
 
 				}
 			}
+			copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);
+			copyModelAngles(this.bipedRightArm, this.bipedRightArmwear);
 		}
 	}
 }
