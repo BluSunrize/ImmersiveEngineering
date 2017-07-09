@@ -1,4 +1,4 @@
-#####Version 0.12-64
+#####Version 0.12-64 - BUILT
 - Updated to Minecraft 1.12, fixed a lot of the issues resulting from this update
     - NOTE: Currently, IE's vanilla crafting recipes are not yet JSONs. This will probably change in future releases.
     - NOTE ALSO: Update may be a bit unstable. Feel free to report issues on github.
