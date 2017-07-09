@@ -124,7 +124,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.input.Keyboard;
 
@@ -136,8 +135,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 @SuppressWarnings("deprecation")
-@Mod.EventBusSubscriber
-@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
 	public static TextureMap revolverTextureMap;
