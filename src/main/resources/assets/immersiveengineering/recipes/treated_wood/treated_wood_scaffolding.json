@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wooden_decoration",
+    "data": 1,
+    "count": 6
+  },
+  "pattern": [
+    "WWW",
+    " S ",
+    "S S"
+  ],
+  "key": {
+    "W": {
+      "item": "#plankTreatedWood"
+    },
+    "S": {
+      "item": "#stickTreatedWood"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:treated_wood_stairs2"
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:treated_wood_stairs1"
+    }
+  ]
+}

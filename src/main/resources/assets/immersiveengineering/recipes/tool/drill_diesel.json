@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:drill",
+    "data": 0
+  },
+  "pattern": [
+    "  G",
+    " EG",
+    "C  "
+  ],
+  "key": {
+    "C": {
+      "item": "#componentSteel"
+    },
+    "E": {
+      "item": "immersiveengineering:metal_decoration0",
+      "data": 5
+    },
+    "G": {
+      "item": "#woodenGrip"
+    }
+  }
+}

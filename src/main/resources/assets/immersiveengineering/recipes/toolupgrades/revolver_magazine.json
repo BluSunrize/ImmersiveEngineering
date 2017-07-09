@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 5
+  },
+  "pattern": [
+    " CS",
+    "C C",
+    "IC "
+  ],
+  "key": {
+    "I": {
+      "item": "#componentIron"
+    },
+    "S": {
+      "item": "#ingotSteel"
+    },
+    "C": {
+      "item": "#ingotCopper"
+    }
+  }
+}

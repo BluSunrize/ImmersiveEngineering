@@ -1,0 +1,18 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:stone_decoration_stairs_concrete_leaded",
+    "count": 4
+  },
+  "pattern": [
+    "C  ",
+    "CC ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "immersiveengineering:stone_decoration",
+      "data": 7
+    }
+  }
+}

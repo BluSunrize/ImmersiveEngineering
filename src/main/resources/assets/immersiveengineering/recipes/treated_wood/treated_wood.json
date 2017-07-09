@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:treated_wood",
+    "data": 0,
+    "count": 8
+  },
+  "pattern": [
+    "WWW",
+    "WCW",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "#plankWood"
+    },
+    "C": {
+      "type": "immersiveengineering:fluid",
+      "fluid": "creosote"
+    }
+  }
+}

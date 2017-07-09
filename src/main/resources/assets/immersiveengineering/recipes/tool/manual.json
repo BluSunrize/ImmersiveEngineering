@@ -1,0 +1,15 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:tool",
+    "data": 3
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "minecraft:lever"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wooden_device0",
+    "data": 2
+  },
+  "pattern": [
+    "WWW",
+    "B F"
+  ],
+  "key": {
+    "W": {
+      "item": "#plankTreatedWood"
+    },
+    "B": {
+      "item": "#craftingTableWood"
+    },
+    "F": {
+      "item": "#fenceTreatedWood"
+    }
+  }
+}

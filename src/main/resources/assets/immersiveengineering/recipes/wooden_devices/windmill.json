@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wooden_device1",
+    "data": 1
+  },
+  "pattern": [
+    "PPP",
+    "PIP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "immersiveengineering:material",
+      "data": 11
+    },
+    "I": {
+      "item": "#ingotIron"
+    }
+  }
+}

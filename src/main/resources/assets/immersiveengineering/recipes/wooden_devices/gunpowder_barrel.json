@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wooden_device0",
+    "data": 4
+  },
+  "pattern": [
+    " F ",
+    "GBG",
+    "GGG"
+  ],
+  "key": {
+    "F": {
+      "item": "#fiberHemp"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
+    "B": {
+      "item": "immersiveengineering:wooden_device0",
+      "data": 1
+    }
+  }
+}

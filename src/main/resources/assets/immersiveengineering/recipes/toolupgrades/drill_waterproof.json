@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 0
+  },
+  "pattern": [
+    "BI ",
+    "IBI",
+    " IC"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "I": {
+      "item": "#dyeBlue"
+    },
+    "C": {
+      "item": "#componentIron"
+    }
+  }
+}

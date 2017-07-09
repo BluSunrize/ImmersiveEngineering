@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:tool",
+    "data": 0
+  },
+  "pattern": [
+    " IF",
+    " SI",
+    "S  "
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "S": {
+      "item": "#listWoodenSticks"
+    },
+    "F": {
+      "item": "minecraft:string"
+    }
+  }
+}

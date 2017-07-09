@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 2
+  },
+  "pattern": [
+    "P",
+    "B"
+  ],
+  "key": {
+    "P": {
+      "item": "#plateSteel"
+    },
+    "B": {
+      "item": "immersiveengineering:stone_decoration",
+      "data": 1
+    }
+  }
+}

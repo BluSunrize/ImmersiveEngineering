@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 9
+  },
+  "pattern": [
+    "WWW",
+    "HHH"
+  ],
+  "key": {
+    "W": {
+      "item": "immersiveengineering:wirecoil",
+      "data": 2
+    },
+    "H": {
+      "item": "immersiveengineering:metal_device0",
+      "data": 2
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ingredients": {
+    "fluid": "blusunrize.immersiveengineering.common.crafting.IngredientFactoryFluidStack"
+  },
+  "conditions": {
+    "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryOreExists"
+  }
+}

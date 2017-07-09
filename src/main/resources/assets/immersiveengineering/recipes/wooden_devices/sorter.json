@@ -1,0 +1,29 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wooden_device0",
+    "data": 3
+  },
+  "pattern": [
+    "WRW",
+    "IBI",
+    "WCW"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    },
+    "W": {
+      "item": "#plankTreatedWood"
+    },
+    "B": {
+      "item": "#baseConveyor"
+    },
+    "C": {
+      "item": "#componentIron"
+    }
+  }
+}

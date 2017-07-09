@@ -1,0 +1,17 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:treated_wood_slab",
+    "data": 0,
+    "count": 6
+  },
+  "pattern": [
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "immersiveengineering:treated_wood",
+      "data": 0
+    }
+  }
+}
