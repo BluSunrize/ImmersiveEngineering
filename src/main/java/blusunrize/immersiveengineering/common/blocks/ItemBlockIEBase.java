@@ -29,11 +29,14 @@ import java.util.Locale;
 
 public class ItemBlockIEBase extends ItemBlock
 {
+	private int[] burnTime;
+
 	public ItemBlockIEBase(Block b)
 	{
 		super(b);
 		if(((BlockIEBase)b).enumValues.length>1)
 			setHasSubtypes(true);
+		this.burnTime = new int[((BlockIEBase)b).enumValues!=null?((BlockIEBase)b).enumValues.length:1];
 	}
 
 	@Override
@@ -81,6 +84,18 @@ public class ItemBlockIEBase extends ItemBlock
 		}
 	}
 
+
+	public ItemBlockIEBase setBurnTime(int meta, int burnTime)
+	{
+		if(meta>=0 && meta<this.burnTime.length)
+			this.burnTime[meta] = burnTime;
+		return this;
+	}
+	@Override
+	public int getItemBurnTime(ItemStack itemStack)
+	{
+		return this.burnTime[Math.max(0, Math.min(itemStack.getMetadata(), this.burnTime.length-1))];
+	}
 
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
