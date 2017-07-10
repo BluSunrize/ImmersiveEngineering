@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:fluorescent_tube"
+  },
+  "pattern": [
+    "GEG",
+    "GgG",
+    "GgG"
+  ],
+  "key": {
+    "G": {
+      "item": "#blockGlass"
+    },
+    "E": {
+      "item": "immersiveengineering:graphite_electrode"
+    },
+    "g": {
+      "item": "#dustGlowstone"
+    }
+  }
+}
