@@ -29,7 +29,10 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
+import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
+import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
+import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
@@ -558,6 +561,10 @@ public class IEContent
 			BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
 		}
 		/**SMELTING*/
+		itemMaterial.setBurnTime(6, 3200);
+		Item itemBlockStoneDecoration = Item.getItemFromBlock(blockStoneDecoration);
+		if(itemBlockStoneDecoration instanceof ItemBlockIEBase)
+			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
 		IERecipes.initFurnaceRecipes();
 
 		/**CRAFTING*/
@@ -565,6 +572,21 @@ public class IEContent
 
 		/**BLUEPRINTS*/
 		IERecipes.initBlueprintRecipes();
+
+		/**MULTIBLOCK RECIPES*/
+		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
+		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
+
+		IERecipes.initBlastFurnaceRecipes();
+
+		IERecipes.initMetalPressRecipes();
+
+		IERecipes.initAlloySmeltingRecipes();
+
+		IERecipes.initCrusherRecipes();
+
+		IERecipes.initArcSmeltingRecipes();
 
 		/**POTIONS*/
 		IEPotions.init();
@@ -656,28 +678,6 @@ public class IEContent
 				return query;
 			}
 		});
-
-		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
-		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,8), "ingotIron", 1200, new ItemStack(itemMaterial,1,7));
-		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,8), "blockIron", 1200*9, new ItemStack(itemMaterial,9,7));
-
-		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 1200);
-		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 1200*10);
-		BlastFurnaceRecipe.addBlastFuel("charcoal", 300);
-		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
-		GameRegistry.registerFuelHandler(new IEFuelHandler());
-
-		IERecipes.initAlloySmeltingRecipes();
-
-		IERecipes.initCrusherRecipes();
-
-		IERecipes.initArcSmeltingRecipes();
-
-		ItemStack shoddyElectrode = new ItemStack(itemGraphiteElectrode);
-		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
-		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold,1,2), 4800).setInputSize(4);
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
