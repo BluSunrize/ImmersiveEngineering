@@ -2,7 +2,7 @@
   "type": "forge:ore_shapeless",
   "result": {
     "item": "minecraft:gunpowder",
-    "count":4
+    "count": 4
   },
   "ingredients": [
     {

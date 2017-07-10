@@ -3,6 +3,7 @@
     "fluid": "blusunrize.immersiveengineering.common.crafting.IngredientFactoryFluidStack"
   },
   "conditions": {
-    "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryOreExists"
+    "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryOreExists",
+    "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryIEConfig"
   }
 }
