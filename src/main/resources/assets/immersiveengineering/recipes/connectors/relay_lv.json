@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:connector",
+    "data": 1,
+    "count": 8
+  },
+  "pattern": [
+    " I ",
+    "BIB"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotCopper"
+    },
+    "B": {
+      "item": "minecraft:hardened_clay"
+    }
+  }
+}

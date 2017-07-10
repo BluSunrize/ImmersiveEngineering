@@ -1,0 +1,27 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:connector",
+    "data": 10
+  },
+  "pattern": [
+    "H H",
+    "ICI",
+    "IRI"
+  ],
+  "key": {
+    "H": {
+      "item": "immersiveengineering:connector",
+      "data": 4
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "C": {
+      "item": "minecraft:repeater"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    }
+  }
+}

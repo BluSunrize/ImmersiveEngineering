@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration0",
+    "data": 1
+  },
+  "pattern": [
+    "WWW",
+    "WIW",
+    "WWW"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "W": {
+      "item": "immersiveengineering:wirecoil",
+      "data": 1
+    }
+  }
+}

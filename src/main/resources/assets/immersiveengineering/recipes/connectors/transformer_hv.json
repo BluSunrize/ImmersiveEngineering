@@ -1,0 +1,28 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:connector",
+    "data": 8
+  },
+  "pattern": [
+    "M H",
+    "IBI",
+    "III"
+  ],
+  "key": {
+    "H": {
+      "item": "immersiveengineering:connector",
+      "data": 4
+    },
+    "M": {
+      "item": "immersiveengineering:connector",
+      "data": 2
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "B": {
+      "item": "#hvCoil"
+    }
+  }
+}

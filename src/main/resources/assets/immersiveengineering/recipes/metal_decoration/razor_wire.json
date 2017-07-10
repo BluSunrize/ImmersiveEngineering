@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration2",
+    "data": 5,
+    "count": 3
+  },
+  "pattern": [
+    "PWP",
+    "WWW",
+    "PWP"
+  ],
+  "key": {
+    "W": {
+      "item": "#wireSteel"
+    },
+    "P": {
+      "item": "#plateSteel"
+    }
+  }
+}
