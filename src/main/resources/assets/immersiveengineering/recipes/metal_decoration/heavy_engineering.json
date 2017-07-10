@@ -1,0 +1,27 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration0",
+    "data": 5,
+    "count": 2
+  },
+  "pattern": [
+    "IGI",
+    "PEP",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "E": {
+      "item": "#ingotElectrum"
+    },
+    "G": {
+      "item": "#componentSteel"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    }
+  }
+}

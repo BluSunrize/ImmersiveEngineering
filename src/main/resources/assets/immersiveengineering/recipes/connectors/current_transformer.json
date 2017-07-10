@@ -1,0 +1,27 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:connector",
+    "data": 11
+  },
+  "pattern": [
+    " M ",
+    "BCB",
+    "ICI"
+  ],
+  "key": {
+    "M": {
+      "item": "immersiveengineering:tool",
+      "data": 2
+    },
+    "B": {
+      "item": "minecraft:hardened_clay"
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "C": {
+      "item": "#copperCoil"
+    }
+  }
+}

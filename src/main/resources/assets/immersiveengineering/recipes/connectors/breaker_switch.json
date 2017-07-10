@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:connector",
+    "data": 9
+  },
+  "pattern": [
+    " L ",
+    "CIC"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "C": {
+      "item": "minecraft:hardened_clay"
+    },
+    "I": {
+      "item": "#ingotCopper"
+    }
+  }
+}

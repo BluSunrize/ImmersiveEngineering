@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration2",
+    "data": 4,
+    "count": 3
+  },
+  "pattern": [
+    " I ",
+    "PGP",
+    " I "
+  ],
+  "key": {
+    "G": {
+      "item": "#glowstone"
+    },
+    "I": {
+      "item": "#plateIron"
+    },
+    "P": {
+      "item": "#paneGlass"
+    }
+  }
+}

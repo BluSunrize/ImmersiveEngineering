@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration2",
+    "data": 1,
+    "count": 4
+  },
+  "pattern": [
+    "II",
+    "IS"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "S": {
+      "item": "#stickSteel"
+    }
+  }
+}
