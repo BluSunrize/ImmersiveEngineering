@@ -1,0 +1,19 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": "{conveyorType:\"immersiveengineering:dropper\"}"
+  },
+  "pattern": [
+    "C",
+    "T"
+  ],
+  "key": {
+    "C": {
+      "item": "#baseConveyor"
+    },
+    "T": {
+      "item": "minecraft:iron_trapdoor"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": "{conveyorType:\"immersiveengineering:conveyor\"}",
+    "count": 1
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:conveyor",
+      "nbt": "{conveyorType:\"immersiveengineering:uncontrolled\"}"
+    }
+  ]
+}
