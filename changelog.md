@@ -1,3 +1,8 @@
+#####Version 0.12-65
+- changed crafting recipes to the new json based system!
+- fixed ClientProxy trying to subscribe on the Server side
+- fixed arm sleeves on players not matching arm position. Nothing I can do about armor, I'm afraid.
+
 #####Version 0.12-64 - BUILT
 - Updated to Minecraft 1.12, fixed a lot of the issues resulting from this update
     - NOTE: Currently, IE's vanilla crafting recipes are not yet JSONs. This will probably change in future releases.
