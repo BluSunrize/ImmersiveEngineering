@@ -1,0 +1,15 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:material",
+    "data": 21
+  },
+  "ingredients": [
+    {
+      "item": "#plateElectrum"
+    },
+    {
+      "item": "#listCutters"
+    }
+  ]
+}

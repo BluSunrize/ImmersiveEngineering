@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": "{conveyorType:\"immersiveengineering:vertical\"}",
+    "counter": 3
+  },
+  "pattern": [
+    "CI",
+    "C ",
+    "CI"
+  ],
+  "key": {
+    "C": {
+      "item": "#baseConveyor"
+    },
+    "I": {
+      "item": "#ingotIron"
+    }
+  }
+}

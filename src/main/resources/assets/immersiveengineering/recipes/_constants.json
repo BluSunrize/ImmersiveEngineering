@@ -475,9 +475,8 @@
     },
     "name": "wireSteel"
   },
-
   {
-    "ingredient":[
+    "ingredient": [
       {
         "type": "forge:ore_dict",
         "ore": "stickWood"
@@ -490,7 +489,7 @@
     "name": "listWoodenSticks"
   },
   {
-    "ingredient":[
+    "ingredient": [
       {
         "type": "forge:ore_dict",
         "ore": "stickIron"
@@ -505,6 +504,19 @@
       }
     ],
     "name": "listMetalSticks"
+  },
+  {
+    "ingredient": [
+      {
+        "item": "immersiveengineering:tool",
+        "data": 1
+      },
+      {
+        "item": "minecraft:shears",
+        "data": 32767
+      }
+    ],
+    "name": "listCutters"
   },
   {
     "ingredient": {
