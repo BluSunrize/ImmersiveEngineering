@@ -1,3 +1,6 @@
+#####Version 0.12-66 - BUILT
+- fixed the missing dustCharcoal reference in recipes
+
 #####Version 0.12-65 - BUILT
 - changed crafting recipes to the new json based system!
 - fixed ClientProxy trying to subscribe on the Server side
