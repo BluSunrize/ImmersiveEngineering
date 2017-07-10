@@ -569,8 +569,11 @@
   },
   {
     "ingredient": {
+      "type": "minecraft:item_nbt",
       "item": "immersiveengineering:conveyor",
-      "nbt": "{conveyorType:\"immersiveengineering:conveyor\"}"
+      "nbt": {
+        "conveyorType": "immersiveengineering:conveyor"
+      }
     },
     "name": "baseConveyor"
   }

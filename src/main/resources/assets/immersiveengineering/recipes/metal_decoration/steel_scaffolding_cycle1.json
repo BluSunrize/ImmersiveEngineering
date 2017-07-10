@@ -1,5 +1,6 @@
 {
   "type": "forge:ore_shapeless",
+  "group": "immersiveengineering:scaffolding_steel",
   "result": {
     "item": "immersiveengineering:metal_decoration1",
     "data": 3

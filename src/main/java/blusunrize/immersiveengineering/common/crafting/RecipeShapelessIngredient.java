@@ -22,6 +22,10 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	{
 		super(group, result, wrapIngredients(recipe));
 	}
+	public RecipeShapelessIngredient(ResourceLocation group, ItemStack result, NonNullList<Ingredient> input)
+	{
+		super(group, input, result);
+	}
 	private static Object[] wrapIngredients(Object... recipe)
 	{
 		Object[] out = new Object[recipe.length];

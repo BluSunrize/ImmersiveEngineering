@@ -6,9 +6,12 @@
     }
   ],
   "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
   "result": {
     "item": "immersiveengineering:conveyor",
-    "nbt": "{conveyorType:\"immersiveengineering:conveyor\"}",
+    "nbt": {
+      "conveyorType": "immersiveengineering:conveyor"
+    },
     "count": 8
   },
   "pattern": [

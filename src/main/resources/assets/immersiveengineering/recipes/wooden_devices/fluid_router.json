@@ -1,5 +1,6 @@
 {
-  "type": "forge:ore_shaped",
+  "type": "immersiveengineering:ingredient_shaped",
+  "quarter_turn": true,
   "result": {
     "item": "immersiveengineering:wooden_device0",
     "data": 7

@@ -7,6 +7,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeShapedIngredient extends ShapedOreRecipe
@@ -19,6 +20,11 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	{
 		super(group, result, wrapIngredients(recipe));
 	}
+	public RecipeShapedIngredient(ResourceLocation group, ItemStack result, ShapedPrimer primer)
+	{
+		super(group, result, primer);
+	}
+
 	private static Object[] wrapIngredients(Object... recipe)
 	{
 		Object[] out = new Object[recipe.length];
