@@ -1,0 +1,26 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 13
+  },
+  "pattern": [
+    "GTG",
+    "G G",
+    "WCW"
+  ],
+  "key": {
+    "T": {
+      "item": "#elecTube"
+    },
+    "G": {
+      "item": "#blockGlass"
+    },
+    "W": {
+      "item": "#plankTreatedWood"
+    },
+    "C": {
+      "item": "#componentIron"
+    }
+  }
+}

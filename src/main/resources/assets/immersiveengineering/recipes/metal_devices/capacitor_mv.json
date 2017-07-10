@@ -1,0 +1,29 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device0",
+    "data": 1
+  },
+  "pattern": [
+    "III",
+    "ELE",
+    "WRW"
+  ],
+  "key": {
+    "L": {
+      "item": "#ingotLead"
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "E": {
+      "item": "#ingotElectrum"
+    },
+    "R": {
+      "item": "#blockRedstone"
+    },
+    "W": {
+      "item": "#plankTreatedWood"
+    }
+  }
+}

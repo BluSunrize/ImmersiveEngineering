@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 3
+  },
+  "pattern": [
+    "III",
+    "CBC",
+    "CCC"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "C": {
+      "item": "#plateConstantan"
+    },
+    "B": {
+      "item": "#copperCoil"
+    }
+  }
+}

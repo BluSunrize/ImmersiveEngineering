@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 2
+  },
+  "pattern": [
+    "RCR",
+    "III"
+  ],
+  "key": {
+    "C": {
+      "item": "#copperCoil"
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    }
+  }
+}
