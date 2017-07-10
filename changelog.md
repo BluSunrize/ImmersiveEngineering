@@ -1,4 +1,4 @@
-#####Version 0.12-65
+#####Version 0.12-65 - BUILT
 - changed crafting recipes to the new json based system!
 - fixed ClientProxy trying to subscribe on the Server side
 - fixed arm sleeves on players not matching arm position. Nothing I can do about armor, I'm afraid.
