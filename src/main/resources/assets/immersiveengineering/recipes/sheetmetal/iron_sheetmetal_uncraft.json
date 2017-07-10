@@ -1,0 +1,13 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:metal",
+    "data": 39
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:sheetmetal",
+      "data": 9
+    }
+  ]
+}
