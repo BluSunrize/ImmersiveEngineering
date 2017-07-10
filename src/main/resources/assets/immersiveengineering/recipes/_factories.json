@@ -2,6 +2,10 @@
   "ingredients": {
     "fluid": "blusunrize.immersiveengineering.common.crafting.IngredientFactoryFluidStack"
   },
+  "recipes": {
+    "ingredient_shapeless": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapelessIngredient",
+    "ingredient_shaped": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapedIngredient"
+  },
   "conditions": {
     "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryOreExists",
     "config": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryIEConfig"

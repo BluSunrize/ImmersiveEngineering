@@ -8,7 +8,9 @@
   "type": "forge:ore_shaped",
   "result": {
     "item": "immersiveengineering:blueprint",
-    "nbt": "{conveyorType:\"electrode\"}"
+    "nbt": {
+      "blueprint": "electrode"
+    }
   },
   "pattern": [
     "GGG",

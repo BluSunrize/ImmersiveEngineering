@@ -1,5 +1,6 @@
 {
-  "type": "forge:ore_shaped",
+  "type": "immersiveengineering:ingredient_shaped",
+  "eighth_turn": true,
   "result": {
     "item": "immersiveengineering:metal_decoration0",
     "data": 3,
