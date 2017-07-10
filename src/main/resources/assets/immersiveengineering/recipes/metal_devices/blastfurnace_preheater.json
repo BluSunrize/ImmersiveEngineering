@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 0
+  },
+  "pattern": [
+    "SSS",
+    "S S",
+    "SHS"
+  ],
+  "key": {
+    "S": {
+      "item": "#blockSheetmetalIron"
+    },
+    "H": {
+      "item": "immersiveengineering:metal_device1",
+      "data": 1
+    }
+  }
+}

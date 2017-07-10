@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 8
+  },
+  "pattern": [
+    "III",
+    " C ",
+    "MCM"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotAluminum"
+    },
+    "C": {
+      "item": "#copperCoil"
+    },
+    "M": {
+      "item": "immersiveengineering:metal_device0",
+      "data": 2
+    }
+  }
+}
