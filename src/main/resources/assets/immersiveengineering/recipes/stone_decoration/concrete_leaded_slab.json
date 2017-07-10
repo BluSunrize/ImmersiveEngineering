@@ -1,0 +1,17 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:stone_decoration_slab",
+    "data": 7,
+    "count": 6
+  },
+  "pattern": [
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "immersiveengineering:stone_decoration",
+      "data": 7
+    }
+  }
+}

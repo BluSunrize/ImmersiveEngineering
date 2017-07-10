@@ -310,6 +310,27 @@
   {
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "plateCopper"
+    },
+    "name": "plateCopper"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plateElectrum"
+    },
+    "name": "plateElectrum"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plateGold"
+    },
+    "name": "plateGold"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "plateIron"
     },
     "name": "plateIron"
@@ -324,9 +345,30 @@
   {
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "plateNickel"
+    },
+    "name": "plateNickel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plateSilver"
+    },
+    "name": "plateSilver"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "plateSteel"
     },
     "name": "plateSteel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plateUranium"
+    },
+    "name": "plateUranium"
   },
   {
     "ingredient": {

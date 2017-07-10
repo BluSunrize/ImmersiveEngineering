@@ -1,0 +1,17 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:storage_slab",
+    "data": 6,
+    "count": 6
+  },
+  "pattern": [
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "immersiveengineering:storage",
+      "data": 6
+    }
+  }
+}
