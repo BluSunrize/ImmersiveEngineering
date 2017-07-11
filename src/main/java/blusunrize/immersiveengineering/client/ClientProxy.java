@@ -1132,10 +1132,20 @@ public class ClientProxy extends CommonProxy
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_casing);
 
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPotion.getStill());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPotion.getFlowing());
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/creosote_still");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/creosote_flow");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/plantoil_still");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/plantoil_flow");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/ethanol_still");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/ethanol_flow");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/biodiesel_still");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/biodiesel_flow");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/concrete_still");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/concrete_flow");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/potion_still");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/potion_flow");
 
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
 	}
 	@SubscribeEvent
 	public void textureStichPost(TextureStitchEvent.Post event)

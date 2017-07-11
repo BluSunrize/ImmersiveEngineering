@@ -190,32 +190,12 @@ public class IEContent
 	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
 	static {
-
-		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000);
-		if(!FluidRegistry.registerFluid(fluidCreosote))
-			fluidCreosote = FluidRegistry.getFluid("creosote");
-		FluidRegistry.addBucketForFluid(fluidCreosote);
-		fluidPlantoil = new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000);
-		if(!FluidRegistry.registerFluid(fluidPlantoil))
-			fluidPlantoil = FluidRegistry.getFluid("plantoil");
-		FluidRegistry.addBucketForFluid(fluidPlantoil);
-		fluidEthanol = new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000);
-		if(!FluidRegistry.registerFluid(fluidEthanol))
-			fluidEthanol = FluidRegistry.getFluid("ethanol");
-		FluidRegistry.addBucketForFluid(fluidEthanol);
-		fluidBiodiesel = new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000);
-		if(!FluidRegistry.registerFluid(fluidBiodiesel))
-			fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
-		FluidRegistry.addBucketForFluid(fluidBiodiesel);
-		fluidConcrete = new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000);
-		if(!FluidRegistry.registerFluid(fluidConcrete))
-			fluidConcrete = FluidRegistry.getFluid("concrete");
-		FluidRegistry.addBucketForFluid(fluidConcrete);
-
-		fluidPotion = new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow"));
-		if(!FluidRegistry.registerFluid(fluidPotion))
-			fluidPotion = FluidRegistry.getFluid("potion");
-		FluidRegistry.addBucketForFluid(fluidPotion);
+		fluidCreosote = setupFluid(new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000));
+		fluidPlantoil = setupFluid(new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000));
+		fluidEthanol = setupFluid(new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000));
+		fluidBiodiesel = setupFluid(new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000));
+		fluidConcrete = setupFluid(new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000));
+		fluidPotion = setupFluid(new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
 
 		blockOre = (BlockIEBase)new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
 		blockStorage = (BlockIEBase)new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
@@ -348,6 +328,14 @@ public class IEContent
 		unlocalized = unlocalized.substring(unlocalized.indexOf("immersive"));
 		unlocalized = unlocalized.replaceFirst("\\.", ":");
 		return new ResourceLocation(unlocalized);
+	}
+
+	private static Fluid setupFluid(Fluid fluid)
+	{
+		FluidRegistry.addBucketForFluid(fluid);
+		if(!FluidRegistry.registerFluid(fluid))
+			return FluidRegistry.getFluid(fluid.getName());
+		return fluid;
 	}
 
 	public static void preInit()
@@ -1032,6 +1020,16 @@ public class IEContent
 			if(bottlingRegistered.add(mixPredicate.output))
 				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,333));
 		}
+	}
+
+	public static void refreshFluidReferences()
+	{
+		fluidCreosote = FluidRegistry.getFluid("creosote");
+		fluidPlantoil = FluidRegistry.getFluid("plantoil");
+		fluidEthanol = FluidRegistry.getFluid("ethanol");
+		fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
+		fluidConcrete = FluidRegistry.getFluid("concrete");
+		fluidPotion = FluidRegistry.getFluid("potion");
 	}
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)

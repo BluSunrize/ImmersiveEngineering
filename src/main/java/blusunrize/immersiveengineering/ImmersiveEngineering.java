@@ -192,10 +192,12 @@ public class ImmersiveEngineering
 				IESaveData.setInstance(world.provider.getDimension(), worldData);
 			}
 		}
+		IEContent.refreshFluidReferences();
 	}
 
 	@Mod.EventHandler
-	public void remap(MissingMappings<?> ev) {
+	public void remap(MissingMappings<?> ev)
+	{
 		NameRemapper.remap(ev);
 	}
 
