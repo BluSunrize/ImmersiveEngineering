@@ -2,13 +2,13 @@
   "type": "forge:ore_shapeless",
   "result": {
     "item": "immersiveengineering:metal",
-    "data": 8,
+    "data": 5,
     "count": 9
   },
   "ingredients": [
     {
       "item": "immersiveengineering:storage",
-      "data": 8
+      "data": 5
     }
   ]
 }

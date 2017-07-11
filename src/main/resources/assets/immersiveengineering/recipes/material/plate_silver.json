@@ -2,13 +2,15 @@
   "type": "forge:ore_shapeless",
   "result": {
     "item": "immersiveengineering:metal",
-    "data": 8,
-    "count": 9
+    "data": 33
   },
   "ingredients": [
     {
-      "item": "immersiveengineering:storage",
-      "data": 8
+      "item": "#ingotSilver"
+    },
+    {
+      "item": "immersiveengineering:tool",
+      "data": 0
     }
   ]
 }

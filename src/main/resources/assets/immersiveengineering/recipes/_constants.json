@@ -219,6 +219,13 @@
   {
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "ingotConstantan"
+    },
+    "name": "ingotConstantan"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "ingotCopper"
     },
     "name": "ingotCopper"
@@ -229,6 +236,13 @@
       "ore": "ingotElectrum"
     },
     "name": "ingotElectrum"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "ingotGold"
+    },
+    "name": "ingotGold"
   },
   {
     "ingredient": {
@@ -247,9 +261,30 @@
   {
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "ingotNickel"
+    },
+    "name": "ingotNickel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSilver"
+    },
+    "name": "ingotSilver"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "ingotSteel"
     },
     "name": "ingotSteel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "ingotUranium"
+    },
+    "name": "ingotUranium"
   },
   {
     "ingredient": {
