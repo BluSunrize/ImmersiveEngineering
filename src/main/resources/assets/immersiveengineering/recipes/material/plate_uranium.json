@@ -2,13 +2,15 @@
   "type": "forge:ore_shapeless",
   "result": {
     "item": "immersiveengineering:metal",
-    "data": 8,
-    "count": 9
+    "data": 35
   },
   "ingredients": [
     {
-      "item": "immersiveengineering:storage",
-      "data": 8
+      "item": "#ingotUranium"
+    },
+    {
+      "item": "immersiveengineering:tool",
+      "data": 0
     }
   ]
 }
