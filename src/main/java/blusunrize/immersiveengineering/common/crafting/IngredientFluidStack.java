@@ -25,6 +25,11 @@ public class IngredientFluidStack extends Ingredient
 		this(new FluidStack(fluid, amount));
 	}
 
+	public FluidStack getFluid()
+	{
+		return fluid;
+	}
+
 	ItemStack[] cachedStacks;
 	@Override
 	public ItemStack[] getMatchingStacks()

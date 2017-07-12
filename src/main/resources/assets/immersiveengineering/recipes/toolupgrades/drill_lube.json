@@ -1,5 +1,5 @@
 {
-  "type": "forge:ore_shaped",
+  "type": "immersiveengineering:ingredient_shaped",
   "result": {
     "item": "immersiveengineering:toolupgrade",
     "data": 1

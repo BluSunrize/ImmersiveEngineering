@@ -8,6 +8,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeShapedIngredient extends ShapedOreRecipe
@@ -87,22 +90,25 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
 	{
 		NonNullList<ItemStack> remains = ForgeHooks.defaultRecipeGetRemainingItems(inv);
-//		Commented out, apparently fluids handle this reasonably well themselves .-.
-//		for(int i = 0; i < height*width; i++)
-//		{
-//			ItemStack s = inv.getStackInSlot(i);
-//			IngredientStack[] matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: ingredients;
-//			if((remains[i]!=null || s!=null) && matchedIngr[i]!=null && matchedIngr[i].fluid!=null)
-//			{
-//				if(remains[i]==null && s!=null)
-//					remains[i] = s.copy();
-//				IFluidHandler handler = FluidUtil.getFluidHandler(remains[i]);
-//				if(handler!=null)
-//					handler.drain(matchedIngr[i].fluid.amount, true);
-//				if(remains[i].stackSize<=0)
-//					remains[i] = null;
-//			}
-//		}
+		for(int i = 0; i < height*width; i++)
+		{
+			ItemStack s = inv.getStackInSlot(i);
+			NonNullList<Ingredient> matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: this.input;
+			if((!remains.get(i).isEmpty() || !s.isEmpty()) && matchedIngr.get(i) instanceof IngredientFluidStack)
+			{
+				if(remains.get(i).isEmpty() && !s.isEmpty())
+					remains.set(i, s.copy());
+				System.out.println("Had fluid ingredient for "+remains.get(i));
+				IFluidHandler handler = FluidUtil.getFluidHandler(remains.get(i));
+				if(handler!=null)
+				{
+					FluidStack fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluid();
+					handler.drain(fluid.amount, true);
+				}
+				if(remains.get(i).getCount()<=0)
+					remains.set(i, ItemStack.EMPTY);
+			}
+		}
 		return remains;
 	}
 
@@ -153,9 +159,11 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 				}
 
 				ItemStack slot = inv.getStackInRowAndColumn(x, y);
-				if((target == null) != (slot.isEmpty()))
-					return false;
-				else if(target != null && !target.apply(slot))
+//				if((target == null) != (slot.isEmpty()))
+//					return false;
+//				else if(target != null && !target.apply(slot))
+//					return false;
+				if(!target.apply(slot))
 					return false;
 			}
 		return true;

@@ -1,5 +1,5 @@
 {
-  "type": "forge:ore_shaped",
+  "type": "immersiveengineering:ingredient_shaped",
   "group": "immersiveengineering:treated_wood",
   "result": {
     "item": "immersiveengineering:treated_wood",
