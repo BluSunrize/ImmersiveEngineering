@@ -54,12 +54,12 @@ public class ModelIEPlayer extends ModelPlayer
 					{
 						if(right)
 						{
-							this.bipedRightArm.rotateAngleX = -1.39626f;
-							this.bipedRightArm.rotateAngleY = .08726f;
+							this.bipedRightArm.rotateAngleX = -1.39626f + this.bipedHead.rotateAngleX;
+							this.bipedRightArm.rotateAngleY = -.08726f + this.bipedHead.rotateAngleY;
 						} else
 						{
-							this.bipedLeftArm.rotateAngleX = -1.39626f;
-							this.bipedLeftArm.rotateAngleY = .08726f;
+							this.bipedLeftArm.rotateAngleX = -1.39626f  + this.bipedHead.rotateAngleX;
+							this.bipedLeftArm.rotateAngleY = .08726f + this.bipedHead.rotateAngleY;
 						}
 					}
 					else if(heldItem.getItem() instanceof ItemDrill ||heldItem.getItem() instanceof ItemChemthrower)
