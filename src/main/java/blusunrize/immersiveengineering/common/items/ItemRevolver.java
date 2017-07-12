@@ -102,17 +102,24 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	{
 		if(slotChanged)
 			return true;
+		if(super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged))
+			return true;
+
 		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null) && newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
 		{
 			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
 			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
 			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
+			{
+				System.out.println("new shader!");
 				return true;
+			}
 		}
 		if(ItemNBTHelper.hasKey(oldStack, "elite") || ItemNBTHelper.hasKey(newStack, "elite"))
 			if(!ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite")))
 				return true;
-		return super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
+
+		return false;
 	}
 
 	@Override
@@ -260,7 +267,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 					world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
 				else
 				{
-					if(ItemNBTHelper.getInt(revolver, "cooldown") > 0)
+					if(getShootCooldown(revolver) > 0)
 						return new ActionResult(EnumActionResult.PASS, revolver);
 
 					NonNullList<ItemStack> bullets = getBullets(revolver);
@@ -402,8 +409,6 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		return "";
 	}
 
-
-
 	@SideOnly(Side.CLIENT)
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
@@ -457,10 +462,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity)
 	{
-		if(entity instanceof EntityPlayer && getUpgrades(stack).getBoolean("fancyAnimation") && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
+		if(entity instanceof EntityPlayer && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
 			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT);
-			if(main)
+			if(getUpgrades(stack).getBoolean("fancyAnimation") && main)
 			{
 				float f = ((EntityPlayer)entity).getCooledAttackStrength(ClientUtils.mc().timer.renderPartialTicks);
 				if(f < 1)
