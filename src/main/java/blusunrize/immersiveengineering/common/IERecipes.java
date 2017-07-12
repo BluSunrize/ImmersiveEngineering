@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
+import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
@@ -55,10 +56,23 @@ public class IERecipes
 		ForgeRegistries.RECIPES.register(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ).setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
 	}
 
-	public static void addShapelessOredictRecipe(ItemStack output, Object... recipe)
+	public static void addShapelessOredictRecipe(String registryName, ItemStack output, Object... recipe)
 	{
 		ShapelessOreRecipe sor = new ShapelessOreRecipe(null, output, recipe);
-		ForgeRegistries.RECIPES.register(sor.setRegistryName(sor.getGroup()));
+		if(registryName==null)
+		{
+			registryName = ImmersiveEngineering.MODID+":";
+			if(output.getItem() instanceof ItemIEBase)
+				registryName += ((ItemIEBase)output.getItem()).itemName+"_"+((ItemIEBase)output.getItem()).getSubNames()[output.getMetadata()]+"*"+output.getCount();
+			else
+			{
+				int idx = output.getUnlocalizedName().lastIndexOf(":");
+				registryName += output.getUnlocalizedName().substring(idx < 0?0: idx)+"_"+output.getMetadata()+"*"+output.getCount();
+			}
+		}
+		else if(!registryName.startsWith(ImmersiveEngineering.MODID))
+			registryName = ImmersiveEngineering.MODID+":"+registryName;
+		ForgeRegistries.RECIPES.register(sor.setRegistryName(registryName));
 	}
 
 	public static void initBlueprintRecipes()
@@ -254,7 +268,7 @@ public class IERecipes
 								out = Utils.copyStackWithAmount(preferredDust, 2);
 								if(allowHammerCrushing)
 								{
-									addShapelessOredictRecipe(preferredDust, name,new ItemStack(IEContent.itemTool));
+									addShapelessOredictRecipe("hammercrushing_"+ore, preferredDust, name,new ItemStack(IEContent.itemTool));
 									hammerCrushingList.add(ore);
 								}
 							}
