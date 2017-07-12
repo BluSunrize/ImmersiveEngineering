@@ -1,9 +1,11 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
@@ -13,11 +15,14 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import java.util.regex.Pattern;
+
 public class RecipeShapedIngredient extends ShapedOreRecipe
 {
 	NonNullList<Ingredient> ingredientsQuarterTurn;
 	NonNullList<Ingredient> ingredientsEighthTurn;
-	int nbtCopyTargetSlot = -1;
+	int[] nbtCopyTargetSlot = null;
+	Pattern nbtCopyPredicate = null;
 	int lastMatch = 0;
 	public RecipeShapedIngredient(ResourceLocation group, ItemStack result, Object... recipe)
 	{
@@ -66,20 +71,32 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		return this;
 	}
 
-	public RecipeShapedIngredient setNBTCopyTargetRecipe(int slot)
+	public RecipeShapedIngredient setNBTCopyTargetRecipe(int... slot)
 	{
 		this.nbtCopyTargetSlot = slot;
+		return this;
+	}
+	public RecipeShapedIngredient setNBTCopyPredicate(String pattern)
+	{
+		this.nbtCopyPredicate = Pattern.compile(pattern);
 		return this;
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting matrix)
 	{
-		if(nbtCopyTargetSlot >= 0)
+		if(nbtCopyTargetSlot != null)
 		{
 			ItemStack out = output.copy();
-			if(!matrix.getStackInSlot(nbtCopyTargetSlot).isEmpty() && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
-				out.setTagCompound(matrix.getStackInSlot(nbtCopyTargetSlot).getTagCompound().copy());
+			NBTTagCompound tag = out.hasTagCompound()?out.getTagCompound():new NBTTagCompound();
+			for(int targetSlot : nbtCopyTargetSlot)
+			{
+				ItemStack s = matrix.getStackInSlot(targetSlot);
+				if(!s.isEmpty() && s.hasTagCompound())
+					tag = ItemNBTHelper.combineTags(tag, s.getTagCompound(), nbtCopyPredicate);
+			}
+			if(!tag.hasNoTags())
+				out.setTagCompound(tag);
 			return out;
 		}
 		else

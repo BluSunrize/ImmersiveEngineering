@@ -86,8 +86,20 @@ public class RecipeFactoryShapedIngredient implements IRecipeFactory
 		if(JsonUtils.getBoolean(json, "eighth_turn", false))
 			recipe.allowEighthTurn();
 		if(JsonUtils.hasField(json, "copy_nbt"))
-			recipe.setNBTCopyTargetRecipe(JsonUtils.getInt(json, "copy_nbt"));
-
+		{
+			if(JsonUtils.isJsonArray(json, "copy_nbt"))
+			{
+				JsonArray jArray = JsonUtils.getJsonArray(json, "copy_nbt");
+				int[] array = new int[jArray.size()];
+				for(int i=0; i<array.length; i++)
+					array[i] = jArray.get(i).getAsInt();
+				recipe.setNBTCopyTargetRecipe(array);
+			}
+			else
+				recipe.setNBTCopyTargetRecipe(JsonUtils.getInt(json, "copy_nbt"));
+			if(JsonUtils.hasField(json, "copy_nbt_predicate"))
+				recipe.setNBTCopyPredicate(JsonUtils.getString(json, "copy_nbt_predicate"));
+		}
 		return recipe;
 	}
 }
