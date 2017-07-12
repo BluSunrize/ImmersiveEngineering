@@ -8,6 +8,8 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
+import java.util.regex.Pattern;
+
 public class ItemNBTHelper
 {
 	public static NBTTagCompound getTag(ItemStack stack)
@@ -179,7 +181,7 @@ public class ItemNBTHelper
 		getTag(stack).setTag(key, val.writeToNBT(new NBTTagCompound()));
 	}
 	public static ItemStack getItemStack(ItemStack stack, String key)
-	{		
+	{
 		if(hasTag(stack) && getTag(stack).hasKey(key))
 			return new ItemStack(getTagCompound(stack, key));
 		return ItemStack.EMPTY;
@@ -252,5 +254,69 @@ public class ItemNBTHelper
 			}
 		}
 		return stack;
+	}
+
+	public static NBTTagCompound combineTags(NBTTagCompound target, NBTTagCompound add, Pattern pattern)
+	{
+		if(target==null || target.hasNoTags())
+			return add.copy();
+		for(String key : add.getKeySet())
+			if(pattern==null || pattern.matcher(key).matches())
+				if(!target.hasKey(key))
+					target.setTag(key, add.getTag(key));
+				else
+				{
+					switch(add.getTagId(key))
+					{
+						case 1: //Byte
+							target.setByte(key, (byte)(target.getByte(key)+add.getByte(key)));
+							break;
+						case 2: //Short
+							target.setShort(key, (short)(target.getShort(key)+add.getShort(key)));
+							break;
+						case 3: //Int
+							target.setInteger(key, (target.getInteger(key)+add.getInteger(key)));
+							break;
+						case 4: //Long
+							target.setLong(key, (target.getLong(key)+add.getLong(key)));
+							break;
+						case 5: //Float
+							target.setFloat(key, (target.getFloat(key)+add.getFloat(key)));
+							break;
+						case 6: //Double
+							target.setDouble(key, (target.getDouble(key)+add.getDouble(key)));
+							break;
+						case 7: //ByteArray
+							byte[] bytesTarget = target.getByteArray(key);
+							byte[] bytesAdd = add.getByteArray(key);
+							byte[] bytes = new byte[bytesTarget.length+bytesAdd.length];
+							System.arraycopy(bytesTarget,0, bytes,0, bytesTarget.length);
+							System.arraycopy(bytesAdd,0, bytes,bytesTarget.length, bytesAdd.length);
+							target.setByteArray(key, bytes);
+							break;
+						case 8: //String
+							target.setString(key, (target.getString(key)+add.getString(key)));
+							break;
+						case 9: //List
+							NBTTagList listTarget = (NBTTagList)target.getTag(key);
+							NBTTagList listAdd = (NBTTagList)add.getTag(key);
+							for(int i=0; i<listAdd.tagCount(); i++)
+								listTarget.appendTag(listAdd.get(i));
+							target.setTag(key, listTarget);
+							break;
+						case 10: //Compound
+							combineTags(target.getCompoundTag(key), add.getCompoundTag(key), null);
+							break;
+						case 11: //IntArray
+							int[] intsTarget = target.getIntArray(key);
+							int[] intsAdd = add.getIntArray(key);
+							int[] ints = new int[intsTarget.length+intsAdd.length];
+							System.arraycopy(intsTarget,0, ints,0, intsTarget.length);
+							System.arraycopy(intsAdd,0, ints,intsTarget.length, intsAdd.length);
+							target.setIntArray(key, ints);
+							break;
+					}
+				}
+		return target;
 	}
 }
