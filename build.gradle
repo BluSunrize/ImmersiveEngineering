@@ -104,7 +104,7 @@ dependencies {
 //    compile 'industrial-craft:industrialcraft-2:release:ex111'
 //    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
     deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.+'
-    deobfCompile 'de.ellpeck.actuallyadditions:ActuallyAdditions:1.11.2-r108'
+    deobfCompile 'de.ellpeck.actuallyadditions:ActuallyAdditions:1.12-r113'
 
 }
 
