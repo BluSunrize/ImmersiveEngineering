@@ -149,6 +149,7 @@ tile.immersiveengineering.connector.breakerswitch.name=Breaker Switch
 tile.immersiveengineering.connector.redstone_breaker.name=Redstone Breaker
 tile.immersiveengineering.connector.energy_meter.name=Current Transformer
 tile.immersiveengineering.connector.connector_redstone.name=Redstone Wire Connector
+tile.immersiveengineering.connector.connector_probe.name=Redstone Probe Connector
 
 tile.immersiveengineering.metal_device0.capacitor_lv.name=LV Capacitor
 tile.immersiveengineering.metal_device0.capacitor_mv.name=MV Capacitor
@@ -678,6 +679,8 @@ desc.immersiveengineering.info.fertFill=Fertilizer Amount: %1$s
 desc.immersiveengineering.info.fertMod=Growth Modifier: %1$s
 
 desc.immersiveengineering.info.redstoneChannel=Channel: %1$s
+desc.immersiveengineering.info.redstoneChannel.send=Channel Sending: %1$s
+desc.immersiveengineering.info.redstoneChannel.rec=Channel Receiving: %1$s
 
 desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Arc Furnace
 desc.immersiveengineering.info.multiblock.IE:Assembler=Assembler

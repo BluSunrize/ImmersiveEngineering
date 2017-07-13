@@ -35,7 +35,8 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
-		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		setMetaBlockLayer(BlockTypes_Connector.RELAY_HV.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		setMetaBlockLayer(BlockTypes_Connector.CONNECTOR_PROBE.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
 		setAllNotNormalBlock();
 	}
 
@@ -109,6 +110,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
+		super.neighborChanged(state, world, pos, blockIn, fromPos);
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityConnectorLV)
 		{
@@ -165,6 +167,8 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				return new TileEntityEnergyMeter();
 			case CONNECTOR_REDSTONE:
 				return new TileEntityConnectorRedstone();
+			case CONNECTOR_PROBE:
+				return new TileEntityConnectorProbe();
 		}
 		return null;
 	}
