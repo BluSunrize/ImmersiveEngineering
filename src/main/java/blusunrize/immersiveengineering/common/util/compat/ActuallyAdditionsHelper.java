@@ -3,7 +3,12 @@ package blusunrize.immersiveengineering.common.util.compat;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -46,7 +51,7 @@ public class ActuallyAdditionsHelper extends IECompatModule
 		Block riceBlock = Block.REGISTRY.getObject(new ResourceLocation("actuallyadditions:block_rice"));
 		if(riceSeeds!=null && food!=null && riceBlock!=null) {
 			BelljarHandler.cropHandler.register(new ItemStack(riceSeeds), new ItemStack[]{new ItemStack(food,2,16), new ItemStack(riceSeeds)}, new ItemStack(Blocks.DIRT), riceBlock.getDefaultState());
-			FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, new ItemStack(food, 1, 16), 6400);
+			FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,40), ItemStack.EMPTY, new ItemStack(food, 1, 16), 6400);
 		}
 
 		Item canolaSeeds = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions:item_canola_seed"));
@@ -65,11 +70,39 @@ public class ActuallyAdditionsHelper extends IECompatModule
 			RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(canolaOil,8),new FluidStack(fluidEthanol,8), 80);
 		}
 		
-		Fluid oil = FluidRegistry.getFluid("oil");
-		if( oil != null){
-			RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(oil, 8) ,new FluidStack(fluidEthanol,0), 80);
+		Fluid crystaloil = FluidRegistry.getFluid("crystaloil");
+		if( crystaloil != null){
+			
 		}
 		
 		
+		//Add whatever fuels AA burns to the Diesel Generator
+		for (de.ellpeck.actuallyadditions.api.recipe.OilGenRecipe recipe 
+			: de.ellpeck.actuallyadditions.api.ActuallyAdditionsAPI.OIL_GENERATOR_RECIPES)
+		{
+			IELogger.debug("Found "+ recipe.fluidName +" fuel from AA.");
+			// AA burns oil in batches of 50mb.
+			// We want power for 1 bucket. 1000mb/50mb = 20
+			int totalPower = recipe.genAmount*recipe.genTime*20;
+			
+			// Diesel Generator always generates 4096/t
+			Fluid fuel = FluidRegistry.getFluid(recipe.fluidName);
+			DieselHandler.registerFuel(fuel, totalPower/4096);
+			
+			// If it's at least as energy dense as BioDiesel it should work in the drill.
+			if(totalPower > 512000){
+				DieselHandler.registerDrillFuel(fuel);
+			}
+			
+			// Have it work as flammable in the chemthrower with duration relative to it's genTime.
+			// and amplifier relative to it's genAmount. 
+			ChemthrowerHandler.registerEffect(fuel, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,recipe.genTime,recipe.genAmount/100));
+			ChemthrowerHandler.registerFlammable(fuel);
+			
+		}
+		
 	}
+	
+			
+	
 }
