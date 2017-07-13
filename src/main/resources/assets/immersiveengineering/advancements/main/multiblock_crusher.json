@@ -1,0 +1,24 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal_multiblock",
+			"data": 1
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:mbCrusher"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:mbCrusher.desc"
+		},
+		"frame": "goal"
+	},
+	"parent": "immersiveengineering:main/make_steel",
+	"criteria": {
+		"form_blastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:Crusher"
+			}
+		}
+	}
+}

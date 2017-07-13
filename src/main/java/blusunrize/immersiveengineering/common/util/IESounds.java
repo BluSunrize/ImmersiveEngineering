@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +19,7 @@ public class IESounds
 	static Set<SoundEvent> registeredEvents = new HashSet();
 	public static SoundEvent metalpress_piston = registerSound("metalPressPiston");
 	public static SoundEvent metalpress_smash = registerSound("metalPressSmash");
-	public static SoundEvent birthdayParty = ImmersiveEngineering.register(new SoundEvent(new ResourceLocation(ImmersiveEngineering.MODID, "birthdayParty")),"birthdayParty");
+	public static SoundEvent birthdayParty = registerSound("birthdayParty");
 	public static SoundEvent revolverFire = registerSound("revolverFire");
 	public static SoundEvent spray= registerSound("spray");
 	public static SoundEvent sprayFire = registerSound("spray_fire");
@@ -42,7 +42,7 @@ public class IESounds
 	public static void init()
 	{
 		for(SoundEvent event : registeredEvents)
-			GameRegistry.register(event);
+			ForgeRegistries.SOUND_EVENTS.register(event);
 	}
 
 	public static void PlaySoundForPlayer(Entity player, SoundEvent sound, float volume, float pitch)

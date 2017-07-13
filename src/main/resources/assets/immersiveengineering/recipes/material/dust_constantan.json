@@ -1,0 +1,16 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:metal",
+    "data": 15,
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "#dustCopper"
+    },
+    {
+      "item": "#dustNickel"
+    }
+  ]
+}

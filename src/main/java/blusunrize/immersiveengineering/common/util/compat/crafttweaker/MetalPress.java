@@ -4,10 +4,10 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IIngredient;
-import minetweaker.api.item.IItemStack;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -32,11 +32,11 @@ public class MetalPress
 			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, sMold, energy);
 			if(inputSize > 0)
 				r.setInputSize(inputSize);
-			MineTweakerAPI.apply(new Add(r));
+			CraftTweakerAPI.apply(new Add(r));
 		}
 	}
 
-	private static class Add implements IUndoableAction
+	private static class Add implements IAction
 	{
 		private final MetalPressRecipe recipe;
 
@@ -53,44 +53,19 @@ public class MetalPress
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			MetalPressRecipe.recipeList.remove(recipe.mold, recipe);
-			IECompatModule.jeiRemoveFunc.accept(recipe);
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding Metal Press Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing Metal Press Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
-	private static class Remove implements IUndoableAction
+	private static class Remove implements IAction
 	{
 		private final ItemStack output;
 		List<MetalPressRecipe> removedRecipes;
@@ -109,49 +84,19 @@ public class MetalPress
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(MetalPressRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						MetalPressRecipe.recipeList.put(recipe.mold, recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Metal Press Recipes for " + output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Metal Press Recipes for " + output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 
 	@ZenMethod
 	public static void removeRecipeByMold(IItemStack mold)
 	{
-		MineTweakerAPI.apply(new RemoveByMold(CraftTweakerHelper.toStack(mold)));
+		CraftTweakerAPI.apply(new RemoveByMold(CraftTweakerHelper.toStack(mold)));
 	}
 
-	private static class RemoveByMold implements IUndoableAction
+	private static class RemoveByMold implements IAction
 	{
 		private final ComparableItemStack mold;
 		List<MetalPressRecipe> removedRecipes;
@@ -171,38 +116,9 @@ public class MetalPress
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-			{
-				MetalPressRecipe.recipeList.putAll(mold, removedRecipes);
-				for(MetalPressRecipe recipe : removedRecipes)
-					IECompatModule.jeiAddFunc.accept(recipe);
-			}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Metal Press Recipes for Mold: " + mold.stack.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Metal Press Recipes for Mold: " + mold.stack.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 }

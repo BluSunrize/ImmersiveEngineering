@@ -1,50 +1,40 @@
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class RecipeShapelessIngredient extends ShapelessOreRecipe
 {
-	static IngredientStack[] tempIngredients;
-
-	List<IngredientStack> ingredients;
 	int nbtCopyTargetSlot = -1;
 	int toolDamageSlot = -1;
 
-	public RecipeShapelessIngredient(ItemStack result, Object... recipe)
+	public RecipeShapelessIngredient(ResourceLocation group, ItemStack result, Object... recipe)
 	{
-		super(result, saveIngredients(recipe));
-		setIngredients(tempIngredients);
-		tempIngredients = null;
+		super(group, result, wrapIngredients(recipe));
 	}
-
-	public RecipeShapelessIngredient setIngredients(IngredientStack[] ingr)
+	public RecipeShapelessIngredient(ResourceLocation group, ItemStack result, NonNullList<Ingredient> input)
 	{
-		ingredients = new ArrayList();
-		input.clear();
-		for(IngredientStack stack : ingr)
-			if(stack != null)
-			{
-				ingredients.add(stack);
-				input.add(stack.getShapedRecipeInput());
-			}
-		return this;
+		super(group, input, result);
 	}
-
-	public List<IngredientStack> getIngredients()
+	private static Object[] wrapIngredients(Object... recipe)
 	{
-		return ingredients;
+		Object[] out = new Object[recipe.length];
+		for(int i=0; i<recipe.length; i++)
+			if(recipe[i] instanceof IngredientStack)
+				out[i] = new IngredientIngrStack((IngredientStack)recipe[i]);
+			else
+				out[i] = recipe[i];
+		return out;
 	}
 
 	public RecipeShapelessIngredient setNBTCopyTargetRecipe(int slot)
@@ -59,30 +49,14 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 		return this;
 	}
 
-	public static Object[] saveIngredients(Object... recipe)
-	{
-		Object[] converted = new Object[recipe.length];
-		tempIngredients = new IngredientStack[recipe.length];
-		for(int i = 0; i < recipe.length; i++)
-		{
-			IngredientStack ingr = ApiUtils.createIngredientStack(recipe[i]);
-			if(ingr != null)
-			{
-				tempIngredients[i] = ingr;
-				converted[i] = Blocks.FIRE;
-			}
-		}
-		return converted;
-	}
-
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting matrix)
 	{
-		if(nbtCopyTargetSlot >= 0 && nbtCopyTargetSlot < ingredients.size())
+		if(nbtCopyTargetSlot >= 0 && nbtCopyTargetSlot < getIngredients().size())
 			for(int i = 0; i < matrix.getSizeInventory(); i++)
 			{
 				ItemStack slot = matrix.getStackInSlot(i);
-				if(ingredients.get(nbtCopyTargetSlot).matchesItemStack(slot))
+				if(getIngredients().get(nbtCopyTargetSlot).apply(slot))
 				{
 					ItemStack out = output.copy();
 					if(!matrix.getStackInSlot(nbtCopyTargetSlot).isEmpty() && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
@@ -101,12 +75,12 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 		{
 			ItemStack s = inv.getStackInSlot(i);
 			ItemStack remain = remains.get(i);
-			if(toolDamageSlot >= 0 && toolDamageSlot < ingredients.size())
+			if(toolDamageSlot >= 0 && toolDamageSlot < getIngredients().size())
 			{
 				ItemStack tool = ItemStack.EMPTY;
-				if(remain.isEmpty() && !s.isEmpty() && ingredients.get(toolDamageSlot).matchesItemStack(s))
+				if(remain.isEmpty() && !s.isEmpty() && getIngredients().get(toolDamageSlot).apply(s))
 					tool = s.copy();
-				else if(!remain.isEmpty() && ingredients.get(toolDamageSlot).matchesItemStack(remain))
+				else if(!remain.isEmpty() && getIngredients().get(toolDamageSlot).apply(remain))
 					tool = remain;
 				if(!tool.isEmpty() && tool.getItem().isDamageable())
 				{
@@ -129,7 +103,7 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	@Override
 	public boolean matches(InventoryCrafting matrix, World world)
 	{
-		ArrayList<IngredientStack> required = new ArrayList(ingredients);
+		ArrayList<Ingredient> required = new ArrayList(getIngredients());
 
 		for(int i = 0; i < matrix.getSizeInventory(); i++)
 		{
@@ -137,11 +111,11 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 			if(!slot.isEmpty())
 			{
 				boolean inRecipe = false;
-				Iterator<IngredientStack> iterator = required.iterator();
+				Iterator<Ingredient> iterator = required.iterator();
 				while(iterator.hasNext())
 				{
-					IngredientStack next = iterator.next();
-					if(next.matchesItemStack(slot))
+					Ingredient next = iterator.next();
+					if(next.apply(slot))
 					{
 						inRecipe = true;
 						iterator.remove();

@@ -1,0 +1,16 @@
+{
+  "type": "immersiveengineering:ingredient_shapeless",
+  "damage_tool": 1,
+  "result": {
+    "item": "immersiveengineering:material",
+    "data": 21
+  },
+  "ingredients": [
+    {
+      "item": "#plateElectrum"
+    },
+    {
+      "item": "#listCutters"
+    }
+  ]
+}

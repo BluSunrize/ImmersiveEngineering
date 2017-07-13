@@ -2,10 +2,10 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IIngredient;
-import minetweaker.api.liquid.ILiquidStack;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.liquid.ILiquidStack;
 import net.minecraftforge.fluids.FluidStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -28,10 +28,10 @@ public class Mixer
 		}
 
 		MixerRecipe r = new MixerRecipe(CraftTweakerHelper.toFluidStack(output), CraftTweakerHelper.toFluidStack(fluidInput), adds, energy);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
-	private static class Add implements IUndoableAction
+	private static class Add implements IAction
 	{
 		private final MixerRecipe recipe;
 
@@ -48,34 +48,9 @@ public class Mixer
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			MixerRecipe.recipeList.remove(recipe);
-			IECompatModule.jeiRemoveFunc.accept(recipe);
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding Fermenter Recipe for Fluid " + recipe.fluidOutput.getLocalizedName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing Fermenter Recipe for Fluid " + recipe.fluidOutput.getLocalizedName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
@@ -83,10 +58,10 @@ public class Mixer
 	public static void removeRecipe(ILiquidStack output)
 	{
 		if(CraftTweakerHelper.toFluidStack(output) != null)
-			MineTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(output)));
+			CraftTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(output)));
 	}
 
-	private static class RemoveFluid implements IUndoableAction
+	private static class RemoveFluid implements IAction
 	{
 		private final FluidStack output;
 		ArrayList<MixerRecipe> removedRecipes = new ArrayList<MixerRecipe>();
@@ -113,39 +88,9 @@ public class Mixer
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(MixerRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						MixerRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Mixer Recipes for Fluid " + output.getLocalizedName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Mixer Recipes for Fluid " + output.getLocalizedName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 }

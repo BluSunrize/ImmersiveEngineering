@@ -1,0 +1,25 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:revolver",
+			"data": 0,
+			"nbt": "{Inv:[{Slot:18b,id:\"immersiveengineering:toolupgrade\",Count:1b,Damage:5s},{Slot:19b,id:\"immersiveengineering:toolupgrade\",Count:1b,Damage:6s}],upgrades:{electro:1b,bullets:6}}"
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:upgradeRevolver"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:upgradeRevolver.desc"
+		},
+		"frame": "challenge"
+	},
+	"parent": "immersiveengineering:main/craft_revolver",
+	"criteria": {
+		"code_trigger": {
+			"trigger": "minecraft:impossible"
+		}
+	},
+	"rewards": {
+		"loot": ["immersiveengineering:advancements/shader_rare"]
+	}
+}

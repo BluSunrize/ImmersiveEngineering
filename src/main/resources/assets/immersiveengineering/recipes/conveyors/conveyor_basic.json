@@ -1,0 +1,26 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": {
+      "conveyorType": "immersiveengineering:conveyor"
+    },
+    "count": 8
+  },
+  "pattern": [
+    "LLL",
+    "IRI"
+  ],
+  "key": {
+    "L": {
+      "item": "#leather"
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    }
+  }
+}

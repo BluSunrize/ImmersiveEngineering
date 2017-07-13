@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class RecipeRevolver implements IRecipe
+public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
@@ -48,10 +48,11 @@ public class RecipeRevolver implements IRecipe
 	}
 
 	@Override
-	public int getRecipeSize()
+	public boolean canFit(int width, int height)
 	{
-		return 10;
+		return width>=2 && height>=2;
 	}
+
 	@Override
 	public ItemStack getRecipeOutput()
 	{

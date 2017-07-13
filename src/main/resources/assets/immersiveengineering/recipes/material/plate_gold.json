@@ -1,0 +1,16 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:metal",
+    "data": 40
+  },
+  "ingredients": [
+    {
+      "item": "#ingotGold"
+    },
+    {
+      "item": "immersiveengineering:tool",
+      "data": 0
+    }
+  ]
+}

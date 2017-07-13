@@ -1,0 +1,25 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration0",
+    "data": 6,
+    "count": 2
+  },
+  "pattern": [
+    "III",
+    "EDE",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "E": {
+      "item": "#ingotElectrum"
+    },
+    "D": {
+      "item": "immersiveengineering:metal_device1",
+      "data": 2
+    }
+  }
+}

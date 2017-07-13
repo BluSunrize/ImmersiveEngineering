@@ -1,0 +1,30 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "quarter_turn": true,
+  "group": "immersiveengineering:concrete",
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 5,
+    "count": 12
+  },
+  "pattern": [
+    "SCS",
+    "GBG",
+    "SCS"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:clay_ball"
+    },
+    "S": {
+      "item": "#itemSlag"
+    },
+    "G": {
+      "item": "minecraft:gravel"
+    },
+    "B": {
+      "type": "immersiveengineering:fluid",
+      "fluid": "water"
+    }
+  }
+}

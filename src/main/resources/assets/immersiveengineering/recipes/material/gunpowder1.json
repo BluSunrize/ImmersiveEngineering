@@ -1,0 +1,33 @@
+{
+  "conditions": [
+    {
+      "type": "immersiveengineering:ore_exists",
+      "ore": "dustCharcoal"
+    }
+  ],
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "minecraft:gunpowder",
+    "count": 4
+  },
+  "ingredients": [
+    {
+      "item": "#dustSaltpeter"
+    },
+    {
+      "item": "#dustSaltpeter"
+    },
+    {
+      "item": "#dustSaltpeter"
+    },
+    {
+      "item": "#dustSaltpeter"
+    },
+    {
+      "item": "#dustSulfur"
+    },
+    {
+      "item": "#dustCharcoal"
+    }
+  ]
+}

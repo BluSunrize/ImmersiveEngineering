@@ -11,22 +11,19 @@ import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.*;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -35,14 +32,15 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Function;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[13.20.0.2259,);after:jei@[4.3,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[14.21.1.2404,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.10.2-2.5,);after:theoneprobe@[1.4.4,)")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
@@ -69,6 +67,8 @@ public class ImmersiveEngineering
 		IEContent.preInit();
 		proxy.preInit();
 
+		IEAdvancements.preInit();
+
 		WireType.wireLossRatio = IEConfig.wireLossRatio;
 		WireType.wireTransferRate = IEConfig.wireTransferRate;
 		WireType.wireColouration = IEConfig.wireColouration;
@@ -86,11 +86,13 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{5,3});
 		IECompatModule.doModulesPreInit();
-		proxy.preInitEnd();
+
+		new ThreadContributorSpecialsDownloader();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
+		proxy.preInitEnd();
 		IEContent.init();
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		GameRegistry.registerWorldGenerator(ieWorldGen, 0);
@@ -137,7 +139,6 @@ public class ImmersiveEngineering
 					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
 			}
 		}
-		NameRemapper.init();
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
@@ -145,7 +146,6 @@ public class ImmersiveEngineering
 		IEContent.postInit();
 		ExcavatorHandler.recalculateChances(true);
 		proxy.postInit();
-		new ThreadContributorSpecialsDownloader();
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
 		ShaderRegistry.compileWeight();
@@ -192,42 +192,46 @@ public class ImmersiveEngineering
 				IESaveData.setInstance(world.provider.getDimension(), worldData);
 			}
 		}
+		IEContent.refreshFluidReferences();
 	}
 
 	@Mod.EventHandler
-	public void remap(FMLMissingMappingsEvent ev) {
+	public void remap(MissingMappings<?> ev)
+	{
 		NameRemapper.remap(ev);
 	}
 
-	public static <T extends IForgeRegistryEntry<?>> T register(T object, String name)
-	{
-		return registerByFullName(object, MODID+":"+name);
-	}
-	public static <T extends IForgeRegistryEntry<?>> T registerByFullName(T object, String name)
-	{
-		object.setRegistryName(new ResourceLocation(name));
-		return GameRegistry.register(object);
-	}
-	public static Block registerBlockByFullName(Block block, ItemBlock itemBlock, String name)
-	{
-		block = registerByFullName(block, name);
-		registerByFullName(itemBlock, name);
-		return block;
-	}
-	public static Block registerBlockByFullName(Block block, Class<? extends ItemBlock> itemBlock, String name)
-	{
-		try{
-			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), name);
-		}catch(Exception e){e.printStackTrace();}
-		return null;
-	}
-	public static Block registerBlock(Block block, Class<? extends ItemBlock> itemBlock, String name)
-	{
-		try{
-			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), MODID+":"+name);
-		}catch(Exception e){e.printStackTrace();}
-		return null;
-	}
+//	public static Item registerItem(Item item, String name)
+//	{
+//		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(MODID+":"+name)));
+//		return item;
+//	}
+//	public static Item registerItemByFullName(Item item, String name)
+//	{
+//		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(name)));
+//		return item;
+//	}
+//	public static Block registerBlockByFullName(Block block, ItemBlock itemBlock, String name)
+//	{
+//		ResourceLocation rl = new ResourceLocation(name);
+//		ForgeRegistries.BLOCKS.register(block.setRegistryName(rl));
+//		ForgeRegistries.ITEMS.register(itemBlock.setRegistryName(rl));
+//		return block;
+//	}
+//	public static Block registerBlockByFullName(Block block, Class<? extends ItemBlock> itemBlock, String name)
+//	{
+//		try{
+//			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), name);
+//		}catch(Exception e){e.printStackTrace();}
+//		return null;
+//	}
+//	public static Block registerBlock(Block block, Class<? extends ItemBlock> itemBlock, String name)
+//	{
+//		try{
+//			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), MODID+":"+name);
+//		}catch(Exception e){e.printStackTrace();}
+//		return null;
+//	}
 
 
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)

@@ -2,9 +2,9 @@ package blusunrize.lib.manual;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -52,7 +52,7 @@ public class ManualUtils
 	public static void drawTexturedRect(int x, int y, int w, int h, double... uv)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
 		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();

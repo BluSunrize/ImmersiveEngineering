@@ -1,0 +1,14 @@
+{
+  "type": "forge:ore_shapeless",
+  "group": "immersiveengineering:treated_wood",
+  "result": {
+    "item": "immersiveengineering:treated_wood",
+    "data": 0
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:treated_wood",
+      "data": 2
+    }
+  ]
+}

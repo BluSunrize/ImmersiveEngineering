@@ -1,0 +1,26 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 3
+  },
+  "pattern": [
+    "CS ",
+    "SBO",
+    " OB"
+  ],
+  "key": {
+    "C": {
+      "item": "#componentIron"
+    },
+    "S": {
+      "item": "#ingotSteel"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "O": {
+      "item": "#dyeRed"
+    }
+  }
+}

@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntitySampleDrill>
 {
 	@Override
-	public void renderTileEntityAt(TileEntitySampleDrill tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntitySampleDrill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -33,7 +33,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Lists.newArrayList("drill"), true));
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);

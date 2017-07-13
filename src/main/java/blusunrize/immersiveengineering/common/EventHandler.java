@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
@@ -74,7 +73,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -134,11 +132,11 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttach(AttachCapabilitiesEvent.Entity event)
+	public void onCapabilitiesAttach(AttachCapabilitiesEvent event)
 	{
-		if(event.getEntity() instanceof EntityMinecart)
+		if(event.getObject() instanceof EntityMinecart)
 		{
-			EntityMinecart entityMinecart = (EntityMinecart) event.getEntity();
+			EntityMinecart entityMinecart = (EntityMinecart) event.getObject();
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"), new ShaderWrapper_Direct("immersiveengineering:minecart"));
 		}
 	}
@@ -168,7 +166,7 @@ public class EventHandler
 			for(ResourceLocation inject : lootInjections)
 				if(event.getName().getResourcePath().equals(inject.getResourcePath()))
 				{
-					LootPool injectPool = Utils.loadBuiltinLootTable(inject).getPool("immersiveengineering_loot_inject");
+					LootPool injectPool = Utils.loadBuiltinLootTable(inject, event.getLootTableManager()).getPool("immersiveengineering_loot_inject");
 					LootPool mainPool = event.getTable().getPool("main");
 					if(injectPool!=null && mainPool!=null)
 						try
@@ -526,45 +524,6 @@ public class EventHandler
 				}
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public void onItemCrafted(ItemCraftedEvent event)
-	{
-		if(event.player!=null)
-			for(IEAchievements.AchievementIE achievement : IEAchievements.normalCraftingAchievements)
-			{
-				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
-				{
-					for(ItemStack trigger : achievement.triggerItems)
-						if(ApiUtils.stackMatchesObject(event.crafting, trigger, achievement.checkNBT&&trigger.hasTagCompound()))
-						{
-							event.player.addStat(achievement);
-							break;
-						}
-				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.icon, achievement.checkNBT&&achievement.icon.hasTagCompound()))
-					event.player.addStat(achievement);
-			}
-	}
-
-	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void onBlockPlaced(BlockEvent.PlaceEvent event)
-	{
-		if(event.getPlayer() !=null && !event.isCanceled())
-			for(IEAchievements.AchievementIE achievement : IEAchievements.placementAchievements)
-			{
-				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
-				{
-					for(ItemStack trigger : achievement.triggerItems)
-						if(OreDictionary.itemMatches(trigger, event.getItemInHand(), achievement.checkNBT))
-						{
-							event.getPlayer().addStat(achievement);
-							break;
-						}
-				}
-				else if(OreDictionary.itemMatches(achievement.icon, event.getItemInHand(), achievement.checkNBT))
-					event.getPlayer().addStat(achievement);
-			}
 	}
 
 	@SubscribeEvent()

@@ -10,9 +10,9 @@ import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiAssembler extends GuiContainer
+public class GuiAssembler extends GuiIEContainerBase
 {
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public TileEntityAssembler tile;
@@ -76,7 +76,7 @@ public class GuiAssembler extends GuiContainer
 				if(mx>=guiLeft+27+i*58&&mx<guiLeft+43+i*58 && my>=guiTop+64&&my<guiTop+80)
 				{
 					tooltip.add(tile.patterns[i].inv.get(9).getDisplayName());
-					tile.patterns[i].inv.get(9).getItem().addInformation(tile.patterns[i].inv.get(9), ClientUtils.mc().player, tooltip, false);
+					tile.patterns[i].inv.get(9).getItem().addInformation(tile.patterns[i].inv.get(9), ClientUtils.mc().world, tooltip, TooltipFlags.NORMAL);
 					for(int j=0; j<tooltip.size(); j++)
 						tooltip.set(j, (j==0?tile.patterns[i].inv.get(9).getRarity().rarityColor: TextFormatting.GRAY)+tooltip.get(j));
 				}

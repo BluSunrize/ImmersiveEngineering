@@ -33,13 +33,14 @@ public class ThermalFoundationHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-		//TE Compat for smelter recipes. Not worth a separate module.
-		OreDictionary.registerOre("crystalSlag", new ItemStack(IEContent.itemMaterial,1,7));
 	}
 
 	@Override
 	public void init()
 	{
+		//TE Compat for smelter recipes. Not worth a separate module.
+		OreDictionary.registerOre("crystalSlag", new ItemStack(IEContent.itemMaterial,1,7));
+
 		ChemthrowerHandler.registerEffect("coal", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,0));
 		ChemthrowerHandler.registerFlammable("coal");
 

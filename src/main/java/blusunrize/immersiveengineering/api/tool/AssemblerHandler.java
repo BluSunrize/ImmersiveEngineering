@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.tool;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -73,7 +74,9 @@ public class AssemblerHandler
 				return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.getCount());
 			else
 				return new RecipeQuery(stack, stack.getCount());
-		} else if(o instanceof IngredientStack)
+		} else if(o instanceof Ingredient)
+			return new RecipeQuery(((Ingredient)o).getMatchingStacks(), 1);
+		else if(o instanceof IngredientStack)
 			return new RecipeQuery(o, ((IngredientStack)o).inputSize);
 		return new RecipeQuery(o, 1);
 	}

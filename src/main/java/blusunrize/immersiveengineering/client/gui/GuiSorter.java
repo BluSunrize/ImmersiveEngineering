@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -22,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiSorter extends GuiContainer
+public class GuiSorter extends GuiIEContainerBase
 {
 	TileEntitySorter tile;
 	public GuiSorter(InventoryPlayer inventoryPlayer, TileEntitySorter tile)
@@ -114,7 +113,7 @@ public class GuiSorter extends GuiContainer
 		}
 
 		@Override
-		public void drawButton(Minecraft mc, int mx, int my)
+		public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
 		{
 			if (this.visible)
 			{

@@ -1,0 +1,28 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal_device0",
+			"data": 5
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:craftPump"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:craftPump.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/connect_wire",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:metal_device0",
+						"data": 5
+					}
+				]
+			}
+		}
+	}
+}

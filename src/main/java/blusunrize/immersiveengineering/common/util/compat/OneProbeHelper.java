@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -17,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
@@ -54,6 +56,7 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		input.registerProbeConfigProvider(energyInfo);
 		input.registerProvider(new ProcessProvider());
 		input.registerProvider(new TeslaCoilProvider());
+		input.registerProvider(new SideConfigProvider());
 		input.registerBlockDisplayOverride(new MultiblockDisplayOverride());
 		return null;
 	}
@@ -148,13 +151,13 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if (te instanceof TileEntityTeslaCoil)
+			if(te instanceof TileEntityTeslaCoil)
 			{
 				TileEntityTeslaCoil tc = (TileEntityTeslaCoil) te;
-				if (tc.dummy)
+				if(tc.dummy)
 				{
 					te = world.getTileEntity(data.getPos().offset(tc.facing, -1));
-					if (te instanceof TileEntityTeslaCoil)
+					if(te instanceof TileEntityTeslaCoil)
 						tc = (TileEntityTeslaCoil) te;
 					else
 					{
@@ -164,10 +167,32 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 				}
 				probeInfo.text(I18n.format(Lib.CHAT_INFO+"rsControl."+(tc.redstoneControlInverted?"invertedOn":"invertedOff")));
 				probeInfo.text(I18n.format(Lib.CHAT_INFO+"tesla."+(tc.lowPower?"lowPower":"highPower")));
-				
+
 			}
 		}
-		
+	}
+	public static class SideConfigProvider implements IProbeInfoProvider
+	{
+
+		@Override
+		public String getID()
+		{
+			return ImmersiveEngineering.MODID+":"+"SideConfigInfo";
+		}
+
+		@Override
+		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
+		{
+			TileEntity te = world.getTileEntity(data.getPos());
+			if(te instanceof IEBlockInterfaces.IConfigurableSides && data.getSideHit()!=null)
+			{
+				boolean flip = player.isSneaking();
+				EnumFacing side = flip?data.getSideHit().getOpposite():data.getSideHit();
+				SideConfig sc = ((IEBlockInterfaces.IConfigurableSides)te).getSideConfig(side.getIndex());
+				String s = I18n.format(Lib.DESC_INFO+"blockSide."+(flip?"opposite":"facing"))+": ";
+				probeInfo.text(s + I18n.format(Lib.DESC_INFO+"blockSide.io."+(sc.ordinal()-1)));
+			}
+		}
 	}
 	public static class MultiblockDisplayOverride implements IBlockDisplayOverride
 	{

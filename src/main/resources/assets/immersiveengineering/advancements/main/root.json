@@ -1,0 +1,30 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:tool",
+			"data": 3
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:root"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:root.desc"
+		},
+		"background": "immersiveengineering:textures/blocks/treated_wood.png",
+		"show_toast": false,
+		"announce_to_chat": false
+	},
+	"criteria": {
+		"hold_manual": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:tool",
+						"data": 3
+					}
+				]
+			}
+		}
+	}
+}

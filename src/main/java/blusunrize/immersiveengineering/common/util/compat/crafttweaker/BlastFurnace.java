@@ -3,10 +3,10 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IIngredient;
-import minetweaker.api.item.IItemStack;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -26,10 +26,10 @@ public class BlastFurnace
 			return;
 
 		BlastFurnaceRecipe r = new BlastFurnaceRecipe(CraftTweakerHelper.toStack(output), oInput, time, CraftTweakerHelper.toStack(slag));
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
-	private static class Add implements IUndoableAction
+	private static class Add implements IAction
 	{
 		private final BlastFurnaceRecipe recipe;
 
@@ -46,44 +46,19 @@ public class BlastFurnace
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			BlastFurnaceRecipe.recipeList.remove(recipe);
-			IECompatModule.jeiRemoveFunc.accept(recipe);
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding Blast Furnace Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing Blast Furnace Recipe for " + recipe.output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
-	private static class Remove implements IUndoableAction
+	private static class Remove implements IAction
 	{
 		private final ItemStack output;
 		List<BlastFurnaceRecipe> removedRecipes;
@@ -102,39 +77,9 @@ public class BlastFurnace
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(BlastFurnaceRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						BlastFurnaceRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Blast Furnace Recipe for " + output.getDisplayName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Blast Furnace Recipe for " + output.getDisplayName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 
@@ -146,10 +91,10 @@ public class BlastFurnace
 		if(oInput == null)
 			return;
 
-		MineTweakerAPI.apply(new AddFuel(oInput, time));
+		CraftTweakerAPI.apply(new AddFuel(oInput, time));
 	}
 
-	private static class AddFuel implements IUndoableAction
+	private static class AddFuel implements IAction
 	{
 		private final Object fuel;
 		private Object fuelRecipeKey;
@@ -169,44 +114,19 @@ public class BlastFurnace
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			BlastFurnaceRecipe.blastFuels.remove(fuelRecipeKey);
-			IECompatModule.jeiRemoveFunc.accept(fuelRecipeKey);
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding " + (fuel instanceof ItemStack ? ((ItemStack)fuel).getDisplayName() : (String)fuel) + " as Blast Furnace Fuel";
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing " + (fuel instanceof ItemStack ? ((ItemStack)fuel).getDisplayName() : (String)fuel) + " as Blast Furnace Fuel";
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
 	@ZenMethod
 	public static void removeFuel(IItemStack output)
 	{
-		MineTweakerAPI.apply(new RemoveFuel(CraftTweakerHelper.toStack(output)));
+		CraftTweakerAPI.apply(new RemoveFuel(CraftTweakerHelper.toStack(output)));
 	}
 
-	private static class RemoveFuel implements IUndoableAction
+	private static class RemoveFuel implements IAction
 	{
 		private final ItemStack stack;
 		BlastFurnaceFuel removed;
@@ -234,37 +154,9 @@ public class BlastFurnace
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removed != null)
-			{
-				BlastFurnaceRecipe.blastFuels.add(removed);
-				IECompatModule.jeiAddFunc.accept(removed);
-			}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing " + stack + " as Blast Furnace Fuel";
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding " + stack + " as Blast Furnace Fuel";
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 }

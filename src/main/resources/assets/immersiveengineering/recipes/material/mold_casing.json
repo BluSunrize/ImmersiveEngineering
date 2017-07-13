@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:mold",
+    "data": 3
+  },
+  "pattern": [
+    " P ",
+    "PCP",
+    " P "
+  ],
+  "key": {
+    "P": {
+      "item": "#plateSteel"
+    },
+    "C": {
+      "item": "immersiveengineering:bullet",
+      "data": 0
+    }
+  }
+}

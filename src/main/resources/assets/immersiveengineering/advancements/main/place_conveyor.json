@@ -1,0 +1,22 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:conveyor"
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:placeConveyor"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:placeConveyor.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/root",
+	"criteria": {
+		"place_conveyor": {
+			"trigger": "minecraft:placed_block",
+			"conditions": {
+				"block": "immersiveengineering:conveyor"
+			}
+		}
+	}
+}

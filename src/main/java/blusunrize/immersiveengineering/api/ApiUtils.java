@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
@@ -127,6 +128,11 @@ public class ApiUtils
 					return false;
 			}
 		return true;
+	}
+
+	public static Ingredient createIngredientFromList(List<ItemStack> list)
+	{
+		return Ingredient.fromStacks(list.toArray(new ItemStack[list.size()]));
 	}
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack)

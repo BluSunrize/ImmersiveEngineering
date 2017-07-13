@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 0,
+    "count": 3
+  },
+  "pattern": [
+    "CBC",
+    "BSB",
+    "CBC"
+  ],
+  "key": {
+    "S": {
+      "item": "#sandstone"
+    },
+    "C": {
+      "item": "minecraft:clay_ball"
+    },
+    "B": {
+      "item": "#ingotBrick"
+    }
+  }
+}

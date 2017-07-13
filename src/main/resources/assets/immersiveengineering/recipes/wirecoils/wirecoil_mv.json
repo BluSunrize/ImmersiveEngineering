@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wirecoil",
+    "data": 1,
+    "count": 4
+  },
+  "pattern": [
+    " I ",
+    "ISI",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "item": "#wireElectrum"
+    },
+    "S": {
+      "item": "#listWoodenSticks"
+    }
+  }
+}

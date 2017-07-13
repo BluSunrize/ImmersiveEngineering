@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "eighth_turn": true,
+  "result": {
+    "item": "immersiveengineering:metal_decoration0",
+    "data": 3,
+    "count": 2
+  },
+  "pattern": [
+    "IRI",
+    "RCR",
+    "IRI"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "C": {
+      "item": "#ingotCopper"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    }
+  }
+}

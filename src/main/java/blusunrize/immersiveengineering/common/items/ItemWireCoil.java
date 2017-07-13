@@ -8,11 +8,11 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +25,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		if(stack.getItemDamage() == 5)
 		{
@@ -155,7 +156,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 										nodeHere.connectCable(type, target, nodeLink);
 										nodeLink.connectCable(type, targetLink, nodeHere);
 										IESaveData.setDirty(world.provider.getDimension());
-										player.addStat(IEAchievements.connectWire);
+										Utils.unlockIEAdvancement(player, "main/connect_wire");
 
 										if(!player.capabilities.isCreativeMode)
 											stack.shrink(1);

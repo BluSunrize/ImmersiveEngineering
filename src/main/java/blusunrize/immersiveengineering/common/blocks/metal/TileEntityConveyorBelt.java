@@ -142,7 +142,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			if(conveyorBeltSubtype.canBeDyed() && Utils.isDye(heldItem))
 			{
 				EnumDyeColor dye = EnumDyeColor.byDyeDamage(Utils.getDye(heldItem));
-				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye.getMapColor().colorValue);
+				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye.getColorValue());
 			}
 			else
 				update = conveyorBeltSubtype.playerInteraction(this, player, hand, heldItem, hitX,hitY,hitZ, side);

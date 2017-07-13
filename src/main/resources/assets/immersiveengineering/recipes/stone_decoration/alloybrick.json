@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 10,
+    "count": 2
+  },
+  "pattern": [
+    "SB",
+    "BS"
+  ],
+  "key": {
+    "S": {
+      "item": "#sandstone"
+    },
+    "B": {
+      "item": "#ingotBrick"
+    }
+  }
+}

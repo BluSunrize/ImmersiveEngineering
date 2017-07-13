@@ -1,0 +1,29 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 9
+  },
+  "pattern": [
+    "III",
+    "PTC",
+    "ILI"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "P": {
+      "item": "#paneGlass"
+    },
+    "T": {
+      "item": "#elecTube"
+    },
+    "C": {
+      "item": "#copperCoil"
+    },
+    "L": {
+      "item": "#componentIron"
+    }
+  }
+}

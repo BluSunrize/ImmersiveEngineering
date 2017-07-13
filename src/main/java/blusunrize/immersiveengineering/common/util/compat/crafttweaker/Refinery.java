@@ -2,9 +2,9 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.liquid.ILiquidStack;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.api.liquid.ILiquidStack;
 import net.minecraftforge.fluids.FluidStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -26,10 +26,10 @@ public class Refinery
 			return;
 
 		RefineryRecipe r = new RefineryRecipe(fOut, fIn0, fIn1, energy);
-		MineTweakerAPI.apply(new Add(r));
+		CraftTweakerAPI.apply(new Add(r));
 	}
 
-	private static class Add implements IUndoableAction
+	private static class Add implements IAction
 	{
 		private final RefineryRecipe recipe;
 
@@ -46,34 +46,9 @@ public class Refinery
 		}
 
 		@Override
-		public boolean canUndo()
-		{
-			return true;
-		}
-
-		@Override
-		public void undo()
-		{
-			RefineryRecipe.recipeList.remove(recipe);
-			IECompatModule.jeiRemoveFunc.accept(recipe);
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Adding Refinery Recipe for " + recipe.output.getLocalizedName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Removing Refinery Recipe for " + recipe.output.getLocalizedName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
 		}
 	}
 
@@ -81,10 +56,10 @@ public class Refinery
 	public static void removeRecipe(ILiquidStack output)
 	{
 		if(CraftTweakerHelper.toFluidStack(output) != null)
-			MineTweakerAPI.apply(new Remove(CraftTweakerHelper.toFluidStack(output)));
+			CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toFluidStack(output)));
 	}
 
-	private static class Remove implements IUndoableAction
+	private static class Remove implements IAction
 	{
 		private final FluidStack output;
 		ArrayList<RefineryRecipe> removedRecipes = new ArrayList<RefineryRecipe>();
@@ -111,39 +86,9 @@ public class Refinery
 		}
 
 		@Override
-		public void undo()
-		{
-			if(removedRecipes != null)
-				for(RefineryRecipe recipe : removedRecipes)
-					if(recipe != null)
-					{
-						RefineryRecipe.recipeList.add(recipe);
-						IECompatModule.jeiAddFunc.accept(recipe);
-					}
-		}
-
-		@Override
 		public String describe()
 		{
 			return "Removing Refinery Recipes for " + output.getLocalizedName();
-		}
-
-		@Override
-		public String describeUndo()
-		{
-			return "Re-Adding Refinery Recipes for " + output.getLocalizedName();
-		}
-
-		@Override
-		public Object getOverrideKey()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean canUndo()
-		{
-			return true;
 		}
 	}
 }

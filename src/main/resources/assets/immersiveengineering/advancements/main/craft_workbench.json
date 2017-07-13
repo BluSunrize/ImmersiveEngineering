@@ -1,0 +1,28 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:wooden_device0",
+			"data": 2
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:craftWorkbench"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:craftWorkbench.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/root",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:wooden_device0",
+						"data": 2
+					}
+				]
+			}
+		}
+	}
+}

@@ -112,5 +112,11 @@ public class IEFluid extends Fluid
 		{
 			return new DataParameter(id, this);
 		}
+
+		@Override
+		public Optional<FluidStack> copyValue(Optional<FluidStack> value)
+		{
+			return value.isPresent()?Optional.of(value.get().copy()):Optional.absent();
+		}
 	};
 }

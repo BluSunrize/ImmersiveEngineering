@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device0",
+    "data": 5
+  },
+  "pattern": [
+    " I ",
+    "ICI",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "item": "#plateIron"
+    },
+    "C": {
+      "item": "#componentIron"
+    },
+    "P": {
+      "item": "immersiveengineering:metal_device1",
+      "data": 6
+    }
+  }
+}

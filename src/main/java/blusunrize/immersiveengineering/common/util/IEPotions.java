@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +12,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class IEPotions
 {
@@ -24,13 +26,13 @@ public class IEPotions
 
 	public static void init()
 	{
-		flammable = new IEPotion(new ResourceLocation("ie.flammable"), true,0x8f3f1f,0, false,0, true,true).setPotionName("immersiveengineering.potion.flammable");
-		slippery = new IEPotion(new ResourceLocation("ie.slippery"), true,0x171003,0, false,1, true,true).setPotionName("immersiveengineering.potion.slippery");
-		conductive = new IEPotion(new ResourceLocation("ie.conductive"), true,0x690000,0, false,2, true,true).setPotionName("immersiveengineering.potion.conductive");
-		sticky = new IEPotion(new ResourceLocation("ie.sticky"), true,0x9c6800,0, false,3, true,true).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
-		stunned = new IEPotion(new ResourceLocation("ie.stunned"), true,0x624a98,0, false,4, true,true).setPotionName("immersiveengineering.potion.stunned");
-		concreteFeet = new IEPotion(new ResourceLocation("ie.concreteFeet"), true,0x624a98,0, false,5, true,true).setPotionName("immersiveengineering.potion.concreteFeet").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
-		flashed = new IEPotion(new ResourceLocation("ie.flashed"), true,0x624a98,0, false,6, true,true).setPotionName("immersiveengineering.potion.flashed").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
+		flammable = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flammable"), true,0x8f3f1f,0, false,0, true,true).setPotionName("immersiveengineering.potion.flammable");
+		slippery = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "slippery"), true,0x171003,0, false,1, true,true).setPotionName("immersiveengineering.potion.slippery");
+		conductive = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "conductive"), true,0x690000,0, false,2, true,true).setPotionName("immersiveengineering.potion.conductive");
+		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), true,0x9c6800,0, false,3, true,true).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
+		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), true,0x624a98,0, false,4, true,true).setPotionName("immersiveengineering.potion.stunned");
+		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concreteFeet"), true,0x624a98,0, false,5, true,true).setPotionName("immersiveengineering.potion.concreteFeet").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
+		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), true,0x624a98,0, false,6, true,true).setPotionName("immersiveengineering.potion.flashed").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
 
 		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky,stunned,concreteFeet,flashed};
 	}
@@ -52,7 +54,7 @@ public class IEPotions
 			this.halfTickRateWIthAmplifier = halveTick;
 			this.setIconIndex(icon%8, icon/8);
 
-			REGISTRY.register(-1, resource, this);
+			ForgeRegistries.POTIONS.register(this.setRegistryName(resource));
 		}
 
 		@Override
@@ -91,7 +93,7 @@ public class IEPotions
 			if(this==IEPotions.slippery)
 			{
 				if(living.onGround)
-					living.moveRelative(0,1, 0.005F);
+					living.moveRelative(0,0,1, 0.005F);
 				EntityEquipmentSlot hand = living.getRNG().nextBoolean()?EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND;
 				if(!living.world.isRemote && living.getRNG().nextInt(300)==0 && !living.getItemStackFromSlot(hand).isEmpty())
 				{

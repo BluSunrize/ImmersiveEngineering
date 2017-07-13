@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -125,7 +126,7 @@ public class ClientUtils
 		boolean b = (dx < 0 && dz <= 0) || (dz < 0 && dx <= 0) || (dz < 0 && dx > 0);
 
 
-		VertexBuffer worldrenderer = tes.getBuffer();
+		BufferBuilder worldrenderer = tes.getBuffer();
 		//		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
 		//		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
 		//		worldrenderer.pos(x+w, y, 0).tex(uv[1], uv[2]).endVertex();
@@ -958,7 +959,7 @@ public class ClientUtils
 	//	}
 
 	//Cheers boni =P
-	public static void drawBlockDamageTexture(Tessellator tessellatorIn, VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
+	public static void drawBlockDamageTexture(Tessellator tessellatorIn, BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
 		double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double) partialTicks;
 		double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double) partialTicks;
@@ -1022,7 +1023,7 @@ public class ClientUtils
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		worldrenderer.pos(x, y + h, 0).color(colour >> 16 & 255, colour >> 8 & 255, colour & 255, colour >> 24 & 255).endVertex();
 		worldrenderer.pos(x + w, y + h, 0).color(colour >> 16 & 255, colour >> 8 & 255, colour & 255, colour >> 24 & 255).endVertex();
@@ -1051,7 +1052,7 @@ public class ClientUtils
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		worldrenderer.pos(x1, y0, 0).color(f1, f2, f3, f).endVertex();
 		worldrenderer.pos(x0, y0, 0).color(f1, f2, f3, f).endVertex();
@@ -1067,7 +1068,7 @@ public class ClientUtils
 	public static void drawTexturedRect(float x, float y, float w, float h, double... uv)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		worldrenderer.pos(x, y + h, 0).tex(uv[0], uv[3]).endVertex();
 		worldrenderer.pos(x + w, y + h, 0).tex(uv[1], uv[3]).endVertex();
@@ -1144,7 +1145,7 @@ public class ClientUtils
 
 	public static void renderToolTip(ItemStack stack, int x, int y)
 	{
-		List list = stack.getTooltip(mc().player, mc().gameSettings.advancedItemTooltips);
+		List list = stack.getTooltip(mc().player, mc().gameSettings.advancedItemTooltips?TooltipFlags.ADVANCED:TooltipFlags.NORMAL);
 
 		for(int k = 0; k < list.size(); ++k)
 			if(k == 0)
@@ -1561,17 +1562,17 @@ public class ClientUtils
 	public static void renderQuads(Collection<BakedQuad> quads, float brightness, float red, float green, float blue)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder BufferBuilder = tessellator.getBuffer();
 		for(BakedQuad bakedquad : quads)
 		{
-			vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
-			vertexbuffer.addVertexData(bakedquad.getVertexData());
+			BufferBuilder.begin(7, DefaultVertexFormats.ITEM);
+			BufferBuilder.addVertexData(bakedquad.getVertexData());
 			if(bakedquad.hasTintIndex())
-				vertexbuffer.putColorRGB_F4(red * brightness, green * brightness, blue * brightness);
+				BufferBuilder.putColorRGB_F4(red * brightness, green * brightness, blue * brightness);
 			else
-				vertexbuffer.putColorRGB_F4(brightness, brightness, brightness);
+				BufferBuilder.putColorRGB_F4(brightness, brightness, brightness);
 			Vec3i vec3i = bakedquad.getFace().getDirectionVec();
-			vertexbuffer.putNormal((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
+			BufferBuilder.putNormal((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
 			tessellator.draw();
 		}
 	}
@@ -1605,7 +1606,7 @@ public class ClientUtils
 		return ret;
 	}
 
-	public static void renderBox(VertexBuffer wr, double x0, double y0, double z0, double x1, double y1, double z1)
+	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
 	{
 		wr.pos(x0, y0, z1).endVertex();
 		wr.pos(x1, y0, z1).endVertex();
@@ -1638,7 +1639,7 @@ public class ClientUtils
 		wr.pos(x1, y0, z0).endVertex();
 	}
 
-	public static void renderTexturedBox(VertexBuffer wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
+	public static void renderTexturedBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
 	{
 		wr.pos(x0, y0, z1).tex(u0, v0).endVertex();
 		wr.pos(x1, y0, z1).tex(u1, v0).endVertex();
@@ -1699,12 +1700,12 @@ public class ClientUtils
 	/**
 	 * Renders the given quads. Uses the local and neighbour brightnesses to calculate lighting
 	 * @param quads the quads to render
-	 * @param renderer the VertexBuffer to render to
+	 * @param renderer the BufferBuilder to render to
 	 * @param world the world the model is in. Will be used to obtain lighting information
 	 * @param pos the position that this model is in. Use the position the the quads are actually in, not the rendering block
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
 	 */
-	public static void renderModelTESRFancy(List<BakedQuad> quads, VertexBuffer renderer, World world, BlockPos pos, boolean useCached)
+	public static void renderModelTESRFancy(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, boolean useCached)
 	{//TODO include matrix transformations?, cache normals?
 		if (Config.IEConfig.disableFancyTESR)
 			renderModelTESRFast(quads, renderer, world, pos);
@@ -1809,7 +1810,7 @@ public class ClientUtils
 	private static float scaledSquared(int val, float scale) {
 		return (val/scale)*(val/scale);
 	}
-	public static void renderModelTESRFast(List<BakedQuad> quads, VertexBuffer renderer, World world, BlockPos pos)
+	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos)
 	{
 		int brightness = world.getCombinedLight(pos, 0);
 		int l1 = (brightness >> 0x10) & 0xFFFF;

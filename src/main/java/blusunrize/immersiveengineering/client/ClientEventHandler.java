@@ -15,8 +15,10 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
+import blusunrize.immersiveengineering.client.models.ModelIEPlayer;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -39,7 +41,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelBiped.ArmPose;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.*;
@@ -236,7 +238,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
 			event.getToolTip().add(TextFormatting.GRAY+ I18n.format("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack())));
-		if(IEConfig.oreTooltips && event.isShowAdvancedItemTooltips())
+		if(IEConfig.oreTooltips && event.getFlags().isAdvanced())
 		{
 			for(int oid : OreDictionary.getOreIDs(event.getItemStack()))
 				event.getToolTip().add(TextFormatting.GRAY + OreDictionary.getOreName(oid));
@@ -557,7 +559,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 						}
 
-						float cooldown = 1-ItemNBTHelper.getInt(equipped, "cooldown")/15f;
+						int cd = ((ItemRevolver)equipped.getItem()).getShootCooldown(equipped);
+						float cdMax = ((ItemRevolver)equipped.getItem()).getMaxShootCooldown(equipped);
+						float cooldown = 1-cd/cdMax;
 						if(cooldown>0)
 						{
 							GlStateManager.scale(2, 2, 1);
@@ -575,7 +579,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 							Tessellator tessellator = Tessellator.getInstance();
-							VertexBuffer worldrenderer = tessellator.getBuffer();
+							BufferBuilder worldrenderer = tessellator.getBuffer();
 							worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 							worldrenderer.pos((right?0: 1-x2)*7, 15, 0).tex(uMin, 127/256f).endVertex();
 							worldrenderer.pos((right?x2: 1)*7, 15, 0).tex(uMax, 127/256f).endVertex();
@@ -980,7 +984,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				GlStateManager.depthMask(false);
 
 				Tessellator tessellator = Tessellator.getInstance();
-				VertexBuffer vertexbuffer = tessellator.getBuffer();
+				BufferBuilder BufferBuilder = tessellator.getBuffer();
 
 				EnumFacing f = ((TileEntityTurntable)tile).getFacing();
 				double tx = pos.getX()+.5;
@@ -992,12 +996,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					ty += f.getFrontOffsetY();
 					tz += f.getFrontOffsetZ();
 				}
-				vertexbuffer.setTranslation(tx+px,ty+py,tz+pz);
+				BufferBuilder.setTranslation(tx+px,ty+py,tz+pz);
 
 				double angle = -event.getPlayer().ticksExisted%80/40d*Math.PI;
-				drawRotationArrows(tessellator, vertexbuffer, f, angle, ((TileEntityTurntable)tile).invert);
+				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TileEntityTurntable)tile).invert);
 
-				vertexbuffer.setTranslation(0, 0, 0);
+				BufferBuilder.setTranslation(0, 0, 0);
 
 				GlStateManager.depthMask(true);
 				GlStateManager.enableTexture2D();
@@ -1019,8 +1023,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				GlStateManager.depthMask(false);
 
 				Tessellator tessellator = Tessellator.getInstance();
-				VertexBuffer vertexbuffer = tessellator.getBuffer();
-				vertexbuffer.setTranslation(pos.getX() + px, pos.getY() + py, pos.getZ() + pz);
+				BufferBuilder BufferBuilder = tessellator.getBuffer();
+				BufferBuilder.setTranslation(pos.getX() + px, pos.getY() + py, pos.getZ() + pz);
 				double[][] points = new double[4][];
 
 
@@ -1043,16 +1047,16 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					points[2] = new double[]{side == EnumFacing.WEST ? ((targetedBB != null ? targetedBB.minX : 0) - f1) : ((targetedBB != null ? targetedBB.maxX : 1) + f1), 1 + f1, 0 - f1};
 					points[3] = new double[]{side == EnumFacing.WEST ? ((targetedBB != null ? targetedBB.minX : 0) - f1) : ((targetedBB != null ? targetedBB.maxX : 1) + f1), 0 - f1, 1 + f1};
 				}
-				vertexbuffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+				BufferBuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
 				for(double[] point : points)
-					vertexbuffer.pos(point[0], point[1], point[2]).color(0, 0, 0, 0.4F).endVertex();
+					BufferBuilder.pos(point[0], point[1], point[2]).color(0, 0, 0, 0.4F).endVertex();
 				tessellator.draw();
 
-				vertexbuffer.begin(2, DefaultVertexFormats.POSITION_COLOR);
-				vertexbuffer.pos(points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
-				vertexbuffer.pos(points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
-				vertexbuffer.pos(points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
-				vertexbuffer.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
+				BufferBuilder.begin(2, DefaultVertexFormats.POSITION_COLOR);
+				BufferBuilder.pos(points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
+				BufferBuilder.pos(points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
+				BufferBuilder.pos(points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
+				BufferBuilder.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
 				tessellator.draw();
 
 				float xFromMid = side.getAxis() == Axis.X ? 0 : (float) event.getTarget().hitVec.x - pos.getX() - .5f;
@@ -1061,8 +1065,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3d dir = new Vec3d(max == Math.abs(xFromMid) ? Math.signum(xFromMid) : 0, max == Math.abs(yFromMid) ? Math.signum(yFromMid) : 0, max == Math.abs(zFromMid) ? Math.signum(zFromMid) : 0);
 				if(dir != null)
-					drawBlockOverlayArrow(tessellator, vertexbuffer, dir, side, targetedBB);
-				vertexbuffer.setTranslation(0, 0, 0);
+					drawBlockOverlayArrow(tessellator, BufferBuilder, dir, side, targetedBB);
+				BufferBuilder.setTranslation(0, 0, 0);
 
 				GlStateManager.depthMask(true);
 				GlStateManager.enableTexture2D();
@@ -1083,11 +1087,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 
 	private static double[][] rotationArrowCoords = {{.375, 0},{.5, -.125},{.4375, -.125},{.4375, -.25},{.25, -.4375},{-.25, -.4375},{-.4375, -.25},{-.4375, -.0625},{-.3125, -.0625},{-.3125, -.1875},{-.1875, -.3125},{.1875, -.3125},{.3125, -.1875},{.3125, -.125},{.25, -.125}};
 	private static double[][] rotationArrowQuads = {rotationArrowCoords[7], rotationArrowCoords[8], rotationArrowCoords[6], rotationArrowCoords[9], rotationArrowCoords[5], rotationArrowCoords[10], rotationArrowCoords[4], rotationArrowCoords[11], rotationArrowCoords[3], rotationArrowCoords[12], rotationArrowCoords[2], rotationArrowCoords[13], rotationArrowCoords[1], rotationArrowCoords[14], rotationArrowCoords[0], rotationArrowCoords[0]};
-	public static void drawRotationArrows(Tessellator tessellator, VertexBuffer vertexbuffer, EnumFacing facing, double rotation, boolean flip)
+	public static void drawRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, EnumFacing facing, double rotation, boolean flip)
 	{
 		double cos = Math.cos(rotation);
 		double sin = Math.sin(rotation);
-		vertexbuffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+		BufferBuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
 		for(double[] p : rotationArrowCoords)
 		{
 			double w = (cos*p[0]+sin*p[1]);
@@ -1095,10 +1099,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1:1)*facing.getAxisDirection().getOffset()*h;
 			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): w;
 			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?1:-1)*facing.getAxisDirection().getOffset()*h: w;
-			vertexbuffer.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
+			BufferBuilder.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
 		}
 		tessellator.draw();
-		vertexbuffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+		BufferBuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
 		for(double[] p : rotationArrowCoords)
 		{
 			double w = (cos*p[0]+sin*p[1]);
@@ -1106,11 +1110,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1:-1)*facing.getAxisDirection().getOffset()*h;
 			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): -w;
 			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1:1)*facing.getAxisDirection().getOffset()*h: -w;
-			vertexbuffer.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
+			BufferBuilder.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
 		}
 		tessellator.draw();
 
-		vertexbuffer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		BufferBuilder.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_COLOR);
 		for(double[] p : rotationArrowQuads)
 		{
 			double w = (cos*p[0]+sin*p[1]);
@@ -1118,10 +1122,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1:1)*facing.getAxisDirection().getOffset()*h;
 			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): w;
 			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?1:-1)*facing.getAxisDirection().getOffset()*h: w;
-			vertexbuffer.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0],Lib.COLOUR_F_ImmersiveOrange[1],Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+			BufferBuilder.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0],Lib.COLOUR_F_ImmersiveOrange[1],Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		}
 		tessellator.draw();
-		vertexbuffer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		BufferBuilder.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_COLOR);
 		for(double[] p : rotationArrowQuads)
 		{
 			double w = (cos*p[0]+sin*p[1]);
@@ -1129,14 +1133,14 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1:-1)*facing.getAxisDirection().getOffset()*h;
 			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): -w;
 			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1:1)*facing.getAxisDirection().getOffset()*h: -w;
-			vertexbuffer.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0],Lib.COLOUR_F_ImmersiveOrange[1],Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+			BufferBuilder.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0],Lib.COLOUR_F_ImmersiveOrange[1],Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		}
 		tessellator.draw();
 	}
 
 	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
-	public static void drawBlockOverlayArrow(Tessellator tessellator, VertexBuffer vertexbuffer, Vec3d directionVec, EnumFacing side, AxisAlignedBB targetedBB)
+	public static void drawBlockOverlayArrow(Tessellator tessellator, BufferBuilder BufferBuilder, Vec3d directionVec, EnumFacing side, AxisAlignedBB targetedBB)
 	{
 		Vec3d[] translatedPositions = new Vec3d[arrowCoords.length];
 		Matrix4 mat = new Matrix4();
@@ -1160,13 +1164,13 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			translatedPositions[i] = vec;
 		}
 
-		vertexbuffer.begin(6, DefaultVertexFormats.POSITION_COLOR);
+		BufferBuilder.begin(6, DefaultVertexFormats.POSITION_COLOR);
 		for(Vec3d point : translatedPositions)
-			vertexbuffer.pos(point.x, point.y, point.z).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+			BufferBuilder.pos(point.x, point.y, point.z).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		tessellator.draw();
-		vertexbuffer.begin(2, DefaultVertexFormats.POSITION_COLOR);
+		BufferBuilder.begin(2, DefaultVertexFormats.POSITION_COLOR);
 		for(Vec3d point : translatedPositions)
-			vertexbuffer.pos(point.x, point.y, point.z).color(0, 0, 0, 0.4F).endVertex();
+			BufferBuilder.pos(point.x, point.y, point.z).color(0, 0, 0, 0.4F).endVertex();
 		tessellator.draw();
 	}
 
@@ -1205,7 +1209,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			int y = Math.min((int)player.posY-2,player.getEntityWorld().getChunkFromBlockCoords(new BlockPos(player.posX,0,player.posZ)).getLowestHeight());
 			float h = (float)Math.max(32, player.posY-y+4);
 			Tessellator tessellator = Tessellator.getInstance();
-			VertexBuffer vertexbuffer = tessellator.getBuffer();
+			BufferBuilder BufferBuilder = tessellator.getBuffer();
 
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
@@ -1215,28 +1219,28 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			float r = Lib.COLOUR_F_ImmersiveOrange[0];
 			float g = Lib.COLOUR_F_ImmersiveOrange[1];
 			float b = Lib.COLOUR_F_ImmersiveOrange[2];
-			vertexbuffer.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
+			BufferBuilder.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
 			GlStateManager.glLineWidth(5f);
-			vertexbuffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			vertexbuffer.pos( 0,0, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos( 0,h, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,0, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,h, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,0,16).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,h,16).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos( 0,0,16).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos( 0,h,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+			BufferBuilder.pos( 0,0, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos( 0,h, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,0, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,h, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,0,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,h,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos( 0,0,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos( 0,h,16).color(r,g,b,.375f).endVertex();
 
-			vertexbuffer.pos( 0,2, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,2, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos( 0,2, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos( 0,2,16).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos( 0,2,16).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,2,16).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,2, 0).color(r,g,b,.375f).endVertex();
-			vertexbuffer.pos(16,2,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos( 0,2, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,2, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos( 0,2, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos( 0,2,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos( 0,2,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,2,16).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,2, 0).color(r,g,b,.375f).endVertex();
+			BufferBuilder.pos(16,2,16).color(r,g,b,.375f).endVertex();
 			tessellator.draw();
-			vertexbuffer.setTranslation(0, 0, 0);
+			BufferBuilder.setTranslation(0, 0, 0);
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.enableCull();
 			GlStateManager.disableBlend();
@@ -1280,27 +1284,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=false;
 		}
-		for(EnumHand hand : EnumHand.values())
-		{
-			ItemStack heldItem = event.getEntity().getHeldItem(hand);
-			if(!heldItem.isEmpty())
-			{
-				ArmPose twohanded = null;
-				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemChemthrower), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemDrill), heldItem, true) || OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun), heldItem, true))
-					twohanded = ArmPose.BLOCK;
-				if(twohanded!=null && event.getEntity().getHeldItem(hand==EnumHand.MAIN_HAND?EnumHand.OFF_HAND:EnumHand.MAIN_HAND).isEmpty())
-				{
-					ModelBase model = event.getRenderer().getMainModel();
-					if(model instanceof ModelBiped)
-					{
-						if(hand==EnumHand.MAIN_HAND)
-							((ModelBiped) model).leftArmPose = twohanded;
-						else
-							((ModelBiped) model).rightArmPose = twohanded;
-					}
-				}
-			}
-		}
+		//Replaces vanilla model with IE's fancy one, provided the config allows it
+		if(Config.IEConfig.fancyItemHolding && !(event.getRenderer().getMainModel() instanceof ModelIEPlayer) && event.getRenderer().getMainModel() instanceof ModelPlayer)
+			event.getRenderer().mainModel = new ModelIEPlayer((ModelPlayer)event.getRenderer().mainModel);
+
 	}
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)

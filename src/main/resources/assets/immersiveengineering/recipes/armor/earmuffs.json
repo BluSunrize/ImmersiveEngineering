@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:earmuffs"
+  },
+  "pattern": [
+    " S ",
+    "S S",
+    "W W"
+  ],
+  "key": {
+    "S": {
+      "item": "#stickIron"
+    },
+    "W": {
+      "item": "minecraft:wool",
+      "data": 32767
+    }
+  }
+}

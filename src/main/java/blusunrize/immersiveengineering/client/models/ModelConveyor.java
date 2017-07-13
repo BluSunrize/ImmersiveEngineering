@@ -25,7 +25,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,7 +35,7 @@ import javax.vecmath.Matrix4f;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
+public class ModelConveyor implements IBakedModel
 {
 	static List<BakedQuad> emptyQuads = Lists.newArrayList();
 	public static HashMap<String, List<BakedQuad>> modelCache = new HashMap<>();

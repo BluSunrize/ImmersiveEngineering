@@ -1,0 +1,28 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal",
+			"data": 8
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:makeSteel"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:makeSteel.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/multiblock_blastfurnace",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:metal",
+						"data": 8
+					}
+				]
+			}
+		}
+	}
+}

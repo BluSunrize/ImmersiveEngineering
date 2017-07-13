@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEntityBottlingMachine>
 {
 	@Override
-	public void renderTileEntityAt(TileEntityBottlingMachine te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityBottlingMachine te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -41,9 +41,9 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
-		//Initialize Tesselator and VertexBuffer
+		//Initialize Tesselator and BufferBuilder
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
@@ -177,7 +177,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 					float h0 = -.5f;
 					float h1 = h0+itemDisplays[i][4];
 
-					VertexBuffer worldrenderer = tessellator.getBuffer();
+					BufferBuilder worldrenderer = tessellator.getBuffer();
 
 					GL11.glEnable(GL11.GL_STENCIL_TEST);
 
@@ -220,7 +220,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 		GlStateManager.popMatrix();
 	}
 
-	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, VertexBuffer worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
+	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
 		if(state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));

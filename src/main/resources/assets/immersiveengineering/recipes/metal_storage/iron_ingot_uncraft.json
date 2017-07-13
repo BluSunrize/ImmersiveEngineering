@@ -1,0 +1,13 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:metal",
+    "data": 29,
+    "count": 9
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ]
+}

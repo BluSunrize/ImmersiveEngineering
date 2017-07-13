@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:connector",
+    "data": 12,
+    "count": 4
+  },
+  "pattern": [
+    "III",
+    "BRB"
+  ],
+  "key": {
+    "I": {
+      "item": "#nuggetElectrum"
+    },
+    "B": {
+      "item": "minecraft:hardened_clay"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    }
+  }
+}

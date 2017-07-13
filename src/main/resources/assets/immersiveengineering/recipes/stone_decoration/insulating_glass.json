@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "quarter_turn": true,
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 8,
+    "count": 2
+  },
+  "pattern": [
+    " G ",
+    "IDI",
+    " G "
+  ],
+  "key": {
+    "G": {
+      "item": "#blockGlass"
+    },
+    "I": {
+      "item": "#dustIron"
+    },
+    "D": {
+      "item": "#dyeGreen"
+    }
+  }
+}

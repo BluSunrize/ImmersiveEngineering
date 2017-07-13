@@ -65,7 +65,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		{
 			if (this.tickedProcesses > 0)
 				for (int i = 23; i < 26; i++)
-					if (this.inventory.get(i).attemptDamageItem(1, Utils.RAND))
+					if (this.inventory.get(i).attemptDamageItem(1, Utils.RAND, null))
 					{
 						this.inventory.set(i, ItemStack.EMPTY);
 						//						updateClient = true;

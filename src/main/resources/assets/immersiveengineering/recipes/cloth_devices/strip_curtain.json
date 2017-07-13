@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:cloth_device",
+    "data": 2,
+    "count": 3
+  },
+  "pattern": [
+    "SSS",
+    "FFF",
+    "FFF"
+  ],
+  "key": {
+    "S": {
+      "item": "#listMetalSticks"
+    },
+    "F": {
+      "item": "#fabricHemp"
+    }
+  }
+}

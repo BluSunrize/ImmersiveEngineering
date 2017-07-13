@@ -9,21 +9,28 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
-import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
@@ -35,7 +42,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -43,10 +49,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IGuiItem
@@ -103,6 +109,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
 				return true;
 		}
+		if(ItemNBTHelper.hasKey(oldStack, "elite") || ItemNBTHelper.hasKey(newStack, "elite"))
+			if(!ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite")))
+				return true;
 		return super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
 	}
 
@@ -129,10 +138,11 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for(int i=0;i<2;i++)
-			list.add(new ItemStack(this,1,i));
+		if(this.isInCreativeTab(tab))
+			for(int i=0;i<2;i++)
+				list.add(new ItemStack(this,1,i));
 		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
 		//		{
 		//			ItemStack stack = new ItemStack(this,1,0);
@@ -142,7 +152,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		//		}
 	}
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		if(stack.getItemDamage()!=1)
 		{
@@ -185,6 +195,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		Multimap multimap = super.getAttributeModifiers(slot, stack);
 		if(slot==EntityEquipmentSlot.MAINHAND)
 		{
+			if(getUpgrades(stack).getBoolean("fancyAnimation"))
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, 0));
 			double melee = getUpgrades(stack).getDouble("melee");
 			if(melee != 0)
 			{
@@ -242,81 +254,83 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
 				return new ActionResult(EnumActionResult.SUCCESS, revolver);
 			}
-			else if(this.getUpgrades(revolver).getBoolean("nerf"))
-				world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
-			else
+			else if(player.getCooledAttackStrength(1)>=1)
 			{
-				if(ItemNBTHelper.getInt(revolver, "cooldown")>0)
-					return new ActionResult(EnumActionResult.PASS, revolver);
-
-				NonNullList<ItemStack> bullets = getBullets(revolver);
-
-				if(isEmpty(revolver))
+				if(this.getUpgrades(revolver).getBoolean("nerf"))
+					world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
+				else
 				{
-					for(int i=0; i<player.inventory.getSizeInventory(); i++)
-					{
-						ItemStack loader = player.inventory.getStackInSlot(i);
-						if(!loader.isEmpty() && loader.getItem() == this && loader.getItemDamage()==1 && !isEmpty(loader))
-						{
-							int dc = 0;
-							for(ItemStack b : bullets)
-								if(!b.isEmpty())
-								{
-									world.spawnEntity(new EntityItem(world, player.posX,player.posY,player.posZ, b ));
-									dc++;
-								}
-							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, .5f, 3f);
-							ItemNBTHelper.setDelayedSoundsForStack(revolver, "casings", "random.successful_hit",.05f,5, dc/2, 8,2);
-							setBullets(revolver, getBullets(loader));
-							setBullets(loader, NonNullList.withSize(8, ItemStack.EMPTY));
-							player.inventory.setInventorySlotContents(i, loader);
-							player.inventory.markDirty();
-							if (player instanceof EntityPlayerMP)
-								ImmersiveEngineering.packetHandler.sendTo(new MessageSpeedloaderSync(i), (EntityPlayerMP)player);
+					if(ItemNBTHelper.getInt(revolver, "cooldown") > 0)
+						return new ActionResult(EnumActionResult.PASS, revolver);
 
-							ItemNBTHelper.setBoolean(revolver, "blocked", true);
-							return new ActionResult(EnumActionResult.SUCCESS, revolver);
+					NonNullList<ItemStack> bullets = getBullets(revolver);
+
+					if(isEmpty(revolver))
+					{
+						for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+						{
+							ItemStack loader = player.inventory.getStackInSlot(i);
+							if(!loader.isEmpty()&&loader.getItem()==this&&loader.getItemDamage()==1&&!isEmpty(loader))
+							{
+								int dc = 0;
+								for(ItemStack b : bullets)
+									if(!b.isEmpty())
+									{
+										world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, b));
+										dc++;
+									}
+								world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, .5f, 3f);
+								ItemNBTHelper.setDelayedSoundsForStack(revolver, "casings", "random.successful_hit", .05f, 5, dc/2, 8, 2);
+								setBullets(revolver, getBullets(loader));
+								setBullets(loader, NonNullList.withSize(8, ItemStack.EMPTY));
+								player.inventory.setInventorySlotContents(i, loader);
+								player.inventory.markDirty();
+								if(player instanceof EntityPlayerMP)
+									ImmersiveEngineering.packetHandler.sendTo(new MessageSpeedloaderSync(i), (EntityPlayerMP)player);
+
+								ItemNBTHelper.setBoolean(revolver, "blocked", true);
+								return new ActionResult(EnumActionResult.SUCCESS, revolver);
+							}
 						}
 					}
-				}
 
-				if(!ItemNBTHelper.getBoolean(revolver, "blocked"))
-				{
-					if(!bullets.get(0).isEmpty() && bullets.get(0).getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
+					if(!ItemNBTHelper.getBoolean(revolver, "blocked"))
 					{
-						String key = ItemNBTHelper.getString(bullets.get(0), "bullet");
-						IBullet bullet = BulletHandler.getBullet(key);
-						if(bullet != null)
+						if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof ItemBullet&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
 						{
-							Vec3d vec = player.getLookVec();
-							boolean electro = getUpgrades(revolver).getBoolean("electro");
-							int count = bullet.getProjectileCount(player);
-							if(count == 1)
+							String key = ItemNBTHelper.getString(bullets.get(0), "bullet");
+							IBullet bullet = BulletHandler.getBullet(key);
+							if(bullet!=null)
 							{
-								Entity entBullet = getBullet(player, vec, vec, key, bullets.get(0), electro);
-								player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
-							} else
-								for(int i = 0; i < count; i++)
+								Vec3d vec = player.getLookVec();
+								boolean electro = getUpgrades(revolver).getBoolean("electro");
+								int count = bullet.getProjectileCount(player);
+								if(count==1)
 								{
-									Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian() * .1, player.getRNG().nextGaussian() * .1, player.getRNG().nextGaussian() * .1);
-									Entity entBullet = getBullet(player, vec, vecDir, key, bullets.get(0), electro);
+									Entity entBullet = getBullet(player, vec, vec, key, bullets.get(0), electro);
 									player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
-								}
-							bullets.set(0, bullet.getCasing(bullets.get(0)));
-							world.playSound(null, player.posX, player.posY, player.posZ, IESounds.revolverFire, SoundCategory.PLAYERS, 1f, 1f);
+								} else
+									for(int i = 0; i < count; i++)
+									{
+										Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
+										Entity entBullet = getBullet(player, vec, vecDir, key, bullets.get(0), electro);
+										player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
+									}
+								bullets.set(0, bullet.getCasing(bullets.get(0)));
+								world.playSound(null, player.posX, player.posY, player.posZ, IESounds.revolverFire, SoundCategory.PLAYERS, 1f, 1f);
+							} else
+								world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
 						} else
 							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
-					}
-					else
-						world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
 
-					NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletSlotAmount(revolver), ItemStack.EMPTY);
-					for(int i = 1; i< cycled.size(); i++)
-						cycled.set(i-1, bullets.get(i));
-					cycled.set(cycled.size() -1, bullets.get(0));
-					setBullets(revolver, cycled);
-					ItemNBTHelper.setInt(revolver, "cooldown", 15);
-					return new ActionResult(EnumActionResult.SUCCESS, revolver);
+						NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletSlotAmount(revolver), ItemStack.EMPTY);
+						for(int i = 1; i < cycled.size(); i++)
+							cycled.set(i-1, bullets.get(i));
+						cycled.set(cycled.size()-1, bullets.get(0));
+						setBullets(revolver, cycled);
+						ItemNBTHelper.setInt(revolver, "cooldown", getMaxShootCooldown(revolver));
+						return new ActionResult(EnumActionResult.SUCCESS, revolver);
+					}
 				}
 			}
 		} else if(!player.isSneaking() && revolver.getItemDamage() == 0)
@@ -332,6 +346,15 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		bullet.motionZ = vecDir.z;
 		bullet.bulletElectro = electro;
 		return bullet;
+	}
+
+	public int getShootCooldown(ItemStack stack)
+	{
+		return ItemNBTHelper.getInt(stack, "cooldown");
+	}
+	public int getMaxShootCooldown(ItemStack stack)
+	{
+		return 15;
 	}
 
 	public boolean isEmpty(ItemStack stack)
@@ -432,9 +455,25 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
+	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity)
 	{
-		return transform;
+		if(entity instanceof EntityPlayer && getUpgrades(stack).getBoolean("fancyAnimation") && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
+		{
+			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT);
+			if(main)
+			{
+				float f = ((EntityPlayer)entity).getCooledAttackStrength(ClientUtils.mc().timer.renderPartialTicks);
+				if(f < 1)
+				{
+					float angle = f*-6.28318f;
+					if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
+						angle *= -1;
+					perspective.translate(0, 1.5-f, 0);
+					perspective.rotate(angle, 0, 0, 1);
+				}
+			}
+		}
+		return perspective;
 	}
 
 	public String[] compileRender(ItemStack revolver)
@@ -540,9 +579,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-		player.addStat(IEAchievements.craftRevolver);
 		if(!contents.get(18).isEmpty()&&!contents.get(19).isEmpty())
-			player.addStat(IEAchievements.upgradeRevolver);
+			Utils.unlockIEAdvancement(player, "main/upgrade_revolver");
 	}
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();

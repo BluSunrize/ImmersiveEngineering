@@ -12,9 +12,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemDrillhead extends ItemIEBase implements IDrillHead
@@ -53,7 +54,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		if(stack.getItemDamage()<getSubNames().length)
 		{
@@ -71,14 +72,15 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		}
 	}
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for(int i=0;i<getSubNames().length;i++)
-		{
-			ItemStack s = new ItemStack(this,1,i);
-			if(ApiUtils.isExistingOreName(getHeadPerm(s).repairMaterial))
-				list.add(s);
-		}
+		if(this.isInCreativeTab(tab))
+			for(int i=0;i<getSubNames().length;i++)
+			{
+				ItemStack s = new ItemStack(this,1,i);
+				if(ApiUtils.isExistingOreName(getHeadPerm(s).repairMaterial))
+					list.add(s);
+			}
 
 	}
 
@@ -193,7 +195,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 			maxHardness = state.getPlayerRelativeBlockHardness(player, world, startPos)*0.6F;
 		if(maxHardness<0)
 			maxHardness = 0;
-		
+
 		if(diameter%2==0)//even numbers
 		{
 			float hx = (float)mop.hitVec.x-mop.getBlockPos().getX();

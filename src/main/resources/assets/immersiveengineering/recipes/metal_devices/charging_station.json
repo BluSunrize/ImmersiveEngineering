@@ -1,0 +1,30 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 5
+  },
+  "pattern": [
+    "IMI",
+    "GGG",
+    "WCW"
+  ],
+  "key": {
+    "M": {
+      "item": "immersiveengineering:connector",
+      "data": 2
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "G": {
+      "item": "#blockGlass"
+    },
+    "C": {
+      "item": "#copperCoil"
+    },
+    "W": {
+      "item": "#plankTreatedWood"
+    }
+  }
+}

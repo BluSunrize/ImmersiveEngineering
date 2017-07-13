@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityToolbox;
 import blusunrize.immersiveengineering.common.gui.ContainerToolboxBlock;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiToolboxBlock extends GuiContainer
+public class GuiToolboxBlock extends GuiIEContainerBase
 {
 	public GuiToolboxBlock(InventoryPlayer inventoryPlayer, TileEntityToolbox toolbox)
 	{

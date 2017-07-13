@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:material",
+    "data": 15
+  },
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "C": {
+      "item": "#componentIron"
+    }
+  }
+}

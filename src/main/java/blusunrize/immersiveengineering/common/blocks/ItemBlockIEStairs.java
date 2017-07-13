@@ -3,13 +3,14 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemBlockIEStairs extends ItemBlock
@@ -25,9 +26,10 @@ public class ItemBlockIEStairs extends ItemBlock
 		return damageValue;
 	}
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList)
 	{
-		this.block.getSubBlocks(item, tab, itemList);
+		if(this.isInCreativeTab(tab))
+			this.block.getSubBlocks(tab, itemList);
 	}
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
@@ -36,9 +38,9 @@ public class ItemBlockIEStairs extends ItemBlock
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advInfo)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
 	{
 		if(((BlockIEStairs)block).hasFlavour)
-			list.add(I18n.format(Lib.DESC_FLAVOUR+((BlockIEStairs)block).name));
+			tooltip.add(I18n.format(Lib.DESC_FLAVOUR+((BlockIEStairs)block).name));
 	}
 }

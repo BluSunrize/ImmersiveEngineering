@@ -1,0 +1,28 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal_device1",
+			"data": 1
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:craftHeater"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:craftHeater.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/connect_wire",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:metal_device1",
+						"data": 1
+					}
+				]
+			}
+		}
+	}
+}

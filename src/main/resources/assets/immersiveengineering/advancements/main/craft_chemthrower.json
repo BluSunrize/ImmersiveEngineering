@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:chemthrower"
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:craftChemthrower"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:craftChemthrower.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/craft_workbench",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:chemthrower"
+					}
+				]
+			}
+		}
+	}
+}

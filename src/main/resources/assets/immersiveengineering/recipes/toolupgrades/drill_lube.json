@@ -1,0 +1,24 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 1
+  },
+  "pattern": [
+    "BI ",
+    "IBI",
+    " IC"
+  ],
+  "key": {
+    "B": {
+      "type": "immersiveengineering:fluid",
+      "fluid": "plantoil"
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "C": {
+      "item": "#componentIron"
+    }
+  }
+}

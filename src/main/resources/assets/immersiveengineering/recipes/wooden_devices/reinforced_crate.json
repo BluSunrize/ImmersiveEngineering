@@ -1,0 +1,29 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "copy_nbt": 4,
+  "quarter_turn": true,
+  "result": {
+    "item": "immersiveengineering:wooden_device0",
+    "data": 5
+  },
+  "pattern": [
+    "WPW",
+    "RCR",
+    "WPW"
+  ],
+  "key": {
+    "W": {
+      "item": "#plankTreatedWood"
+    },
+    "P": {
+      "item": "#plateIron"
+    },
+    "R": {
+      "item": "#stickIron"
+    },
+    "C": {
+      "item": "immersiveengineering:wooden_device0",
+      "data": 0
+    }
+  }
+}

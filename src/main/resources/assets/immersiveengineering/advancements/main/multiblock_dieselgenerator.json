@@ -1,0 +1,24 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal_multiblock",
+			"data": 10
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:mbDieselGen"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:mbDieselGen.desc"
+		},
+		"frame": "goal"
+	},
+	"parent": "immersiveengineering:main/make_steel",
+	"criteria": {
+		"form_blastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:DieselGenerator"
+			}
+		}
+	}
+}

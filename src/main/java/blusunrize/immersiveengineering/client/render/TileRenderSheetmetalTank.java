@@ -2,9 +2,9 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fluids.FluidStack;
@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEntitySheetmetalTank>
 {
 	@Override
-	public void renderTileEntityAt(TileEntitySheetmetalTank tile, double x, double y, double z, float f, int destroyStage)
+	public void render(TileEntitySheetmetalTank tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(!tile.formed || tile.pos!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -41,7 +41,7 @@ public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEnti
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			GlStateManager.disableLighting();
 			
-			VertexBuffer worldrenderer = ClientUtils.tes().getBuffer();
+			BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
 			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 			worldrenderer.pos(-4, -4, 0).color(0x22,0x22,0x22,0xff).endVertex();
 			worldrenderer.pos(-4, 20, 0).color(0x22,0x22,0x22,0xff).endVertex();

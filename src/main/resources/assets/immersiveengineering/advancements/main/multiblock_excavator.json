@@ -1,0 +1,24 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal_multiblock",
+			"data": 11
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:mbExcavator"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:mbExcavator.desc"
+		},
+		"frame": "challenge"
+	},
+	"parent": "immersiveengineering:main/make_steel",
+	"criteria": {
+		"form_blastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:Excavator"
+			}
+		}
+	}
+}

@@ -1,0 +1,36 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:stone_device",
+			"data": 1
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:blastfurnace"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:blastfurnace.desc"
+		},
+		"frame": "goal"
+	},
+	"parent": "immersiveengineering:main/craft_hammer",
+	"criteria": {
+		"form_blastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:BlastFurnace"
+			}
+		},
+		"form_improvedblastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:BlastFurnaceAdvanced"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"form_blastfurnace",
+			"form_improvedblastfurnace"
+		]
+	]
+}

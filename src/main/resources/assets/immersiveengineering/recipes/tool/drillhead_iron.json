@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:drillhead",
+    "data": 1
+  },
+  "pattern": [
+    "SS ",
+    "BBS",
+    "SS "
+  ],
+  "key": {
+    "B": {
+      "item": "#blockIron"
+    },
+    "S": {
+      "item": "#ingotIron"
+    }
+  }
+}

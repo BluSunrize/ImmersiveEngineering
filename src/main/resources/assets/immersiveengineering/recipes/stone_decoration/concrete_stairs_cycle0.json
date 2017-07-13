@@ -1,0 +1,11 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "immersiveengineering:stone_decoration_stairs_concrete_tile"
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:stone_decoration_stairs_concrete"
+    }
+  ]
+}

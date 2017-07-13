@@ -1,0 +1,23 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:stone_device",
+			"data": 2
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:mbImprovedBlastFurnace"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:mbImprovedBlastFurnace.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/make_steel",
+	"criteria": {
+		"form_blastfurnace": {
+			"trigger": "immersiveengineering:multiblock_formed",
+			"conditions": {
+				"multiblock": "IE:BlastFurnaceAdvanced"
+			}
+		}
+	}
+}

@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration0",
+    "data": 4,
+    "count": 2
+  },
+  "pattern": [
+    "IGI",
+    "CCC",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotIron"
+    },
+    "C": {
+      "item": "#ingotCopper"
+    },
+    "G": {
+      "item": "#componentIron"
+    }
+  }
+}

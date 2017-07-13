@@ -3,11 +3,10 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
 
-public class GuiCrate extends GuiContainer
+public class GuiCrate extends GuiIEContainerBase
 {
 	public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile )
 	{

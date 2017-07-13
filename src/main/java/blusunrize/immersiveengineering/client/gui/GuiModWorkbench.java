@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -29,7 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiModWorkbench extends GuiContainer
+public class GuiModWorkbench extends GuiIEContainerBase
 {
 	TileEntityModWorkbench workbench;
 	public GuiModWorkbench(InventoryPlayer inventoryPlayer, TileEntityModWorkbench tile )

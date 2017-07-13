@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -20,17 +19,17 @@ import javax.vecmath.Matrix4f;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class IEConnectionModel implements IBakedModel, IPerspectiveAwareModel
+public class IEConnectionModel implements IBakedModel
 {
-    private final LoadingCache<IModelState, IEConnectionModel> cache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<IModelState, IEConnectionModel>()
-    {
-        @Override
+	private final LoadingCache<IModelState, IEConnectionModel> cache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<IModelState, IEConnectionModel>()
+	{
+		@Override
 		public IEConnectionModel load(IModelState state) throws Exception
-        {
-            return new IEConnectionModel(baseModel, state);
-        }
-    });
-	
+		{
+			return new IEConnectionModel(baseModel, state);
+		}
+	});
+
 	IBakedModel baseModel;
 	IModelState modelState;
 
@@ -44,9 +43,7 @@ public class IEConnectionModel implements IBakedModel, IPerspectiveAwareModel
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
-		if(baseModel instanceof IPerspectiveAwareModel)
-			return ((IPerspectiveAwareModel)baseModel).handlePerspective(cameraTransformType);
-		return Pair.of(this, new Matrix4f());
+		return baseModel.handlePerspective(cameraTransformType);
 	}
 
 //	@Override
@@ -54,7 +51,7 @@ public class IEConnectionModel implements IBakedModel, IPerspectiveAwareModel
 //	{
 //		return baseModel;
 //	}
-	
+
 //	@Override
 //	public IBakedModel handleBlockState(IBlockState state)
 //	{

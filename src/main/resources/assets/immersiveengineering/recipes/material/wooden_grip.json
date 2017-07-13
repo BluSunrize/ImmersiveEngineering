@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:material",
+    "data": 13
+  },
+  "pattern": [
+    "SS",
+    "IS",
+    "SS"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotCopper"
+    },
+    "S": {
+      "item": "#stickTreatedWood"
+    }
+  }
+}

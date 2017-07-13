@@ -40,7 +40,7 @@ public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
         float f2 = (1-(entity.getFuse()-partialTicks+1)/100F) * .8F;
         this.bindEntityTexture(entity);
         GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-        blockrendererdispatcher.renderBlockBrightness(entity.block, entity.getBrightness(partialTicks));
+        blockrendererdispatcher.renderBlockBrightness(entity.block, entity.getBrightness());
         GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
         if(entity.getFuse()/5%2 == 0)

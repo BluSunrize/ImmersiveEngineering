@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:material",
+    "data": 10
+  },
+  "pattern": [
+    " S ",
+    "SBS",
+    "BSB"
+  ],
+  "key": {
+    "B": {
+      "item": "#plankTreatedWood"
+    },
+    "S": {
+      "item": "#stickTreatedWood"
+    }
+  }
+}

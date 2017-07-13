@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:metal_device1",
+			"data": 9
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:placeFloodlight"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:placeFloodlight.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/connect_wire",
+	"criteria": {
+		"place_floodlight": {
+			"trigger": "minecraft:placed_block",
+			"conditions": {
+				"item": {
+					"item": "immersiveengineering:metal_device1",
+					"data": 9
+				}
+			}
+		}
+	}
+}

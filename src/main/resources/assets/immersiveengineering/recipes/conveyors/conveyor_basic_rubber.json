@@ -1,0 +1,33 @@
+{
+  "conditions": [
+    {
+      "type": "immersiveengineering:ore_exists",
+      "ore": "itemRubber"
+    }
+  ],
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": {
+      "conveyorType": "immersiveengineering:conveyor"
+    },
+    "count": 8
+  },
+  "pattern": [
+    "LLL",
+    "IRI"
+  ],
+  "key": {
+    "L": {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    "I": {
+      "item": "#ingotIron"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    }
+  }
+}

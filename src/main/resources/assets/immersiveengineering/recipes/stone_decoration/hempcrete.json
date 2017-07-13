@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:stone_decoration",
+    "data": 4,
+    "count": 6
+  },
+  "pattern": [
+    "CCC",
+    "HHH",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:clay_ball"
+    },
+    "H": {
+      "item": "#fiberHemp"
+    }
+  }
+}

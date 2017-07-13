@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:bullet",
+    "data": 1,
+    "count": 5
+  },
+  "pattern": [
+    "PDP",
+    "PDP",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotCopper"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "D": {
+      "item": "#dyeRed"
+    }
+  }
+}

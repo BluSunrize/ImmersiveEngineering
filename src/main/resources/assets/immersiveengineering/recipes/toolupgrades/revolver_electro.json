@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 6
+  },
+  "pattern": [
+    "TTT",
+    "RWR"
+  ],
+  "key": {
+    "T": {
+      "item": "#elecTube"
+    },
+    "R": {
+      "item": "#stickSteel"
+    },
+    "W": {
+      "item": "#wireCopper"
+    }
+  }
+}

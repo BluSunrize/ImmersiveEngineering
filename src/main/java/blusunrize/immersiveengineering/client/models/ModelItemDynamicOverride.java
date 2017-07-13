@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -17,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,11 +25,12 @@ import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author BluSunrize - 12.08.2016
  */
-public class ModelItemDynamicOverride implements IPerspectiveAwareModel
+public class ModelItemDynamicOverride implements IBakedModel
 {
 	IBakedModel itemModel;
 	ImmutableList<BakedQuad> quads;
@@ -96,9 +95,7 @@ public class ModelItemDynamicOverride implements IPerspectiveAwareModel
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
-		if(itemModel instanceof IPerspectiveAwareModel)
-			return Pair.of(this, ((IPerspectiveAwareModel)itemModel).handlePerspective(cameraTransformType).getRight());
-		return Pair.of(this, TRSRTransformation.identity().getMatrix());
+		return Pair.of(this, itemModel.handlePerspective(cameraTransformType).getRight());
 	}
 
 	public static final HashMap<String, IBakedModel> modelCache = new HashMap();

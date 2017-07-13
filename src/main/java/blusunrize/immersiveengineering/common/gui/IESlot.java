@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -12,7 +11,6 @@ import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -51,14 +49,6 @@ public abstract class IESlot extends Slot
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			return false;
-		}
-		@Override
-		public ItemStack onTake(EntityPlayer player, ItemStack stack)
-		{
-			ItemStack result = super.onTake(player, stack);
-			if(player!=null && (this.container instanceof ContainerBlastFurnace || this.container instanceof ContainerArcFurnace) && ApiUtils.compareToOreName(stack, "ingotSteel"))
-				player.addStat(IEAchievements.makeSteel);
-			return result;
 		}
 	}
 	public static class FluidContainer extends IESlot
@@ -353,19 +343,6 @@ public abstract class IESlot extends Slot
 			{
 				((ContainerModWorkbench)container).rebindSlots();
 				((ContainerModWorkbench)container).tile.markDirty();
-			}
-			for(IEAchievements.AchievementIE achievement : IEAchievements.blueprintCraftingAchievements)
-			{
-				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
-				{
-					for(ItemStack trigger : achievement.triggerItems)
-						if(ApiUtils.stackMatchesObject(stack, trigger, achievement.checkNBT&&trigger.hasTagCompound()))
-						{
-							player.addStat(achievement);
-							break;
-						}
-				} else if(ApiUtils.stackMatchesObject(stack, achievement.icon, achievement.checkNBT&&achievement.icon.hasTagCompound()))
-					player.addStat(achievement);
 			}
 			this.inventory.markDirty();
 			return super.onTake(player, stack);

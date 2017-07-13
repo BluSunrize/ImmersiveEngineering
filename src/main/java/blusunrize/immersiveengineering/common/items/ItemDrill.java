@@ -10,12 +10,10 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -24,6 +22,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -58,6 +57,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
@@ -79,9 +79,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return new Slot[]
 				{
 						new IESlot.DrillHead(container, invItem,0, 98,22),
-						new IESlot.Upgrades(container, invItem,1,  78,42, "DRILL", stack, true),
+						new IESlot.Upgrades(container, invItem,1,  78,52, "DRILL", stack, true),
 						new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
-						new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true)
+						new IESlot.Upgrades(container, invItem,3, 118,52, "DRILL", stack, true)
 				};
 	}
 	@Override
@@ -111,7 +111,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		}
 	}
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
@@ -229,9 +229,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-		player.addStat(IEAchievements.craftDrill);
 		if(!contents.get(0).isEmpty() && !contents.get(1).isEmpty() && !contents.get(2).isEmpty() && !contents.get(3).isEmpty())
-			player.addStat(IEAchievements.upgradeDrill);
+			Utils.unlockIEAdvancement(player, "main/upgrade_drill");
 	}
 
 	/*INVENTORY STUFF*/

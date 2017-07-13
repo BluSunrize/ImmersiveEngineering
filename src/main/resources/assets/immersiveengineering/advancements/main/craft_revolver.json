@@ -1,0 +1,28 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:revolver",
+			"data": 0
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:craftRevolver"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:craftRevolver.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/craft_workbench",
+	"criteria": {
+		"craft_hammer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "immersiveengineering:revolver",
+						"data": 0
+					}
+				]
+			}
+		}
+	}
+}

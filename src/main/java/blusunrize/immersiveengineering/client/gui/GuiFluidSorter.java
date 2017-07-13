@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorte
 import blusunrize.immersiveengineering.common.gui.ContainerFluidSorter;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -26,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GuiFluidSorter extends GuiContainer
+public class GuiFluidSorter extends GuiIEContainerBase
 {
 	TileEntityFluidSorter tile;
 	InventoryPlayer playerInventory;

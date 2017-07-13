@@ -1,0 +1,31 @@
+{
+  "conditions": [
+    {
+      "type": "immersiveengineering:config",
+      "key": "arcfurnace_electrodeCrafting"
+    }
+  ],
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:blueprint",
+    "nbt": {
+      "blueprint": "electrode"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GDG",
+    "GPG"
+  ],
+  "key": {
+    "G": {
+      "item": "#ingotHOPGraphite"
+    },
+    "D": {
+      "item": "#dyeBlue"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  }
+}

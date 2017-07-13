@@ -29,13 +29,19 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
+import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
+import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
+import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
+import blusunrize.immersiveengineering.common.util.IEPotions;
+import blusunrize.immersiveengineering.common.util.IEVillagerTrades;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import net.minecraft.block.Block;
@@ -79,10 +85,14 @@ import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -94,9 +104,12 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import javax.annotation.Nullable;
 import java.util.*;
 
+@Mod.EventBusSubscriber
 public class IEContent
 {
 	public static ArrayList<Block> registeredIEBlocks = new ArrayList<Block>();
+	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
+
 	public static BlockIEBase blockOre;
 	public static BlockIEBase blockStorage;
 	public static BlockIESlab blockStorageSlabs;
@@ -136,7 +149,6 @@ public class IEContent
 	public static BlockIEFluid blockFluidBiodiesel;
 	public static BlockIEFluid blockFluidConcrete;
 
-	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
 	public static ItemIEBase itemMaterial;
 	public static ItemIEBase itemMetal;
 	public static ItemIEBase itemTool;
@@ -177,33 +189,13 @@ public class IEContent
 
 	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
-	public static void preInit()
-	{
-		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000);
-		if(!FluidRegistry.registerFluid(fluidCreosote))
-			fluidCreosote = FluidRegistry.getFluid("creosote");
-		FluidRegistry.addBucketForFluid(fluidCreosote);
-		fluidPlantoil = new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000);
-		if(!FluidRegistry.registerFluid(fluidPlantoil))
-			fluidPlantoil = FluidRegistry.getFluid("plantoil");
-		FluidRegistry.addBucketForFluid(fluidPlantoil);
-		fluidEthanol = new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000);
-		if(!FluidRegistry.registerFluid(fluidEthanol))
-			fluidEthanol = FluidRegistry.getFluid("ethanol");
-		FluidRegistry.addBucketForFluid(fluidEthanol);
-		fluidBiodiesel = new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000);
-		if(!FluidRegistry.registerFluid(fluidBiodiesel))
-			fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
-		FluidRegistry.addBucketForFluid(fluidBiodiesel);
-		fluidConcrete = new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000);
-		if(!FluidRegistry.registerFluid(fluidConcrete))
-			fluidConcrete = FluidRegistry.getFluid("concrete");
-		FluidRegistry.addBucketForFluid(fluidConcrete);
-
-		fluidPotion = new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow"));
-		if(!FluidRegistry.registerFluid(fluidPotion))
-			fluidPotion = FluidRegistry.getFluid("potion");
-		FluidRegistry.addBucketForFluid(fluidPotion);
+	static {
+		fluidCreosote = setupFluid(new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000));
+		fluidPlantoil = setupFluid(new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000));
+		fluidEthanol = setupFluid(new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000));
+		fluidBiodiesel = setupFluid(new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000));
+		fluidConcrete = setupFluid(new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000));
+		fluidPotion = setupFluid(new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
 
 		blockOre = (BlockIEBase)new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
 		blockStorage = (BlockIEBase)new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
@@ -262,7 +254,6 @@ public class IEContent
 		blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
 		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
 
-
 		itemMaterial = new ItemIEBase("material", 64,
 				"stick_treated", "stick_iron", "stick_steel", "stick_aluminum",
 				"hemp_fiber", "hemp_fabric",
@@ -312,33 +303,70 @@ public class IEContent
 		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky")
 		{
 			@Override
-			public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+			public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 			{
 			}
 		};
+	}
 
-		//		blockMetalDevice = new BlockMetalDevices();
-		//		blockMetalDevice2 = new BlockMetalDevices2();
-		//		blockMetalDecoration = new BlockMetalDecoration();
-		//		blockMetalMultiblocks = new BlockMetalMultiblocks();
-		//		blockWoodenDevice = new BlockWoodenDevices().setFlammable(true);
-		//		blockWoodenDecoration = new BlockWoodenDecoration().setFlammable(true);
-		//		blockStoneDevice = new BlockStoneDevices();
-		//		blockStoneDecoration = new BlockStoneDecoration();
-		//		blockConcreteStair = new BlockIEStairs("concreteStairs",blockStoneDecoration,4);
-		//		blockConcreteTileStair = new BlockIEStairs("concreteTileStairs",blockStoneDecoration,5);
-		//		blockClothDevice = new BlockClothDevices();
-		//
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> event)
+	{
+		for(Block block : registeredIEBlocks)
+			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getUnlocalizedName())));
+	}
 
-		//Ore Dict
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> event)
+	{
+		for(Item item : registeredIEItems)
+			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getUnlocalizedName())));
+	}
+
+	private static ResourceLocation createRegistryName(String unlocalized)
+	{
+		unlocalized = unlocalized.substring(unlocalized.indexOf("immersive"));
+		unlocalized = unlocalized.replaceFirst("\\.", ":");
+		return new ResourceLocation(unlocalized);
+	}
+
+	private static Fluid setupFluid(Fluid fluid)
+	{
+		FluidRegistry.addBucketForFluid(fluid);
+		if(!FluidRegistry.registerFluid(fluid))
+			return FluidRegistry.getFluid(fluid.getName());
+		return fluid;
+	}
+
+	public static void preInit()
+	{
+		/**CONVEYORS*/
+		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
+			NBTTagCompound data = entity.getEntityData();
+			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
+				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
+		}, (entity, iConveyorTile) -> {
+			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
+		});
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
+
+		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+	}
+
+	public static void init()
+	{
+		/**ORE DICTIONARY*/
 		registerToOreDict("ore", blockOre);
 		registerToOreDict("block", blockStorage);
 		registerToOreDict("slab", blockStorageSlabs);
 		registerToOreDict("blockSheetmetal", blockSheetmetal);
 		registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
 		registerToOreDict("", itemMetal);
-//		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,6),new ItemStack(itemMetal,1,15),new ItemStack(itemMetal,1,26),new ItemStack(itemMetal,1,36), new ItemStack(blockStorage,1,6),new ItemStack(blockStorageSlabs,1,6), new ItemStack(blockSheetmetal,1,6),new ItemStack(blockSheetmetalSlabs,1,6));
-		//		OreDictionary.registerOre("seedIndustrialHemp", new ItemStack(itemSeeds));
 		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial,1,0));
 		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,1));
 		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,2));
@@ -375,21 +403,12 @@ public class IEContent
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.STONEBRICK));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ICE));
-//		OreDictionary.registerOre("blockFrostedIce", new ItemStack(Blocks.FROSTED_ICE));
 		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.PACKED_ICE));
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.CRAFTING_TABLE));
 		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.BLAZE_ROD));
 		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL,1,1));
-		//Fluid Containers
-//		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,0), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,1), new ItemStack(Items.BUCKET));
-//		FluidContainerRegistry.registerFluidContainer(fluidPlantoil, new ItemStack(itemFluidContainers,1,2), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidPlantoil, new ItemStack(itemFluidContainers,1,3), new ItemStack(Items.BUCKET));
-//		FluidContainerRegistry.registerFluidContainer(fluidEthanol, new ItemStack(itemFluidContainers,1,4), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidEthanol, new ItemStack(itemFluidContainers,1,5), new ItemStack(Items.BUCKET));
-//		FluidContainerRegistry.registerFluidContainer(fluidBiodiesel, new ItemStack(itemFluidContainers,1,6), new ItemStack(Items.GLASS_BOTTLE));
-//		FluidContainerRegistry.registerFluidContainer(fluidBiodiesel, new ItemStack(itemFluidContainers,1,7), new ItemStack(Items.BUCKET));
-		//		//Mining
+
+		/**MINING LEVELS*/
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.LEAD.getMeta()));
@@ -406,6 +425,7 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
 
+		/**WORLDGEN*/
 		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
@@ -413,11 +433,6 @@ public class IEContent
 		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
 
-		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
-	}
-
-	public static void init()
-	{
 		/**TILEENTITIES*/
 		registerTile(TileEntityIESlab.class);
 
@@ -502,10 +517,7 @@ public class IEContent
 		registerTile(TileEntityArcFurnace.class);
 		registerTile(TileEntityLightningrod.class);
 		registerTile(TileEntityMixer.class);
-		//
 		//		registerTile(TileEntitySkycrateDispenser.class);
-		//		registerTile(TileEntityFloodlight.class);
-		//
 		registerTile(TileEntityFakeLight.class);
 
 
@@ -537,6 +549,10 @@ public class IEContent
 			BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
 		}
 		/**SMELTING*/
+		itemMaterial.setBurnTime(6, 3200);
+		Item itemBlockStoneDecoration = Item.getItemFromBlock(blockStoneDecoration);
+		if(itemBlockStoneDecoration instanceof ItemBlockIEBase)
+			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
 		IERecipes.initFurnaceRecipes();
 
 		/**CRAFTING*/
@@ -544,6 +560,21 @@ public class IEContent
 
 		/**BLUEPRINTS*/
 		IERecipes.initBlueprintRecipes();
+
+		/**MULTIBLOCK RECIPES*/
+		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
+		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
+
+		IERecipes.initBlastFurnaceRecipes();
+
+		IERecipes.initMetalPressRecipes();
+
+		IERecipes.initAlloySmeltingRecipes();
+
+		IERecipes.initCrusherRecipes();
+
+		IERecipes.initArcSmeltingRecipes();
 
 		/**POTIONS*/
 		IEPotions.init();
@@ -562,21 +593,6 @@ public class IEContent
 			addBanner("wolf", "wlf", wolfpackCartridge, 0,0);
 		}
 
-		/**CONVEYORS*/
-		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
-			NBTTagCompound data = entity.getEntityData();
-			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
-				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
-		}, (entity, iConveyorTile) -> {
-			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
-
 		/**ASSEMBLER RECIPE ADAPTERS*/
 		//Shaped
 		AssemblerHandler.registerRecipeAdapter(ShapedRecipes.class, new IRecipeAdapter<ShapedRecipes>()
@@ -584,9 +600,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(ShapedRecipes recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.length];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.recipeItems[i]);
+					query[i] = AssemblerHandler.createQuery(recipe.recipeItems.get(i));
 				return query;
 			}
 		});
@@ -608,9 +624,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(ShapedOreRecipe recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getInput().length];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getInput()[i]);
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
 				return query;
 			}
 		});
@@ -620,9 +636,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(ShapelessOreRecipe recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getInput().size()];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getInput().get(i));
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
 				return query;
 			}
 		});
@@ -632,9 +648,9 @@ public class IEContent
 			@Override
 			public RecipeQuery[] getQueriedInputs(RecipeShapedIngredient recipe)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().length];
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
 				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients()[i]);
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
 				return query;
 			}
 		});
@@ -650,28 +666,6 @@ public class IEContent
 				return query;
 			}
 		});
-
-		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
-		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,8), "ingotIron", 1200, new ItemStack(itemMaterial,1,7));
-		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,8), "blockIron", 1200*9, new ItemStack(itemMaterial,9,7));
-
-		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 1200);
-		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 1200*10);
-		BlastFurnaceRecipe.addBlastFuel("charcoal", 300);
-		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
-		GameRegistry.registerFuelHandler(new IEFuelHandler());
-
-		IERecipes.initAlloySmeltingRecipes();
-
-		IERecipes.initCrusherRecipes();
-
-		IERecipes.initArcSmeltingRecipes();
-
-		ItemStack shoddyElectrode = new ItemStack(itemGraphiteElectrode);
-		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
-		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold,1,2), 4800).setInputSize(4);
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
@@ -838,6 +832,8 @@ public class IEContent
 		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
 		if(OreDictionary.doesOreNameExist("oreSulfur"))
 			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "oreSulfur"}, new float[]{.5f, .5f});
+		else
+			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "dustSulfur"}, new float[]{.5f, .5f});
 		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum","oreTitanium","denseoreAluminum"}, new float[]{.90f,.05f,.05f});
 		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper","oreGold","oreNickel","denseoreCopper"}, new float[]{.65f,.25f,.05f,.05f});
 		if(OreDictionary.doesOreNameExist("oreTin"))
@@ -852,7 +848,10 @@ public class IEContent
 		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead","oreSilver","oreSulfur","denseoreLead","denseoreSilver"}, new float[]{.40f,.40f,.1f,.05f,.05f});
 		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead","oreSilver","denseoreLead"}, new float[]{.55f,.4f,.05f});
 		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver","oreLead","denseoreSilver"}, new float[]{.55f,.4f,.05f});
-		ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
+		if(OreDictionary.doesOreNameExist("oreSulfur"))
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
+		else
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","dustSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal","denseoreCoal","oreDiamond","oreEmerald"}, new float[]{.92f,.1f,.015f,.015f});
 
 		/**MULTIBLOCKS*/
@@ -878,7 +877,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
 
 		/**ACHIEVEMENTS*/
-		IEAchievements.init();
+//		IEAchievements.init();
 
 		/**VILLAGE*/
 		VillagerRegistry villageRegistry = VillagerRegistry.instance();
@@ -890,7 +889,7 @@ public class IEContent
 		if(IEConfig.enableVillagers)
 		{
 			villagerProfession_engineer = new VillagerRegistry.VillagerProfession(ImmersiveEngineering.MODID + ":engineer", "immersiveengineering:textures/models/villager_engineer.png", "immersiveengineering:textures/models/villager_engineer_zombie.png");
-			villageRegistry.register(villagerProfession_engineer);
+			ForgeRegistries.VILLAGER_PROFESSIONS.register(villagerProfession_engineer);
 
 			VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".engineer");
 			career_engineer.addTrade(1,
@@ -1021,6 +1020,16 @@ public class IEContent
 			if(bottlingRegistered.add(mixPredicate.output))
 				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,333));
 		}
+	}
+
+	public static void refreshFluidReferences()
+	{
+		fluidCreosote = FluidRegistry.getFluid("creosote");
+		fluidPlantoil = FluidRegistry.getFluid("plantoil");
+		fluidEthanol = FluidRegistry.getFluid("ethanol");
+		fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
+		fluidConcrete = FluidRegistry.getFluid("concrete");
+		fluidPotion = FluidRegistry.getFluid("potion");
 	}
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)

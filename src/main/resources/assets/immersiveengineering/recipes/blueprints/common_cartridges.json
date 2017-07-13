@@ -1,0 +1,31 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:blueprint",
+    "nbt": {
+      "blueprint": "bullet"
+    }
+  },
+  "pattern": [
+    "JKL",
+    "DDD",
+    "PPP"
+  ],
+  "key": {
+    "J": {
+      "item": "minecraft:gunpowder"
+    },
+    "K": {
+      "item": "#ingotCopper"
+    },
+    "L": {
+      "item": "minecraft:gunpowder"
+    },
+    "D": {
+      "item": "#dyeBlue"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  }
+}

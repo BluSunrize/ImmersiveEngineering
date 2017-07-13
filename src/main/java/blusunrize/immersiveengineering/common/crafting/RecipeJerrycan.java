@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class RecipeJerrycan implements IRecipe
+public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
@@ -76,10 +76,11 @@ public class RecipeJerrycan implements IRecipe
 	}
 
 	@Override
-	public int getRecipeSize()
+	public boolean canFit(int width, int height)
 	{
-		return 10;
+		return width>=2 && height>=2;
 	}
+
 	@Override
 	public ItemStack getRecipeOutput()
 	{

@@ -32,7 +32,7 @@ public class GuiButtonManualLink extends GuiButton
     }
 
 	@Override
-	public void drawButton(Minecraft mc, int mx, int my)
+	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
 	{
 		this.hovered = mx >= this.x && my >= this.y && mx < this.x + this.width && my < this.y + this.height;
 		if(hovered)

@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api.tool;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -82,7 +83,7 @@ public class BulletHandler
 			return baseName;
 		}
 
-		default void addTooltip(ItemStack stack, @Nullable EntityPlayer player, List<String> list, boolean advanced)
+		default void addTooltip(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 		{
 		}
 

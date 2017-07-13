@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:scaffolding_aluminum",
+  "result": {
+    "item": "immersiveengineering:metal_decoration1",
+    "data": 5,
+    "count": 6
+  },
+  "pattern": [
+    "III",
+    " R ",
+    "R R"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotAluminum"
+    },
+    "R": {
+      "item": "#stickAluminum"
+    }
+  }
+}

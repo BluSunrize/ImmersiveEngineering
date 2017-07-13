@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": {
+      "conveyorType": "immersiveengineering:splitter"
+    },
+    "counter": 3
+  },
+  "pattern": [
+    "CIC",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "#baseConveyor"
+    },
+    "I": {
+      "item": "#ingotIron"
+    }
+  }
+}

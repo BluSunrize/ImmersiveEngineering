@@ -3,14 +3,13 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiRefinery extends GuiContainer
+public class GuiRefinery extends GuiIEContainerBase
 {
 	TileEntityRefinery tile;
 	public GuiRefinery(InventoryPlayer inventoryPlayer, TileEntityRefinery tile)

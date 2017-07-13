@@ -20,7 +20,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 
 	//	public void renderDynamic(TileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	@Override
-	public void renderTileEntityAt(TileEntityModWorkbench te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityModWorkbench te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		if(te.dummy||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;

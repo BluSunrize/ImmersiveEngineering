@@ -1,0 +1,27 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_device1",
+    "data": 4,
+    "count": 3
+  },
+  "pattern": [
+    " I ",
+    "PTP",
+    "IRI"
+  ],
+  "key": {
+    "P": {
+      "item": "#paneGlass"
+    },
+    "I": {
+      "item": "#plateIron"
+    },
+    "T": {
+      "item": "#elecTube"
+    },
+    "R": {
+      "item": "#dustRedstone"
+    }
+  }
+}

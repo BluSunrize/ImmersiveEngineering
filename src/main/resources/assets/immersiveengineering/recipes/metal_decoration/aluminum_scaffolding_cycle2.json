@@ -1,0 +1,14 @@
+{
+  "type": "forge:ore_shapeless",
+  "group": "immersiveengineering:scaffolding_aluminum",
+  "result": {
+    "item": "immersiveengineering:metal_decoration1",
+    "data": 5
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:metal_decoration1",
+      "data": 7
+    }
+  ]
+}

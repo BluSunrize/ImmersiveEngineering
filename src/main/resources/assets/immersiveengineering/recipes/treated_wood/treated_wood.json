@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "group": "immersiveengineering:treated_wood",
+  "result": {
+    "item": "immersiveengineering:treated_wood",
+    "data": 0,
+    "count": 8
+  },
+  "pattern": [
+    "WWW",
+    "WCW",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "#plankWood"
+    },
+    "C": {
+      "type": "immersiveengineering:fluid",
+      "fluid": "creosote"
+    }
+  }
+}

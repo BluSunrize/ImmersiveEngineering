@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningrod;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.IEnergyProvider;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityLightningrod> implements IFluxProvider,IEnergyProvider
+public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityLightningrod> implements IFluxProvider
 {
 	FluxStorage energyStorage = new FluxStorage(IEConfig.Machines.lightning_output);
 

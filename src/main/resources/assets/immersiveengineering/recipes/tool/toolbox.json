@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolbox"
+  },
+  "pattern": [
+    "PPP",
+    "RCR"
+  ],
+  "key": {
+    "P": {
+      "item": "#plateAluminum"
+    },
+    "C": {
+      "item": "immersiveengineering:wooden_device0",
+      "data": 0
+    },
+    "R": {
+      "item": "#dyeRed"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:drill",
+			"nbt": "{Inv:[{Slot:0b,id:\"immersiveengineering:drillhead\",Count:1b,Damage:0s},{Slot:1b,id:\"immersiveengineering:toolupgrade\",Count:3b,Damage:2s},{Slot:2b,id:\"immersiveengineering:toolupgrade\",Count:1b,Damage:1s},{Slot:3b,id:\"immersiveengineering:toolupgrade\",Count:1b,Damage:0s}],upgrades:{damage:3,waterproof:1b,oiled:1b,speed:6.0f}}"
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:upgradeDrill"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:upgradeDrill.desc"
+		},
+		"frame": "challenge"
+	},
+	"parent": "immersiveengineering:main/craft_drill",
+	"criteria": {
+		"code_trigger": {
+			"trigger": "minecraft:impossible"
+		}
+	},
+	"rewards": {
+		"loot": ["immersiveengineering:advancements/shader_rare"]
+	}
+}

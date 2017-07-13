@@ -1,0 +1,19 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:wirecoil"
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:connectWire"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:connectWire.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/root",
+	"criteria": {
+		"code_trigger": {
+			"trigger": "minecraft:impossible"
+		}
+	}
+}

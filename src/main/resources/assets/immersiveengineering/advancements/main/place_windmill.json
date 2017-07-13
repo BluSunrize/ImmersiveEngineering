@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "immersiveengineering:wooden_device1",
+			"data": 1
+		},
+		"title": {
+			"translate": "advancement.immersiveengineering:placeWindmill"
+		},
+		"description": {
+			"translate": "advancement.immersiveengineering:placeWindmill.desc"
+		}
+	},
+	"parent": "immersiveengineering:main/root",
+	"criteria": {
+		"place_windmill": {
+			"trigger": "minecraft:placed_block",
+			"conditions": {
+				"item": {
+					"item": "immersiveengineering:wooden_device1",
+					"data": 1
+				}
+			}
+		}
+	}
+}

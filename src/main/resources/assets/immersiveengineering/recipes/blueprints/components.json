@@ -1,0 +1,31 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:blueprint",
+    "nbt": {
+      "blueprint": "components"
+    }
+  },
+  "pattern": [
+    "JKL",
+    "DDD",
+    "PPP"
+  ],
+  "key": {
+    "J": {
+      "item": "#ingotCopper"
+    },
+    "K": {
+      "item": "#ingotAluminum"
+    },
+    "L": {
+      "item": "#ingotIron"
+    },
+    "D": {
+      "item": "#dyeBlue"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  }
+}

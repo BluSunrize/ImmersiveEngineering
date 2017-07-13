@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "eighth_turn": true,
+  "result": {
+    "item": "immersiveengineering:metal_decoration0",
+    "data": 7,
+    "count": 2
+  },
+  "pattern": [
+    "ICI",
+    "CBC",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "#ingotSteel"
+    },
+    "C": {
+      "item": "#ingotCopper"
+    },
+    "B": {
+      "type": "immersiveengineering:fluid",
+      "fluid": "water"
+    }
+  }
+}
