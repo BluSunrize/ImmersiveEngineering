@@ -49,12 +49,9 @@ import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.items.ItemDrillhead;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.ItemIEBase;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
-import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -190,7 +187,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625,.75,0).scale(.875,.875,.875).rotate(-Math.PI*.6875, 0, 1, 0))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.5,.25).scale(.5,.5,.5)));
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver/revolver.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0,1,0).scale(.1875, .25, .25).translate(.25, .25, .5))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0,1,0).scale(.1875, .25, .25).translate(-.3, .25, .5))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .0625,-.03125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0,1,0).rotate(Math.toRadians(-10), 0,0,1))
@@ -1169,6 +1166,8 @@ public class ClientProxy extends CommonProxy
 					return new GuiRevolver(player.inventory, world, slot, item);
 				if(ID==Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
 					return new GuiToolbox(player.inventory, world, slot, item);
+				if(ID==Lib.GUIID_Speedloader && item.getItem() instanceof ItemSpeedloader)
+					return new GuiSpeedloader(player.inventory, world, slot, item);
 			}
 		}
 

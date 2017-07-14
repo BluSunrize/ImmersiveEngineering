@@ -161,6 +161,7 @@ public class IEContent
 	public static ItemIEBase itemMold;
 	public static ItemIEBase itemBlueprint;
 	public static ItemIEBase itemRevolver;
+	public static ItemIEBase itemSpeedloader;
 	public static ItemIEBase itemBullet;
 	public static ItemIEBase itemChemthrower;
 	public static ItemIEBase itemRailgun;
@@ -274,6 +275,7 @@ public class IEContent
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
 		itemRevolver = new ItemRevolver();
+		itemSpeedloader = new ItemSpeedloader();
 		itemBullet = new ItemBullet();
 		itemChemthrower = new ItemChemthrower();
 		itemRailgun = new ItemRailgun();

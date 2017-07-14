@@ -509,10 +509,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
 						ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped), true);
 					}
-					else if(equipped.getItem() instanceof ItemRevolver && equipped.getItemDamage()!=2)
+					else if(equipped.getItem() instanceof ItemRevolver || equipped.getItem() instanceof ItemSpeedloader)
 					{
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-						NonNullList<ItemStack> bullets = ((ItemRevolver)equipped.getItem()).getBullets(equipped);
+						NonNullList<ItemStack> bullets = equipped.getItem() instanceof ItemRevolver?((ItemRevolver)equipped.getItem()).getBullets(equipped): ((ItemSpeedloader)equipped.getItem()).getContainedItems(equipped);
 						int bulletAmount = bullets.size();
 						EnumHandSide side = hand==EnumHand.MAIN_HAND?player.getPrimaryHand():player.getPrimaryHand().opposite();
 						boolean right = side==EnumHandSide.RIGHT;
@@ -559,33 +559,36 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 						}
 
-						int cd = ((ItemRevolver)equipped.getItem()).getShootCooldown(equipped);
-						float cdMax = ((ItemRevolver)equipped.getItem()).getMaxShootCooldown(equipped);
-						float cooldown = 1-cd/cdMax;
-						if(cooldown>0)
+						if(equipped.getItem() instanceof ItemRevolver)
 						{
-							GlStateManager.scale(2, 2, 1);
-							GlStateManager.translate(-dx, -dy, 0);
-							GlStateManager.translate(event.getResolution().getScaledWidth()/2+(right?1:-6),event.getResolution().getScaledHeight()/2-7, 0);
+							int cd = ((ItemRevolver)equipped.getItem()).getShootCooldown(equipped);
+							float cdMax = ((ItemRevolver)equipped.getItem()).getMaxShootCooldown(equipped);
+							float cooldown = 1-cd/cdMax;
+							if(cooldown > 0)
+							{
+								GlStateManager.scale(2, 2, 1);
+								GlStateManager.translate(-dx, -dy, 0);
+								GlStateManager.translate(event.getResolution().getScaledWidth()/2+(right?1: -6), event.getResolution().getScaledHeight()/2-7, 0);
 
-							float h1 = cooldown > .33?.5f: cooldown*1.5f;
-							float h2 = cooldown;
-							float x2 = cooldown < .75?1: 4*(1-cooldown);
+								float h1 = cooldown > .33?.5f: cooldown*1.5f;
+								float h2 = cooldown;
+								float x2 = cooldown < .75?1: 4*(1-cooldown);
 
-							float uMin = (88+(right?0: 7*x2))/256f;
-							float uMax = (88+(right?7*x2: 0))/256f;
-							float vMin1 = (112+(right?h1: h2)*15)/256f;
-							float vMin2 = (112+(right?h2: h1)*15)/256f;
+								float uMin = (88+(right?0: 7*x2))/256f;
+								float uMax = (88+(right?7*x2: 0))/256f;
+								float vMin1 = (112+(right?h1: h2)*15)/256f;
+								float vMin2 = (112+(right?h2: h1)*15)/256f;
 
-							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-							Tessellator tessellator = Tessellator.getInstance();
-							BufferBuilder worldrenderer = tessellator.getBuffer();
-							worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-							worldrenderer.pos((right?0: 1-x2)*7, 15, 0).tex(uMin, 127/256f).endVertex();
-							worldrenderer.pos((right?x2: 1)*7, 15, 0).tex(uMax, 127/256f).endVertex();
-							worldrenderer.pos((right?x2: 1)*7, (right?h2: h1)*15, 0).tex(uMax, vMin2).endVertex();
-							worldrenderer.pos((right?0: 1-x2)*7, (right?h1: h2)*15, 0).tex(uMin, vMin1).endVertex();
-							tessellator.draw();
+								ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
+								Tessellator tessellator = Tessellator.getInstance();
+								BufferBuilder worldrenderer = tessellator.getBuffer();
+								worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+								worldrenderer.pos((right?0: 1-x2)*7, 15, 0).tex(uMin, 127/256f).endVertex();
+								worldrenderer.pos((right?x2: 1)*7, 15, 0).tex(uMax, 127/256f).endVertex();
+								worldrenderer.pos((right?x2: 1)*7, (right?h2: h1)*15, 0).tex(uMax, vMin2).endVertex();
+								worldrenderer.pos((right?0: 1-x2)*7, (right?h1: h2)*15, 0).tex(uMin, vMin1).endVertex();
+								tessellator.draw();
+							}
 						}
 
 						RenderHelper.disableStandardItemLighting();
