@@ -127,7 +127,7 @@
         "model": "immersiveengineering:smartmodel/conn_conn_hv"
       },
       "relay_hv": {
-        "model": "immersiveengineering:smartmodel/conn_rel_hv"
+        "model": "immersiveengineering:connector/relay_hv.obj"
       },
       "connector_structural": {
         "model": "immersiveengineering:smartmodel/conn_conn_struct"

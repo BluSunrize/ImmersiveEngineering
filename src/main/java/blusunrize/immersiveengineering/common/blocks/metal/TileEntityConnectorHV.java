@@ -40,12 +40,6 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	}
 
 	@Override
-	int getRenderRadiusIncrease()
-	{
-		return WireType.STEEL.getMaxLength();
-	}
-
-	@Override
 	public int getMaxInput()
 	{
 		return connectorInputValues[2];

@@ -82,19 +82,19 @@ public class ClientUtils
 	//		}
 	//	}
 	//
-	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite)
+	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite, BufferBuilder buffer, double x, double y, double z)
 	{
-		if(connection == null || start == null || end == null)
+		if(connection == null || start == null)
 			return;
 		int col = connection.cableType.getColour(connection);
 		double r = connection.cableType.getRenderDiameter() / 2;
-		int[] rgba = new int[]{col >> 16 & 255, col >> 8 & 255, col & 255, 255};
-		tessellateConnection(connection, start, end, rgba, r, sprite);
+		int[] rgba = new int[]{255, 0, 0, 255};//TODO{col >> 16 & 255, col >> 8 & 255, col & 255, 255};
+		tessellateConnection(connection, start, end, rgba, r, sprite, buffer, x, y, z);
 	}
 
-	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite)
+	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite, BufferBuilder buffer, double x, double y, double z)
 	{
-		if(connection == null || start == null || end == null || connection.end == null || connection.start == null)
+		if(connection == null || start == null || connection.end == null || connection.start == null)
 			return;
 		Vec3d startOffset = start.getConnectionOffset(connection);
 		Vec3d endOffset = end.getConnectionOffset(connection);
@@ -108,14 +108,13 @@ public class ClientUtils
 		double dw = Math.sqrt(dx * dx + dz * dz);
 		double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
 		World world = ((TileEntity) start).getWorld();
-		Tessellator tes = tes();
 
 		double rmodx = dz / dw;
 		double rmodz = dx / dw;
 
 		Vec3d[] vertex = connection.getSubVertices(world);
 		//		Vec3 initPos = new Vec3(connection.start.getX()+startOffset.xCoord, connection.start.getY()+startOffset.yCoord, connection.start.getZ()+startOffset.zCoord);
-		Vec3d initPos = new Vec3d(startOffset.x, startOffset.y, startOffset.z);
+		Vec3d initPos = new Vec3d(startOffset.x+connection.start.getX(), startOffset.y+connection.start.getY(), startOffset.z+connection.start.getZ());
 
 		double uMin = sprite.getMinU();
 		double uMax = sprite.getMaxU();
@@ -125,63 +124,38 @@ public class ClientUtils
 		boolean vertical = connection.end.getX() == connection.start.getX() && connection.end.getZ() == connection.start.getZ();
 		boolean b = (dx < 0 && dz <= 0) || (dz < 0 && dx <= 0) || (dz < 0 && dx > 0);
 
-
-		BufferBuilder worldrenderer = tes.getBuffer();
-		//		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
-		//		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
-		//		worldrenderer.pos(x+w, y, 0).tex(uv[1], uv[2]).endVertex();
-		//		worldrenderer.pos(x, y, 0).tex(uv[0], uv[2]).endVertex();
 		if(vertical)
 		{
-			//			double uShift = Math.abs(dy)/ * uD;
-			//			worldrenderer.pos(x, y, z)
-			worldrenderer.setTranslation(initPos.x, initPos.y, initPos.z);
+			buffer.setTranslation(x+ connection.start.getX()+startOffset.x, y+ connection.start.getY()+startOffset.y, z+ connection.start.getZ()+startOffset.z);
 
-			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
+			buffer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			worldrenderer.setTranslation(0, 0, 0);
+			buffer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 		} else
 		{
+			buffer.setTranslation(x, y, z);
 			double u0 = uMin;
 			double u1 = uMin;
 			for(int i = b ? (vertex.length - 1) : 0; (b ? (i >= 0) : (i < vertex.length)); i += (b ? -1 : 1))
 			{
-				Vec3d v0 = i > 0 ? vertex[i - 1].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ()) : initPos;
-				Vec3d v1 = vertex[i].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ());
+				Vec3d v0 = i > 0 ? vertex[i - 1] : initPos;
+				Vec3d v1 = vertex[i];
 
 				//				double u0 = uMin;
 				//				double u1 = uMax;
@@ -192,25 +166,25 @@ public class ClientUtils
 					u1 = uMin;
 					u0 = uMax;
 				}
-				worldrenderer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
 			}
 		}

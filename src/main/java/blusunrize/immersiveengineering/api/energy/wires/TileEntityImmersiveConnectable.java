@@ -9,15 +9,20 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -93,6 +98,13 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		this.limitType = cableType;
+		BlockPos pos = ApiUtils.toBlockPos(other);
+		if (world.isRemote&&pos!=null)
+		{
+			if (renderAABB==null)
+				renderAABB = Block.FULL_BLOCK_AABB.offset(pos);
+			renderAABB = renderAABB.union(new AxisAlignedBB(pos, pos));
+		}
 	}
 	@Override
 	public WireType getCableLimiter(TargetingInfo target)
@@ -275,5 +287,25 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		super.invalidate();
 		if (world.isRemote)
 			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(pos, world);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		return 65536.0D;
+	}
+
+
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		if (renderAABB==null)
+			renderAABB = Block.FULL_BLOCK_AABB.offset(pos);
+		return renderAABB;
 	}
 }

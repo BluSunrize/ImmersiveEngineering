@@ -468,6 +468,8 @@ public class ImmersiveNetHandler
 				Vec3d vEnd = new Vec3d(end.getX(), end.getY(), end.getZ());
 				IImmersiveConnectable iicStart = toIIC(start, world);
 				IImmersiveConnectable iicEnd = toIIC(end, world);
+				if (iicEnd instanceof IICProxy||iicStart instanceof IICProxy)
+					return new Vec3d[0];//Don't generate subvertices until both ends are loaded
 				if(iicStart!=null)
 					vStart = addVectors(vStart, iicStart.getConnectionOffset(this));
 				if(iicEnd!=null)

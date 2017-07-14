@@ -32,12 +32,6 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV
 		double conRadius = con.cableType.getRenderDiameter()/2;
 		return new Vec3d(.5+side.getFrontOffsetX()*(.0625-conRadius), .5+side.getFrontOffsetY()*(.0625-conRadius), .5+side.getFrontOffsetZ()*(.0625-conRadius));
 	}
-
-	@Override
-	int getRenderRadiusIncrease()
-	{
-		return WireType.ELECTRUM.getMaxLength();
-	}
 	
 	@Override
 	public int getMaxInput()

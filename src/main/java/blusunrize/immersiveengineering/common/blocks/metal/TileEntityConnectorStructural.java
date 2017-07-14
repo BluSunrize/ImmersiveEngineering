@@ -72,12 +72,6 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	}
 
 	@Override
-	int getRenderRadiusIncrease()
-	{
-		return WireType.STRUCTURE_STEEL.getMaxLength();
-	}
-
-	@Override
 	public int getMaxInput()
 	{
 		return 0;

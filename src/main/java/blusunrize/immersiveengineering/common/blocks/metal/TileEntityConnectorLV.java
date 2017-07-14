@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -208,31 +209,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		double conRadius = con.cableType.getRenderDiameter()/2;
 		return new Vec3d(.5-conRadius*side.getFrontOffsetX(), .5-conRadius*side.getFrontOffsetY(), .5-conRadius*side.getFrontOffsetZ());
 	}
-
-	@SideOnly(Side.CLIENT)
-	private AxisAlignedBB renderAABB;
-	@SideOnly(Side.CLIENT)
-	@Override
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		//		if(renderAABB==null)
-		//		{
-		//			if(Config.getBoolean("increasedRenderboxes"))
-		//			{
-		int inc = getRenderRadiusIncrease();
-		return new AxisAlignedBB(this.pos.getX()-inc,this.pos.getY()-inc,this.pos.getZ()-inc, this.pos.getX()+inc+1,this.pos.getY()+inc+1,this.pos.getZ()+inc+1);
-		//				renderAABB = new AxisAlignedBB(this.pos.getX()-inc,this.pos.getY()-inc,this.pos.getZ()-inc, this.pos.getX()+inc+1,this.pos.getY()+inc+1,this.pos.getZ()+inc+1);
-		//			}
-		//			else
-		//				renderAABB = super.getRenderBoundingBox();
-		//		}
-		//		return renderAABB;
-	}
-	int getRenderRadiusIncrease()
-	{
-		return WireType.COPPER.getMaxLength();
-	}
-
 	IEForgeEnergyWrapper energyWrapper;
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
