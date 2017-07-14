@@ -115,7 +115,6 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			{
 				if(remains.get(i).isEmpty() && !s.isEmpty())
 					remains.set(i, s.copy());
-				System.out.println("Had fluid ingredient for "+remains.get(i));
 				IFluidHandler handler = FluidUtil.getFluidHandler(remains.get(i));
 				if(handler!=null)
 				{
