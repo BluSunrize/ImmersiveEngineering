@@ -59,7 +59,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 {
 	public ItemRevolver()
 	{
-		super("revolver", 1, "REVOLVER", "normal","speedloader");
+		super("revolver", 1, "REVOLVER");
 	}
 	public static UUID speedModUUID = Utils.generateNewUUID();
 	public HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
@@ -110,10 +110,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
 			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
 			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
-			{
-				System.out.println("new shader!");
 				return true;
-			}
 		}
 		if(ItemNBTHelper.hasKey(oldStack, "elite") || ItemNBTHelper.hasKey(newStack, "elite"))
 			if(!ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite")))
@@ -148,8 +145,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
-			for(int i=0;i<2;i++)
-				list.add(new ItemStack(this,1,i));
+			list.add(new ItemStack(this));
 		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
 		//		{
 		//			ItemStack stack = new ItemStack(this,1,0);
@@ -226,28 +222,23 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
-		if(!world.isRemote && stack.getItemDamage()!=1 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
 		{
-			int l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "casings", ent);
-			if(l==0)
-				ItemNBTHelper.setDelayedSoundsForStack(stack, "cylinderFill", "tile.piston.in",.3f,3, 1,6,1);
-			l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "cylinderFill", ent);
-			if(l==0)
-				ItemNBTHelper.setDelayedSoundsForStack(stack, "cylinderClose", "fire.ignite",.6f,5, 1,6,1);
-			l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "cylinderClose", ent);
-			if(l==0)
-				ItemNBTHelper.setDelayedSoundsForStack(stack, "cylinderSpin", "note.hat",.1f,5, 5,8,1);
-			l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "cylinderSpin", ent);
-			if(l==0)
-				ItemNBTHelper.remove(stack, "blocked");
-		}
-		if(!world.isRemote && ItemNBTHelper.hasKey(stack, "cooldown"))
-		{
-			int cooldown = ItemNBTHelper.getInt(stack, "cooldown")-1;
-			if(cooldown<=0)
-				ItemNBTHelper.remove(stack, "cooldown");
-			else
-				ItemNBTHelper.setInt(stack, "cooldown", cooldown);
+			if(ItemNBTHelper.hasKey(stack, "reload"))
+			{
+				int reload = ItemNBTHelper.getInt(stack, "reload")-1;
+				if(reload <= 0)
+					ItemNBTHelper.remove(stack, "reload");
+				else
+					ItemNBTHelper.setInt(stack, "reload", reload);
+			}
+			if(ItemNBTHelper.hasKey(stack, "cooldown"))
+			{
+				int cooldown = ItemNBTHelper.getInt(stack, "cooldown")-1;
+				if(cooldown <= 0)
+					ItemNBTHelper.remove(stack, "cooldown");
+				else
+					ItemNBTHelper.setInt(stack, "cooldown", cooldown);
+			}
 		}
 	}
 	@Override
@@ -256,7 +247,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		ItemStack revolver = player.getHeldItem(hand);
 		if(!world.isRemote)
 		{
-			if(player.isSneaking() || revolver.getItemDamage()==1)
+			if(player.isSneaking())
 			{
 				CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
 				return new ActionResult(EnumActionResult.SUCCESS, revolver);
@@ -267,41 +258,32 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 					world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
 				else
 				{
-					if(getShootCooldown(revolver) > 0)
+					if(getShootCooldown(revolver) > 0 || ItemNBTHelper.hasKey(revolver, "reload"))
 						return new ActionResult(EnumActionResult.PASS, revolver);
 
 					NonNullList<ItemStack> bullets = getBullets(revolver);
 
 					if(isEmpty(revolver))
-					{
 						for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 						{
-							ItemStack loader = player.inventory.getStackInSlot(i);
-							if(!loader.isEmpty()&&loader.getItem()==this&&loader.getItemDamage()==1&&!isEmpty(loader))
+							ItemStack stack = player.inventory.getStackInSlot(i);
+							if(stack.getItem() instanceof ItemSpeedloader && !((ItemSpeedloader)stack.getItem()).isEmpty(stack))
 							{
-								int dc = 0;
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
-									{
 										world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, b));
-										dc++;
-									}
-								world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, .5f, 3f);
-								ItemNBTHelper.setDelayedSoundsForStack(revolver, "casings", "random.successful_hit", .05f, 5, dc/2, 8, 2);
-								setBullets(revolver, getBullets(loader));
-								setBullets(loader, NonNullList.withSize(8, ItemStack.EMPTY));
-								player.inventory.setInventorySlotContents(i, loader);
+								setBullets(revolver, ((ItemSpeedloader)stack.getItem()).getContainedItems(stack));
+								((ItemSpeedloader)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.inventory.markDirty();
 								if(player instanceof EntityPlayerMP)
-									ImmersiveEngineering.packetHandler.sendTo(new MessageSpeedloaderSync(i), (EntityPlayerMP)player);
+									ImmersiveEngineering.packetHandler.sendTo(new MessageSpeedloaderSync(i, hand), (EntityPlayerMP)player);
 
-								ItemNBTHelper.setBoolean(revolver, "blocked", true);
+								ItemNBTHelper.setInt(revolver, "reload", 60);
 								return new ActionResult(EnumActionResult.SUCCESS, revolver);
 							}
 						}
-					}
 
-					if(!ItemNBTHelper.getBoolean(revolver, "blocked"))
+					if(!ItemNBTHelper.hasKey(revolver, "reload"))
 					{
 						if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof ItemBullet&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
 						{
@@ -341,7 +323,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				}
 			}
 		} else if(!player.isSneaking() && revolver.getItemDamage() == 0)
-			return new ActionResult(ItemNBTHelper.getInt(revolver, "cooldown") > 0 ? EnumActionResult.PASS : EnumActionResult.SUCCESS, revolver);
+			return new ActionResult(getShootCooldown(revolver)>0||ItemNBTHelper.hasKey(revolver,"reload") ? EnumActionResult.PASS : EnumActionResult.SUCCESS, revolver);
 		return new ActionResult(EnumActionResult.SUCCESS, revolver);
 	}
 
@@ -423,7 +405,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
-		if(group.equals("revolver_frame")||group.equals("barrel")||group.equals("cosmetic_compensator"))
+		if(group.equals("frame")||group.equals("cylinder")||group.equals("barrel")||group.equals("cosmetic_compensator"))
 			return true;
 
 		HashSet<String> render = new HashSet<String>();
@@ -477,8 +459,67 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 					perspective.rotate(angle, 0, 0, 1);
 				}
 			}
+
+			//Re-grab stack because the other one doesn't do reloads properly
+			stack = main?entity.getHeldItemMainhand():entity.getHeldItemOffhand();
+			if(ItemNBTHelper.hasKey(stack, "reload"))
+			{
+				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
+				if(f>.35&&f<1.95)
+					if(f < .5)
+						perspective.translate((.35-f)*2, 0, 0).rotate(2.64*(f-.35), 0, 0, main?1:-1);
+					else if(f < .6)
+						perspective.translate((f-.5)*6, (.5-f)*1, 0).rotate(.87266, 0, 0, main?1:-1);
+					else if(f < 1.7)
+						perspective.translate(0, -.6, 0).rotate(.87266, 0, 0, main?1:-1);
+					else if(f < 1.8)
+						perspective.translate((1.8-f)*6, (f-1.8)*1, 0).rotate(.87266, 0, 0, main?1:-1);
+					else
+						perspective.translate((f-1.95f)*2, 0, 0).rotate(2.64*(1.95-f), 0, 0, main?1:-1);
+			}
 		}
 		return perspective;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean isDynamicGroup(ItemStack stack, String group)
+	{
+		return "frame".equals(group) || "cylinder".equals(group);
+	}
+
+	private static final Matrix4 matOpen = new Matrix4().translate(-.625, .25, 0).rotate(-.87266, 0, 0, 1);
+	private static final Matrix4 matClose = new Matrix4().translate(-.625, .25, 0);
+	private static final Matrix4 matCylinder = new Matrix4().translate(0, .6875, 0);
+	@SideOnly(Side.CLIENT)
+	@Override
+	public Matrix4 dynamicChanges(ItemStack stack, String group, TransformType cameraTransformType, @Nullable EntityLivingBase entity)
+	{
+		if(entity instanceof EntityPlayer && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
+		{
+			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT);
+
+			//Re-grab stack because the other one doesn't do reloads properly
+			stack = main?entity.getHeldItemMainhand():entity.getHeldItemOffhand();
+			if(ItemNBTHelper.hasKey(stack, "reload"))
+			{
+				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
+				if("frame".equals(group))
+				{
+					if(f < .35||f > 1.95)
+						return matClose;
+					else if(f < .5)
+						return new Matrix4().translate(-.625, .25, 0).rotate(-2.64*(f-.35), 0, 0, 1);
+					else if(f < 1.8)
+						return matOpen;
+					else
+						return new Matrix4().translate(-.625, .25, 0).rotate(-2.64*(1.95-f), 0, 0, 1);
+				}
+				else if(f>2.5 && f<2.9)
+					return new Matrix4().translate(0, .6875, 0).rotate(-15.70795*(f-2.5), main?1:-1, 0, 0);
+			}
+		}
+		return "frame".equals(group)?matClose:matCylinder;
 	}
 
 	public String[] compileRender(ItemStack revolver)
