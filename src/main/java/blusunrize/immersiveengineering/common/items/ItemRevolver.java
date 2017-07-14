@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -447,13 +448,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		if(entity instanceof EntityPlayer && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
 			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT);
+			boolean left = cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND;
 			if(getUpgrades(stack).getBoolean("fancyAnimation") && main)
 			{
 				float f = ((EntityPlayer)entity).getCooledAttackStrength(ClientUtils.mc().timer.renderPartialTicks);
 				if(f < 1)
 				{
 					float angle = f*-6.28318f;
-					if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
+					if(left)
 						angle *= -1;
 					perspective.translate(0, 1.5-f, 0);
 					perspective.rotate(angle, 0, 0, 1);
@@ -467,16 +469,18 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
 				if(f>.35&&f<1.95)
 					if(f < .5)
-						perspective.translate((.35-f)*2, 0, 0).rotate(2.64*(f-.35), 0, 0, main?1:-1);
+						perspective.translate((.35-f)*2, 0, 0).rotate(2.64*(f-.35), 0, 0, left?-1:1);
 					else if(f < .6)
-						perspective.translate((f-.5)*6, (.5-f)*1, 0).rotate(.87266, 0, 0, main?1:-1);
+						perspective.translate((f-.5)*6, (.5-f)*1, 0).rotate(.87266, 0, 0, left?-1:1);
 					else if(f < 1.7)
-						perspective.translate(0, -.6, 0).rotate(.87266, 0, 0, main?1:-1);
+						perspective.translate(0, -.6, 0).rotate(.87266, 0, 0, left?-1:1);
 					else if(f < 1.8)
-						perspective.translate((1.8-f)*6, (f-1.8)*1, 0).rotate(.87266, 0, 0, main?1:-1);
+						perspective.translate((1.8-f)*6, (f-1.8)*1, 0).rotate(.87266, 0, 0, left?-1:1);
 					else
-						perspective.translate((f-1.95f)*2, 0, 0).rotate(2.64*(1.95-f), 0, 0, main?1:-1);
+						perspective.translate((f-1.95f)*2, 0, 0).rotate(2.64*(1.95-f), 0, 0, left?-1:1);
 			}
+			else if(((EntityPlayer)entity).openContainer instanceof ContainerRevolver)
+				perspective.translate(left?.4:-.4, .4, 0).rotate(.87266, 0, 0, left?-1:1);
 		}
 		return perspective;
 	}
@@ -498,7 +502,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		if(entity instanceof EntityPlayer && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
 			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT);
-
+			boolean left = cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND;
 			//Re-grab stack because the other one doesn't do reloads properly
 			stack = main?entity.getHeldItemMainhand():entity.getHeldItemOffhand();
 			if(ItemNBTHelper.hasKey(stack, "reload"))
@@ -516,8 +520,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						return new Matrix4().translate(-.625, .25, 0).rotate(-2.64*(1.95-f), 0, 0, 1);
 				}
 				else if(f>2.5 && f<2.9)
-					return new Matrix4().translate(0, .6875, 0).rotate(-15.70795*(f-2.5), main?1:-1, 0, 0);
+					return new Matrix4().translate(0, .6875, 0).rotate(-15.70795*(f-2.5), left?-1:1, 0, 0);
 			}
+			else if("frame".equals(group) && ((EntityPlayer)entity).openContainer instanceof ContainerRevolver)
+				return matOpen;
 		}
 		return "frame".equals(group)?matClose:matCylinder;
 	}
