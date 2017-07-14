@@ -20,6 +20,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,6 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -171,7 +173,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		if(group.equals("upgrade_waterproof"))
 			return upgrades.getBoolean("waterproof");
 		if(group.equals("upgrade_speed"))
-			return upgrades.getInteger("speed")>0;
+			return upgrades.getBoolean("oiled");
 		if(!this.getHead(stack).isEmpty())
 		{
 			if(group.equals("drill_head"))
@@ -199,14 +201,35 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 				mat.translate(-.25f,0,0);
 				return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 			}
-			if(group.equals("upgrade_damage1")||group.equals("upgrade_damage2")||group.equals("upgrade_damage3")||group.equals("upgrade_damage4"))
-			{
-				Matrix4 mat = new Matrix4(transform.get().getMatrix());
-				mat.translate(.441f,0,0);
-				return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
-			}
 		}
 		return transform;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean isDynamicGroup(ItemStack stack, String group)
+	{
+		return "drill_head".equals(group) ||"upgrade_damage0".equals(group) ||"upgrade_damage1".equals(group)||"upgrade_damage2".equals(group)||"upgrade_damage3".equals(group)||"upgrade_damage4".equals(group);
+	}
+	private static final Matrix4 matAugers = new Matrix4().translate(.441f,0,0);
+	@SideOnly(Side.CLIENT)
+	@Override
+	public Matrix4 dynamicChanges(ItemStack stack, String group, TransformType cameraTransformType, @Nullable EntityLivingBase entity)
+	{
+		if(entity!=null && canDrillBeUsed(stack, entity) && (entity.getHeldItem(EnumHand.MAIN_HAND)==stack||entity.getHeldItem(EnumHand.OFF_HAND)==stack) && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
+		{
+			//.069813f
+			float angle = entity.ticksExisted%60/60f * 6.28218f;
+			if("drill_head".equals(group) || "upgrade_damage0".equals(group))
+				return new Matrix4().rotate(angle, 1,0,0);
+			if("upgrade_damage1".equals(group) || "upgrade_damage2".equals(group))
+				return new Matrix4().translate(.441f,0,0).rotate(angle, 0,1,0);
+			if( "upgrade_damage3".equals(group) || "upgrade_damage4".equals(group))
+				return new Matrix4().translate(.441f,0,0).rotate(angle, 0,0,1);
+		}
+		else if("upgrade_damage1".equals(group) || "upgrade_damage2".equals(group) || "upgrade_damage3".equals(group) || "upgrade_damage4".equals(group))
+			return matAugers;
+		return null;
 	}
 
 	@Override
