@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -25,7 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implements INeighbourChangeTile
+public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 {
 	private int redstoneChannelSending = 0;
 	private int lastOutput = 0;
@@ -82,13 +81,6 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
 	{
 		List<EntityItemFrame> list = world.getEntitiesWithinAABB(EntityItemFrame.class, new AxisAlignedBB(pos), entity -> entity!=null && entity.getHorizontalFacing()==facing);
 		return list.size()==1 ? list.get(0) : null;
-	}
-
-	@Override
-	public void onNeighborBlockChange(BlockPos pos)
-	{
-//		System.out.println("marking comparator dirty!");
-
 	}
 
 	@Override
