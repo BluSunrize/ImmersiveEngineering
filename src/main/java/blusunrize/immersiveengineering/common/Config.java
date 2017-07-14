@@ -76,6 +76,8 @@ public class Config
 		public static int hempSeedWeight = 5;
 		@Comment({"Allows revolvers and other IE items to look properly held in 3rd person. Can be disabled in case of conflicts with other animation mods."})
 		public static boolean fancyItemHolding = true;
+		@Comment({"Allows snazzy looking animations on drills and revolvers. May impact framerate."})
+		public static boolean fancyItemAnimations = true;
 
 
 		@Comment({"A list of all mods that IE has integrated compatability for","Setting any of these to false disables the respective compat"})

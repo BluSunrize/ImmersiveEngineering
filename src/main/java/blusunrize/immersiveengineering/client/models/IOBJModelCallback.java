@@ -71,4 +71,21 @@ public interface IOBJModelCallback<T>
 	{
 		return null;
 	}
+
+	/**
+	 * USE THIS SPARINGLY. IT'S PROBABLY HORRENDOUS FOR PERFORMANCE.
+	 */
+	@SideOnly(Side.CLIENT)
+	default boolean isDynamicGroup(T object, String group)
+	{
+		return false;
+	}
+	/**
+	 * USE THIS SPARINGLY. IT'S PROBABLY HORRENDOUS FOR PERFORMANCE.
+	 */
+	@SideOnly(Side.CLIENT)
+	default Matrix4 dynamicChanges(T object, String group, TransformType cameraTransformType, @Nullable EntityLivingBase entity)
+	{
+		return null;
+	}
 }
