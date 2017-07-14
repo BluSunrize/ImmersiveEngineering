@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.util;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -111,49 +110,6 @@ public class ItemNBTHelper
 	public static NBTTagCompound getTagCompound(ItemStack stack, String key)
 	{
 		return hasTag(stack) ? getTag(stack).getCompoundTag(key) : new NBTTagCompound();
-	}
-
-	public static void setDelayedSoundsForStack(ItemStack stack, String nbtKey, String sound, float volume, float pitch, int amount, int baseDelay, int iDelay)
-	{
-		int[] delayedSounds = new int[amount];
-		for(int i=0; i<delayedSounds.length; i++)
-			delayedSounds[i]=baseDelay+i*iDelay;
-
-		setIntArray(stack, "delayedSound_"+nbtKey+"_delay", delayedSounds);
-		setString(stack, "delayedSound_"+nbtKey+"_sound", sound);
-		setFloat(stack, "delayedSound_"+nbtKey+"_volume", volume);
-		setFloat(stack, "delayedSound_"+nbtKey+"_pitch", pitch);
-	}
-	public static int handleDelayedSoundsForStack(ItemStack stack, String nbtKey, Entity ent)
-	{
-		if(!hasKey(stack, "delayedSound_"+nbtKey+"_delay"))
-			return -1;
-		int[] delayedSounds = ItemNBTHelper.getIntArray(stack, "delayedSound_"+nbtKey+"_delay");
-		int l = 0;
-		for(int i=0; i<delayedSounds.length; i++)
-		{
-			--delayedSounds[i];
-			if(delayedSounds[i]<=0)
-			{
-				//ToDo: Delayed Sounds could be nicer anyway.
-//				ent.playSound();
-//				ent.world.playSoundAtEntity(ent, getString(stack, "delayedSound_"+nbtKey+"_sound"), getFloat(stack, "delayedSound_"+nbtKey+"_volume"), getFloat(stack, "delayedSound_"+nbtKey+"_pitch"));
-			}
-			else
-				++l;
-		}
-		if(l>0)
-		{
-			ItemNBTHelper.setIntArray(stack, "delayedSound_"+nbtKey+"_delay", delayedSounds);
-		}
-		else
-		{
-			ItemNBTHelper.remove(stack, "delayedSound_"+nbtKey+"_delay");
-			ItemNBTHelper.remove(stack, "delayedSound_"+nbtKey+"_sound");
-			ItemNBTHelper.remove(stack, "delayedSound_"+nbtKey+"_volume");
-			ItemNBTHelper.remove(stack, "delayedSound_"+nbtKey+"_pitch");
-		}
-		return l;
 	}
 
 	public static void setFluidStack(ItemStack stack, String key, FluidStack val)

@@ -319,8 +319,7 @@ item.immersiveengineering.tool.voltmeter.name=Engineer's Voltmeter
 item.immersiveengineering.tool.manual.name=Engineer's Manual
 item.immersiveengineering.toolbox.name=Engineer's Toolbox
 
-item.immersiveengineering.revolver.normal.name=Revolver
-item.immersiveengineering.revolver.speedloader.name=Revolver Speedloader
+item.immersiveengineering.revolver.name=Revolver
 item.immersiveengineering.revolver.dev.name=♛Royal Vanquisher♚
 item.immersiveengineering.revolver.infinity.name=Catalyst
 item.immersiveengineering.revolver.tesla.name=The Coilgun
@@ -337,6 +336,7 @@ item.immersiveengineering.revolver.rose.name=Divine Rose
 item.immersiveengineering.revolver.noName.name=No Name
 item.immersiveengineering.revolver.patreonBlu.name=§6Last Word§r
 item.immersiveengineering.revolver.patreonHazard.name=§4Twisted Phantom§r
+item.immersiveengineering.speedloader.name=Revolver Speedloader
 
 item.immersiveengineering.bullet.empty_casing.name=Empty Casing
 item.immersiveengineering.bullet.empty_shell.name=Empty Shell
