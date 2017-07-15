@@ -253,15 +253,21 @@ public class IESmartObjModel extends OBJBakedModel
 		if(!this.tempStack.isEmpty() && tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
 			ShaderWrapper wrapper = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			shader = wrapper.getShaderItem();
-			if(!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
+			if(wrapper!=null)
+			{
+				shader = wrapper.getShaderItem();
+				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
+			}
 		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(CapabilityShader.BLOCKSTATE_PROPERTY))
 		{
 			ShaderWrapper wrapper = ((IExtendedBlockState)this.tempState).getValue(CapabilityShader.BLOCKSTATE_PROPERTY);
-			shader = wrapper.getShaderItem();
-			if(!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, wrapper.getShaderType());
+			if(wrapper!=null)
+			{
+				shader = wrapper.getShaderItem();
+				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, wrapper.getShaderType());
+			}
 		}
 
 		if(!this.tempStack.isEmpty() && tempStack.getItem() instanceof IOBJModelCallback)
