@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -114,15 +115,13 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			if((!remains.get(i).isEmpty() || !s.isEmpty()) && matchedIngr.get(i) instanceof IngredientFluidStack)
 			{
 				if(remains.get(i).isEmpty() && !s.isEmpty())
-					remains.set(i, s.copy());
+					remains.set(i, Utils.copyStackWithAmount(s, 1));
 				IFluidHandler handler = FluidUtil.getFluidHandler(remains.get(i));
 				if(handler!=null)
 				{
 					FluidStack fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluid();
 					handler.drain(fluid.amount, true);
 				}
-				if(remains.get(i).getCount()<=0)
-					remains.set(i, ItemStack.EMPTY);
 			}
 		}
 		return remains;
