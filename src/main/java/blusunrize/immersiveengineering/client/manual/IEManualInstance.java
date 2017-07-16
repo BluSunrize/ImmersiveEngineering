@@ -179,7 +179,6 @@ public class IEManualInstance extends ManualInstance
 		return s;
 	}
 
-
 	@Override
 	public void openManual()
 	{
@@ -290,6 +289,12 @@ public class IEManualInstance extends ManualInstance
 	public boolean showCategoryInList(String category)
 	{
 		return true;
+	}
+
+	@Override
+	public String formatLink(ManualLink link)
+	{
+		return TextFormatting.GOLD+"  -> "+formatEntryName(link.getKey())+", "+(link.getPage()+1);
 	}
 
 	@Override

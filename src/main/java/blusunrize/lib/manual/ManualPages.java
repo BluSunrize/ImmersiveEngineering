@@ -1,5 +1,6 @@
 package blusunrize.lib.manual;
 
+import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
@@ -27,6 +28,9 @@ public abstract class ManualPages implements IManualPage
 	protected ManualInstance manual;
 	protected String text;
 	protected String localizedText;
+	protected List<ItemStack> providedItems;
+
+	protected ItemStack highlighted = ItemStack.EMPTY;
 
 	public ManualPages(ManualInstance manual, String text)
 	{
@@ -52,16 +56,8 @@ public abstract class ManualPages implements IManualPage
 	@Override
 	public void buttonPressed(GuiManual gui, GuiButton button)
 	{
-		if(button instanceof GuiButtonManualLink&&GuiManual.activeManual!=null)
-		{
-			if(GuiManual.previousSelectedEntry.size() > 0)
-				GuiManual.previousSelectedEntry.add(0, GuiManual.getSelectedEntry());
-			else
-				GuiManual.previousSelectedEntry.add(GuiManual.getSelectedEntry());
-			GuiManual.setSelectedEntry(((GuiButtonManualLink)button).key);
-			GuiManual.page = ((GuiButtonManualLink)button).pageLinked;
-			GuiManual.activeManual.initGui();
-		}
+		if(button instanceof GuiButtonManualLink)
+			((GuiButtonManualLink)button).link.changePage(gui);
 	}
 
 	@Override
@@ -89,6 +85,25 @@ public abstract class ManualPages implements IManualPage
 	public void recalculateCraftingRecipes()
 	{
 	}
+
+	public void addProvidedItem(ItemStack s)
+	{
+		if(providedItems==null)
+			providedItems = new ArrayList<>(1);
+		providedItems.add(s);
+	}
+	@Override
+	public ItemStack[] getProvidedRecipes()
+	{
+		return providedItems!=null?providedItems.toArray(new ItemStack[providedItems.size()]): new ItemStack[0];
+	}
+
+	@Override
+	public ItemStack getHighlightedStack()
+	{
+		return highlighted;
+	}
+
 
 	public static class Text extends ManualPages
 	{
@@ -363,7 +378,7 @@ public abstract class ManualPages implements IManualPage
 		{
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
-			ItemStack highlighted = ItemStack.EMPTY;
+			highlighted = ItemStack.EMPTY;
 			int yOffset = 0;
 			int length = stacks.size();
 			if(length > 0)
@@ -460,6 +475,15 @@ public abstract class ManualPages implements IManualPage
 						checkRecipe(recipe, stack, stack, iStack);
 				}
 			}
+
+			if(providedItems!=null)
+				this.providedItems.clear();
+			for(Object stack : stacks)
+				if(stack instanceof ItemStack)
+					this.addProvidedItem((ItemStack)stack);
+				else if(stack instanceof ItemStack[])
+					for(ItemStack subStack : (ItemStack[])stack)
+						this.addProvidedItem(subStack);
 		}
 
 		void checkRecipe(IRecipe rec, Object key, Object stack, int iStack)
@@ -523,7 +547,7 @@ public abstract class ManualPages implements IManualPage
 			RenderHelper.enableGUIStandardItemLighting();
 
 			int totalYOff = 0;
-			ItemStack highlighted = ItemStack.EMPTY;
+			highlighted = ItemStack.EMPTY;
 			for(int i = 0; i < stacks.length; i++)
 			{
 				Object stack = stacks[i];
@@ -660,7 +684,6 @@ public abstract class ManualPages implements IManualPage
 				}
 			} else
 			{
-
 				Iterator<IRecipe> itRecipes = CraftingManager.REGISTRY.iterator();
 				while(itRecipes.hasNext())
 				{
@@ -705,6 +728,11 @@ public abstract class ManualPages implements IManualPage
 					}
 				}
 			}
+			if(providedItems!=null)
+				this.providedItems.clear();
+			for(Object stack : stacks)
+				if(stack instanceof ItemStack)
+					this.addProvidedItem((ItemStack)stack);
 		}
 
 		@Override
@@ -724,7 +752,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
 
-			ItemStack highlighted = ItemStack.EMPTY;
+			highlighted = ItemStack.EMPTY;
 
 			if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 			{
@@ -838,10 +866,15 @@ public abstract class ManualPages implements IManualPage
 			if(segment.length < 3)
 				break;
 			String page = segment.length > 3?segment[3]: "0";
-			String result = segment[2];
-			String[] resultParts = result.split(" ");
-			for(String part : resultParts)
+			String[] resultParts = segment[2].split(" ");
+			String result = "";
+			for(int iPart=0; iPart<resultParts.length; iPart++)
+			{
+				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
+				String part = '\u00a7'+String.valueOf((char)(128+repList.size()))+resultParts[iPart];
 				repList.add(new String[]{part, segment[1], page});
+				result += (iPart>0?" ":"")+part;
+			}
 			text = text.replaceFirst(rep, result);
 		}
 
@@ -857,6 +890,8 @@ public abstract class ManualPages implements IManualPage
 				String s = list.get(yOff);
 				if((start = s.indexOf(rep[0])) >= 0)
 				{
+					String formatIdent = rep[0].substring(0,2);
+					rep[0] = rep[0].substring(2);
 					int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
 					int by = yOff*helper.fontRenderer.FONT_HEIGHT;
 					String bkey = rep[1];
@@ -868,7 +903,8 @@ public abstract class ManualPages implements IManualPage
 					} catch(Exception e)
 					{
 					}
-					pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx, y+by, bw, (int)(helper.fontRenderer.FONT_HEIGHT*1.5), bkey, rep[0], bpage));
+					pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx, y+by, bw, (int)(helper.fontRenderer.FONT_HEIGHT*1.5), new ManualLink(bkey, bpage), rep[0]));
+					text = text.replaceFirst(formatIdent, "");
 					break;
 				}
 			}
