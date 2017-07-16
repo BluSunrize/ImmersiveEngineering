@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.network;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -49,7 +49,7 @@ public class MessageSpeedloaderSync implements IMessage
 		{
 			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
 			{
-				EntityPlayer player = ClientUtils.mc().player;
+				EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
 				if(player.getHeldItem(message.hand).getItem() instanceof ItemRevolver)
 				{
 					player.playSound(IESounds.revolverReload, 1f, 1f);
