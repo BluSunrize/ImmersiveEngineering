@@ -672,7 +672,13 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.getManual().addEntry("eMeter", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "eMeter0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.ENERGY_METER.getMeta())));
 		Map<String,Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
 		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"K");
-		ManualHelper.getManual().addEntry("redstoneWires", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires0", new ItemStack(IEContent.itemWireCoil, 1, 5)), new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires1", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_REDSTONE.getMeta())));
+		ManualHelper.getManual().addEntry("redstoneWires", ManualHelper.CAT_ENERGY,
+				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires0", new ItemStack(IEContent.itemWireCoil, 1, 5)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires1", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_REDSTONE.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires2", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_PROBE.getMeta())),
+				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires3"),
+				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires4"),
+				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires5"));
 		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
 				new ManualPages.Table(ManualHelper.getManual(), "thermoElectric1", table, false));

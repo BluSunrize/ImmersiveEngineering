@@ -1,9 +1,10 @@
 package blusunrize.lib.manual;
 
-import java.util.List;
-
-import net.minecraft.client.gui.GuiButton;
 import blusunrize.lib.manual.gui.GuiManual;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 public interface IManualPage
 {
@@ -14,4 +15,12 @@ public interface IManualPage
 	void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button);
 	boolean listForSearch(String searchTag);
 	void recalculateCraftingRecipes();
+	default ItemStack[] getProvidedRecipes()
+	{
+		return new ItemStack[0];
+	}
+	default ItemStack getHighlightedStack()
+	{
+		return ItemStack.EMPTY;
+	}
 }
