@@ -573,7 +573,11 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
 		handleMineralManual();
-		ManualHelper.addEntry("components", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9)), new ManualPages.Crafting(ManualHelper.getManual(), "components1", BlueprintCraftingRecipe.getTypedBlueprint("components")), new ManualPageBlueprint(ManualHelper.getManual(), "components2", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,26)));
+		ManualHelper.addEntry("components", ManualHelper.CAT_GENERAL,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "components1", BlueprintCraftingRecipe.getTypedBlueprint("components")),
+				new ManualPageBlueprint(ManualHelper.getManual(), "components2", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,26)),
+				new ManualPageBlueprint(ManualHelper.getManual(), "components3", new ItemStack(IEContent.itemMaterial,1,27)));
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.ItemDisplay(ManualHelper.getManual(), "graphite0", new ItemStack(IEContent.itemMaterial,1,18),new ItemStack(IEContent.itemMaterial,1,19)),new ManualPageBlueprint(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemGraphiteElectrode)));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.Text(ManualHelper.getManual(), "shader2"));
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
@@ -876,6 +880,7 @@ public class ClientProxy extends CommonProxy
 			}catch (Exception exception){
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
+		ManualHelper.getManual().indexRecipes();
 	}
 	static ManualEntry mineralEntry;
 	public static void handleMineralManual()
@@ -1557,6 +1562,11 @@ public class ClientProxy extends CommonProxy
 	public World getClientWorld()
 	{
 		return ClientUtils.mc().world;
+	}
+	@Override
+	public EntityPlayer getClientPlayer()
+	{
+		return ClientUtils.mc().player;
 	}
 
 	@Override
