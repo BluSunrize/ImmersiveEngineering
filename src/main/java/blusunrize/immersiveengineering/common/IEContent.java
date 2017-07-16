@@ -377,6 +377,7 @@ public class IEContent
 		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial,1,23));
 		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial,1,24));
 		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial,1,25));
+		OreDictionary.registerOre("electronTube", new ItemStack(itemMaterial,1,26));
 
 		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs,1,OreDictionary.WILDCARD_VALUE));

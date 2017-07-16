@@ -21,7 +21,7 @@ public class ItemMaterial extends ItemIEBase
 				"wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
 				"dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
 				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel",
-				"dust_saltpeter","dust_sulfur", "electron_tube");
+				"dust_saltpeter","dust_sulfur", "electron_tube", "circuit_board");
 	}
 
 	@Override
