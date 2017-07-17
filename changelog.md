@@ -1,4 +1,4 @@
-#####Version 0.12-67
+#####Version 0.12-67 - BUILT
 - added the Probe Connector. It can read Comparator Overrides on Inventories and stuff!
 - added fancy animations for the reload with a speeloader and opening the revolver GUI
 - added the Circuit Board material, requires for Probe Connector and Turrets
@@ -14,7 +14,7 @@
 - fixed IE's fluids to always stitch into the sheet and have buckets load correctly
 - fixed missing Hammer Crushing recipes
 - fixed IE recipes using fluids not emptying containers properly & duplicating them
-- fixed recipes for Aluminum and Steel wires
+- fixed recipes for Aluminium and Steel wires
 
 #####Version 0.12-66 - BUILT
 - fixed the missing dustCharcoal reference in recipes
