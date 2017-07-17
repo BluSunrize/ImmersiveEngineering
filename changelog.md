@@ -1,3 +1,21 @@
+#####Version 0.12-67
+- added the Probe Connector. It can read Comparator Overrides on Inventories and stuff!
+- added fancy animations for the reload with a speeloader and opening the revolver GUI
+- added the Circuit Board material, requires for Probe Connector and Turrets
+- added Comparator interfacing to a lot of IE multiblocks (using the RS controlpanel)
+- re-added animations for the drill. It rotates again \o/
+- changed TE OreDict comapt to run in init phase
+- changed Revolvers to aim at enemies properly
+- changed re-equip animations for Revolver to look better
+- changed the Speedloader to a separate item, added a unique reload sound
+- changed the link system in the manual to allow linking to specific crafting recipes
+- fixed missing recipes for Metal plates
+- fixed Uranium Blocks + Slabs not having a recipe
+- fixed IE's fluids to always stitch into the sheet and have buckets load correctly
+- fixed missing Hammer Crushing recipes
+- fixed IE recipes using fluids not emptying containers properly & duplicating them
+- fixed recipes for Aluminum and Steel wires
+
 #####Version 0.12-66 - BUILT
 - fixed the missing dustCharcoal reference in recipes
 
