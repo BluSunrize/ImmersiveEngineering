@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -25,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -54,6 +56,21 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
+	}
+
+	@Override
+	public int getComparatorInputOverride()
+	{
+		if(!this.isRedstonePos())
+			return 0;
+		BlockPos wheelPos = this.getBlockPosForPos(31);
+		if(world.isBlockLoaded(wheelPos) && world.getTileEntity(wheelPos) instanceof TileEntityBucketWheel)
+		{
+			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos.getX()>>4, wheelPos.getZ()>>4);
+			float remain = (ExcavatorHandler.mineralVeinCapacity-info.depletion)/(float)ExcavatorHandler.mineralVeinCapacity;
+			return MathHelper.floor(Math.max(remain,0)*15);
+		}
+		return 0;
 	}
 
 	@Override
