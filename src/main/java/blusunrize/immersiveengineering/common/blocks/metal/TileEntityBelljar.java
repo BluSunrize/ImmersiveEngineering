@@ -498,7 +498,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	{
 		return facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==EnumFacing.UP)?SideConfig.INPUT:SideConfig.NONE;
 	}
-	IEForgeEnergyWrapper energyWrapper = new IEForgeEnergyWrapper(this, EnumFacing.UP);
+	IEForgeEnergyWrapper energyWrapper = new IEForgeEnergyWrapper(this, null);
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
