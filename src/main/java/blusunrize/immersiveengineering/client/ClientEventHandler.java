@@ -282,7 +282,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	{
 		if(connectionsRendered)
 			return;
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		//		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -310,9 +310,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 
 
 				Tessellator.instance.setTranslation(tile.xCoord-dx, tile.yCoord-dy, tile.zCoord-dz);
-				//				GL11.glTranslated((tile.xCoord+.5-dx), (tile.yCoord+.5-dy), (tile.zCoord+.5-dz));
+				//				GlStateManager.translate((tile.xCoord+.5-dx), (tile.yCoord+.5-dy), (tile.zCoord+.5-dz));
 				ClientUtils.renderAttachedConnections((TileEntity)tile);
-				//				GL11.glTranslated(-(tile.xCoord+.5-dx), -(tile.yCoord+.5-dy), -(tile.zCoord+.5-dz));
+				//				GlStateManager.translate(-(tile.xCoord+.5-dx), -(tile.yCoord+.5-dy), -(tile.zCoord+.5-dz));
 
 			}
 
@@ -409,10 +409,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					ClientUtils.drawColouredRect(0,0, (int)offsetX+1,height, 0xff000000);
 					ClientUtils.drawColouredRect((int)offsetX+resMin,0, (int)offsetX+1,height, 0xff000000);
 				}
-				GL11.glEnable(GL11.GL_BLEND);
+				GlStateManager.enableBlend();
 				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
-				GL11.glTranslatef(offsetX,offsetY,0);
+				GlStateManager.translate(offsetX,offsetY,0);
 				ClientUtils.drawTexturedRect(0,0,resMin,resMin, 0f,1f,0f,1f);
 
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
@@ -430,12 +430,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						float totalOffset = 0;
 						float stepLength = 118/(float)steps.length;
 						float stepOffset = (stepLength-7)/2f;
-						GL11.glTranslatef(223/256f*resMin,64/256f*resMin, 0);
-						GL11.glTranslatef(0,(5+stepOffset)/256*resMin,0);
+						GlStateManager.translate(223/256f*resMin,64/256f*resMin, 0);
+						GlStateManager.translate(0,(5+stepOffset)/256*resMin,0);
 						for(int i=0; i<steps.length; i++)
 						{
 							ClientUtils.drawTexturedRect(0,0, 8/256f*resMin,7/256f*resMin, 88/256f,96/256f,96/256f,103/256f);
-							GL11.glTranslatef(0,stepLength/256*resMin,0);
+							GlStateManager.translate(0,stepLength/256*resMin,0);
 							totalOffset += stepLength;
 
 							if(curStep==-1 || Math.abs(steps[i]-ZoomHandler.fovZoom)<dist)
@@ -444,21 +444,21 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 								dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
 							}
 						}
-						GL11.glTranslatef(0,-totalOffset/256*resMin,0);
+						GlStateManager.translate(0,-totalOffset/256*resMin,0);
 
 						if(curStep>=0 && curStep<steps.length)
 						{
-							GL11.glTranslatef(6/256f*resMin,curStep*stepLength/256*resMin,0);
+							GlStateManager.translate(6/256f*resMin,curStep*stepLength/256*resMin,0);
 							ClientUtils.drawTexturedRect(0,0, 8/256f*resMin,7/256f*resMin, 88/256f,98/256f,103/256f,110/256f);
 							ClientUtils.font().drawString((1/steps[curStep])+"x", (int)(16/256f*resMin),0, 0xffffff);
-							GL11.glTranslatef(-6/256f*resMin,-curStep*stepLength/256*resMin,0);
+							GlStateManager.translate(-6/256f*resMin,-curStep*stepLength/256*resMin,0);
 						}
-						GL11.glTranslatef(0,-((5+stepOffset)/256*resMin),0);
-						GL11.glTranslatef(-223/256f*resMin,-64/256f*resMin, 0);
+						GlStateManager.translate(0,-((5+stepOffset)/256*resMin),0);
+						GlStateManager.translate(-223/256f*resMin,-64/256f*resMin, 0);
 					}
 				}
 
-				GL11.glTranslatef(-offsetX,-offsetY,0);
+				GlStateManager.translate(-offsetX,-offsetY,0);
 			}
 		}
 	}
@@ -603,11 +603,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					{
 						boolean drill = equipped.getItem() instanceof ItemDrill;
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-						GL11.glColor4f(1, 1, 1, 1);
+						GlStateManager.color(1, 1, 1, 1);
 						float dx = event.getResolution().getScaledWidth()-16;
 						float dy = event.getResolution().getScaledHeight();
-						GL11.glPushMatrix();
-						GL11.glTranslated(dx, dy, 0);
+						GlStateManager.pushMatrix();
+						GlStateManager.translate(dx, dy, 0);
 						int w = 31;
 						int h = 62;
 						double uMin = 179/256f;
@@ -616,7 +616,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						double vMax = 71/256f;
 						ClientUtils.drawTexturedRect(-24,-68, w,h, uMin,uMax,vMin,vMax);
 
-						GL11.glTranslated(-23,-37,0);
+						GlStateManager.translate(-23,-37,0);
 						IFluidHandler handler = FluidUtil.getFluidHandler(equipped);
 						int capacity = -1;
 						if(handler!=null)
@@ -636,9 +636,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 							float cap = (float) capacity;
 							float angle = 83 - (166 * amount / cap);
-							GL11.glRotatef(angle, 0, 0, 1);
+							GlStateManager.rotate(angle, 0, 0, 1);
 							ClientUtils.drawTexturedRect(6, -2, 24, 4, 91 / 256f, 123 / 256f, 80 / 256f, 87 / 256f);
-							GL11.glRotatef(-angle, 0, 0, 1);
+							GlStateManager.rotate(-angle, 0, 0, 1);
 							//					for(int i=0; i<=8; i++)
 							//					{
 							//						float angle = 83-(166/8f)*i;
@@ -646,7 +646,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
 							//						GL11.glRotatef(-angle, 0, 0, 1);
 							//					}
-							GL11.glTranslated(23, 37, 0);
+							GlStateManager.translate(23, 37, 0);
 							if(drill)
 							{
 								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108 / 256f, 174 / 256f, 4 / 256f, 76 / 256f);
@@ -666,7 +666,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 
 							}
 						}
-						GL11.glPopMatrix();
+						GlStateManager.popMatrix();
 					}
 					else if(equipped.getItem() instanceof ItemIEShield)
 					{
@@ -674,12 +674,13 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						if(!upgrades.hasNoTags())
 						{
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-							GL11.glColor4f(1, 1, 1, 1);
+							GlStateManager.color(1, 1, 1, 1);
 							boolean boundLeft = (player.getPrimaryHand()==EnumHandSide.RIGHT)==(hand==EnumHand.OFF_HAND);
 							float dx = boundLeft?16: (event.getResolution().getScaledWidth()-16-64);
 							float dy = event.getResolution().getScaledHeight();
-							GL11.glPushMatrix();
-							GL11.glTranslated(dx, dy, 0);
+							GlStateManager.pushMatrix();
+							GlStateManager.enableBlend();
+							GlStateManager.translate(dx, dy, 0);
 							ClientUtils.drawTexturedRect(0, -22, 64, 22, 0, 64/256f, 176/256f, 198/256f);
 
 							if(upgrades.getBoolean("flash"))
@@ -700,7 +701,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 									ClientUtils.drawTexturedRect(40, -22-h, 12, h, 40/256f, 52/256f, (214-h)/256f, 214/256f);
 								}
 							}
-							GL11.glPopMatrix();
+							GlStateManager.disableBlend();
+							GlStateManager.popMatrix();
 						}
 					}
 					//				else if(equipped.getItem() instanceof ItemRailgun)
@@ -708,10 +710,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					//					float dx = event.getResolution().getScaledWidth()-32-48;
 					//					float dy = event.getResolution().getScaledHeight()-40;
 					//					ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-					//					GL11.glColor4f(1, 1, 1, 1);
-					//					GL11.glPushMatrix();
+					//					GlStateManager.color(1, 1, 1, 1);
+					//					GlStateManager.pushMatrix();
 					//					GL11.glEnable(GL11.GL_BLEND);
-					//					GL11.glTranslated(dx, dy, 0);
+					//					GlStateManager.translate(dx, dy, 0);
 					//
 					//					int duration = player.getItemInUseDuration();
 					//					int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
