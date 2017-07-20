@@ -41,6 +41,7 @@ public abstract class ManualPages implements IManualPage
 	@Override
 	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
+		highlighted = ItemStack.EMPTY;
 		if(text!=null&&!text.isEmpty())
 		{
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
