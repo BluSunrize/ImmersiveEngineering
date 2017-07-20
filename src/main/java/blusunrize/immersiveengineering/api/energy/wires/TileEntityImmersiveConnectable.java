@@ -169,7 +169,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 				loadConnsFromNBT(nbt);
 		}catch(Exception e)
 		{
-			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error reading NBT. You shoudl probably report this.");
+			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error reading NBT. You should probably report this.");
 		}
 	}
 	@Override
