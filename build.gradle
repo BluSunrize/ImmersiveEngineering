@@ -90,17 +90,12 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.12:4.+"
     deobfCompile "cofh:RedstoneFlux:1.12-2.+:universal"
     deobfCompile "slimeknights.mantle:Mantle:1.12-1.2.+"
-//    deobfCompile "slimeknights:TConstruct:1.11.2-2.7.+" ToDo when TCon updates
-//    deobfCompile "com.github.mcjty:compatlayer:1.11-0.+"//1.10-0.2.2 ToDo?
+    deobfCompile "slimeknights:TConstruct:1.12-2.8.+"
     deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
-//    deobfCompile "MineTweaker3:MineTweaker3-MC1112-Main:1.11.2-3.0.+"//17.68 ToDo?
     deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
 //    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+" ToDo?
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2" ToDo!!
-//    compile 'industrial-craft:industrialcraft-2:release:ex111'
-//    deobfCompile 'net.industrial-craft:industrialcraft-2:2.7.+:dev'
     deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.+'
-
 }
 
 jar {

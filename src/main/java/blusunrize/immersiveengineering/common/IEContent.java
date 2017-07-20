@@ -314,6 +314,8 @@ public class IEContent
 	{
 		for(Item item : registeredIEItems)
 			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getUnlocalizedName())));
+
+		registerOres();
 	}
 
 	private static ResourceLocation createRegistryName(String unlocalized)
@@ -351,7 +353,7 @@ public class IEContent
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 	}
 
-	public static void init()
+	public static void registerOres()
 	{
 		/**ORE DICTIONARY*/
 		registerToOreDict("ore", blockOre);
@@ -360,48 +362,51 @@ public class IEContent
 		registerToOreDict("blockSheetmetal", blockSheetmetal);
 		registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
 		registerToOreDict("", itemMetal);
-		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial,1,0));
-		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,1));
-		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,2));
-		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial,1,3));
-		OreDictionary.registerOre("fiberHemp", new ItemStack(itemMaterial,1,4));
-		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial,1,5));
-		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial,1,6));
-		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,7));
-		OreDictionary.registerOre("dustCoke", new ItemStack(itemMaterial,1,17));
-		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(itemMaterial,1,18));
-		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(itemMaterial,1,19));
-		OreDictionary.registerOre("wireCopper", new ItemStack(itemMaterial,1,20));
-		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial,1,21));
-		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial,1,22));
-		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial,1,23));
-		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial,1,24));
-		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial,1,25));
-		OreDictionary.registerOre("electronTube", new ItemStack(itemMaterial,1,26));
+		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial, 1, 0));
+		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial, 1, 1));
+		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial, 1, 2));
+		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial, 1, 3));
+		OreDictionary.registerOre("fiberHemp", new ItemStack(itemMaterial, 1, 4));
+		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial, 1, 5));
+		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial, 1, 6));
+		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial, 1, 7));
+		OreDictionary.registerOre("dustCoke", new ItemStack(itemMaterial, 1, 17));
+		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(itemMaterial, 1, 18));
+		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(itemMaterial, 1, 19));
+		OreDictionary.registerOre("wireCopper", new ItemStack(itemMaterial, 1, 20));
+		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial, 1, 21));
+		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial, 1, 22));
+		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial, 1, 23));
+		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial, 1, 24));
+		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial, 1, 25));
+		OreDictionary.registerOre("electronTube", new ItemStack(itemMaterial, 1, 26));
 
-		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
-		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs,1,OreDictionary.WILDCARD_VALUE));
-		OreDictionary.registerOre("fenceTreatedWood", new ItemStack(blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()));
-		OreDictionary.registerOre("scaffoldingTreatedWood", new ItemStack(blockWoodenDecoration,1,BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()));
-		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration,1,BlockTypes_StoneDecoration.COKE.getMeta()));
-		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()));
-		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
+		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("fenceTreatedWood", new ItemStack(blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta()));
+		OreDictionary.registerOre("scaffoldingTreatedWood", new ItemStack(blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()));
+		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.COKE.getMeta()));
+		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
+		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()));
+		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta()));
+		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()));
+		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()));
+		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()));
+		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()));
+		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()));
+		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.STONEBRICK));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ICE));
 		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.PACKED_ICE));
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.CRAFTING_TABLE));
 		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.BLAZE_ROD));
-		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL,1,1));
+		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL, 1, 1));
+	}
 
+	public static void init()
+	{
 		/**MINING LEVELS*/
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));

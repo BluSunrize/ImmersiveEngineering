@@ -42,7 +42,7 @@ public abstract class IECompatModule
 		moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
 //		moduleClasses.put("opencomputers", OCHelper.class); ToDo: OpenComputers
 		moduleClasses.put("theoneprobe", OneProbeHelper.class);
-//		moduleClasses.put("tconstruct", TConstructHelper.class); ToDo: TConstruct
+		moduleClasses.put("tconstruct", TConstructHelper.class);
 		moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
 		moduleClasses.put("thaumcraft", ThaumcraftHelper.class);
 		moduleClasses.put("railcraft", RailcraftHelper.class);
