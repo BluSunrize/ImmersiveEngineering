@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -58,7 +59,14 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
-		if(!world.isRemote && (!inHand || !(ent instanceof EntityLivingBase) || ((EntityLivingBase)ent).getActiveItemStack()!=stack))//Don't recharge if in use, to avoid flickering
+		if(world.isRemote)
+			return;
+
+		if(ent instanceof EntityLivingBase)
+			inHand |= ((EntityLivingBase)ent).getHeldItem(EnumHand.OFF_HAND)==stack;
+
+		boolean blocking = ent instanceof EntityLivingBase && ((EntityLivingBase)ent).isActiveItemStackBlocking();
+		if(!inHand || !blocking)//Don't recharge if in use, to avoid flickering
 		{
 			if(getUpgrades(stack).hasKey("flash_cooldown") && this.extractEnergy(stack, 20, true)==20)
 			{
@@ -83,7 +91,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 
 	public void damageShield(ItemStack stack, EntityPlayer player, int damage, DamageSource source, float amount, LivingAttackEvent event)
 	{
-		stack.damageItem(damage, player);
+		boolean doDamage = true;
 		if(getUpgrades(stack).getBoolean("flash") && getUpgrades(stack).getInteger("flash_cooldown")<=0)
 		{
 			Vec3d look = player.getLookVec();
@@ -91,7 +99,11 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			List<EntityLivingBase> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVector().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
 			for(EntityLivingBase t : targets)
 				if(!player.equals(t))
+				{
 					t.addPotionEffect(new PotionEffect(IEPotions.flashed,100,1));
+					if(t instanceof EntityLiving)
+						((EntityLiving)t).setAttackTarget(null);
+				}
 			getUpgrades(stack).setInteger("flash_cooldown",40);
 		}
 		if(getUpgrades(stack).getBoolean("shock") && getUpgrades(stack).getInteger("shock_cooldown")<=0)
@@ -102,6 +114,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				Entity projectile = event.getSource().getImmediateSource();
 				projectile.setDead();
 				event.setCanceled(true);
+				doDamage = false;
 				b = true;
 			}
 			if(event.getSource().getTrueSource()!=null && event.getSource().getTrueSource() instanceof EntityLivingBase && event.getSource().getTrueSource().getDistanceSqToEntity(player)<4)
@@ -116,6 +129,8 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
 			}
 		}
+		if(doDamage)
+			stack.damageItem(damage, player);
 	}
 
 	@Override
