@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
@@ -164,13 +165,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					if(!held.isEmpty() && held.getItem() instanceof ItemIEShield)
 					{
 						if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet") && ((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
-						{
-							int prevSlot = ((ItemIEShield)held.getItem()).getUpgrades(held).getInteger("prevSlot");
-							ItemStack s = player.inventory.mainInventory.get(prevSlot);
-							player.inventory.mainInventory.set(prevSlot, held);
-							player.setHeldItem(EnumHand.OFF_HAND, s);
-							((ItemIEShield)held.getItem()).getUpgrades(held).removeTag("prevSlot");
-						}
+							ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(player.getName(), -1));
 					}
 					else
 					{
@@ -178,11 +173,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						{
 							ItemStack s = player.inventory.mainInventory.get(i);
 							if(!s.isEmpty() && s.getItem() instanceof ItemIEShield && ((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-							{
-								((ItemIEShield)s.getItem()).getUpgrades(s).setInteger("prevSlot",i);
-								player.inventory.mainInventory.set(i, held);
-								player.setHeldItem(EnumHand.OFF_HAND, s);
-							}
+								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(player.getName(), i));
 						}
 					}
 				}
