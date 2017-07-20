@@ -1,10 +1,10 @@
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.gson.JsonObject;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.function.BooleanSupplier;
 
@@ -19,6 +19,6 @@ public class ConditionFactoryOreExists implements IConditionFactory
 	{
 		String key = JsonUtils.getString(json , "ore");
 		boolean value = JsonUtils.getBoolean(json , "value", true);
-		return () -> OreDictionary.doesOreNameExist(key) == value;
+		return () -> ApiUtils.isExistingOreName(key) == value;
 	}
 }
