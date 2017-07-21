@@ -89,9 +89,14 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		}
 	}
 
-	public void damageShield(ItemStack stack, EntityPlayer player, int damage, DamageSource source, float amount, LivingAttackEvent event)
+	@Override
+	public boolean isShield(ItemStack stack, @Nullable EntityLivingBase entity)
 	{
-		boolean doDamage = true;
+		return true;
+	}
+
+	public void hitShield(ItemStack stack, EntityPlayer player, DamageSource source, float amount, LivingAttackEvent event)
+	{
 		if(getUpgrades(stack).getBoolean("flash") && getUpgrades(stack).getInteger("flash_cooldown")<=0)
 		{
 			Vec3d look = player.getLookVec();
@@ -114,7 +119,6 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				Entity projectile = event.getSource().getImmediateSource();
 				projectile.setDead();
 				event.setCanceled(true);
-				doDamage = false;
 				b = true;
 			}
 			if(event.getSource().getTrueSource()!=null && event.getSource().getTrueSource() instanceof EntityLivingBase && event.getSource().getTrueSource().getDistanceSqToEntity(player)<4)
@@ -129,8 +133,6 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
 			}
 		}
-		if(doDamage)
-			stack.damageItem(damage, player);
 	}
 
 	@Override

@@ -41,7 +41,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -58,7 +57,6 @@ import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -410,16 +408,7 @@ public class EventHandler
 			if(!activeStack.isEmpty() && activeStack.getItem() instanceof ItemIEShield && event.getAmount()>=3 && Utils.canBlockDamageSource(player, event.getSource()))
 			{
 				float amount = event.getAmount();
-				((ItemIEShield)activeStack.getItem()).damageShield(activeStack, player, 1+(int)Math.floor(amount), event.getSource(), amount, event);
-				if(activeStack.isEmpty())
-				{
-					EnumHand hand = player.getActiveHand();
-					ForgeEventFactory.onPlayerDestroyItem(player, activeStack, hand);
-					player.setHeldItem(hand, ItemStack.EMPTY);
-
-					player.resetActiveHand();
-					player.playSound(SoundEvents.ITEM_SHIELD_BREAK, .8f, .8f+Utils.RAND.nextFloat()*.4f);
-				}
+				((ItemIEShield)activeStack.getItem()).hitShield(activeStack, player, event.getSource(), amount, event);
 			}
 		}
 	}
