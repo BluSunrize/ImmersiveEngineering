@@ -958,10 +958,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						}
 
 					if(overrideBox!=null)
-						RenderGlobal.drawSelectionBoundingBox(overrideBox.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0.4f);
+						RenderGlobal.drawSelectionBoundingBox(overrideBox.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
 					else
 						for(AxisAlignedBB aabb : additionalBoxes.isEmpty()?boxes:additionalBoxes)
-							RenderGlobal.drawSelectionBoundingBox(aabb.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0.4f);
+							RenderGlobal.drawSelectionBoundingBox(aabb.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
 					GlStateManager.depthMask(true);
 					GlStateManager.enableTexture2D();
 					GlStateManager.disableBlend();

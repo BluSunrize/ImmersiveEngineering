@@ -187,7 +187,7 @@ public class EntityRevolvershot extends Entity
 				vec31 = new Vec3d(movingobjectposition.hitVec.x, movingobjectposition.hitVec.y, movingobjectposition.hitVec.z);
 
 			Entity entity = null;
-			List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D));
 			double d0 = 0.0D;
 
 			for (int i = 0; i < list.size(); ++i)
@@ -196,7 +196,7 @@ public class EntityRevolvershot extends Entity
 				if (entity1.canBeCollidedWith() && (!entity1.isEntityEqual(this.shootingEntity)))
 				{
 					float f = 0.3F;
-					AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double)f, (double)f, (double)f);
+					AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(f);
 					RayTraceResult movingobjectposition1 = axisalignedbb.calculateIntercept(vec3, vec31);
 
 					if (movingobjectposition1 != null)
