@@ -112,9 +112,9 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		{
 			ItemStack s = inv.getStackInSlot(i);
 			NonNullList<Ingredient> matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: this.input;
-			if((!remains.get(i).isEmpty() || !s.isEmpty()) && matchedIngr.get(i) instanceof IngredientFluidStack)
+			if(matchedIngr.get(i) instanceof IngredientFluidStack)
 			{
-				if(remains.get(i).isEmpty() && !s.isEmpty())
+				if(!s.isEmpty())
 					remains.set(i, Utils.copyStackWithAmount(s, 1));
 				IFluidHandler handler = FluidUtil.getFluidHandler(remains.get(i));
 				if(handler!=null)

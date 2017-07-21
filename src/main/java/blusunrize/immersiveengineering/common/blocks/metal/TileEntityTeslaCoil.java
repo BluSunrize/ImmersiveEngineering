@@ -79,7 +79,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			if (lowPower)
 				radius/=2;
 			AxisAlignedBB aabbSmall = new AxisAlignedBB(getPos().getX()+.5-radius,getPos().getY()+.5-radius,getPos().getZ()+.5-radius, getPos().getX()+.5+radius,getPos().getY()+.5+radius,getPos().getZ()+.5+radius);
-			AxisAlignedBB aabb = aabbSmall.expand(radius/2, radius/2, radius/2);
+			AxisAlignedBB aabb = aabbSmall.grow(radius/2);
 			List<Entity> targetsAll = world.getEntitiesWithinAABB(Entity.class, aabb);
 			if (!world.isRemote)
 				for (Entity e:targetsAll)
