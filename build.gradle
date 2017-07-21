@@ -34,6 +34,8 @@ minecraft {
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
+    coreMod = "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
+
     replace '${version}', project.version
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -101,6 +103,8 @@ dependencies {
 jar {
     manifest {
         attributes 'FMLAT': 'ImmersiveEngineering_at.cfg'
+
+        attributes("FMLCorePluginContainsFMLMod": "true", "FMLCorePlugin": "blusunrize.immersiveengineering.common.asm.IELoadingPlugin")
     }
 }
 
