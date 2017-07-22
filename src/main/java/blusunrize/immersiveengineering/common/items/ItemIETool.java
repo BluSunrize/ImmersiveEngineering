@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -33,7 +32,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -152,16 +150,6 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
-	{
-		EnumActionResult ret =  tryFormMB(player, world, pos, side, hand);
-		if (world.isRemote&&ret!=EnumActionResult.PASS)
-			// If the client returns PASS, the server won't get notified
-			// We need the server to be notified, so we notify it manually
-			Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, hitX, hitY, hitZ));
-		return ret;
-	}
-
-	private EnumActionResult tryFormMB(EntityPlayer player, World world, BlockPos pos, EnumFacing side, EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.getMetadata() == 0)

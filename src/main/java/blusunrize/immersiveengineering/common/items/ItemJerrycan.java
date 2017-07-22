@@ -50,25 +50,6 @@ public class ItemJerrycan extends ItemIEBase
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
-	{
-		if(!world.isRemote)
-		{
-			ItemStack stack = player.getHeldItem(hand);
-			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity!=null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null))
-			{
-				if(FluidUtil.interactWithFluidHandler(player, hand, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)))
-				{
-					return EnumActionResult.SUCCESS;
-				}
-				return EnumActionResult.FAIL;
-			}
-		}
-		return EnumActionResult.PASS;
-	}
-
-	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
