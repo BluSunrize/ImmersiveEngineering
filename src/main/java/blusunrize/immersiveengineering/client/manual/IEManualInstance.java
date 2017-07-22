@@ -133,8 +133,8 @@ public class IEManualInstance extends ManualInstance
 				if(world!=null && world.provider!=null)
 				{
 					String name = world.provider.getDimensionType().getName();
-					if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
-						name = name.substring(4);
+					if(name.toLowerCase(Locale.ENGLISH).startsWith("the ") || name.toLowerCase(Locale.ENGLISH).startsWith("the_"))
+						name = name.substring(4,5).toUpperCase()+name.substring(5);
 					result = name;
 				}
 				else
