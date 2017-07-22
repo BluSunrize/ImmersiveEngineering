@@ -1,4 +1,4 @@
-#####Version 0.12-68
+#####Version 0.12-68 - BUILT
 - re-added TConstruct compat
 - added Fertilizer compat for ActuallyAdditions, BetterWithMods and IC2
 - changed player arms for certain IE items to also affect armor
