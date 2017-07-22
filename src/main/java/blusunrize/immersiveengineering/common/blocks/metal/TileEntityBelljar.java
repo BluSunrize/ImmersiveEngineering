@@ -388,7 +388,11 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			if(dummy==0 && (facing==null||facing.getAxis()!=this.facing.rotateY().getAxis()))
 				return (T)inputHandler;
 			if(dummy==1 && (facing==null||facing==this.facing.getOpposite()))
-				return (T)outputHandler;
+			{
+				TileEntity te = world.getTileEntity(getPos().down(dummy));
+				if(te instanceof TileEntityBelljar)
+					return (T)((TileEntityBelljar)te).outputHandler;
+			}
 		}
 		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && dummy==0 && (facing==null||facing.getAxis()!=this.facing.rotateY().getAxis()))
 			return (T)tank;
