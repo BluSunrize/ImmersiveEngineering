@@ -57,7 +57,7 @@ public abstract class ContainerInternalStorageItem extends Container
 				if(!this.mergeItemStack(stackInSlot, internalSlots, (internalSlots + 36), true))
 					return ItemStack.EMPTY;
 			}
-			else if(!stackInSlot.isEmpty())
+			else if(allowShiftclicking() && !stackInSlot.isEmpty())
 			{
 				boolean b = true;
 				for(int i=0; i<internalSlots; i++)
@@ -99,6 +99,11 @@ public abstract class ContainerInternalStorageItem extends Container
 			detectAndSendChanges();
 		}
 		return oldStackInSlot;
+	}
+
+	protected boolean allowShiftclicking()
+	{
+		return true;
 	}
 
 	@Override
