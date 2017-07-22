@@ -3,8 +3,12 @@ package blusunrize.immersiveengineering.common.util.compat;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
+import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import ic2.api.recipe.IRecipeInput;
 import ic2.core.recipe.AdvRecipe;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class IC2Helper extends IECompatModule
 {
@@ -36,6 +40,10 @@ public class IC2Helper extends IECompatModule
 				return new RecipeQuery[0];
 			}
 		});
+
+		Item cropRes = Item.REGISTRY.getObject(new ResourceLocation("ic2","crop_res"));
+		if(cropRes!=null)
+			BelljarHandler.registerBasicItemFertilizer(new ItemStack(cropRes,1,2), 1.25f);
 	}
 
 	@Override
