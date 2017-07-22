@@ -44,6 +44,6 @@ public class MysticalAgricultureHelper extends IECompatModule
 		Item itemEssence = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture:"+type+"_essence"));
 		Block blockCrop = Block.REGISTRY.getObject(new ResourceLocation("mysticalagriculture:"+type+"_crop"));
 		if(itemSeeds!=null && itemEssence!=null && blockCrop!=null)
-			BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemEssence),new ItemStack(itemSeeds)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
+			BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemEssence)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 	}
 }
