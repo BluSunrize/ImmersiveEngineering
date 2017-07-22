@@ -74,18 +74,18 @@ public abstract class IECompatModule
 				try
 				{
 					//IC2 Classic is not supported.
-					if("IC2".equals(e.getKey()) && Loader.isModLoaded("IC2-Classic-Spmod"))
+					if("IC2".equals(e.getKey())&&Loader.isModLoaded("IC2-Classic-Spmod"))
 						continue;
 
 					Boolean enabled = Config.IEConfig.compat.get(e.getKey());
-					if(enabled==null || !enabled.booleanValue())
+					if(enabled==null||!enabled.booleanValue())
 						continue;
 					IECompatModule m = e.getValue().newInstance();
 					modules.add(m);
 					m.preInit();
 				} catch(Exception exception)
 				{
-					IELogger.error("Compat module for " + e.getKey() + " could not be preInitialized. Report this!");
+					IELogger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this!");
 				}
 	}
 	public static void doModulesInit()
@@ -103,7 +103,7 @@ public abstract class IECompatModule
 			try{
 				compat.postInit();
 			}catch (Exception exception){
-				IELogger.error("Compat module for "+compat+" could not be initialized");
+				IELogger.error("Compat module for "+compat+" could not be postInitialized");
 			}
 	}
 	//We don't want this to happen multiple times after all >_>
@@ -118,7 +118,7 @@ public abstract class IECompatModule
 					compat.loadComplete();
 				}catch (Exception exception){
 					IELogger.error("Compat module for "+compat+" could not be initialized");
-				exception.printStackTrace();
+					exception.printStackTrace();
 				}
 		}
 	}
