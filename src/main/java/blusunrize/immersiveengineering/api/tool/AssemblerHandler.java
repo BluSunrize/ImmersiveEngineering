@@ -75,7 +75,12 @@ public class AssemblerHandler
 			else
 				return new RecipeQuery(stack, stack.getCount());
 		} else if(o instanceof Ingredient)
-			return new RecipeQuery(((Ingredient)o).getMatchingStacks(), 1);
+		{
+			ItemStack[] stacks = ((Ingredient)o).getMatchingStacks();
+			if(stacks.length<=0)
+				return null;
+			return new RecipeQuery(stacks, 1);
+		}
 		else if(o instanceof IngredientStack)
 			return new RecipeQuery(o, ((IngredientStack)o).inputSize);
 		return new RecipeQuery(o, 1);
