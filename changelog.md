@@ -5,6 +5,7 @@
 - changed shield to use Forge's new provided shield method
 - changed Mystical Agriculture compat to not output seeds anymore
 - changed Arc Furnace, Squeezer and Fermenter to only output comparator signals for their input
+- changed revolver GUI to allow display of dual-wielded revolvers
 - fixed cloche not accepting power from the bottom block
 - fixed speedloader recipe mistakenly crafting a revolver
 - fixed gunpowder recipe being active even when there isn't any charcoal dust
