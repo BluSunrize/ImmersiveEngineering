@@ -323,6 +323,11 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 
 
 	@Override
+	public int getComparatedSize()
+	{
+		return 8;
+	}
+	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;

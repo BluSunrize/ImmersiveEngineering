@@ -1260,9 +1260,10 @@ public class Utils
 			return 0;
 		else
 		{
+			int max = inv.getComparatedSize();
 			int i=0;
 			float f = 0.0F;
-			for(int j = 0; j< inv.getInventory().size(); ++j)
+			for(int j = 0; j< max; ++j)
 			{
 				ItemStack itemstack = inv.getInventory().get(j);
 				if(!itemstack.isEmpty())
@@ -1271,7 +1272,7 @@ public class Utils
 					++i;
 				}
 			}
-			f = f/(float) inv.getInventory().size();
+			f = f/(float) max;
 			return MathHelper.floor(f * 14.0F) + (i > 0 ? 1 : 0);
 		}
 	}

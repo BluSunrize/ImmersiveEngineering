@@ -396,6 +396,11 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 
 
 	@Override
+	public int getComparatedSize()
+	{
+		return 8;
+	}
+	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;

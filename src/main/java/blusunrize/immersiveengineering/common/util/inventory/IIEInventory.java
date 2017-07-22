@@ -10,4 +10,5 @@ public interface IIEInventory
 	int getSlotLimit(int slot);
 	void doGraphicalUpdates(int slot);
 	default NonNullList<ItemStack> getDroppedItems(){return getInventory();}
+	default int getComparatedSize(){return getInventory().size();}
 }

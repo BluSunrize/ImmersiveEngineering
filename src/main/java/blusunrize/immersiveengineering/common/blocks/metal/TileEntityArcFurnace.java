@@ -461,6 +461,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 
 
 	@Override
+	public int getComparatedSize()
+	{
+		return 12;
+	}
+	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
