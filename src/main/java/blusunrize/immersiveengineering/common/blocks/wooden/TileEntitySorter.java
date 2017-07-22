@@ -106,19 +106,19 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	{
 		if(side>=0 && side<this.sideFilter.length)
 			return (this.sideFilter[side]&1)!=0;
-		return false;		
+		return false;
 	}
 	public boolean doNBT(int side)
 	{
 		if(side>=0 && side<this.sideFilter.length)
 			return (this.sideFilter[side]&2)!=0;
-		return false;		
+		return false;
 	}
 	public boolean doFuzzy(int side)
 	{
 		if(side>=0 && side<this.sideFilter.length)
 			return (this.sideFilter[side]&4)!=0;
-		return false;		
+		return false;
 	}
 
 	@Override
@@ -148,71 +148,71 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	{
 		if(isRouting || stack.isEmpty())
 			return new Integer[][]{{},{},{},{}};
-			this.isRouting = true;
-			ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>(6);
-			ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>(6);
-			ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>(6);
-			ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>(6);
-			for(EnumFacing side : EnumFacing.values())
-				if(side!=inputSide)
+		this.isRouting = true;
+		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>(6);
+		for(EnumFacing side : EnumFacing.values())
+			if(side!=inputSide)
+			{
+				boolean unmapped = true;
+				boolean allowed = false;
+				filterIteration:
 				{
-					boolean unmapped = true;
-					boolean allowed = false;
-					filterIteration:
-					{
-						for(ItemStack filterStack : filter.filters[side.ordinal()])
-							if(!filterStack.isEmpty())
+					for(ItemStack filterStack : filter.filters[side.ordinal()])
+						if(!filterStack.isEmpty())
+						{
+							unmapped = false;
+
+							boolean b = OreDictionary.itemMatches(filterStack, stack, true);
+
+							if(!b && doFuzzy(side.ordinal()))
+								b = filterStack.getItem().equals(stack.getItem());
+
+							if(!b && doOredict(side.ordinal()))
+								for (String name:OreDictionary.getOreNames())
+									if (Utils.compareToOreName(stack, name)&&Utils.compareToOreName(filterStack, name))
+									{
+										b = true;
+										break;
+									}
+
+							if(doNBT(side.ordinal()))
+								b &= Utils.compareItemNBT(filterStack, stack);
+							if(b)
 							{
-								unmapped = false;
-
-								boolean b = OreDictionary.itemMatches(filterStack, stack, true);
-
-								if(!b && doFuzzy(side.ordinal()))
-									b = filterStack.getItem().equals(stack.getItem());
-
-								if(!b && doOredict(side.ordinal()))
-									for (String name:OreDictionary.getOreNames())
-										if (Utils.compareToOreName(stack, name)&&Utils.compareToOreName(filterStack, name))
-										{
-											b = true;
-											break;
-										}
-
-								if(doNBT(side.ordinal()))
-									b &= Utils.compareItemNBT(filterStack, stack);
-								if(b)
-								{
-									allowed=true;
-									break filterIteration;
-								}
-
+								allowed=true;
+								break filterIteration;
 							}
-					}
-					if(allowed)
-					{
-						TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
-						if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
-							validFilteredInvOuts.add(side.ordinal());
-						else if(allowThrowing)
-							validFilteredEntityOuts.add(side.ordinal());
-					}
-					else if(allowUnmapped&&unmapped)
-					{
-						TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
-						if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
-							validUnfilteredInvOuts.add(side.ordinal());
-						else if(allowThrowing)
-							validUnfilteredEntityOuts.add(side.ordinal());
-					}
+
+						}
 				}
-			this.isRouting = false;
-			
-			return new Integer[][]{ 
+				if(allowed)
+				{
+					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
+					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
+						validFilteredInvOuts.add(side.ordinal());
+					else if(allowThrowing)
+						validFilteredEntityOuts.add(side.ordinal());
+				}
+				else if(allowUnmapped&&unmapped)
+				{
+					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
+					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
+						validUnfilteredInvOuts.add(side.ordinal());
+					else if(allowThrowing)
+						validUnfilteredEntityOuts.add(side.ordinal());
+				}
+			}
+		this.isRouting = false;
+
+		return new Integer[][]{
 				validFilteredInvOuts.toArray(new Integer[validFilteredInvOuts.size()]),
 				validFilteredEntityOuts.toArray(new Integer[validFilteredEntityOuts.size()]),
 				validUnfilteredInvOuts.toArray(new Integer[validUnfilteredInvOuts.size()]),
 				validUnfilteredEntityOuts.toArray(new Integer[validUnfilteredEntityOuts.size()])
-			};
+		};
 	}
 
 
