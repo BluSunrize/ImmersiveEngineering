@@ -1,3 +1,24 @@
+#####Version 0.12-68
+- re-added TConstruct compat
+- added Fertilizer compat for ActuallyAdditions, BetterWithMods and IC2
+- changed player arms for certain IE items to also affect armor
+- changed shield to use Forge's new provided shield method
+- changed Mystical Agriculture compat to not output seeds anymore
+- changed Arc Furnace, Squeezer and Fermenter to only output comparator signals for their input
+- fixed cloche not accepting power from the bottom block
+- fixed speedloader recipe mistakenly crafting a revolver
+- fixed gunpowder recipe being active even when there isn't any charcoal dust
+- fixed shield only equipping on the clientside with the magnet glove
+- fixed shield flickering when recharging in offhand
+- fixed back button in the manual failing
+- fixed shaders resulting in invisible revolver grips
+- fixed crafttweaker integration
+- fixed various AABBs errors causign projectiles to miss
+- fixed cloche having incorrect item handling (leading to trouble with EIO conduits)
+- fixed Forestry compat not loading
+- fixed Fluid Router allowing for an infinite loop
+- fixed Assembler not handling some recipes properly
+
 #####Version 0.12-67 - BUILT
 - added the Probe Connector. It can read Comparator Overrides on Inventories and stuff!
 - added fancy animations for the reload with a speeloader and opening the revolver GUI
