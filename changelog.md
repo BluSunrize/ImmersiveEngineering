@@ -1,4 +1,4 @@
-#####Version 0.12-69
+#####Version 0.12-69 - BUILT
 - fixed TConstruct dependency
 - fixed Assembler not properly handling Fluid Ingredients from IE and CoFH
 - fixed Revolver GUI not properly syncing
