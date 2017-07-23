@@ -97,6 +97,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -319,6 +320,8 @@ public class ClientProxy extends CommonProxy
 
 		for(Item item : IEContent.registeredIEItems)
 		{
+			if(item instanceof ItemBlock)
+				continue;
 			if(item instanceof ItemIEBase)
 			{
 				ItemIEBase ieMetaItem = (ItemIEBase)item;
