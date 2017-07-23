@@ -1,3 +1,9 @@
+#####Version 0.12-69
+- fixed TConstruct dependency
+- fixed Assembler not properly handling Fluid Ingredients from IE and CoFH
+- fixed Revolver GUI not properly syncing
+- fixed model loading error (thanks PaleoCrafter)
+
 #####Version 0.12-68 - BUILT
 - re-added TConstruct compat
 - added Fertilizer compat for ActuallyAdditions, BetterWithMods and IC2
