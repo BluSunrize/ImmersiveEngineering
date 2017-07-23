@@ -31,6 +31,7 @@ public abstract class IECompatModule
 		moduleClasses.put("botania", BotaniaHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
+		moduleClasses.put("cofhcore", CoFHHelper.class);
 		moduleClasses.put("crafttweaker", CraftTweakerHelper.class);
 		moduleClasses.put("denseores", DenseOresHelper.class);
 		moduleClasses.put("enderio", EnderIOHelper.class);
