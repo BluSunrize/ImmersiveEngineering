@@ -29,10 +29,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
-import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
-import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
-import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
+import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
@@ -594,6 +591,9 @@ public class IEContent
 		}
 
 		/**ASSEMBLER RECIPE ADAPTERS*/
+		//Fluid Ingredients
+		AssemblerHandler.registerSpecialQueryConverters((o)->
+				o instanceof IngredientFluidStack? new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
 		//Shaped
 		AssemblerHandler.registerRecipeAdapter(ShapedRecipes.class, new IRecipeAdapter<ShapedRecipes>()
 		{
