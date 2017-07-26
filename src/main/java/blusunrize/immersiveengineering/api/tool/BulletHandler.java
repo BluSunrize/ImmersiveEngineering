@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -131,6 +132,14 @@ public class BulletHandler
 		default boolean isValidForTurret()
 		{
 			return false;
+		}
+
+		/**
+		 * @return a special sound for when this cartridge is fired. Return null for the default sound.
+		 */
+		default SoundEvent getSound()
+		{
+			return null;
 		}
 	}
 
