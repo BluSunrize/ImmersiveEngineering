@@ -135,6 +135,13 @@ public class IEContent
 	public static BlockIEBase blockMetalDecoration0;
 	public static BlockIEBase blockMetalDecoration1;
 	public static BlockIEBase blockMetalDecoration2;
+	public static BlockIEBase blockMetalDecorationSlabs1;
+	public static Block blockSteelScaffoldingStair;
+	public static Block blockSteelScaffoldingStair1;
+	public static Block blockSteelScaffoldingStair2;
+	public static Block blockAluminumScaffoldingStair;
+	public static Block blockAluminumScaffoldingStair1;
+	public static Block blockAluminumScaffoldingStair2;
 	public static BlockIEBase blockConnectors;
 	public static BlockIEBase blockMetalDevice0;
 	public static BlockIEBase blockMetalDevice1;
@@ -237,9 +244,18 @@ public class IEContent
 
 		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
 		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetal_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
+
 		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metal_decoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
+		blockMetalDecorationSlabs1 = (BlockIESlab)new BlockIEScaffoldSlab("metal_decoration1_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class)).setMetaHidden(0, 4).setHardness(3.0F).setResistance(15.0F);
+		blockSteelScaffoldingStair = new BlockIEStairs("steel_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(1)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockSteelScaffoldingStair1 = new BlockIEStairs("steel_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(2)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockSteelScaffoldingStair2 = new BlockIEStairs("steel_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(3)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair = new BlockIEStairs("aluminum_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(5)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair1 = new BlockIEStairs("aluminum_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(6)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair2 = new BlockIEStairs("aluminum_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(7)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+
 		blockConnectors = new BlockConnector();
 		blockMetalDevice0 = new BlockMetalDevice0();
 		blockMetalDevice1 = new BlockMetalDevice1();

@@ -60,6 +60,15 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		{
 			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy>3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
+		if(te instanceof TileEntityWallmount)
+		{
+			if(side==EnumFacing.UP)
+				return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2;
+			else if(side==EnumFacing.DOWN)
+				return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
+			else
+				return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
+		}
 		return super.isSideSolid(state, world, pos, side);
 	}
 

@@ -136,6 +136,19 @@ tile.immersiveengineering.metal_decoration2.lantern.name=Lantern
 tile.immersiveengineering.metal_decoration2.razor_wire.name=Razor Wire
 tile.immersiveengineering.metal_decoration2.toolbox.name=Engineer's Toolbox
 
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=Steel Scaffolding Slab
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=Steel Scaffolding Slab
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_2.name=Steel Scaffolding Slab
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_0.name=Aluminium Scaffolding Slab
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_1.name=Aluminium Scaffolding Slab
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_2.name=Aluminium Scaffolding Slab
+tile.immersiveengineering.steel_scaffolding_stairs0.name=Steel Scaffolding Stairs
+tile.immersiveengineering.steel_scaffolding_stairs1.name=Steel Scaffolding Stairs
+tile.immersiveengineering.steel_scaffolding_stairs2.name=Steel Scaffolding Stairs
+tile.immersiveengineering.aluminum_scaffolding_stairs0.name=Aluminium Scaffolding Stairs
+tile.immersiveengineering.aluminum_scaffolding_stairs1.name=Aluminium Scaffolding Stairs
+tile.immersiveengineering.aluminum_scaffolding_stairs2.name=Aluminium Scaffolding Stairs
+
 tile.immersiveengineering.connector.connector_lv.name=LV Wire Connector
 tile.immersiveengineering.connector.relay_lv.name=LV Wire Relay
 tile.immersiveengineering.connector.connector_mv.name=MV Wire Connector

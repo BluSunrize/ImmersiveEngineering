@@ -79,7 +79,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		state  = super.getActualState(state, world, pos);
 		if(this.getMetaFromState(state)==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || this.getMetaFromState(state)==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
-				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, this.canConnectFenceTo(world, pos.offset(f)));
+				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, this.canConnectFenceTo(world, pos.offset(f), f));
 		return state;
 	}
 
@@ -135,11 +135,19 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 //		else
 //			this.setBlockBounds(0,0,0,1,1,1);
 //	}
-	public boolean canConnectFenceTo(IBlockAccess world, BlockPos pos)
+	public boolean canConnectFenceTo(IBlockAccess world, BlockPos pos, EnumFacing dir)
 	{
 		IBlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		return block != Blocks.BARRIER && (!((!(block instanceof BlockFence || block.equals(this)) || state.getMaterial() != this.blockMaterial) && !(block instanceof BlockFenceGate)) || ((state.getMaterial().isOpaque() && state.isFullCube()) && state.getMaterial() != Material.GOURD));
+		if(block==Blocks.BARRIER)
+			return false;
+		if((block instanceof BlockFence || block.equals(this) || block instanceof BlockFenceGate) && state.getMaterial()==this.blockMaterial)
+			return true;
+		return state.getMaterial().isOpaque() && state.isSideSolid(world, pos, dir.getOpposite());
+//		(!((!(block instanceof BlockFence || block.equals(this)) || state.getMaterial() != this.blockMaterial) && !())
+//				|| ((state.getMaterial().isOpaque() && state.isFullCube()) && state.getMaterial() != Material.GOURD));
+
+//		return block != Blocks.BARRIER && (!((!(block instanceof BlockFence || block.equals(this)) || state.getMaterial() != this.blockMaterial) && !(block instanceof BlockFenceGate)) || ((state.getMaterial().isOpaque() && state.isFullCube()) && state.getMaterial() != Material.GOURD));
 	}
 
 	@Override
@@ -167,7 +175,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
-			return new AxisAlignedBB(canConnectFenceTo(world,pos.add(-1,0,0))?0:.375f,0,canConnectFenceTo(world,pos.add(0,0,-1))?0:.375f, canConnectFenceTo(world,pos.add(1,0,0))?1:.625f,1f,canConnectFenceTo(world,pos.add(0,0,1))?1:.625f);
+			return new AxisAlignedBB(canConnectFenceTo(world,pos.add(-1,0,0), EnumFacing.WEST)?0:.375f,0,canConnectFenceTo(world,pos.add(0,0,-1), EnumFacing.NORTH)?0:.375f, canConnectFenceTo(world,pos.add(1,0,0), EnumFacing.EAST)?1:.625f,1f,canConnectFenceTo(world,pos.add(0,0,1), EnumFacing.SOUTH)?1:.625f);
 		return super.getBoundingBox(state, world, pos);
 	}
 

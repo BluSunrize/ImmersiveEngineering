@@ -5,6 +5,12 @@ import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockIEStairs extends BlockStairs
 {
@@ -12,6 +18,7 @@ public class BlockIEStairs extends BlockStairs
 	public boolean isFlammable = false;
 	public String name;
 	float explosionResistance;
+	BlockRenderLayer renderLayer = BlockRenderLayer.SOLID;
 	
 	public BlockIEStairs(String name, IBlockState state)
 	{
@@ -49,4 +56,24 @@ public class BlockIEStairs extends BlockStairs
 		return this;
 	}
 
+	@Override
+	public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
+	{
+		if(this.renderLayer!=BlockRenderLayer.SOLID)
+			return false;
+		return super.doesSideBlockRendering(state, world, pos, face);
+	}
+
+	public BlockIEStairs setRenderLayer(BlockRenderLayer layer)
+	{
+		this.renderLayer = layer;
+		return this;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public BlockRenderLayer getBlockLayer()
+	{
+		return renderLayer;
+	}
 }

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -10,6 +11,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -55,6 +58,45 @@ public abstract class TileEntityIEBase extends TileEntity
 	{
 		this.readCustomNBT(pkt.getNbtCompound(), true);
 	}
+
+
+	@Override
+	public void rotate(Rotation rot)
+	{
+		if(rot!=Rotation.NONE && this instanceof IDirectionalTile && ((IDirectionalTile)this).canRotate(EnumFacing.UP))
+		{
+			EnumFacing f = ((IDirectionalTile)this).getFacing();
+			switch(rot)
+			{
+				case CLOCKWISE_90:
+					f = f.rotateY();
+					break;
+				case CLOCKWISE_180:
+					f = f.getOpposite();
+					break;
+				case COUNTERCLOCKWISE_90:
+					f = f.rotateYCCW();
+					break;
+			}
+			((IDirectionalTile)this).setFacing(f);
+			this.markDirty();
+			if(this.pos!=null)
+				this.markBlockForUpdate(this.pos, null);
+		}
+	}
+
+	@Override
+	public void mirror(Mirror mirrorIn)
+	{
+		if(mirrorIn==Mirror.FRONT_BACK && this instanceof IDirectionalTile)
+		{
+			((IDirectionalTile)this).setFacing(((IDirectionalTile)this).getFacing());
+			this.markDirty();
+			if(this.pos!=null)
+				this.markBlockForUpdate(this.pos, null);
+		}
+	}
+
 
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
