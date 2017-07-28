@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.Entity;
@@ -211,6 +212,11 @@ public class IEBlockInterfaces
 	public interface IBlockBounds
 	{
 		float[] getBlockBounds();
+	}
+
+	public interface IFaceShape
+	{
+		BlockFaceShape getFaceShape(EnumFacing side);
 	}
 	public interface IAdvancedSelectionBounds extends IBlockBounds
 	{

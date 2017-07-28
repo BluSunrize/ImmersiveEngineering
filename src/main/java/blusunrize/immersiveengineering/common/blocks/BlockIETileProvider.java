@@ -17,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -27,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -381,6 +383,49 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				return ((IColouredTile)tile).getRenderColour(tintIndex);
 		}
 		return 0xffffff;
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	{
+		if(normalBlockCheck(state))
+			return BlockFaceShape.SOLID;
+		else if(side!=null)
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof IFaceShape)
+				return ((IFaceShape)te).getFaceShape(side);
+			else
+			{
+				AxisAlignedBB bb = getBoundingBox(state, world, pos);
+				double wMin = side.getAxis()==Axis.X?bb.minZ: bb.minX;
+				double wMax = side.getAxis()==Axis.X?bb.maxZ: bb.maxX;
+				double hMin = side.getAxis()==Axis.Y?bb.minZ: bb.minY;
+				double hMax = side.getAxis()==Axis.Y?bb.maxZ: bb.maxY;
+				if(wMin==0&&hMin==0 && wMax==1&&hMax==1)
+					return BlockFaceShape.SOLID;
+				else if(hMin==0&&hMax==1 && wMin==(1-wMax))
+				{
+					if(wMin>.375)
+						return BlockFaceShape.MIDDLE_POLE_THIN;
+					else if(wMin>.3125)
+						return BlockFaceShape.MIDDLE_POLE;
+					else
+						return BlockFaceShape.MIDDLE_POLE_THICK;
+				}
+				else if(hMin==wMin && hMax==wMax)
+				{
+					if(wMin > .375)
+						return BlockFaceShape.CENTER_SMALL;
+					else if(wMin > .3125)
+						return BlockFaceShape.CENTER;
+					else
+						return BlockFaceShape.CENTER_BIG;
+				}
+				return BlockFaceShape.UNDEFINED;
+			}
+		}
+		return super.getBlockFaceShape(world, state, pos, side);
 	}
 
 	@Override

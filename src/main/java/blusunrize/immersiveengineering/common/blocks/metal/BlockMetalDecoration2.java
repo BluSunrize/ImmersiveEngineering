@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -58,6 +59,26 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	}
 
 	@Override
+	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+	{
+		int meta = this.getMetaFromState(world.getBlockState(pos));
+		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta() || meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof TileEntityWallmount)
+			{
+				if(facing==EnumFacing.UP)
+					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2;
+				else if(facing==EnumFacing.DOWN)
+					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
+				else
+					return facing==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
+			}
+		}
+		return super.canBeConnectedTo(world, pos, facing);
+	}
+
+	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
@@ -75,6 +96,27 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 				return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
 		}
 		return super.isSideSolid(state, world, pos, side);
+	}
+
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	{
+		int meta = this.getMetaFromState(state);
+		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta() || meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof TileEntityWallmount)
+			{
+				if(side==EnumFacing.UP)
+					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+				else if(side==EnumFacing.DOWN)
+					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+				else
+					return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+			}
+		}
+		return BlockFaceShape.SOLID;
 	}
 
 	@Override
