@@ -2,15 +2,15 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import net.minecraft.block.Block;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration1;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockFence;
-import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -47,6 +47,18 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	}
 
 	@Override
+	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+	{
+		int meta = this.getMetaFromState(world.getBlockState(pos));
+		if(meta==BlockTypes_WoodenDecoration.FENCE.getMeta())
+		{
+			IBlockState connector = world.getBlockState(pos.offset(facing));
+			return connector.getBlock() instanceof BlockMetalDecoration1&&this.getMetaFromState(connector)==meta;
+		}
+		return super.canBeConnectedTo(world, pos, facing);
+	}
+
+	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		//		int meta = world.getBlockMetadata(x, y, z);
@@ -80,6 +92,15 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	}
 
 	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	{
+		int meta = this.getMetaFromState(state);
+		if(meta==BlockTypes_WoodenDecoration.FENCE.getMeta())
+			return side != EnumFacing.UP && side != EnumFacing.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
+		return BlockFaceShape.SOLID;
+	}
+
+	@Override
 	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		int meta = this.getMetaFromState(state);
@@ -102,7 +123,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 		state  = super.getActualState(state, world, pos);
 		if(this.getMetaFromState(state)==BlockTypes_WoodenDecoration.FENCE.getMeta())
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
-				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, this.canConnectFenceTo(world, pos.offset(f)));
+				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
 		return state;
 	}
 
@@ -158,12 +179,6 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 //		else
 //			this.setBlockBounds(0,0,0,1,1,1);
 //	}
-	public boolean canConnectFenceTo(IBlockAccess world, BlockPos pos)
-	{
-		IBlockState state = world.getBlockState(pos);
-		Block block = state.getBlock();
-		return block != Blocks.BARRIER && (!((!(block instanceof BlockFence || block.equals(this)) || state.getMaterial() != this.blockMaterial) && !(block instanceof BlockFenceGate)) || ((state.getMaterial().isOpaque() && state.isFullCube()) && state.getMaterial() != Material.GOURD));
-	}
 
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
@@ -189,7 +204,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==BlockTypes_WoodenDecoration.FENCE.getMeta())
-			return new AxisAlignedBB(canConnectFenceTo(world,pos.add(-1,0,0))?0:.375f,0,canConnectFenceTo(world,pos.add(0,0,-1))?0:.375f, canConnectFenceTo(world,pos.add(1,0,0))?1:.625f,1f,canConnectFenceTo(world,pos.add(0,0,1))?1:.625f);
+			return new AxisAlignedBB(Utils.canFenceConnectTo(world,pos,EnumFacing.WEST,blockMaterial)?0:.375f,0,Utils.canFenceConnectTo(world,pos,EnumFacing.NORTH,blockMaterial)?0:.375f, Utils.canFenceConnectTo(world,pos,EnumFacing.EAST,blockMaterial)?1:.625f,1f,Utils.canFenceConnectTo(world,pos,EnumFacing.SOUTH,blockMaterial)?1:.625f);
 		else if(meta==BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
 			return FULL_BLOCK_AABB;
 

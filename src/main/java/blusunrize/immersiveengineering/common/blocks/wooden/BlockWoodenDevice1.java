@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -50,6 +51,46 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 				world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, new ItemStack(this,1,this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
+	}
+
+	@Override
+	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+	{
+		int meta = this.getMetaFromState(world.getBlockState(pos));
+		if(meta==BlockTypes_WoodenDevice1.WALLMOUNT.getMeta())
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof TileEntityWallmount)
+			{
+				if(facing==EnumFacing.UP)
+					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2;
+				else if(facing==EnumFacing.DOWN)
+					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
+				else
+					return facing==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
+			}
+		}
+		return super.canBeConnectedTo(world, pos, facing);
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	{
+		int meta = this.getMetaFromState(state);
+		if(meta==BlockTypes_WoodenDevice1.WALLMOUNT.getMeta())
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof TileEntityWallmount)
+			{
+				if(side==EnumFacing.UP)
+					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+				else if(side==EnumFacing.DOWN)
+					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+				else
+					return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+			}
+		}
+		return BlockFaceShape.SOLID;
 	}
 
 	@Override
