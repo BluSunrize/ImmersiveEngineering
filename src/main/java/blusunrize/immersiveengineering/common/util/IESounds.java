@@ -21,6 +21,7 @@ public class IESounds
 	public static SoundEvent metalpress_smash = registerSound("metalPressSmash");
 	public static SoundEvent birthdayParty = registerSound("birthdayParty");
 	public static SoundEvent revolverFire = registerSound("revolverFire");
+	public static SoundEvent revolverFireThump = registerSound("revolverFireThump");
 	public static SoundEvent revolverReload = registerSound("revolverReload");
 	public static SoundEvent spray= registerSound("spray");
 	public static SoundEvent sprayFire = registerSound("spray_fire");

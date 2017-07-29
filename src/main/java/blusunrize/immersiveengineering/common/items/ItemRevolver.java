@@ -307,7 +307,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 										player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)));
-								world.playSound(null, player.posX, player.posY, player.posZ, IESounds.revolverFire, SoundCategory.PLAYERS, 1f, 1f);
+								SoundEvent sound = bullet.getSound();
+								if(sound==null)
+									sound = IESounds.revolverFire;
+								world.playSound(null, player.posX, player.posY, player.posZ, sound, SoundCategory.PLAYERS, 1f, 1f);
 							} else
 								world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
 						} else

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.entities.EntityWolfpackShot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.gui.FontRenderer;
@@ -31,6 +32,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -99,6 +101,11 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 					((EntityRevolvershot)projectile).setMovementDecay(0.9f);
 				}
 				return projectile;
+			}
+			@Override
+			public SoundEvent getSound()
+			{
+				return IESounds.revolverFireThump;
 			}
 		});
 

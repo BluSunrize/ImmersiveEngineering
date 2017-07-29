@@ -41,6 +41,13 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.revolver_fire"
 	},
+	"revolverFireThump": {
+		"category": "neutral",
+		"sounds": [
+			"immersiveengineering:revolver_fire_thump"
+		],
+		"subtitle": "subtitle.immersiveengineering.revolver_fire"
+	},
 	"revolverReload": {
 		"category": "neutral",
 		"sounds": [
