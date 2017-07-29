@@ -114,8 +114,9 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			}
 		}
 
+		int amount_prev = tanks[0].getFluidAmount();
 		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory.get(0), inventory.get(1), null);
-		if(!emptyContainer.isEmpty() && emptyContainer.getCount() > 0)
+		if(amount_prev!=tanks[0].getFluidAmount())
 		{
 			if(!inventory.get(1).isEmpty() && OreDictionary.itemMatches(inventory.get(1), emptyContainer, true))
 				inventory.get(1).grow(emptyContainer.getCount());
@@ -126,8 +127,9 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 				inventory.set(0, ItemStack.EMPTY);
 			update = true;
 		}
+		amount_prev = tanks[1].getFluidAmount();
 		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory.get(2), inventory.get(3), null);
-		if(!emptyContainer.isEmpty() && emptyContainer.getCount() > 0)
+		if(amount_prev!=tanks[1].getFluidAmount())
 		{
 			if(!inventory.get(3).isEmpty() && OreDictionary.itemMatches(inventory.get(3), emptyContainer, true))
 				inventory.get(3).grow(emptyContainer.getCount());
