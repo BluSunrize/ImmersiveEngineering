@@ -24,6 +24,7 @@ public abstract class IECompatModule
 	static
 	{
 		moduleClasses.put("actuallyadditions", ActuallyAdditionsHelper.class);
+		moduleClasses.put("albedo", AlbedoHelper.class);
 		moduleClasses.put("attaineddrops", AttainedDropsHelper.class);
 		moduleClasses.put("baubles", BaublesHelper.class);
 		moduleClasses.put("betterwithmods", BetterWithModsHelper.class);

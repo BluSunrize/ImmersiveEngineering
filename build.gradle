@@ -86,6 +86,9 @@ repositories {
         name 'CoFH Maven'
         url "http://maven.covers1624.net/"
     }
+    maven { // Albedo Lights
+        url 'https://repo.elytradev.com/'
+    }
 }
 
 dependencies {
@@ -98,6 +101,7 @@ dependencies {
 //    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+" ToDo?
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2" ToDo!!
     deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.+'
+    deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
 jar {
