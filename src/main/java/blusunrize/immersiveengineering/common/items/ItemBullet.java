@@ -90,6 +90,16 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			{
 				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
 			}
+			@Override
+			public Entity getProjectile(@Nullable EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean charged)
+			{
+				if(projectile instanceof EntityRevolvershot)
+				{
+					((EntityRevolvershot)projectile).setGravity(0.05f);
+					((EntityRevolvershot)projectile).setMovementDecay(0.9f);
+				}
+				return projectile;
+			}
 		});
 
 		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(

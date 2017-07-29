@@ -44,6 +44,8 @@ public class EntityRevolvershot extends Entity
 	public EntityLivingBase shootingEntity;
 	private int ticksInGround;
 	private int ticksInAir;
+	private float movementDecay = 0;
+	private float gravity = 0;
 
 	private int tickLimit=40;
 	String bulletType;
@@ -87,6 +89,16 @@ public class EntityRevolvershot extends Entity
 	public void setTickLimit(int limit)
 	{
 		this.tickLimit=limit;
+	}
+
+	public void setMovementDecay(float f)
+	{
+		this.movementDecay=f;
+	}
+
+	public void setGravity(float f)
+	{
+		this.gravity=f;
 	}
 
 
@@ -235,14 +247,23 @@ public class EntityRevolvershot extends Entity
 			this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
 			this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
 
-			if (this.isInWater())
+			float decay = movementDecay;
+			if(this.isInWater())
 			{
-				for (int j = 0; j < 4; ++j)
-				{
-					float f3 = 0.25F;
+				float f3 = 0.25F;
+				for(int j = 0; j < 4; ++j)
 					this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * (double)f3, this.posY - this.motionY * (double)f3, this.posZ - this.motionZ * (double)f3, this.motionX, this.motionY, this.motionZ);
-				}
+				decay *= .6;
 			}
+
+			if(decay!=0)
+			{
+				this.motionX *= decay;
+				this.motionY *= decay;
+				this.motionZ *= decay;
+			}
+			if(gravity!=0)
+				this.motionY -= gravity;
 
 			if(ticksExisted%4==0)
 				this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
