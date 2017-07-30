@@ -245,7 +245,7 @@ public class IEContent
 		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
 		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetal_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
 
-		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metal_decoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT).setHardness(3.0F).setResistance(15.0F);
+		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metal_decoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setBlockLayer(BlockRenderLayer.CUTOUT).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
 		blockMetalDecorationSlabs1 = (BlockIESlab)new BlockIEScaffoldSlab("metal_decoration1_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class)).setMetaHidden(0, 4).setHardness(3.0F).setResistance(15.0F);
