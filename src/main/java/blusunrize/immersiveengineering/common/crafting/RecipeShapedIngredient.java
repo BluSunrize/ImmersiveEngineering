@@ -13,7 +13,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.util.regex.Pattern;
@@ -116,11 +116,12 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			{
 				if(!s.isEmpty())
 					remains.set(i, Utils.copyStackWithAmount(s, 1));
-				IFluidHandler handler = FluidUtil.getFluidHandler(remains.get(i));
+				IFluidHandlerItem handler = FluidUtil.getFluidHandler(remains.get(i));
 				if(handler!=null)
 				{
 					FluidStack fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluid();
 					handler.drain(fluid.amount, true);
+					remains.set(i, handler.getContainer());
 				}
 			}
 		}

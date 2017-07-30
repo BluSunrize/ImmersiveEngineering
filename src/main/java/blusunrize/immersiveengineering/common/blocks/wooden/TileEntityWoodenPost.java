@@ -1,13 +1,11 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IPostBlock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import com.google.common.collect.Lists;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 
-public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
+public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock, IFaceShape, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
 {
 	public static ArrayList<? extends Enum> postMetaProperties = Lists.newArrayList(BlockTypes_WoodenDevice1.POST, BlockTypes_MetalDecoration2.ALUMINUM_POST, BlockTypes_MetalDecoration2.STEEL_POST);
 
@@ -86,6 +84,16 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public BlockFaceShape getFaceShape(EnumFacing side)
+	{
+		if(dummy==0)
+			return side==EnumFacing.DOWN?BlockFaceShape.CENTER_BIG:BlockFaceShape.UNDEFINED;
+		else if(dummy>=3)
+			return (side==EnumFacing.UP||(dummy>3&&side==EnumFacing.DOWN))?BlockFaceShape.CENTER_BIG:BlockFaceShape.UNDEFINED;
+		return BlockFaceShape.CENTER;
 	}
 
 	public boolean hasConnection(EnumFacing dir)

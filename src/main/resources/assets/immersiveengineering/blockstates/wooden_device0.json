@@ -147,7 +147,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "builtin/generated",
+				"model": "immersiveengineering:ie_empty",
 				"textures": {"particle": "immmersiveengineering:blocks/treated_wood_horizontal"}
 			}
 		}

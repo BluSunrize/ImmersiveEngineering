@@ -2,15 +2,14 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import net.minecraft.block.Block;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockFence;
-import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -49,6 +48,27 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	}
 
 	@Override
+	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+	{
+		int meta = this.getMetaFromState(world.getBlockState(pos));
+		if(meta==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
+		{
+			IBlockState connector = world.getBlockState(pos.offset(facing));
+			return connector.getBlock() instanceof BlockMetalDecoration1&&this.getMetaFromState(connector)==meta;
+		}
+		return super.canBeConnectedTo(world, pos, facing);
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	{
+		int meta = this.getMetaFromState(state);
+		if(meta==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
+			return side != EnumFacing.UP && side != EnumFacing.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
+		return BlockFaceShape.SOLID;
+	}
+
+	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		int meta = this.getMetaFromState(state);
@@ -79,67 +99,8 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		state  = super.getActualState(state, world, pos);
 		if(this.getMetaFromState(state)==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || this.getMetaFromState(state)==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
-				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, this.canConnectFenceTo(world, pos.offset(f)));
+				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
 		return state;
-	}
-
-	//	@Override
-//	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
-//	{
-//		//		TileEntity tileEntity = world.getTileEntity(x, y, z);
-//		IBlockState state = world.getBlockState(pos);
-//		if(this.getMetaFromState(state)==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || this.getMetaFromState(state)==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
-//			this.setBlockBounds(canConnectFenceTo(world,pos.add(-1,0,0))?0:.375f,0,canConnectFenceTo(world,pos.add(0,0,-1))?0:.375f, canConnectFenceTo(world,pos.add(1,0,0))?1:.625f,1,canConnectFenceTo(world,pos.add(0,0,1))?1:.625f);
-//		//		else if(tileEntity instanceof TileEntityLantern)
-//		//		{
-//		//			int f = ((TileEntityLantern)tileEntity).facing ;
-//		//			if(f<2)
-//		//				this.setBlockBounds(.25f,f==1?0:.125f,.25f, .75f,f==1?.875f:1f,.75f);
-//		//			else
-//		//				this.setBlockBounds(f==5?0:.25f,0,f==3?0:.25f, f==4?1:.75f,.875f,f==2?1:.75f);
-//		//		}
-//		//		else if(tileEntity instanceof TileEntityConnectorStructural)
-//		//		{
-//		//			float length = .5f;
-//		//			switch(((TileEntityConnectorStructural)tileEntity).facing )
-//		//			{
-//		//			case 0://UP
-//		//				this.setBlockBounds(.25f,0,.25f,  .75f,length,.75f);
-//		//				break;
-//		//			case 1://DOWN
-//		//				this.setBlockBounds(.25f,1-length,.25f,  .75f,1,.75f);
-//		//				break;
-//		//			case 2://SOUTH
-//		//				this.setBlockBounds(.25f,.25f,0,  .75f,.75f,length);
-//		//				break;
-//		//			case 3://NORTH
-//		//				this.setBlockBounds(.25f,.25f,1-length,  .75f,.75f,1);
-//		//				break;
-//		//			case 4://EAST
-//		//				this.setBlockBounds(0,.25f,.25f,  length,.75f,.75f);
-//		//				break;
-//		//			case 5://WEST
-//		//				this.setBlockBounds(1-length,.25f,.25f,  1,.75f,.75f);
-//		//				break;
-//		//			}
-//		//		}
-//		//		else if(tileEntity instanceof TileEntityWallmount)
-//		//		{
-//		//			TileEntityWallmount arm = (TileEntityWallmount)tileEntity;
-//		//			int f = arm.facing;
-//		//			if(arm.sideAttached>0)
-//		//				this.setBlockBounds(f==4?0:f==5?.375f:.3125f,arm.inverted?.3125f:0,f==2?0:f==3?.375f:.3125f, f==5?1:f==4?.625f:.6875f,arm.inverted?1:.6875f,f==3?1:f==2?.625f:.6875f);
-//		//			else
-//		//				this.setBlockBounds(f==5?0:.3125f,arm.inverted?.375f:0,f==3?0:.3125f, f==4?1:.6875f,arm.inverted?1:.625f,f==2?1:.6875f);
-//		//		}
-//		else
-//			this.setBlockBounds(0,0,0,1,1,1);
-//	}
-	public boolean canConnectFenceTo(IBlockAccess world, BlockPos pos)
-	{
-		IBlockState state = world.getBlockState(pos);
-		Block block = state.getBlock();
-		return block != Blocks.BARRIER && (!((!(block instanceof BlockFence || block.equals(this)) || state.getMaterial() != this.blockMaterial) && !(block instanceof BlockFenceGate)) || ((state.getMaterial().isOpaque() && state.isFullCube()) && state.getMaterial() != Material.GOURD));
 	}
 
 	@Override
@@ -167,7 +128,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
-			return new AxisAlignedBB(canConnectFenceTo(world,pos.add(-1,0,0))?0:.375f,0,canConnectFenceTo(world,pos.add(0,0,-1))?0:.375f, canConnectFenceTo(world,pos.add(1,0,0))?1:.625f,1f,canConnectFenceTo(world,pos.add(0,0,1))?1:.625f);
+			return new AxisAlignedBB(Utils.canFenceConnectTo(world,pos,EnumFacing.WEST,blockMaterial)?0:.375f,0,Utils.canFenceConnectTo(world,pos,EnumFacing.NORTH,blockMaterial)?0:.375f, Utils.canFenceConnectTo(world,pos,EnumFacing.EAST,blockMaterial)?1:.625f,1f,Utils.canFenceConnectTo(world,pos,EnumFacing.SOUTH,blockMaterial)?1:.625f);
 		return super.getBoundingBox(state, world, pos);
 	}
 

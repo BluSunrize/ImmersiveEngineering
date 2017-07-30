@@ -15,9 +15,9 @@ import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -241,6 +241,32 @@ public class Utils
 		ItemStack stack = new ItemStack(state.getBlock(),1,state.getBlock().getMetaFromState(state));
 		return compareToOreName(stack, oreName);
 	}
+
+	public static boolean canFenceConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing, Material blockMaterial)
+	{
+		BlockPos other = pos.offset(facing);
+		IBlockState state = world.getBlockState(other);
+		Block block = world.getBlockState(other).getBlock();
+		if(block.canBeConnectedTo(world, other, facing.getOpposite()))
+			return true;
+		BlockFaceShape blockfaceshape = state.getBlockFaceShape(world, other, facing.getOpposite());
+		boolean flag = blockfaceshape == BlockFaceShape.MIDDLE_POLE && (state.getMaterial()==blockMaterial || block instanceof BlockFenceGate);
+		return !isExceptBlockForAttachWithFence(block) && blockfaceshape == BlockFaceShape.SOLID || flag;
+	}
+
+	private static boolean isExceptionBlockForAttaching(Block block)
+	{
+		return block instanceof BlockShulkerBox|| block instanceof BlockLeaves|| block instanceof BlockTrapDoor || block == Blocks.BEACON || block == Blocks.CAULDRON || block == Blocks.GLASS || block == Blocks.GLOWSTONE || block == Blocks.ICE || block == Blocks.SEA_LANTERN || block == Blocks.STAINED_GLASS;
+	}
+	private static boolean isExceptBlockForAttachWithPiston(Block block)
+	{
+		return isExceptionBlockForAttaching(block) || block == Blocks.PISTON || block == Blocks.STICKY_PISTON || block == Blocks.PISTON_HEAD;
+	}
+	private static boolean isExceptBlockForAttachWithFence(Block block)
+	{
+		return isExceptBlockForAttachWithPiston(block) || block == Blocks.BARRIER || block == Blocks.MELON_BLOCK || block == Blocks.PUMPKIN || block == Blocks.LIT_PUMPKIN;
+	}
+
 
 	public static String formatDouble(double d, String s)
 	{

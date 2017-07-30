@@ -186,7 +186,7 @@
     {
       "false":{},
       "true":{
-        "model": "builtin/generated"
+        "model": "immersiveengineering:ie_empty"
       }
     }
   }

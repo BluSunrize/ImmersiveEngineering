@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -95,6 +96,23 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 				return side==EnumFacing.UP;
 		}
 		return true;
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	{
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof TileEntityIESlab)
+		{
+			int type = ((TileEntityIESlab)te).slabType;
+			if(type==2)
+				return BlockFaceShape.SOLID;
+			else if((type==0&&side==EnumFacing.DOWN)||(type==1&&side==EnumFacing.UP))
+				return BlockFaceShape.SOLID;
+			else
+				return BlockFaceShape.UNDEFINED;
+		}
+		return BlockFaceShape.SOLID;
 	}
 
 	@Override

@@ -1,3 +1,10 @@
+#####Version 0.12-70
+- added Shader-capabilities to the Heavy Plated Shield
+- added Scaffolding Slabs and Stairs
+- changed Mystical Agriculture compat to work for Inferium seeds
+- fixed Treated Wood recipes not consuming creosote
+- fixed up fence-connections for some IE blocks
+
 #####Version 0.12-69 - BUILT
 - fixed TConstruct dependency
 - fixed Assembler not properly handling Fluid Ingredients from IE and CoFH
