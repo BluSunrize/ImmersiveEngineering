@@ -5,6 +5,9 @@
     "layer": "CUTOUT_MIPPED",
     "textures": [
         "immersiveengineering:blocks/ctm/metal_decoration1_steel_scaffolding_top2_ctm"
-    ]
+    ],
+    "extra": {
+        "ignore_states": true
+    }
   }
 }
