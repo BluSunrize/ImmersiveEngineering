@@ -29,7 +29,7 @@
 	],
 	"textures":
 	{
-		"particle": "#block_up",
+		"particle": "#block_particle",
 		"block_down": "#block_down",
 		"block_up": "#block_up",
 		"block_north": "#block_north",

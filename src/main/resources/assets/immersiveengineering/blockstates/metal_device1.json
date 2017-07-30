@@ -111,6 +111,7 @@
 					"side_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active",
 					"overlay_off": "immersiveengineering:blocks/metal_device1_furnace_heater_overlay",
 					"overlay_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active_overlay",
+					"block_particle": "immersiveengineering:blocks/metal_device1_furnace_heater",
 					"block_down": "#side_off",
 					"block_up": "#side_off",
 					"block_north": "immersiveengineering:blocks/metal_device1_furnace_heater_socket",
