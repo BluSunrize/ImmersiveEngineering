@@ -1,9 +1,15 @@
 #####Version 0.12-70
 - added Shader-capabilities to the Heavy Plated Shield
 - added Scaffolding Slabs and Stairs
+- added a tiny bit of Albedo compat. Makes fancy lights happen on the Tesla Coils!
 - changed Mystical Agriculture compat to work for Inferium seeds
+- changed bullets to have increased speed
+- changed HE cartridges to travel in an arc and make a different sound
+    - API update, cartridges can define custom sounds
 - fixed Treated Wood recipes not consuming creosote
 - fixed up fence-connections for some IE blocks
+- fixed duplication glitch within the Refinery
+- fixed particle issues with some Multiblocks
 
 #####Version 0.12-69 - BUILT
 - fixed TConstruct dependency
