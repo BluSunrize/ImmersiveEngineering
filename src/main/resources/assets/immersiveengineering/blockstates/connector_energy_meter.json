@@ -54,7 +54,7 @@
 		"_0multiblockslave":
 		{
 			"false":{
-				"model": "builtin/generated"
+				"model": "immersiveengineering:ie_empty"
 			},
 			"true":{}
 		}

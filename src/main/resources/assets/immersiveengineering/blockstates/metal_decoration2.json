@@ -141,7 +141,10 @@
 		{
 			"false":{},
 			"true":{
-				"model": "builtin/generated"
+				"model": "immersiveengineering:ie_empty",
+				"textures": {
+					"particle": "immersiveengineering:blocks/storage_steel"
+				}
 			}
 		},
 		"int_4":
