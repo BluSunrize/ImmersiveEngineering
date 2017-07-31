@@ -1,4 +1,4 @@
-#####Version 0.12-70
+#####Version 0.12-70 - BUILT
 - added Shader-capabilities to the Heavy Plated Shield
 - added Scaffolding Slabs and Stairs
 - added a tiny bit of Albedo compat. Makes fancy lights happen on the Tesla Coils!
