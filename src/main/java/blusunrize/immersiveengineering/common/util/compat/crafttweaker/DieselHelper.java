@@ -13,29 +13,21 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class DieselHelper
 {
     @ZenMethod
-    public static void addFuel(ILiquidStack fuel, int time, boolean drill)
-    {
-    	
-        CraftTweakerAPI.apply(new Add(fuel, time, drill));
-    }
-    
-    @ZenMethod
     public static void addFuel(ILiquidStack fuel, int time)
     {
-        addFuel(fuel, time, false);
+    	
+        CraftTweakerAPI.apply(new AddFuel(fuel, time));
     }
-
-    private static class Add implements IAction
+    
+    private static class AddFuel implements IAction
     {
         private final ILiquidStack fuel;
         private final int time;
-        private final boolean drill;
 
-        public Add(ILiquidStack fuel, int time, boolean drill)
+        public AddFuel(ILiquidStack fuel, int time)
         {
             this.fuel = fuel;
             this.time = time;
-            this.drill = drill;
         }
 
         @Override
@@ -43,15 +35,41 @@ public class DieselHelper
         {
         	Fluid fuelFluid = FluidRegistry.getFluid(fuel.getName());
         	DieselHandler.registerFuel(fuelFluid, time);
-            if(drill){
-            	DieselHandler.registerDrillFuel(fuelFluid);
-            }
         }
 
         @Override
         public String describe()
         {
-            return "Registering Fuel " + fuel.getDisplayName();
+            return "Registering Diesel Generator Fuel " + fuel.getDisplayName();
+        }
+    }
+    
+    @ZenMethod
+    public static void addDrillFuel(ILiquidStack fuel)
+    {
+    	CraftTweakerAPI.apply(new AddDrillFuel(fuel));
+    }
+    
+    private static class AddDrillFuel implements IAction
+    {
+        private final ILiquidStack fuel;
+
+        public AddDrillFuel(ILiquidStack fuel)
+        {
+            this.fuel = fuel;
+        }
+
+        @Override
+        public void apply()
+        {
+        	Fluid fuelFluid = FluidRegistry.getFluid(fuel.getName());    
+        	DieselHandler.registerDrillFuel(fuelFluid);
+        }
+
+        @Override
+        public String describe()
+        {
+            return "Registering Drill Fuel " + fuel.getDisplayName();
         }
     }
 
