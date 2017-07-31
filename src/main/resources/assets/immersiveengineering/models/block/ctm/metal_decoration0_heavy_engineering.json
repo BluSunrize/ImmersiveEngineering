@@ -1,11 +1,7 @@
 {
-	"parent": "block/cube_all",
+	"parent": "immersiveengineering:block/ie_six_sides_overlay_all",
 	"textures": {
-		"all": "immersiveengineering:blocks/metal_decoration0_heavy_engineering"
-	},
-
-	"ctm" : {
-		"model": { "model": "cube" },
-		"face": "immersiveengineering:ctm/metal_decoration0_heavy_engineering.cf"
+		"block_all": "immersiveengineering:blocks/ctm/metal_decoration0_heavy_engineering_ctm",
+		"overlay_all": "immersiveengineering:blocks/ctm/metal_decoration0_dark_frame"
 	}
 }

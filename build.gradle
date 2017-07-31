@@ -92,6 +92,7 @@ repositories {
 }
 
 dependencies {
+    runtime "team.chisel.ctm:CTM:MC1.12-0.2.1.5"
     deobfCompile "mezz.jei:jei_1.12:4.+"
     deobfCompile "cofh:RedstoneFlux:1.12-2.+:universal"
     deobfCompile "slimeknights.mantle:Mantle:1.12-1.3.+"
