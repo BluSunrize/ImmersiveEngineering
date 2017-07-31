@@ -6,6 +6,7 @@
 - changed bullets to have increased speed
 - changed HE cartridges to travel in an arc and make a different sound
     - API update, cartridges can define custom sounds
+- changed, updated and improved the CTM compatability (thanks InsomniaKitten)
 - fixed Treated Wood recipes not consuming creosote
 - fixed up fence-connections for some IE blocks
 - fixed duplication glitch within the Refinery
