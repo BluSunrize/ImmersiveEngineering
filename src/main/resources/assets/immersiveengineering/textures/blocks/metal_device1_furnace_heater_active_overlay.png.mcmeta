@@ -2,6 +2,8 @@
   "ctm": {
     "ctm_version": 1,
     "layer": "CUTOUT",
-	"extra": { "light": 12 }
+    "extra": {
+      "light": 12
+    }
   }
 }
