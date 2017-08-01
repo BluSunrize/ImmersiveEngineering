@@ -72,5 +72,62 @@ public class DieselHelper
             return "Registering Drill Fuel " + fuel.getDisplayName();
         }
     }
+    
+    @ZenMethod
+    public static void removeFuel(ILiquidStack fuel){
+    	CraftTweakerAPI.apply(new RemoveFuel(fuel));
+    }
+    
+    private static class RemoveFuel implements IAction
+    {
+        private final ILiquidStack fuel;
+
+        public RemoveFuel(ILiquidStack fuel)
+        {
+            this.fuel = fuel;
+        }
+
+        @Override
+        public void apply()
+        {
+        	Fluid fuelFluid = FluidRegistry.getFluid(fuel.getName());    
+        	DieselHandler.removeFuel(fuelFluid);
+        }
+
+        @Override
+        public String describe()
+        {
+            return "Removing Fuel " + fuel.getDisplayName();
+        }
+    }
+    
+    @ZenMethod
+    public static void removeDrillFuel(ILiquidStack fuel){
+    	CraftTweakerAPI.apply(new RemoveDrillFuel(fuel));
+    }
+    
+    private static class RemoveDrillFuel implements IAction
+    {
+        private final ILiquidStack fuel;
+
+        public RemoveDrillFuel(ILiquidStack fuel)
+        {
+            this.fuel = fuel;
+        }
+
+        @Override
+        public void apply()
+        {
+        	Fluid fuelFluid = FluidRegistry.getFluid(fuel.getName());    
+        	DieselHandler.removeDrillFuel(fuelFluid);
+        }
+
+        @Override
+        public String describe()
+        {
+            return "Removing Drill Fuel " + fuel.getDisplayName();
+        }
+    }
+
 
 }
