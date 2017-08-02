@@ -478,7 +478,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (pos==10&&facing==this.facing.getOpposite())||(pos==16&&facing==this.facing);
+			return ((pos==10&&facing==this.facing.getOpposite())||(pos==16&&facing==this.facing))&&master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler insertionHandler = new IEInventoryHandler(18, this, 0, true, false);
@@ -489,7 +489,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityAssembler master = master();
-			if(master==null)
+			if (master==null)
 				return null;
 			if(pos==10&&facing==this.facing.getOpposite())
 				return (T)master.insertionHandler;

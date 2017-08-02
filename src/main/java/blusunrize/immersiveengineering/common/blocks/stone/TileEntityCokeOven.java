@@ -297,7 +297,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler invHandler = new IEInventoryHandler(4,this,0, new boolean[]{true,false,true,false},new boolean[]{false,true,false,true});

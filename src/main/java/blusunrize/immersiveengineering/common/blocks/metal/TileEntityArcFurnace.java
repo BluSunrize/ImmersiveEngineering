@@ -521,7 +521,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if((pos == 2 || pos == 22 || pos == 86 || pos == 88 || facing == null) && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler inputHandler = new IEInventoryHandler(12, this, 0, true,false)
@@ -571,7 +571,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityArcFurnace master = master();
-			if(master==null)
+			if (master==null)
 				return null;
 			if(pos==2)
 				return (T)master.outputHandler;

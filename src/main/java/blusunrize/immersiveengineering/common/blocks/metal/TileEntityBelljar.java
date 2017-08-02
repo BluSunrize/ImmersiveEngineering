@@ -372,10 +372,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return dummy==0?(facing==null||facing.getAxis()!=this.facing.rotateY().getAxis()): dummy==1&&(facing==null||facing==this.facing.getOpposite());
-		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			return dummy==0 && (facing==null||facing.getAxis()!=this.facing.rotateY().getAxis());
+		if (getGuiMaster()!=null)
+		{
+			if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+				return dummy == 0 ? (facing == null || facing.getAxis() != this.facing.rotateY().getAxis()) : dummy == 1 && (facing == null || facing == this.facing.getOpposite());
+			else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+				return dummy == 0 && (facing == null || facing.getAxis() != this.facing.rotateY().getAxis());
+		}
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler inputHandler = new IEInventoryHandler(1,this,2, true,false);
@@ -389,9 +392,9 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 				return (T)inputHandler;
 			if(dummy==1 && (facing==null||facing==this.facing.getOpposite()))
 			{
-				TileEntity te = world.getTileEntity(getPos().down(dummy));
-				if(te instanceof TileEntityBelljar)
-					return (T)((TileEntityBelljar)te).outputHandler;
+				TileEntityBelljar te = getGuiMaster();
+				if(te!=null)
+					return (T) te.outputHandler;
 			}
 		}
 		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && dummy==0 && (facing==null||facing.getAxis()!=this.facing.rotateY().getAxis()))
@@ -410,13 +413,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		return Lib.GUIID_Belljar;
 	}
 	@Override
-	public TileEntity getGuiMaster()
+	public TileEntityBelljar getGuiMaster()
 	{
 		if(dummy==0)
 			return this;
 		TileEntity te = world.getTileEntity(getPos().down(dummy));
 		if(te instanceof TileEntityBelljar)
-			return te;
+			return (TileEntityBelljar) te;
 		return null;
 	}
 

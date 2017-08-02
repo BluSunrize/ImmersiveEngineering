@@ -257,6 +257,7 @@ public class IEBlockInterfaces
 		}
 		boolean canOpenGui();
 		int getGuiID();
+		@Nullable
 		TileEntity getGuiMaster();
 
 		default void onGuiOpened(EntityPlayer player, boolean clientside)
