@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.client.render;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
@@ -8,26 +7,32 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.model.animation.FastTESR;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
-import scala.tools.nsc.doc.model.Def;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer<TileEntityImmersiveConnectable>
 {
-	WeakHashMap<TileEntityImmersiveConnectable, VertexBuffer> cache = new WeakHashMap<>();//TODO clean up properly!!!
-	VertexFormat FORMAT = DefaultVertexFormats.POSITION_TEX_COLOR;
+	private static Map<IImmersiveConnectable, VertexBuffer> cache = new HashMap<>();
+	private final static VertexFormat FORMAT = DefaultVertexFormats.POSITION_TEX_COLOR;
 
 	public TileRenderImmersiveConnectable() {
 		IEApi.renderCacheClearers.add(cache::clear);
@@ -69,7 +74,6 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer<Ti
 			}
 			else
 			{
-
 				buffer.begin(GL11.GL_QUADS, FORMAT);
 				VertexBuffer vbo = new VertexBuffer(FORMAT);
 
@@ -105,5 +109,13 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer<Ti
 	public boolean isGlobalRenderer(TileEntityImmersiveConnectable te)
 	{
 		return true;
+	}
+
+	public static void reset(IImmersiveConnectable toRemove) {
+		if (cache.containsKey(toRemove)) {
+			VertexBuffer vb = cache.get(toRemove);
+			vb.deleteGlBuffers();
+			cache.remove(toRemove);
+		}
 	}
 }

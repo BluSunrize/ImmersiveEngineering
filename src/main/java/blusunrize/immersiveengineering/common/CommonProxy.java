@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
@@ -206,6 +207,9 @@ public class CommonProxy implements IGuiHandler
 	{
 	}
 	public void clearRenderCaches()
+	{
+	}
+	public void resetConnectionVBO(IImmersiveConnectable iic)
 	{
 	}
 }

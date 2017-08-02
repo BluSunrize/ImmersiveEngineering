@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -1626,6 +1627,12 @@ public class ClientProxy extends CommonProxy
 			ModelLoader.setCustomMeshDefinition(item, mapper);
 		}
 		ModelLoader.setCustomStateMapper(block, mapper);
+	}
+
+	@Override
+	public void resetConnectionVBO(IImmersiveConnectable iic)
+	{
+		TileRenderImmersiveConnectable.reset(iic);
 	}
 
 	static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition

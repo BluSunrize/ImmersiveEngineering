@@ -152,6 +152,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		{
 			IBlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state,state, 3);
+			ImmersiveEngineering.proxy.resetConnectionVBO(this);
 			return true;
 		} else if(id == 254)
 		{
