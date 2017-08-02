@@ -18,11 +18,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
@@ -304,13 +302,5 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
 		return false;
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-	{
-		if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return null;
-		return super.getCapability(capability, facing);
 	}
 }

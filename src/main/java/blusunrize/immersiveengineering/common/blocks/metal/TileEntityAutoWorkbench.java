@@ -260,7 +260,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if(pos==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler insertionHandler = new IEInventoryHandler(16, this, 1, true, false);
