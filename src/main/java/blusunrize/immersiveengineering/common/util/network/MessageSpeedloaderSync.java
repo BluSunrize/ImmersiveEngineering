@@ -1,9 +1,14 @@
 package blusunrize.immersiveengineering.common.util.network;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,9 +18,11 @@ import net.minecraftforge.fml.relauncher.Side;
 public class MessageSpeedloaderSync implements IMessage
 {
 	int slot;
-	public MessageSpeedloaderSync(int slot)
+	EnumHand hand;
+	public MessageSpeedloaderSync(int slot, EnumHand hand)
 	{
 		this.slot = slot;
+		this.hand = hand;
 	}
 	public MessageSpeedloaderSync()
 	{
@@ -25,12 +32,14 @@ public class MessageSpeedloaderSync implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		slot = buf.readByte();
+		hand = EnumHand.values()[buf.readByte()];
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
 		buf.writeByte(slot);
+		buf.writeByte(hand.ordinal());
 	}
 
 	public static class Handler implements IMessageHandler<MessageSpeedloaderSync, IMessage>
@@ -39,7 +48,15 @@ public class MessageSpeedloaderSync implements IMessage
 		public IMessage onMessage(MessageSpeedloaderSync message, MessageContext ctx)
 		{
 			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-				Minecraft.getMinecraft().player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemRevolver, 1, 1));
+			{
+				EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
+				if(player.getHeldItem(message.hand).getItem() instanceof ItemRevolver)
+				{
+					player.playSound(IESounds.revolverReload, 1f, 1f);
+					ItemNBTHelper.setInt(player.getHeldItem(message.hand), "reload", 60);
+				}
+				player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemSpeedloader));
+			}
 			return null;
 		}
 	}

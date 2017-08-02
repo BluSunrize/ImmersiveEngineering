@@ -21,6 +21,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -375,6 +376,24 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	}
 
 	@Override
+	public int getComparatorInputOverride()
+	{
+		if(this.pos==112)
+		{
+			TileEntityArcFurnace master = master();
+			if(master!=null)
+			{
+				float f = 0;
+				for(int i = 23; i < 26; i++)
+					if(!master.inventory.get(i).isEmpty())
+						f += 1-(master.inventory.get(i).getItemDamage()/(float)master.inventory.get(i).getMaxDamage());
+				return MathHelper.floor(Math.max(f/3f,0)*15);
+			}
+		}
+		return super.getComparatorInputOverride();
+	}
+
+	@Override
 	public boolean isInWorldProcessingMachine()
 	{
 		return false;
@@ -442,6 +461,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 
 
 	@Override
+	public int getComparatedSize()
+	{
+		return 12;
+	}
+	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
@@ -497,7 +521,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if((pos == 2 || pos == 22 || pos == 86 || pos == 88 || facing == null) && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler inputHandler = new IEInventoryHandler(12, this, 0, true,false)
@@ -547,7 +571,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityArcFurnace master = master();
-			if(master==null)
+			if (master==null)
 				return null;
 			if(pos==2)
 				return (T)master.outputHandler;

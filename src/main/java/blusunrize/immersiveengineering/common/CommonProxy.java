@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.ItemSpeedloader;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,6 +82,8 @@ public class CommonProxy implements IGuiHandler
 					return new ContainerRevolver(player.inventory, world, slot, item);
 				if(ID == Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
 					return new ContainerToolbox(player.inventory, world, slot, item);
+				if(ID == Lib.GUIID_Speedloader && item.getItem() instanceof ItemSpeedloader)
+					return new ContainerSpeedloader(player.inventory, world, slot, item);
 			}
 		}
 		else
@@ -186,6 +189,10 @@ public class CommonProxy implements IGuiHandler
 		return new String[]{s};
 	}
 	public World getClientWorld()
+	{
+		return null;
+	}
+	public EntityPlayer getClientPlayer()
 	{
 		return null;
 	}

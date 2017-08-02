@@ -1,0 +1,10 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "CUTOUT_MIPPED",
+    "textures": [
+      "immersiveengineering:blocks/ctm/metal_decoration1_steel_scaffolding_ctm"
+    ]
+  }
+}

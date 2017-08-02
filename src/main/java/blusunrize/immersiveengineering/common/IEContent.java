@@ -29,10 +29,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
-import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
-import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
-import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
+import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
@@ -138,6 +135,13 @@ public class IEContent
 	public static BlockIEBase blockMetalDecoration0;
 	public static BlockIEBase blockMetalDecoration1;
 	public static BlockIEBase blockMetalDecoration2;
+	public static BlockIEBase blockMetalDecorationSlabs1;
+	public static Block blockSteelScaffoldingStair;
+	public static Block blockSteelScaffoldingStair1;
+	public static Block blockSteelScaffoldingStair2;
+	public static Block blockAluminumScaffoldingStair;
+	public static Block blockAluminumScaffoldingStair1;
+	public static Block blockAluminumScaffoldingStair2;
 	public static BlockIEBase blockConnectors;
 	public static BlockIEBase blockMetalDevice0;
 	public static BlockIEBase blockMetalDevice1;
@@ -161,6 +165,7 @@ public class IEContent
 	public static ItemIEBase itemMold;
 	public static ItemIEBase itemBlueprint;
 	public static ItemIEBase itemRevolver;
+	public static ItemIEBase itemSpeedloader;
 	public static ItemIEBase itemBullet;
 	public static ItemIEBase itemChemthrower;
 	public static ItemIEBase itemRailgun;
@@ -239,9 +244,18 @@ public class IEContent
 
 		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
 		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetal_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
-		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metal_decoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
+
+		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metal_decoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setBlockLayer(BlockRenderLayer.CUTOUT).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
+		blockMetalDecorationSlabs1 = (BlockIESlab)new BlockIEScaffoldSlab("metal_decoration1_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class)).setMetaHidden(0, 4).setHardness(3.0F).setResistance(15.0F);
+		blockSteelScaffoldingStair = new BlockIEStairs("steel_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(1)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockSteelScaffoldingStair1 = new BlockIEStairs("steel_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(2)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockSteelScaffoldingStair2 = new BlockIEStairs("steel_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(3)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair = new BlockIEStairs("aluminum_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(5)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair1 = new BlockIEStairs("aluminum_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(6)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair2 = new BlockIEStairs("aluminum_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(7)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+
 		blockConnectors = new BlockConnector();
 		blockMetalDevice0 = new BlockMetalDevice0();
 		blockMetalDevice1 = new BlockMetalDevice1();
@@ -254,16 +268,7 @@ public class IEContent
 		blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
 		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
 
-		itemMaterial = new ItemIEBase("material", 64,
-				"stick_treated", "stick_iron", "stick_steel", "stick_aluminum",
-				"hemp_fiber", "hemp_fabric",
-				"coal_coke", "slag",
-				"component_iron", "component_steel",
-				"waterwheel_segment", "windmill_blade", "windmill_sail",
-				"wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
-				"dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
-				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel",
-				"dust_saltpeter","dust_sulfur", "electron_tube");
+		itemMaterial = new ItemMaterial();
 		itemMetal = new ItemIEBase("metal", 64,
 				"ingot_copper", "ingot_aluminum", "ingot_lead", "ingot_silver", "ingot_nickel", "ingot_uranium", "ingot_constantan", "ingot_electrum", "ingot_steel",
 				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
@@ -283,6 +288,7 @@ public class IEContent
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
 		itemRevolver = new ItemRevolver();
+		itemSpeedloader = new ItemSpeedloader();
 		itemBullet = new ItemBullet();
 		itemChemthrower = new ItemChemthrower();
 		itemRailgun = new ItemRailgun();
@@ -321,6 +327,8 @@ public class IEContent
 	{
 		for(Item item : registeredIEItems)
 			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getUnlocalizedName())));
+
+		registerOres();
 	}
 
 	private static ResourceLocation createRegistryName(String unlocalized)
@@ -358,7 +366,7 @@ public class IEContent
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 	}
 
-	public static void init()
+	public static void registerOres()
 	{
 		/**ORE DICTIONARY*/
 		registerToOreDict("ore", blockOre);
@@ -367,47 +375,51 @@ public class IEContent
 		registerToOreDict("blockSheetmetal", blockSheetmetal);
 		registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
 		registerToOreDict("", itemMetal);
-		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial,1,0));
-		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,1));
-		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,2));
-		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial,1,3));
-		OreDictionary.registerOre("fiberHemp", new ItemStack(itemMaterial,1,4));
-		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial,1,5));
-		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial,1,6));
-		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,7));
-		OreDictionary.registerOre("dustCoke", new ItemStack(itemMaterial,1,17));
-		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(itemMaterial,1,18));
-		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(itemMaterial,1,19));
-		OreDictionary.registerOre("wireCopper", new ItemStack(itemMaterial,1,20));
-		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial,1,21));
-		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial,1,22));
-		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial,1,23));
-		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial,1,24));
-		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial,1,25));
+		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial, 1, 0));
+		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial, 1, 1));
+		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial, 1, 2));
+		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial, 1, 3));
+		OreDictionary.registerOre("fiberHemp", new ItemStack(itemMaterial, 1, 4));
+		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial, 1, 5));
+		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial, 1, 6));
+		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial, 1, 7));
+		OreDictionary.registerOre("dustCoke", new ItemStack(itemMaterial, 1, 17));
+		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(itemMaterial, 1, 18));
+		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(itemMaterial, 1, 19));
+		OreDictionary.registerOre("wireCopper", new ItemStack(itemMaterial, 1, 20));
+		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial, 1, 21));
+		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial, 1, 22));
+		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial, 1, 23));
+		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial, 1, 24));
+		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial, 1, 25));
+		OreDictionary.registerOre("electronTube", new ItemStack(itemMaterial, 1, 26));
 
-		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
-		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs,1,OreDictionary.WILDCARD_VALUE));
-		OreDictionary.registerOre("fenceTreatedWood", new ItemStack(blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()));
-		OreDictionary.registerOre("scaffoldingTreatedWood", new ItemStack(blockWoodenDecoration,1,BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()));
-		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration,1,BlockTypes_StoneDecoration.COKE.getMeta()));
-		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()));
-		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
+		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("fenceTreatedWood", new ItemStack(blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta()));
+		OreDictionary.registerOre("scaffoldingTreatedWood", new ItemStack(blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()));
+		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.COKE.getMeta()));
+		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
+		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()));
+		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta()));
+		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()));
+		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()));
+		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()));
+		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()));
+		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()));
+		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.STONEBRICK));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ICE));
 		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.PACKED_ICE));
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.CRAFTING_TABLE));
 		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.BLAZE_ROD));
-		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL,1,1));
+		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL, 1, 1));
+	}
 
+	public static void init()
+	{
 		/**MINING LEVELS*/
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
@@ -474,6 +486,7 @@ public class IEContent
 		registerTile(TileEntityRedstoneBreaker.class);
 		registerTile(TileEntityEnergyMeter.class);
 		registerTile(TileEntityConnectorRedstone.class);
+		registerTile(TileEntityConnectorProbe.class);
 
 		registerTile(TileEntityCapacitorLV.class);
 		registerTile(TileEntityCapacitorMV.class);
@@ -594,6 +607,9 @@ public class IEContent
 		}
 
 		/**ASSEMBLER RECIPE ADAPTERS*/
+		//Fluid Ingredients
+		AssemblerHandler.registerSpecialQueryConverters((o)->
+				o instanceof IngredientFluidStack? new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
 		//Shaped
 		AssemblerHandler.registerRecipeAdapter(ShapedRecipes.class, new IRecipeAdapter<ShapedRecipes>()
 		{

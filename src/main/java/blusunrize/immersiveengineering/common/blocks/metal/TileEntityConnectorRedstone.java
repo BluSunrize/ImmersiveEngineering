@@ -36,7 +36,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public int redstoneChannel = 0;
 	public boolean rsDirty = false;
 
-	private RedstoneWireNetwork wireNetwork = new RedstoneWireNetwork().add(this);
+	protected RedstoneWireNetwork wireNetwork = new RedstoneWireNetwork().add(this);
 	private boolean loaded = false;
 	// ONLY EVER USE THIS ON THE CLIENT! I don't want to sync the entire network...
 	private int outputClient = -1;
@@ -120,7 +120,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 			signals[redstoneChannel] = (byte) Math.max(getLocalRS(), signals[redstoneChannel]);
 		rsDirty = false;
 	}
-	private int getLocalRS()
+	protected int getLocalRS()
 	{
 		int val = world.isBlockIndirectlyGettingPowered(pos);
 		if (val == 0)

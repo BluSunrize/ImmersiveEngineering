@@ -24,6 +24,7 @@ public abstract class IECompatModule
 	static
 	{
 		moduleClasses.put("actuallyadditions", ActuallyAdditionsHelper.class);
+		moduleClasses.put("albedo", AlbedoHelper.class);
 		moduleClasses.put("attaineddrops", AttainedDropsHelper.class);
 		moduleClasses.put("baubles", BaublesHelper.class);
 		moduleClasses.put("betterwithmods", BetterWithModsHelper.class);
@@ -31,6 +32,7 @@ public abstract class IECompatModule
 		moduleClasses.put("botania", BotaniaHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
+		moduleClasses.put("cofhcore", CoFHHelper.class);
 		moduleClasses.put("crafttweaker", CraftTweakerHelper.class);
 		moduleClasses.put("denseores", DenseOresHelper.class);
 		moduleClasses.put("enderio", EnderIOHelper.class);
@@ -42,7 +44,7 @@ public abstract class IECompatModule
 		moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
 //		moduleClasses.put("opencomputers", OCHelper.class); ToDo: OpenComputers
 		moduleClasses.put("theoneprobe", OneProbeHelper.class);
-//		moduleClasses.put("tconstruct", TConstructHelper.class); ToDo: TConstruct
+		moduleClasses.put("tconstruct", TConstructHelper.class);
 		moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
 		moduleClasses.put("thaumcraft", ThaumcraftHelper.class);
 		moduleClasses.put("railcraft", RailcraftHelper.class);
@@ -74,18 +76,18 @@ public abstract class IECompatModule
 				try
 				{
 					//IC2 Classic is not supported.
-					if("IC2".equals(e.getKey()) && Loader.isModLoaded("IC2-Classic-Spmod"))
+					if("IC2".equals(e.getKey())&&Loader.isModLoaded("IC2-Classic-Spmod"))
 						continue;
 
 					Boolean enabled = Config.IEConfig.compat.get(e.getKey());
-					if(enabled==null || !enabled.booleanValue())
+					if(enabled==null||!enabled.booleanValue())
 						continue;
 					IECompatModule m = e.getValue().newInstance();
 					modules.add(m);
 					m.preInit();
 				} catch(Exception exception)
 				{
-					IELogger.error("Compat module for " + e.getKey() + " could not be preInitialized. Report this!");
+					IELogger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this!");
 				}
 	}
 	public static void doModulesInit()
@@ -103,7 +105,7 @@ public abstract class IECompatModule
 			try{
 				compat.postInit();
 			}catch (Exception exception){
-				IELogger.error("Compat module for "+compat+" could not be initialized");
+				IELogger.error("Compat module for "+compat+" could not be postInitialized");
 			}
 	}
 	//We don't want this to happen multiple times after all >_>
@@ -118,7 +120,7 @@ public abstract class IECompatModule
 					compat.loadComplete();
 				}catch (Exception exception){
 					IELogger.error("Compat module for "+compat+" could not be initialized");
-				exception.printStackTrace();
+					exception.printStackTrace();
 				}
 		}
 	}

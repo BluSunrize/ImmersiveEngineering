@@ -6,7 +6,7 @@
   },
   "pattern": [
     " S ",
-    " GL",
+    " GC",
     "XBR"
   ],
   "key": {
@@ -17,9 +17,9 @@
     "G": {
       "item": "immersiveengineering:chemthrower"
     },
-    "L": {
-      "item": "immersiveengineering:metal_decoration0",
-      "data": 4
+    "C": {
+      "item": "immersiveengineering:material",
+      "data": 27
     },
     "B": {
       "item": "immersiveengineering:wooden_device0",

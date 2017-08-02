@@ -42,6 +42,7 @@ public class ConnLoader implements ICustomModelLoader
 				new ResourceLocation("immersiveengineering:block/connector/connector_structural.obj.ie"));
 
 		baseModels.put("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connector_redstone.obj.ie"));
+		baseModels.put("conn_probe", new ResourceLocation("immersiveengineering:block/connector/connector_probe.obj.ie"));
 
 		baseModels.put("breaker_off",
 				new ResourceLocation("immersiveengineering:block/connector/breaker_switch_off.obj.ie"));

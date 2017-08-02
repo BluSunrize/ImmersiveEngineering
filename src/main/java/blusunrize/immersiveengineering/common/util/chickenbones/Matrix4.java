@@ -11,17 +11,17 @@ import java.math.RoundingMode;
 
 /**
  * Copyright (C) 2013 Chicken-Bones
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 //This file originally copied from CodeChickenLib, courtesy of Chicken-Bones.
 //This is a customized version created by Steven Blom (AtomicBlom) of the Steam and Steel development team.
@@ -36,9 +36,9 @@ public class Matrix4
 		m00 = m11 = m22 = m33 = 1;
 	}
 	public Matrix4(double d00, double d01, double d02, double d03,
-			double d10, double d11, double d12, double d13,
-			double d20, double d21, double d22, double d23,
-			double d30, double d31, double d32, double d33)
+				   double d10, double d11, double d12, double d13,
+				   double d20, double d21, double d22, double d23,
+				   double d30, double d31, double d32, double d33)
 	{
 		m00 = d00;
 		m01 = d01;
@@ -88,22 +88,22 @@ public class Matrix4
 		translate(.5, .5, .5);
 		switch(facing)
 		{
-		case UP:
-			rotate(Math.PI/2, 1, 0, 0);
-			break;
-		case DOWN:
-			rotate(-Math.PI/2, 1, 0, 0);
-			break;
-		case SOUTH:
-			rotate(Math.PI, 0, 1, 0);
-			break;
-		case EAST:
-			rotate(-Math.PI/2, 0, 1, 0);
-			break;
-		case WEST:
-			rotate(Math.PI/2, 0, 1, 0);
-			break;
-		case NORTH:
+			case UP:
+				rotate(Math.PI/2, 1, 0, 0);
+				break;
+			case DOWN:
+				rotate(-Math.PI/2, 1, 0, 0);
+				break;
+			case SOUTH:
+				rotate(Math.PI, 0, 1, 0);
+				break;
+			case EAST:
+				rotate(-Math.PI/2, 0, 1, 0);
+				break;
+			case WEST:
+				rotate(Math.PI/2, 0, 1, 0);
+				break;
+			case NORTH:
 		}
 		translate(-.5, -.5, -.5);
 	}
@@ -450,8 +450,75 @@ public class Matrix4
 	{
 		MathContext cont = new MathContext(4, RoundingMode.HALF_UP);
 		return "["+new BigDecimal(m00, cont)+","+new BigDecimal(m01, cont)+","+new BigDecimal(m02, cont)+","+new BigDecimal(m03, cont)+"]\n"+
-		"["+new BigDecimal(m10, cont)+","+new BigDecimal(m11, cont)+","+new BigDecimal(m12, cont)+","+new BigDecimal(m13, cont)+"]\n"+
-		"["+new BigDecimal(m20, cont)+","+new BigDecimal(m21, cont)+","+new BigDecimal(m22, cont)+","+new BigDecimal(m23, cont)+"]\n"+
-		"["+new BigDecimal(m30, cont)+","+new BigDecimal(m31, cont)+","+new BigDecimal(m32, cont)+","+new BigDecimal(m33, cont)+"]";
+				"["+new BigDecimal(m10, cont)+","+new BigDecimal(m11, cont)+","+new BigDecimal(m12, cont)+","+new BigDecimal(m13, cont)+"]\n"+
+				"["+new BigDecimal(m20, cont)+","+new BigDecimal(m21, cont)+","+new BigDecimal(m22, cont)+","+new BigDecimal(m23, cont)+"]\n"+
+				"["+new BigDecimal(m30, cont)+","+new BigDecimal(m31, cont)+","+new BigDecimal(m32, cont)+","+new BigDecimal(m33, cont)+"]";
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this==o) return true;
+		if(o==null||getClass()!=o.getClass()) return false;
+
+		Matrix4 matrix4 = (Matrix4)o;
+
+		if(Double.compare(matrix4.m00, m00)!=0)return false;
+		if(Double.compare(matrix4.m01, m01)!=0) return false;
+		if(Double.compare(matrix4.m02, m02)!=0) return false;
+		if(Double.compare(matrix4.m03, m03)!=0) return false;
+		if(Double.compare(matrix4.m10, m10)!=0) return false;
+		if(Double.compare(matrix4.m11, m11)!=0) return false;
+		if(Double.compare(matrix4.m12, m12)!=0) return false;
+		if(Double.compare(matrix4.m13, m13)!=0) return false;
+		if(Double.compare(matrix4.m20, m20)!=0) return false;
+		if(Double.compare(matrix4.m21, m21)!=0) return false;
+		if(Double.compare(matrix4.m22, m22)!=0) return false;
+		if(Double.compare(matrix4.m23, m23)!=0) return false;
+		if(Double.compare(matrix4.m30, m30)!=0) return false;
+		if(Double.compare(matrix4.m31, m31)!=0) return false;
+		if(Double.compare(matrix4.m32, m32)!=0) return false;
+		return Double.compare(matrix4.m33, m33)==0;
+
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result;
+		long temp;
+		temp = Double.doubleToLongBits(m00);
+		result = (int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m01);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m02);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m03);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m10);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m11);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m12);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m13);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m20);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m21);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m22);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m23);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m30);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m31);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m32);
+		result = 31*result+(int)(temp^(temp>>>32));
+		temp = Double.doubleToLongBits(m33);
+		result = 31*result+(int)(temp^(temp>>>32));
+		return result;
 	}
 }

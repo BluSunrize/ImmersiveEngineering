@@ -1,3 +1,63 @@
+#####Version 0.12-70 - BUILT
+- added Shader-capabilities to the Heavy Plated Shield
+- added Scaffolding Slabs and Stairs
+- added a tiny bit of Albedo compat. Makes fancy lights happen on the Tesla Coils!
+- changed Mystical Agriculture compat to work for Inferium seeds
+- changed bullets to have increased speed
+- changed HE cartridges to travel in an arc and make a different sound
+    - API update, cartridges can define custom sounds
+- changed, updated and improved the CTM compatability (thanks InsomniaKitten)
+- fixed Treated Wood recipes not consuming creosote
+- fixed up fence-connections for some IE blocks
+- fixed duplication glitch within the Refinery
+- fixed particle issues with some Multiblocks
+
+#####Version 0.12-69 - BUILT
+- fixed TConstruct dependency
+- fixed Assembler not properly handling Fluid Ingredients from IE and CoFH
+- fixed Revolver GUI not properly syncing
+- fixed model loading error (thanks PaleoCrafter)
+
+#####Version 0.12-68 - BUILT
+- re-added TConstruct compat
+- added Fertilizer compat for ActuallyAdditions, BetterWithMods and IC2
+- changed player arms for certain IE items to also affect armor
+- changed shield to use Forge's new provided shield method
+- changed Mystical Agriculture compat to not output seeds anymore
+- changed Arc Furnace, Squeezer and Fermenter to only output comparator signals for their input
+- changed revolver GUI to allow display of dual-wielded revolvers
+- fixed cloche not accepting power from the bottom block
+- fixed speedloader recipe mistakenly crafting a revolver
+- fixed gunpowder recipe being active even when there isn't any charcoal dust
+- fixed shield only equipping on the clientside with the magnet glove
+- fixed shield flickering when recharging in offhand
+- fixed back button in the manual failing
+- fixed shaders resulting in invisible revolver grips
+- fixed crafttweaker integration
+- fixed various AABBs errors causign projectiles to miss
+- fixed cloche having incorrect item handling (leading to trouble with EIO conduits)
+- fixed Forestry compat not loading
+- fixed Fluid Router allowing for an infinite loop
+- fixed Assembler not handling some recipes properly
+
+#####Version 0.12-67 - BUILT
+- added the Probe Connector. It can read Comparator Overrides on Inventories and stuff!
+- added fancy animations for the reload with a speeloader and opening the revolver GUI
+- added the Circuit Board material, requires for Probe Connector and Turrets
+- added Comparator interfacing to a lot of IE multiblocks (using the RS controlpanel)
+- re-added animations for the drill. It rotates again \o/
+- changed TE OreDict comapt to run in init phase
+- changed Revolvers to aim at enemies properly
+- changed re-equip animations for Revolver to look better
+- changed the Speedloader to a separate item, added a unique reload sound
+- changed the link system in the manual to allow linking to specific crafting recipes
+- fixed missing recipes for Metal plates
+- fixed Uranium Blocks + Slabs not having a recipe
+- fixed IE's fluids to always stitch into the sheet and have buckets load correctly
+- fixed missing Hammer Crushing recipes
+- fixed IE recipes using fluids not emptying containers properly & duplicating them
+- fixed recipes for Aluminium and Steel wires
+
 #####Version 0.12-66 - BUILT
 - fixed the missing dustCharcoal reference in recipes
 

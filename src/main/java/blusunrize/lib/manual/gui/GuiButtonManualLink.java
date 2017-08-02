@@ -1,28 +1,27 @@
 package blusunrize.lib.manual.gui;
 
+import blusunrize.lib.manual.ManualInstance.ManualLink;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class GuiButtonManualLink extends GuiButton
 {
-	public String key;
 	public String localized;
-	public int pageLinked;
+	public ManualLink link;
 	GuiManual gui;
-	public GuiButtonManualLink(GuiManual gui, int id, int x, int y, int w, int h, String key, String localized, int pageLinked)
+	public GuiButtonManualLink(GuiManual gui, int id, int x, int y, int w, int h, ManualLink link, String localized)
 	{
 		super(id, x,y, w,h, "");
 		this.gui = gui;
-		this.key = key;
+		this.link = link;
 		this.localized = localized;
 		if(gui.manual.improveReadability())
 			this.localized = TextFormatting.BOLD+localized;
-		this.pageLinked = pageLinked;
 	}
 
 	@Override
@@ -37,12 +36,13 @@ public class GuiButtonManualLink extends GuiButton
 		this.hovered = mx >= this.x && my >= this.y && mx < this.x + this.width && my < this.y + this.height;
 		if(hovered)
 		{
-			FontRenderer font = gui.manual.fontRenderer;
+//			FontRenderer font = gui.manual.fontRenderer;
+			FontRenderer font = mc.fontRenderer;
 			boolean uni = font.getUnicodeFlag();
 			font.setUnicodeFlag(true);
 			font.drawString(localized, x, y, gui.manual.getHighlightColour());
 			font.setUnicodeFlag(false);
-			gui.drawHoveringText(Arrays.asList(gui.manual.formatEntryName(key)+", "+(pageLinked+1)), mx+8,my+4, font);
+			gui.drawHoveringText(Collections.singletonList(gui.manual.formatLink(link)), mx+8,my+4, font);
 			font.setUnicodeFlag(uni);
 			GlStateManager.enableBlend();
 		}

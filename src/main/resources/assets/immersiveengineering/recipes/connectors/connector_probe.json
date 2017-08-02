@@ -1,0 +1,28 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:connector",
+    "data": 13
+  },
+  "pattern": [
+    " C ",
+    "GPG",
+    " Q "
+  ],
+  "key": {
+    "C": {
+      "item": "immersiveengineering:connector",
+      "data": 12
+    },
+    "G": {
+      "item": "#paneGlass"
+    },
+    "P": {
+      "item": "immersiveengineering:material",
+      "data": 27
+    },
+    "Q": {
+      "item": "#gemQuartz"
+    }
+  }
+}

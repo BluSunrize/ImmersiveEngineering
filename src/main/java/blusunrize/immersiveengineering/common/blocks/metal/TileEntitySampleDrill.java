@@ -38,6 +38,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public int dummy=0;
 	public int process=0;
 	public boolean active = false;
+	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
 
 	public static boolean _Immovable()
@@ -48,10 +49,16 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Override
 	public void update()
 	{
-		if(dummy!=0 || world.isRemote || world.isAirBlock(getPos().add(0,-1,0)) || !sample.isEmpty())
+		if (world.isRemote && active)
+		{
+			process++;
+			return;
+		}
+		if(dummy!=0 || world.isAirBlock(getPos().add(0,-1,0)) || !sample.isEmpty())
 			return;
 
 		boolean powered = world.isBlockIndirectlyGettingPowered(getPos())>0;
+		final boolean prevActive = active;
 		if(!active && powered)
 			active = true;
 		else if(active && !powered && process>= IEConfig.Machines.coredrill_time)
@@ -72,6 +79,11 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
 			}
+		if (prevActive!=active)
+		{
+			this.markDirty();
+			this.markContainingBlockForUpdate(null);
+		}
 	}
 
 	public float getSampleProgress()
@@ -96,6 +108,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		return ExcavatorHandler.mineralVeinCapacity - sample.getTagCompound().getInteger("depletion");
 	}
 
+	@Nonnull
 	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, MineralWorldInfo info)
 	{
 		ItemStack stack = new ItemStack(IEContent.itemCoresample);

@@ -16,16 +16,6 @@ public class CraftTweakerHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-	}
-
-	@Override
-	public void init()
-	{
-	}
-
-	@Override
-	public void postInit()
-	{
 		CraftTweakerAPI.registerClass(AlloySmelter.class);
 		CraftTweakerAPI.registerClass(BlastFurnace.class);
 		CraftTweakerAPI.registerClass(CokeOven.class);
@@ -40,6 +30,16 @@ public class CraftTweakerHelper extends IECompatModule
 		CraftTweakerAPI.registerClass(BottlingMachine.class);
 		CraftTweakerAPI.registerClass(MetalPress.class);
 		CraftTweakerAPI.registerClass(Mixer.class);
+	}
+
+	@Override
+	public void init()
+	{
+	}
+
+	@Override
+	public void postInit()
+	{
 	}
 
 	/**

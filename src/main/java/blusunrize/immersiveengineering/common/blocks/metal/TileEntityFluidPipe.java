@@ -564,9 +564,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		if(box instanceof AdvancedAABB)
 		{
-			if(box.expand(.002,.002,.002).contains(mop.hitVec))
+			if(box.grow(.002).contains(mop.hitVec))
 			{
-				AxisAlignedBB changedBox = ((AdvancedAABB)box).fd!=null?box.expand(((AdvancedAABB)box).fd.getFrontOffsetX()!=0?0:.03125, ((AdvancedAABB)box).fd.getFrontOffsetY()!=0?0:.03125, ((AdvancedAABB)box).fd.getFrontOffsetZ()!=0?0:.03125): box;
+				AxisAlignedBB changedBox = ((AdvancedAABB)box).fd!=null?box.grow(((AdvancedAABB)box).fd.getFrontOffsetX()!=0?0:.03125, ((AdvancedAABB)box).fd.getFrontOffsetY()!=0?0:.03125, ((AdvancedAABB)box).fd.getFrontOffsetZ()!=0?0:.03125): box;
 				list.add(changedBox);
 				return true;
 			}
@@ -959,7 +959,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		for(AxisAlignedBB box : boxes)
 			if(box instanceof AdvancedAABB)
 			{
-				if(box.expand(.002,.002,.002).contains(new Vec3d(getPos().getX()+hitX, getPos().getY()+hitY, getPos().getZ()+hitZ)))
+				if(box.grow(.002).contains(new Vec3d(getPos().getX()+hitX, getPos().getY()+hitY, getPos().getZ()+hitZ)))
 					if(box instanceof AdvancedAABB && ((AdvancedAABB)box).fd != null)
 						fd = ((AdvancedAABB)box).fd;
 			}

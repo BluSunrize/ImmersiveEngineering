@@ -3,6 +3,7 @@ package blusunrize.lib.manual.gui;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
+import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
@@ -14,10 +15,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class GuiManual extends GuiScreen
 {
@@ -28,10 +26,10 @@ public class GuiManual extends GuiScreen
 	int manualTick=0;
 	List<GuiButton> pageButtons = new ArrayList();
 
-	public static String selectedCategory;
-	private static String selectedEntry;
-	public static ArrayList<String> previousSelectedEntry = new ArrayList();
-	public static int page;
+	public String selectedCategory;
+	private String selectedEntry;
+	public Stack<String> previousSelectedEntry = new Stack();
+	public int page;
 	public static GuiManual activeManual;
 
 	ManualInstance manual;
@@ -62,15 +60,15 @@ public class GuiManual extends GuiScreen
 		return false;
 	}
 
-	public static String getSelectedEntry()
+	public String getSelectedEntry()
 	{
 		return selectedEntry;
 	}
-	public static void setSelectedEntry(String string)
+	public void setSelectedEntry(String string)
 	{
 		selectedEntry = string;
 		if(string!=null)
-			activeManual.manual.openEntry(string);
+			manual.openEntry(string);
 	}
 	public ManualInstance getManual()
 	{
@@ -168,7 +166,7 @@ public class GuiManual extends GuiScreen
 		this.drawTexturedModalRect(guiLeft,guiTop, 0,0, xSize,ySize);
 		if(this.searchField!=null)
 		{
-			int l = searchField.getText()!=null?searchField.getText().length()*6:0; 
+			int l = searchField.getText()!=null?searchField.getText().length()*6:0;
 			if(l>20)
 				this.drawTexturedModalRect(guiLeft+166,guiTop+74, 136+(120-l),238, l,18);
 			if(this.hasSuggestions!=-1 && this.hasSuggestions<this.buttonList.size())
@@ -287,15 +285,7 @@ public class GuiManual extends GuiScreen
 		else if(button.id == 1)
 		{
 			if(selectedEntry!=null)
-			{
-				if(previousSelectedEntry.size()>0)
-				{
-					setSelectedEntry(previousSelectedEntry.get(0));
-					previousSelectedEntry.remove(0);
-				}
-				else
-					setSelectedEntry(null);
-			}
+				setSelectedEntry(previousSelectedEntry.isEmpty()?null:previousSelectedEntry.pop());
 			else if(selectedCategory!=null)
 				selectedCategory=null;
 			page=0;
@@ -333,6 +323,23 @@ public class GuiManual extends GuiScreen
 	public void renderToolTip(ItemStack stack, int x, int y)
 	{
 		super.renderToolTip(stack, x, y);
+	}
+	@Override
+	public List<String> getItemToolTip(ItemStack stack)
+	{
+		List<String> tooltip = super.getItemToolTip(stack);
+		ManualEntry entry = manual.getEntry(selectedEntry);
+		if(entry!=null)
+		{
+			IManualPage mPage = (page < 0||page >= entry.getPages().length)?null: entry.getPages()[page];
+			if(mPage!=null && mPage.getHighlightedStack()==stack)
+			{
+				ManualLink link = this.manual.getManualLink(stack);
+				if(link!=null)
+					tooltip.add(manual.formatLink(link));
+			}
+		}
+		return tooltip;
 	}
 	@Override
 	public void drawHoveringText(List text, int x, int y, FontRenderer font)
@@ -376,27 +383,32 @@ public class GuiManual extends GuiScreen
 				page--;
 				this.initGui();
 			}
-			if(page<entry.getPages().length-1 && mx>135&&mx<135+17 && my>179&&my<179+10)
+			else if(page<entry.getPages().length-1 && mx>135&&mx<135+17 && my>179&&my<179+10)
 			{
 				page++;
 				this.initGui();
 			}
-
+			else
+			{
+				IManualPage mPage = (page<0||page>=entry.getPages().length)?null: entry.getPages()[page];
+				if(mPage!=null)
+				{
+					ItemStack highlighted = mPage.getHighlightedStack();
+					if(!highlighted.isEmpty())
+					{
+						ManualLink link = this.getManual().getManualLink(highlighted);
+						if(link!=null)
+							link.changePage(this);
+					}
+				}
+			}
 		}
 		else if(button==1)
 		{
 			if(searchField!=null && searchField.getText()!=null && !searchField.getText().isEmpty())
 				searchField.setText("");
 			else if(selectedEntry!=null)
-			{
-				if(previousSelectedEntry.size()>0)
-				{
-					setSelectedEntry(previousSelectedEntry.get(0));
-					previousSelectedEntry.remove(0);
-				}
-				else
-					setSelectedEntry(null);
-			}
+				setSelectedEntry(previousSelectedEntry.isEmpty()?null:previousSelectedEntry.pop());
 			else if(selectedCategory!=null)
 				selectedCategory=null;
 			page=0;

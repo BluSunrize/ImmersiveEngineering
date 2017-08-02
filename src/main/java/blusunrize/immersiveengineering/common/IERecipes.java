@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
+import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
@@ -83,6 +84,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,8), "plateIron","plateIron","ingotCopper");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,9), "plateSteel","plateSteel","ingotCopper");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,3,26), "blockGlass","wireCopper","wireCopper","dustRedstone");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,27), new ItemStack(IEContent.blockStoneDecoration,1, BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()),"plateCopper","electronTube","electronTube");
 
 		//
 		//BULLETS

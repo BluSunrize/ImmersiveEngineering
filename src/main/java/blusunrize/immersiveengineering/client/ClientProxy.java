@@ -51,12 +51,9 @@ import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.items.ItemDrillhead;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.ItemIEBase;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
-import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -102,6 +99,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -192,7 +190,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625,.75,0).scale(.875,.875,.875).rotate(-Math.PI*.6875, 0, 1, 0))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.5,.25).scale(.5,.5,.5)));
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver/revolver.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0,1,0).scale(.1875, .25, .25).translate(.25, .25, .5))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0,1,0).scale(.1875, .25, .25).translate(-.3, .25, .5))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .0625,-.03125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0,1,0).rotate(Math.toRadians(-10), 0,0,1))
@@ -324,6 +322,8 @@ public class ClientProxy extends CommonProxy
 
 		for(Item item : IEContent.registeredIEItems)
 		{
+			if(item instanceof ItemBlock)
+				continue;
 			if(item instanceof ItemIEBase)
 			{
 				ItemIEBase ieMetaItem = (ItemIEBase)item;
@@ -578,7 +578,11 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
 		handleMineralManual();
-		ManualHelper.addEntry("components", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9)), new ManualPages.Crafting(ManualHelper.getManual(), "components1", BlueprintCraftingRecipe.getTypedBlueprint("components")), new ManualPageBlueprint(ManualHelper.getManual(), "components2", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,26)));
+		ManualHelper.addEntry("components", ManualHelper.CAT_GENERAL,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "components1", BlueprintCraftingRecipe.getTypedBlueprint("components")),
+				new ManualPageBlueprint(ManualHelper.getManual(), "components2", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,26)),
+				new ManualPageBlueprint(ManualHelper.getManual(), "components3", new ItemStack(IEContent.itemMaterial,1,27)));
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.ItemDisplay(ManualHelper.getManual(), "graphite0", new ItemStack(IEContent.itemMaterial,1,18),new ItemStack(IEContent.itemMaterial,1,19)),new ManualPageBlueprint(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemGraphiteElectrode)));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.Text(ManualHelper.getManual(), "shader2"));
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
@@ -673,7 +677,13 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.getManual().addEntry("eMeter", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "eMeter0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.ENERGY_METER.getMeta())));
 		Map<String,Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
 		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"K");
-		ManualHelper.getManual().addEntry("redstoneWires", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires0", new ItemStack(IEContent.itemWireCoil, 1, 5)), new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires1", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_REDSTONE.getMeta())));
+		ManualHelper.getManual().addEntry("redstoneWires", ManualHelper.CAT_ENERGY,
+				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires0", new ItemStack(IEContent.itemWireCoil, 1, 5)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires1", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_REDSTONE.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires2", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_PROBE.getMeta())),
+				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires3"),
+				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires4"),
+				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires5"));
 		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
 				new ManualPages.Table(ManualHelper.getManual(), "thermoElectric1", table, false));
@@ -881,6 +891,7 @@ public class ClientProxy extends CommonProxy
 			}catch (Exception exception){
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
+		ManualHelper.getManual().indexRecipes();
 	}
 	static ManualEntry mineralEntry;
 	public static void handleMineralManual()
@@ -1171,6 +1182,8 @@ public class ClientProxy extends CommonProxy
 					return new GuiRevolver(player.inventory, world, slot, item);
 				if(ID==Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
 					return new GuiToolbox(player.inventory, world, slot, item);
+				if(ID==Lib.GUIID_Speedloader && item.getItem() instanceof ItemSpeedloader)
+					return new GuiSpeedloader(player.inventory, world, slot, item);
 			}
 		}
 
@@ -1560,6 +1573,11 @@ public class ClientProxy extends CommonProxy
 	public World getClientWorld()
 	{
 		return ClientUtils.mc().world;
+	}
+	@Override
+	public EntityPlayer getClientPlayer()
+	{
+		return ClientUtils.mc().player;
 	}
 
 	@Override

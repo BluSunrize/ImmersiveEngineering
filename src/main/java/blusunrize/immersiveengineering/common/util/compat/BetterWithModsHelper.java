@@ -22,6 +22,8 @@ public class BetterWithModsHelper extends IECompatModule
 		Block hempBlock = Block.REGISTRY.getObject(new ResourceLocation("betterwithmods:hemp"));
 		if(hempSeeds!=null && material!=null && hempBlock!=null)
 			BelljarHandler.cropHandler.register(new ItemStack(hempSeeds), new ItemStack[]{new ItemStack(material,1,2),new ItemStack(hempSeeds,1)}, new ItemStack(Blocks.DIRT), hempBlock.getDefaultState());
+		if(material!=null)
+			BelljarHandler.registerBasicItemFertilizer(new ItemStack(material,1,5), 1.25f);
 	}
 
 	@Override

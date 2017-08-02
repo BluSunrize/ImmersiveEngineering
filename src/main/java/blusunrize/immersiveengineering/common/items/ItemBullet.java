@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.entities.EntityWolfpackShot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.gui.FontRenderer;
@@ -31,6 +32,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -89,6 +91,21 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 			{
 				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
+			}
+			@Override
+			public Entity getProjectile(@Nullable EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean charged)
+			{
+				if(projectile instanceof EntityRevolvershot)
+				{
+					((EntityRevolvershot)projectile).setGravity(0.05f);
+					((EntityRevolvershot)projectile).setMovementDecay(0.9f);
+				}
+				return projectile;
+			}
+			@Override
+			public SoundEvent getSound()
+			{
+				return IESounds.revolverFireThump;
 			}
 		});
 
@@ -343,7 +360,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 					}
 					else if(bullet.bulletPotion.getItem() instanceof ItemSplashPotion)
 					{
-						List<EntityLivingBase> livingEntities = bullet.world.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
+						List<EntityLivingBase> livingEntities = bullet.world.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D));
 						if(livingEntities != null && !livingEntities.isEmpty())
 							for(EntityLivingBase living : livingEntities)
 								if(living.canBeHitWithPotion())

@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -33,6 +34,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.*;
+import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.model.IModelState;
@@ -62,6 +64,8 @@ public class IESmartObjModel extends OBJBakedModel
 	EntityLivingBase tempEntity;
 	VertexFormat format;
 	Map<String, String> texReplace = null;
+	private TransformType lastCameraTransform = TransformType.FIXED;
+	boolean hasDynamicFaces = false;
 
 	public IESmartObjModel(IBakedModel baseModel, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transformationMap)
 	{
@@ -74,6 +78,7 @@ public class IESmartObjModel extends OBJBakedModel
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
+		this.lastCameraTransform = cameraTransformType;
 		if(transformationMap==null || transformationMap.isEmpty())
 			return super.handlePerspective(cameraTransformType);
 		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy():new Matrix4();
@@ -232,10 +237,11 @@ public class IESmartObjModel extends OBJBakedModel
 		}
 		if(bakedQuads==null)
 			bakedQuads = buildQuads();
-		List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(bakedQuads));
-		return quadList;
+		List<BakedQuad> quadList = Lists.newArrayList(bakedQuads);
+		if(hasDynamicFaces)
+			handleDynamicQuads(quadList);
+		return Collections.synchronizedList(quadList);
 	}
-
 
 	private ImmutableList<BakedQuad> buildQuads()
 	{
@@ -247,15 +253,21 @@ public class IESmartObjModel extends OBJBakedModel
 		if(!this.tempStack.isEmpty() && tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
 			ShaderWrapper wrapper = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			shader = wrapper.getShaderItem();
-			if(!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
+			if(wrapper!=null)
+			{
+				shader = wrapper.getShaderItem();
+				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
+			}
 		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(CapabilityShader.BLOCKSTATE_PROPERTY))
 		{
 			ShaderWrapper wrapper = ((IExtendedBlockState)this.tempState).getValue(CapabilityShader.BLOCKSTATE_PROPERTY);
-			shader = wrapper.getShaderItem();
-			if(!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, wrapper.getShaderType());
+			if(wrapper!=null)
+			{
+				shader = wrapper.getShaderItem();
+				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, wrapper.getShaderType());
+			}
 		}
 
 		if(!this.tempStack.isEmpty() && tempStack.getItem() instanceof IOBJModelCallback)
@@ -276,11 +288,12 @@ public class IESmartObjModel extends OBJBakedModel
 			ShaderLayer shaderLayer = sCase!=null?sCase.getLayers()[pass]:null;
 			for(Group g : getModel().getMatLib().getGroups().values())
 			{
+				String groupName = g.getName();
 				if(callback != null)
-					if(!callback.shouldRenderGroup(callbackObject, g.getName()))
+					if(!callback.shouldRenderGroup(callbackObject, groupName))
 						continue;
 				if(sCase != null)
-					if(!sCase.renderModelPartForPass(shader, tempStack, g.getName(), pass))
+					if(!sCase.renderModelPartForPass(shader, tempStack, groupName, pass))
 						continue;
 				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
 				Optional<TRSRTransformation> transform = Optional.empty();
@@ -290,22 +303,30 @@ public class IESmartObjModel extends OBJBakedModel
 					if(state.parent != null)
 						transform = state.parent.apply(Optional.empty());
 					if(callback != null)
-						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
-					if(state.getGroupsWithVisibility(true).contains(g.getName()))
+						transform = callback.applyTransformations(callbackObject, groupName, transform);
+					if(state.getGroupsWithVisibility(true).contains(groupName))
 						faces.addAll(g.applyTransform(transform));
 				} else
 				{
 					transform = getState().apply(Optional.empty());
 					if(callback != null)
-						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
+						transform = callback.applyTransformations(callbackObject, groupName, transform);
 					faces.addAll(g.applyTransform(transform));
 				}
 
 				int argb = 0xffffffff;
 				if(sCase != null)
-					argb = sCase.getARGBColourModifier(shader, tempStack, g.getName(), pass);
+					argb = sCase.getARGBColourModifier(shader, tempStack, groupName, pass);
 				else if(callback != null)
-					argb = callback.getRenderColour(callbackObject, g.getName());
+					argb = callback.getRenderColour(callbackObject, groupName);
+
+				boolean dynQuad = false;
+				if(callback!=null && Config.IEConfig.fancyItemAnimations && callback.isDynamicGroup(callbackObject, groupName))
+				{
+					dynQuad = true;
+					if(!hasDynamicFaces)
+						hasDynamicFaces = true;
+				}
 
 				float[] colour = {(argb >> 16 & 255) / 255f, (argb >> 8 & 255) / 255f, (argb & 255) / 255f, (argb >> 24 & 255) / 255f};
 
@@ -323,7 +344,7 @@ public class IESmartObjModel extends OBJBakedModel
 					{
 						if(sCase!=null)
 						{
-							ResourceLocation rl = sCase.getReplacementSprite(shader, tempStack, g.getName(), pass);
+							ResourceLocation rl = sCase.getReplacementSprite(shader, tempStack, groupName, pass);
 							if(rl!=null)
 								tempSprite = ClientUtils.getSprite(rl);
 						}
@@ -331,16 +352,18 @@ public class IESmartObjModel extends OBJBakedModel
 							tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
 						if(tempSprite==null&&tempState!=null&&texReplace!=null)
 						{
-							String s = texReplace.get(g.getName());
+							String s = texReplace.get(groupName);
 							if (s!=null)
 								tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
 						}
 						if(tempSprite==null && !"null".equals(f.getMaterialName()))
 							tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
 					}
+					if(tempSprite==null)
+						tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
 					if(tempSprite != null)
 					{
-						UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(getFormat());
+						IVertexConsumer builder = dynQuad?new DynamicAccessQuad.Builder(getFormat(), groupName): new UnpackedBakedQuad.Builder(getFormat());
 						builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
 						builder.setTexture(tempSprite);
 						builder.setQuadTint(pass);
@@ -384,7 +407,10 @@ public class IESmartObjModel extends OBJBakedModel
 						{
 							for(int i=0; i<4; i++)
 								putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
-							quads.add(builder.build());
+							if(builder instanceof UnpackedBakedQuad.Builder)
+								quads.add(((UnpackedBakedQuad.Builder)builder).build());
+							else if(builder instanceof DynamicAccessQuad.Builder)
+								quads.add(((DynamicAccessQuad.Builder)builder).build());
 						}
 					}
 				}
@@ -395,8 +421,7 @@ public class IESmartObjModel extends OBJBakedModel
 		return ImmutableList.copyOf(quads);
 	}
 
-
-	protected final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate texCoord, TextureAtlasSprite sprite, float[] colour)
+	protected final void putVertexData(IVertexConsumer builder, Vertex v, Normal faceNormal, TextureCoordinate texCoord, TextureAtlasSprite sprite, float[] colour)
 	{
 		for(int e = 0; e < getFormat().getElementCount(); e++)
 		{
@@ -438,6 +463,29 @@ public class IESmartObjModel extends OBJBakedModel
 					builder.put(e);
 			}
 		}
+	}
+
+	private void handleDynamicQuads(List<BakedQuad> quadList)
+	{
+		IOBJModelCallback callback = null;
+		Object callbackObject = null;
+		if(!this.tempStack.isEmpty() && tempStack.getItem() instanceof IOBJModelCallback)
+		{
+			callback = (IOBJModelCallback)tempStack.getItem();
+			callbackObject = this.tempStack;
+		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
+		{
+			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
+			callbackObject = this.tempState;
+		}
+
+		if(callback!=null)
+			for(int i = 0; i < quadList.size(); i++)
+			{
+				BakedQuad bq = quadList.get(i);
+				if(bq instanceof DynamicAccessQuad)
+					quadList.set(i, ((DynamicAccessQuad)bq).applyMatrix(callback.dynamicChanges(callbackObject, ((DynamicAccessQuad)bq).getName(), lastCameraTransform, tempEntity)));
+			}
 	}
 
 	static int getExtendedStateHash(IExtendedBlockState state)

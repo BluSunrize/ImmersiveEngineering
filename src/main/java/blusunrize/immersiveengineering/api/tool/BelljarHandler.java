@@ -83,6 +83,22 @@ public class BelljarHandler
 				return handler;
 		return null;
 	}
+	public static void registerBasicItemFertilizer(final ItemStack stack, final float growthMultiplier)
+	{
+		registerItemFertilizer(new ItemFertilizerHandler()
+		{
+			@Override
+			public boolean isValid(@Nullable ItemStack fertilizer)
+			{
+				return OreDictionary.itemMatches(stack, fertilizer, false);
+			}
+			@Override
+			public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
+			{
+				return growthMultiplier;
+			}
+		});
+	}
 
 	public static ResourceLocation getSoilTexture(ItemStack soil)
 	{

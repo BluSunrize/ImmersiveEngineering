@@ -476,7 +476,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if(pos==16&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true,true,true,true,true,true,true,true}, new boolean[8]);
@@ -488,6 +488,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			TileEntityMixer master = master();
 			if(master!=null)
 				return (T)master.insertionHandler;
+			return null;
 		}
 		return super.getCapability(capability, facing);
 	}

@@ -63,6 +63,10 @@ public class ManualPageBlueprint extends ManualPages
 							yOff = h*18;
 					}
 				}
+		if(providedItems!=null)
+			this.providedItems.clear();
+		for(ItemStack stack : stacks)
+			this.addProvidedItem(stack);
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class ManualPageBlueprint extends ManualPages
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		RenderHelper.enableGUIStandardItemLighting();
 
-		ItemStack highlighted = ItemStack.EMPTY;
+		highlighted = ItemStack.EMPTY;
 
 		if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 		{

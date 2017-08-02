@@ -2,7 +2,12 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Maps;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import java.util.HashMap;
 
 public abstract class ManualInstance
 {
@@ -20,6 +25,7 @@ public abstract class ManualInstance
 	public abstract String formatCategoryName(String s);
 	public abstract String formatEntryName(String s);
 	public abstract String formatEntrySubtext(String s);
+	public abstract String formatLink(ManualLink link);
 	public abstract String formatText(String s);
 	public abstract boolean showCategoryInList(String category);
 	public abstract boolean showEntryInList(ManualEntry entry);
@@ -90,10 +96,58 @@ public abstract class ManualInstance
 		}
 	}
 
-	public void recalculateAllRecipes()
+	public HashMap<Integer, ManualLink> itemLinks = Maps.newHashMap();
+	public void indexRecipes()
 	{
+		itemLinks.clear();
 		for(ManualEntry entry : manualContents.values())
+		{
+			int iP = 0;
 			for(IManualPage p : entry.getPages())
+			{
 				p.recalculateCraftingRecipes();
+				for(ItemStack s : p.getProvidedRecipes())
+					itemLinks.put(getItemHash(s), new ManualLink(entry.getName(),iP));
+				iP++;
+			}
+		}
+	}
+	public ManualLink getManualLink(ItemStack stack)
+	{
+		int hash = getItemHash(stack);
+		return itemLinks.get(hash);
+	}
+	int getItemHash(ItemStack stack)
+	{
+		return (ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode()*31 + (stack.getHasSubtypes()?stack.getMetadata():0))*31 + (!stack.hasTagCompound()||stack.getTagCompound().hasNoTags()?0 : stack.getTagCompound().hashCode());
+	}
+	public static class ManualLink
+	{
+		private final String key;
+		private final int page;
+
+		public ManualLink(String key, int page)
+		{
+			this.key = key;
+			this.page = page;
+		}
+
+		public String getKey()
+		{
+			return key;
+		}
+
+		public int getPage()
+		{
+			return page;
+		}
+
+		public void changePage(GuiManual guiManual)
+		{
+			guiManual.previousSelectedEntry.push(guiManual.getSelectedEntry());
+			guiManual.setSelectedEntry(this.key);
+			guiManual.page = this.page;
+			guiManual.initGui();
+		}
 	}
 }

@@ -19,11 +19,9 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityAlloySmelter> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
@@ -286,14 +284,6 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
 		return false;
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-	{
-		if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return null;
-		return super.getCapability(capability, facing);
 	}
 
 	@Override

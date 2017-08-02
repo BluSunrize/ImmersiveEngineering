@@ -10,10 +10,7 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -45,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IIEInternalFluxHandler, IHammerInteraction, IMirrorAble, IProcessTile
+public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IIEInternalFluxHandler, IHammerInteraction, IMirrorAble, IProcessTile, IComparatorOverride
 {
 	public final FluxStorageAdvanced energyStorage;
 	protected final boolean hasRedstoneControl;
@@ -190,13 +187,24 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public abstract int[] getRedstonePos();
 	public boolean isRedstonePos()
 	{
-		if(!hasRedstoneControl || getRedstonePos()==null)
+		if(!hasRedstoneControl||getRedstonePos()==null)
 			return false;
 		for(int i : getRedstonePos())
 			if(pos==i)
 				return true;
 		return false;
 	}
+	@Override
+	public int getComparatorInputOverride()
+	{
+		if(!this.isRedstonePos())
+			return 0;
+		TileEntityMultiblockMetal master = master();
+		if(master==null)
+			return 0;
+		return Utils.calcRedstoneFromInventory(master);
+	}
+
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{

@@ -133,8 +133,8 @@ public class IEManualInstance extends ManualInstance
 				if(world!=null && world.provider!=null)
 				{
 					String name = world.provider.getDimensionType().getName();
-					if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
-						name = name.substring(4);
+					if(name.toLowerCase(Locale.ENGLISH).startsWith("the ") || name.toLowerCase(Locale.ENGLISH).startsWith("the_"))
+						name = name.substring(4,5).toUpperCase()+name.substring(5);
 					result = name;
 				}
 				else
@@ -178,7 +178,6 @@ public class IEManualInstance extends ManualInstance
 		}
 		return s;
 	}
-
 
 	@Override
 	public void openManual()
@@ -290,6 +289,12 @@ public class IEManualInstance extends ManualInstance
 	public boolean showCategoryInList(String category)
 	{
 		return true;
+	}
+
+	@Override
+	public String formatLink(ManualLink link)
+	{
+		return TextFormatting.GOLD+"  -> "+formatEntryName(link.getKey())+", "+(link.getPage()+1);
 	}
 
 	@Override

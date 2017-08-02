@@ -1,0 +1,10 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "CUTOUT",
+    "textures": [
+      "immersiveengineering:blocks/ctm/metal_decoration0_generator_ctm"
+    ]
+  }
+}

@@ -4,14 +4,5 @@
 		"side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding",
 		"top": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top",
 		"bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top"
-	},
-
-	"ctm" : {
-		"model": { "model": "immersiveengineering:ie_scaffolding" },
-		"face": "immersiveengineering:ctm/metal_decoration1_steel_scaffolding.cf",
-		"overrides":{
-			"UP":"immersiveengineering:ctm/metal_decoration1_steel_scaffolding_top.cf",
-			"DOWN":"immersiveengineering:ctm/metal_decoration1_steel_scaffolding_top.cf"
-		}
 	}
 }

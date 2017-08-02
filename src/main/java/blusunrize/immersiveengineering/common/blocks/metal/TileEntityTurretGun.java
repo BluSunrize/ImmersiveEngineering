@@ -14,10 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -117,7 +114,10 @@ public class TileEntityTurretGun extends TileEntityTurret
 								inventory.get(1).grow(casing.getCount());
 						}
 					}
-					world.playSound(null, getPos(), IESounds.revolverFire, SoundCategory.BLOCKS, 1,1);
+					SoundEvent sound = bullet.getSound();
+					if(sound==null)
+						sound = IESounds.revolverFire;
+					world.playSound(null, getPos(), sound, SoundCategory.BLOCKS, 1,1);
 				}
 			}
 		}

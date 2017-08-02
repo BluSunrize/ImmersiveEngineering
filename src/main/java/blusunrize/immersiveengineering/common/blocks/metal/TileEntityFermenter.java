@@ -323,6 +323,11 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 
 
 	@Override
+	public int getComparatedSize()
+	{
+		return 8;
+	}
+	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
@@ -382,7 +387,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if((pos==15||pos==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true,true,true,true,true,true,true,true}, new boolean[8]);

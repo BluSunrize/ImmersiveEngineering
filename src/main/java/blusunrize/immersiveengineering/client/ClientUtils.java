@@ -6,6 +6,10 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.items.ItemChemthrower;
+import blusunrize.immersiveengineering.common.items.ItemDrill;
+import blusunrize.immersiveengineering.common.items.ItemRailgun;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -18,6 +22,7 @@ import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.*;
@@ -31,6 +36,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -423,6 +429,58 @@ public class ClientUtils
 				newRenderers[i].offsetZ = oldRenderers[i].offsetZ;
 			}
 		return newRenderers;
+	}
+
+	public static void handleBipedRotations(ModelBiped model, Entity entity)
+	{
+		if(!Config.IEConfig.fancyItemHolding)
+			return;
+
+		if(entity instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer)entity;
+			for(EnumHand hand : EnumHand.values())
+			{
+				ItemStack heldItem = player.getHeldItem(hand);
+				if(!heldItem.isEmpty())
+				{
+					boolean right = (hand==EnumHand.MAIN_HAND) == (player.getPrimaryHand()==EnumHandSide.RIGHT);
+					if(heldItem.getItem() instanceof ItemRevolver)
+					{
+						if(right)
+						{
+							model.bipedRightArm.rotateAngleX = -1.39626f + model.bipedHead.rotateAngleX;
+							model.bipedRightArm.rotateAngleY = -.08726f + model.bipedHead.rotateAngleY;
+						} else
+						{
+							model.bipedLeftArm.rotateAngleX = -1.39626f  + model.bipedHead.rotateAngleX;
+							model.bipedLeftArm.rotateAngleY = .08726f + model.bipedHead.rotateAngleY;
+						}
+					}
+					else if(heldItem.getItem() instanceof ItemDrill||heldItem.getItem() instanceof ItemChemthrower)
+					{
+						if(right)
+						{
+							model.bipedLeftArm.rotateAngleX = -.87266f;
+							model.bipedLeftArm.rotateAngleY = .52360f;
+						}
+						else
+						{
+							model.bipedRightArm.rotateAngleX = -.87266f;
+							model.bipedRightArm.rotateAngleY = -0.52360f;
+						}
+					}
+					else if(heldItem.getItem() instanceof ItemRailgun)
+					{
+						if(right)
+							model.bipedRightArm.rotateAngleX = -.87266f;
+						else
+							model.bipedLeftArm.rotateAngleX = -.87266f;
+					}
+
+				}
+			}
+		}
 	}
 
 	//	public static void handleStaticTileRenderer(TileEntity tile)

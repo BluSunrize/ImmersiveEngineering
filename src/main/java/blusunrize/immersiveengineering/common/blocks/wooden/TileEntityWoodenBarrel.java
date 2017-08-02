@@ -254,18 +254,6 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}
-//			else if(Utils.fillFluidHandlerWithPlayerItem(world, this.tank, player, hand, heldItem))
-//			{
-//				this.markDirty();
-//				this.markContainingBlockForUpdate(null);
-//				return true;
-//			}
-//		if(Utils.fillPlayerItemFromFluidHandler(world, this.tank, player, hand, heldItem, this.tank.getFluid()))
-//		{
-//			this.markDirty();
-//			this.markContainingBlockForUpdate(null);
-//			return true;
-//		}
 		return false;
 	}
 

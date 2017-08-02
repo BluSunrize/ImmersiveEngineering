@@ -63,6 +63,7 @@ public class ShaderRegistry
 		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
+		registerShader_Shield(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		for(IShaderRegistryMethod method : shaderRegistrationMethods)
@@ -212,6 +213,33 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_uncoloured"),0xffffffff));
 
 		ShaderCaseRailgun shader = new ShaderCaseRailgun(list);
+		return registerShaderCase(name, shader, rarity);
+	}
+
+	/**
+	 * Method to register a default implementation of Shield Shaders
+	 * @param name name of the shader
+	 * @param overlayType uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 base colour
+	 * @param colour1 design colour
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional colour for the additional texture, if present
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseShield registerShader_Shield(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_0"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_1_"+overlayType),colour1));
+		if(additionalTexture!=null)
+		{
+			ResourceLocation rl = additionalTexture.indexOf(58)>=0?new ResourceLocation(additionalTexture):new ResourceLocation("immersiveengineering:items/shaders/shield_"+additionalTexture);
+			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+		}
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_uncoloured"),0xffffffff));
+
+		ShaderCaseShield shader = new ShaderCaseShield(list);
 		return registerShaderCase(name, shader, rarity);
 	}
 

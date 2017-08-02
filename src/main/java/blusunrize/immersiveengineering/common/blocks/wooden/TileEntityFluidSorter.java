@@ -25,6 +25,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	public byte[] sortWithNBT = {1,1,1,1,1,1};
 	//	public static final int filterSlotsPerSide = 8;
 	public FluidStack[][] filters = new FluidStack[6][8];
+	boolean isRouting = false;
 
 	public int routeFluid(EnumFacing inputSide, FluidStack stack, boolean doFill)
 	{
@@ -88,8 +89,9 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 
 	public IFluidHandler[][] getValidOutputs(EnumFacing inputSide, FluidStack fluidStack, boolean allowUnmapped)
 	{
-		if(fluidStack==null)
+		if(isRouting || fluidStack==null)
 			return new IFluidHandler[2][0];
+		this.isRouting = true;
 		ArrayList<IFluidHandler> validFilteredInvOuts = new ArrayList<IFluidHandler>(6);
 		ArrayList<IFluidHandler> validUnfilteredInvOuts = new ArrayList<IFluidHandler>(6);
 		for(EnumFacing side : EnumFacing.values())
@@ -127,6 +129,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 					}
 				}
 			}
+		this.isRouting = false;
 		return new IFluidHandler[][]{
 				validFilteredInvOuts.toArray(new IFluidHandler[validFilteredInvOuts.size()]),
 				validUnfilteredInvOuts.toArray(new IFluidHandler[validUnfilteredInvOuts.size()]),

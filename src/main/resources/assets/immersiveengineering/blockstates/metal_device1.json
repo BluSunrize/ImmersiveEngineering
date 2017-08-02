@@ -12,8 +12,10 @@
 			"west": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
 			"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
 
-			"sideOff": "immersiveengineering:blocks/metal_device1_furnace_heater",
-			"sideOn": "immersiveengineering:blocks/metal_device1_furnace_heater_active"
+			"side_off": "immersiveengineering:blocks/metal_device1_furnace_heater",
+			"overlay_off": "immersiveengineering:blocks/metal_device1_furnace_heater_overlay",
+			"side_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active",
+			"overlay_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active_overlay"
 		}
 	},
 	"variants":
@@ -102,16 +104,28 @@
 				"model": "immersiveengineering:metal_device/blastfurnace_preheater.obj",
 				"custom": { "flip-v": true }
 			},
-			"furnace_heater": {"textures": {
-				"bottom": "#sideOff",
-				"top": "#sideOff",
-				"north": "immersiveengineering:blocks/metal_device1_furnace_heater_socket",
-				"south": "#sideOff",
-				"west": "#sideOff",
-				"east": "#sideOff",
-				"sideOff": "immersiveengineering:blocks/metal_device1_furnace_heater",
-				"sideOn": "immersiveengineering:blocks/metal_device1_furnace_heater_active"
-			}},
+			"furnace_heater": {
+				"model": "immersiveengineering:ie_six_sides_overlay",
+				"textures": {
+					"side_off": "immersiveengineering:blocks/metal_device1_furnace_heater",
+					"side_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active",
+					"overlay_off": "immersiveengineering:blocks/metal_device1_furnace_heater_overlay",
+					"overlay_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active_overlay",
+					"block_particle": "immersiveengineering:blocks/metal_device1_furnace_heater",
+					"block_down": "#side_off",
+					"block_up": "#side_off",
+					"block_north": "immersiveengineering:blocks/metal_device1_furnace_heater_socket",
+					"block_south": "#side_off",
+					"block_west": "#side_off",
+					"block_east": "#side_off",
+					"overlay_down": "#overlay_off",
+					"overlay_up": "#overlay_off",
+					"overlay_north": "immersiveengineering:blocks/metal_device1_furnace_heater_socket",
+					"overlay_south": "#overlay_off",
+					"overlay_west": "#overlay_off",
+					"overlay_east": "#overlay_off"
+				}
+			},
 			"dynamo": {"textures": {
 				"bottom": "immersiveengineering:blocks/metal_device1_dynamo_bottom",
 				"top": "immersiveengineering:blocks/metal_device1_dynamo_top",
@@ -167,7 +181,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "builtin/generated"
+				"model": "immersiveengineering:ie_empty"
 			}
 		},
 		//active texture
@@ -175,7 +189,8 @@
 		{
 			"false":{},
 			"true":{"textures": {
-				"sideOff": "#sideOn"
+				"side_off": "#side_on",
+				"overlay_off": "#overlay_on"
 			}}
 		}
 	}

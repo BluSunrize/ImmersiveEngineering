@@ -79,7 +79,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			if (lowPower)
 				radius/=2;
 			AxisAlignedBB aabbSmall = new AxisAlignedBB(getPos().getX()+.5-radius,getPos().getY()+.5-radius,getPos().getZ()+.5-radius, getPos().getX()+.5+radius,getPos().getY()+.5+radius,getPos().getZ()+.5+radius);
-			AxisAlignedBB aabb = aabbSmall.expand(radius/2, radius/2, radius/2);
+			AxisAlignedBB aabb = aabbSmall.grow(radius/2);
 			List<Entity> targetsAll = world.getEntitiesWithinAABB(Entity.class, aabb);
 			if (!world.isRemote)
 				for (Entity e:targetsAll)
@@ -304,7 +304,8 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 		coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
 		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx,ty,tz)));
-		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
+//		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
+		world.playSound(getPos().getX(),getPos().getY(),getPos().getZ(), IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+ Utils.RAND.nextFloat(), true);
 	}
 
 	private void addAnimation(LightningAnimation ani)

@@ -2,10 +2,5 @@
 	"parent": "block/cube_all",
 	"textures": {
 		"all": "immersiveengineering:blocks/metal_decoration0_generator"
-	},
-
-	"ctm" : {
-		"model": { "model": "cube" },
-		"face": "immersiveengineering:ctm/metal_decoration0_generator.cf"
 	}
 }
