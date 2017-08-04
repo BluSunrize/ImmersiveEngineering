@@ -98,13 +98,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		this.limitType = cableType;
-		BlockPos pos = ApiUtils.toBlockPos(other);
-		if (world.isRemote&&pos!=null)
-		{
-			if (renderAABB==null)
-				renderAABB = Block.FULL_BLOCK_AABB.offset(pos);
-			renderAABB = renderAABB.union(new AxisAlignedBB(pos, pos));
-		}
 	}
 	@Override
 	public WireType getCableLimiter(TargetingInfo target)
@@ -153,6 +146,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			IBlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state,state, 3);
 			ImmersiveEngineering.proxy.resetConnectionVBO(this);
+			renderAABB = initRenderAABB();
 			return true;
 		} else if(id == 254)
 		{
@@ -306,7 +300,18 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if (renderAABB==null)
-			renderAABB = Block.FULL_BLOCK_AABB.offset(pos);
+			renderAABB = initRenderAABB();
 		return renderAABB;
+	}
+
+	private AxisAlignedBB initRenderAABB()
+	{
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+		AxisAlignedBB ret = Block.FULL_BLOCK_AABB.offset(pos);
+		if (conns!=null)
+			for (Connection c:conns)
+				if (c.end.compareTo(c.start)>0)
+					ret = ret.union(Block.FULL_BLOCK_AABB.offset(c.end));
+		return ret;
 	}
 }

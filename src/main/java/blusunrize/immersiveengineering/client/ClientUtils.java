@@ -53,6 +53,10 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -61,6 +65,7 @@ import javax.vecmath.Quat4d;
 import java.util.*;
 import java.util.function.Function;
 
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientUtils
 {
 	public static final AxisAlignedBB standardBlockAABB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
@@ -87,7 +92,8 @@ public class ClientUtils
 	//			}
 	//		}
 	//	}
-	//
+
+	private static Map<BlockPos, Integer> brightnessCache = new HashMap<>();
 	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite, BufferBuilder buffer, double x, double y, double z)
 	{
 		if(connection == null || start == null)
@@ -134,25 +140,32 @@ public class ClientUtils
 		{
 			buffer.setTranslation(x+ connection.start.getX()+startOffset.x, y+ connection.start.getY()+startOffset.y, z+ connection.start.getZ()+startOffset.z);
 
-			buffer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			int light0 = getLightAt(world, connection.start);
+			int light0_0 = (light0>>16)&0xFFFF;
+			int light0_1 = light0&255;
+			int light1 = getLightAt(world, new BlockPos(connection.end));
+			int light1_0 = (light1>>16)&0xFFFF;
+			int light1_1 = light1&255;
 
-			buffer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 - radius, 0, 0).tex(uMin, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx - radius, dy, dz).tex(uMax, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx + radius, dy, dz).tex(uMax, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 + radius, 0, 0).tex(uMin, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-			buffer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx - radius, dy, dz).tex(uMax, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 - radius, 0, 0).tex(uMin, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0 + radius, 0, 0).tex(uMin, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx + radius, dy, dz).tex(uMax, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-			buffer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			buffer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0, 0, 0 - radius).tex(uMin, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx, dy, dz - radius).tex(uMax, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx, dy, dz + radius).tex(uMax, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0, 0, 0 + radius).tex(uMin, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+
+			buffer.pos(dx, dy, dz - radius).tex(uMax, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0, 0, 0 - radius).tex(uMin, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(0, 0, 0 + radius).tex(uMin, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+			buffer.pos(dx, dy, dz + radius).tex(uMax, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 		} else
 		{
 			buffer.setTranslation(x, y, z);
@@ -172,30 +185,55 @@ public class ClientUtils
 					u1 = uMin;
 					u0 = uMax;
 				}
-				buffer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				int light0 = getLightAt(world, new BlockPos(v0));
+				int light0_0 = (light0>>16)&0xffff;
+				int light0_1 = light0&255;
+				int light1 = getLightAt(world, new BlockPos(v1));
+				int light1_0 = (light1>>16)&0xffff;
+				int light1_1 = light1&255;
 
-				buffer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				buffer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y + radius, v1.z).tex(u1, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y + radius, v0.z).tex(u0, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x, v0.y - radius, v0.z).tex(u0, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x, v1.y - radius, v1.z).tex(u1, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				buffer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				buffer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+
+				buffer.pos(v1.x - radius * rmodx, v1.y, v1.z + radius * rmodz).tex(u1, vMax).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x - radius * rmodx, v0.y, v0.z + radius * rmodz).tex(u0, vMax).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v0.x + radius * rmodx, v0.y, v0.z - radius * rmodz).tex(u0, vMin).lightmap(light0_0, light0_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				buffer.pos(v1.x + radius * rmodx, v1.y, v1.z - radius * rmodz).tex(u1, vMin).lightmap(light1_0, light1_1).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
 			}
 		}
-		//		tes.setColorRGBA_I(0xffffff, 0xff);
 	}
+
+	public static int getLightAt(World world, BlockPos pos)
+	{
+		if (true||!brightnessCache.containsKey(pos))
+		{
+			int ret = world.getCombinedLight(pos, 0);
+			brightnessCache.put(pos, ret);
+			return ret;
+		}
+		return brightnessCache.get(pos);
+	}
+
+	@SubscribeEvent
+	public static void onClientTick(TickEvent.ClientTickEvent event)
+	{
+		//TODO can I clear that cache specifically on light updates?
+		brightnessCache.clear();
+	}
+
 	//
 	//	public static int calcBrightness(IBlockAccess world, double x, double y, double z)
 	//	{

@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -120,6 +121,7 @@ public class ImmersiveNetHandler
 	{
 		return getAllConnections(world.provider.getDimension());
 	}
+	@Nullable
 	public synchronized Set<Connection> getConnections(World world, BlockPos node)
 	{
 		if(world!=null && world.provider!=null)

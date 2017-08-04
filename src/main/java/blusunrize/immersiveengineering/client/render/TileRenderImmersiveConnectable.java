@@ -7,18 +7,14 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 
@@ -32,7 +28,7 @@ import java.util.Set;
 public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer<TileEntityImmersiveConnectable>
 {
 	private static Map<IImmersiveConnectable, VertexBuffer> cache = new HashMap<>();
-	private final static VertexFormat FORMAT = DefaultVertexFormats.POSITION_TEX_COLOR;
+	private final static VertexFormat FORMAT = DefaultVertexFormats.POSITION_TEX_LMAP_COLOR;
 
 	public TileRenderImmersiveConnectable() {
 		IEApi.renderCacheClearers.add(cache::clear);
@@ -44,11 +40,17 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer<Ti
 		GlStateManager.pushMatrix();
 		GlStateManager.color(255, 255, 255, 255);
 
-		GlStateManager.disableTexture2D();
+
+		RenderHelper.disableStandardItemLighting();
+		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		GlStateManager.shadeModel(GL11.GL_SMOOTH);
+		GlStateManager.disableCull();
+		GlStateManager.bindTexture(OpenGlHelper.defaultTexUnit);
+		if(Minecraft.isAmbientOcclusionEnabled())
+			GlStateManager.shadeModel(7425);
+		else
+			GlStateManager.shadeModel(7424);
+
 		Tessellator tess = Tessellator.getInstance();
 		BufferBuilder buffer = tess.getBuffer();
 		if(te != null)
@@ -59,12 +61,25 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer<Ti
 				vbo.bindBuffer();
 				int stride = FORMAT.getNextOffset();
 				ByteBuffer byteBuff = Tessellator.getInstance().getBuffer().getByteBuffer();
-				GlStateManager.glVertexPointer(3, GL11.GL_FLOAT, stride, 0);
+
 				GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				GlStateManager.glTexCoordPointer(2, GL11.GL_FLOAT, stride, 12);
+
+				OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
 				GlStateManager.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-				GlStateManager.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, stride, 20);
+
+				OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
+				GlStateManager.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+
+				OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
 				GlStateManager.glEnableClientState(GL11.GL_COLOR_ARRAY);
+
+				GlStateManager.glVertexPointer(3, GL11.GL_FLOAT, stride, 0);
+				GlStateManager.glTexCoordPointer(2, GL11.GL_FLOAT, stride, 12);
+				OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
+				GlStateManager.glTexCoordPointer(2, GL11.GL_SHORT, stride, 20);
+				OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
+				GlStateManager.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, stride, 24);
+
 				vbo.drawArrays(GL11.GL_QUADS);
 				vbo.unbindBuffer();
 				byteBuff.limit(0);
@@ -99,9 +114,14 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer<Ti
 				vbo.bufferData(buffer.getByteBuffer());
 				cache.put(te, vbo);
 			}
+			GlStateManager.enableRescaleNormal();
+			GlStateManager.popAttrib();
+			GlStateManager.disableBlend();
+			GlStateManager.enableLighting();
+			GlStateManager.enableTexture2D();
+			RenderHelper.enableStandardItemLighting();
 			GlStateManager.popMatrix();
 			buffer.setTranslation(0, 0, 0);
-			GlStateManager.enableTexture2D();
 		}
 	}
 
