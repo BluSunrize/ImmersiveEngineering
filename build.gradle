@@ -92,17 +92,17 @@ repositories {
 }
 
 dependencies {
-    runtime "team.chisel.ctm:CTM:MC1.12-0.2.1.5"
-    deobfCompile "mezz.jei:jei_1.12:4.+"
-    deobfCompile "cofh:RedstoneFlux:1.12-2.+:universal"
-    deobfCompile "slimeknights.mantle:Mantle:1.12-1.3.+"
-    deobfCompile "slimeknights:TConstruct:1.12-2.7.+"
-    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
-    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
+    compileOnly "team.chisel.ctm:CTM:MC1.12-0.2.1.5"
+    compileOnly "mezz.jei:jei_1.12:4.+"
+    compileOnly "cofh:RedstoneFlux:1.12-2.+:deobf"
+    compileOnly "slimeknights.mantle:Mantle:1.12-1.3.+"
+    compileOnly "slimeknights:TConstruct:1.12-2.7.+"
+    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
+    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
 //    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+" ToDo?
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2" ToDo!!
-    deobfCompile 'net.industrial-craft:industrialcraft-2:2.8.+'
-    deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
+    compileOnly 'net.industrial-craft:industrialcraft-2:2.8.+'
+    compileOnly 'elucent:albedo:2.0-SNAPSHOT'
 }
 
 jar {
