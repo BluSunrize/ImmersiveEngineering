@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -40,6 +41,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class TileEntityTurret extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IGuiTile, IEntityProof, IHammerInteraction, IHasObjProperty
 {
@@ -60,11 +62,26 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	public float rotationYaw;
 	public float rotationPitch;
 
+	private UUID targetId;
+
 	@Override
 	public void update()
 	{
 		if(dummy)
 			return;
+		double range = getRange();
+		if (targetId!=null)
+		{
+			AxisAlignedBB validBox = Block.FULL_BLOCK_AABB.offset(pos).grow(range);
+			List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, validBox);
+			for (EntityLivingBase entity:entities)
+				if (entity.getUniqueID().equals(targetId)&&isValidTarget(entity))
+				{
+					target = entity;
+					break;
+				}
+			targetId = null;
+		}
 
 		if(target!=null)
 		{
@@ -72,8 +89,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			double dY = target.posY-(getPos().getY()+.5);
 			double dZ = target.posZ-(getPos().getZ()+.5);
 			double dSq = dX*dX+dY*dY+dZ*dZ;
-			double r = getRange();
-			if(dSq > r*r)
+			if(dSq > range*range)
 				this.target=null;
 			else
 			if(world.isRemote)
@@ -153,33 +169,34 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(getPos().getX()-range,getPos().getY(),getPos().getZ()-range, getPos().getX()+range,getPos().getY()+3,getPos().getZ()+range));
 		if(list.isEmpty())
 			return null;
-		EntityLivingBase target = null;
 		for(EntityLivingBase entity : list)
+			if (isValidTarget(entity))
+				return entity;
+		return null;
+	}
+	public boolean isValidTarget(EntityLivingBase entity)
+	{
+		if(entity==null || entity.isDead || entity.getHealth()<=0 || !canSeeEntity(entity))
+			return false;
+		//Continue if blacklist and name is in list, or whitelist and name is not in list
+		if(whitelist ^ isListedName(targetList, entity.getName()))
+			return false;
+		//Same as above but for the owner of the pet, to prevent shooting wolves
+		if(entity instanceof IEntityOwnable)
 		{
-			if(entity==null || entity.isDead || entity.getHealth()<=0 || !canSeeEntity(entity))
-				continue;
-			//Continue if blacklist and name is in list, or whitelist and name is not in list
-			if(whitelist ^ isListedName(targetList, entity.getName()))
-				continue;
-			//Same as above but for the owner of the pet, to prevent shooting wolves
-			if(entity instanceof IEntityOwnable)
-			{
-				Entity entityOwner = ((IEntityOwnable)entity).getOwner();
-				if(entityOwner!=null&&(whitelist ^ isListedName(targetList, entityOwner.getName())))
-					continue;
-			}
-
-			if(entity instanceof EntityAnimal && !attackAnimals)
-				continue;
-			if(entity instanceof EntityPlayer && !attackPlayers)
-				continue;
-			if(!(entity instanceof EntityPlayer) && !(entity instanceof EntityAnimal) && !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
-				continue;
-
-			if(target==null || entity.getDistanceSq(getPos())<target.getDistanceSq(getPos()))
-				target = entity;
+			Entity entityOwner = ((IEntityOwnable)entity).getOwner();
+			if(entityOwner!=null&&(whitelist ^ isListedName(targetList, entityOwner.getName())))
+				return false;
 		}
-		return target;
+
+		if(entity instanceof EntityAnimal && !attackAnimals)
+			return false;
+		if(entity instanceof EntityPlayer && !attackPlayers)
+			return false;
+		if(!(entity instanceof EntityPlayer) && !(entity instanceof EntityAnimal) && !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
+			return false;
+
+		return target==null || entity.getDistanceSq(getPos())<target.getDistanceSq(getPos());
 	}
 	private boolean isListedName(List<String> list, String name)
 	{
@@ -241,13 +258,8 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		attackNeutrals = nbt.getBoolean("attackNeutrals");
 
 		target = null;
-		if(nbt.hasKey("target"))
-		{
-			int targetId = nbt.getInteger("target");
-			Entity ent = world.getEntityByID(targetId);
-			if(ent instanceof EntityLivingBase && !ent.isDead)
-				target = (EntityLivingBase)ent;
-		}
+		if(nbt.hasKey("target", 8))
+			targetId = UUID.fromString(nbt.getString("target"));
 	}
 
 	@Override
@@ -271,7 +283,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		nbt.setBoolean("attackNeutrals",attackNeutrals);
 
 		if(target!=null)
-			nbt.setInteger("target", target.getEntityId());
+			nbt.setString("target", target.getUniqueID().toString());
 	}
 
 	@Override
