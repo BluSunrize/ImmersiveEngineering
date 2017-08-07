@@ -23,7 +23,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -194,12 +193,6 @@ public class ImmersiveEngineering
 			}
 		}
 		IEContent.refreshFluidReferences();
-	}
-
-	@Mod.EventHandler
-	public void remap(MissingMappings<?> ev)
-	{
-		NameRemapper.remap(ev);
 	}
 
 //	public static Item registerItem(Item item, String name)

@@ -58,6 +58,7 @@ import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
@@ -580,5 +581,11 @@ public class EventHandler
 				((TileEntityMultiblockPart) te).onlyLocalDissassembly = event.getWorld().getTotalWorldTime();
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public void remap(RegistryEvent.MissingMappings<?> ev)
+	{
+		NameRemapper.remap(ev);
 	}
 }
