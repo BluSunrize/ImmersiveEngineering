@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * @author BluSunrize - 20.07.2017
  */
+@IFMLLoadingPlugin.SortingIndex(1001)
 public class IELoadingPlugin implements IFMLLoadingPlugin
 {
 	@Override

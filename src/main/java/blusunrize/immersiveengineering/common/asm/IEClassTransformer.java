@@ -20,7 +20,7 @@ public class IEClassTransformer implements IClassTransformer
 
 	static{
 		transformerMap.put("net.minecraft.client.model.ModelBiped", new MethodTransformer[]{
-				new MethodTransformer("setRotationAngles", "func_78087_a", "a", "(FFFFFFLnet/minecraft/entity/Entity;)V", "(FFFFFFLve;)V", methodNode ->
+				new MethodTransformer("setRotationAngles", "func_78087_a", "(FFFFFFLnet/minecraft/entity/Entity;)V", methodNode ->
 				{
 					Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 					while(iterator.hasNext())
@@ -51,7 +51,7 @@ public class IEClassTransformer implements IClassTransformer
 
 			for(MethodNode method : node.methods)
 				for(MethodTransformer methodTransformer : transformers)
-					if((methodTransformer.functionName.equals(method.name)||methodTransformer.srgName.equals(method.name)||methodTransformer.obfName.equals(method.name)) && (methodTransformer.functionDesc.equals(method.desc)||methodTransformer.obfDesc.equals(method.desc)))
+					if((methodTransformer.functionName.equals(method.name)||methodTransformer.srgName.equals(method.name)) && methodTransformer.functionDesc.equals(method.desc))
 						methodTransformer.function.accept(method);
 
 			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -65,18 +65,14 @@ public class IEClassTransformer implements IClassTransformer
 	{
 		final String functionName;
 		final String srgName;
-		final String obfName;
 		final String functionDesc;
-		final String obfDesc;
 		final Consumer<MethodNode> function;
 
-		private MethodTransformer(String funcName, String srgName, String obfName, String funcDesc, String obfDesc, Consumer<MethodNode> function)
+		private MethodTransformer(String funcName, String srgName, String funcDesc, Consumer<MethodNode> function)
 		{
 			this.functionName = funcName;
 			this.srgName = srgName;
-			this.obfName = obfName;
 			this.functionDesc = funcDesc;
-			this.obfDesc = obfDesc;
 			this.function = function;
 		}
 	}

@@ -39,7 +39,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[14.21.1.2420,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION,
+		dependencies = "required-after:forge@[14.22.0.2447,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
+		certificateFingerprint = "7e11c175d1e24007afec7498a1616bef0000027d")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
