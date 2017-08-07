@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase.ItemBlockIENoInventory;
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -32,7 +32,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 	public BlockWoodenDevice0()
 	{
-		super("wooden_device0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
+		super("wooden_device0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIENoInventory.class, IEProperties.FACING_ALL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
