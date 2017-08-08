@@ -1,6 +1,7 @@
 {
   "ingredients": {
-    "fluid": "blusunrize.immersiveengineering.common.crafting.IngredientFactoryFluidStack"
+    "fluid": "blusunrize.immersiveengineering.common.crafting.IngredientFactoryFluidStack",
+    "stackable_nbt": "blusunrize.immersiveengineering.common.crafting.IngredientFactoryStackableNBT"
   },
   "recipes": {
     "ingredient_shapeless": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapelessIngredient",
