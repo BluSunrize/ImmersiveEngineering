@@ -1,0 +1,44 @@
+package blusunrize.immersiveengineering.common.crafting;
+
+import com.google.gson.JsonObject;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IIngredientFactory;
+import net.minecraftforge.common.crafting.JsonContext;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
+
+public class IngredientFactoryStackableNBT implements IIngredientFactory
+{
+	@Nonnull
+	@Override
+	public Ingredient parse(JsonContext context, JsonObject json)
+	{
+		return new IngredientStackableNBT(CraftingHelper.getItemStack(json, context));
+	}
+
+	public static class IngredientStackableNBT extends Ingredient
+	{
+		@Nonnull
+		private final ItemStack stack;
+		public IngredientStackableNBT(@Nonnull ItemStack match)
+		{
+			super(match);
+			stack = match;
+		}
+
+		@Override
+		public boolean apply(@Nullable ItemStack input)
+		{
+			if (input==null||!super.apply(input))
+				return false;
+			Optional<NBTTagCompound> tag1 = Optional.ofNullable(stack.getTagCompound());
+			Optional<NBTTagCompound> tag2 = Optional.ofNullable(input.getTagCompound());
+			return tag1.equals(tag2);
+		}
+	}
+}
