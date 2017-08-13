@@ -103,68 +103,29 @@ dependencies {
     compileOnly 'elucent:albedo:2.0-SNAPSHOT'
 }
 
-reobf {
-    coreJar {mappingType = 'SEARGE'}
-}
-
-task coreJar(type: Jar) {
-    // Copy all compiled files and resources from the source set to the JAR
-    // If you have additional source sets, add the same logic here
-    from(sourceSets.main.output) {
-        // Don't include the coremod in the main mod
-        // If you have more coremod-related packages that aren't nested in the main one, add exclusions for them
-        include 'blusunrize/immersiveengineering/common/asm/**'
-    }
-    manifest {
-        attributes "FMLCorePlugin": "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
-    }
-    // Add a classifier to the JAR ('-core' at the end of the file name)
-    // Distinguishes the mod JAR from the shipped one
-    classifier 'core'
-    group = 'build'
-}
-
-task signCoreJar(type: SignJar) {
-    onlyIf { // Skip the task if our secret data isn't available
-        project.hasProperty('keyStore')
-    }
-    dependsOn reobfCoreJar
-    if (project.hasProperty('keyStore')) { // This needs to be a path to the keystore file
-        keyStore = project.keyStore
-        alias = project.storeAlias
-        storePass = project.storePass
-        keyPass = project.storePass
-        inputFile = coreJar.archivePath
-        outputFile = coreJar.archivePath
-    }
-}
-
 task signMainJar(type: SignJar) {
-    onlyIf { // Skip the task if our secret data isn't available
-        project.hasProperty('keyStore')
-    }
     dependsOn reobfJar
     if (project.hasProperty('keyStore')) { // This needs to be a path to the keystore file
-        keyStore = project.keyStore
-        alias = project.storeAlias
-        storePass = project.storePass
-        keyPass = project.storePass
         inputFile = jar.archivePath
         outputFile = jar.archivePath
     }
 }
+
+tasks.withType(SignJar) {
+    onlyIf { // Skip the task if our secret data isn't available
+        project.hasProperty('keyStore')
+    }
+    keyStore = project.keyStore
+    alias = project.storeAlias
+    storePass = project.storePass
+    keyPass = project.storePass
+}
+
 build.dependsOn signMainJar
-jar.dependsOn signCoreJar
 
 jar {
     manifest {
-        attributes 'ContainedDeps': coreJar.archivePath.name
         attributes "FMLAT": "ImmersiveEngineering_at.cfg"
-    }
-    exclude 'blusunrize/immersiveengineering/common/asm/**'
-    // Add the output of the mod JAR task to the main JAR for later extraction
-    from(coreJar.archivePath.absolutePath) {
-        include '*' // Due to the way Gradle's copy tasks work, we need this line for the JAR to get added
     }
 }
 
