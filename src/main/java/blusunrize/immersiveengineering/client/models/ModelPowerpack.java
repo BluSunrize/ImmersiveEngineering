@@ -193,7 +193,6 @@ public class ModelPowerpack extends ModelIEArmorBase
 		}
 		GlStateManager.enableBlend();
 		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
-		ClientUtils.handleBipedRotations(this, entity);
 		GlStateManager.disableBlend();
 
 		ClientUtils.bindTexture("immersiveengineering:textures/blocks/wire.png");

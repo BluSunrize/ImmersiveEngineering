@@ -15,11 +15,8 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
-import blusunrize.immersiveengineering.client.models.ModelIEPlayer;
-import blusunrize.immersiveengineering.client.render.LayerSwingingArmor;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -43,15 +40,11 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -1276,29 +1269,15 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onRenderLivingPre(RenderLivingEvent.Pre event)
 	{
-		if (event.getEntity().getEntityData().hasKey("headshot"))
+		if(event.getEntity().getEntityData().hasKey("headshot"))
 		{
 			ModelBase model = event.getRenderer().mainModel;
-			if (model instanceof ModelBiped)
-				((ModelBiped) model).bipedHead.showModel = false;
-			else if (model instanceof ModelVillager)
-				((ModelVillager) model).villagerHead.showModel = false;
-		}
-		if (Config.IEConfig.fancyItemHolding &&
-				!(event.getRenderer().getMainModel() instanceof ModelIEPlayer) &&
-				event.getRenderer().getMainModel() instanceof ModelPlayer)
-		{
-			event.getRenderer().mainModel = new ModelIEPlayer((ModelPlayer) event.getRenderer().mainModel);
-			RenderLivingBase<?> model = event.getRenderer();
-			for (int i = 0; i < model.layerRenderers.size(); i++)
-			{
-				LayerRenderer<?> layer = model.layerRenderers.get(i);
-				if (layer.getClass()==LayerBipedArmor.class)
-					model.layerRenderers.set(i, (LayerRenderer) new LayerSwingingArmor((LayerBipedArmor) layer));
-			}
+			if(model instanceof ModelBiped)
+				((ModelBiped)model).bipedHead.showModel=false;
+			else if(model instanceof ModelVillager)
+				((ModelVillager)model).villagerHead.showModel=false;
 		}
 	}
-
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)
 	{
