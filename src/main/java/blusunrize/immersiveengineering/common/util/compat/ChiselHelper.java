@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class ChiselHelper extends IECompatModule
@@ -9,9 +7,6 @@ public class ChiselHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-		//Activate the transparency layer because of CTM
-		IEContent.blockMetalDecoration0.setBlockLayer(BlockRenderLayer.SOLID,BlockRenderLayer.TRANSLUCENT);
-		IEContent.blockMetalDecoration1.setBlockLayer(BlockRenderLayer.CUTOUT,BlockRenderLayer.CUTOUT);
 	}
 
 	@Override
