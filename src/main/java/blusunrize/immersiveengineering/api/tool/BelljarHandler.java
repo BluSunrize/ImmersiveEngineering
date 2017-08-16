@@ -170,7 +170,7 @@ public class BelljarHandler
 		@Override
 		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
 		{
-			return .00625f * fertilizer;
+			return .003125f * fertilizer;
 		}
 		@Override
 		public ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile)
