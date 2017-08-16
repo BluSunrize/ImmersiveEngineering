@@ -5,16 +5,17 @@ import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.OreIngredient;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 
 public class HarvestcraftHelper extends IECompatModule
 {
@@ -27,22 +28,22 @@ public class HarvestcraftHelper extends IECompatModule
 	public void init()
 	{
 		//Pams Harvest Craft uses fluids with OreDict entries, so this is my workaround >_>
-		final List listWater = OreDictionary.getOres("listAllwater");
+		final ItemStack waterBucket = new ItemStack(Items.WATER_BUCKET);
 		AssemblerHandler.registerSpecialQueryConverters(o -> {
-			if(!(o instanceof List))
+			if(!(o instanceof OreIngredient))
 				return null;
-			if(listWater==o)
+			if(((OreIngredient)o).apply(waterBucket))
 				return new RecipeQuery(new FluidStack(FluidRegistry.WATER,1000), 1000);
 			return null;
 		});
 		final Fluid milk = FluidRegistry.getFluid("milk");
 		if(milk!=null)
 		{
-			final List listMilk = OreDictionary.getOres("listAllmilk");
+			final ItemStack milkBucket = new ItemStack(Items.MILK_BUCKET);
 			AssemblerHandler.registerSpecialQueryConverters(o -> {
-				if(!(o instanceof List))
+				if(!(o instanceof Ingredient))
 					return null;
-				if(listMilk == o)
+				if(((Ingredient)o).apply(milkBucket))
 					return new RecipeQuery(new FluidStack(milk, 1000), 1000);
 				return null;
 			});
