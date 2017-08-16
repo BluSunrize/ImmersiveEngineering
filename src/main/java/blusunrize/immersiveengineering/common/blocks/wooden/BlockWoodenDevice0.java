@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase.ItemBlockIENoInventory;
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -35,8 +36,9 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 		super("wooden_device0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIENoInventory.class, IEProperties.FACING_ALL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
-		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
-		setNotNormalBlock(BlockTypes_WoodenDevice0.WORKBENCH.getMeta());
+		this.setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
+		this.setNotNormalBlock(BlockTypes_WoodenDevice0.WORKBENCH.getMeta());
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override

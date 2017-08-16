@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBl
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -50,6 +51,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
 	protected Map<Integer, Float> metaHardness = new HashMap<>();
 	protected Map<Integer, Integer> metaResistances = new HashMap<>();
+	protected EnumPushReaction[] metaMobilityFlags;
 	protected boolean[] canHammerHarvest;
 	protected boolean[] metaNotNormalBlock;
 	private boolean opaqueCube = false;
@@ -63,6 +65,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.hasFlavour = new boolean[this.enumValues.length];
 		this.metaRenderLayers = new Set[this.enumValues.length];
 		this.canHammerHarvest = new boolean[this.enumValues.length];
+		this.metaMobilityFlags = new EnumPushReaction[this.enumValues.length];
 
 		ArrayList<IProperty> propList = new ArrayList<IProperty>();
 		ArrayList<IUnlistedProperty> unlistedPropList = new ArrayList<IUnlistedProperty>();
@@ -277,6 +280,21 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		if(metaResistances.containsKey(meta))
 			return metaResistances.get(meta);
 		return super.getExplosionResistance(world, pos, exploder, explosion);
+	}
+
+
+	public BlockIEBase<E> setMetaMobilityFlag(int meta, EnumPushReaction flag)
+	{
+		metaMobilityFlags[meta] = flag;
+		return this;
+	}
+	@Override
+	public EnumPushReaction getMobilityFlag(IBlockState state)
+	{
+		int meta = getMetaFromState(state);
+		if(metaMobilityFlags[meta]==null)
+			return EnumPushReaction.NORMAL;
+		return metaMobilityFlags[meta];
 	}
 
 	public BlockIEBase<E> setNotNormalBlock(int meta)
