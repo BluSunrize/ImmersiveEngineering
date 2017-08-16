@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.tool;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChorusPlant;
 import net.minecraft.block.BlockCrops;
@@ -376,8 +377,9 @@ public class BelljarHandler
 		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS,2)}, "sand", Blocks.CACTUS.getDefaultState(),Blocks.CACTUS.getDefaultState());
 		stackingHandler.register(new ItemStack(Blocks.CHORUS_FLOWER), new ItemStack[]{new ItemStack(Items.CHORUS_FRUIT,1)}, new ItemStack(Blocks.END_STONE), Blocks.CHORUS_PLANT.getDefaultState().withProperty(BlockChorusPlant.DOWN,true).withProperty(BlockChorusPlant.UP,true),Blocks.CHORUS_PLANT.getDefaultState().withProperty(BlockChorusPlant.DOWN,true).withProperty(BlockChorusPlant.UP,true),Blocks.CHORUS_FLOWER.getDefaultState());
 
-		cropHandler.register(new ItemStack(Blocks.RED_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.RED_MUSHROOM,2)}, new ItemStack(Blocks.MYCELIUM), Blocks.RED_MUSHROOM.getDefaultState());
-		cropHandler.register(new ItemStack(Blocks.BROWN_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.BROWN_MUSHROOM,2)}, new ItemStack(Blocks.MYCELIUM), Blocks.BROWN_MUSHROOM.getDefaultState());
+		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.DIRT,1,2)));
+		cropHandler.register(new ItemStack(Blocks.RED_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.RED_MUSHROOM,2)}, shroomSoil, Blocks.RED_MUSHROOM.getDefaultState());
+		cropHandler.register(new ItemStack(Blocks.BROWN_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.BROWN_MUSHROOM,2)}, shroomSoil, Blocks.BROWN_MUSHROOM.getDefaultState());
 
 		registerFluidFertilizer(new FluidFertilizerHandler()
 		{
