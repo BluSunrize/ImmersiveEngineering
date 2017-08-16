@@ -53,8 +53,6 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 			GlStateManager.disableBlend();
 
 			GlStateManager.popMatrix();
-			if(animation.timer--<=0)
-				animationIt.remove();
 		}
 		GL11.glPopAttrib();
 		setLightmapDisabled(false);
