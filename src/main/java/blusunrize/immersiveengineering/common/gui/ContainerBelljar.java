@@ -16,7 +16,7 @@ public class ContainerBelljar extends ContainerIEBase
 		for(int i=0; i<4; i++)
 			this.addSlotToContainer(new IESlot.Output(this, this.inv, 3+i, 116+i%2*18, 34+i/2*18));
 
-		this.slotCount=6;
+		this.slotCount=7;
 		this.tile = tile;
 
 		for (int i = 0; i < 3; i++)
