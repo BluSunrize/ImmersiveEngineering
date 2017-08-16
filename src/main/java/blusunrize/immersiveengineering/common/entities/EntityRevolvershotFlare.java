@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
+import elucent.albedo.lighting.ILightProvider;
+import elucent.albedo.lighting.Light;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -13,12 +15,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EntityRevolvershotFlare extends EntityRevolvershot
+import javax.annotation.Nullable;
+
+@Optional.Interface(iface="elucent.albedo.lighting.ILightProvider", modid="albedo")
+public class EntityRevolvershotFlare extends EntityRevolvershot implements ILightProvider
 {
 	boolean shootUp = false;
 	public int colour = -1;
 	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.createKey(EntityRevolvershotFlare.class, DataSerializers.VARINT);
+	private BlockPos lightPos;
 
 	public EntityRevolvershotFlare(World world)
 	{
@@ -90,6 +99,16 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 				Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1);
 				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x,posY+v.y,posZ+v.z, v.x/10,v.y/10,v.z/10, 1, r,g,b);
 			}
+
+			lightPos = this.getPosition();
+			for(int i=0; i<128; i++)
+				if(world.isAirBlock(lightPos))
+					lightPos = lightPos.down();
+				else
+				{
+					lightPos = lightPos.up(6);
+					break;
+				}
 		}
 	}
 
@@ -120,5 +139,19 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 			}
 		}
 		this.setDead();
+	}
+
+	@Nullable
+	@Optional.Method(modid="albedo")
+	@SideOnly(Side.CLIENT)
+	@Override
+	public Light provideLight()
+	{
+		float r = (getColour()>>16&255)/255f;
+		float g = (getColour()>>8&255)/255f;
+		float b = (getColour()&255)/255f;
+		if(lightPos!=null)
+			return Light.builder().pos(lightPos).radius(16).color(r, g, b).build();
+		return Light.builder().pos(this).radius(1).color(r, g, b).build();
 	}
 }
