@@ -31,6 +31,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -57,13 +58,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	}
 
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
-	{
-		return super.getDrops(world, pos, state, fortune);
-	}
-
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+//	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile != null && ( !(tile instanceof ITileDrop) || !((ITileDrop)tile).preventInventoryDrop()))
@@ -72,7 +68,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			{
 				for(ItemStack s : ((IIEInventory)tile).getDroppedItems())
 					if(!s.isEmpty())
-						spawnAsEntity(world, pos, s);
+						drops.add(s);
 			}
 			else if(tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
 			{
@@ -81,11 +77,25 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 					for(int i = 0; i < h.getSlots(); i++)
 						if(!h.getStackInSlot(i).isEmpty())
 						{
-							spawnAsEntity(world, pos, h.getStackInSlot(i));
+							drops.add(h.getStackInSlot(i));
 							((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
 						}
 			}
 		}
+		if(tile instanceof ITileDrop)
+		{
+			ItemStack s = ((ITileDrop)tile).getTileDrop(harvesters.get(), state);
+			if(!s.isEmpty())
+				drops.add(s);
+		}
+		else
+			super.getDrops(drops, world, pos, state, fortune);
+	}
+
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	{
+		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
 		{
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
@@ -100,15 +110,6 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile, ItemStack stack)
 	{
-		if(tile instanceof ITileDrop)
-		{
-			ItemStack s = ((ITileDrop)tile).getTileDrop(player, state);
-			if(!s.isEmpty())
-			{
-				spawnAsEntity(world, pos, s);
-				return;
-			}
-		}
 		if(tile instanceof IAdditionalDrops)
 		{
 			Collection<ItemStack> stacks = ((IAdditionalDrops)tile).getExtraDrops(player, state);
