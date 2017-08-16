@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -25,6 +26,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaBlockLayer(BlockTypes_MetalDevice0.FLUID_PLACER.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setNotNormalBlock(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice0.FLUID_PLACER.getMeta());
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override

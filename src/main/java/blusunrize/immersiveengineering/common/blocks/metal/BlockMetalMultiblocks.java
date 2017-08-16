@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -40,6 +41,12 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 		if(BlockTypes_MetalMultiblock.values()[meta].needsCustomState())
 			return BlockTypes_MetalMultiblock.values()[meta].getCustomState();
 		return null;
+	}
+
+	@Override
+	public EnumPushReaction getMobilityFlag(IBlockState state)
+	{
+		return EnumPushReaction.BLOCK;
 	}
 
 	@Override

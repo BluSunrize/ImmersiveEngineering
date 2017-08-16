@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
@@ -32,6 +33,9 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		this.setResistance(5.0F);
 		this.setAllNotNormalBlock();
 		lightOpacity = 0;
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.POST.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.WATERMILL.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.WINDMILL.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override
