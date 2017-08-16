@@ -1,0 +1,12 @@
+{
+  "type": "forge:ore_shapeless",
+  "group": "immersiveengineering:scaffolding_stairs_aluminum",
+  "result": {
+    "item": "immersiveengineering:aluminum_scaffolding_stairs0"
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:aluminum_scaffolding_stairs2"
+    }
+  ]
+}

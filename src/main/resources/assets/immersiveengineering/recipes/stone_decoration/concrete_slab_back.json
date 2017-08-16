@@ -1,5 +1,6 @@
 {
   "type": "forge:ore_shaped",
+  "group": "immersiveengineering:concrete",
   "result": {
     "item": "immersiveengineering:stone_decoration",
     "data": 5

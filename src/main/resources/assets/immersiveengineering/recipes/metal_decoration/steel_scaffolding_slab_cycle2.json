@@ -1,0 +1,14 @@
+{
+  "type": "forge:ore_shapeless",
+  "group": "immersiveengineering:scaffolding_slab_steel",
+  "result": {
+    "item": "immersiveengineering:metal_decoration1_slab",
+    "data": 1
+  },
+  "ingredients": [
+    {
+      "item": "immersiveengineering:metal_decoration1_slab",
+      "data": 3
+    }
+  ]
+}
