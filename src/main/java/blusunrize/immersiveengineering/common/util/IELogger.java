@@ -1,15 +1,16 @@
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 public class IELogger
 {
 	public static boolean debug = false;
+	public static Logger logger;
+
 	public static void log(Level logLevel, Object object)
 	{
-		FMLLog.log(ImmersiveEngineering.MODID, logLevel, String.valueOf(object));
+		logger.log(logLevel, String.valueOf(object));
 	}
 
 	public static void error(Object object)
