@@ -168,7 +168,7 @@ public class IEBlockInterfaces
 
 	public interface ITileDrop
 	{
-		ItemStack getTileDrop(EntityPlayer player, IBlockState state);
+		ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state);
 
 		void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack);
 
