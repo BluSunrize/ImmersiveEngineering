@@ -1,5 +1,6 @@
 {
   "type": "forge:ore_shaped",
+  "group": "immersiveengineering:concrete_slab",
   "result": {
     "item": "immersiveengineering:stone_decoration_slab",
     "data": 6,
