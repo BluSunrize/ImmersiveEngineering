@@ -156,7 +156,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			{
 				int subX = x - startX;
 				int subY = y - startY;
-				Ingredient target = null;
+				Ingredient target = Ingredient.EMPTY;
 
 				if(!rotate)
 				{
