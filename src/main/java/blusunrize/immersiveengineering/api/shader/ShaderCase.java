@@ -32,11 +32,15 @@ public abstract class ShaderCase
 	}
 	public ShaderCase addLayers(ShaderLayer... addedLayers)
 	{
+		addLayers(getLayerInsertionIndex(), addedLayers);
+		return this;
+	}
+	public ShaderCase addLayers(int index, ShaderLayer... addedLayers)
+	{
 		ShaderLayer[] newLayers = new ShaderLayer[layers.length+addedLayers.length];
-		int insert = getLayerInsertionIndex();
-		System.arraycopy(this.layers,0, newLayers,0, insert);
-		System.arraycopy(addedLayers,0, newLayers,insert, addedLayers.length);
-		System.arraycopy(this.layers,insert, newLayers,insert+addedLayers.length, this.layers.length-insert);
+		System.arraycopy(this.layers,0, newLayers,0, index);
+		System.arraycopy(addedLayers,0, newLayers,index, addedLayers.length);
+		System.arraycopy(this.layers,index, newLayers,index+addedLayers.length, this.layers.length-index);
 		this.layers = newLayers;
 		return this;
 	}
