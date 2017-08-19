@@ -57,11 +57,20 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		super(name, material, mainProperty, itemBlock, additionalProperties);
 	}
 
+	private static TileEntity tempTile;
+	private static BlockPos tempPos;
+
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 //	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		TileEntity tile = world.getTileEntity(pos);
+		if(tile==null && tempTile!=null && pos==tempPos)
+		{
+			tile = tempTile;
+			tempTile = null;
+			tempPos = null;
+		}
 		if(tile != null && ( !(tile instanceof ITileDrop) || !((ITileDrop)tile).preventInventoryDrop()))
 		{
 			if(tile instanceof IIEInventory && ((IIEInventory)tile).getDroppedItems()!=null)
@@ -103,6 +112,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IImmersiveConnectable)
 			if(!world.isRemote||!Minecraft.getMinecraft().isSingleplayer())
 				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile),world, !world.isRemote&&world.getGameRules().getBoolean("doTileDrops"));
+		tempPos = pos;
+		tempTile = tile;
 		super.breakBlock(world, pos, state);
 		world.removeTileEntity(pos);
 	}
