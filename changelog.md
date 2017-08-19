@@ -1,3 +1,24 @@
+#####Version 0.12-71
+- added missing recipes for Scaffold Slabs & Stairs
+- added Albedo compat for Flare Cartridges
+- added a recipe to make torches out of wool and creosote
+- added the "Ancient" shader
+- changed logging to use separate logger rather than FMLLog (thanks Malte)
+- changed Garden Coche to allow Podzol as a mushroom soil
+- changed the Cloche to run at a reduced speed
+- changed all multi- and dummyblocks to be immovable by Pistons, because Quark
+- fixed Core Sample Drill animation (thanks Malte)
+- fixed a bunch of Capability errors (thanks Malte)
+- fixed turrets causing issues in target acquisition (thanks Malte)
+- fixed client disconnecting due to NBT overflow in crates and toolboxes (thanks Malte)
+- fixed broken remapper (thanks Malte)
+- fixed conveyor recipes requiring single inputs (thanks Malte)
+- fixed Tesla Coil animation not getting reset (thanks Malte)
+- fixed Chisel compat conflicting with CTM
+- fixed HarvestCraft compat not handling water and milk in the assembler properly
+- fixed auto-breakers causing issues with Storage Crates and others
+- fixed shiftclicking being broken in the Cloche GUI
+
 #####Version 0.12-70 - BUILT
 - added Shader-capabilities to the Heavy Plated Shield
 - added Scaffolding Slabs and Stairs
