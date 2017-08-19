@@ -18,6 +18,7 @@
 - fixed HarvestCraft compat not handling water and milk in the assembler properly
 - fixed auto-breakers causing issues with Storage Crates and others
 - fixed shiftclicking being broken in the Cloche GUI
+- fixed Manual not reopening on the selected page
 
 #####Version 0.12-70 - BUILT
 - added Shader-capabilities to the Heavy Plated Shield
