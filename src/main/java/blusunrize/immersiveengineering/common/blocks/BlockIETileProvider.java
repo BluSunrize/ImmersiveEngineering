@@ -65,12 +65,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 //	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile==null && tempTile!=null && pos==tempPos)
-		{
+		if(tile==null && tempTile!=null && pos.equals(tempPos))
 			tile = tempTile;
-			tempTile = null;
-			tempPos = null;
-		}
 		if(tile != null && ( !(tile instanceof ITileDrop) || !((ITileDrop)tile).preventInventoryDrop()))
 		{
 			if(tile instanceof IIEInventory && ((IIEInventory)tile).getDroppedItems()!=null)
@@ -99,6 +95,12 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		}
 		else
 			super.getDrops(drops, world, pos, state, fortune);
+
+		if(tempTile!=null || tempPos!=null)
+		{
+			tempTile = null;
+			tempPos = null;
+		}
 	}
 
 	@Override
