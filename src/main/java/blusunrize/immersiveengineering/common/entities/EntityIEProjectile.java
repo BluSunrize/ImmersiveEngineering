@@ -200,7 +200,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 			{
 				if(!this.isBurning() && this.canIgnite() && mop.entityHit!=null && mop.entityHit.isBurning())
 					this.setFire(3);
-				if(mop.entityHit instanceof EntityLivingBase)
+				if(mop.entityHit!=null)
 				{
 					boolean allowHit = true;
 					if(this.shootingEntity instanceof EntityPlayer && mop.entityHit instanceof EntityPlayer)
