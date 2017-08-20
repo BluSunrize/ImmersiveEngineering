@@ -20,13 +20,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.Properties;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalDecoration2> implements IPostBlock
 {
@@ -43,11 +41,11 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	}
 
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		if(this.getMetaFromState(state)==BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta()||this.getMetaFromState(state)==BlockTypes_MetalDecoration2.STEEL_POST.getMeta())
-			return new ArrayList<>();
-		return super.getDrops(world, pos, state, fortune);
+			return;
+		super.getDrops(drops, world, pos, state, fortune);
 	}
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
