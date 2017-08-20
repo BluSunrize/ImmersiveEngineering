@@ -60,7 +60,7 @@ public class ConveyorVertical extends ConveyorBasic
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
 		key += "f" + facing.ordinal();
 		key += "a" + (isActive(tile) ? 1 : 0);
-		key += "b" + (renderBottomBelt(tile, facing)?("1"+(super.renderWall(tile,facing,0)?"1":"0")+(super.renderWall(tile,facing,1)?"1":"0")):"000");
+		key += "b" + (renderBottomBelt(tile, facing)?("1"+(renderBottomWall(tile,facing,0)?"1":"0")+(renderBottomWall(tile,facing,1)?"1":"0")):"000");
 		key += "c" + getDyeColour();
 		return key;
 	}
@@ -72,37 +72,44 @@ public class ConveyorVertical extends ConveyorBasic
 				if(f == EnumFacing.UP)
 					return false;
 		for(EnumFacing f : EnumFacing.HORIZONTALS)
-			if(f != facing)
+			if(f != facing && isInwardConveyor(tile, f))
+				return true;
+		return false;
+	}
+	protected boolean isInwardConveyor(TileEntity tile, EnumFacing f)
+	{
+		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().offset(f));
+		if(te instanceof IConveyorTile)
+		{
+			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
+			if (sub!=null)
+				for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+					if(f == f2.getOpposite())
+						return true;
+		}
+		te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0).offset(f));
+		if(te instanceof IConveyorTile)
+		{
+			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
+			if (sub!=null)
 			{
-				te = tile.getWorld().getTileEntity(tile.getPos().offset(f));
-				if(te instanceof IConveyorTile)
+				int b = 0;
+				for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
 				{
-					IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
-					if (sub!=null)
-						for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
-							if(f == f2.getOpposite())
-								return true;
-				}
-				te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0).offset(f));
-				if(te instanceof IConveyorTile)
-				{
-					IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
-					if (sub!=null)
-					{
-						int b = 0;
-						for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
-						{
-							if(f == f2.getOpposite())
-								b++;
-							else if(EnumFacing.UP == f2)
-								b++;
-							if(b == 2)
-								return true;
-						}
-					}
+					if(f == f2.getOpposite())
+						b++;
+					else if(EnumFacing.UP == f2)
+						b++;
+					if(b == 2)
+						return true;
 				}
 			}
+		}
 		return false;
+	}
+	protected boolean renderBottomWall(TileEntity tile, EnumFacing facing, int wall)
+	{
+		return super.renderWall(tile, facing, wall);
 	}
 
 	@Override
@@ -220,7 +227,7 @@ public class ConveyorVertical extends ConveyorBasic
 		}
 	}
 
-	static AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
+	static final AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
 
 	@Override
 	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
@@ -274,7 +281,7 @@ public class ConveyorVertical extends ConveyorBasic
 		{
 			TextureAtlasSprite sprite = ClientUtils.getSprite(isActive(tile) ? ConveyorBasic.texture_on : ConveyorBasic.texture_off);
 			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
-			boolean[] walls = {super.renderWall(tile, facing, 0), super.renderWall(tile, facing, 1)};
+			boolean[] walls = {renderBottomWall(tile, facing, 0), renderBottomWall(tile, facing, 1)};
 			baseModel.addAll(ModelConveyor.getBaseConveyor(facing, .875f, new Matrix4(facing), ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
 		}
 		return baseModel;

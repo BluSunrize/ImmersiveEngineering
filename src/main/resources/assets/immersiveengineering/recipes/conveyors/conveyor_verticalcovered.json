@@ -1,0 +1,26 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": {
+      "conveyorType": "immersiveengineering:verticalcovered"
+    }
+  },
+  "pattern": [
+    "S",
+    "C"
+  ],
+  "key": {
+    "C": {
+      "type": "immersiveengineering:stackable_nbt",
+      "item": "immersiveengineering:conveyor",
+      "nbt": {
+        "conveyorType": "immersiveengineering:vertical"
+      }
+    },
+    "S": {
+      "item": "#scaffoldingSteel"
+    }
+  }
+}
