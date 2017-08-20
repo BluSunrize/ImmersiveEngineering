@@ -364,6 +364,9 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
 
+		/**BULLETS*/
+		ItemBullet.initBullets();
+
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 	}
 
