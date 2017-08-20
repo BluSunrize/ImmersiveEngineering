@@ -323,6 +323,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IDirectionalTile && Utils.isHammer(heldItem) && ((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player) && !world.isRemote)
 		{
 			EnumFacing f = ((IDirectionalTile)tile).getFacing();
+			EnumFacing oldF = f;
 			int limit = ((IDirectionalTile)tile).getFacingLimitation();
 
 			if(limit==0)
@@ -332,6 +333,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			else if(limit == 2 || limit == 5)
 				f = player.isSneaking()?f.rotateYCCW():f.rotateY();
 			((IDirectionalTile)tile).setFacing(f);
+			((IDirectionalTile)tile).afterRotation(oldF,f);
 			tile.markDirty();
 			world.notifyBlockUpdate(pos,state,state,3);
 			world.addBlockEvent(tile.getPos(), tile.getBlockType(), 255, 0);

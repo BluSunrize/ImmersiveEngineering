@@ -55,6 +55,12 @@ public class ConveyorSplit extends ConveyorBasic
 	}
 
 	@Override
+	public void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+	{
+		this.outputFace = newDir.rotateY();
+	}
+
+	@Override
 	public void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
 	{
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());

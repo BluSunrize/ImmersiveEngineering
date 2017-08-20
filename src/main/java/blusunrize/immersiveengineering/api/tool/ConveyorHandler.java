@@ -173,6 +173,13 @@ public class ConveyorHandler
 		boolean setConveyorDirection(ConveyorDirection dir);
 
 		/**
+		 * Called after the conveyor has been rotated with a hammer
+		 */
+		default void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+		{
+		}
+
+		/**
 		 * @return false if the conveyor is deactivated (for instance by a redstone signal)
 		 */
 		boolean isActive(TileEntity tile);

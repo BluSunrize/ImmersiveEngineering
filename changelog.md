@@ -23,6 +23,7 @@
 - fixed Railgun not working on Ender Dragon, Crystals and non-living entities (thanks Malte)
 - fixed Bullets not loading the damage from the config properly
 - fixed deprecated uses of getDrops
+- fixed Splitting Conveyor being derpy after being rotated
 
 #####Version 0.12-70 - BUILT
 - added Shader-capabilities to the Heavy Plated Shield

@@ -109,6 +109,13 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	{
 		return true;
 	}
+	@Override
+	public void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+	{
+		if(this.conveyorBeltSubtype != null)
+			this.conveyorBeltSubtype.afterRotation(oldDir, newDir);
+	}
+
 
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
