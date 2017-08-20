@@ -57,21 +57,24 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		BulletHandler.emptyCasing = new ItemStack(this, 1, 0);
 		BulletHandler.emptyShell = new ItemStack(this, 1, 1);
 		BulletHandler.basicCartridge = new ItemStack(this, 1, 2);
+	}
 
+	public static void initBullets()
+	{
 		BulletHandler.registerBullet("casull", new BulletHandler.DamagingBullet(
-				entities -> IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]),
+				entities -> IEDamageSources.causeCasullDamage((EntityRevolvershot)entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_Casull,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_casull")));
 
 		BulletHandler.registerBullet("armor_piercing", new BulletHandler.DamagingBullet(
-				entities -> IEDamageSources.causePiercingDamage((EntityRevolvershot) entities[0], entities[1]),
+				entities -> IEDamageSources.causePiercingDamage((EntityRevolvershot)entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_AP,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_armor_piercing")));
 
 		BulletHandler.registerBullet("buckshot", new BulletHandler.DamagingBullet(
-				entities -> IEDamageSources.causeBuckshotDamage((EntityRevolvershot) entities[0], entities[1]),
+				entities -> IEDamageSources.causeBuckshotDamage((EntityRevolvershot)entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_Buck,
 				true,
 				false,
@@ -92,6 +95,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			{
 				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
 			}
+
 			@Override
 			public Entity getProjectile(@Nullable EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean charged)
 			{
@@ -102,6 +106,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				}
 				return projectile;
 			}
+
 			@Override
 			public SoundEvent getSound()
 			{
@@ -110,13 +115,13 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		});
 
 		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(
-				entities -> IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]),
+				entities -> IEDamageSources.causeSilverDamage((EntityRevolvershot)entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_Silver,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_silver")));
 
 		BulletHandler.registerBullet("dragonsbreath", new BulletHandler.DamagingBullet(
-				entities -> IEDamageSources.causeDragonsbreathDamage((EntityRevolvershot) entities[0], entities[1]),
+				entities -> IEDamageSources.causeDragonsbreathDamage((EntityRevolvershot)entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_Dragon,
 				true,
 				true,
@@ -132,7 +137,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			@Override
 			public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean electro)
 			{
-				((EntityRevolvershot) projectile).setTickLimit(10);
+				((EntityRevolvershot)projectile).setTickLimit(10);
 				projectile.setFire(3);
 				return projectile;
 			}
