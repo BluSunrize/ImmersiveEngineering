@@ -1534,7 +1534,7 @@ public class ClientUtils
 			v.setX(to.x);
 		sprite = textureGetter.apply(EnumFacing.EAST);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), sprite, new double[]{from.z*16, 16-to.y*16, to.z*16, 16-from.y*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
 
 		return quads;
 	}
