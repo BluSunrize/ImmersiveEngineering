@@ -3,6 +3,7 @@
 - added Albedo compat for Flare Cartridges
 - added a recipe to make torches out of wool and creosote
 - added the "Ancient" shader
+- added the Covered Vertical Conveyor
 - changed logging to use separate logger rather than FMLLog (thanks Malte)
 - changed Garden Coche to allow Podzol as a mushroom soil
 - changed the Cloche to run at a reduced speed
@@ -19,6 +20,9 @@
 - fixed auto-breakers causing issues with Storage Crates and others
 - fixed shiftclicking being broken in the Cloche GUI
 - fixed Manual not reopening on the selected page
+- fixed Railgun not working on Ender Dragon, Crystals and non-living entities (thanks Malte)
+- fixed Bullets not loading the damage from the config properly
+- fixed deprecated uses of getDrops
 
 #####Version 0.12-70 - BUILT
 - added Shader-capabilities to the Heavy Plated Shield
