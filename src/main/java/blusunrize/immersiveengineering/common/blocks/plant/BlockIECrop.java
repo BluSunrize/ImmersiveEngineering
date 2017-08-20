@@ -20,6 +20,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -28,8 +29,6 @@ import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockBush implements IGrowable, IIEMetaBlock
@@ -200,19 +199,16 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return meta==0?box0: meta==1?box1: meta==2?box2: FULL_BLOCK_AABB;
 	}
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
-		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
 		int meta = this.getMetaFromState(state);
 		if(meta>=4)
 		{
 			for (int i=0; i<3+fortune; ++i)
 				if(Utils.RAND.nextInt(8) <= meta)
-					ret.add(new ItemStack(IEContent.itemMaterial,1,4));
-			ret.add(new ItemStack(IEContent.itemSeeds,1,0));
+					drops.add(new ItemStack(IEContent.itemMaterial,1,4));
+			drops.add(new ItemStack(IEContent.itemSeeds,1,0));
 		}
-
-		return ret;
 	}
 	@Override
     public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos block)
