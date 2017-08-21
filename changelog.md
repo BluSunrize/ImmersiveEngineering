@@ -4,6 +4,8 @@
 - added a recipe to make torches out of wool and creosote
 - added the "Ancient" shader
 - added the Covered Vertical Conveyor
+- added the Chemthrower Multitank upgrade
+- re-added the Hemp to String recipe
 - changed logging to use separate logger rather than FMLLog (thanks Malte)
 - changed Garden Coche to allow Podzol as a mushroom soil
 - changed the Cloche to run at a reduced speed
