@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -327,12 +326,6 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
-	{
-		return null;
-	}
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)

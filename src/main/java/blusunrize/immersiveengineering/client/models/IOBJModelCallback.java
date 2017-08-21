@@ -46,9 +46,9 @@ public interface IOBJModelCallback<T>
 	};
 
 	@SideOnly(Side.CLIENT)
-	TextureAtlasSprite getTextureReplacement(T object, String material);
+	default TextureAtlasSprite getTextureReplacement(T object, String material){ return null; }
 	@SideOnly(Side.CLIENT)
-	boolean shouldRenderGroup(T object, String group);
+	default boolean shouldRenderGroup(T object, String group){ return true; }
 	@SideOnly(Side.CLIENT)
 	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform) { return transform; }
 	@SideOnly(Side.CLIENT)

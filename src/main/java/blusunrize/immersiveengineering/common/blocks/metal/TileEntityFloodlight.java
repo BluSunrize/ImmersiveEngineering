@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -514,12 +513,6 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		facing = f;
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
-	}
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)

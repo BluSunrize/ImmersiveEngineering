@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -289,13 +288,6 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 				return new float[]{1 - length, wMin, wMin, 1, wMax, wMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
 	}
 
 	@SideOnly(Side.CLIENT)

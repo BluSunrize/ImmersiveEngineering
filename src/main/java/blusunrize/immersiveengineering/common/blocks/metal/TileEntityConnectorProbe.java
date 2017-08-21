@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
@@ -152,13 +151,6 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 				return new float[]{0, wMin, wMin, 1, wMax, wMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
 	}
 
 	@SideOnly(Side.CLIENT)
