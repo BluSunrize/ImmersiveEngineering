@@ -29,7 +29,7 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 			ItemNBTHelper.modifyFloat(modifications, "speed", upgrade.getCount()*2f);
 			ItemNBTHelper.modifyInt(modifications, "damage", upgrade.getCount());
 		}),
-		DRILL_CAPACITY(ImmutableSet.of("DRILL","CHEMTHROWER"), (upgrade, modifications)-> ItemNBTHelper.modifyInt(modifications, "capacity", 2000)),
+		DRILL_CAPACITY(ImmutableSet.of("DRILL","CHEMTHROWER"), 1, (target, upgrade)->!((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("multitank"), (upgrade, modifications)-> ItemNBTHelper.modifyInt(modifications, "capacity", 2000)),
 		REVOLVER_BAYONET(ImmutableSet.of("REVOLVER"), (upgrade, modifications)-> ItemNBTHelper.modifyFloat(modifications, "melee", 6f)),
 		REVOLVER_MAGAZINE(ImmutableSet.of("REVOLVER"), 1, (target, upgrade)->!((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("bullets"), (upgrade, modifications)-> ItemNBTHelper.modifyInt(modifications, "bullets", 6)),
 		REVOLVER_ELECTRO(ImmutableSet.of("REVOLVER"), (upgrade, modifications)-> modifications.setBoolean("electro",true)),
@@ -38,7 +38,8 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 		RAILGUN_CAPACITORS(ImmutableSet.of("RAILGUN"), (upgrade, modifications)-> modifications.setFloat("speed",1f)),
 		SHIELD_FLASH(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("flash",true)),
 		SHIELD_SHOCK(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("shock",true)),
-		SHIELD_MAGNET(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("magnet",true));
+		SHIELD_MAGNET(ImmutableSet.of("SHIELD"), (upgrade, modifications)-> modifications.setBoolean("magnet",true)),
+		CHEMTHROWER_MULTITANK(ImmutableSet.of("CHEMTHROWER"), 1, (target, upgrade)->!((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("capacity"), (upgrade, modifications)-> modifications.setBoolean("multitank",true));
 
 		private ImmutableSet<String> toolset;
 		private int stackSize=1;

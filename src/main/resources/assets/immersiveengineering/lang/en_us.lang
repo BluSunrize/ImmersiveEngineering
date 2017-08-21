@@ -386,6 +386,7 @@ item.immersiveengineering.toolupgrade.railgun_capacitors.name=Additional Capacit
 item.immersiveengineering.toolupgrade.shield_flash.name=Flashbulb
 item.immersiveengineering.toolupgrade.shield_shock.name=Shock Emitters
 item.immersiveengineering.toolupgrade.shield_magnet.name=Magnetic Glove
+item.immersiveengineering.toolupgrade.chemthrower_multitank.name=Multitank
 
 item.immersiveengineering.blueprint.name=Engineer's Blueprint
 item.immersiveengineering.mold.plate.name=Metal Press Mold: Plate
@@ -573,6 +574,7 @@ entity.Villager.immersiveengineering.electrician=Electrician
 entity.Villager.immersiveengineering.outfitter=Outfitter
 
 key.immersiveengineering.magnetEquip=Magnetic Shield Glove (doubletap)
+key.immersiveengineering.chemthrowerSwitch=Switch Chemthrower Tanks
 
 desc.immersiveengineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.immersiveengineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
@@ -776,6 +778,7 @@ desc.immersiveengineering.flavour.toolupgrade.railgun_capacitors=Reduces charge 
 desc.immersiveengineering.flavour.toolupgrade.shield_flash=Produces a blinding flash
 desc.immersiveengineering.flavour.toolupgrade.shield_shock=Shocks attackers and vapourizes projectiles
 desc.immersiveengineering.flavour.toolupgrade.shield_magnet=Equips the shield at the press of a button
+desc.immersiveengineering.flavour.toolupgrade.chemthrower_multitank=Allows multiple Fluids in the Chemical Thrower
 
 gui.immersiveengineering.empty=Empty
 gui.immersiveengineering.blastFurnace=Blast Furnace
@@ -1387,6 +1390,7 @@ ie.manual.entry.chemthrower.subtext=BURN ALL THE THINGS!
 ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propels fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
 ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The §6Large Tank§r increases the fluid capacity of the Chemical Thrower by 2000 mb.
 ie.manual.entry.chemthrower2=The §6Focused Nozzle§r decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
+ie.manual.entry.chemthrower3=The §6Multitank§r allows the Chemthrower to store up to three different Fluids. You can select the active tank by <config;b;chemthrower_scroll;sneaking and using the scrollwheel, or through use of;using> the keybind §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r if it has been set in the options.<br>This upgrade is mutually exclusive to the §6Large Tank§r.
 
 ie.manual.entry.skyhook.name=Engineer's Skyhook
 ie.manual.entry.skyhook.subtext=Booker, catch!

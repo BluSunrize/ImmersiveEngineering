@@ -4,6 +4,8 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import com.google.common.base.Optional;
+import elucent.albedo.lighting.ILightProvider;
+import elucent.albedo.lighting.Light;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,8 +22,14 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EntityChemthrowerShot extends EntityIEProjectile
+import javax.annotation.Nullable;
+
+
+@net.minecraftforge.fml.common.Optional.Interface(iface="elucent.albedo.lighting.ILightProvider", modid="albedo")
+public class EntityChemthrowerShot extends EntityIEProjectile implements ILightProvider
 {
 	private FluidStack fluid;
 	private static final DataParameter<Optional<FluidStack>> dataMarker_fluid = EntityDataManager.createKey(EntityChemthrowerShot.class, IEFluid.OPTIONAL_FLUID_STACK);
@@ -139,6 +147,48 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 				}
 			}
 		}
+	}
+
+	@Nullable
+	@Override
+	public Light provideLight()
+	{
+		FluidStack fluidStack = getFluid();
+		if(fluidStack!=null)
+		{
+			int light = this.isBurning()?15:fluidStack.getFluid().getLuminosity(fluidStack);
+			if(light>0)
+				return Light.builder().pos(this).radius(.05f*light).color(1,1,1).build();
+		}
+		return null;
+	}
+
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getBrightnessForRender()
+	{
+		FluidStack fluidStack = getFluid();
+		if(fluidStack!=null)
+		{
+			int light = this.isBurning()?15: fluidStack.getFluid().getLuminosity(fluidStack);
+			if(light > 0)
+				return Math.max(light, super.getBrightnessForRender());
+		}
+		return super.getBrightnessForRender();
+	}
+
+	@Override
+	public float getBrightness()
+	{
+		FluidStack fluidStack = getFluid();
+		if(fluidStack!=null)
+		{
+			int light = this.isBurning()?15: fluidStack.getFluid().getLuminosity(fluidStack);
+			if(light > 0)
+				return Math.max(light, super.getBrightness());
+		}
+		return super.getBrightness();
 	}
 
 //	@Override

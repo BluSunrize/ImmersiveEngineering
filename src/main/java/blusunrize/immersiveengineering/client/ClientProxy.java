@@ -106,6 +106,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
@@ -138,6 +139,7 @@ public class ClientProxy extends CommonProxy
 	public static IENixieFontRender nixieFont;
 	public static IEItemFontRender itemFont;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", Keyboard.KEY_S, "key.categories.gameplay");
+	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", 0, "key.categories.gameplay");
 
 	@Override
 	public void preInit()
@@ -389,6 +391,10 @@ public class ClientProxy extends CommonProxy
 			}
 		});
 		ClientRegistry.registerKeyBinding(keybind_magnetEquip);
+
+		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
+		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
+
 		//		revolverTextureMap = new TextureMap("textures/revolvers",true);
 		//		revolverTextureMap.setMipmapLevels(Minecraft.getMinecraft().gameSettings.mipmapLevels);
 		//		Minecraft.getMinecraft().renderEngine.loadTickableTexture(revolverTextureResource, revolverTextureMap);
@@ -747,7 +753,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_TOOLS,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,13), new ItemStack(IEContent.itemToolUpgrades,1,0)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.DRILL_CAPACITY.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.CHEMTHROWER_FOCUS.ordinal())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.CHEMTHROWER_FOCUS.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.CHEMTHROWER_MULTITANK.ordinal())));
 		ManualHelper.addEntry("powerpack", ManualHelper.CAT_TOOLS,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "powerpack0", new ItemStack(IEContent.itemPowerpack)),
 				new ManualPages.Text(ManualHelper.getManual(), "powerpack1"));

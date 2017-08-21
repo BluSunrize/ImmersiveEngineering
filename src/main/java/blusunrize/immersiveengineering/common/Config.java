@@ -343,6 +343,9 @@ public class Config
 			public static String[] earDefenders_SoundBlacklist = new String[]{};
 			@Comment({"The mb of fluid the Chemical Thrower will consume per tick of usage"})
 			public static int chemthrower_consumption = 10;
+			@Comment({"Set this to false to disable the use of Sneak+Scroll to switch Chemthrower tanks."})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			public static boolean chemthrower_scroll = true;
 			@Comment({"The base amount of Flux consumed per shot by the Railgun"})
 			public static int railgun_consumption = 800;
 			@Comment({"A modifier for the damage of all projectiles fired by the Railgun"})
