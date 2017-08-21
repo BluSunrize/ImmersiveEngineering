@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -28,6 +29,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.network.MessageChemthrowerSwitch;
 import blusunrize.immersiveengineering.common.util.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
@@ -176,6 +178,14 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				}
 			if(this.shieldToggleButton!=ClientUtils.mc().gameSettings.keyBindBack.isKeyDown())
 				this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
+
+
+			if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
+			{
+				ItemStack held = event.player.getHeldItem(EnumHand.MAIN_HAND);
+				if(held.getItem() instanceof ItemChemthrower && ((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.player.getName(), true));
+			}
 		}
 //		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
 //		{
@@ -661,6 +671,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 								boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
 								ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66 / 256f, 78 / 256f, (ignite ? 21 : 9) / 256f, (ignite ? 33 : 21) / 256f);
 
+								ClientUtils.drawTexturedRect(-100, -20, 64, 16, 0 / 256f, 64 / 256f, 76 / 256f, 92 / 256f);
+								if(fuel!=null)
+								{
+									String name = ClientUtils.font().trimStringToWidth(fuel.getLocalizedName(), 50).trim();
+									ClientUtils.font().drawString(name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0);
+								}
 							}
 						}
 						GlStateManager.popMatrix();
@@ -883,31 +899,40 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		if(event.getDwheel() != 0)
 		{
 			EntityPlayer player = ClientUtils.mc().player;
-			if(!player.getHeldItem(EnumHand.MAIN_HAND).isEmpty() && player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof IZoomTool && player.isSneaking())
+			if(!player.getHeldItem(EnumHand.MAIN_HAND).isEmpty() && player.isSneaking())
 			{
 				ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
-				IZoomTool tool = (IZoomTool)equipped.getItem();
-				if(tool.canZoom(equipped, player))
+
+				if(equipped.getItem() instanceof IZoomTool)
 				{
-					float[] steps = tool.getZoomSteps(equipped, player);
-					if(steps!=null && steps.length>0)
+					IZoomTool tool = (IZoomTool)equipped.getItem();
+					if(tool.canZoom(equipped, player))
 					{
-						int curStep = -1;
-						float dist=0;
-						for(int i=0; i<steps.length; i++)
-							if(curStep==-1 || Math.abs(steps[i]-ZoomHandler.fovZoom)<dist)
-							{
-								curStep = i;
-								dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
-							}
-						if(curStep!=-1)
+						float[] steps = tool.getZoomSteps(equipped, player);
+						if(steps!=null&&steps.length > 0)
 						{
-							int newStep = curStep+(event.getDwheel()>0?-1:1);
-							if(newStep>=0 && newStep<steps.length)
-								ZoomHandler.fovZoom = steps[newStep];
-							event.setCanceled(true);
+							int curStep = -1;
+							float dist = 0;
+							for(int i = 0; i < steps.length; i++)
+								if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
+								{
+									curStep = i;
+									dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
+								}
+							if(curStep!=-1)
+							{
+								int newStep = curStep+(event.getDwheel() > 0?-1: 1);
+								if(newStep >= 0&&newStep < steps.length)
+									ZoomHandler.fovZoom = steps[newStep];
+								event.setCanceled(true);
+							}
 						}
 					}
+				}
+				if(Config.IEConfig.Tools.chemthrower_scroll && equipped.getItem() instanceof ItemChemthrower && ((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
+				{
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(player.getName(), event.getDwheel()<0));
+					event.setCanceled(true);
 				}
 			}
 		}
