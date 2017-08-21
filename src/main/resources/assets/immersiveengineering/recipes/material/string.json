@@ -1,0 +1,17 @@
+{
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "minecraft:string"
+  },
+  "ingredients": [
+    {
+      "item": "#fiberHemp"
+    },
+    {
+      "item": "#fiberHemp"
+    },
+    {
+      "item": "#fiberHemp"
+    }
+  ]
+}
