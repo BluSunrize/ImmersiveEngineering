@@ -7,7 +7,6 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -101,16 +100,6 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 		return false;
 	}
 
-	@Override
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
-	}
-	@Override
-	public boolean shouldRenderGroup(IBlockState object, String group)
-	{
-		return true;
-	}
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{

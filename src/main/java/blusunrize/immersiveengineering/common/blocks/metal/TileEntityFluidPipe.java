@@ -15,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -238,20 +237,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null&&sideConfig[facing.ordinal()]==0)
 			return (T)sidedHandlers[facing.ordinal()];
 		return super.getCapability(capability, facing);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean shouldRenderGroup(IBlockState object, String group)
-	{
-		return true;
 	}
 
 	@Override

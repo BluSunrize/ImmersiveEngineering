@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -288,16 +287,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 	@Override
 	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
-	{
-		return true;
-	}
-	@Override
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
-	}
-	@Override
-	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
 		return true;
 	}

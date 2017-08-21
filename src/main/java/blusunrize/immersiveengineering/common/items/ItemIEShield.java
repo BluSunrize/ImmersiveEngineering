@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSo
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -209,11 +208,6 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		return EnumAction.BLOCK;
 	}
 
-	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack object, String material)
-	{
-		return null;
-	}
 	@Override
 	public boolean shouldRenderGroup(ItemStack object, String group)
 	{

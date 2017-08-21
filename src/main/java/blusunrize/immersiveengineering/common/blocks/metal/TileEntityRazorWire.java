@@ -9,7 +9,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -137,12 +136,6 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
-	}
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
