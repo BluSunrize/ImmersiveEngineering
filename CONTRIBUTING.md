@@ -18,7 +18,9 @@ Some mods are not officially supported by IE. They will probably work pretty wel
 
 - **Fastcraft**: same as Optifine.
 
-- **(K)Cauldron** and similar server software: While the source code of some of these is available on GitHub or similar platforms, it would require a lot of extra work to test everything with every server software.
+- **SpongeForge** and similar server software: While the source code of some of these is available on GitHub or similar platforms, it would require a lot of extra work to test everything with every server software.
+
+- **Torcherino** and other mods to speed up machines (not crops): If they cause a crash, report it. If they don't work on IE machines or cause rendering glitches, don't report it.
 
 ### Known issues
  It is not unlikely that the issue you want to report has already been reported and maybe it has even been fixed for the next version of IE. Try searching for different terms related to your issue [here](https://github.com/Blusunrize/ImmersiveEngineering/issues?utf8=%E2%9C%93&q=is%3Aissue+). You can enter search terms in the box above the list of issues. Please <b>always</b> search for both open and closed issues as issues are closed when the fix has been written, not when a release containing a fix is published. If your issue has already been reported, please do <b>not</b> post comments like "I have the same crash: &lt;link to crashlog&gt;" unless someone specifically asks for additional crashlogs to help track down the issue.
