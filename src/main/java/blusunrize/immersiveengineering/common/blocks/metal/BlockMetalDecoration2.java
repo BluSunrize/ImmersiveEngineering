@@ -126,8 +126,11 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		if(stack.getItemDamage()== BlockTypes_MetalDecoration2.STEEL_POST.getMeta() || stack.getItemDamage()== BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())
 		{
 			for(int hh=1; hh<=3; hh++)
-				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+			{
+				BlockPos pos2 = pos.up(hh);
+				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
+			}
 		}
 		return true;
 	}

@@ -100,12 +100,16 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		if(stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER.getMeta() || stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER_HV.getMeta())
 		{
 			for(int hh=1; hh<=2; hh++)
-				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+			{
+				BlockPos pos2 = pos.up(hh);
+				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
+			}
 		}
 		else if(stack.getItemDamage()== BlockTypes_Connector.ENERGY_METER.getMeta())
 		{
-			if(!world.getBlockState(pos.add(0,1,0)).getBlock().isReplaceable(world, pos.add(0,1,0)))
+			BlockPos pos2 = pos.up();
+			if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 				return false;
 		}
 		return true;

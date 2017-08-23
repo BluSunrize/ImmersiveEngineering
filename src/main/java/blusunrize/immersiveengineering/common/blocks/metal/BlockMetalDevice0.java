@@ -46,7 +46,10 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
 		if(stack.getItemDamage()==BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())
-			return world.isAirBlock(pos.add(0,1,0));
+		{
+			BlockPos above = pos.up();
+			return world.isOutsideBuildHeight(above)||!world.getBlockState(above).getBlock().isReplaceable(world, above);
+		}
 		return true;
 	}
 

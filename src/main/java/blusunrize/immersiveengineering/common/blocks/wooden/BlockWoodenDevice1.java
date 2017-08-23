@@ -139,15 +139,18 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 					if((hh>-2&&hh<2)||(ww>-2&&ww<2))
 					{
 						BlockPos pos2 = pos.add(f.getAxis()==Axis.Z?ww:0, hh, f.getAxis()==Axis.Z?0:ww);
-						if(!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
+						if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 							return false;
 					}
 		}
 		else if(stack.getItemDamage()==BlockTypes_WoodenDevice1.POST.getMeta())
 		{
 			for(int hh=1; hh<=3; hh++)
-				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+			{
+				BlockPos pos2 = pos.add(0,hh,0);
+				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
+			}
 		}
 		return true;
 	}
