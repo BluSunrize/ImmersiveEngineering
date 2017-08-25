@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -22,6 +23,9 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class IESlot extends Slot
@@ -86,12 +90,12 @@ public abstract class IESlot extends Slot
 			return BlastFurnaceRecipe.isValidBlastFuel(itemStack);
 		}
 	}
-	public static class Bullet extends IESlot
+	public static class Bullet extends SlotItemHandler
 	{
 		int limit;
-		public Bullet(Container container, IInventory inv, int id, int x, int y, int limit)
+		public Bullet(IItemHandler inv, int id, int x, int y, int limit)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 			this.limit=limit;
 		}
 		@Override
@@ -105,11 +109,11 @@ public abstract class IESlot extends Slot
 			return limit;
 		}
 	}
-	public static class DrillHead extends IESlot
+	public static class DrillHead extends SlotItemHandler
 	{
-		public DrillHead(Container container, IInventory inv, int id, int x, int y)
+		public DrillHead(IItemHandler inv, int id, int x, int y)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 		}
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
@@ -122,14 +126,16 @@ public abstract class IESlot extends Slot
 			return 1;
 		}
 	}
-	public static class Upgrades extends IESlot
+	public static class Upgrades extends SlotItemHandler
 	{
 		ItemStack upgradeableTool;
 		String type;
 		boolean preventDoubles;
-		public Upgrades(Container container, IInventory inv, int id, int x, int y, String type, ItemStack upgradeableTool, boolean preventDoubles)
+		Container container;
+		public Upgrades(Container container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool, boolean preventDoubles)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
+			this.container = container;
 			this.type = type;
 			this.upgradeableTool = upgradeableTool;
 			this.preventDoubles = preventDoubles;
@@ -215,8 +221,11 @@ public abstract class IESlot extends Slot
 		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
 			ItemStack result = super.onTake(player, stack);
-			if(!stack.isEmpty() && stack.getItem() instanceof IUpgradeableTool)
-				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
+			if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeableTool)
+				((IUpgradeableTool) stack.getItem()).removeFromWorkbench(player, stack);
+			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			if (handler instanceof IEItemStackHandler)
+				((IEItemStackHandler) handler).setTile(null);
 			return result;
 		}
 	}
@@ -286,18 +295,18 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class BlueprintInput extends IESlot
+	public static class BlueprintInput extends SlotItemHandler
 	{
 		ItemStack upgradeableTool;
-		public BlueprintInput(Container container, IInventory inv, int id, int x, int y, ItemStack upgradeableTool)
+		Container container;
+		public BlueprintInput(Container container, IItemHandler inv, int id, int x, int y, ItemStack upgradeableTool)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 			this.upgradeableTool = upgradeableTool;
 		}
 		@Override
 		public void onSlotChanged()
 		{
-			this.inventory.markDirty();
 			if(!upgradeableTool.isEmpty() && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).updateOutputs(upgradeableTool);
 			if(container instanceof ContainerModWorkbench)
@@ -310,13 +319,15 @@ public abstract class IESlot extends Slot
 			return 64;
 		}
 	}
-	public static class BlueprintOutput extends IESlot
+	public static class BlueprintOutput extends SlotItemHandler
 	{
 		public BlueprintCraftingRecipe recipe;
 		ItemStack upgradeableTool;
-		public BlueprintOutput(Container container, IInventory inv, int id, int x, int y, ItemStack upgradeableTool, BlueprintCraftingRecipe recipe)
+		Container container;
+		public BlueprintOutput(Container container, IItemHandler inv, int id, int x, int y, ItemStack upgradeableTool, BlueprintCraftingRecipe recipe)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
+			this.container = container;
 			this.upgradeableTool = upgradeableTool;
 			this.recipe = recipe;
 		}
@@ -339,11 +350,6 @@ public abstract class IESlot extends Slot
 		{
 			if(!upgradeableTool.isEmpty() && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
-			if(container instanceof ContainerModWorkbench)
-			{
-				((ContainerModWorkbench)container).toolInv.syncItemToList();
-				((ContainerModWorkbench)container).tile.markDirty();
-			}
 			this.inventory.markDirty();
 			return super.onTake(player, stack);
 		}
@@ -413,11 +419,13 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ContainerCallback extends IESlot
+	public static class ContainerCallback extends SlotItemHandler
 	{
-		public ContainerCallback(Container container, IInventory inv, int id, int x, int y)
+		Container container;
+		public ContainerCallback(Container container, IItemHandler inv, int id, int x, int y)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
+			this.container = container;
 		}
 		@Override
 		public boolean isItemValid(ItemStack itemStack)

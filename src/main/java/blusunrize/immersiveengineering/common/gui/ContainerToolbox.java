@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -21,22 +20,22 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 	int addSlots(InventoryPlayer iinventory)
 	{
 		int i=0;
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 48, 24));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 30, 42));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 48, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 48, 24));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 30, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 48, 42));
 
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 75, 24));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 93, 24));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++,111, 24));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 75, 42));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 93, 42));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++,111, 42));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++,129, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 75, 24));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 93, 24));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++,111, 24));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 75, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 93, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++,111, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++,129, 42));
 
 		for(int j=0; j<6; j++)
-			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 35+j*18, 77));
+			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 35+j*18, 77));
 		for(int j=0; j<7; j++)
-			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 26+j*18, 112));
+			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 26+j*18, 112));
 
 		bindPlayerInventory(iinventory);
 		return i;
