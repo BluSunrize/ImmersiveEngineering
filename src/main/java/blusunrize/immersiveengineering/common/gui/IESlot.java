@@ -341,7 +341,7 @@ public abstract class IESlot extends Slot
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
 			if(container instanceof ContainerModWorkbench)
 			{
-				((ContainerModWorkbench)container).rebindSlots();
+				((ContainerModWorkbench)container).toolInv.syncItemToList();
 				((ContainerModWorkbench)container).tile.markDirty();
 			}
 			this.inventory.markDirty();

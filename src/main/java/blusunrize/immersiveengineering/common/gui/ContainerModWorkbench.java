@@ -9,10 +9,10 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkben
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbench>
 {
@@ -37,6 +37,13 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 
+	@Override
+	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
+	{
+		toolInv.syncItemToList();
+		return super.slotClick(id, button, clickType, player);
+	}
+
 	public void rebindSlots()
 	{
 		this.inventorySlots.clear();
@@ -59,9 +66,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 						this.addSlotToContainer(s);
 						slotCount++;
 					}
-
-				NonNullList<ItemStack> cont = ((IUpgradeableTool)tool.getItem()).getContainedItems(tool);
-				this.toolInv.stackList = cont;
+				this.toolInv.syncItemToList();
 			}
 			if(tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 			{
