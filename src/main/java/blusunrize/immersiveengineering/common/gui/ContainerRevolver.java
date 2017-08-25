@@ -54,7 +54,7 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 
 		if(this.secondRevolverInventory!=null)
 		{
-			this.secondRevolverInventory.stackList = ((IInternalStorageItem)this.secondRevolver.getItem()).getContainedItems(this.secondRevolver);
+			this.secondRevolverInventory.syncItemToList();
 			this.onCraftMatrixChanged(this.secondRevolverInventory);
 		}
 	}

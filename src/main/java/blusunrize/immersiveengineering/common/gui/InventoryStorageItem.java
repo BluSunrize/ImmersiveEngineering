@@ -24,12 +24,15 @@ public class InventoryStorageItem implements IInventory
 		if(!stack.isEmpty() && stack.getItem() instanceof IInternalStorageItem)
 		{
 			this.itemStack=stack;
-			int slots = ((IInternalStorageItem)stack.getItem()).getInternalSlots(stack);
-			this.stackList = NonNullList.withSize(slots, ItemStack.EMPTY);
+			syncItemToList();
 			this.name = stack.getDisplayName();
 		}
 	}
 
+	public void syncItemToList()
+	{
+		stackList = ((IInternalStorageItem)itemStack.getItem()).getContainedItems(itemStack);
+	}
 
 	@Override
 	public int getSizeInventory()

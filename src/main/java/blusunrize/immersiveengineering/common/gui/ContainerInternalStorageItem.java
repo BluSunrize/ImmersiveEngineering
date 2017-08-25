@@ -27,15 +27,6 @@ public abstract class ContainerInternalStorageItem extends Container
 		this.input = new InventoryStorageItem(this, heldItem);
 		this.internalSlots = this.addSlots(iinventory);
 		this.blockedSlot = (iinventory.currentItem + 27 + internalSlots);
-
-
-		//if (!world.isRemote)
-			try {
-				((InventoryStorageItem)this.input).stackList = ((IInternalStorageItem)this.heldItem.getItem()).getContainedItems(this.heldItem);
-			} catch(Exception e)
-			{
-				e.printStackTrace();
-			}
 		this.onCraftMatrixChanged(this.input);
 	}
 
