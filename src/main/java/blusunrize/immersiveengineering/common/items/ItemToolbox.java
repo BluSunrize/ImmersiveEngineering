@@ -82,6 +82,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	{
 		NBTTagCompound ret = super.getNBTShareTag(stack);
 		if (ret!=null) {
+			ret = ret.copy();
 			ret.removeTag("Inv");
 		}
 		return ret;
