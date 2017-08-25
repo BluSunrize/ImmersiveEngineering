@@ -171,6 +171,7 @@ public class ItemBlockIEBase extends ItemBlock
 		{
 			NBTTagCompound ret = super.getNBTShareTag(stack);
 			if (ret!=null) {
+				ret = ret.copy();
 				ret.removeTag("inventory");
 			}
 			return ret;
