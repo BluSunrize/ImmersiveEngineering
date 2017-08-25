@@ -19,7 +19,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemArmor;
@@ -35,6 +34,8 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -244,18 +245,19 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		return true;
 	}
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, invItem,0, 80,32, "SHIELD", stack, true),
-						new IESlot.Upgrades(container, invItem,1,100,32, "SHIELD", stack, true)
+						new IESlot.Upgrades(container, inv,0, 80,32, "SHIELD", stack, true),
+						new IESlot.Upgrades(container, inv,1,100,32, "SHIELD", stack, true)
 //						new IESlot.Upgrades(container, invItem,2,100,32, "SHIELD", stack, true)
 				};
 
 	}
 	@Override
-	public int getInternalSlots(ItemStack stack)
+	public int getSlotCount(ItemStack stack)
 	{
 		return 2;
 	}

@@ -475,7 +475,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(pos==16&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((facing==null||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
@@ -483,7 +483,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(pos==16&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((facing==null||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityMixer master = master();
 			if(master!=null)

@@ -137,7 +137,7 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack)
 	{
-		ComparableItemStack comp = new ComparableItemStack(stack);
+		ComparableItemStack comp = new ComparableItemStack(stack);//TODO cache
 		if(stack.hasTagCompound() && !stack.getTagCompound().hasNoTags())
 			comp.setUseNBT(true);
 		return comp;

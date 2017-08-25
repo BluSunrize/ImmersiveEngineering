@@ -31,7 +31,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -40,7 +39,6 @@ import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -55,6 +53,9 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -71,19 +72,20 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		super("drill", 1, "DRILL", "diesel");
 	}
 	@Override
-	public int getInternalSlots(ItemStack stack)
+	public int getSlotCount(ItemStack stack)
 	{
 		return 5;
 	}
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.DrillHead(container, invItem,0, 98,22),
-						new IESlot.Upgrades(container, invItem,1,  78,52, "DRILL", stack, true),
-						new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
-						new IESlot.Upgrades(container, invItem,3, 118,52, "DRILL", stack, true)
+						new IESlot.DrillHead(inv,0, 98,22),
+						new IESlot.Upgrades(container, inv,1,  78,52, "DRILL", stack, true),
+						new IESlot.Upgrades(container, inv,2,  98,52, "DRILL", stack, true),
+						new IESlot.Upgrades(container, inv,3, 118,52, "DRILL", stack, true)
 				};
 	}
 	@Override
@@ -251,22 +253,21 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-		if(!contents.get(0).isEmpty() && !contents.get(1).isEmpty() && !contents.get(2).isEmpty() && !contents.get(3).isEmpty())
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		if(inv!=null&&!inv.getStackInSlot(0).isEmpty() && !inv.getStackInSlot(1).isEmpty() && !inv.getStackInSlot(2).isEmpty() && !inv.getStackInSlot(3).isEmpty())
 			Utils.unlockIEAdvancement(player, "main/upgrade_drill");
 	}
 
 	/*INVENTORY STUFF*/
 	public ItemStack getHead(ItemStack drill)
 	{
-		ItemStack head = this.getContainedItems(drill).get(0);
+		ItemStack head = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0);
 		return !head.isEmpty() &&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
 	}
 	public void setHead(ItemStack drill, ItemStack head)
 	{
-		NonNullList<ItemStack> inv = this.getContainedItems(drill);
-		inv.set(0, head);
-		this.setContainedItems(drill, inv);
+		IItemHandler inv = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
 	}
 
 	/*TOOL STUFF*/
@@ -503,6 +504,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
+		ICapabilityProvider superCap = super.initCapabilities(stack, nbt);
 		return new ICapabilityProvider()
 		{
 			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
@@ -510,7 +512,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 			{
-				return capability== CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY || capability== CapabilityShader.SHADER_CAPABILITY;
+				return capability== CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ||
+						capability== CapabilityShader.SHADER_CAPABILITY ||
+						(superCap!=null&&superCap.hasCapability(capability, facing));
 			}
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
@@ -519,6 +523,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 					return (T)fluids;
 				if(capability==CapabilityShader.SHADER_CAPABILITY)
 					return (T)shaders;
+				if (superCap!=null)
+				{
+					return superCap.getCapability(capability, facing);
+				}
 				return null;
 			}
 		};

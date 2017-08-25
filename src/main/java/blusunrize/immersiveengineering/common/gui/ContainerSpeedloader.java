@@ -17,14 +17,14 @@ public class ContainerSpeedloader extends ContainerInternalStorageItem
 	int addSlots(InventoryPlayer iinventory)
 	{
 		int i = 0;
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 80, 3, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 99, 11, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 107, 30, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 99, 49, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 80, 57, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 61, 49, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 53, 30, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, 61, 11, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 80, 3, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 99, 11, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 107, 30, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 99, 49, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 80, 57, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 61, 49, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 53, 30, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this.inv, i++, 61, 11, 1));
 		this.bindPlayerInventory(iinventory);
 		return i;
 	}

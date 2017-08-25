@@ -24,6 +24,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 
@@ -134,7 +136,13 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	{
 		if(stack.getItem() instanceof ItemInternalStorage)
 		{
-			this.inventory = ((ItemInternalStorage)stack.getItem()).getContainedItems(stack);
+			IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			if (inv!=null) {
+				inventory = NonNullList.withSize(inv.getSlots(), ItemStack.EMPTY);
+				for (int i = 0; i < inv.getSlots(); i++)
+					inventory.set(i, inv.getStackInSlot(i));
+			}
+
 			if(stack.hasDisplayName())
 				this.name = stack.getDisplayName();
 			enchantments = stack.getEnchantmentTagList();
