@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFl
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,6 +31,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -240,32 +242,54 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
 		ICapabilityProvider superCap = super.initCapabilities(stack, nbt);
-		return new ICapabilityProvider()
+		return new CapProvider(stack, (IEItemStackHandler) superCap);
+	}
+
+	private class CapProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
+	{
+		IEItemStackHandler superCap;
+		IEItemFluidHandler fluids;
+		ShaderWrapper_Item shaders;
+		public CapProvider(ItemStack stack, IEItemStackHandler sC)
 		{
-			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
-			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
+			superCap = sC;
+			fluids = new IEItemFluidHandler(stack, 2000);
+			shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
+		}
+		@Override
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+		{
+			return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY||
+					capability==CapabilityShader.SHADER_CAPABILITY||
+					(superCap!=null&&superCap.hasCapability(capability, facing));
+		}
 
-			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-			{
-				return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY||
-						capability==CapabilityShader.SHADER_CAPABILITY||
-						capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY||
-						(superCap!=null&&superCap.hasCapability(capability, facing));
-			}
+		@Override
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+		{
+			if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+				return (T)fluids;
+			if(capability==CapabilityShader.SHADER_CAPABILITY)
+				return (T)shaders;
+			if (superCap!=null)
+				return superCap.getCapability(capability, facing);
+			return null;
+		}
 
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
-			{
-				if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-					return (T)fluids;
-				if(capability==CapabilityShader.SHADER_CAPABILITY)
-					return (T)shaders;
-				if (superCap!=null)
-					return superCap.getCapability(capability, facing);
-				return null;
-			}
-		};
+		@Override
+		public NBTTagCompound serializeNBT()
+		{
+			if (superCap!=null)
+				return superCap.serializeNBT();
+			return null;
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound nbt)
+		{
+			if (superCap!=null)
+				superCap.deserializeNBT(nbt);
+		}
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
@@ -44,7 +46,7 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 	};
 
 	private EntityEquipmentSlot secondHand;
-	public ItemStack secondRevolver = ItemStack.EMPTY;
+	public ItemStack secondRevolver;//NonNull after addSlots is called in the super constructor
 	private int offset = 0;
 
 	public ContainerRevolver(InventoryPlayer iinventory, World world, EntityEquipmentSlot slot, ItemStack revolver)
@@ -57,13 +59,13 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 	{
 		if(this.equipmentSlot==EntityEquipmentSlot.MAINHAND||this.equipmentSlot==EntityEquipmentSlot.OFFHAND)
 		{
-			int bullets0 = ((ItemRevolver)(heldItem).getItem()).getBulletSlotAmount(heldItem);
+			int bullets0 = ((IBulletContainer)(heldItem).getItem()).getBulletCount(heldItem);
 
 			this.secondHand = this.equipmentSlot==EntityEquipmentSlot.MAINHAND?EntityEquipmentSlot.OFFHAND:EntityEquipmentSlot.MAINHAND;
 			this.secondRevolver = iinventory.player.getItemStackFromSlot(this.secondHand);
-			if(!secondRevolver.isEmpty() && secondRevolver.getItem() instanceof ItemRevolver)
+			if(!secondRevolver.isEmpty() && secondRevolver.getItem() instanceof IBulletContainer)
 			{
-				int bullets1 = ((ItemRevolver)(secondRevolver).getItem()).getBulletSlotAmount(secondRevolver);
+				int bullets1 = ((IBulletContainer)secondRevolver.getItem()).getBulletCount(secondRevolver);
 				this.offset = ((bullets0>=18?150:bullets0>8?136:74)+(bullets1>=18?150:bullets1>8?136:74)+4-176)/2;
 			}
 			else
@@ -82,8 +84,10 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 			ItemStack held = this.secondHand==null?heldItem: (hand==0)==(player.getPrimaryHand()==EnumHandSide.RIGHT)?secondRevolver:heldItem;
 			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getPrimaryHand()==EnumHandSide.RIGHT)?secondRevolverInventory:this.inv;
-			int revolverSlots = ((ItemRevolver)(held).getItem()).getBulletSlotAmount(held);
+			int revolverSlots = ((IBulletContainer)(held).getItem()).getBulletCount(held);
 
+			if (inv instanceof IEItemStackHandler)
+				((IEItemStackHandler) inv).setInventoryForUpdate(iinventory);
 			this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+29, 3, 1));
 			int slots = revolverSlots >= 18?2: revolverSlots > 8?1: 0;
 			for(int[] slot : slotPositions[slots])
@@ -130,5 +134,19 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 			if(!hand.isEmpty()&&!hand.equals(secondRevolver))
 				player.setItemStackToSlot(this.secondHand, this.secondRevolver);
 		}*/
+	}
+
+	@Override
+	public void onContainerClosed(EntityPlayer par1EntityPlayer)
+	{
+		super.onContainerClosed(par1EntityPlayer);
+
+		for(int hand = 0; hand<(this.secondHand!=null?2:1); hand++)
+		{
+			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			IItemHandler inv = this.secondHand == null ? this.inv : (hand == 0) == (player.getPrimaryHand() == EnumHandSide.RIGHT) ? secondRevolverInventory : this.inv;
+			if (inv instanceof IEItemStackHandler)
+				((IEItemStackHandler) inv).setInventoryForUpdate(null);
+		}
 	}
 }

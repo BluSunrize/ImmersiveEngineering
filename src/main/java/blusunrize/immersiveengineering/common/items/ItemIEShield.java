@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.resources.I18n;
@@ -30,6 +31,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,6 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -53,25 +56,56 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
 		if (!stack.isEmpty())
-			return new ICapabilityProvider()
-			{
-				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-				final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:shield", stack);
-
-				@Override
-				public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-				{
-					return capability == CapabilityShader.SHADER_CAPABILITY || capability == CapabilityEnergy.ENERGY;
-				}
-
-				@Override
-				public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-				{
-					return capability == CapabilityShader.SHADER_CAPABILITY ? (T) shaders : capability == CapabilityEnergy.ENERGY ? (T) energyStorage : null;
-				}
-			};
+			return new CapProvider(stack, (IEItemStackHandler) super.initCapabilities(stack, nbt));
 		else
 			return super.initCapabilities(stack, nbt);
+	}
+
+	private class CapProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
+	{
+		IEItemStackHandler superCap;
+		final EnergyHelper.ItemEnergyStorage energyStorage;
+		final ShaderWrapper_Item shaders;
+		public CapProvider(ItemStack stack, IEItemStackHandler sC)
+		{
+			superCap = sC;
+			energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
+			shaders = new ShaderWrapper_Item("immersiveengineering:shield", stack);
+		}
+		@Override
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+		{
+			return capability== CapabilityEnergy.ENERGY||
+					capability==CapabilityShader.SHADER_CAPABILITY||
+					(superCap!=null&&superCap.hasCapability(capability, facing));
+		}
+
+		@Override
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+		{
+			if(capability==CapabilityEnergy.ENERGY)
+				return (T)energyStorage;
+			if(capability==CapabilityShader.SHADER_CAPABILITY)
+				return (T)shaders;
+			if (superCap!=null)
+				return superCap.getCapability(capability, facing);
+			return null;
+		}
+
+		@Override
+		public NBTTagCompound serializeNBT()
+		{
+			if (superCap!=null)
+				return superCap.serializeNBT();
+			return null;
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound nbt)
+		{
+			if (superCap!=null)
+				superCap.deserializeNBT(nbt);
+		}
 	}
 
 	@Override

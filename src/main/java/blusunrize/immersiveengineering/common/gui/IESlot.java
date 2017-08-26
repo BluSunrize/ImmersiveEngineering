@@ -28,6 +28,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
+
 public abstract class IESlot extends Slot
 {
 	final Container container;
@@ -108,6 +110,12 @@ public abstract class IESlot extends Slot
 		{
 			return limit;
 		}
+
+		@Override
+		public int getItemStackLimit(@Nonnull ItemStack stack)
+		{
+			return limit;
+		}
 	}
 	public static class DrillHead extends SlotItemHandler
 	{
@@ -153,6 +161,12 @@ public abstract class IESlot extends Slot
 		public int getSlotStackLimit()
 		{
 			return 64;
+		}
+
+		@Override
+		public void onSlotChanged()
+		{
+			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool);
 		}
 	}
 	public static class Shader extends IESlot

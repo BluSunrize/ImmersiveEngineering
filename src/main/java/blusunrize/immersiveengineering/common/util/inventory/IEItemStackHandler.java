@@ -61,10 +61,16 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 			for (int i = 0; i < Math.min(stacks.size(), idealSize); i++)
 				newList.set(i, stacks.get(i));
 			stacks = newList;
+			stack = ItemStack.EMPTY;
 			first = false;
 		}
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T) this;
 		return null;
+	}
+
+	public NonNullList<ItemStack> getContainedItems()
+	{
+		return stacks;
 	}
 }
