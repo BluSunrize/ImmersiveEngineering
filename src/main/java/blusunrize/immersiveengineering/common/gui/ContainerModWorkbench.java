@@ -40,7 +40,8 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	@Override
 	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
 	{
-		toolInv.syncItemToList();
+		if (toolInv!=null)
+			toolInv.syncItemToList();
 		return super.slotClick(id, button, clickType, player);
 	}
 
