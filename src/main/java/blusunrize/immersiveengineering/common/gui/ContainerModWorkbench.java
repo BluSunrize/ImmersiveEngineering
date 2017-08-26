@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -137,6 +138,15 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		}
 		return stack;
 	}
+
+	@Override
+	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
+	{
+		ItemStack ret = super.slotClick(id, button, clickType, player);
+		tile.markContainingBlockForUpdate(null);
+		return ret;
+	}
+
 	@Override
 	public void onCraftMatrixChanged(IInventory p_75130_1_)
 	{

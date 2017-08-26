@@ -1,9 +1,11 @@
 package blusunrize.immersiveengineering.common.items;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -40,5 +42,15 @@ public class IEItemInterfaces
 
 		@SideOnly(Side.CLIENT)
 		List<ResourceLocation> getTextures(ItemStack stack, String key);
+	}
+
+	public interface  IBulletContainer
+	{
+		NonNullList<ItemStack> getBullets(ItemStack container, boolean remote);
+		default NonNullList<ItemStack> getBullets(ItemStack container)
+		{
+			return getBullets(container, FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT);
+		}
+		int getBulletCount(ItemStack container);
 	}
 }

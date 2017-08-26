@@ -47,9 +47,9 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -1180,12 +1180,10 @@ public class ClientProxy extends CommonProxy
 			{
 				if(ID==Lib.GUIID_Manual && ManualHelper.getManual()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), item, false))
 					return ManualHelper.getManual().getGui();
-				if(ID==Lib.GUIID_Revolver && item.getItem() instanceof ItemRevolver)
+				if(ID==Lib.GUIID_Revolver && item.getItem() instanceof IEItemInterfaces.IBulletContainer)
 					return new GuiRevolver(player.inventory, world, slot, item);
 				if(ID==Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
 					return new GuiToolbox(player.inventory, world, slot, item);
-				if(ID==Lib.GUIID_Speedloader && item.getItem() instanceof ItemSpeedloader)
-					return new GuiSpeedloader(player.inventory, world, slot, item);
 			}
 		}
 

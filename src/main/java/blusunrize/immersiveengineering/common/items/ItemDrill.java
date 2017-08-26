@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -47,10 +48,12 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -261,7 +264,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	/*INVENTORY STUFF*/
 	public ItemStack getHead(ItemStack drill)
 	{
-		ItemStack head = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0);
+		ItemStack head;
+		if (FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+			head = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0);
+		else
+			head = new ItemStack(ItemNBTHelper.getTagCompound(drill, "head"));
 		return !head.isEmpty() &&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
 	}
 	public void setHead(ItemStack drill, ItemStack head)
@@ -505,31 +512,55 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
 		ICapabilityProvider superCap = super.initCapabilities(stack, nbt);
-		return new ICapabilityProvider()
+		return new CapProvider(stack, (IEItemStackHandler) superCap);
+	}
+
+	private class CapProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
+	{
+		IEItemStackHandler superCap;
+		IEItemFluidHandler fluids;
+		ShaderWrapper_Item shaders;
+		public CapProvider(ItemStack stack, IEItemStackHandler sC)
 		{
-			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
-			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:drill", stack);
-			@Override
-			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+			superCap = sC;
+			fluids = new IEItemFluidHandler(stack, 2000);
+			shaders = new ShaderWrapper_Item("immersiveengineering:drill", stack);
+		}
+		@Override
+		public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+		{
+			return capability== CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ||
+					capability== CapabilityShader.SHADER_CAPABILITY ||
+					(superCap!=null&&superCap.hasCapability(capability, facing));
+		}
+		@Override
+		public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+		{
+			if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+				return (T)fluids;
+			if(capability==CapabilityShader.SHADER_CAPABILITY)
+				return (T)shaders;
+			if (superCap!=null)
 			{
-				return capability== CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ||
-						capability== CapabilityShader.SHADER_CAPABILITY ||
-						(superCap!=null&&superCap.hasCapability(capability, facing));
+				return superCap.getCapability(capability, facing);
 			}
-			@Override
-			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-			{
-				if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-					return (T)fluids;
-				if(capability==CapabilityShader.SHADER_CAPABILITY)
-					return (T)shaders;
-				if (superCap!=null)
-				{
-					return superCap.getCapability(capability, facing);
-				}
-				return null;
-			}
-		};
+			return null;
+		}
+
+		@Override
+		public NBTTagCompound serializeNBT()
+		{
+			if (superCap!=null)
+				return superCap.serializeNBT();
+			return null;
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound nbt)
+		{
+			if (superCap!=null)
+				superCap.deserializeNBT(nbt);
+		}
 	}
 	@Override
 	public int getCapacity(ItemStack container, int baseCapacity)
@@ -540,5 +571,18 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public boolean allowFluid(ItemStack container, FluidStack fluid)
 	{
 		return fluid!=null && DieselHandler.isValidDrillFuel(fluid.getFluid());
+	}
+
+	@Nullable
+	@Override
+	public NBTTagCompound getNBTShareTag(ItemStack stack)
+	{
+		NBTTagCompound ret = super.getNBTShareTag(stack);
+		if (ret==null)
+			return null;
+		NBTTagCompound tmp = new NBTTagCompound();
+		getHead(stack).writeToNBT(tmp);
+		ret.setTag("head", tmp);
+		return ret;
 	}
 }

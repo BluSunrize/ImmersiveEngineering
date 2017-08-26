@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevic
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -64,6 +65,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -86,8 +88,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -511,10 +511,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					else if(equipped.getItem() instanceof ItemRevolver || equipped.getItem() instanceof ItemSpeedloader)
 					{
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-						IItemHandler bullets = equipped.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+						NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped, true);
 						if (bullets!=null)
 						{
-							int bulletAmount = equipped.getItem() instanceof ItemRevolver ? ((ItemRevolver) equipped.getItem()).getBulletSlotAmount(equipped) : bullets.getSlots();
+							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
 							EnumHandSide side = hand == EnumHand.MAIN_HAND ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
 							boolean right = side == EnumHandSide.RIGHT;
 							float dx = right ? event.getResolution().getScaledWidth() - 32 - 48 : 48;
@@ -535,7 +535,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							int[][] slots = ContainerRevolver.slotPositions[bulletAmount >= 18 ? 2 : bulletAmount > 8 ? 1 : 0];
 							for (int i = 0; i < bulletAmount; i++)
 							{
-								ItemStack b = bullets.getStackInSlot(i);
+								ItemStack b = bullets.get(i);
 								if (!b.isEmpty())
 								{
 									int x = 0;
@@ -590,11 +590,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 									tessellator.draw();
 								}
 							}
+							RenderHelper.disableStandardItemLighting();
+							GlStateManager.disableBlend();
+							GlStateManager.popMatrix();
 						}
 
-						RenderHelper.disableStandardItemLighting();
-						GlStateManager.disableBlend();
-						GlStateManager.popMatrix();
 					} else if(equipped.getItem() instanceof ItemRailgun)
 					{
 						int duration = 72000 - (player.isHandActive()&&player.getActiveHand()==hand?player.getItemInUseCount():0);
