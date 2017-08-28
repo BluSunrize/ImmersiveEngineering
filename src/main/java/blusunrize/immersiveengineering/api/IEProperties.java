@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.block.properties.PropertyInteger;
@@ -111,7 +111,7 @@ public class IEProperties
 	
 	public static class PropertyBoolInverted extends PropertyHelper<Boolean>
 	{
-		private final ImmutableSet<Boolean> allowedValues = ImmutableSet.of(Boolean.valueOf(false), Boolean.valueOf(true));
+		private final static ImmutableList<Boolean> ALLOWED_VALUES = ImmutableList.of(false, true);
 		protected PropertyBoolInverted(String name)
 		{
 			super(name, Boolean.class);
@@ -119,7 +119,7 @@ public class IEProperties
 		@Override
 		public Collection<Boolean> getAllowedValues()
 		{
-			return this.allowedValues;
+			return ALLOWED_VALUES;
 		}
 		@Override
 		public Optional<Boolean> parseValue(String value)
