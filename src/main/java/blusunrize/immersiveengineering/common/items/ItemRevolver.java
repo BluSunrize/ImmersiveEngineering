@@ -17,7 +17,10 @@ import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
@@ -340,7 +343,6 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 										player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
-								IELogger.info(bullets.get(0));
 								SoundEvent sound = bullet.getSound();
 								if(sound==null)
 									sound = IESounds.revolverFire;

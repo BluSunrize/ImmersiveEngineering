@@ -16,9 +16,15 @@ public class ComparableItemStack
 	}
 	public ComparableItemStack(ItemStack stack, boolean matchOre)
 	{
+		this(stack, matchOre, true);
+	}
+	public ComparableItemStack(ItemStack stack, boolean matchOre, boolean copy)
+	{
 		if(stack==null)
 			throw new RuntimeException("You cannot instantiate a ComparableItemStack with null for an Item!");
-		this.stack = stack.copy();
+		this.stack = stack;
+		if (copy)
+			copy();
 		if(matchOre)
 		{
 			int[] oids = OreDictionary.getOreIDs(stack);
@@ -26,6 +32,12 @@ public class ComparableItemStack
 				this.oreID = oids[0];
 		}
 	}
+
+	public void copy()
+	{
+		stack = stack.copy();
+	}
+
 	public ComparableItemStack(String oreName)
 	{
 		this(IEApi.getPreferredOreStack(oreName));

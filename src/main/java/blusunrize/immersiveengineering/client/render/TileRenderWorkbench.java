@@ -62,8 +62,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 		if(!te.getInventory().get(0).isEmpty())
 		{
 			try{
-				ItemStack is = te.getInventory().get(0).copy();
-				is.setCount(1);
+				ItemStack is = te.getInventory().get(0);
 				ClientUtils.mc().getRenderItem().renderItem(is, ItemCameraTransforms.TransformType.FIXED);
 			}catch(Exception e)
 			{
