@@ -8,15 +8,19 @@ import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
+//TODO custom subclass of ItemStackHandler for markDirty etc
 public class ContainerMixer extends ContainerIEBase<TileEntityMixer> implements ICallbackContainer
 {
 	public ContainerMixer(InventoryPlayer inventoryPlayer, TileEntityMixer tile)
 	{
 		super(inventoryPlayer, tile);
 
+		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		for(int i=0; i<8; i++)
-			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i, 7+(i%2)*21,7+(i/2)*18));
+			this.addSlotToContainer(new IESlot.ContainerCallback(this, inv, i, 7+(i%2)*21,7+(i/2)*18));
 		slotCount=8;
 
 		for (int i = 0; i < 3; i++)

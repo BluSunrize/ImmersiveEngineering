@@ -5,11 +5,11 @@ import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class ItemUpgradeableTool extends ItemInternalStorage implements IUpgradeableTool
@@ -47,20 +47,23 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	public void recalculateUpgrades(ItemStack stack)
 	{
 		clearUpgrades(stack);
-		NonNullList<ItemStack> inv = getContainedItems(stack);
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
-		for(int i=0; i<inv.size(); i++)//start at 1, 0 is the drill
+		if (inv!=null)
 		{
-			ItemStack u = inv.get(i);
-			if(!u.isEmpty() && u.getItem() instanceof IUpgrade)
+			for (int i = 0; i < inv.getSlots(); i++)
 			{
-				IUpgrade upg = (IUpgrade)u.getItem();
-				if(upg.getUpgradeTypes(u).contains(upgradeType) && upg.canApplyUpgrades(stack, u))
-					upg.applyUpgrades(stack, u, upgradeTag);
+				ItemStack u = inv.getStackInSlot(i);
+				if (!u.isEmpty() && u.getItem() instanceof IUpgrade)
+				{
+					IUpgrade upg = (IUpgrade) u.getItem();
+					if (upg.getUpgradeTypes(u).contains(upgradeType) && upg.canApplyUpgrades(stack, u))
+						upg.applyUpgrades(stack, u, upgradeTag);
+				}
 			}
+			ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
+			finishUpgradeRecalculation(stack);
 		}
-		ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
-		finishUpgradeRecalculation(stack);
 	}
 	public NBTTagCompound getUpgradeBase(ItemStack stack)
 	{
@@ -79,5 +82,5 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	@Override
 	public abstract boolean canModify(ItemStack stack);
 	@Override
-	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem);
+	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack);
 }

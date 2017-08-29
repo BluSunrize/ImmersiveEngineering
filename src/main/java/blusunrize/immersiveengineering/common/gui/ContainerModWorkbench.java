@@ -7,16 +7,18 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbench>
 {
-	public InventoryStorageItem toolInv;
 	public InventoryShader shaderInv;
 	public InventoryPlayer inventoryPlayer;
 
@@ -37,14 +39,6 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 
-	@Override
-	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
-	{
-		if (toolInv!=null)
-			toolInv.syncItemToList();
-		return super.slotClick(id, button, clickType, player);
-	}
-
 	public void rebindSlots()
 	{
 		this.inventorySlots.clear();
@@ -58,16 +52,16 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 			{
 				if(tool.getItem() instanceof ItemEngineersBlueprint)
 					((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
-
-				this.toolInv = new InventoryStorageItem(this, tool);
-				Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, toolInv);
+				IItemHandler handler = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+				if (handler instanceof IEItemStackHandler)
+					((IEItemStackHandler) handler).setTile(tile);
+				Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool);
 				if(slots != null)
 					for(Slot s : slots)
 					{
 						this.addSlotToContainer(s);
 						slotCount++;
 					}
-				this.toolInv.syncItemToList();
 			}
 			if(tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 			{
@@ -144,6 +138,15 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		}
 		return stack;
 	}
+
+	@Override
+	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
+	{
+		ItemStack ret = super.slotClick(id, button, clickType, player);
+		tile.markContainingBlockForUpdate(null);
+		return ret;
+	}
+
 	@Override
 	public void onCraftMatrixChanged(IInventory p_75130_1_)
 	{

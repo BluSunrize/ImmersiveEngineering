@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class ContainerTurret extends ContainerIEBase<TileEntityTurret>
 {
@@ -18,7 +19,7 @@ public class ContainerTurret extends ContainerIEBase<TileEntityTurret>
 
 		if(tile instanceof TileEntityTurretGun)
 		{
-			this.addSlotToContainer(new IESlot.Bullet(this, this.inv, 0, 134, 13, 64)
+			this.addSlotToContainer(new IESlot.Bullet(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), 0, 134, 13, 64)
 			{
 				@Override
 				public boolean isItemValid(ItemStack itemStack)
