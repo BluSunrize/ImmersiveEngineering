@@ -102,7 +102,7 @@ dependencies {
 //    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+" ToDo?
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2" ToDo!!
     compileOnly 'net.industrial-craft:industrialcraft-2:2.8.+'
-    compileOnly 'elucent:albedo:2.0-SNAPSHOT'
+    deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
 jar {
