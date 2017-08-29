@@ -42,7 +42,7 @@ public class CommandHandler extends CommandBase
 	@Override
 	public int getRequiredPermissionLevel()
 	{
-		return 4;
+		return name.equals("cie")?0:4;
 	}
 
 	@Override
