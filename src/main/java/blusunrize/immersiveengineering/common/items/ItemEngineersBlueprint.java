@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -10,13 +9,15 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
@@ -78,22 +79,23 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		return true;
 	}
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		LinkedHashSet<Slot> slots = new LinkedHashSet<Slot>();
 
-		slots.add(new IESlot.BlueprintInput(container, invItem, 0, 74, 21, stack));
-		slots.add(new IESlot.BlueprintInput(container, invItem, 1, 92, 21, stack));
-		slots.add(new IESlot.BlueprintInput(container, invItem, 2, 74, 39, stack));
-		slots.add(new IESlot.BlueprintInput(container, invItem, 3, 92, 39, stack));
-		slots.add(new IESlot.BlueprintInput(container, invItem, 4, 74, 57, stack));
-		slots.add(new IESlot.BlueprintInput(container, invItem, 5, 92, 57, stack));
+		slots.add(new IESlot.BlueprintInput(container, inv, 0, 74, 21, stack));
+		slots.add(new IESlot.BlueprintInput(container, inv, 1, 92, 21, stack));
+		slots.add(new IESlot.BlueprintInput(container, inv, 2, 74, 39, stack));
+		slots.add(new IESlot.BlueprintInput(container, inv, 3, 92, 39, stack));
+		slots.add(new IESlot.BlueprintInput(container, inv, 4, 74, 57, stack));
+		slots.add(new IESlot.BlueprintInput(container, inv, 5, 92, 57, stack));
 
 		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
 		for(int i=0; i<recipes.length; i++)
 		{
 			int y = 21 + (i < 9 ? i / 3 : (-(i - 6) / 3)) * 18;
-			slots.add(new IESlot.BlueprintOutput(container, invItem, 6 + i, 118 + (i % 3 * 18), y, stack, recipes[i]));
+			slots.add(new IESlot.BlueprintOutput(container, inv, 6 + i, 118 + (i % 3 * 18), y, stack, recipes[i]));
 		}
 		return slots.toArray(new Slot[slots.size()]);
 	}
@@ -101,44 +103,33 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	public void updateOutputs(ItemStack stack)
 	{
 		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
-		NonNullList<ItemStack> stored = this.getContainedItems(stack);
+		IItemHandlerModifiable handler = (IItemHandlerModifiable) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		NonNullList<ItemStack> query = NonNullList.withSize(6, ItemStack.EMPTY);
-		for(int i=0; i<stored.size(); i++)
+		for(int i=0; i<handler.getSlots(); i++)
 			if(i<6)
-				query.set(i, stored.get(i));
+				query.set(i, handler.getStackInSlot(i));
 			else
 			{
-				stored.set(i, ItemStack.EMPTY);
+				handler.setStackInSlot(i, ItemStack.EMPTY);
 				int craftable = recipes[i-6].getMaxCrafted(query);
 				if(craftable>0)
-					stored.set(i, Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.getCount() * craftable, 64)));
+					handler.setStackInSlot(i, Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.getCount() * craftable, 64)));
 			}
-		this.setContainedItems(stack, stored);
 	}
 
 	public void reduceInputs(BlueprintCraftingRecipe recipe, ItemStack stack, ItemStack crafted, Container contained)
 	{
-		NonNullList<ItemStack> stored = this.getContainedItems(stack);
+		IItemHandlerModifiable handler = (IItemHandlerModifiable)stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		NonNullList<ItemStack> query = NonNullList.withSize(6, ItemStack.EMPTY);
 		for(int i=0; i<6; i++)
-			query.set(i, stored.get(i));
+			query.set(i, handler.getStackInSlot(i));
 		recipe.consumeInputs(query, crafted.getCount()/recipe.output.getCount());
 		for(int i=0; i<6; i++)
-			stored.set(i, query.get(i));
-		this.setContainedItems(stack, stored);
-		if (contained instanceof ContainerModWorkbench)
-		{
-			ContainerModWorkbench work = (ContainerModWorkbench) contained;
-			if(work.toolInv!=null)
-			{
-				work.toolInv.stackList = query;
-				work.onCraftMatrixChanged(work.toolInv);
-			}
-		}
+			handler.setStackInSlot(i, query.get(i));
 	}
 
 	@Override
-	public int getInternalSlots(ItemStack stack)
+	public int getSlotCount(ItemStack stack)
 	{
 		return 6 + BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint")).length;
 	}
@@ -146,9 +137,9 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@Override
 	public boolean canTakeFromWorkbench(ItemStack stack)
 	{
-		NonNullList<ItemStack> stored = this.getContainedItems(stack);
+		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		for(int i=0; i<6; i++)
-			if(!stored.get(i).isEmpty())
+			if(!handler.getStackInSlot(i).isEmpty())
 				return false;
 		return true;
 	}

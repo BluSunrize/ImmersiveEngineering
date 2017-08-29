@@ -46,7 +46,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.vecmath.Matrix4f;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
@@ -116,20 +115,19 @@ public class IESmartObjModel extends OBJBakedModel
 	{
 		return overrideList;
 	}
-	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList())
+	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList<>())
 	{
 		@Override
 		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 		{
-			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack);
-			if(comp == null)
+			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false);
+			if (comp == null)
 				return originalModel;
-			try
+			IBakedModel model = cachedBakedItemModels.getIfPresent(comp);
+			if (model == null)
 			{
-				IBakedModel model = cachedBakedItemModels.get(comp, () ->
+				if (originalModel instanceof IESmartObjModel)
 				{
-					if (!(originalModel instanceof IESmartObjModel))
-						return originalModel;
 					IESmartObjModel newModel = (IESmartObjModel) originalModel;
 
 					ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
@@ -165,19 +163,18 @@ public class IESmartObjModel extends OBJBakedModel
 					IESmartObjModel bakedModel = new IESmartObjModel(newModel.baseModel, newModel.getModel(), newModel.getState(), newModel.getFormat(), builder.build(), transformationMap);
 					bakedModel.tempStack = stack;
 					bakedModel.tempEntity = entity;
-					return bakedModel;
-				});
-
-				if (model instanceof IESmartObjModel)
-				{
-					((IESmartObjModel) model).tempStack = stack;
-					((IESmartObjModel) model).tempEntity = entity;
-				}
-				return model;
-			} catch (ExecutionException e)
-			{
-				throw new RuntimeException(e.getCause());
+					model = bakedModel;
+				} else
+					model = originalModel;
+				comp.copy();
+				cachedBakedItemModels.put(comp, model);
 			}
+			if (model instanceof IESmartObjModel)
+			{
+				((IESmartObjModel) model).tempStack = stack;
+				((IESmartObjModel) model).tempEntity = entity;
+			}
+			return model;
 		}
 	};
 

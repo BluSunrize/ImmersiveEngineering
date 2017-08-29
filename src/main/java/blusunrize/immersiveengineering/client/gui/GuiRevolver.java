@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -20,12 +20,12 @@ public class GuiRevolver extends GuiIEContainerBase
 	public GuiRevolver(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack revolver)
 	{
 		super(new ContainerRevolver(inventoryPlayer, world, slot, revolver));
-		if(!revolver.isEmpty() && revolver.getItem() instanceof ItemRevolver)
-			this.bullets[0] = ((ItemRevolver)revolver.getItem()).getBulletSlotAmount(revolver);
-		this.otherRevolver = ((ContainerRevolver)this.inventorySlots).secondRevolver!=null;
+		if(!revolver.isEmpty() && revolver.getItem() instanceof IBulletContainer)
+			this.bullets[0] = ((IBulletContainer)revolver.getItem()).getBulletCount(revolver);
+		this.otherRevolver = !((ContainerRevolver)this.inventorySlots).secondRevolver.isEmpty();
 		if(this.otherRevolver)
 		{
-			this.bullets[1] = ((ItemRevolver)((ContainerRevolver)this.inventorySlots).secondRevolver.getItem()).getBulletSlotAmount(((ContainerRevolver)this.inventorySlots).secondRevolver);
+			this.bullets[1] = ((IBulletContainer)((ContainerRevolver)this.inventorySlots).secondRevolver.getItem()).getBulletCount(((ContainerRevolver)this.inventorySlots).secondRevolver);
 			this.offset = ((bullets[0]>=18?150:bullets[0]>8?136:74)+(bullets[1]>=18?150:bullets[1]>8?136:74)+4-176)/2;
 			if(this.offset>0)
 				this.xSize += this.offset*2;

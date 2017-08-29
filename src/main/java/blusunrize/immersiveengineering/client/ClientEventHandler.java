@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevic
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -510,88 +511,90 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					else if(equipped.getItem() instanceof ItemRevolver || equipped.getItem() instanceof ItemSpeedloader)
 					{
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-						NonNullList<ItemStack> bullets = equipped.getItem() instanceof ItemRevolver?((ItemRevolver)equipped.getItem()).getBullets(equipped): ((ItemSpeedloader)equipped.getItem()).getContainedItems(equipped);
-						int bulletAmount = bullets.size();
-						EnumHandSide side = hand==EnumHand.MAIN_HAND?player.getPrimaryHand():player.getPrimaryHand().opposite();
-						boolean right = side==EnumHandSide.RIGHT;
-						float dx = right?event.getResolution().getScaledWidth()-32-48:48;
-						float dy = event.getResolution().getScaledHeight()-64;
-						GlStateManager.pushMatrix();
-						GlStateManager.enableBlend();
-						GlStateManager.translate(dx, dy, 0);
-						GlStateManager.scale(.5f, .5f, 1);
-						GlStateManager.color(1, 1, 1, 1);
-
-						ClientUtils.drawTexturedRect(0,1,74,74, 0/256f,74/256f, 51/256f,125/256f);
-						if(bulletAmount>=18)
-							ClientUtils.drawTexturedRect(47,1,103,74, 74/256f,177/256f, 51/256f,125/256f);
-						else if(bulletAmount>8)
-							ClientUtils.drawTexturedRect(57,1,79,39, 57/256f,136/256f, 12/256f,51/256f);
-
-						RenderItem ir = ClientUtils.mc().getRenderItem();
-						int[][] slots = ContainerRevolver.slotPositions[bulletAmount>=18?2: bulletAmount>8?1: 0];
-						for(int i=0; i<bulletAmount; i++)
+						NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped, true);
+						if (bullets!=null)
 						{
-							if(!bullets.get(i).isEmpty())
-							{
-								int x = 0;
-								int y = 0;
-								if(i==0)
-								{
-									x = 29;
-									y = 3;
-								}
-								else if(i-1<slots.length)
-								{
-									x = slots[i-1][0];
-									y = slots[i-1][1];
-								}
-								else
-								{
-									int ii = i-(slots.length+1);
-									x = ii==0?48: ii==1?29: ii==3?2: 10;
-									y = ii==1?57: ii==3?30: ii==4?11: 49;
-								}
+							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
+							EnumHandSide side = hand == EnumHand.MAIN_HAND ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+							boolean right = side == EnumHandSide.RIGHT;
+							float dx = right ? event.getResolution().getScaledWidth() - 32 - 48 : 48;
+							float dy = event.getResolution().getScaledHeight() - 64;
+							GlStateManager.pushMatrix();
+							GlStateManager.enableBlend();
+							GlStateManager.translate(dx, dy, 0);
+							GlStateManager.scale(.5f, .5f, 1);
+							GlStateManager.color(1, 1, 1, 1);
 
-								ir.renderItemIntoGUI(bullets.get(i), x,y);
+							ClientUtils.drawTexturedRect(0, 1, 74, 74, 0 / 256f, 74 / 256f, 51 / 256f, 125 / 256f);
+							if (bulletAmount >= 18)
+								ClientUtils.drawTexturedRect(47, 1, 103, 74, 74 / 256f, 177 / 256f, 51 / 256f, 125 / 256f);
+							else if (bulletAmount > 8)
+								ClientUtils.drawTexturedRect(57, 1, 79, 39, 57 / 256f, 136 / 256f, 12 / 256f, 51 / 256f);
+
+							RenderItem ir = ClientUtils.mc().getRenderItem();
+							int[][] slots = ContainerRevolver.slotPositions[bulletAmount >= 18 ? 2 : bulletAmount > 8 ? 1 : 0];
+							for (int i = 0; i < bulletAmount; i++)
+							{
+								ItemStack b = bullets.get(i);
+								if (!b.isEmpty())
+								{
+									int x = 0;
+									int y = 0;
+									if (i == 0)
+									{
+										x = 29;
+										y = 3;
+									} else if (i - 1 < slots.length)
+									{
+										x = slots[i - 1][0];
+										y = slots[i - 1][1];
+									} else
+									{
+										int ii = i - (slots.length + 1);
+										x = ii == 0 ? 48 : ii == 1 ? 29 : ii == 3 ? 2 : 10;
+										y = ii == 1 ? 57 : ii == 3 ? 30 : ii == 4 ? 11 : 49;
+									}
+
+									ir.renderItemIntoGUI(b, x, y);
+								}
 							}
+
+							if (equipped.getItem() instanceof ItemRevolver)
+							{
+								int cd = ((ItemRevolver) equipped.getItem()).getShootCooldown(equipped);
+								float cdMax = ((ItemRevolver) equipped.getItem()).getMaxShootCooldown(equipped);
+								float cooldown = 1 - cd / cdMax;
+								if (cooldown > 0)
+								{
+									GlStateManager.scale(2, 2, 1);
+									GlStateManager.translate(-dx, -dy, 0);
+									GlStateManager.translate(event.getResolution().getScaledWidth() / 2 + (right ? 1 : -6), event.getResolution().getScaledHeight() / 2 - 7, 0);
+
+									float h1 = cooldown > .33 ? .5f : cooldown * 1.5f;
+									float h2 = cooldown;
+									float x2 = cooldown < .75 ? 1 : 4 * (1 - cooldown);
+
+									float uMin = (88 + (right ? 0 : 7 * x2)) / 256f;
+									float uMax = (88 + (right ? 7 * x2 : 0)) / 256f;
+									float vMin1 = (112 + (right ? h1 : h2) * 15) / 256f;
+									float vMin2 = (112 + (right ? h2 : h1) * 15) / 256f;
+
+									ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
+									Tessellator tessellator = Tessellator.getInstance();
+									BufferBuilder worldrenderer = tessellator.getBuffer();
+									worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+									worldrenderer.pos((right ? 0 : 1 - x2) * 7, 15, 0).tex(uMin, 127 / 256f).endVertex();
+									worldrenderer.pos((right ? x2 : 1) * 7, 15, 0).tex(uMax, 127 / 256f).endVertex();
+									worldrenderer.pos((right ? x2 : 1) * 7, (right ? h2 : h1) * 15, 0).tex(uMax, vMin2).endVertex();
+									worldrenderer.pos((right ? 0 : 1 - x2) * 7, (right ? h1 : h2) * 15, 0).tex(uMin, vMin1).endVertex();
+									tessellator.draw();
+								}
+							}
+							RenderHelper.disableStandardItemLighting();
+							GlStateManager.disableBlend();
+							GlStateManager.popMatrix();
 						}
 
-						if(equipped.getItem() instanceof ItemRevolver)
-						{
-							int cd = ((ItemRevolver)equipped.getItem()).getShootCooldown(equipped);
-							float cdMax = ((ItemRevolver)equipped.getItem()).getMaxShootCooldown(equipped);
-							float cooldown = 1-cd/cdMax;
-							if(cooldown > 0)
-							{
-								GlStateManager.scale(2, 2, 1);
-								GlStateManager.translate(-dx, -dy, 0);
-								GlStateManager.translate(event.getResolution().getScaledWidth()/2+(right?1: -6), event.getResolution().getScaledHeight()/2-7, 0);
-
-								float h1 = cooldown > .33?.5f: cooldown*1.5f;
-								float h2 = cooldown;
-								float x2 = cooldown < .75?1: 4*(1-cooldown);
-
-								float uMin = (88+(right?0: 7*x2))/256f;
-								float uMax = (88+(right?7*x2: 0))/256f;
-								float vMin1 = (112+(right?h1: h2)*15)/256f;
-								float vMin2 = (112+(right?h2: h1)*15)/256f;
-
-								ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-								Tessellator tessellator = Tessellator.getInstance();
-								BufferBuilder worldrenderer = tessellator.getBuffer();
-								worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-								worldrenderer.pos((right?0: 1-x2)*7, 15, 0).tex(uMin, 127/256f).endVertex();
-								worldrenderer.pos((right?x2: 1)*7, 15, 0).tex(uMax, 127/256f).endVertex();
-								worldrenderer.pos((right?x2: 1)*7, (right?h2: h1)*15, 0).tex(uMax, vMin2).endVertex();
-								worldrenderer.pos((right?0: 1-x2)*7, (right?h1: h2)*15, 0).tex(uMin, vMin1).endVertex();
-								tessellator.draw();
-							}
-						}
-
-						RenderHelper.disableStandardItemLighting();
-						GlStateManager.disableBlend();
-						GlStateManager.popMatrix();
 					} else if(equipped.getItem() instanceof ItemRailgun)
 					{
 						int duration = 72000 - (player.isHandActive()&&player.getActiveHand()==hand?player.getItemInUseCount():0);

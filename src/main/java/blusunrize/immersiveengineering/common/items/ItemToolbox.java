@@ -11,12 +11,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 {
@@ -71,20 +68,8 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	}
 
 	@Override
-	public int getInternalSlots(ItemStack stack)
+	public int getSlotCount(ItemStack stack)
 	{
 		return 23;
-	}
-
-	@Nullable
-	@Override
-	public NBTTagCompound getNBTShareTag(ItemStack stack)
-	{
-		NBTTagCompound ret = super.getNBTShareTag(stack);
-		if (ret!=null) {
-			ret = ret.copy();
-			ret.removeTag("Inv");
-		}
-		return ret;
 	}
 }

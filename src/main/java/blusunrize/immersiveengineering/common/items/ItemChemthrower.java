@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFl
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
@@ -31,12 +31,16 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -84,7 +88,6 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		NonNullList<ItemStack> contents = this.getContainedItems(stack);
 //		ToDo: Make an Upgrade Advancement?
 //		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
 //			Utils.unlockIEAdvancement(player, "upgrade_chemthrower");
@@ -238,27 +241,61 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return new ICapabilityProvider()
+		ICapabilityProvider superCap = super.initCapabilities(stack, nbt);
+		return new CapProvider(stack, (IEItemStackHandler) superCap);
+	}
+
+	private class CapProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
+	{
+		IEItemStackHandler superCap;
+		IEItemFluidHandler fluids;
+		ShaderWrapper_Item shaders;
+		public CapProvider(ItemStack stack, IEItemStackHandler sC)
 		{
-			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
-			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
+			superCap = sC;
+			fluids = new IEItemFluidHandler(stack, 2000);
+			shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
+		}
+		@Override
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+		{
+			return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY||
+					capability==CapabilityShader.SHADER_CAPABILITY||
+					(superCap!=null&&superCap.hasCapability(capability, facing));
+		}
 
-			@Override
-			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-			{
-				return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY||capability==CapabilityShader.SHADER_CAPABILITY;
-			}
+		@Override
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+		{
+			if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+				return (T)fluids;
+			if(capability==CapabilityShader.SHADER_CAPABILITY)
+				return (T)shaders;
+			if (superCap!=null)
+				return superCap.getCapability(capability, facing);
+			return null;
+		}
 
-			@Override
-			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-			{
-				if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-					return (T)fluids;
-				if(capability==CapabilityShader.SHADER_CAPABILITY)
-					return (T)shaders;
-				return null;
-			}
-		};
+		@Override
+		public NBTTagCompound serializeNBT()
+		{
+			if (superCap!=null)
+				return superCap.serializeNBT();
+			return null;
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound nbt)
+		{
+			if (superCap!=null)
+				superCap.deserializeNBT(nbt);
+		}
+	}
+
+	@Override
+	public int getSlotCount(ItemStack stack)
+	{
+		return 4;
 	}
 
 	@Override
@@ -274,19 +311,14 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, invItem, 0, 80, 32, "CHEMTHROWER", stack, true),
-						new IESlot.Upgrades(container, invItem, 1, 100, 32, "CHEMTHROWER", stack, true)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "CHEMTHROWER", stack, true),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "CHEMTHROWER", stack, true)
 				};
-	}
-
-	@Override
-	public int getInternalSlots(ItemStack stack)
-	{
-		return 4;
 	}
 
 	@Override

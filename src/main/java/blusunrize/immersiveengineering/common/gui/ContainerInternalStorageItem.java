@@ -1,18 +1,23 @@
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.tool.IInternalStorageItem;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public abstract class ContainerInternalStorageItem extends Container
 {
 	protected World world;
 	protected int blockedSlot;
-	public IInventory input;
+	public IItemHandler inv;
 	protected EntityEquipmentSlot equipmentSlot = null;
 	protected ItemStack heldItem = ItemStack.EMPTY;
 	protected EntityPlayer player = null;
@@ -24,10 +29,11 @@ public abstract class ContainerInternalStorageItem extends Container
 		this.player = iinventory.player;
 		this.equipmentSlot = entityEquipmentSlot;
 		this.heldItem = heldItem;
-		this.input = new InventoryStorageItem(this, heldItem);
+		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		if (inv instanceof IEItemStackHandler)
+			((IEItemStackHandler) inv).setInventoryForUpdate(iinventory);
 		this.internalSlots = this.addSlots(iinventory);
 		this.blockedSlot = (iinventory.currentItem + 27 + internalSlots);
-		this.onCraftMatrixChanged(this.input);
 	}
 
 	abstract int addSlots(InventoryPlayer iinventory);
@@ -119,14 +125,16 @@ public abstract class ContainerInternalStorageItem extends Container
 		super.onContainerClosed(par1EntityPlayer);
 		if (!this.world.isRemote)
 			updatePlayerItem();
+		if (inv instanceof IEItemStackHandler)
+			((IEItemStackHandler) inv).setInventoryForUpdate(null);
 	}
 
 	protected void updatePlayerItem()
 	{
-		((IInternalStorageItem)this.heldItem.getItem()).setContainedItems(this.heldItem, ((InventoryStorageItem)this.input).stackList);
+		/*((IInternalStorageItem)this.heldItem.getItem()).setContainedItems(this.heldItem, ((InventoryStorageItem)this.input).stackList);
 		ItemStack hand = player.getItemStackFromSlot(this.equipmentSlot);
 		if(!hand.isEmpty() && !hand.equals(heldItem))
 			player.setItemStackToSlot(this.equipmentSlot, this.heldItem);
-		player.inventory.markDirty();
+		player.inventory.markDirty();TODO remove?*/
 	}
 }

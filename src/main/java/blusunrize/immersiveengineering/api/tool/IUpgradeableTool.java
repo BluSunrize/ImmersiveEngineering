@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.api.tool;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
  * Upgradeable tools like Drill and Revolver implement this.<br>
  * Since this is an interface, upgrade- and inventory-management need to be handled by the item implementing this 
  */
-public interface IUpgradeableTool extends IInternalStorageItem
+public interface IUpgradeableTool
 {
 	/**
 	 * @return an NBTTagCompound containing the upgrades as keys and their values<br>
@@ -42,6 +41,6 @@ public interface IUpgradeableTool extends IInternalStorageItem
 	/**
 	 * @return an array of Slots to display in the workbench when this item is placed in it
 	 */
-	Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem);
+	Slot[] getWorkbenchSlots(Container container, ItemStack stack);
 
 }
