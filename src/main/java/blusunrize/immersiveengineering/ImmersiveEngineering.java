@@ -87,6 +87,8 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesPreInit();
 
 		new ThreadContributorSpecialsDownloader();
+
+		IEContent.preInitEnd();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)

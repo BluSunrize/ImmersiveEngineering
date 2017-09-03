@@ -58,15 +58,13 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
+import net.minecraft.potion.*;
 import net.minecraft.potion.PotionHelper.MixPredicate;
-import net.minecraft.potion.PotionType;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -331,6 +329,75 @@ public class IEContent
 		registerOres();
 	}
 
+	@SubscribeEvent
+	public static void registerPotions(RegistryEvent.Register<Potion> event)
+	{
+		/**POTIONS*/
+		IEPotions.init();
+	}
+
+	@SubscribeEvent
+	public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
+	{
+		/**CRAFTING*/
+		IERecipes.initCraftingRecipes();
+
+		/**FURNACE*/
+		IERecipes.initFurnaceRecipes();
+
+		/**BLUEPRINTS*/
+		IERecipes.initBlueprintRecipes();
+
+		/**MULTIBLOCK RECIPES*/
+		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
+		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
+
+		IERecipes.initBlastFurnaceRecipes();
+
+		IERecipes.initMetalPressRecipes();
+
+		IERecipes.initAlloySmeltingRecipes();
+
+		IERecipes.initCrusherRecipes();
+
+		IERecipes.initArcSmeltingRecipes();
+
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.WHEAT_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
+		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
+		Fluid fluidBlood = FluidRegistry.getFluid("blood");
+		if(fluidBlood!=null)
+			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood,5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
+
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.REEDS, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.MELON, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.APPLE, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, "cropPotato", 6400);
+
+		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8), 80);
+
+		MixerRecipe.addRecipe(new FluidStack(fluidConcrete,500), new FluidStack(FluidRegistry.WATER,500),new Object[]{"sand","sand",Items.CLAY_BALL,"gravel"}, 3200);
+
+		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
+
+		/**POTIONS*/
+		HashSet<PotionType> mixerRegistered = new HashSet<>();
+		HashSet<PotionType> bottlingRegistered = new HashSet<>();
+		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
+		{
+			if(mixerRegistered.add(mixPredicate.input))
+				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
+			if(bottlingRegistered.add(mixPredicate.output))
+				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,333));
+		}
+
+		/**ORE DICT CRAWLING*/
+		IERecipes.postInitOreDictRecipes();
+	}
+
 	private static ResourceLocation createRegistryName(String unlocalized)
 	{
 		unlocalized = unlocalized.substring(unlocalized.indexOf("immersive"));
@@ -368,6 +435,16 @@ public class IEContent
 		ItemBullet.initBullets();
 
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+	}
+
+	public static void preInitEnd()
+	{
+		/**WOLFPACK BULLETS*/
+		if(!BulletHandler.homingCartridges.isEmpty())
+		{
+			BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
+			BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
+		}
 	}
 
 	public static void registerOres()
@@ -559,42 +636,11 @@ public class IEContent
 		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemChemthrower));
 		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRailgun));
 
-		/**WOLFPACK BULLETS*/
-		if(!BulletHandler.homingCartridges.isEmpty())
-		{
-			BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
-			BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
-		}
 		/**SMELTING*/
 		itemMaterial.setBurnTime(6, 3200);
 		Item itemBlockStoneDecoration = Item.getItemFromBlock(blockStoneDecoration);
 		if(itemBlockStoneDecoration instanceof ItemBlockIEBase)
 			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
-		IERecipes.initFurnaceRecipes();
-
-		/**CRAFTING*/
-		IERecipes.initCraftingRecipes();
-
-		/**BLUEPRINTS*/
-		IERecipes.initBlueprintRecipes();
-
-		/**MULTIBLOCK RECIPES*/
-		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
-
-		IERecipes.initBlastFurnaceRecipes();
-
-		IERecipes.initMetalPressRecipes();
-
-		IERecipes.initAlloySmeltingRecipes();
-
-		IERecipes.initCrusherRecipes();
-
-		IERecipes.initArcSmeltingRecipes();
-
-		/**POTIONS*/
-		IEPotions.init();
 
 		/**BANNERS*/
 		addBanner("hammer", "hmr", new ItemStack(itemTool,1,0));
@@ -790,26 +836,6 @@ public class IEContent
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost= IEConfig.Machines.heater_speedupConsumption;
 		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new DefaultFurnaceAdapter());
-
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.WHEAT_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
-		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
-		Fluid fluidBlood = FluidRegistry.getFluid("blood");
-		if(fluidBlood!=null)
-			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood,5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
-
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.REEDS, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.MELON, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.APPLE, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, "cropPotato", 6400);
-
-		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8), 80);
-
-		MixerRecipe.addRecipe(new FluidStack(fluidConcrete,500), new FluidStack(FluidRegistry.WATER,500),new Object[]{"sand","sand",Items.CLAY_BALL,"gravel"}, 3200);
-
-		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
 
 		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
 		{
@@ -1029,17 +1055,6 @@ public class IEContent
 
 	public static void postInit()
 	{
-		IERecipes.postInitOreDictRecipes();
-
-		HashSet<PotionType> mixerRegistered = new HashSet<>();
-		HashSet<PotionType> bottlingRegistered = new HashSet<>();
-		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-		{
-			if(mixerRegistered.add(mixPredicate.input))
-				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
-			if(bottlingRegistered.add(mixPredicate.output))
-				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,333));
-		}
 	}
 
 	public static void refreshFluidReferences()
