@@ -340,7 +340,7 @@ public class IEContent
 	public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{
 		/**CRAFTING*/
-		IERecipes.initCraftingRecipes();
+		IERecipes.initCraftingRecipes(event.getRegistry());
 
 		/**FURNACE*/
 		IERecipes.initFurnaceRecipes();
