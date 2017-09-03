@@ -30,7 +30,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "14.21.1.2443"
+    version = "14.22.0.2467"
+    //14.21.1.2443"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
@@ -42,7 +43,8 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20170628"
+//    mappings = "snapshot_20170628"
+    mappings = "snapshot_20170903"
     //"snapshot_20160518" 1.9
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }

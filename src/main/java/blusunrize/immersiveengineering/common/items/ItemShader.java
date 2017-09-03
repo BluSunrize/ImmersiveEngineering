@@ -173,7 +173,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				ArrayList<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name, keys.toArray(new String[keys.size()]), 4);
 				if(!corrected.isEmpty())
 				{
-					IELogger.info("SHADER UPDATE: Fixing "+name+"to "+corrected.get(0));
+					IELogger.info("SHADER UPDATE: Fixing "+name+" to "+corrected.get(0));
 					IELogger.info("Others: "+corrected);
 					ItemNBTHelper.setString(stack, "shader_name", corrected.get(0));
 					return corrected.get(0);
