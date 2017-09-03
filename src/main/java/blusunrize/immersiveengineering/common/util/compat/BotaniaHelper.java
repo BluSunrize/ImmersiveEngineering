@@ -72,8 +72,10 @@ public class BotaniaHelper extends IECompatModule
 
 			ShaderRegistryEntry entry = ItemShader.addShader("Terra", 1, rariryRelic, 0xff3e2d14, 0xff2b1108, 0xff41bd1a, 0xff2e120a).setInfo(null,"Botania","terra");
 			entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/livingwood5"),0xffffffff).setTextureBounds(17/128d,24/128d,33/128d,40/128d));
-			entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/alfheimPortalInside"),0xffffffff).setTextureBounds(14/64d,10/64d, 26/64d,22/64d));
+			entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/alfheim_portal_swirl"),0xffffffff).setTextureBounds(14/64d,10/64d, 26/64d,22/64d));
 			entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/storage1"),0xff9e83eb).setTextureBounds(55/64d,42/64d,1,58/64d).setCutoutBounds(.1875,0,.75,1));
+			entry.getCase("immersiveengineering:shield").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/crate_open"),0xffffffff).setTextureBounds(0/32f,9/32f, 14/32f,26/32f).setCutoutBounds(.0625,0, .9375,1));
+
 		}
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 			MinecraftForge.EVENT_BUS.register(this);
