@@ -114,8 +114,6 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 								active = true;
 						}
 					}
-					burnTime--;
-					markContainingBlockForUpdate(null);
 				}
 
 				if(process<=0)
@@ -145,6 +143,8 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 						this.active=true;
 					}
 				}
+				burnTime--;
+				markContainingBlockForUpdate(null);
 			}
 			else
 			{
