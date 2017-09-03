@@ -1,23 +1,17 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet.HomingBullet;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemRevolver.SpecialRevolver;
 import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
@@ -30,12 +24,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import vazkii.botania.api.item.TinyPotatoRenderEvent;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Locale;
 
 public class BotaniaHelper extends IECompatModule
 {
@@ -91,35 +81,6 @@ public class BotaniaHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
-		new ThreadContributorToNameFormatter();
-	}
-
-
-	private static ArrayListMultimap<String, SpecialRevolver> nameToSpecial = ArrayListMultimap.create();
-
-	public static class ThreadContributorToNameFormatter extends Thread
-	{
-		public ThreadContributorToNameFormatter()
-		{
-			setName("Immersive Engineering Contributors Name Finder Thread");
-			setDaemon(true);
-			start();
-		}
-
-		@Override
-		public void run()
-		{
-			try
-			{
-				if(ImmersiveEngineering.ThreadContributorSpecialsDownloader.activeThread != null)
-					ImmersiveEngineering.ThreadContributorSpecialsDownloader.activeThread.join();
-			} catch(InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-			for(String uuid : ItemRevolver.specialRevolvers.keySet())
-				nameToSpecial.putAll(ImmersiveEngineering.proxy.getNameFromUUID(uuid).toLowerCase(Locale.ENGLISH), ItemRevolver.specialRevolvers.get(uuid));
-		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
@@ -133,57 +94,6 @@ public class BotaniaHelper extends IECompatModule
 				for(EntityItem item : event.getDrops())
 					if(item != null && !item.getItem().isEmpty() && IEContent.itemShaderBag.equals(item.getItem().getItem()))
 						ItemNBTHelper.setString(item.getItem(), "rarity", "RELIC");
-		}
-	}
-
-	EntityItem revolverEntity;
-
-	@SubscribeEvent()
-	@SideOnly(Side.CLIENT)
-	public void onPotatoRender(TinyPotatoRenderEvent event)
-	{
-		if(event.tile.getWorld() == null)
-			return;
-		if(revolverEntity == null)
-		{
-			revolverEntity = new EntityItem(event.tile.getWorld(), 0.0D, 0.0D, 0.0D, new ItemStack(IEContent.itemRevolver));
-			revolverEntity.hoverStart = 0;
-		}
-		try
-		{
-			String formattedName = event.name.replace("_", " ");
-			ItemRevolver.SpecialRevolver special = null;
-			if(formattedName.equalsIgnoreCase("Mr Damien Hazard") || formattedName.equalsIgnoreCase("Mr Hazard"))
-				special = ItemRevolver.specialRevolversByTag.get("dev");
-			else if(event.name.equalsIgnoreCase("BluSunrize"))
-				special = ItemRevolver.specialRevolversByTag.get("fenrir");
-			else
-			{
-				if(nameToSpecial.containsKey(event.name.toLowerCase(Locale.ENGLISH)))
-				{
-					List<SpecialRevolver> list = nameToSpecial.get(event.name.toLowerCase(Locale.ENGLISH));
-					if(list != null && list.size() > 0)
-					{
-						long ticks = event.tile.getWorld() != null ? event.tile.getWorld().getTotalWorldTime() / 100 : 0;
-						special = list.get((int)(ticks % list.size()));
-					}
-				}
-			}
-
-			if(special != null)
-			{
-				GlStateManager.pushMatrix();
-				((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getItem(), special);
-				GlStateManager.translate(-.16, 1.45, -.2);
-				GlStateManager.rotate(-90, 0, 1, 0);
-				GlStateManager.rotate(15, 0, 0, 1);
-				GlStateManager.rotate(180, 1, 0, 0);
-				GlStateManager.scale(.625f, .625f, .625f);
-				ClientUtils.mc().getRenderManager().doRenderEntity(revolverEntity, 0, 0, 0, 0, 0, false);
-				GlStateManager.popMatrix();
-			}
-		} catch(Exception e)
-		{
 		}
 	}
 }
