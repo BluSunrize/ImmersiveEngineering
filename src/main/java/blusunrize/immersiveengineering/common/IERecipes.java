@@ -19,11 +19,13 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import java.util.HashSet;
 public class IERecipes
 {
 
-	public static void initCraftingRecipes()
+	public static void initCraftingRecipes(IForgeRegistry<IRecipe> registry)
 	{
 		//Recipe Sorter is deprecated apparently
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":shapedIngredient", RecipeShapedIngredient.class, Category.SHAPED, "after:forge:shapedore");
@@ -47,14 +49,16 @@ public class IERecipes
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		//Loop, special or colouration recipes
-		ForgeRegistries.RECIPES.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
-		ForgeRegistries.RECIPES.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
-		ForgeRegistries.RECIPES.register(new RecipeJerrycan().setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
-		ForgeRegistries.RECIPES.register(new RecipeShaderBags().setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
-		ForgeRegistries.RECIPES.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
-		ForgeRegistries.RECIPES.register(new RecipePowerpack().setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
+		registry.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
+		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
+		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
+		registry.register(new RecipeSpeeloader().setRegistryName(ImmersiveEngineering.MODID, "speedloader_load"));
+		registry.register(new RecipeJerrycan().setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
+		registry.register(new RecipeShaderBags().setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
+		registry.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
+		registry.register(new RecipePowerpack().setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
 		final ItemStack stripCurtain = new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
-		ForgeRegistries.RECIPES.register(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ).setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
+		registry.register(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ).setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
 	}
 
 	public static void addShapelessOredictRecipe(String registryName, ItemStack output, Object... recipe)
