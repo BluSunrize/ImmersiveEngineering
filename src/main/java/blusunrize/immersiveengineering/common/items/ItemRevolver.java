@@ -130,50 +130,25 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		ICapabilityProvider superCap = super.initCapabilities(stack, nbt);
-		return new CapProvider(stack, (IEItemStackHandler) superCap);
-	}
+		return new IEItemStackHandler(stack)
+		{
+			final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:revolver", stack);
 
-	private class CapProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
-	{
-		IEItemStackHandler superCap;
-		final ShaderWrapper_Item shaders;
-		public CapProvider(ItemStack stack, IEItemStackHandler sC)
-		{
-			superCap = sC;
-			shaders = new ShaderWrapper_Item("immersiveengineering:revolver", stack);
-		}
-		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-		{
-			return capability==CapabilityShader.SHADER_CAPABILITY||
-					(superCap!=null&&superCap.hasCapability(capability, facing));
-		}
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+			{
+				return capability == CapabilityShader.SHADER_CAPABILITY ||
+						super.hasCapability(capability, facing);
+			}
 
-		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
-		{
-			if(capability==CapabilityShader.SHADER_CAPABILITY)
-				return (T)shaders;
-			if (superCap!=null)
-				return superCap.getCapability(capability, facing);
-			return null;
-		}
-
-		@Override
-		public NBTTagCompound serializeNBT()
-		{
-			if (superCap!=null)
-				return superCap.serializeNBT();
-			return null;
-		}
-
-		@Override
-		public void deserializeNBT(NBTTagCompound nbt)
-		{
-			if (superCap!=null)
-				superCap.deserializeNBT(nbt);
-		}
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+			{
+				if (capability == CapabilityShader.SHADER_CAPABILITY)
+					return (T) shaders;
+				return super.getCapability(capability, facing);
+			}
+		};
 	}
 
 	@Override
@@ -398,6 +373,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	}
 	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
 	{
+		if (!remote&&isEmpty(revolver))
+			remote = true;
+		else if (remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
+			remote = false;
 		if (!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
 		else
@@ -684,6 +663,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		NBTTagCompound ret = super.getNBTShareTag(stack);
 		if (ret==null)
 			ret = new NBTTagCompound();
+		else
+			ret = ret.copy();
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		if (handler!=null)
 		{
