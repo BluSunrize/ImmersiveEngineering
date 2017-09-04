@@ -241,55 +241,30 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		ICapabilityProvider superCap = super.initCapabilities(stack, nbt);
-		return new CapProvider(stack, (IEItemStackHandler) superCap);
-	}
+		return new IEItemStackHandler(stack)
+		{
+			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
+			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
 
-	private class CapProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
-	{
-		IEItemStackHandler superCap;
-		IEItemFluidHandler fluids;
-		ShaderWrapper_Item shaders;
-		public CapProvider(ItemStack stack, IEItemStackHandler sC)
-		{
-			superCap = sC;
-			fluids = new IEItemFluidHandler(stack, 2000);
-			shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
-		}
-		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-		{
-			return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY||
-					capability==CapabilityShader.SHADER_CAPABILITY||
-					(superCap!=null&&superCap.hasCapability(capability, facing));
-		}
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+			{
+				return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ||
+						capability == CapabilityShader.SHADER_CAPABILITY ||
+						super.hasCapability(capability, facing);
+			}
 
-		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
-		{
-			if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-				return (T)fluids;
-			if(capability==CapabilityShader.SHADER_CAPABILITY)
-				return (T)shaders;
-			if (superCap!=null)
-				return superCap.getCapability(capability, facing);
-			return null;
-		}
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+			{
+				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+					return (T) fluids;
+				if (capability == CapabilityShader.SHADER_CAPABILITY)
+					return (T) shaders;
+				return super.getCapability(capability, facing);
+			}
 
-		@Override
-		public NBTTagCompound serializeNBT()
-		{
-			if (superCap!=null)
-				return superCap.serializeNBT();
-			return null;
-		}
-
-		@Override
-		public void deserializeNBT(NBTTagCompound nbt)
-		{
-			if (superCap!=null)
-				superCap.deserializeNBT(nbt);
-		}
+		};
 	}
 
 	@Override

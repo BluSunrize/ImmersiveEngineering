@@ -55,57 +55,29 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		if (!stack.isEmpty())
-			return new CapProvider(stack, (IEItemStackHandler) super.initCapabilities(stack, nbt));
-		else
-			return super.initCapabilities(stack, nbt);
-	}
+		return new IEItemStackHandler(stack)
+		{
+			final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
+			final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:shield", stack);
 
-	private class CapProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
-	{
-		IEItemStackHandler superCap;
-		final EnergyHelper.ItemEnergyStorage energyStorage;
-		final ShaderWrapper_Item shaders;
-		public CapProvider(ItemStack stack, IEItemStackHandler sC)
-		{
-			superCap = sC;
-			energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-			shaders = new ShaderWrapper_Item("immersiveengineering:shield", stack);
-		}
-		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-		{
-			return capability== CapabilityEnergy.ENERGY||
-					capability==CapabilityShader.SHADER_CAPABILITY||
-					(superCap!=null&&superCap.hasCapability(capability, facing));
-		}
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+			{
+				return capability == CapabilityEnergy.ENERGY ||
+						capability == CapabilityShader.SHADER_CAPABILITY ||
+						super.hasCapability(capability, facing);
+			}
 
-		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
-		{
-			if(capability==CapabilityEnergy.ENERGY)
-				return (T)energyStorage;
-			if(capability==CapabilityShader.SHADER_CAPABILITY)
-				return (T)shaders;
-			if (superCap!=null)
-				return superCap.getCapability(capability, facing);
-			return null;
-		}
-
-		@Override
-		public NBTTagCompound serializeNBT()
-		{
-			if (superCap!=null)
-				return superCap.serializeNBT();
-			return null;
-		}
-
-		@Override
-		public void deserializeNBT(NBTTagCompound nbt)
-		{
-			if (superCap!=null)
-				superCap.deserializeNBT(nbt);
-		}
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+			{
+				if (capability == CapabilityEnergy.ENERGY)
+					return (T) energyStorage;
+				if (capability == CapabilityShader.SHADER_CAPABILITY)
+					return (T) shaders;
+				return super.getCapability(capability, facing);
+			}
+		};
 	}
 
 	@Override

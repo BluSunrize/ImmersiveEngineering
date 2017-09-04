@@ -78,6 +78,10 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 	@Override
 	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
 	{
+		if (!remote&&isEmpty(revolver))
+			remote = true;
+		else if (remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
+			remote = false;
 		if (!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0,getSlotCount(revolver)));
 		else
@@ -91,6 +95,8 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 		NBTTagCompound ret = super.getNBTShareTag(stack);
 		if (ret==null)
 			ret = new NBTTagCompound();
+		else
+			ret = ret.copy();
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		if (handler!=null)
 		{
