@@ -4,15 +4,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,7 +30,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEntityDieselGenerator,IMultiblockRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IGuiTile, ISoundTile
+public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEntityDieselGenerator,IMultiblockRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IGuiTile, ISoundTile, IFaceShape
 {
 	public TileEntityDieselGenerator()
 	{
@@ -451,5 +449,17 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	public boolean shoudlPlaySound(String sound)
 	{
 		return active;
+	}
+
+	@Override
+	public BlockFaceShape getFaceShape(EnumFacing side)
+	{
+		if(pos==0||pos==2)
+			return side.getAxis()==facing.rotateY().getAxis()?BlockFaceShape.SOLID:BlockFaceShape.UNDEFINED;
+		else if(pos>=15&&pos<=17)
+			return side == EnumFacing.UP?BlockFaceShape.SOLID:BlockFaceShape.UNDEFINED;
+		else if(pos==23)
+			return side.getAxis()==facing.rotateY().getAxis()?BlockFaceShape.SOLID:BlockFaceShape.UNDEFINED;
+		return BlockFaceShape.UNDEFINED;
 	}
 }
