@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -36,6 +38,15 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)tileEntity;
 			if(!tile.formed && tile.pos==-1 && !tile.getOriginalBlock().isEmpty())
 				world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, tile.getOriginalBlock().copy()));
+
+			if(tile.formed && tile instanceof IIEInventory)
+			{
+				IIEInventory master = (IIEInventory)tile.master();
+				if(master!=null && (!(master instanceof ITileDrop) || !((ITileDrop)master).preventInventoryDrop()) && master.getDroppedItems()!=null)
+					for(ItemStack s : master.getDroppedItems())
+						if(!s.isEmpty())
+							world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s.copy()));
+			}
 		}
 		if(tileEntity instanceof TileEntityMultiblockPart)
 			((TileEntityMultiblockPart)tileEntity).disassemble();
