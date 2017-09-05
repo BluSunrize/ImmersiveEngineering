@@ -114,11 +114,13 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 								active = true;
 						}
 					}
+					markContainingBlockForUpdate(null);
 				}
+				burnTime--;
 
 				if(process<=0)
 				{
-					if(active)
+					if(processMax>0)
 					{
 						AlloyRecipe recipe = getRecipe();
 						if(recipe!=null)
@@ -133,7 +135,6 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 								inventory.set(3, recipe.output.copy());
 						}
 						processMax=0;
-						active=false;
 					}
 					AlloyRecipe recipe = getRecipe();
 					if(recipe!=null)
@@ -143,8 +144,6 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 						this.active=true;
 					}
 				}
-				burnTime--;
-				markContainingBlockForUpdate(null);
 			}
 			else
 			{
