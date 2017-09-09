@@ -1,3 +1,23 @@
+#####Version 0.12-72
+- added a recipe to fill the Speedloader in a crafting table
+- changed IE's items with internal storage to use ItemHandler capabilities (thanks Malte)
+- changed IE's OBJ models to generate less comparative objects (thanks Malte)
+- changed IE to register its recipes on the proper event, fixing Crafttweaker compat
+- changed Alloy Kiln and Blastfurnace to tick down their active fuel even when not smelting (like vanilla furnaces)
+- fixed issues with dummyblocks spawning outside world borders (thanks Malte)
+- fixed crates and toolboxes losing their inventory (thanks Malte)
+- fixed various desync issues with the Engineer's Workbench (thanks Malte)
+- fixed render issues with multiblock TESRs (thanks Malte)
+- fixed Botania compat
+- fixed various desync issues with the Revolver & Speedloader HUD displays (thanks Malte)
+- fixed Multiblocks not dropping their contents
+- fixed Diesel Generators not allowing levers to be attached
+- fixed tooltip localisation for Alloy Kiln and Automatic Workbench
+- fixed Stripcurtains not notifying the strong signal to turn off
+- fixed Railgun projectiles not colliding with entities properly
+- fixed Fluid Pipes not showing their covers with CTM installed
+- fixed inventory models for Engineering blocks with CTM installed
+
 #####Version 0.12-71 - BUILT
 - added missing recipes for Scaffold Slabs & Stairs
 - added Albedo compat for Flare Cartridges
