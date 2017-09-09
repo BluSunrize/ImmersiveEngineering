@@ -48,7 +48,8 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		if(stack.getItemDamage()==BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())
 		{
 			BlockPos above = pos.up();
-			return world.isOutsideBuildHeight(above)||!world.getBlockState(above).getBlock().isReplaceable(world, above);
+			if(world.isOutsideBuildHeight(above)||!world.getBlockState(above).getBlock().isReplaceable(world, above))
+				return false;
 		}
 		return true;
 	}
