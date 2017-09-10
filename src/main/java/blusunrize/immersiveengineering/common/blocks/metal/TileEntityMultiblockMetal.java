@@ -285,6 +285,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	@Override
 	public void update()
 	{
+		ApiUtils.checkForNeedlessTicking(this);
 		tickedProcesses = 0;
 		if(world.isRemote || isDummy() || isRSDisabled())
 			return;

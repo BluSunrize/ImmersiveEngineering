@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -49,13 +50,14 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Override
 	public void update()
 	{
+		ApiUtils.checkForNeedlessTicking(this);
+		if(dummy!=0 || world.isAirBlock(getPos().add(0,-1,0)) || !sample.isEmpty())
+			return;
 		if (world.isRemote && active)
 		{
 			process++;
 			return;
 		}
-		if(dummy!=0 || world.isAirBlock(getPos().add(0,-1,0)) || !sample.isEmpty())
-			return;
 
 		boolean powered = world.isBlockIndirectlyGettingPowered(getPos())>0;
 		final boolean prevActive = active;
