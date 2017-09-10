@@ -109,6 +109,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
+		super.onUpdate(stack, world, ent, slot, inHand);
 		if(world.isRemote)
 			return;
 

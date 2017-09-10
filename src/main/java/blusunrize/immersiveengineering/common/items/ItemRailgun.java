@@ -178,6 +178,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
+		super.onUpdate(stack, world, ent, slot, inHand);
 		//		if(!world.isRemote && stack.getItemDamage()!=1 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
 		//		{
 		//			int l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "casings", ent);
