@@ -32,6 +32,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -439,9 +440,11 @@ public class ApiUtils
 		}
 		else if(input instanceof String)
 			return new IngredientStack((String)input);
+		else if(input instanceof Pair)
+			return new IngredientStack(((Pair<String, Integer>) input).getLeft(), ((Pair<String, Integer>) input).getRight());
 		else if(input instanceof FluidStack)
 			return new IngredientStack((FluidStack)input);
-		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, String (OreDictionary name) or FluidStack; "+input+" is invalid");
+		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, String (OreDictionary name), Pair<String (OreDictionary name), Integer (amount)> or FluidStack; "+input+" is invalid");
 	}
 	public static IngredientStack createIngredientStack(Object input)
 	{

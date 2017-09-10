@@ -10,6 +10,7 @@ import crafttweaker.api.oredict.IOreDictEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class CraftTweakerHelper extends IECompatModule
 {
@@ -65,7 +66,7 @@ public class CraftTweakerHelper extends IECompatModule
 			else if(iStack instanceof IngredientStack)
 			{
 				IIngredient ingr = ReflectionHelper.getPrivateValue(IngredientStack.class, (IngredientStack)iStack, "ingredient");
-				return toObject(ingr);
+				return Pair.of(toObject(ingr), iStack.getAmount());
 			} else
 				return null;
 		}
