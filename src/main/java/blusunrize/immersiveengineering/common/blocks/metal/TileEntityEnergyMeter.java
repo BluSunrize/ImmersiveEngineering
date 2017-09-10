@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
@@ -81,10 +82,11 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public void update()
 	{
-		if (!world.isRemote&&((world.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal<0))
-			updateComparatorValues();
+		ApiUtils.checkForNeedlessTicking(this);
 		if(lower || world.isRemote)
 			return;
+		if (((world.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal<0))
+			updateComparatorValues();
 		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
 		lastPackets.add(lastEnergyPassed);
 		if(lastPackets.size()>20)
@@ -179,6 +181,13 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		return !lower;
 	}
+
+	@Override
+	public boolean isLogicDummy()
+	{
+		return lower;
+	}
+
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -277,19 +286,22 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		int oldVal = compVal;
 		int maxTrans = 0;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, lower?pos.up():pos);
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if (conns==null)
-		{
 			compVal = 0;
-			return;
+		else
+		{
+			for (Connection c : conns)
+				maxTrans += c.cableType.getTransferRate();
+			maxTrans /= 2;
+			double val = getAveragePower() / (double) maxTrans;
+			compVal = (int) Math.ceil(15 * val);
 		}
-		for (Connection c:conns)
-			maxTrans+=c.cableType.getTransferRate();
-		maxTrans/=2;
-		double val = getAveragePower()/(double)maxTrans;
-		compVal = (int) Math.ceil(15*val);
 		if (oldVal!=compVal)
+		{
 			world.updateComparatorOutputLevel(pos, getBlockType());
+			world.updateComparatorOutputLevel(pos.down(), getBlockType());
+		}
 	}
 	@Override
 	public int getComparatorInputOverride()

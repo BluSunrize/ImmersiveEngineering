@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -71,6 +72,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	@Override
 	public void update()
 	{
+		ApiUtils.checkForNeedlessTicking(this);
 		if(pos==4 && !world.isRemote && world.isBlockIndirectlyGettingPowered(getPos())>0)
 			for(int i=0; i<6; i++)
 				if(i!=1 && tank.getFluidAmount()>0)

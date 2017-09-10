@@ -6,6 +6,8 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -536,6 +538,12 @@ public class ApiUtils
 		TreeMap<String,Integer> sortedMap = new TreeMap<String,Integer>(new ValueComparator(map, inverse));
 		sortedMap.putAll(map);
 		return sortedMap;
+	}
+
+	public static <T extends TileEntity&IGeneralMultiblock> void checkForNeedlessTicking(T te)
+	{
+		if (!te.getWorld().isRemote&&te.isLogicDummy())
+			EventHandler.REMOVE_FROM_TICKING.add(te);
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>

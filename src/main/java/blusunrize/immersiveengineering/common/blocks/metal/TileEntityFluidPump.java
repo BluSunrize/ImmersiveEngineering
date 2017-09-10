@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -58,6 +59,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void update()
 	{
+		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy || world.isRemote)
 			return;
 		if(tank.getFluidAmount()>0)

@@ -46,8 +46,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	@Override
 	public void update()
 	{
-//		if(pos==4 && !world.isRemote && this.outputStack==null && storageAmount>0 && identStack!=null)
-//			this.markDirty();
+		ApiUtils.checkForNeedlessTicking(this);
 
 		if(pos==4 && !world.isRemote && !this.identStack.isEmpty() && storageAmount>0 && world.isBlockIndirectlyGettingPowered(getPos())>0 && world.getTotalWorldTime()%8==0)
 		{

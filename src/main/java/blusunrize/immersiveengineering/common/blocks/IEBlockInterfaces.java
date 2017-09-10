@@ -228,11 +228,22 @@ public class IEBlockInterfaces
 		List<AxisAlignedBB> getAdvancedColisionBounds();
 	}
 
-	public interface IHasDummyBlocks
+	public interface IHasDummyBlocks extends IGeneralMultiblock
 	{
-		boolean isDummy();
 		void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ);
 		void breakDummies(BlockPos pos, IBlockState state);
+		boolean isDummy();
+		default boolean isLogicDummy()
+		{
+			return isDummy();
+		}
+	}
+	/**
+	 * super-interface for {@link TileEntityMultiblockPart} and {@link IHasDummyBlocks}
+	 */
+	public interface IGeneralMultiblock
+	{
+		boolean isLogicDummy();
 	}
 
 	public interface IHasObjProperty

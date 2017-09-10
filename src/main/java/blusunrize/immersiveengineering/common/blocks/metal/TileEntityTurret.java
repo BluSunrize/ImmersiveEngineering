@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -67,6 +68,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	@Override
 	public void update()
 	{
+		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy)
 			return;
 		double range = getRange();

@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -44,6 +45,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void update()
 	{
+		ApiUtils.checkForNeedlessTicking(this);
 		if(offset[0]!=0||offset[1]!=0||world==null)
 			return;
 		if(isBlocked())
