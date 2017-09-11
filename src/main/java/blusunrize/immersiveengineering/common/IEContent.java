@@ -364,8 +364,8 @@ public class IEContent
 		IERecipes.initArcSmeltingRecipes();
 
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.WHEAT_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 30), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
 		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
 		Fluid fluidBlood = FluidRegistry.getFluid("blood");
