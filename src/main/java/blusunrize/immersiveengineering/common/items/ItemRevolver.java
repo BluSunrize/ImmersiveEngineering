@@ -51,7 +51,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -233,6 +232,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
+		super.onUpdate(stack, world, ent, slot, inHand);
 		{
 			if(ItemNBTHelper.hasKey(stack, "reload"))
 			{
@@ -274,7 +274,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 					NonNullList<ItemStack> bullets = getBullets(revolver);
 
-					if(isEmpty(revolver))
+					if(isEmpty(revolver, false))
 						for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 						{
 							ItemStack stack = player.inventory.getStackInSlot(i);
@@ -283,8 +283,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
 										world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, b));
-								setBullets((IItemHandlerModifiable) revolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null),
-										((ItemSpeedloader)stack.getItem()).getContainedItems(stack));
+								setBullets(revolver, ((ItemSpeedloader)stack.getItem()).getContainedItems(stack));
 								((ItemSpeedloader)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.inventory.markDirty();
 								if(player instanceof EntityPlayerMP)
@@ -331,7 +330,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						for(int i = 1; i < cycled.size(); i++)
 							cycled.set(i-1, bullets.get(i));
 						cycled.set(cycled.size()-1, bullets.get(0));
-						setBullets((IItemHandlerModifiable) revolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), cycled);
+						setBullets(revolver, cycled);
 						player.inventory.markDirty();
 						ItemNBTHelper.setInt(revolver, "cooldown", getMaxShootCooldown(revolver));
 						return new ActionResult(EnumActionResult.SUCCESS, revolver);
@@ -362,18 +361,21 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		return 15;
 	}
 
-	public boolean isEmpty(ItemStack stack)
+	public boolean isEmpty(ItemStack stack, boolean allowCasing)
 	{
-		NonNullList<ItemStack> bullets = getBullets(stack);
-		boolean empty = true;
-		for(ItemStack b : bullets)
-			if(!b.isEmpty() && b.getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(b, "bullet"))
-				empty=false;
-		return empty;
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		if (inv!=null)
+			for (int i = 0; i < inv.getSlots(); i++)
+			{
+				ItemStack b = inv.getStackInSlot(i);
+				if(!b.isEmpty() && b.getItem() instanceof ItemBullet && (allowCasing||ItemNBTHelper.hasKey(b, "bullet")))
+					return false;
+			}
+		return true;
 	}
 	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
 	{
-		if (!remote&&isEmpty(revolver))
+		if (!remote&&isEmpty(revolver, true))
 			remote = true;
 		else if (remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
 			remote = false;
@@ -382,12 +384,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		else
 			return Utils.readInventory(ItemNBTHelper.getTag(revolver).getTagList("bullets", 10), getBulletCount(revolver));
 	}
-	public void setBullets(IItemHandlerModifiable inv, NonNullList<ItemStack> bullets)
+	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
 	{
+		IItemHandlerModifiable inv = (IItemHandlerModifiable) revolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		assert inv!=null;
+		for (int i = 0;i<18;i++)
+			inv.setStackInSlot(i, ItemStack.EMPTY);
 		for(int i = 0; i< bullets.size(); i++)
 			inv.setStackInSlot(i, bullets.get(i));
-		for (int i = bullets.size();i<18;i++)
-			inv.setStackInSlot(i, ItemStack.EMPTY);
 	}
 	@Override
 	public int getBulletCount(ItemStack revolver)

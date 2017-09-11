@@ -5,10 +5,11 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -77,8 +78,9 @@ public abstract class ItemInternalStorage extends ItemIEBase
 			NBTTagList list = ItemNBTHelper.getTag(stack).getTagList("Inv", 10);
 			setContainedItems(stack, Utils.readInventory(list, getSlotCount(stack)));
 			ItemNBTHelper.remove(stack, "Inv");
-			if (entityIn instanceof EntityPlayer)
-				((EntityPlayer) entityIn).inventory.markDirty();
+			//Sync the changes
+			if (entityIn instanceof EntityPlayerMP && !worldIn.isRemote)
+				((EntityPlayerMP) entityIn).connection.sendPacket(new SPacketSetSlot(-2, itemSlot, stack));
 		}
 	}
 }

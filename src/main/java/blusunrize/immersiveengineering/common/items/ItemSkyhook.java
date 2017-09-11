@@ -44,6 +44,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
+		super.onUpdate(stack, world, ent, slot, inHand);
 		if(getUpgrades(stack).getBoolean("fallBoost"))
 		{
 			float dmg = (float)Math.ceil(ent.fallDistance/5);
