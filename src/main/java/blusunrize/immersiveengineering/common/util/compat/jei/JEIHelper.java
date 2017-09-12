@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.mixer.MixerRecipeC
 import blusunrize.immersiveengineering.common.util.compat.jei.refinery.RefineryRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
+import com.google.common.collect.Collections2;
 import mezz.jei.api.*;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.gui.IDrawable;
@@ -128,15 +129,15 @@ public class JEIHelper implements IModPlugin
 		modRegistry.addRecipes(new ArrayList(AlloyRecipe.recipeList), "ie.alloysmelter");
 		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.recipeList), "ie.blastfurnace");
 		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.blastFuels), "ie.blastfurnace.fuel");
-		modRegistry.addRecipes(new ArrayList(MetalPressRecipe.recipeList.values()), "ie.metalPress");
-		modRegistry.addRecipes(new ArrayList(CrusherRecipe.recipeList), "ie.crusher");
-		modRegistry.addRecipes(new ArrayList(BlueprintCraftingRecipe.recipeList.values()), "ie.workbench");
-		modRegistry.addRecipes(new ArrayList(SqueezerRecipe.recipeList), "ie.squeezer");
-		modRegistry.addRecipes(new ArrayList(FermenterRecipe.recipeList), "ie.fermenter");
-		modRegistry.addRecipes(new ArrayList(RefineryRecipe.recipeList), "ie.refinery");
-		modRegistry.addRecipes(new ArrayList(ArcFurnaceRecipe.recipeList), "ie.arcFurnace");
-		modRegistry.addRecipes(new ArrayList(BottlingMachineRecipe.recipeList), "ie.bottlingMachine");
-		modRegistry.addRecipes(new ArrayList(MixerRecipe.recipeList), "ie.mixer");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(MetalPressRecipe.recipeList.values(), input -> input.listInJEI())), "ie.metalPress");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(CrusherRecipe.recipeList, input -> input.listInJEI())), "ie.crusher");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(BlueprintCraftingRecipe.recipeList.values(), input -> input.listInJEI())), "ie.workbench");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(SqueezerRecipe.recipeList, input -> input.listInJEI())), "ie.squeezer");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(FermenterRecipe.recipeList, input -> input.listInJEI())), "ie.fermenter");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(RefineryRecipe.recipeList, input -> input.listInJEI())), "ie.refinery");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> input.listInJEI())), "ie.arcFurnace");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(BottlingMachineRecipe.recipeList, input -> input.listInJEI())), "ie.bottlingMachine");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(MixerRecipe.recipeList, input -> input.listInJEI())), "ie.mixer");
 	}
 
 	@Override
