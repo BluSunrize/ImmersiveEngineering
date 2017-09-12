@@ -29,7 +29,7 @@ public class MetalPress
 		ItemStack sMold = CraftTweakerHelper.toStack(mold);
 		if(!sOut.isEmpty() && !sMold.isEmpty())
 		{
-			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, sMold, energy);
+			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, ApiUtils.createComparableItemStack(sMold), energy);
 			if(inputSize > 0)
 				r.setInputSize(inputSize);
 			CraftTweakerAPI.apply(new Add(r));

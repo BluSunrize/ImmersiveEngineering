@@ -394,6 +394,8 @@ item.immersiveengineering.mold.gear.name=Metal Press Mold: Gear
 item.immersiveengineering.mold.rod.name=Metal Press Mold: Rod
 item.immersiveengineering.mold.bullet_casing.name=Metal Press Mold: Bullet Casing
 item.immersiveengineering.mold.wire.name=Metal Press Mold: Wire
+item.immersiveengineering.mold.packing4.name=Metal Press Mold: Packing 2x2
+item.immersiveengineering.mold.packing9.name=Metal Press Mold: Packing 3x3
 
 item.immersiveengineering.graphite_electrode.name=Graphite Electrode
 item.immersiveengineering.shader.name=Shader
