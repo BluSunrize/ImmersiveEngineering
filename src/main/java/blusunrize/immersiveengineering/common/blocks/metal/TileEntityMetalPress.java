@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -153,13 +152,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			IMultiblockRecipe recipe = master.findRecipeForInsertion(stack);
 			if(recipe==null)
 				return;
-			ItemStack displayStack = ItemStack.EMPTY;
-			for(IngredientStack ingr : recipe.getItemInputs())
-				if(ingr.matchesItemStack(stack))
-				{
-					displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
-					break;
-				}
+			ItemStack displayStack = recipe.getDisplayStack(stack);
 			float transformationPoint = 56.25f/(float)recipe.getTotalProcessTime();
 			MultiblockProcess process = new MultiblockProcessInWorld(recipe, transformationPoint, Utils.createNonNullItemStackListFromItemStack(displayStack));
 			if(master.addProcessToQueue(process, true))
@@ -317,7 +310,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	@Override
 	public MetalPressRecipe findRecipeForInsertion(ItemStack inserting)
 	{
-		return MetalPressRecipe.findRecipe(mold, inserting, true);
+		return MetalPressRecipe.findRecipe(mold, inserting);
 	}
 	@Override
 	protected MetalPressRecipe readRecipeFromNBT(NBTTagCompound tag)
