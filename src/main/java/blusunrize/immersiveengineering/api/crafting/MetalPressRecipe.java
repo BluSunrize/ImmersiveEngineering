@@ -51,7 +51,12 @@ public class MetalPressRecipe extends MultiblockRecipe
 		this.jeiItemInputList[1] = Lists.newArrayList(mold.stack);
 		this.jeiTotalItemInputList.add(mold.stack);
 	}
-	
+
+	public boolean matches(ItemStack mold, ItemStack input)
+	{
+		return this.input.matches(input);
+	}
+
 	public static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipeList = ArrayListMultimap.create();
 	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ItemStack mold, int energy)
 	{
@@ -59,14 +64,14 @@ public class MetalPressRecipe extends MultiblockRecipe
 		recipeList.put(r.mold, r);
 		return r;
 	}
-	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, boolean checkStackSize)
+	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input)
 	{
 		if(mold.isEmpty() || input.isEmpty())
 			return null;
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold);
 		List<MetalPressRecipe> list = recipeList.get(comp);
 		for(MetalPressRecipe recipe : list)
-			if(recipe.input.matches(input))
+			if(recipe.matches(mold, input))
 				return recipe;
 		return null;
 	}
