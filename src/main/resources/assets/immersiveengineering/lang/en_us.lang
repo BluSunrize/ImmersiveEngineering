@@ -1226,7 +1226,7 @@ ie.manual.entry.silo2=A comparator attached to the bottom center block will it e
 
 ie.manual.entry.metalbarrel.name=Metal Barrel
 ie.manual.entry.metalbarrel.subtext=Doesn't roll
-ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids.
+ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids, and won't output automatically if receiving a redstone signal
 
 ie.manual.entry.assembler.name=Assembler
 ie.manual.entry.assembler.subtext=Some assembly required
