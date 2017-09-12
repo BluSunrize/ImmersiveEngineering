@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
@@ -194,6 +195,11 @@ public class IERecipes
 		ItemStack shoddyElectrode = new ItemStack(IEContent.itemGraphiteElectrode);
 		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
 		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold,1,2), 4800).setInputSize(4);
+
+		ComparableItemStack mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,5));
+		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 2));
+		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,6));
+		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 3));
 	}
 
 	public static HashMap<String, ItemStack> oreOutputModifier = new HashMap<String, ItemStack>();
@@ -256,6 +262,11 @@ public class IERecipes
 	{
 		boolean allowHammerCrushing = !IEConfig.Tools.disableHammerCrushing;
 		ArrayListMultimap<String, ItemStack> registeredMoldBases = ArrayListMultimap.create();
+		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,0));
+		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,1));
+		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,2));
+		ComparableItemStack compMoldWire = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,4));
+
 		for(String name : OreDictionary.getOreNames())
 			if(ApiUtils.isExistingOreName(name))
 				if(name.startsWith("ore"))
@@ -324,7 +335,7 @@ public class IERecipes
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("plate",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, new ItemStack(IEContent.itemMold,1,0), 2400);
+						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, compMoldPlate, 2400);
 					}
 				}
 				else if(name.startsWith("gear"))
@@ -334,7 +345,7 @@ public class IERecipes
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("gear",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, new ItemStack(IEContent.itemMold,1,1), 2400).setInputSize(4);
+						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, compMoldGear, 2400).setInputSize(4);
 					}
 				}
 				else if(name.startsWith("stick")||name.startsWith("rod"))
@@ -344,7 +355,7 @@ public class IERecipes
 					if(priorityStick && ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("rod",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,2), 2400);
+						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, compMoldRod, 2400);
 					}
 				}
 				else if(name.startsWith("wire"))
@@ -353,7 +364,7 @@ public class IERecipes
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("wire",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,4), 2400);
+						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, compMoldWire, 2400);
 					}
 				}
 		if(registeredMoldBases.containsKey("plate"))
