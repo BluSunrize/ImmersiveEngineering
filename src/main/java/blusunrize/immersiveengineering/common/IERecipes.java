@@ -206,6 +206,8 @@ public class IERecipes
 		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 2));
 		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,6));
 		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 3));
+		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,7));
+		MetalPressRecipe.recipeList.put(mold, new MetalPressUnpackingRecipe(mold, 3200));
 	}
 
 	public static HashMap<String, ItemStack> oreOutputModifier = new HashMap<String, ItemStack>();

@@ -282,7 +282,7 @@ public class IEContent
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
-		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bullet_casing", "wire", "packing4", "packing9");
+		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bullet_casing", "wire", "packing4", "packing9", "unpacking");
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
 		itemRevolver = new ItemRevolver();
