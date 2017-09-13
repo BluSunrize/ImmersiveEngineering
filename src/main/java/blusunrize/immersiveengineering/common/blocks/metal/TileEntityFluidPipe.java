@@ -15,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -24,6 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -31,6 +31,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -110,32 +112,32 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		while(!openList.isEmpty() && closedList.size()<1024)
 		{
 			BlockPos next = openList.get(0);
-				TileEntity pipeTile = Utils.getExistingTileEntity(world, next);
-				if(!closedList.contains(next) && (pipeTile instanceof IFluidPipe))
+			TileEntity pipeTile = Utils.getExistingTileEntity(world, next);
+			if(!closedList.contains(next) && (pipeTile instanceof IFluidPipe))
+			{
+				if(pipeTile instanceof TileEntityFluidPipe)
+					closedList.add(next);
+				IFluidTankProperties[] tankInfo;
+				for(int i=0; i<6; i++)
 				{
-					if(pipeTile instanceof TileEntityFluidPipe)
-						closedList.add(next);
-					IFluidTankProperties[] tankInfo;
-					for(int i=0; i<6; i++)
+					//						boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
+					EnumFacing fd = EnumFacing.getFront(i);
+					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 					{
-						//						boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
-						EnumFacing fd = EnumFacing.getFront(i);
-						if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
-						{
-							BlockPos nextPos = next.offset(fd);
-								TileEntity adjacentTile = Utils.getExistingTileEntity(world, nextPos);
-								if(adjacentTile!=null)
-									if(adjacentTile instanceof TileEntityFluidPipe)
-										openList.add(nextPos);
-									else if(adjacentTile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite()))
-									{
-										IFluidHandler handler = adjacentTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
-										tankInfo = handler.getTankProperties();
-										if(tankInfo != null && tankInfo.length > 0)
-											fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
-									}
-						}
+						BlockPos nextPos = next.offset(fd);
+						TileEntity adjacentTile = Utils.getExistingTileEntity(world, nextPos);
+						if(adjacentTile!=null)
+							if(adjacentTile instanceof TileEntityFluidPipe)
+								openList.add(nextPos);
+							else if(adjacentTile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite()))
+							{
+								IFluidHandler handler = adjacentTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
+								tankInfo = handler.getTankProperties();
+								if(tankInfo != null && tankInfo.length > 0)
+									fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
+							}
 					}
+				}
 			}
 			openList.remove(0);
 		}
@@ -242,20 +244,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean shouldRenderGroup(IBlockState object, String group)
-	{
-		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
 	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
 	{
 		if(!pipeCover.isEmpty())
@@ -263,12 +251,16 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			Block b = Block.getBlockFromItem(pipeCover.getItem());
 			IBlockState state = b != null ? b.getStateFromMeta(pipeCover.getMetadata()) : Blocks.STONE.getDefaultState();
 			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+			BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
 			if(model != null)
-			{
-				for(EnumFacing facing : EnumFacing.VALUES)
-					quads.addAll(model.getQuads(state, facing, 0));
-				quads.addAll(model.getQuads(state, null, 0));
-			}
+				for(BlockRenderLayer layer : BlockRenderLayer.values())
+				{
+					ForgeHooksClient.setRenderLayer(layer);
+					for(EnumFacing facing : EnumFacing.VALUES)
+						quads.addAll(model.getQuads(state, facing, 0));
+					quads.addAll(model.getQuads(state, null, 0));
+				}
+			ForgeHooksClient.setRenderLayer(curL);
 		}
 		return quads;
 	}

@@ -1,0 +1,18 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:scaffolding_slab_steel",
+  "result": {
+    "item": "immersiveengineering:metal_decoration1_slab",
+    "data": 2,
+    "count": 6
+  },
+  "pattern": [
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "immersiveengineering:metal_decoration1",
+      "data": 2
+    }
+  }
+}

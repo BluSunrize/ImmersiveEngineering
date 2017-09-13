@@ -170,7 +170,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 			if(mop==null || mop.entityHit==null)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1));
+				List list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1), (e)->e.canBeCollidedWith());
 				double d0 = 0.0D;
 				for (int i = 0; i < list.size(); ++i)
 				{
@@ -200,7 +200,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 			{
 				if(!this.isBurning() && this.canIgnite() && mop.entityHit!=null && mop.entityHit.isBurning())
 					this.setFire(3);
-				if(mop.entityHit instanceof EntityLivingBase)
+				if(mop.entityHit!=null)
 				{
 					boolean allowHit = true;
 					if(this.shootingEntity instanceof EntityPlayer && mop.entityHit instanceof EntityPlayer)

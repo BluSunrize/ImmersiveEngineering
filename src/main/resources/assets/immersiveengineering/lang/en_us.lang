@@ -192,6 +192,7 @@ tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Co
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=Vertical Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=Splitting Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:covered.name=Covered Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=Vertical Covered Conveyor Belt
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=Metal Press
 tile.immersiveengineering.metal_multiblock.crusher.name=Crusher
@@ -385,6 +386,7 @@ item.immersiveengineering.toolupgrade.railgun_capacitors.name=Additional Capacit
 item.immersiveengineering.toolupgrade.shield_flash.name=Flashbulb
 item.immersiveengineering.toolupgrade.shield_shock.name=Shock Emitters
 item.immersiveengineering.toolupgrade.shield_magnet.name=Magnetic Glove
+item.immersiveengineering.toolupgrade.chemthrower_multitank.name=Multitank
 
 item.immersiveengineering.blueprint.name=Engineer's Blueprint
 item.immersiveengineering.mold.plate.name=Metal Press Mold: Plate
@@ -392,6 +394,8 @@ item.immersiveengineering.mold.gear.name=Metal Press Mold: Gear
 item.immersiveengineering.mold.rod.name=Metal Press Mold: Rod
 item.immersiveengineering.mold.bullet_casing.name=Metal Press Mold: Bullet Casing
 item.immersiveengineering.mold.wire.name=Metal Press Mold: Wire
+item.immersiveengineering.mold.packing4.name=Metal Press Mold: Packing 2x2
+item.immersiveengineering.mold.packing9.name=Metal Press Mold: Packing 3x3
 
 item.immersiveengineering.graphite_electrode.name=Graphite Electrode
 item.immersiveengineering.shader.name=Shader
@@ -572,6 +576,7 @@ entity.Villager.immersiveengineering.electrician=Electrician
 entity.Villager.immersiveengineering.outfitter=Outfitter
 
 key.immersiveengineering.magnetEquip=Magnetic Shield Glove (doubletap)
+key.immersiveengineering.chemthrowerSwitch=Switch Chemthrower Tanks
 
 desc.immersiveengineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.immersiveengineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
@@ -697,8 +702,10 @@ desc.immersiveengineering.info.redstoneChannel=Channel: %1$s
 desc.immersiveengineering.info.redstoneChannel.send=Channel Sending: %1$s
 desc.immersiveengineering.info.redstoneChannel.rec=Channel Receiving: %1$s
 
+desc.immersiveengineering.info.multiblock.IE:AlloySmelter=Alloy Kiln
 desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Arc Furnace
 desc.immersiveengineering.info.multiblock.IE:Assembler=Assembler
+desc.immersiveengineering.info.multiblock.IE:AutoWorkbench=Automated Engineers Workbench
 desc.immersiveengineering.info.multiblock.IE:BlastFurnace=Crude Blast Furnace
 desc.immersiveengineering.info.multiblock.IE:BlastFurnaceAdvanced=Improved Blast Furnace
 desc.immersiveengineering.info.multiblock.IE:BottlingMachine=Bottling Machine
@@ -775,6 +782,7 @@ desc.immersiveengineering.flavour.toolupgrade.railgun_capacitors=Reduces charge 
 desc.immersiveengineering.flavour.toolupgrade.shield_flash=Produces a blinding flash
 desc.immersiveengineering.flavour.toolupgrade.shield_shock=Shocks attackers and vapourizes projectiles
 desc.immersiveengineering.flavour.toolupgrade.shield_magnet=Equips the shield at the press of a button
+desc.immersiveengineering.flavour.toolupgrade.chemthrower_multitank=Allows multiple Fluids in the Chemical Thrower
 
 gui.immersiveengineering.empty=Empty
 gui.immersiveengineering.blastFurnace=Blast Furnace
@@ -1218,7 +1226,7 @@ ie.manual.entry.silo2=A comparator attached to the bottom center block will it e
 
 ie.manual.entry.metalbarrel.name=Metal Barrel
 ie.manual.entry.metalbarrel.subtext=Doesn't roll
-ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids.
+ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids, and won't output automatically if receiving a redstone signal
 
 ie.manual.entry.assembler.name=Assembler
 ie.manual.entry.assembler.subtext=Some assembly required
@@ -1311,6 +1319,7 @@ ie.manual.entry.conveyor2=The Dropping Conveyor Belt is quite simply a conveyor 
 ie.manual.entry.conveyor3=The Vertical Conveyor Belt is a belt meant to be mounted on walls. Using the buckets attached to it, it will lift entities straight up. Despite the use of the term "bucket", it will not lift fluids.<br>This belt can insert into inventories above it or simply expel items over the edge at the top onto more conveyors.
 ie.manual.entry.conveyor4=The Splitting Conveyor Belt alternates between redirecting Items and Entities left and right, plain and simple. This feature can be used to achieve a more equal distribution in your factories.
 ie.manual.entry.conveyor5=The Covered Conveyor Belt works just like a normal conveyor, however it is covered by a piece of scaffolding, which prevents players from picking up items from it.<br>You can rightclick it with other types of scaffold or glass to change the cover's appearance.
+ie.manual.entry.conveyor6=Similarly, the Vertical Conveyor can also be covered in scaffolding to achieve the same benefits of "pickup-prevention" while still allowing for straight vertical transport.
 
 ie.manual.entry.furnaceHeater.name=External Heater
 ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
@@ -1385,6 +1394,7 @@ ie.manual.entry.chemthrower.subtext=BURN ALL THE THINGS!
 ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propels fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
 ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The §6Large Tank§r increases the fluid capacity of the Chemical Thrower by 2000 mb.
 ie.manual.entry.chemthrower2=The §6Focused Nozzle§r decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
+ie.manual.entry.chemthrower3=The §6Multitank§r allows the Chemthrower to store up to three different Fluids. You can select the active tank by <config;b;chemthrower_scroll;sneaking and using the scrollwheel, or through use of;using> the keybind §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r if it has been set in the options.<br>This upgrade is mutually exclusive to the §6Large Tank§r.
 
 ie.manual.entry.skyhook.name=Engineer's Skyhook
 ie.manual.entry.skyhook.subtext=Booker, catch!
@@ -1584,6 +1594,7 @@ desc.immersiveengineering.info.shader.details.warbird=Design inspired by planes 
 desc.immersiveengineering.info.shader.details.matrix=No particular inspiration, just another use for the pipe overlay.
 desc.immersiveengineering.info.shader.details.twili=Named and designed in reference to the race of the same name.
 desc.immersiveengineering.info.shader.details.usurper=Named and designed in reference to Zant, the usurper to the throne.
+desc.immersiveengineering.info.shader.details.ancient=Named and designed after the ancient Sheikah technology
 desc.immersiveengineering.info.shader.details.glacis=No particular inspiration, decided to experiment with transparency.
 desc.immersiveengineering.info.shader.details.phoenix=No particular inspiration, just another use for the gradient type of shaders.
 desc.immersiveengineering.info.shader.details.radiant=Named and designed after world 'Radiant Garden'.

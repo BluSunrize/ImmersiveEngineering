@@ -797,13 +797,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			IMultiblockRecipe recipe = this.multiblock.findRecipeForInsertion(stack);
 			if(recipe==null)
 				return stack;
-			ItemStack displayStack = ItemStack.EMPTY;
-			for(IngredientStack ingr : recipe.getItemInputs())
-				if(ingr.matchesItemStack(stack))
-				{
-					displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
-					break;
-				}
+			ItemStack displayStack = recipe.getDisplayStack(stack);
 			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, transformationPoint, Utils.createNonNullItemStackListFromItemStack(displayStack)), simulate, doProcessStacking))
 			{
 				multiblock.markDirty();

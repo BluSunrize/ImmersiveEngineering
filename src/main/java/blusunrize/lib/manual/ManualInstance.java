@@ -50,6 +50,8 @@ public abstract class ManualInstance
 
 	public GuiManual getGui()
 	{
+		if(GuiManual.activeManual!=null && GuiManual.activeManual.getManual()==this)
+			return GuiManual.activeManual;
 		return new GuiManual(this, texture);
 	}
 

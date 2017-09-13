@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -38,6 +39,9 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		setMetaBlockLayer(BlockTypes_Connector.RELAY_HV.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setMetaBlockLayer(BlockTypes_Connector.CONNECTOR_PROBE.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
 		setAllNotNormalBlock();
+		setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER.getMeta(), EnumPushReaction.BLOCK);
+		setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER_HV.getMeta(), EnumPushReaction.BLOCK);
+		setMetaMobilityFlag(BlockTypes_Connector.ENERGY_METER.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override
@@ -96,12 +100,16 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		if(stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER.getMeta() || stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER_HV.getMeta())
 		{
 			for(int hh=1; hh<=2; hh++)
-				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+			{
+				BlockPos pos2 = pos.up(hh);
+				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
+			}
 		}
 		else if(stack.getItemDamage()== BlockTypes_Connector.ENERGY_METER.getMeta())
 		{
-			if(!world.getBlockState(pos.add(0,1,0)).getBlock().isReplaceable(world, pos.add(0,1,0)))
+			BlockPos pos2 = pos.up();
+			if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 				return false;
 		}
 		return true;

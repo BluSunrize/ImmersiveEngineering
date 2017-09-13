@@ -1,0 +1,19 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:scaffolding_stairs_aluminum",
+  "result": {
+    "item": "immersiveengineering:aluminum_scaffolding_stairs0",
+    "count": 4
+  },
+  "pattern": [
+    "S  ",
+    "SS ",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "immersiveengineering:metal_decoration1",
+      "data": 5
+    }
+  }
+}

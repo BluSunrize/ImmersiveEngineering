@@ -54,6 +54,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 			{
 				redstoneSignal = 0;
 				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
+				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockType(), false);
 			}
 		}
 	}

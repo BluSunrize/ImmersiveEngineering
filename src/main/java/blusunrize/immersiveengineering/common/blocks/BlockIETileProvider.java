@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
@@ -31,6 +32,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -40,13 +42,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Mod.EventBusSubscriber
 public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements ITileEntityProvider, IColouredBlock
 {
 	private boolean hasColours = false;
@@ -56,23 +64,29 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		super(name, material, mainProperty, itemBlock, additionalProperties);
 	}
 
-	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	private static final Map<DimensionBlockPos, TileEntity> tempTile = new HashMap<>();
+	@SubscribeEvent
+	public static void onTick(TickEvent.ServerTickEvent ev)
 	{
-		return super.getDrops(world, pos, state, fortune);
+		if (ev.phase== TickEvent.Phase.END)
+			tempTile.clear();
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+//	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		TileEntity tile = world.getTileEntity(pos);
+		DimensionBlockPos dpos = new DimensionBlockPos(pos, world instanceof World?((World) world).provider.getDimension():0);
+		if(tile==null && tempTile.containsKey(dpos))
+			tile = tempTile.get(dpos);
 		if(tile != null && ( !(tile instanceof ITileDrop) || !((ITileDrop)tile).preventInventoryDrop()))
 		{
 			if(tile instanceof IIEInventory && ((IIEInventory)tile).getDroppedItems()!=null)
 			{
 				for(ItemStack s : ((IIEInventory)tile).getDroppedItems())
 					if(!s.isEmpty())
-						spawnAsEntity(world, pos, s);
+						drops.add(s);
 			}
 			else if(tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
 			{
@@ -81,11 +95,27 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 					for(int i = 0; i < h.getSlots(); i++)
 						if(!h.getStackInSlot(i).isEmpty())
 						{
-							spawnAsEntity(world, pos, h.getStackInSlot(i));
+							drops.add(h.getStackInSlot(i));
 							((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
 						}
 			}
 		}
+		if(tile instanceof ITileDrop)
+		{
+			ItemStack s = ((ITileDrop)tile).getTileDrop(harvesters.get(), state);
+			if(!s.isEmpty())
+				drops.add(s);
+		}
+		else
+			super.getDrops(drops, world, pos, state, fortune);
+
+		tempTile.remove(dpos);
+	}
+
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	{
+		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
 		{
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
@@ -93,6 +123,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IImmersiveConnectable)
 			if(!world.isRemote||!Minecraft.getMinecraft().isSingleplayer())
 				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile),world, !world.isRemote&&world.getGameRules().getBoolean("doTileDrops"));
+		tempTile.put(new DimensionBlockPos(pos, world.provider.getDimension()), tile);
 		super.breakBlock(world, pos, state);
 		world.removeTileEntity(pos);
 	}
@@ -100,15 +131,6 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile, ItemStack stack)
 	{
-		if(tile instanceof ITileDrop)
-		{
-			ItemStack s = ((ITileDrop)tile).getTileDrop(player, state);
-			if(!s.isEmpty())
-			{
-				spawnAsEntity(world, pos, s);
-				return;
-			}
-		}
 		if(tile instanceof IAdditionalDrops)
 		{
 			Collection<ItemStack> stacks = ((IAdditionalDrops)tile).getExtraDrops(player, state);
@@ -309,6 +331,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IDirectionalTile && Utils.isHammer(heldItem) && ((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player) && !world.isRemote)
 		{
 			EnumFacing f = ((IDirectionalTile)tile).getFacing();
+			EnumFacing oldF = f;
 			int limit = ((IDirectionalTile)tile).getFacingLimitation();
 
 			if(limit==0)
@@ -318,6 +341,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			else if(limit == 2 || limit == 5)
 				f = player.isSneaking()?f.rotateYCCW():f.rotateY();
 			((IDirectionalTile)tile).setFacing(f);
+			((IDirectionalTile)tile).afterRotation(oldF,f);
 			tile.markDirty();
 			world.notifyBlockUpdate(pos,state,state,3);
 			world.addBlockEvent(tile.getPos(), tile.getBlockType(), 255, 0);

@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
@@ -311,13 +310,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 				CrusherRecipe recipe = master.findRecipeForInsertion(stack);
 				if(recipe==null)
 					return;
-				ItemStack displayStack = ItemStack.EMPTY;
-				for(IngredientStack ingr : recipe.getItemInputs())
-					if(ingr.matchesItemStack(stack))
-					{
-						displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
-						break;
-					}
+				ItemStack displayStack = recipe.getDisplayStack(stack);
 				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
 				if(master.addProcessToQueue(process, true, true))
 				{

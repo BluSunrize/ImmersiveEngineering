@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
@@ -19,11 +20,13 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ import java.util.HashSet;
 public class IERecipes
 {
 
-	public static void initCraftingRecipes()
+	public static void initCraftingRecipes(IForgeRegistry<IRecipe> registry)
 	{
 		//Recipe Sorter is deprecated apparently
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":shapedIngredient", RecipeShapedIngredient.class, Category.SHAPED, "after:forge:shapedore");
@@ -47,14 +50,16 @@ public class IERecipes
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		//Loop, special or colouration recipes
-		ForgeRegistries.RECIPES.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
-		ForgeRegistries.RECIPES.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
-		ForgeRegistries.RECIPES.register(new RecipeJerrycan().setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
-		ForgeRegistries.RECIPES.register(new RecipeShaderBags().setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
-		ForgeRegistries.RECIPES.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
-		ForgeRegistries.RECIPES.register(new RecipePowerpack().setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
+		registry.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
+		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
+		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
+		registry.register(new RecipeSpeeloader().setRegistryName(ImmersiveEngineering.MODID, "speedloader_load"));
+		registry.register(new RecipeJerrycan().setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
+		registry.register(new RecipeShaderBags().setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
+		registry.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
+		registry.register(new RecipePowerpack().setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
 		final ItemStack stripCurtain = new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
-		ForgeRegistries.RECIPES.register(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ).setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
+		registry.register(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ).setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
 	}
 
 	public static void addShapelessOredictRecipe(String registryName, ItemStack output, Object... recipe)
@@ -190,6 +195,11 @@ public class IERecipes
 		ItemStack shoddyElectrode = new ItemStack(IEContent.itemGraphiteElectrode);
 		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
 		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold,1,2), 4800).setInputSize(4);
+
+		ComparableItemStack mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,5));
+		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 2));
+		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,6));
+		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 3));
 	}
 
 	public static HashMap<String, ItemStack> oreOutputModifier = new HashMap<String, ItemStack>();
@@ -252,6 +262,11 @@ public class IERecipes
 	{
 		boolean allowHammerCrushing = !IEConfig.Tools.disableHammerCrushing;
 		ArrayListMultimap<String, ItemStack> registeredMoldBases = ArrayListMultimap.create();
+		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,0));
+		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,1));
+		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,2));
+		ComparableItemStack compMoldWire = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,4));
+
 		for(String name : OreDictionary.getOreNames())
 			if(ApiUtils.isExistingOreName(name))
 				if(name.startsWith("ore"))
@@ -320,7 +335,7 @@ public class IERecipes
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("plate",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, new ItemStack(IEContent.itemMold,1,0), 2400);
+						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, compMoldPlate, 2400);
 					}
 				}
 				else if(name.startsWith("gear"))
@@ -330,7 +345,7 @@ public class IERecipes
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("gear",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, new ItemStack(IEContent.itemMold,1,1), 2400).setInputSize(4);
+						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, compMoldGear, 2400).setInputSize(4);
 					}
 				}
 				else if(name.startsWith("stick")||name.startsWith("rod"))
@@ -340,7 +355,7 @@ public class IERecipes
 					if(priorityStick && ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("rod",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,2), 2400);
+						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, compMoldRod, 2400);
 					}
 				}
 				else if(name.startsWith("wire"))
@@ -349,7 +364,7 @@ public class IERecipes
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("wire",OreDictionary.getOres(name));
-						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,4), 2400);
+						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, compMoldWire, 2400);
 					}
 				}
 		if(registeredMoldBases.containsKey("plate"))

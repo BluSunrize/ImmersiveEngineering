@@ -13,16 +13,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -44,6 +44,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
+		super.onUpdate(stack, world, ent, slot, inHand);
 		if(getUpgrades(stack).getBoolean("fallBoost"))
 		{
 			float dmg = (float)Math.ceil(ent.fallDistance/5);
@@ -134,23 +135,18 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, invItem, 0, 102, 42, "SKYHOOK", stack, true),
-						new IESlot.Upgrades(container, invItem, 1, 102, 22, "SKYHOOK", stack, true),
+						new IESlot.Upgrades(container, inv, 0, 102, 42, "SKYHOOK", stack, true),
+						new IESlot.Upgrades(container, inv, 1, 102, 22, "SKYHOOK", stack, true),
 				};
 	}
 
 	@Override
-	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
-	{
-		NonNullList<ItemStack> contents = this.getContainedItems(stack);
-	}
-
-	@Override
-	public int getInternalSlots(ItemStack stack)
+	public int getSlotCount(ItemStack stack)
 	{
 		return 2;
 	}

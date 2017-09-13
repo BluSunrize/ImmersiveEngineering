@@ -12,9 +12,8 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkben
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.gui.*;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemSpeedloader;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -77,12 +76,10 @@ public class CommonProxy implements IGuiHandler
 			ItemStack item = player.getItemStackFromSlot(slot);
 			if(!item.isEmpty() && item.getItem() instanceof IGuiItem && ((IGuiItem)item.getItem()).getGuiID(item)==ID)
 			{
-				if(ID == Lib.GUIID_Revolver && item.getItem() instanceof ItemRevolver)
+				if(ID == Lib.GUIID_Revolver && item.getItem() instanceof IEItemInterfaces.IBulletContainer)
 					return new ContainerRevolver(player.inventory, world, slot, item);
 				if(ID == Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
 					return new ContainerToolbox(player.inventory, world, slot, item);
-				if(ID == Lib.GUIID_Speedloader && item.getItem() instanceof ItemSpeedloader)
-					return new ContainerSpeedloader(player.inventory, world, slot, item);
 			}
 		}
 		else

@@ -1,5 +1,5 @@
 def mainVersion = "0.12"
-def buildNumber = "70"
+def buildNumber = "71"
 
 // For those who want the bleeding edge
 buildscript {
@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "14.22.0.2452"
+    version = "14.22.0.2467"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
@@ -40,7 +40,8 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20170628"
+//    mappings = "snapshot_20170628"
+    mappings = "snapshot_20170903"
     //"snapshot_20160518" 1.9
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
@@ -100,7 +101,7 @@ dependencies {
 //    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+" ToDo?
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2" ToDo!!
     compileOnly 'net.industrial-craft:industrialcraft-2:2.8.+'
-    compileOnly 'elucent:albedo:2.0-SNAPSHOT'
+    deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
 reobf {

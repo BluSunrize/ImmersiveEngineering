@@ -9,13 +9,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
 {
@@ -67,9 +65,8 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 	}
 
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
-		return new ArrayList<ItemStack>();
 	}
 
 	@Override

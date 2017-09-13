@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "result": {
+    "item": "minecraft:torch",
+    "count": 12
+  },
+  "mirrored": true,
+  "pattern": [
+    "WC ",
+    "SSS"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:wool",
+      "data": 32767
+    },
+    "C": {
+      "type": "immersiveengineering:fluid",
+      "fluid": "creosote"
+    },
+    "S": {
+      "item": "#stickWood"
+    }
+  }
+}

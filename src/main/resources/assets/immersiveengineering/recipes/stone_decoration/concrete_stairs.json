@@ -1,5 +1,6 @@
 {
   "type": "forge:ore_shaped",
+  "group": "immersiveengineering:concrete_stairs",
   "result": {
     "item": "immersiveengineering:stone_decoration_stairs_concrete",
     "count": 4

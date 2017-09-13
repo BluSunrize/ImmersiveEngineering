@@ -7,7 +7,9 @@ import net.minecraft.util.NonNullList;
  * @author BluSunrize - 27.10.2015
  *
  * An item that contains an internal inventory, like drill or revolver
+ * Deprecated in favor of capabilities
  */
+@Deprecated
 public interface IInternalStorageItem
 {
 	NonNullList<ItemStack> getContainedItems(ItemStack stack);

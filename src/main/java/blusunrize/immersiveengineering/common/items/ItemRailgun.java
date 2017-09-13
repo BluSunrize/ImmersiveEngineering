@@ -17,15 +17,14 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -36,10 +35,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
@@ -53,17 +56,18 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	}
 
 	@Override
-	public int getInternalSlots(ItemStack stack)
+	public int getSlotCount(ItemStack stack)
 	{
 		return 2+1;
 	}
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, invItem,0, 80,32, "RAILGUN", stack, true),
-						new IESlot.Upgrades(container, invItem,1,100,32, "RAILGUN", stack, true)
+						new IESlot.Upgrades(container, inv,0, 80,32, "RAILGUN", stack, true),
+						new IESlot.Upgrades(container, inv,1,100,32, "RAILGUN", stack, true)
 				};
 	}
 	@Override
@@ -104,26 +108,29 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		if (!stack.isEmpty())
-			return new ICapabilityProvider()
+		return new IEItemStackHandler(stack)
+		{
+			final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
+			final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
+
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 			{
-				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-				final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
+				return capability == CapabilityEnergy.ENERGY ||
+						capability == CapabilityShader.SHADER_CAPABILITY ||
+						super.hasCapability(capability, facing);
+			}
 
-				@Override
-				public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-				{
-					return capability == CapabilityShader.SHADER_CAPABILITY || capability == CapabilityEnergy.ENERGY;
-				}
-
-				@Override
-				public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-				{
-					return capability == CapabilityShader.SHADER_CAPABILITY ? (T) shaders : capability == CapabilityEnergy.ENERGY ? (T) energyStorage : null;
-				}
-			};
-		else
-			return super.initCapabilities(stack, nbt);
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+			{
+				if (capability == CapabilityEnergy.ENERGY)
+					return (T) energyStorage;
+				if (capability == CapabilityShader.SHADER_CAPABILITY)
+					return (T) shaders;
+				return super.getCapability(capability, facing);
+			}
+		};
 	}
 
 	@Override
@@ -171,6 +178,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
+		super.onUpdate(stack, world, ent, slot, inHand);
 		//		if(!world.isRemote && stack.getItemDamage()!=1 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
 		//		{
 		//			int l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "casings", ent);
@@ -279,7 +287,6 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		NonNullList<ItemStack> contents = this.getContainedItems(stack);
 //		ToDo: Make an Upgrade Advancement?
 //		if(contents[18]!=null&&contents[19]!=null)
 //			Utils.unlockIEAdvancement(player, "upgrade_railgun");
@@ -327,12 +334,6 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
-	{
-		return null;
-	}
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)

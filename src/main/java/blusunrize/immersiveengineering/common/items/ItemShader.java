@@ -85,6 +85,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Matrix", 7, EnumRarity.RARE, 0xff053f3c,0xffe1e1ff,0xffd4ffff,0xffffffff, "pipes",true,0xff84ddd8).setInfo(null,null,"matrix");
 		addShader("Twili", 5, EnumRarity.EPIC, 0xff555d70,0xff1a1e2b,0xff222739,0xff1db58e, "circuit",false,0xff1db58e).setInfo(null,"The Legend of Zelda: Twilight Princess","twili");
 		addShader("Usurper", 3, EnumRarity.EPIC, 0xff3e1e1e,0xff5c6156,0xff111010,0xff737a6c, "circuit",false,0xffca2f38).setInfo(null,"The Legend of Zelda: Twilight Princess","usurper");
+		entry = addShader("Ancient", 6, EnumRarity.EPIC, 0xff9c3a2d,0xff514848,0xfff6ae4a,0xff80fcf2, "circuit",false,0x99bc9377).setInfo(null,"The Legend of Zelda: Breath of the Wild","ancient");
+		((ShaderCaseDrill)entry.getCase("immersiveengineering:drill")).addHeadLayers(new ShaderLayer(new ResourceLocation("immersiveengineering","items/drill_iron"),0xff80fcf2));
 
 		addShader("Glacis", 6, EnumRarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd).setInfo(null,null,"glacis");
 		addShader("Phoenix", 5, EnumRarity.RARE, 0xff750000, 0xffd00000, 0xffff7f00, 0xffff7f00).setInfo(null,null,"phoenix");
@@ -171,7 +173,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				ArrayList<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name, keys.toArray(new String[keys.size()]), 4);
 				if(!corrected.isEmpty())
 				{
-					IELogger.info("SHADER UPDATE: Fixing "+name+"to "+corrected.get(0));
+					IELogger.info("SHADER UPDATE: Fixing "+name+" to "+corrected.get(0));
 					IELogger.info("Others: "+corrected);
 					ItemNBTHelper.setString(stack, "shader_name", corrected.get(0));
 					return corrected.get(0);

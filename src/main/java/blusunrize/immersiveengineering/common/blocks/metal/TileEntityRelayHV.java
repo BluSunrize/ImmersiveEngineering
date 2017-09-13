@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
@@ -32,11 +31,6 @@ public class TileEntityRelayHV extends TileEntityConnectorHV implements IOBJMode
 		return true;
 	}
 
-	@Override
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
-	{
-		return null;
-	}
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{

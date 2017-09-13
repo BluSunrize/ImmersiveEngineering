@@ -1,0 +1,24 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:toolupgrade",
+    "data": 13
+  },
+  "pattern": [
+    " P ",
+    "TCT"
+  ],
+  "key": {
+    "P": {
+      "item": "immersiveengineering:metal_device1",
+      "data": 6
+    },
+    "T": {
+      "item": "immersiveengineering:toolupgrade",
+      "data": 3
+    },
+    "C": {
+      "item": "#componentSteel"
+    }
+  }
+}

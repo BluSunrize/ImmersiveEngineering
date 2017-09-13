@@ -91,9 +91,10 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 
 			if(burnTime>0)
 			{
+				int processSpeed = 1;
 				if(process>0)
 				{
-					int processSpeed = getProcessSpeed();
+					processSpeed = getProcessSpeed();
 					if(inventory.get(0).isEmpty())
 					{
 						process=0;
@@ -115,13 +116,13 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 								active = true;
 						}
 					}
-					burnTime-=processSpeed;
 					markContainingBlockForUpdate(null);
 				}
+				burnTime-=processSpeed;
 
 				if(process<=0)
 				{
-					if(active)
+					if(processMax>0)
 					{
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
@@ -140,7 +141,6 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 							}
 						}
 						processMax=0;
-						active=false;
 						burnTime -= process;
 					}
 					BlastFurnaceRecipe recipe = getRecipe();

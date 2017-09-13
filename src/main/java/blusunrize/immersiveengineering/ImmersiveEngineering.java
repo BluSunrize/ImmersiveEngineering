@@ -63,7 +63,7 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-//		IELogger.debug = VERSION.startsWith("${");
+		IELogger.logger = event.getModLog();
 		Config.preInit(event);
 		IEContent.preInit();
 		proxy.preInit();
@@ -89,6 +89,8 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesPreInit();
 
 		new ThreadContributorSpecialsDownloader();
+
+		IEContent.preInitEnd();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -125,6 +127,7 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageShaderManual.HandlerClient.class, MessageShaderManual.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageBirthdayParty.HandlerClient.class, MessageBirthdayParty.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageMagnetEquip.Handler.class, MessageMagnetEquip.class, messageId++, Side.SERVER);
+		packetHandler.registerMessage(MessageChemthrowerSwitch.Handler.class, MessageChemthrowerSwitch.class, messageId++, Side.SERVER);
 
 		for(FMLInterModComms.IMCMessage message : FMLInterModComms.fetchRuntimeMessages(instance))
 		{

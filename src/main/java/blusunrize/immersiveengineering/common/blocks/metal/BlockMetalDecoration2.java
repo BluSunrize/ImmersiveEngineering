@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
@@ -19,13 +20,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.Properties;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalDecoration2> implements IPostBlock
 {
@@ -37,14 +36,16 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		this.setAllNotNormalBlock();
 		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.CUTOUT);
 		lightOpacity = 0;
+		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.STEEL_POST.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		if(this.getMetaFromState(state)==BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta()||this.getMetaFromState(state)==BlockTypes_MetalDecoration2.STEEL_POST.getMeta())
-			return new ArrayList<>();
-		return super.getDrops(world, pos, state, fortune);
+			return;
+		super.getDrops(drops, world, pos, state, fortune);
 	}
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
@@ -125,8 +126,11 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		if(stack.getItemDamage()== BlockTypes_MetalDecoration2.STEEL_POST.getMeta() || stack.getItemDamage()== BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())
 		{
 			for(int hh=1; hh<=3; hh++)
-				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+			{
+				BlockPos pos2 = pos.up(hh);
+				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
+			}
 		}
 		return true;
 	}

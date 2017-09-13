@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -25,6 +26,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaBlockLayer(BlockTypes_MetalDevice0.FLUID_PLACER.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setNotNormalBlock(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice0.FLUID_PLACER.getMeta());
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override
@@ -44,7 +46,11 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
 		if(stack.getItemDamage()==BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())
-			return world.isAirBlock(pos.add(0,1,0));
+		{
+			BlockPos above = pos.up();
+			if(world.isOutsideBuildHeight(above)||!world.getBlockState(above).getBlock().isReplaceable(world, above))
+				return false;
+		}
 		return true;
 	}
 

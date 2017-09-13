@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -55,6 +56,13 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.TURRET_CHEM.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.TURRET_GUN.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.BELLJAR.getMeta());
+
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TESLA_COIL.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TURRET_CHEM.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TURRET_GUN.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.BELLJAR.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override
@@ -111,18 +119,22 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		if (stack.getItemDamage() == BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta() || stack.getItemDamage() == BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta() || stack.getItemDamage() == BlockTypes_MetalDevice1.BELLJAR.getMeta())
 		{
 			for (int hh = 1; hh <= 2; hh++)
-				if (!world.getBlockState(pos.add(0, hh, 0)).getBlock().isReplaceable(world, pos.add(0, hh, 0)))
+			{
+				BlockPos pos2 = pos.add(0, hh, 0);
+				if (world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
+			}
 		}
 		else if (stack.getItemDamage() == BlockTypes_MetalDevice1.TESLA_COIL.getMeta())
 		{
 			BlockPos newPos = pos.offset(side);
-			if(!world.getBlockState(newPos).getBlock().isReplaceable(world, newPos))
+			if(world.isOutsideBuildHeight(newPos)||!world.getBlockState(newPos).getBlock().isReplaceable(world, newPos))
 				return false;
 		}
 		else if (stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_CHEM.getMeta() || stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_GUN.getMeta())
 		{
-			if(!world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
+			BlockPos newPos = pos.up();
+			if(world.isOutsideBuildHeight(newPos)||!world.getBlockState(newPos).getBlock().isReplaceable(world, newPos))
 				return false;
 		}
 		return true;

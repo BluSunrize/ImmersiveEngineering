@@ -66,6 +66,9 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				soundPos = null;
 			}
 		}
+		if (world.isRemote && effectMap.containsKey(pos))
+			effectMap.get(pos).removeIf(LightningAnimation::tick);
+
 		int timeKey = getPos().getX()^getPos().getZ();
 		int energyDrain = IEConfig.Machines.teslacoil_consumption;
 		if (lowPower)
@@ -489,7 +492,9 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		public Vec3d startPos;
 		public EntityLivingBase targetEntity;
 		public Vec3d targetPos;
-		public int timer = 40;
+		private int lifeTimer = 20;
+		private final int ANIMATION_MAX = 4;
+		private int animationTimer = ANIMATION_MAX;
 
 		public List<Vec3d> subPoints = new ArrayList<>();
 		private Vec3d prevTarget;
@@ -507,14 +512,14 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 
 		public boolean shoudlRecalculateLightning()
 		{
-			if(subPoints.isEmpty()||timer%8==0)
+			if (subPoints.isEmpty() || animationTimer == 0)
 				return true;
 			boolean b = false;
 			Vec3d end = targetEntity!=null?targetEntity.getPositionVector():targetPos;
 			if(prevTarget!=null)
 				b = prevTarget.distanceTo(end)>1;
-				prevTarget = end;
-				return b;
+			prevTarget = end;
+			return b;
 		}
 
 		public void createLightning(Random rand)
@@ -547,7 +552,12 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				}
 				subPoints.add(sub.addVector(offX,offY,offZ));
 			}
+			animationTimer = ANIMATION_MAX+Utils.RAND.nextInt(5)-2;
 		}
-
+		public boolean tick() {
+			animationTimer--;
+			lifeTimer--;
+			return lifeTimer<=0;
+		}
 	}
 }
