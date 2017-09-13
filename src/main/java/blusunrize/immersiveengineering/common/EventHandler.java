@@ -90,12 +90,14 @@ public class EventHandler
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<Integer, BlockPos>> requestedBlockUpdates = new LinkedList<>();
+	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
+
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
 		//		if(event.world.provider.dimensionId==0)
 		//		{
-		/**
+		/*
 		 if(ImmersiveNetHandler.INSTANCE==null)
 		 ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
 		 if(!event.world.isRemote && !IESaveData.loaded)
@@ -270,7 +272,8 @@ public class EventHandler
 		}
 		if(event.phase==TickEvent.Phase.END && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
-			for(Entry<Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.getDimension()).entrySet())
+			int dim = event.world.provider.getDimension();
+			for(Entry<Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).entrySet())
 				if(e.getValue()>e.getKey().cableType.getTransferRate())
 				{
 					if(event.world instanceof WorldServer)
@@ -278,7 +281,13 @@ public class EventHandler
 							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME, false, vec.x,vec.y,vec.z, 0, 0,.02,0, 1, new int[0]);
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
-			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.getDimension()).clear();
+			ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).clear();
+
+			if (!REMOVE_FROM_TICKING.isEmpty())
+			{
+				event.world.tickableTileEntities.removeAll(REMOVE_FROM_TICKING);
+				REMOVE_FROM_TICKING.removeIf((te) -> te.getWorld().provider.getDimension() == dim);
+			}
 		}
 		if(event.phase==TickEvent.Phase.START)
 		{

@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
@@ -25,7 +26,8 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPart<T>> extends TileEntityIEBase implements ITickable, IDirectionalTile, IBlockBounds
+public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPart<T>> extends TileEntityIEBase
+		implements ITickable, IDirectionalTile, IBlockBounds, IGeneralMultiblock
 {
 	public boolean formed = false;
 	public int pos=-1;
@@ -254,6 +256,13 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	{
 		return offset[0]!=0 || offset[1]!=0 || offset[2]!=0;
 	}
+
+	@Override
+	public boolean isLogicDummy()
+	{
+		return isDummy();
+	}
+
 	public abstract ItemStack getOriginalBlock();
 	public void disassemble()
 	{

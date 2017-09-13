@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -37,6 +38,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	@Override
 	public void update()
 	{
+		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote && formed && pos==13)
 		{
 			if(energyStorage.getEnergyStored()>0)
