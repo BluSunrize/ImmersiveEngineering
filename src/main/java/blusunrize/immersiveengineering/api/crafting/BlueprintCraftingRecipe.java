@@ -187,21 +187,26 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			int inputSize = ingr.inputSize*crafted;
 
 			for(int i = 0; i< query.size(); i++)
-				if(!query.get(i).isEmpty())
-					if(ingr.matchesItemStackIgnoringSize(query.get(i)))
+			{
+				ItemStack queryStack = query.get(i);
+				if(!queryStack.isEmpty())
+					if(ingr.matchesItemStackIgnoringSize(queryStack))
 					{
-						int taken = Math.min(query.get(i).getCount(), inputSize);
-						consumed.add(ApiUtils.copyStackWithAmount(query.get(i),taken));
-						query.get(i).shrink(taken);
-						if(query.get(i).getCount()<=0)
-							query.set(i, ItemStack.EMPTY);
-						inputSize-=taken;
-						if(inputSize<=0)
+						int taken = Math.min(queryStack.getCount(), inputSize);
+						consumed.add(ApiUtils.copyStackWithAmount(queryStack, taken));
+						if(taken>=queryStack.getCount() && queryStack.getItem().hasContainerItem(queryStack))
+							query.set(i, queryStack.getItem().getContainerItem(queryStack));
+						else
+							queryStack.shrink(taken);
+						inputSize -= taken;
+						if(inputSize <= 0)
 						{
 							inputIt.remove();
 							break;
 						}
 					}
+
+			}
 		}
 		return consumed;
 	}

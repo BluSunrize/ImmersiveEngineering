@@ -1,0 +1,25 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:blueprint",
+    "nbt": {
+      "blueprint": "molds"
+    }
+  },
+  "pattern": [
+    " K ",
+    "DDD",
+    "PPP"
+  ],
+  "key": {
+    "K": {
+      "item": "#plateSteel"
+    },
+    "D": {
+      "item": "#dyeBlue"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  }
+}
