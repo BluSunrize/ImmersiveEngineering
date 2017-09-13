@@ -39,7 +39,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:forge@[14.21.1.2420,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION,
+		dependencies = "required-after:forge@[14.22.0.2447,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
+		certificateFingerprint = "Blu's Key")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
@@ -161,6 +163,24 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void modIDMapping(FMLModIdMappingEvent event)
 	{
+	}
+
+	private final static String[] alternativeCerts = {
+			"7e11c175d1e24007afec7498a1616bef0000027d",// malte0811
+			"MavenKeyHere"//TODO maven
+	};
+
+	@Mod.EventHandler
+	public void wrongSignature(FMLFingerprintViolationEvent event)
+	{
+		IELogger.error("THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
+		for (String altCert:alternativeCerts)
+			if (event.getFingerprints().contains(altCert))
+			{
+				IELogger.error(altCert+" is considered an alternative certificate (which may be ok to use in some cases). " +
+						"If you thought this was an official build you probably shouldn't use it.");
+				break;
+			}
 	}
 
 

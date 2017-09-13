@@ -31,11 +31,8 @@ targetCompatibility = 1.8
 
 minecraft {
     version = "14.22.0.2467"
-    //14.21.1.2443"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
-
-    coreMod = "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
 
     replace '${version}', project.version
     // the mappings can be changed at any time, and must be in the following format.
@@ -107,11 +104,68 @@ dependencies {
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
+reobf {
+    coreJar {mappingType = 'SEARGE'}
+}
+
+task coreJar(type: Jar) {
+    // Copy all compiled files and resources from the source set to the JAR
+    // If you have additional source sets, add the same logic here
+    from(sourceSets.main.output) {
+        // Don't include the coremod in the main mod
+        // If you have more coremod-related packages that aren't nested in the main one, add exclusions for them
+        include 'blusunrize/immersiveengineering/common/asm/**'
+    }
+    manifest {
+        attributes "FMLCorePlugin": "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
+    }
+    // Add a classifier to the JAR ('-core' at the end of the file name)
+    // Distinguishes the mod JAR from the shipped one
+    classifier 'core'
+    group = 'build'
+}
+
+task signCoreJar(type: SignJar) {
+    onlyIf { // Skip the task if our secret data isn't available
+        project.hasProperty('keyStore')
+    }
+    dependsOn reobfCoreJar
+    if (project.hasProperty('keyStore')) { // This needs to be a path to the keystore file
+        keyStore = project.keyStore
+        alias = project.storeAlias
+        storePass = project.storePass
+        keyPass = project.storePass
+        inputFile = coreJar.archivePath
+        outputFile = coreJar.archivePath
+    }
+}
+
+task signMainJar(type: SignJar) {
+    onlyIf { // Skip the task if our secret data isn't available
+        project.hasProperty('keyStore')
+    }
+    dependsOn reobfJar
+    if (project.hasProperty('keyStore')) { // This needs to be a path to the keystore file
+        keyStore = project.keyStore
+        alias = project.storeAlias
+        storePass = project.storePass
+        keyPass = project.storePass
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
+}
+build.dependsOn signMainJar
+jar.dependsOn signCoreJar
+
 jar {
     manifest {
+        attributes 'ContainedDeps': coreJar.archivePath.name
         attributes "FMLAT": "ImmersiveEngineering_at.cfg"
-        attributes "FMLCorePlugin": "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
-        attributes "FMLCorePluginContainsFMLMod": "true"
+    }
+    exclude 'blusunrize/immersiveengineering/common/asm/**'
+    // Add the output of the mod JAR task to the main JAR for later extraction
+    from(coreJar.archivePath.absolutePath) {
+        include '*' // Due to the way Gradle's copy tasks work, we need this line for the JAR to get added
     }
 }
 
@@ -124,25 +178,24 @@ sourceSets {
     }
 }
 
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
 
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
 
-                // replace version and mcversion
-                expand 'version':project.version, 'mcversion':project.minecraft.version
-            }
+        // replace version and mcversion
+        expand "version": project.version, "mcversion": project.minecraft.version
+    }
 
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+}
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
