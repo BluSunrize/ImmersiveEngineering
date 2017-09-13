@@ -821,7 +821,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("metalPress", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "metalPress0", MultiblockMetalPress.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "metalPress1"),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "metalPress2", (Object[])tempItemList.toArray(new ItemStack[tempItemList.size()])));
+				new ManualPages.Crafting(ManualHelper.getManual(), "metalPress2", BlueprintCraftingRecipe.getTypedBlueprint("molds")),
+				new ManualPageBlueprint(ManualHelper.getManual(), "metalPress3", tempItemList.toArray(new ItemStack[tempItemList.size()])));
 		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),

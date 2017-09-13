@@ -165,7 +165,7 @@ public class ImmersiveEngineering
 	{
 	}
 
-	private final static String[] alternativeCerts = {
+	private static final String[] alternativeCerts = {
 			"7e11c175d1e24007afec7498a1616bef0000027d",// malte0811
 			"MavenKeyHere"//TODO maven
 	};
@@ -173,11 +173,11 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void wrongSignature(FMLFingerprintViolationEvent event)
 	{
-		IELogger.error("THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
+		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
 		for (String altCert:alternativeCerts)
 			if (event.getFingerprints().contains(altCert))
 			{
-				IELogger.error(altCert+" is considered an alternative certificate (which may be ok to use in some cases). " +
+				System.out.println("[Immersive Engineering/Error] "+altCert+" is considered an alternative certificate (which may be ok to use in some cases). " +
 						"If you thought this was an official build you probably shouldn't use it.");
 				break;
 			}

@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -90,6 +89,13 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,9), "plateSteel","plateSteel","ingotCopper");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,3,26), "blockGlass","wireCopper","wireCopper","dustRedstone");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,27), new ItemStack(IEContent.blockStoneDecoration,1, BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()),"plateCopper","electronTube","electronTube");
+
+		//
+		//MOLDS
+		//
+		for(int i=0; i<IEContent.itemMold.getSubNames().length; i++)
+			if(!IEContent.itemMold.isMetaHidden(i))
+				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(IEContent.itemMold,1,i), "plateSteel","plateSteel","plateSteel","plateSteel","plateSteel",new ItemStack(IEContent.itemTool, 1, 1));
 
 		//
 		//BULLETS
@@ -261,7 +267,6 @@ public class IERecipes
 	public static void postInitOreDictRecipes()
 	{
 		boolean allowHammerCrushing = !IEConfig.Tools.disableHammerCrushing;
-		ArrayListMultimap<String, ItemStack> registeredMoldBases = ArrayListMultimap.create();
 		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,0));
 		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,1));
 		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,2));
@@ -333,48 +338,28 @@ public class IERecipes
 				{
 					String ore = name.substring("plate".length());
 					if(ApiUtils.isExistingOreName("ingot"+ore))
-					{
-						registeredMoldBases.putAll("plate",OreDictionary.getOres(name));
 						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, compMoldPlate, 2400);
-					}
 				}
 				else if(name.startsWith("gear"))
 				{
 					IEContent.itemMold.setMetaUnhidden(1);
 					String ore = name.substring("gear".length());
 					if(ApiUtils.isExistingOreName("ingot"+ore))
-					{
-						registeredMoldBases.putAll("gear",OreDictionary.getOres(name));
 						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, compMoldGear, 2400).setInputSize(4);
-					}
 				}
 				else if(name.startsWith("stick")||name.startsWith("rod"))
 				{
 					String ore = name.startsWith("stick")?name.substring("stick".length()):name.substring("rod".length());
 					boolean priorityStick = !name.startsWith("rod")||!ApiUtils.isExistingOreName("stick"+ore);
 					if(priorityStick && ApiUtils.isExistingOreName("ingot"+ore))
-					{
-						registeredMoldBases.putAll("rod",OreDictionary.getOres(name));
 						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, compMoldRod, 2400);
-					}
 				}
 				else if(name.startsWith("wire"))
 				{
 					String ore = name.substring("wire".length());
 					if(ApiUtils.isExistingOreName("ingot"+ore))
-					{
-						registeredMoldBases.putAll("wire",OreDictionary.getOres(name));
 						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, compMoldWire, 2400);
-					}
 				}
-		if(registeredMoldBases.containsKey("plate"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_plate"), new ItemStack(IEContent.itemMold, 1, 0), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("plate"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_plate"));
-		if(registeredMoldBases.containsKey("gear"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_gear"), new ItemStack(IEContent.itemMold, 1, 1), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("gear"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_gear"));
-		if(registeredMoldBases.containsKey("rod"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_rod"), new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("rod"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_rod"));
-		if(registeredMoldBases.containsKey("wire"))
-			ForgeRegistries.RECIPES.register(new RecipeShapedIngredient(new ResourceLocation(ImmersiveEngineering.MODID+":"+"mold_wire"), new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', new IngredientStack(registeredMoldBases.get("wire"))).setRegistryName(ImmersiveEngineering.MODID+":"+"mold_wire"));
 		Config.manual_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 

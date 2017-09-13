@@ -363,7 +363,10 @@ public abstract class IESlot extends Slot
 		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
 			if(!upgradeableTool.isEmpty() && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
+			{
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
+				((ItemEngineersBlueprint)upgradeableTool.getItem()).updateOutputs(upgradeableTool);
+			}
 			this.inventory.markDirty();
 			return super.onTake(player, stack);
 		}
