@@ -4,33 +4,26 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashMap;
 
 /**
  * @author BluSunrize - 12.09.2017
  */
-public class MetalPressPackingRecipe extends MetalPressRecipe
+public class MetalPressUnpackingRecipe extends MetalPressRecipe
 {
-	private final int gridSize;
-	private final int totalAmount;
 	private final int baseEnergy;
 	private HashMap<ComparableItemStack, PackedDelegate> cache = new HashMap();
 
-	public MetalPressPackingRecipe(ComparableItemStack mold, int energy, int gridSize)
+	public MetalPressUnpackingRecipe(ComparableItemStack mold, int energy)
 	{
 		super(ItemStack.EMPTY, ItemStack.EMPTY, mold, energy);
-		this.gridSize = gridSize;
-		this.totalAmount = gridSize*gridSize;
 		this.baseEnergy = energy;
 
-		MetalPressRecipe.deserializers.put("packing"+totalAmount, nbt -> {
+		MetalPressRecipe.deserializers.put("unpacking", nbt -> {
 			ComparableItemStack comp = ComparableItemStack.readFromNBT(nbt.getCompoundTag("mapKey"));
 			if(cache.containsKey(comp))
 				return cache.get(comp);
@@ -49,7 +42,7 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 	@Override
 	public boolean matches(ItemStack mold, ItemStack input)
 	{
-		return input.getCount()>=this.totalAmount && getOutputCached(input)!=null;
+		return getOutputCached(input)!=null;
 	}
 	@Override
 	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input)
@@ -74,7 +67,7 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 		@Override
 		public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 		{
-			nbt.setString("type", "packing"+input.inputSize);
+			nbt.setString("type", "unpacking");
 			nbt.setTag("mapKey", mapKey.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("output", output.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
@@ -91,23 +84,24 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 			return this.cache.get(comp);
 
 		comp.copy();
-		ItemStack out = getPackedOutput(this.gridSize, this.totalAmount, input);
-		if(out.isEmpty())
+		ItemStack out = MetalPressPackingRecipe.getPackedOutput(1,1, input);
+		int count = out.getCount();
+
+		if(count!=4 && count!=9)
 		{
 			this.cache.put(comp, null);
 			return null;
 		}
-		PackedDelegate delegate = new PackedDelegate(comp, out, Utils.copyStackWithAmount(input, this.totalAmount), this.mold, this.baseEnergy);
+
+		ItemStack rePacked = MetalPressPackingRecipe.getPackedOutput(count==4?2:3, count, out);
+		if(rePacked.isEmpty() || !OreDictionary.itemMatches(input, rePacked, true))
+		{
+			this.cache.put(comp, null);
+			return null;
+		}
+
+		PackedDelegate delegate = new PackedDelegate(comp, out, Utils.copyStackWithAmount(input, 1), this.mold, this.baseEnergy);
 		this.cache.put(comp, delegate);
 		return delegate;
-	}
-
-	public static ItemStack getPackedOutput(int gridSize, int totalAmount, ItemStack stack)
-	{
-		InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(gridSize, gridSize, NonNullList.withSize(totalAmount, stack.copy()));
-		IRecipe recipe = Utils.findRecipe(invC, FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
-		if(recipe!=null)
-			return recipe.getCraftingResult(invC);
-		return ItemStack.EMPTY;
 	}
 }
