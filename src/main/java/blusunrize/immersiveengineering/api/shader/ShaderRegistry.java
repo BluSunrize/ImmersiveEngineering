@@ -122,7 +122,7 @@ public class ShaderRegistry
 		if(additionalTexture!=null)
 		{
 			ResourceLocation rl = additionalTexture.indexOf(58)>=0?new ResourceLocation(additionalTexture):new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+additionalTexture);
-			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+			list.add(new ShaderLayer(rl,colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_uncoloured"),0xffffffff));
 		ShaderCaseRevolver shader = new ShaderCaseRevolver(list);
@@ -150,7 +150,7 @@ public class ShaderRegistry
 		if(additionalTexture!=null)
 		{
 			ResourceLocation rl = additionalTexture.indexOf(58)>=0?new ResourceLocation(additionalTexture):new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+additionalTexture);
-			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+			list.add(new ShaderLayer(rl,colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_uncoloured"),0xffffffff));
 		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(list);
@@ -179,7 +179,7 @@ public class ShaderRegistry
 		if(additionalTexture!=null)
 		{
 			ResourceLocation rl = additionalTexture.indexOf(58)>=0?new ResourceLocation(additionalTexture):new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+additionalTexture);
-			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+			list.add(new ShaderLayer(rl,colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_uncoloured"),0xffffffff));
 		list.add(new ShaderLayer(null,0xffffffff));//final pass is for drill head and augers
@@ -208,7 +208,7 @@ public class ShaderRegistry
 		if(additionalTexture!=null)
 		{
 			ResourceLocation rl = additionalTexture.indexOf(58)>=0?new ResourceLocation(additionalTexture):new ResourceLocation("immersiveengineering:items/shaders/railgun_"+additionalTexture);
-			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+			list.add(new ShaderLayer(rl,colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_uncoloured"),0xffffffff));
 
@@ -235,7 +235,7 @@ public class ShaderRegistry
 		if(additionalTexture!=null)
 		{
 			ResourceLocation rl = additionalTexture.indexOf(58)>=0?new ResourceLocation(additionalTexture):new ResourceLocation("immersiveengineering:items/shaders/shield_"+additionalTexture);
-			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+			list.add(new ShaderLayer(rl,colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_uncoloured"),0xffffffff));
 
@@ -302,7 +302,7 @@ public class ShaderRegistry
 		if(additionalTexture!=null)
 		{
 			ResourceLocation rl = additionalTexture.indexOf(58)>=0?new ResourceLocation(additionalTexture):new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+additionalTexture);
-			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+			list.add(new ShaderLayer(rl,colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_uncoloured"),0xffffffff));
 

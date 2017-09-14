@@ -106,6 +106,8 @@ public abstract class ShaderCase
 		{
 			this.texture = texture;
 			this.colour = colour;
+			if(ShaderRegistry.defaultLayerBounds.containsKey(texture))
+				this.setTextureBounds(ShaderRegistry.defaultLayerBounds.get(texture));
 		}
 
 		public ShaderLayer setTextureBounds(double... bounds)
