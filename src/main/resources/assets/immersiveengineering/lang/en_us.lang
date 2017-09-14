@@ -396,6 +396,7 @@ item.immersiveengineering.mold.bullet_casing.name=Metal Press Mold: Bullet Casin
 item.immersiveengineering.mold.wire.name=Metal Press Mold: Wire
 item.immersiveengineering.mold.packing4.name=Metal Press Mold: Packing 2x2
 item.immersiveengineering.mold.packing9.name=Metal Press Mold: Packing 3x3
+item.immersiveengineering.mold.unpacking.name=Metal Press Mold: Unpacking
 
 item.immersiveengineering.graphite_electrode.name=Graphite Electrode
 item.immersiveengineering.shader.name=Shader
@@ -1214,6 +1215,7 @@ ie.manual.entry.metalPress0=The Metal Press is an automated way of shaping metal
 ie.manual.entry.metalPress1=Power is input through the top, and items through the conveyors, obviously in the direction of movement. The lower middle block is the redstone control port, rightclicking it with an Engineer's Hammer allows you to invert the redstone control.
 ie.manual.entry.metalPress2=To actually work, the metal press requires a mold to be attached to the piston. These molds are created in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> using the blueprint displayed above.
 ie.manual.entry.metalPress3=Molds are crafted as shown above, with the wirecutter taking some damage for every crafting operation. They are then inserted into the metal press by right-clicking the multiblock with a mold in hand.
+ie.manual.entry.metalPress4=The packing and unpacking molds can be used to compress 4 or 9 of the same item into their relevant storage form, as well as unpack them again. This can be utilized to store ingots as blocks, or automatically create simple blocks like Sandstone.
 
 ie.manual.entry.tank.name=Tank
 ie.manual.entry.tank.subtext=Full to the brim!
