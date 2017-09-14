@@ -1,4 +1,4 @@
-#####Version 0.12-72
+#####Version 0.12-72 - BUILT
 - added a recipe to fill the Speedloader in a crafting table
 - added Packing and Unpacking molds to the Metal Press
 - added Jar Signing to comply with Forge's coremod guidelines (thanks Malte)
