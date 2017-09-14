@@ -30,6 +30,7 @@ public class CraftTweakerHelper extends IECompatModule
 		CraftTweakerAPI.registerClass(BottlingMachine.class);
 		CraftTweakerAPI.registerClass(MetalPress.class);
 		CraftTweakerAPI.registerClass(Mixer.class);
+		CraftTweakerAPI.registerClass(DieselHelper.class);
 	}
 
 	@Override

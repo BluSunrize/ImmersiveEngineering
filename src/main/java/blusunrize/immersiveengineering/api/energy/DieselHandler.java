@@ -66,4 +66,14 @@ public class DieselHandler
 	{
 		return fuel != null && drillFuel.contains(fuel);
 	}
+	
+	public static void removeFuel(Fluid fuel){
+		if(fuel != null){
+			dieselGenBurnTime.remove(fuel.getName());
+		}
+	}
+	
+	public static void removeDrillFuel(Fluid fuel){
+		drillFuel.remove(fuel);
+	}
 }
