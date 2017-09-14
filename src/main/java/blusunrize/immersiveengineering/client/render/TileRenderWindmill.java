@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -64,8 +63,6 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 
 		float dir = tile.facing == EnumFacing.SOUTH ? 0 : tile.facing == EnumFacing.NORTH ? 180 : tile.facing == EnumFacing.EAST ? 90 : -90;
 		float rot = 360 * (tile.rotation + (!tile.canTurn || tile.rotation == 0 ? 0 : partialTicks)*tile.perTick);
-		if(tile.facing.getAxisDirection() == AxisDirection.NEGATIVE)
-			rot *= -1;
 
 		GlStateManager.rotate(rot, tile.facing.getAxis() == Axis.X ? 1 : 0, 0, tile.facing.getAxis() == Axis.Z ? 1 : 0);
 		GlStateManager.rotate(dir, 0, 1, 0);
