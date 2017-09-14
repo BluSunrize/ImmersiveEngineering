@@ -2,6 +2,7 @@
 - added a recipe to fill the Speedloader in a crafting table
 - added Packing and Unpacking molds to the Metal Press
 - added Jar Signing to comply with Forge's coremod guidelines (thanks Malte)
+- added support for amounts on OreDict ingredients in Crafttweaker compat (thanks MatrixN1)
 - changed IE's items with internal storage to use ItemHandler capabilities (thanks Malte)
 - changed IE's OBJ models to generate less comparative objects (thanks Malte)
 - changed IE to register its recipes on the proper event, fixing Crafttweaker compat
@@ -10,6 +11,7 @@
 - changed Metal Press molds to be crafted in the Workbench
 - changed Metal Barrels to not output fluid when receiving a redstone signal, to work as valves (thanks Berinhardt)
 - changed dummies on Multiblocks to be removed from the list of ticking tiles (thanks Malte)
+- changed Windmills to rotate in in accordance to wind from the north or west, rather than fixed clockwise
 - fixed issues with dummyblocks spawning outside world borders (thanks Malte)
 - fixed crates and toolboxes losing their inventory (thanks Malte)
 - fixed various desync issues with the Engineer's Workbench (thanks Malte)
