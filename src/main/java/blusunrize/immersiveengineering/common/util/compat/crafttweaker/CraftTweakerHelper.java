@@ -65,7 +65,11 @@ public class CraftTweakerHelper extends IECompatModule
 			else if(iStack instanceof IngredientStack)
 			{
 				IIngredient ingr = ReflectionHelper.getPrivateValue(IngredientStack.class, (IngredientStack)iStack, "ingredient");
-				return toObject(ingr);
+				Object o = toObject(ingr);
+				if (o instanceof String)
+					return new blusunrize.immersiveengineering.api.crafting.IngredientStack((String) o, iStack.getAmount());
+				else
+					return o;
 			} else
 				return null;
 		}
