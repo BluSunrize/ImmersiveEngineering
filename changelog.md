@@ -3,6 +3,7 @@
 - added Packing and Unpacking molds to the Metal Press
 - added Jar Signing to comply with Forge's coremod guidelines (thanks Malte)
 - added support for amounts on OreDict ingredients in Crafttweaker compat (thanks MatrixN1)
+- added Crafttweaker compat for the Dieselgenerator + Drill (thanks Faxn)
 - changed IE's items with internal storage to use ItemHandler capabilities (thanks Malte)
 - changed IE's OBJ models to generate less comparative objects (thanks Malte)
 - changed IE to register its recipes on the proper event, fixing Crafttweaker compat
