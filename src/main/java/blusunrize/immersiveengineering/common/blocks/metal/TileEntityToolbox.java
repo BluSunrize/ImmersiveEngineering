@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
+import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -31,7 +32,7 @@ import javax.annotation.Nullable;
 
 public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalTile, IBlockBounds, IIEInventory, IGuiTile, ITileDrop, IPlayerInteraction
 {
-	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+	NonNullList<ItemStack> inventory = NonNullList.withSize(ItemToolbox.SLOT_COUNT, ItemStack.EMPTY);
 	public String name;
 	private EnumFacing facing = EnumFacing.NORTH;
 	private NBTTagList enchantments;
@@ -45,7 +46,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		if(nbt.hasKey("enchantments"))
 			this.enchantments = nbt.getTagList("enchantments", 10);
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 27);
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), ItemToolbox.SLOT_COUNT);
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
