@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 
 public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 {
+	public static final int SLOT_COUNT = 23;
 	public ItemToolbox()
 	{
 		super("toolbox", 1);
@@ -70,6 +71,6 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
-		return 23;
+		return SLOT_COUNT;
 	}
 }
