@@ -172,8 +172,10 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 		if(fluidStack!=null)
 		{
 			int light = this.isBurning()?15: fluidStack.getFluid().getLuminosity(fluidStack);
+			int superBrightness = super.getBrightnessForRender();
+			light = (superBrightness&(0xff<<20))|(light<<4);
 			if(light > 0)
-				return Math.max(light, super.getBrightnessForRender());
+				return Math.max(light, superBrightness);
 		}
 		return super.getBrightnessForRender();
 	}

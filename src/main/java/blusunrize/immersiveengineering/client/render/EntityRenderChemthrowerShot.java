@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -35,9 +36,12 @@ public class EntityRenderChemthrowerShot extends Render
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		GlStateManager.enableRescaleNormal();
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+		RenderHelper.disableStandardItemLighting();
+
 		Tessellator tessellator = ClientUtils.tes();
 
-		GlStateManager.disableCull();
 		GlStateManager.rotate(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotate(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
@@ -50,16 +54,20 @@ public class EntityRenderChemthrowerShot extends Render
 			float g = (colour>>8&255)/255f;
 			float b = (colour&255)/255f;
 			ClientUtils.bindAtlas();
+			int lightAll = entity.getBrightnessForRender();
+			int lightA = (lightAll>>0x10)&0xffff;
+			int lightB = lightAll&0xffff;
 			GlStateManager.scale(.25f, .25f, .25f);
 			BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
-			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-			worldrenderer.pos(-.25,-.25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4)).color(r,g,b,a).endVertex();
-			worldrenderer.pos( .25,-.25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4)).color(r,g,b,a).endVertex();
-			worldrenderer.pos( .25, .25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(0)).color(r,g,b,a).endVertex();
-			worldrenderer.pos(-.25, .25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(0)).color(r,g,b,a).endVertex();
+			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+			worldrenderer.pos(-.25,-.25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r,g,b,a).endVertex();
+			worldrenderer.pos( .25,-.25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r,g,b,a).endVertex();
+			worldrenderer.pos( .25, .25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r,g,b,a).endVertex();
+			worldrenderer.pos(-.25, .25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r,g,b,a).endVertex();
 			tessellator.draw();
 		}
-		GlStateManager.enableCull();
+		RenderHelper.enableStandardItemLighting();
+		GlStateManager.disableBlend();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();
 	}
