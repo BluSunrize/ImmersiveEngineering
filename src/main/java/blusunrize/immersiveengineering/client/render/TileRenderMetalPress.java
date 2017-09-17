@@ -27,7 +27,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 	{
 		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
-		
+
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
@@ -36,10 +36,10 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
-		
+
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
-		
+
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
@@ -53,6 +53,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 			float transportTime = 52.5f/(float)process.maxTicks;
 			float pressTime = 3.75f/(float)process.maxTicks;
 			float fProcess = (process.processTick+(te.shouldRenderAsActive()?partialTicks:0))/(float)process.maxTicks;
+
 			if(fProcess<transportTime)
 				shift[i] = fProcess/transportTime*.5f;
 			else if(fProcess<(1-transportTime))
@@ -87,7 +88,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
-		
+
 		GlStateManager.rotate(te.facing==EnumFacing.SOUTH?180: te.facing==EnumFacing.WEST?90: te.facing==EnumFacing.EAST?-90: 0, 0,1,0);
 		if(!te.mold.isEmpty())
 		{
@@ -109,6 +110,8 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 				continue;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0,0,-2.5*shift[i]);
+			if(piston>.92)
+				GlStateManager.translate(0,.92-piston,0);
 
 			List<ItemStack> displays = ((MultiblockProcessInWorld)process).getDisplayItem();
 			if(!displays.isEmpty())
