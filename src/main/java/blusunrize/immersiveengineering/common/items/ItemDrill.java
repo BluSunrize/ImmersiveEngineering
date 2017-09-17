@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
@@ -48,7 +49,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -204,6 +204,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			{
 				Matrix4 mat = new Matrix4(transform.get().getMatrix());
 				mat.translate(-.25f,0,0);
+				return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
+			}
+			if(!IEConfig.fancyItemAnimations && group.startsWith("upgrade_damage") && !"upgrade_damage0".equals(group))
+			{
+				Matrix4 mat = new Matrix4(transform.get().getMatrix());
+				mat.translate(.441f,0,0);
 				return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 			}
 		}
@@ -514,7 +520,6 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return new IEItemStackHandler(stack)
 		{
 			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
-			;
 			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:drill", stack);
 
 			@Override

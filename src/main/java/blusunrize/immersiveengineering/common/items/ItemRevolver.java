@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -51,6 +52,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -373,6 +375,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			}
 		return true;
 	}
+	@Override
 	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
 	{
 		if (!remote&&isEmpty(revolver, true))
@@ -514,7 +517,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public boolean isDynamicGroup(ItemStack stack, String group)
 	{
-		return "frame".equals(group) || "cylinder".equals(group);
+		return false;//"frame".equals(group) || "cylinder".equals(group);
 	}
 
 	private static final Matrix4 matOpen = new Matrix4().translate(-.625, .25, 0).rotate(-.87266, 0, 0, 1);
@@ -551,6 +554,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				return matOpen;
 		}
 		return "frame".equals(group)?matClose:matCylinder;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
+	{
+		if(!IEConfig.fancyItemAnimations && transform.isPresent() && ("frame".equals(group)||"cylinder".equals(group)))
+		{
+			Matrix4 mat = new Matrix4(transform.get().getMatrix());
+			if("frame".equals(group))
+				mat.translate(-.625, .25, 0);
+			else
+				mat.translate(0,.6875,0);
+			return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
+		}
+		return transform;
 	}
 
 	public String[] compileRender(ItemStack revolver)
