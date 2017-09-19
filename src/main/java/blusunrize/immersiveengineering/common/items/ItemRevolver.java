@@ -517,7 +517,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public boolean isDynamicGroup(ItemStack stack, String group)
 	{
-		return false;//"frame".equals(group) || "cylinder".equals(group);
+		return "frame".equals(group) || "cylinder".equals(group);
 	}
 
 	private static final Matrix4 matOpen = new Matrix4().translate(-.625, .25, 0).rotate(-.87266, 0, 0, 1);
