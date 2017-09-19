@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "14.22.0.2467"
+    version = "14.23.0.2486"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
@@ -188,7 +188,7 @@ processResources {
         include "mcmod.info"
 
         // replace version and mcversion
-        expand "version": project.version, "mcversion": project.minecraft.version
+        expand "version": project.version, "mcversion": "1.12"
     }
 
     // copy everything else, thats not the mcmod.info
