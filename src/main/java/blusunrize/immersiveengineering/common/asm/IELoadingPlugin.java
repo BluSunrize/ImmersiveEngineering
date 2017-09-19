@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author BluSunrize - 20.07.2017
  */
-@IFMLLoadingPlugin.MCVersion(value = "1.12.1")
+//@IFMLLoadingPlugin.MCVersion(value = "1.12.1") Disabling this because you can't specify 1.12.x to allow all .12 versions
 @IFMLLoadingPlugin.SortingIndex(1001)
 public class IELoadingPlugin implements IFMLLoadingPlugin
 {
