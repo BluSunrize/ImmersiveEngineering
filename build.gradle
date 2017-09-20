@@ -51,9 +51,9 @@ repositories {
         name 'DVS1 Maven FS'
         url 'http://dvs1.progwml6.com/files/maven'
     }
-    maven { // WAILA
-        name "ProfMobius Maven FS"
-        url "http://mobiusstrip.eu/maven"
+    maven { // HWYLA
+        name "TehNuts WAILA fork"
+        url "http://tehnut.info/maven"
     }
     maven { // OpenComputers
         name "OpenComputers"
@@ -99,7 +99,7 @@ dependencies {
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
 //    deobfCompile "li.cil.oc:OpenComputers:MC1.11.2-1.7.0.+" ToDo?
-//    deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2" ToDo!!
+    compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
     compileOnly 'net.industrial-craft:industrialcraft-2:2.8.+'
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }

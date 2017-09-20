@@ -87,12 +87,12 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			int cur = accessor.getNBTInteger(accessor.getNBTData(), "Energy");
 			int max = accessor.getNBTInteger(accessor.getNBTData(), "MaxStorage");
 			if(max>0 && ((ITaggedList)currenttip).getEntries("IFEnergyStorage").size()==0)
-				((ITaggedList)currenttip).add(String.format("%d / %d IF", new Object[] {cur,max}), "IFEnergyStorage");
-			if (tile instanceof TileEntityTeslaCoil)
+				((ITaggedList)currenttip).add(String.format("%d / %d IF", cur,max), "IFEnergyStorage");
+			if (tile instanceof TileEntityTeslaCoil && ((ITaggedList)currenttip).getEntries("teslaCoil").size()==0)
 			{
 				boolean rsInv = accessor.getNBTData().getBoolean("redstoneInverted");
 				boolean lowPower = accessor.getNBTData().getBoolean("lowPower");
-				currenttip.add(I18n.format(Lib.CHAT_INFO+"rsControl."+(rsInv?"invertedOn":"invertedOff")));
+				((ITaggedList)currenttip).add(I18n.format(Lib.CHAT_INFO+"rsControl."+(rsInv?"invertedOn":"invertedOff")), "teslaCoil");
 				currenttip.add(I18n.format(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower":"highPower")));
 			}
 		}
