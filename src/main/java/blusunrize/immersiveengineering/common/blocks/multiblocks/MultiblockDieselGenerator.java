@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -147,6 +148,8 @@ public class MultiblockDieselGenerator implements IMultiblock
 
 		if(b)
 		{
+			IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta());
+			state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
 			for(int l=0;l<5;l++)
 				for(int w=-1;w<=1;w++)
 					for(int h=-1;h<=1;h++)
@@ -156,12 +159,11 @@ public class MultiblockDieselGenerator implements IMultiblock
 						int ww = mirror?-w:w;
 						BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
-						world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta()));
+						world.setBlockState(pos2, state);
 						TileEntity curr = world.getTileEntity(pos2);
 						if(curr instanceof TileEntityDieselGenerator)
 						{
 							TileEntityDieselGenerator tile = (TileEntityDieselGenerator)curr;
-							tile.facing=side;
 							tile.formed=true;
 							tile.pos = (h+1)*15 + l*3 + (w+1);
 							tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww : -ww)};

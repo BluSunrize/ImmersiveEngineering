@@ -182,7 +182,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_Conveyor meta)
 	{
 //		switch(BlockTypes_Conveyor.values()[meta])
 //		{

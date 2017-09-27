@@ -59,7 +59,7 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 	//	}
 
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
+	public TileEntity createBasicTE(World worldIn, E meta)
 	{
 		return new TileEntityIESlab();
 	}

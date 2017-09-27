@@ -1,11 +1,13 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
+import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
@@ -110,6 +112,8 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 						}
 					}
 
+		IBlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h=-1;h<=2;h++)
 			for(int l=-1;l<=1;l++)
 				for(int w=-1;w<=1;w++)
@@ -118,7 +122,7 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 						int xx = f==EnumFacing.EAST?l: f==EnumFacing.WEST?-l: f==EnumFacing.NORTH?-w:w;
 						int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w:-w;
 
-						world.setBlockState(pos.add(xx, h, zz), IEContent.blockStoneDevice.getStateFromMeta(2));
+						world.setBlockState(pos.add(xx, h, zz), state);
 						BlockPos pos2 = pos.add(xx, h, zz);
 						TileEntity curr = world.getTileEntity(pos2);
 						if(curr instanceof TileEntityBlastFurnace)
@@ -126,7 +130,6 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 							TileEntityBlastFurnace currBlast = (TileEntityBlastFurnace) curr;
 							currBlast.offset=new int[]{xx,h,zz};
 							currBlast.pos = (h+1)*9 + (l+1)*3 + (w+1);
-							currBlast.facing=f.getOpposite();
 							currBlast.formed=true;
 							currBlast.markDirty();
 							world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);

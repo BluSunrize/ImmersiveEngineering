@@ -50,6 +50,7 @@ public class IEBlockInterfaces
 		String[] getIntPropertyNames();
 		PropertyInteger getIntProperty(String name);
 		int getIntPropertyValue(String name);
+		default void setValue(String name, int value) {}
 	}
 
 	public interface IUsesBooleanProperty

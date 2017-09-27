@@ -170,9 +170,9 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_ClothDevice type)
 	{
-		switch(BlockTypes_ClothDevice.values()[meta])
+		switch(type)
 		{
 			case CUSHION:
 				return null;

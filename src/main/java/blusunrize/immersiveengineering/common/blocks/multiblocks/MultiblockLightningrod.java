@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -154,7 +155,8 @@ public class MultiblockLightningrod implements IMultiblock
 					}
 				}
 
-
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
 		for(int l=0;l<3;l++)
 			for(int w=-1;w<=1;w++)
 				for(int h=-1;h<=1;h++)
@@ -162,12 +164,11 @@ public class MultiblockLightningrod implements IMultiblock
 					int ww = mirror?-w:w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
-					world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta()));
+					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntityLightningrod)
 					{
 						TileEntityLightningrod tile = (TileEntityLightningrod)curr;
-						tile.facing=side;
 						tile.formed=true;
 						tile.pos = (h+1)*9 + l*3 + (w+1);
 						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww : -ww)};

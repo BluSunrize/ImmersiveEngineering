@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -189,6 +190,8 @@ public class MultiblockArcFurnace implements IMultiblock
 
 		if(b)
 		{
+			IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
+			state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
 			for(int l=0;l<5;l++)
 				for(int w=-2;w<=2;w++)
 					for(int h=0;h<5;h++)
@@ -197,12 +200,11 @@ public class MultiblockArcFurnace implements IMultiblock
 							int ww = mirrored?-w:w;
 							BlockPos pos2 = startPos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
-							world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
+							world.setBlockState(pos2, state);
 							TileEntity curr = world.getTileEntity(pos2);
 							if(curr instanceof TileEntityArcFurnace)
 							{
 								TileEntityArcFurnace tile = (TileEntityArcFurnace)curr;
-								tile.facing=side;
 								tile.formed=true;
 								tile.pos = h*25 + l*5 + (w+2);
 								tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww),h-1,(side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww : -ww)};

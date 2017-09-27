@@ -337,9 +337,9 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_WoodenDevice1 type)
 	{
-		switch(BlockTypes_WoodenDevice1.values()[meta])
+		switch(type)
 		{
 		case WATERMILL:
 			return new TileEntityWatermill();

@@ -68,19 +68,19 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_StoneDevices type)
 	{
-		switch(meta)
+		switch(type)
 		{
-			case 0:
+			case COKE_OVEN:
 				return new TileEntityCokeOven();
-			case 1:
+			case BLAST_FURNACE:
 				return new TileEntityBlastFurnace();
-			case 2:
+			case BLAST_FURNACE_ADVANCED:
 				return new TileEntityBlastFurnaceAdvanced();
-			case 6:
+			case CORESAMPLE:
 				return new TileEntityCoresample();
-			case 7:
+			case ALLOY_SMELTER:
 				return new TileEntityAlloySmelter();
 		}
 		return null;

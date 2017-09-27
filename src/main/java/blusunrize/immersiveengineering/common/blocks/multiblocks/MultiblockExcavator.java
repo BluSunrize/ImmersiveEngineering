@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -126,51 +127,48 @@ public class MultiblockExcavator implements IMultiblock
 	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
 	{
 		side = side.getOpposite();
-		if(side==EnumFacing.UP||side==EnumFacing.DOWN)
+		if (side == EnumFacing.UP || side == EnumFacing.DOWN)
 			side = EnumFacing.fromAngle(player.rotationYaw);
 
 		boolean mirror = false;
 		boolean b = this.structureCheck(world, pos, side, mirror);
-		if(!b)
+		if (!b)
 		{
 			mirror = true;
 			b = structureCheck(world, pos, side, mirror);
 		}
-		if(!b)
+		if (!b)
 			return false;
 
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.EXCAVATOR.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
+		for (int l = 0; l < 6; l++)
+			for (int w = -1; w <= 1; w++)
+				for (int h = -1; h <= 1; h++)
+				{
+					if (l > 0 && w == 0)
+						continue;
+					int ww = mirror ? -w : w;
+					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
-		if(b)
-		{
-			for(int l=0;l<6;l++)
-				for(int w=-1;w<=1;w++)
-					for(int h=-1;h<=1;h++)
+					world.setBlockState(pos2, state);
+					TileEntity curr = world.getTileEntity(pos2);
+					if (curr instanceof TileEntityExcavator)
 					{
-						if(l>0&&w==0)
-							continue;
-						int ww = mirror?-w:w;
-						BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
-
-						world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.EXCAVATOR.getMeta()));
-						TileEntity curr = world.getTileEntity(pos2);
-						if(curr instanceof TileEntityExcavator)
-						{
-							TileEntityExcavator tile = (TileEntityExcavator)curr;
-							tile.facing=side;
-							tile.formed=true;
-							tile.pos = (h+1)*18 + l*3 + (w+1);
-							tile.offset = new int[]{(side==EnumFacing.WEST?-l: side==EnumFacing.EAST?l: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l: side==EnumFacing.SOUTH?l: side==EnumFacing.EAST?ww : -ww)};
-							tile.mirrored=mirror;
-							tile.markDirty();
-							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
-						}
+						TileEntityExcavator tile = (TileEntityExcavator) curr;
+						tile.formed = true;
+						tile.pos = (h + 1) * 18 + l * 3 + (w + 1);
+						tile.offset = new int[]{(side == EnumFacing.WEST ? -l : side == EnumFacing.EAST ? l : side == EnumFacing.NORTH ? ww : -ww), h, (side == EnumFacing.NORTH ? -l : side == EnumFacing.SOUTH ? l : side == EnumFacing.EAST ? ww : -ww)};
+						tile.mirrored = mirror;
+						tile.markDirty();
+						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
+				}
 
-			BlockPos wheelPos = pos.offset(side,4);
-			if(MultiblockBucketWheel.instance.isBlockTrigger(world.getBlockState(wheelPos)))
-				MultiblockBucketWheel.instance.createStructure(world, wheelPos, side.rotateYCCW(), player);
-		}
-		return b;
+		BlockPos wheelPos = pos.offset(side, 4);
+		if (MultiblockBucketWheel.instance.isBlockTrigger(world.getBlockState(wheelPos)))
+			MultiblockBucketWheel.instance.createStructure(world, wheelPos, side.rotateYCCW(), player);
+		return true;
 	}
 
 	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
