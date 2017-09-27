@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -129,6 +130,8 @@ public class MultiblockSheetmetalTank implements IMultiblock
 							return false;
 					}
 
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.TANK.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h=0;h<=4;h++)
 			for(int l=-1;l<=1;l++)
 				for(int w=-1;w<=1;w++)
@@ -141,7 +144,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 					int xx = f==EnumFacing.EAST?l: f==EnumFacing.WEST?-l: f==EnumFacing.NORTH?-w:w;
 					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w:-w;
 
-					world.setBlockState(pos.add(xx, h, zz), IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.TANK.getMeta()));
+					world.setBlockState(pos.add(xx, h, zz), state);
 					BlockPos pos2 = pos.add(xx, h, zz);
 					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntitySheetmetalTank)
@@ -149,7 +152,6 @@ public class MultiblockSheetmetalTank implements IMultiblock
 						TileEntitySheetmetalTank currTank = (TileEntitySheetmetalTank) curr;
 						currTank.offset=new int[]{xx,h,zz};
 						currTank.pos = h*9 + (l+1)*3 + (w+1);
-						currTank.facing=f.getOpposite();
 						currTank.formed=true;
 						currTank.offset=new int[]{xx,h,zz};
 						currTank.markDirty();

@@ -48,6 +48,12 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 	}
 
 	@Override
+	public void setValue(String name, int value)
+	{
+		orientation = value;
+	}
+
+	@Override
 	public EnumFacing getFacing()
 	{
 		return facing;

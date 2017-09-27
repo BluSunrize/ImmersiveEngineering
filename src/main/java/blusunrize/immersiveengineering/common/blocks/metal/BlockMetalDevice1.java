@@ -154,9 +154,9 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_MetalDevice1 type)
 	{
-		switch(BlockTypes_MetalDevice1.values()[meta])
+		switch(type)
 		{
 			case BLAST_FURNACE_PREHEATER:
 				return new TileEntityBlastFurnacePreheater();

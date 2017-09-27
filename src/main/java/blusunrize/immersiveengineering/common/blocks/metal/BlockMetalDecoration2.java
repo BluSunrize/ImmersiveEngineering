@@ -142,9 +142,9 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
+	public TileEntity createBasicTE(World worldIn, BlockTypes_MetalDecoration2 type)
 	{
-		switch(BlockTypes_MetalDecoration2.values()[meta])
+		switch(type)
 		{
 			case STEEL_POST:
 				return new TileEntityWoodenPost();

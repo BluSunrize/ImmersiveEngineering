@@ -83,7 +83,7 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 
 
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
+	public TileEntity createBasicTE(World worldIn, BlockTypes_FakeLight meta)
 	{
 		return new TileEntityFakeLight();
 	}

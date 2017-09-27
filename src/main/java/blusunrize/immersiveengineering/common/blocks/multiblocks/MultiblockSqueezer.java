@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -135,6 +136,8 @@ public class MultiblockSqueezer implements IMultiblock
 		if(!b)
 			return false;
 
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.SQUEEZER.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
 		for(int h=-1;h<=1;h++)
 			for(int l=-1;l<=1;l++)
 				for(int w=-1;w<=1;w++)
@@ -145,12 +148,11 @@ public class MultiblockSqueezer implements IMultiblock
 					int ww = mirror?-w:w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
-					world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.SQUEEZER.getMeta()));
+					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntitySqueezer)
 					{
 						TileEntitySqueezer tile = (TileEntitySqueezer)curr;
-						tile.facing=side;
 						tile.formed=true;
 						tile.pos = (h+1)*9 + (l+1)*3 + (w+1);
 						tile.offset = new int[]{(side==EnumFacing.WEST?-l: side==EnumFacing.EAST?l: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l: side==EnumFacing.SOUTH?l: side==EnumFacing.EAST?ww : -ww)};

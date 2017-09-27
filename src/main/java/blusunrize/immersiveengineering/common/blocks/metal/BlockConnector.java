@@ -145,9 +145,9 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_Connector type)
 	{
-		switch(BlockTypes_Connector.values()[meta])
+		switch(type)
 		{
 			case CONNECTOR_LV:
 				return new TileEntityConnectorLV();

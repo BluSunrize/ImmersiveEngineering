@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
@@ -140,6 +141,8 @@ public class MultiblockBottlingMachine implements IMultiblock
 
 		if(!b)
 			return false;
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
 		for(int l=0; l<2; l++)
 			for(int w=-1; w<=1; w++)
 				for(int h=-1; h<=1; h++)
@@ -148,12 +151,11 @@ public class MultiblockBottlingMachine implements IMultiblock
 						int ww = mirrored?-w: w;
 						BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
-						world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta()));
+						world.setBlockState(pos2, state);
 						TileEntity curr = world.getTileEntity(pos2);
 						if(curr instanceof TileEntityBottlingMachine)
 						{
 							TileEntityBottlingMachine tile = (TileEntityBottlingMachine)curr;
-							tile.facing = side;
 							tile.formed = true;
 							tile.pos = (h+1)*6+l*3+(w+1);
 							tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww: -ww)};

@@ -50,9 +50,9 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_MetalMultiblock type)
 	{
-		switch(BlockTypes_MetalMultiblock.values()[meta])
+		switch(type)
 		{
 			case METAL_PRESS:
 				return new TileEntityMetalPress();

@@ -73,9 +73,9 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createBasicTE(World world, BlockTypes_MetalDevice0 type)
 	{
-		switch(BlockTypes_MetalDevice0.values()[meta])
+		switch(type)
 		{
 			case CAPACITOR_LV:
 				return new TileEntityCapacitorLV();

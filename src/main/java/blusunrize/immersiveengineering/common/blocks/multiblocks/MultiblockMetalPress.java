@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
@@ -147,18 +148,19 @@ public class MultiblockMetalPress implements IMultiblock
 						return false;
 				}
 			}
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, dir);
 		for(int l=-1;l<=1;l++)
 			for(int h=-1;h<=1;h++)
 			{
 				if(h==1&&l!=0)
 					continue;
 				BlockPos pos2 = pos.offset(dir, l).add(0,h,0);
-				world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
+				world.setBlockState(pos2, state);
 				TileEntity curr = world.getTileEntity(pos2);
 				if(curr instanceof TileEntityMetalPress)
 				{
 					TileEntityMetalPress tile = (TileEntityMetalPress)curr;
-					tile.facing=dir;
 					tile.formed=true;
 					tile.pos = (h+1)*3 + (l+1);
 					tile.offset = new int[]{(dir==EnumFacing.WEST?-l: dir==EnumFacing.EAST?l: 0),h,(dir==EnumFacing.NORTH?-l: dir==EnumFacing.SOUTH?l: 0)};

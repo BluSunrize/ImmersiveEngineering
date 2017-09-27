@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -8,6 +9,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -117,6 +119,9 @@ public class MultiblockBucketWheel implements IMultiblock
 				}
 			}
 
+
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
 		for(int h=-3;h<=3;h++)
 			for(int w=-3;w<=3;w++)
 			{
@@ -127,12 +132,11 @@ public class MultiblockBucketWheel implements IMultiblock
 				if((w==-3||w==3) && h!=0)
 					continue;
 
-				world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta()));
+				world.setBlockState(pos2, state);
 				TileEntity curr = world.getTileEntity(pos2);
 				if(curr instanceof TileEntityBucketWheel)
 				{
 					TileEntityBucketWheel tile = (TileEntityBucketWheel) curr;
-					tile.facing=side;
 					tile.formed=true;
 					tile.pos = (w+3) + (h+3)*7;
 

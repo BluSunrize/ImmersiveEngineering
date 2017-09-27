@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -49,13 +49,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Mod.EventBusSubscriber
-public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements ITileEntityProvider, IColouredBlock
+public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements IColouredBlock
 {
 	private boolean hasColours = false;
 
@@ -71,6 +68,42 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if (ev.phase== TickEvent.Phase.END)
 			tempTile.clear();
 	}
+
+	@Override
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+
+	@Nullable
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state)
+	{
+		TileEntity basic = createBasicTE(world, state.getValue(property));
+		Collection<IProperty<?>> keys = state.getPropertyKeys();
+		if (basic instanceof IDirectionalTile)
+		{
+			if (keys.contains(IEProperties.FACING_HORIZONTAL))
+				((IDirectionalTile) basic).setFacing(state.getValue(IEProperties.FACING_HORIZONTAL));
+			else if (keys.contains(IEProperties.FACING_ALL))
+				((IDirectionalTile) basic).setFacing(state.getValue(IEProperties.FACING_ALL));
+		}
+		if (basic instanceof IAttachedIntegerProperies)
+		{
+			IAttachedIntegerProperies tileIntProps = (IAttachedIntegerProperies) basic;
+			String[] names = ((IAttachedIntegerProperies) basic).getIntPropertyNames();
+			for (String propertyName:names)
+			{
+				PropertyInteger property = tileIntProps.getIntProperty(propertyName);
+				if (keys.contains(property))
+					tileIntProps.setValue(propertyName, state.getValue(property));
+			}
+		}
+
+		return basic;
+	}
+
+	@Nullable
+	public abstract TileEntity createBasicTE(World worldIn, E type);
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
