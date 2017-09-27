@@ -61,7 +61,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Mass Fusion", 3, EnumRarity.RARE, 0xff6e5a37, 0xff394730, 0xff545454, 0xffaaaaaa, "fusion",true,0xffffffff).setInfo(null,"Fallout","massfusion");
 
 		addShader("StormFlower", 1, EnumRarity.COMMON, 0xff273427,0xff286f30,0xff4b9255,0xff286f30).setInfo(null,"RWBY","stormflower");
-		addShader("Miló", 2, EnumRarity.UNCOMMON, 0xff3b1b10,0xff670004,0xffce7e10,0xff670004).setInfo(null,"RWBY","milo");
+		addShader("Mil\u00F3", 2, EnumRarity.UNCOMMON, 0xff3b1b10,0xff670004,0xffce7e10,0xff670004).setInfo(null,"RWBY","milo");
 		addShader("Trident", 2, EnumRarity.UNCOMMON, 0xff515151,0xffa8a8a8,0xff29d3ff,0xffafafaf).setInfo(null,"RWBY","trident");
 		addShader("Chloris", 4, EnumRarity.RARE, 0xff38322a,0xff38322a,0xff88fabe,0xffc8c8c8).setInfo(null,"RWBY","chloris");
 		addShader("Crescent Rose", 2, EnumRarity.COMMON, 0xff141414,0xff910008,0xff080808,0xffa4a4a4).setInfo(null,"RWBY","crescentrose");
