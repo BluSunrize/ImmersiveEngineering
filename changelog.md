@@ -1,4 +1,4 @@
-#####Version 0.12-73
+#####Version 0.12-73 - BUILT
 - added whitelist configs for the toolbox
 - re-enabled WAILA compat
 - re-enabled OpenComputers compat (not sure if it works)
