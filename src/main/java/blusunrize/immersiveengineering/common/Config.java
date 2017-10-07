@@ -354,6 +354,14 @@ public class Config
 			public static String[] powerpack_whitelist = new String[]{};
 			@Comment({"A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this"})
 			public static String[] powerpack_blacklist = new String[]{"embers:ashen_cloak_chest", "ic2:batpack","ic2:cf_pack","ic2:energy_pack","ic2:jetpack","ic2:jetpack_electric","ic2:lappack"};
+
+			@Comment({"A whitelist of tools allowed in the toolbox, formatting: [mod id]:[item name]"})
+			public static String[] toolbox_tools = new String[]{};
+			@Comment({"A whitelist of foods allowed in the toolbox, formatting: [mod id]:[item name]"})
+			public static String[] toolbox_foods = new String[]{};
+			@Comment({"A whitelist of wire-related items allowed in the toolbox, formatting: [mod id]:[item name]"})
+			public static String[] toolbox_wiring = new String[]{};
+
 		}
 	}
 
