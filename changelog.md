@@ -1,3 +1,6 @@
+#####Version 0.12-74 - BUILT
+- changed IE to ACTUALLY load on all 1.12 subversions
+
 #####Version 0.12-73 - BUILT
 - added whitelist configs for the toolbox
 - re-enabled WAILA compat
