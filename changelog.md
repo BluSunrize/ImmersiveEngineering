@@ -1,3 +1,19 @@
+#####Version 0.12-73 - BUILT
+- added whitelist configs for the toolbox
+- re-enabled WAILA compat
+- changed IE to load on all 1.12 subversions
+- changed Metal Press render to have items sink a bit down to hide blocks
+- changed IE blocks to allow states for directional setting (thanks Malte)
+- changed Crushers to have a limited size queue to avoid login crashes
+- fixed toolbox crashing when placed (thanks Malte)
+- fixed lighting of the chemthrower particles (thanks Malte)
+- fixed drill and revolver looking derpy when fancy animations are disabled
+- fixed the Miló Shader's name (thanks Malte)
+- fixed client-access exceptions with TOP handler
+- fixed Foresty compat errors
+- fixed cycle animations for the gunturret
+- fixed issues with Botania compat
+
 #####Version 0.12-72 - BUILT
 - added a recipe to fill the Speedloader in a crafting table
 - added Packing and Unpacking molds to the Metal Press
