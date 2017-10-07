@@ -57,11 +57,11 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 			{
 				float cycle = 0;
 				if(((TileEntityTurretGun)tile).cycleRender>3)
-					cycle = (((TileEntityTurretGun)tile).cycleRender-5)/2f;
+					cycle = (5-((TileEntityTurretGun)tile).cycleRender)/2f;
 				else
 					cycle = ((TileEntityTurretGun)tile).cycleRender/3f;
 
-				GlStateManager.translate(0, 0, cycle*.3125);
+				GlStateManager.translate(-tile.facing.getFrontOffsetX()*cycle*.3125, 0, -tile.facing.getFrontOffsetZ()*cycle*.3125);
 			}
 			renderModelPart(blockRenderer, tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), false, "action");
 		}
