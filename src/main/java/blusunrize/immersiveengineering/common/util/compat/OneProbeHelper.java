@@ -13,12 +13,12 @@ import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
 import mcjty.theoneprobe.config.Config;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
@@ -165,8 +165,8 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 						return;
 					}
 				}
-				probeInfo.text(I18n.format(Lib.CHAT_INFO+"rsControl."+(tc.redstoneControlInverted?"invertedOn":"invertedOff")));
-				probeInfo.text(I18n.format(Lib.CHAT_INFO+"tesla."+(tc.lowPower?"lowPower":"highPower")));
+				probeInfo.text(I18n.translateToLocal(Lib.CHAT_INFO+"rsControl."+(tc.redstoneControlInverted?"invertedOn":"invertedOff")));
+				probeInfo.text(I18n.translateToLocal(Lib.CHAT_INFO+"tesla."+(tc.lowPower?"lowPower":"highPower")));
 
 			}
 		}
@@ -187,10 +187,10 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 			if(te instanceof IEBlockInterfaces.IConfigurableSides && data.getSideHit()!=null)
 			{
 				boolean flip = player.isSneaking();
-				EnumFacing side = flip?data.getSideHit().getOpposite():data.getSideHit();
+				EnumFacing side = flip?data.getSideHit().getOpposite(): data.getSideHit();
 				SideConfig sc = ((IEBlockInterfaces.IConfigurableSides)te).getSideConfig(side.getIndex());
-				String s = I18n.format(Lib.DESC_INFO+"blockSide."+(flip?"opposite":"facing"))+": ";
-				probeInfo.text(s + I18n.format(Lib.DESC_INFO+"blockSide.io."+(sc.ordinal()-1)));
+				String s = I18n.translateToLocal(Lib.DESC_INFO+"blockSide."+(flip?"opposite": "facing"))+": ";
+				probeInfo.text(s+I18n.translateToLocal(Lib.DESC_INFO+"blockSide.io."+(sc.ordinal()-1)));
 			}
 		}
 	}
