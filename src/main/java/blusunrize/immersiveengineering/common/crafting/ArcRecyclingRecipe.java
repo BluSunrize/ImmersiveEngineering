@@ -1,16 +1,21 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe

@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
@@ -111,7 +119,7 @@ public class IEProperties
 	
 	public static class PropertyBoolInverted extends PropertyHelper<Boolean>
 	{
-		private final static ImmutableList<Boolean> ALLOWED_VALUES = ImmutableList.of(false, true);
+		private static final ImmutableList<Boolean> ALLOWED_VALUES = ImmutableList.of(false, true);
 		protected PropertyBoolInverted(String name)
 		{
 			super(name, Boolean.class);

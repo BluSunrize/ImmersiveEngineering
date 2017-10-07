@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
@@ -35,7 +43,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

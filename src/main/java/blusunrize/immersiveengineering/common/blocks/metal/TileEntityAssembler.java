@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
@@ -314,9 +322,8 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		if(this.inventory.get(18+iPattern).isEmpty())
 			return true;
-		else if(OreDictionary.itemMatches(output, this.inventory.get(18+iPattern), true) && Utils.compareItemNBT(output, this.inventory.get(18+iPattern)) && this.inventory.get(18 + iPattern).getCount() + output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize())
-			return true;
-		return false;
+		else
+			return OreDictionary.itemMatches(output, this.inventory.get(18+iPattern), true)&&Utils.compareItemNBT(output, this.inventory.get(18+iPattern))&&this.inventory.get(18+iPattern).getCount()+output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize();
 	}
 	public boolean isRecipeIngredient(ItemStack stack, int slot)
 	{

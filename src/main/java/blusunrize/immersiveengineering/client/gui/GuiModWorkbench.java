@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -82,7 +90,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 				if(button instanceof GuiSliderIE && floatArray!=null)
 					message.setFloat("f_"+floatArray[iFloat++].name,(float)((GuiSliderIE)button).sliderValue);
 			}
-			if(lastMessage==null || !lastMessage.equals(message))//Only send packets when values have changed
+			if(!message.equals(lastMessage))//Only send packets when values have changed
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.workbench, message));
 			lastMessage = message;
 		}

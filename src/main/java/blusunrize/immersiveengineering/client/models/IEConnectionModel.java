@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.client.models;
 
 import com.google.common.cache.CacheBuilder;
@@ -24,7 +32,7 @@ public class IEConnectionModel implements IBakedModel
 	private final LoadingCache<IModelState, IEConnectionModel> cache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<IModelState, IEConnectionModel>()
 	{
 		@Override
-		public IEConnectionModel load(IModelState state) throws Exception
+		public IEConnectionModel load(IModelState state)
 		{
 			return new IEConnectionModel(baseModel, state);
 		}
