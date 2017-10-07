@@ -1,10 +1,13 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
+import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -15,12 +18,43 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
 public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 {
 	public static final int SLOT_COUNT = 23;
 	public ItemToolbox()
 	{
 		super("toolbox", 1);
+		ToolboxHandler.addToolType(new Predicate<ItemStack>()
+		{
+			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_tools);
+			@Override
+			public boolean test(ItemStack stack)
+			{
+				return set.contains(stack.getItem().getRegistryName().toString());
+			}
+		});
+		ToolboxHandler.addFoodType(new Predicate<ItemStack>()
+		{
+			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_foods);
+			@Override
+			public boolean test(ItemStack stack)
+			{
+				return set.contains(stack.getItem().getRegistryName().toString());
+			}
+		});
+		ToolboxHandler.addWiringType(new BiPredicate<ItemStack, World>()
+		{
+			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_wiring);
+			@Override
+			public boolean test(ItemStack stack, World world)
+			{
+				return set.contains(stack.getItem().getRegistryName().toString());
+			}
+		});
 	}
 
 	@Override
