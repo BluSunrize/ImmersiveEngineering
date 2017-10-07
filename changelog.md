@@ -1,6 +1,7 @@
-#####Version 0.12-73 - BUILT
+#####Version 0.12-73
 - added whitelist configs for the toolbox
 - re-enabled WAILA compat
+- re-enabled OpenComputers compat (not sure if it works)
 - changed IE to load on all 1.12 subversions
 - changed Metal Press render to have items sink a bit down to hide blocks
 - changed IE blocks to allow states for directional setting (thanks Malte)
