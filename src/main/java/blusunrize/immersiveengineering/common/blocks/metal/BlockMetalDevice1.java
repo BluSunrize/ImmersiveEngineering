@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -128,14 +136,12 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		else if (stack.getItemDamage() == BlockTypes_MetalDevice1.TESLA_COIL.getMeta())
 		{
 			BlockPos newPos = pos.offset(side);
-			if(world.isOutsideBuildHeight(newPos)||!world.getBlockState(newPos).getBlock().isReplaceable(world, newPos))
-				return false;
+			return !world.isOutsideBuildHeight(newPos)&&world.getBlockState(newPos).getBlock().isReplaceable(world, newPos);
 		}
 		else if (stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_CHEM.getMeta() || stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_GUN.getMeta())
 		{
 			BlockPos newPos = pos.up();
-			if(world.isOutsideBuildHeight(newPos)||!world.getBlockState(newPos).getBlock().isReplaceable(world, newPos))
-				return false;
+			return !world.isOutsideBuildHeight(newPos)&&world.getBlockState(newPos).getBlock().isReplaceable(world, newPos);
 		}
 		return true;
 	}

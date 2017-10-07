@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.IEContent;
@@ -35,8 +43,7 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 		{
 			IFluidHandler handler = FluidUtil.getFluidHandler(container);
 			FluidStack fs = handler.drain(Integer.MAX_VALUE, false);
-			if(fs==null || (fs.amount<handler.getTankProperties()[0].getCapacity() && fs.isFluidEqual(FluidUtil.getFluidContained(jerrycan))))
-				return true;
+			return fs==null||(fs.amount < handler.getTankProperties()[0].getCapacity()&&fs.isFluidEqual(FluidUtil.getFluidContained(jerrycan)));
 		}
 		return false;
 	}

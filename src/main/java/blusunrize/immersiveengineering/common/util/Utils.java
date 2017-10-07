@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -473,8 +481,7 @@ public class Utils
 				Vec3d vec3d1 = entity.getLook(1.0F);
 				Vec3d vec3d2 = vec3d.subtractReverse(entity.getPositionVector()).normalize();
 				vec3d2 = new Vec3d(vec3d2.x, 0.0D, vec3d2.z);
-				if(vec3d2.dotProduct(vec3d1) < 0)
-					return true;
+				return vec3d2.dotProduct(vec3d1) < 0;
 			}
 		}
 		return false;
@@ -722,8 +729,7 @@ public class Utils
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp.isEmpty() || temp.getCount() < stack.getCount())
-				return true;
+			return temp.isEmpty()||temp.getCount() < stack.getCount();
 		}
 		return false;
 	}
