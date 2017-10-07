@@ -380,7 +380,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	@Override
 	public int getProcessQueueMaxLength()
 	{
-		return -1;
+		return 2048;
 	}
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<CrusherRecipe> process)
