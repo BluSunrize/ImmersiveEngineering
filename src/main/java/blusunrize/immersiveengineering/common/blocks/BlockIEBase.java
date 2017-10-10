@@ -232,12 +232,9 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	@Override
 	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
 	{
-		if(cachedTileRequestState!=null)
-		{
-			int meta = this.getMetaFromState(cachedTileRequestState);
-			if(meta>=0 && meta<metaRenderLayers.length && metaRenderLayers[meta]!=null)
-				return metaRenderLayers[meta].contains(layer);
-		}
+		int meta = this.getMetaFromState(state);
+		if (meta >= 0 && meta < metaRenderLayers.length && metaRenderLayers[meta] != null)
+			return metaRenderLayers[meta].contains(layer);
 		return renderLayers.contains(layer);
 	}
 	public BlockIEBase<E> setMetaLightOpacity(int meta, int opacity)
@@ -350,16 +347,6 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		return normalBlockCheck(state);
-	}
-
-
-	//This is a ridiculously hacky workaround, I would not recommend it to anyone.
-	protected static IBlockState cachedTileRequestState;
-	@Override
-	public boolean hasTileEntity(IBlockState state)
-	{
-		cachedTileRequestState = state;
-		return super.hasTileEntity(state);
 	}
 
 	protected BlockStateContainer createNotTempBlockState()
