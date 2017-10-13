@@ -82,9 +82,11 @@ public class Config
 
 		@Comment({"A list of all mods that IE has integrated compatability for","Setting any of these to false disables the respective compat"})
 		public static Map<String,Boolean> compat = Maps.newHashMap(Maps.toMap(IECompatModule.moduleClasses.keySet(), (s)->Boolean.TRUE));
-
+		@SubConfig
 		public static Machines machines;
+		@SubConfig
 		public static Ores ores;
+		@SubConfig
 		public static Tools tools;
 
 
@@ -421,10 +423,8 @@ public class Config
 				}catch(Exception e){
 					e.printStackTrace();
 				}
-			else if(f.getType().getSuperclass()==Object.class) //Only support classes that are one level below Object.
-			{
+			else if(f.getAnnotation(SubConfig.class)!=null)
 				checkMappedValues(f.getType());
-			}
 		}
 	}
 
@@ -435,6 +435,11 @@ public class Config
 		Class mapClass();
 		String mapName();
 	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	public @interface SubConfig
+	{}
 
 //	public static void setBoolean(String key, boolean b)
 //	{
