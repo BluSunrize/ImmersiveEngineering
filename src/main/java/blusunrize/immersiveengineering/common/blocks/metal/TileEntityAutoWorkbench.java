@@ -1,14 +1,17 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAutoWorkbench;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -329,5 +332,18 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		if(pos==14)
 			return new EnumFacing[]{this.facing.rotateY()};
 		return new EnumFacing[0];
+	}
+
+	@Override
+	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	{
+		if (state.getBlock()== IEContent.blockConveyor)
+		{
+			if ((l==2&&w==0)||l==1)
+				state = state.withProperty(IEProperties.FACING_ALL, facing.rotateY());
+			else
+				state = state.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
+		}
+		super.replaceStructureBlock(pos,state, stack, h, l, w);
 	}
 }

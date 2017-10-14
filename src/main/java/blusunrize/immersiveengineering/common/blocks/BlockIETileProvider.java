@@ -88,8 +88,10 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			else if (keys.contains(IEProperties.FACING_ALL))
 				newFacing = state.getValue(IEProperties.FACING_ALL);
 			int type = ((IDirectionalTile) basic).getFacingLimitation();
-			if (newFacing!=null) {
-				switch (type) {
+			if (newFacing!=null)
+			{
+				switch (type)
+				{
 					case 2:
 					case 4:
 					case 5:
