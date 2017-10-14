@@ -82,10 +82,29 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		Collection<IProperty<?>> keys = state.getPropertyKeys();
 		if (basic instanceof IDirectionalTile)
 		{
+			EnumFacing newFacing = null;
 			if (keys.contains(IEProperties.FACING_HORIZONTAL))
-				((IDirectionalTile) basic).setFacing(state.getValue(IEProperties.FACING_HORIZONTAL));
+				newFacing = state.getValue(IEProperties.FACING_HORIZONTAL);
 			else if (keys.contains(IEProperties.FACING_ALL))
-				((IDirectionalTile) basic).setFacing(state.getValue(IEProperties.FACING_ALL));
+				newFacing = state.getValue(IEProperties.FACING_ALL);
+			int type = ((IDirectionalTile) basic).getFacingLimitation();
+			if (newFacing!=null) {
+				switch (type) {
+					case 2:
+					case 4:
+					case 5:
+					case 6:
+						if (newFacing.getAxis()==Axis.Y)
+							newFacing = null;
+						break;
+					case 3:
+						if (newFacing.getAxis()!=Axis.Y)
+							newFacing = null;
+						break;
+				}
+				if (newFacing!=null)
+					((IDirectionalTile) basic).setFacing(newFacing);
+			}
 		}
 		if (basic instanceof IAttachedIntegerProperies)
 		{
