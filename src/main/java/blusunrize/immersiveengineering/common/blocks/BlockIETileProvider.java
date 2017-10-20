@@ -123,6 +123,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		return basic;
 	}
 
+	@Override
+	protected IBlockState getInitDefaultState()
+	{
+		IBlockState ret = super.getInitDefaultState();
+		if (ret.getPropertyKeys().contains(IEProperties.FACING_ALL))
+			ret = ret.withProperty(IEProperties.FACING_ALL, getDefaultFacing());
+		else if (ret.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
+			ret = ret.withProperty(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
+		return ret;
+	}
+
 	@Nullable
 	public abstract TileEntity createBasicTE(World worldIn, E type);
 
@@ -171,9 +182,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
-		{
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
-		}
 		if(tile instanceof IImmersiveConnectable)
 			if(!world.isRemote||!Minecraft.getMinecraft().isSingleplayer())
 				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile),world, !world.isRemote&&world.getGameRules().getBoolean("doTileDrops"));
@@ -250,11 +259,6 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			PropertyDirection prop = state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
 			state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
 		}
-		else if(state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
-			state = state.withProperty(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
-		else if(state.getPropertyKeys().contains(IEProperties.FACING_ALL))
-			state = state.withProperty(IEProperties.FACING_ALL, getDefaultFacing());
-
 		if(tile instanceof IActiveState)
 		{
 			IProperty boolProp = ((IActiveState) tile).getBoolProperty(IActiveState.class);

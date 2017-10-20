@@ -111,11 +111,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	@Override
 	public IBlockState getInventoryState(int meta)
 	{
-		IBlockState state = this.blockState.getBaseState().withProperty(this.property, enumValues[meta]);
-		//		for(int i=0; i<this.additionalProperties.length; i++)
-		//			if(this.additionalProperties[i]!=null && !this.additionalProperties[i].getAllowedValues().isEmpty())
-		//				state = state.withProperty(this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
-		return state;
+		return getStateFromMeta(meta);
 	}
 	@Override
 	public PropertyEnum<E> getMetaProperty()
@@ -402,29 +398,17 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 			return 0;
 		return state.getValue(this.property).getMeta();
 	}
-	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		for(int i=0; i<this.additionalProperties.length; i++)
-			if(this.additionalProperties[i]!=null && !this.additionalProperties[i].getAllowedValues().isEmpty())
-				state = applyProperty(state, this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
-		return state;
-	}
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		IBlockState state = this.getDefaultState().withProperty(this.property, fromMeta(meta));
-		for(int i=0; i<this.additionalProperties.length; i++)
-			if(this.additionalProperties[i]!=null && !this.additionalProperties[i].getAllowedValues().isEmpty())
-				state = applyProperty(state, this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
-		return state;
-		//		return this.getDefaultState().withProperty(this.property, fromMeta(meta));
-	}
 	protected E fromMeta(int meta)
 	{
 		if(meta<0||meta>=enumValues.length)
 			meta = 0;
 		return enumValues[meta];
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState().withProperty(this.property, fromMeta(meta));
 	}
 
 	@Override
