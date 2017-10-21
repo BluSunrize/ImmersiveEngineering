@@ -33,7 +33,9 @@ public abstract class ItemInternalStorage extends ItemIEBase
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt)
 	{
-		return new IEItemStackHandler(stack);
+		if (!stack.isEmpty())
+			return new IEItemStackHandler(stack);
+		return null;
 	}
 
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)

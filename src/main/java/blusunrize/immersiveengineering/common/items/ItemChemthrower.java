@@ -241,30 +241,32 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return new IEItemStackHandler(stack)
-		{
-			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
-			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
-
-			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+		if (!stack.isEmpty())
+			return new IEItemStackHandler(stack)
 			{
-				return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ||
-						capability == CapabilityShader.SHADER_CAPABILITY ||
-						super.hasCapability(capability, facing);
-			}
+				IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
+				ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
 
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
-			{
-				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-					return (T) fluids;
-				if (capability == CapabilityShader.SHADER_CAPABILITY)
-					return (T) shaders;
-				return super.getCapability(capability, facing);
-			}
+				@Override
+				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+				{
+					return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ||
+							capability == CapabilityShader.SHADER_CAPABILITY ||
+							super.hasCapability(capability, facing);
+				}
 
-		};
+				@Override
+				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				{
+					if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+						return (T) fluids;
+					if (capability == CapabilityShader.SHADER_CAPABILITY)
+						return (T) shaders;
+					return super.getCapability(capability, facing);
+				}
+
+			};
+		return null;
 	}
 
 	@Override

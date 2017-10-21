@@ -131,25 +131,27 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return new IEItemStackHandler(stack)
-		{
-			final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:revolver", stack);
-
-			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+		if (!stack.isEmpty())
+			return new IEItemStackHandler(stack)
 			{
-				return capability == CapabilityShader.SHADER_CAPABILITY ||
-						super.hasCapability(capability, facing);
-			}
+				final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:revolver", stack);
 
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
-			{
-				if (capability == CapabilityShader.SHADER_CAPABILITY)
-					return (T) shaders;
-				return super.getCapability(capability, facing);
-			}
-		};
+				@Override
+				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
+				{
+					return capability == CapabilityShader.SHADER_CAPABILITY ||
+							super.hasCapability(capability, facing);
+				}
+
+				@Override
+				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				{
+					if (capability == CapabilityShader.SHADER_CAPABILITY)
+						return (T) shaders;
+					return super.getCapability(capability, facing);
+				}
+			};
+		return null;
 	}
 
 	@Override

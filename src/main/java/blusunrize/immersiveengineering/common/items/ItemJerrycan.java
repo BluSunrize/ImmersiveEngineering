@@ -97,6 +97,8 @@ public class ItemJerrycan extends ItemIEBase
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return new FluidHandlerItemStack(stack, 10000);
+		if (!stack.isEmpty())
+			return new FluidHandlerItemStack(stack, 10000);
+		return null;
 	}
 }
