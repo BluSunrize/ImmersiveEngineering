@@ -254,6 +254,13 @@
   {
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "ingotHOPGraphite"
+    },
+    "name": "ingotHOPGraphite"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "ingotIron"
     },
     "name": "ingotIron"
