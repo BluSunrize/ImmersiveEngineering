@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -92,13 +100,11 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 			EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
 			if(f.getAxis()==Axis.Z)
 			{
-				if(!world.getBlockState(pos.add(1,0,0)).getBlock().isReplaceable(world,pos.add(1,0,0)) && !world.getBlockState(pos.add(-1,0,0)).getBlock().isReplaceable(world,pos.add(-1,0,0)))
-					return false;
+				return world.getBlockState(pos.add(1, 0, 0)).getBlock().isReplaceable(world, pos.add(1, 0, 0))||world.getBlockState(pos.add(-1, 0, 0)).getBlock().isReplaceable(world, pos.add(-1, 0, 0));
 			}
 			else
 			{
-				if(!world.getBlockState(pos.add(0,0,1)).getBlock().isReplaceable(world,pos.add(0,0,1)) && !world.getBlockState(pos.add(0,0,-1)).getBlock().isReplaceable(world,pos.add(0,0,-1)))
-					return false;
+				return world.getBlockState(pos.add(0, 0, 1)).getBlock().isReplaceable(world, pos.add(0, 0, 1))||world.getBlockState(pos.add(0, 0, -1)).getBlock().isReplaceable(world, pos.add(0, 0, -1));
 			}
 		}
 		return true;

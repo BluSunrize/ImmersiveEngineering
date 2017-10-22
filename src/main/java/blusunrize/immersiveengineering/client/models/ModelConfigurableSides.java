@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -25,7 +33,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import org.lwjgl.util.vector.Vector3f;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -205,7 +212,7 @@ public class ModelConfigurableSides implements IBakedModel
 		}
 
 		@Override
-		public IModel loadModel(ResourceLocation modelLocation) throws IOException
+		public IModel loadModel(ResourceLocation modelLocation)
 		{
 			String resourcePath = modelLocation.getResourcePath();
 			int pos = resourcePath.indexOf(MODEL_PREFIX);

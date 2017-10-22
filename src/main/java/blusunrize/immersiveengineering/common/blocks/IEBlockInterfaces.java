@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
@@ -234,6 +242,7 @@ public class IEBlockInterfaces
 		void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ);
 		void breakDummies(BlockPos pos, IBlockState state);
 		boolean isDummy();
+		@Override
 		default boolean isLogicDummy()
 		{
 			return isDummy();

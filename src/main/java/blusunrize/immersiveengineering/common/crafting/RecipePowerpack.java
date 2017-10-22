@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
@@ -33,9 +41,7 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 		}
 		if(!powerpack.isEmpty() && !armor.isEmpty() && !ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 			return true;
-		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack) && powerpack.isEmpty())
-			return true;
-		return false;
+		else return !armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack)&&powerpack.isEmpty();
 	}
 
 	@Override

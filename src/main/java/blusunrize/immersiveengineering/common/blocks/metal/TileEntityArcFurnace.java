@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
@@ -413,8 +421,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		{
 			if(this.inventory.get(22).isEmpty())
 				return true;
-			if(!ItemHandlerHelper.canItemStacksStack(this.inventory.get(22), process.recipe.slag) || inventory.get(22).getCount() + process.recipe.slag.getCount() >getSlotLimit(22))
-				return false;
+			return ItemHandlerHelper.canItemStacksStack(this.inventory.get(22), process.recipe.slag)&&inventory.get(22).getCount()+process.recipe.slag.getCount() <= getSlotLimit(22);
 		}
 		return true;
 	}

@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.api;
 
 import net.minecraft.item.ItemStack;
@@ -89,8 +97,7 @@ public class ComparableItemStack
 				return false;
 			if(!this.stack.hasTagCompound() && !otherStack.hasTagCompound())
 				return true;
-			if(!this.stack.getTagCompound().equals(otherStack.getTagCompound()))
-				return false;
+			return this.stack.getTagCompound().equals(otherStack.getTagCompound());
 		}
 		return true;
 	}

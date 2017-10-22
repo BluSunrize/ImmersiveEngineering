@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -109,8 +117,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		else if(stack.getItemDamage()== BlockTypes_Connector.ENERGY_METER.getMeta())
 		{
 			BlockPos pos2 = pos.up();
-			if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
-				return false;
+			return !world.isOutsideBuildHeight(pos2)&&world.getBlockState(pos2).getBlock().isReplaceable(world, pos2);
 		}
 		return true;
 	}
