@@ -72,7 +72,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	{
 		if(this.name!=null)
 			nbt.setString("name", this.name);
-		if(this.enchantments!=null)
+		if(this.enchantments!=null && this.enchantments.tagCount()>0)
 			nbt.setTag("enchantments", this.enchantments);
 		if(!descPacket)
 		{
@@ -185,7 +185,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			stack.setTagCompound(tag);
 		if(this.name!=null)
 			stack.setStackDisplayName(this.name);
-		if(enchantments!=null)
+		if(enchantments!=null && enchantments.tagCount()>0)
 			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
 	}
