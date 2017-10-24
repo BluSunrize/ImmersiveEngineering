@@ -208,7 +208,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
 					IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
-					FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount);
+					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.amount, true);
 					if(tile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 					{
 						insertResource.tag = new NBTTagCompound();
@@ -232,7 +232,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				int amount = (int)(fluidForSort*prio);
 				if(i++ == sorting.size()-1)
 					amount = canAccept;
-				FluidStack insertResource = new FluidStack(fs.getFluid(), amount);
+				FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, amount, true);
 				if(output.containingTile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower,true)>=accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower,false);
