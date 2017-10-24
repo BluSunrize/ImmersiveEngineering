@@ -309,6 +309,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			{
 				process.doProcessTick(this);
 				tickedProcesses++;
+				updateMasterBlock(null, true);
 			}
 			if(process.clearProcess)
 				processIterator.remove();
