@@ -38,11 +38,11 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
+		//Load new info from NBT
 		int[] savedDimensions = nbt.getIntArray("savedDimensions");
 		for(int dim: savedDimensions)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList"+dim, 10);
-			ImmersiveNetHandler.INSTANCE.clearAllConnections(dim);
 			for(int i=0; i<connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);

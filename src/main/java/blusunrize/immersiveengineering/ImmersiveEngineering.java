@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -211,7 +212,11 @@ public class ImmersiveEngineering
 			{
 				IELogger.info("WorldData loading");
 
+				//Clear out any info from previous worlds
+				for (int dim: ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
+					ImmersiveNetHandler.INSTANCE.clearAllConnections(dim);
 				IESaveData worldData = (IESaveData) world.loadData(IESaveData.class, IESaveData.dataName);
+
 				if(worldData==null)
 				{
 					IELogger.info("WorldData not found");
