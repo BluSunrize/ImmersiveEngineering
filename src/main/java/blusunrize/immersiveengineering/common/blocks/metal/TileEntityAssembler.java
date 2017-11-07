@@ -247,7 +247,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					tank.drain(fs.amount, true);
 					markDirty();
 					this.markContainingBlockForUpdate(null);
-					return Optional.absent();
+					return Optional.of(ItemStack.EMPTY);
 				}
 		Optional<ItemStack> ret = Optional.absent();
 		for(int i = 0; i< inventory.size(); i++)
