@@ -76,6 +76,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static java.lang.Math.min;
 
@@ -999,6 +1000,10 @@ public class Utils
 
 	public static HashSet<BlockPos> rayTrace(Vec3d start, Vec3d end, World world)
 	{
+		return rayTrace(start, end, world, (p)->{});
+	}
+	public static HashSet<BlockPos> rayTrace(Vec3d start, Vec3d end, World world, Consumer<BlockPos> out)
+	{
 		HashSet<BlockPos> ret = new HashSet<BlockPos>();
 		HashSet<BlockPos> checked = new HashSet<BlockPos>();
 		// x
@@ -1015,7 +1020,7 @@ public class Utils
 		if (mov.x!=0)
 		{
 			mov = scalarProd(mov, 1 / mov.x);
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.DIAMOND_ORE);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
 		}
 		// y
 		if (mov.y!=0)
@@ -1032,7 +1037,7 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1/mov.y);
 
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.IRON_ORE);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
 		}
 
 		// z
@@ -1050,11 +1055,11 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1 / mov.z);
 
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.GOLD_ORE);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
 		}
 		return ret;
 	}
-	private static void ray(double dif, Vec3d mov, Vec3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Block tmp)
+	private static void ray(double dif, Vec3d mov, Vec3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Consumer<BlockPos> out)
 	{
 		//Do NOT set this to true unless for debugging. Causes blocks to be placed along the traced ray
 		boolean place = false;
@@ -1082,6 +1087,7 @@ public class Utils
 				//				if (place)
 				//					world.setBlockState(blockPos, tmp);
 				checked.add(blockPos);
+				out.accept(blockPos);
 			}
 			blockPos = new BlockPos((int) Math.floor(posPrev.x), (int) Math.floor(posPrev.y), (int) Math.floor(posPrev.z));
 			if (!checked.contains(blockPos)&&i + lengthAdd-standartOff<dif)
@@ -1093,6 +1099,7 @@ public class Utils
 				//				if (place)
 				//					world.setBlock(blockPos.posX, blockPos.posY, blockPos.posZ, tmp);
 				checked.add(blockPos);
+				out.accept(blockPos);
 			}
 		}
 	}

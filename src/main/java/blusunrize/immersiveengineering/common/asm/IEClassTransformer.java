@@ -45,6 +45,31 @@ public class IEClassTransformer implements IClassTransformer
 					}
 				})
 		});
+		transformerMap.put("net.minecraft.entity.Entity", new MethodTransformer[]{
+				new MethodTransformer("doBlockCollisions", "func_145775_I", "()V", (m) ->
+				{
+					//INVOKEVIRTUAL net/minecraft/block/Block.onEntityCollidedWithBlock (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/entity/Entity;)V
+					Iterator<AbstractInsnNode> iterator = m.instructions.iterator();
+					while (iterator.hasNext())
+					{
+						AbstractInsnNode anode = iterator.next();
+						if (anode.getOpcode() == Opcodes.INVOKEVIRTUAL)
+						{
+							MethodInsnNode n = (MethodInsnNode) anode;
+							if (n.name.equals("onEntityCollidedWithBlock")||n.name.equals("func_180634_a"))
+							{
+								InsnList newInstructions = new InsnList();
+								newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 4));
+								newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+								newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+										"blusunrize/immersiveengineering/api/energy/wires/ImmersiveNetHandler", "handleEntityCollision",
+										"(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V", false));
+								m.instructions.insert(n, newInstructions);
+							}
+						}
+					}
+				})
+		});
 	}
 
 	@Override
