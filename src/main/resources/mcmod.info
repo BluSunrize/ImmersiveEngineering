@@ -2,7 +2,7 @@
 {
   "modid": "immersiveengineering",
   "name": "Immersive Engineering",
-  "description": "",
+  "description": "A tech based mod focused on realism.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/BluSunrize/ImmersiveEngineering",
