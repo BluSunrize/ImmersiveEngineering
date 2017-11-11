@@ -22,6 +22,8 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -49,38 +51,42 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 
 	public void rebindSlots()
 	{
+		//Don't rebind if the tool didn't change
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+			for (Slot slot:inventorySlots)
+				if (slot instanceof IESlot.Upgrades)
+					if (ItemStack.areItemsEqual(((IESlot.Upgrades) slot).upgradeableTool, inv.getStackInSlot(0)))
+						return;
 		this.inventorySlots.clear();
+		this.inventoryItemStacks.clear();
 		this.addSlotToContainer(new IESlot.UpgradeableItem(this, this.inv, 0, 24, 22, 1));
-		slotCount=1;
+		slotCount = 1;
 
 		ItemStack tool = this.getSlot(0).getStack();
-		if(!tool.isEmpty())
+		if (tool.getItem() instanceof IUpgradeableTool)
 		{
-			if(tool.getItem() instanceof IUpgradeableTool)
-			{
-				if(tool.getItem() instanceof ItemEngineersBlueprint)
-					((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
-				IItemHandler handler = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-				if (handler instanceof IEItemStackHandler)
-					((IEItemStackHandler) handler).setTile(tile);
-				Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool);
-				if(slots != null)
-					for(Slot s : slots)
-					{
-						this.addSlotToContainer(s);
-						slotCount++;
-					}
-			}
-			if(tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-			{
-				ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-				if(wrapper!=null)
+			if (tool.getItem() instanceof ItemEngineersBlueprint)
+				((ItemEngineersBlueprint) tool.getItem()).updateOutputs(tool);
+			IItemHandler handler = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			if (handler instanceof IEItemStackHandler)
+				((IEItemStackHandler) handler).setTile(tile);
+			Slot[] slots = ((IUpgradeableTool) tool.getItem()).getWorkbenchSlots(this, tool);
+			if (slots != null)
+				for (Slot s : slots)
 				{
-					this.shaderInv = new InventoryShader(this, wrapper);
-					this.addSlotToContainer(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
+					this.addSlotToContainer(s);
 					slotCount++;
-					this.shaderInv.shader = wrapper.getShaderItem();
 				}
+		}
+		if (tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		{
+			ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+			if (wrapper != null)
+			{
+				this.shaderInv = new InventoryShader(this, wrapper);
+				this.addSlotToContainer(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
+				slotCount++;
+				this.shaderInv.shader = wrapper.getShaderItem();
 			}
 		}
 		bindPlayerInv(inventoryPlayer);
@@ -152,6 +158,8 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	{
 		ItemStack ret = super.slotClick(id, button, clickType, player);
 		tile.markContainingBlockForUpdate(null);
+		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+			detectAndSendChanges();
 		return ret;
 	}
 
