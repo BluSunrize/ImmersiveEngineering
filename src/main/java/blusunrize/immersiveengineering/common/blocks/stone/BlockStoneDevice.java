@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -33,6 +34,10 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 		setHardness(2.0F);
 		setResistance(20f);
 		this.setAllNotNormalBlock();
+		this.setMetaMobilityFlag(BlockTypes_StoneDevices.COKE_OVEN.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_StoneDevices.BLAST_FURNACE.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta(), EnumPushReaction.BLOCK);
 		lightOpacity = 0;
 	}
 
