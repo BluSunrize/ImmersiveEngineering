@@ -132,7 +132,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 				if(shooter!=null)
 					thrower = shooter.getHeldItem(EnumHand.MAIN_HAND);
 
-				if(mop.typeOfHit== Type.ENTITY)
+				if(mop.typeOfHit== Type.ENTITY&&mop.entityHit instanceof EntityLivingBase)
 					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluidStack);
 				else if(mop.typeOfHit== Type.BLOCK)
 					effect.applyToBlock(world, mop, shooter, thrower, fluidStack);
