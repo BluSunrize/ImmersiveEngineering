@@ -11,6 +11,8 @@
 ### Crashlogs
 If your Minecraft instance has crashed, a file will have been generated in the folder `crash-reports` of your minecraft folder. To understand what has happened, we need to know the content of that file. But please don't just put it directly in your report (that makes it hard to read), upload it to a site like [pastebin](http://pastebin.com) or [gist](http://gist.github.com) and put a link in the actuall bug report.
 
+There is one case where no crash log will be generated: If it wasn't MC that crashed but Java. There will be a file called `hs_err` and then some number in your minecraft folder. If that happens, make sure your Java version is up to date (But not Java 9, Minecraft isn't compatible with it). Also make sure that Minecraft is actually using that version, the vanilla launcher includes an old Java version (Java 8 update 25, published in autumn 2014). You can see what version Minecraft is using in the top right of the debug screen (F3). There is a known JVM crash that happens at random while browsing the engineer's manual but only with the old Java version.
+
 ### Other mods
 Some mods are not officially supported by IE. They will probably work pretty well, but some thing might not work/look weird. If your modpack contains one or more of these mods and you encounter a bug, try removing the unsupported mods. If the bug/crash does not happen without those mods, don't report it since fixing interactions with those mods is usually impossible or extremely hard. The following mods are not officially supported:
 
