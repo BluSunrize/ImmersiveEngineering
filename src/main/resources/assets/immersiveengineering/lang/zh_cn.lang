@@ -1,4 +1,3 @@
-ï»¿ Byte Order Mark, because fuck you IntelliJ
 # BLOCKS
 tile.immersiveengineering.ore.copper.name=铜矿石
 tile.immersiveengineering.ore.aluminum.name=铝土矿石
@@ -1383,21 +1382,22 @@ ie.manual.entry.bullets.name=左轮弹药
 ie.manual.entry.bullets.subtext=
 ie.manual.entry.bullets0=左轮手枪弹药需要工程师装配台以及特定的<link;blueprints;§o§n工程师§o§n蓝图§r>才能制作.你自己就可以绘制一般军火的制造蓝图,但一些高级军火的蓝图需要你从他人手中购买才能得到.
 ie.manual.entry.bullets1=§l空§l弹头§r和§l弹壳§r是所有弹头的基础.空弹壳可在<link;metalPress;§o§n金属§o§n冲压机§r>中用合适的模具合成,这样制作可以节约材料.
-ie.manual.entry.bullets2=<br>§l卡苏尔弹§r可以通过使用“普通子弹”蓝图制作.它们是简易的铅弹,能够造成中等的伤害.
-ie.manual.entry.bullets3=<br>§l穿甲弹§r可以通过使用同种蓝图制作.它们能够造成同等伤害但却能通过高动能穿透装甲.
-ie.manual.entry.bullets4=<br>§l鹿弹§r可以通过使用同种蓝图制作.内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.
-ie.manual.entry.bullets5=<br>§l高爆弹§r可以通过使用“普通子弹”蓝图制作.它们在击中后会造成小型爆炸,对生物和地形造成伤害.
-ie.manual.entry.bullets6=<br>§l银弹§r是由铅芯被银所包裹而制成,会对...狼人十分有效?!
-ie.manual.entry.bullets7=<br>§l龙息弹§r可以通过使用"特种子弹"蓝图制作.类似鹿弹,短距离十分有效,不过内部充满的是易燃金属粉末,产生一束短距离火舌.
-ie.manual.entry.bullets8=<br>§l药剂弹头§r同样需要使用“特种子弹”蓝图制作.它们能够通过和对应药剂一起合成来装填任何药剂并且在弹药击中时生效.普通药剂需要精准命中,而溅射药剂会有范围效果<config;b;etfuturumBullets;而延长版药剂则可以产生一片药水云,并持续一段时间.;.>
-ie.manual.entry.bulletsBotania0=<br>§l叶绿弹§r通过使用“特种子弹”蓝图和魔力金属“泰拉钢”制作,这让它们能够自动寻找并跟踪目标.
-ie.manual.entry.bulletsBotania1=<br>§l狼群弹§r是一种集束子弹,发射时本身不会制导,击中目标时会分裂出六枚自动制导的弹头.
+ie.manual.entry.bullets_casull=<br>§l卡苏尔弹§r可以通过使用“普通子弹”蓝图制作.它们是简易的铅弹,能够造成中等的伤害.
+ie.manual.entry.bullets_armorPiercing=<br>§l穿甲弹§r可以通过使用同种蓝图制作.它们能够造成同等伤害但却能通过高动能穿透装甲.
+ie.manual.entry.bullets_buckshot=<br>§l鹿弹§r可以通过使用同种蓝图制作.内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.
+ie.manual.entry.bullets_HE=<br>§l高爆弹§r可以通过使用“普通子弹”蓝图制作.它们在击中后会造成小型爆炸,对生物和地形造成伤害.
+ie.manual.entry.bullets_silver=<br>§l银弹§r是由铅芯被银所包裹而制成,会对...狼人十分有效?!
+ie.manual.entry.bullets_dragonsbreath=<br>§l龙息弹§r可以通过使用"特种子弹"蓝图制作.类似鹿弹,短距离十分有效,不过内部充满的是易燃金属粉末,产生一束短距离火舌.
+ie.manual.entry.bullets_potion=<br>§l药剂弹头§r同样需要使用“特种子弹”蓝图制作.它们能够通过和对应药剂一起合成来装填任何药剂并且在弹药击中时生效.普通药剂需要精准命中,而溅射药剂会有范围效果<config;b;etfuturumBullets;而延长版药剂则可以产生一片药水云,并持续一段时间.;.>
+ie.manual.entry.bullets_flare=<br>§l叶绿弹§r通过使用“特种子弹”蓝图和魔力金属“泰拉钢”制作,这让它们能够自动寻找并跟踪目标.
+ie.manual.entry.bullets_wolfpack=<br>§l狼群弹§r是一种集束子弹,发射时本身不会制导,击中目标时会分裂出六枚自动制导的弹头.
 
 ie.manual.entry.chemthrower.name=化学喷射器
 ie.manual.entry.chemthrower.subtext=
 ie.manual.entry.chemthrower0=化学喷射器是一种能够将内部储液罐中液体喷射出去的装置.该装置能够装在任何液体或气体,而且右键就会将其喷洒出去.<br>若喷射出的液体是可燃液体,它还有点燃液体的功能.潜行右键来使用点火装置.
 ie.manual.entry.chemthrower1=同其它工具一样,化学喷射器可以在<link;workbench;§o§n工程师装配台§r>中进行改装.这些升级将会影响储罐的大小,喷射的范围以及喷射速度.<br><br>大型燃料缸能够增加化学喷射器的储量至2000mb.
 ie.manual.entry.chemthrower2=聚焦喷嘴会降低喷射速度但会略微增加喷射范围,让你能够更精准的击中远处目标.
+ie.manual.entry.chemthrower3=The §6Multitank§r allows the Chemthrower to store up to three different Fluids. You can select the active tank by <config;b;chemthrower_scroll;sneaking and using the scrollwheel, or through use of;using> the keybind §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r if it has been set in the options.<br>This upgrade is mutually exclusive to the §6Large Tank§r
 
 ie.manual.entry.skyhook.name=工程师天钩
 ie.manual.entry.skyhook.subtext=Booker, catch!
@@ -1407,9 +1407,20 @@ ie.manual.entry.skyhook1=只需在接近接线器时按住右键,你就会勾住
 ie.manual.entry.shader.name=皮肤
 ie.manual.entry.shader.subtext=蓝色!不,黄色!
 ie.manual.entry.shader0=皮肤是一些你能够在世界中找到或与村民交易获得的物品.它们本身没有什么功能,但它们可以装配到<link;revolver;§o§n左轮手枪§r>、<link;drill;§o§n机械钻§r>、<link;chemthrower;§o§n化学喷射器§r>或<link;railgun;§o§n磁轨炮§r>上,以此改变这些物品的外观设计.当然,也可以用在其它等待你发现的东西上.简单的将它们放入<link;workbench;§o§n工程师§o§n装配台§r>并将皮肤放入合适的装配栏中即可.<br>你也可以将其右键应用在矿车上!
-//Impossible Feature atm// or a <link;balloon;§o§nBallon§r> <br>你也可以将其右键应用在矿车或者<link;balloon;§o§n气球§r>上!
 ie.manual.entry.shader1=皮肤奖励袋内含一种随机皮肤.可以在地牢箱子中找到,或者和村民交易以及怪物掉落.所开出的皮肤稀有度和袋子本身相同或者更稀有.当使用一个袋子时,你得到未拥有的皮肤的概率要比已获取的更高一些.
 ie.manual.entry.shader2=皮肤奖励袋能合成为两个低一级的奖励袋,让你能有机会重新尝试.皮肤本身也能够合成为一个低级的奖励袋.
+ie.manual.entry.shader3=着色器袋可以制作成两个较低级别的袋子。 这将降低您获得更稀有的着色器的机会，但能为您提供更多的尝试。
+//Shaders themselves can also be crafted into a single bag of the lower level.
+
+ie.manual.entry.shaderList.name=皮肤列表
+ie.manual.entry.shaderList.noInfo=你还没有解锁该皮肤！
+ie.manual.entry.shaderList.unlock=解锁该皮肤
+ie.manual.entry.shaderList.order=获得:
+
+ie.manual.entry.powerpack.name=电容背包
+ie.manual.entry.powerpack.subtext=难道是....雷....埃贡！
+ie.manual.entry.powerpack0=能量储存需要空间和一些重量级的组件。 因此，在每个工具中分别存储大量的能量是不切实际的。<br>电容器背包可是算是一种妥协办法，为任何电力工具提供存储的能量。
+ie.manual.entry.powerpack1=背包对任何装在主体或手上的工具以及您佩戴的任何护甲进行充电。<br>电容器可以像一块胸甲一样穿在你的身上，或者你可以把它附在最常用的装甲上以同时获得供电和保护的好处。
 
 ie.manual.entry.railgun.name=磁轨炮
 ie.manual.entry.railgun.subtext=突破速度的束缚
@@ -1417,6 +1428,19 @@ ie.manual.entry.railgun0=磁轨炮(更准确地说,是“便携式电磁感应�
 ie.manual.entry.railgun1=按住鼠标右键,一直充电到99%,然后发射物品栏的子弹.<br><br>可用的“炮弹”包括§6铁杆§r、§6钢杆§r<config;b;literalRailGun;、§6钢筋§r、铁路MOD的§6绝大多数导轨§r;>以及§6石墨棒§r.
 ie.manual.entry.railgun2=和其它IE工具一样,轨道炮可以在<link;workbench;§o§n工程师装配台§r>修改和定制<link;shader;§o§n皮§o§n肤§r>.<br><br>§6附加电容§r可以增加轨道炮的能量储存和减少充电时间.
 ie.manual.entry.railgun3=§6瞄准镜§r可以增加视野距离.潜行时可使用瞄准镜,鼠标滚轮调节视角.
+
+ie.manual.entry.razorwire.name=刀片刺网
+ie.manual.entry.razorwire.subtext=超大的切片机
+ie.manual.entry.razorwire0=刀片刺网是连接有金属碎片的电线。 它会减慢和削减任何试图通过它的实体。<br> 刀片刺网只能使用钳子移除，任何其他尝试都会伤害玩家。<br>另外，可以连接一根LV电线，为刀片刺网附加额外伤害。
+
+ie.manual.entry.turret.name=炮塔
+ie.manual.entry.turret.subtext=你还站在那干嘛？
+ie.manual.entry.turret0=炮塔是您工厂自动防御的下一步。 它们具有结合机械“大脑”的复杂光学系统，以有效地区分和获取目标，并使用内置武器来调教实体。<br>所有炮塔的基座都有能量口，通入红石信号才能激活，也可以通过用工程师锤潜行右击反转。
+ie.manual.entry.turret1=被放置后，炮塔将记住其所有者，不允许其他用户破坏或修改它们。 右击炮塔打开GUI，该GUI具有带有输入字段的名称列表以及多个定位选项。<br>默认情况下，该列表是可能未被攻击的目标的黑名单。 这个列表使用生物名称，所以白名单生物是可行的。
+ie.manual.entry.turret2=化学喷射炮塔利用了<link;chemthrower;§o§neponymous §o§n工具§r>的液体推进能力向目标喷射任何东西,可以是水，可以是火，也可以是柴油。
+ie.manual.entry.turret3=炮塔的底部和后部具有流体端口，以允许管道与其连接。 此外，GUI有一个左侧的按钮，可以禁止或启用导向火焰，点燃分配的流体，只要它是易燃的。<br> <br>本蓝图的提供者对用户的任何损失概不负责 ，邻居养的各种牲畜可能会遭殃。
+ie.manual.entry.turret4=机枪炮塔可以算是<link;revolver;§o§n左轮§r>的强化版本，它能容下更大更多的子弹。
+ie.manual.entry.turret5=用于自动插入弹药和提取用过的外壳的端口位于基座的后部和底部。 炮塔可以存放一整组子弹，GUI里有一个按钮来切换自动排出废弃的外壳。<br> <br>注意某些弹药可能会对用户或其财产造成附带损害。
 
 ie.manual.entry.maneuverGear.name=立体机动装置
 ie.manual.entry.maneuverGear.subtext=进击的巨人僵尸
@@ -1533,3 +1557,58 @@ ie.manual.entry.computer.capacitor0=电容器六面均可与电脑连接<br>§lg
 ie.manual.entry.computer.teslaCoil.name=特斯拉线圈 ☎
 ie.manual.entry.computer.teslaCoil.subtext=不，这不是固态特斯拉线圈
 ie.manual.entry.computer.teslaCoil0=§lisActive()§r:若线圈已激活则返回true,否则返回false<br>§lsetRSMode(boolean)§r:设定线圈的红石控制模式<br>§lsetPowerMode(boolean)§r: 设定线圈的工作模式,可设定为高能模式(true)或低能模式(false)(<link;teslaCoil;§o§nexplanation§r;2>).仅当线圈未激活时有效.
+
+ie.manual.entry.computer.mixer.name=混合机 ☎
+ie.manual.entry.computer.mixer.subtext=大桶的饼干面团！
+ie.manual.entry.computer.mixer0=§lisActive（）§r：返回混合器当前是否活动。<br>§lisValidRecipe（）§r：返回是否存在任何输入物品和流体组合的有效配方。<br>§lgetEnergyStored（）§r ：返回存储在本机中的能量数量。<br>§lgetMaxEnergyStored（）§r：返回此机器中可以存储的最大能量数量<br>§lgetInputStack（int slot）§r：返回 指定的输入槽（1-12）。
+ie.manual.entry.computer.mixer1=§lprogress§r和§lmaxProgress§r用于存储当前进度和在指定槽位上完成的进度（两个值在tick中）。<br>§lgetTank（）§r：返回底部流体储罐。
+
+#SHADER INFO
+desc.immersiveengineering.info.shader.details.rosequartz=第一个皮肤的历史！<br>没有确切的参考，虽然这个名字本身是受到“Inkheart”系列小说中的一个角色的启发
+desc.immersiveengineering.info.shader.details.argo=没有确切的参考，但风格+颜色是出自视频游戏“命运”的灵感。
+desc.immersiveengineering.info.shader.details.sunstrike=没有确切的参考但是名字+颜色的灵感源于于电影“Destiny”中的Sunbreaker Titans。
+desc.immersiveengineering.info.shader.details.locus=命名和颜色来着“雇佣兵的轨迹”在RvB季11-13。
+desc.immersiveengineering.info.shader.details.felix=在RvB季节11-13之后，雇佣军的“Felix”命名和着色。
+desc.immersiveengineering.info.shader.details.sharkface=在RvB季节9和13中的雇佣军“鲨鱼面”之后命名和着色。
+desc.immersiveengineering.info.shader.details.dragonsbreath=命名和设计和某个火箭发射器的同名。
+desc.immersiveengineering.info.shader.details.hawk=命名和设计和某个手提箱“Hawkmoon”有关。
+desc.immersiveengineering.info.shader.details.eyas=在手提包“Eyasluna”之后命名和设计的。 Hawkmoon的小弟弟。
+desc.immersiveengineering.info.shader.details.magnum=由比赛获胜者设计！
+desc.immersiveengineering.info.shader.details.fox=很蓬松 以具体的IRC频道及其居民的名义命名。
+desc.immersiveengineering.info.shader.details.vaulttec=颜色和命名在已经很明显了
+desc.immersiveengineering.info.shader.details.sponsor=显而易见的设计参考“辐射系列”。
+desc.immersiveengineering.info.shader.details.massfusion=设计参考“辐射系列”的能量武器。
+desc.immersiveengineering.info.shader.details.stormflower=由雷仁挥舞着刀刃的SMGs命名和设计。
+desc.immersiveengineering.info.shader.details.milo=被Pyrrha Nikos挥舞着的矛/步枪命名和设计。
+desc.immersiveengineering.info.shader.details.trident=在海王星Vasilias挥舞的lasergun / spear后命名和设计。
+desc.immersiveengineering.info.shader.details.chloris=由Reese Chloris挥舞着/左轮手枪命名和设计。
+desc.immersiveengineering.info.shader.details.crescentrose=由Ruby Rose执导的“高素质狙击手”命名和设计。
+desc.immersiveengineering.info.shader.details.qrow=以Qrow Branwen命名，并在他的剑/镰刀之后设计。
+desc.immersiveengineering.info.shader.details.lususnaturae=在第4卷音乐之后命名。 此外，这个名字听起来很糟糕。
+desc.immersiveengineering.info.shader.details.vanguard=在先锋阵营之后命名和着色。
+desc.immersiveengineering.info.shader.details.regal=在“国王的秋季”袭击后的武器设计。
+desc.immersiveengineering.info.shader.details.harrowed=在英雄“国王的秋天”的武器之后设计。
+desc.immersiveengineering.info.shader.details.taken=在“被摄”的敌人之后设计。
+desc.immersiveengineering.info.shader.details.angelsthesis=以主题曲命名，基于新世纪福音战士单位EVA-01的配色方案。
+desc.immersiveengineering.info.shader.details.sutherland=在圣洁不列颠帝国使用的骑士框架之后命名和设计。
+desc.immersiveengineering.info.shader.details.exia=高达机动战士后命名和设计。
+desc.immersiveengineering.info.shader.details.gurrenlagann=参考主要和名誉枪手后命名和设计的。
+desc.immersiveengineering.info.shader.details.dominator=参考大规模动画系列的本子而设计。
+desc.immersiveengineering.info.shader.details.warbird=设计灵感来自世界大战的飞机。
+desc.immersiveengineering.info.shader.details.matrix=没有特别的灵感，只是用于管道覆盖。
+desc.immersiveengineering.info.shader.details.twili=以同名的比赛命名和设计。
+desc.immersiveengineering.info.shader.details.usurper=命名和设计参考Zant，篡夺王位。
+desc.immersiveengineering.info.shader.details.ancient=以古代Sheikah技术命名和设计
+desc.immersiveengineering.info.shader.details.glacis=没有特别的灵感，决定尝试透明度。
+desc.immersiveengineering.info.shader.details.phoenix=没有特别的灵感，只是渐变式皮肤的另一个用途。
+desc.immersiveengineering.info.shader.details.radiant=以世界“辐射花园”命名和设计。
+desc.immersiveengineering.info.shader.details.hollow=以世界“空心堡垒”命名和设计。
+desc.immersiveengineering.info.shader.details.microshark=以Minishark和Megashark机枪的名义参考并设计。
+desc.immersiveengineering.info.shader.details.n7=联盟特种部队的最高名称后命名和设计。
+desc.immersiveengineering.info.shader.details.normandy=在参考诺曼底SR2在其联盟配色方案命名和设计。
+desc.immersiveengineering.info.shader.details.omnitool=参考全息多光子命名和设计。
+desc.immersiveengineering.info.shader.details.kindled=旨在将原版纹理和动画结合到皮肤中。
+desc.immersiveengineering.info.shader.details.darkfire=在Riku和Terra所雇用的黑暗之火之后命名和设计。
+desc.immersiveengineering.info.shader.details.erruption=没有具体的参考，只是使用原版纹理，特别是裂纹。
+desc.immersiveengineering.info.shader.details.terra=受益于‘活木’和‘泰拉钢’的材质，并融合了一些Botania（植物魔法）纹理。
+desc.immersiveengineering.info.shader.details.waaagh=黄色绿色最大的BOOOMS！<br>设计明确地提到40k宇宙中的Orks。
