@@ -813,8 +813,8 @@ gui.immersiveengineering.config.mixer.outputSingle=仅输出底部流体
 gui.immersiveengineering.config.mixer.outputAll=输出所有流体
 
 gui.immersiveengineering.config.assembler.clearRecipe=清除配方
-gui.immersiveengineering.config.assembler.recursiveIngredients=递归使用材料
-gui.immersiveengineering.config.assembler.nonRecursiveIngredients=非递归使用材料
+gui.immersiveengineering.config.assembler.recursiveIngredients=循环使用材料
+gui.immersiveengineering.config.assembler.nonRecursiveIngredients=不循环使用材料
 
 #CHAT
 chat.immersiveengineering.warning.wrongCable=你无法在此处连接线缆
@@ -879,7 +879,7 @@ subtitle.immersiveengineering.chargeSlow=电容器充电
 subtitle.immersiveengineering.spark=电火花
 subtitle.immersiveengineering.railgunFire=磁轨炮发射
 subtitle.immersiveengineering.tesla=线圈有电流流过
-subtitle.immersiveengineering.direSwitch=切换匕首中的Direwolf20
+subtitle.immersiveengineering.direSwitch=Direwolf20正在模仿刀闸
 
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=粉碎
@@ -978,7 +978,7 @@ achievement.immersiveengineering:mbExcavator.desc=建造斗轮式挖掘机
 achievement.immersiveengineering:mbArcFurnace=最热话题
 achievement.immersiveengineering:mbArcFurnace.desc=建造电弧炉
 
-achievement.immersiveengineering:secret_birthdayParty=Grunt Birthday Party
+achievement.immersiveengineering:secret_birthdayParty=Grunt生日派对
 achievement.immersiveengineering:secret_birthdayParty.desc=擦亮火柴...
 achievement.immersiveengineering:secret_luckOfTheDraw=抽奖的运气
 achievement.immersiveengineering:secret_luckOfTheDraw.desc=全有即全无
@@ -1559,8 +1559,8 @@ ie.manual.entry.computer.teslaCoil.subtext=不，这不是固态特斯拉线圈
 ie.manual.entry.computer.teslaCoil0=§lisActive()§r:若线圈已激活则返回true,否则返回false<br>§lsetRSMode(boolean)§r:设定线圈的红石控制模式<br>§lsetPowerMode(boolean)§r: 设定线圈的工作模式,可设定为高能模式(true)或低能模式(false)(<link;teslaCoil;§o§nexplanation§r;2>).仅当线圈未激活时有效.
 
 ie.manual.entry.computer.mixer.name=混合机 ☎
-ie.manual.entry.computer.mixer.subtext=大桶的饼干面团！
-ie.manual.entry.computer.mixer0=§lisActive（）§r：返回混合器当前是否活动。<br>§lisValidRecipe（）§r：返回是否存在任何输入物品和流体组合的有效配方。<br>§lgetEnergyStored（）§r ：返回存储在本机中的能量数量。<br>§lgetMaxEnergyStored（）§r：返回此机器中可以存储的最大能量数量<br>§lgetInputStack（int slot）§r：返回 指定的输入槽（1-12）。
+ie.manual.entry.computer.mixer.subtext=曲奇面团的大缸！
+ie.manual.entry.computer.mixer0=§lisActive（）§r：返回搅拌机当前是否在工作。<br>§lisValidRecipe（）§r：返回输入的任意物品和液体的组合是否存在一个有效的合成配方。<br>§lgetEnergyStored（）§r ：返回存储在本机中的能量数量。<br>§lgetMaxEnergyStored（）§r：返回此机器中可以存储的最大能量数量<br>§lgetInputStack（int slot）§r：返回 指定的输入槽（1-12）。
 ie.manual.entry.computer.mixer1=§lprogress§r和§lmaxProgress§r用于存储当前进度和在指定槽位上完成的进度（两个值在tick中）。<br>§lgetTank（）§r：返回底部流体储罐。
 
 #SHADER INFO
