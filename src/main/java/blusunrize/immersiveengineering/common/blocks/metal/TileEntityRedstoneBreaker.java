@@ -91,4 +91,9 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	{
 		return false;
 	}
+	@Override
+	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
+	{
+		return false;
+	}
 }
