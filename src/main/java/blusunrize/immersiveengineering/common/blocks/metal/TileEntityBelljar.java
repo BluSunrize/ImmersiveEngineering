@@ -124,11 +124,17 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 					{
 						ItemStack[] outputs = handler.getOutput(inventory.get(1), inventory.get(0), this);
 						int canFit = 0;
+						boolean[] emptySlotsUsed = new boolean[4];
 						for(int i=0; i<outputs.length; i++)
 							if(!outputs[i].isEmpty())
-								for(int j=3;j<7;j++)
-									if(inventory.get(j).isEmpty() || (ItemHandlerHelper.canItemStacksStack(inventory.get(j),outputs[i]) && inventory.get(j).getCount()+outputs[i].getCount()<= inventory.get(j).getMaxStackSize()))
+								for(int j = 3; j < 7; j++)
+									if((inventory.get(j).isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(inventory.get(j), outputs[i])&&inventory.get(j).getCount()+outputs[i].getCount() <= inventory.get(j).getMaxStackSize()))
+									{
 										canFit++;
+										if(inventory.get(j).isEmpty())
+											emptySlotsUsed[j-3] = true;
+										break;
+									}
 						if(canFit>=outputs.length)
 						{
 							for(ItemStack output : outputs)
