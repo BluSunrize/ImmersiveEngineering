@@ -1,3 +1,28 @@
+#####Version 0.12-75
+- Relicensed IE, because it was about time. It's not perfect but it's better than uncertainty
+- added a basic description to the mcmodinfo (thanks carstorm)
+- added a configurable, global, modifier for the Cloche's Fertilizer effectiveness
+- cleaned up internal BlockState logic a bit (thanks Malte)
+- changed Chisel compat to use proper IMC keys
+- changed Stone Multiblocks to be immovable to pistons
+- changed RedtoneBreakers to not visually connect to non-direct redstonedust
+- fixed broken rendering for blocks in non-standard layers (thanks Malte)
+- fixed config checks for @Mapped values causing issues (thanks Malte)
+- fixed issues with invalid block rotations (thanks Malte)
+- fixed Autoworkbench not disassembling properly (thanks Malte)
+- fixed crashes caused by empty ItemStacks (thanks Malte)
+- fixed Multiblocks not firing visual updates properly (thanks Malte)
+- fixed Eletrode Blueprints not being craftable
+- fixed Fluid Pump and Sheetmetal Tank not preserving NBT data
+- fixed Storage Crates writing empty enchantment tags on pickup
+- fixed Wire connections not synchronizing properly when switching between worlds (thanks Malte)
+- fixed Assembler consuming too much fluid in edgecases (thanks Malte)
+- fixed desync issues with the Workbench in multiplayer (thanks Malte)
+- fixed waterwheel rotation issues (thanks Malte)
+- fixed shooting non-living entities with the Chemthrower (thanks Malte)
+- fixed Mixer recpies not showing tooltips in JEI
+- fixed Cloche voiding seeds
+
 #####Version 0.12-74 - BUILT
 - changed IE to ACTUALLY load on all 1.12 subversions
 
