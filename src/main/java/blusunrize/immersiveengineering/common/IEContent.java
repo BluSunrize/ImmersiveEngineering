@@ -399,7 +399,7 @@ public class IEContent
 			if(mixerRegistered.add(mixPredicate.input))
 				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
 			if(bottlingRegistered.add(mixPredicate.output))
-				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,333));
+				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,250));
 		}
 
 		/**ORE DICT CRAWLING*/

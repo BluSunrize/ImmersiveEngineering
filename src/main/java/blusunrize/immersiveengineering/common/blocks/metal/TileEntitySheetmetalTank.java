@@ -87,7 +87,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 				{
 					EnumFacing f = EnumFacing.getFront(i);
 					int outSize = Math.min(144, tank.getFluidAmount());
-					FluidStack out = new FluidStack(tank.getFluid().getFluid(), outSize);
+					FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
 					BlockPos outputPos = getPos().offset(f);
 					IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, f.getOpposite());
 					if(output != null)
