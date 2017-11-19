@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class BlastFurnaceRecipeWrapper extends BlankRecipeWrapper
+public class BlastFurnaceRecipeWrapper implements IRecipeWrapper
 {
 	private final List<ItemStack> inputs;
 	private final ItemStack output;

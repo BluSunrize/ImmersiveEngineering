@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class AlloySmelterRecipeWrapper extends BlankRecipeWrapper
+public class AlloySmelterRecipeWrapper implements IRecipeWrapper
 {
 	private final List<List<ItemStack>> inputs;
 	private final ItemStack output;

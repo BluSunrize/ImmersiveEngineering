@@ -29,12 +29,14 @@ import net.minecraftforge.fluids.FluidStack;
 public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerRecipeWrapper>
 {
 	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/mixer.png");
+	private final IDrawable tankTexture;
 	private final IDrawable tankOverlay;
 	private final IDrawable arrowDrawable;
 
 	public MixerRecipeCategory(IGuiHelper helper)
 	{
-		super("mixer","tile.immersiveengineering.metal_multiblock.mixer.name", helper.createDrawable(background, 68,8, 74,60), MixerRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.MIXER.getMeta()));
+		super("mixer","tile.immersiveengineering.metal_multiblock.mixer.name", helper.createBlankDrawable(155,60), MixerRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.MIXER.getMeta()));
+		tankTexture = helper.createDrawable(background, 68,8, 74,60);
 		tankOverlay = helper.createDrawable(background, 177,31, 20,51, -2,2,-2,2);
 		arrowDrawable = helper.createDrawable(background, 178,17, 18,13);
 	}
@@ -43,16 +45,16 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 	public void setRecipe(IRecipeLayout recipeLayout, MixerRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		guiFluidStacks.init(0, true, 8,3, 58,47, 4000, false, null);
+		guiFluidStacks.init(0, true, 48,3, 58,47, 4000, false, null);
 		guiFluidStacks.set(0, recipeWrapper.getFluidIn());
-		guiFluidStacks.init(1, false, 100,2, 16,47, 4000, false, tankOverlay);
+		guiFluidStacks.init(1, false, 138,2, 16,47, 4000, false, tankOverlay);
 		guiFluidStacks.set(1, ingredients.getOutputs(FluidStack.class).get(0));
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		for(int i=0; i<recipeWrapper.recipeInputs.length; i++)
 		{
-			int x = -40+(i%2)*18;
+			int x = 0+(i%2)*18;
 			int y = 0+i/2*18;
 			guiItemStacks.init(i, true, x,y);
 			guiItemStacks.set(i, recipeWrapper.recipeInputs[i]);
@@ -62,8 +64,9 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		arrowDrawable.draw(minecraft, 77,19);
-		ClientUtils.drawSlot(100,17,16,47);
+		tankTexture.draw(minecraft, 40,0);
+		arrowDrawable.draw(minecraft, 117,19);
+		ClientUtils.drawSlot(138,17,16,47);
 	}
 
 

@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class MultiblockRecipeWrapper extends BlankRecipeWrapper
+public class MultiblockRecipeWrapper implements IRecipeWrapper
 {
 	public List<ItemStack>[] recipeInputs;
 	protected List<ItemStack> inputs;
