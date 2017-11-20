@@ -1,4 +1,4 @@
-#####Version 0.12-75
+#####Version 0.12-75 - BUILT
 - Relicensed IE, because it was about time. It's not perfect but it's better than uncertainty
 - added a basic description to the mcmodinfo (thanks carstorm)
 - added a configurable, global, modifier for the Cloche's Fertilizer effectiveness
