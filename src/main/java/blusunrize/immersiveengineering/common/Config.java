@@ -188,8 +188,12 @@ public class Config
 			public static int belljar_fertilizer = 6000;
 			@Comment({"The amount of fluid the belljar uses per dose of fertilizer"})
 			public static int belljar_fluid = 250;
-			@Comment({"A base-modifier for all solid+fluid fertilizers in the belljar"})
-			public static float belljar_fertilizer_mod = 1f;
+			@Comment({"A modifier to apply to the belljars total growing speed"})
+			public static float belljar_growth_mod = 1;
+			@Comment({"A base-modifier for all solid fertilizers in the belljar"})
+			public static float belljar_solid_fertilizer_mod = 1f;
+			@Comment({"A base-modifier for all fluid fertilizers in the belljar"})
+			public static float belljar_fluid_fertilizer_mod = 1f;
 
 			//Lights
 			@Comment({"Set this to false to disable the mob-spawn prevention of the Powered Lantern"})
@@ -405,7 +409,8 @@ public class Config
 		BlueprintCraftingRecipe.timeModifier = IEConfig.Machines.autoWorkbench_timeModifier;
 		MixerRecipe.energyModifier = IEConfig.Machines.mixer_energyModifier;
 		MixerRecipe.timeModifier = IEConfig.Machines.mixer_timeModifier;
-		BelljarHandler.fertilizerModifier = IEConfig.Machines.belljar_fertilizer_mod;
+		BelljarHandler.solidFertilizerModifier = IEConfig.Machines.belljar_solid_fertilizer_mod;
+		BelljarHandler.fluidFertilizerModifier = IEConfig.Machines.belljar_fluid_fertilizer_mod;
 
 		Config.manual_int.put("excavator_depletion_days", Machines.excavator_depletion*45/24000);
 		Config.manual_bool.put("literalRailGun", false);//preventive measure for Railcraft

@@ -50,7 +50,8 @@ public class BelljarHandler
 	private static HashSet<FluidFertilizerHandler> fluidFertilizers = new HashSet<>();
 	private static HashSet<ItemFertilizerHandler> itemFertilizers = new HashSet<>();
 
-	public static float fertilizerModifier = 1;
+	public static float solidFertilizerModifier = 1;
+	public static float fluidFertilizerModifier = 1;
 
 	public static void registerHandler(IPlantHandler handler)
 	{
@@ -106,7 +107,7 @@ public class BelljarHandler
 			@Override
 			public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
 			{
-				return fertilizerModifier*growthMultiplier;
+				return solidFertilizerModifier*growthMultiplier;
 			}
 		});
 	}
@@ -401,7 +402,7 @@ public class BelljarHandler
 			@Override
 			public float getGrowthMultiplier(FluidStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
 			{
-				return fertilizerModifier;
+				return fluidFertilizerModifier;
 			}
 		});
 		registerItemFertilizer(new ItemFertilizerHandler()
@@ -415,7 +416,7 @@ public class BelljarHandler
 			@Override
 			public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
 			{
-				return fertilizerModifier*1.25f;
+				return solidFertilizerModifier*1.25f;
 			}
 		});
 	}

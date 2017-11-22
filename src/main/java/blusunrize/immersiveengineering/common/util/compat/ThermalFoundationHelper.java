@@ -117,7 +117,7 @@ public class ThermalFoundationHelper extends IECompatModule
 				@Override
 				public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
 				{
-					return BelljarHandler.fertilizerModifier*(1.5f+(.25f*fertilizer.getMetadata()));
+					return BelljarHandler.solidFertilizerModifier*(1.5f+(.25f*fertilizer.getMetadata()));
 				}
 			});
 	}

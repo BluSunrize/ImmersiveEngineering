@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.ItemFertilizerHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -157,7 +158,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 					}
 					else if(growth < 1)
 					{
-						growth += handler.getGrowthStep(inventory.get(1), inventory.get(0), growth, this, fertilizerMod, false);
+						growth += Config.IEConfig.Machines.belljar_growth_mod * handler.getGrowthStep(inventory.get(1), inventory.get(0), growth, this, fertilizerMod, false);
 						consume = true;
 						if(world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
 							sendSyncPacket(0);
