@@ -237,7 +237,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 			if(te instanceof TileEntitySampleDrill)
 				return ((TileEntitySampleDrill)te).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 		}
-			
+
 		if(!this.sample.isEmpty())
 		{
 			if(!world.isRemote)

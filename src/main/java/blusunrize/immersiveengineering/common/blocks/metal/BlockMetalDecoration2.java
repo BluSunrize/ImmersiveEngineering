@@ -42,7 +42,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setAllNotNormalBlock();
-		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.CUTOUT, BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		lightOpacity = 0;
 		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.STEEL_POST.getMeta(), EnumPushReaction.BLOCK);
 		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta(), EnumPushReaction.BLOCK);
