@@ -63,7 +63,7 @@ public class TConstructHelper extends IECompatModule
 		blockMoltenUranium = new BlockIEFluid("molten_uranium", fluidUranium, net.minecraft.block.material.Material.LAVA);
 
 		fluidConstantan = new FluidColouredMetal("constantan", 0xf7866c, 518);
-		sendFluidForMelting("Constantan", fluidUranium);
+		sendFluidForMelting("Constantan", fluidConstantan);
 		blockMoltenConstantan = new BlockIEFluid("molten_constantan", fluidConstantan, net.minecraft.block.material.Material.LAVA);
 	}
 
