@@ -304,6 +304,9 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 			maxTrans /= 2;
 			double val = getAveragePower() / (double) maxTrans;
 			compVal = (int) Math.ceil(15 * val);
+			TileEntity te = world.getTileEntity(pos.down());
+			if (te instanceof TileEntityEnergyMeter)
+				((TileEntityEnergyMeter) te).compVal = compVal;
 		}
 		if (oldVal!=compVal)
 		{

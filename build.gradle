@@ -71,16 +71,16 @@ repositories {
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
-    /*repositories {//Curseforge maven, in case some other maven goes offline
+    repositories {//Curseforge maven, in case some other maven goes offline
         maven {
             name = "CurseForge"
             url = "https://minecraft.curseforge.com/api/maven/"
         }
-    }*/
-    maven { //IC2
+    }
+    /*maven { //IC2
         name = "ic2"
         url = "http://maven.ic2.player.to/"
-    }
+    }*/
     maven { // Redstone Flux
         name 'CoFH Maven'
         url "http://maven.covers1624.net/"
@@ -100,7 +100,7 @@ dependencies {
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
     compileOnly "li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
     compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
-    compileOnly 'net.industrial-craft:industrialcraft-2:2.8.+'
+    compileOnly 'industrial-craft:industrialcraft-2:release:ex111'//'net.industrial-craft:industrialcraft-2:2.8.+'
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
