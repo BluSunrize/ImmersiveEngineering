@@ -568,7 +568,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	{
 		NBTTagCompound ret = super.getNBTShareTag(stack);
 		if (ret==null)
-			return null;
+			ret = new NBTTagCompound();
+		else
+			ret = ret.copy();
 		NBTTagCompound tmp = new NBTTagCompound();
 		getHead(stack).writeToNBT(tmp);
 		ret.setTag("head", tmp);
