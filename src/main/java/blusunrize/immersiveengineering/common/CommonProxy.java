@@ -158,9 +158,6 @@ public class CommonProxy implements IGuiHandler
 	public void stopTileSound(String soundName, TileEntity tile)
 	{
 	}
-	public void spawnCrusherFX(TileEntityCrusher tile, ItemStack stack)
-	{
-	}
 	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
 	{
 	}

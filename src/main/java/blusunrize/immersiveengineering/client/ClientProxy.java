@@ -23,7 +23,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
+import blusunrize.immersiveengineering.client.fx.ParticleSparks;
 import blusunrize.immersiveengineering.client.fx.ParticleFluidSplash;
 import blusunrize.immersiveengineering.client.fx.ParticleIEBubble;
 import blusunrize.immersiveengineering.client.gui.*;
@@ -1169,6 +1169,8 @@ public class ClientProxy extends CommonProxy
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/concrete_flow");
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/potion_still");
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/potion_flow");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/hot_metal_still");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/hot_metal_flow");
 
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
 	}
@@ -1373,26 +1375,6 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void spawnCrusherFX(TileEntityCrusher tile, ItemStack stack)
-	{
-		//		if(stack!=null)
-		//			for(int i=0; i<3; i++)
-		//			{
-		//				double x = tile.xCoord+.5+.5*(tile.facing.getAxis()==Axis.Z?tile.getworld().rand.nextGaussian()-.5:0);
-		//				double y = tile.yCoord+2 + tile.getworld().rand.nextGaussian()/2;
-		//				double z = tile.zCoord+.5+.5*(tile.facing.getAxis()==Axis.X?tile.getworld().rand.nextGaussian()-.5:0);
-		//				double mX = tile.getworld().rand.nextGaussian() * 0.01D;
-		//				double mY = tile.getworld().rand.nextGaussian() * 0.05D;
-		//				double mZ = tile.getworld().rand.nextGaussian() * 0.01D;
-		//				EntityFX particle = null;
-		//				if(stack.getItem().getSpriteNumber()==0)
-		//					particle = new EntityFXBlockParts(tile.getworld(), stack, tile.getworld().rand.nextInt(16), x,y,z, mX,mY,mZ);
-		//				else
-		//					particle = new EntityFXItemParts(tile.getworld(), stack, tile.getworld().rand.nextInt(16), x,y,z, mX,mY,mZ);
-		//				Minecraft.getMinecraft().effectRenderer.addEffect(particle);
-		//			}
-	}
-	@Override
 	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
 	{
 		//		if(stack!=null && Config.getBoolean("excavator_particles"))
@@ -1418,7 +1400,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
-		Particle particle = new EntityFXSparks(world, x,y,z, mx,my,mz);
+		Particle particle = new ParticleSparks(world, x,y,z, mx,my,mz);
 		Minecraft.getMinecraft().effectRenderer.addEffect(particle);
 	}
 	@Override

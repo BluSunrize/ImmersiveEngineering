@@ -1705,6 +1705,14 @@ public class ClientUtils
 		wr.pos(x1, y0, z0).endVertex();
 	}
 
+	public static void renderTexturedBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1, TextureAtlasSprite tex, boolean yForV)
+	{
+		float minU = tex.getInterpolatedU(x0*16);
+		float maxU = tex.getInterpolatedU(x1*16);
+		float minV = tex.getInterpolatedV((yForV?y1:z0)*16);
+		float maxV = tex.getInterpolatedV((yForV?y0:z1)*16);
+		renderTexturedBox(wr, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV);
+	}
 	public static void renderTexturedBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
 	{
 		wr.pos(x0, y0, z1).tex(u0, v0).endVertex();

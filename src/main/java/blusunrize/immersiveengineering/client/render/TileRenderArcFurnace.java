@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -17,18 +18,23 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
 
 import java.util.List;
 
 public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityArcFurnace>
 {
+	private TextureAtlasSprite hotMetal_flow = null;
+	private TextureAtlasSprite hotMetal_still = null;
 	@Override
 	public void render(TileEntityArcFurnace te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
@@ -83,7 +89,57 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 		tessellator.draw();
 
 		RenderHelper.enableStandardItemLighting();
-
+		if(te.pouringMetal>0)
+		{
+			if (hotMetal_flow==null) {
+				hotMetal_still = ApiUtils.getRegisterSprite(ClientUtils.mc().getTextureMapBlocks(), "immersiveengineering:blocks/fluid/hot_metal_still");
+				hotMetal_flow = ApiUtils.getRegisterSprite(ClientUtils.mc().getTextureMapBlocks(), "immersiveengineering:blocks/fluid/hot_metal_flow");
+			}
+			GlStateManager.rotate(-te.facing.getHorizontalAngle()+180, 0,1,0);
+			int process= 40;
+			float speed = 5f;
+			int pour = process-te.pouringMetal;
+			Vector3f tmp = new Vector3f();
+			float h = (pour>(process-speed)?((process-pour)/speed*27): pour>speed?27: (pour/speed*27))/16f;
+			GlStateManager.translate(-.5f,1.25-.6875f,1.5f);
+			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+			setLightmapDisabled(true);
+			if(pour>(process-speed))
+				addTranslation(tmp, worldRenderer, 0,-1.6875f+h,0);
+			if(h>1)
+			{
+				addTranslation(tmp, worldRenderer, 0,-h,0);
+				ClientUtils.renderTexturedBox(worldRenderer, .375,0,.375, .625, 1,.625, hotMetal_flow, true);
+				addTranslation(tmp, worldRenderer, 0,1,0);
+				ClientUtils.renderTexturedBox(worldRenderer, .375,0,.375, .625,h-1,.625, hotMetal_flow, true);
+				addTranslation(tmp, worldRenderer, 0,-1,0);
+				addTranslation(tmp, worldRenderer, 0,h,0);
+			}
+			else
+			{
+				addTranslation(tmp, worldRenderer, 0,-h,0);
+				ClientUtils.renderTexturedBox(worldRenderer, .375,0,.375, .625,h,.625, hotMetal_flow, true);
+				addTranslation(tmp, worldRenderer, 0,h,0);
+			}
+			if(pour>(process-speed))
+				addTranslation(tmp, worldRenderer, 0,1.6875f-h,0);
+			if(pour>speed)
+			{
+				float h2 = (pour>(process-speed)?.625f: pour/(process-speed)*.625f);
+				addTranslation(tmp, worldRenderer, 0,-1.6875f,0);
+				ClientUtils.renderTexturedBox(worldRenderer, .125,0,.125, .875,h2,.875, hotMetal_still, false);
+				addTranslation(tmp, worldRenderer, 0,1.6875f,0);
+			}
+			worldRenderer.setTranslation(0, 0, 0);
+			tessellator.draw();
+			setLightmapDisabled(false);
+		}
 		GlStateManager.popMatrix();
+	}
+
+	private void addTranslation(Vector3f tmp, BufferBuilder bb, float x, float y, float z)
+	{
+		tmp.translate(x, y, z);
+		bb.setTranslation(tmp.x, tmp.y, tmp.z);
 	}
 }

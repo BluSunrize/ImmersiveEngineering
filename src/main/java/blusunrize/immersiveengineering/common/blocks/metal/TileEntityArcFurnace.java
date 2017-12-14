@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
@@ -49,6 +50,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		super(MultiblockArcFurnace.instance, new int[]{5,5,5}, 64000, true);
 	}
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
+	public int pouringMetal = 0;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -69,8 +71,30 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	public void update()
 	{
 		super.update();
-
-		if (!world.isRemote && !isDummy() && !isRSDisabled() && energyStorage.getEnergyStored() > 0)
+		if (isDummy())
+			return;
+		if(world.isRemote)
+		{
+			if(pouringMetal>0)
+				pouringMetal--;
+			//if(shouldRenderAsActive())
+				for(int i=0; i<4; i++)
+				{
+					if(Utils.RAND.nextInt(6)==0)
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*facing.getFrontOffsetX(),
+								getPos().getY()+2.9,getPos().getZ()+.5-.25*facing.getFrontOffsetZ(),
+								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
+					if(Utils.RAND.nextInt(6)==0)
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(facing==EnumFacing.EAST?-.25:.25),
+								getPos().getY()+2.9,getPos().getZ()+.5+(facing==EnumFacing.SOUTH?.25:-.25),
+								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
+					if(Utils.RAND.nextInt(6)==0)
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(facing==EnumFacing.WEST?.25:-.25),
+								getPos().getY()+2.9,getPos().getZ()+.5+(facing==EnumFacing.NORTH?-.25:.25),
+								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
+				}
+		}
+		else if (!isRSDisabled() && energyStorage.getEnergyStored() > 0)
 		{
 			if (this.tickedProcesses > 0)
 				for (int i = 23; i < 26; i++)
@@ -160,6 +184,14 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					}
 			}
 		}
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int type)
+	{
+		if (id==0)
+			pouringMetal = type;
+		return super.receiveClientEvent(id, type);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -654,6 +686,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		protected void writeExtraDataToNBT(NBTTagCompound nbt)
 		{
 			super.writeExtraDataToNBT(nbt);
+		}
+
+		@Override
+		protected void processFinish(TileEntityMultiblockMetal te)
+		{
+			super.processFinish(te);
+			te.getWorld().addBlockEvent(te.getPos(), te.getBlockType(), 0,40);
 		}
 	}
 
