@@ -282,12 +282,6 @@ public class ModelConfigurableSides implements IBakedModel
 		}
 
 		@Override
-		public IModelState getDefaultState()
-		{
-			return null;
-		}
-
-		@Override
 		public IModel retexture(ImmutableMap<String, String> textures)
 		{
 			String newName = this.name;

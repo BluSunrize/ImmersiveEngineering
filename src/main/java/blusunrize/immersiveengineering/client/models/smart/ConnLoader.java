@@ -184,11 +184,5 @@ public class ConnLoader implements ICustomModelLoader
 			}
 		}
 
-		@Override
-		public IModelState getDefaultState()
-		{
-			return null;
-		}
-
 	}
 }
