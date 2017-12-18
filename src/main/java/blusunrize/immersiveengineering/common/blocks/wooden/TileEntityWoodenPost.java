@@ -79,12 +79,11 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 						if(i==2)//Arms
 						{
 							TileEntityWoodenPost arm = (TileEntityWoodenPost)world.getTileEntity(pos.add(0,1+i,0).offset(f));
-							boolean up = arm.hasConnection(EnumFacing.UP);
 							boolean down = arm.hasConnection(EnumFacing.DOWN);
-							if(up || (!up&&!down))
-								list.add("arm_"+f.getName2()+"_up");
 							if(down)
 								list.add("arm_"+f.getName2()+"_down");
+							else
+								list.add("arm_"+f.getName2()+"_up");
 						}
 						else//Simple Connectors
 							list.add("con_"+i+"_"+f.getName2());
@@ -147,10 +146,8 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		if(dummy==3)
 			return new float[]{hasConnection(EnumFacing.WEST)?0:.3125f,0,hasConnection(EnumFacing.NORTH)?0:.3125f, hasConnection(EnumFacing.EAST)?1:.6875f,1,hasConnection(EnumFacing.SOUTH)?1:.6875f};
 
-		float up = hasConnection(EnumFacing.UP)?1:.5625f;
 		float down = hasConnection(EnumFacing.DOWN)?0:.4375f;
-		if(down==.4375f&&up==.5625f)
-			up=1;
+		float up = down>0?1:.5625f;
 		if(dummy-3==2)
 			return new float[]{.3125f,down,.3125f, .6875f,up,1};
 		if(dummy-3==3)
