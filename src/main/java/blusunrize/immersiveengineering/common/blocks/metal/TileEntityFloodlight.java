@@ -83,6 +83,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		boolean enabled;
 		if(shouldUpdate)
 		{
+			lightsToBePlaced.clear();
 			updateFakeLights(true, active);
 			markDirty();
 			this.markContainingBlockForUpdate(null);
@@ -107,17 +108,18 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true,active);
+			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
 		}
 		if(!active)
 		{
 			if(!lightsToBePlaced.isEmpty())
 				lightsToBePlaced.clear();
 		}
-		else if(!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty() && world.getTotalWorldTime()%8==((getPos().getX()^getPos().getZ())&7))
+		if((!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty()) && world.getTotalWorldTime()%8==((getPos().getX()^getPos().getZ())&7))
 		{
 			Iterator<BlockPos> it = lightsToBePlaced.iterator();
 			int timeout = 0;
-			while(it.hasNext() && timeout++<16)
+			while(it.hasNext() && timeout++<Math.max(16, 32-lightsToBeRemoved.size()))
 			{
 				BlockPos cc = it.next();
 				//				world.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
@@ -129,8 +131,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				it.remove();
 			}
 			it = lightsToBeRemoved.iterator();
-			timeout = 0;
-			while(it.hasNext() && timeout++<16)
+			while(it.hasNext() && timeout++<32)
 			{
 				BlockPos cc = it.next();
 				if(Utils.getExistingTileEntity(world, cc) instanceof TileEntityFakeLight)
@@ -278,6 +279,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
+		boolean oldActive = active;
 		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInteger("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
@@ -298,6 +300,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		{
 			controllingComputers = nbt.getBoolean("computerControlled") ? 1 : 0;
 			computerOn = nbt.getBoolean("computerOn");
+		}
+		if (world!=null&&oldActive!=active) {
+			world.checkLightFor(EnumSkyBlock.BLOCK, pos);
 		}
 	}
 
@@ -596,7 +601,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	@SideOnly(Side.CLIENT)
 	@Override
 	public String getCacheKey(IBlockState object) {
-		return rotX+":"+rotY+":"+active;
+		return side+":"+facing+":"+rotX+":"+rotY+":"+active;
 	}
 
 	//computer stuff
@@ -615,10 +620,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				return;
 		}
 		this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX + (dir ? -11.25f : 11.25f)));
-		markDirty();
-		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 		turnCooldown = 20;
+		shouldUpdate = true;
 	}
 
 	public void turnY(boolean dir, boolean throwException)
@@ -632,9 +636,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		this.rotY += dir ? -11.25 : 11.25;
 		this.rotY %= 360;
-		markDirty();
-		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 		turnCooldown = 20;
+		shouldUpdate = true;
 	}
 }
