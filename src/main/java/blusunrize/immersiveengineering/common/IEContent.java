@@ -356,6 +356,9 @@ public class IEContent
 		/**BLUEPRINTS*/
 		IERecipes.initBlueprintRecipes();
 
+		/**BELLJAR*/
+		BelljarHandler.init();
+
 		/**MULTIBLOCK RECIPES*/
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
