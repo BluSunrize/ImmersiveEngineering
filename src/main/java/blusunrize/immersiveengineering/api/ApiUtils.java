@@ -42,8 +42,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
 
@@ -322,9 +327,24 @@ public class ApiUtils
 		}
 		return null;
 	}
+
+	public static Vec3d getVecForIICAt(World world, BlockPos p, Connection conn)
+	{
+		Vec3d vStart = new Vec3d(p.getX(),p.getY(),p.getZ());
+		IImmersiveConnectable iicStart = toIIC(p, world);
+		if(iicStart!=null)
+			vStart = addVectors(vStart, iicStart.getConnectionOffset(conn));
+		return vStart;
+	}
+
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
 		return vec0.addVector(vec1.x,vec1.y,vec1.z);
+	}
+
+	public static double acosh(double x) {
+		//See http://mathworld.wolfram.com/InverseHyperbolicCosine.html
+		return Math.log(x+Math.sqrt(x+1)*Math.sqrt(x-1));
 	}
 
 	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
@@ -334,10 +354,15 @@ public class ApiUtils
 		if(vertical)
 			return new Vec3d[]{new Vec3d(start.x, start.y, start.z), new Vec3d(end.x, end.y, end.z)};
 
-		return getConnectionCatenary(start, end, connection.cableType.getSlack());
+		return getConnectionCatenary(start, end, connection.cableType.getSlack(), connection);
 	}
 
 	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
+	{
+		return getConnectionCatenary(start, end, slack, null);
+	}
+
+	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack, @Nullable Connection c)
 	{
 		double dx = (end.x)-(start.x);
 		double dy = (end.y)-(start.y);
@@ -354,23 +379,137 @@ public class ApiUtils
 				break;
 		}
 		double a = dw/2/l;
-		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
-		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
+		double offsetX = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
+		double offsetY = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
+		if (c!=null)
+		{
+			c.catOffsetX = offsetX;
+			c.catOffsetY = offsetY;
+			c.catA = a;
+		}
 
 		Vec3d[] vex = new Vec3d[vertices+1];
 
 		vex[0] = new Vec3d(start.x, start.y, start.z);
 		for(int i=1; i<vertices; i++)
 		{
-			float n1 = i/(float)vertices;
-			double x1 = 0 + dx * n1;
-			double z1 = 0 + dz * n1;
-			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-			vex[i] = new Vec3d(start.x+x1, start.y+y1, start.z+z1);
+			float posRelative = i/(float)vertices;
+			double x = 0 + dx * posRelative;
+			double z = 0 + dz * posRelative;
+			double y = a * Math.cosh((dw*posRelative-offsetX)/a)+offsetY;
+			vex[i] = new Vec3d(start.x+x, start.y+y, start.z+z);
 		}
 		vex[vertices] = new Vec3d(end.x, end.y, end.z);
 
 		return vex;
+	}
+
+	public static double getDim(Vec3d vec, int dim) {
+		return dim==0?vec.x:(dim==1?vec.y:vec.z);
+	}
+
+	public static BlockPos offsetDim(BlockPos p, int dim, int amount) {
+		return p.add(dim==0?amount:0, dim==1?amount:0, dim==2?amount:0);
+	}
+
+	public static boolean raytraceAlongCatenary(Connection conn, World w, BiPredicate<BlockPos, Pair<Vec3d, Vec3d>> shouldStop, Consumer<BlockPos> close)
+	{
+		final double EPS = .01;
+		conn.getSubVertices(w);
+		//Raytrace X&Z
+		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
+		HashSet<BlockPos> done = new HashSet<>();
+		HashSet<BlockPos> near = new HashSet<>();
+		Vec3d vStart = getVecForIICAt(w, conn.start, conn);
+		Vec3d vEnd = getVecForIICAt(w, conn.end, conn);
+		Vec3d across = vEnd.subtract(vStart);
+		across = new Vec3d(across.x, 0, across.z);
+		double lengthHor = across.lengthVector();
+		for (int dim = 0; dim <= 2; dim += 2)
+		{
+			int start = (int) Math.ceil(Math.min(getDim(vStart, dim), getDim(vEnd, dim)));
+			int end = (int) Math.floor(Math.max(getDim(vStart, dim), getDim(vEnd, dim)));
+			if (start!=end)
+			{
+				for (int i = start; i <= end; i += Math.signum(end - start))
+				{
+					double factor = (i - getDim(vStart, dim)) / getDim(across, dim);
+					Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
+
+					for (int dFactor = -1; dFactor <= 1; dFactor += 2)
+					{
+						BlockPos posB = new BlockPos(pos.addVector(dim==0?dFactor * EPS:0, 0, dim==2?dFactor * EPS:0));
+						if (handleVec(pos, halfScanned, done, shouldStop, posB, near, dim))
+							return false;
+					}
+				}
+			}
+		}
+		//Raytrace Y
+		double min = conn.catA + conn.catOffsetY + vStart.y;
+		for (int i = 0;i<2;i++)
+		{
+			double factor = i==0?1:-1;
+			double max = i==0?vEnd.y:vStart.y;
+			for (int y = (int) Math.ceil(min); y <= Math.floor(max); y++)
+			{
+				double yReal = y - vStart.y;
+				double posRel = (factor*acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
+				Vec3d pos = new Vec3d(vStart.x + across.x * posRel, y, vStart.z + across.z * posRel);
+
+				for (int dFactor = -1; dFactor <= 1; dFactor += 2)
+				{
+					BlockPos posB = new BlockPos(pos.addVector(0, dFactor * EPS, 0));
+					if (handleVec(pos, halfScanned, done, shouldStop, posB, near, 1))
+						return false;
+				}
+			}
+		}
+		if (halfScanned.containsKey(conn.start))
+		{
+			shouldStop.test(conn.start, new ImmutablePair<>(halfScanned.get(conn.start), conn.getVecAt(0, vStart, across, lengthHor)));
+			done.add(conn.start);
+		}
+		if (halfScanned.containsKey(conn.end))
+		{
+			shouldStop.test(conn.end, new ImmutablePair<>(halfScanned.get(conn.end), conn.getVecAt(0, vStart, across, lengthHor)));
+			done.add(conn.end);
+		}
+		for (BlockPos p:near)
+			if (!done.contains(p))
+				close.accept(p);
+		return true;
+	}
+
+	private static boolean handleVec(Vec3d pos, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
+									 BiPredicate<BlockPos, Pair<Vec3d, Vec3d>> shouldStop, BlockPos posB, HashSet<BlockPos> near, int dim)
+	{
+		final double DELTA_NEAR = .2;
+		if (!done.contains(posB))
+		{
+			if (halfScanned.containsKey(posB))
+			{
+				boolean stop = shouldStop.test(posB, new ImmutablePair<>(halfScanned.get(posB), pos));
+				done.add(posB);
+				halfScanned.remove(posB);
+				if (stop)
+					return true;
+			}
+			else
+			{
+				halfScanned.put(posB, pos);
+			}
+			for (int i = 0;i<2;i++)
+				if (i!=dim)
+				{
+					double coord = (getDim(pos, i)%1+1)%1;
+					if (coord<DELTA_NEAR)
+						near.add(offsetDim(posB, i, -1));
+					else if (coord>1-DELTA_NEAR)
+						near.add(offsetDim(posB, i, 1));
+				}
+		}
+		return false;
 	}
 
 	public static WireType getWireTypeFromNBT(NBTTagCompound tag, String key)

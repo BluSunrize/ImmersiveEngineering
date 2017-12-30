@@ -118,7 +118,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
-	public static Set<Connection> skyhookGrabableConnections = new HashSet();
+	public static Set<Connection> skyhookGrabableConnections = new HashSet<>();
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
@@ -129,32 +129,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ItemStack stack = player.getActiveItemStack();
 			if(!stack.isEmpty() && stack.getItem() instanceof ItemSkyhook)
 			{
-				TileEntity connector = null;
-				double lastDist = 0;
-				Connection line = null;
-				double py = player.posY+player.getEyeHeight();
-				BlockPos pos = new BlockPos(player.posX,player.posY,player.posZ);
-				for(int xx=-2; xx<=2; xx++)
-					for(int zz=-2; zz<=2; zz++)
-						for(int yy=0; yy<=3; yy++)
-						{
-							TileEntity tile = player.world.getTileEntity(pos.add(xx, yy, zz));
-							if(tile!=null)
-							{
-								Connection con = SkylineHelper.getTargetConnection(player.world, pos.add(xx, yy, zz), player, null);
-								if(con!=null)
-								{
-									double d = tile.getDistanceSq(player.posX,py,player.posZ);
-									if(connector==null || d<lastDist)
-									{
-										connector=tile;
-										lastDist=d;
-										line=con;
-									}
-								}
-							}
-						}
-				if(line!=null&&connector!=null)
+				Connection line = SkylineHelper.getTargetConnection(player.getEntityWorld(), player, null);
+				if(line!=null)
 					skyhookGrabableConnections.add(line);
 			}
 		}

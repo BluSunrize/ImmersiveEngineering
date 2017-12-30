@@ -40,16 +40,18 @@ public class EntitySkylineHook extends Entity
 	public Connection connection;
 	public BlockPos target;
 	public Vec3d[] subPoints;
-	public int targetPoint=0;
+	public int targetPoint;
 	public EntitySkylineHook(World world)
 	{
 		super(world);
 		this.setSize(.125f,.125f);
 		//		this.noClip=true;
 	}
-	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, BlockPos target, Vec3d[] subPoints)
+	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, BlockPos target,
+							 Vec3d[] subPoints, int next)
 	{
 		super(world);
+		targetPoint = next;
 		//		this.noClip=true;
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
@@ -219,7 +221,7 @@ public class EntitySkylineHook extends Entity
 		ItemStack hook = player.getActiveItemStack();
 		if(hook.isEmpty() || !(hook.getItem() instanceof ItemSkyhook))
 			return;
-		Connection line = SkylineHelper.getTargetConnection(world, target, player, connection);
+		Connection line = SkylineHelper.getTargetConnection(world, player, connection);
 		if(line!=null)
 		{
 			player.setActiveHand(player.getActiveHand());

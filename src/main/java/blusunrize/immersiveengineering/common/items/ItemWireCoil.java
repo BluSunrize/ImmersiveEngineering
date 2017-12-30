@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -16,12 +17,14 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +32,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -156,10 +160,24 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(nodeHere.getIgnored(nodeLink));
 									ignore.addAll(nodeLink.getIgnored(nodeHere));
-									boolean canSee = Utils.rayTraceForFirst(rtOff0, rtOff1, world, ignore)==null;
+									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), type,
+											(int)Math.sqrt(distanceSq));
+									boolean canSee = ApiUtils.raytraceAlongCatenary(tmpConn, world, (p, hit)->{
+										if (ignore.contains(p))
+											return false;
+										IBlockState state = world.getBlockState(p);
+										if (state.getBlock().canCollideCheck(state, false))
+										{
+											RayTraceResult rayRes = state.collisionRayTrace(world, p, hit.getLeft(), hit.getRight());
+											return rayRes != null && rayRes.typeOfHit == RayTraceResult.Type.BLOCK;
+										}
+										return false;
+									}, (p)->{});
 									if(canSee)
 									{
-										ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), (int)Math.sqrt(distanceSq), type);
+										ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
+												(int)Math.sqrt(distanceSq), type);
+
 
 										nodeHere.connectCable(type, target, nodeLink);
 										nodeLink.connectCable(type, targetLink, nodeHere);
