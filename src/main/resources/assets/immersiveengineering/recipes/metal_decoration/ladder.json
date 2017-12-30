@@ -1,0 +1,18 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_ladder",
+    "data": 0,
+    "count": 3
+  },
+  "pattern": [
+    "S S",
+    "SSS",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "#listMetalSticks"
+    }
+  }
+}

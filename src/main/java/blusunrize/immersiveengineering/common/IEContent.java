@@ -148,6 +148,7 @@ public class IEContent
 	public static Block blockAluminumScaffoldingStair;
 	public static Block blockAluminumScaffoldingStair1;
 	public static Block blockAluminumScaffoldingStair2;
+	public static Block blockMetalLadder;
 	public static BlockIEBase blockConnectors;
 	public static BlockIEBase blockMetalDevice0;
 	public static BlockIEBase blockMetalDevice1;
@@ -261,6 +262,7 @@ public class IEContent
 		blockAluminumScaffoldingStair = new BlockIEStairs("aluminum_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(5)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
 		blockAluminumScaffoldingStair1 = new BlockIEStairs("aluminum_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(6)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
 		blockAluminumScaffoldingStair2 = new BlockIEStairs("aluminum_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(7)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockMetalLadder = new BlockMetalLadder();
 
 		blockConnectors = new BlockConnector();
 		blockMetalDevice0 = new BlockMetalDevice0();
@@ -561,6 +563,7 @@ public class IEContent
 		registerTile(TileEntityWoodenPost.class);
 		registerTile(TileEntityWallmount.class);
 
+		registerTile(TileEntityLadder.class);
 		registerTile(TileEntityLantern.class);
 		registerTile(TileEntityRazorWire.class);
 		registerTile(TileEntityToolbox.class);

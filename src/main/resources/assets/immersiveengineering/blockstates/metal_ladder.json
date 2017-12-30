@@ -1,0 +1,79 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "cube_all",
+		"textures": { "texture": "immersiveengineering:blocks/metal_ladder" }
+	},
+	"variants":
+	{
+		"inventory,type=normal": [{
+			"transform": "forge:default-item",
+			"model": "minecraft:ladder",
+			"textures": {
+				"texture": "immersiveengineering:blocks/metal_ladder"
+			}}],
+		"inventory,type=covered_steel": [{
+			"model": "immersiveengineering:ie_scaffoldladder",
+			"textures": {
+				"ladder": "immersiveengineering:blocks/metal_ladder",
+				"side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding",
+				"top": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_open",
+				"bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_open"
+			}}],
+		"inventory,type=covered_aluminum": [{
+			"model": "immersiveengineering:ie_scaffoldladder",
+			"textures": {
+				"ladder": "immersiveengineering:blocks/metal_ladder",
+				"side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding",
+				"top": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_open",
+				"bottom": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_open"
+			}}],
+		"type":
+		{
+			"normal": {
+				"model": "immersiveengineering:ie_ladder",
+				"textures": {
+					"texture": "immersiveengineering:blocks/metal_ladder",
+					"particle": "immersiveengineering:blocks/metal_ladder"
+				}
+			},
+			"covered_steel": {
+				"model": "immersiveengineering:ie_scaffoldladder",
+				"textures": {
+					"ladder": "immersiveengineering:blocks/metal_ladder",
+					"side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding",
+					"top": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_open",
+					"bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_open"
+				}
+			},
+			"covered_aluminum": {
+				"model": "immersiveengineering:ie_scaffoldladder",
+				"textures": {
+					"ladder": "immersiveengineering:blocks/metal_ladder",
+					"side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding",
+					"top": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_open",
+					"bottom": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_open"
+				}
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		}
+	}
+}

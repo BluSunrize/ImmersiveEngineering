@@ -149,6 +149,10 @@ tile.immersiveengineering.aluminum_scaffolding_stairs0.name=Aluminium Scaffoldin
 tile.immersiveengineering.aluminum_scaffolding_stairs1.name=Aluminium Scaffolding Stairs
 tile.immersiveengineering.aluminum_scaffolding_stairs2.name=Aluminium Scaffolding Stairs
 
+tile.immersiveengineering.metal_ladder.normal.name=Metal Ladder
+tile.immersiveengineering.metal_ladder.covered_steel.name=Scaffold Covered Ladder
+tile.immersiveengineering.metal_ladder.covered_aluminum.name=Scaffold Covered Ladder
+
 tile.immersiveengineering.connector.connector_lv.name=LV Wire Connector
 tile.immersiveengineering.connector.relay_lv.name=LV Wire Relay
 tile.immersiveengineering.connector.connector_mv.name=MV Wire Connector
