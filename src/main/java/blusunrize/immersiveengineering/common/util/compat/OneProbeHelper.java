@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import com.google.common.base.Function;
 import mcjty.theoneprobe.Tools;
@@ -65,8 +66,35 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		input.registerProvider(new ProcessProvider());
 		input.registerProvider(new TeslaCoilProvider());
 		input.registerProvider(new SideConfigProvider());
+		input.registerProvider(new FluidInfoProvider());
 		input.registerBlockDisplayOverride(new MultiblockDisplayOverride());
 		return null;
+	}
+
+	public static class FluidInfoProvider implements IProbeInfoProvider
+	{
+
+		@Override
+		public String getID() {
+			return ImmersiveEngineering.MODID+":"+"FluidInfo";
+		}
+
+		@Override
+		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+			TileEntity te = world.getTileEntity(data.getPos());
+			if(te instanceof TileEntitySheetmetalTank) {
+				TileEntitySheetmetalTank master = ((TileEntitySheetmetalTank) te).master();
+				int current = master.tank.getFluidAmount();
+				int max = master.tank.getCapacity();
+
+				if(current > 0) {
+					probeInfo.progress(current, max,
+							probeInfo.defaultProgressStyle()
+								.suffix("mB")
+								.numberFormat(NumberFormat.COMPACT));
+				}
+			}
+		}
 	}
 
 
