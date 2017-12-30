@@ -408,12 +408,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return isEffective(state.getMaterial()) && !isDrillBroken(stack);
 	}
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty() && !isDrillBroken(stack))
 			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+getUpgrades(stack).getFloat("speed");
-		return super.getStrVsBlock(stack, state);
+		return super.getDestroySpeed(stack, state);
 	}
 	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, IBlockState state, EntityPlayer player, ItemStack drill, ItemStack head, boolean inWorld)
 	{

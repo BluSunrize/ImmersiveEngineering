@@ -1,3 +1,13 @@
+#####Version 0.12-76
+- added various config options for the Belljar, to adjust growthspeeds and fertilizer effects
+- re-added partivles and animation for the Arc Furnace (thanks Malte)
+- fixed wires connected to razorwire not rendering (thanks Malte)
+- fixed missing comparator output on the Current Transformer (thanks Malte)
+- fixed the drill accidentally modifying its NBT on sharing (thanks Malte)
+- fixed the Bucket Wheel having rotation issues (thanks Malte)
+- fixed crashes related to newer Forge versions (thanks Malte)
+- fixed rendering issues with the Floodlight and improved its performance (thanks Malte)
+
 #####Version 0.12-75 - BUILT
 - Relicensed IE, because it was about time. It's not perfect but it's better than uncertainty
 - added a basic description to the mcmodinfo (thanks carstorm)

@@ -204,7 +204,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				entity.motionY=.05;
 				return;
 			}
-			if(entity.isCollidedHorizontally)
+			if(entity.collidedHorizontally)
 				entity.motionY=.2;
 		}
 	}

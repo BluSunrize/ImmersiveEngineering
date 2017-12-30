@@ -93,7 +93,7 @@ public class BlockIEScaffoldSlab<E extends Enum<E>&BlockIEBase.IBlockEnum> exten
 				entityIn.motionY=0;
 				return;
 			}
-			if(entityIn.isCollidedHorizontally)
+			if(entityIn.collidedHorizontally)
 				entityIn.motionY=.2;
 		}
 	}

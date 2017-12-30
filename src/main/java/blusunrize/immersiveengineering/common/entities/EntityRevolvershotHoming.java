@@ -66,7 +66,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 		EntityLivingBase target = null;
 		for(Object o: world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
 			if(o instanceof EntityLivingBase && !o.equals(this.shootingEntity))
-				if(target==null || ((EntityLivingBase)o).getDistanceSqToEntity(this)<target.getDistanceSqToEntity(this))
+				if(target==null || ((EntityLivingBase)o).getDistanceSq(this)<target.getDistanceSq(this))
 					target = (EntityLivingBase)o;
 		return target;
 	}

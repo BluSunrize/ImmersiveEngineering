@@ -365,12 +365,12 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		for(String type : this.getToolClasses(stack))
 			if(state.getBlock().isToolEffective(type, state))
 				return 6;
-		return super.getStrVsBlock(stack, state);
+		return super.getDestroySpeed(stack, state);
 	}
 
 	@Override

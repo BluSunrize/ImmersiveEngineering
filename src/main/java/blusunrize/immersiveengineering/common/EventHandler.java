@@ -493,7 +493,7 @@ public class EventHandler
 					{
 						if(((Entity)interdictor).isDead || ((Entity)interdictor).world==null)
 							it.remove();
-						else if(((Entity)interdictor).world.provider.getDimension()== event.getEntity().world.provider.getDimension() && ((Entity)interdictor).getDistanceSqToEntity(event.getEntity())<=interdictor.getInterdictionRangeSquared())
+						else if(((Entity)interdictor).world.provider.getDimension()== event.getEntity().world.provider.getDimension() && ((Entity)interdictor).getDistanceSq(event.getEntity())<=interdictor.getInterdictionRangeSquared())
 							event.setCanceled(true);
 					}
 				}
@@ -525,7 +525,7 @@ public class EventHandler
 					{
 						if(((Entity)interdictor).isDead || ((Entity)interdictor).world==null)
 							it.remove();
-						else if(((Entity)interdictor).world.provider.getDimension()== event.getEntity().world.provider.getDimension() && ((Entity)interdictor).getDistanceSqToEntity(event.getEntity())<=interdictor.getInterdictionRangeSquared())
+						else if(((Entity)interdictor).world.provider.getDimension()== event.getEntity().world.provider.getDimension() && ((Entity)interdictor).getDistanceSq(event.getEntity())<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 				}
