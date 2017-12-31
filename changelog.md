@@ -1,4 +1,4 @@
-#####Version 0.12-76
+#####Version 0.12-76 - BUILT
 - added various config options for the Belljar, to adjust growthspeeds and fertilizer effects
 - re-added partivles and animation for the Arc Furnace (thanks Malte)
 - added TOP compat for the Sheetmetal Tank (thanks SirWindfield)
@@ -19,7 +19,7 @@
 - fixed derpyness with Mineral Veins (at least for the most part), regarding CraftTweaker
 - fixed links to Biodiesel in the manual pointing to a nonexistant page
 - fixed a minor texture warning in the console
-- Translations Added/Updated: zh_CN (DYColdWind )
+- Translations Added/Updated: zh_CN (DYColdWind)
 
 #####Version 0.12-75 - BUILT
 - Relicensed IE, because it was about time. It's not perfect but it's better than uncertainty
