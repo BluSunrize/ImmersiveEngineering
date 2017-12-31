@@ -48,7 +48,7 @@ public class EnderIOHelper extends IECompatModule
 		IERecipes.addOreDictArcAlloyingRecipe("ingotSoularium", 1, "Gold", 200, 512, Blocks.SOUL_SAND);
 
 		ChemthrowerHandler.registerEffect("nutrient_distillation", new ChemthrowerEffect_Potion(null, 0, MobEffects.NAUSEA, 80, 1));
-		ChemthrowerHandler.registerEffect("liquid_sunshine", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(MobEffects.GLOWING, 200, 0),new PotionEffect(MobEffects.LEVITATION, 40, 0)));
+		ChemthrowerHandler.registerEffect("liquid_sunshine", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(MobEffects.GLOWING, 200, 0), new PotionEffect(MobEffects.LEVITATION, 40, 0)));
 		ChemthrowerHandler.registerEffect("cloud_seed_concentrated", new ChemthrowerEffect_Potion(null, 0, MobEffects.BLINDNESS, 40, 0));
 		ChemthrowerHandler.registerEffect("vapor_of_levity", new ChemthrowerEffect_Potion(null, 0, MobEffects.LEVITATION, 80, 2));
 
@@ -60,8 +60,8 @@ public class EnderIOHelper extends IECompatModule
 				if(entity instanceof EntityItem)
 				{
 					NBTTagCompound data = entity.getEntityData();
-					long pos = ((TileEntity) iConveyorTile).getPos().toLong();
-					if(!data.hasKey(EIO_MAGNET_NBT) || data.getLong(EIO_MAGNET_NBT) != pos)
+					long pos = ((TileEntity)iConveyorTile).getPos().toLong();
+					if(!data.hasKey(EIO_MAGNET_NBT)||data.getLong(EIO_MAGNET_NBT)!=pos)
 						data.setLong(EIO_MAGNET_NBT, pos);
 				}
 			}

@@ -57,7 +57,8 @@ public class TConstructHelper extends IECompatModule
 	public static Fluid fluidConstantan;
 	public static Block blockMoltenConstantan;
 
-	static {
+	static
+	{
 		fluidUranium = new FluidColouredMetal("uranium", 0x596552, 600);
 		sendFluidForMelting("Uranium", fluidUranium);
 		blockMoltenUranium = new BlockIEFluid("molten_uranium", fluidUranium, net.minecraft.block.material.Material.LAVA);
@@ -70,7 +71,7 @@ public class TConstructHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-		sendAlloyForMelting(new FluidStack(fluidConstantan, 2), "copper",1, "nickel",1);
+		sendAlloyForMelting(new FluidStack(fluidConstantan, 2), "copper", 1, "nickel", 1);
 
 		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemBullet, 1, OreDictionary.WILDCARD_VALUE));
 		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemDrillhead, 1, OreDictionary.WILDCARD_VALUE));
@@ -92,7 +93,7 @@ public class TConstructHelper extends IECompatModule
 		TinkerRegistry.addMaterialStats(constantan, new BowMaterialStats(.55f, 1.5f, 5f));
 		TinkerRegistry.integrate(constantan, fluidConstantan, "Constantan").toolforge().preInit();
 
-		ToolboxHandler.addToolType((s)->(s.getItem() instanceof TinkersItem));
+		ToolboxHandler.addToolType((s) -> (s.getItem() instanceof TinkersItem));
 	}
 
 	@Override
@@ -105,28 +106,30 @@ public class TConstructHelper extends IECompatModule
 		treatedWood.addTrait(TinkerTraits.ecological);
 
 		hemp.addItemIngot("fiberHemp");
-		hemp.setRepresentativeItem(new ItemStack(IEContent.itemMaterial,1,4));
+		hemp.setRepresentativeItem(new ItemStack(IEContent.itemMaterial, 1, 4));
 
 		constantan.setCastable(true);
 		constantan.addItem("nuggetConstantan", 1, Material.VALUE_Nugget);
 		constantan.addItem("ingotConstantan", 1, Material.VALUE_Ingot);
 		constantan.addTrait(thermalInversion);
 
-
-		if(ApiUtils.isExistingOreName("ingotAluBrass"))
-			IERecipes.addOreDictArcAlloyingRecipe("ingotAluBrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
-		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
-		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");
 		//		ChemthrowerHandler.registerEffect("glue", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
-		ChemthrowerHandler.registerEffect("blueslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
-		ChemthrowerHandler.registerEffect("purpleslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,2));
+		ChemthrowerHandler.registerEffect("blueslime", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 100, 1));
+		ChemthrowerHandler.registerEffect("purpleslime", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 100, 2));
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("rodIron"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("rodSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("ironRod"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("steelRod"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
+
+		if(ApiUtils.isExistingOreName("ingotAlubrass"))
+			IERecipes.addOreDictArcAlloyingRecipe("ingotAlubrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
+		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
+		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");
+
 		Fluid fluidClay = FluidRegistry.getFluid("clay");
 		if(fluidClay!=null)
-			MixerRecipe.addRecipe(new FluidStack(IEContent.fluidConcrete,500), new FluidStack(fluidClay,500),new Object[]{"sand","sand","gravel"}, 3200);
+			MixerRecipe.addRecipe(new FluidStack(IEContent.fluidConcrete, 500), new FluidStack(fluidClay, 500), new Object[]{"sand", "sand", "gravel"}, 3200);
+
 	}
 
 	@Override
@@ -166,10 +169,10 @@ public class TConstructHelper extends IECompatModule
 
 	public static void sendAlloyForMelting(FluidStack output, Object... input)
 	{
-		assert(input.length%2==0);
+		assert (input.length%2==0);
 		FluidStack[] inputStacks = new FluidStack[input.length/2];
-		for(int i=0; i<inputStacks.length; i++)
-			if(input[i*2] instanceof String && input[i*2+1] instanceof Integer)
+		for(int i = 0; i < inputStacks.length; i++)
+			if(input[i*2] instanceof String&&input[i*2+1] instanceof Integer)
 			{
 				Fluid f = FluidRegistry.getFluid((String)input[i*2]);
 				if(f!=null)
@@ -196,6 +199,7 @@ public class TConstructHelper extends IECompatModule
 		public static ResourceLocation ICON_MetalFlowing = new ResourceLocation("tconstruct:blocks/fluids/molten_metal_flow");
 
 		int colour;
+
 		public FluidColouredMetal(String name, int colour, int temp)
 		{
 			super(name, ICON_MetalStill, ICON_MetalFlowing);
@@ -223,17 +227,17 @@ public class TConstructHelper extends IECompatModule
 		@Override
 		public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt, boolean wasCritical, boolean wasHit)
 		{
-			if(target.isEntityAlive() && wasHit)
+			if(target.isEntityAlive()&&wasHit)
 			{
 				BlockPos pos = player.getPosition();
 				Biome biome = player.world.getBiomeForCoordsBody(pos);
-				float tempDif = biome.getFloatTemperature(pos)-0.5f;
+				float tempDif = biome.getTemperature(pos)-0.5f;
 				if(tempDif!=0)
 				{
-					if(tempDif<0 && !target.isImmuneToFire())
+					if(tempDif < 0&&!target.isImmuneToFire())
 						target.setFire((int)Math.floor(tempDif*3));
-					else if(tempDif>0)
-						target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,4,(int)Math.floor(tempDif*2)));
+					else if(tempDif > 0)
+						target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 4, (int)Math.floor(tempDif*2)));
 				}
 			}
 		}
