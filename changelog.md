@@ -18,6 +18,7 @@
 - fixed a crash with the Slippery potion
 - fixed derpyness with Mineral Veins (at least for the most part), regarding CraftTweaker
 - fixed links to Biodiesel in the manual pointing to a nonexistant page
+- fixed a minor texture warning in the console
 - Translations Added/Updated: zh_CN (DYColdWind )
 
 #####Version 0.12-75 - BUILT
