@@ -84,7 +84,7 @@ public class ModelCoresample implements IBakedModel
 						{
 							int weight = Math.max(2, Math.round(16*mineral.recalculatedChances[i]));
 							Block b = Block.getBlockFromItem(mineral.oreOutput.get(i).getItem());
-							IBlockState state = b!=null?b.getStateFromMeta(mineral.oreOutput.get(i).getMetadata()): Blocks.STONE.getDefaultState();
+							IBlockState state = b!=null&&b!=Blocks.AIR?b.getStateFromMeta(mineral.oreOutput.get(i).getMetadata()): Blocks.STONE.getDefaultState();
 							IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 							if(model!=null && model.getParticleTexture()!=null)
 								textureOre.put(model.getParticleTexture(), weight);

@@ -15,6 +15,9 @@
 - fixed AA compat, Canola in the squeezer
 - fixed TCon compat, mixup of Constantan and Uranium (thanks tgstyle)
 - fixed TCon compat, Arc Furnace for alloying
+- fixed a crash with the Slippery potion
+- fixed derpyness with Mineral Veins (at least for the most part), regarding CraftTweaker
+
 - Translations Added/Updated: zh_CN (DYColdWind )
 
 #####Version 0.12-75 - BUILT
