@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -107,7 +108,7 @@ public class IEPotions
 				{
 					EntityItem dropped = living.entityDropItem(living.getItemStackFromSlot(hand).copy(), 1);
 					dropped.setPickupDelay(20);
-					living.setItemStackToSlot(hand, null);
+					living.setItemStackToSlot(hand, ItemStack.EMPTY);
 				}
 			}
 			else if(this==IEPotions.concreteFeet && !living.world.isRemote)
