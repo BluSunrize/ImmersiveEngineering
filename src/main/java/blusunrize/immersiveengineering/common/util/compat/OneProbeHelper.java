@@ -18,10 +18,12 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Function;
 import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
 import mcjty.theoneprobe.config.Config;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import javax.annotation.Nullable;
@@ -98,13 +101,18 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 			if(te instanceof TileEntityWoodenBarrel) {
 				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel) te;
 				int current = barrel.tank.getFluidAmount();
-				int capacity = barrel.tank.getCapacity();
-				if (current>0) {
-                    			probeInfo.progress(current, capacity,
-                            			probeInfo.defaultProgressStyle()
-	                                    	.suffix("mB")
-                                    		.numberFormat(NumberFormat.COMPACT));
-		                }
+				if (current > 0) {
+					int capacity = barrel.tank.getCapacity();
+					MapColor fluidMapColor = barrel.tank.getFluid().getFluid().getBlock().getDefaultState().getMaterial().getMaterialMapColor();
+					int color = 0xFF000000 | fluidMapColor.colorValue;
+					probeInfo.progress(current, capacity,
+                            probeInfo.defaultProgressStyle()
+                                .suffix("mB")
+                                .numberFormat(NumberFormat.COMPACT)
+								.filledColor(color)
+								.alternateFilledColor(color)
+					);
+				}
 			}
 		}
 	}
