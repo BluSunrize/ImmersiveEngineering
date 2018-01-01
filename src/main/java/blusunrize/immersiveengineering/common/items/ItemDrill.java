@@ -279,10 +279,16 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public ItemStack getHead(ItemStack drill)
 	{
 		ItemStack head;
-		if (FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-			head = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0);
-		else
+		boolean remote = FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT;
+		IItemHandler cap = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		if (!remote&&cap.getStackInSlot(0).isEmpty())
+			remote = true;
+		else if (remote&&!ItemNBTHelper.hasKey(drill, "head"))
+			remote = false;
+		if (remote)
 			head = new ItemStack(ItemNBTHelper.getTagCompound(drill, "head"));
+		else
+			head = cap.getStackInSlot(0);
 		return !head.isEmpty() &&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
 	}
 	public void setHead(ItemStack drill, ItemStack head)
