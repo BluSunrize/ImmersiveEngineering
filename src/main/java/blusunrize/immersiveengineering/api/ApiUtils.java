@@ -16,8 +16,10 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +33,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -43,12 +47,13 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
 
@@ -331,7 +336,8 @@ public class ApiUtils
 	public static Vec3d getVecForIICAt(World world, BlockPos p, Connection conn)
 	{
 		Vec3d vStart = new Vec3d(p.getX(),p.getY(),p.getZ());
-		IImmersiveConnectable iicStart = toIIC(p, world);
+		//Force loading
+		IImmersiveConnectable iicStart = toIIC(p, world, false);
 		if(iicStart!=null)
 			vStart = addVectors(vStart, iicStart.getConnectionOffset(conn));
 		return vStart;
@@ -412,102 +418,121 @@ public class ApiUtils
 		return p.add(dim==0?amount:0, dim==1?amount:0, dim==2?amount:0);
 	}
 
-	public static boolean raytraceAlongCatenary(Connection conn, World w, BiPredicate<BlockPos, Pair<Vec3d, Vec3d>> shouldStop, Consumer<BlockPos> close)
+	public static Vec3d offsetDim(Vec3d p, int dim, double amount) {
+		return p.addVector(dim==0?amount:0, dim==1?amount:0, dim==2?amount:0);
+	}
+
+	public static boolean raytraceAlongCatenary(Connection conn, World w, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
+												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
-		final double EPS = .01;
 		conn.getSubVertices(w);
-		//Raytrace X&Z
 		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
 		HashSet<BlockPos> done = new HashSet<>();
-		HashSet<BlockPos> near = new HashSet<>();
+		HashSet<Triple<BlockPos, Vec3d, Vec3d>> near = new HashSet<>();
 		Vec3d vStart = getVecForIICAt(w, conn.start, conn);
 		Vec3d vEnd = getVecForIICAt(w, conn.end, conn);
 		Vec3d across = vEnd.subtract(vStart);
 		across = new Vec3d(across.x, 0, across.z);
 		double lengthHor = across.lengthVector();
+		halfScanned.put(conn.start, vStart);
+		halfScanned.put(conn.end, vEnd);
+		//Raytrace X&Z
 		for (int dim = 0; dim <= 2; dim += 2)
 		{
 			int start = (int) Math.ceil(Math.min(getDim(vStart, dim), getDim(vEnd, dim)));
 			int end = (int) Math.floor(Math.max(getDim(vStart, dim), getDim(vEnd, dim)));
-			if (start!=end)
+			for (int i = start; (start > end ? i >= end : i <= end); i += (end == start ? 1 : Math.signum(end - start)))
 			{
-				for (int i = start; i <= end; i += Math.signum(end - start))
-				{
-					double factor = (i - getDim(vStart, dim)) / getDim(across, dim);
-					Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
+				double factor = (i - getDim(vStart, dim)) / getDim(across, dim);
+				Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
 
-					for (int dFactor = -1; dFactor <= 1; dFactor += 2)
-					{
-						BlockPos posB = new BlockPos(pos.addVector(dim==0?dFactor * EPS:0, 0, dim==2?dFactor * EPS:0));
-						if (handleVec(pos, halfScanned, done, shouldStop, posB, near, dim))
-							return false;
-					}
-				}
+				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near))
+					return false;
 			}
 		}
 		//Raytrace Y
 		double min = conn.catA + conn.catOffsetY + vStart.y;
-		for (int i = 0;i<2;i++)
+		for (int i = 0; i < 2; i++)
 		{
-			double factor = i==0?1:-1;
-			double max = i==0?vEnd.y:vStart.y;
+			double factor = i == 0 ? 1 : -1;
+			double max = i == 0 ? vEnd.y : vStart.y;
 			for (int y = (int) Math.ceil(min); y <= Math.floor(max); y++)
 			{
 				double yReal = y - vStart.y;
-				double posRel = (factor*acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
+				double posRel = (factor * acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
 				Vec3d pos = new Vec3d(vStart.x + across.x * posRel, y, vStart.z + across.z * posRel);
 
-				for (int dFactor = -1; dFactor <= 1; dFactor += 2)
-				{
-					BlockPos posB = new BlockPos(pos.addVector(0, dFactor * EPS, 0));
-					if (handleVec(pos, halfScanned, done, shouldStop, posB, near, 1))
-						return false;
-				}
+				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near))
+					return false;
 			}
 		}
-		if (halfScanned.containsKey(conn.start))
-		{
-			shouldStop.test(conn.start, new ImmutablePair<>(halfScanned.get(conn.start), conn.getVecAt(0, vStart, across, lengthHor)));
-			done.add(conn.start);
-		}
-		if (halfScanned.containsKey(conn.end))
-		{
-			shouldStop.test(conn.end, new ImmutablePair<>(halfScanned.get(conn.end), conn.getVecAt(0, vStart, across, lengthHor)));
-			done.add(conn.end);
-		}
-		for (BlockPos p:near)
-			if (!done.contains(p))
-				close.accept(p);
+		for (Triple<BlockPos, Vec3d, Vec3d> p : near)
+			close.accept(p);
+		for (Map.Entry<BlockPos, Vec3d> p : halfScanned.entrySet())
+			if (shouldStop.test(new ImmutableTriple<>(p.getKey(), p.getValue(), p.getValue())))
+				return false;
 		return true;
 	}
 
-	private static boolean handleVec(Vec3d pos, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
-									 BiPredicate<BlockPos, Pair<Vec3d, Vec3d>> shouldStop, BlockPos posB, HashSet<BlockPos> near, int dim)
+	private static boolean handleVec(Vec3d pos, Vec3d origPos, int start, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
+									 Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop, HashSet<Triple<BlockPos, Vec3d, Vec3d>> near)
 	{
-		final double DELTA_NEAR = .2;
+		final double DELTA_HIT = 1e-5;
+		final double EPSILON = 1e-5;
+		boolean calledOther = false;
+		for (int i = start; i < 3; i++)
+		{
+			double coord = getDim(pos, i);
+			double diff = coord - Math.floor(coord);
+			if (diff < DELTA_HIT)
+			{
+				if (handleVec(offsetDim(pos, i, -(diff + EPSILON)), origPos, i + 1, halfScanned, done, shouldStop, near))
+					return true;
+				calledOther = true;
+			}
+			diff = Math.ceil(coord) - coord;
+			if (diff < DELTA_HIT)
+			{
+				if (handleVec(offsetDim(pos, i, diff + EPSILON), origPos, i + 1, halfScanned, done, shouldStop, near))
+					return true;
+				calledOther = true;
+			}
+		}
+		if (!calledOther)
+			return handlePos(origPos, new BlockPos(pos), halfScanned, done, shouldStop, near);
+		return false;
+	}
+
+	private static boolean handlePos(Vec3d pos, BlockPos posB, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
+									 Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop, HashSet<Triple<BlockPos, Vec3d, Vec3d>> near)
+	{
+		final double DELTA_NEAR = .3;
 		if (!done.contains(posB))
 		{
-			if (halfScanned.containsKey(posB))
+			if (halfScanned.containsKey(posB)&&!pos.equals(halfScanned.get(posB)))
 			{
-				boolean stop = shouldStop.test(posB, new ImmutablePair<>(halfScanned.get(posB), pos));
+				Triple<BlockPos, Vec3d, Vec3d> added = new ImmutableTriple<>(posB, halfScanned.get(posB), pos);
+				boolean stop = shouldStop.test(added);
 				done.add(posB);
 				halfScanned.remove(posB);
+				near.removeIf((t) -> t.getLeft().equals(posB));
 				if (stop)
 					return true;
+				for (int i = 0;i<3;i++)
+				{
+					double coord = getDim(pos, i);
+					double diff = coord-Math.floor(coord);
+					if (diff<DELTA_NEAR)
+						near.add(new ImmutableTriple<>(offsetDim(posB, i, -1), added.getMiddle(), added.getRight()));
+					diff = Math.ceil(coord)-coord;
+					if (diff<DELTA_NEAR)
+						near.add(new ImmutableTriple<>(offsetDim(posB, i, 1), added.getMiddle(), added.getRight()));
+				}
 			}
 			else
 			{
 				halfScanned.put(posB, pos);
 			}
-			for (int i = 0;i<2;i++)
-				if (i!=dim)
-				{
-					double coord = (getDim(pos, i)%1+1)%1;
-					if (coord<DELTA_NEAR)
-						near.add(offsetDim(posB, i, -1));
-					else if (coord>1-DELTA_NEAR)
-						near.add(offsetDim(posB, i, 1));
-				}
 		}
 		return false;
 	}
@@ -690,6 +715,19 @@ public class ApiUtils
 	{
 		if (!te.getWorld().isRemote&&te.isLogicDummy())
 			EventHandler.REMOVE_FROM_TICKING.add(te);
+	}
+
+	public static boolean preventsConnection(World worldIn, BlockPos pos, IBlockState state, Vec3d a, Vec3d b)
+	{
+		if (state.getBlock().canCollideCheck(state, false))
+		{
+			AxisAlignedBB aabb = state.getBoundingBox(worldIn, pos).offset(pos).grow(1e-5);
+			if (aabb.contains(a)||aabb.contains(b))
+				return true;
+			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a, b);
+			return rayResult != null && rayResult.typeOfHit == RayTraceResult.Type.BLOCK;
+		}
+		return false;
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>

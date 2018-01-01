@@ -80,6 +80,15 @@ public abstract class WireType
 	public static WireType REDSTONE = new IEBASE(5);
 
 	/**
+	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
+	 * less that DELTA_NEAR in blusunrize.immersiveengineering.api.ApiUtils.handleVec (currently .3)
+	 */
+	public double getDamageRadius()
+	{
+		return 0;//Don't shock people unless it is explicitely enabled for this wire type
+	}
+
+	/**
 	 * DO NOT SUBCLASS THIS.
 	 * This is a core implementation as a base for IE's default wires
 	 * DO NOT SUBCLASS THIS.
@@ -142,6 +151,21 @@ public abstract class WireType
 		public boolean isEnergyWire()
 		{
 			return ordinal<3;
+		}
+
+		@Override
+		public double getDamageRadius()
+		{
+			switch (ordinal)
+			{
+				case 0://LV
+					return .05;
+				case 1://MV
+					return .1;
+				case 2://HV
+					return .3;
+			}
+			return 0;
 		}
 	}
 }

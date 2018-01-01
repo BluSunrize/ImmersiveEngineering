@@ -155,23 +155,16 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
 								else
 								{
-									Vec3d rtOff0 = nodeHere.getRaytraceOffset(nodeLink).addVector(masterPos.getX(), masterPos.getY(), masterPos.getZ());
-									Vec3d rtOff1 = nodeLink.getRaytraceOffset(nodeHere).addVector(linkPos.getX(), linkPos.getY(), linkPos.getZ());
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(nodeHere.getIgnored(nodeLink));
 									ignore.addAll(nodeLink.getIgnored(nodeHere));
 									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), type,
 											(int)Math.sqrt(distanceSq));
-									boolean canSee = ApiUtils.raytraceAlongCatenary(tmpConn, world, (p, hit)->{
-										if (ignore.contains(p))
+									boolean canSee = ApiUtils.raytraceAlongCatenary(tmpConn, world, (p)->{
+										if (ignore.contains(p.getLeft()))
 											return false;
-										IBlockState state = world.getBlockState(p);
-										if (state.getBlock().canCollideCheck(state, false))
-										{
-											RayTraceResult rayRes = state.collisionRayTrace(world, p, hit.getLeft(), hit.getRight());
-											return rayRes != null && rayRes.typeOfHit == RayTraceResult.Type.BLOCK;
-										}
-										return false;
+										IBlockState state = world.getBlockState(p.getLeft());
+										return ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight());
 									}, (p)->{});
 									if(canSee)
 									{

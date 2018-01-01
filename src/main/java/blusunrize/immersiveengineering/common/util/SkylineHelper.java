@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
@@ -46,7 +47,8 @@ public class SkylineHelper
 			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
 
 
-		/* Reasoning for the formula for pos (below): A conn start, B conn across, C player pos
+		/* Reasoning for the formula for pos (below): pos should be the point on the catenary (horizontally) closest to the player position
+		A conn start, B conn across, C player pos
 		A+tB
 		C
 		C-A=:D
@@ -115,27 +117,22 @@ public class SkylineHelper
 		double py = player.posY + player.getEyeHeight();
 		BlockPos head = new BlockPos(player.posX, py, player.posZ);
 		Connection ret = null;
-		if (ImmersiveNetHandler.INSTANCE.blockInWire.containsKey(head))
+		for (int i = 0;i<2;i++)
 		{
-			for (Triple<Connection, Vec3d, Vec3d> connectionVec3dVec3dTriple : ImmersiveNetHandler.INSTANCE.blockInWire.get(head))
+			Map<BlockPos, Set<Triple<Connection, Vec3d, Vec3d>>> inDim = (i == 0 ? ImmersiveNetHandler.INSTANCE.blockInWire : ImmersiveNetHandler.INSTANCE.blockNearWire)
+					.lookup(player.dimension);
+			if (inDim != null && inDim.containsKey(head))
 			{
-				Connection c = connectionVec3dVec3dTriple.getLeft();
-				if (!c.equals(ignored))
+				for (Triple<Connection, Vec3d, Vec3d> connectionVec3dVec3dTriple : inDim.get(head))
 				{
-					ret = c;
-					break;
+					Connection c = connectionVec3dVec3dTriple.getLeft();
+					if (!c.equals(ignored))
+					{
+						ret = c;
+						break;
+					}
 				}
 			}
-		}
-		//TODO check that the player is actually close. Will do that when I have done the wire damage
-		if (ImmersiveNetHandler.INSTANCE.blockNearWire.containsKey(head))
-		{
-			for (Connection c : ImmersiveNetHandler.INSTANCE.blockNearWire.get(head))
-				if (!c.equals(ignored))
-				{
-					ret = c;
-					break;
-				}
 		}
 		if (ret!=null)
 		{

@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListenableFutureTask;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +26,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -275,7 +279,12 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void validate()
 	{
 		super.validate();
-		ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+		if (!world.isRemote)
+			synchronized (world.getMinecraftServer().futureTaskQueue)
+			{
+					world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
+							()->ImmersiveNetHandler.INSTANCE.onTEValidated(this), null));
+			}
 	}
 	@Override
 	public void invalidate()

@@ -84,6 +84,7 @@ public class Lib
 	public static String DMG_Tesla_prim = "ieTeslaPrimary";
 	public static String DMG_RazorWire = "ieRazorWire";
 	public static String DMG_RazorShock = "ieRazorShock";
+	public static String DMG_WireShock = "ieWireShock";
 
 	public static boolean BAUBLES = false;
 	public static boolean IC2 = false;
