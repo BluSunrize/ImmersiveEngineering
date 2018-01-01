@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import com.google.common.base.Function;
 import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
@@ -93,6 +94,17 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 								.suffix("mB")
 								.numberFormat(NumberFormat.COMPACT));
 				}
+			}
+			if(te instanceof TileEntityWoodenBarrel) {
+				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel) te;
+				int current = barrel.tank.getFluidAmount();
+				int capacity = barrel.tank.getCapacity();
+				if (current>0) {
+                    			probeInfo.progress(current, capacity,
+                            			probeInfo.defaultProgressStyle()
+	                                    	.suffix("mB")
+                                    		.numberFormat(NumberFormat.COMPACT));
+		                }
 			}
 		}
 	}
