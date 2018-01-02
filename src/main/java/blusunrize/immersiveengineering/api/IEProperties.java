@@ -132,7 +132,7 @@ public class IEProperties
 		@Override
 		public Optional<Boolean> parseValue(String value)
 		{
-			return Optional.of(Boolean.getBoolean(value));
+			return Optional.of(Boolean.parseBoolean(value));
 		}
 		public static PropertyBoolInverted create(String name)
 		{
