@@ -46,7 +46,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -462,7 +461,7 @@ public class ApiUtils
 				double posRel = (factor * acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
 				Vec3d pos = new Vec3d(vStart.x + across.x * posRel, y, vStart.z + across.z * posRel);
 
-				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near))
+				if (posRel>=0&&posRel<=1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near))
 					return false;
 			}
 		}

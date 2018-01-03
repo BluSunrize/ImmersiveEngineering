@@ -63,4 +63,10 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	{
 		return connectorInputValues[2];
 	}
+
+	@Override
+	protected float getBaseDamage()
+	{
+		return 15F/getMaxOutput();
+	}
 }

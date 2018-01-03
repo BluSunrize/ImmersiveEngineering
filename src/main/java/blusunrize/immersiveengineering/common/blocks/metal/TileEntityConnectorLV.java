@@ -318,7 +318,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int received = 0;
 		if(!world.isRemote)
 		{
-			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), world);
+			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this),
+					world, true);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			final int powerForSort = powerLeft;
 
@@ -326,18 +327,21 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				return 0;
 
 			int sum = 0;
-			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<AbstractConnection,Integer>();
+			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<>();
 			for(AbstractConnection con : outputs)
 			{
 				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
 				if(con.cableType!=null && end!=null)
 				{
-					int atmOut = Math.min(powerForSort,con.cableType.getTransferRate());
-					int tempR = end.outputEnergy(atmOut, true, energyType);
-					if(tempR>0)
+					if (end.isEnergyOutput())
 					{
-						powerSorting.put(con, tempR);
-						sum += tempR;
+						int atmOut = Math.min(powerForSort, con.cableType.getTransferRate());
+						int tempR = end.outputEnergy(atmOut, true, energyType);
+						if (tempR > 0)
+						{
+							powerSorting.put(con, tempR);
+							sum += tempR;
+						}
 					}
 				}
 			}
@@ -384,6 +388,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							break;
 					}
 				}
+			for(AbstractConnection con : outputs)
+			{
+				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
+				if(con.cableType!=null && end!=null && end.allowEnergyToPass(null))
+					//TODO wire loss?
+					end.addAvailableEnergy(Math.min(energyStorage.getEnergyStored(), getMaxOutput()), (i)->energyStorage.modifyEnergyStored(-i));
+			}
 		}
 		return received;
 	}
@@ -396,6 +407,18 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public int getMaxOutput()
 	{
 		return connectorInputValues[0];
+	}
+
+	@Override
+	protected float getBaseDamage()
+	{
+		return 2F/getMaxOutput();//TODO config option? Both this and getMaxDmg are values I just thought of
+	}
+
+	@Override
+	protected float getMaxDamage()
+	{
+		return getMaxOutput()*getBaseDamage();
 	}
 
 	@Override

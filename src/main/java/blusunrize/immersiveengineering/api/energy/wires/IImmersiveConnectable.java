@@ -12,11 +12,13 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @author BluSunrize - 08.03.2015
@@ -74,6 +76,16 @@ public interface IImmersiveConnectable
 	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
 	 */
 	void onEnergyPassthrough(int amount);
+
+	/**
+	 * Informs the connector/relay that there is a source of energy connected to it, and gives it a way to consume it.
+	 * This is valid for a single tick.
+	 * This can be used to add "pulling" consumers to the net or allow non-energy-outputs to consume energy (e.g. to damage entities)
+	 * @param amount The amount available from this source
+	 * @param consume Call this to consume the amount of energy in the parameter
+	 */
+	default void addAvailableEnergy(int amount, Consumer<Integer> consume)
+	{}
 	
 	/**
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
@@ -97,4 +109,19 @@ public interface IImmersiveConnectable
 	{
 		return ImmutableSet.of(ApiUtils.toBlockPos(this));
 	}
+
+	/**
+	 * Returns the amount of damage to be applied to an entity touching a wire connected to this TE. Do not consume energy here.
+	 */
+	default float getDamageAmount(Entity e)
+	{
+		return 0;
+	}
+
+	/**
+	 * Consume energy etc. required to hurt the entity by the specified amount. Called whenever an entity was successfully
+	 * damaged after calling getDamageAmount
+	 */
+	default void processDamage(Entity e, float amount)
+	{}
 }

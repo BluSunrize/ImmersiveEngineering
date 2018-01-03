@@ -60,6 +60,14 @@ public abstract class WireType
 	}
 	public abstract double getRenderDiameter();
 	public abstract boolean isEnergyWire();
+	/**
+	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
+	 * less that DELTA_NEAR in blusunrize.immersiveengineering.api.ApiUtils.handleVec (currently .3)
+	 */
+	public double getDamageRadius()
+	{
+		return 0;//Don't shock people unless it is explicitely enabled for this wire type
+	}
 
 	//THESE VALUES ARE FOR IE's OWN WIRES!
 	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE"};
@@ -78,15 +86,6 @@ public abstract class WireType
 	public static WireType STRUCTURE_ROPE = new IEBASE(3);
 	public static WireType STRUCTURE_STEEL = new IEBASE(4);
 	public static WireType REDSTONE = new IEBASE(5);
-
-	/**
-	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
-	 * less that DELTA_NEAR in blusunrize.immersiveengineering.api.ApiUtils.handleVec (currently .3)
-	 */
-	public double getDamageRadius()
-	{
-		return 0;//Don't shock people unless it is explicitely enabled for this wire type
-	}
 
 	/**
 	 * DO NOT SUBCLASS THIS.

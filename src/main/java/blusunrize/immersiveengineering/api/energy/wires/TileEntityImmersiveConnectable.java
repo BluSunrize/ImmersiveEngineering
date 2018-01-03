@@ -17,21 +17,21 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
@@ -127,6 +127,64 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			IBlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state,state, 3);
 		}
+	}
+
+	private List<Pair<Integer, Consumer<Integer>>> sources = new ArrayList<>();
+	private long lastSourceUpdate = 0;
+	@Override
+	public void addAvailableEnergy(int amount, Consumer<Integer> consume)
+	{
+		long currentTime = world.getTotalWorldTime();
+		if (lastSourceUpdate!=currentTime)
+		{
+			sources.clear();
+			lastSourceUpdate = currentTime;
+		}
+		sources.add(new ImmutablePair<>(amount, consume));
+	}
+
+	@Override
+	public float getDamageAmount(Entity e)
+	{
+		float baseDmg = getBaseDamage();
+		float max = getMaxDamage();
+		if (baseDmg==0||world.getTotalWorldTime()-lastSourceUpdate>1)
+			return 0;
+		float damage = 0;
+		for (int i = 0;i<sources.size()&&damage<max;i++)
+		{
+			int consume = (int) Math.min(sources.get(i).getLeft(), (max-damage)/baseDmg);
+			damage += baseDmg*consume;
+		}
+		return damage;
+	}
+
+	@Override
+	public void processDamage(Entity e, float amount)
+	{
+		float baseDmg = getBaseDamage();
+		float damage = 0;
+		for (int i = 0;i<sources.size()&&damage<amount;i++)
+		{
+			int consume = (int) Math.min(sources.get(i).getLeft(), (amount-damage)/baseDmg);
+			sources.get(i).getRight().accept(consume);
+			damage += baseDmg*consume;
+			if (consume==sources.get(i).getLeft())
+			{
+				sources.remove(i);
+				i--;
+			}
+		}
+	}
+
+	protected float getBaseDamage()
+	{
+		return 0;
+	}
+
+	protected float getMaxDamage()
+	{
+		return 0;
 	}
 
 	@Override

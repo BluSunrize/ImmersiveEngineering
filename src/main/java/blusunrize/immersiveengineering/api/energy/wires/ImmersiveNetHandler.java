@@ -51,7 +51,9 @@ public class ImmersiveNetHandler
 	public static final ImmersiveNetHandler INSTANCE = new ImmersiveNetHandler();
 	public final BlockPlaceListener LISTENER = new BlockPlaceListener();
 	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<>();
+	//TODO merge these maps&leave filtering to the caller in 1.13
 	public Map<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<>();
+	public Map<BlockPos, Set<AbstractConnection>> indirectConnectionsNoOut = new ConcurrentHashMap<>();
 	public Map<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<>();
 	public Map<DimensionBlockPos, IICProxy> proxies = new ConcurrentHashMap<>();
 
@@ -235,7 +237,10 @@ public class ImmersiveNetHandler
 	public void resetCachedIndirectConnections()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		{
 			indirectConnections.clear();
+			indirectConnectionsNoOut.clear();
+		}
 		else
 			ImmersiveEngineering.proxy.clearConnectionModelCache();
 	}
@@ -392,13 +397,12 @@ public class ImmersiveNetHandler
 	{
 		return getIndirectEnergyConnections(node, world, false);
 	}
-	/**
-	 * return values are cached if and only if ignoreIsEnergyOutput is false
-	 */
 	public Set<AbstractConnection> getIndirectEnergyConnections(BlockPos node, World world, boolean ignoreIsEnergyOutput)
 	{
 		if(!ignoreIsEnergyOutput&&indirectConnections.containsKey(node))
 			return indirectConnections.get(node);
+		else if(ignoreIsEnergyOutput&&indirectConnectionsNoOut.containsKey(node))
+			return indirectConnectionsNoOut.get(node);
 
 		List<IImmersiveConnectable> openList = new ArrayList<>();
 		Set<AbstractConnection> closedList = newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>());
@@ -471,11 +475,20 @@ public class ImmersiveNetHandler
 			}
 			openList.remove(0);
 		}
-		if(!ignoreIsEnergyOutput&&FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
-			if(!indirectConnections.containsKey(node))
-				indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<>()));
-			indirectConnections.get(node).addAll(closedList);
+			if (ignoreIsEnergyOutput)
+			{
+				if (!indirectConnections.containsKey(node))
+					indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<>()));
+				indirectConnections.get(node).addAll(closedList);
+			}
+			else
+			{
+				if (!indirectConnectionsNoOut.containsKey(node))
+					indirectConnectionsNoOut.put(node, newSetFromMap(new ConcurrentHashMap<>()));
+				indirectConnectionsNoOut.get(node).addAll(closedList);
+			}
 		}
 		return closedList;
 	}
@@ -483,19 +496,19 @@ public class ImmersiveNetHandler
 	@SuppressWarnings("unused")
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		//TODO Only apply damage when wire is live
-		if (IEConfig.enableWireDamage&&!e.isEntityInvulnerable(IEDamageSources.wireShock))
+		if (IEConfig.enableWireDamage&&!e.isEntityInvulnerable(IEDamageSources.wireShock)&&
+				!(e instanceof EntityPlayer&&((EntityPlayer) e).capabilities.disableDamage))
 		{
 			Map<BlockPos, Set<Triple<Connection, Vec3d, Vec3d>>> mapForDim = INSTANCE.blockInWire.lookup(e.dimension);
 			Map<BlockPos, Set<Triple<Connection, Vec3d, Vec3d>>> nearForDim = INSTANCE.blockNearWire.lookup(e.dimension);
 			Set<Triple<Connection, Vec3d, Vec3d>> in = mapForDim != null ? mapForDim.get(p) : null;
 			Set<Triple<Connection, Vec3d, Vec3d>> near = nearForDim != null ? nearForDim.get(p) : null;
-			handleMapForDamage(p, in, e);
-			handleMapForDamage(p, near, e);
+			handleMapForDamage(in, e);
+			handleMapForDamage(near, e);
 		}
 	}
 
-	private static void handleMapForDamage(BlockPos p, Set<Triple<Connection, Vec3d, Vec3d>> in, Entity e)
+	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, Entity e)
 	{
 		if (in != null && !in.isEmpty())
 		{
@@ -507,8 +520,18 @@ public class ImmersiveNetHandler
 				RayTraceResult rayRes = includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
 				if (rayRes!=null&&rayRes.typeOfHit== RayTraceResult.Type.BLOCK)
 				{
-					//IELogger.info("Attacking: "+e);
-					e.attackEntityFrom(IEDamageSources.wireShock, 5);//TODO vary amount based on available energy+consume energy
+					IImmersiveConnectable iic = toIIC(conn.getLeft().start, e.world);
+					float damage = 0;
+					if (iic!=null)
+						damage = iic.getDamageAmount(e);
+					if (damage==0)
+					{
+						iic = toIIC(conn.getLeft().end, e.world);
+						if (iic!=null)
+							damage = iic.getDamageAmount(e);
+					}
+					if (damage!=0&&e.attackEntityFrom(IEDamageSources.wireShock, damage))
+						iic.processDamage(e, damage);
 				}
 			}
 		}
