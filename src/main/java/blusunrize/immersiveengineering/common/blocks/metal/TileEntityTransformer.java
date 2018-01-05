@@ -13,13 +13,16 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,6 +37,8 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.ELECTRUM;
 
 public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
@@ -131,7 +136,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 			return false;
 		if (other==null)
 			return true;
-		WireType higher = this instanceof TileEntityTransformerHV?WireType.STEEL:WireType.ELECTRUM;
+		WireType higher = this instanceof TileEntityTransformerHV?WireType.STEEL: ELECTRUM;
 		return toAttach==higher||other==higher;
 	}
 	@Override
@@ -194,10 +199,21 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
-		boolean b = con.cableType==limitType;
+		boolean right = con.cableType==limitType;
+		return getConnectionOffset(con, right);
+	}
+
+	@Override
+	public Vec3d getConnectionOffset(Connection con, TargetingInfo target)
+	{
+		return getConnectionOffset(con, getTargetedConnector(target)==0);
+	}
+
+	private Vec3d getConnectionOffset(Connection con, boolean right)
+	{
 		if(onPost)
 		{
-			if(b)
+			if(right)
 				return new Vec3d(.5+(facing==EnumFacing.EAST?.4375: facing==EnumFacing.WEST?-.4375: 0),1.4375,.5+(facing==EnumFacing.SOUTH?.4375: facing==EnumFacing.NORTH?-.4375: 0));
 			else
 				return new Vec3d(.5+(facing==EnumFacing.EAST?-.0625: facing==EnumFacing.WEST?.0625: 0),.25,.5+(facing==EnumFacing.SOUTH?-.0625: facing==EnumFacing.NORTH?.0625: 0));
@@ -205,15 +221,15 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		else
 		{
 			double conRadius = con.cableType.getRenderDiameter()/2;
-			double offset = getIsMirrored()^b?getLowerOffset():getHigherOffset();
+			double offset = getHigherWiretype()==con.cableType?getHigherOffset():getLowerOffset();
 			if(facing==EnumFacing.NORTH)
-				return new Vec3d(b?.8125:.1875, 2+offset-conRadius, .5);
+				return new Vec3d(right?.8125:.1875, 2+offset-conRadius, .5);
 			if(facing==EnumFacing.SOUTH)
-				return new Vec3d(b?.1875:.8125, 2+offset-conRadius, .5);
+				return new Vec3d(right?.1875:.8125, 2+offset-conRadius, .5);
 			if(facing==EnumFacing.WEST)
-				return new Vec3d(.5, 2+offset-conRadius, b?.1875:.8125);
+				return new Vec3d(.5, 2+offset-conRadius, right?.1875:.8125);
 			if(facing==EnumFacing.EAST)
-				return new Vec3d(.5, 2+offset-conRadius, b?.8125:.1875);
+				return new Vec3d(.5, 2+offset-conRadius, right?.8125:.1875);
 		}
 		return new Vec3d(.5,.5,.5);
 	}
@@ -278,9 +294,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		{
 			if (limitType==null&&secondCable==null)
 				return true;
-			WireType higher = this instanceof TileEntityTransformerHV ? WireType.STEEL : WireType.ELECTRUM;
-			boolean b = (limitType != null && higher.equals(limitType)) || (secondCable != null && !higher.equals(secondCable));
-			return b;
+			WireType higher = getHigherWiretype();
+			return (limitType != null && higher.equals(limitType)) || (secondCable != null && !higher.equals(secondCable));
 		}
 	}
 
@@ -400,7 +415,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		if (onPost)
 			return super.getIgnored(other);
-		return ImmutableSet.of(pos.up(), pos.up(2));
+		return ImmutableSet.of(pos.up(2));
 	}
 
 	@Override
@@ -415,5 +430,10 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 
 	protected float getHigherOffset() {
 		return .5625F;
+	}
+
+	public WireType getHigherWiretype()
+	{
+		return ELECTRUM;
 	}
 }

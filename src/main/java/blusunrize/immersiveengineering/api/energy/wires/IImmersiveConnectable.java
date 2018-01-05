@@ -49,7 +49,7 @@ public interface IImmersiveConnectable
 	 * @return a blockPos to do the connection check for.<br>For multiblocks like transformers
 	 */
 	BlockPos getConnectionMaster(@Nullable WireType cableType, TargetingInfo target);
-	
+
 	/**
 	 * @return whether you can connect the given CableType to the tile
 	 */
@@ -94,14 +94,23 @@ public interface IImmersiveConnectable
 	void removeCable(Connection connection);
 	
 	/**
-	 * @return the offset used when RayTracing to or from this block. This vector is based from the blocks /origin/
+	 * Raytracing was replaced by code following the catenary, using
 	 */
+	@Deprecated
 	Vec3d getRaytraceOffset(IImmersiveConnectable link);
 	/**
-	 * Used for rendering only
 	 * @return Where the cable should attach
 	 */
 	Vec3d getConnectionOffset(Connection con);
+	/**
+	 * A version of getConnectionOffset that works before the connection exists.
+	 * Should be identical to getConnectionOffset(Connection) once the connection is added
+	 * @return Where the cable should attach
+	 */
+	default Vec3d getConnectionOffset(Connection con, TargetingInfo target)
+	{
+		return getConnectionOffset(con);
+	}
 	/**
 	 * returns a set of Blocks to be ignored when raytracing
 	 */
@@ -113,7 +122,7 @@ public interface IImmersiveConnectable
 	/**
 	 * Returns the amount of damage to be applied to an entity touching a wire connected to this TE. Do not consume energy here.
 	 */
-	default float getDamageAmount(Entity e)
+	default float getDamageAmount(Entity e, Connection c)
 	{
 		return 0;
 	}
@@ -122,6 +131,6 @@ public interface IImmersiveConnectable
 	 * Consume energy etc. required to hurt the entity by the specified amount. Called whenever an entity was successfully
 	 * damaged after calling getDamageAmount
 	 */
-	default void processDamage(Entity e, float amount)
+	default void processDamage(Entity e, float amount, Connection c)
 	{}
 }

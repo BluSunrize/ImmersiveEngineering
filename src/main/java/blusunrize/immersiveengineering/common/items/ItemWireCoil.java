@@ -160,20 +160,25 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									ignore.addAll(nodeLink.getIgnored(nodeHere));
 									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), type,
 											(int)Math.sqrt(distanceSq));
-									boolean canSee = ApiUtils.raytraceAlongCatenary(tmpConn, world, (p)->{
+									Vec3d start = nodeHere.getConnectionOffset(tmpConn, target).addVector(tileEntity.getPos().getX(),
+											tileEntity.getPos().getY(), tileEntity.getPos().getZ());
+									Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink).addVector(tileEntityLinkingPos.getPos().getX(),
+											tileEntityLinkingPos.getPos().getY(), tileEntityLinkingPos.getPos().getZ());
+									boolean canSee = ApiUtils.raytraceAlongCatenary(tmpConn, (p)->{
 										if (ignore.contains(p.getLeft()))
 											return false;
 										IBlockState state = world.getBlockState(p.getLeft());
 										return ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight());
-									}, (p)->{});
+									}, (p)->{}, start, end);
 									if(canSee)
 									{
-										ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
+										Connection conn = ImmersiveNetHandler.INSTANCE.addAndGetConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
 												(int)Math.sqrt(distanceSq), type);
 
 
 										nodeHere.connectCable(type, target, nodeLink);
 										nodeLink.connectCable(type, targetLink, nodeHere);
+										ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
 										IESaveData.setDirty(world.provider.getDimension());
 										Utils.unlockIEAdvancement(player, "main/connect_wire");
 

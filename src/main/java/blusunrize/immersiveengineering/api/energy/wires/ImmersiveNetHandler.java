@@ -78,6 +78,10 @@ public class ImmersiveNetHandler
 
 	public void addConnection(World world, BlockPos node, BlockPos connection, int distance, WireType cableType)
 	{
+		addAndGetConnection(world, node, connection, distance, cableType);
+	}
+	public Connection addAndGetConnection(World world, BlockPos node, BlockPos connection, int distance, WireType cableType)
+	{
 		Connection conn = new Connection(node, connection, cableType, distance);
 		addConnection(world.provider.getDimension(), node, conn);
 		addConnection(world.provider.getDimension(), connection, new Connection(connection, node, cableType, distance));
@@ -85,7 +89,7 @@ public class ImmersiveNetHandler
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
 		if(world.isBlockLoaded(connection))
 			world.addBlockEvent(connection, world.getBlockState(connection).getBlock(),-1,0);
-		addBlockData(world, conn);
+		return conn;
 	}
 	public void addConnection(World world, BlockPos node, Connection con)
 	{
@@ -109,7 +113,7 @@ public class ImmersiveNetHandler
 		resetCachedIndirectConnections();
 	}
 
-	private void addBlockData(World world, Connection con)
+	public void addBlockData(World world, Connection con)
 	{
 		int dimId = world.provider.getDimension();
 		if (!blockInWire.containsItem(dimId))
@@ -433,7 +437,7 @@ public class ImmersiveNetHandler
 				if(ignoreIsEnergyOutput||next.isEnergyOutput())
 				{
 					BlockPos last = toBlockPos(next);
-					WireType averageType = null;
+					WireType minimumType = null;
 					int distance = 0;
 					List<Connection> connectionParts = new ArrayList<>();
 					while(last!=null)
@@ -450,13 +454,13 @@ public class ImmersiveNetHandler
 									{
 										connectionParts.add(0, conB);
 										distance += conB.length;
-										if(averageType==null || conB.cableType.getTransferRate()<averageType.getTransferRate())
-											averageType = conB.cableType;
+										if(minimumType==null || conB.cableType.getTransferRate()<minimumType.getTransferRate())
+											minimumType = conB.cableType;
 										break;
 									}
 						}
 					}
-					closedList.add(new AbstractConnection(toBlockPos(node), toBlockPos(next), averageType, distance, connectionParts.toArray(new Connection[connectionParts.size()])));
+					closedList.add(new AbstractConnection(toBlockPos(node), toBlockPos(next), minimumType, distance, connectionParts.toArray(new Connection[connectionParts.size()])));
 				}
 
 				Set<Connection> conLN = getConnections(world, toBlockPos(next));
@@ -523,15 +527,15 @@ public class ImmersiveNetHandler
 					IImmersiveConnectable iic = toIIC(conn.getLeft().start, e.world);
 					float damage = 0;
 					if (iic!=null)
-						damage = iic.getDamageAmount(e);
+						damage = iic.getDamageAmount(e, conn.getLeft());
 					if (damage==0)
 					{
 						iic = toIIC(conn.getLeft().end, e.world);
 						if (iic!=null)
-							damage = iic.getDamageAmount(e);
+							damage = iic.getDamageAmount(e, conn.getLeft());
 					}
 					if (damage!=0&&e.attackEntityFrom(IEDamageSources.wireShock, damage))
-						iic.processDamage(e, damage);
+						iic.processDamage(e, damage, conn.getLeft());
 				}
 			}
 		}
@@ -575,12 +579,17 @@ public class ImmersiveNetHandler
 			return n0||n1;
 		}
 
-		public Vec3d[] getSubVertices(World world)
+		public Vec3d[] getSubVertices(Vec3d start, Vec3d end)
 		{
 			if(catenaryVertices==null)
-				catenaryVertices = getConnectionCatenary(this, getVecForIICAt(world, start, this),
-						getVecForIICAt(world, end, this));
+				catenaryVertices = getConnectionCatenary(this, start, end);
 			return catenaryVertices;
+		}
+
+		public Vec3d[] getSubVertices(World world)
+		{
+			return getSubVertices(getVecForIICAt(world, start, this),
+					getVecForIICAt(world, end, this));
 		}
 
 		public Vec3d getVecAt(double pos, Vec3d vStart, Vec3d across, double lengthHor)

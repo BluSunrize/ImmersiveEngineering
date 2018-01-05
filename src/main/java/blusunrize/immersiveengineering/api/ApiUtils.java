@@ -424,12 +424,18 @@ public class ApiUtils
 	public static boolean raytraceAlongCatenary(Connection conn, World w, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
-		conn.getSubVertices(w);
+		Vec3d vStart = getVecForIICAt(w, conn.start, conn);
+		Vec3d vEnd = getVecForIICAt(w, conn.end, conn);
+		return raytraceAlongCatenary(conn, shouldStop, close, vStart, vEnd);
+	}
+
+	public static boolean raytraceAlongCatenary(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
+												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
+	{
+		conn.getSubVertices(vStart, vEnd);
 		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
 		HashSet<BlockPos> done = new HashSet<>();
 		HashSet<Triple<BlockPos, Vec3d, Vec3d>> near = new HashSet<>();
-		Vec3d vStart = getVecForIICAt(w, conn.start, conn);
-		Vec3d vEnd = getVecForIICAt(w, conn.end, conn);
 		Vec3d across = vEnd.subtract(vStart);
 		across = new Vec3d(across.x, 0, across.z);
 		double lengthHor = across.lengthVector();

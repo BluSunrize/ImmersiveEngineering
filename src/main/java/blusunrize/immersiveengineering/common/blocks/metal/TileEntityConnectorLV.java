@@ -34,10 +34,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IIEInternalFluxHandler, IBlockBounds//, ic2.api.energy.tile.IEnergySink
@@ -69,6 +73,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					energyStorage.modifyEnergyStored(-this.transferEnergy(temp, false, 0));
 					markDirty();
 				}
+				addAvailableEnergy(-1, null);
 			}
 			currentTickAccepted = 0;
 		}
@@ -369,7 +374,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							float mod = (((maxInput-tempR)/(float)maxInput)/.25f)*.1f;
 							intermediaryLoss = MathHelper.clamp(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
 
-							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).get(sub):0;
+							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).getOrDefault(sub, 0);
 							transferredPerCon += r;
 							if(!simulate)
 							{
@@ -393,7 +398,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
 				if(con.cableType!=null && end!=null && end.allowEnergyToPass(null))
 					//TODO wire loss?
-					end.addAvailableEnergy(Math.min(energyStorage.getEnergyStored(), getMaxOutput()), (i)->energyStorage.modifyEnergyStored(-i));
+					end.addAvailableEnergy(Math.min(energyStorage.getEnergyStored(), con.cableType.getTransferRate()/8), (i)->energyStorage.modifyEnergyStored(-i));
 			}
 		}
 		return received;
@@ -409,16 +414,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		return connectorInputValues[0];
 	}
 
+	@Nullable
 	@Override
-	protected float getBaseDamage()
+	protected Pair<Integer, Consumer<Integer>> getOwnEnergy()
 	{
-		return 2F/getMaxOutput();//TODO config option? Both this and getMaxDmg are values I just thought of
-	}
-
-	@Override
-	protected float getMaxDamage()
-	{
-		return getMaxOutput()*getBaseDamage();
+		return new ImmutablePair<>(Math.min(energyStorage.getEnergyStored(), getMaxOutput()),
+				(i)->energyStorage.modifyEnergyStored(-i));
 	}
 
 	@Override

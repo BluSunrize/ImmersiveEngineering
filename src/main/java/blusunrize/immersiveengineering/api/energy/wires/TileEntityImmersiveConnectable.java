@@ -30,8 +30,13 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
+
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.COPPER;
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.ELECTRUM;
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.STEEL;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
@@ -87,7 +92,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
-		if(cableType==WireType.STEEL&&!canTakeHV())
+		if(cableType== STEEL&&!canTakeHV())
 			return false;
 		if(cableType==WireType.ELECTRUM&&!canTakeMV())
 			return false;
@@ -138,16 +143,26 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if (lastSourceUpdate!=currentTime)
 		{
 			sources.clear();
+			Pair<Integer, Consumer<Integer>> own = getOwnEnergy();
+			if (own!=null)
+				sources.add(own);
 			lastSourceUpdate = currentTime;
 		}
-		sources.add(new ImmutablePair<>(amount, consume));
+		if (amount>0&&consume!=null)
+			sources.add(new ImmutablePair<>(amount, consume));
+	}
+
+	@Nullable
+	protected Pair<Integer,Consumer<Integer>> getOwnEnergy()
+	{
+		return null;
 	}
 
 	@Override
-	public float getDamageAmount(Entity e)
+	public float getDamageAmount(Entity e, Connection c)
 	{
-		float baseDmg = getBaseDamage();
-		float max = getMaxDamage();
+		float baseDmg = getBaseDamage(c);
+		float max = getMaxDamage(c);
 		if (baseDmg==0||world.getTotalWorldTime()-lastSourceUpdate>1)
 			return 0;
 		float damage = 0;
@@ -160,9 +175,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public void processDamage(Entity e, float amount)
+	public void processDamage(Entity e, float amount, Connection c)
 	{
-		float baseDmg = getBaseDamage();
+		float baseDmg = getBaseDamage(c);
 		float damage = 0;
 		for (int i = 0;i<sources.size()&&damage<amount;i++)
 		{
@@ -177,14 +192,20 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}
 	}
 
-	protected float getBaseDamage()
+	protected float getBaseDamage(Connection c)
 	{
+		if (c.cableType==COPPER)
+			return 8*2F/c.cableType.getTransferRate();
+		else if (c.cableType==ELECTRUM)
+			return 8*5F/c.cableType.getTransferRate();
+		else if (c.cableType==STEEL)
+			return 8*15F/c.cableType.getTransferRate();
 		return 0;
 	}
 
-	protected float getMaxDamage()
+	protected float getMaxDamage(Connection c)
 	{
-		return 0;
+		return c.cableType.getTransferRate()/8*getBaseDamage(c);
 	}
 
 	@Override

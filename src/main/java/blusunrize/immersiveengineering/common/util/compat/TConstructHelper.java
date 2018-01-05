@@ -227,7 +227,7 @@ public class TConstructHelper extends IECompatModule
 			{
 				BlockPos pos = player.getPosition();
 				Biome biome = player.world.getBiomeForCoordsBody(pos);
-				float tempDif = biome.getFloatTemperature(pos)-0.5f;
+				float tempDif = biome.getTemperature(pos)-0.5f;
 				if(tempDif!=0)
 				{
 					if(tempDif<0 && !target.isImmuneToFire())

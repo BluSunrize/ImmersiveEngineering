@@ -181,7 +181,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				event.setCanceled(true);
 				b = true;
 			}
-			if(event.getSource().getTrueSource()!=null && event.getSource().getTrueSource() instanceof EntityLivingBase && event.getSource().getTrueSource().getDistanceSqToEntity(player)<4)
+			if(event.getSource().getTrueSource()!=null && event.getSource().getTrueSource() instanceof EntityLivingBase && event.getSource().getTrueSource().getDistanceSq(player)<4)
 			{
 				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
 				dmgsrc.apply(event.getSource().getTrueSource());

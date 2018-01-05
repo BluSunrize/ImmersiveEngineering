@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
+
 public class TileEntityTransformerHV extends TileEntityTransformer
 {
 	@Override
@@ -29,5 +31,11 @@ public class TileEntityTransformerHV extends TileEntityTransformer
 	@Override
 	protected float getHigherOffset() {
 		return .75F;
+	}
+
+	@Override
+	public WireType getHigherWiretype()
+	{
+		return WireType.STEEL;
 	}
 }

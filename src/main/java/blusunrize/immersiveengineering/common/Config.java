@@ -55,8 +55,11 @@ public class Config
 		public static int[] wireColouration = new int[]{0xb36c3f, 0xeda045, 0x6f6f6f, 0x967e6d, 0x6f6f6f, 0xff2f2f};
 		@Comment({"The maximum length wire can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational"})
 		public static int[] wireLength = new int[]{16, 16, 32, 32, 32, 32};
-		@Comment("If this is enabled, wires connected to power sources will cause damage to entities touching them")
+		@Comment({"If this is enabled, wires connected to power sources will cause damage to entities touching them",
+				"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already."})
 		public static boolean enableWireDamage = false;
+		@Comment({"If this is enabled, placing a block in a wire will break it (drop the wire coil)"})
+		public static boolean blocksBreakWires = true;
 
 		@Comment({"By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view.", "Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs"})
 		//TODO this is for TESR wires. Remove?

@@ -378,7 +378,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 							for(EntityLivingBase living : livingEntities)
 								if(living.canBeHitWithPotion())
 								{
-									double dist = bullet.getDistanceSqToEntity(living);
+									double dist = bullet.getDistanceSq(living);
 									if(dist < 16D)
 									{
 										double dist2 = 1 - Math.sqrt(dist) / 4D;
