@@ -104,7 +104,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 					}
 					else
 						renderGrowth = handler.resetGrowth(inventory.get(1), inventory.get(0), renderGrowth, this, true);
-					if(Utils.RAND.nextInt(8)==0)
+					if(Utils.RAND.nextInt(8)==0 && IEConfig.Machines.belljar_light_animation)
 					{
 						double partX = getPos().getX()+.5;
 						double partY = getPos().getY()+2.6875;
