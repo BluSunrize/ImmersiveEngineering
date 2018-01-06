@@ -35,6 +35,7 @@ import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -66,7 +67,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int dummy = 0;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
-	private NonNullList<ItemStack> previousOutput = NonNullList.withSize(4, ItemStack.EMPTY);
+	private NonNullList<ItemStack> previousOutput = NonNullList.withSize(4, new ItemStack(Blocks.DIRT));
 	public FluidTank tank = new FluidTank(4000)
 	{
 		@Override
