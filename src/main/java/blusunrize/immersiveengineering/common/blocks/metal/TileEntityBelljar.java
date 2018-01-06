@@ -60,6 +60,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class TileEntityBelljar extends TileEntityIEBase implements ITickable, IDirectionalTile, IBlockBounds, IHasDummyBlocks, IIEInventory, IIEInternalFluxHandler, IGuiTile, IOBJModelCallback<IBlockState>
@@ -67,7 +69,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int dummy = 0;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
-	private NonNullList<ItemStack> previousOutput = NonNullList.withSize(4, new ItemStack(Blocks.DIRT));
+	private ArrayList<ItemStack> previousOutput = new ArrayList<ItemStack>();
 	public FluidTank tank = new FluidTank(4000)
 	{
 		@Override
@@ -124,7 +126,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 				if(handler!=null&&handler.isCorrectSoil(inventory.get(1), inventory.get(0)) && fertilizerAmount>0 && energyStorage.extractEnergy(IEConfig.Machines.belljar_consumption, true)==IEConfig.Machines.belljar_consumption)
 				{
 					boolean consume = false;
-					if(growth >= 1 && !previousOutput.equals((NonNullList<ItemStack>) inventory.subList(3, 7)))
+					if(growth >= 1 && !previousOutput.equals( inventory.subList(3, 7)))
 					{
 						ItemStack[] outputs = handler.getOutput(inventory.get(1), inventory.get(0), this);
 						int canFit = 0;
@@ -160,7 +162,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 						}
 						else
 						{
-							previousOutput = (NonNullList<ItemStack>) inventory.subList(3,7);
+							previousOutput = new ArrayList<ItemStack>(inventory.subList(3,7));
 						}
 					}
 					else if(growth < 1)
