@@ -1,3 +1,6 @@
+#####Version 0.12-77
+- fixed Vertical Conveyor recipes returning too little
+
 #####Version 0.12-76 - BUILT
 - added various config options for the Belljar, to adjust growthspeeds and fertilizer effects
 - re-added partivles and animation for the Arc Furnace (thanks Malte)
