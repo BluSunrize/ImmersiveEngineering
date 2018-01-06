@@ -126,7 +126,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 				if(handler!=null&&handler.isCorrectSoil(inventory.get(1), inventory.get(0)) && fertilizerAmount>0 && energyStorage.extractEnergy(IEConfig.Machines.belljar_consumption, true)==IEConfig.Machines.belljar_consumption)
 				{
 					boolean consume = false;
-					if(growth >= 1 && !previousOutput.equals( inventory.subList(3, 7)))
+					if(growth >= 1 && !previousOutput.containsAll( inventory.subList(3, 7)))
 					{
 						ItemStack[] outputs = handler.getOutput(inventory.get(1), inventory.get(0), this);
 						int canFit = 0;
