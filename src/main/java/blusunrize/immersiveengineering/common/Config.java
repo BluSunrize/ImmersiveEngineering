@@ -194,8 +194,6 @@ public class Config
 			public static float belljar_solid_fertilizer_mod = 1f;
 			@Comment({"A base-modifier for all fluid fertilizers in the belljar"})
 			public static float belljar_fluid_fertilizer_mod = 1f;
-			@Comment({"Whether the bell jar will display the light animation"})
-			public static boolean belljar_light_animation = true;
 
 			//Lights
 			@Comment({"Set this to false to disable the mob-spawn prevention of the Powered Lantern"})
