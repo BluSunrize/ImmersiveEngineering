@@ -35,6 +35,7 @@ import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -59,6 +60,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class TileEntityBelljar extends TileEntityIEBase implements ITickable, IDirectionalTile, IBlockBounds, IHasDummyBlocks, IIEInventory, IIEInternalFluxHandler, IGuiTile, IOBJModelCallback<IBlockState>
@@ -66,6 +69,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int dummy = 0;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
+	private ArrayList<ItemStack> previousOutput = new ArrayList<ItemStack>();
 	public FluidTank tank = new FluidTank(4000)
 	{
 		@Override
@@ -82,6 +86,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	private float growth = 0;
 	public float renderGrowth = 0;
 	public boolean renderActive = false;
+	private boolean outputFull = false;
 
 	@Override
 	public void update()
@@ -121,7 +126,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 				if(handler!=null&&handler.isCorrectSoil(inventory.get(1), inventory.get(0)) && fertilizerAmount>0 && energyStorage.extractEnergy(IEConfig.Machines.belljar_consumption, true)==IEConfig.Machines.belljar_consumption)
 				{
 					boolean consume = false;
-					if(growth >= 1)
+					if(growth >= 1 && !previousOutput.containsAll( inventory.subList(3, 7)))
 					{
 						ItemStack[] outputs = handler.getOutput(inventory.get(1), inventory.get(0), this);
 						int canFit = 0;
@@ -154,6 +159,10 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 								}
 							growth = handler.resetGrowth(inventory.get(1), inventory.get(0), growth, this, false);
 							consume = true;
+						}
+						else
+						{
+							previousOutput = new ArrayList<ItemStack>(inventory.subList(3,7));
 						}
 					}
 					else if(growth < 1)
@@ -217,8 +226,10 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 							int out = Math.min(inventory.get(j).getCount(), 16);
 							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j), out);
 							stack = Utils.insertStackIntoInventory(outputTile, stack, facing);
-							if (!stack.isEmpty())
+							if (!stack.isEmpty())  
+							{
 								out -= stack.getCount();
+							}
 							this.inventory.get(j).shrink(out);
 							if ((inventory.get(j).getCount()) <= 0)
 								this.inventory.set(j, ItemStack.EMPTY);
