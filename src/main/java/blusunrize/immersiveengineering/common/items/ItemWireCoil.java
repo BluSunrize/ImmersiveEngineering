@@ -47,7 +47,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 {
 	public ItemWireCoil()
 	{
-		super("wirecoil", 64, "copper", "electrum", "hv", "rope", "structural", "redstone");
+		super("wirecoil", 64, "copper", "electrum", "hv", "rope", "structural", "redstone",
+				"insulated_copper", "insulated_electrum");
 	}
 
 	@Override
@@ -68,6 +69,10 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 				return WireType.STRUCTURE_STEEL;
 			case 5:
 				return WireType.REDSTONE;
+			case 6:
+				return WireType.COPPER_INSULATED;
+			case 7:
+				return WireType.ELECTRUM_INSULATED;
 		}
 	}
 
@@ -78,7 +83,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 		{
 			list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.redstone"));
 			list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction1"));
-		} else if(stack.getItemDamage() > 2)
+		} else if(stack.getItemDamage()%6 > 2)
 		{
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"coil.construction0"));
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"coil.construction1"));
@@ -123,7 +128,6 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 					}
 					else
 					{
-						WireType type = getWireType(stack);
 						int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
 						BlockPos linkPos = new BlockPos(array[1],array[2],array[3]);
 						TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
@@ -132,7 +136,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 							player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
 						else if(linkPos.equals(masterPos))
 							player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
-						else if( distanceSq > (type.getMaxLength()*type.getMaxLength()))
+						else if( distanceSq > (wire.getMaxLength()*wire.getMaxLength()))
 							player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"));
 						else
 						{
@@ -158,7 +162,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(nodeHere.getIgnored(nodeLink));
 									ignore.addAll(nodeLink.getIgnored(nodeHere));
-									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), type,
+									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
 											(int)Math.sqrt(distanceSq));
 									Vec3d start = nodeHere.getConnectionOffset(tmpConn, target).addVector(tileEntity.getPos().getX(),
 											tileEntity.getPos().getY(), tileEntity.getPos().getZ());
@@ -173,11 +177,11 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									if(canSee)
 									{
 										Connection conn = ImmersiveNetHandler.INSTANCE.addAndGetConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
-												(int)Math.sqrt(distanceSq), type);
+												(int)Math.sqrt(distanceSq), wire);
 
 
-										nodeHere.connectCable(type, target, nodeLink);
-										nodeLink.connectCable(type, targetLink, nodeHere);
+										nodeHere.connectCable(wire, target, nodeLink);
+										nodeLink.connectCable(wire, targetLink, nodeHere);
 										ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
 										IESaveData.setDirty(world.provider.getDimension());
 										Utils.unlockIEAdvancement(player, "main/connect_wire");

@@ -60,6 +60,9 @@ public abstract class WireType
 	}
 	public abstract double getRenderDiameter();
 	public abstract boolean isEnergyWire();
+	public boolean canCauseDamage() {
+		return false;
+	}
 	/**
 	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
 	 * less that DELTA_NEAR in blusunrize.immersiveengineering.api.ApiUtils.handleVec (currently .3)
@@ -70,7 +73,8 @@ public abstract class WireType
 	}
 
 	//THESE VALUES ARE FOR IE's OWN WIRES!
-	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE"};
+	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE",
+				"COPPER_INS", "ELECTRUM_INS"};
 	public static double[] wireLossRatio;
 	public static int[] wireTransferRate;
 	public static int[] wireColouration;
@@ -86,6 +90,8 @@ public abstract class WireType
 	public static WireType STRUCTURE_ROPE = new IEBASE(3);
 	public static WireType STRUCTURE_STEEL = new IEBASE(4);
 	public static WireType REDSTONE = new IEBASE(5);
+	public static WireType COPPER_INSULATED = new IEBASE(6);
+	public static WireType ELECTRUM_INSULATED = new IEBASE(7);
 
 	/**
 	 * DO NOT SUBCLASS THIS.
@@ -103,17 +109,17 @@ public abstract class WireType
 		@Override
 		public double getLossRatio()
 		{
-			return Math.abs(wireLossRatio[ordinal]);
+			return Math.abs(wireLossRatio[ordinal%6]);
 		}
 		@Override
 		public int getTransferRate()
 		{
-			return Math.abs(wireTransferRate[ordinal]);
+			return Math.abs(wireTransferRate[ordinal%6]);
 		}
 		@Override
 		public int getColour(Connection connection)
 		{
-			return wireColouration[ordinal];
+			return wireColouration[ordinal%6];//TODO colors for insulated wire
 		}
 		@Override
 		public double getSlack()
@@ -129,7 +135,7 @@ public abstract class WireType
 		@Override
 		public int getMaxLength()
 		{
-			return wireLength[ordinal];
+			return wireLength[ordinal%6];
 		}
 		@Override
 		public ItemStack getWireCoil()
@@ -144,12 +150,12 @@ public abstract class WireType
 		@Override
 		public double getRenderDiameter()
 		{
-			return renderDiameter[ordinal];
+			return renderDiameter[ordinal%6];
 		}
 		@Override
 		public boolean isEnergyWire()
 		{
-			return ordinal<3;
+			return ordinal%6<3;
 		}
 
 		@Override
@@ -165,6 +171,12 @@ public abstract class WireType
 					return .3;
 			}
 			return 0;
+		}
+
+		@Override
+		public boolean canCauseDamage()
+		{
+			return ordinal<3;
 		}
 	}
 }

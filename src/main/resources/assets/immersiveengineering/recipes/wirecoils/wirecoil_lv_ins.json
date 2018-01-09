@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:wirecoil",
+    "data": 6,
+    "count": 4
+  },
+  "pattern": [
+    "FCF",
+    "CFC",
+    "FCF"
+  ],
+  "key": {
+    "F": {
+      "item": "#fabricHemp"
+    },
+    "C": {
+      "item": "#copperCoilItem"
+    }
+  }
+}

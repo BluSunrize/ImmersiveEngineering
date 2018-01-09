@@ -19,15 +19,13 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -500,44 +498,51 @@ public class ImmersiveNetHandler
 	@SuppressWarnings("unused")
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if (IEConfig.enableWireDamage&&!e.isEntityInvulnerable(IEDamageSources.wireShock)&&
+		if (!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof EntityLivingBase&&
+				!e.isEntityInvulnerable(IEDamageSources.wireShock)&&
 				!(e instanceof EntityPlayer&&((EntityPlayer) e).capabilities.disableDamage))
 		{
 			Map<BlockPos, Set<Triple<Connection, Vec3d, Vec3d>>> mapForDim = INSTANCE.blockInWire.lookup(e.dimension);
 			Map<BlockPos, Set<Triple<Connection, Vec3d, Vec3d>>> nearForDim = INSTANCE.blockNearWire.lookup(e.dimension);
 			Set<Triple<Connection, Vec3d, Vec3d>> in = mapForDim != null ? mapForDim.get(p) : null;
 			Set<Triple<Connection, Vec3d, Vec3d>> near = nearForDim != null ? nearForDim.get(p) : null;
-			handleMapForDamage(in, e);
-			handleMapForDamage(near, e);
+			handleMapForDamage(in, (EntityLivingBase) e);
+			handleMapForDamage(near, (EntityLivingBase) e);
 		}
 	}
 
-	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, Entity e)
+	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, EntityLivingBase e)
 	{
+		final double KNOCKBACK_PER_DAMAGE = 10;
 		if (in != null && !in.isEmpty())
 		{
 			AxisAlignedBB eAabb = e.getEntityBoundingBox();
-			for (Triple<Connection, Vec3d, Vec3d> conn:in)
-			{
-				double extra = conn.getLeft().cableType.getDamageRadius();
-				AxisAlignedBB includingExtra = eAabb.grow(extra);
-				RayTraceResult rayRes = includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
-				if (rayRes!=null&&rayRes.typeOfHit== RayTraceResult.Type.BLOCK)
+			for (Triple<Connection, Vec3d, Vec3d> conn : in)
+				if (conn.getLeft().cableType.canCauseDamage())
 				{
-					IImmersiveConnectable iic = toIIC(conn.getLeft().start, e.world);
-					float damage = 0;
-					if (iic!=null)
-						damage = iic.getDamageAmount(e, conn.getLeft());
-					if (damage==0)
+					double extra = conn.getLeft().cableType.getDamageRadius();
+					AxisAlignedBB includingExtra = eAabb.grow(extra);
+					RayTraceResult rayRes = includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
+					if (rayRes != null && rayRes.typeOfHit == RayTraceResult.Type.BLOCK)
 					{
-						iic = toIIC(conn.getLeft().end, e.world);
-						if (iic!=null)
+						IImmersiveConnectable iic = toIIC(conn.getLeft().start, e.world);
+						float damage = 0;
+						if (iic != null)
 							damage = iic.getDamageAmount(e, conn.getLeft());
+						if (damage == 0)
+						{
+							iic = toIIC(conn.getLeft().end, e.world);
+							if (iic != null)
+								damage = iic.getDamageAmount(e, conn.getLeft());
+						}
+						if (damage != 0 && e.attackEntityFrom(IEDamageSources.wireShock, damage))
+						{
+							Vec3d v = e.getLookVec();
+							knockbackNoSource(e, damage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
+							iic.processDamage(e, damage, conn.getLeft());
+						}
 					}
-					if (damage!=0&&e.attackEntityFrom(IEDamageSources.wireShock, damage))
-						iic.processDamage(e, damage, conn.getLeft());
 				}
-			}
 		}
 	}
 

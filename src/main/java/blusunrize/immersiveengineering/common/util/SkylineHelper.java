@@ -126,7 +126,7 @@ public class SkylineHelper
 				for (Triple<Connection, Vec3d, Vec3d> connectionVec3dVec3dTriple : inDim.get(head))
 				{
 					Connection c = connectionVec3dVec3dTriple.getLeft();
-					if (!c.equals(ignored))
+					if (ignored==null||!c.hasSameConnectors(ignored))
 					{
 						ret = c;
 						break;

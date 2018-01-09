@@ -94,9 +94,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		if(cableType== STEEL&&!canTakeHV())
 			return false;
-		if(cableType==WireType.ELECTRUM&&!canTakeMV())
+		if((cableType==WireType.ELECTRUM||cableType==WireType.ELECTRUM_INSULATED)&&!canTakeMV())
 			return false;
-		if(cableType==WireType.COPPER&&!canTakeLV())
+		if((cableType==WireType.COPPER||cableType==WireType.COPPER_INSULATED)&&!canTakeLV())
 			return false;
 		if(cableType==WireType.STRUCTURE_ROPE)
 			return false;
