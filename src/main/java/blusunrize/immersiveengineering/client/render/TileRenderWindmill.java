@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -33,14 +34,9 @@ import java.util.WeakHashMap;
 
 public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWindmill>
 {
-	private List<BakedQuad>[] quads = new List[9];
-	private static WeakHashMap<TileRenderWindmill, Boolean> instances = new WeakHashMap<>();
-	{
-		instances.put(this, true);
-	}
+	private static List<BakedQuad>[] quads = new List[9];
 	@Override
 	public void render(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
-	//	public void renderTileEntityFast(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder BufferBuilder)
 	{
 		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -49,6 +45,8 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		if(quads[tile.sails]==null)
 		{
 			IBlockState state = getWorld().getBlockState(blockPos);
+			if(state.getBlock() != IEContent.blockWoodenDevice1)
+				return;
 			state = state.getActualState(getWorld(), blockPos);
 			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
@@ -90,8 +88,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 	}
 	public static void reset()
 	{
-		for (TileRenderWindmill r:instances.keySet())
-			for(int i=0; i<r.quads.length; i++)
-				r.quads[i] = null;
+		for(int i=0; i<quads.length; i++)
+			quads[i] = null;
 	}
 }

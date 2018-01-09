@@ -587,7 +587,6 @@ public class IEContent
 		registerTile(TileEntityFluidSorter.class);
 		registerTile(TileEntityWatermill.class);
 		registerTile(TileEntityWindmill.class);
-		registerTile(TileEntityWindmillAdvanced.class);
 		registerTile(TileEntityWoodenPost.class);
 		registerTile(TileEntityWallmount.class);
 
