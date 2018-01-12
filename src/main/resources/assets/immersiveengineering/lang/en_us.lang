@@ -323,7 +323,9 @@ item.immersiveengineering.fluidContainers.bottleBiodiesel.name=Bottle of Biodies
 item.immersiveengineering.fluidContainers.bucketBiodiesel.name=Bucket of Biodiesel
 
 item.immersiveengineering.wirecoil.copper.name=LV Wire Coil
+item.immersiveengineering.wirecoil.insulated_copper.name=Insulated LV Wire Coil
 item.immersiveengineering.wirecoil.electrum.name=MV Wire Coil
+item.immersiveengineering.wirecoil.insulated_electrum.name=Insulated MV Wire Coil
 item.immersiveengineering.wirecoil.hv.name=HV Wire Coil
 item.immersiveengineering.wirecoil.rope.name=Hemp Rope Coil
 item.immersiveengineering.wirecoil.structural.name=Steel Cable Coil
@@ -918,6 +920,7 @@ death.attack.ieRazorShock=%1$s was electrocuted by razorwire
 death.attack.ieTesla=%1$s was fried by a Tesla Coil
 death.attack.ieTeslaPrimary=%1$s touched the primary circuit of a running Tesla coil
 death.attack.ieRailgun=%1$s was pierced by %2$s's Railgun
+death.attack.ieWireShock=%1$s wasn't careful enough around live wiring
 
 #ACHIEVEMENTS
 advancement.immersiveengineering:root=Immersive Engineering

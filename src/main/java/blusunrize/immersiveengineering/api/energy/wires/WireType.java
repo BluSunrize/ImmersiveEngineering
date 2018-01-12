@@ -15,7 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author BluSunrize - 08.03.2015<br>
@@ -41,6 +43,15 @@ public abstract class WireType
 	public WireType()
 	{
 		values.add(this);
+	}
+	public static Set<Set<WireType>> matching = new HashSet<>();
+
+	public static boolean canMix(WireType a, WireType b)
+	{
+		for (Set<WireType> s:matching)
+			if (s.contains(a))
+				return s.contains(b);
+		return false;
 	}
 
 	public abstract String getUniqueName();
@@ -92,6 +103,27 @@ public abstract class WireType
 	public static WireType REDSTONE = new IEBASE(5);
 	public static WireType COPPER_INSULATED = new IEBASE(6);
 	public static WireType ELECTRUM_INSULATED = new IEBASE(7);
+	static
+	{
+		Set<WireType> matching = new HashSet<>();
+		matching.add(COPPER);
+		matching.add(COPPER_INSULATED);
+		WireType.matching.add(matching);
+		matching = new HashSet<>();
+		matching.add(ELECTRUM);
+		matching.add(ELECTRUM_INSULATED);
+		WireType.matching.add(matching);
+		matching = new HashSet<>();
+		matching.add(STEEL);
+		WireType.matching.add(matching);
+		matching = new HashSet<>();
+		matching.add(STRUCTURE_STEEL);
+		matching.add(STRUCTURE_ROPE);
+		WireType.matching.add(matching);
+		matching = new HashSet<>();
+		matching.add(REDSTONE);
+		WireType.matching.add(matching);
+	}
 
 	/**
 	 * DO NOT SUBCLASS THIS.
@@ -119,7 +151,7 @@ public abstract class WireType
 		@Override
 		public int getColour(Connection connection)
 		{
-			return wireColouration[ordinal%6];//TODO colors for insulated wire
+			return wireColouration[ordinal];
 		}
 		@Override
 		public double getSlack()

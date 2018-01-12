@@ -34,13 +34,26 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.COPPER;
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.ELECTRUM;
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.STEEL;
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
 	protected WireType limitType = null;
+	private static Set<WireType> LV;
+	private static Set<WireType> MV;
+	private static Set<WireType> HV;
+	static
+	{
+		for (Set<WireType> s:WireType.matching)
+		{
+			if (s.contains(COPPER))
+				LV = s;
+			else if (s.contains(ELECTRUM))
+				MV = s;
+			else if (s.contains(STEEL))
+				HV = s;
+		}
+	}
 
 	protected boolean canTakeLV()
 	{
@@ -92,11 +105,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
-		if(cableType== STEEL&&!canTakeHV())
+		if(HV.contains(cableType)&&!canTakeHV())
 			return false;
-		if((cableType==WireType.ELECTRUM||cableType==WireType.ELECTRUM_INSULATED)&&!canTakeMV())
+		if(MV.contains(cableType)&&!canTakeMV())
 			return false;
-		if((cableType==WireType.COPPER||cableType==WireType.COPPER_INSULATED)&&!canTakeLV())
+		if(LV.contains(cableType)&&!canTakeLV())
 			return false;
 		if(cableType==WireType.STRUCTURE_ROPE)
 			return false;
@@ -104,7 +117,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			return false;
 		if(cableType==WireType.REDSTONE)
 			return false;
-		return limitType==null||(this.isRelay() && limitType==cableType);
+		return limitType==null||(this.isRelay() && canMix(limitType, cableType));
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
