@@ -1,3 +1,29 @@
+#####Version 0.12-77
+- fixed Vertical Conveyor recipes returning too little
+
+#####Version 0.12-76 - BUILT
+- added various config options for the Belljar, to adjust growthspeeds and fertilizer effects
+- re-added partivles and animation for the Arc Furnace (thanks Malte)
+- added TOP compat for the Sheetmetal Tank (thanks SirWindfield)
+- added Metal Ladders and Scaffold covered versions 
+- fixed wires connected to razorwire not rendering (thanks Malte)
+- fixed missing comparator output on the Current Transformer (thanks Malte)
+- fixed the drill accidentally modifying its NBT on sharing (thanks Malte)
+- fixed the Bucket Wheel having rotation issues (thanks Malte)
+- fixed crashes related to newer Forge versions (thanks Malte)
+- fixed rendering issues with the Floodlight and improved its performance (thanks Malte)
+- fixed Carrots and Potoes not working in the Cloche (thanks SirWindfield)
+- fixed crash when the Teslacoil destroys a piece of Faraday armor
+- fixed Chisel compat
+- fixed AA compat, Canola in the squeezer
+- fixed TCon compat, mixup of Constantan and Uranium (thanks tgstyle)
+- fixed TCon compat, Arc Furnace for alloying
+- fixed a crash with the Slippery potion
+- fixed derpyness with Mineral Veins (at least for the most part), regarding CraftTweaker
+- fixed links to Biodiesel in the manual pointing to a nonexistant page
+- fixed a minor texture warning in the console
+- Translations Added/Updated: zh_CN (DYColdWind)
+
 #####Version 0.12-75 - BUILT
 - Relicensed IE, because it was about time. It's not perfect but it's better than uncertainty
 - added a basic description to the mcmodinfo (thanks carstorm)

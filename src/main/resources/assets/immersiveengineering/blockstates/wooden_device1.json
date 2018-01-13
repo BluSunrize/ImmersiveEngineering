@@ -3,18 +3,8 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:iePillar",
-		"custom": { "flip-v": true },
-		"textures": {
-			"particle": "immmersiveengineering:blocks/treated_wood_horizontal",
-			"side": "immersiveengineering:blocks/wooden_device_crate",
-			"top": "immersiveengineering:blocks/wooden_device_crate",
-			"bottom": "immersiveengineering:blocks/wooden_device_crate",
-			
-			"topNone": "immersiveengineering:blocks/wooden_device_barrel_top_none",
-			"topIn": "immersiveengineering:blocks/wooden_device_barrel_top_in",
-			"topOut": "immersiveengineering:blocks/wooden_device_barrel_top_out"
-		}
+		"model": "immersiveengineering:wooden_device/wallmount.obj",
+		"custom": { "flip-v": true }
 	},
 	"variants":
 	{

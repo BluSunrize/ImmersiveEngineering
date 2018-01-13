@@ -148,6 +148,7 @@ public class IEContent
 	public static Block blockAluminumScaffoldingStair;
 	public static Block blockAluminumScaffoldingStair1;
 	public static Block blockAluminumScaffoldingStair2;
+	public static Block blockMetalLadder;
 	public static BlockIEBase blockConnectors;
 	public static BlockIEBase blockMetalDevice0;
 	public static BlockIEBase blockMetalDevice1;
@@ -261,6 +262,7 @@ public class IEContent
 		blockAluminumScaffoldingStair = new BlockIEStairs("aluminum_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(5)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
 		blockAluminumScaffoldingStair1 = new BlockIEStairs("aluminum_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(6)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
 		blockAluminumScaffoldingStair2 = new BlockIEStairs("aluminum_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(7)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockMetalLadder = new BlockMetalLadder();
 
 		blockConnectors = new BlockConnector();
 		blockMetalDevice0 = new BlockMetalDevice0();
@@ -356,6 +358,9 @@ public class IEContent
 		/**BLUEPRINTS*/
 		IERecipes.initBlueprintRecipes();
 
+		/**BELLJAR*/
+		BelljarHandler.init();
+
 		/**MULTIBLOCK RECIPES*/
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
@@ -443,6 +448,34 @@ public class IEContent
 		ItemBullet.initBullets();
 
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+
+		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
+		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
+		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
+		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron","oreNickel","oreTin","denseoreIron"}, new float[]{.5f,.25f,.20f,.05f});
+		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
+		if(OreDictionary.doesOreNameExist("oreSulfur"))
+			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "oreSulfur"}, new float[]{.5f, .5f});
+		else
+			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "dustSulfur"}, new float[]{.5f, .5f});
+		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum","oreTitanium","denseoreAluminum"}, new float[]{.90f,.05f,.05f});
+		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper","oreGold","oreNickel","denseoreCopper"}, new float[]{.65f,.25f,.05f,.05f});
+		if(OreDictionary.doesOreNameExist("oreTin"))
+			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin","denseoreTin"}, new float[]{.95f,.05f});
+		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold","oreCopper","oreNickel","denseoreGold"}, new float[]{.65f,.25f,.05f,.05f});
+		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel","orePlatinum","oreIron","denseoreNickel"}, new float[]{.85f,.05f,.05f,.05f});
+		if(OreDictionary.doesOreNameExist("orePlatinum"))
+			ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum", "oreNickel", "", "oreIridium", "denseorePlatinum"}, new float[]{.40f, .30f, .15f, .1f, .05f});
+		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium","oreLead","orePlutonium","denseoreUranium"}, new float[]{.55f,.3f,.1f,.05f}).addReplacement("oreUranium", "oreYellorium");
+		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz","oreCertusQuartz"}, new float[]{.6f,.4f});
+		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead","oreSilver","oreSulfur","denseoreLead","denseoreSilver"}, new float[]{.40f,.40f,.1f,.05f,.05f});
+		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead","oreSilver","denseoreLead"}, new float[]{.55f,.4f,.05f});
+		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver","oreLead","denseoreSilver"}, new float[]{.55f,.4f,.05f});
+		if(OreDictionary.doesOreNameExist("oreSulfur"))
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
+		else
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","dustSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
+		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal","denseoreCoal","oreDiamond","oreEmerald"}, new float[]{.92f,.1f,.015f,.015f});
 	}
 
 	public static void preInitEnd()
@@ -554,10 +587,10 @@ public class IEContent
 		registerTile(TileEntityFluidSorter.class);
 		registerTile(TileEntityWatermill.class);
 		registerTile(TileEntityWindmill.class);
-		registerTile(TileEntityWindmillAdvanced.class);
 		registerTile(TileEntityWoodenPost.class);
 		registerTile(TileEntityWallmount.class);
 
+		registerTile(TileEntityLadder.class);
 		registerTile(TileEntityLantern.class);
 		registerTile(TileEntityRazorWire.class);
 		registerTile(TileEntityToolbox.class);
@@ -878,35 +911,6 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin("blockYellorium", 2000);
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
-
-		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
-		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
-		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
-		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron","oreNickel","oreTin","denseoreIron"}, new float[]{.5f,.25f,.20f,.05f});
-		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
-		if(OreDictionary.doesOreNameExist("oreSulfur"))
-			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "oreSulfur"}, new float[]{.5f, .5f});
-		else
-			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "dustSulfur"}, new float[]{.5f, .5f});
-		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum","oreTitanium","denseoreAluminum"}, new float[]{.90f,.05f,.05f});
-		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper","oreGold","oreNickel","denseoreCopper"}, new float[]{.65f,.25f,.05f,.05f});
-		if(OreDictionary.doesOreNameExist("oreTin"))
-			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin","denseoreTin"}, new float[]{.95f,.05f});
-		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold","oreCopper","oreNickel","denseoreGold"}, new float[]{.65f,.25f,.05f,.05f});
-		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel","orePlatinum","oreIron","denseoreNickel"}, new float[]{.85f,.05f,.05f,.05f});
-		if(OreDictionary.doesOreNameExist("orePlatinum"))
-			ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum", "oreNickel", "", "oreIridium", "denseorePlatinum"}, new float[]{.40f, .30f, .15f, .1f, .05f});
-		if(OreDictionary.doesOreNameExist("oreUranium")||OreDictionary.doesOreNameExist("oreYellorium"))
-			ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium","oreLead","orePlutonium","denseoreUranium"}, new float[]{.55f,.3f,.1f,.05f}).addReplacement("oreUranium", "oreYellorium");
-		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz","oreCertusQuartz"}, new float[]{.6f,.4f});
-		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead","oreSilver","oreSulfur","denseoreLead","denseoreSilver"}, new float[]{.40f,.40f,.1f,.05f,.05f});
-		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead","oreSilver","denseoreLead"}, new float[]{.55f,.4f,.05f});
-		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver","oreLead","denseoreSilver"}, new float[]{.55f,.4f,.05f});
-		if(OreDictionary.doesOreNameExist("oreSulfur"))
-			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
-		else
-			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","dustSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
-		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal","denseoreCoal","oreDiamond","oreEmerald"}, new float[]{.92f,.1f,.015f,.015f});
 
 		/**MULTIBLOCKS*/
 		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);

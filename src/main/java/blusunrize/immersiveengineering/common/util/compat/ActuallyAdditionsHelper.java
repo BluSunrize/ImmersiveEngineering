@@ -30,14 +30,14 @@ public class ActuallyAdditionsHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		Fluid canolaOil = FluidRegistry.getFluid("canolaoil");
-		if(canolaOil!=null)
-			SqueezerRecipe.addRecipe(new FluidStack(canolaOil,80), null, "cropCanola", 6400);
 	}
 
 	@Override
 	public void postInit()
 	{
+		Fluid canolaOil = FluidRegistry.getFluid("canolaoil");
+		if(canolaOil!=null)
+			SqueezerRecipe.addRecipe(new FluidStack(canolaOil,80), ItemStack.EMPTY, "cropCanola", 6400);
 
 		Item coffeeSeeds = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions","item_coffee_seed"));
 		Item coffeeBeans = Item.REGISTRY.getObject(new ResourceLocation("actuallyadditions","item_coffee_beans"));

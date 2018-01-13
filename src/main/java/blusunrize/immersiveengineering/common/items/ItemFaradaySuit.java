@@ -57,7 +57,7 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 		{
 			dmg.dmg*=1.2;
 			if((!(p instanceof EntityPlayer)||!((EntityPlayer)p).capabilities.isCreativeMode)&&s.attemptDamageItem(2, itemRand, (dmg.getTrueSource() instanceof EntityPlayerMP)?(EntityPlayerMP)dmg.getTrueSource():null))
-				p.setItemStackToSlot(eqSlot, null);
+				p.setItemStackToSlot(eqSlot, ItemStack.EMPTY);
 		}
 	}
 

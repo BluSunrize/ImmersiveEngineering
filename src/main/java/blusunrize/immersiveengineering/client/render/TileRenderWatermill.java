@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -35,6 +36,8 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 		{
 			final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 			IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+			if(state.getBlock() != IEContent.blockWoodenDevice1)
+				return;
 			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
 			quads = blockRenderer.getModelForState(state).getQuads(state, null, 0);
 		}

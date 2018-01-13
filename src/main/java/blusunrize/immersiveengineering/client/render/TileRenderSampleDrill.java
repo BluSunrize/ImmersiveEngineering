@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -36,6 +37,8 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
 		IBakedModel model = blockRenderer.getModelForState(state);
+		if(state.getBlock() != IEContent.blockMetalDevice0)
+			return;
 //				.getModelFromBlockState(state, getWorld(), blockPos);
 		if(state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Lists.newArrayList("drill"), true));

@@ -456,7 +456,6 @@ public class ClientProxy extends CommonProxy
 		//WOOD
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillAdvanced.class, new TileRenderWindmill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityModWorkbench.class, new TileRenderWorkbench());
 		//STONE
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCoresample.class, new TileRenderCoresample());

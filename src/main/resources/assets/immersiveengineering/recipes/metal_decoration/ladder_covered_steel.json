@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_ladder",
+    "data": 1
+  },
+  "pattern": [
+    "S",
+    "L"
+  ],
+  "key": {
+    "L": {
+      "item": "immersiveengineering:metal_ladder",
+      "data": 0
+    },
+    "S": {
+      "item": "#scaffoldingSteel"
+    }
+  }
+}
