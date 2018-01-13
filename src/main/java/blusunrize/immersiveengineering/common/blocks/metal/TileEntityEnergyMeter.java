@@ -40,8 +40,8 @@ import java.util.Set;
 public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds,IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
 {
 	public EnumFacing facing = EnumFacing.NORTH;
-	public int lastEnergyPassed = 0;
-	public ArrayList<Integer> lastPackets = new ArrayList<Integer>(25);
+	public double lastEnergyPassed = 0;
+	public final ArrayList<Double> lastPackets = new ArrayList<>(25);
 	public boolean lower=true;
 	private int compVal = -1;
 
@@ -109,7 +109,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void onEnergyPassthrough(int amount)
+	public void onEnergyPassthrough(double amount)
 	{
 		lastEnergyPassed += amount;
 	}
@@ -223,13 +223,13 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		}
 		if(te.lastPackets.size()==0)
 			return 0;
-		int sum = 0;
+		double sum = 0;
 		synchronized (te.lastPackets)
 		{
-			for(int transfer: te.lastPackets)
+			for(double transfer: te.lastPackets)
 				sum += transfer;
 		}
-		return sum/te.lastPackets.size();
+		return (int) Math.round(sum/te.lastPackets.size());
 	}
 
 	@Override

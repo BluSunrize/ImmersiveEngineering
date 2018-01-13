@@ -34,11 +34,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.ELECTRUM;
 
 public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
@@ -115,8 +114,6 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
-		if(cableType==WireType.STEEL&&!canTakeHV())
-			return false;
 		if(dummy!=0) {
 			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
 			return master instanceof TileEntityTransformer && ((TileEntityTransformer) master).canConnectCable(cableType, target);
@@ -131,13 +128,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		}
 		return false;
 	}
-	private boolean canAttach(WireType toAttach, WireType atConn, WireType other) {
+	private boolean canAttach(WireType toAttach, @Nullable WireType atConn, @Nullable WireType other) {
 		if (atConn!=null)
 			return false;
 		if (other==null)
 			return true;
-		WireType higher = this instanceof TileEntityTransformerHV?WireType.STEEL: ELECTRUM;
-		return toAttach==higher||other==higher;
+		Set<WireType> higher = getHigherWiretype();
+		return higher.contains(toAttach)||higher.contains(other);
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
@@ -294,8 +291,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		{
 			if (limitType==null&&secondCable==null)
 				return true;
-			WireType higher = getHigherWiretype();
-			return (limitType != null && higher.equals(limitType)) || (secondCable != null && !higher.equals(secondCable));
+			Set<WireType> higher = getHigherWiretype();
+			return (limitType != null && higher.contains(limitType)) || (secondCable != null && !higher.contains(secondCable));
 		}
 	}
 
@@ -432,8 +429,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return .5625F;
 	}
 
-	public WireType getHigherWiretype()
+	public Set<WireType> getHigherWiretype()
 	{
-		return ELECTRUM;
+		return MV;
 	}
 }

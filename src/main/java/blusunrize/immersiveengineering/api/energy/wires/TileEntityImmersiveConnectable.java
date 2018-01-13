@@ -40,8 +40,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 {
 	protected WireType limitType = null;
 	private static Set<WireType> LV;
-	private static Set<WireType> MV;
-	private static Set<WireType> HV;
+	public static Set<WireType> MV;
+	public static Set<WireType> HV;
 	static
 	{
 		for (Set<WireType> s:WireType.matching)

@@ -75,7 +75,17 @@ public interface IImmersiveConnectable
 	/**
 	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
 	 */
-	void onEnergyPassthrough(int amount);
+	default void onEnergyPassthrough(int amount)
+	{
+
+	}
+	/**
+	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
+	 */
+	default void onEnergyPassthrough(double amount)
+	{
+		onEnergyPassthrough((int)amount);
+	}
 
 	/**
 	 * Informs the connector/relay that there is a source of energy connected to it, and gives it a way to consume it.

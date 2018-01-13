@@ -78,11 +78,11 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	{
 		if(cableType!=null && !cableType.isEnergyWire())
 			return false;
-		if(cableType==WireType.STEEL&&!canTakeHV())
+		if(HV.contains(cableType)&&!canTakeHV())
 			return false;
 		if(wires>=2)
 			return false;
-		return limitType==null || cableType==limitType;
+		return limitType==null || WireType.canMix(cableType, limitType);
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)

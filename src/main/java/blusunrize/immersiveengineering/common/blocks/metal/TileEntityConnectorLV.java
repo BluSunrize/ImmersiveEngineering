@@ -382,9 +382,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start,world);
 								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end,world);
 								if(subStart!=null && passedConnectors.add(subStart))
-									subStart.onEnergyPassthrough((int)(r-r*intermediaryLoss));
+									subStart.onEnergyPassthrough(r-r*intermediaryLoss);
 								if(subEnd!=null && passedConnectors.add(subEnd))
-									subEnd.onEnergyPassthrough((int)(r-r*intermediaryLoss));
+									subEnd.onEnergyPassthrough(r-r*intermediaryLoss);
 							}
 						}
 						received += r;
