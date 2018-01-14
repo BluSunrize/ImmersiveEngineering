@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelCoresample;
+import blusunrize.immersiveengineering.client.models.smart.FeedthroughModel;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -75,6 +76,8 @@ public class ImmersiveModelRegistry
 		event.getModelRegistry().putObject(mLoc, modelConveyor);
 		mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "inventory");
 		event.getModelRegistry().putObject(mLoc, modelConveyor);
+		mLoc = new ModelResourceLocation(new ResourceLocation(ImmersiveEngineering.MODID, "connector"), "inventory,type=feedthrough");
+		event.getModelRegistry().putObject(mLoc, new FeedthroughModel());
 	}
 
 	public void registerCustomItemModel(ItemStack stack, ItemModelReplacement replacement)

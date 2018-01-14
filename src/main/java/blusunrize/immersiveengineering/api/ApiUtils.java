@@ -16,12 +16,15 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -36,6 +39,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.pipeline.IVertexConsumer;
+import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,10 +51,14 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.lwjgl.util.vector.Vector3f;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
@@ -814,5 +823,85 @@ public class ApiUtils
 			sprite = map.getTextureExtry(path.toString());
 		}
 		return sprite;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static Function<BakedQuad, BakedQuad> applyMatrixToQuad(Matrix4 mat, VertexFormat f)
+	{
+		int posPos = -1;
+		int normPos = -1;
+		for (int i = 0;i<f.getElements().size();i++)
+			if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.POSITION)
+				posPos = i;
+			else if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.NORMAL)
+				normPos = i;
+		if (posPos==-1)
+			return null;
+		final int posPosFinal = posPos;
+		final int normPosFinal = normPos;
+		AtomicReference<UnpackedBakedQuad.Builder> ref = new AtomicReference<>();
+		Matrix4 inverse = mat.copy();
+		inverse.invert();
+		inverse.transpose();
+		IVertexConsumer transformer = new IVertexConsumer()
+		{
+			@Nonnull
+			@Override
+			public VertexFormat getVertexFormat()
+			{
+				return f;
+			}
+
+			@Override
+			public void setQuadTint(int tint)
+			{
+				ref.get().setQuadTint(tint);
+			}
+
+			@Override
+			public void setQuadOrientation(@Nonnull EnumFacing orientation)
+			{
+				ref.get().setQuadOrientation(orientation);
+			}
+
+			@Override
+			public void setApplyDiffuseLighting(boolean diffuse)
+			{
+				ref.get().setApplyDiffuseLighting(diffuse);
+			}
+
+			@Override
+			public void setTexture(@Nonnull TextureAtlasSprite texture)
+			{
+				ref.get().setTexture(texture);
+			}
+
+			@Override
+			public void put(int element, @Nonnull float... data)
+			{
+				if (element==posPosFinal)
+				{
+					Vector3f newPos = mat.apply(new Vector3f(data[0], data[1], data[2]));
+					data = new float[3];
+					data[0] = newPos.x;
+					data[1] = newPos.y;
+					data[2] = newPos.z;
+				}
+				else if (element==normPosFinal)
+				{
+					Vector3f newNormal = inverse.apply(new Vector3f(data[0], data[1], data[2]));
+					data = new float[3];
+					data[0] = newNormal.x;
+					data[1] = newNormal.y;
+					data[2] = newNormal.z;
+				}
+				ref.get().put(element, data);
+			}
+		};
+		return (q)->{
+			ref.set(new UnpackedBakedQuad.Builder(f));
+			q.pipe(transformer);
+			return ref.get().build();
+		};
 	}
 }

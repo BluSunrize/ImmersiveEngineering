@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -24,6 +25,8 @@ import java.util.function.Consumer;
  * @author BluSunrize - 08.03.2015
  *
  * An interface to be implemented by TileEntities, to allow them to connect to the IE net
+ *
+ * "Vec3i offset" parameters give the offset between this block and the one that was clicked on, see getConnectionMaster
  */
 public interface IImmersiveConnectable
 {
@@ -50,15 +53,30 @@ public interface IImmersiveConnectable
 	 */
 	BlockPos getConnectionMaster(@Nullable WireType cableType, TargetingInfo target);
 
+	@Deprecated
+	default boolean canConnectCable(WireType cableType, TargetingInfo target)
+	{
+		return false;
+	}
 	/**
 	 * @return whether you can connect the given CableType to the tile
 	 */
-	boolean canConnectCable(WireType cableType, TargetingInfo target);
+	default boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	{
+		return canConnectCable(cableType, target);
+	}
 	
 	/**
 	 * fired when a cable is attached, use to limit the cables attached to one type
 	 */
-	void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other);
+	default void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other, @Nullable Vec3i offset)
+	{
+		connectCable(cableType, target, other);
+	}
+	default void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	{
+		connectCable(cableType, target, other, null);
+	}
 	
 	/**
 	 * get the CableType limiter of the tile
@@ -101,13 +119,17 @@ public interface IImmersiveConnectable
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
 	 * acts as a wildcard, meaning if connection.CableType is null, you /always/ reset the limiter
 	 */
-	void removeCable(Connection connection);
-	
+	void removeCable(@Nullable Connection connection);
+
+
 	/**
-	 * Raytracing was replaced by code following the catenary, using
+	 * Raytracing was replaced by code following the catenary, using getConnectionOffset(Connection con, TargetingInfo target)
 	 */
 	@Deprecated
-	Vec3d getRaytraceOffset(IImmersiveConnectable link);
+	default Vec3d getRaytraceOffset(IImmersiveConnectable link) {
+		return new Vec3d(.5, .5, .5);
+	}
+
 	/**
 	 * @return Where the cable should attach
 	 */
@@ -117,7 +139,7 @@ public interface IImmersiveConnectable
 	 * Should be identical to getConnectionOffset(Connection) once the connection is added
 	 * @return Where the cable should attach
 	 */
-	default Vec3d getConnectionOffset(Connection con, TargetingInfo target)
+	default Vec3d getConnectionOffset(Connection con, TargetingInfo target, Vec3i offsetLink)
 	{
 		return getConnectionOffset(con);
 	}

@@ -17,14 +17,12 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -32,8 +30,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
@@ -107,11 +105,12 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 				TargetingInfo target = new TargetingInfo(side, hitX,hitY,hitZ);
 				WireType wire = getWireType(stack);
 				BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, target);
+				Vec3i offset = pos.subtract(masterPos);
 				tileEntity = world.getTileEntity(masterPos);
 				if( !(tileEntity instanceof IImmersiveConnectable) || !((IImmersiveConnectable)tileEntity).canConnect())
 					return EnumActionResult.PASS;
 
-				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target))
+				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset))
 				{
 					if (!world.isRemote)
 						player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
@@ -121,7 +120,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 				if(!world.isRemote)
 					if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 					{
-						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(),masterPos.getX(),masterPos.getY(),masterPos.getZ()});
+						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(),masterPos.getX(),masterPos.getY(),masterPos.getZ(),
+								offset.getX(), offset.getY(), offset.getZ()});
 						NBTTagCompound targetNbt = new NBTTagCompound();
 						target.writeToNBT(targetNbt);
 						ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
@@ -130,6 +130,9 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 					{
 						int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
 						BlockPos linkPos = new BlockPos(array[1],array[2],array[3]);
+						Vec3i offsetLink = BlockPos.NULL_VECTOR;
+						if (array.length==7)
+							offsetLink = new Vec3i(array[4], array[5], array[6]);
 						TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
 						int distanceSq = (int) Math.ceil( linkPos.distanceSq(masterPos) );
 						if(array[0]!=world.provider.getDimension())
@@ -141,7 +144,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						else
 						{
 							TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
-							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||!((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink))
+							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||!((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offset))
 								player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
 							else
 							{
@@ -164,9 +167,9 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									ignore.addAll(nodeLink.getIgnored(nodeHere));
 									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
 											(int)Math.sqrt(distanceSq));
-									Vec3d start = nodeHere.getConnectionOffset(tmpConn, target).addVector(tileEntity.getPos().getX(),
+									Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos)).addVector(tileEntity.getPos().getX(),
 											tileEntity.getPos().getY(), tileEntity.getPos().getZ());
-									Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink).addVector(tileEntityLinkingPos.getPos().getX(),
+									Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(tileEntityLinkingPos.getPos().getX(),
 											tileEntityLinkingPos.getPos().getY(), tileEntityLinkingPos.getPos().getZ());
 									boolean canSee = ApiUtils.raytraceAlongCatenary(tmpConn, (p)->{
 										if (ignore.contains(p.getLeft()))
@@ -180,8 +183,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 												(int)Math.sqrt(distanceSq), wire);
 
 
-										nodeHere.connectCable(wire, target, nodeLink);
-										nodeLink.connectCable(wire, targetLink, nodeHere);
+										nodeHere.connectCable(wire, target, nodeLink, offset);
+										nodeLink.connectCable(wire, targetLink, nodeHere, offsetLink);
 										ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
 										IESaveData.setDirty(world.provider.getDimension());
 										Utils.unlockIEAdvancement(player, "main/connect_wire");

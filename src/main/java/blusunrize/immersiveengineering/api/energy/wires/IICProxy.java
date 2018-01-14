@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -82,7 +83,7 @@ public class IICProxy implements IImmersiveConnectable
 		return 0;
 	}
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
 		return false;
 	}
@@ -97,11 +98,7 @@ public class IICProxy implements IImmersiveConnectable
 	@Override
 	public void onEnergyPassthrough(int amount)
 	{}
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		return null;
-	}
+
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -222,11 +221,7 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		}
 		return 0;
 	}
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		return new Vec3d(.5,1.0625,.5);
-	}
+
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

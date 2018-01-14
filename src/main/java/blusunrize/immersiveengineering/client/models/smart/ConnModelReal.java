@@ -66,6 +66,7 @@ public class ConnModelReal implements IBakedModel
 				}
 			}
 			Pair<Byte, ExtBlockstateAdapter> key = new ImmutablePair<>((byte)((x<<4)|z), ad);
+			cache.clear();//TODO remove!
 			IBakedModel ret = cache.get(key);
 			if (ret==null)
 			{

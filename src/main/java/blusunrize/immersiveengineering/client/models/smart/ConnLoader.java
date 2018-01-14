@@ -90,6 +90,9 @@ public class ConnLoader implements ICustomModelLoader
 
 		baseModels.put("razor_wire",
 				new ResourceLocation("immersiveengineering:block/razor_wire.obj.ie"));
+
+		baseModels.put("feedthrough",
+				new ResourceLocation("immersiveengineering:block/smartmodel/feedthrough"));
 	}
 
 	@Override

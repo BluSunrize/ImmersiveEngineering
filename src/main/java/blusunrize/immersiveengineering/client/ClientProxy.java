@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
+import blusunrize.immersiveengineering.client.models.smart.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -273,6 +274,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderFluorescentTube(manager);
 			}});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
+		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 	}
 

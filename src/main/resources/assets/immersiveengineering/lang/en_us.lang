@@ -167,6 +167,7 @@ tile.immersiveengineering.connector.redstone_breaker.name=Redstone Breaker
 tile.immersiveengineering.connector.energy_meter.name=Current Transformer
 tile.immersiveengineering.connector.connector_redstone.name=Redstone Wire Connector
 tile.immersiveengineering.connector.connector_probe.name=Redstone Probe Connector
+tile.immersiveengineering.connector.feedthrough.name=Feedthrough
 
 tile.immersiveengineering.metal_device0.capacitor_lv.name=LV Capacitor
 tile.immersiveengineering.metal_device0.capacitor_mv.name=MV Capacitor

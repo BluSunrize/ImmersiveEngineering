@@ -15,16 +15,19 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import crafttweaker.api.block.IBlock;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -60,6 +63,7 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -971,6 +975,32 @@ public class Utils
 		return list;
 	}
 
+	public static float[] rotateToFacing(float[] in, EnumFacing facing)
+	{
+		for (int i = 0; i < in.length; i++)
+			in[i] -= .5F;
+		float[] ret = new float[in.length];
+		for (int i = 0; i < in.length; i += 3)
+			for (int j = 0; j < 3; j++)
+			{
+				if (j == 0)
+					ret[i + j] = in[i + 0] * facing.getFrontOffsetZ() +
+							in[i + 1] * facing.getFrontOffsetX() +
+							in[i + 2] * facing.getFrontOffsetY();
+				else if (j == 1)
+					ret[i + j] = in[i + 0] * facing.getFrontOffsetX() +
+							in[i + 1] * facing.getFrontOffsetY() +
+							in[i + 2] * facing.getFrontOffsetZ();
+				else
+					ret[i + j] = in[i + 0] * facing.getFrontOffsetY() +
+							in[i + 1] * facing.getFrontOffsetZ() +
+							in[i + 2] * facing.getFrontOffsetX();
+			}
+		for (int i = 0; i < in.length; i++)
+			ret[i] += .5;
+		return ret;
+	}
+
 	public static class InventoryCraftingFalse extends InventoryCrafting
 	{
 		private static final Container nullContainer = new Container()
@@ -1357,5 +1387,40 @@ public class Utils
 			ret.put("hasTag", tank.tag != null);
 		}
 		return ret;
+	}
+
+	public static void stateToNBT(NBTTagCompound out, IBlockState state)
+	{
+		out.setString("block", state.getBlock().getRegistryName().toString());
+		for (IProperty<?> prop:state.getPropertyKeys())
+			saveProp(state, prop, out);
+	}
+
+	public static IBlockState stateFromNBT(NBTTagCompound in)
+	{
+		Block b = Block.getBlockFromName(in.getString("block"));
+		if (b==null)
+			return Blocks.BOOKSHELF.getDefaultState();
+		IBlockState ret = b.getDefaultState();
+		for (IProperty<?> prop:ret.getPropertyKeys())
+		{
+			String name = prop.getName();
+			if (in.hasKey(name, Constants.NBT.TAG_STRING))
+				ret = setProp(ret, prop, in.getString(name));
+		}
+		return ret;
+	}
+
+	private static <T extends Comparable<T>> void saveProp(IBlockState state, IProperty<T> prop, NBTTagCompound out)
+	{
+		out.setString(prop.getName(), prop.getName(state.getValue(prop)));
+	}
+
+	private static <T extends Comparable<T>> IBlockState setProp(IBlockState state, IProperty<T> prop, String value)
+	{
+		Optional<T> valueParsed = prop.parseValue(value);
+		if (valueParsed.isPresent())
+			return state.withProperty(prop, valueParsed.get());
+		return state;
 	}
 }

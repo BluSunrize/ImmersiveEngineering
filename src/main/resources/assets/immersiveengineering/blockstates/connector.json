@@ -123,6 +123,20 @@
         }
       }
     ],
+    "inventory,type=feedthrough": [
+      {
+        "model": "immersiveengineering:connector/connector_probe.obj.ie",
+        "transform": {
+          "scale": [ 0.5, 0.5, 0.5 ],
+          "firstperson_righthand": { "translation": [ 0, 0.25, 0.125 ] },
+          "firstperson_lefthand": { "translation": [ 0, 0.25, 0.125 ] },
+          "thirdperson_righthand": { "translation": [ -0.0625, 0.125, 0.1875 ], "rotation": [{ "x": 70 },{ "y": 70 }] },
+          "thirdperson_lefthand": { "translation": [ -0.0625, 0.125, 0.1875 ], "rotation": [ { "x": 70 }, { "y": 70 } ] },
+          "fixed": { "scale": [ 2, 2, 2 ], "translation": [ 0, 0, 0 ], "rotation": [ { "y": -90 } ] },
+          "gui": { "translation": [ 0, 0.125, 0 ], "rotation": [ { "x": 30 }, { "y": 135 }, { "z": 0 } ], "scale": [ 1.5, 1.5, 1.5 ] }
+        }
+      }
+    ],
     "type":
     {
       "connector_lv": {
@@ -151,6 +165,9 @@
       },
       "connector_probe": {
         "model": "immersiveengineering:smartmodel/conn_conn_probe"
+      },
+      "feedthrough": {
+        "model": "immersiveengineering:smartmodel/conn_feedthrough"
       }
     },
     "facing":

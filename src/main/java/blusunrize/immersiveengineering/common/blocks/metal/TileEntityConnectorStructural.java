@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -96,7 +97,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
 		if(cableType!=WireType.STRUCTURE_ROPE && cableType!=WireType.STRUCTURE_STEEL)
 			return false;

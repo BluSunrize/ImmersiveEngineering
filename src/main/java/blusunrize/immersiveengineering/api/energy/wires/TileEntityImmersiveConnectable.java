@@ -26,6 +26,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -103,7 +104,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		return getPos();
 	}	
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
 		if(HV.contains(cableType)&&!canTakeHV())
 			return false;

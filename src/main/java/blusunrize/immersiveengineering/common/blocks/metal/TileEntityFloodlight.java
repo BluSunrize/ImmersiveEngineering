@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -371,38 +370,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		return super.receiveClientEvent(id, arg);
 	}
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
 
-		int xDif = ((TileEntity)link).getPos().getX()-getPos().getX();
-		int yDif = ((TileEntity)link).getPos().getY()-getPos().getY();
-		int zDif = ((TileEntity)link).getPos().getZ()-getPos().getZ();
-		double x, y, z;
-		switch(side)
-		{
-			case DOWN:
-			case UP:
-				x = (Math.abs(xDif) >= Math.abs(zDif)) ? (xDif >= 0) ? .9375 : .0625 : .5;
-				y = (side == EnumFacing.DOWN) ? .9375 : .0625;
-				z = (Math.abs(zDif) > Math.abs(xDif)) ? (zDif >= 0) ? .9375 : .0625 : .5;
-				break;
-			case NORTH:
-			case SOUTH:
-				x = (Math.abs(xDif) >= Math.abs(yDif)) ? (xDif >= 0) ? .9375 : .0625 : .5;
-				y = (Math.abs(yDif) > Math.abs(xDif)) ? (yDif >= 0) ? .9375 : .0625 : .5;
-				z = (side == EnumFacing.NORTH) ? .9375 : .0625;
-				break;
-			case WEST:
-			case EAST:
-			default:
-				x = (side == EnumFacing.WEST) ? .9375 : .0625;
-				y = (Math.abs(yDif) >= Math.abs(zDif)) ? (yDif >= 0) ? .9375 : .0625 : .5;
-				z = (Math.abs(zDif) > Math.abs(yDif)) ? (zDif >= 0) ? .9375 : .0625 : .5;
-				break;
-		}
-		return new Vec3d(x,y,z);
-	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

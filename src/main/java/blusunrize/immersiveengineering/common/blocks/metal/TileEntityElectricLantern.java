@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -19,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.Vec3d;
@@ -140,18 +138,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		}
 		return super.receiveClientEvent(id, arg);
 	}
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		int xDif = getPos().getX() - ((TileEntity)link).getPos().getX();
-		int zDif = getPos().getZ() - ((TileEntity)link).getPos().getZ();
-		if(xDif==0&&zDif==0)
-			return new Vec3d(.5, .0625, .5);
-		else if(Math.abs(xDif)>=Math.abs(zDif))
-			return new Vec3d(xDif<0?.25:xDif>0?.75:.5, flipped?.9375:.0625, .5);
-		else
-			return new Vec3d(.5, flipped?.9375:.0625, zDif<0?.25:zDif>0?.75:.5);
-	}
+
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

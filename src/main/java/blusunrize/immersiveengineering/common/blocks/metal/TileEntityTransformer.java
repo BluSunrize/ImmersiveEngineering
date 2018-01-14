@@ -13,26 +13,20 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -112,11 +106,11 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return getPos().add(0,-dummy,0);
 	}	
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
 		if(dummy!=0) {
 			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
-			return master instanceof TileEntityTransformer && ((TileEntityTransformer) master).canConnectCable(cableType, target);
+			return master instanceof TileEntityTransformer && ((TileEntityTransformer) master).canConnectCable(cableType, target, offset);
 		}
 		int tc = getTargetedConnector(target);
 		switch(tc)
@@ -187,13 +181,6 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		if(onPost)
-			return new Vec3d(.5, 1.5, .5);
-		return new Vec3d(.5, 2.75, .5);
-	}
-	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
 		boolean right = con.cableType==limitType;
@@ -201,7 +188,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con, TargetingInfo target)
+	public Vec3d getConnectionOffset(Connection con, TargetingInfo target, Vec3i offsetLink)
 	{
 		return getConnectionOffset(con, getTargetedConnector(target)==0);
 	}

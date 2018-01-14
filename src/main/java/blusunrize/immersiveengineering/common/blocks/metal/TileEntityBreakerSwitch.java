@@ -74,7 +74,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
 		if(cableType!=null && !cableType.isEnergyWire())
 			return false;
@@ -132,11 +132,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		onConnectionChange();
 	}
 
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		return new Vec3d(.5,.5,.5);
-	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
