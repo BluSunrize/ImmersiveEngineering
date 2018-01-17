@@ -77,7 +77,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		//		this.motionZ = (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI));
 		//		this.motionY = (double)(-MathHelper.sin(this.rotationPitch / 180.0F * (float)Math.PI));
 
-		this.setLocationAndAngles(this.motionX, this.motionY, this.motionZ, 2*1.5F, 1.0F);
+		this.shoot(this.motionX, this.motionY, this.motionZ, 2*1.5F, 1.0F);
 		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
