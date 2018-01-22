@@ -51,7 +51,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
 public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implements ITileDrop, IDirectionalTile,
-		IHasDummyBlocks, IPropertyPassthrough, IBlockBounds
+		IHasDummyBlocks, IPropertyPassthrough, IBlockBounds, ICacheData
 {
 	public static final Map<WireType, ModelInfo> INFOS = new HashMap<>();
 	public static final String WIRE = "wire";
@@ -305,6 +305,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			{
 				((TileEntityFeedthrough) te).facing = facing;
 				((TileEntityFeedthrough) te).offset = i;
+				((TileEntityFeedthrough) te).reference = reference;
+				((TileEntityFeedthrough) te).stateForMiddle = stateForMiddle;
 			}
 		}
 	}
@@ -338,6 +340,14 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			aabb = Utils.rotateToFacing(tmp, offset>0?facing:facing.getOpposite());
 		}
 		return aabb;
+	}
+
+	@Override
+	public Object[] getCacheData()
+	{
+		return new Object[] {
+				stateForMiddle, reference, facing
+		};
 	}
 
 

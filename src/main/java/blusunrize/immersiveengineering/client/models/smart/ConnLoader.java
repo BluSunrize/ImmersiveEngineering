@@ -98,7 +98,7 @@ public class ConnLoader implements ICustomModelLoader
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
-		ConnModelReal.cache.clear();
+		ConnModelReal.cache.invalidateAll();
 	}
 
 	@Override

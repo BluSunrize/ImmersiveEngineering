@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
@@ -63,6 +64,8 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -999,6 +1002,96 @@ public class Utils
 		for (int i = 0; i < in.length; i++)
 			ret[i] += .5;
 		return ret;
+	}
+
+	public static int hashBlockstate(IBlockState state, Set<Object> ignoredProperties, boolean includeExtended)
+	{
+		int val = 0;
+		final int prime = 31;
+		for (IProperty<?> n : state.getPropertyKeys())
+			if (!ignoredProperties.contains(n))
+			{
+				Object o = state.getValue(n);
+				val = prime * val + (o == null ? 0 : o.hashCode());
+			}
+		if (includeExtended&&state instanceof IExtendedBlockState)
+		{
+			IExtendedBlockState ext = (IExtendedBlockState) state;
+			for (IUnlistedProperty<?> n : ext.getUnlistedNames())
+				if (!ignoredProperties.contains(n))
+				{
+					Object o = ext.getValue(n);
+					val = prime * val + (o == null ? 0 : o.hashCode());
+				}
+		}
+		return val;
+	}
+
+	public static boolean areStatesEqual(IBlockState state, IBlockState other, Set<Object> ignoredProperties, boolean includeExtended)
+	{
+		for(IProperty<?> i : state.getPropertyKeys())
+		{
+			if(!other.getProperties().containsKey(i))
+				return false;
+			if (ignoredProperties.contains(i))
+				continue;
+			Object valThis = state.getValue(i);
+			Object valOther = other.getValue(i);
+			if(valThis==null&&valOther==null)
+				continue;
+			else if(valOther == null || !valOther.equals(state.getValue(i)))
+				return false;
+		}
+		if (includeExtended)
+		{
+			if (state instanceof IExtendedBlockState^other instanceof IExtendedBlockState)
+				return false;
+			if (state instanceof IExtendedBlockState)
+			{
+				IExtendedBlockState extState = (IExtendedBlockState) state;
+				IExtendedBlockState extOther = (IExtendedBlockState) other;
+				for (IUnlistedProperty<?> i : extState.getUnlistedNames())
+				{
+					if (!extOther.getUnlistedProperties().containsKey(i))
+						return false;
+					if (ignoredProperties.contains(i))
+						continue;
+					Object valThis = extState.getValue(i);
+					Object valOther = extOther.getValue(i);
+					if (valThis == null && valOther == null)
+						continue;
+					else if (valOther == null || !valOther.equals(valThis))
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public static boolean areArraysEqualIncludingBlockstates(Object[] a, Object[] a2)
+	{
+		if (a == a2)
+			return true;
+		if (a == null || a2 == null)
+			return false;
+
+		int length = a.length;
+		if (a2.length != length)
+			return false;
+
+		for (int i = 0; i < length; i++)
+		{
+			Object o1 = a[i];
+			Object o2 = a2[i];
+			if (o1 instanceof IBlockState && o2 instanceof IBlockState)
+			{
+				if (!areStatesEqual((IBlockState)o1, (IBlockState) o2, ImmutableSet.of(), false))
+					return false;
+			}
+			else if (!(o1 == null ? o2 == null : o1.equals(o2)))
+				return false;
+		}
+		return true;
 	}
 
 	public static class InventoryCraftingFalse extends InventoryCrafting

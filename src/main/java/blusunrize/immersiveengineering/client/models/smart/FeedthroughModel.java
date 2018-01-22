@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
@@ -45,6 +46,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -57,7 +59,7 @@ import static net.minecraft.util.EnumFacing.Axis.Y;
 
 public class FeedthroughModel implements IBakedModel
 {
-	static final Cache<FeedthroughCacheKey, SpecificFeedthroughModel> CACHE = CacheBuilder.newBuilder()
+	public static final Cache<FeedthroughCacheKey, SpecificFeedthroughModel> CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
@@ -125,21 +127,23 @@ public class FeedthroughModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return ModelLoader.White.INSTANCE;//TODO
+		return ModelLoader.White.INSTANCE;
 	}
 
+	private ItemCameraTransforms transform = new ItemCameraTransforms(
+			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Left
+			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Right
+			new ItemTransformVec3f(new Vector3f(0, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.4F, .4F, .4F)),//1Left
+			new ItemTransformVec3f(new Vector3f(0, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.4F, .4F, .4F)),//1Right
+			new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()),//Head?
+			new ItemTransformVec3f(new Vector3f(30, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.6F, .6F, .6F)),//GUI
+			new ItemTransformVec3f(new Vector3f(), new Vector3f(0, .3F, 0), new Vector3f(.25F, .25F, .25F)),//Ground
+			new ItemTransformVec3f(new Vector3f(0, 180, 45), new Vector3f(0, 0, -.1875F), new Vector3f(.5F, .5F, .5F)));
 	@Nonnull
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return new ItemCameraTransforms(new ItemTransformVec3f(new Vector3f(45, 0, 0), new Vector3f(0, .2F, 0), new Vector3f(.5F, .5F, .5F)),//3Left
-				new ItemTransformVec3f(new Vector3f(45, 0, 0), new Vector3f(0, .2F, 0), new Vector3f(.5F, .5F, .5F)),//3Right
-				new ItemTransformVec3f(new Vector3f(), new Vector3f(0, .2F, 0), new Vector3f(.5F, .5F, .5F)),//1Left
-				new ItemTransformVec3f(new Vector3f(), new Vector3f(0, .2F, 0), new Vector3f(.5F, .5F, .5F)),//1Right
-				new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()),//Head?
-				new ItemTransformVec3f(new Vector3f(30, 45, 0), new Vector3f(0, .125F, 0), new Vector3f(.6F, .6F, .6F)),//GUI
-				new ItemTransformVec3f(new Vector3f(), new Vector3f(0, .1F, 0), new Vector3f(.25F, .25F, .25F)),//Ground
-				new ItemTransformVec3f(new Vector3f(0, 180, 45), new Vector3f(0, 0, -.1875F), new Vector3f(.5F, .5F, .5F)));
+		return transform;
 	}
 
 	private static final FeedthroughItemOverride INSTANCE = new FeedthroughItemOverride();
@@ -164,8 +168,6 @@ public class FeedthroughModel implements IBakedModel
 			super(ImmutableList.of());
 		}
 
-		Item connItem = Item.getItemFromBlock(IEContent.blockConnectors);
-
 		@Nonnull
 		@Override
 		public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
@@ -175,8 +177,6 @@ public class FeedthroughModel implements IBakedModel
 			{
 				try
 				{
-					//TODO remove!!
-					ITEM_MODEL_CACHE.invalidateAll();
 					return ITEM_MODEL_CACHE.get(stack, () ->
 							new SpecificFeedthroughModel(stack));
 				}
@@ -204,7 +204,25 @@ public class FeedthroughModel implements IBakedModel
 			this.offset = offset;
 			this.facing = facing;
 		}
-		//TODO equals+hashCode
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			FeedthroughCacheKey that = (FeedthroughCacheKey) o;
+			return offset == that.offset &&
+					Objects.equals(type, that.type) &&
+					Utils.areStatesEqual(baseState, that.baseState, ImmutableSet.of(), false) &&
+					facing == that.facing;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			int ret = Utils.hashBlockstate(baseState, ImmutableSet.of(), false);
+			return 31*ret+Objects.hash(type, offset, facing);
+		}
 	}
 	private static class SpecificFeedthroughModel extends FeedthroughModel
 	{
@@ -225,7 +243,7 @@ public class FeedthroughModel implements IBakedModel
 		{
 			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes()
 					.getModelForState(k.baseState);
-			sideLoop: for (int j = 0; j < 7; j++)
+			for (int j = 0; j < 7; j++)
 			{
 				EnumFacing side = j<6?EnumFacing.VALUES[j]:null;
 				EnumFacing facing = k.facing;

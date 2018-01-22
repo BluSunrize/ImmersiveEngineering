@@ -35,6 +35,7 @@ import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.client.models.smart.FeedthroughLoader;
+import blusunrize.immersiveengineering.client.models.smart.FeedthroughModel;
 import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -1597,20 +1598,20 @@ public class ClientProxy extends CommonProxy
 	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
 	{
 		for (BlockRenderLayer r:BlockRenderLayer.values())
-			ConnModelReal.cache.remove(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
-		ConnModelReal.cache.remove(new ExtBlockstateAdapter(state, null, ImmutableSet.of()));
+			ConnModelReal.cache.invalidate(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
+		ConnModelReal.cache.invalidate(new ExtBlockstateAdapter(state, null, ImmutableSet.of()));
 	}
 	@Override
 	public void clearConnectionModelCache()
 	{
-		ConnModelReal.cache.clear();
+		ConnModelReal.cache.invalidateAll();
 	}
 
 	static
 	{
 		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
 		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
-		IEApi.renderCacheClearers.add(ConnModelReal.cache::clear);
+		IEApi.renderCacheClearers.add(ConnModelReal.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::clear);
 		IEApi.renderCacheClearers.add(TileEntityFluidPipe.cachedOBJStates::clear);
@@ -1621,6 +1622,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
+		IEApi.renderCacheClearers.add(FeedthroughModel.CACHE::invalidateAll);
 	}
 	@Override
 	public void clearRenderCaches()
