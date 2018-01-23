@@ -826,25 +826,31 @@ public class ApiUtils
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static Function<BakedQuad, BakedQuad> applyMatrixToQuad(Matrix4 mat, VertexFormat f)
+	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, VertexFormat f,
+															   Function<Integer, Integer> colorMultiplier)
 	{
 		int posPos = -1;
 		int normPos = -1;
+		int colorPos = -1;
 		for (int i = 0;i<f.getElements().size();i++)
 			if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.POSITION)
 				posPos = i;
 			else if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.NORMAL)
 				normPos = i;
+			else if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.COLOR)
+				colorPos = i;
 		if (posPos==-1)
 			return null;
 		final int posPosFinal = posPos;
 		final int normPosFinal = normPos;
+		final int colorPosFinal = colorPos;
 		AtomicReference<UnpackedBakedQuad.Builder> ref = new AtomicReference<>();
 		Matrix4 inverse = mat.copy();
 		inverse.invert();
 		inverse.transpose();
 		IVertexConsumer transformer = new IVertexConsumer()
 		{
+			int tintIndex = -1;
 			@Nonnull
 			@Override
 			public VertexFormat getVertexFormat()
@@ -856,6 +862,7 @@ public class ApiUtils
 			public void setQuadTint(int tint)
 			{
 				ref.get().setQuadTint(tint);
+				tintIndex = tint;
 			}
 
 			@Override
@@ -894,6 +901,25 @@ public class ApiUtils
 					data[0] = newNormal.x;
 					data[1] = newNormal.y;
 					data[2] = newNormal.z;
+				}
+				else if (element==colorPosFinal)
+				{
+					if (tintIndex!=-1&&colorMultiplier!=null)
+					{
+						int multiplier = colorMultiplier.apply(tintIndex);
+						if (multiplier != 0)
+						{
+							float r = (float) (multiplier >> 16 & 255) / 255.0F;
+							float g = (float) (multiplier >> 8 & 255) / 255.0F;
+							float b = (float) (multiplier & 255) / 255.0F;
+							float[] oldData = data;
+							data = new float[4];
+							data[0] = oldData[0] * r;
+							data[1] = oldData[1] * g;
+							data[2] = oldData[2] * b;
+							data[3] = oldData[3];
+						}
+					}
 				}
 				ref.get().put(element, data);
 			}

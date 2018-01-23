@@ -63,8 +63,6 @@ public class MultiblockFeedthrough implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		//if(iterator==10||iterator==16)
-		//	return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.EAST);
 		return false;
 	}
 	@Override
@@ -74,16 +72,22 @@ public class MultiblockFeedthrough implements IMultiblock
 		return true;
 	}
 
-	private IBlockState state;
+	private ItemStack renderStack;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-		if (state==null)
-			state = IEContent.blockConnectors.getDefaultState().withProperty(IEContent.blockConnectors.property,
-					BlockTypes_Connector.FEEDTHROUGH);
-		blockRenderer.renderBlockBrightness(state, 1);
+		if(renderStack.isEmpty())
+			renderStack = new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.FEEDTHROUGH.getMeta());
+
+		GlStateManager.translate(2.5, 2.25, 2.25);
+		GlStateManager.rotate(-45, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(6.5, 6.5, 6.5);
+
+		GlStateManager.disableCull();
+		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
+		GlStateManager.enableCull();
 	}
 	@Override
 	public float getManualScale()
@@ -141,6 +145,7 @@ public class MultiblockFeedthrough implements IMultiblock
 				((TileEntityFeedthrough) te).reference = wire;
 				((TileEntityFeedthrough) te).stateForMiddle = middle;
 				((TileEntityFeedthrough) te).offset = i-1;
+				world.checkLight(tmp);
 			}
 
 		}

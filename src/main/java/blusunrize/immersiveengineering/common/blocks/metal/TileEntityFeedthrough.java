@@ -299,14 +299,16 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		for (int i = -1;i<=1;i+=2)
 		{
-			world.setBlockState(pos.offset(facing, i), state);
-			TileEntity te = world.getTileEntity(pos.offset(facing, i));
+			BlockPos tmp = pos.offset(facing, i);
+			world.setBlockState(tmp, state);
+			TileEntity te = world.getTileEntity(tmp);
 			if (te instanceof TileEntityFeedthrough)
 			{
 				((TileEntityFeedthrough) te).facing = facing;
 				((TileEntityFeedthrough) te).offset = i;
 				((TileEntityFeedthrough) te).reference = reference;
 				((TileEntityFeedthrough) te).stateForMiddle = stateForMiddle;
+				world.checkLight(tmp);
 			}
 		}
 	}

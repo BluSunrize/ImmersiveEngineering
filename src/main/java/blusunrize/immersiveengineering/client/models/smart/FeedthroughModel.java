@@ -25,6 +25,8 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,6 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
@@ -81,6 +84,8 @@ public class FeedthroughModel implements IBakedModel
 		WireType wire = WireType.COPPER;
 		EnumFacing facing = EnumFacing.NORTH;
 		int offset = 1;
+		BlockPos p = null;
+		World w = null;
 		if (state instanceof IExtendedBlockState)
 		{
 			TileEntity te = ((IExtendedBlockState) state).getValue(IEProperties.TILEENTITY_PASSTHROUGH);
@@ -90,13 +95,17 @@ public class FeedthroughModel implements IBakedModel
 				wire = ((TileEntityFeedthrough) te).reference;
 				facing = ((TileEntityFeedthrough) te).getFacing();
 				offset = ((TileEntityFeedthrough) te).offset;
+				p = te.getPos();
+				w = te.getWorld();
 			}
 		}
-		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing);
+		final BlockPos pFinal = p;
+		final World wFinal = w;
+		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer());
 		try
 		{
 			return CACHE.get(key,
-					()->new SpecificFeedthroughModel(key)).getQuads(state, side, rand);
+					()->new SpecificFeedthroughModel(key, wFinal, pFinal)).getQuads(state, side, rand);
 		}
 		catch (ExecutionException e)
 		{
@@ -196,13 +205,16 @@ public class FeedthroughModel implements IBakedModel
 		final IBlockState baseState;
 		final int offset;
 		final EnumFacing facing;
+		final BlockRenderLayer layer;
 
-		public FeedthroughCacheKey(WireType type, IBlockState baseState, int offset, EnumFacing facing)
+		public FeedthroughCacheKey(WireType type, IBlockState baseState, int offset, EnumFacing facing,
+								   BlockRenderLayer layer)
 		{
 			this.type = type;
 			this.baseState = baseState;
 			this.offset = offset;
 			this.facing = facing;
+			this.layer = layer;
 		}
 
 		@Override
@@ -214,14 +226,15 @@ public class FeedthroughModel implements IBakedModel
 			return offset == that.offset &&
 					Objects.equals(type, that.type) &&
 					Utils.areStatesEqual(baseState, that.baseState, ImmutableSet.of(), false) &&
-					facing == that.facing;
+					facing == that.facing &&
+					Objects.equals(layer, that.layer);
 		}
 
 		@Override
 		public int hashCode()
 		{
 			int ret = Utils.hashBlockstate(baseState, ImmutableSet.of(), false);
-			return 31*ret+Objects.hash(type, offset, facing);
+			return 31*ret+Objects.hash(type, offset, facing, layer);
 		}
 	}
 	private static class SpecificFeedthroughModel extends FeedthroughModel
@@ -231,18 +244,30 @@ public class FeedthroughModel implements IBakedModel
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
 			IBlockState state = Utils.stateFromNBT(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
-			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, EnumFacing.NORTH));
+			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, EnumFacing.NORTH, null), null, null);
 		}
 
-		public SpecificFeedthroughModel(FeedthroughCacheKey key)
+		public SpecificFeedthroughModel(FeedthroughCacheKey key, World w, BlockPos p)
 		{
-			init(key);
+			init(key, w, p);
 		}
 
-		private void init(FeedthroughCacheKey k)
+		private void init(FeedthroughCacheKey k, @Nullable World world, @Nullable BlockPos pos)
 		{
 			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes()
 					.getModelForState(k.baseState);
+			Function<Integer, Integer> colorMultiplier = null;
+			if (world!=null&&pos!=null)
+			{
+				BlockColors colors = Minecraft.getMinecraft().getBlockColors();
+				colorMultiplier = (i)->colors.colorMultiplier(k.baseState, world, pos, i);
+			}
+			else
+			{
+				ItemColors colors = Minecraft.getMinecraft().getItemColors();
+				ItemStack stack = new ItemStack(k.baseState.getBlock(), 1, k.baseState.getBlock().getMetaFromState(k.baseState));
+				colorMultiplier = (i)->colors.colorMultiplier(stack, i);
+			}
 			for (int j = 0; j < 7; j++)
 			{
 				EnumFacing side = j<6?EnumFacing.VALUES[j]:null;
@@ -250,12 +275,19 @@ public class FeedthroughModel implements IBakedModel
 				switch (k.offset)
 				{
 					case 0:
-						quads.add(model.getQuads(k.baseState, side, 0));
+						if (k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
+						{
+							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
+									DefaultVertexFormats.ITEM, colorMultiplier);
+							quads.add(model.getQuads(k.baseState, side, 0).stream().map(tintTransformer)
+									.collect(Collectors.toCollection(ArrayList::new)));
+						}
 						break;
 					case 1:
 						facing = facing.getOpposite();
 					case -1:
-						quads.add(getConnQuads(facing, side, k.type, new Matrix4()));
+						if (k.layer==BlockRenderLayer.SOLID)
+							quads.add(getConnQuads(facing, side, k.type, new Matrix4()));
 						break;
 					case Integer.MAX_VALUE:
 						Matrix4 mat = new Matrix4();
@@ -264,7 +296,10 @@ public class FeedthroughModel implements IBakedModel
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
-						all.addAll(model.getQuads(k.baseState, side, 0));
+						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
+								DefaultVertexFormats.ITEM, colorMultiplier);
+						all.addAll(model.getQuads(k.baseState, side, 0).stream().map(tintTransformer)
+								.collect(Collectors.toCollection(ArrayList::new)));
 						quads.add(all);
 						break;
 				}
@@ -310,7 +345,8 @@ public class FeedthroughModel implements IBakedModel
 				}
 				conn.add(builder.build());
 			}
-			Function<BakedQuad, BakedQuad> transf = ApiUtils.applyMatrixToQuad(mat, DefaultVertexFormats.ITEM);
+			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, DefaultVertexFormats.ITEM,
+					null);//I hope no one uses tint index for connectors
 			if (transf != null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else
