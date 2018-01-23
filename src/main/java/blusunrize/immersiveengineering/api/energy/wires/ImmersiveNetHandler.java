@@ -20,6 +20,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -362,7 +364,7 @@ public class ImmersiveNetHandler
 		if(!ignoreIsEnergyOutput&&indirectConnections.containsKey(node))
 			return indirectConnections.get(node);
 
-		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
+		PriorityQueue<Pair<IImmersiveConnectable, Float>> queue = new PriorityQueue<>(Comparator.comparingDouble(Pair::getRight));
 		Set<AbstractConnection> closedList = newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>());
 		List<BlockPos> checked = new ArrayList<BlockPos>();
 		HashMap<BlockPos,BlockPos> backtracker = new HashMap<BlockPos,BlockPos>();
@@ -375,7 +377,7 @@ public class ImmersiveNetHandler
 				IImmersiveConnectable end = toIIC(con.end, world);
 				if(end!=null)
 				{
-					openList.add(end);
+					queue.add(new ImmutablePair<>(end, con.getBaseLoss()));
 					backtracker.put(con.end, node);
 				}
 			}
@@ -383,9 +385,11 @@ public class ImmersiveNetHandler
 		IImmersiveConnectable next = null;
 		final int closedListMax = 1200;
 
-		while(closedList.size()<closedListMax && !openList.isEmpty())
+		while(closedList.size()<closedListMax && !queue.isEmpty())
 		{
-			next = openList.get(0);
+			Pair<IImmersiveConnectable, Float> pair = queue.poll();
+			next = pair.getLeft();
+			float loss = pair.getRight();
 			if(!checked.contains(toBlockPos(next)))
 			{
 				if(ignoreIsEnergyOutput||next.isEnergyOutput())
@@ -423,15 +427,19 @@ public class ImmersiveNetHandler
 						if(next.allowEnergyToPass(con))
 						{
 							IImmersiveConnectable end = toIIC(con.end, world);
-							if(end!=null && !checked.contains(con.end) && !openList.contains(end))
+
+							Optional<Pair<IImmersiveConnectable, Float>> existing =
+									queue.stream().filter((p)->p.getLeft()==end).findAny();
+							float newLoss = con.getBaseLoss()+loss;
+							if(end!=null && !checked.contains(con.end) && existing.map(Pair::getRight).orElse(Float.MAX_VALUE)>newLoss)
 							{
-								openList.add(end);
+								existing.ifPresent(p1 -> queue.removeIf((p2) -> p1.getLeft() == p2.getLeft()));
+								queue.add(new ImmutablePair<>(end, newLoss));
 								backtracker.put(con.end, toBlockPos(next));
 							}
 						}
 				checked.add(toBlockPos(next));
 			}
-			openList.remove(0);
 		}
 		if(!ignoreIsEnergyOutput&&FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
@@ -545,6 +553,17 @@ public class ImmersiveNetHandler
 				return false;
 			return compareTo((Connection)obj)==0;
 		}
+
+		public float getBaseLoss()
+		{
+			return getBaseLoss(0);
+		}
+
+		public float getBaseLoss(float mod)
+		{
+			float lengthRelative = this.length/(float)cableType.getMaxLength();
+			return (float)(lengthRelative*cableType.getLossRatio()*(1+mod));
+		}
 	}
 
 	public static class AbstractConnection extends Connection
@@ -561,10 +580,8 @@ public class ImmersiveNetHandler
 			float f = 0;
 			for(Connection c : subConnections)
 			{
-				float length = c.length/(float)c.cableType.getMaxLength();
-				float baseLoss = (float)c.cableType.getLossRatio();
 				float mod = (((connectorMaxInput-energyInput)/(float)connectorMaxInput)/.25f)*.1f;
-				f += length*(baseLoss+baseLoss*mod);
+				f += c.getBaseLoss(mod);
 			}
 			return Math.min(f,1);
 		}
@@ -574,9 +591,7 @@ public class ImmersiveNetHandler
 			float f = 0;
 			for(Connection c : subConnections)
 			{
-				float length = c.length/(float)c.cableType.getMaxLength();
-				float baseLoss = (float)c.cableType.getLossRatio();
-				f += length*baseLoss;
+				f += c.getBaseLoss();
 			}
 			return Math.min(f,1);
 		}
