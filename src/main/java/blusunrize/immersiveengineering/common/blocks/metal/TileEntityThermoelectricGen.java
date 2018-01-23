@@ -35,25 +35,38 @@ import javax.annotation.Nullable;
 
 public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITickable, IIEInternalFluxConnector
 {
+	private int energy = 0;
+	private byte ticks = (byte)(Math.random() * 50);
+
 	@Override
 	public void update()
 	{
 		if(!world.isRemote)
 		{
-			int energy = 0;
-			for(EnumFacing fd : new EnumFacing[]{EnumFacing.DOWN,EnumFacing.NORTH,EnumFacing.WEST})
-				if(!world.isAirBlock(getPos().offset(fd)) && !world.isAirBlock(getPos().offset(fd.getOpposite())))
-				{
-					int temp0 = getTemperature(getPos().offset(fd));
-					int temp1 = getTemperature(getPos().offset(fd.getOpposite()));
-					if(temp0>-1&&temp1>-1)
-					{
-						int diff = Math.abs(temp0-temp1);
-						energy += (int) (Math.sqrt(diff)/2 * IEConfig.Machines.thermoelectric_output);
-					}
-				}
-			outputEnergy(energy);
+			if(ticks % 40 == 0)
+				computeEnergy();
+
+			if(ticks % 10 == 0)
+				outputEnergy(energy * 10);
 		}
+
+		ticks++;
+	}
+
+	private void computeEnergy() {
+		energy = 0;
+
+		for(EnumFacing fd : new EnumFacing[]{EnumFacing.DOWN,EnumFacing.NORTH,EnumFacing.WEST})
+			if(!world.isAirBlock(getPos().offset(fd)) && !world.isAirBlock(getPos().offset(fd.getOpposite())))
+			{
+				int temp0 = getTemperature(getPos().offset(fd));
+				int temp1 = getTemperature(getPos().offset(fd.getOpposite()));
+				if(temp0>-1&&temp1>-1)
+				{
+					int diff = Math.abs(temp0-temp1);
+					energy += (int) (Math.sqrt(diff)/2 * IEConfig.Machines.thermoelectric_output);
+				}
+			}
 	}
 
 	public void outputEnergy(int amount)
