@@ -397,7 +397,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public Set<String> getToolClasses(ItemStack stack)
 	{
 		if(!getHead(stack).isEmpty() && !isDrillBroken(stack))
-			return ImmutableSet.of("pickaxe");
+			return ImmutableSet.of("pickaxe", "shovel");
 		return super.getToolClasses(stack);
 	}
 
