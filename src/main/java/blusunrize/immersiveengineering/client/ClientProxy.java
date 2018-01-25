@@ -554,7 +554,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresSilver", new ItemStack(IEContent.blockOre,1,3),new ItemStack(IEContent.itemMetal,1,3)),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresNickel", new ItemStack(IEContent.blockOre,1,4),new ItemStack(IEContent.itemMetal,1,4)),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresUranium", new ItemStack(IEContent.blockOre,1,5),new ItemStack(IEContent.itemMetal,1,5)));
-		tempRecipeList = new ArrayList();
+		tempRecipeList = new ArrayList<>();
 		if(!IERecipes.hammerCrushingList.isEmpty())
 		{
 			for(String ore : IERecipes.hammerCrushingList)
@@ -661,7 +661,17 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "silo1"),
 				new ManualPages.Text(ManualHelper.getManual(), "silo2"));
 
-		Object[] wires = {new ItemStack(IEContent.itemMaterial, 1, 20), new ItemStack(IEContent.itemWireCoil, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 21), new ItemStack(IEContent.itemWireCoil, 1, 1), new ItemStack(IEContent.itemMaterial, 1, 22), new ItemStack(IEContent.itemMaterial, 1, 23), new ItemStack(IEContent.itemWireCoil, 1, 2)};
+		Object[] wires = {
+				new ItemStack(IEContent.itemMaterial, 1, 20),
+				new ItemStack(IEContent.itemWireCoil, 1, 0),
+				new ItemStack(IEContent.itemWireCoil, 1, 6),
+				new ItemStack(IEContent.itemMaterial, 1, 21),
+				new ItemStack(IEContent.itemWireCoil, 1, 1),
+				new ItemStack(IEContent.itemWireCoil, 1, 7),
+				new ItemStack(IEContent.itemMaterial, 1, 22),
+				new ItemStack(IEContent.itemMaterial, 1, 23),
+				new ItemStack(IEContent.itemWireCoil, 1, 2)
+		};
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
 				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiring1", wires),
@@ -677,7 +687,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringTransformer0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER_HV.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool,1,1)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)));
+				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)),
+				new ManualPageMultiblock(ManualHelper.getManual(), "wiringFeedthrough", MultiblockFeedthrough.instance));
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.DYNAMO.getMeta())),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator1", new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WATERMILL.getMeta()),new ItemStack(IEContent.itemMaterial,1,10)),

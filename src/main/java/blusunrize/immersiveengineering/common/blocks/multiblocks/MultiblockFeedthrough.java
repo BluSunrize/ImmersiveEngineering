@@ -8,41 +8,30 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
-import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class MultiblockFeedthrough implements IMultiblock
 {
@@ -51,7 +40,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	static{
 		structure[0][0][0] = new ItemStack(IEContent.blockConnectors, 1);
 		//TODO translation?
-		structure[0][0][1] = new ItemStack(Blocks.STONE, 1).setTranslatableName("Arbitrary solid block");
+		structure[0][0][1] = new ItemStack(Blocks.BOOKSHELF, 1).setTranslatableName("Arbitrary solid block");
 		structure[0][0][2] = new ItemStack(IEContent.blockConnectors, 1);
 	}
 	@Override
@@ -77,18 +66,28 @@ public class MultiblockFeedthrough implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		if(renderStack.isEmpty())
+		if(renderStack==null||renderStack.isEmpty())
 			renderStack = new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.FEEDTHROUGH.getMeta());
 
-		GlStateManager.translate(2.5, 2.25, 2.25);
+		GlStateManager.translate(.5, .5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
-		GlStateManager.rotate(-20, 1, 0, 0);
-		GlStateManager.scale(6.5, 6.5, 6.5);
+		GlStateManager.rotate(-30, 1, 0, 0);
+		GlStateManager.scale(1.75, 1.75, 1.75);
 
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}
+
+	@Override
+	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
+	{
+		IBlockState ret = IMultiblock.super.getBlockstateFromStack(index, stack);
+		if (stack==structure[0][0][0])
+			return ret.withProperty(IEProperties.FACING_ALL, EnumFacing.SOUTH);
+		return ret;
+	}
+
 	@Override
 	public float getManualScale()
 	{
@@ -122,7 +121,7 @@ public class MultiblockFeedthrough implements IMultiblock
 			return false;
 		BlockPos tmp = pos.offset(side);
 		IBlockState middle = world.getBlockState(tmp).getActualState(world, tmp);
-		if (!middle.isOpaqueCube()||!middle.isFullBlock()||!middle.isFullCube())
+		if (!middle.isFullCube()||middle.getBlock().hasTileEntity(middle)||middle.getRenderType()!= EnumBlockRenderType.MODEL)
 			return false;
 		tmp = pos.offset(side, 2);
 		IBlockState otherConn = world.getBlockState(tmp).getActualState(world, tmp);
@@ -155,6 +154,9 @@ public class MultiblockFeedthrough implements IMultiblock
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{
-		return Arrays.stream(structure[0][0]).map(IngredientStack::new).collect(Collectors.toList()).toArray(new IngredientStack[3]);
+		return new IngredientStack[]{
+				new IngredientStack(new ItemStack(IEContent.blockConnectors, 2)),
+				new IngredientStack(new ItemStack(Blocks.BOOKSHELF, 1).setTranslatableName("Arbitrary solid block"))
+		};
 	}
 }
