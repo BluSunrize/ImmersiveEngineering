@@ -34,10 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -321,7 +318,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			int canAccept = resource.amount;
 			if(canAccept <= 0)
 				return 0;
-			ArrayList<DirectionalFluidOutput> outputList = new ArrayList(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
+			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
 
 			BlockPos ccFrom2 = new BlockPos(pipe.getPos().offset(facing));
 			if(outputList.size() < 1)
@@ -351,10 +348,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				int f = 0;
 				for(DirectionalFluidOutput output : sorting.keySet())
 				{
-					int limit = (resource.tag != null && resource.tag.hasKey("pressurized")) || pipe.canOutputPressurized(output.containingTile, false) ? 1000 : 50;
-					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
-					float prio = sorting.get(output) / (float) sum;
-					int amount = (int) (tileSpecificAcceptedFluid * prio);
+					int amount = sorting.get(output);
+					if (sum>resource.amount)
+					{
+						int limit = (resource.tag != null && resource.tag.hasKey("pressurized")) || pipe.canOutputPressurized(output.containingTile, false) ? 1000 : 50;
+						int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
+						float prio = amount / (float) sum;
+						amount = (int) MathHelper.clamp(1, amount, Math.min(resource.amount*prio, tileSpecificAcceptedFluid));
+					}
 					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
 					if(r > 50)
 						pipe.canOutputPressurized(output.containingTile, true);
