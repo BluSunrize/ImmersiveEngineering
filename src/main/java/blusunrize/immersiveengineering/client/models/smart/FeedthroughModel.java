@@ -10,11 +10,12 @@ package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.ModelInfo;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -55,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.INFOS;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.MIDDLE_STATE;
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.WIRE;
 import static net.minecraft.util.EnumFacing.Axis.Y;
@@ -71,7 +72,7 @@ public class FeedthroughModel implements IBakedModel
 		//TODO find a better place to put this
 		Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter =
 				(rl) -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rl.toString());
-		for (TileEntityFeedthrough.ModelInfo f : INFOS.values())
+		for (WireApi.FeedthroughModelInfo f : INFOS.values())
 			f.onResourceReload(bakedTextureGetter, DefaultVertexFormats.ITEM);
 	}
 
@@ -311,7 +312,7 @@ public class FeedthroughModel implements IBakedModel
 		private List<BakedQuad> getConnQuads(EnumFacing facing, EnumFacing side, WireType type, Matrix4 mat)
 		{
 			//connector model+feedthrough border
-			ModelInfo info = INFOS.get(type);
+			WireApi.FeedthroughModelInfo info = INFOS.get(type);
 			mat.translate(.5, .5, .5);
 			if (facing.getAxis() == Y)
 			{

@@ -26,6 +26,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Optional;
 
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.STRUCTURE_CATEGORY;
+
 public class TileEntityConnectorStructural extends TileEntityConnectorLV implements IHammerInteraction, IOBJModelCallback<IBlockState>
 {
 	public float rotation = 0;
@@ -99,7 +101,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if(cableType!=WireType.STRUCTURE_ROPE && cableType!=WireType.STRUCTURE_STEEL)
+		if(!STRUCTURE_CATEGORY.equals(cableType.getCategory()))
 			return false;
 		return limitType==null||limitType==cableType;
 	}

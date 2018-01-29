@@ -1,25 +1,15 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -32,30 +22,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.http.impl.conn.Wire;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
 public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implements ITileDrop, IDirectionalTile,
 		IHasDummyBlocks, IPropertyPassthrough, IBlockBounds, ICacheData
 {
-	public static final Map<WireType, ModelInfo> INFOS = new HashMap<>();
 	public static final String WIRE = "wire";
-	private static final String MODEL = "model";
 	private static final String POSITIVE_CON_X = "posConnX";
 	private static final String POSITIVE_CON_Y = "posConnY";
 	private static final String POSITIVE_CON_Z = "posConnZ";
@@ -63,49 +43,6 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	private static final String FACING = "facing";
 	private static final String OFFSET = "offset";
 	public static final String MIDDLE_STATE = "middle";
-	static
-	{
-		registerForWiretype(WireType.COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
-				.5, (s)->s.getBlock()== IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_LV);
-		registerForWiretype(WireType.ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
-				.5625, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_MV);
-		registerForWiretype(WireType.STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
-				.75, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_HV);
-		registerForWiretype(WireType.REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
-				ImmutableMap.of(),  new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
-				.5625, .5, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_REDSTONE);
-	}
-
-	public static void registerForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-										   ResourceLocation texLoc, float[] uvs, double connLength, Predicate<IBlockState> matches)
-	{
-		INFOS.put(w, new ModelInfo(model, texRepl, texLoc, uvs, connLength, matches));
-	}
-
-	public static void registerForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-										   ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-										   Predicate<IBlockState> matches)
-	{
-		INFOS.put(w, new ModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, matches));
-	}
-
-	public static void registerForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
-										   double connLength, Predicate<IBlockState> matches)
-	{
-		INFOS.put(w, new ModelInfo(model, texLoc, uvs, connLength, matches));
-	}
-
-	@Nullable
-	public static WireType getWireType(IBlockState state)
-	{
-		for (Map.Entry<WireType, ModelInfo> entry:INFOS.entrySet())
-			if (entry.getValue().matches.test(state))
-				return entry.getKey();
-		return null;
-	}
 
 	@Nonnull
 	public WireType reference = WireType.COPPER;
@@ -183,7 +120,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if (!WireType.canMix(reference, cableType))
+		if (!WireApi.canMix(reference, cableType))
 			return false;
 		boolean positive = isPositive(offset);
 		if (positive)
@@ -350,60 +287,5 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		return new Object[] {
 				stateForMiddle, reference, facing
 		};
-	}
-
-
-	public static class ModelInfo {
-		public final ResourceLocation modelLoc;
-		final ImmutableMap<String, String> texReplacements;
-		@SideOnly(Side.CLIENT)
-		public IBakedModel model;
-		final ResourceLocation texLoc;
-		@SideOnly(Side.CLIENT)
-		public TextureAtlasSprite tex;
-		public final float[] uvs;
-		final double connLength;
-		final double connOffset;
-		final Predicate<IBlockState> matches;
-		public ModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-						 double connLength, double connOffset, Predicate<IBlockState> matches) {
-			modelLoc = model;
-			this.texLoc = texLoc;
-			this.uvs = uvs;
-			texReplacements = texRepl;
-			this.connLength = connLength;
-			this.connOffset = connOffset;
-			this.matches = matches;
-		}
-		public ModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-						 double connLength, Predicate<IBlockState> matches) {
-			this(model, texRepl, texLoc, uvs, connLength, connLength, matches);
-		}
-
-		public ModelInfo(ResourceLocation model, ResourceLocation texLoc, float[] uvs, double connLength, Predicate<IBlockState> matches) {
-			this(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, matches);
-		}
-
-		@SideOnly(Side.CLIENT)
-		public void onResourceReload(Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter, VertexFormat format) {
-			IModel model;
-			try
-			{
-				model = ModelLoaderRegistry.getModel(modelLoc);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				model = ModelLoaderRegistry.getMissingModel();
-			}
-			if (model instanceof OBJModel)
-			{
-				OBJModel obj = (OBJModel) model;
-				obj = (OBJModel) obj.retexture(texReplacements);
-				model = obj.process(ImmutableMap.of("flip-v", "true"));
-			}
-			this.model = model.bake(model.getDefaultState(), format, bakedTextureGetter);
-			tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(texLoc.toString());
-		}
 	}
 }

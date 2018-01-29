@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -103,7 +104,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return TileEntityFeedthrough.getWireType(state)!=null;
+		return WireApi.getWireType(state)!=null;
 	}
 
 	@Override
@@ -116,7 +117,7 @@ public class MultiblockFeedthrough implements IMultiblock
 		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if (conns!=null&&!conns.isEmpty())
 			return false;
-		WireType wire = TileEntityFeedthrough.getWireType(here);
+		WireType wire = WireApi.getWireType(here);
 		if (wire==null)//This shouldn't ever happen
 			return false;
 		BlockPos tmp = pos.offset(side);
@@ -125,7 +126,7 @@ public class MultiblockFeedthrough implements IMultiblock
 			return false;
 		tmp = pos.offset(side, 2);
 		IBlockState otherConn = world.getBlockState(tmp).getActualState(world, tmp);
-		if (TileEntityFeedthrough.getWireType(otherConn)!=wire)
+		if (WireApi.getWireType(otherConn)!=wire)
 			return false;
 		if (otherConn.getValue(IEProperties.FACING_ALL)!=side.getOpposite())
 			return false;

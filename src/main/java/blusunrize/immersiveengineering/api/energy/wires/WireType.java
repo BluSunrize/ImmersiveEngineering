@@ -9,15 +9,23 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.IEContent;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
+import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
 /**
  * @author BluSunrize - 08.03.2015<br>
@@ -27,6 +35,11 @@ import java.util.Set;
  */
 public abstract class WireType
 {
+	public static final String LV_CATEGORY = "LV";
+	public static final String MV_CATEGORY = "MV";
+	public static final String HV_CATEGORY = "HV";
+	public static final String STRUCTURE_CATEGORY = "STRUCTURE";
+	public static final String REDSTONE_CATEGORY = "REDSTONE";
 	private static LinkedHashSet<WireType> values = new LinkedHashSet<WireType>();
 	public static LinkedHashSet<WireType> getValues()
 	{
@@ -43,15 +56,6 @@ public abstract class WireType
 	public WireType()
 	{
 		values.add(this);
-	}
-	public static Set<Set<WireType>> matching = new HashSet<>();
-
-	public static boolean canMix(WireType a, WireType b)
-	{
-		for (Set<WireType> s:matching)
-			if (s.contains(a))
-				return s.contains(b);
-		return false;
 	}
 
 	public abstract String getUniqueName();
@@ -73,6 +77,16 @@ public abstract class WireType
 	public abstract boolean isEnergyWire();
 	public boolean canCauseDamage() {
 		return false;
+	}
+
+	/**
+	 * Used to determine which other wire types can be on the same connector as this wire (obviously does not apply to transformers)
+	 * Returning null will cause the wire to be incompatible with all other wires
+	 */
+	@Nullable
+	public String getCategory()
+	{
+		return null;
 	}
 	/**
 	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
@@ -103,28 +117,22 @@ public abstract class WireType
 	public static WireType REDSTONE = new IEBASE(5);
 	public static WireType COPPER_INSULATED = new IEBASE(6);
 	public static WireType ELECTRUM_INSULATED = new IEBASE(7);
+
 	static
 	{
-		Set<WireType> matching = new HashSet<>();
-		matching.add(COPPER);
-		matching.add(COPPER_INSULATED);
-		WireType.matching.add(matching);
-		matching = new HashSet<>();
-		matching.add(ELECTRUM);
-		matching.add(ELECTRUM_INSULATED);
-		WireType.matching.add(matching);
-		matching = new HashSet<>();
-		matching.add(STEEL);
-		WireType.matching.add(matching);
-		matching = new HashSet<>();
-		matching.add(STRUCTURE_STEEL);
-		matching.add(STRUCTURE_ROPE);
-		WireType.matching.add(matching);
-		matching = new HashSet<>();
-		matching.add(REDSTONE);
-		WireType.matching.add(matching);
+		registerFeedthroughForWiretype(WireType.COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
+				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
+				.5, (s)->s.getBlock()== IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_LV);
+		registerFeedthroughForWiretype(WireType.ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
+				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
+				.5625, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_MV);
+		registerFeedthroughForWiretype(WireType.STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
+				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
+				.75, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_HV);
+		registerFeedthroughForWiretype(WireType.REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
+				ImmutableMap.of(),  new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
+				.5625, .5, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_REDSTONE);
 	}
-
 	/**
 	 * DO NOT SUBCLASS THIS.
 	 * This is a core implementation as a base for IE's default wires
@@ -137,6 +145,7 @@ public abstract class WireType
 		{
 			super();
 			this.ordinal = ordinal;
+			WireApi.registerWireType(this);
 		}
 		@Override
 		public double getLossRatio()
@@ -209,6 +218,30 @@ public abstract class WireType
 		public boolean canCauseDamage()
 		{
 			return ordinal<3;
+		}
+
+		@Nullable
+		@Override
+		public String getCategory()
+		{
+			switch (ordinal)
+			{
+				case 0:
+				case 6:
+					return LV_CATEGORY;
+				case 1:
+				case 7:
+					return MV_CATEGORY;
+				case 2:
+					return HV_CATEGORY;
+				case 3:
+				case 4:
+					return STRUCTURE_CATEGORY;
+				case 5:
+					return REDSTONE_CATEGORY;
+				default:
+					return null;
+			}
 		}
 	}
 }

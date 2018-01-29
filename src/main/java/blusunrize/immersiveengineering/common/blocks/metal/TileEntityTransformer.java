@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,6 +33,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.MV_CATEGORY;
 
 public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
@@ -127,8 +130,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 			return false;
 		if (other==null)
 			return true;
-		Set<WireType> higher = getHigherWiretype();
-		return higher.contains(toAttach)||higher.contains(other);
+		String higher = getHigherWiretype();
+		return higher.equals(toAttach.getCategory())^higher.equals(other.getCategory());
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
@@ -205,7 +208,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		else
 		{
 			double conRadius = con.cableType.getRenderDiameter()/2;
-			double offset = getHigherWiretype()==con.cableType?getHigherOffset():getLowerOffset();
+			double offset = getHigherWiretype().equals(con.cableType.getCategory())?getHigherOffset():getLowerOffset();
 			if(facing==EnumFacing.NORTH)
 				return new Vec3d(right?.8125:.1875, 2+offset-conRadius, .5);
 			if(facing==EnumFacing.SOUTH)
@@ -278,8 +281,9 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		{
 			if (limitType==null&&secondCable==null)
 				return true;
-			Set<WireType> higher = getHigherWiretype();
-			return (limitType != null && higher.contains(limitType)) || (secondCable != null && !higher.contains(secondCable));
+			String higher = getHigherWiretype();
+			return (limitType != null && higher.equals(limitType.getCategory())) ||
+					(secondCable != null && !higher.equals(secondCable.getCategory()));
 		}
 	}
 
@@ -416,8 +420,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return .5625F;
 	}
 
-	public Set<WireType> getHigherWiretype()
+	public String getHigherWiretype()
 	{
-		return MV;
+		return MV_CATEGORY;
 	}
 }

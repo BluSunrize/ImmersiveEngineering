@@ -13,11 +13,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -41,6 +38,8 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.Optional;
 import java.util.Set;
+
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
 
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<IBlockState>
 {
@@ -76,13 +75,13 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if(cableType!=null && !cableType.isEnergyWire())
+		if(!cableType.isEnergyWire())
 			return false;
-		if(HV.contains(cableType)&&!canTakeHV())
+		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
 		if(wires>=2)
 			return false;
-		return limitType==null || WireType.canMix(cableType, limitType);
+		return limitType==null || WireApi.canMix(cableType, limitType);
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)

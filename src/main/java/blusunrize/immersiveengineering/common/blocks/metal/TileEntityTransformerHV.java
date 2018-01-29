@@ -8,9 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 
 import java.util.Set;
+
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
 
 public class TileEntityTransformerHV extends TileEntityTransformer
 {
@@ -36,8 +39,8 @@ public class TileEntityTransformerHV extends TileEntityTransformer
 	}
 
 	@Override
-	public Set<WireType> getHigherWiretype()
+	public String getHigherWiretype()
 	{
-		return HV;
+		return HV_CATEGORY;
 	}
 }

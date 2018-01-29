@@ -35,26 +35,12 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.canMix;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
 	protected WireType limitType = null;
-	private static Set<WireType> LV;
-	public static Set<WireType> MV;
-	public static Set<WireType> HV;
-	static
-	{
-		for (Set<WireType> s:WireType.matching)
-		{
-			if (s.contains(COPPER))
-				LV = s;
-			else if (s.contains(ELECTRUM))
-				MV = s;
-			else if (s.contains(STEEL))
-				HV = s;
-		}
-	}
 
 	protected boolean canTakeLV()
 	{
@@ -106,17 +92,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if(HV.contains(cableType)&&!canTakeHV())
-			return false;
-		if(MV.contains(cableType)&&!canTakeMV())
-			return false;
-		if(LV.contains(cableType)&&!canTakeLV())
-			return false;
-		if(cableType==WireType.STRUCTURE_ROPE)
-			return false;
-		if(cableType==WireType.STRUCTURE_STEEL)
-			return false;
-		if(cableType==WireType.REDSTONE)
+		String category = cableType.getCategory();
+		boolean foundAccepting = (HV_CATEGORY.equals(category)&&canTakeHV())
+				||(MV_CATEGORY.equals(category)&&canTakeMV())
+				||(LV_CATEGORY.equals(category)&&canTakeLV());
+		if (!foundAccepting)
 			return false;
 		return limitType==null||(this.isRelay() && canMix(limitType, cableType));
 	}

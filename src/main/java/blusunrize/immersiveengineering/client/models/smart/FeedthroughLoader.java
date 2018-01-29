@@ -8,12 +8,9 @@
 
 package blusunrize.immersiveengineering.client.models.smart;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +24,8 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.INFOS;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
+
 
 public class FeedthroughLoader implements ICustomModelLoader
 {
@@ -58,7 +56,7 @@ public class FeedthroughLoader implements ICustomModelLoader
 		@Override
 		public Collection<ResourceLocation> getDependencies()
 		{
-			return TileEntityFeedthrough.INFOS.values().stream().map((i)->i.modelLoc).collect(Collectors.toCollection(ArrayList::new));
+			return INFOS.values().stream().map((i)->i.modelLoc).collect(Collectors.toCollection(ArrayList::new));
 		}
 
 		@Nonnull

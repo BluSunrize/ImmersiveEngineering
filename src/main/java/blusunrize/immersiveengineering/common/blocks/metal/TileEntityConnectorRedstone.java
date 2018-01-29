@@ -37,6 +37,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
+
 public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<IBlockState>, IRedstoneConnector
 {
 	public EnumFacing facing = EnumFacing.DOWN;
@@ -167,7 +169,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if(cableType != WireType.REDSTONE)
+		if(!REDSTONE_CATEGORY.equals(cableType.getCategory()))
 			return false;
 		return limitType == null || limitType == cableType;
 	}
