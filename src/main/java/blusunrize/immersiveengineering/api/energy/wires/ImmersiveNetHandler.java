@@ -522,8 +522,10 @@ public class ImmersiveNetHandler
 				{
 					double extra = conn.getLeft().cableType.getDamageRadius();
 					AxisAlignedBB includingExtra = eAabb.grow(extra);
-					RayTraceResult rayRes = includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
-					if (rayRes != null && rayRes.typeOfHit == RayTraceResult.Type.BLOCK)
+					boolean endpointsInEntity = includingExtra.contains(conn.getMiddle())||
+							includingExtra.contains(conn.getRight());
+					RayTraceResult rayRes = endpointsInEntity?null:includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
+					if (endpointsInEntity||(rayRes != null && rayRes.typeOfHit == RayTraceResult.Type.BLOCK))
 					{
 						IImmersiveConnectable iic = toIIC(conn.getLeft().start, e.world);
 						float damage = 0;

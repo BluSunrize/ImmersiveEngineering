@@ -59,7 +59,7 @@ public class Config
 		public static int[] wireLength = new int[]{16, 16, 32, 32, 32, 32};
 		@Comment({"If this is enabled, wires connected to power sources will cause damage to entities touching them",
 				"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already."})
-		public static boolean enableWireDamage = false;
+		public static boolean enableWireDamage = true;
 		@Comment({"If this is enabled, placing a block in a wire will break it (drop the wire coil)"})
 		public static boolean blocksBreakWires = true;
 
