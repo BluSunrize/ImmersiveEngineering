@@ -13,6 +13,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.HashMap;
@@ -127,9 +128,21 @@ public abstract class ManualInstance
 		int hash = getItemHash(stack);
 		return itemLinks.get(hash);
 	}
+
 	int getItemHash(ItemStack stack)
 	{
-		return (ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode()*31 + (stack.getHasSubtypes()?stack.getMetadata():0))*31 + (!stack.hasTagCompound()||stack.getTagCompound().hasNoTags()?0 : stack.getTagCompound().hashCode());
+		if (stack.isEmpty())
+			return 0;
+		int ret = ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode();
+		if (stack.getHasSubtypes())
+			ret = ret*31+stack.getMetadata();
+		if (stack.hasTagCompound())
+		{
+			NBTTagCompound nbt = stack.getTagCompound();
+			if (!nbt.hasNoTags())
+				ret = ret * 31 + nbt.hashCode();
+		}
+		return ret;
 	}
 	public static class ManualLink
 	{
