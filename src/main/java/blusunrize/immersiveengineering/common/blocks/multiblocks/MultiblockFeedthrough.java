@@ -40,8 +40,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	static ItemStack[][][] structure = new ItemStack[1][1][3];
 	static{
 		structure[0][0][0] = new ItemStack(IEContent.blockConnectors, 1);
-		//TODO translation?
-		structure[0][0][1] = new ItemStack(Blocks.BOOKSHELF, 1).setTranslatableName("Arbitrary solid block");
+		structure[0][0][1] = new ItemStack(Blocks.BOOKSHELF, 1).setTranslatableName("tile.immersiveengineering.arb_solid.name");
 		structure[0][0][2] = new ItemStack(IEContent.blockConnectors, 1);
 	}
 	@Override

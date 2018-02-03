@@ -112,7 +112,7 @@ public interface IImmersiveConnectable
 	 * @param amount The amount available from this source
 	 * @param consume Call this to consume the amount of energy in the parameter
 	 */
-	default void addAvailableEnergy(int amount, Consumer<Integer> consume)
+	default void addAvailableEnergy(float amount, Consumer<Float> consume)
 	{}
 	
 	/**

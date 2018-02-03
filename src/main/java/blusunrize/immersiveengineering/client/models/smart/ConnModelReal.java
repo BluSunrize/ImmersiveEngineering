@@ -85,7 +85,6 @@ public class ConnModelReal implements IBakedModel
 			Pair<Byte, ExtBlockstateAdapter> key = new ImmutablePair<>((byte)((x<<4)|z), ad);
 			try
 			{
-				cache.invalidateAll();//TODO remove!
 				IBakedModel ret = cache.get(key, ()->new AssembledBakedModel(ext, textureAtlasSprite, base, rand));
 				return ret.getQuads(state, null, rand);
 			}

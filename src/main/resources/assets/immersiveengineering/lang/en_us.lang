@@ -227,6 +227,8 @@ tile.immersiveengineering.cloth_device.stripcurtain.name=Strip Curtain
 tile.immersiveengineering.molten_uranium.name=Molten Uranium
 tile.immersiveengineering.molten_constantan.name=Molten Constantan
 
+tile.immersiveengineering.arb_solid.name=Arbitrary solid block
+
 #Hydraulicraft Compat
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
 

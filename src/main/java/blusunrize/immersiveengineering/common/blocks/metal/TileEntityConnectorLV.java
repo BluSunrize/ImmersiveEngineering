@@ -73,7 +73,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					energyStorage.modifyEnergyStored(-this.transferEnergy(temp, false, 0));
 					markDirty();
 				}
-				addAvailableEnergy(-1, null);
+				addAvailableEnergy(-1F, null);
 			}
 			currentTickAccepted = 0;
 		}
@@ -391,11 +391,23 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			{
 				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
 				if(con.cableType!=null && end!=null && end.allowEnergyToPass(null))
-					//TODO wire loss?
-					end.addAvailableEnergy(Math.min(energyStorage.getEnergyStored(), con.cableType.getTransferRate()/8), (i)->energyStorage.modifyEnergyStored(-i));
+				{
+					Pair<Float, Consumer<Float>> e = getEnergyForConnection(con);
+					end.addAvailableEnergy(e.getKey(), e.getValue());
+				}
 			}
 		}
 		return received;
+	}
+
+	private Pair<Float, Consumer<Float>> getEnergyForConnection(@Nullable AbstractConnection c)
+	{
+		float loss = c!=null?c.getAverageLossRate():0;
+		float max = (1-loss)*energyStorage.getEnergyStored();
+		Consumer<Float> extract = (energy)->{
+			energyStorage.modifyEnergyStored((int) (-energy/(1-loss)));
+		};
+		return new ImmutablePair<>(max, extract);
 	}
 
 
@@ -410,10 +422,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 	@Nullable
 	@Override
-	protected Pair<Integer, Consumer<Integer>> getOwnEnergy()
+	protected Pair<Float, Consumer<Float>> getOwnEnergy()
 	{
-		return new ImmutablePair<>(Math.min(energyStorage.getEnergyStored(), getMaxOutput()),
-				(i)->energyStorage.modifyEnergyStored(-i));
+		return getEnergyForConnection(null);
 	}
 
 	@Override

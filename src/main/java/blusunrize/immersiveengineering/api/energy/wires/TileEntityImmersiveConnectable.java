@@ -31,6 +31,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
@@ -128,16 +129,16 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}
 	}
 
-	private List<Pair<Integer, Consumer<Integer>>> sources = new ArrayList<>();
+	private List<Pair<Float, Consumer<Float>>> sources = new ArrayList<>();
 	private long lastSourceUpdate = 0;
 	@Override
-	public void addAvailableEnergy(int amount, Consumer<Integer> consume)
+	public void addAvailableEnergy(float amount, Consumer<Float> consume)
 	{
 		long currentTime = world.getTotalWorldTime();
 		if (lastSourceUpdate!=currentTime)
 		{
 			sources.clear();
-			Pair<Integer, Consumer<Integer>> own = getOwnEnergy();
+			Pair<Float, Consumer<Float>> own = getOwnEnergy();
 			if (own!=null)
 				sources.add(own);
 			lastSourceUpdate = currentTime;
@@ -147,7 +148,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Nullable
-	protected Pair<Integer,Consumer<Integer>> getOwnEnergy()
+	protected Pair<Float, Consumer<Float>> getOwnEnergy()
 	{
 		return null;
 	}
@@ -175,7 +176,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		float damage = 0;
 		for (int i = 0;i<sources.size()&&damage<amount;i++)
 		{
-			int consume = (int) Math.min(sources.get(i).getLeft(), (amount-damage)/baseDmg);
+			float consume = Math.min(sources.get(i).getLeft(), (amount-damage)/baseDmg);
 			sources.get(i).getRight().accept(consume);
 			damage += baseDmg*consume;
 			if (consume==sources.get(i).getLeft())
@@ -211,7 +212,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
 	}
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+	public void onDataPacket(@Nonnull NetworkManager net, @Nonnull SPacketUpdateTileEntity pkt)
 	{
 		NBTTagCompound nbt = pkt.getNbtCompound();
 		this.readFromNBT(nbt);
@@ -243,7 +244,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
 		try{
 			if(nbt.hasKey("limitType"))
@@ -258,7 +259,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
 		try{
 			if(limitType!=null)
