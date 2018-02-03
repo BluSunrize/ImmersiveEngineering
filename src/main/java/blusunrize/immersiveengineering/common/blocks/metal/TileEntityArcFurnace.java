@@ -77,7 +77,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		{
 			if(pouringMetal>0)
 				pouringMetal--;
-			//if(shouldRenderAsActive())
+			if(shouldRenderAsActive())
 				for(int i=0; i<4; i++)
 				{
 					if(Utils.RAND.nextInt(6)==0)

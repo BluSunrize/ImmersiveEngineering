@@ -103,6 +103,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 			float h = (pour>(process-speed)?((process-pour)/speed*27): pour>speed?27: (pour/speed*27))/16f;
 			GlStateManager.translate(-.5f,1.25-.6875f,1.5f);
 			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+			GlStateManager.disableLighting();
 			setLightmapDisabled(true);
 			if(pour>(process-speed))
 				addTranslation(tmp, worldRenderer, 0,-1.6875f+h,0);
@@ -133,6 +134,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 			worldRenderer.setTranslation(0, 0, 0);
 			tessellator.draw();
 			setLightmapDisabled(false);
+			GlStateManager.enableLighting();
 		}
 		GlStateManager.popMatrix();
 	}
