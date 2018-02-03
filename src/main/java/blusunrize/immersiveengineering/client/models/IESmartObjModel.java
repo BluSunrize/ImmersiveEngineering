@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -65,7 +66,6 @@ public class IESmartObjModel extends OBJBakedModel
 	IBakedModel baseModel;
 	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	ImmutableList<BakedQuad> bakedQuads;
-	TextureAtlasSprite tempSprite;
 	ItemStack tempStack = ItemStack.EMPTY;
 	IBlockState tempState;
 	EntityLivingBase tempEntity;
@@ -337,7 +337,7 @@ public class IESmartObjModel extends OBJBakedModel
 
 				for(Face f : faces)
 				{
-					tempSprite = null;
+					TextureAtlasSprite tempSprite = null;
 					if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite() && !"null".equals(f.getMaterialName()))
 					{
 						for(Vertex v : f.getVertices())

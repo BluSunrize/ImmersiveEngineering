@@ -32,9 +32,12 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
 public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<IBlockState>, IRedstoneConnector
 {
@@ -164,9 +167,9 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if(cableType != WireType.REDSTONE)
+		if(!REDSTONE_CATEGORY.equals(cableType.getCategory()))
 			return false;
 		return limitType == null || limitType == cableType;
 	}
@@ -241,13 +244,6 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		ioMode = nbt.getInteger("ioMode");
 		redstoneChannel = nbt.getInteger("redstoneChannel");
 		outputClient = nbt.getInteger("output");
-	}
-
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		EnumFacing side = facing.getOpposite();
-		return new Vec3d(.5 + side.getFrontOffsetX() * .0625, .5 + side.getFrontOffsetY() * .0625, .5 + side.getFrontOffsetZ() * .0625);
 	}
 
 	@Override

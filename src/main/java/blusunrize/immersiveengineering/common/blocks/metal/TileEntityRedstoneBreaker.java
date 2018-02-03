@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -56,14 +55,6 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 				(float) end.x, (float) end.y, (float) end.z};
 	}
 
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		Matrix4 mat = new Matrix4(facing);
-		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
-		Vec3d ret = mat.apply(new Vec3d(.5, .5, .99));
-		return ret;
-	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

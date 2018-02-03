@@ -22,39 +22,16 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Triple;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+
+import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
 
 public class SkylineHelper
 {
-	public static Connection getTargetConnection(World world, BlockPos pos, EntityLivingBase living, Connection invalidCon)
-	{
-		if(!(world.getTileEntity(pos) instanceof IImmersiveConnectable))
-			return null;
-
-		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-		if(outputs!=null && outputs.size()>0)
-		{
-			Vec3d vec = living.getLookVec();
-			vec = vec.normalize();
-			Connection line = null;
-			for(Connection c : outputs)
-				if(c!=null && !c.hasSameConnectors(invalidCon))				{
-					if(line==null)
-						line = c;
-					else
-					{
-						Vec3d lineVec = new Vec3d(line.end.getX()-line.start.getX(), line.end.getY()-line.start.getY(), line.end.getZ()-line.start.getZ()).normalize();
-						Vec3d conVec = new Vec3d(c.end.getX()-c.start.getX(), c.end.getY()-c.start.getY(), c.end.getZ()-c.start.getZ()).normalize();
-						if(conVec.distanceTo(vec)<lineVec.distanceTo(vec))
-							line = c;
-					}
-				}
-			return line;
-		}
-		return null;
-	}
-
 	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection)
 	{
 		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start:connection.end;
@@ -69,22 +46,32 @@ public class SkylineHelper
 		if(iicEnd!=null)
 			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
 
-		Vec3d[] steps = getConnectionCatenary(connection,vStart,vEnd);
 
-		double dx = (steps[0].x-vStart.x);
-		double dy = (steps[0].y-vStart.y);
-		double dz = (steps[0].z-vStart.z);
-		double d = 1;//connection.length;
-		//						Math.sqrt(dx*dx+dz*dz+dy*dy);
+		/* Reasoning for the formula for pos (below): pos should be the point on the catenary (horizontally) closest to the player position
+		A conn start, B conn across, C player pos
+		A+tB
+		C
+		C-A=:D
+		D**2=(Cx-Ax-tBx)**2+(Cz-Az-tBz)**2=(Dx-tBx)**2+(Dz-tBz)**2
+		=Dx**2-2tDxBx+t**2Bx**2+Dz**2-2tDzBz+t**2Bz**2
+		=t**2(Bx**2+Bz**2)-(2DxBx+2DzBz)t+Dz**2+Dx**2
 
-		//		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-//		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
+		D**2'=(2Bx**2+2Bz**2)*t-2DxBx+2DzBz=0
+		t=(DxBx+DzBz)/(Bx^2+Bz^2)
+		 */
+		Vec3d pos = player.getPositionEyes(0);
+		Vec3d delta = pos.subtract(vStart);
+		Vec3d across = new Vec3d(vEnd.x-vStart.x, 0, vEnd.z-vStart.z);
+		double t = (delta.x*across.x+delta.z*across.z)/(across.x*across.x+across.z*across.z);
+		pos = connection.getVecAt(t, vStart, across, across.lengthVector());
+		int tInt = (int)(t*16);
 
-		EntitySkylineHook hook = new EntitySkylineHook(player.world, vStart.x,vStart.y,vStart.z, connection, cc0, steps);
+		Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
+		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x,pos.y,pos.z, connection, cc0, steps, tInt+1);
 		float speed = 1;
 		if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
 			speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
-		Vec3d moveVec = getSubMovementVector(vStart, steps[0], speed);
+		Vec3d moveVec = getSubMovementVector(steps[tInt], steps[tInt+1], speed);
 		hook.motionX = moveVec.x;//*speed;
 		hook.motionY = moveVec.y;//*speed;
 		hook.motionZ = moveVec.z;//*speed;
@@ -100,45 +87,6 @@ public class SkylineHelper
 		ItemSkyhook.existingHooks.put(player.getName(), hook);
 		player.startRiding(hook);
 		return hook;
-	}
-
-	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
-	{
-		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
-
-		if(vertical)
-			return new Vec3d[]{new Vec3d(end.x, end.y, end.z)};
-
-		double dx = (end.x)-(start.x);
-		double dy = (end.y)-(start.y);
-		double dz = (end.z)-(start.z);
-		double dw = Math.sqrt(dx*dx + dz*dz);
-		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * connection.cableType.getSlack();
-		double l = 0;
-		int limiter = 0;
-		while(!vertical && limiter<300)
-		{
-			limiter++;
-			l += 0.01;
-			if (Math.sinh(l)/l >= Math.sqrt(k*k - dy*dy)/dw)
-				break;
-		}
-		double a = dw/2/l;
-		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
-		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-
-		int vertices = 16;
-		Vec3d[] vex = new Vec3d[vertices];
-
-		for(int i=0; i<vertices; i++)
-		{
-			float n1 = (i+1)/(float)vertices;
-			double x1 = 0 + dx * n1;
-			double z1 = 0 + dz * n1;
-			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-			vex[i] = new Vec3d(start.x+x1, start.y+y1, start.z+z1);
-		}
-		return vex;
 	}
 
 	public static Vec3d getSubMovementVector(Vec3d start, Vec3d target, float speed)
@@ -162,5 +110,38 @@ public class SkylineHelper
 						return true;
 				}
 		return false;
+	}
+
+	public static Connection getTargetConnection(World world, EntityPlayer player, Connection ignored)
+	{
+		double py = player.posY + player.getEyeHeight();
+		BlockPos head = new BlockPos(player.posX, py, player.posZ);
+		Connection ret = null;
+		for (int i = 0;i<2;i++)
+		{
+			Map<BlockPos, Set<Triple<Connection, Vec3d, Vec3d>>> inDim = (i == 0 ? ImmersiveNetHandler.INSTANCE.blockInWire : ImmersiveNetHandler.INSTANCE.blockNearWire)
+					.lookup(player.dimension);
+			if (inDim != null && inDim.containsKey(head))
+			{
+				for (Triple<Connection, Vec3d, Vec3d> connectionVec3dVec3dTriple : inDim.get(head))
+				{
+					Connection c = connectionVec3dVec3dTriple.getLeft();
+					if (ignored==null||!c.hasSameConnectors(ignored))
+					{
+						ret = c;
+						break;
+					}
+				}
+			}
+		}
+		if (ret!=null)
+		{
+			Vec3d across = new Vec3d(ret.end).subtract(new Vec3d(ret.start));
+			if (across.dotProduct(player.getLookVec())<0)
+			{
+				ret = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), ret);
+			}
+		}
+		return ret;
 	}
 }

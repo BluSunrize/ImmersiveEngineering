@@ -9,13 +9,23 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.IEContent;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
+import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
 /**
  * @author BluSunrize - 08.03.2015<br>
@@ -25,6 +35,11 @@ import java.util.LinkedHashSet;
  */
 public abstract class WireType
 {
+	public static final String LV_CATEGORY = "LV";
+	public static final String MV_CATEGORY = "MV";
+	public static final String HV_CATEGORY = "HV";
+	public static final String STRUCTURE_CATEGORY = "STRUCTURE";
+	public static final String REDSTONE_CATEGORY = "REDSTONE";
 	private static LinkedHashSet<WireType> values = new LinkedHashSet<WireType>();
 	public static LinkedHashSet<WireType> getValues()
 	{
@@ -60,9 +75,31 @@ public abstract class WireType
 	}
 	public abstract double getRenderDiameter();
 	public abstract boolean isEnergyWire();
+	public boolean canCauseDamage() {
+		return false;
+	}
+
+	/**
+	 * Used to determine which other wire types can be on the same connector as this wire (obviously does not apply to transformers)
+	 * Returning null will cause the wire to be incompatible with all other wires
+	 */
+	@Nullable
+	public String getCategory()
+	{
+		return null;
+	}
+	/**
+	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
+	 * less that DELTA_NEAR in blusunrize.immersiveengineering.api.ApiUtils.handleVec (currently .3)
+	 */
+	public double getDamageRadius()
+	{
+		return 0;//Don't shock people unless it is explicitely enabled for this wire type
+	}
 
 	//THESE VALUES ARE FOR IE's OWN WIRES!
-	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE"};
+	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE",
+				"COPPER_INS", "ELECTRUM_INS"};
 	public static double[] wireLossRatio;
 	public static int[] wireTransferRate;
 	public static int[] wireColouration;
@@ -78,7 +115,24 @@ public abstract class WireType
 	public static WireType STRUCTURE_ROPE = new IEBASE(3);
 	public static WireType STRUCTURE_STEEL = new IEBASE(4);
 	public static WireType REDSTONE = new IEBASE(5);
+	public static WireType COPPER_INSULATED = new IEBASE(6);
+	public static WireType ELECTRUM_INSULATED = new IEBASE(7);
 
+	static
+	{
+		registerFeedthroughForWiretype(WireType.COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
+				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
+				.5, (s)->s.getBlock()== IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_LV);
+		registerFeedthroughForWiretype(WireType.ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
+				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
+				.5625, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_MV);
+		registerFeedthroughForWiretype(WireType.STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
+				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
+				.75, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_HV);
+		registerFeedthroughForWiretype(WireType.REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
+				ImmutableMap.of(),  new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
+				.5625, .5, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_REDSTONE);
+	}
 	/**
 	 * DO NOT SUBCLASS THIS.
 	 * This is a core implementation as a base for IE's default wires
@@ -91,16 +145,17 @@ public abstract class WireType
 		{
 			super();
 			this.ordinal = ordinal;
+			WireApi.registerWireType(this);
 		}
 		@Override
 		public double getLossRatio()
 		{
-			return Math.abs(wireLossRatio[ordinal]);
+			return Math.abs(wireLossRatio[ordinal%6]);
 		}
 		@Override
 		public int getTransferRate()
 		{
-			return Math.abs(wireTransferRate[ordinal]);
+			return Math.abs(wireTransferRate[ordinal%6]);
 		}
 		@Override
 		public int getColour(Connection connection)
@@ -121,7 +176,7 @@ public abstract class WireType
 		@Override
 		public int getMaxLength()
 		{
-			return wireLength[ordinal];
+			return wireLength[ordinal%6];
 		}
 		@Override
 		public ItemStack getWireCoil()
@@ -136,12 +191,57 @@ public abstract class WireType
 		@Override
 		public double getRenderDiameter()
 		{
-			return renderDiameter[ordinal];
+			return renderDiameter[ordinal%6];
 		}
 		@Override
 		public boolean isEnergyWire()
 		{
+			return ordinal%6<3;
+		}
+
+		@Override
+		public double getDamageRadius()
+		{
+			switch (ordinal)
+			{
+				case 0://LV
+					return .05;
+				case 1://MV
+					return .1;
+				case 2://HV
+					return .3;
+			}
+			return 0;
+		}
+
+		@Override
+		public boolean canCauseDamage()
+		{
 			return ordinal<3;
+		}
+
+		@Nullable
+		@Override
+		public String getCategory()
+		{
+			switch (ordinal)
+			{
+				case 0:
+				case 6:
+					return LV_CATEGORY;
+				case 1:
+				case 7:
+					return MV_CATEGORY;
+				case 2:
+					return HV_CATEGORY;
+				case 3:
+				case 4:
+					return STRUCTURE_CATEGORY;
+				case 5:
+					return REDSTONE_CATEGORY;
+				default:
+					return null;
+			}
 		}
 	}
 }

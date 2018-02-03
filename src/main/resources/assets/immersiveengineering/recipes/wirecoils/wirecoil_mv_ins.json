@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:ingredient_shaped",
+  "result": {
+    "item": "immersiveengineering:wirecoil",
+    "data": 7,
+    "count": 4
+  },
+  "pattern": [
+    "FCF",
+    "COC",
+    "FCF"
+  ],
+  "key": {
+    "F": {
+      "item": "#fabricHemp"
+    },
+    "C": {
+      "item": "#electrumCoilItem"
+    },
+    "O": {
+      "type": "immersiveengineering:fluid",
+      "fluid": "creosote"
+    }
+  }
+}

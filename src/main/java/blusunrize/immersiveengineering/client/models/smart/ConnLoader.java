@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -28,74 +29,76 @@ import java.util.function.Function;
 public class ConnLoader implements ICustomModelLoader
 {
 	public static final String RESOURCE_LOCATION = "models/block/smartmodel/conn_";
+	//Do not manually write to these in IE 0.12-77+. Use blusunrize.immersiveengineering.api.energy.wires.WireApi.registerConnectorForRender()
 	public static Map<String, ImmutableMap<String, String>> textureReplacements = new HashMap<>();
 	public static Map<String, ResourceLocation> baseModels = new HashMap<>();
 	static
 	{
-		baseModels.put("conn_lv", new ResourceLocation("immersiveengineering:block/connector/connector_lv.obj"));
-		baseModels.put("rel_lv", new ResourceLocation("immersiveengineering:block/connector/connector_lv.obj"));
-		textureReplacements.put("rel_lv", ImmutableMap.of("#immersiveengineering:blocks/connector_connector_lv",
+		WireApi.registerConnectorForRender("conn_lv", new ResourceLocation("immersiveengineering:block/connector/connector_lv.obj"), null);
+		WireApi.registerConnectorForRender("rel_lv", new ResourceLocation("immersiveengineering:block/connector/connector_lv.obj"),
+				ImmutableMap.of("#immersiveengineering:blocks/connector_connector_lv",
 				"immersiveengineering:blocks/connector_relay_lv"));
 
-		baseModels.put("conn_mv", new ResourceLocation("immersiveengineering:block/connector/connector_mv.obj"));
-		baseModels.put("rel_mv", new ResourceLocation("immersiveengineering:block/connector/connector_mv.obj"));
-		textureReplacements.put("rel_mv", ImmutableMap.of("#immersiveengineering:blocks/connector_connector_mv",
+		WireApi.registerConnectorForRender("conn_mv", new ResourceLocation("immersiveengineering:block/connector/connector_mv.obj"), null);
+		WireApi.registerConnectorForRender("rel_mv", new ResourceLocation("immersiveengineering:block/connector/connector_mv.obj"),
+				ImmutableMap.of("#immersiveengineering:blocks/connector_connector_mv",
 				"immersiveengineering:blocks/connector_relay_mv"));
 
-		baseModels.put("conn_hv", new ResourceLocation("immersiveengineering:block/connector/connector_hv.obj"));
-		baseModels.put("rel_hv", new ResourceLocation("immersiveengineering:block/connector/relay_hv.obj"));
+		WireApi.registerConnectorForRender("conn_hv", new ResourceLocation("immersiveengineering:block/connector/connector_hv.obj"), null);
+		WireApi.registerConnectorForRender("rel_hv", new ResourceLocation("immersiveengineering:block/connector/relay_hv.obj"), null);
 
-		baseModels.put("conn_struct",
-				new ResourceLocation("immersiveengineering:block/connector/connector_structural.obj.ie"));
+		WireApi.registerConnectorForRender("conn_struct",
+				new ResourceLocation("immersiveengineering:block/connector/connector_structural.obj.ie"), null);
 
-		baseModels.put("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connector_redstone.obj.ie"));
-		baseModels.put("conn_probe", new ResourceLocation("immersiveengineering:block/connector/connector_probe.obj.ie"));
+		WireApi.registerConnectorForRender("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connector_redstone.obj.ie"), null);
+		WireApi.registerConnectorForRender("conn_probe", new ResourceLocation("immersiveengineering:block/connector/connector_probe.obj.ie"), null);
 
-		baseModels.put("breaker_off",
-				new ResourceLocation("immersiveengineering:block/connector/breaker_switch_off.obj.ie"));
-		baseModels.put("breaker_on", new ResourceLocation("immersiveengineering:block/connector/breaker_switch_on.obj.ie"));
+		WireApi.registerConnectorForRender("breaker_off",
+				new ResourceLocation("immersiveengineering:block/connector/breaker_switch_off.obj.ie"), null);
+		WireApi.registerConnectorForRender("breaker_on", new ResourceLocation("immersiveengineering:block/connector/breaker_switch_on.obj.ie"), null);
 
-		baseModels.put("e_meter", new ResourceLocation("immersiveengineering:block/connector/e_meter.obj"));
-		baseModels.put("redstone_breaker",
-				new ResourceLocation("immersiveengineering:block/connector/redstone_breaker.obj.ie"));
+		WireApi.registerConnectorForRender("e_meter", new ResourceLocation("immersiveengineering:block/connector/e_meter.obj"), null);
+		WireApi.registerConnectorForRender("redstone_breaker",
+				new ResourceLocation("immersiveengineering:block/connector/redstone_breaker.obj.ie"), null);
 
-		baseModels.put("transformer_hv_left",
-				new ResourceLocation("immersiveengineering:block/connector/transformer_hv_left.obj"));
-		baseModels.put("transformer_hv_right",
-				new ResourceLocation("immersiveengineering:block/connector/transformer_hv_right.obj"));
-		baseModels.put("transformer_mv_left",
-				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_left.obj"));
-		baseModels.put("transformer_mv_right",
-				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_right.obj"));
-		baseModels.put("transformer_mv_post",
-				new ResourceLocation("immersiveengineering:block/connector/transformer_post.obj"));
+		WireApi.registerConnectorForRender("transformer_hv_left",
+				new ResourceLocation("immersiveengineering:block/connector/transformer_hv_left.obj"), null);
+		WireApi.registerConnectorForRender("transformer_hv_right",
+				new ResourceLocation("immersiveengineering:block/connector/transformer_hv_right.obj"), null);
+		WireApi.registerConnectorForRender("transformer_mv_left",
+				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_left.obj"), null);
+		WireApi.registerConnectorForRender("transformer_mv_right",
+				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_right.obj"), null);
+		WireApi.registerConnectorForRender("transformer_mv_post",
+				new ResourceLocation("immersiveengineering:block/connector/transformer_post.obj"), null);
 
-		baseModels.put("e_lantern",
-				new ResourceLocation("immersiveengineering:block/metal_device/e_lantern.obj"));
-		baseModels.put("e_lantern_on",
-				new ResourceLocation("immersiveengineering:block/metal_device/e_lantern.obj"));
-		textureReplacements.put("e_lantern_on",
+		WireApi.registerConnectorForRender("e_lantern",
+				new ResourceLocation("immersiveengineering:block/metal_device/e_lantern.obj"), null);
+		WireApi.registerConnectorForRender("e_lantern_on",
+				new ResourceLocation("immersiveengineering:block/metal_device/e_lantern.obj"),
 				ImmutableMap.of("#immersiveengineering:blocks/metal_device1_electric_lantern",
 						"immersiveengineering:blocks/metal_device1_electric_lantern_on"));
-		baseModels.put("floodlight",
-				new ResourceLocation("immersiveengineering:block/metal_device/floodlight.obj.ie"));
-		baseModels.put("floodlight_on",
-				new ResourceLocation("immersiveengineering:block/metal_device/floodlight.obj.ie"));
-		textureReplacements.put("floodlight_on",
+		WireApi.registerConnectorForRender("floodlight",
+				new ResourceLocation("immersiveengineering:block/metal_device/floodlight.obj.ie"), null);
+		WireApi.registerConnectorForRender("floodlight_on",
+				new ResourceLocation("immersiveengineering:block/metal_device/floodlight.obj.ie"),
 				ImmutableMap.of("#immersiveengineering:blocks/metal_device1_floodlight",
 						"immersiveengineering:blocks/metal_device1_floodlight_on"));
 		
-		baseModels.put("balloon",
-				new ResourceLocation("immersiveengineering:block/balloon.obj.ie"));
+		WireApi.registerConnectorForRender("balloon",
+				new ResourceLocation("immersiveengineering:block/balloon.obj.ie"), null);
 
-		baseModels.put("razor_wire",
-				new ResourceLocation("immersiveengineering:block/razor_wire.obj.ie"));
+		WireApi.registerConnectorForRender("razor_wire",
+				new ResourceLocation("immersiveengineering:block/razor_wire.obj.ie"), null);
+
+		WireApi.registerConnectorForRender("feedthrough",
+				new ResourceLocation("immersiveengineering:block/smartmodel/feedthrough"), null);
 	}
 
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
-		ConnModelReal.cache.clear();
+		ConnModelReal.cache.invalidateAll();
 	}
 
 	@Override

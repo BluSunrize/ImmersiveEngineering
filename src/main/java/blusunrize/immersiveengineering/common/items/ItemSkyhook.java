@@ -77,37 +77,21 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
 		TileEntity connector = null;
-		double lastDist = 0;
 		Connection line = null;
-		double py = player.posY+player.getEyeHeight();
-		for(int xx=-2; xx<=2; xx++)
-			for(int zz=-2; zz<=2; zz++)
-				for(int yy=0; yy<=3; yy++)
-				{
-					TileEntity tile = world.getTileEntity( new BlockPos(player.posX+xx, py+yy, player.posZ+zz));
-					if(tile!=null)
-					{
-						Connection con = SkylineHelper.getTargetConnection(world, tile.getPos(), player, null);
-						if(con!=null)
-						{
-							double d = tile.getDistanceSq(player.posX,py,player.posZ);
-							if(connector==null || d<lastDist)
-							{
-								connector=tile;
-								lastDist=d;
-								line=con;
-							}
-						}
-					}
-				}
+		Connection con = SkylineHelper.getTargetConnection(world, player, null);
+		if (con != null)
+		{
+			connector = world.getTileEntity(con.start);
+			line = con;
+		}
 		ItemStack stack = player.getHeldItem(hand);
-		if(line!=null&&connector!=null)
+		if (line != null && connector != null)
 		{
 			SkylineHelper.spawnHook(player, connector, line);
 			player.setActiveHand(hand);
 			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult(EnumActionResult.PASS,stack);
+		return new ActionResult(EnumActionResult.PASS, stack);
 	}
 
 	public float getSkylineSpeed(ItemStack stack)

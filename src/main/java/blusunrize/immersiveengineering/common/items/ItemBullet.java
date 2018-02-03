@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOve
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.util.ITooltipFlag;
@@ -34,13 +35,11 @@ import net.minecraft.item.ItemLingeringPotion;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemSplashPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -245,7 +244,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		return Arrays.asList(new ResourceLocation("immersiveengieering:items/bullet_casull"));
 	}
 
-//	@Override
+	//	@Override
 //	public ItemStack getCasing(ItemStack stack)
 //	{
 //		return new ItemStack(this, 1, stack.getItemDamage()==1||stack.getItemDamage()==4||stack.getItemDamage()==6||stack.getItemDamage()==11?1:0);

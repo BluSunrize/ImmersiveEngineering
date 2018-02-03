@@ -123,6 +123,11 @@
         }
       }
     ],
+    "inventory,type=feedthrough": [
+      {
+        "model": "immersiveengineering:connector/connector_probe.obj.ie"
+      }
+    ],
     "type":
     {
       "connector_lv": {
@@ -151,6 +156,9 @@
       },
       "connector_probe": {
         "model": "immersiveengineering:smartmodel/conn_conn_probe"
+      },
+      "feedthrough": {
+        "model": "immersiveengineering:smartmodel/conn_feedthrough"
       }
     },
     "facing":

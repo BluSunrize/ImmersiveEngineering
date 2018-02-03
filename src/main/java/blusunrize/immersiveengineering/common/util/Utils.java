@@ -15,16 +15,20 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import crafttweaker.api.block.IBlock;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -60,6 +64,9 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -76,6 +83,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static java.lang.Math.min;
 
@@ -970,6 +978,122 @@ public class Utils
 		return list;
 	}
 
+	public static float[] rotateToFacing(float[] in, EnumFacing facing)
+	{
+		for (int i = 0; i < in.length; i++)
+			in[i] -= .5F;
+		float[] ret = new float[in.length];
+		for (int i = 0; i < in.length; i += 3)
+			for (int j = 0; j < 3; j++)
+			{
+				if (j == 0)
+					ret[i + j] = in[i + 0] * facing.getFrontOffsetZ() +
+							in[i + 1] * facing.getFrontOffsetX() +
+							in[i + 2] * facing.getFrontOffsetY();
+				else if (j == 1)
+					ret[i + j] = in[i + 0] * facing.getFrontOffsetX() +
+							in[i + 1] * facing.getFrontOffsetY() +
+							in[i + 2] * facing.getFrontOffsetZ();
+				else
+					ret[i + j] = in[i + 0] * facing.getFrontOffsetY() +
+							in[i + 1] * facing.getFrontOffsetZ() +
+							in[i + 2] * facing.getFrontOffsetX();
+			}
+		for (int i = 0; i < in.length; i++)
+			ret[i] += .5;
+		return ret;
+	}
+
+	public static int hashBlockstate(IBlockState state, Set<Object> ignoredProperties, boolean includeExtended)
+	{
+		int val = 0;
+		final int prime = 31;
+		for (IProperty<?> n : state.getPropertyKeys())
+			if (!ignoredProperties.contains(n))
+			{
+				Object o = state.getValue(n);
+				val = prime * val + (o == null ? 0 : o.hashCode());
+			}
+		if (includeExtended&&state instanceof IExtendedBlockState)
+		{
+			IExtendedBlockState ext = (IExtendedBlockState) state;
+			for (IUnlistedProperty<?> n : ext.getUnlistedNames())
+				if (!ignoredProperties.contains(n))
+				{
+					Object o = ext.getValue(n);
+					val = prime * val + (o == null ? 0 : o.hashCode());
+				}
+		}
+		return val;
+	}
+
+	public static boolean areStatesEqual(IBlockState state, IBlockState other, Set<Object> ignoredProperties, boolean includeExtended)
+	{
+		for(IProperty<?> i : state.getPropertyKeys())
+		{
+			if(!other.getProperties().containsKey(i))
+				return false;
+			if (ignoredProperties.contains(i))
+				continue;
+			Object valThis = state.getValue(i);
+			Object valOther = other.getValue(i);
+			if(valThis==null&&valOther==null)
+				continue;
+			else if(valOther == null || !valOther.equals(state.getValue(i)))
+				return false;
+		}
+		if (includeExtended)
+		{
+			if (state instanceof IExtendedBlockState^other instanceof IExtendedBlockState)
+				return false;
+			if (state instanceof IExtendedBlockState)
+			{
+				IExtendedBlockState extState = (IExtendedBlockState) state;
+				IExtendedBlockState extOther = (IExtendedBlockState) other;
+				for (IUnlistedProperty<?> i : extState.getUnlistedNames())
+				{
+					if (!extOther.getUnlistedProperties().containsKey(i))
+						return false;
+					if (ignoredProperties.contains(i))
+						continue;
+					Object valThis = extState.getValue(i);
+					Object valOther = extOther.getValue(i);
+					if (valThis == null && valOther == null)
+						continue;
+					else if (valOther == null || !valOther.equals(valThis))
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public static boolean areArraysEqualIncludingBlockstates(Object[] a, Object[] a2)
+	{
+		if (a == a2)
+			return true;
+		if (a == null || a2 == null)
+			return false;
+
+		int length = a.length;
+		if (a2.length != length)
+			return false;
+
+		for (int i = 0; i < length; i++)
+		{
+			Object o1 = a[i];
+			Object o2 = a2[i];
+			if (o1 instanceof IBlockState && o2 instanceof IBlockState)
+			{
+				if (!areStatesEqual((IBlockState)o1, (IBlockState) o2, ImmutableSet.of(), false))
+					return false;
+			}
+			else if (!(o1 == null ? o2 == null : o1.equals(o2)))
+				return false;
+		}
+		return true;
+	}
+
 	public static class InventoryCraftingFalse extends InventoryCrafting
 	{
 		private static final Container nullContainer = new Container()
@@ -999,6 +1123,10 @@ public class Utils
 
 	public static HashSet<BlockPos> rayTrace(Vec3d start, Vec3d end, World world)
 	{
+		return rayTrace(start, end, world, (p)->{});
+	}
+	public static HashSet<BlockPos> rayTrace(Vec3d start, Vec3d end, World world, Consumer<BlockPos> out)
+	{
 		HashSet<BlockPos> ret = new HashSet<BlockPos>();
 		HashSet<BlockPos> checked = new HashSet<BlockPos>();
 		// x
@@ -1015,7 +1143,7 @@ public class Utils
 		if (mov.x!=0)
 		{
 			mov = scalarProd(mov, 1 / mov.x);
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.DIAMOND_ORE);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
 		}
 		// y
 		if (mov.y!=0)
@@ -1032,7 +1160,7 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1/mov.y);
 
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.IRON_ORE);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
 		}
 
 		// z
@@ -1050,11 +1178,11 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1 / mov.z);
 
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.GOLD_ORE);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
 		}
 		return ret;
 	}
-	private static void ray(double dif, Vec3d mov, Vec3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Block tmp)
+	private static void ray(double dif, Vec3d mov, Vec3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Consumer<BlockPos> out)
 	{
 		//Do NOT set this to true unless for debugging. Causes blocks to be placed along the traced ray
 		boolean place = false;
@@ -1082,6 +1210,7 @@ public class Utils
 				//				if (place)
 				//					world.setBlockState(blockPos, tmp);
 				checked.add(blockPos);
+				out.accept(blockPos);
 			}
 			blockPos = new BlockPos((int) Math.floor(posPrev.x), (int) Math.floor(posPrev.y), (int) Math.floor(posPrev.z));
 			if (!checked.contains(blockPos)&&i + lengthAdd-standartOff<dif)
@@ -1093,6 +1222,7 @@ public class Utils
 				//				if (place)
 				//					world.setBlock(blockPos.posX, blockPos.posY, blockPos.posZ, tmp);
 				checked.add(blockPos);
+				out.accept(blockPos);
 			}
 		}
 	}
@@ -1350,5 +1480,40 @@ public class Utils
 			ret.put("hasTag", tank.tag != null);
 		}
 		return ret;
+	}
+
+	public static void stateToNBT(NBTTagCompound out, IBlockState state)
+	{
+		out.setString("block", state.getBlock().getRegistryName().toString());
+		for (IProperty<?> prop:state.getPropertyKeys())
+			saveProp(state, prop, out);
+	}
+
+	public static IBlockState stateFromNBT(NBTTagCompound in)
+	{
+		Block b = Block.getBlockFromName(in.getString("block"));
+		if (b==null)
+			return Blocks.BOOKSHELF.getDefaultState();
+		IBlockState ret = b.getDefaultState();
+		for (IProperty<?> prop:ret.getPropertyKeys())
+		{
+			String name = prop.getName();
+			if (in.hasKey(name, Constants.NBT.TAG_STRING))
+				ret = setProp(ret, prop, in.getString(name));
+		}
+		return ret;
+	}
+
+	private static <T extends Comparable<T>> void saveProp(IBlockState state, IProperty<T> prop, NBTTagCompound out)
+	{
+		out.setString(prop.getName(), prop.getName(state.getValue(prop)));
+	}
+
+	private static <T extends Comparable<T>> IBlockState setProp(IBlockState state, IProperty<T> prop, String value)
+	{
+		Optional<T> valueParsed = prop.parseValue(value);
+		if (valueParsed.isPresent())
+			return state.withProperty(prop, valueParsed.get());
+		return state;
 	}
 }

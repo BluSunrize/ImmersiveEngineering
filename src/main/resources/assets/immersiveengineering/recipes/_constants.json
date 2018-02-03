@@ -639,5 +639,19 @@
       }
     },
     "name": "baseConveyor"
+  },
+  {
+    "ingredient": {
+      "item": "immersiveengineering:wirecoil",
+      "data": 0
+    },
+    "name": "copperCoilItem"
+  },
+  {
+    "ingredient": {
+      "item": "immersiveengineering:wirecoil",
+      "data": 1
+    },
+    "name": "electrumCoilItem"
   }
 ]

@@ -376,13 +376,13 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			if(tile instanceof IAdvancedDirectionalTile)
 				((IAdvancedDirectionalTile)tile).onDirectionalPlacement(side, hitX, hitY, hitZ, placer);
 		}
-		if(tile instanceof IHasDummyBlocks)
-		{
-			((IHasDummyBlocks)tile).placeDummies(pos, state, side, hitX, hitY, hitZ);
-		}
 		if(tile instanceof ITileDrop)
 		{
 			((ITileDrop)tile).readOnPlacement(placer, stack);
+		}
+		if(tile instanceof IHasDummyBlocks)
+		{
+			((IHasDummyBlocks)tile).placeDummies(pos, state, side, hitX, hitY, hitZ);
 		}
 	}
 

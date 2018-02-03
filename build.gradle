@@ -1,5 +1,5 @@
 def mainVersion = "0.12"
-def buildNumber = "77"
+def buildNumber = "77-wirechanges"
 
 // For those who want the bleeding edge
 buildscript {

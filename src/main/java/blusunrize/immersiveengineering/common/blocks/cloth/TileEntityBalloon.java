@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -23,7 +22,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
@@ -136,23 +134,6 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		return 0xffffffff;
 	}
 
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		int xDif = ((TileEntity)link).getPos().getX()-getPos().getX();
-		int zDif = ((TileEntity)link).getPos().getZ()-getPos().getZ();
-		int yDif = ((TileEntity)link).getPos().getY()-getPos().getY();
-		if(yDif<0)
-		{
-			double dist = Math.sqrt(xDif*xDif + zDif*zDif);
-			if(dist/Math.abs(yDif)<2.5)
-				return new Vec3d(.5,.09375,.5);
-		}
-		if(Math.abs(zDif)>Math.abs(xDif))
-			return new Vec3d(.5,.09375,zDif>0?.8125:.1875);
-		else
-			return new Vec3d(xDif>0?.8125:.1875,.09375,.5);
-	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

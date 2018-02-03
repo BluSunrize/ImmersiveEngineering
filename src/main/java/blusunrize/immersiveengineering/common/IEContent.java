@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevice;
+import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -113,35 +114,35 @@ public class IEContent
 	public static ArrayList<Block> registeredIEBlocks = new ArrayList<Block>();
 	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
 
-	public static BlockIEBase blockOre;
-	public static BlockIEBase blockStorage;
+	public static BlockIEBase<BlockTypes_MetalsIE> blockOre;
+	public static BlockIEBase<BlockTypes_MetalsIE> blockStorage;
 	public static BlockIESlab blockStorageSlabs;
-	public static BlockIEBase blockStoneDecoration;
-	public static BlockIEBase blockStoneDecorationSlabs;
+	public static BlockIEBase<BlockTypes_StoneDecoration> blockStoneDecoration;
+	public static BlockIEBase<BlockTypes_StoneDecoration> blockStoneDecorationSlabs;
 	public static Block blockStoneStair_hempcrete;
 	public static Block blockStoneStair_concrete0;
 	public static Block blockStoneStair_concrete1;
 	public static Block blockStoneStair_concrete2;
-	public static BlockIEBase blockStoneDevice;
+	public static BlockIEBase<BlockTypes_StoneDevices> blockStoneDevice;
 
-	public static BlockIEBase blockTreatedWood;
-	public static BlockIEBase blockTreatedWoodSlabs;
+	public static BlockIEBase<BlockTypes_TreatedWood> blockTreatedWood;
+	public static BlockIEBase<BlockTypes_TreatedWood> blockTreatedWoodSlabs;
 	public static Block blockWoodenStair;
 	public static Block blockWoodenStair1;
 	public static Block blockWoodenStair2;
-	public static BlockIEBase blockWoodenDecoration;
-	public static BlockIEBase blockWoodenDevice0;
-	public static BlockIEBase blockWoodenDevice1;
+	public static BlockIEBase<BlockTypes_WoodenDecoration> blockWoodenDecoration;
+	public static BlockIEBase<BlockTypes_WoodenDevice0> blockWoodenDevice0;
+	public static BlockIEBase<BlockTypes_WoodenDevice1> blockWoodenDevice1;
 	public static Block blockCrop;
-	public static BlockIEBase blockClothDevice;
+	public static BlockIEBase<BlockTypes_ClothDevice> blockClothDevice;
 	public static Block blockFakeLight;
 
-	public static BlockIEBase blockSheetmetal;
-	public static BlockIEBase blockSheetmetalSlabs;
-	public static BlockIEBase blockMetalDecoration0;
-	public static BlockIEBase blockMetalDecoration1;
-	public static BlockIEBase blockMetalDecoration2;
-	public static BlockIEBase blockMetalDecorationSlabs1;
+	public static BlockIEBase<BlockTypes_MetalsAll> blockSheetmetal;
+	public static BlockIEBase<BlockTypes_MetalsAll> blockSheetmetalSlabs;
+	public static BlockIEBase<BlockTypes_MetalDecoration0> blockMetalDecoration0;
+	public static BlockIEBase<BlockTypes_MetalDecoration1> blockMetalDecoration1;
+	public static BlockIEBase<BlockTypes_MetalDecoration2> blockMetalDecoration2;
+	public static BlockIEBase<BlockTypes_MetalDecoration1> blockMetalDecorationSlabs1;
 	public static Block blockSteelScaffoldingStair;
 	public static Block blockSteelScaffoldingStair1;
 	public static Block blockSteelScaffoldingStair2;
@@ -149,11 +150,11 @@ public class IEContent
 	public static Block blockAluminumScaffoldingStair1;
 	public static Block blockAluminumScaffoldingStair2;
 	public static Block blockMetalLadder;
-	public static BlockIEBase blockConnectors;
-	public static BlockIEBase blockMetalDevice0;
-	public static BlockIEBase blockMetalDevice1;
-	public static BlockIEBase blockConveyor;
-	public static BlockIEBase blockMetalMultiblock;
+	public static BlockIEBase<BlockTypes_Connector> blockConnectors;
+	public static BlockIEBase<BlockTypes_MetalDevice0> blockMetalDevice0;
+	public static BlockIEBase<BlockTypes_MetalDevice1> blockMetalDevice1;
+	public static BlockIEBase<BlockTypes_Conveyor> blockConveyor;
+	public static BlockIEBase<BlockTypes_MetalMultiblock> blockMetalMultiblock;
 	public static BlockIEFluid blockFluidCreosote;
 	public static BlockIEFluid blockFluidPlantoil;
 	public static BlockIEFluid blockFluidEthanol;
@@ -190,7 +191,7 @@ public class IEContent
 
 	public static ItemIEBase itemFakeIcons;
 
-	//	public static BlockIEBase blockClothDevice;
+	//	public static BlockIEBase<BlockTypes_> blockClothDevice;
 	public static Fluid fluidCreosote;
 	public static Fluid fluidPlantoil;
 	public static Fluid fluidEthanol;
@@ -609,6 +610,7 @@ public class IEContent
 		registerTile(TileEntityEnergyMeter.class);
 		registerTile(TileEntityConnectorRedstone.class);
 		registerTile(TileEntityConnectorProbe.class);
+		registerTile(TileEntityFeedthrough.class);
 
 		registerTile(TileEntityCapacitorLV.class);
 		registerTile(TileEntityCapacitorMV.class);
@@ -933,6 +935,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
 		MultiblockHandler.registerMultiblock(MultiblockLightningrod.instance);
 		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
+		MultiblockHandler.registerMultiblock(MultiblockFeedthrough.instance);
 
 		/**ACHIEVEMENTS*/
 //		IEAchievements.init();

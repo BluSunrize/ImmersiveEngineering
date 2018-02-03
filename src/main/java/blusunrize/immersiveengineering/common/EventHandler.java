@@ -127,6 +127,8 @@ public class EventHandler
 		 */
 		//		}
 		ImmersiveEngineering.proxy.onWorldLoad();
+		if (IEConfig.blocksBreakWires)
+			event.getWorld().addEventListener(ImmersiveNetHandler.INSTANCE.LISTENER);
 	}
 	//transferPerTick
 	@SubscribeEvent

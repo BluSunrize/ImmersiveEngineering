@@ -81,7 +81,8 @@ public class ImmersiveEngineering
 
 		WireType.wireLossRatio = IEConfig.wireLossRatio;
 		WireType.wireTransferRate = IEConfig.wireTransferRate;
-		WireType.wireColouration = IEConfig.wireColouration;
+		WireType.wireColouration =
+				(IEConfig.wireColouration.length!=IEConfig.wireColourationDefault.length)?IEConfig.wireColourationDefault:IEConfig.wireColouration;
 		WireType.wireLength = IEConfig.wireLength;
 
 		for(int b : IEConfig.Ores.oreDimBlacklist)

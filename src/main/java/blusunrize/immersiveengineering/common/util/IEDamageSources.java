@@ -27,6 +27,7 @@ import java.util.Map;
 
 public class IEDamageSources
 {
+
 	public static class IEDamageSource_Indirect extends EntityDamageSourceIndirect
 	{
 		public IEDamageSource_Indirect(String tag, Entity shot, Entity shooter)
@@ -147,6 +148,7 @@ public class IEDamageSources
 	public static DamageSource razorWire = new IEDamageSource(Lib.DMG_RazorWire);
 
 	public static DamageSource razorShock = new IEDamageSource(Lib.DMG_RazorShock);
+	public static DamageSource wireShock = new IEDamageSource(Lib.DMG_WireShock);
 
 	public static TeslaDamageSource causeTeslaDamage(float amount, boolean lowPower)
 	{

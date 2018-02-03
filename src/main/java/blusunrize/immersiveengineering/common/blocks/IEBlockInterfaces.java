@@ -300,4 +300,9 @@ public class IEBlockInterfaces
 	public interface IPropertyPassthrough
 	{
 	}
+
+	public interface ICacheData
+	{
+		Object[] getCacheData();
+	}
 }

@@ -27,10 +27,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.ArrayList;
@@ -40,8 +37,8 @@ import java.util.Set;
 public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds,IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
 {
 	public EnumFacing facing = EnumFacing.NORTH;
-	public int lastEnergyPassed = 0;
-	public ArrayList<Integer> lastPackets = new ArrayList<Integer>(25);
+	public double lastEnergyPassed = 0;
+	public final ArrayList<Double> lastPackets = new ArrayList<>(25);
 	public boolean lower=true;
 	private int compVal = -1;
 
@@ -109,22 +106,22 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void onEnergyPassthrough(int amount)
+	public void onEnergyPassthrough(double amount)
 	{
 		lastEnergyPassed += amount;
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
 		if(lower)
 		{
 			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
-				return ((TileEntityEnergyMeter)above).canConnectCable(cableType, target);
+				return ((TileEntityEnergyMeter)above).canConnectCable(cableType, target, offset);
 			return false;
 		}
-		return super.canConnectCable(cableType, target);
+		return super.canConnectCable(cableType, target, offset);
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
@@ -163,16 +160,6 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		lower = nbt.getBoolean("dummy");
 	}
 
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		int xDif = ((TileEntity)link).getPos().getX()-getPos().getX();
-		int zDif = ((TileEntity)link).getPos().getZ()-getPos().getZ();
-		if(facing.getAxis()==Axis.X)
-			return new Vec3d(.5,.4375,zDif>0?.8125:.1875);
-		else
-			return new Vec3d(xDif>0?.8125:.1875,.4375,.5);
-	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
@@ -223,13 +210,13 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		}
 		if(te.lastPackets.size()==0)
 			return 0;
-		int sum = 0;
+		double sum = 0;
 		synchronized (te.lastPackets)
 		{
-			for(int transfer: te.lastPackets)
+			for(double transfer: te.lastPackets)
 				sum += transfer;
 		}
-		return sum/te.lastPackets.size();
+		return (int) Math.round(sum/te.lastPackets.size());
 	}
 
 	@Override

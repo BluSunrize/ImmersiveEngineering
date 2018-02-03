@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.util.EnumFacing;
@@ -27,12 +26,6 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV
 		return false;
 	}
 
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		EnumFacing side = facing.getOpposite();
-		return new Vec3d(.5+side.getFrontOffsetX()*.125, .5+side.getFrontOffsetY()*.125, .5+side.getFrontOffsetZ()*.125);
-	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

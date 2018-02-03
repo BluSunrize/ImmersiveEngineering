@@ -40,16 +40,21 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 {
 	public BlockConnector()
 	{
-		super("connector", Material.IRON, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IEProperties.BOOLEANS[1], IEProperties.MULTIBLOCKSLAVE, IOBJModelCallback.PROPERTY);
+		super("connector", Material.IRON, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,
+				IEProperties.BOOLEANS[0], IEProperties.BOOLEANS[1], IEProperties.MULTIBLOCKSLAVE, IOBJModelCallback.PROPERTY,
+				IEProperties.TILEENTITY_PASSTHROUGH);
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
 		setMetaBlockLayer(BlockTypes_Connector.RELAY_HV.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setMetaBlockLayer(BlockTypes_Connector.CONNECTOR_PROBE.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
+		setMetaBlockLayer(BlockTypes_Connector.FEEDTHROUGH.getMeta(), BlockRenderLayer.SOLID,
+				BlockRenderLayer.CUTOUT, BlockRenderLayer.CUTOUT_MIPPED, BlockRenderLayer.TRANSLUCENT);
 		setAllNotNormalBlock();
 		setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER.getMeta(), EnumPushReaction.BLOCK);
 		setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER_HV.getMeta(), EnumPushReaction.BLOCK);
 		setMetaMobilityFlag(BlockTypes_Connector.ENERGY_METER.getMeta(), EnumPushReaction.BLOCK);
+		setMetaMobilityFlag(BlockTypes_Connector.FEEDTHROUGH.getMeta(), EnumPushReaction.BLOCK);
 	}
 
 	@Override
@@ -105,19 +110,26 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	@Override
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
-		if(stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER.getMeta() || stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER_HV.getMeta())
+		switch (BlockTypes_Connector.values()[stack.getItemDamage()])
 		{
-			for(int hh=1; hh<=2; hh++)
-			{
-				BlockPos pos2 = pos.up(hh);
-				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
-					return false;
-			}
-		}
-		else if(stack.getItemDamage()== BlockTypes_Connector.ENERGY_METER.getMeta())
-		{
-			BlockPos pos2 = pos.up();
-			return !world.isOutsideBuildHeight(pos2)&&world.getBlockState(pos2).getBlock().isReplaceable(world, pos2);
+			case TRANSFORMER:
+			case TRANSFORMER_HV:
+				for (int hh = 1; hh <= 2; hh++)
+				{
+					BlockPos pos2 = pos.up(hh);
+					if (world.isOutsideBuildHeight(pos2) || !world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
+						return false;
+				}
+			break;
+			case ENERGY_METER:
+				BlockPos pos2 = pos.up();
+				return !world.isOutsideBuildHeight(pos2) && world.getBlockState(pos2).getBlock().isReplaceable(world, pos2);
+			case FEEDTHROUGH:
+				EnumFacing f = new TileEntityFeedthrough().getFacingForPlacement(player, pos, side, hitX, hitY, hitZ);
+				BlockPos forward = pos.offset(f, 1);
+				BlockPos backward = pos.offset(f, -1);
+				return world.getBlockState(forward).getBlock().isReplaceable(world, forward)&&
+						world.getBlockState(backward).getBlock().isReplaceable(world, backward);
 		}
 		return true;
 	}
@@ -184,6 +196,8 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				return new TileEntityConnectorRedstone();
 			case CONNECTOR_PROBE:
 				return new TileEntityConnectorProbe();
+			case FEEDTHROUGH:
+				return new TileEntityFeedthrough();
 		}
 		return null;
 	}
@@ -209,5 +223,17 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	public boolean allowHammerHarvest(IBlockState state)
 	{
 		return true;
+	}
+
+	@Override
+	public int getLightOpacity(IBlockState state, IBlockAccess w, BlockPos pos)
+	{
+		if (state.getValue(property)==BlockTypes_Connector.FEEDTHROUGH)
+		{
+			TileEntity te = w.getTileEntity(pos);
+			if (te instanceof TileEntityFeedthrough&&((TileEntityFeedthrough) te).offset==0)
+				return 255;
+		}
+		return super.getLightOpacity(state, w, pos);
 	}
 }

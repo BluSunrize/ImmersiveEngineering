@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import net.minecraft.block.state.IBlockState;
@@ -19,12 +18,6 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 public class TileEntityRelayHV extends TileEntityConnectorHV implements IOBJModelCallback<IBlockState>
 {
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		EnumFacing side = facing.getOpposite();
-		return new Vec3d(.5+side.getFrontOffsetX()*.4375, .5+side.getFrontOffsetY()*.4375, .5+side.getFrontOffsetZ()*.4375);
-	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{

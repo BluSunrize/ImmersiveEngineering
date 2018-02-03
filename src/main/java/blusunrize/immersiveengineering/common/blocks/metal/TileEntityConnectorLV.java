@@ -34,10 +34,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IIEInternalFluxHandler, IBlockBounds//, ic2.api.energy.tile.IEnergySink
@@ -69,6 +73,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					energyStorage.modifyEnergyStored(-this.transferEnergy(temp, false, 0));
 					markDirty();
 				}
+				addAvailableEnergy(-1F, null);
 			}
 			currentTickAccepted = 0;
 		}
@@ -204,12 +209,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		EnumFacing side = facing.getOpposite();
-		return new Vec3d(.5+side.getFrontOffsetX()*.0625, .5+side.getFrontOffsetY()*.0625, .5+side.getFrontOffsetZ()*.0625);
-	}
-	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
@@ -318,7 +317,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int received = 0;
 		if(!world.isRemote)
 		{
-			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), world);
+			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this),
+					world, true);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			final int powerForSort = powerLeft;
 
@@ -326,18 +326,21 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				return 0;
 
 			int sum = 0;
-			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<AbstractConnection,Integer>();
+			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<>();
 			for(AbstractConnection con : outputs)
 			{
 				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
 				if(con.cableType!=null && end!=null)
 				{
-					int atmOut = Math.min(powerForSort,con.cableType.getTransferRate());
-					int tempR = end.outputEnergy(atmOut, true, energyType);
-					if(tempR>0)
+					if (end.isEnergyOutput())
 					{
-						powerSorting.put(con, tempR);
-						sum += tempR;
+						int atmOut = Math.min(powerForSort, con.cableType.getTransferRate());
+						int tempR = end.outputEnergy(atmOut, true, energyType);
+						if (tempR > 0)
+						{
+							powerSorting.put(con, tempR);
+							sum += tempR;
+						}
 					}
 				}
 			}
@@ -365,7 +368,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							float mod = (((maxInput-tempR)/(float)maxInput)/.25f)*.1f;
 							intermediaryLoss = MathHelper.clamp(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
 
-							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).get(sub):0;
+							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).getOrDefault(sub, 0);
 							transferredPerCon += r;
 							if(!simulate)
 							{
@@ -373,9 +376,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start,world);
 								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end,world);
 								if(subStart!=null && passedConnectors.add(subStart))
-									subStart.onEnergyPassthrough((int)(r-r*intermediaryLoss));
+									subStart.onEnergyPassthrough(r-r*intermediaryLoss);
 								if(subEnd!=null && passedConnectors.add(subEnd))
-									subEnd.onEnergyPassthrough((int)(r-r*intermediaryLoss));
+									subEnd.onEnergyPassthrough(r-r*intermediaryLoss);
 							}
 						}
 						received += r;
@@ -384,8 +387,27 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							break;
 					}
 				}
+			for(AbstractConnection con : outputs)
+			{
+				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
+				if(con.cableType!=null && end!=null && end.allowEnergyToPass(null))
+				{
+					Pair<Float, Consumer<Float>> e = getEnergyForConnection(con);
+					end.addAvailableEnergy(e.getKey(), e.getValue());
+				}
+			}
 		}
 		return received;
+	}
+
+	private Pair<Float, Consumer<Float>> getEnergyForConnection(@Nullable AbstractConnection c)
+	{
+		float loss = c!=null?c.getAverageLossRate():0;
+		float max = (1-loss)*energyStorage.getEnergyStored();
+		Consumer<Float> extract = (energy)->{
+			energyStorage.modifyEnergyStored((int) (-energy/(1-loss)));
+		};
+		return new ImmutablePair<>(max, extract);
 	}
 
 
@@ -396,6 +418,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public int getMaxOutput()
 	{
 		return connectorInputValues[0];
+	}
+
+	@Nullable
+	@Override
+	protected Pair<Float, Consumer<Float>> getOwnEnergy()
+	{
+		return getEnergyForConnection(null);
 	}
 
 	@Override

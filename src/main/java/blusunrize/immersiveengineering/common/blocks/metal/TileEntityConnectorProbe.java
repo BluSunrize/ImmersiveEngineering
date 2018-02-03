@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -124,13 +123,6 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	{
 		super.readCustomNBT(nbt, descPacket);
 		redstoneChannelSending = nbt.getInteger("redstoneChannelSending");
-	}
-
-	@Override
-	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		EnumFacing side = facing.getOpposite();
-		return new Vec3d(.5 + side.getFrontOffsetX() * .375, .5 + side.getFrontOffsetY() * .375, .5 + side.getFrontOffsetZ() * .375);
 	}
 
 	@Override
