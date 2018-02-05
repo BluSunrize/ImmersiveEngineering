@@ -556,13 +556,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	}
 
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if((pos == 2 || pos == 22 || pos == 86 || pos == 88 || facing == null) && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return master()!=null;
-		return super.hasCapability(capability, facing);
-	}
 	IItemHandler inputHandler = new IEInventoryHandler(12, this, 0, true,false)
 	{
 		//ignore the given slot and spread it out
@@ -604,6 +597,15 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	IItemHandler additiveHandler = new IEInventoryHandler(4, this, 12, true,false);
 	IItemHandler outputHandler = new IEInventoryHandler(6, this, 16, false,true);
 	IItemHandler slagHandler = new IEInventoryHandler(1, this, 22, false,true);
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		if((pos == 2 || pos == 22 || pos == 86 || pos == 88) && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return master()!=null;
+		return super.hasCapability(capability, facing);
+	}
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
