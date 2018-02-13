@@ -62,6 +62,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -79,11 +80,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -1300,6 +1303,18 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				((ModelBiped)model).bipedHead.showModel=true;
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=true;
+		}
+	}
+
+	@SubscribeEvent
+	public void onLoginClient(EntityJoinWorldEvent ev)
+	{
+		Entity e = ev.getEntity();
+		if (e==Minecraft.getMinecraft().player&&ev.getWorld().isRemote)
+		{
+			String javaV = System.getProperty("java.version");
+			if (javaV.equals("1.8.0_25"))
+				e.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"old_java", javaV));
 		}
 	}
 }

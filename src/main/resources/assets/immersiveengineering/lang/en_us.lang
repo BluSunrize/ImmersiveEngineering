@@ -664,6 +664,8 @@ desc.immersiveengineering.info.mineral.Lapis=Lapis
 desc.immersiveengineering.info.mineral.Coal=Coal
 desc.immersiveengineering.info.mineral.Wolframite=Wolframite
 
+chat.immersiveengineering.info.old_java=[Immersive Engineering] §4Warning: §rYour Java version is %1$s. This version causes crashes with the Engineer's manual. These crashes are close to impossible to fix for us. You can prevent the crashes by installing up-to-date Java (make sure to use Java 8, not Java 9) and forcing your launcher to use it.
+
 chat.immersiveengineering.info.coresample.pos=%1$s to %2$s
 chat.immersiveengineering.info.coresample.mineral=%1$s-Vein
 chat.immersiveengineering.info.coresample.noMineral=No Mineral
@@ -1108,8 +1110,7 @@ ie.manual.entry.concrete0=Concrete is a very hard and resistant composite materi
 ie.manual.entry.balloon.name=Balloon
 ie.manual.entry.balloon.subtext=...just make 99 of them
 ie.manual.entry.balloon0=Balloons are sacks of fabric with a heatsource below to keep them afloat. They will also emit light, but despite the torch, they are not a fire hazard.<br>Balloons can be placed like normal blocks, or, when no block is targeted, they will be placed in the air infront of you.
-ie.manual.entry.balloon1=Similar to <link;metalconstruction;§o§nStructural §o§nConnectors§r;5>, you can attach Hemp Rope and Steel Wire to the balloon.<br>Sneak-clicking allows you to set a height offset for the balloon, allowing you to place it up to 5 blocks above the target.
-//Impossible Feature atm// <br>You can also use dyes on a placed balloon; which part you dye depends on where you target it.<br>Rightclicking with an Engineer's Hammer will toggle the balloon's design between horizontal or vertical stripes.
+ie.manual.entry.balloon1=Similar to <link;metalconstruction;§o§nStructural §o§nConnectors§r;5>, you can attach Hemp Rope and Steel Wire to the balloon.<br>Sneak-clicking allows you to set a height offset for the balloon, allowing you to place it up to 5 blocks above the target.<br>You can also use dyes on a placed balloon; which part you dye depends on where you target it.<br>Rightclicking with an Engineer's Hammer will toggle the balloon's design between horizontal or vertical stripes.
 
 ie.manual.entry.crate.name=Wooden Storage Crate
 ie.manual.entry.crate.subtext=Move that gear up!
