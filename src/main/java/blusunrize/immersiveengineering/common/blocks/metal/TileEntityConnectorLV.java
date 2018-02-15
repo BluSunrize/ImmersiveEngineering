@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Abst
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -50,7 +51,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public EnumFacing facing = EnumFacing.DOWN;
 	private long lastTransfer = -1;
 	public int currentTickAccepted=0;
-	public static int[] connectorInputValues = {};
+	public static int[] connectorInputValues = Config.IEConfig.Machines.wireConnectorInput;
 	private FluxStorage energyStorage = new FluxStorage(getMaxInput(),getMaxInput(),0);
 
 	boolean firstTick = true;
@@ -71,6 +72,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				if(temp>0)
 				{
 					energyStorage.modifyEnergyStored(-this.transferEnergy(temp, false, 0));
+					notifyAvailableEnergy(energyStorage.getEnergyStored(), null);
 					markDirty();
 				}
 				addAvailableEnergy(-1F, null);
@@ -285,6 +287,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		if(!simulate)
 		{
 			energyStorage.modifyEnergyStored(accepted);
+			notifyAvailableEnergy(accepted, null);
 			lastTransfer = world.getTotalWorldTime();
 			markDirty();
 		}
@@ -328,11 +331,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			int sum = 0;
 			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<>();
 			for(AbstractConnection con : outputs)
-			{
-				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
-				if(con.cableType!=null && end!=null)
+				if (con.isEnergyOutput)
 				{
-					if (end.isEnergyOutput())
+					IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
+					if(con.cableType!=null && end!=null)
 					{
 						int atmOut = Math.min(powerForSort, con.cableType.getTransferRate());
 						int tempR = end.outputEnergy(atmOut, true, energyType);
@@ -343,7 +345,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						}
 					}
 				}
-			}
 
 			if(sum>0)
 				for(AbstractConnection con : powerSorting.keySet())
@@ -387,17 +388,23 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							break;
 					}
 				}
-			for(AbstractConnection con : outputs)
-			{
-				IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
-				if(con.cableType!=null && end!=null && end.allowEnergyToPass(null))
-				{
-					Pair<Float, Consumer<Float>> e = getEnergyForConnection(con);
-					end.addAvailableEnergy(e.getKey(), e.getValue());
-				}
-			}
 		}
 		return received;
+	}
+
+	private void notifyAvailableEnergy(int energyStored, @Nullable Set<AbstractConnection> outputs)
+	{
+		if (outputs==null)
+			outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(pos, world, true);
+		for(AbstractConnection con : outputs)
+		{
+			IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
+			if(con.cableType!=null && end!=null && end.allowEnergyToPass(null))
+			{
+				Pair<Float, Consumer<Float>> e = getEnergyForConnection(con);
+				end.addAvailableEnergy(e.getKey(), e.getValue());
+			}
+		}
 	}
 
 	private Pair<Float, Consumer<Float>> getEnergyForConnection(@Nullable AbstractConnection c)

@@ -19,6 +19,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -195,13 +196,13 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 		if(getMetaFromState(state)==BlockTypes_WoodenDecoration.FENCE.getMeta())
 		{
 			addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.PILLAR_AABB);
-			if(state.getValue(BlockFence.NORTH).booleanValue())
+			if(state.getValue(BlockFence.NORTH))
 				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.NORTH_AABB);
-			if(state.getValue(BlockFence.EAST).booleanValue())
+			if(state.getValue(BlockFence.EAST))
 				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.EAST_AABB);
-			if(state.getValue(BlockFence.SOUTH).booleanValue())
+			if(state.getValue(BlockFence.SOUTH))
 				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.SOUTH_AABB);
-			if(state.getValue(BlockFence.WEST).booleanValue())
+			if(state.getValue(BlockFence.WEST))
 				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.WEST_AABB);
 		}
 		else
@@ -221,13 +222,13 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	private static int getBoundingBoxIdx(IBlockState state)
 	{
 		int i = 0;
-		if(state.getValue(BlockFence.NORTH).booleanValue())
+		if(state.getValue(BlockFence.NORTH))
 			i |= 1 << EnumFacing.NORTH.getHorizontalIndex();
-		if(state.getValue(BlockFence.EAST).booleanValue())
+		if(state.getValue(BlockFence.EAST))
 			i |= 1 << EnumFacing.EAST.getHorizontalIndex();
-		if(state.getValue(BlockFence.SOUTH).booleanValue())
+		if(state.getValue(BlockFence.SOUTH))
 			i |= 1 << EnumFacing.SOUTH.getHorizontalIndex();
-		if(state.getValue(BlockFence.WEST).booleanValue())
+		if(state.getValue(BlockFence.WEST))
 			i |= 1 << EnumFacing.WEST.getHorizontalIndex();
 		return i;
 	}
@@ -236,5 +237,16 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
 	{
 		return world.getBlockState(pos).getValue(property)==BlockTypes_WoodenDecoration.SCAFFOLDING;
+	}
+
+
+	@Nullable
+	@Override
+	public PathNodeType getAiPathNodeType(IBlockState state, IBlockAccess world, BlockPos pos)
+	{
+		if (state.getValue(property) == BlockTypes_WoodenDecoration.FENCE)
+			return PathNodeType.FENCE;
+		else
+			return super.getAiPathNodeType(state, world, pos);
 	}
 }

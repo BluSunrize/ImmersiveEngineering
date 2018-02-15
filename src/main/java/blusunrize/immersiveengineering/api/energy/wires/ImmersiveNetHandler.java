@@ -49,7 +49,6 @@ public class ImmersiveNetHandler
 	public static final ImmersiveNetHandler INSTANCE = new ImmersiveNetHandler();
 	public final BlockPlaceListener LISTENER = new BlockPlaceListener();
 	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<>();
-	//TODO merge these maps&leave filtering to the caller in 1.13
 	public Map<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<>();
 	public Map<BlockPos, Set<AbstractConnection>> indirectConnectionsNoOut = new ConcurrentHashMap<>();
 	public Map<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<>();
@@ -434,7 +433,8 @@ public class ImmersiveNetHandler
 			float loss = pair.getRight();
 			if(!checked.contains(toBlockPos(next)))
 			{
-				if(ignoreIsEnergyOutput||next.isEnergyOutput())
+				boolean isOutput = next.isEnergyOutput();
+				if(ignoreIsEnergyOutput||isOutput)
 				{
 					BlockPos last = toBlockPos(next);
 					WireType minimumType = null;
@@ -460,7 +460,7 @@ public class ImmersiveNetHandler
 									}
 						}
 					}
-					closedList.add(new AbstractConnection(toBlockPos(node), toBlockPos(next), minimumType, distance, connectionParts.toArray(new Connection[connectionParts.size()])));
+					closedList.add(new AbstractConnection(toBlockPos(node), toBlockPos(next), minimumType, distance, isOutput, connectionParts.toArray(new Connection[connectionParts.size()])));
 				}
 
 				Set<Connection> conLN = getConnections(world, toBlockPos(next));
@@ -687,9 +687,16 @@ public class ImmersiveNetHandler
 	public static class AbstractConnection extends Connection
 	{
 		public Connection[] subConnections;
+		public boolean isEnergyOutput;
 		public AbstractConnection(BlockPos start, BlockPos end, WireType cableType, int length, Connection... subConnections)
 		{
+			this(start, end, cableType, length, true, subConnections);
+		}
+
+		public AbstractConnection(BlockPos start, BlockPos end, WireType cableType, int length, boolean output, Connection... subConnections)
+		{
 			super(start,end,cableType,length);
+			this.isEnergyOutput = output;
 			this.subConnections=subConnections;
 		}
 

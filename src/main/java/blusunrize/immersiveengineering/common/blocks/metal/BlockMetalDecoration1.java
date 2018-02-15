@@ -18,6 +18,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -150,5 +151,19 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	public boolean allowHammerHarvest(IBlockState state)
 	{
 		return true;
+	}
+
+	@Nullable
+	@Override
+	public PathNodeType getAiPathNodeType(IBlockState state, IBlockAccess world, BlockPos pos)
+	{
+		switch (state.getValue(property))
+		{
+			case STEEL_FENCE:
+			case ALUMINUM_FENCE:
+				return PathNodeType.FENCE;
+			default:
+				return super.getAiPathNodeType(state, world, pos);
+		}
 	}
 }
