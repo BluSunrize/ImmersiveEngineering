@@ -166,11 +166,15 @@ public class ApiUtils
 		return createComparableItemStack(stack, true);
 	}
 
+
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
+		return createComparableItemStack(stack, copy, stack.hasTagCompound() && !stack.getTagCompound().hasNoTags());
+	}
+	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
+	{
 		ComparableItemStack comp = new ComparableItemStack(stack, true, copy);
-		if(stack.hasTagCompound() && !stack.getTagCompound().hasNoTags())
-			comp.setUseNBT(true);
+		comp.setUseNBT(useNbt);
 		return comp;
 	}
 

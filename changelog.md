@@ -1,5 +1,24 @@
 #####Version 0.12-77
-- fixed Vertical Conveyor recipes returning too little
+- Various changes to the wiring system (Malte):
+  - Uninsulated energy wires cause damage now
+  - Wires don't need clear line-of-sight but a clear path along the wire as it is rendered
+  - Placing blocks that obstruct wires will cause the wire to break/drop
+  - The skyhook can attach to the middle of connections, rather than just the endpoints
+  - Added a feedthrough insulator as a way to get wires through walls
+  - Addons using wires will have to adapt to these changes!
+- IE now prints a message to chat if Java 8 update 25 is used since it causes unfixable crashes (Malte)
+- Fixed the drill not properly accepting its head (Malte)
+- Fixed broken deserialization of boolean properties, this caused some potential issues with Buildcraft (Malte)
+- Fixed some TESR blockstate crashes (Malte)
+- Fixed IE projectiles (chemthrower, railgun) not working (Malte)
+- Fixed wire loss being higher than intended in some cases (Malte)
+- Fixed fluid pipes losing fluid and not accepting small amounts (Malte)
+- Non-IE wires can no longer be connected to IE connectors (Malte)
+- Fixed arc furnace particles rendering when the arc furnace isn't active (Malte)
+- Fixed some capability crashes (Malte)
+- Fixed mobs trying to jump over IE fences (Malte)
+- Re-fixed the blast furnace using slightly more coke coal than it should (Malte)
+- fixed Vertical Conveyor recipes returning too little (BluSunrize)
 
 #####Version 0.12-76 - BUILT
 - added various config options for the Belljar, to adjust growthspeeds and fertilizer effects

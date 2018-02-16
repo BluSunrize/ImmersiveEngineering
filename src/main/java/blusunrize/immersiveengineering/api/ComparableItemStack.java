@@ -92,13 +92,7 @@ public class ComparableItemStack
 		if(!OreDictionary.itemMatches(stack,otherStack, false))
 			return false;
 		if(this.useNBT)
-		{
-			if(this.stack.hasTagCompound() != otherStack.hasTagCompound())
-				return false;
-			if(!this.stack.hasTagCompound() && !otherStack.hasTagCompound())
-				return true;
-			return this.stack.getTagCompound().equals(otherStack.getTagCompound());
-		}
+			return ItemStack.areItemStackTagsEqual(stack, otherStack);
 		return true;
 	}
 

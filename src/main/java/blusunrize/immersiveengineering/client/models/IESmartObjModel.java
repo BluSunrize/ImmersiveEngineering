@@ -128,7 +128,7 @@ public class IESmartObjModel extends OBJBakedModel
 		@Override
 		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 		{
-			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false);
+			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
 			if (comp == null)
 				return originalModel;
 			IBakedModel model = cachedBakedItemModels.getIfPresent(comp);
