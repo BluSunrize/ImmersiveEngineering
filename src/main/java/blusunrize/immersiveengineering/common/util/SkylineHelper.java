@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -24,7 +23,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -117,23 +115,25 @@ public class SkylineHelper
 		double py = player.posY + player.getEyeHeight();
 		BlockPos head = new BlockPos(player.posX, py, player.posZ);
 		Connection ret = null;
-		for (int i = 0;i<2;i++)
-		{
-			Map<BlockPos, Set<Triple<Connection, Vec3d, Vec3d>>> inDim = (i == 0 ? ImmersiveNetHandler.INSTANCE.blockInWire : ImmersiveNetHandler.INSTANCE.blockNearWire)
+			Map<BlockPos, ImmersiveNetHandler.BlockWireInfo> inDim = ImmersiveNetHandler.INSTANCE.blockWireMap
 					.lookup(player.dimension);
 			if (inDim != null && inDim.containsKey(head))
 			{
-				for (Triple<Connection, Vec3d, Vec3d> connectionVec3dVec3dTriple : inDim.get(head))
+				ImmersiveNetHandler.BlockWireInfo info = inDim.get(head);
+				for (int i = 0;i<2;i++)
 				{
-					Connection c = connectionVec3dVec3dTriple.getLeft();
-					if (ignored==null||!c.hasSameConnectors(ignored))
+					Set<Triple<Connection, Vec3d, Vec3d>> conns = i==0?info.in:info.near;
+					for (Triple<Connection, Vec3d, Vec3d> connectionVec3dVec3dTriple : conns)
 					{
-						ret = c;
-						break;
+						Connection c = connectionVec3dVec3dTriple.getLeft();
+						if (ignored == null || !c.hasSameConnectors(ignored))
+						{
+							ret = c;
+							break;
+						}
 					}
 				}
 			}
-		}
 		if (ret!=null)
 		{
 			Vec3d across = new Vec3d(ret.end).subtract(new Vec3d(ret.start));

@@ -72,10 +72,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				if(temp>0)
 				{
 					energyStorage.modifyEnergyStored(-this.transferEnergy(temp, false, 0));
-					notifyAvailableEnergy(energyStorage.getEnergyStored(), null);
 					markDirty();
 				}
 				addAvailableEnergy(-1F, null);
+				notifyAvailableEnergy(energyStorage.getEnergyStored(), null);
 			}
 			currentTickAccepted = 0;
 		}
