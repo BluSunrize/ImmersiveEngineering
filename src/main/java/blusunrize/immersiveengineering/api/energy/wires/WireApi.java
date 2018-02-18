@@ -18,10 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -40,22 +37,25 @@ public final class WireApi
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, Predicate<IBlockState> matches)
+													  ResourceLocation texLoc, float[] uvs, double connLength, Predicate<IBlockState> matches,
+													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, matches));
+		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
 													  ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-													  Predicate<IBlockState> matches)
+													  Predicate<IBlockState> matches,
+													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, matches));
+		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, matches, dmgPerEnergy, maxDmg, postProcessDmg));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
-													  double connLength, Predicate<IBlockState> matches)
+													  double connLength, Predicate<IBlockState> matches,
+													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texLoc, uvs, connLength, matches));
+		INFOS.put(w, new FeedthroughModelInfo(model, texLoc, uvs, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg));
 	}
 
 	@Nullable
@@ -97,6 +97,9 @@ public final class WireApi
 	{
 		public final ResourceLocation modelLoc;
 		final ImmutableMap<String, String> texReplacements;
+		public final float dmgPerEnergy;
+		public final float maxDmg;
+		public final Function<Float, Float> postProcessDmg;
 		@SideOnly(Side.CLIENT)
 		public IBakedModel model;
 		final ResourceLocation texLoc;
@@ -107,7 +110,8 @@ public final class WireApi
 		public final double connOffset;
 		final Predicate<IBlockState> matches;
 		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, Predicate<IBlockState> matches) {
+									double connLength, double connOffset, Predicate<IBlockState> matches,
+									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg) {
 			modelLoc = model;
 			this.texLoc = texLoc;
 			this.uvs = uvs;
@@ -115,14 +119,19 @@ public final class WireApi
 			this.connLength = connLength;
 			this.connOffset = connOffset;
 			this.matches = matches;
+			this.dmgPerEnergy = dmgPerEnergy;
+			this.maxDmg = maxDmg;
+			this.postProcessDmg = postProcessDmg;
 		}
 		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, Predicate<IBlockState> matches) {
-			this(model, texRepl, texLoc, uvs, connLength, connLength, matches);
+									double connLength, Predicate<IBlockState> matches,
+									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg) {
+			this(model, texRepl, texLoc, uvs, connLength, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg);
 		}
 
-		public FeedthroughModelInfo(ResourceLocation model, ResourceLocation texLoc, float[] uvs, double connLength, Predicate<IBlockState> matches) {
-			this(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, matches);
+		public FeedthroughModelInfo(ResourceLocation model, ResourceLocation texLoc, float[] uvs, double connLength, Predicate<IBlockState> matches,
+									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg) {
+			this(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg);
 		}
 
 		@SideOnly(Side.CLIENT)

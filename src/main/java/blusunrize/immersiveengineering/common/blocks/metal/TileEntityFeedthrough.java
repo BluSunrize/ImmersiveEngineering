@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -287,5 +288,23 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		return new Object[] {
 				stateForMiddle, reference, facing
 		};
+	}
+
+	@Override
+	public float getDamageAmount(Entity e, ImmersiveNetHandler.Connection c)
+	{
+		return INFOS.get(reference).postProcessDmg.apply(super.getDamageAmount(e, c));
+	}
+
+	@Override
+	protected float getBaseDamage(ImmersiveNetHandler.Connection c)
+	{
+		return INFOS.get(reference).dmgPerEnergy;
+	}
+
+	@Override
+	protected float getMaxDamage(ImmersiveNetHandler.Connection c)
+	{
+		return INFOS.get(reference).maxDmg;
 	}
 }

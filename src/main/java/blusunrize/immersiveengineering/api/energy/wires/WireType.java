@@ -120,18 +120,22 @@ public abstract class WireType
 
 	static
 	{
-		registerFeedthroughForWiretype(WireType.COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
+		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
-				.5, (s)->s.getBlock()== IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_LV);
-		registerFeedthroughForWiretype(WireType.ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
+				.5, (s)->s.getBlock()== IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_LV,
+				8*2F/COPPER.getTransferRate(), 2, (f)->f);
+		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
-				.5625, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_MV);
-		registerFeedthroughForWiretype(WireType.STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
+				.5625, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_MV,
+				8*5F/ELECTRUM.getTransferRate(), 5, (f)->f);
+		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
-				.75, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_HV);
-		registerFeedthroughForWiretype(WireType.REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
+				.75, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_HV,
+				8*15F/STEEL.getTransferRate(), 15, (f)->f);
+		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
 				ImmutableMap.of(),  new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
-				.5625, .5, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_REDSTONE);
+				.5625, .5, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_REDSTONE,
+				0, 0, (f)->f);
 	}
 	/**
 	 * DO NOT SUBCLASS THIS.
