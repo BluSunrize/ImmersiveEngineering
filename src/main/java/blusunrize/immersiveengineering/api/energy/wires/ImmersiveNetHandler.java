@@ -429,7 +429,8 @@ public class ImmersiveNetHandler
 			Pair<IImmersiveConnectable, Float> pair = queue.poll();
 			next = pair.getLeft();
 			float loss = pair.getRight();
-			if(!checked.contains(toBlockPos(next)))
+			BlockPos nextPos = toBlockPos(next);
+			if(!checked.contains(nextPos)&&queue.stream().noneMatch((p)->p.getLeft().equals(nextPos)))
 			{
 				boolean isOutput = next.isEnergyOutput();
 				if(ignoreIsEnergyOutput||isOutput)
@@ -674,6 +675,12 @@ public class ImmersiveNetHandler
 			return compareTo((Connection)obj)==0;
 		}
 
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(start, end, cableType);
+		}
+
 		public float getBaseLoss()
 		{
 			return getBaseLoss(0);
@@ -721,6 +728,24 @@ public class ImmersiveNetHandler
 				f += c.getBaseLoss();
 			}
 			return Math.min(f,1);
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			if (!super.equals(o)) return false;
+			AbstractConnection that = (AbstractConnection) o;
+			return Arrays.equals(subConnections, that.subConnections);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			int result = super.hashCode();
+			result = 31 * result + Arrays.hashCode(subConnections);
+			return result;
 		}
 	}
 

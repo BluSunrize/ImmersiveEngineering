@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Triple;
@@ -62,7 +63,7 @@ public class SkylineHelper
 		Vec3d across = new Vec3d(vEnd.x-vStart.x, 0, vEnd.z-vStart.z);
 		double t = (delta.x*across.x+delta.z*across.z)/(across.x*across.x+across.z*across.z);
 		pos = connection.getVecAt(t, vStart, across, across.lengthVector());
-		int tInt = (int)(t*16);
+		int tInt = MathHelper.clamp(0, (int)(t*16), 15);
 
 		Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
 		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x,pos.y,pos.z, connection, cc0, steps, tInt+1);
