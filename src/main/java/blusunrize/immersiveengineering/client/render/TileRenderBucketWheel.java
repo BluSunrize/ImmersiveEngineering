@@ -66,7 +66,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 					{
 						list.add("dig"+i);
 						Block b = Block.getBlockFromItem(tile.digStacks.get(i).getItem());
-						IBlockState digState = b!=null?b.getStateFromMeta(tile.digStacks.get(i).getMetadata()): Blocks.STONE.getDefaultState();
+						IBlockState digState = b!=Blocks.AIR?b.getStateFromMeta(tile.digStacks.get(i).getMetadata()): Blocks.COBBLESTONE.getDefaultState();
 						IBakedModel digModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
 						if(digModel!=null && digModel.getParticleTexture()!=null)
 							texMap.put("dig"+i, digModel.getParticleTexture().getIconName());

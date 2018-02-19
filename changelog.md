@@ -8,6 +8,7 @@
   - Addons using wires will have to adapt to these changes!
 - IE now prints a message to chat if Java 8 update 25 is used since it causes unfixable crashes (Malte)
 - Changed Drill to have the "Shovel" tool class (primetoxinz)
+- Changed Excavator to show Cobblestone instead of missing texture when digging items instead of blocks (BluSunrize)
 - Fixed the drill not properly accepting its head (Malte)
 - Fixed broken deserialization of boolean properties, this caused some potential issues with Buildcraft (Malte)
 - Fixed some TESR blockstate crashes (Malte)
