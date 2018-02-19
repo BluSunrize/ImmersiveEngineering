@@ -7,6 +7,7 @@
   - Added a feedthrough insulator as a way to get wires through walls
   - Addons using wires will have to adapt to these changes!
 - IE now prints a message to chat if Java 8 update 25 is used since it causes unfixable crashes (Malte)
+- Changed Drill to have the "Shovel" tool class (primetoxinz)
 - Fixed the drill not properly accepting its head (Malte)
 - Fixed broken deserialization of boolean properties, this caused some potential issues with Buildcraft (Malte)
 - Fixed some TESR blockstate crashes (Malte)
@@ -18,9 +19,10 @@
 - Fixed some capability crashes (Malte)
 - Fixed mobs trying to jump over IE fences (Malte)
 - Re-fixed the blast furnace using slightly more coke coal than it should (Malte)
-- fixed Vertical Conveyor recipes returning too little (BluSunrize)
-- fixed Nullpointer on Redstone Probes (BluSunrize)
-- fixed Output slots not being blocked (BluSunrize)
+- Fixed Vertical Conveyor recipes returning too little (BluSunrize)
+- Fixed Nullpointer on Redstone Probes (BluSunrize)
+- Fixed Output slots not being blocked (BluSunrize)
+- Translations Added/Updated: en_ud (The-Fireplace), ja_jp (iceink001)
 
 #####Version 0.12-76 - BUILT
 - added various config options for the Belljar, to adjust growthspeeds and fertilizer effects
