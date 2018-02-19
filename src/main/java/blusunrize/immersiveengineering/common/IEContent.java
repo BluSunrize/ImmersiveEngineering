@@ -429,6 +429,7 @@ public class IEContent
 
 	public static void preInit()
 	{
+		WireType.init();
 		/**CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			NBTTagCompound data = entity.getEntityData();

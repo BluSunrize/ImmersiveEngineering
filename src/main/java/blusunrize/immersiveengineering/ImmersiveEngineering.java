@@ -74,16 +74,17 @@ public class ImmersiveEngineering
 	{
 		IELogger.logger = event.getModLog();
 		Config.preInit(event);
-		IEContent.preInit();
-		proxy.preInit();
-
-		IEAdvancements.preInit();
-
 		WireType.wireLossRatio = IEConfig.wireLossRatio;
 		WireType.wireTransferRate = IEConfig.wireTransferRate;
 		WireType.wireColouration =
 				(IEConfig.wireColouration.length!=IEConfig.wireColourationDefault.length)?IEConfig.wireColourationDefault:IEConfig.wireColouration;
 		WireType.wireLength = IEConfig.wireLength;
+
+		IEContent.preInit();
+		proxy.preInit();
+
+		IEAdvancements.preInit();
+
 
 		for(int b : IEConfig.Ores.oreDimBlacklist)
 			IEWorldGen.oreDimBlacklist.add(b);

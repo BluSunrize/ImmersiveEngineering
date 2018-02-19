@@ -109,17 +109,25 @@ public abstract class WireType
 	@SideOnly(Side.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;
 
-	public static WireType COPPER = new IEBASE(0);
-	public static WireType ELECTRUM = new IEBASE(1);
-	public static WireType STEEL = new IEBASE(2);
-	public static WireType STRUCTURE_ROPE = new IEBASE(3);
-	public static WireType STRUCTURE_STEEL = new IEBASE(4);
-	public static WireType REDSTONE = new IEBASE(5);
-	public static WireType COPPER_INSULATED = new IEBASE(6);
-	public static WireType ELECTRUM_INSULATED = new IEBASE(7);
+	public static WireType COPPER;
+	public static WireType ELECTRUM;
+	public static WireType STEEL;
+	public static WireType STRUCTURE_ROPE;
+	public static WireType STRUCTURE_STEEL;
+	public static WireType REDSTONE;
+	public static WireType COPPER_INSULATED;
+	public static WireType ELECTRUM_INSULATED;
 
-	static
+	public static void init()
 	{
+		COPPER = new IEBASE(0);
+		ELECTRUM = new IEBASE(1);
+		STEEL = new IEBASE(2);
+		STRUCTURE_ROPE = new IEBASE(3);
+		STRUCTURE_STEEL = new IEBASE(4);
+		REDSTONE = new IEBASE(5);
+		COPPER_INSULATED = new IEBASE(6);
+		ELECTRUM_INSULATED = new IEBASE(7);
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
 				.5, (s)->s.getBlock()== IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_LV,
