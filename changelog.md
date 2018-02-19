@@ -1,4 +1,4 @@
-#####Version 0.12-77
+#####Version 0.12-77 - BUILT
 - Various changes to the wiring system (Malte):
   - Uninsulated energy wires cause damage now
   - Wires don't need clear line-of-sight but a clear path along the wire as it is rendered
