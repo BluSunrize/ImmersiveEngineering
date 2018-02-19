@@ -62,7 +62,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return true;
+			return false;
 		}
 	}
 	public static class FluidContainer extends IESlot

@@ -19,7 +19,8 @@
 - Fixed mobs trying to jump over IE fences (Malte)
 - Re-fixed the blast furnace using slightly more coke coal than it should (Malte)
 - fixed Vertical Conveyor recipes returning too little (BluSunrize)
-- fixed Nullpointer on Redstone Probes
+- fixed Nullpointer on Redstone Probes (BluSunrize)
+- fixed Output slots not being blocked (BluSunrize)
 
 #####Version 0.12-76 - BUILT
 - added various config options for the Belljar, to adjust growthspeeds and fertilizer effects
