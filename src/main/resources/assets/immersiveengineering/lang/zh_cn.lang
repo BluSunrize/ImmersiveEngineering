@@ -1,3 +1,4 @@
+ImmersiveEngineering Chinese localization
 # BLOCKS
 tile.immersiveengineering.ore.copper.name=铜矿石
 tile.immersiveengineering.ore.aluminum.name=铝土矿石
@@ -148,6 +149,10 @@ tile.immersiveengineering.aluminum_scaffolding_stairs0.name=铝脚手架楼梯
 tile.immersiveengineering.aluminum_scaffolding_stairs1.name=铝脚手架楼梯
 tile.immersiveengineering.aluminum_scaffolding_stairs2.name=铝脚手架楼梯
 
+tile.immersiveengineering.metal_ladder.normal.name=金属梯子
+tile.immersiveengineering.metal_ladder.covered_steel.name=安全梯
+tile.immersiveengineering.metal_ladder.covered_aluminum.name=安全梯
+
 tile.immersiveengineering.connector.connector_lv.name=低压接线器
 tile.immersiveengineering.connector.relay_lv.name=低压继电器
 tile.immersiveengineering.connector.connector_mv.name=中压接线器
@@ -162,6 +167,7 @@ tile.immersiveengineering.connector.redstone_breaker.name=红石控制断路刀�
 tile.immersiveengineering.connector.energy_meter.name=电流互感器
 tile.immersiveengineering.connector.connector_redstone.name=红石接线器
 tile.immersiveengineering.connector.connector_probe.name=红石探测接线器
+tile.immersiveengineering.connector.feedthrough.name=Feedthrough Insulator
 
 tile.immersiveengineering.metal_device0.capacitor_lv.name=低压电容器
 tile.immersiveengineering.metal_device0.capacitor_mv.name=中压电容器
@@ -220,6 +226,8 @@ tile.immersiveengineering.cloth_device.stripcurtain.name=带状帘
 
 tile.immersiveengineering.molten_uranium.name=熔融铀
 tile.immersiveengineering.molten_constantan.name=熔融康铜
+
+tile.immersiveengineering.arb_solid.name=Arbitrary solid block
 
 #Hydraulicraft Support
 tile.harvesterTrolley.ieCrop.name=工业大麻收割车
@@ -293,7 +301,7 @@ item.immersiveengineering.material.component_iron.name=铁质机械零件
 item.immersiveengineering.material.component_steel.name=钢质机械零件
 item.immersiveengineering.material.waterwheel_segment.name=水车部件
 item.immersiveengineering.material.windmill_blade.name=风车叶片
-item.immersiveengineering.material.windmill_blade_advanced.name=改良风车叶片
+item.immersiveengineering.material.windmill_sail.name=改良风车叶片
 item.immersiveengineering.material.wooden_grip.name=木握柄
 item.immersiveengineering.material.gunpart_barrel.name=枪管
 item.immersiveengineering.material.gunpart_drum.name=左筒
@@ -322,7 +330,9 @@ item.immersiveengineering.fluidContainers.bottleBiodiesel.name=生物柴油瓶
 item.immersiveengineering.fluidContainers.bucketBiodiesel.name=生物柴油桶
 
 item.immersiveengineering.wirecoil.copper.name=低压线圈
+item.immersiveengineering.wirecoil.insulated_copper.name=绝缘低压线圈
 item.immersiveengineering.wirecoil.electrum.name=中压线圈
+item.immersiveengineering.wirecoil.insulated_electrum.name=绝缘中压线圈
 item.immersiveengineering.wirecoil.hv.name=高压线圈
 item.immersiveengineering.wirecoil.rope.name=麻绳线圈
 item.immersiveengineering.wirecoil.structural.name=钢线圈
@@ -333,7 +343,7 @@ item.immersiveengineering.tool.voltmeter.name=工程师电表
 item.immersiveengineering.tool.manual.name=工程师手册
 item.immersiveengineering.toolbox.name=工程师工具箱
 
-item.immersiveengineering.revolver.normal.name=左轮手枪
+item.immersiveengineering.revolver.name=左轮手枪
 item.immersiveengineering.revolver.dev.name=♛皇家征服者♚
 item.immersiveengineering.revolver.infinity.name=催化
 item.immersiveengineering.revolver.tesla.name=线圈枪
@@ -413,8 +423,8 @@ item.immersiveengineering.fluorescent_tube.name=荧光管
 item.immersiveengineering.powerpack.name=电容背包
 item.immersiveengineering.shield.name=重型盾牌
 
-#CREATIVE - PLEASE DO NOT TRANSLATE THIS ENTRY THANKS 请勿翻译此条目 谢谢合作 -
-#itemGroup.immersiveengineering=Immersive Engineering
+#CREATIVE
+itemGroup.immersiveengineering=沉浸工程
 
 #ENTITIES
 entity.immersiveengineering.skylineHook.name=天钩
@@ -567,7 +577,7 @@ item.immersiveengineering.bullet.terrasteel.name=叶绿弹
 ie.manual.entry.bullets_terrasteel=§l叶绿§l弹§r使用“特种子弹”蓝图和魔力金属“泰拉钢”制作，这让它们能够自动寻找并跟踪目标。
 #BLOODMAGIC COMPAT
 #item.immersiveengineering.bullet.crystalwill.name=晶化意志弹
-#ie.manual.entry.bullets_crystalwill=§l晶化§l意志§l弹§r使用“特种子弹”和Demon Will Crystal制作，其中的少量demonic will将会迫使子弹寻找附近的目标并给予无情的打击。
+#ie.manual.entry.bullets_crystalwill=§l晶化§l意志§l弹§r使用“特种子弹”和恶魔意志晶体制作，其中的少量恶魔意志将会迫使子弹寻找附近的目标并给予无情的打击。
 
 #DESCRIPTIONS
 entity.Villager.immersiveengineering.engineer=结构工程师
@@ -653,6 +663,8 @@ desc.immersiveengineering.info.mineral.Silver=银矿
 desc.immersiveengineering.info.mineral.Lapis=青金石矿
 desc.immersiveengineering.info.mineral.Coal=煤矿
 desc.immersiveengineering.info.mineral.Wolframite=钨矿
+
+chat.immersiveengineering.info.old_java=[Immersive Engineering] §4警告：§r你的Java版本为 %1$s ，该版本会导致使用工程师手册崩溃。对于此崩溃问题，我们不会进行修复。你可以通过升级Java（注意：升级Java8版本，而不是使用Java9）版本来解决此问题。
 
 chat.immersiveengineering.info.coresample.pos=%1$s 到 %2$s
 chat.immersiveengineering.info.coresample.mineral=%1$s矿脉
@@ -917,6 +929,7 @@ death.attack.ieRazorShock=%1$s被刀片刺网电的骨头酥脆
 death.attack.ieTesla=%1$s被特斯拉线圈烤成了焦炭
 death.attack.ieTeslaPrimary=%1$s触碰到了特斯拉线圈的主电缆
 death.attack.ieRailgun=%1$s被%2$s的轨道炮刺穿了
+death.attack.ieWireShock=%1$s不小心触碰到未绝缘导线
 
 #ACHIEVEMENTS
 advancement.immersiveengineering:root=Immersive Engineering
