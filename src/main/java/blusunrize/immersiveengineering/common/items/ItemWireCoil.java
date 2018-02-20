@@ -167,11 +167,11 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									ignore.addAll(nodeLink.getIgnored(nodeHere));
 									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
 											(int)Math.sqrt(distanceSq));
-									Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos)).addVector(tileEntity.getPos().getX(),
-											tileEntity.getPos().getY(), tileEntity.getPos().getZ());
-									Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(tileEntityLinkingPos.getPos().getX(),
-											tileEntityLinkingPos.getPos().getY(), tileEntityLinkingPos.getPos().getZ());
-									boolean canSee = ApiUtils.raytraceAlongCatenary(tmpConn, (p)->{
+									Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos));
+									Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(linkPos.getX()-masterPos.getX(),
+											linkPos.getY()-masterPos.getY(),
+											linkPos.getZ()-masterPos.getZ());
+									boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p)->{
 										if (ignore.contains(p.getLeft()))
 											return false;
 										IBlockState state = world.getBlockState(p.getLeft());

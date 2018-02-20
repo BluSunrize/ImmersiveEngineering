@@ -513,14 +513,14 @@ public class ImmersiveNetHandler
 				BlockWireInfo info = mapForDim.get(p);
 				if (info!=null)
 				{
-					handleMapForDamage(info.in, (EntityLivingBase) e);
-					handleMapForDamage(info.near, (EntityLivingBase) e);
+					handleMapForDamage(info.in, (EntityLivingBase) e, p);
+					handleMapForDamage(info.near, (EntityLivingBase) e, p);
 				}
 			}
 		}
 	}
 
-	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, EntityLivingBase e)
+	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, EntityLivingBase e, BlockPos here)
 	{
 		final double KNOCKBACK_PER_DAMAGE = 10;
 		if (!in.isEmpty())
@@ -530,7 +530,7 @@ public class ImmersiveNetHandler
 				if (conn.getLeft().cableType.canCauseDamage())
 				{
 					double extra = conn.getLeft().cableType.getDamageRadius();
-					AxisAlignedBB includingExtra = eAabb.grow(extra);
+					AxisAlignedBB includingExtra = eAabb.grow(extra).offset(-here.getX(), -here.getY(), -here.getZ());
 					boolean endpointsInEntity = includingExtra.contains(conn.getMiddle())||
 							includingExtra.contains(conn.getRight());
 					RayTraceResult rayRes = endpointsInEntity?null:includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());

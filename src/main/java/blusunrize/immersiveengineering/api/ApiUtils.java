@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -345,12 +346,16 @@ public class ApiUtils
 
 	public static Vec3d getVecForIICAt(World world, BlockPos p, Connection conn)
 	{
-		Vec3d vStart = new Vec3d(p.getX(),p.getY(),p.getZ());
+		Vec3d pos = Vec3d.ZERO;
 		//Force loading
 		IImmersiveConnectable iicStart = toIIC(p, world, false);
 		if(iicStart!=null)
-			vStart = addVectors(vStart, iicStart.getConnectionOffset(conn));
-		return vStart;
+			pos = iicStart.getConnectionOffset(conn);
+		if (p.equals(conn.end))
+			pos = pos.addVector(conn.end.getX()-conn.start.getX(),
+					conn.end.getY()-conn.start.getY(),
+					conn.end.getZ()-conn.start.getZ());
+		return pos;
 	}
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
@@ -437,11 +442,21 @@ public class ApiUtils
 	{
 		Vec3d vStart = getVecForIICAt(w, conn.start, conn);
 		Vec3d vEnd = getVecForIICAt(w, conn.end, conn);
-		return raytraceAlongCatenary(conn, shouldStop, close, vStart, vEnd);
+		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
 	}
 
+	/**
+	 * Use raytraceAlongCatenaryRelative instead, pass vStart and vEnd relative to the start of the connection
+	 */
+	@Deprecated
 	public static boolean raytraceAlongCatenary(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
+	{
+		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart.subtract(conn.start.getX(), conn.start.getY(), conn.start.getZ()),
+				vEnd.subtract(conn.start.getX(), conn.start.getY(), conn.start.getZ()));
+	}
+	public static boolean raytraceAlongCatenaryRelative(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
+														Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
 	{
 		conn.getSubVertices(vStart, vEnd);
 		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
@@ -462,7 +477,7 @@ public class ApiUtils
 				double factor = (i - getDim(vStart, dim)) / getDim(across, dim);
 				Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
 
-				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near))
+				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 					return false;
 			}
 		}
@@ -478,7 +493,7 @@ public class ApiUtils
 				double posRel = (factor * acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
 				Vec3d pos = new Vec3d(vStart.x + across.x * posRel, y, vStart.z + across.z * posRel);
 
-				if (posRel>=0&&posRel<=1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near))
+				if (posRel>=0&&posRel<=1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 					return false;
 			}
 		}
@@ -491,7 +506,8 @@ public class ApiUtils
 	}
 
 	private static boolean handleVec(Vec3d pos, Vec3d origPos, int start, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
-									 Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop, HashSet<Triple<BlockPos, Vec3d, Vec3d>> near)
+									 Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop, HashSet<Triple<BlockPos, Vec3d, Vec3d>> near,
+									 BlockPos offset)
 	{
 		final double DELTA_HIT = 1e-5;
 		final double EPSILON = 1e-5;
@@ -502,20 +518,24 @@ public class ApiUtils
 			double diff = coord - Math.floor(coord);
 			if (diff < DELTA_HIT)
 			{
-				if (handleVec(offsetDim(pos, i, -(diff + EPSILON)), origPos, i + 1, halfScanned, done, shouldStop, near))
+				if (handleVec(offsetDim(pos, i, -(diff + EPSILON)), origPos, i + 1, halfScanned, done, shouldStop, near, offset))
 					return true;
 				calledOther = true;
 			}
 			diff = Math.ceil(coord) - coord;
 			if (diff < DELTA_HIT)
 			{
-				if (handleVec(offsetDim(pos, i, diff + EPSILON), origPos, i + 1, halfScanned, done, shouldStop, near))
+				if (handleVec(offsetDim(pos, i, diff + EPSILON), origPos, i + 1, halfScanned, done, shouldStop, near, offset))
 					return true;
 				calledOther = true;
 			}
 		}
 		if (!calledOther)
-			return handlePos(origPos, new BlockPos(pos), halfScanned, done, shouldStop, near);
+		{
+			BlockPos blockPos = new BlockPos(pos);
+			return handlePos(origPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ()),
+					blockPos.add(offset), halfScanned, done, shouldStop, near);
+		}
 		return false;
 	}
 
@@ -737,7 +757,7 @@ public class ApiUtils
 	{
 		if (state.getBlock().canCollideCheck(state, false))
 		{
-			AxisAlignedBB aabb = state.getBoundingBox(worldIn, pos).offset(pos).grow(1e-5);
+			AxisAlignedBB aabb = state.getBoundingBox(worldIn, pos).grow(1e-5);
 			if (aabb.contains(a)||aabb.contains(b))
 				return true;
 			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a, b);

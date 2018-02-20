@@ -1416,11 +1416,10 @@ public class ClientUtils
 			float[] rgb = {(color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, (color >> 24 & 255) / 255f};
 			if (rgb[3]==0)
 				rgb[3] = 1;
-			Vector3f start = new Vector3f(conn.start.getX(), conn.start.getY(), conn.start.getZ());
 			float radius = (float) (conn.cableType.getRenderDiameter() / 2);
 			List<Integer> crossings = new ArrayList<>();
 			for (int i = 1;i<f.length;i++)
-				if (crossesChunkBoundary(f[i], f[i-1]))
+				if (crossesChunkBoundary(f[i], f[i-1], conn.start))
 					crossings.add(i);
 			int index = crossings.size()/2;
 			boolean greater = conn.start.compareTo(conn.end)>0;
@@ -1435,9 +1434,7 @@ public class ClientUtils
 				List<BakedQuad> curr = ret[fading?1:0];
 				int j = i - 1;
 				Vector3f here = new Vector3f((float) f[i].x, (float) f[i].y, (float) f[i].z);
-				Vector3f.sub(here, start, here);
 				Vector3f there = new Vector3f((float) f[j].x, (float) f[j].y, (float) f[j].z);
-				Vector3f.sub(there, start, there);
 				if (fading)
 				{
 					Vector3f.add(here, fadingOffset, here);
@@ -1616,13 +1613,17 @@ public class ClientUtils
 					builder.put(e);
 			}
 	}
-	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end)
+	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end, BlockPos offset)
 	{
-		if (((int)Math.floor(start.x/16))!=((int)Math.floor(end.x/16)))
+		if (crossesChunkBorderSingleDim(start.x, end.x, offset.getX()))
 			return true;
-		if (((int)Math.floor(start.y/16))!=((int)Math.floor(end.y/16)))
+		if (crossesChunkBorderSingleDim(start.y, end.y, offset.getY()))
 			return true;
-		return ((int)Math.floor(start.z/ 16)) != ((int)Math.floor(end.z / 16));
+		return crossesChunkBorderSingleDim(start.z, end.z, offset.getZ());
+	}
+
+	private static boolean crossesChunkBorderSingleDim(double a, double b, int offset) {
+		return ((int)a+offset)>>4!=((int)b+offset)>>4;
 	}
 
 	public static void renderQuads(Collection<BakedQuad> quads, float brightness, float red, float green, float blue)

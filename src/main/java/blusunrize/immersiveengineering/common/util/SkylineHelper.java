@@ -124,9 +124,9 @@ public class SkylineHelper
 				for (int i = 0;i<2;i++)
 				{
 					Set<Triple<Connection, Vec3d, Vec3d>> conns = i==0?info.in:info.near;
-					for (Triple<Connection, Vec3d, Vec3d> connectionVec3dVec3dTriple : conns)
+					for (Triple<Connection, Vec3d, Vec3d> conn : conns)
 					{
-						Connection c = connectionVec3dVec3dTriple.getLeft();
+						Connection c = conn.getLeft();
 						if (ignored == null || !c.hasSameConnectors(ignored))
 						{
 							ret = c;
