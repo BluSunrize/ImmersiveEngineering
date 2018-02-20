@@ -276,7 +276,7 @@ public class FeedthroughModel implements IBakedModel
 				switch (k.offset)
 				{
 					case 0:
-						if (k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
+						if (k.layer==null||k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
 						{
 							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
 									DefaultVertexFormats.ITEM, colorMultiplier);
