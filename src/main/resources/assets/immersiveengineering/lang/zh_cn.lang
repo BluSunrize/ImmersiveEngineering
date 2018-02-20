@@ -167,7 +167,7 @@ tile.immersiveengineering.connector.redstone_breaker.name=红石控制断路刀�
 tile.immersiveengineering.connector.energy_meter.name=电流互感器
 tile.immersiveengineering.connector.connector_redstone.name=红石接线器
 tile.immersiveengineering.connector.connector_probe.name=红石探测接线器
-tile.immersiveengineering.connector.feedthrough.name=Feedthrough Insulator
+tile.immersiveengineering.connector.feedthrough.name=通透绝缘体
 
 tile.immersiveengineering.metal_device0.capacitor_lv.name=低压电容器
 tile.immersiveengineering.metal_device0.capacitor_mv.name=中压电容器
@@ -383,7 +383,7 @@ item.immersiveengineering.drillhead.steel.name=钢制钻头
 item.immersiveengineering.skyhook.name=工程师天钩
 
 item.immersiveengineering.toolupgrade.drill_waterproof.name=压缩空气罐
-item.immersiveengineering.toolupgrade.drill_speed.name=高级润滑系统
+item.immersiveengineering.toolupgrade.drill_lube.name=高级润滑系统
 item.immersiveengineering.toolupgrade.drill_damage.name=附加螺旋钻
 item.immersiveengineering.toolupgrade.drill_capacity.name=大型燃料缸
 item.immersiveengineering.toolupgrade.revolver_bayonet.name=刺刀
