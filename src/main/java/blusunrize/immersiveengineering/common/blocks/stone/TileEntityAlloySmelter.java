@@ -101,6 +101,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 
 			if(burnTime>0)
 			{
+				boolean doneWork = false;
 				if(process>0)
 				{
 					if(inventory.get(0).isEmpty()||inventory.get(1).isEmpty())
@@ -120,6 +121,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 						else
 						{
 							process--;
+							doneWork = true;
 							if (!active)
 								active = true;
 						}
@@ -150,7 +152,9 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 					if(recipe!=null)
 					{
 						this.process=recipe.time;
-						this.processMax=process;
+						if (!doneWork)
+							process--;
+						this.processMax=recipe.time;
 						this.active=true;
 					}
 				}
