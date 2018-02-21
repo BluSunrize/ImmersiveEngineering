@@ -98,19 +98,24 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 //	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
+		return doCoilUse(this, player, world, pos, hand, side, hitX, hitY, hitZ);
+	}
+	
+	public static EnumActionResult doCoilUse(IWireCoil coil, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof IImmersiveConnectable && ((IImmersiveConnectable)tileEntity).canConnect())
 			{
 				ItemStack stack = player.getHeldItem(hand);
 				TargetingInfo target = new TargetingInfo(side, hitX,hitY,hitZ);
-				WireType wire = getWireType(stack);
+				WireType wire = coil.getWireType(stack);
 				BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, target);
 				Vec3i offset = pos.subtract(masterPos);
 				tileEntity = world.getTileEntity(masterPos);
 				if( !(tileEntity instanceof IImmersiveConnectable) || !((IImmersiveConnectable)tileEntity).canConnect())
 					return EnumActionResult.PASS;
 
-				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset))
+				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset) || !coil.canConnectCable(wire, tileEntity))
 				{
 					if (!world.isRemote)
 						player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
@@ -144,7 +149,9 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						else
 						{
 							TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
-							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||!((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offset))
+							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||
+							   !((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offset)||
+							   !coil.canConnectCable(wire, tileEntityLinkingPos))
 								player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
 							else
 							{
@@ -211,5 +218,9 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 				return EnumActionResult.SUCCESS;
 			}
 		return EnumActionResult.PASS;
+	}
+	public boolean canConnectCable(WireType wire, TileEntity targetEntity)
+	{
+		return true;
 	}
 }

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * @author BluSunrize - 26.06.2015
@@ -18,4 +19,5 @@ import net.minecraft.item.ItemStack;
 public interface IWireCoil
 {
 	WireType getWireType(ItemStack stack);
+	boolean canConnectCable(WireType wire, TileEntity targetEntity);
 }
