@@ -18,6 +18,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
@@ -31,6 +32,7 @@ import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
+import blusunrize.immersiveengineering.common.util.network.MessageObstructedConnection;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -44,6 +46,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -224,5 +227,12 @@ public class CommonProxy implements IGuiHandler
 	}
 	public void clearRenderCaches()
 	{
+	}
+
+	public void addFailedConnection(Connection connection, BlockPos reason, EntityPlayer player)
+	{
+		ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(connection, reason, player.world),
+				new TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
+						64));
 	}
 }

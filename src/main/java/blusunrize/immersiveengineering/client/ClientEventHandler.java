@@ -62,6 +62,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -100,11 +101,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientEventHandler implements IResourceManagerReloadListener
 {
@@ -122,6 +125,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet<>();
+	public static final Map<Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
@@ -137,6 +141,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					skyhookGrabableConnections.add(line);
 			}
 		}
+
+		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getValue().decrementAndGet() <= 0);
 
 		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
 		{
@@ -265,13 +271,23 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			}
 		}
 	}
-	/*
-	@SubscribeEvent()
-	public void lastWorldRender(RenderWorldLastEvent event)
-	{
-		connectionsRendered = false;
-		ParticleRenderer.dispatch();
+
+	private void renderObstructingBlocks(BufferBuilder bb, Tessellator tes, double dx, double dy, double dz) {
+		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+		for (Map.Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+		{
+			BlockPos obstruction = entry.getValue().getKey();
+			bb.setTranslation(obstruction.getX() - dx,
+					obstruction.getY() - dy,
+					obstruction.getZ() - dz);
+			final double eps = 1e-3;
+			ClientUtils.renderBox(bb, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
+		}
+		bb.setTranslation(0, 0, 0);
+		tes.draw();
 	}
+
+	/*
 	static boolean connectionsRendered = false;
 	public static void renderAllIEConnections(float partial)
 	{
@@ -1251,6 +1267,57 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			BufferBuilder.setTranslation(0, 0, 0);
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.enableCull();
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture2D();
+		}
+
+		if (!FAILED_CONNECTIONS.isEmpty())
+		{
+			Entity viewer = ClientUtils.mc().getRenderViewEntity();
+			if (viewer == null)
+				viewer = ClientUtils.mc().player;
+			float partial = ClientUtils.mc().getRenderPartialTicks();
+			double dx = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partial;
+			double dy = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partial;
+			double dz = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partial;
+			Tessellator tes = Tessellator.getInstance();
+			BufferBuilder bb = tes.getBuffer();
+			float oldLineWidth = GL11.glGetFloat(GL11.GL_LINE_WIDTH);
+			GlStateManager.glLineWidth(5);
+			GlStateManager.disableTexture2D();
+			GlStateManager.enableBlend();
+			bb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+			for (Map.Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+			{
+				Connection conn = entry.getKey();
+				bb.setTranslation(conn.start.getX() - dx,
+						conn.start.getY() - dy,
+						conn.start.getZ() - dz);
+				Vec3d[] points = conn.getSubVertices(ClientUtils.mc().world);
+				int time = entry.getValue().getValue().get();
+				float alpha = (float) Math.min((2 + Math.sin(time * Math.PI / 40)) / 3, time / 20F);
+				for (int i = 0; i < points.length - 1; i++)
+				{
+					bb.pos(points[i].x, points[i].y, points[i].z)
+							.color(1, 0, 0, alpha).endVertex();
+					alpha = (float) Math.min((2 + Math.sin((time + (i + 1) * 8) * Math.PI / 40)) / 3, time / 20F);
+					bb.pos(points[i + 1].x, points[i + 1].y, points[i + 1].z)
+							.color(1, 0, 0, alpha).endVertex();
+				}
+			}
+			bb.setTranslation(0, 0, 0);
+			tes.draw();
+			GlStateManager.glLineWidth(oldLineWidth);
+			GlStateManager.enableBlend();
+			GlStateManager.color(1, 0, 0, .5F);
+			renderObstructingBlocks(bb, tes, dx, dy, dz);
+
+			//Code to render the obstructing block through other blocks
+			//GlStateManager.color(1, 0, 0, .25F);
+			//GlStateManager.depthFunc(GL11.GL_GREATER);
+			//renderObstructingBlocks(bb, tes, dx, dy, dz);
+			//GlStateManager.depthFunc(GL11.GL_LEQUAL);
+
 			GlStateManager.disableBlend();
 			GlStateManager.enableTexture2D();
 		}

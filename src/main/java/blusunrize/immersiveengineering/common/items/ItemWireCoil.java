@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -171,11 +172,17 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 									Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(linkPos.getX()-masterPos.getX(),
 											linkPos.getY()-masterPos.getY(),
 											linkPos.getZ()-masterPos.getZ());
+									BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
 									boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p)->{
 										if (ignore.contains(p.getLeft()))
 											return false;
 										IBlockState state = world.getBlockState(p.getLeft());
-										return ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight());
+										if (ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+										{
+											failedReason.setPos(p.getLeft());
+											return true;
+										}
+										return false;
 									}, (p)->{}, start, end);
 									if(canSee)
 									{
@@ -201,7 +208,10 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 										world.notifyBlockUpdate(linkPos, state,state, 3);
 									}
 									else
+									{
 										player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"));
+										ImmersiveEngineering.proxy.addFailedConnection(tmpConn, failedReason, player);
+									}
 								}
 							}
 						}
