@@ -1457,119 +1457,119 @@ ie.manual.entry.turret5=用于自动插入弹药和提取用过的外壳的端�
 
 ie.manual.entry.maneuverGear.name=立体机动装置
 ie.manual.entry.maneuverGear.subtext=进击的巨人僵尸
-ie.manual.entry.maneuverGear0=立体机动装置是工程学上的奇迹.它由皮革制的安全带、两个抓钩以及一套压缩空气推进系统构成.<br>整个套装需装备于<config;b;baubles;腰带或;>护腿的位置,以通量能源(Flux)驱动.
-ie.manual.entry.maneuverGear1=§l§n控制方法：§r<br>按下<keybind;key.immersiveengineering.3dgear>键可切换至机动装置控制模式.在控制模式下,按下鼠标键将消耗一定通量能源并发射抓钩.若抓钩已抓住某个物体,按住鼠标可将你直接拉到目标物体上.双击可让钩子返回你身上.<br>双击<keybind;key.immersiveengineering.3dgear>键可同时让两个钩子返回.
-ie.manual.entry.maneuverGear2=§l§n推进：§r<br>同时按下跳跃键和<keybind;key.immersiveengineering.3dgear>键后,机动装置会消耗一定量的压缩空气储备,并将你沿目视方向推进一段距离.在推进系统闲置若干秒后,其内部自带的空气压缩机会重新填装压缩空气,并消耗一些能量.<br>若你有从高空掉落导致摔伤的风险,这套推进系统会自动喷出压缩空气进行缓冲,以避免意外事故发生.
+ie.manual.entry.maneuverGear0=立体机动装置是工程学上的奇迹。它由皮革制的安全带、两个抓钩以及一套压缩空气推进系统构成。<br>整个套装需装备于<config;b;baubles;腰带或;>护腿的位置，以通量能源（Flux）驱动。
+ie.manual.entry.maneuverGear1=§l§n控制方法：§r<br>按下<keybind;key.immersiveengineering.3dgear>键可切换至机动装置控制模式。在控制模式下，按下鼠标键将消耗一定通量能源并发射抓钩。若抓钩已抓住某个物体，按住鼠标可将你直接拉到目标物体上。双击可让钩子返回你身上。<br>双击<keybind;key.immersiveengineering.3dgear>键可同时让两个钩子返回。
+ie.manual.entry.maneuverGear2=§l§n推进：§r<br>同时按下跳跃键和<keybind;key.immersiveengineering.3dgear>键后，机动装置会消耗一定量的压缩空气储备，并将你沿目视方向推进一段距离。在推进系统闲置若干秒后，其内部自带的空气压缩机会重新填装压缩空气，并消耗一些能量。<br>若你有从高空掉落导致摔伤的风险，这套推进系统会自动喷出压缩空气进行缓冲，以避免意外事故发生。
 
 ie.manual.entry.crusher.name=粉碎机
-ie.manual.entry.crusher.subtext=管好你的手!
-ie.manual.entry.crusher0=粉碎矿物是提高产量的有效途径,因为每个矿物都可以加工得到两份可以烧制的矿粉.这台工业级粉碎机让这个过程变得更加方便.其加工速度取决于能源供应.
-ie.manual.entry.crusher1=通过给前端的控制面板输入红石信号将暂停粉碎机的处理过程.<br>右击正前面中心方块以完成建造过程.它的前面是底部有一个轻型工程块的宽面.
-//然而粉碎机不仅仅是用于粉碎矿物.生物落入粉碎机将会受到持续的伤害而最终的掉落物会从粉碎机的输出端输出.同样的,所有无法被处理的物品将会被销毁.<br>
+ie.manual.entry.crusher.subtext=管好你的手！
+ie.manual.entry.crusher0=粉碎矿物是提高产量的有效途径，因为每个矿物都可以加工得到两份可以烧制的矿粉。这台工业级粉碎机让这个过程变得更加方便。其加工速度取决于能源供应。
+ie.manual.entry.crusher1=通过给前端的控制面板输入红石信号将暂停粉碎机的处理过程。<br>右击正前面中心方块以完成建造过程。它的前面是底部有一个轻型工程块的宽面。
+//然而粉碎机不仅仅是用于粉碎矿物，生物落入粉碎机将会受到持续的伤害而最终的掉落物会从粉碎机的输出端输出。同样的，所有无法被处理的物品将会被销毁。<br>
 
 ie.manual.entry.lightningrod.name=避雷针
-ie.manual.entry.lightningrod.subtext=雷击!
-ie.manual.entry.lightningrod0=闪电是一种自然现象.它包含了大量的原始力量,而避雷针能够驾驭这种力量.<br>通过在多方块结构上堆叠大量钢栅栏,你增加了在雨天或雷暴天气闪电击中它的概率. 
-ie.manual.entry.lightningrod1=当钢柱被击中时,产生的大量能量会被储存在避雷针中然后缓慢的传输到侧面的能量连接点.<br><br>结构搭建如上图所示,手持工程师锤右键中央方块完成搭建.
-ie.manual.entry.lightningrod2=你可以通过在最顶端的钢栅栏搭建一个相互连接的钢栅栏"网"来增加避雷针被击中的概率.
+ie.manual.entry.lightningrod.subtext=雷击！
+ie.manual.entry.lightningrod0=闪电是一种自然现象。它包含了大量的原始力量，而避雷针能够驾驭这种力量。<br>通过在多方块结构上堆叠大量钢栅栏，你增加了在雨天或雷暴天气闪电击中它的概率。
+ie.manual.entry.lightningrod1=当钢柱被击中时，产生的大量能量会被储存在避雷针中然后缓慢的传输到侧面的能量连接点。<br><br>结构搭建如上图所示，手持工程师锤右键中央方块完成搭建。
+ie.manual.entry.lightningrod2=你可以通过在最顶端的钢栅栏搭建一个相互连接的钢栅栏"网"来增加避雷针被击中的概率。
 
 ie.manual.entry.minerals.name=矿床
 ie.manual.entry.minerals.subtext=矿石相关
-ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并不新鲜.而如今我们一直忽略的是矿脉,其中混合着多种矿石的存在.由于它们细长的分布,普通的矿工难以发现它们,但一种<link;excavator;§o§n特殊机器§r>或许能够提供一些帮助.
-#ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产,你会想合成一个岩芯钻井.这台机器在通电时能够钻入区块并确定分布矿物的种类.钻井会消耗<config;i;coredrill_consumption>Flux/t并需要<config;i;coredrill_time>ticks来完整的获取与检测样本.
-ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产,你会想要合成一个岩芯钻井.你需要为它提供能源,并右击或提供一个红石信号来启动钻井.它将会钻入区块,提取出能确定分布矿物的种类的岩芯样本.钻井的能耗有<config;i;coredrill_consumption>Flux/t,而且一次钻井需要<config;i;coredrill_time>ticks来完整的获取与检测样本.
-ie.manual.entry.minerals2=下面将会列出所有矿脉的种类以及在其中能够找到的矿石种类.
+ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并不新鲜。而如今我们一直忽略的是矿脉，其中混合着多种矿石的存在。由于它们细长的分布，普通的矿工难以发现它们，但一种<link;excavator;§o§n特殊机器§r>或许能够提供一些帮助。
+#ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产，你会想合成一个岩芯钻井。这台机器在通电时能够钻入区块并确定分布矿物的种类。钻井会消耗<config;i;coredrill_consumption>Flux/t并需要<config;i;coredrill_time>ticks来完整的获取与检测样本。
+ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产，你会想要合成一个岩芯钻井。你需要为它提供能源，并右击或提供一个红石信号来启动钻井。它将会钻入区块，提取出能确定分布矿物的种类的岩芯样本。钻井的能耗有<config;i;coredrill_consumption>Flux/t，而且一次钻井需要<config;i;coredrill_time>ticks来完整的获取与检测样本。
+ie.manual.entry.minerals2=下面将会列出所有矿脉的种类以及在其中能够找到的矿石种类。
 ie.manual.entry.minerals3=%1$s<br>它包含：%2$s
-ie.manual.entry.mineralsDimValid=§l%1$s§r<br>是一种会在 %2$s 生成的矿脉.
-ie.manual.entry.mineralsDimInvalid=§l%1$s§r<br>是一种会在除了 %2$s 的任何地方生成的矿脉.
-ie.manual.entry.mineralsDimAny=§l%1$s§r<br>是一种会在任何世界生成的矿脉.
+ie.manual.entry.mineralsDimValid=§l%1$s§r<br>是一种会在 %2$s 生成的矿脉。
+ie.manual.entry.mineralsDimInvalid=§l%1$s§r<br>是一种会在除了 %2$s 的任何地方生成的矿脉。
+ie.manual.entry.mineralsDimAny=§l%1$s§r<br>是一种会在任何世界生成的矿脉。
 
 ie.manual.entry.arcfurnace.name=电弧炉
 ie.manual.entry.arcfurnace.subtext=不是反应堆 
-ie.manual.entry.arcfurnace0=电弧炉是一种用于快速熔炼金属的重型结构.它外表被钢质外壳覆盖,顶部装有用于加热的电极.
-ie.manual.entry.arcfurnace1=因为它的高速和同时加工多个物品的能力,电弧炉相当擅长冶炼金属和炼钢,但它的工作流程也比较复杂,需要时常维护才能保持功能正常运转.<br>为保持工作,矿渣必须时常清理,损坏电极也应及时更换.
-ie.manual.entry.arcfurnace2=要搭建一台电弧炉,需要按照第一页的方式进行建造,然后用工程师锤右击炼药锅.<br><br>能量需要从后方的三个插孔中输入,并且给前端的控制面板输入红石信号将会关闭机器.右击控制面板,“桶”或外壳将会打开交互界面.
-ie.manual.entry.arcfurnace3=§l交互界面：§r<br>第一眼看过去可能会有些迷惑,但是它实际上表达很直白.<br><br>顶部的三个格子是<link;graphite;§o§n石墨§o§n电极§r;1>插槽.<br>左侧的十二个格子用于输入金属和矿石.每一个格子都有一个用于显示烧炼进度的温度条.
-ie.manual.entry.arcfurnace4=右侧的四个格子用于输入“辅料”,这是指那些加工过程中加入的不同的原料.举个例子,在熔炼铁时加焦煤粉来制得钢.<br>主料和辅料的输入可分别通过电弧炉顶部电极左右两侧的输入仓完成.
-ie.manual.entry.arcfurnace5=底部的七个格子有六个用于输出成品,还有一个输出矿渣.成品可以从电弧炉正面的"桶"中提取,矿渣则会通过电弧炉背后的通道导出.电弧炉会自动输出成品和矿渣到邻近的容器中(这包括传送带).
+ie.manual.entry.arcfurnace0=电弧炉是一种用于快速熔炼金属的重型结构。它外表被钢质外壳覆盖，顶部装有用于加热的电极。
+ie.manual.entry.arcfurnace1=因为它的高速和同时加工多个物品的能力，电弧炉相当擅长冶炼金属和炼钢，但它的工作流程也比较复杂，需要时常维护才能保持功能正常运转。<br>为保持工作，矿渣必须时常清理，损坏电极也应及时更换。
+ie.manual.entry.arcfurnace2=要搭建一台电弧炉，需要按照第一页的方式进行建造，然后用工程师锤右击炼药锅.<br><br>能量需要从后方的三个插孔中输入，并且给前端的控制面板输入红石信号将会关闭机器。右击控制面板，“桶”或外壳将会打开交互界面。
+ie.manual.entry.arcfurnace3=§l交互界面：§r<br>第一眼看过去可能会有些迷惑，但是它实际上表达很直白.<br><br>顶部的三个格子是<link;graphite;§o§n石墨§o§n电极§r;1>插槽。<br>左侧的十二个格子用于输入金属和矿石。每一个格子都有一个用于显示烧炼进度的温度条。
+ie.manual.entry.arcfurnace4=右侧的四个格子用于输入“辅料”，这是指那些加工过程中加入的不同的原料。举个例子，在熔炼铁时加焦煤粉来制得钢。<br>主料和辅料的输入可分别通过电弧炉顶部电极左右两侧的输入仓完成。
+ie.manual.entry.arcfurnace5=底部的七个格子有六个用于输出成品，还有一个输出矿渣。成品可以从电弧炉正面的"桶"中提取，矿渣则会通过电弧炉背后的通道导出。电弧炉会自动输出成品和矿渣到邻近的容器中（这包括传送带）。
 
 ie.manual.entry.excavator.name=斗轮式挖掘机
 ie.manual.entry.excavator.subtext=比矮人更为高效
-ie.manual.entry.excavator0=斗轮式挖掘机可谓是现代机械的巅峰之作.它能够将正常挖矿采集不到的<link;minerals;§o§n矿物§r;0>从矿脉中挖掘出来.作为代价,斗轮式挖掘机拥有极为复杂的结构,并且需要消耗<config;i;excavator_consumption>Flux/t来维持运作.
-ie.manual.entry.excavator1=结构由两部分组成：第一页中的机器和前一页展示的斗轮,它正好能够嵌入机器的“吊带”位置.能量输入端在机器的侧面,后面添加了红石控制面板以及物品输出口.<br>当挖掘机开采矿物时,矿脉的范围会缓慢减小,不过一个矿脉能够支撑<config;i;excavator_depletion_days>天的连续开采.
+ie.manual.entry.excavator0=斗轮式挖掘机可谓是现代机械的巅峰之作。它能够将正常挖矿采集不到的<link;minerals;§o§n矿物§r;0>从矿脉中挖掘出来。作为代价，斗轮式挖掘机拥有极为复杂的结构，并且需要消耗<config;i;excavator_consumption>Flux/t来维持运作。
+ie.manual.entry.excavator1=结构由两部分组成：第一页中的机器和前一页展示的斗轮，它正好能够嵌入机器的“吊带”位置。能量输入端在机器的侧面，后面添加了红石控制面板以及物品输出口。<br>当挖掘机开采矿物时，矿脉的范围会缓慢减小，不过一个矿脉能够支撑<config;i;excavator_depletion_days>天的连续开采。
 
 ie.manual.category.computers.name=电脑控制支持
 
 ie.manual.entry.computer.general.name=基本信息 ☎
 ie.manual.entry.computer.general.subtext=来自未来的科技
-ie.manual.entry.computer.general0=本手册中介绍的大部分机械都可以用OpenCopmuters或ComputerCraft的电脑控制.若使用OpenComputers,需将机器与Adapter连接方可启用电脑控制功能.若该机械有红石接口,则这个接口也支持电脑控制;若需要其它机器的技术信息,请查阅对应条目.本条目的下一页将介绍一些常用的返回值类型.
-ie.manual.entry.computer.general1=§lItemStack§r(物品栈,物品堆叠)是一种常用的返回值类型.一般,它包含下列键:<br>§lname§r:物品的注册名,例如原版的圆石的注册名是"minecraft:cobblestone"<br>§lsize§r:物品数量<br>§lnameUnlocalized§r:未经本地化的名字,例如圆石对应"tile.stonebrick".仅适用于ComputerCraft.<br>§llabel§r:该物品的实际显示名字.在铁砧中重命名会影响这个键对应的值.
-ie.manual.entry.computer.general2=§ldamage§r:物品损害值或元数据(metadata)<br>§lmaxDamage§r:该物品损坏前可承受的最大损害值<br>§lmaxSize§r:该物品的最大可堆叠数量,通常是64<br>§lhasTag§r:是否有附加的NBT标签.
-ie.manual.entry.computer.general3=§lFluidStack§r(流体栈):这个类型代表了一定数量的流体.一般,该table中包含下列键:<br>§lname§r:该液体未经本地化的名字<br>§lamount§r:流体数量,以毫桶(milibuckets, mB)为单位<br>§lhasTag§r:是否有附加的NBT标签.
-ie.manual.entry.computer.general4=§lFluid tanks(流体储罐)§r和FluidStack类似,区别在于流体此时是储存在容器中的.因此,此table中除了包含所有FluidStack的键外,还包含有额外的键§lcapacity§r,用于表示此储罐的容积上限.
+ie.manual.entry.computer.general0=本手册中介绍的大部分机械都可以用OpenCopmuters（开放式电脑）或ComputerCraft的电脑控制。若使用OpenComputers，需将机器与Adapter连接方可启用电脑控制功能.若该机械有红石接口,则这个接口也支持电脑控制;若需要其它机器的技术信息，请查阅对应条目。本条目的下一页将介绍一些常用的返回值类型。
+ie.manual.entry.computer.general1=§lItemStack§r（物品堆）是一种常用的返回值类型。一般，它包含下列键：<br>§lname§r:物品的注册名，例如原版的圆石的注册名是"minecraft:cobblestone"<br>§lsize§r:物品数量<br>§lnameUnlocalized§r:未经本地化的名字，例如圆石对应"tile.stonebrick"。仅适用于ComputerCraft。<br>§llabel§r:该物品的实际显示名字。在铁砧中重命名会影响这个键对应的值。
+ie.manual.entry.computer.general2=§ldamage§r:物品损害值或元数据（metadata）<br>§lmaxDamage§r：该物品损坏前可承受的最大损害值<br>§lmaxSize§r：该物品的最大可堆叠数量，通常是64<br>§lhasTag§r：是否有附加的NBT标签。
+ie.manual.entry.computer.general3=§lFluidStack§r（流体堆）：这个类型代表了一定数量的流体。一般，该table中包含下列键：<br>§lname§r：该液体未经本地化的名字<br>§lamount§r：流体数量，以毫桶（milibuckets， mB）为单位<br>§lhasTag§r:是否有附加的NBT标签。
+ie.manual.entry.computer.general4=§lFluid tanks（流体储罐）§r和FluidStack类似，区别在于流体此时是储存在容器中的。因此，此table中除了包含所有FluidStack的键外，还包含有额外的键§lcapacity§r，用于表示此储罐的容积上限。
 
 ie.manual.entry.computer.arcfurnace.name=电弧炉 ☎
 ie.manual.entry.computer.arcfurnace.subtext=不是反应堆
-ie.manual.entry.computer.arcFurnace0=§lsetEnabled(boolean active)§r:可控制电弧炉的开关,和红石控制面板的效果类似.<br>§lisActive()§r:电弧炉工作时返回true,否则返回false<br>§lgetInputStack(int slot)§r:返回指定输入格(取值范围:1-12)的ItemStack.返回的table中还附带两个键:§lprogress§r,代表此输入格当前工作进度;和§lmaxProgress§r,代表此输入格完成时的进度
-ie.manual.entry.computer.arcFurnace1=两者均以tick为单位.<br>§lgetOutputStack(int slot)§r:返回指定输出格(取值范围:1-6)的ItemStack.<br>§lgetAdditiveStack(int slot)§r: returns the stack in the specified additive slot (1-4)<br>§lgetSlagStack()§r:返回炉渣格中的ItemStack<br>§lhasElectrodes()§r:当全部三个电极格中的电极均有效时返回true，否则返回false<br>§lgetElectrode(int slot)§r:根据给定的电极格(取值范围1-4)返回对应的ItemStack
-ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r:返回电弧炉可储存的最大能量数量<br>§lgetEnergyStored()§r:返回泛光灯储存的能量数量
+ie.manual.entry.computer.arcFurnace0=§lsetEnabled(boolean active)§r：可控制电弧炉的开关，和红石控制面板的效果类似。<br>§lisActive()§r：电弧炉工作时返回true，否则返回false<br>§lgetInputStack(int slot)§r：返回指定输入格（取值范围:1-12）的ItemStack。返回的table中还附带两个键：§lprogress§r，代表此输入格当前工作进度；和§lmaxProgress§r，代表此输入格完成时的进度
+ie.manual.entry.computer.arcFurnace1=两者均以tick为单位。<br>§lgetOutputStack(int slot)§r：返回指定输出格（取值范围:1-6）的ItemStack。<br>§lgetAdditiveStack(int slot)§r：returns the stack in the specified additive slot (1-4)<br>§lgetSlagStack()§r：返回炉渣格中的ItemStack<br>§lhasElectrodes()§r：当全部三个电极格中的电极均有效时返回true，否则返回false<br>§lgetElectrode(int slot)§r：根据给定的电极格（取值范围1-4）返回对应的ItemStack
+ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r：返回电弧炉可储存的最大能量数量<br>§lgetEnergyStored()§r：返回泛光灯储存的能量数量
 
 ie.manual.entry.computer.sampleDrill.name=岩芯钻井 ☎
 ie.manual.entry.computer.sampleDrill.subtext=保证样本有代表性
-ie.manual.entry.computer.sampleDrill0=岩芯钻井的底部可连接电脑.<br>§lgetSampleProgress()§r:返回当前进度,1代表样本分析已结束,0代表样本分析还未开始.<br>§lisSamplingFinished()§r:样本分析已接触时返回true,否则返回false<br>§lgetVeinUnlocalizedName()§r:返回找到的矿脉的未本地化名
-ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r:返回找到的矿脉的本地化名<br>§lgetVeinIntegrity()§r:返回矿脉的完整度,1代表完整,0代表已采空,-1代表可无限开采.<br>§lgetEnergyStored()§r:返回钻井储存的能量数量<br>§lgetMaxEnergyStored()§r:返回钻井最大可储存的能量数.
+ie.manual.entry.computer.sampleDrill0=岩芯钻井的底部可连接电脑。<br>§lgetSampleProgress()§r：返回当前进度，1代表样本分析已结束，0代表样本分析还未开始。<br>§lisSamplingFinished()§r：样本分析已接触时返回true，否则返回false<br>§lgetVeinUnlocalizedName()§r：返回找到的矿脉的未本地化名
+ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r：返回找到的矿脉的本地化名<br>§lgetVeinIntegrity()§r：返回矿脉的完整度，1代表完整，0代表已采空，-1代表可无限开采。<br>§lgetEnergyStored()§r：返回钻井储存的能量数量<br>§lgetMaxEnergyStored()§r：返回钻井最大可储存的能量数。
 
 ie.manual.entry.computer.crusher.name=粉碎机 ☎
-ie.manual.entry.computer.crusher.subtext=管好你的手!
-ie.manual.entry.computer.crusher0=§lsetEnabled(boolean active)§r:可控制粉碎机的开关,和红石控制面板的效果类似.<br>§lisActive()§r:粉碎机工作时返回true,否则返回false<br>§lgetInputQueue()§r:返回代表粉碎机输入序列的table.该table的键以数字命名,从1开始.每个键对应的值均为table,包含下列键:<br>"progress":当前进度<br>"maxProgress":完成时的进度
-ie.manual.entry.computer.crusher1="input":输入的ItemStack<br>"output":主产物ItemStack<br>§lgetMaxEnergyStored()§r:返回粉碎机可储存的最大能量数量<br>§lgetEnergyStored()§r:返回粉碎机储存的能量数量
+ie.manual.entry.computer.crusher.subtext=管好你的手！
+ie.manual.entry.computer.crusher0=§lsetEnabled(boolean active)§r：可控制粉碎机的开关，和红石控制面板的效果类似。<br>§lisActive()§r：粉碎机工作时返回true，否则返回false<br>§lgetInputQueue()§r：返回代表粉碎机输入序列的table。该table的键以数字命名，从1开始。每个键对应的值均为table，包含下列键：<br>"progress":当前进度<br>"maxProgress"：完成时的进度
+ie.manual.entry.computer.crusher1="input"：输入的ItemStack<br>"output"：主产物ItemStack<br>§lgetMaxEnergyStored()§r：返回粉碎机可储存的最大能量数量<br>§lgetEnergyStored()§r：返回粉碎机储存的能量数量
 
 ie.manual.entry.computer.dieselgen.name=柴油发电机 ☎
-ie.manual.entry.computer.dieselgen.subtext=比产量更重要的是：更高的产量.
-ie.manual.entry.computer.dieselgen0=§lsetEnabled(boolean active)§r:可控制柴油发电机的开关<br>§lisActive()§r:柴油发电机工作时返回true,否则返回false<br>§lgetTankInfo()§r:返回柴油发电机储罐信息
+ie.manual.entry.computer.dieselgen.subtext=提高产量最重要的是：量产。
+ie.manual.entry.computer.dieselgen0=§lsetEnabled(boolean active)§r：可控制柴油发电机的开关<br>§lisActive()§r：柴油发电机工作时返回true，否则返回false<br>§lgetTankInfo()§r:返回柴油发电机储罐信息
 
 ie.manual.entry.computer.energymeter.name=电流互感器 ☎
-ie.manual.entry.computer.energymeter.subtext=每小时88Flux!
-ie.manual.entry.computer.energymeter0=电流互感器的底部可与电脑连接.它只有一个方法可用:§lgetAvgEnergy()§r,可返回在过去的1秒(20刻)中平均能量流,以Flux/刻为单位.
+ie.manual.entry.computer.energymeter.subtext=每小时88Flux！
+ie.manual.entry.computer.energymeter0=电流互感器的底部可与电脑连接。它只有一个方法可用：§lgetAvgEnergy()§r，可返回在过去的1秒（20刻）中平均能量流，以Flux/刻为单位。
 
 ie.manual.entry.computer.excavator.name=斗轮式挖掘机 ☎
 ie.manual.entry.computer.excavator.subtext=比矮人更为高效
-ie.manual.entry.computer.excavator0=§lisActive()§r:挖掘机工作时返回true,否则返回false.该返回值与矿脉是否存在无关.<br>§lsetEnabled(boolean active)§r:可控制挖掘机的开关<br>§lgetEnergyStored()§r:返回挖掘机储存的能量数量<br>§lgetMaxEnergyStored()§r:返回挖掘机可储存的最大能量数量
+ie.manual.entry.computer.excavator0=§lisActive()§r：挖掘机工作时返回true，否则返回false。该返回值与矿脉是否存在无关。<br>§lsetEnabled(boolean active)§r：可控制挖掘机的开关<br>§lgetEnergyStored()§r：返回挖掘机储存的能量数量<br>§lgetMaxEnergyStored()§r：返回挖掘机可储存的最大能量数量
 
 ie.manual.entry.computer.squeezerAndFermenter.name=工业发酵机和工业压榨机 ☎
 ie.manual.entry.computer.squeezerAndFermenter.subtext=重复发布
-ie.manual.entry.computer.squeezerAndFermenter0=工业发酵机和工业压榨机的电脑支持高度相似.<br>§lgetRecipe(int slot)§r:根据指定的格子(取值范围1-9),返回用于描述一个recipe的3个tables和一个整数.第一个table是输入的ItemStack,第二个table是输出的ItemStack,第三个table是输出的FluidStack,整数代表加工时间.若没有找到合成,则返回字符串"No recipe found"
-ie.manual.entry.computer.squeezerAndFermenter1=§lgetInputStack(int slot)§r:根据指定的输入格(取值范围1-9)返回ItemStack<br>§lgetOutputStack()§r:返回输出格中的ItemStack<br>§lgetFluid()§r:返回液体输出储罐<br>§lgetEmptyCannisters§r:返回右上角格子中的空容器的ItemStack<br>§lgetFilledCannisters()§r:返回右下角格子中的满容器的ItemStack<br>§lgetEnergyStored§r:返回该机器储存的能量数量.
-ie.manual.entry.computer.squeezerAndFermenter2=§lgetMaxEnergyStored()§r:返回该机器可储存的能量数量.
+ie.manual.entry.computer.squeezerAndFermenter0=工业发酵机和工业压榨机的电脑支持高度相似。<br>§lgetRecipe(int slot)§r:根据指定的格子（取值范围1-9），返回用于描述一个recipe的3个tables和一个整数。第一个table是输入的ItemStack，第二个table是输出的ItemStack，第三个table是输出的FluidStack，整数代表加工时间。若没有找到合成，则返回字符串"No recipe found"
+ie.manual.entry.computer.squeezerAndFermenter1=§lgetInputStack(int slot)§r：根据指定的输入格（取值范围1-9）返回ItemStack<br>§lgetOutputStack()§r:返回输出格中的ItemStack<br>§lgetFluid()§r：返回液体输出储罐<br>§lgetEmptyCannisters§r：返回右上角格子中的空容器的ItemStack<br>§lgetFilledCannisters()§r：返回右下角格子中的满容器的ItemStack<br>§lgetEnergyStored§r：返回该机器储存的能量数量。
+ie.manual.entry.computer.squeezerAndFermenter2=§lgetMaxEnergyStored()§r：返回该机器可储存的能量数量。
 
 ie.manual.entry.computer.floodlight.name=泛光灯 ☎
 ie.manual.entry.computer.floodlight.subtext=复古LED
-ie.manual.entry.computer.floodlight0=以下内容均假定泛光灯放置在地面上。泛光灯底面可与电脑连接。使用电脑旋转泛光灯后，须等待一秒能才能再次旋转。<br>§lturnAroundXZ(boolean dir)§r:水平旋转泛光灯<br>§lturnAroundY(boolean dir)§r:沿Y轴旋转泛光灯<br>§lcanTurn()§r:当泛光灯可旋转时返回true,否则返回false
-ie.manual.entry.computer.floodlight1=§lsetEnabled(boolean on)§r:开关泛光灯<br>§lisActive()§r:若泛光灯开启则返回true,否则返回false<br>§lgetEnergyStored()§r:返回泛光灯储存的能量数量<br>§lgetMaxEnergyStored()§r:返回泛光灯可储存的最大能量数量.
+ie.manual.entry.computer.floodlight0=以下内容均假定泛光灯放置在地面上。泛光灯底面可与电脑连接。使用电脑旋转泛光灯后，须等待一秒能才能再次旋转。<br>§lturnAroundXZ(boolean dir)§r：水平旋转泛光灯<br>§lturnAroundY(boolean dir)§r：沿Y轴旋转泛光灯<br>§lcanTurn()§r:当泛光灯可旋转时返回true，否则返回false
+ie.manual.entry.computer.floodlight1=§lsetEnabled(boolean on)§r：开关泛光灯<br>§lisActive()§r：若泛光灯开启则返回true，否则返回false<br>§lgetEnergyStored()§r：返回泛光灯储存的能量数量<br>§lgetMaxEnergyStored()§r：返回泛光灯可储存的最大能量数量。
 
 ie.manual.entry.computer.refinery.name=炼油厂 ☎
 ie.manual.entry.computer.refinery.subtext=数位化柴油
-ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r: 返回包含有两个输入储罐的table,分别储存在"input1"和"input2"两个键下.<br>§lgetOutputTank()§r:返回输出储罐<br>§lgetRecipe()§r:返回包含三个键的table,其中键"input1"和键"input2"存储有两种输入的流体,键"output"则对应输出的流体.<br>§lsetEnabled(boolean on)§r:开关炼油厂<br>§lisValidRecipe()§r:若当前输入有对应的recipe则返回true,否则返回false.
-ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r:返回包含有若干空容器的ItemStack的table,其中键"input1"和键"ipnut2"对应输入储罐,键"output"对应输出储罐.<br>§lgetMaxEnergyStored()§r:返回炼油厂可储存的最大能量数量<br>§lgetEnergyStored()§r:返回炼油厂储存的能量数量.
+ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r：返回包含有两个输入储罐的table，分别储存在"input1"和"input2"两个键下。<br>§lgetOutputTank()§r：返回输出储罐<br>§lgetRecipe()§r:返回包含三个键的table，其中键"input1"和键"input2"存储有两种输入的流体，键"output"则对应输出的流体。<br>§lsetEnabled(boolean on)§r：开关炼油厂<br>§lisValidRecipe()§r：若当前输入有对应的recipe则返回true，否则返回false。
+ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r：返回包含有若干空容器的ItemStack的table，其中键"input1"和键"ipnut2"对应输入储罐，键"output"对应输出储罐。<br>§lgetMaxEnergyStored()§r：返回炼油厂可储存的最大能量数量<br>§lgetEnergyStored()§r：返回炼油厂储存的能量数量。
 
 ie.manual.entry.computer.assembler.name=装配机 ☎
 ie.manual.entry.computer.assembler.subtext=objdump -d
-ie.manual.entry.computer.assembler0=装配机底层可与电脑连接.<br>§lhasIngredients(int recipe)§r:若指定配方(取值范围1-3)有对应recipe则返回true,否则返回false.<br>§lsetEnabled(int slot, boolean on)§r:启用或禁用指定合成阵列(取值范围1-3).若合成被禁用,即便有材料可以合成也不会工作.<br>§lgetRecipe(int recipe)l§r:返回指定recipe(取值范围0-2)对应的table.键"in1"、"in2"、...、"in9"对应输入,键"out"对应输出.
-ie.manual.entry.computer.assembler1=§lgetTank(int tank)§r:根据序号(取值范围1-3)返回对应的储罐<br>§lgetMaxEnergyStored()§r:返回装配机可储存的最大能量数量.<br>§lgetEnergyStored()§r:返回装配机储存的能量数量.<br>§lgetStackInSlot(int slot)§r:根据序号(取值范围1-18)返回对应输入格中的ItemStack.<br>§lgetBufferStack(recipe:int)§r:根据序号(取值范围1-3)返回对应合成的输出ItemStack.
+ie.manual.entry.computer.assembler0=装配机底层可与电脑连接。<br>§lhasIngredients(int recipe)§r:若指定配方（取值范围1-3）有对应recipe则返回true，否则返回false。<br>§lsetEnabled(int slot, boolean on)§r：启用或禁用指定合成阵列（取值范围1-3）。若合成被禁用，即便有材料可以合成也不会工作。<br>§lgetRecipe(int recipe)l§r：返回指定recipe（取值范围0-2）对应的table.键"in1"、"in2"、...、"in9"对应输入，键"out"对应输出。
+ie.manual.entry.computer.assembler1=§lgetTank(int tank)§r：根据序号（取值范围1-3）返回对应的储罐<br>§lgetMaxEnergyStored()§r：返回装配机可储存的最大能量数量。<br>§lgetEnergyStored()§r：返回装配机储存的能量数量。<br>§lgetStackInSlot(int slot)§r:根据序号（取值范围1-18）返回对应输入格中的ItemStack。<br>§lgetBufferStack(recipe:int)§r:根据序号（取值范围1-3）返回对应合成的输出ItemStack。
 
 ie.manual.entry.computer.bottlingMachine.name=灌装机 ☎
-ie.manual.entry.computer.bottlingMachine.subtext=Fill 'er up!
-ie.manual.entry.computer.bottlingMachine0=灌装机正面中下方的方块,以及背面底部的一列,可以与电脑连接.cannister在通过传送带上的黑盒后会被认为已装满.<br>§lgetFluid()§r:返回灌装机内部的储罐.<br>§lgetEmptyCannister(int n)§r:返回第n个容器,顺序容器进入机器的顺序决定.返回的table中包含键"process",用于表示灌装进度.进度等于72时代表已装满,进度等于120时代表已输出.
-ie.manual.entry.computer.bottlingMachine1=§lgetEmptyCannisterCount()§r:返回灌装机中的空容器数量<br>§lgetFilledCannister(int n)§r:返回第n个满容器,顺序由进入黑箱的顺序决定.返回的table中包含键"process",用于表示灌装进度.<br>§lgetFilledCannisterCount()§r:返回灌装机中满容器的数量.
-ie.manual.entry.computer.bottlingMachine2=§lgetEnergyStored()§r:返回灌装机储存的能量数量<br>§lgetMaxEnergyStored()§r:返回灌装机可储存的最大能量数量<br>§lsetEnabled(boolean on)§r:开关灌装机
+ie.manual.entry.computer.bottlingMachine.subtext=装满它！
+ie.manual.entry.computer.bottlingMachine0=灌装机正面中下方的方块，以及背面底部的一列，可以与电脑连接。cannister在通过传送带上的黑盒后会被认为已装满。<br>§lgetFluid()§r：返回灌装机内部的储罐。<br>§lgetEmptyCannister(int n)§r：返回第n个容器，顺序容器进入机器的顺序决定。返回的table中包含键"process"，用于表示灌装进度。进度等于72时代表已装满，进度等于120时代表已输出。
+ie.manual.entry.computer.bottlingMachine1=§lgetEmptyCannisterCount()§r：返回灌装机中的空容器数量<br>§lgetFilledCannister(int n)§r：返回第n个满容器，顺序由进入黑箱的顺序决定.返回的table中包含键"process"，用于表示灌装进度。<br>§lgetFilledCannisterCount()§r：返回灌装机中满容器的数量。
+ie.manual.entry.computer.bottlingMachine2=§lgetEnergyStored()§r：返回灌装机储存的能量数量<br>§lgetMaxEnergyStored()§r：返回灌装机可储存的最大能量数量<br>§lsetEnabled(boolean on)§r：开关灌装机
 
 ie.manual.entry.computer.capacitor.name=电容器 ☎
 ie.manual.entry.computer.capacitor.subtext=高压大电容
-ie.manual.entry.computer.capacitor0=电容器六面均可与电脑连接<br>§lgetEnergyStored()§r:返回电容器当前储能数量.<br>§lgetMaxEnergyStored()§r:返回电容器最大可储能数量.
+ie.manual.entry.computer.capacitor0=电容器六面均可与电脑连接<br>§lgetEnergyStored()§r：返回电容器当前储能数量。<br>§lgetMaxEnergyStored()§r：返回电容器最大可储能数量。
 
 ie.manual.entry.computer.teslaCoil.name=特斯拉线圈 ☎
 ie.manual.entry.computer.teslaCoil.subtext=不，这不是固态特斯拉线圈
-ie.manual.entry.computer.teslaCoil0=§lisActive()§r:若线圈已激活则返回true,否则返回false<br>§lsetRSMode(boolean)§r:设定线圈的红石控制模式<br>§lsetPowerMode(boolean)§r: 设定线圈的工作模式,可设定为高能模式(true)或低能模式(false)(<link;teslaCoil;§o§nexplanation§r;2>).仅当线圈未激活时有效.
+ie.manual.entry.computer.teslaCoil0=§lisActive()§r：若线圈已激活则返回true，否则返回false<br>§lsetRSMode(boolean)§r：设定线圈的红石控制模式<br>§lsetPowerMode(boolean)§r：设定线圈的工作模式，可设定为高能模式为true则低能模式为false(<link;teslaCoil;§o§nexplanation§r;2>)。仅当线圈未激活时有效。
 
 ie.manual.entry.computer.mixer.name=混合机 ☎
 ie.manual.entry.computer.mixer.subtext=曲奇面团的大缸！
@@ -1578,8 +1578,8 @@ ie.manual.entry.computer.mixer1=§lprogress§r和§lmaxProgress§r用于存储�
 
 #SHADER INFO
 desc.immersiveengineering.info.shader.details.rosequartz=第一个皮肤的历史！<br>没有确切的参考，虽然这个名字本身是受到“Inkheart”系列小说中的一个角色的启发
-desc.immersiveengineering.info.shader.details.argo=没有确切的参考，但风格+颜色是出自视频游戏“命运”的灵感。
-desc.immersiveengineering.info.shader.details.sunstrike=没有确切的参考但是名字+颜色的灵感源于于电影“Destiny”中的Sunbreaker Titans。
+desc.immersiveengineering.info.shader.details.argo=没有确切的参考，但风格以及颜色是出自视频游戏“命运”的灵感。
+desc.immersiveengineering.info.shader.details.sunstrike=没有确切的参考，但是名字以及颜色的灵感源于于电影《Destiny》中的Sunbreaker Titans。
 desc.immersiveengineering.info.shader.details.locus=命名和颜色来着“雇佣兵的轨迹”在RvB季11-13。
 desc.immersiveengineering.info.shader.details.felix=在RvB季节11-13之后，雇佣军的“Felix”命名和着色。
 desc.immersiveengineering.info.shader.details.sharkface=在RvB季节9和13中的雇佣军“鲨鱼面”之后命名和着色。
@@ -1616,7 +1616,7 @@ desc.immersiveengineering.info.shader.details.glacis=没有特别的灵感，决
 desc.immersiveengineering.info.shader.details.phoenix=没有特别的灵感，只是渐变式皮肤的另一个用途。
 desc.immersiveengineering.info.shader.details.radiant=以世界“辐射花园”命名和设计。
 desc.immersiveengineering.info.shader.details.hollow=以世界“空心堡垒”命名和设计。
-desc.immersiveengineering.info.shader.details.microshark=以Minishark和Megashark机枪的名义参考并设计。
+desc.immersiveengineering.info.shader.details.microshark=以Minishark（迷你鲨）和Megashark（巨兽鲨）机枪的名义参考并设计。
 desc.immersiveengineering.info.shader.details.n7=联盟特种部队的最高名称后命名和设计。
 desc.immersiveengineering.info.shader.details.normandy=在参考诺曼底SR2在其联盟配色方案命名和设计。
 desc.immersiveengineering.info.shader.details.omnitool=参考全息多光子命名和设计。
