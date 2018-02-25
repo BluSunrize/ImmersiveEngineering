@@ -62,7 +62,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -98,6 +97,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.input.Mouse;
@@ -1306,15 +1306,23 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		}
 	}
 
+
+	private boolean justLoggedIn = false;
+	@SubscribeEvent
+	public void onLoginClientPre(ClientConnectedToServerEvent ev)
+	{
+		justLoggedIn = true;
+	}
+
 	@SubscribeEvent
 	public void onLoginClient(EntityJoinWorldEvent ev)
 	{
-		Entity e = ev.getEntity();
-		if (e==Minecraft.getMinecraft().player&&ev.getWorld().isRemote)
+		if (ev.getEntity()==Minecraft.getMinecraft().player&&justLoggedIn)
 		{
 			String javaV = System.getProperty("java.version");
 			if (javaV.equals("1.8.0_25"))
-				e.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"old_java", javaV));
+				Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO + "old_java", javaV));
+			justLoggedIn = false;
 		}
 	}
 }
