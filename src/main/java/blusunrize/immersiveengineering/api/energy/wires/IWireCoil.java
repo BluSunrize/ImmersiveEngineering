@@ -19,5 +19,17 @@ import net.minecraft.tileentity.TileEntity;
 public interface IWireCoil
 {
 	WireType getWireType(ItemStack stack);
-	boolean canConnectCable(WireType wire, TileEntity targetEntity);
+	public default boolean canConnectCable(ItemStack stack, TileEntity targetEntity)
+	{
+		return true;
+	}
+	public default int getMaxLength(ItemStack stack)
+	{
+		WireType wire = getWireType(stack);
+		return wire.getMaxLength();
+	}
+	public default void consumeWire(ItemStack stack, int length)
+	{
+		stack.shrink(1);
+	}	
 }
