@@ -1,4 +1,4 @@
-#####Version 0.12-78
+#####Version 0.12-78 - BUILT
 - Added a preliminary connection render to debug obstructions (Malte)
 - Added Craftweaker function to remove Crusher recipes by input (BluSurize)
 - Fixed crash when breaking middle block of Feedthrough connector (Malte)
