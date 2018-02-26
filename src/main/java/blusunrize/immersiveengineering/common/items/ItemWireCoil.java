@@ -145,7 +145,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						else
 						{
 							TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
-							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||!((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offset))
+							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||!((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offset)
+									||!((IImmersiveConnectable) tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos))
 								player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
 							else
 							{
