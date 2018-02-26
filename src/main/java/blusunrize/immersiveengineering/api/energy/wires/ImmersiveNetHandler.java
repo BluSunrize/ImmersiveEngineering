@@ -271,9 +271,9 @@ public class ImmersiveNetHandler
 			for (Connection con : getMultimap(world.provider.getDimension()).get(node))
 			{
 				removeConnection(world, con);
-				double dx = node.getX() + .5 + Math.signum(con.start.getX() - con.end.getX());
-				double dy = node.getY() + .5 + Math.signum(con.start.getY() - con.end.getY());
-				double dz = node.getZ() + .5 + Math.signum(con.start.getZ() - con.end.getZ());
+				double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());
+				double dy = node.getY() + .5 + Math.signum(con.end.getY() - con.start.getY());
+				double dz = node.getZ() + .5 + Math.signum(con.end.getZ() - con.start.getZ());
 				if (doDrops && world.getGameRules().getBoolean("doTileDrops"))
 					world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 			}
@@ -311,9 +311,9 @@ public class ImmersiveNetHandler
 			if (con.cableType == type)
 			{
 				removeConnection(world, con);
-				double dx = node.getX() + .5 + Math.signum(con.start.getX() - con.end.getX());
-				double dy = node.getY() + .5 + Math.signum(con.start.getY() - con.end.getY());
-				double dz = node.getZ() + .5 + Math.signum(con.start.getZ() - con.end.getZ());
+				double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());
+				double dy = node.getY() + .5 + Math.signum(con.end.getY() - con.start.getY());
+				double dz = node.getZ() + .5 + Math.signum(con.end.getZ() - con.start.getZ());
 				if (world.getGameRules().getBoolean("doTileDrops"))
 					world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 				ret = true;
