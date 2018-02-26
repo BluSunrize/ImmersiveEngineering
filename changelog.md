@@ -1,3 +1,14 @@
+#####Version 0.12-78
+- Added a preliminary connection render to debug obstructions (Malte)
+- Fixed crash when breaking middle block of Feedthrough connector (Malte)
+- Fixed errors related to floating point accuracy (Malte)
+- Fixed Blastfurnace not working at all (Malte)
+- Fixed raytracing on vertical connections (Malte)
+- Fixed Sampledrill render (Malte)
+- Fixed J8U25 message showing on dimension change (Malte)
+- Fixed Feedthrough connectors connecting to themselves (Malte)
+- Fixed wires dropping in the wrong location (Malte)
+
 #####Version 0.12-77 - BUILT
 - Various changes to the wiring system (Malte):
   - Uninsulated energy wires cause damage now
