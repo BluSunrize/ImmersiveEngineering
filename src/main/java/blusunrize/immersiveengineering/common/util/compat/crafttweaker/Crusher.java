@@ -87,7 +87,7 @@ public class Crusher
 		@Override
 		public void apply()
 		{
-			removedRecipes = CrusherRecipe.removeRecipes(output);
+			removedRecipes = CrusherRecipe.removeRecipesForOutput(output);
 			for(CrusherRecipe recipe : removedRecipes)
 				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
@@ -95,7 +95,38 @@ public class Crusher
 		@Override
 		public String describe()
 		{
-			return "Removing Crusher Recipe for " + output.getDisplayName();
+			return "Removing Crusher Recipe for output: " + output.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeRecipesForInput(IItemStack input)
+	{
+		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(input)));
+	}
+
+	private static class RemoveForInput implements IAction
+	{
+		private final ItemStack input;
+		List<CrusherRecipe> removedRecipes;
+
+		public RemoveForInput(ItemStack input)
+		{
+			this.input = input;
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = CrusherRecipe.removeRecipesForInput(input);
+			for(CrusherRecipe recipe : removedRecipes)
+				IECompatModule.jeiRemoveFunc.accept(recipe);
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing Crusher Recipe for input: " + input.getDisplayName();
 		}
 	}
 }
