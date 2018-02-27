@@ -1009,9 +1009,9 @@ immersiveengineering.potion.concreteFeet=缓慢
 immersiveengineering.potion.flashed=闪现
 
 #MANUAL
-ie.manual.entry..name=
-ie.manual.entry..subtext=
-ie.manual.entry.=
+#ie.manual.entry..name=
+#ie.manual.entry..subtext=
+#ie.manual.entry.=
 
 ie.manual.category.update.name=最新动态！
 ie.manual.entry.updateNews_0.name=版本0.6.0更新内容
@@ -1109,9 +1109,8 @@ ie.manual.entry.concrete0=混凝土是一种极为坚硬，防御力极强的复
 
 ie.manual.entry.balloon.name=气球
 ie.manual.entry.balloon.subtext=...制作99个就对了
-ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮。它们同样会释放光亮,但不同于火把的是，他们并没有火灾隐患。<br>气球能够像其它方块一样放置，或者，当没有目标方块时,它们会被放置在你前方的空气方块中。
-ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢§o§n制§o§n接§o§n线§o§n器§r;5>类似，你可以将麻绳或钢线连接到上面.<br>潜行右击可以设置气球的放置高度差，允许你将其放置在目标方块上方最多5格高的地方。
-//Impossible Feature atm// <br>You can also use dyes on a placed balloon; which part you dye depends on where you target it.<br>Rightclicking with an Engineer's Hammer will toggle the balloon's design between horizontal or vertical stripes. <br> (译文)你还可以对已放置的气球使用染料;染色的部位取决于你对准的部位。<br>手持工程师锤右键气球会改变条纹形状。
+ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮。它们同样会释放光亮，但不同于火把的是，他们并没有火灾隐患。<br>气球能够像其它方块一样放置，或者，当没有目标方块时,它们会被放置在你前方的空气方块中。
+ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢§o§n制§o§n接§o§n线§o§n器§r;5>类似，你可以将麻绳或钢线连接到上面。<br>潜行右击可以设置气球的放置高度差，允许你将其放置在目标方块上方最多5格高的地方。
 
 ie.manual.entry.crate.name=木制储物箱
 ie.manual.entry.crate.subtext=移动装备了！
