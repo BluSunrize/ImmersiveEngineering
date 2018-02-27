@@ -159,7 +159,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					if(recipe!=null)
 					{
 						this.process=recipe.time - processSpeed;
-						this.processMax=process;
+						this.processMax= recipe.time;
 						this.active=true;
 					}
 				}

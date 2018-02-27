@@ -37,7 +37,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
 		IBakedModel model = blockRenderer.getModelForState(state);
-		if(state.getBlock() != IEContent.blockMetalDevice0)
+		if(state.getBlock() != IEContent.blockMetalDevice1)
 			return;
 //				.getModelFromBlockState(state, getWorld(), blockPos);
 		if(state instanceof IExtendedBlockState)

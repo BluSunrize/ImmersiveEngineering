@@ -120,7 +120,7 @@ public class CrusherRecipe extends MultiblockRecipe
 				return recipe;
 		return null;
 	}
-	public static List<CrusherRecipe> removeRecipes(ItemStack stack)
+	public static List<CrusherRecipe> removeRecipesForOutput(ItemStack stack)
 	{
 		List<CrusherRecipe> list = new ArrayList();
 		Iterator<CrusherRecipe> it = recipeList.iterator();
@@ -128,6 +128,21 @@ public class CrusherRecipe extends MultiblockRecipe
 		{
 			CrusherRecipe ir = it.next();
 			if(OreDictionary.itemMatches(ir.output, stack, true))
+			{
+				list.add(ir);
+				it.remove();
+			}
+		}
+		return list;
+	}
+	public static List<CrusherRecipe> removeRecipesForInput(ItemStack stack)
+	{
+		List<CrusherRecipe> list = new ArrayList();
+		Iterator<CrusherRecipe> it = recipeList.iterator();
+		while(it.hasNext())
+		{
+			CrusherRecipe ir = it.next();
+			if(ir.input.matchesItemStackIgnoringSize(stack))
 			{
 				list.add(ir);
 				it.remove();

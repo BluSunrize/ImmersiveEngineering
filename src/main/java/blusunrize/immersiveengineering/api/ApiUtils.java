@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -375,7 +374,7 @@ public class ApiUtils
 
 	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
 	{
-		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
+		boolean vertical = end.x==start.x && end.z==start.z;
 
 		if(vertical)
 			return new Vec3d[]{new Vec3d(start.x, start.y, start.z), new Vec3d(end.x, end.y, end.z)};
@@ -476,8 +475,8 @@ public class ApiUtils
 		for (int dim = 0; dim <= 2; dim += 2)
 		{
 			int start = (int) Math.ceil(Math.min(getDim(vStart, dim), getDim(vEnd, dim)));
-			int end = (int) Math.floor(Math.max(getDim(vStart, dim), getDim(vEnd, dim)));
-			for (int i = start; (start > end ? i >= end : i <= end); i += (end == start ? 1 : Math.signum(end - start)))
+			int end = (int) Math.ceil(Math.max(getDim(vStart, dim), getDim(vEnd, dim)));
+			for (int i = start; i < end; i ++)
 			{
 				double factor = (i - getDim(vStart, dim)) / getDim(across, dim);
 				Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
@@ -487,19 +486,34 @@ public class ApiUtils
 			}
 		}
 		//Raytrace Y
-		double min = conn.catA + conn.catOffsetY + vStart.y;
-		for (int i = 0; i < 2; i++)
+		boolean vertical = vStart.x==vEnd.x&&vStart.z==vEnd.z;
+		if (vertical)
 		{
-			double factor = i == 0 ? 1 : -1;
-			double max = i == 0 ? vEnd.y : vStart.y;
-			for (int y = (int) Math.ceil(min); y <= Math.floor(max); y++)
+			for (int y = (int) Math.ceil(Math.min(vStart.y, vEnd.y)); y <= Math.floor(Math.max(vStart.y, vEnd.y)); y++)
 			{
-				double yReal = y - vStart.y;
-				double posRel = (factor * acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
-				Vec3d pos = new Vec3d(vStart.x + across.x * posRel, y, vStart.z + across.z * posRel);
-
-				if (posRel>=0&&posRel<=1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+				Vec3d pos = new Vec3d(vStart.x, y, vStart.z);
+				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 					return false;
+			}
+		}
+		else
+		{
+			double min = conn.catA + conn.catOffsetY + vStart.y;
+			for (int i = 0; i < 2; i++)
+			{
+				double factor = i == 0 ? 1 : -1;
+				double max = i == 0 ? vEnd.y : vStart.y;
+				for (int y = (int) Math.ceil(min); y <= Math.floor(max); y++)
+				{
+					double yReal = y - vStart.y;
+					double posRel;
+					Vec3d pos;
+					posRel = (factor * acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
+					pos = new Vec3d(vStart.x + across.x * posRel, y, vStart.z + across.z * posRel);
+
+					if (posRel >= 0 && posRel <= 1 && handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+						return false;
+				}
 			}
 		}
 		for (Triple<BlockPos, Vec3d, Vec3d> p : near)

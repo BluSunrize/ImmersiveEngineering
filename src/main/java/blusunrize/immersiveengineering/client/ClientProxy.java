@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -130,6 +131,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
@@ -138,6 +140,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(Side.CLIENT)
@@ -1616,6 +1619,13 @@ public class ClientProxy extends CommonProxy
 	public void clearConnectionModelCache()
 	{
 		ConnModelReal.cache.invalidateAll();
+	}
+
+	@Override
+	public void addFailedConnection(ImmersiveNetHandler.Connection connection, BlockPos reason, EntityPlayer player)
+	{
+		ClientEventHandler.FAILED_CONNECTIONS.put(connection,
+				new ImmutablePair<>(reason, new AtomicInteger(200)));
 	}
 
 	static

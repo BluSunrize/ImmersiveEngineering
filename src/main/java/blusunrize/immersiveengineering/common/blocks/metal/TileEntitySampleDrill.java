@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -250,9 +251,12 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		}
 		else if(!this.active)
 		{
-			this.active = true;
-			markDirty();
-			this.markContainingBlockForUpdate(null);
+			if (energyStorage.getEnergyStored()>=IEConfig.Machines.coredrill_consumption)
+			{
+				this.active = true;
+				markDirty();
+				this.markContainingBlockForUpdate(null);
+			}
 			return true;
 		}
 		return false;
