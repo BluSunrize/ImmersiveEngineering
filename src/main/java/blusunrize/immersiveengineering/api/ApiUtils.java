@@ -656,8 +656,8 @@ public class ApiUtils
 						{
 							TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
 							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||
-							   !((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offset)||
-                               !((IImmersiveConnectable) tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
+							   !((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offsetLink)||
+							   !((IImmersiveConnectable) tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
 							   !coil.canConnectCable(stack, tileEntityLinkingPos))
 								player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
 							else
