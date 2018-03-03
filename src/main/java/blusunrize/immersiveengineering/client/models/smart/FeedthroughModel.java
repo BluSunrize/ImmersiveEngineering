@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -42,7 +42,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -240,6 +239,11 @@ public class FeedthroughModel implements IBakedModel
 	}
 	private static class SpecificFeedthroughModel extends FeedthroughModel
 	{
+		private static final float[] WHITE = {1, 1, 1, 1};
+		private static final Vector3f[] vertices = {
+				new Vector3f(.75F, .001F, .75F), new Vector3f(.75F, .001F, .25F),
+				new Vector3f(.25F, .001F, .25F), new Vector3f(.25F, .001F, .75F)
+		};
 		List<List<BakedQuad>> quads = new ArrayList<>(6);
 		public SpecificFeedthroughModel(ItemStack stack)
 		{
@@ -328,24 +332,7 @@ public class FeedthroughModel implements IBakedModel
 			mat.translate(-.5, -.5, -.5);
 			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, 0));
 			if (side == facing)
-			{
-				UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(DefaultVertexFormats.ITEM);
-				TextureAtlasSprite tex = info.tex;
-				builder.setTexture(tex);
-				builder.setQuadOrientation(facing);
-				builder.setQuadTint(-1);
-				for (int i = 0; i < 4; i++)
-				{
-					int x = i < 2 ? 1 : 0;
-					int y = i == 0 || i == 3 ? 1 : 0;
-					builder.put(0, .25F + .5F * x, .001F, .25F + .5F * y);
-					builder.put(1, 1, 1, 1, 1);
-					builder.put(2, tex.getInterpolatedU(info.uvs[x * 2]), tex.getInterpolatedV(info.uvs[y * 2 + 1]));
-					builder.put(3, 0, 1, 0);
-					builder.put(4, 0);
-				}
-				conn.add(builder.build());
-			}
+				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, facing, info.tex, info.uvs, WHITE, false));
 			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, DefaultVertexFormats.ITEM,
 					null);//I hope no one uses tint index for connectors
 			if (transf != null)

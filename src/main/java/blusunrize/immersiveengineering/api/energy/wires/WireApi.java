@@ -105,7 +105,7 @@ public final class WireApi
 		final ResourceLocation texLoc;
 		@SideOnly(Side.CLIENT)
 		public TextureAtlasSprite tex;
-		public final float[] uvs;
+		public final double[] uvs = new double[4];
 		public final double connLength;
 		public final double connOffset;
 		final Predicate<IBlockState> matches;
@@ -114,7 +114,8 @@ public final class WireApi
 									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg) {
 			modelLoc = model;
 			this.texLoc = texLoc;
-			this.uvs = uvs;
+			for (int i = 0; i < 4; i++)
+				this.uvs[i] = uvs[i];
 			texReplacements = texRepl;
 			this.connLength = connLength;
 			this.connOffset = connOffset;
