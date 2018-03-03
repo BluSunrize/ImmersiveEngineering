@@ -1623,7 +1623,7 @@ public class ClientUtils
 	}
 
 	private static boolean crossesChunkBorderSingleDim(double a, double b, int offset) {
-		return ((int)a+offset)>>4!=((int)b+offset)>>4;
+		return ((int)Math.floor(a+offset))>>4!=((int)Math.floor(b+offset))>>4;
 	}
 
 	public static void renderQuads(Collection<BakedQuad> quads, float brightness, float red, float green, float blue)
