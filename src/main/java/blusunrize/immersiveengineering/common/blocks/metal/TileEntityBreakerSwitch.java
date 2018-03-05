@@ -182,7 +182,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			inverted = !inverted;
 			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn":"invertedOff")));
 			if (this instanceof TileEntityBreakerSwitch && wires>1)
-				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world.provider.getDimension(), pos);
 			notifyNeighbours();
 		}
 		else
@@ -200,7 +200,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			active = !active;
 			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F,1);
 			if (wires>1)
-				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world.provider.getDimension(), pos);
 			world.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
 			notifyNeighbours();
 		}
