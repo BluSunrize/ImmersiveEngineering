@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,8 +49,10 @@ public class ImmersiveNetHandler
 	public static final ImmersiveNetHandler INSTANCE = new ImmersiveNetHandler();
 	public final BlockPlaceListener LISTENER = new BlockPlaceListener();
 	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<>();
-	public Map<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<>();
-	public Map<BlockPos, Set<AbstractConnection>> indirectConnectionsNoOut = new ConcurrentHashMap<>();
+	public TIntObjectMap<Map<BlockPos, Set<AbstractConnection>>> indirectConnections
+			= new TIntObjectHashMap<>();
+	public TIntObjectMap<Map<BlockPos, Set<AbstractConnection>>> indirectConnectionsIgnoreOut
+			= new TIntObjectHashMap<>();
 	public Map<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<>();
 	public Map<DimensionBlockPos, IICProxy> proxies = new ConcurrentHashMap<>();
 
@@ -233,15 +237,24 @@ public class ImmersiveNetHandler
 		resetCachedIndirectConnections();
 	}
 
+	/**
+	 * Reset ALL cached connections, anywhere, in any dimension. Use
+	 */
+	@Deprecated
 	public void resetCachedIndirectConnections()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
 			indirectConnections.clear();
-			indirectConnectionsNoOut.clear();
+			indirectConnectionsIgnoreOut.clear();
 		}
 		else
 			ImmersiveEngineering.proxy.clearConnectionModelCache();
+	}
+
+	public void resetCachedIndirectConnections(int dimensions, @Nullable BlockPos start)
+	{
+
 	}
 
 	public void removeConnectionAndDrop(Connection conn, World world, @Nullable BlockPos dropPos)
@@ -398,10 +411,13 @@ public class ImmersiveNetHandler
 	}
 	public Set<AbstractConnection> getIndirectEnergyConnections(BlockPos node, World world, boolean ignoreIsEnergyOutput)
 	{
-		if(!ignoreIsEnergyOutput&&indirectConnections.containsKey(node))
-			return indirectConnections.get(node);
-		else if(ignoreIsEnergyOutput&&indirectConnectionsNoOut.containsKey(node))
-			return indirectConnectionsNoOut.get(node);
+		int dimension = world.provider.getDimension();
+		if(!ignoreIsEnergyOutput&&indirectConnections.containsKey(dimension)&&
+				indirectConnections.get(dimension).containsKey(node))
+			return indirectConnections.get(dimension).get(node);
+		else if(ignoreIsEnergyOutput&& indirectConnectionsIgnoreOut.containsKey(dimension)&&
+				indirectConnectionsIgnoreOut.get(dimension).containsKey(node))
+			return indirectConnectionsIgnoreOut.get(dimension).get(node);
 
 		PriorityQueue<Pair<IImmersiveConnectable, Float>> queue = new PriorityQueue<>(Comparator.comparingDouble(Pair::getRight));
 		Set<AbstractConnection> closedList = newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>());
@@ -486,15 +502,21 @@ public class ImmersiveNetHandler
 		{
 			if (ignoreIsEnergyOutput)
 			{
-				if (!indirectConnections.containsKey(node))
-					indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<>()));
-				indirectConnections.get(node).addAll(closedList);
+				if (!indirectConnectionsIgnoreOut.containsKey(dimension))
+					indirectConnectionsIgnoreOut.put(dimension, new ConcurrentHashMap<>());
+				Map<BlockPos, Set<AbstractConnection>> conns = indirectConnectionsIgnoreOut.get(dimension);
+				if (!conns.containsKey(node))
+					conns.put(node, newSetFromMap(new ConcurrentHashMap<>()));
+				conns.get(node).addAll(closedList);
 			}
 			else
 			{
-				if (!indirectConnectionsNoOut.containsKey(node))
-					indirectConnectionsNoOut.put(node, newSetFromMap(new ConcurrentHashMap<>()));
-				indirectConnectionsNoOut.get(node).addAll(closedList);
+				if (!indirectConnections.containsKey(dimension))
+					indirectConnections.put(dimension, new ConcurrentHashMap<>());
+				Map<BlockPos, Set<AbstractConnection>> conns = indirectConnections.get(dimension);
+				if (!conns.containsKey(node))
+					conns.put(node, newSetFromMap(new ConcurrentHashMap<>()));
+				conns.get(node).addAll(closedList);
 			}
 		}
 		return closedList;
