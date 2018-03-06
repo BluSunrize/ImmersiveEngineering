@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -33,7 +34,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class EntitySkylineHook extends Entity
 {
@@ -221,12 +225,23 @@ public class EntitySkylineHook extends Entity
 		ItemStack hook = player.getActiveItemStack();
 		if(hook.isEmpty() || !(hook.getItem() instanceof ItemSkyhook))
 			return;
-		Connection line = ApiUtils.getTargetConnection(world, player, connection, 0);
-		if(line!=null)
+		Optional<Connection> line = Optional.empty();
+		Set<Connection> possible = ImmersiveNetHandler.INSTANCE.getConnections(world, connection.end);
+		if (possible!=null)
+		{
+			Vec3d look = player.getLookVec();
+			line = possible.stream().filter(c->!c.hasSameConnectors(connection))
+					.max(Comparator.comparingDouble(c-> {
+						Vec3d[] vertices = c.getSubVertices(world);
+						Vec3d across = vertices[vertices.length-1].subtract(vertices[0]).normalize();
+						return across.dotProduct(look);
+					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
+		}
+		if(line.isPresent())
 		{
 			player.setActiveHand(player.getActiveHand());
 //					setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
-			SkylineHelper.spawnHook(player, end, line);
+			SkylineHelper.spawnHook(player, end, line.get());
 			//					ChunkCoordinates cc0 = line.end==target?line.start:line.end;
 			//					ChunkCoordinates cc1 = line.end==target?line.end:line.start;
 			//					double dx = cc0.posX-cc1.posX;
