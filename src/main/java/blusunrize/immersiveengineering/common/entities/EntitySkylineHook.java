@@ -221,7 +221,7 @@ public class EntitySkylineHook extends Entity
 		ItemStack hook = player.getActiveItemStack();
 		if(hook.isEmpty() || !(hook.getItem() instanceof ItemSkyhook))
 			return;
-		Connection line = SkylineHelper.getTargetConnection(world, player, connection);
+		Connection line = ApiUtils.getTargetConnection(world, player, connection, 0);
 		if(line!=null)
 		{
 			player.setActiveHand(player.getActiveHand());

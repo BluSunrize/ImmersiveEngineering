@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -16,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.AbstractConnection;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -51,6 +53,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +61,10 @@ import java.util.Set;
 
 public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 {
+	public static final int HAMMER_META = 0;
+	public static final int CUTTER_META = 1;
+	public static final int VOLTMETER_META = 2;
+	public static final int MANUAL_META = 3;
 	static int hammerMaxDamage;
 	static int cutterMaxDamage;
 	public ItemIETool()
@@ -70,7 +77,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public int getGuiID(ItemStack stack)
 	{
-		return stack.getItemDamage()==3?Lib.GUIID_Manual:-1;
+		return stack.getItemDamage()==MANUAL_META?Lib.GUIID_Manual:-1;
 	}
 
 	@Override
@@ -82,7 +89,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 			if(link!=null&&link.length>3)
 				list.add(I18n.format(Lib.DESC_INFO+"attachedToDim", link[1],link[2],link[3],link[0]));
 		}
-		if(stack.getItemDamage()==0)
+		if(stack.getItemDamage()==HAMMER_META)
 		{
 			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 			{
@@ -111,10 +118,10 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				}
 			}
 		}
-		if(flag.isAdvanced() && stack.getItemDamage()<2)
+		if(flag.isAdvanced() && stack.getItemDamage()<VOLTMETER_META)
 		{
-			int nbtDamage = ItemNBTHelper.getInt(stack, stack.getItemDamage()==0?"hammerDmg":"cutterDmg");
-			int maxDamage = stack.getItemDamage()==0?hammerMaxDamage:cutterMaxDamage;
+			int nbtDamage = ItemNBTHelper.getInt(stack, stack.getItemDamage()==HAMMER_META?"hammerDmg":"cutterDmg");
+			int maxDamage = stack.getItemDamage()==HAMMER_META?hammerMaxDamage:cutterMaxDamage;
 			list.add("Durability: "+(maxDamage-nbtDamage)+" / "+maxDamage);
 		}
 	}
@@ -122,12 +129,13 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return stack.getItemDamage()<2;
+		return stack.getItemDamage()<VOLTMETER_META;
 	}
+	@Nonnull
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
 	{
-		if(stack.getItemDamage()==0)
+		if(stack.getItemDamage()==HAMMER_META)
 		{
 			int nbtDamage = ItemNBTHelper.getInt(stack, "hammerDmg")+1;
 			if(nbtDamage<hammerMaxDamage)
@@ -137,7 +145,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				return container;
 			}
 		}
-		else if(stack.getItemDamage()==1)
+		else if(stack.getItemDamage()==CUTTER_META)
 		{
 			int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
 			if(nbtDamage<cutterMaxDamage)
@@ -152,15 +160,16 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	//	@Override
 	//	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	//	{
-	//		return stack.getItemDamage()!=0;
+	//		return stack.getItemDamage()!=HAMMER_META;
 	//	}
 
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		if (stack.getMetadata() == 0)
+		if (stack.getMetadata() == HAMMER_META)
 		{
 			String[] permittedMultiblocks = null;
 			String[] interdictedMultiblocks = null;
@@ -213,17 +222,18 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		return EnumActionResult.PASS;
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(stack.getItemDamage() == 0)
+		if(stack.getItemDamage() == HAMMER_META)
 		{
 			if(!(tileEntity instanceof IDirectionalTile) && !(tileEntity instanceof IHammerInteraction) && !(tileEntity instanceof IConfigurableSides))
 				return RotationUtil.rotateBlock(world, pos, side) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 		}
-		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable)
+		else if(stack.getItemDamage() == CUTTER_META && tileEntity instanceof IImmersiveConnectable)
 		{
 			TargetingInfo target = new TargetingInfo(side, hitX, hitY, hitZ);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(null, target);
@@ -250,7 +260,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 			}
 			return EnumActionResult.SUCCESS;
 		}
-		else if(stack.getItemDamage() == 2 && !world.isRemote)
+		else if(stack.getItemDamage() == VOLTMETER_META && !world.isRemote)
 		{
 			if(!player.isSneaking() && (tileEntity instanceof IFluxReceiver || tileEntity instanceof IFluxProvider))
 			{
@@ -302,26 +312,38 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
 	{
-		return !player.world.isRemote && stack.getItemDamage() == 0 && RotationUtil.rotateEntity(entity, player);
+		return !player.world.isRemote && stack.getItemDamage() == HAMMER_META && RotationUtil.rotateEntity(entity, player);
 	}
 
 	@Override
 	public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)
 	{
-		return stack.getItemDamage()==0;
+		return stack.getItemDamage()==HAMMER_META;
 	}
 
+	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		if(stack.getItemDamage()==3)
+		if(stack.getItemDamage()==MANUAL_META)
 		{
 			if(world.isRemote)
 				CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult(EnumActionResult.PASS, stack);
+		else if (stack.getMetadata()==CUTTER_META)
+		{
+			if (!world.isRemote)
+			{
+				double reachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+				Connection target = ApiUtils.getTargetConnection(world, player, null, reachDistance);
+				if (target != null)
+					ImmersiveNetHandler.INSTANCE.removeConnectionAndDrop(target, world, player.getPosition());
+			}
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+		}
+		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
 
 	@Override
@@ -336,18 +358,18 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		if(stack.getItemDamage()==0)
+		if(stack.getItemDamage()==HAMMER_META)
 			return (ItemNBTHelper.getInt(stack, "hammerDmg")>0);
-		else if(stack.getItemDamage()==1)
+		else if(stack.getItemDamage()==CUTTER_META)
 			return (ItemNBTHelper.getInt(stack, "cutterDmg")>0);
 		return false;
 	}
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		if(stack.getItemDamage()==0)
+		if(stack.getItemDamage()==HAMMER_META)
 			return ItemNBTHelper.getInt(stack, "hammerDmg") / (double)hammerMaxDamage;
-		else if(stack.getItemDamage()==1)
+		else if(stack.getItemDamage()==CUTTER_META)
 			return ItemNBTHelper.getInt(stack, "cutterDmg") / (double)cutterMaxDamage;
 		return 0;
 	}
@@ -357,11 +379,12 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public Set<String> getToolClasses(ItemStack stack)
 	{
 		int meta = stack.getItemDamage();
-		return meta==0?ImmutableSet.of(Lib.TOOL_HAMMER): meta==1?ImmutableSet.of(Lib.TOOL_WIRECUTTER): new HashSet<String>();
+		return meta==HAMMER_META?ImmutableSet.of(Lib.TOOL_HAMMER): meta==CUTTER_META?ImmutableSet.of(Lib.TOOL_WIRECUTTER): new HashSet<String>();
 	}
 
 	@Override
@@ -376,14 +399,14 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public boolean isTool(ItemStack item)
 	{
-		return item.getItemDamage()!=3;
+		return item.getItemDamage()!=MANUAL_META;
 	}
 
 	//	@Override
 	//	@Optional.Method(modid = "CoFHAPI|item")
 	//	public boolean isUsable(ItemStack stack, EntityLivingBase living, int x, int y, int z)
 	//	{
-	//		return stack!=null&&stack.getItemDamage()==0;
+	//		return stack!=null&&stack.getItemDamage()==HAMMER_META;
 	//	}
 	//
 	//	@Override

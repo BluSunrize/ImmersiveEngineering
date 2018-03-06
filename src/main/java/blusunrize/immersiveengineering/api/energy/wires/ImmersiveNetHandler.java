@@ -283,7 +283,7 @@ public class ImmersiveNetHandler
 		cachedConnsForDim.remove(start);
 		while (!open.isEmpty())
 		{
-			Iterator<BlockPos> it = open.iterator();//TODO decrease allocs
+			Iterator<BlockPos> it = open.iterator();
 			BlockPos next = it.next();
 			it.remove();
 			closed.add(next);

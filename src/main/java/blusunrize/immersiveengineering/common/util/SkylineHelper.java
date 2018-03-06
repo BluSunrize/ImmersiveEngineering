@@ -45,23 +45,9 @@ public class SkylineHelper
 		if(iicEnd!=null)
 			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
 
-
-		/* Reasoning for the formula for pos (below): pos should be the point on the catenary (horizontally) closest to the player position
-		A conn start, B conn across, C player pos
-		A+tB
-		C
-		C-A=:D
-		D**2=(Cx-Ax-tBx)**2+(Cz-Az-tBz)**2=(Dx-tBx)**2+(Dz-tBz)**2
-		=Dx**2-2tDxBx+t**2Bx**2+Dz**2-2tDzBz+t**2Bz**2
-		=t**2(Bx**2+Bz**2)-(2DxBx+2DzBz)t+Dz**2+Dx**2
-
-		D**2'=(2Bx**2+2Bz**2)*t-2DxBx+2DzBz=0
-		t=(DxBx+DzBz)/(Bx^2+Bz^2)
-		 */
 		Vec3d pos = player.getPositionEyes(0);
-		Vec3d delta = pos.subtract(vStart);
 		Vec3d across = new Vec3d(vEnd.x-vStart.x, 0, vEnd.z-vStart.z);
-		double t = (delta.x*across.x+delta.z*across.z)/(across.x*across.x+across.z*across.z);
+		double t = Utils.getCoeffForMinDistance(pos, vStart, across);
 		pos = connection.getVecAt(t, vStart, across, across.lengthVector());
 		int tInt = MathHelper.clamp(0, (int)(t*16), 15);
 
@@ -109,40 +95,5 @@ public class SkylineHelper
 						return true;
 				}
 		return false;
-	}
-
-	public static Connection getTargetConnection(World world, EntityPlayer player, Connection ignored)
-	{
-		double py = player.posY + player.getEyeHeight();
-		BlockPos head = new BlockPos(player.posX, py, player.posZ);
-		Connection ret = null;
-			Map<BlockPos, ImmersiveNetHandler.BlockWireInfo> inDim = ImmersiveNetHandler.INSTANCE.blockWireMap
-					.lookup(player.dimension);
-			if (inDim != null && inDim.containsKey(head))
-			{
-				ImmersiveNetHandler.BlockWireInfo info = inDim.get(head);
-				for (int i = 0;i<2;i++)
-				{
-					Set<Triple<Connection, Vec3d, Vec3d>> conns = i==0?info.in:info.near;
-					for (Triple<Connection, Vec3d, Vec3d> conn : conns)
-					{
-						Connection c = conn.getLeft();
-						if (ignored == null || !c.hasSameConnectors(ignored))
-						{
-							ret = c;
-							break;
-						}
-					}
-				}
-			}
-		if (ret!=null)
-		{
-			Vec3d across = new Vec3d(ret.end).subtract(new Vec3d(ret.start));
-			if (across.dotProduct(player.getLookVec())<0)
-			{
-				ret = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), ret);
-			}
-		}
-		return ret;
 	}
 }

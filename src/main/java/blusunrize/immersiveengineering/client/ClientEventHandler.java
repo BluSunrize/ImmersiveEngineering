@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -136,7 +137,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ItemStack stack = player.getActiveItemStack();
 			if(!stack.isEmpty() && stack.getItem() instanceof ItemSkyhook)
 			{
-				Connection line = SkylineHelper.getTargetConnection(player.getEntityWorld(), player, null);
+				Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
 				if(line!=null)
 					skyhookGrabableConnections.add(line);
 			}

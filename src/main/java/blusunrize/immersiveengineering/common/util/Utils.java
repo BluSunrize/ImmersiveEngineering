@@ -1094,6 +1094,27 @@ public class Utils
 		return true;
 	}
 
+
+	/* Reasoning for the formula for pos (below): pos should be the point on the catenary (horizontally) closest to the player position
+	A conn start, B conn across, C player pos
+	A+tB
+	C
+	C-A=:D
+	D**2=(Cx-Ax-tBx)**2+(Cy-Ay-tBy)**2+(Cz-Az-tBz)**2
+	=(Dx-tBx)**2+(Dy-tBy)**2+(Dz-tBz)**2
+	=Dx**2-2tDxBx+t**2Bx**2+Dy**2-2tDyBy+t**2By**2+Dz**2-2tDzBz+t**2Bz**2
+	=t**2(Bx**2+By**2+Bz**2)-(2DxBx+2DyBy+2DzBz)t+Dz**2+Dy**2+Dx**2
+
+	D**2'=(2Bx**2+2*By**2+2Bz**2)*t-2DxBx-2DyBy-2DzBz=0
+	t=(DxBx+DyBy+DzBz)/(Bx**2+By**2+Bz**2)
+	 =D*B/|B|
+	 */
+	public static double getCoeffForMinDistance(Vec3d point, Vec3d line, Vec3d across)
+	{
+		Vec3d delta = point.subtract(line);
+		return delta.dotProduct(across)/across.lengthSquared();
+	}
+
 	public static class InventoryCraftingFalse extends InventoryCrafting
 	{
 		private static final Container nullContainer = new Container()
@@ -1179,6 +1200,16 @@ public class Utils
 			mov = scalarProd(mov, 1 / mov.z);
 
 			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
+		}
+		if (checked.isEmpty())
+		{
+			BlockPos pos = new BlockPos(start);
+			IBlockState state = world.getBlockState(pos);
+			Block b = state.getBlock();
+			if (b.canCollideCheck(state, false) && state.collisionRayTrace(world, pos, start, end) != null)
+				ret.add(pos);
+			checked.add(pos);
+			out.accept(pos);
 		}
 		return ret;
 	}

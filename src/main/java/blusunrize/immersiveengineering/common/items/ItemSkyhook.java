@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
@@ -78,7 +79,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	{
 		TileEntity connector = null;
 		Connection line = null;
-		Connection con = SkylineHelper.getTargetConnection(world, player, null);
+		Connection con = ApiUtils.getTargetConnection(world, player, null, 0);
 		if (con != null)
 		{
 			connector = world.getTileEntity(con.start);

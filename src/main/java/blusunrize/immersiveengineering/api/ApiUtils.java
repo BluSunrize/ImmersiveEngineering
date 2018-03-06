@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -27,6 +28,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -800,6 +802,54 @@ public class ApiUtils
 				entity.motionY = 0.4;
 			}
 		}
+	}
+
+	public static Connection getTargetConnection(World world, EntityPlayer player, Connection ignored, double maxDistance)
+	{
+		Vec3d look = player.getLookVec();
+		Vec3d start = player.getPositionEyes(1);
+		Vec3d end = start.add(look.scale(maxDistance));
+		Map<BlockPos, ImmersiveNetHandler.BlockWireInfo> inDim = ImmersiveNetHandler.INSTANCE.blockWireMap
+				.lookup(player.dimension);
+		AtomicReference<Connection> ret = new AtomicReference<>();
+		AtomicDouble minDistSq = new AtomicDouble(Double.POSITIVE_INFINITY);
+		Utils.rayTrace(start, end, world, (pos)->
+		{
+			if (inDim != null && inDim.containsKey(pos))
+			{
+				ImmersiveNetHandler.BlockWireInfo info = inDim.get(pos);
+				for (int i = 0; i < 2; i++)
+				{
+					Set<Triple<Connection, Vec3d, Vec3d>> conns = i == 0 ? info.in : info.near;
+					for (Triple<Connection, Vec3d, Vec3d> conn : conns)
+					{
+						Connection c = conn.getLeft();
+						if (ignored == null || !c.hasSameConnectors(ignored))
+						{
+							Vec3d startRelative = start.addVector(-pos.getX(), -pos.getY(), -pos.getZ());
+							Vec3d across = conn.getRight().subtract(conn.getMiddle());
+							double t = Utils.getCoeffForMinDistance(startRelative, conn.getMiddle(), across);
+							t = MathHelper.clamp(0, t, 1);
+							Vec3d closest = conn.getMiddle().addVector(t*across.x, t*across.y, t*across.z);
+							double distSq = closest.squareDistanceTo(startRelative);
+							if (distSq<minDistSq.get())
+							{
+								ret.set(c);
+								minDistSq.set(distSq);
+							}
+						}
+					}
+				}
+			}
+		});
+		Connection retConn = ret.get();
+		if (retConn!=null)
+		{
+			Vec3d across = new Vec3d(retConn.end).subtract(new Vec3d(retConn.start));
+			if (across.dotProduct(player.getLookVec())<0)
+				retConn = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), retConn);
+		}
+		return retConn;
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>
