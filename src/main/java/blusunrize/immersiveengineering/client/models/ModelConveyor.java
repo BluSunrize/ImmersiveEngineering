@@ -89,6 +89,8 @@ public class ModelConveyor implements IBakedModel
 			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
 		else
 		{
+			if (conveyor==null)
+				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
 			Matrix4f facingMatrix = TRSRTransformation.getMatrix(facing);
 			if(conveyor != null)
