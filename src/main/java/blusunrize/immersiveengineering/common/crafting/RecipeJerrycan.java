@@ -20,25 +20,23 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
+import javax.annotation.Nonnull;
 
 public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
+
 		ItemStack jerrycan = ItemStack.EMPTY;
 		ItemStack container = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
-		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty())
-				if(jerrycan.isEmpty() && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
-					jerrycan = stackInSlot;
-				else if(container.isEmpty() && FluidUtil.getFluidHandler(stackInSlot)!=null)
-					container = stackInSlot;
-				else
-					return false;
-		}
+		int[] slots = getRelevantSlots(inv);
+		if (slots[0]>=0)
+			jerrycan = inv.getStackInSlot(slots[0]);
+		if (slots[1]>=0)
+			container = inv.getStackInSlot(slots[1]);
 		if(!jerrycan.isEmpty() && !container.isEmpty())
 		{
 			IFluidHandler handler = FluidUtil.getFluidHandler(container);
@@ -48,32 +46,30 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
 	{
 		ItemStack jerrycan = ItemStack.EMPTY;
 		ItemStack container = ItemStack.EMPTY;
 		FluidStack fs = null;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		int[] slots = getRelevantSlots(inv);
+		if (slots[0]>=0)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty())
-				if(jerrycan.isEmpty() && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
-				{
-					jerrycan = stackInSlot;
-					fs = FluidUtil.getFluidContained(jerrycan);
-				}
-				else if(container.isEmpty() && FluidUtil.getFluidHandler(stackInSlot)!=null)
-					container = stackInSlot;
+			jerrycan = inv.getStackInSlot(slots[0]);
+			fs = FluidUtil.getFluidContained(jerrycan);
 		}
+		if (slots[1]>=0)
+			container = inv.getStackInSlot(slots[1]);
 		if(fs!=null && !container.isEmpty())
 		{
 			ItemStack newContainer = Utils.copyStackWithAmount(container, 1);
-			IFluidHandler handler = FluidUtil.getFluidHandler(newContainer);
+			IFluidHandlerItem handler = FluidUtil.getFluidHandler(newContainer);
 			int accepted = handler.fill(fs, false);
 			if(accepted>0)
 			{
 				handler.fill(fs, true);
+				newContainer = handler.getContainer();// Because buckets are silly
 //				FluidUtil.getFluidHandler(jerrycan).drain(accepted,true);
 				ItemNBTHelper.setInt(jerrycan, "jerrycanDrain", accepted);
 			}
@@ -82,28 +78,47 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 		return ItemStack.EMPTY;
 	}
 
+	private int[] getRelevantSlots(InventoryCrafting inv)
+	{
+		int[] ret = {-1, -1};
+		for(int i=0;i<inv.getSizeInventory();i++)
+		{
+			ItemStack stackInSlot = inv.getStackInSlot(i);
+			if(!stackInSlot.isEmpty())
+				if(ret[0]<0 && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
+					ret[0] = i;
+				else if(ret[1]<0 && FluidUtil.getFluidHandler(stackInSlot)!=null)
+					ret[1] = i;
+				else
+				{
+					ret[0] = ret[1] = -1;
+					return ret;
+				}
+		}
+		return ret;
+	}
+
 	@Override
 	public boolean canFit(int width, int height)
 	{
 		return width>=2 && height>=2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
 		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-//		for(int i=0;i<inv.getSizeInventory();i++)
-//		{
-//			ItemStack stackInSlot = inv.getStackInSlot(i);
-//			if(stackInSlot!=null)
-//				if(jerrycan==null && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "fluid"))
-//
-//		return new ItemStack[]
+		NonNullList<ItemStack> remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		int[] inputs = getRelevantSlots(inv);
+		if (inputs[1]>=0)
+			remaining.set(inputs[1], ItemStack.EMPTY);
+		return remaining;
 	}
 }
