@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
