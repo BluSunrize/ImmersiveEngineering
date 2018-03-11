@@ -61,6 +61,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 					return accepted;
 				}
 			}
+			isRouting = false;
 		}
 		return 0;
 	}

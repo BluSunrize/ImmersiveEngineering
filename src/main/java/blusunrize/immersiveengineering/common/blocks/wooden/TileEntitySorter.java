@@ -115,6 +115,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 				isRouting = false;
 				return ItemStack.EMPTY;
 			}
+			isRouting = false;
 		}
 		return stack;
 	}
