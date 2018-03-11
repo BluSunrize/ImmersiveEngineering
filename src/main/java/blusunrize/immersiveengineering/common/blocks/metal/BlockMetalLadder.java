@@ -105,12 +105,10 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 		if(this.getMetaFromState(state)==0)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity!=null)
+			if(tileEntity instanceof IEBlockInterfaces.IDirectionalTile)
 			{
-				if (tileEntity instanceof IEBlockInterfaces.IDirectionalTile) {
-					IEBlockInterfaces.IDirectionalTile directionalTile = (IEBlockInterfaces.IDirectionalTile) tileEntity;
-					return LADDER_AABB[directionalTile.getFacing().getIndex() - 2];
-				}
+				IEBlockInterfaces.IDirectionalTile directionalTile = (IEBlockInterfaces.IDirectionalTile) tileEntity;
+				return LADDER_AABB[directionalTile.getFacing().getIndex() - 2];
 			}
 		}
 		return super.getBoundingBox(state, world, pos);
