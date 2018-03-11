@@ -1,6 +1,7 @@
-#ImmersiveEngineering-0.12-76_ja_JP
+#ImmersiveEngineering-0.12-78_ja_JP
 #Ice_ink
 
+ï»¿ Byte Order Mark, because fuck you IntelliJ
 # BLOCKS
 tile.immersiveengineering.ore.copper.name=銅鉱石
 tile.immersiveengineering.ore.aluminum.name=ボーキサイト鉱石
@@ -169,6 +170,7 @@ tile.immersiveengineering.connector.redstone_breaker.name=レッドストーン�
 tile.immersiveengineering.connector.energy_meter.name=モニタリング変圧器
 tile.immersiveengineering.connector.connector_redstone.name=レッドストーンワイヤ端子
 tile.immersiveengineering.connector.connector_probe.name=レッドストーンプローブ端子
+tile.immersiveengineering.connector.feedthrough.name=絶縁フィードスルー
 
 tile.immersiveengineering.metal_device0.capacitor_lv.name=低電圧キャパシタ
 tile.immersiveengineering.metal_device0.capacitor_mv.name=中電圧キャパシタ
@@ -227,6 +229,8 @@ tile.immersiveengineering.cloth_device.stripcurtain.name=シートカーテン
 
 tile.immersiveengineering.molten_uranium.name=融解したウラニウム
 tile.immersiveengineering.molten_constantan.name=融解したコンスタンタン
+
+tile.immersiveengineering.arb_solid.name=任意の個体ブロック
 
 #Hydraulicraft Compat
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
@@ -329,7 +333,9 @@ item.immersiveengineering.fluidContainers.bottleBiodiesel.name=バイオディ�
 item.immersiveengineering.fluidContainers.bucketBiodiesel.name=バイオディーゼル入りバケツ
 
 item.immersiveengineering.wirecoil.copper.name=低圧ワイヤーの束
+item.immersiveengineering.wirecoil.insulated_copper.name=低圧ワイヤーの束 (絶縁被覆)
 item.immersiveengineering.wirecoil.electrum.name=中圧ワイヤーの束
+item.immersiveengineering.wirecoil.insulated_electrum.name=中圧ワイヤーの束 (絶縁被覆)
 item.immersiveengineering.wirecoil.hv.name=高圧ワイヤーの束
 item.immersiveengineering.wirecoil.rope.name=麻のロープの束
 item.immersiveengineering.wirecoil.structural.name=鋼鉄ケーブルの束
@@ -661,6 +667,8 @@ desc.immersiveengineering.info.mineral.Lapis=ラピスラズリ
 desc.immersiveengineering.info.mineral.Coal=石炭
 desc.immersiveengineering.info.mineral.Wolframite=タングステン原鉱
 
+chat.immersiveengineering.info.old_java=[Immersive Engineering] §4警告: §r使用されているJavaのバージョンは%1$sです。 このバージョンのままでは、[技師の手引書]を使用した場合にクラッシュが発生する可能性があります。 現在、このクラッシュを我々が解決するのは不可能に近いことです。 最新版のJavaをインストールし、ランチャーにおいて強制的に使用させることで、クラッシュを防ぐことができます。(Java9ではなく、Java8を使用してください)
+
 chat.immersiveengineering.info.coresample.pos=%1$s to %2$s
 chat.immersiveengineering.info.coresample.mineral=%1$s-鉱脈
 chat.immersiveengineering.info.coresample.noMineral=有用な資源はありません
@@ -924,6 +932,7 @@ death.attack.ieRazorShock=%1$sは鉄線で感電させられました
 death.attack.ieTesla=%1$sはテスラコイルでフライにされました
 death.attack.ieTeslaPrimary=%1$sは動作しているテスラコイルの主電源に触ってしまいました
 death.attack.ieRailgun=%1$sは、%2$sのレールガンに貫かれました
+death.attack.ieWireShock=%1$sは、通電している配線への注意を怠っていました
 
 #ACHIEVEMENTS
 advancement.immersiveengineering:root=Immersive Engineering
@@ -1104,8 +1113,7 @@ ie.manual.entry.concrete0=コンクリートはとても硬い耐久性のある
 ie.manual.entry.balloon.name=支持気球
 ie.manual.entry.balloon.subtext=... 99個を作ろう
 ie.manual.entry.balloon0=気球は下からの熱い空気によって浮かぶ袋状の布地です。 松明のような光源にもかかわらず、火災の危険性はありません。支持気球は通常のブロックのように配置することができます。ブロックをターゲットしていないとき、それはあなたの目の前の空中に配置されます。
-ie.manual.entry.balloon1=<link;metalconstruction;§o§n装飾用コネクタ§r;5>と同様に、麻のロープや鋼鉄ケーブルを取り付けることができます。<br>スニーク-右クリックするごとに、空中に配置する際の高さが1つずつ上がり、最大5ブロック上の地点にまで置くことができます。
-//Impossible Feature atm// <br>You can also use dyes on a placed balloon; which part you dye depends on where you target it.<br>Rightclicking with an Engineer's Hammer will toggle the balloon's design between horizontal or vertical stripes.
+ie.manual.entry.balloon1=<link;metalconstruction;§o§n装飾用コネクタ§r;5>と同様に、麻のロープや鋼鉄ケーブルを取り付けることができます。<br>スニーク-右クリックするごとに、空中に配置する際の高さが1つずつ上がり、最大5ブロック上の地点にまで置くことができます。<br>配置されている気球に、染料を持って右クリックすると染色することができ、クリックをする場所によって色が付く場所が変わります。<br>ハンマーで右クリックをすると、気球の外観を水平柄と縦のストライプ柄で切り替えられます。
 
 ie.manual.entry.crate.name=収納木箱
 ie.manual.entry.crate.subtext=動かせ、ギア・アップ！
@@ -1156,9 +1164,10 @@ ie.manual.entry.wiringTransformer0=§l変圧器§rを使えば異なる種類の
 ie.manual.entry.wiringTransformer1=4ページ目の2枚目の画像のように、<link;wiring;§o§n変圧器を支柱に§r;4>付属させることができます。<br>高電圧変圧器ではこうした配置を行うことはできません。
 ie.manual.entry.wiringCutters=§lワイヤカッター§rでブロック(接続端子,継電器など)を右クリックすると、ブロックに接続されているすべてのワイヤを取り外すことができます。
 ie.manual.entry.wiringVoltmeter=§l電圧計§rは流れている電気を測定をするために使用します。<br>任意のエネルギーストレージに向ける、またはそれを右クリックすることで現在の貯蔵量を知ることができるでしょう。<br>2つの接続端子をスニーク-右クリックして、それらの間の平均損失を算出することもできます。
+ie.manual.entry.wiringFeedthrough=外壁の穴を用意する必要はありません。絶縁フィードスルーはブロックの片面から他の面へと配線を通します。§l通常§rの§l個体§rのブロックであればどんなものもそこに組み込めます。使用する一対の接続端子(電源およびレッドストーン)によって、それぞれに対応する種類のワイヤーを通すことができます。
 
 ie.manual.entry.generator.name=発電
-
+ie.manual.entry.generator.subtext=
 ie.manual.entry.generator0=なんらかの動力があれば、それをエネルギーに変換することで利用しやすいものにできます。<br>実際にRFを生成するには、風車や水車の運動力を利用することができます。<br>これらをダイナモに接続すると、回転する速度に基づいて電力(RF)が生成されます。
 ie.manual.entry.generator1=水車はダイナモに向けて動力を伝えます。<br>回転速度は周囲を流れる水に基づいているので、最適な結果を得るには上半分から下半分に沿って水を半円形に向けることが望ましいでしょう。<br>水車は最大3つまで連結させることができます。
 ie.manual.entry.generator2=風車は'強力な'とまではいきませんが、シンプルで自由な発電方法です。<br>その速度は前面に確保されたスペースに依存し、空気の流れが滞るとその働きが大幅に低下します。<br>雨や雷雨のような気象条件では、強い風によって回転速度が向上します。
@@ -1618,4 +1627,3 @@ desc.immersiveengineering.info.shader.details.darkfire=Named and designed after 
 desc.immersiveengineering.info.shader.details.erruption=No particular reference, just another use of vanilla textures, specificially the block breaking overlay.
 desc.immersiveengineering.info.shader.details.terra=Heavily inspired by Livingwood and Terrasteel materials, and incoporating some of Botania's textures.
 desc.immersiveengineering.info.shader.details.waaagh=Yellow makez da biggest BOOOMS!<br>Designed in obvious reference to the Orks in the 40k universe.
-
