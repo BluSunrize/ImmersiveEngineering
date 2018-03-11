@@ -320,7 +320,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				return 0;
 			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
 
-			BlockPos ccFrom2 = new BlockPos(pipe.getPos().offset(facing));
 			if(outputList.size() < 1)
 //NO OUTPUTS!
 				return 0;
@@ -331,9 +330,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			{
 				BlockPos cc = Utils.toCC(output.containingTile);
 				if(!cc.equals(ccFrom) && pipe.world.isBlockLoaded(cc) && !pipe.equals(output.containingTile))
-				//&& output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
 				{
-					int limit = (resource.tag != null && resource.tag.hasKey("pressurized")) || pipe.canOutputPressurized(output.containingTile, false) ? 1000 : 50;
+					int limit = getTranferrableAmount(resource, output);
 					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
 					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, true), false);
 					if(temp > 0)
@@ -351,10 +349,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 					int amount = sorting.get(output);
 					if (sum>resource.amount)
 					{
-						int limit = (resource.tag != null && resource.tag.hasKey("pressurized")) || pipe.canOutputPressurized(output.containingTile, false) ? 1000 : 50;
+						int limit = getTranferrableAmount(resource, output);
 						int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
 						float prio = amount / (float) sum;
-						amount = (int) MathHelper.clamp(1, amount, Math.min(resource.amount*prio, tileSpecificAcceptedFluid));
+						amount = (int) Math.ceil(MathHelper.clamp(amount, 1,
+								Math.min(resource.amount*prio, tileSpecificAcceptedFluid)));
+						amount = Math.min(amount, canAccept);
 					}
 					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
 					if(r > 50)
@@ -367,6 +367,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				return f;
 			}
 			return 0;
+		}
+
+		private int getTranferrableAmount(FluidStack resource, DirectionalFluidOutput output) {
+			return (resource.tag != null && resource.tag.hasKey("pressurized")) ||
+					pipe.canOutputPressurized(output.containingTile, false)
+					? 1000 : 50;
 		}
 
 		@Nullable

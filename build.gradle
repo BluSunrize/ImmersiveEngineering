@@ -97,7 +97,7 @@ dependencies {
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.10.310"
     compileOnly "li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
     compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
-    compileOnly 'industrial-craft:industrialcraft-2:release:ex111'//'net.industrial-craft:industrialcraft-2:2.8.+'
+    compileOnly 'industrial-craft:industrialcraft-2:release:ex112'//'net.industrial-craft:industrialcraft-2:2.8.+'
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
