@@ -100,6 +100,11 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 	public boolean checkArea()
 	{
+		//Issue #2857 prevent crashing the server when EnumFacing.rotateY() would throw IllegalStateException.
+		//That happens when facing is UP or DOWN
+		if (EnumFacing.UP.equals(facing) || EnumFacing.DOWN.equals(facing))
+			return false;
+
 		turnSpeed=0;
 		for(int hh=-4;hh<=4;hh++)
 		{
