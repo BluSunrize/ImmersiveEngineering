@@ -46,8 +46,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 	public ItemStack routeItem(EnumFacing inputSide, ItemStack stack, boolean simulate)
 	{
-		if(!world.isRemote)
+		if(!world.isRemote&&!isRouting)
 		{
+			this.isRouting = true;
 			Integer[][] validOutputs = getValidOutputs(inputSide, stack, true, false);
 
 			if(validOutputs[0].length>0)
@@ -60,7 +61,10 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 						{
 							stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[0][i]), simulate);
 							if(stack.isEmpty())
+							{
+								isRouting = false;
 								return ItemStack.EMPTY;
+							}
 						}
 
 			}
@@ -76,6 +80,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 					ei.motionZ = (0.075F * fd.getFrontOffsetZ());
 					this.world.spawnEntity(ei);
 				}
+				isRouting = false;
 				return ItemStack.EMPTY;
 			}
 			if(validOutputs[2].length>0)
@@ -88,7 +93,10 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 						{
 							stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[2][i]), simulate);
 							if(stack.isEmpty())
+							{
+								isRouting = false;
 								return ItemStack.EMPTY;
+							}
 						}
 
 			}
@@ -104,6 +112,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 					ei.motionZ = (0.075F * fd.getFrontOffsetZ());
 					this.world.spawnEntity(ei);
 				}
+				isRouting = false;
 				return ItemStack.EMPTY;
 			}
 		}
@@ -154,9 +163,8 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 	public Integer[][] getValidOutputs(EnumFacing inputSide, ItemStack stack, boolean allowUnmapped, boolean allowThrowing)
 	{
-		if(isRouting || stack.isEmpty())
+		if(stack.isEmpty())
 			return new Integer[][]{{},{},{},{}};
-		this.isRouting = true;
 		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>(6);
 		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>(6);
 		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>(6);
@@ -213,7 +221,6 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 						validUnfilteredEntityOuts.add(side.ordinal());
 				}
 			}
-		this.isRouting = false;
 
 		return new Integer[][]{
 				validFilteredInvOuts.toArray(new Integer[validFilteredInvOuts.size()]),
