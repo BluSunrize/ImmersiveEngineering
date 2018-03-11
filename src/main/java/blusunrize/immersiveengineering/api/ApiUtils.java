@@ -773,9 +773,15 @@ public class ApiUtils
 	{
 		if (state.getBlock().canCollideCheck(state, false))
 		{
-			AxisAlignedBB aabb = state.getBoundingBox(worldIn, pos).grow(1e-5);
-			if (aabb.contains(a)||aabb.contains(b))
-				return true;
+			List<AxisAlignedBB> aabbs = new ArrayList<>(1);
+			state.addCollisionBoxToList(worldIn, pos, Block.FULL_BLOCK_AABB.offset(pos),
+					aabbs, null, false);
+			for (AxisAlignedBB aabb:aabbs)
+			{
+				aabb = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()).grow(1e-5);
+				if (aabb.contains(a) || aabb.contains(b))
+					return true;
+			}
 			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a, b);
 			return rayResult != null && rayResult.typeOfHit == RayTraceResult.Type.BLOCK;
 		}
