@@ -155,7 +155,7 @@ public class IEBlockInterfaces
 				}
 			}
 			else if(limit == 6)
-				f = side.getAxis()!=Axis.Y? side.getOpposite(): EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite();
+				f = side.getAxis()!=Axis.Y? side.getOpposite():placer.getHorizontalFacing();
 
 			return mirrorFacingOnPlacement(placer)?f.getOpposite():f;
 		}
