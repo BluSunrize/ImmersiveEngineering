@@ -81,8 +81,8 @@ public class ImmersiveNetHandler
 	public Connection addAndGetConnection(World world, BlockPos node, BlockPos connection, int distance, WireType cableType)
 	{
 		Connection conn = new Connection(node, connection, cableType, distance);
-		addConnection(world.provider.getDimension(), node, conn);
-		addConnection(world.provider.getDimension(), connection, new Connection(connection, node, cableType, distance));
+		addConnection(world, node, conn);
+		addConnection(world, connection, new Connection(connection, node, cableType, distance));
 		if(world.isBlockLoaded(node))
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
 		if(world.isBlockLoaded(connection))
@@ -92,13 +92,13 @@ public class ImmersiveNetHandler
 	public void addConnection(World world, BlockPos node, Connection con)
 	{
 		addConnection(world.provider.getDimension(), node, con);
+		resetCachedIndirectConnections(world, node);
 	}
 	public void addConnection(int world, BlockPos node, Connection con)
 	{
 		if(!getMultimap(world).containsKey(node))
 			getMultimap(world).put(node, newSetFromMap(new ConcurrentHashMap<>()));
 		getMultimap(world).get(node).add(con);
-		resetCachedIndirectConnections(world, node);
 		IESaveData.setDirty(world);
 	}
 
@@ -108,7 +108,7 @@ public class ImmersiveNetHandler
 		if (conns != null)
 			for (Connection con : conns)
 				addBlockData(te.getWorld(), con);
-		resetCachedIndirectConnections(te.getWorld().provider.getDimension(), te.getPos());
+		resetCachedIndirectConnections(te.getWorld(), te.getPos());
 	}
 
 	public void addBlockData(World world, Connection con)
@@ -141,7 +141,7 @@ public class ImmersiveNetHandler
 		if (con == null || world == null)
 			return;
 		int dim = world.provider.getDimension();
-		resetCachedIndirectConnections(dim, con.start);
+		resetCachedIndirectConnections(world, con.start);
 		Map<BlockPos, Set<Connection>> connsInDim = getMultimap(world.provider.getDimension());
 		Set<Connection> reverseConns = connsInDim.get(con.end);
 		Set<Connection> forwardConns = connsInDim.get(con.start);
@@ -233,7 +233,7 @@ public class ImmersiveNetHandler
 	}
 	public void clearConnectionsOriginatingFrom(BlockPos node, World world)
 	{
-		resetCachedIndirectConnections(world.provider.getDimension(), node);
+		resetCachedIndirectConnections(world, node);
 		if(getMultimap(world.provider.getDimension()).containsKey(node))
 			getMultimap(world.provider.getDimension()).get(node).clear();
 	}
@@ -256,44 +256,41 @@ public class ImmersiveNetHandler
 	/**
 	 * Resets the cached energy connections for all connectors connected to an IIC.
 	 * Call this when there are "more" wires (before removing and after adding)
-	 * @param dimension the dimension to reset the cache in
+	 * @param w the world to reset the cache in
 	 * @param start the starting block. If this is null, all cached connections for the dimension will be reset
 	 */
-	public void resetCachedIndirectConnections(int dimension, @Nullable BlockPos start)
+	public void resetCachedIndirectConnections(World w, @Nullable BlockPos start)
 	{
-		resetCachedIndirectConnections(dimension, start, indirectConnectionsIgnoreOut);
-		resetCachedIndirectConnections(dimension, start, indirectConnections);
-	}
-
-	private void resetCachedIndirectConnections(int dimension, @Nullable BlockPos start,
-												TIntObjectMap<Map<BlockPos, Set<AbstractConnection>>> cached)
-	{
-		if (!cached.containsKey(dimension))
-			return;
+		int dimension = w.provider.getDimension();
 		if (start==null)
 		{
-			cached.remove(dimension);
+			for (BlockPos pos : directConnections.get(dimension).keySet())
+			{
+				IImmersiveConnectable iic = toIIC(pos, w);
+				if (iic != null)
+				{
+					iic.onConnectivityUpdate(pos, dimension);
+				}
+			}
 			return;
 		}
-		Map<BlockPos, Set<AbstractConnection>> cachedConnsForDim = cached.get(dimension);
 		Map<BlockPos, Set<Connection>> connsForDim = directConnections.get(dimension);
 		Set<BlockPos> open = new HashSet<>();
 		open.add(start);
 		Set<BlockPos> closed = new HashSet<>();
-		cachedConnsForDim.remove(start);
 		while (!open.isEmpty())
 		{
 			Iterator<BlockPos> it = open.iterator();
 			BlockPos next = it.next();
 			it.remove();
 			closed.add(next);
+			IImmersiveConnectable iic = toIIC(next, w);
+			iic.onConnectivityUpdate(next, dimension);
 			Set<Connection> connsAtBlock = connsForDim.get(next);
 			if (connsAtBlock!=null)
 				for (Connection c:connsAtBlock)
-				{
-					if (!closed.contains(c.end) && open.add(c.end))
-						cachedConnsForDim.remove(c.end);
-				}
+					if (!closed.contains(c.end))
+						open.add(c.end);
 		}
 	}
 
@@ -359,7 +356,7 @@ public class ImmersiveNetHandler
 		if(type==null)
 			return false;
 		int dim = world.provider.getDimension();
-		resetCachedIndirectConnections(dim, node);
+		resetCachedIndirectConnections(world, node);
 		boolean ret = false;
 		for(Connection con : getMultimap(world.provider.getDimension()).get(node))
 		{

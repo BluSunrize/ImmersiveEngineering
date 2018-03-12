@@ -782,7 +782,8 @@ public class ApiUtils
 				if (aabb.contains(a) || aabb.contains(b))
 					return true;
 			}
-			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a, b);
+			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.addVector(pos.getX(), pos.getY(), pos.getZ()),
+					b.addVector(pos.getX(), pos.getY(), pos.getZ()));
 			return rayResult != null && rayResult.typeOfHit == RayTraceResult.Type.BLOCK;
 		}
 		return false;

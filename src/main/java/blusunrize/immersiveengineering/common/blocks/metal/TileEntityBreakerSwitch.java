@@ -40,6 +40,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE;
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<IBlockState>
 {
@@ -75,7 +77,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if(!cableType.isEnergyWire())
+		if(!cableType.isEnergyWire()&&!REDSTONE_CATEGORY.equals(cableType.getCategory()))
 			return false;
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
@@ -181,8 +183,8 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		{
 			inverted = !inverted;
 			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn":"invertedOff")));
-			if (this instanceof TileEntityBreakerSwitch && wires>1)
-				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world.provider.getDimension(), pos);
+			if (wires>1)
+				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world, pos);
 			notifyNeighbours();
 		}
 		else
@@ -200,7 +202,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			active = !active;
 			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F,1);
 			if (wires>1)
-				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world.provider.getDimension(), pos);
+				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world, pos);
 			world.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
 			notifyNeighbours();
 		}

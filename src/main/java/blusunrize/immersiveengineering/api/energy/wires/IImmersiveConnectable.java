@@ -21,6 +21,8 @@ import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.INSTANCE;
+
 /**
  * @author BluSunrize - 08.03.2015
  *
@@ -165,4 +167,12 @@ public interface IImmersiveConnectable
 	 */
 	default void processDamage(Entity e, float amount, Connection c)
 	{}
+
+	default void onConnectivityUpdate(BlockPos pos, int dimension)
+	{
+		if (INSTANCE.indirectConnections.containsKey(dimension))
+			INSTANCE.indirectConnections.get(dimension).remove(pos);
+		if (INSTANCE.indirectConnectionsIgnoreOut.containsKey(dimension))
+			INSTANCE.indirectConnectionsIgnoreOut.get(dimension).remove(pos);
+	}
 }

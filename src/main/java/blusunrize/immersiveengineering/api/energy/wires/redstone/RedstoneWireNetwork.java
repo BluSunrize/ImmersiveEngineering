@@ -8,16 +8,18 @@
 
 package blusunrize.immersiveengineering.api.energy.wires.redstone;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.INSTANCE;
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
 public class RedstoneWireNetwork
 {
@@ -32,54 +34,78 @@ public class RedstoneWireNetwork
 
 	public void mergeNetwork(RedstoneWireNetwork wireNetwork)
 	{
-		for(WeakReference<IRedstoneConnector> connectorRef : wireNetwork.connectors)
+		List<WeakReference<IRedstoneConnector>> conns = null;
+		if (connectors.size()>0)
+			conns = connectors;
+		else if (wireNetwork.connectors.size()>0)
+			conns = wireNetwork.connectors;
+		if (conns==null)//No connectors to merge
+			return;
+		IRedstoneConnector start = null;
+		for (WeakReference<IRedstoneConnector> conn:conns)
+			if (conn.get()!=null)
+			{
+				start = conn.get();
+				break;
+			}
+		if (start!=null)
 		{
-			IRedstoneConnector connector = connectorRef.get();
-			if(connector != null)
-				connector.setNetwork(add(connector));
+			BlockPos startPos = Utils.toCC(start);
+			updateConnectors(startPos, start.getConnectorWorld(), this);
+			updateValues();
 		}
-		for(WeakReference<IRedstoneConnector> connectorRef : wireNetwork.connectors)
-		{
-			IRedstoneConnector connector = connectorRef.get();
-			if(connector != null)
-				connector.onChange();
-		}
-		updateValues();
 	}
 
 	public void removeFromNetwork(IRedstoneConnector removedConnector)
 	{
-		BlockPos removedCC = Utils.toCC(removedConnector);
-		for(WeakReference<IRedstoneConnector> connectorRef : connectors)
+		Iterator<WeakReference<IRedstoneConnector>> iterator = connectors.iterator();
+		Set<RedstoneWireNetwork> knownNets = new HashSet<>();
+		while (iterator.hasNext())
 		{
-			IRedstoneConnector connector = connectorRef.get();
-			if(connector != null)
-				connector.setNetwork(new RedstoneWireNetwork().add(connector));
-		}
-		for(WeakReference<IRedstoneConnector> connectorRef : connectors)
-		{
-			IRedstoneConnector connector = connectorRef.get();
-			if(connector != null)
+			WeakReference<IRedstoneConnector> conn = iterator.next();
+			IRedstoneConnector start = conn.get();
+			if (start != null && !knownNets.contains(start.getNetwork()))
 			{
-				BlockPos conCC = Utils.toCC(connector);
-				Set<ImmersiveNetHandler.Connection> connections = ImmersiveNetHandler.INSTANCE.getConnections(connector.getConnectorWorld(), conCC);
-				if(connections != null)
-					for(ImmersiveNetHandler.Connection connection : connections)
-					{
-						BlockPos node = connection.start;
-						if(node.equals(conCC))
-							node = connection.end;
-						if(!node.equals(removedCC))
-						{
-							TileEntity nodeTile = Utils.getExistingTileEntity(connector.getConnectorWorld(), node);
-							if(nodeTile instanceof IRedstoneConnector)
-								if(connector.getNetwork() != ((IRedstoneConnector) nodeTile).getNetwork())
-									connector.getNetwork().mergeNetwork(((IRedstoneConnector) nodeTile).getNetwork());
-						}
-					}
-				connector.onChange();
+				RedstoneWireNetwork newNet = new RedstoneWireNetwork();
+				updateConnectors(Utils.toCC(start), start.getConnectorWorld(), newNet);
+				knownNets.add(newNet);
 			}
 		}
+
+	}
+
+	public static void updateConnectors(BlockPos start, World world, RedstoneWireNetwork network)
+	{
+		int dimension = world.provider.getDimension();
+		Map<BlockPos, Set<Connection>> connsForDim = INSTANCE.directConnections.get(dimension);
+		Set<BlockPos> open = new HashSet<>();
+		open.add(start);
+		Set<BlockPos> closed = new HashSet<>();
+		network.connectors.clear();
+		while (!open.isEmpty())
+		{
+			Iterator<BlockPos> it = open.iterator();
+			BlockPos next = it.next();
+			it.remove();
+			IImmersiveConnectable iic = ApiUtils.toIIC(next, world);
+			closed.add(next);
+			Set<Connection> connsAtBlock = connsForDim.get(next);
+			if (iic instanceof IRedstoneConnector)
+			{
+				((IRedstoneConnector) iic).setNetwork(network);
+				network.connectors.add(new WeakReference<>((IRedstoneConnector)iic));
+			}
+			if (connsAtBlock != null && iic != null)
+				for (Connection c : connsAtBlock)
+				{
+					if (iic.allowEnergyToPass(c) &&
+							REDSTONE_CATEGORY.equals(c.cableType.getCategory()) &&
+							!closed.contains(c.end))
+						open.add(c.end);
+				}
+		}
+		network.channelValues = null;
+		network.updateValues();
 	}
 
 	public void updateValues()
