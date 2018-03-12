@@ -130,19 +130,19 @@ public abstract class WireType
 		ELECTRUM_INSULATED = new IEBASE(7);
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
-				.5, (s)->s.getBlock()== IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_LV,
+				.5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_LV.getMeta()),
 				8*2F/COPPER.getTransferRate(), 2, (f)->f);
 		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
-				.5625, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_MV,
+				.5625, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_MV.getMeta()),
 				8*5F/ELECTRUM.getTransferRate(), 5, (f)->f);
 		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
-				.75, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_HV,
+				.75, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_HV.getMeta()),
 				8*15F/STEEL.getTransferRate(), 15, (f)->f);
 		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
 				ImmutableMap.of(),  new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
-				.5625, .5, (s)->s.getBlock()==IEContent.blockConnectors&&s.getValue(IEContent.blockConnectors.property)== CONNECTOR_REDSTONE,
+				.5625, .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_REDSTONE.getMeta()),
 				0, 0, (f)->f);
 	}
 	/**

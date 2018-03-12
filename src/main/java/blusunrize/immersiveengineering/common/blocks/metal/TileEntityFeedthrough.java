@@ -1,13 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -19,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -28,10 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
-import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
 public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implements ITileDrop, IDirectionalTile,
 		IHasDummyBlocks, IPropertyPassthrough, IBlockBounds, ICacheData
@@ -55,6 +51,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Nullable
 	private BlockPos connPositive = null;
 	private boolean hasNegative = false;
+	private boolean formed = true;
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -180,12 +177,32 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
-		stack.setTagInfo(WIRE, new NBTTagString(reference.getUniqueName()));
-		NBTTagCompound stateNbt = new NBTTagCompound();
-		Utils.stateToNBT(stateNbt, stateForMiddle);
-		stack.setTagInfo(MIDDLE_STATE, stateNbt);
-		return stack;
+		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
+		if (info.canReplace())
+		{
+			if (offset==0)
+			{
+				NonNullList<ItemStack> ret = Utils.getDrops(stateForMiddle);
+				if (ret.size()>0)
+				{
+					for (int i = 1;i<ret.size();i++)
+						Utils.dropStackAtPos(world, pos, ret.get(i));
+					return ret.get(0);
+				}
+			}
+			else
+				return new ItemStack(info.conn.getBlock(), 1, info.conn.getBlock().getMetaFromState(info.conn));
+			return ItemStack.EMPTY;
+		}
+		else
+		{
+			ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+			stack.setTagInfo(WIRE, new NBTTagString(reference.getUniqueName()));
+			NBTTagCompound stateNbt = new NBTTagCompound();
+			Utils.stateToNBT(stateNbt, stateForMiddle);
+			stack.setTagInfo(MIDDLE_STATE, stateNbt);
+			return stack;
+		}
 	}
 
 	@Override
@@ -254,8 +271,36 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		for (int i = -1-offset;i<=1-offset;i++)
-			world.setBlockToAir(pos.offset(facing, i));
+		if (!formed)
+			return;
+		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
+		for (int i = -1;i<=1;i++)
+		{
+			int offsetLocal = i-offset;
+			BlockPos replacePos = pos.offset(facing, offsetLocal);
+			if (!info.canReplace())
+				world.setBlockToAir(replacePos);
+			else if (i!=offset)
+			{
+				TileEntity te = world.getTileEntity(replacePos);
+				if (te instanceof TileEntityFeedthrough)
+					((TileEntityFeedthrough)te).formed = false;
+				IBlockState newState = Blocks.AIR.getDefaultState();
+				switch (i)
+				{
+					case -1:
+						newState = info.conn.withProperty(IEProperties.FACING_ALL, facing);
+						break;
+					case 0:
+						newState = stateForMiddle;
+						break;
+					case 1:
+						newState = info.conn.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
+						break;
+				}
+				world.setBlockState(replacePos, newState);
+			}
+		}
 	}
 
 	@Override

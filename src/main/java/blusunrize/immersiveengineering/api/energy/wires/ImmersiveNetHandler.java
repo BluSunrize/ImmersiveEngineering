@@ -285,7 +285,8 @@ public class ImmersiveNetHandler
 			it.remove();
 			closed.add(next);
 			IImmersiveConnectable iic = toIIC(next, w);
-			iic.onConnectivityUpdate(next, dimension);
+			if (iic!=null)
+				iic.onConnectivityUpdate(next, dimension);
 			Set<Connection> connsAtBlock = connsForDim.get(next);
 			if (connsAtBlock!=null)
 				for (Connection c:connsAtBlock)

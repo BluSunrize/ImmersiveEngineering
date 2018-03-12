@@ -36,6 +36,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
@@ -59,6 +60,9 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeBeach;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
@@ -77,6 +81,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -1122,7 +1127,7 @@ public class Utils
 			@Override
 			public void onCraftMatrixChanged(IInventory paramIInventory){}
 			@Override
-			public boolean canInteractWith(EntityPlayer p_75145_1_)
+			public boolean canInteractWith(@Nonnull EntityPlayer p_75145_1_)
 			{
 				return false;
 			}
@@ -1535,6 +1540,14 @@ public class Utils
 		return ret;
 	}
 
+	public static NonNullList<ItemStack> getDrops(IBlockState state)
+	{
+		DropBlockAcess w = new DropBlockAcess(state);
+		NonNullList<ItemStack> ret = NonNullList.create();
+		state.getBlock().getDrops(ret, w, BlockPos.ORIGIN, state, 0);
+		return ret;
+	}
+
 	private static <T extends Comparable<T>> void saveProp(IBlockState state, IProperty<T> prop, NBTTagCompound out)
 	{
 		out.setString(prop.getName(), prop.getName(state.getValue(prop)));
@@ -1546,5 +1559,66 @@ public class Utils
 		if (valueParsed.isPresent())
 			return state.withProperty(prop, valueParsed.get());
 		return state;
+	}
+
+	private static class DropBlockAcess implements IBlockAccess
+	{
+		IBlockState state;
+		public DropBlockAcess(IBlockState state) {
+			this.state = state;
+		}
+
+
+		@Nullable
+		@Override
+		public TileEntity getTileEntity(@Nonnull BlockPos pos)
+		{
+			return null;
+		}
+
+		@Override
+		public int getCombinedLight(@Nonnull BlockPos pos, int lightValue)
+		{
+			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public IBlockState getBlockState(@Nonnull BlockPos pos)
+		{
+			return pos.equals(BlockPos.ORIGIN)?state:Blocks.AIR.getDefaultState();
+		}
+
+		@Override
+		public boolean isAirBlock(@Nonnull BlockPos pos)
+		{
+			return !pos.equals(BlockPos.ORIGIN);
+		}
+
+		@Nonnull
+		@Override
+		public Biome getBiome(@Nonnull BlockPos pos)
+		{
+			return Biomes.MUSHROOM_ISLAND;
+		}
+
+		@Override
+		public int getStrongPower(@Nonnull BlockPos pos, @Nonnull EnumFacing direction)
+		{
+			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public WorldType getWorldType()
+		{
+			return WorldType.DEFAULT;
+		}
+
+		@Override
+		public boolean isSideSolid(@Nonnull BlockPos pos, @Nonnull EnumFacing side, boolean _default)
+		{
+			return pos.equals(BlockPos.ORIGIN)?state.isSideSolid(this, BlockPos.ORIGIN, side):false;
+		}
 	}
 }
