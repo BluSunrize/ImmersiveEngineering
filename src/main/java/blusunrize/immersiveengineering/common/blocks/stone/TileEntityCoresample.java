@@ -190,7 +190,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 				}
 				else
 					overlay[1] = "Dimension "+coords[0];
-				overlay[2] = I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1, "");
+				overlay[2] = I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1);
 			}
 			return overlay;
 		}

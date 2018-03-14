@@ -63,6 +63,9 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityMultiblockPart<?>))
+			super.getDrops(drops, world, pos, state, fortune);
 	}
 	@Override
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)

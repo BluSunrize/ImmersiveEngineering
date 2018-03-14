@@ -44,6 +44,6 @@ public enum BlockTypes_Connector implements IStringSerializable, BlockIEBase.IBl
 	@Override
 	public boolean listForCreative()
 	{
-		return true;
+		return this!=FEEDTHROUGH;
 	}
 }
