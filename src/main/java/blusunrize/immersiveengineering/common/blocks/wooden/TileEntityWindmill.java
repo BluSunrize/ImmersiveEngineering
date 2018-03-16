@@ -100,6 +100,9 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 	public boolean checkArea()
 	{
+		if (facing.getAxis()==EnumFacing.Axis.Y)
+			return false;
+
 		turnSpeed=0;
 		for(int hh=-4;hh<=4;hh++)
 		{
