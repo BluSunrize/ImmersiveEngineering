@@ -39,6 +39,7 @@ public class CraftTweakerHelper extends IECompatModule
 		CraftTweakerAPI.registerClass(MetalPress.class);
 		CraftTweakerAPI.registerClass(Mixer.class);
 		CraftTweakerAPI.registerClass(DieselHelper.class);
+		CraftTweakerAPI.registerClass(Thermoelectric.class);
 	}
 
 	@Override
@@ -79,6 +80,27 @@ public class CraftTweakerHelper extends IECompatModule
 					return new blusunrize.immersiveengineering.api.crafting.IngredientStack((String) o, iStack.getAmount());
 				else
 					return o;
+			} else
+				return null;
+		}
+	}
+
+	public static blusunrize.immersiveengineering.api.crafting.IngredientStack toIEIngredientStack(IIngredient iStack)
+	{
+		if(iStack == null)
+			return null;
+		else
+		{
+			if(iStack instanceof IOreDictEntry)
+				return new blusunrize.immersiveengineering.api.crafting.IngredientStack(((IOreDictEntry)iStack).getName());
+			else if(iStack instanceof IItemStack)
+				return new blusunrize.immersiveengineering.api.crafting.IngredientStack(toStack((IItemStack)iStack));
+			else if(iStack instanceof IngredientStack)
+			{
+				IIngredient ingr = ReflectionHelper.getPrivateValue(IngredientStack.class, (IngredientStack)iStack, "ingredient");
+				blusunrize.immersiveengineering.api.crafting.IngredientStack ingrStack = toIEIngredientStack(ingr);
+				ingrStack.inputSize = iStack.getAmount();
+				return ingrStack;
 			} else
 				return null;
 		}
