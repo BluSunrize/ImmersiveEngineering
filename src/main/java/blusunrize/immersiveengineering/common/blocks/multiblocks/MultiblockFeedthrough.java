@@ -109,10 +109,8 @@ public class MultiblockFeedthrough implements IMultiblock
 	@Override
 	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
 	{
-		side = side.getOpposite();
 		IBlockState here = world.getBlockState(pos).getActualState(world, pos);
-		if (here.getValue(IEProperties.FACING_ALL)!=side)
-			return false;
+		side = here.getValue(IEProperties.FACING_ALL);
 		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if (conns!=null&&!conns.isEmpty())
 			return false;
