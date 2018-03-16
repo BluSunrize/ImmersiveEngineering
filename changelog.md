@@ -1,6 +1,5 @@
 #####Version 0.12-79
 - Added the ability for Wirecutters to cut wires from anywhere (Malte)
-- Added a preliminary connection render to debug obstructions (Malte)
 - Added Craftweaker support for the Thermolelectric Generator (BluSunrize)
 - Added documentation for metal ladders (BluSunrize)
 - Added Squeezer recipe for beetroot seeds (pap1723)
@@ -11,10 +10,8 @@
 - Fixed wire rendering in edgecases (Malte)
 - Fixed issues with the Skyhook (Malte)
 - Fixed missing textures on conveyors (Malte)
-- Fixed issues with the Skyhook (Malte)
 - Fixed dupebug with Jerrycans (Malte)
 - Fixed stackoverflow with routers (Malte)
-- Fixed issues with the Skyhook (Malte)
 - Fixed Feedthrough Connectors functionality (Malte)
 - Fixed Coresamples not dropping when broken (Malte)
 - Fixed missing revolver sounds (BluSunrize)
