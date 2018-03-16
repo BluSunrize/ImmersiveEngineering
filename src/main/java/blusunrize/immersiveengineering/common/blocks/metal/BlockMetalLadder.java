@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -103,11 +104,11 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	{
 		if(this.getMetaFromState(state)==0)
 		{
-			TileEntityLadder tile = (TileEntityLadder)world.getTileEntity(pos);
-			if(tile!=null)
+			TileEntity tileEntity = world.getTileEntity(pos);
+			if(tileEntity instanceof IEBlockInterfaces.IDirectionalTile)
 			{
-				EnumFacing dir = tile.getFacing();
-				return LADDER_AABB[dir.getIndex()-2];
+				IEBlockInterfaces.IDirectionalTile directionalTile = (IEBlockInterfaces.IDirectionalTile) tileEntity;
+				return LADDER_AABB[directionalTile.getFacing().getIndex() - 2];
 			}
 		}
 		return super.getBoundingBox(state, world, pos);
