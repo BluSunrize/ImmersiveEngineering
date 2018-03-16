@@ -22,3 +22,6 @@ build
 eclipse
 run
 libs
+
+gradle.properties
+*.jks
