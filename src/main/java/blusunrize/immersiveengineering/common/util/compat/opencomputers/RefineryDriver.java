@@ -42,38 +42,12 @@ public class RefineryDriver extends DriverSidedTileEntity
 		return TileEntityRefinery.class;
 	}
 
-	public class RefineryEnvironment extends ManagedEnvironmentIE<TileEntityRefinery>
+	public class RefineryEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityRefinery>
 	{
 
 		public RefineryEnvironment(World w, BlockPos bp, Class<? extends TileEntityIEBase> teClass)
 		{
 			super(w, bp, teClass);
-		}
-
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntityRefinery master = getTileEntity();
-			if(master != null)
-			{
-				master.controllingComputers++;
-				master.computerOn = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntityRefinery te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
-		}
-
-		@Callback(doc = "function(enable:boolean) -- enable or disable the refinery")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			getTileEntity().computerOn = args.checkBoolean(0);
-			return null;
 		}
 
 		@Callback(doc = "function():number -- get energy storage capacity")
@@ -143,6 +117,18 @@ public class RefineryDriver extends DriverSidedTileEntity
 			ret.put("input2", te.inventory.get(2));
 			ret.put("output", te.inventory.get(5));
 			return new Object[]{ret};
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			return super.enableComputerControl(context, args);
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			return super.setEnabled(context, args);
 		}
 
 		@Override

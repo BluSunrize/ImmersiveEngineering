@@ -38,7 +38,7 @@ public class SqueezerDriver extends DriverSidedTileEntity
 	}
 
 
-	public class FermenterEnvironment extends ManagedEnvironmentIE<TileEntitySqueezer>
+	public class FermenterEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntitySqueezer>
 	{
 
 		public FermenterEnvironment(World w, BlockPos bp)
@@ -46,36 +46,6 @@ public class SqueezerDriver extends DriverSidedTileEntity
 			super(w, bp, TileEntitySqueezer.class);
 		}
 
-		@Override
-		public String preferredName()
-		{
-			return "ie_fermenter";
-		}
-
-		@Override
-		public int priority()
-		{
-			return 1000;
-		}
-
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntitySqueezer te = getTileEntity();
-			if(te != null)
-			{
-				te.controllingComputers++;
-				te.computerOn = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntitySqueezer te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
-		}
 
 		@Callback(doc = "function(slot:int):table, table, table, int -- returns the recipe for the specified input slot")
 		public Object[] getRecipe(Context context, Arguments args)
@@ -136,20 +106,34 @@ public class SqueezerDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().energyStorage.getEnergyStored()};
 		}
 
-		@Callback(doc = "function(boolean):void -- turns the fermenter on or off")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			boolean val = args.checkBoolean(0);
-			TileEntitySqueezer te = getTileEntity();
-			if(te != null)
-				te.computerOn = val;
-			return new Object[]{};
-		}
-
 		@Callback(doc = "function():boolean -- returns whether the fermenter is running")
 		public Object[] isActive(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().shouldRenderAsActive()};
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			return super.enableComputerControl(context, args);
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			return super.setEnabled(context, args);
+		}
+
+		@Override
+		public String preferredName()
+		{
+			return "ie_fermenter";
+		}
+
+		@Override
+		public int priority()
+		{
+			return 1000;
 		}
 	}
 }

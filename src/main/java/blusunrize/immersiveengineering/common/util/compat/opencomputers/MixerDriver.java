@@ -44,43 +44,13 @@ public class MixerDriver extends DriverSidedTileEntity
 		return TileEntityMixer.class;
 	}
 
-	public class MixerEnvironment extends ManagedEnvironmentIE<TileEntityMixer>
+	public class MixerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityMixer>
 	{
 
-		@Override
-		public String preferredName()
-		{
-			return "ie_mixer";
-		}
-
-		@Override
-		public int priority()
-		{
-			return 1000;
-		}
 
 		public MixerEnvironment(World w, BlockPos p, Class<? extends TileEntityIEBase> teClass)
 		{
 			super(w, p, teClass);
-		}
-
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntityMixer master = getTileEntity();
-			if(master != null)
-			{
-				master.controllingComputers++;
-				master.computerOn = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntityMixer te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
 		}
 
 		@Callback(doc = "function():int -- gets the maximum amount of energy stored")
@@ -93,13 +63,6 @@ public class MixerDriver extends DriverSidedTileEntity
 		public Object[] getEnergyStored(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().energyStorage.getEnergyStored()};
-		}
-
-		@Callback(doc = "function(on:boolean) -- turns the mixer on or off")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			getTileEntity().computerOn = args.checkBoolean(0);
-			return null;
 		}
 
 		@Callback(doc = "function():boolean -- checks whether the mixer is currently active")
@@ -145,6 +108,30 @@ public class MixerDriver extends DriverSidedTileEntity
 		public Object[] isValidRecipe(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().processQueue.get(0).recipe != null};
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			return super.enableComputerControl(context, args);
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			return super.setEnabled(context, args);
+		}
+
+		@Override
+		public String preferredName()
+		{
+			return "ie_mixer";
+		}
+
+		@Override
+		public int priority()
+		{
+			return 1000;
 		}
 	}
 }

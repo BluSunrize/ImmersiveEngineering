@@ -45,7 +45,7 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 		return TileEntityArcFurnace.class;
 	}
 
-	public class ArcFurnaceEnvironment extends ManagedEnvironmentIE<TileEntityArcFurnace>
+	public class ArcFurnaceEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityArcFurnace>
 	{
 
 		@Override
@@ -65,25 +65,6 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 			super(w, p, teClass);
 		}
 
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntityArcFurnace master = getTileEntity();
-			if(master != null)
-			{
-				master.controllingComputers++;
-				master.computerOn = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntityArcFurnace te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
-		}
-
 		@Callback(doc = "function():int -- gets the maximum amount of energy stored")
 		public Object[] getMaxEnergyStored(Context context, Arguments args)
 		{
@@ -94,13 +75,6 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 		public Object[] getEnergyStored(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().energyStorage.getEnergyStored()};
-		}
-
-		@Callback(doc = "function(on:boolean) -- turns the excavator on or off")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			getTileEntity().computerOn = args.checkBoolean(0);
-			return null;
 		}
 
 		@Callback(doc = "function():boolean -- checks whether the arc furnace is currently active")
@@ -177,5 +151,18 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 				map.put("damage", ItemNBTHelper.getInt(stack, "graphDmg"));
 			return new Object[]{map};
 		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			return super.enableComputerControl(context, args);
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			return super.setEnabled(context, args);
+		}
 	}
+
 }

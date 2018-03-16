@@ -34,19 +34,12 @@ public class DieselGenDriver extends DriverSidedTileEntity
 		return TileEntityDieselGenerator.class;
 	}
 
-	public class DieselEnvironment extends ManagedEnvironmentIE<TileEntityDieselGenerator>
+	public class DieselEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityDieselGenerator>
 	{
 
 		public DieselEnvironment(World w, BlockPos bp)
 		{
 			super(w, bp, TileEntityDieselGenerator.class);
-		}
-
-		@Callback(doc = "function(enable:boolean) -- allow or disallow the generator to run when it can")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			getTileEntity().computerOn = args.checkBoolean(0);
-			return null;
 		}
 
 		@Callback(doc = "function():boolean -- get whether the generator is currently producing energy")
@@ -61,6 +54,18 @@ public class DieselGenDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().tanks[0].getInfo()};
 		}
 
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			return super.enableComputerControl(context, args);
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			return super.setEnabled(context, args);
+		}
+
 		@Override
 		public String preferredName()
 		{
@@ -72,25 +77,5 @@ public class DieselGenDriver extends DriverSidedTileEntity
 		{
 			return 1000;
 		}
-
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntityDieselGenerator te = getTileEntity();
-			if(te != null)
-			{
-				te.controllingComputers++;
-				te.computerOn = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntityDieselGenerator te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
-		}
-
 	}
 }

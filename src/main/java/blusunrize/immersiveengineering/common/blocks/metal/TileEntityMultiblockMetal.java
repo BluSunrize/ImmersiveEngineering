@@ -49,6 +49,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IIEInternalFluxHandler, IHammerInteraction, IMirrorAble, IProcessTile, IComparatorOverride
 {
@@ -56,8 +57,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	protected final boolean hasRedstoneControl;
 	protected final IMultiblock mutliblockInstance;
 	protected boolean redstoneControlInverted = false;
-	public int controllingComputers = 0;
-	public boolean computerOn = true;
+	//Absent means no controlling computers
+	public Optional<Boolean> computerOn = Optional.empty();
 
 	public TileEntityMultiblockMetal(IMultiblock mutliblockInstance, int[] structureDimensions, int energyCapacity, boolean redstoneControl)
 	{
@@ -93,10 +94,18 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				}
 			}
 		}
-		if(descPacket)
+		byte cOn = nbt.getByte("computerOn");
+		switch (cOn)
 		{
-			controllingComputers = nbt.getBoolean("computerControlled") ? 1 : 0;
-			computerOn = nbt.getBoolean("computerOn");
+			case 0:
+				computerOn = Optional.of(false);
+				break;
+			case 1:
+				computerOn = Optional.of(true);
+				break;
+			case 2:
+				computerOn = Optional.empty();
+				break;
 		}
 	}
 	@Override
@@ -109,11 +118,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		for(MultiblockProcess process : this.processQueue)
 			processNBT.appendTag(writeProcessToNBT(process));
 		nbt.setTag("processQueue", processNBT);
-		if(descPacket)
-		{
-			nbt.setBoolean("computerControlled", controllingComputers > 0);
-			nbt.setBoolean("computerOn", computerOn);
-		}
+		if (computerOn.isPresent())
+			nbt.setBoolean("computerOn", computerOn.get());
+		else
+			nbt.setByte("computerOn", (byte)2);
 	}
 	protected abstract R readRecipeFromNBT(NBTTagCompound tag);
 	protected MultiblockProcess loadProcessFromNBT(NBTTagCompound tag)
@@ -228,7 +236,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	}
 	public boolean isRSDisabled()
 	{
-		if(controllingComputers > 0 && !computerOn)
+		if(!computerOn.orElse(true))
 			return true;
 		int[] rsPositions = getRedstonePos();
 		if(rsPositions==null || rsPositions.length<1)
@@ -412,7 +420,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	public boolean shouldRenderAsActive()
 	{
-		return (controllingComputers <= 0 || computerOn) && getEnergyStored(null) > 0 && !isRSDisabled() && !processQueue.isEmpty();
+		return computerOn.orElse(true) && getEnergyStored(null) > 0 && !isRSDisabled() && !processQueue.isEmpty();
 	}
 
 	public abstract static class MultiblockProcess<R extends IMultiblockRecipe>

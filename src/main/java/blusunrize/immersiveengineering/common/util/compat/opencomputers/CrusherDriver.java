@@ -47,18 +47,11 @@ public class CrusherDriver extends DriverSidedTileEntity
 	}
 
 
-	public class CrusherEnvironment extends ManagedEnvironmentIE<TileEntityCrusher>
+	public class CrusherEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityCrusher>
 	{
 		public CrusherEnvironment(World w, BlockPos bp, Class<? extends TileEntityIEBase> teClass)
 		{
 			super(w, bp, teClass);
-		}
-
-		@Callback(doc = "function(enable:boolean) -- enable or disable the crusher")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			getTileEntity().computerOn = args.checkBoolean(0);
-			return null;
 		}
 
 		@Callback(doc = "function():number -- get energy storage capacity")
@@ -105,6 +98,18 @@ public class CrusherDriver extends DriverSidedTileEntity
 			return new Object[]{ret};
 		}
 
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			return super.enableComputerControl(context, args);
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			return super.setEnabled(context, args);
+		}
+
 		@Override
 		public String preferredName()
 		{
@@ -115,25 +120,6 @@ public class CrusherDriver extends DriverSidedTileEntity
 		public int priority()
 		{
 			return 1000;
-		}
-
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntityCrusher te = getTileEntity();
-			if(te != null)
-			{
-				te.controllingComputers++;
-				te.computerOn = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntityCrusher te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
 		}
 	}
 }

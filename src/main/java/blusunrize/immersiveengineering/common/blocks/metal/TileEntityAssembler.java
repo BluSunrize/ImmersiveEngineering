@@ -48,6 +48,7 @@ import java.util.Iterator;
 public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IGuiTile, IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
 	public boolean[] computerOn = new boolean[3];
+	public boolean isComputerControlled = false;
 	public TileEntityAssembler()
 	{
 		super(MultiblockAssembler.instance, new int[]{3,3,3}, 32000, true);
@@ -76,6 +77,15 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				patterns[iPattern].readFromNBT(patternList);
 			}
 		}
+		{
+			byte cOn = nbt.getByte("computerControlled");
+			isComputerControlled = (cOn & 1) != 0;
+			if (isComputerControlled)
+			{
+				for (int i = 0; i < 3; i++)
+					computerOn[i] = (cOn & (2 << i)) != 0;
+			}
+		}
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -94,6 +104,14 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				patterns[iPattern].writeToNBT(patternList);
 				nbt.setTag("pattern"+iPattern, patternList);
 			}
+		}
+		if (isComputerControlled)
+		{
+			byte cOn = 1;
+			for (int i = 0; i < 3; i++)
+				if (computerOn[i])
+					cOn |= 2<<i;
+			nbt.setByte("computerControlled", cOn);
 		}
 	}
 	@Override
@@ -136,8 +154,8 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		for (int p = 0; p < patterns.length; p++)
 		{
 			CrafterPatternInventory pattern = patterns[p];
-			if ((controllingComputers != 0) && !computerOn[p])
-				return;
+			if (isComputerControlled && !computerOn[p])
+				continue;
 			if (!pattern.inv.get(9).isEmpty() && canOutput(pattern.inv.get(9), p))
 			{
 				ItemStack output = pattern.inv.get(9).copy();

@@ -41,7 +41,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 		return TileEntityAssembler.class;
 	}
 
-	public class AssemblerEnvironment extends ManagedEnvironmentIE<TileEntityAssembler>
+	public class AssemblerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityAssembler>
 	{
 
 		@Override
@@ -61,27 +61,6 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			super(w, bp, teClass);
 		}
 
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntityAssembler master = getTileEntity();
-			if(master != null)
-			{
-				master.controllingComputers++;
-				master.computerOn[0] = true;
-				master.computerOn[1] = true;
-				master.computerOn[2] = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntityAssembler te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
-		}
-
 		@Callback(doc = "function(recipe:int):boolean -- get whether the ingredients for the specified recipe are available")
 		public Object[] hasIngredients(Context context, Arguments args)
 		{
@@ -96,17 +75,6 @@ public class AssemblerDriver extends DriverSidedTileEntity
 				if(!stack.isEmpty())
 					queryList.add(stack.copy());
 			return new Object[]{master.hasIngredients(master.patterns[recipe - 1], queryList)};
-		}
-
-		@Callback(doc = "function(recipe:int) -- enables or disables the specified recipe")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			boolean on = args.checkBoolean(1);
-			int recipe = args.checkInteger(0);
-			if(recipe > 3 || recipe < 1)
-				throw new IllegalArgumentException("Only recipes 1-3 are available");
-			getTileEntity().computerOn[recipe - 1] = on;
-			return null;
 		}
 
 		@Callback(doc = "function(recipe:int):table -- get the recipe in the specified position")
@@ -171,5 +139,25 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().inventory.get(17 + slot)};
 		}
 
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			TileEntityAssembler te = getTileEntity();
+			te.isComputerControlled = args.checkBoolean(0);
+			for (int i = 0; i < 3; i++)
+				te.computerOn[i] = true;
+			return null;
+		}
+
+		@Callback(doc = "function(recipe:int) -- enables or disables the specified recipe")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			boolean on = args.checkBoolean(1);
+			int recipe = args.checkInteger(0);
+			if(recipe > 3 || recipe < 1)
+				throw new IllegalArgumentException("Only recipes 1-3 are available");
+			getTileEntity().computerOn[recipe - 1] = on;
+			return null;
+		}
 	}
 }

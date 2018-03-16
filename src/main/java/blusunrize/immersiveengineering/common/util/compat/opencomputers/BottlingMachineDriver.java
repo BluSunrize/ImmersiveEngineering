@@ -42,7 +42,7 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 		return TileEntityBottlingMachine.class;
 	}
 
-	public class BottlingMachineEnvironment extends ManagedEnvironmentIE<TileEntityBottlingMachine>
+	public class BottlingMachineEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityBottlingMachine>
 	{
 
 		public BottlingMachineEnvironment(World w, BlockPos bp, Class<? extends TileEntityIEBase> teClass)
@@ -50,36 +50,10 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 			super(w, bp, teClass);
 		}
 
-		@Override
-		public void onConnect(Node node)
-		{
-			TileEntityBottlingMachine master = getTileEntity();
-			if(master != null)
-			{
-				master.controllingComputers++;
-				master.computerOn = true;
-			}
-		}
-
-		@Override
-		public void onDisconnect(Node node)
-		{
-			TileEntityBottlingMachine te = getTileEntity();
-			if(te != null)
-				te.controllingComputers--;
-		}
-
 		@Callback(doc = "function():boolean -- checks whether the Bottling Machine is currently active")
 		public Object[] isActive(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().shouldRenderAsActive()};
-		}
-		
-		@Callback(doc = "function(enable:boolean) -- enable or disable the Bottling Machine")
-		public Object[] setEnabled(Context context, Arguments args)
-		{
-			getTileEntity().computerOn = args.checkBoolean(0);
-			return null;
 		}
 
 		@Callback(doc = "function():number -- get energy storage capacity")
@@ -100,6 +74,18 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().tanks[0].getInfo()};
 		}
 
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
+		public Object[] enableComputerControl(Context context, Arguments args)
+		{
+			return super.enableComputerControl(context, args);
+		}
+
+		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
+		public Object[] setEnabled(Context context, Arguments args)
+		{
+			return super.setEnabled(context, args);
+		}
 
 		@Override
 		public String preferredName()
