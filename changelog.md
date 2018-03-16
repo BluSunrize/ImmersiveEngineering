@@ -20,6 +20,7 @@
 - Fixed missing revolver sounds (BluSunrize)
 - Fixed broken audio-subtitles (lgthibault)
 - Fixed crash with windmills (lgthibault)
+- Fixed crash with metal ladders (lgthibault)
 - Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 
 #####Version 0.12-78 - BUILT
