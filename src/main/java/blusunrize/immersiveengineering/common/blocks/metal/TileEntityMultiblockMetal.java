@@ -236,8 +236,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	}
 	public boolean isRSDisabled()
 	{
-		if(!computerOn.orElse(true))
-			return true;
+		if(computerOn.isPresent())
+			return !computerOn.get();
 		int[] rsPositions = getRedstonePos();
 		if(rsPositions==null || rsPositions.length<1)
 			return false;
@@ -420,7 +420,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	public boolean shouldRenderAsActive()
 	{
-		return computerOn.orElse(true) && getEnergyStored(null) > 0 && !isRSDisabled() && !processQueue.isEmpty();
+		return getEnergyStored(null) > 0 && !isRSDisabled() && !processQueue.isEmpty();
 	}
 
 	public abstract static class MultiblockProcess<R extends IMultiblockRecipe>

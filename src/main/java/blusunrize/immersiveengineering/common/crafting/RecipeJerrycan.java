@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	@Override
-	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
+	public boolean matches(@Nonnull InventoryCrafting inv, World world)
 	{
 
 		ItemStack jerrycan = ItemStack.EMPTY;

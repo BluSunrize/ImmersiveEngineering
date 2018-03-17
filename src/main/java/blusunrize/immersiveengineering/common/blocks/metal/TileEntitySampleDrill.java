@@ -10,9 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -25,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +43,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks, IPlayerInteraction, IHasObjProperty
@@ -308,5 +312,28 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public ArrayList<String> compileDisplayList()
 	{
 		return displayList;
+	}
+
+	@Nullable
+	public String getVeinLocalizedName()
+	{
+		String name = getVein();
+		if(name==null||name.isEmpty())
+			return null;
+		String unlocalizedName = Lib.DESC_INFO+"mineral."+name;
+		String localizedName = I18n.format(unlocalizedName);
+		if(unlocalizedName.equals(localizedName))
+			return name;
+		return localizedName;
+	}
+	public float getVeinIntegrity()
+	{
+		if (sample.isEmpty())
+			return 0;
+		else if (ItemNBTHelper.hasKey(sample, "infinite"))
+			return -1;
+		else if (ItemNBTHelper.hasKey(sample, "depletion"))
+			return 1-ItemNBTHelper.getInt(sample, "depletion")/(float)ExcavatorHandler.mineralVeinCapacity;
+		return 0;
 	}
 }

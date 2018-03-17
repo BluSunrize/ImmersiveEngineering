@@ -28,7 +28,8 @@ public class GeneralComputerHelper
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general2"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general3"),
-					new ManualPages.Text(ManualHelper.getManual(), "computer.general4"));
+					new ManualPages.Text(ManualHelper.getManual(), "computer.general4"),
+					new ManualPages.Text(ManualHelper.getManual(), "computer.general5"));
 			ManualHelper.getManual().addEntry("computer.arcfurnace", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace2"));
