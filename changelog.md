@@ -1,4 +1,4 @@
-#####Version 0.12-79
+#####Version 0.12-79 - BUILT
 - Added the ability for Wirecutters to cut wires from anywhere (Malte)
 - Added Craftweaker support for the Thermolelectric Generator (BluSunrize)
 - Added documentation for metal ladders (BluSunrize)
