@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig.Machines;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
@@ -18,8 +19,14 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.common.collect.Maps;
 import net.minecraftforge.common.config.Config.Comment;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
+import net.minecraftforge.common.config.Config.RequiresWorldRestart;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,6 +37,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+@Mod.EventBusSubscriber
 public class Config
 {
 	public static HashMap<String, Boolean> manual_bool = new HashMap<String, Boolean>();
@@ -44,7 +52,9 @@ public class Config
 	public static class IEConfig
 	{
 		//Wire Stuff
-		@Comment({"Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data.", "This option will check and load all connection endpoints and may slow down the world loading process."})
+		@Comment({"Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data.",
+				"This option will check and load all connection endpoints and may slow down the world loading process."})
+		@RequiresWorldRestart
 		public static boolean validateConnections = false;
 		@Comment({"The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )"})
 		@Mapped(mapClass = Config.class, mapName = "manual_intA")
@@ -61,6 +71,7 @@ public class Config
 				"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already."})
 		public static boolean enableWireDamage = true;
 		@Comment({"If this is enabled, placing a block in a wire will break it (drop the wire coil)"})
+		@RequiresWorldRestart
 		public static boolean blocksBreakWires = true;
 
 		@Comment({"By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view.", "Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs"})
@@ -85,6 +96,7 @@ public class Config
 		@Comment({"Set this to false to hide the update news in the manual"})
 		public static boolean showUpdateNews = true;
 		@Comment({"Set this to false to stop the IE villager house from spawning"})
+		@RequiresMcRestart
 		public static boolean villagerHouse = true;
 		@Comment({"Set this to false to remove IE villagers from the game"})
 		public static boolean enableVillagers = true;
@@ -210,6 +222,7 @@ public class Config
 			@Comment({"How much Flux the powered lantern can hold (should be greater than the power draw)"})
 			public static int lantern_maximumStorage = 10;
 			@Comment({"Set this to false to disable the mob-spawn prevention of the Floodlight"})
+			@RequiresWorldRestart
 			public static boolean floodlight_spawnPrevent = true;
 			@Comment({"How much Flux the floodlight draws per tick"})
 			public static int floodlight_energyDraw = 5;
@@ -246,8 +259,10 @@ public class Config
 			public static int arcfurnace_electrodeDamage = 96000;
 			@Comment({"Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot"})
 			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
 			public static boolean arcfurnace_electrodeCrafting = false;
 			@Comment({"Set this to false to disable the Arc Furnace's recycling of armors and tools"})
+			@RequiresMcRestart
 			public static boolean arcfurnace_recycle = true;
 			@Comment({"A modifier to apply to the energy costs of every Automatic Workbench recipe"})
 			public static float autoWorkbench_energyModifier = 1;
@@ -337,6 +352,7 @@ public class Config
 		public static class Tools
 		{
 			@Comment({"Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer"})
+			@RequiresMcRestart
 			public static boolean disableHammerCrushing = false;
 			@Comment({"The maximum durability of the Engineer's Hammer. Used up when hammering ingots into plates."})
 			public static int hammerDurabiliy = 100;
@@ -392,6 +408,11 @@ public class Config
 	static Configuration config;
 	public static void preInit(FMLPreInitializationEvent event)
 	{
+		onConfigUpdate();
+	}
+
+	private static void onConfigUpdate()
+	{
 		if(IEConfig.validateConnections)
 			IELogger.warn("Connection validation enabled");
 
@@ -422,6 +443,11 @@ public class Config
 		Config.manual_int.put("excavator_depletion_days", Machines.excavator_depletion*45/24000);
 		Config.manual_bool.put("literalRailGun", false);//preventive measure for Railcraft
 		checkMappedValues(IEConfig.class);
+		WireType.wireLossRatio = IEConfig.wireLossRatio;
+		WireType.wireTransferRate = IEConfig.wireTransferRate;
+		WireType.wireColouration =
+				(IEConfig.wireColouration.length!=IEConfig.wireColourationDefault.length)?IEConfig.wireColourationDefault:IEConfig.wireColouration;
+		WireType.wireLength = IEConfig.wireLength;
 	}
 
 	public static void checkMappedValues(Class confClass)
@@ -464,76 +490,11 @@ public class Config
 	public @interface SubConfig
 	{}
 
-//	public static void setBoolean(String key, boolean b)
-//	{
-////		config_boolean.put(key, b);
-//	}
-//	public static boolean getBoolean(String key)
-//	{
-////		Boolean b = config_boolean.get(key);
-////		return b != null && b.booleanValue();
-//		return false;
-//	}
-//
-//	public static void setInt(String key, int i)
-//	{
-////		manual_int.put(key, i);
-//	}
-//	public static int getInt(String key)
-//	{
-////		Integer i = manual_int.get(key);
-////		return i!=null?i.intValue():0;
-//		return 0;
-//	}
-//
-//	public static void setDouble(String key, double d)
-//	{
-////		manual_double.put(key, d);
-//	}
-//	public static double getDouble(String key)
-//	{
-////		Double d = manual_double.get(key);
-////		return d!=null?d.floatValue():0;
-//		return 0;
-//	}
-//
-//	public static void setString(String key, String s)
-//	{
-////		config_string.put(key, s);
-//	}
-//	public static String getString(String key)
-//	{
-////		return config_string.get(key);
-//		return "";
-//	}
-//
-//	public static void setDoubleArray(String key, double[] dA)
-//	{
-////		config_doubleArray.put(key, dA);
-//	}
-//	public static double[] getDoubleArray(String key)
-//	{
-////		return config_doubleArray.get(key);
-//		return new double[6];
-//	}
-//
-//	public static void setIntArray(String key, int[] iA)
-//	{
-////		config_intArray.put(key, iA);
-//	}
-//	public static int[] getIntArray(String key)
-//	{
-////		return config_intArray.get(key);
-//		return new int[6];
-//	}
-//
-//	public static void setStringArray(String key, String[] dA)
-//	{
-////		config_stringArray.put(key, dA);
-//	}
-//	public static String[] getStringArray(String key)
-//	{
-////		return config_stringArray.get(key);
-//		return new String[6];
-//	}
+	@SubscribeEvent
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent ev) {
+		if (ev.getModID().equals(ImmersiveEngineering.MODID)) {
+			ConfigManager.sync(ImmersiveEngineering.MODID, net.minecraftforge.common.config.Config.Type.INSTANCE);
+			onConfigUpdate();
+		}
+	}
 }
