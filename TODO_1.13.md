@@ -7,8 +7,10 @@
    - Probably make a net handler object for each dimension? Currectly all maps have int as the first key
    - Merge `ImmersiveNetHandler.indirectConnectionsNoOut` and `ImmersiveNetHandler.indirectConnections`
    - Public methods shouldn't leave the net handler in an "inconsistent" state (diodes/single-direction edges) etc.
-
+ - Remove config-mirroring fields from all over the place (e.g. `WireType.wireTransferRate`)
+ 
 Maybe:
  - Change the manual to:
    1. Use a file per entry (in a language-specific directory) rather than a line in the lang file per page
    2. Auto-split the entries into lines and pages ([Possible implementation](https://github.com/malte0811/IndustrialWires/blob/MC1.12/src/main/java/malte0811/industrialWires/client/manual/TextSplitter.java))
+   
