@@ -151,12 +151,20 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory.get(2), inventory.get(3), null);
 				if(!filledContainer.isEmpty())
 				{
-					if(!inventory.get(3).isEmpty() && OreDictionary.itemMatches(inventory.get(3), filledContainer, true))
-						inventory.get(3).grow(filledContainer.getCount());
-					else if(inventory.get(3).isEmpty())
-						inventory.set(3, filledContainer.copy());
-					Utils.modifyInvStackSize(inventory, 2, -filledContainer.getCount());
-					b=true;
+					if(inventory.get(2).getCount()==1 && !Utils.isFluidContainerFull(filledContainer))
+					{
+						inventory.set(2, filledContainer.copy());
+						b = true;
+					}
+					else
+					{
+						if(!inventory.get(3).isEmpty()&&OreDictionary.itemMatches(inventory.get(3), filledContainer, true))
+							inventory.get(3).grow(filledContainer.getCount());
+						else if(inventory.get(3).isEmpty())
+							inventory.set(3, filledContainer.copy());
+						Utils.modifyInvStackSize(inventory, 2, -filledContainer.getCount());
+						b = true;
+					}
 				}
 			}
 

@@ -155,16 +155,19 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 				if (!empty.isEmpty()&&tanks[0].getFluidAmount()>0)
 				{
 					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory().get(10), null);
-					if (!full.isEmpty())
-					{
-						if (!getInventory().get(10).isEmpty()&&OreDictionary.itemMatches(full, getInventory().get(10), true))
-							getInventory().get(10).grow(full.getCount());
+					if(!full.isEmpty())
+						if(getInventory().get(9).getCount()==1&&!Utils.isFluidContainerFull(full))
+							getInventory().set(9, full.copy());
 						else
-							getInventory().set(10, full);
-						inventory.get(9).shrink(1);
-						if(inventory.get(9).getCount() <= 0)
-							inventory.set(9, ItemStack.EMPTY);
-					}
+						{
+							if(!getInventory().get(10).isEmpty()&&OreDictionary.itemMatches(full, getInventory().get(10), true))
+								getInventory().get(10).grow(full.getCount());
+							else
+								getInventory().set(10, full);
+							inventory.get(9).shrink(1);
+							if(inventory.get(9).getCount() <= 0)
+								inventory.set(9, ItemStack.EMPTY);
+						}
 				}
 			}
 			if(!inventory.get(8).isEmpty() && world.getTotalWorldTime()%8==0)

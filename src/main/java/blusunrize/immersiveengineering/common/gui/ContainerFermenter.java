@@ -21,7 +21,7 @@ public class ContainerFermenter extends ContainerIEBase<TileEntityFermenter>
 		for(int i=0; i<8; i++)
 			this.addSlotToContainer(new Slot(this.inv, i, 8+(i%4)*18,19+(i/4)*18));
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 8, 91,53));
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 9, 134,17, true));
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 9, 134,17, false));
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 10, 134,53));
 		slotCount=11;
 

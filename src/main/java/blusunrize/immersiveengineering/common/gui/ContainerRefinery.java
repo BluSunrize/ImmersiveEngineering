@@ -72,7 +72,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 		});
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 85,54));
 
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 4, 133,15, true)
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 4, 133,15, false)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)

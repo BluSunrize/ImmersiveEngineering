@@ -22,7 +22,6 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import crafttweaker.api.block.IBlock;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -62,7 +61,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeBeach;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
@@ -74,6 +72,8 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -942,6 +942,20 @@ public class Utils
 
 	}
 
+	public static boolean isFluidContainerFull(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		IFluidHandlerItem handler = FluidUtil.getFluidHandler(stack);
+		if(handler==null)
+			return false;
+		IFluidTankProperties[] tank = handler.getTankProperties();
+		for(IFluidTankProperties prop : tank)
+			if(prop.getContents()==null || prop.getContents().amount<prop.getCapacity())
+				return false;
+		return true;
+	}
+
 //	public static FluidStack getFluidFromItemStack(ItemStack stack)
 //	{
 //		if(stack==null)
@@ -1618,7 +1632,7 @@ public class Utils
 		@Override
 		public boolean isSideSolid(@Nonnull BlockPos pos, @Nonnull EnumFacing side, boolean _default)
 		{
-			return pos.equals(BlockPos.ORIGIN)?state.isSideSolid(this, BlockPos.ORIGIN, side):false;
+			return pos.equals(BlockPos.ORIGIN)&&state.isSideSolid(this, BlockPos.ORIGIN, side);
 		}
 	}
 }

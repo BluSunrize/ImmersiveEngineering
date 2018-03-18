@@ -7,6 +7,7 @@
 - Changed Feedthrough Connectors to break like normal multiblocks (Malte)
 - Changed Feedthrough Connectors to form regardless of connector face clicked (BluSunrize)
 - Changed codebase for wire coils to allow easier extension (AntiBlueQuirk)
+- Changed Multiblocks to only move FluidContainers to the output slots when they are full (BluSunrize)
 - Made the IE config react to changes from the in-game GUI
 - Fixed a crash with Optifine and feedthrough connectors (Malte)
 - Fixed wire rendering in edgecases (Malte)
