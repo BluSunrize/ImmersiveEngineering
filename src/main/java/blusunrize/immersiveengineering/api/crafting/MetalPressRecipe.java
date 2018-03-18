@@ -17,10 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -96,7 +93,8 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
 	{
 		List<MetalPressRecipe> list = new ArrayList();
-		for(ComparableItemStack mold : recipeList.keySet())
+		Set<ComparableItemStack> keySet = new HashSet<ComparableItemStack>(recipeList.keySet());
+		for(ComparableItemStack mold : keySet)
 		{
 			Iterator<MetalPressRecipe> it = recipeList.get(mold).iterator();
 			while(it.hasNext())

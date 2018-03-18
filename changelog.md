@@ -3,6 +3,7 @@
 - Added Craftweaker support for the Thermolelectric Generator (BluSunrize)
 - Added documentation for metal ladders (BluSunrize)
 - Added Squeezer recipe for beetroot seeds (pap1723)
+- Re-Enabled OpenComputers compat (Malte)
 - Changed Feedthrough Connectors to break like normal multiblocks (Malte)
 - Changed Feedthrough Connectors to form regardless of connector face clicked (BluSunrize)
 - Changed codebase for wire coils to allow easier extension (AntiBlueQuirk)
@@ -18,6 +19,7 @@
 - Fixed broken audio-subtitles (lgthibault)
 - Fixed crash with windmills (lgthibault)
 - Fixed crash with metal ladders (lgthibault)
+- Fixed Craftweaker removal function of MetalPress (BluSunrize)
 - Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 
 #####Version 0.12-78 - BUILT
