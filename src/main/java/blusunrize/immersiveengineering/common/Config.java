@@ -110,6 +110,10 @@ public class Config
 
 		@Comment({"A list of all mods that IE has integrated compatability for","Setting any of these to false disables the respective compat"})
 		public static Map<String,Boolean> compat = Maps.newHashMap(Maps.toMap(IECompatModule.moduleClasses.keySet(), (s)->Boolean.TRUE));
+
+		@Comment({"A config setting to enable debug features. These features may vary between releases, may cause crashes, and are unsupported. Do not enable unless asked to by a developer of IE."})
+		public static boolean enableDebug = false;
+
 		@SubConfig
 		public static Machines machines;
 		@SubConfig

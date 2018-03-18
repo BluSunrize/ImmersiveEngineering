@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
@@ -222,11 +223,85 @@ public class ConnModelReal implements IBakedModel
 			}
 			else
 				extraCacheKey = null;
+			if (Config.IEConfig.enableDebug)
+			{
+				//Debug code for #2887
+				if (!this.equals(this)||this.hashCode()!=this.hashCode())
+				{
+					String debug = "Basic state:\n";
+					debug += toStringDebug(state);
+					debug += "Layer: "+layer+"\n";
+					debug += "Cache key: "+extraCacheKey+"\nAdditional:\n";
+					debug += "Ignored:\n";
+					for (Object o:ignoredProperties)
+						debug += toStringDebug(o);
+					throw new IllegalStateException(debug);
+				}
+			}
 		}
+
+		private String toStringProp(IProperty<?> o)
+		{
+			if (o==null)
+				return "PROPERTY WAS NULL";
+			return o.getClass()+": listed, Type: "+o.getValueClass()+", Name: "+o.getName();
+		}
+
+		private String toStringProp(IUnlistedProperty<?> o)
+		{
+			if (o==null)
+				return "PROPERTY WAS NULL";
+			return o.getClass()+": unlisted, Type: "+o.getType()+", Name: "+o.getName();
+		}
+
+		private String toStringDebug(Object o) {
+			if (o==null)
+				return "NULL";
+			if (o instanceof IBlockState)
+			{
+				String ret = "";
+				for (IProperty<?> p:((IBlockState) o).getPropertyKeys())
+				{
+					ret += toStringProp(p)+" has value "+toStringDebug(((IBlockState) o).getValue(p))+"\n";
+				}
+				if (o instanceof IExtendedBlockState)
+				{
+					for (Map.Entry<IUnlistedProperty<?>, Optional<?>> p:((IExtendedBlockState) o).getUnlistedProperties().entrySet())
+					{
+						ret += toStringProp(p.getKey())+" has value "+toStringDebug(p.getValue().orElse(null))+"\n";
+					}
+				}
+				return ret;
+			}
+			if (o instanceof IUnlistedProperty)
+				return toStringProp((IUnlistedProperty)o);
+			if (o instanceof IProperty)
+				return toStringProp((IProperty)o);
+			return o.getClass()+": "+o;
+		}
+
 		public ExtBlockstateAdapter(IExtendedBlockState s, BlockRenderLayer l, Set<Object> ignored, Object[] additional)
 		{
 			this(s, l, ignored);
 			additionalProperties = additional;
+			if (Config.IEConfig.enableDebug)
+			{
+				//Debug code for #2887
+				if (!this.equals(this)||this.hashCode()!=this.hashCode())
+				{
+					String debug = "Basic state:\n";
+					debug += toStringDebug(state);
+					debug += "Layer: "+layer+"\n";
+					debug += "Cache key: "+extraCacheKey+"\nAdditional:\n";
+					if (additionalProperties!=null)
+						for (Object o:additionalProperties)
+							debug += toStringDebug(o);
+					debug += "Ignored:\n";
+					for (Object o:ignoredProperties)
+						debug += toStringDebug(o);
+					throw new IllegalStateException(debug);
+				}
+			}
 		}
 
 		@Override

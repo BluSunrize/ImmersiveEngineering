@@ -227,7 +227,8 @@ public class IESmartObjModel extends OBJBakedModel
 			else
 				adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(),
 						ExtBlockstateAdapter.CONNS_OBJ_CALLBACK);
-			if(!modelCache.containsKey(adapter))
+			List<BakedQuad> quads = modelCache.get(adapter);
+			if(quads==null)
 			{
 				IESmartObjModel model = null;
 				if(objstate!=null)
@@ -236,9 +237,10 @@ public class IESmartObjModel extends OBJBakedModel
 					model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(), transformationMap);
 				model.tempState = blockState;
 				model.texReplace = tex;
-				modelCache.put(adapter, model.buildQuads());
+				quads = model.buildQuads();
+				modelCache.put(adapter, quads);
 			}
-			return Collections.synchronizedList(Lists.newArrayList(modelCache.get(adapter)));
+			return Collections.synchronizedList(Lists.newArrayList(quads));
 		}
 		if(bakedQuads==null)
 			bakedQuads = buildQuads();
