@@ -1518,7 +1518,7 @@ ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r：返回电弧�
 ie.manual.entry.computer.bottlingMachine.name=灌装机 ☎
 ie.manual.entry.computer.bottlingMachine.subtext=装满它！
 ie.manual.entry.computer.bottlingmachine0=§lisActive()§r: returns a boolean that is true if the bottling machine is currently processing something and false otherwise<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this machine<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this machine
-ie.manual.entry.computer.bottlingmachine1=§lgetTank()§r: returns the contents of the fluid tank
+ie.manual.entry.computer.bottlingmachine1=§lgetTank()§r：返回流体储罐信息。
 
 
 
@@ -1529,12 +1529,12 @@ ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r：返回找�
 
 ie.manual.entry.computer.crusher.name=粉碎机 ☎
 ie.manual.entry.computer.crusher.subtext=管好你的手！
-ie.manual.entry.computer.crusher0=§lisActive()§r: returns whether the crusher is currently crushing items<br>§lgetInputQueue()§r: returns the input queue of the crusher as a table. The table contains the places in the input queue as keys (starting at 1). Each place in the queue is saved as a table with the following keys:<br>"progress": the current progress
+ie.manual.entry.computer.crusher0=§lisActive()§r：粉碎机工作时返回true，否则返回false。<br>§lgetInputQueue()§r：返回代表粉碎机输入序列的table。该table的键以数字命名，从1开始。每个键对应的值均为table，包含下列键：<br>"progress"：当前进度
 ie.manual.entry.computer.crusher1="input"：输入的ItemStack<br>"output"：主产物ItemStack<br>§lgetMaxEnergyStored()§r：返回粉碎机可储存的最大能量数量<br>§lgetEnergyStored()§r：返回粉碎机储存的能量数量
 
 ie.manual.entry.computer.dieselgen.name=柴油发电机 ☎
 ie.manual.entry.computer.dieselgen.subtext=提高产量最重要的是：量产。
-ie.manual.entry.computer.dieselgen0=§lgetTankInfo()§r: returns the internal diesel tank
+ie.manual.entry.computer.dieselgen0=§lgetTankInfo()§r：返回柴油发电机储罐信息。
 
 ie.manual.entry.computer.energymeter.name=电流互感器 ☎
 ie.manual.entry.computer.energymeter.subtext=Just an ADC
@@ -1542,7 +1542,7 @@ ie.manual.entry.computer.energymeter0=电流互感器的底部可与电脑连接
 
 ie.manual.entry.computer.excavator.name=斗轮式挖掘机 ☎
 ie.manual.entry.computer.excavator.subtext=比矮人更为高效
-ie.manual.entry.computer.excavator0=§lisActive()§r: returns whether the excavator is running. This does not say anything about the existence of a mineral vein<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this excavator<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this excavator
+ie.manual.entry.computer.excavator0=§lisActive()§r：挖掘机工作时返回true，否则返回false。该返回值与矿脉是否存在无关。<br>§lgetEnergyStored()§r：返回挖掘机储存的能量数量<br>§lgetMaxEnergyStored()§r：返回挖掘机可储存的最大能量数量
 
 ie.manual.entry.computer.squeezerAndFermenter.name=工业发酵机和工业压榨机 ☎
 ie.manual.entry.computer.squeezerAndFermenter.subtext=重复发布
@@ -1553,11 +1553,11 @@ ie.manual.entry.computer.squeezerAndFermenter2=§lgetMaxEnergyStored()§r：返�
 ie.manual.entry.computer.floodlight.name=泛光灯 ☎
 ie.manual.entry.computer.floodlight.subtext=复古LED
 ie.manual.entry.computer.floodlight0=以下内容均假定泛光灯放置在地面上。泛光灯底面可与电脑连接。使用电脑旋转泛光灯后，须等待一秒能才能再次旋转。<br>§lturnAroundXZ(boolean dir)§r：水平旋转泛光灯<br>§lturnAroundY(boolean dir)§r：沿Y轴旋转泛光灯<br>§lcanTurn()§r:当泛光灯可旋转时返回true，否则返回false
-ie.manual.entry.computer.floodlight1=§lgetEnergyStored()§r: returns the amount of energy stored in the floodlight<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in the floodlight<br>§lwaitForCooldown()§r: waits until the floodlight can be turned again.
+ie.manual.entry.computer.floodlight1=§lgetEnergyStored()§r：返回泛光灯储存的能量数量<br>§lgetMaxEnergyStored()§r：返回泛光灯可储存的最大能量数量。<br>§lwaitForCooldown()§r：返回泛光灯再次旋转时间。
 
 ie.manual.entry.computer.refinery.name=炼油厂 ☎
 ie.manual.entry.computer.refinery.subtext=数位化柴油
-ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r: returns a table storing the input tanks in the keys "input1" and "input2"<br>§lgetOutputTank()§r: returns the output tank<br>§lgetRecipe()§r: returns a table containing the input fluids in the keys "input1" and "input2" and the output fluid in the key "output"<br>§lisValidRecipe()§r: returns whether a recipe with the current input fluids exists
+ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r：返回包含有两个输入储罐的table，分别储存在"input1"和"input2"两个键下。<br>§lgetOutputTank()§r：返回输出储罐<br>§lgetRecipe()§r：返回包含三个键的table，其中键"input1"和键"input2"存储有两种输入的流体，键"output"则对应输出的流体<br>§lisValidRecipe()§r：若当前输入有对应的recipe则返回true，否则返回false。
 ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r：返回包含有若干空容器的ItemStack的table，其中键"input1"和键"ipnut2"对应输入储罐，键"output"对应输出储罐。<br>§lgetMaxEnergyStored()§r：返回炼油厂可储存的最大能量数量<br>§lgetEnergyStored()§r：返回炼油厂储存的能量数量。
 
 ie.manual.entry.computer.assembler.name=装配机 ☎
