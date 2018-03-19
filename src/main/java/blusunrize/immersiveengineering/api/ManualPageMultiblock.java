@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +30,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import org.lwjgl.opengl.GL11;
@@ -157,6 +159,7 @@ public class ManualPageMultiblock extends ManualPages
 	public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 	{
 		boolean openBuffer = false;
+		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
 		try
 		{
 			if(multiblock.getStructureManual() != null)
@@ -260,6 +263,12 @@ public class ManualPageMultiblock extends ManualPages
 			try{
 				Tessellator.getInstance().draw();
 			}catch(Exception e){}
+		int newStackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
+		while (newStackDepth>stackDepth)
+		{
+			GlStateManager.popMatrix();
+			newStackDepth--;
+		}
 	}
 
 	@Override
@@ -370,7 +379,11 @@ public class ManualPageMultiblock extends ManualPages
 		@Override
 		public Biome getBiome(BlockPos pos)
 		{
-			return null;
+			World world = Minecraft.getMinecraft().world;
+			if (world!=null)
+				return world.getBiome(pos);
+			else
+				return Biomes.BIRCH_FOREST;
 		}
 
 		@Override
@@ -382,7 +395,12 @@ public class ManualPageMultiblock extends ManualPages
 		@Override
 		public WorldType getWorldType()
 		{
-			return null;
+
+			World world = Minecraft.getMinecraft().world;
+			if (world!=null)
+				return world.getWorldType();
+			else
+				return WorldType.DEFAULT;
 		}
 
 		@Override
