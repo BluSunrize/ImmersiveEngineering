@@ -35,9 +35,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -94,18 +96,21 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				}
 			}
 		}
-		byte cOn = nbt.getByte("computerOn");
-		switch (cOn)
+		if (nbt.hasKey("computerOn", Constants.NBT.TAG_BYTE) && Loader.isModLoaded("opencomputers"))
 		{
-			case 0:
-				computerOn = Optional.of(false);
-				break;
-			case 1:
-				computerOn = Optional.of(true);
-				break;
-			case 2:
-				computerOn = Optional.empty();
-				break;
+			byte cOn = nbt.getByte("computerOn");
+			switch (cOn)
+			{
+				case 0:
+					computerOn = Optional.of(false);
+					break;
+				case 1:
+					computerOn = Optional.of(true);
+					break;
+				case 2:
+					computerOn = Optional.empty();
+					break;
+			}
 		}
 	}
 	@Override
