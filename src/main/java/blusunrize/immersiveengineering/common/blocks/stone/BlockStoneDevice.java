@@ -38,6 +38,10 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 		this.setMetaMobilityFlag(BlockTypes_StoneDevices.BLAST_FURNACE.getMeta(), EnumPushReaction.BLOCK);
 		this.setMetaMobilityFlag(BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta(), EnumPushReaction.BLOCK);
 		this.setMetaMobilityFlag(BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta(), EnumPushReaction.BLOCK);
+		this.hasMultiblockTile[BlockTypes_StoneDevices.CONCRETE_SHEET.getMeta()] = false;
+		this.hasMultiblockTile[BlockTypes_StoneDevices.CONCRETE_QUARTER.getMeta()] = false;
+		this.hasMultiblockTile[BlockTypes_StoneDevices.CONCRETE_THREEQUARTER.getMeta()] = false;
+		this.hasMultiblockTile[BlockTypes_StoneDevices.CORESAMPLE.getMeta()] = false;
 		lightOpacity = 0;
 	}
 

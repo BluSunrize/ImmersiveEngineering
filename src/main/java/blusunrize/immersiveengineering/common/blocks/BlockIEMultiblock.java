@@ -26,10 +26,16 @@ import net.minecraft.world.World;
 
 public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
 {
+	protected final boolean[] hasMultiblockTile;
+
 	public BlockIEMultiblock(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
-		super(name, material, mainProperty, itemBlock, combineProperties(additionalProperties, IEProperties.FACING_HORIZONTAL,IEProperties.MULTIBLOCKSLAVE));
+		super(name, material, mainProperty, itemBlock, combineProperties(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
+		this.hasMultiblockTile = new boolean[this.enumValues.length];
+		for(int i = 0; i < this.hasMultiblockTile.length; i++)
+			this.hasMultiblockTile[i] = true;
 	}
+
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -41,32 +47,34 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityMultiblockPart && world.getGameRules().getBoolean("doTileDrops"))
+		if(tileEntity instanceof TileEntityMultiblockPart&&world.getGameRules().getBoolean("doTileDrops"))
 		{
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)tileEntity;
-			if(!tile.formed && tile.pos==-1 && !tile.getOriginalBlock().isEmpty())
-				world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, tile.getOriginalBlock().copy()));
+			if(!tile.formed&&tile.pos==-1&&!tile.getOriginalBlock().isEmpty())
+				world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, tile.getOriginalBlock().copy()));
 
-			if(tile.formed && tile instanceof IIEInventory)
+			if(tile.formed&&tile instanceof IIEInventory)
 			{
 				IIEInventory master = (IIEInventory)tile.master();
-				if(master!=null && (!(master instanceof ITileDrop) || !((ITileDrop)master).preventInventoryDrop()) && master.getDroppedItems()!=null)
+				if(master!=null&&(!(master instanceof ITileDrop)||!((ITileDrop)master).preventInventoryDrop())&&master.getDroppedItems()!=null)
 					for(ItemStack s : master.getDroppedItems())
 						if(!s.isEmpty())
-							world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s.copy()));
+							world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s.copy()));
 			}
 		}
 		if(tileEntity instanceof TileEntityMultiblockPart)
 			((TileEntityMultiblockPart)tileEntity).disassemble();
 		super.breakBlock(world, pos, state);
 	}
+
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
-		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof TileEntityMultiblockPart<?>))
+		int meta = this.getMetaFromState(state);
+		if(meta >= 0&&meta < this.hasMultiblockTile.length&&!this.hasMultiblockTile[meta])
 			super.getDrops(drops, world, pos, state, fortune);
 	}
+
 	@Override
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
@@ -75,6 +83,7 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 			return stack;
 		return super.getPickBlock(state, target, world, pos, player);
 	}
+
 	public ItemStack getOriginalBlock(World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);

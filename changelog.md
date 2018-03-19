@@ -3,6 +3,7 @@
 - Fixed pre-IE-79 multiblocks not working on IE 79 (Malte)
 - Fixed FluidContainer slots not accepting empty containers (BluSunrize)
 - Fixed Villager trades for Shader bags being inverted (BluSunrize)
+- Fixed Multiblocks dropping themselves as illegal items (BluSunrize)
 
 #####Version 0.12-79 - BUILT
 - Added the ability for Wirecutters to cut wires from anywhere (Malte)
