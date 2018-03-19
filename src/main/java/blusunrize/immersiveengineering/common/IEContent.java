@@ -1030,13 +1030,13 @@ public class IEContent
 			ItemNBTHelper.setString(bag_rare, "rarity", EnumRarity.RARE.toString());
 
 			career_outfitter.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(bag_common, new EntityVillager.PriceInfo(8, 16))
+					new IEVillagerTrades.ItemstackForEmerald(bag_common, new EntityVillager.PriceInfo(8, 16))
 			);
 			career_outfitter.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(bag_uncommon, new EntityVillager.PriceInfo(12, 20))
+					new IEVillagerTrades.ItemstackForEmerald(bag_uncommon, new EntityVillager.PriceInfo(12, 20))
 			);
 			career_outfitter.addTrade(3,
-					new IEVillagerTrades.EmeraldForItemstack(bag_rare, new EntityVillager.PriceInfo(16, 24))
+					new IEVillagerTrades.ItemstackForEmerald(bag_rare, new EntityVillager.PriceInfo(16, 24))
 			);
 		}
 
