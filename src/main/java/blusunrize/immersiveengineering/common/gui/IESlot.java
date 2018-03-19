@@ -67,11 +67,11 @@ public abstract class IESlot extends Slot
 	}
 	public static class FluidContainer extends IESlot
 	{
-		boolean empty;
-		public FluidContainer(Container container, IInventory inv, int id, int x, int y, boolean empty)
+		int filter; //0 = any, 1 = empty, 2 = full
+		public FluidContainer(Container container, IInventory inv, int id, int x, int y, int filter)
 		{
 			super(container, inv, id, x, y);
-			this.empty=empty;
+			this.filter=filter;
 		}
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
@@ -82,10 +82,12 @@ public abstract class IESlot extends Slot
 			IFluidTankProperties[] tank = handler.getTankProperties();
 			if(tank == null || tank.length < 1 || tank[0] == null)
 				return false;
-			if(empty)
+
+			if(filter==1)
 				return tank[0].getContents() == null;
-			else
+			else if(filter==2)
 				return tank[0].getContents() != null;
+			return true;
 		}
 	}
 	public static class BlastFuel extends IESlot

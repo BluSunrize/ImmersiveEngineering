@@ -1,3 +1,8 @@
+#####Version 0.12-80
+- Fixed multiblock rendering in the manual with Optifine and texture packs (Malte)
+- Fixed pre-IE-79 multiblocks not working on IE 79 (Malte)
+- Fixed FluidContainer slots not accepting empty containers (BluSunrize)
+
 #####Version 0.12-79 - BUILT
 - Added the ability for Wirecutters to cut wires from anywhere (Malte)
 - Added Craftweaker support for the Thermolelectric Generator (BluSunrize)

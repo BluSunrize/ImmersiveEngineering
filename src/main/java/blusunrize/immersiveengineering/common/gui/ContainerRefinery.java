@@ -26,7 +26,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 		super(inventoryPlayer, tile);
 
 		final TileEntityRefinery tileF = tile;
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 0, 37,15, false)
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 0, 37,15, 2)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
@@ -49,7 +49,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 		});
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 37,54));
 
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2, 85,15, false)
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2, 85,15, 2)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
@@ -72,14 +72,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 		});
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 85,54));
 
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 4, 133,15, false)
-		{
-			@Override
-			public boolean isItemValid(ItemStack itemStack)
-			{
-				return super.isItemValid(itemStack) || (!itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null));
-			}
-		});
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 4, 133,15, 0));
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 5, 133,54));
 		slotCount=6;
 
