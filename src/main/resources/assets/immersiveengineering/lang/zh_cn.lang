@@ -1502,12 +1502,12 @@ ie.manual.category.computers.name=电脑控制支持
 
 ie.manual.entry.computer.general.name=基本信息 ☎
 ie.manual.entry.computer.general.subtext=来自未来的科技
-ie.manual.entry.computer.general0=Many of the machines described in this manual can be controlled using computers from OpenComputers. An Adapter has to be used to connect the machine to the network. If the machine is a multiblock that has a redstone port, that is where you can attach your computer. Otherwise please check the machine-specific entry in this chapter. The following pages describe some commonly used return types and methods.
-ie.manual.entry.computer.general1=Multiblocks with a redstone port can be enabled and disabled using computers as well as redstone:<br>§lenableComputerControl( enabled:bool)§r: This enables or disables computer control for the machine. The machine will ignore redstone signals while this is enabled. This will not automatically reset when the computer is removed.<br>§lsetEnabled(enable:bool)§r: Enables or disables the machine, like a redstone signal would. This only works if computer control is enabled.
-ie.manual.entry.computer.general2=§lItem stacks§r are a very common return type. They consist of a table containing these entries:<br>§lname§r: the internal name of the item, e.g. "minecraft:cobblestone" for cobblestone<br>§lsize§r: the size of the item stack<br>§llabel§r: The name of the stack. Changes when the stack is renamed in an anvil.
-ie.manual.entry.computer.general3=§ldamage§r: The damage (or, in most cases, metadata) of the item stack<br>§lmaxDamage§r: The maximum amount of damage the item can have before breaking<br>§lmaxSize§r: the maximum stack size for this item. 64 in most cases<br>§lhasTag§r: whether the stack has a nbt tag
-ie.manual.entry.computer.general4=§lFluid stacks§r: A fluid stack represents some amount of a specific fluid that isn't necessarily in a tank. These entries are available in the returned table:<br>§lname§r: the unlocalized name of the fluid<br>§lamount§r: the amount of fluid, in millibuckets<br>§lhasTag§r: whether the fluid has a nbt tag
-ie.manual.entry.computer.general5=§lFluid tanks§r are similar to fluid stacks, with the difference that this fluid is inside a tank. The returned table has the same entries as the table for a fluid stack. Additionally the capacity of the tank the fluid is in is stored in the entry §lcapacity§r
+ie.manual.entry.computer.general0=本手册中介绍的大部分机械都可以用OpenCopmuters（开放式电脑）或ComputerCraft的电脑控制。若使用OpenComputers，需将机器与Adapter连接方可启用电脑控制功能。若该机械有红石接口，则这个接口也支持电脑控制；若需要其它机器的技术信息，请查阅对应条目。本条目的下一页将介绍一些常用的返回值类型。
+ie.manual.entry.computer.general1=你可以使用电脑或者红石来控制带有红石接口的多方块结构：<br>§lenableComputerControl( enabled:bool)§r：用来控制机械开关。若启用此功能后机械将忽略红石信号，且取消电脑对机械的控制时其不会自动重置。<br>§lsetEnabled(enable:bool)§r：类似红石信号那样控制机械，这仅在电脑控制启用时才有效。
+ie.manual.entry.computer.general2=§lItem stacks§r（物品堆）是一种常用的返回值类型。一般，它包含下列键：<br>§lname§r：物品的注册名，例如原版的圆石的注册名是"minecraft:cobblestone"<br>§lsize§r：物品数量<br>§llabel§r：该物品的实际显示名字，在铁砧中重命名会影响这个键对应的值。
+ie.manual.entry.computer.general3=§ldamage§r：物品损害值或元数据（metadata）。<br>§lmaxDamage§r：该物品损坏前可承受的最大损害值<br>§lmaxSize§r：该物品的最大可堆叠数量，通常是64。<br>§lhasTag§r：是否有附加的NBT标签。
+ie.manual.entry.computer.general4=§lFluid stacks§r（流体堆）：这个类型代表了一定数量的流体。一般，该table中包含下列键：<br>§lname§r：该液体未经本地化的名字<br>§lamount§r：流体数量，以毫桶（milibuckets，mB）为单位<br>§lhasTag§r：是否有附加的NBT标签。
+ie.manual.entry.computer.general5=§lFluid tanks§r（流体储罐）和FluidStack类似，区别在于流体此时是储存在容器中的。因此，此table中除了包含所有FluidStack的键外，还包含有额外的键§lcapacity§r，用于表示此储罐的容积上限。
 
 ie.manual.entry.computer.arcfurnace.name=电弧炉 ☎
 ie.manual.entry.computer.arcfurnace.subtext=不是反应堆
@@ -1517,7 +1517,7 @@ ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r：返回电弧�
 
 ie.manual.entry.computer.bottlingMachine.name=灌装机 ☎
 ie.manual.entry.computer.bottlingMachine.subtext=装满它！
-ie.manual.entry.computer.bottlingmachine0=§lisActive()§r: returns a boolean that is true if the bottling machine is currently processing something and false otherwise<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this machine<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this machine
+ie.manual.entry.computer.bottlingmachine0=§lisActive()§r：灌装机工作时返回true，否则返回false。<br>§lgetMaxEnergyStored()§r：返回灌装机可储存的最大能量数量<br>§lgetEnergyStored()§r：返回灌装机储存的能量数量
 ie.manual.entry.computer.bottlingmachine1=§lgetTank()§r：返回流体储罐信息。
 
 
