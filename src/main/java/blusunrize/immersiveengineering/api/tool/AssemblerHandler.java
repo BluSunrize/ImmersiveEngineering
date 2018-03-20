@@ -14,7 +14,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ import java.util.function.Function;
 public class AssemblerHandler
 {
 	private static final HashMap<Class<? extends IRecipe>, IRecipeAdapter> registry = new LinkedHashMap<Class<? extends IRecipe>, IRecipeAdapter>();
-	private static final List<Function<Object,RecipeQuery>> specialQueryConverters = new ArrayList<>();
+	private static final List<Function<Object, RecipeQuery>> specialQueryConverters = new ArrayList<>();
 
 	public static void registerRecipeAdapter(Class<? extends IRecipe> recipeClass, IRecipeAdapter adapter)
 	{
@@ -38,7 +37,7 @@ public class AssemblerHandler
 	public static IRecipeAdapter findAdapterForClass(Class<? extends IRecipe> recipeClass)
 	{
 		IRecipeAdapter adapter = registry.get(recipeClass);
-		if(adapter == null && recipeClass != IRecipe.class && recipeClass.getSuperclass()!=Object.class)
+		if(adapter==null&&recipeClass!=IRecipe.class&&recipeClass.getSuperclass()!=Object.class)
 		{
 			adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
 			registry.put(recipeClass, adapter);
@@ -51,7 +50,7 @@ public class AssemblerHandler
 		return findAdapterForClass(recipe.getClass());
 	}
 
-	public static void registerSpecialQueryConverters(Function<Object,RecipeQuery> func)
+	public static void registerSpecialQueryConverters(Function<Object, RecipeQuery> func)
 	{
 		specialQueryConverters.add(func);
 	}
@@ -59,6 +58,7 @@ public class AssemblerHandler
 	public interface IRecipeAdapter<R extends IRecipe>
 	{
 		RecipeQuery[] getQueriedInputs(R recipe);
+
 		default RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input)
 		{
 			return getQueriedInputs(recipe);
@@ -67,31 +67,35 @@ public class AssemblerHandler
 
 	public static RecipeQuery createQuery(Object o)
 	{
-		if(o == null)
+		if(o==null)
 			return null;
-		for(Function<Object,RecipeQuery> func : specialQueryConverters)
+		for(Function<Object, RecipeQuery> func : specialQueryConverters)
 		{
 			RecipeQuery q = func.apply(o);
 			if(q!=null)
 				return q;
 		}
 		if(o instanceof ItemStack)
-		{
-			ItemStack stack = (ItemStack)o;
-			if(stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) && FluidUtil.getFluidContained(stack)!=null)
-				return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.getCount());
-			else
-				return new RecipeQuery(stack, stack.getCount());
-		} else if(o instanceof Ingredient)
+			return createQueryFromItemStack((ItemStack)o);
+		else if(o instanceof Ingredient)
 		{
 			ItemStack[] stacks = ((Ingredient)o).getMatchingStacks();
-			if(stacks.length<=0)
+			if(stacks.length <= 0)
 				return null;
+			if(stacks.length==1)
+				return createQueryFromItemStack(stacks[0]);
 			return new RecipeQuery(stacks, 1);
 		}
 		else if(o instanceof IngredientStack)
 			return new RecipeQuery(o, ((IngredientStack)o).inputSize);
 		return new RecipeQuery(o, 1);
+	}
+
+	public static RecipeQuery createQueryFromItemStack(ItemStack stack)
+	{
+		if(FluidUtil.getFluidContained(stack)!=null)
+			return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.getCount());
+		return new RecipeQuery(stack, stack.getCount());
 	}
 
 	public static class RecipeQuery
