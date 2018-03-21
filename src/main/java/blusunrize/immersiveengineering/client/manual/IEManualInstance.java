@@ -52,14 +52,14 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatText(String s)
 	{
-		if(!s.contains(" "))//if it contains spaces, it's probably already translated.
-		{
-			s = ManualUtils.attemptStringTranslation("ie.manual.entry.%s",s);
+//		if(!s.contains(" "))//if it contains spaces, it's probably already translated.
+//		{
+//			s = ManualUtils.attemptStringTranslation("ie.manual.entry.%s",s);
 //			String translKey =  + s;
 //			String translated = I18n.format(translKey);
 //			if(!translKey.equals(translated))
 //				s = translated;
-		}
+//		}
 		String splitKey = ";";
 
 		s = s.replaceAll("<br>", "\n");
@@ -70,58 +70,7 @@ public class IEManualInstance extends ManualInstance
 			overflow++;
 			int end = s.indexOf(">", start);
 			String rep = s.substring(start, end+1);
-			String[] segment = rep.substring(0,rep.length()-1).split(splitKey);
-			if(segment.length<3)
-				break;
-			String result = "";
-			if(segment[1].equalsIgnoreCase("b"))
-			{
-				if(segment.length>3)
-					result = (Config.manual_bool.get(segment[2])?segment[3]: segment.length>4?segment[4]:"");
-				else
-					result = ""+ Config.manual_bool.get(segment[2]);
-			}
-			else if(segment[1].equalsIgnoreCase("i"))
-				result = ""+ Config.manual_int.get(segment[2]);
-			else if(segment[1].equalsIgnoreCase("iA"))
-			{
-				int[] iA = Config.manual_intA.get(segment[2]);
-				if(segment.length>3)
-					try{
-						if(segment[3].startsWith("l"))
-						{
-							int limiter = Integer.parseInt(segment[3].substring(1));
-							for(int i=0; i<limiter; i++)
-								result += (i>0?", ":"")+iA[i];
-						}
-						else
-						{
-							int idx = Integer.parseInt(segment[3]);
-							result = ""+iA[idx];
-						}
-					}catch(Exception ex){
-						break;
-					}
-				else
-					for(int i=0; i<iA.length; i++)
-						result += (i>0?", ":"")+iA[i];
-			}
-			else if(segment[1].equalsIgnoreCase("d"))
-				result = ""+ Config.manual_double.get(segment[2]);
-			else if(segment[1].equalsIgnoreCase("dA"))
-			{
-				double[] iD = Config.manual_doubleA.get(segment[2]);
-				if(segment.length>3)
-					try{
-						int idx = Integer.parseInt(segment[3]);
-						result = ""+Utils.formatDouble(iD[idx], "##0.0##");
-					}catch(Exception ex){
-						break;
-					}
-				else
-					for(int i=0; i<iD.length; i++)
-						result += (i>0?", ":"")+Utils.formatDouble(iD[i], "##0.0##");
-			}
+			String result = formatConfigEntry(rep, splitKey);
 
 			s = s.replaceFirst(rep, result);
 		}
@@ -282,7 +231,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatEntrySubtext(String s)
 	{
-		String unformatted = "ie.manual.entry." + s + ".subtext";
+		String unformatted = "ie.manual.entry." + s + ".subtext";//TODO make this work with the new system
 		String formatted = I18n.format(unformatted);
 		return unformatted.equals(formatted) ? "" : formatted;
 	}
@@ -347,5 +296,71 @@ public class IEManualInstance extends ManualInstance
 	public boolean improveReadability()
 	{
 		return IEConfig.badEyesight;
+	}
+	
+	public String formatConfigEntry(String rep, String splitKey)
+	{
+		String[] segment = rep.substring(0,rep.length()-1).split(splitKey);
+		if(segment.length<3)
+			return "~ERROR0~";
+		if(segment[1].equalsIgnoreCase("b"))
+		{
+			if(segment.length>3)
+				return (Config.manual_bool.get(segment[2])?segment[3]: segment.length>4?segment[4]:"");
+			else
+				return ""+ Config.manual_bool.get(segment[2]);
+		}
+		else if(segment[1].equalsIgnoreCase("i"))
+			return ""+ Config.manual_int.get(segment[2]);
+		else if(segment[1].equalsIgnoreCase("iA"))
+		{
+			int[] iA = Config.manual_intA.get(segment[2]);
+			if(segment.length>3)
+				try{
+					if(segment[3].startsWith("l"))
+					{
+						int limiter = Integer.parseInt(segment[3].substring(1));
+						StringBuilder result = new StringBuilder();
+						for(int i=0; i<limiter; i++)
+							result.append(i > 0 ? ", " : "").append(iA[i]);
+						return result.toString();
+					}
+					else
+					{
+						int idx = Integer.parseInt(segment[3]);
+						return ""+iA[idx];
+					}
+				}catch(Exception ex){
+					return "~ERROR1~";
+				}
+			else
+			{
+				StringBuilder result = new StringBuilder();
+				for(int i=0; i<iA.length; i++)
+					result.append(i > 0 ? ", " : "").append(iA[i]);
+				return result.toString();
+			}
+		}
+		else if(segment[1].equalsIgnoreCase("d"))
+			return ""+ Config.manual_double.get(segment[2]);
+		else if(segment[1].equalsIgnoreCase("dA"))
+		{
+			double[] iD = Config.manual_doubleA.get(segment[2]);
+			if(segment.length>3)
+				try{
+					int idx = Integer.parseInt(segment[3]);
+					return ""+Utils.formatDouble(iD[idx], "##0.0##");
+				}catch(Exception ex){
+					return "~ERROR2~";
+				}
+			else
+			{
+				StringBuilder result = new StringBuilder();
+				for(int i=0; i<iD.length; i++)
+					result.append(i > 0 ? ", " : "").append(Utils.formatDouble(iD[i], "##0.0##"));
+				return result.toString();
+			}
+		}
+		return "~ERROR3~";
 	}
 }

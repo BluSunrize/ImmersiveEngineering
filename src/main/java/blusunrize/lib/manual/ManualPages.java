@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -32,24 +33,24 @@ import java.util.*;
 public abstract class ManualPages implements IManualPage
 {
 	protected ManualInstance manual;
-	protected String text;
-	protected String localizedText;
+	private TextSplitter text;
+	private int pageId;
+	protected String[] lines = null;
 	protected List<ItemStack> providedItems;
 
 	protected ItemStack highlighted = ItemStack.EMPTY;
 
-	public ManualPages(ManualInstance manual, String text)
+	public ManualPages(ManualInstance manual, TextSplitter text, int pageId)
 	{
 		this.manual = manual;
 		this.text = text;
+		this.pageId = pageId;
 	}
 
 	@Override
 	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
 		highlighted = ItemStack.EMPTY;
-		if(text!=null&&!text.isEmpty())
-		{
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(true);
 			this.localizedText = manual.formatText(text);
@@ -57,7 +58,6 @@ public abstract class ManualPages implements IManualPage
 			if(this.localizedText==null)
 				this.localizedText = "";
 			manual.fontRenderer.setUnicodeFlag(uni);
-		}
 	}
 
 	@Override
@@ -209,6 +209,15 @@ public abstract class ManualPages implements IManualPage
 		{
 			return false;
 		}
+
+		@Override
+		public int getMaxLines()
+		{
+			int yOff = 0;
+			for (int i = 0; i < resources.length; i++)
+				yOff += sizing[i][3]+5;
+			return super.getMaxLines()-MathHelper.ceil(yOff/(double)manual.fontRenderer.FONT_HEIGHT);
+		}
 	}
 
 	public static class Table extends ManualPages
@@ -219,6 +228,8 @@ public abstract class ManualPages implements IManualPage
 		int[] bars;
 		//		int[] barsH;
 		boolean horizontalBars = false;
+		int tableLines;
+		private int[] textOff;
 
 		public Table(ManualInstance manual, String text, String[][] table, boolean horizontalBars)
 		{
@@ -261,6 +272,29 @@ public abstract class ManualPages implements IManualPage
 								bars[j] = fl;
 						}
 					}
+					textOff = new int[bars!=null?bars.length: 0];
+					if(bars!=null)
+					{
+						int xx = x;
+						for(int i = 0; i < bars.length; i++)
+						{
+							xx += bars[i]+8;
+							textOff[i] = xx;
+						}
+					}
+
+					int yOff = 0;
+					for(int i = 0; i < localizedTable.length; i++)
+						if(localizedTable[i]!=null)
+							for(int j = 0; j < localizedTable[i].length; j++)
+								if(localizedTable[i][j]!=null)
+								{
+									int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
+									l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
+									if (j!=0)
+										yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
+								}
+					tableLines = MathHelper.ceil(yOff/(double)manual.fontRenderer.FONT_HEIGHT);
 				}
 			} catch(Exception e)
 			{
@@ -280,22 +314,6 @@ public abstract class ManualPages implements IManualPage
 			{
 				int col = manual.getHighlightColour()|0xff000000;
 				gui.drawGradientRect(x, y+textHeight-2, x+120, y+textHeight-1, col, col);
-				int[] textOff = new int[bars!=null?bars.length: 0];
-
-				//				gui.drawGradientRect(x,y+textHeight+yOff-2,x+120,y+textHeight+yOff-1,  manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
-				if(bars!=null)
-				{
-					int xx = x;
-					for(int i = 0; i < bars.length; i++)
-					{
-						xx += bars[i]+4;
-
-						//						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+yOff, col,col);
-						//						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+(manual.fontRenderer.FONT_HEIGHT+1)*localizedTable.length, col,col);
-						xx += 4;
-						textOff[i] = xx;
-					}
-				}
 
 				int yOff = 0;
 				for(int i = 0; i < localizedTable.length; i++)
@@ -303,19 +321,18 @@ public abstract class ManualPages implements IManualPage
 						for(int j = 0; j < localizedTable[i].length; j++)
 							if(localizedTable[i][j]!=null)
 							{
-								int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
-								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
+								int xx = textOff.length > 0&&j > 0? textOff[j-1]: x;
+								int w = Math.max(10, 120-(j > 0? textOff[j-1]-x: 0));
+								int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
 								ManualUtils.drawSplitString(manual.fontRenderer, localizedTable[i][j], xx, y+textHeight+yOff, w, manual.getTextColour());
 								//							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
 								if(j!=0)
 								{
-									int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
-
 									if(horizontalBars)
 									{
 										float scale = .5f;
 										GL11.glScalef(1, scale, 1);
-										gui.drawGradientRect(x, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale), x+120, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale+1), manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
+										gui.drawGradientRect(x, (int)((y+textHeight+yOff+tableLines*manual.fontRenderer.FONT_HEIGHT)/scale), x+120, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale+1), manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
 										GL11.glScalef(1, 1/scale, 1);
 									}
 
@@ -333,6 +350,12 @@ public abstract class ManualPages implements IManualPage
 		public boolean listForSearch(String searchTag)
 		{
 			return false;
+		}
+
+		@Override
+		public int getMaxLines()
+		{
+			return super.getMaxLines()-tableLines;
 		}
 	}
 
@@ -373,7 +396,7 @@ public abstract class ManualPages implements IManualPage
 				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0 > 0?1: 0);
 				float equalPerLine = length/(float)lines;
 				line1 = (int)Math.floor(equalPerLine);
-				line0 = (int)Math.ceil(equalPerLine);
+				line0 = MathHelper.ceil(equalPerLine);
 				lineSum = line0+line1;
 				yOffset = lines*(int)(18*scale);
 			}
@@ -397,7 +420,7 @@ public abstract class ManualPages implements IManualPage
 				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0 > 0?1: 0);
 				float equalPerLine = length/(float)lines;
 				line1 = (int)Math.floor(equalPerLine);
-				line0 = (int)Math.ceil(equalPerLine);
+				line0 = MathHelper.ceil(equalPerLine);
 				lineSum = line0+line1;
 				int lastLines = length%lineSum;
 				int lastLine = lastLines==line0?line0: lastLines==0?line1: lastLines%line0;
@@ -660,6 +683,17 @@ public abstract class ManualPages implements IManualPage
 			}
 			return false;
 		}
+
+		@Override
+		public int getMaxLines()
+		{
+			int yOff = 0;
+			for (int i = 0; i < this.yOff.length; i++)
+			{
+				yOff += this.yOff[i]+8;
+			}
+			return super.getMaxLines()-MathHelper.ceil(yOff/(int) manual.fontRenderer.FONT_HEIGHT);
+		}
 	}
 
 	public static class CraftingMulti extends ManualPages
@@ -869,6 +903,12 @@ public abstract class ManualPages implements IManualPage
 					}
 				}
 			return false;
+		}
+
+		@Override
+		public int getMaxLines()
+		{
+			return super.getMaxLines()-MathHelper.ceil(yOff/(double)manual.fontRenderer.FONT_HEIGHT);
 		}
 	}
 

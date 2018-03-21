@@ -73,6 +73,8 @@ import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
+import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.TextSplitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -676,23 +678,31 @@ public class ClientProxy extends CommonProxy
 				new ItemStack(IEContent.itemMaterial, 1, 23),
 				new ItemStack(IEContent.itemWireCoil, 1, 2)
 		};
-		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
-				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiring1", wires),
-				new ManualPages.Image(ManualHelper.getManual(), "wiring2", "immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"),
-				new ManualPages.Image(ManualHelper.getManual(), "wiring3", "immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"),
-				new ManualPages.Text(ManualHelper.getManual(), "wiring4"),
-				new ManualPages.Text(ManualHelper.getManual(), "wiring5"),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringConnector",
-						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_LV.getMeta()),
-						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_MV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta()),
-						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_HV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta())),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringCapacitor", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringTransformer0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER_HV.getMeta())),
-				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool,1,1)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)),
-				new ManualPageMultiblock(ManualHelper.getManual(), "wiringFeedthrough", MultiblockFeedthrough.instance));
+		TextSplitter splitter = new TextSplitter(ManualHelper.getManual(),
+				(s)->(s.startsWith("<config"))?
+						ManualHelper.getManual().formatConfigEntry(s, ";")
+						:s);
+		splitter.addSpecialPage(0, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s, wires));
+		splitter.addSpecialPage(1, 0, (s)->new ManualPages.Image(ManualHelper.getManual(), s,
+				"immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"));
+		splitter.addSpecialPage(1, 1, (s)->new ManualPages.Image(ManualHelper.getManual(), s,
+				"immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"));
+		splitter.addSpecialPage(2, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s,
+				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_LV.getMeta()),
+				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_MV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta()),
+				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_HV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta())
+		));
+		splitter.addSpecialPage(3, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s,
+				new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())
+		));
+		splitter.addSpecialPage(4, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s,
+				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER_HV.getMeta())
+		));
+		splitter.addSpecialPage(5, 0, (s)->new ManualPages.Crafting(ManualHelper.getManual(), s, new ItemStack(IEContent.itemTool,1,1)));
+		splitter.addSpecialPage(6, 0, (s)->new ManualPages.Crafting(ManualHelper.getManual(), s, new ItemStack(IEContent.itemTool,1,2)));
+		splitter.addSpecialPage(7, 0, (s)->new ManualPageMultiblock(ManualHelper.getManual(), s, MultiblockFeedthrough.instance));
+		ManualUtils.addManualEntryFromFile(ManualHelper.getManual(), ManualHelper.CAT_ENERGY, new ResourceLocation(ImmersiveEngineering.MODID, "wiring"), splitter);
+
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.DYNAMO.getMeta())),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator1", new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WATERMILL.getMeta()),new ItemStack(IEContent.itemMaterial,1,10)),

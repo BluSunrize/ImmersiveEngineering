@@ -310,6 +310,12 @@ public class ManualPageMultiblock extends ManualPages
 		return false;
 	}
 
+	@Override
+	public int getMaxLines()
+	{
+		return super.getMaxLines();//TODO
+	}
+
 	static class MultiblockBlockAccess implements IBlockAccess
 	{
 		private final MultiblockRenderInfo data;

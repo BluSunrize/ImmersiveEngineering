@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 
@@ -25,9 +26,9 @@ public class ManualHelper
 	public static String CAT_HEAVYMACHINES = "heavymachines";
 	public static String CAT_UPDATE = "update";
 	
-	public static ManualInstance ieManualInstance;
+	public static IEManualInstance ieManualInstance;
 
-	public static ManualInstance getManual()
+	public static IEManualInstance getManual()
 	{
 		return ieManualInstance;
 	}

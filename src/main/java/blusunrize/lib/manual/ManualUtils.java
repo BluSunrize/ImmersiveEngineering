@@ -8,6 +8,10 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -15,14 +19,19 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.io.IOUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.function.Function;
 
 public class ManualUtils
 {
@@ -190,5 +199,53 @@ public class ManualUtils
 	public static RenderItem renderItem()
 	{
 		return mc().getRenderItem();
+	}
+
+	public static void addManualEntryFromFile(ManualInstance manual, String category, ResourceLocation name, TextSplitter splitter)
+	{
+		ResourceLocation realLoc = new ResourceLocation(name.getResourceDomain(),
+				"manual/" + Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
+						+ "/" + name.getResourcePath()+".txt");
+		IResource res = getResourceNullable(realLoc);
+		if (res == null)
+			res = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
+					"manual/en_us/" + name.getResourcePath()+".txt"));
+		if (res==null)
+			return;
+		try
+		{
+			byte[] bytes = IOUtils.toByteArray(res.getInputStream());
+			String content = new String(bytes);
+			int titleEnd = content.indexOf('\n');
+			String title = content.substring(0, titleEnd);
+			content = content.substring(titleEnd+1);
+			int subtitleEnd = content.indexOf('\n');
+			String subTitle = content.substring(0, subtitleEnd);
+			content = content.substring(subtitleEnd+1);
+			IELogger.logger.info(title+" ("+subTitle+")");//TODO
+			boolean prev = manual.fontRenderer.getUnicodeFlag();
+			manual.fontRenderer.setUnicodeFlag(true);
+			manual.entryRenderPre();
+			splitter.split(content);
+			manual.entryRenderPost();
+			manual.fontRenderer.setUnicodeFlag(prev);
+			manual.addEntry(name.getResourceDomain(), category, splitter.toManualEntry());
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private static IResource getResourceNullable(ResourceLocation rl)
+	{
+		try
+		{
+			return Minecraft.getMinecraft().getResourceManager().getResource(rl);
+		}
+		catch (IOException e)
+		{
+			return null;
+		}
 	}
 }
