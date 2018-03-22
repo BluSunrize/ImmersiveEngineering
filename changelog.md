@@ -5,6 +5,7 @@
 - Fixed Villager trades for Shader bags being inverted (BluSunrize)
 - Fixed Multiblocks dropping themselves as illegal items (BluSunrize)
 - Fixed ugly high-rez textures on Engineering blocks when CTM isn't loaded (BluSunrize)
+- Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 
 #####Version 0.12-79 - BUILT
 - Added the ability for Wirecutters to cut wires from anywhere (Malte)
