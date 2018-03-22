@@ -1,0 +1,7 @@
+{
+	"parent":"immersiveengineering:item/ie_item_base",
+	"textures": {
+		"layer0":"immersiveengineering:items/bullet_potion",
+		"layer1":"immersiveengineering:items/bullet_potion_layer"
+	}
+}
