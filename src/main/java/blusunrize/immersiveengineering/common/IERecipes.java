@@ -12,7 +12,10 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
@@ -22,6 +25,7 @@ import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -39,6 +43,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class IERecipes
 {
@@ -72,19 +77,14 @@ public class IERecipes
 	public static void addShapelessOredictRecipe(String registryName, ItemStack output, Object... recipe)
 	{
 		ShapelessOreRecipe sor = new ShapelessOreRecipe(null, output, recipe);
-		if(registryName==null)
+		if (registryName == null)
 		{
-			registryName = ImmersiveEngineering.MODID+":";
-			if(output.getItem() instanceof ItemIEBase)
-				registryName += ((ItemIEBase)output.getItem()).itemName+"_"+((ItemIEBase)output.getItem()).getSubNames()[output.getMetadata()]+"*"+output.getCount();
-			else
-			{
-				int idx = output.getUnlocalizedName().lastIndexOf(":");
-				registryName += output.getUnlocalizedName().substring(idx < 0?0: idx)+"_"+output.getMetadata()+"*"+output.getCount();
-			}
+			registryName = ImmersiveEngineering.MODID + ":";
+			int idx = output.getUnlocalizedName().lastIndexOf(":");
+			registryName += output.getUnlocalizedName().substring(idx < 0 ? 0 : idx) + "_" + output.getMetadata() + "*" + output.getCount();
 		}
-		else if(!registryName.startsWith(ImmersiveEngineering.MODID))
-			registryName = ImmersiveEngineering.MODID+":"+registryName;
+		else if (!registryName.startsWith(ImmersiveEngineering.MODID))
+			registryName = ImmersiveEngineering.MODID + ":" + registryName;
 		ForgeRegistries.RECIPES.register(sor.setRegistryName(registryName));
 	}
 
@@ -93,59 +93,63 @@ public class IERecipes
 		//
 		//MATERIALS
 		//
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,8), "plateIron","plateIron","ingotCopper");
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,9), "plateSteel","plateSteel","ingotCopper");
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,3,26), "blockGlass","wireCopper","wireCopper","dustRedstone");
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial,1,27), new ItemStack(IEContent.blockStoneDecoration,1, BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()),"plateCopper","electronTube","electronTube");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEItems.componentIron), "plateIron","plateIron","ingotCopper");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEItems.componentSteel), "plateSteel","plateSteel","ingotCopper");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEItems.electronTube,3), "blockGlass","wireCopper","wireCopper","dustRedstone");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEItems.circuitBoard), new ItemStack(IEContent.blockStoneDecoration,1, BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()),"plateCopper","electronTube","electronTube");
 
 		//
 		//MOLDS
 		//
-		for(int i=0; i<IEContent.itemMold.getSubNames().length; i++)
-			if(!IEContent.itemMold.isMetaHidden(i))
-				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(IEContent.itemMold,1,i), "plateSteel","plateSteel","plateSteel","plateSteel","plateSteel",new ItemStack(IEContent.itemTool, 1, 1));
+		List<ItemIEBase> molds = ImmutableList.of(IEItems.moldBulletCasing, IEItems.moldGear, IEItems.moldPacking4,
+				IEItems.moldPacking9, IEItems.moldPlate, IEItems.moldRod, IEItems.moldUnpacking,
+				IEItems.moldWire);
+		for(ItemIEBase mold:molds)
+			if(!mold.isHidden())
+				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(mold), "plateSteel","plateSteel","plateSteel","plateSteel","plateSteel",
+						new ItemStack(IEItems.wirecutter));
 
 		//
 		//BULLETS
 		//
 		//Casull
 		ItemStack bullet = BulletHandler.getBulletStack("casull");
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead");
 		//Piercing
 		bullet = BulletHandler.getBulletStack("armorPiercing");
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetSteel", "nuggetSteel", "nuggetConstantan", "nuggetConstantan");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, "nuggetSteel", "nuggetSteel", "nuggetConstantan", "nuggetConstantan");
 		if(ApiUtils.isExistingOreName("nuggetTungsten"))
-			BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetTungsten", "nuggetTungsten");
+			BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, "nuggetTungsten", "nuggetTungsten");
 		// We don't have depleted stuff atm
 		//		if(ApiUtils.isExistingOreName("nuggetCyanite"))
-		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetCyanite","nuggetCyanite");
+		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEItems.bullet,1,3), new ItemStack(IEItems.bullet,1,0),Items.gunpowder,"nuggetCyanite","nuggetCyanite");
 		//		else if(ApiUtils.isExistingOreName("ingotCyanite"))
-		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,3,3), new ItemStack(IEContent.itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
+		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEItems.bullet,3,3), new ItemStack(IEItems.bullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
 		//Silver
 		bullet = BulletHandler.getBulletStack("silver");
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead", "nuggetSilver");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead", "nuggetSilver");
 		//Buckshot
 		bullet = BulletHandler.getBulletStack("buckshot");
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustIron");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEItems.bullet, 1, 1), Items.GUNPOWDER, "dustIron");
 		//HE
 		bullet = BulletHandler.getBulletStack("HE");
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Blocks.TNT);
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, Blocks.TNT);
 		//Dragonsbreath
 		bullet = BulletHandler.getBulletStack("dragonsbreath");
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dustAluminum");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEItems.bullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dustAluminum");
 		//Potion
 		bullet = BulletHandler.getBulletStack("potion");
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Items.GLASS_BOTTLE);
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, Items.GLASS_BOTTLE);
 		ForgeRegistries.RECIPES.register(new RecipePotionBullets().setRegistryName(ImmersiveEngineering.MODID, "bullet_potion"));
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 		//Flare
 		bullet = BulletHandler.getBulletStack("flare");
 		ItemNBTHelper.setInt(bullet, "flareColour", 0xcc2e06);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeRed");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEItems.bullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeRed");
 		ItemNBTHelper.setInt(bullet, "flareColour", 0x2ca30b);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeGreen");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEItems.bullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeGreen");
 		ItemNBTHelper.setInt(bullet, "flareColour", 0xffff82);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEItems.bullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
 		ForgeRegistries.RECIPES.register(new RecipeFlareBullets().setRegistryName(ImmersiveEngineering.MODID, "potion_flare"));
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":flareBullet", RecipeFlareBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 
@@ -156,45 +160,45 @@ public class IERecipes
 			ArrayList<ItemStack> homingCartridges = new ArrayList();
 			for(String s : BulletHandler.homingCartridges)
 				homingCartridges.add(BulletHandler.getBulletStack(s));
-			BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, homingCartridges, homingCartridges, homingCartridges, homingCartridges);
+			BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEItems.bullet, 1, 1), Items.GUNPOWDER, homingCartridges, homingCartridges, homingCartridges, homingCartridges);
 		}
 
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.EMERALD,1,2));
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.EMERALD,1,7));
 
-		BlueprintCraftingRecipe.addRecipe("electrode", new ItemStack(IEContent.itemGraphiteElectrode), "ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite");
+		BlueprintCraftingRecipe.addRecipe("electrode", new ItemStack(IEItems.graphiteElectrode), "ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite");
 		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.EMERALD,1,18));
 	}
 
 	public static void initFurnaceRecipes()
 	{
 		//Ores
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,0), new ItemStack(IEContent.itemMetal,1,0), 0.3f);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,1), new ItemStack(IEContent.itemMetal,1,1), 0.3F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,2), new ItemStack(IEContent.itemMetal,1,2), 0.7F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,3), new ItemStack(IEContent.itemMetal,1,3), 1.0F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,4), new ItemStack(IEContent.itemMetal,1,4), 1.0F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,5), new ItemStack(IEContent.itemMetal,1,5), 1.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,0), new ItemStack(IEItems.ingotCopper), 0.3f);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,1), new ItemStack(IEItems.ingotAluminum), 0.3F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,2), new ItemStack(IEItems.ingotLead), 0.7F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,3), new ItemStack(IEItems.ingotSilver), 1.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,4), new ItemStack(IEItems.ingotNickel), 1.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre,1,5), new ItemStack(IEItems.ingotUranium), 1.0F);
 		//Dusts
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,9), new ItemStack(IEContent.itemMetal,1,0), 0.3F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,10), new ItemStack(IEContent.itemMetal,1,1), 0.3F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,11), new ItemStack(IEContent.itemMetal,1,2), 0.7F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,12), new ItemStack(IEContent.itemMetal,1,3), 0.7F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,13), new ItemStack(IEContent.itemMetal,1,4), 1F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,14), new ItemStack(IEContent.itemMetal,1,5), 0.7F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,15), new ItemStack(IEContent.itemMetal,1,6), 0.7F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,16), new ItemStack(IEContent.itemMetal,1,7), 1F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,17), new ItemStack(IEContent.itemMetal,1,8), 0.7F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,18), new ItemStack(Items.IRON_INGOT), 0.7F);
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal,1,19), new ItemStack(Items.GOLD_INGOT), 1.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustCopper), new ItemStack(IEItems.ingotCopper), 0.3F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustAluminum), new ItemStack(IEItems.ingotAluminum), 0.3F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustLead), new ItemStack(IEItems.ingotLead), 0.7F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustSilver), new ItemStack(IEItems.ingotSilver), 0.7F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustNickel), new ItemStack(IEItems.ingotNickel), 1F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustUranium), new ItemStack(IEItems.ingotUranium), 0.7F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.ingotConstantan), new ItemStack(IEItems.ingotConstantan), 0.7F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.ingotElectrum), new ItemStack(IEItems.ingotElectrum), 1F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustSteel), new ItemStack(IEItems.ingotSteel), 0.7F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustIron), new ItemStack(Items.IRON_INGOT), 0.7F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustGold), new ItemStack(Items.GOLD_INGOT), 1.0F);
 
-		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMaterial,1,18), new ItemStack(IEContent.itemMaterial,1,19), 0.5F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEItems.dustHopGraphite), new ItemStack(IEItems.ingotHopGraphite), 0.5F);
 	}
 
 	public static void initBlastFurnaceRecipes()
 	{
-		BlastFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,8), "ingotIron", 1200, new ItemStack(IEContent.itemMaterial,1,7));
-		BlastFurnaceRecipe.addRecipe(new ItemStack(IEContent.blockStorage,1,8), "blockIron", 1200*9, new ItemStack(IEContent.itemMaterial,9,7));
+		BlastFurnaceRecipe.addRecipe(new ItemStack(IEItems.ingotSteel), "ingotIron", 1200, new ItemStack(IEItems.slag));
+		BlastFurnaceRecipe.addRecipe(new ItemStack(IEContent.blockStorage,1,8), "blockIron", 1200*9, new ItemStack(IEItems.slag, 9));
 
 		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 1200);
 		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 1200*10);
@@ -204,17 +208,17 @@ public class IERecipes
 
 	public static void initMetalPressRecipes()
 	{
-		MetalPressRecipe.addRecipe(new ItemStack(IEContent.itemBullet,2,0),"ingotCopper",new ItemStack(IEContent.itemMold,1,3), 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(IEItems.bullet,2,0),"ingotCopper",new ItemStack(IEItems.moldBulletCasing), 2400);
 
-		ItemStack shoddyElectrode = new ItemStack(IEContent.itemGraphiteElectrode);
+		ItemStack shoddyElectrode = new ItemStack(IEItems.graphiteElectrode);
 		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
-		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold,1,2), 4800).setInputSize(4);
+		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEItems.moldRod), 4800).setInputSize(4);
 
-		ComparableItemStack mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,5));
+		ComparableItemStack mold = ApiUtils.createComparableItemStack(new ItemStack(IEItems.moldPacking4));
 		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 2));
-		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,6));
+		mold = ApiUtils.createComparableItemStack(new ItemStack(IEItems.moldPacking9));
 		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 3));
-		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,7));
+		mold = ApiUtils.createComparableItemStack(new ItemStack(IEItems.moldUnpacking));
 		MetalPressRecipe.recipeList.put(mold, new MetalPressUnpackingRecipe(mold, 3200));
 	}
 
@@ -258,13 +262,13 @@ public class IERecipes
 		addCrusherRecipe(new ItemStack(Blocks.SAND), Blocks.GRAVEL, 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "itemSlag", 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "blockGlass", 3200);
-		addCrusherRecipe(new ItemStack(Blocks.SAND,2), "sandstone", 1600, new ItemStack(IEContent.itemMaterial,1,24),.5f);
+		addCrusherRecipe(new ItemStack(Blocks.SAND,2), "sandstone", 1600, new ItemStack(IEItems.dustSaltpeter),.5f);
 		addCrusherRecipe(new ItemStack(Items.QUARTZ,4), "blockQuartz", 3200);
 		addCrusherRecipe(new ItemStack(Items.GLOWSTONE_DUST,4), "glowstone", 3200);
-		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER,4), "rodBlaze", 3200, new ItemStack(IEContent.itemMaterial,1,25),.5f);
+		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER,4), "rodBlaze", 3200, new ItemStack(IEItems.dustSulfur),.5f);
 		addCrusherRecipe(new ItemStack(Items.DYE,6,15), Items.BONE, 3200);
-		addCrusherRecipe(new ItemStack(IEContent.itemMaterial,1,17), "fuelCoke", 2400);
-		addCrusherRecipe(new ItemStack(IEContent.itemMaterial, 9, 17), "blockFuelCoke", 4800);
+		addCrusherRecipe(new ItemStack(IEItems.dustCoke), "fuelCoke", 2400);
+		addCrusherRecipe(new ItemStack(IEItems.dustCoke, 9), "blockFuelCoke", 4800);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.COAL), 2400);
 		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.OBSIDIAN, 6000);
 		for(int i=0; i<16; i++)
@@ -277,10 +281,10 @@ public class IERecipes
 	public static void postInitOreDictRecipes()
 	{
 		boolean allowHammerCrushing = !IEConfig.Tools.disableHammerCrushing;
-		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,0));
-		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,1));
-		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,2));
-		ComparableItemStack compMoldWire = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,4));
+		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(IEItems.moldPlate));
+		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(IEItems.moldGear));
+		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(IEItems.moldRod));
+		ComparableItemStack compMoldWire = ApiUtils.createComparableItemStack(new ItemStack(IEItems.moldWire));
 
 		for(String name : OreDictionary.getOreNames())
 			if(ApiUtils.isExistingOreName(name))
@@ -300,7 +304,7 @@ public class IERecipes
 								out = Utils.copyStackWithAmount(preferredDust, 2);
 								if(allowHammerCrushing)
 								{
-									addShapelessOredictRecipe("hammercrushing_"+ore, preferredDust, name,new ItemStack(IEContent.itemTool));
+									addShapelessOredictRecipe("hammercrushing_"+ore, preferredDust, name,new ItemStack(IEItems.hammer));
 									hammerCrushingList.add(ore);
 								}
 							}
@@ -352,7 +356,7 @@ public class IERecipes
 				}
 				else if(name.startsWith("gear"))
 				{
-					IEContent.itemMold.setMetaUnhidden(1);
+					IEItems.moldGear.setHidden(false);
 					String ore = name.substring("gear".length());
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 						MetalPressRecipe.addRecipe(IEApi.getPreferredOreStack(name), "ingot"+ore, compMoldGear, 2400).setInputSize(4);
@@ -436,8 +440,8 @@ public class IERecipes
 	public static void initAlloySmeltingRecipes()
 	{
 		//IE Alloys
-		addAlloyingRecipe(new ItemStack(IEContent.itemMetal,2,6), "Copper",1,"Nickel",1, 200);
-		addAlloyingRecipe(new ItemStack(IEContent.itemMetal,2,7), "Gold",1,"Silver",1, 200);
+		addAlloyingRecipe(new ItemStack(IEItems.ingotConstantan), "Copper",1,"Nickel",1, 200);
+		addAlloyingRecipe(new ItemStack(IEItems.ingotElectrum), "Gold",1,"Silver",1, 200);
 		//Common Alloys
 		addOreDictAlloyingRecipe("ingotInvar",3, "Iron",2, "Nickel",1, 200);
 		addOreDictAlloyingRecipe("ingotBronze",4, "Copper",3, "Tin",1, 200);
@@ -476,22 +480,22 @@ public class IERecipes
 	public static void initArcSmeltingRecipes()
 	{
 		//Steel
-		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,8), "ingotIron", new ItemStack(IEContent.itemMaterial,1,7), 400,512, "dustCoke");
-		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,8), "dustIron", new ItemStack(IEContent.itemMaterial,1,7), 400,512, "dustCoke");
+		ArcFurnaceRecipe.addRecipe(new ItemStack(IEItems.ingotSteel), "ingotIron", new ItemStack(IEItems.slag), 400,512, "dustCoke");
+		ArcFurnaceRecipe.addRecipe(new ItemStack(IEItems.ingotSteel), "dustIron", new ItemStack(IEItems.slag), 400,512, "dustCoke");
 		//Vanilla+IE Ores
 		arcOutputModifier.put("Iron", new ItemStack(Items.IRON_INGOT,2));
 		arcOutputModifier.put("Gold", new ItemStack(Items.GOLD_INGOT,2));
-		arcOutputModifier.put("Copper", new ItemStack(IEContent.itemMetal,2,0));
-		arcOutputModifier.put("Aluminum", new ItemStack(IEContent.itemMetal,2,1));
-		arcOutputModifier.put("Aluminium", new ItemStack(IEContent.itemMetal,2,1));
-		arcOutputModifier.put("Lead", new ItemStack(IEContent.itemMetal,2,2));
-		arcOutputModifier.put("Silver", new ItemStack(IEContent.itemMetal,2,3));
-		arcOutputModifier.put("Nickel", new ItemStack(IEContent.itemMetal,2,4));
+		arcOutputModifier.put("Copper", new ItemStack(IEItems.ingotCopper,2));
+		arcOutputModifier.put("Aluminum", new ItemStack(IEItems.ingotAluminum,2));
+		arcOutputModifier.put("Aluminium", new ItemStack(IEItems.ingotAluminum,2));
+		arcOutputModifier.put("Lead", new ItemStack(IEItems.ingotLead,2));
+		arcOutputModifier.put("Silver", new ItemStack(IEItems.ingotSilver,2));
+		arcOutputModifier.put("Nickel", new ItemStack(IEItems.ingotNickel,2));
 		//IE Alloys
-		addOreDictArcAlloyingRecipe(new ItemStack(IEContent.itemMetal, 2, 6), "Copper", 100, 512, "dustNickel");
-		addOreDictArcAlloyingRecipe(new ItemStack(IEContent.itemMetal, 2, 6), "Nickel", 100, 512, "dustCopper");
-		addOreDictArcAlloyingRecipe(new ItemStack(IEContent.itemMetal, 2, 7), "Gold", 100, 512, "dustSilver");
-		addOreDictArcAlloyingRecipe(new ItemStack(IEContent.itemMetal, 2, 7), "Silver", 100, 512, "dustGold");
+		addOreDictArcAlloyingRecipe(new ItemStack(IEItems.ingotConstantan, 2), "Copper", 100, 512, "dustNickel");
+		addOreDictArcAlloyingRecipe(new ItemStack(IEItems.ingotConstantan, 2), "Nickel", 100, 512, "dustCopper");
+		addOreDictArcAlloyingRecipe(new ItemStack(IEItems.ingotElectrum, 2), "Gold", 100, 512, "dustSilver");
+		addOreDictArcAlloyingRecipe(new ItemStack(IEItems.ingotElectrum, 2), "Silver", 100, 512, "dustGold");
 		//Common Alloys
 		addOreDictArcAlloyingRecipe("ingotInvar",3, "Nickel", 200,512, "dustIron","dustIron");
 		addOreDictArcAlloyingRecipe("ingotBronze",4, "Tin", 200,512, "dustCopper","dustCopper","dustCopper");
@@ -500,8 +504,10 @@ public class IERecipes
 		addOreDictArcAlloyingRecipe("ingotRedAlloy",1, "Copper", 100,512, "dustRedstone","dustRedstone","dustRedstone","dustRedstone");
 
 		//Recycling
-		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE));
-		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemDrillhead,1,OreDictionary.WILDCARD_VALUE));
+		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEItems.drillheadIron));
+		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEItems.drillheadSteel));
+		for (WireType coil: WireType.getValues())
+			ArcFurnaceRecipe.allowItemForRecycling(coil.getWireCoil());
 
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration0,1,OreDictionary.WILDCARD_VALUE));
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration1,1,OreDictionary.WILDCARD_VALUE));
@@ -517,19 +523,19 @@ public class IERecipes
 	public static void addArcOreSmelting(ItemStack output, String ore)
 	{
 		if(ApiUtils.isExistingOreName("ore"+ore))
-			addArcRecipe(output, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,7)).setSpecialRecipeType("Ores");
+			addArcRecipe(output, "ore"+ore, 200,512, new ItemStack(IEItems.slag)).setSpecialRecipeType("Ores");
 		//		if(ApiUtils.isExistingOreName("oreNether"+ore))
-		//			addArcRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
+		//			addArcRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 200,512, new ItemStack(IEItems.material,1,13)).setSpecialRecipeType("Ores");
 
 		//YAY GregTech!
 		if(ApiUtils.isExistingOreName("oreNetherrack"+ore))
-			addArcRecipe(output, "oreNetherrack"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,7)).setSpecialRecipeType("Ores");
+			addArcRecipe(output, "oreNetherrack"+ore, 200,512, new ItemStack(IEItems.slag)).setSpecialRecipeType("Ores");
 		if(ApiUtils.isExistingOreName("oreEndstone"+ore))
-			addArcRecipe(output, "oreEndstone"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,7)).setSpecialRecipeType("Ores");
+			addArcRecipe(output, "oreEndstone"+ore, 200,512, new ItemStack(IEItems.slag)).setSpecialRecipeType("Ores");
 		if(ApiUtils.isExistingOreName("oreBlackgranite"+ore))
-			addArcRecipe(output, "oreBlackgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,7)).setSpecialRecipeType("Ores");
+			addArcRecipe(output, "oreBlackgranite"+ore, 200,512, new ItemStack(IEItems.slag)).setSpecialRecipeType("Ores");
 		if(ApiUtils.isExistingOreName("oreRedgranite"+ore))
-			addArcRecipe(output, "oreRedgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,7)).setSpecialRecipeType("Ores");
+			addArcRecipe(output, "oreRedgranite"+ore, 200,512, new ItemStack(IEItems.slag)).setSpecialRecipeType("Ores");
 	}
 	public static void addOreDictArcAlloyingRecipe(String outName, int outSize, String inputName, int time, int energyPerTick, Object... additives)
 	{

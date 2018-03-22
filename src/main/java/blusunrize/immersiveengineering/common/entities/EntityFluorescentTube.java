@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
@@ -137,7 +138,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	{
 		if (!isDead&&!world.isRemote)
 		{
-			ItemStack tube = new ItemStack(IEContent.itemFluorescentTube);
+			ItemStack tube = new ItemStack(IEItems.fluorescentTube);
 			ItemFluorescentTube.setRGB(tube, rgb);
 			EntityItem ent = new EntityItem(world, posX, posY, posZ, tube);
 			world.spawnEntity(ent);

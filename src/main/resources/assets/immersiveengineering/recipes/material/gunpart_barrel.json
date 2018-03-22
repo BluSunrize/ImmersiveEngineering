@@ -1,8 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:material",
-    "data": 14
+    "item": "immersiveengineering:gunpart_barrel"
   },
   "pattern": [
     "III"

@@ -1,7 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:toolupgrade",
+    "item": "immersiveengineering:toolupgrade_chemthrower_multitank",
     "data": 13
   },
   "pattern": [
@@ -14,8 +14,7 @@
       "data": 6
     },
     "T": {
-      "item": "immersiveengineering:toolupgrade",
-      "data": 3
+      "item": "immersiveengineering:toolupgrade_drill_capacity"
     },
     "C": {
       "item": "#componentSteel"

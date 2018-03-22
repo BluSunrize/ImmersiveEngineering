@@ -11,8 +11,7 @@
   ],
   "key": {
     "P": {
-      "item": "immersiveengineering:material",
-      "data": 11
+      "item": "immersiveengineering:windmill_blade"
     },
     "I": {
       "item": "#ingotIron"

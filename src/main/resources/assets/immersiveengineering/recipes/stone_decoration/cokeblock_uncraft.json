@@ -1,8 +1,7 @@
 {
   "type": "forge:ore_shapeless",
   "result": {
-    "item": "immersiveengineering:material",
-    "data": 6,
+    "item": "immersiveengineering:coal_coke",
     "count": 9
   },
   "ingredients": [

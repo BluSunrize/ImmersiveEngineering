@@ -14,7 +14,7 @@
       "item": "#ingotIron"
     },
     "W": {
-      "item": "immersiveengineering:wirecoil",
+      "item": "immersiveengineering:wirecoil_copper",
       "data": 0
     }
   }

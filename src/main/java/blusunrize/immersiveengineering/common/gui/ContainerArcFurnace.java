@@ -72,7 +72,7 @@ public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
 //					i=12;
 //					j=16;
 //				}
-//				else if(IEContent.itemGraphiteElectrode.equals(stack.getItem()))
+//				else if(IEItems.GraphiteElectrode.equals(stack.getItem()))
 //				{
 //					i=23;
 //					j=26;

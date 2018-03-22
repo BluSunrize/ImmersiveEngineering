@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -30,11 +31,11 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 //		if(Lib.BAUBLES && living instanceof EntityPlayer)
 //		{
 //			ItemStack belt = BaublesHelper.getBauble((EntityPlayer)living,3);
-//			if(belt!=null && belt.getItem().equals(IEContent.itemManeuverGear))
+//			if(belt!=null && belt.getItem().equals(IEItems.ManeuverGear))
 //			{
 //				GlStateManager.pushMatrix();
-//				ModelBiped model = IEContent.itemManeuverGear.getArmorModel((EntityPlayer)living, belt, 2, null);
-//				ClientUtils.bindTexture(IEContent.itemManeuverGear.getArmorTexture(belt, (EntityPlayer)living, 2, null));
+//				ModelBiped model = IEItems.ManeuverGear.getArmorModel((EntityPlayer)living, belt, 2, null);
+//				ClientUtils.bindTexture(IEItems.ManeuverGear.getArmorTexture(belt, (EntityPlayer)living, 2, null));
 //				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
 //				GlStateManager.popMatrix();
 //			}
@@ -46,12 +47,12 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 			if(!earmuffs.isEmpty())
 			{
 				GlStateManager.pushMatrix();
-				ModelBiped model = IEContent.itemEarmuffs.getArmorModel(living, earmuffs, EntityEquipmentSlot.HEAD, null);
-				ClientUtils.bindTexture(IEContent.itemEarmuffs.getArmorTexture(earmuffs, living, EntityEquipmentSlot.HEAD, "overlay"));
+				ModelBiped model = IEItems.earmuffs.getArmorModel(living, earmuffs, EntityEquipmentSlot.HEAD, null);
+				ClientUtils.bindTexture(IEItems.earmuffs.getArmorTexture(earmuffs, living, EntityEquipmentSlot.HEAD, "overlay"));
 				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
 				int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
 				GlStateManager.color((colour >> 16 & 255) / 255f, (colour >> 8 & 255) / 255f, (colour & 255) / 255f);
-				ClientUtils.bindTexture(IEContent.itemEarmuffs.getArmorTexture(earmuffs, living, EntityEquipmentSlot.HEAD, null));
+				ClientUtils.bindTexture(IEItems.earmuffs.getArmorTexture(earmuffs, living, EntityEquipmentSlot.HEAD, null));
 				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
 				GlStateManager.popMatrix();
 			}
@@ -63,8 +64,8 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 			if(!powerpack.isEmpty())
 			{
 				GlStateManager.pushMatrix();
-				ModelBiped model = IEContent.itemPowerpack.getArmorModel(living, powerpack, EntityEquipmentSlot.CHEST, null);
-				ClientUtils.bindTexture(IEContent.itemPowerpack.getArmorTexture(powerpack, living, EntityEquipmentSlot.CHEST, null));
+				ModelBiped model = IEItems.powerpack.getArmorModel(living, powerpack, EntityEquipmentSlot.CHEST, null);
+				ClientUtils.bindTexture(IEItems.powerpack.getArmorTexture(powerpack, living, EntityEquipmentSlot.CHEST, null));
 				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
 				GlStateManager.popMatrix();
 			}

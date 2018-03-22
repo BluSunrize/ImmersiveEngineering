@@ -24,9 +24,9 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 {
 	String upgradeType;
 
-	public ItemUpgradeableTool(String name, int stackSize, String upgradeType, String... subNames)
+	public ItemUpgradeableTool(String name, int stackSize, String upgradeType)
 	{
-		super(name, stackSize, subNames);
+		super(name, stackSize);
 		this.upgradeType=upgradeType;
 	}
 

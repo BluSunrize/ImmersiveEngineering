@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
@@ -68,7 +69,7 @@ public class ImmersiveModelRegistry
 			}
 		}
 
-		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", IEContent.itemCoresample.itemName), "inventory");
+		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", IEItems.coresample.itemName), "inventory");
 		event.getModelRegistry().putObject(mLoc, new ModelCoresample());
 		IConveyorBelt belt = ConveyorHandler.getConveyor(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), null);
 		ModelConveyor modelConveyor = new ModelConveyor(belt);
@@ -84,11 +85,7 @@ public class ImmersiveModelRegistry
 	{
 		if(stack.getItem() instanceof ItemIEBase)
 		{
-			ResourceLocation loc;
-			if(((ItemIEBase) stack.getItem()).getSubNames() != null && ((ItemIEBase) stack.getItem()).getSubNames().length > 0)
-				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName + "/" + ((ItemIEBase) stack.getItem()).getSubNames()[stack.getItemDamage()]);
-			else
-				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName);
+			ResourceLocation loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName);
 			itemModelReplacements.put(new ModelResourceLocation(loc, "inventory"), replacement);
 		}
 	}

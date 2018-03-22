@@ -18,8 +18,7 @@
       "item": "#paneGlass"
     },
     "P": {
-      "item": "immersiveengineering:material",
-      "data": 27
+      "item": "immersiveengineering:circuit_board"
     },
     "Q": {
       "item": "#gemQuartz"

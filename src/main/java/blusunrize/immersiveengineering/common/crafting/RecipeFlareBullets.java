@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -37,7 +38,7 @@ public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegi
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty() && IEItems.bullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -59,7 +60,7 @@ public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegi
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty() && IEItems.bullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 				{
 					bullet = stackInSlot;
 

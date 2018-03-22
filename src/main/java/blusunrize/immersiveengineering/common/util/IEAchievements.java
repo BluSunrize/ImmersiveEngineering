@@ -77,11 +77,11 @@
 //
 //	public static void init()
 //	{
-//		openManual = new AchievementIE("openManual", 0, 1, new ItemStack(IEContent.itemTool,1,3), null);
-//		craftHammer = new AchievementIE("craftHammer", 3, 2, IEContent.itemTool, openManual).setNormalCrafting();
-//		connectWire = new AchievementIE("connectWire", 0, -1, IEContent.itemWireCoil, openManual);
+//		openManual = new AchievementIE("openManual", 0, 1, new ItemStack(IEItems.Tool,1,3), null);
+//		craftHammer = new AchievementIE("craftHammer", 3, 2, IEItems.Tool, openManual).setNormalCrafting();
+//		connectWire = new AchievementIE("connectWire", 0, -1, IEItems.WireCoil, openManual);
 //		blastfurnace = new AchievementIE("blastfurnace", 2, 1, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE.getMeta()), craftHammer);
-//		makeSteel = new AchievementIE("makeSteel", 2, -1, new ItemStack(IEContent.itemMetal,1,8), blastfurnace);
+//		makeSteel = new AchievementIE("makeSteel", 2, -1, new ItemStack(IEItems.Metal,1,8), blastfurnace);
 //
 //		placeConveyor = new AchievementIE("placeConveyor", 1, 3, ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), openManual).setPlacement(new ItemStack(IEContent.blockConveyor));
 //		placeWindmill = new AchievementIE("placeWindmill", -1, 3, new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()), openManual).setPlacement(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()));
@@ -98,42 +98,42 @@
 //		mbExcavator = new AchievementIE("mbExcavator", 6, 1, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.EXCAVATOR.getMeta()), craftHammer).setSpecial();
 //		mbArcFurnace = new AchievementIE("mbArcFurnace", 6, 2, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()), craftHammer).setSpecial();
 //
-//		craftRevolver = new AchievementIE("craftRevolver", 3, -6, IEContent.itemRevolver, makeSteel).setNormalCrafting();
+//		craftRevolver = new AchievementIE("craftRevolver", 3, -6, IEItems.Revolver, makeSteel).setNormalCrafting();
 //		NonNullList<ItemStack> upgrades = NonNullList.withSize(20, ItemStack.EMPTY);
-//		upgrades.set(18, new ItemStack(IEContent.itemToolUpgrades,1,5));
-//		upgrades.set(19, new ItemStack(IEContent.itemToolUpgrades,1,6));
-//		ItemStack revolver = new ItemStack(IEContent.itemRevolver);
-//		((ItemRevolver)IEContent.itemRevolver).setContainedItems(revolver, upgrades);
-//		((ItemRevolver)IEContent.itemRevolver).recalculateUpgrades(revolver);
+//		upgrades.set(18, new ItemStack(IEItems.ToolUpgrades,1,5));
+//		upgrades.set(19, new ItemStack(IEItems.ToolUpgrades,1,6));
+//		ItemStack revolver = new ItemStack(IEItems.Revolver);
+//		((ItemRevolver)IEItems.Revolver).setContainedItems(revolver, upgrades);
+//		((ItemRevolver)IEItems.Revolver).recalculateUpgrades(revolver);
 //		upgradeRevolver = new AchievementIE("upgradeRevolver", 4, -6, revolver, craftRevolver);
 //		if(!BulletHandler.homingCartridges.isEmpty())
 //			craftWolfPack = new AchievementIE("craftWolfPack", 4, -7, BulletHandler.getBulletStack("wolfpack"), craftRevolver).setCheckNBT(true).setBlueprintCrafting().setSpecial();
 //
-//		ItemStack drill = new ItemStack(IEContent.itemDrill);
-//		((ItemDrill)IEContent.itemDrill).setHead(drill, new ItemStack(IEContent.itemDrillhead));
+//		ItemStack drill = new ItemStack(IEItems.Drill);
+//		((ItemDrill)IEItems.Drill).setHead(drill, new ItemStack(IEItems.Drillhead));
 //		craftDrill = new AchievementIE("craftDrill", 1, -6, drill, makeSteel).setNormalCrafting();
 //		upgrades = NonNullList.withSize(4, ItemStack.EMPTY);
-//		upgrades.set(0, new ItemStack(IEContent.itemDrillhead));
-//		upgrades.set(1, new ItemStack(IEContent.itemToolUpgrades,1,0));
-//		upgrades.set(2, new ItemStack(IEContent.itemToolUpgrades,1,1));
-//		upgrades.set(3, new ItemStack(IEContent.itemToolUpgrades,3,2));
+//		upgrades.set(0, new ItemStack(IEItems.Drillhead));
+//		upgrades.set(1, new ItemStack(IEItems.ToolUpgrades,1,0));
+//		upgrades.set(2, new ItemStack(IEItems.ToolUpgrades,1,1));
+//		upgrades.set(3, new ItemStack(IEItems.ToolUpgrades,3,2));
 //		ItemStack drill2 = drill.copy();
-//		((ItemDrill)IEContent.itemDrill).setContainedItems(drill2, upgrades);
-//		((ItemDrill)IEContent.itemDrill).recalculateUpgrades(drill2);
+//		((ItemDrill)IEItems.Drill).setContainedItems(drill2, upgrades);
+//		((ItemDrill)IEItems.Drill).recalculateUpgrades(drill2);
 //		upgradeDrill = new AchievementIE("upgradeDrill", 0, -6, drill2, craftDrill);
 //
-//		craftSkyhook = new AchievementIE("craftSkyhook", 1, -5, IEContent.itemSkyhook, makeSteel).setNormalCrafting();
-//		ItemStack hook = new ItemStack(IEContent.itemSkyhook);
+//		craftSkyhook = new AchievementIE("craftSkyhook", 1, -5, IEItems.Skyhook, makeSteel).setNormalCrafting();
+//		ItemStack hook = new ItemStack(IEItems.Skyhook);
 //		hook.addEnchantment(Enchantments.UNBREAKING, 1);
 //		//skyhookPro = new AchievementIE("skyhookPro", 0, -5, hook, craftSkyhook);
 //
 //
-//		craftChemthrower = new AchievementIE("craftChemthrower", 3, -5, IEContent.itemChemthrower, makeSteel).setNormalCrafting();
+//		craftChemthrower = new AchievementIE("craftChemthrower", 3, -5, IEItems.Chemthrower, makeSteel).setNormalCrafting();
 //
-//		craftRailgun = new AchievementIE("craftRailgun", 1, -7, IEContent.itemRailgun, makeSteel).setNormalCrafting();
+//		craftRailgun = new AchievementIE("craftRailgun", 1, -7, IEItems.Railgun, makeSteel).setNormalCrafting();
 //
-//		secret_birthdayParty = new AchievementIE("secret_birthdayParty", -4,-1, new ItemStack(IEContent.itemFakeIcons,1,0), null).setSpecial();
-//		secret_luckOfTheDraw = new AchievementIE("secret_luckOfTheDraw", -4, 1, new ItemStack(IEContent.itemFakeIcons,1,1), null).setSpecial();
+//		secret_birthdayParty = new AchievementIE("secret_birthdayParty", -4,-1, new ItemStack(IEItems.FakeIcons,1,0), null).setSpecial();
+//		secret_luckOfTheDraw = new AchievementIE("secret_luckOfTheDraw", -4, 1, new ItemStack(IEItems.FakeIcons,1,1), null).setSpecial();
 //
 //		ieAchievementPage = new AchievementPage(ImmersiveEngineering.MODNAME, AchievementIE.achievements.toArray(new Achievement[AchievementIE.achievements.size()]));
 //		AchievementPage.registerAchievementPage(ieAchievementPage);

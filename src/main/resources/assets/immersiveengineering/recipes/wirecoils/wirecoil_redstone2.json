@@ -2,7 +2,7 @@
   "type": "forge:ore_shaped",
   "group": "immersiveengineering:wirecoil_redstone",
   "result": {
-    "item": "immersiveengineering:wirecoil",
+    "item": "immersiveengineering:wirecoil_redstone",
     "data": 5,
     "count": 4
   },

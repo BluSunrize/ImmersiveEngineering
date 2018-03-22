@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -31,11 +32,11 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 			if(!stackInSlot.isEmpty())
 				if(stack.isEmpty())
 				{
-					if(IEContent.itemShaderBag.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "rarity"))
+					if(IEItems.shaderBag.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "rarity"))
 						stack = stackInSlot;
 					else
 						return false;
-//					if(IEContent.itemShader.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "shader_name"))
+//					if(IEItems.Shader.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "shader_name"))
 //						stack = stackInSlot;
 				}
 				else
@@ -52,7 +53,7 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				ItemStack output = new ItemStack(IEContent.itemShaderBag,IEContent.itemShaderBag.equals(stackInSlot.getItem())?2:1);
+				ItemStack output = new ItemStack(IEItems.shaderBag,IEItems.shaderBag.equals(stackInSlot.getItem())?2:1);
 				EnumRarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
 				if(next!=null)
 				{
@@ -73,7 +74,7 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemShaderBag,2);
+		return new ItemStack(IEItems.shaderBag,2);
 	}
 
     @Override

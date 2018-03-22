@@ -1,8 +1,7 @@
 {
   "type": "immersiveengineering:ingredient_shaped",
   "result": {
-    "item": "immersiveengineering:wirecoil",
-    "data": 7,
+    "item": "immersiveengineering:wirecoil_electrum_insulated",
     "count": 4
   },
   "pattern": [

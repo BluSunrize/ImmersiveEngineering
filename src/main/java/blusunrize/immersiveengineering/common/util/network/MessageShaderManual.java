@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
@@ -90,7 +91,7 @@ public class MessageShaderManual implements IMessage
 				EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(message.args[0]);
 				if(!player.capabilities.isCreativeMode)
 					ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(message.args[1]).replicationCost);
-				ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
+				ItemStack shaderStack = new ItemStack(IEItems.shader);
 				ItemNBTHelper.setString(shaderStack, "shader_name", message.args[1]);
 				EntityItem entityitem = player.dropItem(shaderStack, false);
 				if(entityitem != null)

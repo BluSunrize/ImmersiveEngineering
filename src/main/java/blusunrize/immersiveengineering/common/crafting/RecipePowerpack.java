@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -32,7 +33,7 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+				if(powerpack.isEmpty() && IEItems.powerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty() && isValidArmor(stackInSlot))
 					armor = stackInSlot;
@@ -53,7 +54,7 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+				if(powerpack.isEmpty() && IEItems.powerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty() && isValidArmor(stackInSlot))
 					armor = stackInSlot;
@@ -84,7 +85,7 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemPowerpack,1,0);
+		return new ItemStack(IEItems.powerpack,1,0);
 	}
 
 	@Override
@@ -104,7 +105,7 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 	{
 		if(!(stack.getItem() instanceof ItemArmor) || ((ItemArmor)stack.getItem()).armorType!=EntityEquipmentSlot.CHEST)
 			return false;
-		if (stack.getItem()==IEContent.itemPowerpack)
+		if (stack.getItem()==IEItems.powerpack)
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
 		for(String s : Config.IEConfig.Tools.powerpack_whitelist)

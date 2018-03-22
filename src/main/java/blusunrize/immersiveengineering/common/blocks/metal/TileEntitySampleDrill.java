@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -126,7 +127,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Nonnull
 	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, MineralWorldInfo info)
 	{
-		ItemStack stack = new ItemStack(IEContent.itemCoresample);
+		ItemStack stack = new ItemStack(IEItems.coresample);
 		ItemNBTHelper.setLong(stack, "timestamp", world.getTotalWorldTime());
 		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.provider.getDimension(), chunkX,chunkZ});
 		if(info.mineralOverride!=null)

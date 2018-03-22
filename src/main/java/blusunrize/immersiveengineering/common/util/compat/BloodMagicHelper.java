@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -32,7 +33,7 @@ public class BloodMagicHelper extends IECompatModule
 	{
 		Item crystal = Item.REGISTRY.getObject(new ResourceLocation("bloodmagic:item_demon_crystal"));
 		if(crystal != null)
-			BlueprintCraftingRecipe.addRecipe("specialBullet", BulletHandler.getBulletStack("crystalwill"), new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, crystal);
+			BlueprintCraftingRecipe.addRecipe("specialBullet", BulletHandler.getBulletStack("crystalwill"), new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, crystal);
 	}
 
 	@Override

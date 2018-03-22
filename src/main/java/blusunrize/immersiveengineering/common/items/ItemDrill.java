@@ -80,7 +80,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 
 	public ItemDrill()
 	{
-		super("drill", 1, "DRILL", "diesel");
+		super("drill", 1, "DRILL");
 	}
 	@Override
 	public int getSlotCount(ItemStack stack)

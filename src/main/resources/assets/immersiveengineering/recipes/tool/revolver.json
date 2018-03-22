@@ -14,19 +14,16 @@
       "item": "#ingotIron"
     },
     "B": {
-      "item": "immersiveengineering:material",
-      "data": 14
+      "item": "immersiveengineering:gunpart_barrel"
     },
     "D": {
-      "item": "immersiveengineering:material",
-      "data": 15
+      "item": "immersiveengineering:gunpart_drum"
     },
     "G": {
       "item": "#woodenGrip"
     },
     "H": {
-      "item": "immersiveengineering:material",
-      "data": 16
+      "item": "immersiveengineering:gunpart_hammer"
     }
   }
 }

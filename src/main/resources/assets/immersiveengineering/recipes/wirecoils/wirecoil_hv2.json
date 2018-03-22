@@ -2,8 +2,7 @@
   "type": "forge:ore_shaped",
   "group": "immersiveengineering:wirecoil_hv",
   "result": {
-    "item": "immersiveengineering:wirecoil",
-    "data": 2,
+    "item": "immersiveengineering:wirecoil_hv",
     "count": 4
   },
   "pattern": [

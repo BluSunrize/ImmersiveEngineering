@@ -43,18 +43,14 @@ import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
-import blusunrize.immersiveengineering.common.util.IEFluid;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
-import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.IEVillagerTrades;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,7 +75,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -107,6 +102,10 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import javax.annotation.Nullable;
 import java.util.*;
+
+import static blusunrize.immersiveengineering.api.IEItems.*;
+import static blusunrize.immersiveengineering.api.tool.ToolUpgrades.RAILGUN_CAPACITORS;
+import static blusunrize.immersiveengineering.api.tool.ToolUpgrades.REVOLVER_ELECTRO;
 
 @Mod.EventBusSubscriber
 public class IEContent
@@ -160,36 +159,6 @@ public class IEContent
 	public static BlockIEFluid blockFluidEthanol;
 	public static BlockIEFluid blockFluidBiodiesel;
 	public static BlockIEFluid blockFluidConcrete;
-
-	public static ItemIEBase itemMaterial;
-	public static ItemIEBase itemMetal;
-	public static ItemIEBase itemTool;
-	public static ItemIEBase itemToolbox;
-	public static ItemIEBase itemWireCoil;
-	public static ItemIEBase itemSeeds;
-	public static ItemIEBase itemDrill;
-	public static ItemIEBase itemDrillhead;
-	public static ItemIEBase itemJerrycan;
-	public static ItemIEBase itemMold;
-	public static ItemIEBase itemBlueprint;
-	public static ItemIEBase itemRevolver;
-	public static ItemIEBase itemSpeedloader;
-	public static ItemIEBase itemBullet;
-	public static ItemIEBase itemChemthrower;
-	public static ItemIEBase itemRailgun;
-	public static ItemIEBase itemSkyhook;
-	public static ItemIEBase itemToolUpgrades;
-	public static ItemIEBase itemShader;
-	public static ItemIEBase itemShaderBag;
-	public static Item itemEarmuffs;
-	public static ItemIEBase itemCoresample;
-	public static ItemIEBase itemGraphiteElectrode;
-	public static ItemFaradaySuit[] itemsFaradaySuit = new ItemFaradaySuit[4];
-	public static ItemIEBase itemFluorescentTube;
-	public static Item itemPowerpack;
-	public static ItemIEBase itemShield;
-
-	public static ItemIEBase itemFakeIcons;
 
 	//	public static BlockIEBase<BlockTypes_> blockClothDevice;
 	public static Fluid fluidCreosote;
@@ -277,51 +246,126 @@ public class IEContent
 		blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
 		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
 
-		itemMaterial = new ItemMaterial();
-		itemMetal = new ItemIEBase("metal", 64,
-				"ingot_copper", "ingot_aluminum", "ingot_lead", "ingot_silver", "ingot_nickel", "ingot_uranium", "ingot_constantan", "ingot_electrum", "ingot_steel",
-				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
-				"nugget_copper", "nugget_aluminum", "nugget_lead", "nugget_silver", "nugget_nickel", "nugget_uranium", "nugget_constantan", "nugget_electrum", "nugget_steel", "nugget_iron",
-				"plate_copper", "plate_aluminum", "plate_lead", "plate_silver", "plate_nickel", "plate_uranium", "plate_constantan", "plate_electrum", "plate_steel", "plate_iron", "plate_gold");
-		itemTool = new ItemIETool();
-		itemToolbox = new ItemToolbox();
-		itemWireCoil = new ItemWireCoil();
-		WireType.ieWireCoil = itemWireCoil;
-		itemSeeds = new ItemIESeed(blockCrop, "hemp");
+		stickTreated = new ItemMaterial("stick_treated");
+		stickIron = new ItemMaterial("stick_iron");
+		stickSteel = new ItemMaterial("stick_steel");
+		stickAluminum = new ItemMaterial("stick_aluminum");
+		hempFiber = new ItemMaterial("hemp_fiber");
+		hempFabric = new ItemMaterial("hemp_fabric");
+		coalCoke = new ItemMaterial("coal_coke").setBurnTime(3200);
+		slag = new ItemMaterial("slag");
+		componentIron = new ItemMaterial("component_iron");
+		componentSteel = new ItemMaterial("component_steel");
+		waterwheelSegment = new ItemMaterial("waterwheel_segment");
+		windmillBlade = new ItemMaterial("windmill_blade");
+		windmillSail = new ItemMaterial("windmill_sail");
+		woodenGrip = new ItemMaterial("wooden_grip");
+		gunpartBarrel = new ItemMaterial("gunpart_barrel");
+		gunpartDrum = new ItemMaterial("gunpart_drum");
+		gunpartHammer = new ItemMaterial("gunpart_hammer");
+		dustCoke = new ItemMaterial("dust_coke");
+		dustHopGraphite = new ItemMaterial("dust_hop_graphite");
+		ingotHopGraphite = new ItemMaterial("ingot_hop_graphite");
+		wireCopper = new ItemMaterial("wire_copper");
+		wireElectrum = new ItemMaterial("wire_electrum");
+		wireAluminum = new ItemMaterial("wire_aluminum");
+		wireSteel = new ItemMaterial("wire_steel");
+		dustSaltpeter = new ItemMaterial("dust_saltpeter");
+		dustSulfur = new ItemMaterial("dust_sulfur");
+		electronTube = new ItemMaterial("electron_tube");
+		circuitBoard = new ItemMaterial("circuit_board");
+		ingotCopper = new ItemIEBase("ingot_copper", 64, "");
+		ingotAluminum = new ItemIEBase("ingot_aluminum", 64, "");
+		ingotLead = new ItemIEBase("ingot_lead", 64, "");
+		ingotSilver = new ItemIEBase("ingot_silver", 64, "");
+		ingotNickel = new ItemIEBase("ingot_nickel", 64, "");
+		ingotUranium = new ItemIEBase("ingot_uranium", 64, "");
+		ingotConstantan = new ItemIEBase("ingot_constantan", 64, "");
+		ingotElectrum = new ItemIEBase("ingot_electrum", 64, "");
+		ingotSteel = new ItemIEBase("ingot_steel", 64, "");
+		dustCopper = new ItemIEBase("dust_copper", 64, "");
+		dustAluminum = new ItemIEBase("dust_aluminum", 64, "");
+		dustLead = new ItemIEBase("dust_lead", 64, "");
+		dustSilver = new ItemIEBase("dust_silver", 64, "");
+		dustNickel = new ItemIEBase("dust_nickel", 64, "");
+		dustUranium = new ItemIEBase("dust_uranium", 64, "");
+		dustConstantan = new ItemIEBase("dust_constantan", 64, "");
+		dustElectrum = new ItemIEBase("dust_electrum", 64, "");
+		dustSteel = new ItemIEBase("dust_steel", 64, "");
+		dustIron = new ItemIEBase("dust_iron", 64, "");
+		dustGold = new ItemIEBase("dust_gold", 64, "");
+		nuggetCopper = new ItemIEBase("nugget_copper", 64, "");
+		nuggetAluminum = new ItemIEBase("nugget_aluminum", 64, "");
+		nuggetLead = new ItemIEBase("nugget_lead", 64, "");
+		nuggetSilver = new ItemIEBase("nugget_silver", 64, "");
+		nuggetNickel = new ItemIEBase("nugget_nickel", 64, "");
+		nuggetUranium = new ItemIEBase("nugget_uranium", 64, "");
+		nuggetConstantan = new ItemIEBase("nugget_constantan", 64, "");
+		nuggetElectrum = new ItemIEBase("nugget_electrum", 64, "");
+		nuggetSteel = new ItemIEBase("nugget_steel", 64, "");
+		nuggetIron = new ItemIEBase("nugget_iron", 64, "");
+		plateCopper = new ItemIEBase("plate_copper", 64, "");
+		plateAluminum = new ItemIEBase("plate_aluminum", 64, "");
+		plateLead = new ItemIEBase("plate_lead", 64, "");
+		plateSilver = new ItemIEBase("plate_silver", 64, "");
+		plateNickel = new ItemIEBase("plate_nickel", 64, "");
+		plateUranium = new ItemIEBase("plate_uranium", 64, "");
+		plateConstantan = new ItemIEBase("plate_constantan", 64, "");
+		plateElectrum = new ItemIEBase("plate_electrum", 64, "");
+		plateSteel = new ItemIEBase("plate_steel", 64, "");
+		plateIron = new ItemIEBase("plate_iron", 64, "");
+		plateGold = new ItemIEBase("plate_gold", 64, "");
+		manual = new ItemManual();
+		hammer = new ItemHammer();
+		wirecutter = new ItemCutter();
+		voltmeter = new ItemVoltmeter();
+		toolbox = new ItemToolbox();
+		wireCoilCopper = new ItemWireCoil("copper");
+		wireCoilElectrum = new ItemWireCoil("electrum");
+		wireCoilHV = new ItemWireCoil("hv");
+		wireCoilRope = new ItemWireCoil("rope");
+		wireCoilStructual = new ItemWireCoil("structural");
+		wireCoilRedstone = new ItemWireCoil("redstone");
+		wireCoilCopperInsulated = new ItemWireCoil("insulated_copper");
+		wireCoilElectrumInsulated = new ItemWireCoil("insulated_electrum");
+		hempSeeds = new ItemIESeed(blockCrop);
 		if(Config.IEConfig.hempSeedWeight > 0)
-			MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), Config.IEConfig.hempSeedWeight);
-		itemDrill = new ItemDrill();
-		itemDrillhead = new ItemDrillhead();
-		itemJerrycan = new ItemJerrycan();
-		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bullet_casing", "wire", "packing4", "packing9", "unpacking");
-		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
-		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
-		itemRevolver = new ItemRevolver();
-		itemSpeedloader = new ItemSpeedloader();
-		itemBullet = new ItemBullet();
-		itemChemthrower = new ItemChemthrower();
-		itemRailgun = new ItemRailgun();
-		itemSkyhook = new ItemSkyhook();
-		itemToolUpgrades = new ItemToolUpgrade();
-		itemShader = new ItemShader();
-		itemShaderBag = new ItemShaderBag();
-		itemEarmuffs = new ItemEarmuffs();
-		itemCoresample = new ItemCoresample();
-		itemGraphiteElectrode = new ItemGraphiteElectrode();
+			MinecraftForge.addGrassSeed(new ItemStack(hempSeeds), Config.IEConfig.hempSeedWeight);
+		drill = new ItemDrill();
+		drillheadIron = new ItemDrillhead.ItemDrillheadIron();
+		drillheadSteel = new ItemDrillhead.ItemDrillheadSteel();
+		jerrycan = new ItemJerrycan();
+		moldPlate = new ItemIEBase("mold_plate", 1);
+		moldGear = new ItemIEBase("mold_gear", 1).setHidden(true);
+		moldRod = new ItemIEBase("mold_rod", 1);
+		moldBulletCasing = new ItemIEBase("mold_bullet_casing", 1);
+		moldWire = new ItemIEBase("mold_wire", 1);
+		moldPacking4 = new ItemIEBase("mold_packing4", 1);
+		moldPacking9 = new ItemIEBase("mold_packing9", 1);
+		moldUnpacking = new ItemIEBase("mold_unpacking", 1);
+		blueprint = new ItemEngineersBlueprint();
+		revolver = new ItemRevolver();
+		speedloader = new ItemSpeedloader();
+		bullet = new ItemBullet();
+		chemthrower = new ItemChemthrower();
+		railgun = new ItemRailgun();
+		skyhook = new ItemSkyhook();
+		for (ToolUpgrades upgrade:ToolUpgrades.values())
+			toolUpgrades.put(upgrade, new ItemToolUpgrade(upgrade));
+		shader = new ItemShader();
+		shaderBag = new ItemShaderBag();
+		earmuffs = new ItemEarmuffs();
+		coresample = new ItemCoresample();
+		graphiteElectrode = new ItemGraphiteElectrode();
 		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveengineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
-		for(int i = 0; i < itemsFaradaySuit.length; i++)
-			itemsFaradaySuit[i] = new ItemFaradaySuit(EntityEquipmentSlot.values()[2+i]);
-		itemFluorescentTube = new ItemFluorescentTube();
-		itemPowerpack = new ItemPowerpack();
-		itemShield = new ItemIEShield();
+		for(int i = 0; i < faradaySuit.length; i++)
+			faradaySuit[i] = new ItemFaradaySuit(EntityEquipmentSlot.values()[2+i]);
+		fluorescentTube = new ItemFluorescentTube();
+		powerpack = new ItemPowerpack();
+		shield = new ItemIEShield();
 
-		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky")
-		{
-			@Override
-			public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
-			{
-			}
-		};
+		fakeBirthday = new ItemIEBase("birthday", 1);
+		fakeLucky = new ItemIEBase("lucky", 1);
 	}
 
 	@SubscribeEvent
@@ -343,27 +387,27 @@ public class IEContent
 	@SubscribeEvent
 	public static void registerPotions(RegistryEvent.Register<Potion> event)
 	{
-		/**POTIONS*/
+		/*POTIONS*/
 		IEPotions.init();
 	}
 
 	@SubscribeEvent
 	public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{
-		/**CRAFTING*/
+		/*CRAFTING*/
 		IERecipes.initCraftingRecipes(event.getRegistry());
 
-		/**FURNACE*/
+		/*FURNACE*/
 		IERecipes.initFurnaceRecipes();
 
-		/**BLUEPRINTS*/
+		/*BLUEPRINTS*/
 		IERecipes.initBlueprintRecipes();
 
-		/**BELLJAR*/
+		/*BELLJAR*/
 		BelljarHandler.init();
 
-		/**MULTIBLOCK RECIPES*/
-		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
+		/*MULTIBLOCK RECIPES*/
+		CokeOvenRecipe.addRecipe(new ItemStack(coalCoke), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
 		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
 
@@ -381,8 +425,8 @@ public class IEContent
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 60), ItemStack.EMPTY, Items.BEETROOT_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 40), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
-		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, hempSeeds, 6400);
+		SqueezerRecipe.addRecipe(null, new ItemStack(dustHopGraphite), new ItemStack(dustCoke), 19200);
 		Fluid fluidBlood = FluidRegistry.getFluid("blood");
 		if(fluidBlood!=null)
 			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood,5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
@@ -398,7 +442,7 @@ public class IEContent
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
 
-		/**POTIONS*/
+		/*POTIONS*/
 		HashSet<PotionType> mixerRegistered = new HashSet<>();
 		HashSet<PotionType> bottlingRegistered = new HashSet<>();
 		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
@@ -409,7 +453,7 @@ public class IEContent
 				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,250));
 		}
 
-		/**ORE DICT CRAWLING*/
+		/*ORE DICT CRAWLING*/
 		IERecipes.postInitOreDictRecipes();
 	}
 
@@ -431,7 +475,7 @@ public class IEContent
 	public static void preInit()
 	{
 		WireType.init();
-		/**CONVEYORS*/
+		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			NBTTagCompound data = entity.getEntityData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
@@ -447,7 +491,7 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
 
-		/**BULLETS*/
+		/*BULLETS*/
 		ItemBullet.initBullets();
 
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
@@ -483,7 +527,7 @@ public class IEContent
 
 	public static void preInitEnd()
 	{
-		/**WOLFPACK BULLETS*/
+		/*WOLFPACK BULLETS*/
 		if(!BulletHandler.homingCartridges.isEmpty())
 		{
 			BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
@@ -493,31 +537,32 @@ public class IEContent
 
 	public static void registerOres()
 	{
-		/**ORE DICTIONARY*/
+		/*ORE DICTIONARY*/
 		registerToOreDict("ore", blockOre);
 		registerToOreDict("block", blockStorage);
 		registerToOreDict("slab", blockStorageSlabs);
 		registerToOreDict("blockSheetmetal", blockSheetmetal);
 		registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
-		registerToOreDict("", itemMetal);
-		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial, 1, 0));
-		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial, 1, 1));
-		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial, 1, 2));
-		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial, 1, 3));
-		OreDictionary.registerOre("fiberHemp", new ItemStack(itemMaterial, 1, 4));
-		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial, 1, 5));
-		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial, 1, 6));
-		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial, 1, 7));
-		OreDictionary.registerOre("dustCoke", new ItemStack(itemMaterial, 1, 17));
-		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(itemMaterial, 1, 18));
-		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(itemMaterial, 1, 19));
-		OreDictionary.registerOre("wireCopper", new ItemStack(itemMaterial, 1, 20));
-		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial, 1, 21));
-		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial, 1, 22));
-		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial, 1, 23));
-		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial, 1, 24));
-		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial, 1, 25));
-		OreDictionary.registerOre("electronTube", new ItemStack(itemMaterial, 1, 26));
+		OreDictionary.registerOre("stickTreatedWood", new ItemStack(stickTreated));
+		OreDictionary.registerOre("stickIron", new ItemStack(stickIron));
+		OreDictionary.registerOre("stickSteel", new ItemStack(stickSteel, 1, 2));
+		OreDictionary.registerOre("stickAluminum", new ItemStack(stickAluminum));
+		OreDictionary.registerOre("fiberHemp", new ItemStack(hempFiber));
+		OreDictionary.registerOre("fabricHemp", new ItemStack(hempFabric));
+		OreDictionary.registerOre("fuelCoke", new ItemStack(coalCoke));
+		OreDictionary.registerOre("itemSlag", new ItemStack(slag));
+		OreDictionary.registerOre("dustCoke", new ItemStack(dustCoke));
+		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(dustHopGraphite));
+		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(ingotHopGraphite));
+		OreDictionary.registerOre("dustSaltpeter", new ItemStack(dustSaltpeter));
+		OreDictionary.registerOre("dustSulfur", new ItemStack(dustSulfur));
+
+		OreDictionary.registerOre("wireCopper", new ItemStack(wireCopper));
+		OreDictionary.registerOre("wireElectrum", new ItemStack(wireElectrum));
+		OreDictionary.registerOre("wireAluminum", new ItemStack(wireAluminum));
+		OreDictionary.registerOre("wireSteel", new ItemStack(wireSteel));
+
+		OreDictionary.registerOre("electronTube", new ItemStack(electronTube));
 
 		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood, 1, OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs, 1, OreDictionary.WILDCARD_VALUE));
@@ -545,7 +590,7 @@ public class IEContent
 
 	public static void init()
 	{
-		/**MINING LEVELS*/
+		/*MINING LEVELS*/
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.LEAD.getMeta()));
@@ -562,7 +607,7 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
 
-		/**WORLDGEN*/
+		/*WORLDGEN*/
 		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
@@ -570,7 +615,7 @@ public class IEContent
 		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
 
-		/**TILEENTITIES*/
+		/*TILEENTITIES*/
 		registerTile(TileEntityIESlab.class);
 
 		registerTile(TileEntityBalloon.class);
@@ -661,7 +706,7 @@ public class IEContent
 
 
 
-		/**ENTITIES*/
+		/*ENTITIES*/
 		int i = 0;
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShot"), EntityRevolvershot.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "skylineHook"), EntitySkylineHook.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
@@ -674,21 +719,18 @@ public class IEContent
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "explosive"), EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "fluorescentTube"), EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 		CapabilityShader.register();
-		ShaderRegistry.itemShader = IEContent.itemShader;
-		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRevolver));
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemDrill));
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemChemthrower));
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRailgun));
+		ShaderRegistry.itemExamples.add(new ItemStack(revolver));
+		ShaderRegistry.itemExamples.add(new ItemStack(drill));
+		ShaderRegistry.itemExamples.add(new ItemStack(chemthrower));
+		ShaderRegistry.itemExamples.add(new ItemStack(railgun));
 
-		/**SMELTING*/
-		itemMaterial.setBurnTime(6, 3200);
+		/*SMELTING*/
 		Item itemBlockStoneDecoration = Item.getItemFromBlock(blockStoneDecoration);
 		if(itemBlockStoneDecoration instanceof ItemBlockIEBase)
 			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
 
-		/**BANNERS*/
-		addBanner("hammer", "hmr", new ItemStack(itemTool,1,0));
+		/*BANNERS*/
+		addBanner("hammer", "hmr", new ItemStack(hammer));
 		addBanner("bevels", "bvl", "plateIron");
 		addBanner("ornate", "orn", "dustSilver");
 		addBanner("treatedwood", "twd", "plankTreatedWood");
@@ -701,7 +743,7 @@ public class IEContent
 			addBanner("wolf", "wlf", wolfpackCartridge, 0,0);
 		}
 
-		/**ASSEMBLER RECIPE ADAPTERS*/
+		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialQueryConverters((o)->
 				o instanceof IngredientFluidStack? new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
@@ -876,7 +918,7 @@ public class IEContent
 		RailgunHandler.registerProjectileProperties(new IngredientStack("stickIron"), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		RailgunHandler.registerProjectileProperties(new IngredientStack("stickAluminum"), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		RailgunHandler.registerProjectileProperties(new IngredientStack("stickSteel"), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemGraphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost= IEConfig.Machines.heater_speedupConsumption;
@@ -907,7 +949,9 @@ public class IEContent
 			}
 		};
 		BelljarHandler.registerHandler(hempBelljarHandler);
-		hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial,4,4),new ItemStack(itemSeeds,2)},new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
+		hempBelljarHandler.register(new ItemStack(hempSeeds),
+				new ItemStack[]{new ItemStack(hempFiber, 4),new ItemStack(hempSeeds,2)},
+				new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);
@@ -916,7 +960,7 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
 
-		/**MULTIBLOCKS*/
+		/*MULTIBLOCKS*/
 		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
 		MultiblockHandler.registerMultiblock(MultiblockAlloySmelter.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
@@ -939,10 +983,10 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFeedthrough.instance);
 
-		/**ACHIEVEMENTS*/
+		/*ACHIEVEMENTS*/
 //		IEAchievements.init();
 
-		/**VILLAGE*/
+		/*VILLAGE*/
 		VillagerRegistry villageRegistry = VillagerRegistry.instance();
 		if(IEConfig.villagerHouse)
 		{
@@ -956,77 +1000,77 @@ public class IEContent
 
 			VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".engineer");
 			career_engineer.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 0), new EntityVillager.PriceInfo(8, 16)),
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(stickTreated), new EntityVillager.PriceInfo(8, 16)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockWoodenDecoration, 1, 1), new EntityVillager.PriceInfo(-10, -6)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockClothDevice, 1, 1), new EntityVillager.PriceInfo(-3, -1))
 			);
 			career_engineer.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 1), new EntityVillager.PriceInfo(2, 6)),
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(stickIron), new EntityVillager.PriceInfo(2, 6)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 1), new EntityVillager.PriceInfo(-8, -4)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 5), new EntityVillager.PriceInfo(-8, -4))
 			);
 			career_engineer.addTrade(3,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 2), new EntityVillager.PriceInfo(2, 6)),
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 7), new EntityVillager.PriceInfo(4, 8)),
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(stickSteel), new EntityVillager.PriceInfo(2, 6)),
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(slag), new EntityVillager.PriceInfo(4, 8)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockStoneDecoration, 1, 5), new EntityVillager.PriceInfo(-6, -2))
 			);
 
 			VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".machinist");
 			career_machinist.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 6), new EntityVillager.PriceInfo(8, 16)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(coalCoke), new EntityVillager.PriceInfo(8, 16)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(hammer), new EntityVillager.PriceInfo(4, 7))
 			);
 			career_machinist.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal, 1, 0), new EntityVillager.PriceInfo(4, 6)),
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal, 1, 1), new EntityVillager.PriceInfo(4, 6)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3))
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(ingotCopper), new EntityVillager.PriceInfo(4, 6)),
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(ingotAluminum), new EntityVillager.PriceInfo(4, 6)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(componentSteel), new EntityVillager.PriceInfo(1, 3))
 			);
 			career_machinist.addTrade(3,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(toolbox), new EntityVillager.PriceInfo(6, 8)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(waterwheelSegment), new EntityVillager.PriceInfo(1, 3)),
 					new IEVillagerTrades.ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
 			);
 			career_machinist.addTrade(4,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 0), new EntityVillager.PriceInfo(28, 40)),
-					new IEVillagerTrades.ItemstackForEmerald(itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(drillheadSteel), new EntityVillager.PriceInfo(28, 40)),
+					new IEVillagerTrades.ItemstackForEmerald(earmuffs, new EntityVillager.PriceInfo(4, 9))
 			);
 			career_machinist.addTrade(5,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 1), new EntityVillager.PriceInfo(32, 48)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(drillheadIron), new EntityVillager.PriceInfo(32, 48)),
 					new IEVillagerTrades.ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
 			);
 
 			VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".electrician");
 			career_electrician.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 20), new EntityVillager.PriceInfo(8, 16)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 0), new EntityVillager.PriceInfo(-4, -2))
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(wireCopper), new EntityVillager.PriceInfo(8, 16)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(wirecutter), new EntityVillager.PriceInfo(4, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(wireCoilCopper), new EntityVillager.PriceInfo(-4, -2))
 			);
 			career_electrician.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 21), new EntityVillager.PriceInfo(6, 12)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 2), new EntityVillager.PriceInfo(4, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-4, -1))
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(wireElectrum), new EntityVillager.PriceInfo(6, 12)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(voltmeter), new EntityVillager.PriceInfo(4, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(wireCoilElectrum), new EntityVillager.PriceInfo(-4, -1))
 			);
 			career_electrician.addTrade(3,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 22), new EntityVillager.PriceInfo(4, 8)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 2), new EntityVillager.PriceInfo(-2, -1)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 6), new EntityVillager.PriceInfo(8, 12))
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(wireAluminum), new EntityVillager.PriceInfo(4, 8)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(wireCoilHV), new EntityVillager.PriceInfo(-2, -1)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(toolUpgrades.get(REVOLVER_ELECTRO)), new EntityVillager.PriceInfo(8, 12))
 			);
 			career_electrician.addTrade(4,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 9), new EntityVillager.PriceInfo(8, 12)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemFluorescentTube), new EntityVillager.PriceInfo(8, 12)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[0]), new EntityVillager.PriceInfo(5, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[1]), new EntityVillager.PriceInfo(9, 11)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[2]), new EntityVillager.PriceInfo(5, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(toolUpgrades.get(RAILGUN_CAPACITORS)), new EntityVillager.PriceInfo(8, 12)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(fluorescentTube), new EntityVillager.PriceInfo(8, 12)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(faradaySuit[0]), new EntityVillager.PriceInfo(5, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(faradaySuit[1]), new EntityVillager.PriceInfo(9, 11)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(faradaySuit[2]), new EntityVillager.PriceInfo(5, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(faradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
 			);
 
 			VillagerRegistry.VillagerCareer career_outfitter = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".outfitter");
 
-			ItemStack bag_common = new ItemStack(IEContent.itemShaderBag);
+			ItemStack bag_common = new ItemStack(shaderBag);
 			ItemNBTHelper.setString(bag_common, "rarity", EnumRarity.COMMON.toString());
-			ItemStack bag_uncommon = new ItemStack(IEContent.itemShaderBag);
+			ItemStack bag_uncommon = new ItemStack(shaderBag);
 			ItemNBTHelper.setString(bag_uncommon, "rarity", EnumRarity.UNCOMMON.toString());
-			ItemStack bag_rare = new ItemStack(IEContent.itemShaderBag);
+			ItemStack bag_rare = new ItemStack(shaderBag);
 			ItemNBTHelper.setString(bag_rare, "rarity", EnumRarity.RARE.toString());
 
 			career_outfitter.addTrade(1,
@@ -1040,7 +1084,7 @@ public class IEContent
 			);
 		}
 
-		/**LOOT*/
+		/*LOOT*/
 		if(IEConfig.villagerHouse)
 			LootTableList.register(VillageEngineersHouse.woodenCrateLoot);
 		for(ResourceLocation rl : EventHandler.lootInjections)
@@ -1054,11 +1098,9 @@ public class IEContent
 		//				OreDictionary.registerOre("blockFuelCoke", new ItemStack(rcCube,1,0));
 		//		}
 
-		/**BLOCK ITEMS FROM CRATES*/
+		/*BLOCK ITEMS FROM CRATES*/
 		IEApi.forbiddenInCrates.add((stack)-> {
-			if (stack.getItem()==IEContent.itemToolbox)
-				return true;
-			if (stack.getItem()==IEContent.itemToolbox)
+			if (stack.getItem()==toolbox)
 				return true;
 			if (OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
 				return true;
@@ -1082,55 +1124,6 @@ public class IEContent
 		fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
 		fluidConcrete = FluidRegistry.getFluid("concrete");
 		fluidPotion = FluidRegistry.getFluid("potion");
-	}
-
-	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
-	{
-		if(metas==null||metas.length<1)
-		{
-			for(int meta=0; meta<item.getSubNames().length; meta++)
-				if(!item.isMetaHidden(meta))
-				{
-					String name = item.getSubNames()[meta];
-					name = createOreDictName(name);
-					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1);
-					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
-				}
-		}
-		else
-		{
-			for(int meta: metas)
-				if(!item.isMetaHidden(meta))
-				{
-					String name = item.getSubNames()[meta];
-					name = createOreDictName(name);
-					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1);
-					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
-				}
-		}
-	}
-
-	private static String createOreDictName(String name)
-	{
-		String upperName = name.toUpperCase();
-		StringBuilder sb = new StringBuilder();
-		boolean nextCapital = false;
-		for (int i = 0; i < name.length(); i++)
-		{
-			if (name.charAt(i) == '_') {
-				nextCapital = true;
-			} else {
-				char nextChar = name.charAt(i);
-				if (nextCapital) {
-					nextChar = upperName.charAt(i);
-					nextCapital = false;
-				}
-				sb.append(nextChar);
-			}
-		}
-		return sb.toString();
 	}
 
 	public static void registerToOreDict(String type, BlockIEBase item, int... metas)

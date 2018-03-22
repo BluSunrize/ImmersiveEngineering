@@ -11,7 +11,7 @@
   ],
   "key": {
     "S": {
-      "item": "immersiveengineering:toolupgrade",
+      "item": "immersiveengineering:toolupgrade_railgun_scope",
       "data": 8
     },
     "G": {
@@ -19,8 +19,7 @@
       "data": 0
     },
     "C": {
-      "item": "immersiveengineering:material",
-      "data": 27
+      "item": "immersiveengineering:circuit_board"
     },
     "B": {
       "item": "immersiveengineering:wooden_device0",
@@ -31,8 +30,7 @@
       "data": 3
     },
     "X": {
-      "item": "immersiveengineering:toolupgrade",
-      "data": 5
+      "item": "immersiveengineering:toolupgrade_revolver_magazine"
     }
   }
 }

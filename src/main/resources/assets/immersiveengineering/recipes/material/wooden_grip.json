@@ -1,8 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:material",
-    "data": 13
+    "item": "immersiveengineering:wooden_grip"
   },
   "pattern": [
     "SS",

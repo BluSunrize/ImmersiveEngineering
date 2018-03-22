@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -62,7 +63,7 @@ public class ManualPageShader extends ManualPages
 		String username = player.getName();
 		unlocked = ShaderRegistry.receivedShaders.get(username).contains(shader.getName());
 
-		shaderItem = new ItemStack(ShaderRegistry.itemShader);
+		shaderItem = new ItemStack(IEItems.shader);
 		shaderItem.setTagCompound(new NBTTagCompound());
 		shaderItem.getTagCompound().setString("shader_name", shader.getName());
 		replicationCost = shader.replicationCost;

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -25,6 +26,8 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+
+import static blusunrize.immersiveengineering.api.IEItems.shaderBag;
 
 public class ShaderRegistry
 {
@@ -358,8 +361,6 @@ public class ShaderRegistry
 	*/
 
 	public static ManualEntry manualEntry;
-	public static Item itemShader;
-	public static Item itemShaderBag;
 	/**List of example items for shader manual entries*/
 	public static List<ItemStack> itemExamples = new ArrayList();
 	public static void compileWeight()
@@ -401,7 +402,7 @@ public class ShaderRegistry
 			for(int i=0; i<ShaderRegistry.sortedRarityMap.size(); i++)
 			{
 				EnumRarity outputRarity = ShaderRegistry.sortedRarityMap.get(i);
-				shaderBags.set(i, new ItemStack(itemShaderBag));
+				shaderBags.set(i, new ItemStack(shaderBag));
 				shaderBags.get(i).setTagCompound(new NBTTagCompound());
 				shaderBags.get(i).getTagCompound().setString("rarity", outputRarity.toString());
 				ArrayList<EnumRarity> upperRarities = ShaderRegistry.getHigherRarities(outputRarity);
@@ -410,12 +411,12 @@ public class ShaderRegistry
 					ArrayList<ItemStack> inputList = new ArrayList();
 					for(EnumRarity r : upperRarities)
 					{
-						ItemStack bag = new ItemStack(itemShaderBag);
+						ItemStack bag = new ItemStack(shaderBag);
 						bag.setTagCompound(new NBTTagCompound());
 						bag.getTagCompound().setString("rarity",  r.toString());
 						inputList.add(bag);
 					}
-					ItemStack s0 = new ItemStack(itemShaderBag,2);
+					ItemStack s0 = new ItemStack(shaderBag,2);
 					s0.setTagCompound(new NBTTagCompound());
 					s0.getTagCompound().setString("rarity", outputRarity.toString());
 					if(!inputList.isEmpty())

@@ -163,7 +163,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
 			list.add(new ItemStack(this));

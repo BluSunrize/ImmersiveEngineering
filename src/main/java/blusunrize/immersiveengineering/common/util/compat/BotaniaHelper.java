@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -49,7 +50,7 @@ public class BotaniaHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		BlueprintCraftingRecipe.addRecipe("specialBullet", BulletHandler.getBulletStack("terrasteel"), new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetTerrasteel", "nuggetTerrasteel");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", BulletHandler.getBulletStack("terrasteel"), new ItemStack(IEItems.bullet, 1, 0), Items.GUNPOWDER, "nuggetTerrasteel", "nuggetTerrasteel");
 
 		try
 		{
@@ -100,7 +101,7 @@ public class BotaniaHelper extends IECompatModule
 			event.getEntityLiving().writeEntityToNBT(tag);
 			if(tag.getBoolean("hardMode"))
 				for(EntityItem item : event.getDrops())
-					if(item != null && !item.getItem().isEmpty() && IEContent.itemShaderBag.equals(item.getItem().getItem()))
+					if(item != null && !item.getItem().isEmpty() && IEItems.shaderBag.equals(item.getItem().getItem()))
 						ItemNBTHelper.setString(item.getItem(), "rarity", "RELIC");
 		}
 	}

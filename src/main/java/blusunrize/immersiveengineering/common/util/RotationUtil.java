@@ -77,15 +77,4 @@ public class RotationUtil
 		}
 		return state.getBlock().rotateBlock(world, pos, axis);
 	}
-	
-	public static boolean rotateEntity(Entity entity, EntityPlayer player)
-	{
-		if(entity instanceof EntityArmorStand)
-		{
-//			float f = (float)MathHelper.floor_float((MathHelper.wrapAngleTo180_float(playerIn.rotationYaw - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-//			((EntityArmorStand)entity).rotationYaw+=22.5;
-//			((EntityArmorStand)entity).rotationYaw%=360;
-		}
-		return false;
-	}
 }

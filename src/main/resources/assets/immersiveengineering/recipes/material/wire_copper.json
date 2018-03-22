@@ -2,8 +2,7 @@
   "type": "immersiveengineering:ingredient_shapeless",
   "damage_tool": 1,
   "result": {
-    "item": "immersiveengineering:material",
-    "data": 20
+    "item": "immersiveengineering:wire_copper"
   },
   "ingredients": [
     {

@@ -1,7 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:material",
+    "item": "immersiveengineering:component_steel",
     "data": 9
   },
   "pattern": [

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
@@ -159,7 +160,7 @@ public class IETileSound implements ITickableSound
 			ItemStack stack = ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 			if(ItemNBTHelper.hasKey(stack,"IE:Earmuffs"))
 				stack = ItemNBTHelper.getItemStack(stack, "IE:Earmuffs");
-			if(!stack.isEmpty() && IEContent.itemEarmuffs.equals(stack.getItem()))
+			if(!stack.isEmpty() && IEItems.earmuffs.equals(stack.getItem()))
 				volumeAjustment = ItemEarmuffs.getVolumeMod(stack);
 		}
 		if(volumeAjustment>.1f)

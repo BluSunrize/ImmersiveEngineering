@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -132,8 +133,8 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(IEContent.itemToolbox);
-		((ItemInternalStorage)IEContent.itemToolbox).setContainedItems(stack, inventory);
+		ItemStack stack = new ItemStack(IEItems.toolbox);
+		((ItemInternalStorage)IEItems.toolbox).setContainedItems(stack, inventory);
 		if(this.name!=null)
 			stack.setStackDisplayName(this.name);
 		if(enchantments!=null)

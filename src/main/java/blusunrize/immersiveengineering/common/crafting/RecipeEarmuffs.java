@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -39,9 +40,9 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(earmuffs.isEmpty() && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				if(earmuffs.isEmpty() && IEItems.earmuffs.equals(stackInSlot.getItem()))
 					earmuffs = stackInSlot;
-				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor) stackInSlot.getItem()).armorType == EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor) stackInSlot.getItem()).armorType == EntityEquipmentSlot.HEAD && !IEItems.earmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -65,7 +66,7 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(earmuffs.isEmpty() && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				if(earmuffs.isEmpty() && IEItems.earmuffs.equals(stackInSlot.getItem()))
 				{
 					earmuffs = stackInSlot;
 					int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
@@ -90,7 +91,7 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 					colourArray[2] += b;
 					++totalColourSets;
 				}
-				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor.isEmpty() && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.HEAD && !IEItems.earmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 		}
 
@@ -138,7 +139,7 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemBullet,1,10);
+		return new ItemStack(IEItems.earmuffs);
 	}
 
 	@Override

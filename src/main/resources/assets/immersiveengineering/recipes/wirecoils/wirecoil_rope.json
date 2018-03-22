@@ -1,7 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:wirecoil",
+    "item": "immersiveengineering:wirecoil_rope",
     "data": 3,
     "count": 4
   },

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemSpeedloader;
@@ -22,7 +23,7 @@ public class RecipeSpeeloader extends ShapedOreRecipe
 {
 	public RecipeSpeeloader()
 	{
-		super(null, new ItemStack(IEContent.itemSpeedloader), CraftingHelper.parseShaped("BBB", "BSB", "BBB", 'S', IEContent.itemSpeedloader, 'B', BulletHandler.getBulletStack("casull")));
+		super(null, new ItemStack(IEItems.speedloader), CraftingHelper.parseShaped("BBB", "BSB", "BBB", 'S', IEItems.speedloader, 'B', BulletHandler.getBulletStack("casull")));
 	}
 
 	@Override

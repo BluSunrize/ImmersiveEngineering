@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
@@ -208,7 +209,7 @@ public class EventHandler
 //	@SubscribeEvent
 //	public void onEntityInteract(EntityInteractEvent event)
 //	{
-//		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
+//		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEItems.Revolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
 //			event.setCanceled(true);
 //	}
 
@@ -412,7 +413,7 @@ public class EventHandler
 			for(Class<? extends EntityLiving> boring : listOfBoringBosses)
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
 					return;
-			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
+			ItemStack bag = new ItemStack(IEItems.shaderBag);
 			ItemNBTHelper.setString(bag, "rarity", r.toString());
 			event.getDrops().add(new EntityItem(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
 		}
@@ -540,13 +541,13 @@ public class EventHandler
 	{
 		ItemStack current = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(!current.isEmpty() && current.getItem().equals(IEContent.itemDrill) && current.getItemDamage()==0 && event.getEntityPlayer().isInsideOfMaterial(Material.WATER))
-			if( ((ItemDrill)IEContent.itemDrill).getUpgrades(current).getBoolean("waterproof"))
+		if(!current.isEmpty() && current.getItem().equals(IEItems.drill) && current.getItemDamage()==0 && event.getEntityPlayer().isInsideOfMaterial(Material.WATER))
+			if( ((ItemDrill)IEItems.drill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);
 		if(event.getState().getBlock()==IEContent.blockMetalDecoration2 && IEContent.blockMetalDecoration2.getMetaFromState(event.getState())==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())
-			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,1), current, false))
+			if(!OreDictionary.itemMatches(new ItemStack(IEItems.wirecutter), current, false))
 				event.setCanceled(true);
 		TileEntity te = event.getEntityPlayer().getEntityWorld().getTileEntity(event.getPos());
 		if(te instanceof IEntityProof && !((IEntityProof)te).canEntityDestroy(event.getEntityPlayer()))

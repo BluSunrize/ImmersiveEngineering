@@ -8,22 +8,21 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IEContent;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.api.IEItems.*;
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
@@ -104,7 +103,6 @@ public abstract class WireType
 	public static int[] wireTransferRate;
 	public static int[] wireColouration;
 	public static int[] wireLength;
-	public static Item ieWireCoil;
 	public static double[] renderDiameter = {.03125, .03125, .0625, .0625, .0625, .03125};
 	@SideOnly(Side.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;
@@ -193,7 +191,26 @@ public abstract class WireType
 		@Override
 		public ItemStack getWireCoil()
 		{
-			return new ItemStack(ieWireCoil,1,ordinal);
+			switch (ordinal)
+			{
+				case 0://LV
+					return new ItemStack(wireCoilCopper, 1);
+				case 1://MV
+					return new ItemStack(wireCoilElectrum, 1);
+				case 2://HV
+					return new ItemStack(wireCoilHV, 1);
+				case 3://Structure rope
+					return new ItemStack(wireCoilRope, 1);
+				case 4://Structure steel
+					return new ItemStack(wireCoilStructual, 1);
+				case 5://Redstone
+					return new ItemStack(wireCoilRedstone, 1);
+				case 6://Insulated LV
+					return new ItemStack(wireCoilCopperInsulated, 1);
+				case 7://Insulated MV
+					return new ItemStack(wireCoilElectrumInsulated, 1);
+			}
+			return ItemStack.EMPTY;
 		}
 		@Override
 		public String getUniqueName()

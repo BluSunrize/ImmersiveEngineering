@@ -24,9 +24,9 @@ import net.minecraftforge.common.IPlantable;
 public class ItemIESeed extends ItemIEBase implements IPlantable
 {
     private Block cropBlock;
-	public ItemIESeed(Block cropBlock, String... subNames)
+	public ItemIESeed(Block cropBlock)
 	{
-		super("seed", 64, subNames);
+		super("hempseed", 64);
 		this.cropBlock = cropBlock;
 	}
 

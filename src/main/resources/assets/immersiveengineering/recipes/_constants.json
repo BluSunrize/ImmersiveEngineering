@@ -571,8 +571,7 @@
   {
     "ingredient": [
       {
-        "item": "immersiveengineering:tool",
-        "data": 1
+        "item": "immersiveengineering:wirecutter"
       },
       {
         "item": "minecraft:shears",
@@ -583,29 +582,25 @@
   },
   {
     "ingredient": {
-      "item": "immersiveengineering:material",
-      "data": 8
+      "item": "immersiveengineering:component_iron"
     },
     "name": "componentIron"
   },
   {
     "ingredient": {
-      "item": "immersiveengineering:material",
-      "data": 9
+      "item": "immersiveengineering:component_steel"
     },
     "name": "componentSteel"
   },
   {
     "ingredient": {
-      "item": "immersiveengineering:material",
-      "data": 13
+      "item": "immersiveengineering:wooden_grip"
     },
     "name": "woodenGrip"
   },
   {
     "ingredient": {
-      "item": "immersiveengineering:material",
-      "data": 26
+      "item": "immersiveengineering:electron_tube"
     },
     "name": "elecTube"
   },
@@ -642,14 +637,14 @@
   },
   {
     "ingredient": {
-      "item": "immersiveengineering:wirecoil",
+      "item": "immersiveengineering:wirecoil_copper",
       "data": 0
     },
     "name": "copperCoilItem"
   },
   {
     "ingredient": {
-      "item": "immersiveengineering:wirecoil",
+      "item": "immersiveengineering:wirecoil_electrum",
       "data": 1
     },
     "name": "electrumCoilItem"

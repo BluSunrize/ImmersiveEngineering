@@ -1,8 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:toolupgrade",
-    "data": 6
+    "item": "immersiveengineering:toolupgrade_revolver_electro"
   },
   "pattern": [
     "TTT",

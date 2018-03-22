@@ -11,8 +11,7 @@
   ],
   "key": {
     "P": {
-      "item": "immersiveengineering:material",
-      "data": 10
+      "item": "immersiveengineering:waterwheel_segment"
     },
     "I": {
       "item": "#ingotSteel"

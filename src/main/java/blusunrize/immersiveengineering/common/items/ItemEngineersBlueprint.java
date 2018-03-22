@@ -28,6 +28,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,7 +71,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
 			for(String key : BlueprintCraftingRecipe.blueprintCategories)

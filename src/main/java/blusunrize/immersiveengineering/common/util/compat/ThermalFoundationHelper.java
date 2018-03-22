@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.ItemFertilizerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
@@ -47,7 +48,7 @@ public class ThermalFoundationHelper extends IECompatModule
 	public void init()
 	{
 		//TE Compat for smelter recipes. Not worth a separate module.
-		OreDictionary.registerOre("crystalSlag", new ItemStack(IEContent.itemMaterial,1,7));
+		OreDictionary.registerOre("crystalSlag", new ItemStack(IEItems.slag));
 
 		ChemthrowerHandler.registerEffect("coal", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,0));
 		ChemthrowerHandler.registerFlammable("coal");

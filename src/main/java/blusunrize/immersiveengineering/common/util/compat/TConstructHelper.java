@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
@@ -73,8 +74,9 @@ public class TConstructHelper extends IECompatModule
 	{
 		sendAlloyForMelting(new FluidStack(fluidConstantan, 2), "copper", 1, "nickel", 1);
 
-		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemBullet, 1, OreDictionary.WILDCARD_VALUE));
-		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemDrillhead, 1, OreDictionary.WILDCARD_VALUE));
+		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEItems.bullet, 1, OreDictionary.WILDCARD_VALUE));
+		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEItems.drillheadIron));
+		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEItems.drillheadSteel));
 
 		TinkerRegistry.addMaterialStats(treatedWood,
 				new HeadMaterialStats(25, 2.00f, 2.00f, HarvestLevels.STONE),
@@ -106,7 +108,7 @@ public class TConstructHelper extends IECompatModule
 		treatedWood.addTrait(TinkerTraits.ecological);
 
 		hemp.addItemIngot("fiberHemp");
-		hemp.setRepresentativeItem(new ItemStack(IEContent.itemMaterial, 1, 4));
+		hemp.setRepresentativeItem(new ItemStack(IEItems.hempFiber));
 
 		constantan.setCastable(true);
 		constantan.addItem("nuggetConstantan", 1, Material.VALUE_Nugget);

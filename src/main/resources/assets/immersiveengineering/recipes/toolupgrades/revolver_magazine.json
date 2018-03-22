@@ -1,7 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:toolupgrade",
+    "item": "immersiveengineering:toolupgrade_revolver_magazine",
     "data": 5
   },
   "pattern": [

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -63,7 +64,7 @@ public class MessageSpeedloaderSync implements IMessage
 					player.playSound(IESounds.revolverReload, 1f, 1f);
 					ItemNBTHelper.setInt(player.getHeldItem(message.hand), "reload", 60);
 				}
-				player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemSpeedloader));
+				player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEItems.speedloader));
 			}
 			return null;
 		}

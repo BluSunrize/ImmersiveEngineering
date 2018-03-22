@@ -1,7 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:toolupgrade",
+    "item": "immersiveengineering:toolupgrade_railgun_scope",
     "data": 8
   },
   "pattern": [

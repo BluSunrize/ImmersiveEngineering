@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -253,7 +254,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 			if(ItemNBTHelper.hasKey(earmuffs, Lib.NBT_Earmuffs))
 				earmuffs = ItemNBTHelper.getItemStack(earmuffs, Lib.NBT_Earmuffs);
-			if(!earmuffs.isEmpty() && IEContent.itemEarmuffs.equals(earmuffs.getItem()) && !ItemNBTHelper.getBoolean(earmuffs,"IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
+			if(!earmuffs.isEmpty() && IEItems.earmuffs.equals(earmuffs.getItem()) && !ItemNBTHelper.getBoolean(earmuffs,"IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
 				for(String blacklist : IEConfig.Tools.earDefenders_SoundBlacklist)
 					if(blacklist!=null && blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
@@ -486,7 +487,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				if(!player.getHeldItem(hand).isEmpty())
 				{
 					ItemStack equipped = player.getHeldItem(hand);
-					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, false) || equipped.getItem() instanceof IWireCoil)
+					if(OreDictionary.itemMatches(new ItemStack(IEItems.voltmeter), equipped, false) || equipped.getItem() instanceof IWireCoil)
 					{
 						if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
 						{
@@ -507,7 +508,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 						}
 					}
-					else if (OreDictionary.itemMatches(equipped, new ItemStack(IEContent.itemFluorescentTube), false))
+					else if (OreDictionary.itemMatches(equipped, new ItemStack(IEItems.fluorescentTube), false))
 					{
 						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
 						ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped), true);
@@ -753,7 +754,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					if(mop!=null && mop.getBlockPos()!=null)
 					{
 						TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
-						if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, true))
+						if(OreDictionary.itemMatches(new ItemStack(IEItems.voltmeter), equipped, true))
 						{
 							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText:0xffffff;
 							String[] text = null;

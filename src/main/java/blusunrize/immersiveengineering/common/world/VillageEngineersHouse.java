@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
@@ -196,7 +197,7 @@ public class VillageEngineersHouse extends Village
 			this.placeCrate(world,box,rand, 6,0,1);
 			this.placeCrate(world,box,rand, 8,0,2);
 			this.placeCrate(world,box,rand, 5,1,7);
-			this.placeItemframe(rand, world, 4,3,2, getCoordBaseMode().getOpposite(), new ItemStack(IEContent.itemTool,1,0));
+			this.placeItemframe(rand, world, 4,3,2, getCoordBaseMode().getOpposite(), new ItemStack(IEItems.hammer));
 		}catch(Exception e)
 		{
 			e.printStackTrace();

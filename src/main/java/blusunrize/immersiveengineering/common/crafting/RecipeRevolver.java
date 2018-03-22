@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty() && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), stackInSlot, false) && stackInSlot.getItemDamage()!=1)
+				if(revolver.isEmpty() && OreDictionary.itemMatches(new ItemStack(IEItems.revolver,1,OreDictionary.WILDCARD_VALUE), stackInSlot, false) && stackInSlot.getItemDamage()!=1)
 					revolver = stackInSlot;
 				else
 					return false;
@@ -46,7 +47,7 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty() && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), stackInSlot, false) && stackInSlot.getItemDamage()!=1)
+				if(revolver.isEmpty() && OreDictionary.itemMatches(new ItemStack(IEItems.revolver,1,OreDictionary.WILDCARD_VALUE), stackInSlot, false) && stackInSlot.getItemDamage()!=1)
 					revolver = stackInSlot.copy();
 				else
 					return ItemStack.EMPTY;

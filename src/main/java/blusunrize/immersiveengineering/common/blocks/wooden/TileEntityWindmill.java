@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -215,7 +216,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(sails<8 && OreDictionary.itemMatches(new ItemStack(IEContent.itemMaterial,1,12), heldItem, false))
+		if(sails<8 && OreDictionary.itemMatches(new ItemStack(IEItems.windmillSail), heldItem, false))
 		{
 			this.sails++;
 			heldItem.shrink(1);

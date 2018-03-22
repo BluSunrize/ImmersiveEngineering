@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -85,7 +86,7 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(ret[0]<0 && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
+				if(ret[0]<0 && IEItems.jerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
 					ret[0] = i;
 				else if(ret[1]<0 && FluidUtil.getFluidHandler(stackInSlot)!=null)
 					ret[1] = i;

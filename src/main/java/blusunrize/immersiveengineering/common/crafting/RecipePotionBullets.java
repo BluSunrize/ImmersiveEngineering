@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -31,7 +32,7 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty() && IEItems.bullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
@@ -50,7 +51,7 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty() && IEItems.bullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;

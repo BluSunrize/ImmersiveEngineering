@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
@@ -36,7 +37,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
-	public static Item itemBlueprint;
 
 	public static ArrayList<String> blueprintCategories = new ArrayList<String>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
@@ -64,7 +64,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static ItemStack getTypedBlueprint(String type)
 	{
-		ItemStack stack = new ItemStack(itemBlueprint,1,0);
+		ItemStack stack = new ItemStack(IEItems.blueprint,1,0);
 		ItemNBTHelper.setString(stack, "blueprint", type);
 		return stack;
 	}

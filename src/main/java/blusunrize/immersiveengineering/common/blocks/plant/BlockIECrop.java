@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.plant;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
@@ -214,8 +215,8 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		{
 			for (int i=0; i<3+fortune; ++i)
 				if(Utils.RAND.nextInt(8) <= meta)
-					drops.add(new ItemStack(IEContent.itemMaterial,1,4));
-			drops.add(new ItemStack(IEContent.itemSeeds,1,0));
+					drops.add(new ItemStack(IEItems.hempFiber));
+			drops.add(new ItemStack(IEItems.hempSeeds));
 		}
 	}
 	@Override

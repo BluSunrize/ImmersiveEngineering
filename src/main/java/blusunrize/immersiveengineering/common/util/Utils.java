@@ -1134,6 +1134,27 @@ public class Utils
 		return delta.dotProduct(across)/across.lengthSquared();
 	}
 
+	public static String createOreDictName(String name)
+	{
+		String upperName = name.toUpperCase();
+		StringBuilder sb = new StringBuilder();
+		boolean nextCapital = false;
+		for (int i = 0; i < name.length(); i++)
+		{
+			if (name.charAt(i) == '_') {
+				nextCapital = true;
+			} else {
+				char nextChar = name.charAt(i);
+				if (nextCapital) {
+					nextChar = upperName.charAt(i);
+					nextCapital = false;
+				}
+				sb.append(nextChar);
+			}
+		}
+		return sb.toString();
+	}
+
 	public static class InventoryCraftingFalse extends InventoryCrafting
 	{
 		private static final Container nullContainer = new Container()

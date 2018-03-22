@@ -1,7 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:toolupgrade",
+    "item": "immersiveengineering:toolupgrade_railgun_capacitors",
     "data": 9
   },
   "pattern": [
@@ -10,8 +10,7 @@
   ],
   "key": {
     "W": {
-      "item": "immersiveengineering:wirecoil",
-      "data": 2
+      "item": "immersiveengineering:wirecoil_hv"
     },
     "H": {
       "item": "immersiveengineering:metal_device0",

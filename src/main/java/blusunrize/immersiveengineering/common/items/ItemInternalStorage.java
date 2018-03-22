@@ -30,9 +30,9 @@ import javax.annotation.Nullable;
 public abstract class ItemInternalStorage extends ItemIEBase
 {
 
-	public ItemInternalStorage(String name, int stackSize, String... subNames)
+	public ItemInternalStorage(String name, int stackSize)
 	{
-		super(name, stackSize, subNames);
+		super(name, stackSize);
 	}
 
 	public abstract int getSlotCount(ItemStack stack);

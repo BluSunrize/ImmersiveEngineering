@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -24,6 +25,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 public class ItemShaderBag extends ItemIEBase
 {
@@ -52,7 +55,7 @@ public class ItemShaderBag extends ItemIEBase
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
 			for(int i=ShaderRegistry.sortedRarityMap.size()-1; i>=0; i--)
@@ -90,7 +93,7 @@ public class ItemShaderBag extends ItemIEBase
 				String shader = ShaderRegistry.getRandomShader(player.getName(), player.getRNG(), stack.getRarity(), true);
 				if(shader==null || shader.isEmpty())
 					return new ActionResult(EnumActionResult.FAIL, stack);
-				ItemStack shaderItem = new ItemStack(IEContent.itemShader);
+				ItemStack shaderItem = new ItemStack(IEItems.shader);
 				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
 				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity())<=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC) && ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity())>=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
 					Utils.unlockIEAdvancement(player, "main/secret_luckofthedraw");

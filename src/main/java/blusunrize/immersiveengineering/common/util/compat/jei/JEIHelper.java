@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
+import blusunrize.immersiveengineering.api.IEItems;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -70,7 +71,7 @@ public class JEIHelper implements IModPlugin
 				return null;
 			}
 		});
-		subtypeRegistry.registerSubtypeInterpreter(IEContent.itemBullet, new ISubtypeInterpreter()
+		subtypeRegistry.registerSubtypeInterpreter(IEItems.bullet, new ISubtypeInterpreter()
 		{
 			@Nullable
 			@Override
@@ -119,7 +120,8 @@ public class JEIHelper implements IModPlugin
 		modRegistry = registryIn;
 		//Blacklist
 		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockCrop, 1, OreDictionary.WILDCARD_VALUE));
-		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.itemFakeIcons, 1, OreDictionary.WILDCARD_VALUE));
+		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEItems.fakeBirthday));
+		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEItems.fakeLucky));
 		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockStoneDevice, 1, OreDictionary.WILDCARD_VALUE));
 		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockMetalMultiblock, 1, OreDictionary.WILDCARD_VALUE));
 

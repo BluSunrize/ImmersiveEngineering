@@ -1,8 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:wirecoil",
-    "data": 6,
+    "item": "immersiveengineering:wirecoil_copper_insulated",
     "count": 4
   },
   "pattern": [

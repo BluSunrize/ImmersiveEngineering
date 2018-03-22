@@ -1,7 +1,7 @@
 {
   "type": "forge:ore_shaped",
   "result": {
-    "item": "immersiveengineering:toolupgrade",
+    "item": "immersiveengineering:toolupgrade_shield_magnet",
     "data": 12
   },
   "pattern": [
