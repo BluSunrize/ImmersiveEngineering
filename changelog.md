@@ -1,4 +1,4 @@
-#####Version 0.12-80
+#####Version 0.12-80 - BUILT
 - Fixed multiblock rendering in the manual with Optifine and texture packs (Malte)
 - Fixed pre-IE-79 multiblocks not working on IE 79 (Malte)
 - Fixed FluidContainer slots not accepting empty containers (BluSunrize)
