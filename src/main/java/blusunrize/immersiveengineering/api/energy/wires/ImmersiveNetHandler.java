@@ -261,7 +261,14 @@ public class ImmersiveNetHandler
 	 */
 	public void resetCachedIndirectConnections(World w, @Nullable BlockPos start)
 	{
+		if (FMLCommonHandler.instance().getEffectiveSide()!=Side.SERVER)
+		{
+			ImmersiveEngineering.proxy.clearConnectionModelCache();
+			return;
+		}
 		int dimension = w.provider.getDimension();
+		if (!directConnections.containsKey(dimension))
+			return;
 		if (start==null)
 		{
 			for (BlockPos pos : directConnections.get(dimension).keySet())

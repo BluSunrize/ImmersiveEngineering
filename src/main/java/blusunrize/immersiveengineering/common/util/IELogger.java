@@ -36,6 +36,21 @@ public class IELogger
 		log(Level.WARN, object);
 	}
 
+	public static void error(String message, Object... params)
+	{
+		logger.log(Level.ERROR, message, params);
+	}
+
+	public static void info(String message, Object... params)
+	{
+		logger.log(Level.INFO, message, params);
+	}
+
+	public static void warn(String message, Object... params)
+	{
+		logger.log(Level.WARN, message, params);
+	}
+
 	public static void debug(Object object)
 	{
 //		if(debug)
