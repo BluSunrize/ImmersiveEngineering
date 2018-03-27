@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.old.ManualPages;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;

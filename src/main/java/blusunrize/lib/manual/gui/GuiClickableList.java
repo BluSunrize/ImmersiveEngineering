@@ -8,35 +8,53 @@
 
 package blusunrize.lib.manual.gui;
 
+import blusunrize.lib.manual.ManualEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Mouse;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+
 public class GuiClickableList extends GuiButton
 {
-	String[] entries;
-	float textScale;
-	int offset;
-	int maxOffset;
+	String[] headers;
+	@Nullable
+	ManualEntry[] entries;
+	private float textScale;
+	private int offset;
+	private int maxOffset;
 	int perPage;
-	int translationType;
-	GuiManual gui;
+	private GuiManual gui;
 
 	private long prevWheelNano = 0;
 
-	public GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, int translationType, String... entries)
+	GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, String[] headers)
+	{
+		super(id, x, y, w, h, "");
+		this.gui = gui;
+		this.textScale = textScale;
+		this.headers = headers;
+
+		perPage = (h-8)/getFontHeight();
+		if(perPage< headers.length)
+			maxOffset = headers.length-perPage;
+	}
+
+	GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, @Nonnull ManualEntry[] entries)
 	{
 		super(id, x, y, w, h, "");
 		this.gui = gui;
 		this.textScale = textScale;
 		this.entries = entries;
-		this.translationType = translationType;
+		this.headers = Arrays.stream(entries).map(ManualEntry::getTitle).toArray(String[]::new);
 
 		perPage = (h-8)/getFontHeight();
-		if(perPage<entries.length)
-			maxOffset = entries.length-perPage;
+		if(perPage< headers.length)
+			maxOffset = headers.length-perPage;
 	}
 
 	int getFontHeight()
@@ -56,7 +74,7 @@ public class GuiClickableList extends GuiButton
 		GlStateManager.translate(x/textScale, y/textScale, 0);
 		GlStateManager.color(1, 1, 1);
 		this.hovered = mx>=x&&mx<x+width && my>=y&&my<y+height;
-		for(int i=0; i<Math.min(perPage, entries.length); i++)
+		for(int i = 0; i<Math.min(perPage, headers.length); i++)
 		{
 			int col = gui.manual.getTextColour();
 			if(hovered && mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
@@ -64,9 +82,9 @@ public class GuiClickableList extends GuiButton
 			if(i!=0)
 				GlStateManager.translate(0, getFontHeight(), 0);
 			int j = offset+i;
-			if(j>entries.length-1)
-				j=entries.length-1;
-			String s = translationType==-1?entries[j]: translationType==0?gui.manual.formatCategoryName(entries[j]):gui.manual.formatEntryName(entries[j]);
+			if(j> headers.length-1)
+				j= headers.length-1;
+			String s = entries==null?gui.manual.formatCategoryName(headers[j]): headers[j];
 			fr.drawString(s, 0,0, col, false);
 		}
 		GlStateManager.scale(1/textScale,1/textScale,1/textScale);
@@ -109,7 +127,7 @@ public class GuiClickableList extends GuiButton
 		if(b)
 		{
 			int mmY = my-this.y;
-			for(int i=0; i<Math.min(perPage, entries.length); i++)
+			for(int i = 0; i<Math.min(perPage, headers.length); i++)
 				if(mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
 					selectedOption=offset+i;
 		}

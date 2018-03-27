@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.lib.manual.ManualPages;
+import blusunrize.lib.manual.old.ManualPages;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 

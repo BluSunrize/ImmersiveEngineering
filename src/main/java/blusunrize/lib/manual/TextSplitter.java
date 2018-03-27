@@ -1,55 +1,51 @@
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.IManualPage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class TextSplitter {
 	private final Function<String, Integer> width;
 	private final int lineWidth;
-	private Map<Integer, Map<Integer, Page>> linesOnSpecialPages = new HashMap<>();
-	private Map<Integer, Page> pageToSpecial = new HashMap<>();
-	private List<List<String>> entry = new ArrayList<>();
-	private Page defPage;
-	private Function<String, String> tokenTransform;
+	private final Map<Integer, Map<Integer, SpecialManualElement>> specialByAnchor = new HashMap<>();
+	private final Map<Integer, SpecialManualElement> specialByPage = new HashMap<>();
+	private final List<List<String>> entry = new ArrayList<>();
+	private final Function<String, String> tokenTransform;
+	private final int linesPerPage;
 
-	public TextSplitter(Function<String, Integer> w, int lW, Function<String, IManualPage> defaultPage,
+	public TextSplitter(Function<String, Integer> w, int lW, int lP,
 						Function<String, String> tokenTransform) {
 		width = w;
 		lineWidth = lW;
-		defPage = new Page(defaultPage);
+		linesPerPage = lP;
 		this.tokenTransform = tokenTransform;
 	}
 
 	public TextSplitter(ManualInstance m)
 	{
-		this(m.fontRenderer::getStringWidth, 120,
-				(s) -> new ManualPages.Text(m, s), (s)->s);
+		this(m.fontRenderer::getStringWidth, 120, 16, (s)->s);
 	}
 
 	public TextSplitter(ManualInstance m, Function<String, String> tokenTransform)
 	{
-		this(m.fontRenderer::getStringWidth, 120,
-				(s) -> new ManualPages.Text(m, s), tokenTransform);
+		this(m.fontRenderer::getStringWidth, 120, 16, tokenTransform);
 	}
 
 	public void clearSpecial() {
-		linesOnSpecialPages.clear();
+		specialByPage.clear();
 	}
 
-	public void addSpecialPage(int ref, int offset, Function<String, IManualPage> factory) {
+	public void addSpecialPage(int ref, int offset, SpecialManualElement element) {
 		if (offset<0||(ref!=-1&&ref<0)) {
 			throw new IllegalArgumentException();
 		}
-		if (!linesOnSpecialPages.containsKey(ref)) {
-			linesOnSpecialPages.put(ref, new HashMap<>());
+		if (!specialByAnchor.containsKey(ref)) {
+			specialByAnchor.put(ref, new HashMap<>());
 		}
-		linesOnSpecialPages.get(ref).put(offset, new Page(factory));
+		specialByAnchor.get(ref).put(offset, element);
 	}
 
 	// I added labels to all break statements to make it more readable
@@ -82,7 +78,7 @@ public class TextSplitter {
 							} else if (text.startsWith("<&")&&text.endsWith(">")) {
 								int id = Integer.parseInt(text.substring(2, text.length()-1));
 								int pageForId = entry.size();
-								Map<Integer, Page> specialForId = linesOnSpecialPages.get(id);
+								Map<Integer, SpecialManualElement> specialForId = specialByAnchor.get(id);
 								if (specialForId!=null&&specialForId.containsKey(0)) {
 									if (page.size()>getLinesOnPage(pageForId)) {
 										pageForId++;
@@ -101,7 +97,8 @@ public class TextSplitter {
 						}
 					}
 				}
-				page.add(line);
+				if (!line.isEmpty())
+					page.add(line);//TODO
 			}
 			if (!page.stream().allMatch(String::isEmpty)) {
 				int linesMax = getLinesOnPage(entry.size());
@@ -112,15 +109,6 @@ public class TextSplitter {
 				entry.add(page);
 			}
 		}
-	}
-
-	public IManualPage[] toManualEntry() {
-		IManualPage[] ret = new IManualPage[entry.size()];
-		for (int i = 0; i < entry.size(); i++) {
-			String s = entry.get(i).stream().collect(Collectors.joining("\n"));
-			ret[i] = pageToSpecial.getOrDefault(i, defPage).factory.apply(s);
-		}
-		return ret;
 	}
 
 	private int getWidth(String text) {
@@ -138,20 +126,20 @@ public class TextSplitter {
 	}
 
 	private int getLinesOnPage(int id) {
-		if (pageToSpecial.containsKey(id)) {
-			return pageToSpecial.get(id).getMaxLines();
+		if (specialByPage.containsKey(id)) {
+			return linesPerPage-specialByPage.get(id).getLinesTaken();
 		}
-		return defPage.getMaxLines();
+		return linesPerPage;
 	}
 
 	private boolean updateSpecials(int ref, int page) {
-		if (linesOnSpecialPages.containsKey(ref)) {
-			for (Map.Entry<Integer, Page> entry :linesOnSpecialPages.get(ref).entrySet()) {
+		if (specialByAnchor.containsKey(ref)) {
+			for (Map.Entry<Integer, SpecialManualElement> entry : specialByAnchor.get(ref).entrySet()) {
 				int specialPage = page+entry.getKey();
-				if (pageToSpecial.containsKey(specialPage)) {
+				if (specialByPage.containsKey(specialPage)) {
 					return true;
 				}
-				pageToSpecial.put(specialPage, entry.getValue());
+				specialByPage.put(specialPage, entry.getValue());
 			}
 		} else if (ref!=-1) {//Default reference for page 0
 			System.out.println("WARNING: Reference "+ref+" was found, but no special pages were registered for it");
@@ -204,21 +192,11 @@ public class TextSplitter {
 		return ret;
 	}
 
-	public List<List<String>> getEntry() {
+	public List<List<String>> getEntryText() {
 		return entry;
 	}
 
-	private class Page {
-		private final Function<String, IManualPage> factory;
-		private IManualPage emptyInstance;
-		public Page(Function<String, IManualPage> f) {
-			factory = f;
-			emptyInstance = f.apply("");
-		}
-		
-		public int getMaxLines()
-		{
-			return emptyInstance.getMaxLines();
-		}
+	public Map<Integer, SpecialManualElement> getSpecials() {
+		return specialByPage;
 	}
 }

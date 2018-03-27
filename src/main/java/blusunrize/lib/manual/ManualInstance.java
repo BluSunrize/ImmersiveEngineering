@@ -17,6 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public abstract class ManualInstance
 {
@@ -49,7 +51,7 @@ public abstract class ManualInstance
 
 	public void openManual(){}
 	public void closeManual(){}
-	public void openEntry(String entry){}
+	public void openEntry(ManualEntry entry){}
 	public void titleRenderPre(){}
 	public void titleRenderPost(){}
 	public void entryRenderPre(){}
@@ -66,45 +68,16 @@ public abstract class ManualInstance
 
 	public ArrayListMultimap<String, ManualEntry> manualContents = ArrayListMultimap.create();
 
-	public void addEntry(String name, String category, IManualPage... pages)
+	public void addEntry(ManualEntry entry)
 	{
-		manualContents.put(category, new ManualEntry(name,category,pages));
+		manualContents.put(entry.getCategory(), entry);
 	}
-	public ManualEntry getEntry(String name)
+	public ManualEntry getEntry(String category, String name)
 	{
-		for(ManualEntry e : manualContents.values())
-			if(e.name.equalsIgnoreCase(name))
+		for(ManualEntry e : manualContents.get(category))
+			if(e.getTitle().equalsIgnoreCase(name))
 				return e;
 		return null;
-	}
-	public static class ManualEntry
-	{
-		String name;
-		String category;
-		IManualPage[] pages;
-		public ManualEntry(String name, String category, IManualPage... pages)
-		{
-			this.name=name;
-			this.category=category;
-			this.pages=pages;
-		}
-
-		public String getName()
-		{
-			return name;
-		}
-		public String getCategory()
-		{
-			return category;
-		}
-		public IManualPage[] getPages()
-		{
-			return pages;
-		}
-		public void setPages(IManualPage[] pages)
-		{
-			this.pages = pages;
-		}
 	}
 
 	public HashMap<Integer, ManualLink> itemLinks = Maps.newHashMap();
@@ -113,14 +86,14 @@ public abstract class ManualInstance
 		itemLinks.clear();
 		for(ManualEntry entry : manualContents.values())
 		{
-			int iP = 0;
-			for(IManualPage p : entry.getPages())
+			final int[] iP = {0};
+			entry.getSpecials().forEach((p)->
 			{
 				p.recalculateCraftingRecipes();
 				for(ItemStack s : p.getProvidedRecipes())
-					itemLinks.put(getItemHash(s), new ManualLink(entry.getName(),iP));
-				iP++;
-			}
+					itemLinks.put(getItemHash(s), new ManualLink(entry, iP[0]));
+				iP[0]++;
+			});
 		}
 	}
 	public ManualLink getManualLink(ItemStack stack)
@@ -144,18 +117,24 @@ public abstract class ManualInstance
 		}
 		return ret;
 	}
+
+	public Stream<ManualEntry> getAllEntries()
+	{
+		return manualContents.entries().stream().map(Map.Entry::getValue);
+	}
+
 	public static class ManualLink
 	{
-		private final String key;
+		private final ManualEntry key;
 		private final int page;
 
-		public ManualLink(String key, int page)
+		public ManualLink(ManualEntry key, int page)
 		{
 			this.key = key;
 			this.page = page;
 		}
 
-		public String getKey()
+		public ManualEntry getKey()
 		{
 			return key;
 		}

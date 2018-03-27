@@ -69,12 +69,13 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import blusunrize.lib.manual.IManualPage;
-import blusunrize.lib.manual.ManualInstance.ManualEntry;
-import blusunrize.lib.manual.ManualPages;
-import blusunrize.lib.manual.ManualPages.PositionedItemStack;
+import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.TextSplitter;
+import blusunrize.lib.manual.old.IManualPage;
+import blusunrize.lib.manual.old.ManualPages;
+import blusunrize.lib.manual.old.ManualPages.PositionedItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -600,7 +601,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageBlueprint(ManualHelper.getManual(), "components3", new ItemStack(IEContent.itemMaterial,1,27)));
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.ItemDisplay(ManualHelper.getManual(), "graphite0", new ItemStack(IEContent.itemMaterial,1,18),new ItemStack(IEContent.itemMaterial,1,19)),new ManualPageBlueprint(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemGraphiteElectrode)));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.Text(ManualHelper.getManual(), "shader2"));
-		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
+		//ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
 		pages = new ArrayList<IManualPage>();
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			pages.add(new ManualPageShader(ManualHelper.getManual(), entry));
@@ -678,30 +679,29 @@ public class ClientProxy extends CommonProxy
 				new ItemStack(IEContent.itemMaterial, 1, 23),
 				new ItemStack(IEContent.itemWireCoil, 1, 2)
 		};
-		TextSplitter splitter = new TextSplitter(ManualHelper.getManual(),
-				(s)->(s.startsWith("<config"))?
-						ManualHelper.getManual().formatConfigEntry(s, ";")
-						:s);
-		splitter.addSpecialPage(0, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s, wires));
-		splitter.addSpecialPage(1, 0, (s)->new ManualPages.Image(ManualHelper.getManual(), s,
+		ManualEntry.ManualEntryBuilder wiring = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+		wiring.addSpecialElement(0, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(), wires));
+		wiring.addSpecialElement(1, 0, new SpecialManualElements.Image(ManualHelper.getManual(),
 				"immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"));
-		splitter.addSpecialPage(1, 1, (s)->new ManualPages.Image(ManualHelper.getManual(), s,
+		wiring.addSpecialElement(1, 1, new SpecialManualElements.Image(ManualHelper.getManual(),
 				"immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"));
-		splitter.addSpecialPage(2, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s,
+		wiring.addSpecialElement(2, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(),
 				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_LV.getMeta()),
 				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_MV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta()),
 				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_HV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta())
 		));
-		splitter.addSpecialPage(3, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s,
+		wiring.addSpecialElement(3, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(),
 				new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())
 		));
-		splitter.addSpecialPage(4, 0, (s)->new ManualPages.CraftingMulti(ManualHelper.getManual(), s,
+		wiring.addSpecialElement(4, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(),
 				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER_HV.getMeta())
 		));
-		splitter.addSpecialPage(5, 0, (s)->new ManualPages.Crafting(ManualHelper.getManual(), s, new ItemStack(IEContent.itemTool,1,1)));
-		splitter.addSpecialPage(6, 0, (s)->new ManualPages.Crafting(ManualHelper.getManual(), s, new ItemStack(IEContent.itemTool,1,2)));
-		splitter.addSpecialPage(7, 0, (s)->new ManualPageMultiblock(ManualHelper.getManual(), s, MultiblockFeedthrough.instance));
-		ManualUtils.addManualEntryFromFile(ManualHelper.getManual(), ManualHelper.CAT_ENERGY, new ResourceLocation(ImmersiveEngineering.MODID, "wiring"), splitter);
+		wiring.addSpecialElement(5, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,1)));
+		wiring.addSpecialElement(6, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,2)));
+		//TODO wiring.addSpecialElement(7, 0, new ManualPageMultiblock(ManualHelper.getManual(), MultiblockFeedthrough.instance));
+		wiring.setCategory(ManualHelper.CAT_ENERGY);
+		wiring.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
+		ManualHelper.getManual().addEntry(wiring.create());
 
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.DYNAMO.getMeta())),
@@ -1017,13 +1017,13 @@ public class ClientProxy extends CommonProxy
 //			String[][][] multiTables = formatToTable_ExcavatorMinerals();
 //			for(String[][] minTable : multiTables)
 //				pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));
-			if(mineralEntry!=null)
-				mineralEntry.setPages(pages.toArray(new IManualPage[pages.size()]));
-			else
-			{
-				ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
-				mineralEntry = ManualHelper.getManual().getEntry("minerals");
-			}
+			//if(mineralEntry!=null)
+			//	mineralEntry.setPages(pages.toArray(new IManualPage[pages.size()]));
+			//else
+			//{
+			//	ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
+			//	mineralEntry = ManualHelper.getManual().getEntry("minerals");
+			//}
 		}
 	}
 	static String[][][] formatToTable_ExcavatorMinerals()

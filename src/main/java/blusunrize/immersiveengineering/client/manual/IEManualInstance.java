@@ -15,12 +15,13 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.IEItemFontRender;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual.MessageType;
-import blusunrize.lib.manual.IManualPage;
+import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.old.IManualPage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -202,14 +203,20 @@ public class IEManualInstance extends ManualInstance
 	{
 		return I18n.format("item.immersiveengineering.tool.manual.name");
 	}
+	LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
 	@Override
+	public void addEntry(ManualEntry entry)
+	{
+		super.addEntry(entry);
+		if(!categorySet.contains(entry.getCategory()))
+			categorySet.add(entry.getCategory());
+	}
+//TODO REMOVE
 	public void addEntry(String name, String category, IManualPage... pages)
 	{
-		super.addEntry(name, category, pages);
-		if(!categorySet.contains(category))
-			categorySet.add(category);
+		//ieManualInstance.addEntry(name, category, pages);
+		IELogger.logger.error("NOT SUPPORTED YET");
 	}
-	LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
 	@Override
 	public String[] getSortedCategoryList()
 	{
@@ -240,7 +247,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		if(entry!=null && ManualHelper.CAT_UPDATE.equalsIgnoreCase(entry.getCategory()))
 			return IEConfig.showUpdateNews;
-		return !(entry != null && "shaderList".equalsIgnoreCase(entry.getName()));
+		return !(entry != null && "shaderList".equalsIgnoreCase(entry.getTitle()));//TODO what should this do?
 	}
 	@Override
 	public boolean showCategoryInList(String category)
@@ -251,13 +258,13 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatLink(ManualLink link)
 	{
-		return TextFormatting.GOLD+"  -> "+formatEntryName(link.getKey())+", "+(link.getPage()+1);
+		return TextFormatting.GOLD+"  -> "+link.getKey().getTitle()+", "+(link.getPage()+1);
 	}
 
 	@Override
-	public void openEntry(String entry)
+	public void openEntry(ManualEntry entry)
 	{
-		if("shaderList".equalsIgnoreCase(entry))
+		if("shaderList".equalsIgnoreCase(entry.getTitle()))//TODO this doesn't work any more
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC,ClientUtils.mc().player.getName()));
 	}
 

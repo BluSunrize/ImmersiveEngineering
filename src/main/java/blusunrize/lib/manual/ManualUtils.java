@@ -11,9 +11,12 @@ package blusunrize.lib.manual;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.lib.manual.gui.GuiButtonManualLink;
+import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
@@ -134,14 +137,13 @@ public class ManualUtils
 	/**
 	 * Custom implementation of drawing a split string because Mojang's doesn't reset text colour between lines >___>
 	 */
-	public static void drawSplitString(FontRenderer fontRenderer, String string, int x, int y, int width, int colour)
+	public static void drawSplitString(FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
 	{
 		fontRenderer.resetStyles();
 		fontRenderer.textColor = colour;
-		List<String> list = fontRenderer.listFormattedStringToWidth(string, width);
 		FloatBuffer currentGLColor = BufferUtils.createFloatBuffer(16);
 		int line = 0;
-		for(Iterator<String> iterator = list.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
+		for(Iterator<String> iterator = text.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
 		{
 			String next = iterator.next();
 			if(line>0)
@@ -165,6 +167,67 @@ public class ManualUtils
 			}
 			fontRenderer.drawString(next, x, y, colour, false);
 		}
+	}
+
+	public static String addLinks(ManualInstance helper, GuiManual gui, String text, int x, int y, int width, List<GuiButton> pageButtons)
+	{
+		List<String[]> repList = new ArrayList<String[]>();
+		int start;
+		int overflow = 0;
+		while((start = text.indexOf("<link")) >= 0&&overflow < 50)
+		{
+			overflow++;
+			int end = text.indexOf(">", start);
+			String rep = text.substring(start, end+1);
+			String[] segment = rep.substring(0, rep.length()-1).split(";");
+			if(segment.length < 3)
+				break;
+			String page = segment.length > 3?segment[3]: "0";
+			String[] resultParts = segment[2].split(" ");
+			StringBuilder result = new StringBuilder();
+			for(int iPart=0; iPart<resultParts.length; iPart++)
+			{
+				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
+				String part = '\u00a7'+String.valueOf((char)(128+repList.size()))+resultParts[iPart];
+				repList.add(new String[]{part, segment[1], page});
+				result.append(iPart > 0 ? " " : "").append(part);
+			}
+			text = text.replaceFirst(rep, result.toString());
+		}
+
+
+		List<String> list = helper.fontRenderer.listFormattedStringToWidth(text, width);
+
+		Iterator<String[]> itRep = repList.iterator();
+		while(itRep.hasNext())
+		{
+			String[] rep = itRep.next();
+			for(int yOff = 0; yOff < list.size(); yOff++)
+			{
+				String s = list.get(yOff);
+				if((start = s.indexOf(rep[0])) >= 0)
+				{
+					String formatIdent = rep[0].substring(0,2);
+					rep[0] = rep[0].substring(2);
+					int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
+					int by = yOff*helper.fontRenderer.FONT_HEIGHT;
+					String bkey = rep[1];
+					int bw = helper.fontRenderer.getStringWidth(rep[0]);
+					int bpage = 0;
+					try
+					{
+						bpage = Integer.parseInt(rep[2]);
+					} catch(Exception e)
+					{
+					}
+					pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx, y+by, bw, (int)(helper.fontRenderer.FONT_HEIGHT*1.5),
+							new ManualInstance.ManualLink(helper.getEntry("", bkey), bpage), rep[0]));//TODO Category!
+					text = text.replaceFirst(formatIdent, "");
+					break;
+				}
+			}
+		}
+		return text;
 	}
 
 	public static String attemptStringTranslation(String tranlationKey, String arg)
@@ -201,51 +264,9 @@ public class ManualUtils
 		return mc().getRenderItem();
 	}
 
-	public static void addManualEntryFromFile(ManualInstance manual, String category, ResourceLocation name, TextSplitter splitter)
-	{
-		ResourceLocation realLoc = new ResourceLocation(name.getResourceDomain(),
-				"manual/" + Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
-						+ "/" + name.getResourcePath()+".txt");
-		IResource res = getResourceNullable(realLoc);
-		if (res == null)
-			res = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
-					"manual/en_us/" + name.getResourcePath()+".txt"));
-		if (res==null)
-			return;
-		try
-		{
-			byte[] bytes = IOUtils.toByteArray(res.getInputStream());
-			String content = new String(bytes);
-			int titleEnd = content.indexOf('\n');
-			String title = content.substring(0, titleEnd);
-			content = content.substring(titleEnd+1);
-			int subtitleEnd = content.indexOf('\n');
-			String subTitle = content.substring(0, subtitleEnd);
-			content = content.substring(subtitleEnd+1);
-			IELogger.logger.info(title+" ("+subTitle+")");//TODO
-			boolean prev = manual.fontRenderer.getUnicodeFlag();
-			manual.fontRenderer.setUnicodeFlag(true);
-			manual.entryRenderPre();
-			splitter.split(content);
-			manual.entryRenderPost();
-			manual.fontRenderer.setUnicodeFlag(prev);
-			manual.addEntry(name.getResourceDomain(), category, splitter.toManualEntry());
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
 
-	private static IResource getResourceNullable(ResourceLocation rl)
+	public static void drawSplitString(FontRenderer fontRenderer, String localizedText, int x, int i, int i1, int textColour)
 	{
-		try
-		{
-			return Minecraft.getMinecraft().getResourceManager().getResource(rl);
-		}
-		catch (IOException e)
-		{
-			return null;
-		}
+		throw new UnsupportedOperationException();
 	}
 }

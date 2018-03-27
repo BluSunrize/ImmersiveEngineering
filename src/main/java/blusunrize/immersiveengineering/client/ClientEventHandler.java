@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -44,6 +45,7 @@ import blusunrize.immersiveengineering.common.util.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
+import blusunrize.lib.manual.ManualEntry;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -123,6 +125,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_" + i);
 
 		ImmersiveEngineering.proxy.clearRenderCaches();
+
+		if (ManualHelper.getManual()!=null)
+			ManualHelper.getManual().getAllEntries()
+					.forEach(ManualEntry::refreshPages);
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet<>();
