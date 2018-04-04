@@ -30,6 +30,8 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration.FENCE;
+
 public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecoration>
 {
 	public BlockWoodenDecoration()
@@ -59,7 +61,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
 	{
 		int meta = this.getMetaFromState(world.getBlockState(pos));
-		if(meta==BlockTypes_WoodenDecoration.FENCE.getMeta())
+		if(meta==FENCE.getMeta())
 		{
 			IBlockState connector = world.getBlockState(pos.offset(facing));
 			return connector.getBlock() instanceof BlockMetalDecoration1&&this.getMetaFromState(connector)==meta;
@@ -72,8 +74,6 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	{
 		//		int meta = world.getBlockMetadata(x, y, z);
 		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_WoodenDecoration.FENCE.getMeta())
-			return side==EnumFacing.UP;
 		if(meta==BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
 			return true;
 		//		TileEntity te = world.getTileEntity(x, y, z);
@@ -104,7 +104,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
 	{
 		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_WoodenDecoration.FENCE.getMeta())
+		if(meta==FENCE.getMeta())
 			return side != EnumFacing.UP && side != EnumFacing.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
 		return BlockFaceShape.SOLID;
 	}
@@ -130,7 +130,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		state  = super.getActualState(state, world, pos);
-		if(this.getMetaFromState(state)==BlockTypes_WoodenDecoration.FENCE.getMeta())
+		if(this.getMetaFromState(state)==FENCE.getMeta())
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
 				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
 		return state;
@@ -193,7 +193,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
 	{
 		state = state.getActualState(worldIn, pos);
-		if(getMetaFromState(state)==BlockTypes_WoodenDecoration.FENCE.getMeta())
+		if(getMetaFromState(state)==FENCE.getMeta())
 		{
 			addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.PILLAR_AABB);
 			if(state.getValue(BlockFence.NORTH))
@@ -212,7 +212,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_WoodenDecoration.FENCE.getMeta())
+		if(meta==FENCE.getMeta())
 			return new AxisAlignedBB(Utils.canFenceConnectTo(world,pos,EnumFacing.WEST,blockMaterial)?0:.375f,0,Utils.canFenceConnectTo(world,pos,EnumFacing.NORTH,blockMaterial)?0:.375f, Utils.canFenceConnectTo(world,pos,EnumFacing.EAST,blockMaterial)?1:.625f,1f,Utils.canFenceConnectTo(world,pos,EnumFacing.SOUTH,blockMaterial)?1:.625f);
 		else if(meta==BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
 			return FULL_BLOCK_AABB;
@@ -244,9 +244,16 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	@Override
 	public PathNodeType getAiPathNodeType(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if (state.getValue(property) == BlockTypes_WoodenDecoration.FENCE)
+		if (state.getValue(property) == FENCE)
 			return PathNodeType.FENCE;
 		else
 			return super.getAiPathNodeType(state, world, pos);
+	}
+
+	@Override
+	public boolean canPlaceTorchOnTop(IBlockState state, IBlockAccess world, BlockPos pos)
+	{
+		//TODO remove in 1.13 when fences extend BlockFence (Mojang has a special case for fences)
+		return state.getValue(property)==FENCE||super.canPlaceTorchOnTop(state, world, pos);
 	}
 }
