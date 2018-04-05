@@ -378,6 +378,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void init()
 	{
+		super.init();
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(handler);

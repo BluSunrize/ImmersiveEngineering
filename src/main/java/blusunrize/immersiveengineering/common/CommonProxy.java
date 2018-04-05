@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
+import blusunrize.immersiveengineering.common.items.DataFixer1213;
 import blusunrize.immersiveengineering.common.util.network.MessageObstructedConnection;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,9 +41,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -58,7 +61,12 @@ public class CommonProxy implements IGuiHandler
 	public void preInitEnd()
 	{
 	}
-	public void init(){}
+	public void init()
+	{
+		ModFixs fixer = FMLCommonHandler.instance().getDataFixer().init(ImmersiveEngineering.MODID,
+				ImmersiveEngineering.DATA_FIXER_VERSION);
+		fixer.registerFix(FixTypes.ITEM_INSTANCE, new DataFixer1213());
+	}
 
 	public void initEnd()
 	{

@@ -23,9 +23,10 @@ import javax.annotation.Nonnull;
 
 public class ItemManual extends ItemIEBase implements IGuiItem
 {
+	public static final String NAME = "manual";
 	public ItemManual()
 	{
-		super("manual", 1);
+		super(NAME, 1);
 	}
 
 	@Override
