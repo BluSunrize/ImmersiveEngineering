@@ -312,19 +312,16 @@ public class EventHandler
 						itExplosion.remove();
 				}
 			}
-			synchronized (requestedBlockUpdates)
+			while (!requestedBlockUpdates.isEmpty())
 			{
-				while (!requestedBlockUpdates.isEmpty())
+				Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
+				if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 				{
-					Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
-					if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+					World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(curr.getLeft());
+					if(w!=null)
 					{
-						World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(curr.getLeft());
-						if(w!=null)
-						{
-							IBlockState state = w.getBlockState(curr.getRight());
-							w.notifyBlockUpdate(curr.getRight(), state,state, 3);
-						}
+						IBlockState state = w.getBlockState(curr.getRight());
+						w.notifyBlockUpdate(curr.getRight(), state,state, 3);
 					}
 				}
 			}

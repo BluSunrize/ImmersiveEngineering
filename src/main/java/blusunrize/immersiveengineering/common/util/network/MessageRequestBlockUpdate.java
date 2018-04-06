@@ -47,12 +47,9 @@ public class MessageRequestBlockUpdate implements IMessage
 		{
 			WorldServer world = ctx.getServerHandler().player.getServerWorld();
 			world.addScheduledTask(() -> {
-				synchronized (EventHandler.requestedBlockUpdates)
-				{
-					if (world.isBlockLoaded(message.pos)) {
-						int dim = world.provider.getDimension();
-						EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, message.pos));
-					}
+				if (world.isBlockLoaded(message.pos)) {
+					int dim = world.provider.getDimension();
+					EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, message.pos));
 				}
 			});
 			return null;
