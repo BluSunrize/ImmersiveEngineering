@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -108,13 +109,15 @@ public class MessageShaderManual implements IMessage
 		@Override
 		public IMessage onMessage(MessageShaderManual message, MessageContext ctx)
 		{
-			if(message.key==MessageType.SYNC && message.args.length>0)
-			{
-				String name = ClientUtils.mc().player.getName();
-				for (String shader : message.args)
-					if(shader!=null)
-						ShaderRegistry.receivedShaders.put(name, shader);
-			}
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				if(message.key==MessageType.SYNC && message.args.length>0)
+				{
+					String name = ClientUtils.mc().player.getName();
+					for (String shader : message.args)
+						if(shader!=null)
+							ShaderRegistry.receivedShaders.put(name, shader);
+				}
+			});
 			return null;
 		}
 	}
