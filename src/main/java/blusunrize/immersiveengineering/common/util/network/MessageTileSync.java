@@ -45,7 +45,7 @@ public class MessageTileSync implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-	    buf.writeLong(this.pos.toLong());
+		buf.writeLong(this.pos.toLong());
 		ByteBufUtils.writeTag(buf, this.nbt);
 	}
 
@@ -54,8 +54,8 @@ public class MessageTileSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageTileSync message, MessageContext ctx)
 		{
-		    WorldServer world = ctx.getServerHandler().player.getServerWorld();
-		    world.addScheduledTask(() -> {
+			WorldServer world = ctx.getServerHandler().player.getServerWorld();
+			world.addScheduledTask(() -> {
 				if (world.isBlockLoaded(message.pos)) {
 					TileEntity tile = world.getTileEntity(message.pos);
 					if(tile instanceof TileEntityIEBase)

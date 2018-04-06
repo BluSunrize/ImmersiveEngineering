@@ -69,7 +69,7 @@ public class MessageObstructedConnection implements IMessage
 		{
 			Minecraft.getMinecraft().addScheduledTask(() -> {
 				ImmersiveNetHandler.Connection conn = new ImmersiveNetHandler.Connection(message.startB, message.endB, message.wireType,
-					(int)Math.sqrt(message.startB.distanceSq(message.endB)));
+						(int)Math.sqrt(message.startB.distanceSq(message.endB)));
 				conn.getSubVertices(message.start, message.end);
 				ImmersiveEngineering.proxy.addFailedConnection(conn, message.blocking, null);
 			});

@@ -64,8 +64,8 @@ public class MessageMinecartShaderSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageMinecartShaderSync message, MessageContext ctx)
 		{
-		    WorldServer world = ctx.getServerHandler().player.getServerWorld();
-		    world.addScheduledTask(() -> {
+			WorldServer world = ctx.getServerHandler().player.getServerWorld();
+			world.addScheduledTask(() -> {
 				Entity entity = world.getEntityByID(message.entityID);
 				if(entity!=null && entity.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 				{

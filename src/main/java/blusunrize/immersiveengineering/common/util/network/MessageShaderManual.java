@@ -80,7 +80,7 @@ public class MessageShaderManual implements IMessage
 					Collection<String> received = ShaderRegistry.receivedShaders.get(playerName);
 					String[] ss = received.toArray(new String[received.size()+1]);
 					System.arraycopy(ss,0, ss,1, ss.length-1);
-                    ss[0] = playerName;
+					ss[0] = playerName;
 					ImmersiveEngineering.packetHandler.sendTo(new MessageShaderManual(MessageType.SYNC,ss), player);
 				}
 				else if(message.key==MessageType.UNLOCK && message.args.length>0)

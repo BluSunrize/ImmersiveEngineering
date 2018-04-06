@@ -37,7 +37,7 @@ public class MessageRequestBlockUpdate implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-	    buf.writeLong(pos.toLong());
+		buf.writeLong(pos.toLong());
 	}
 
 	public static class Handler implements IMessageHandler<MessageRequestBlockUpdate, IMessage>

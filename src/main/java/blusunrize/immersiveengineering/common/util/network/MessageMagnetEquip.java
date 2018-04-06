@@ -45,8 +45,8 @@ public class MessageMagnetEquip implements IMessage
 		@Override
 		public IMessage onMessage(MessageMagnetEquip message, MessageContext ctx)
 		{
-		    EntityPlayerMP player = ctx.getServerHandler().player;
-		    player.getServerWorld().addScheduledTask(() -> {
+        	EntityPlayerMP player = ctx.getServerHandler().player;
+        	player.getServerWorld().addScheduledTask(() -> {
 				ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
 				if(message.fetchSlot>=0)
 				{
