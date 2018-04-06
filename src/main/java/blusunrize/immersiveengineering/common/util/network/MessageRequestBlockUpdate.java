@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.network;
 import blusunrize.immersiveengineering.common.EventHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -18,12 +19,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 public class MessageRequestBlockUpdate implements IMessage
 {
-	int dim;
 	BlockPos pos;
-	public MessageRequestBlockUpdate(int dimension, BlockPos pos)
+	public MessageRequestBlockUpdate(BlockPos pos)
 	{
 		this.pos = pos;
-		dim = dimension;
 	}
 	public MessageRequestBlockUpdate()
 	{
@@ -32,14 +31,13 @@ public class MessageRequestBlockUpdate implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		dim = buf.readInt();
-		pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+		pos = BlockPos.fromLong(buf.readLong());
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeInt(dim).writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
+	    buf.writeLong(pos.toLong());
 	}
 
 	public static class Handler implements IMessageHandler<MessageRequestBlockUpdate, IMessage>
@@ -47,10 +45,16 @@ public class MessageRequestBlockUpdate implements IMessage
 		@Override
 		public IMessage onMessage(MessageRequestBlockUpdate message, MessageContext ctx)
 		{
-			synchronized (EventHandler.requestedBlockUpdates)
-			{
-				EventHandler.requestedBlockUpdates.offer(new ImmutablePair<Integer, BlockPos>(message.dim, message.pos));
-			}
+			WorldServer world = ctx.getServerHandler().player.getServerWorld();
+			world.addScheduledTask(() -> {
+				synchronized (EventHandler.requestedBlockUpdates)
+				{
+					if (world.isBlockLoaded(message.pos)) {
+						int dim = world.provider.getDimension();
+						EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, message.pos));
+					}
+				}
+			});
 			return null;
 		}
 	}

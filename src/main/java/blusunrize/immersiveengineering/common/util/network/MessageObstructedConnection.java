@@ -78,13 +78,12 @@ public class MessageObstructedConnection implements IMessage
 		@Override
 		public IMessage onMessage(MessageObstructedConnection message, MessageContext ctx)
 		{
-			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-			{
+			Minecraft.getMinecraft().addScheduledTask(() -> {
 				ImmersiveNetHandler.Connection conn = new ImmersiveNetHandler.Connection(message.startB, message.endB, message.wireType,
-						(int)Math.sqrt(message.startB.distanceSq(message.endB)));
+					(int)Math.sqrt(message.startB.distanceSq(message.endB)));
 				conn.getSubVertices(message.start, message.end);
 				ImmersiveEngineering.proxy.addFailedConnection(conn, message.blocking, null);
-			}
+			});
 			return null;
 		}
 	}

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -55,8 +56,7 @@ public class MessageSpeedloaderSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageSpeedloaderSync message, MessageContext ctx)
 		{
-			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-			{
+			Minecraft.getMinecraft().addScheduledTask(() -> {
 				EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
 				if(player.getHeldItem(message.hand).getItem() instanceof ItemRevolver)
 				{
@@ -64,7 +64,7 @@ public class MessageSpeedloaderSync implements IMessage
 					ItemNBTHelper.setInt(player.getHeldItem(message.hand), "reload", 60);
 				}
 				player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemSpeedloader));
-			}
+			});
 			return null;
 		}
 	}

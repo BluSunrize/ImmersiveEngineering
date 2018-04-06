@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -79,18 +80,20 @@ public class MessageSkyhookSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageSkyhookSync message, MessageContext ctx)
 		{
-			World world = ImmersiveEngineering.proxy.getClientWorld();
-			if(world!=null)
-			{
-				Entity ent = world.getEntityByID(message.entityID);
-				if(ent instanceof EntitySkylineHook)
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				World world = ImmersiveEngineering.proxy.getClientWorld();
+				if(world!=null)
 				{
-					((EntitySkylineHook)ent).connection = message.connection;
-					((EntitySkylineHook)ent).target = message.target;
-					((EntitySkylineHook)ent).subPoints = message.subPoints;
-					((EntitySkylineHook)ent).targetPoint = message.targetPoint;
+					Entity ent = world.getEntityByID(message.entityID);
+					if(ent instanceof EntitySkylineHook)
+					{
+						((EntitySkylineHook)ent).connection = message.connection;
+						((EntitySkylineHook)ent).target = message.target;
+						((EntitySkylineHook)ent).subPoints = message.subPoints;
+						((EntitySkylineHook)ent).targetPoint = message.targetPoint;
+					}
 				}
-			}
+			});
 			return null;
 		}
 	}
