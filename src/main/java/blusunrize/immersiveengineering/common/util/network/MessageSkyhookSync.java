@@ -49,7 +49,7 @@ public class MessageSkyhookSync implements IMessage
 		entityID = buf.readInt();
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
 		connection = Connection.readFromNBT(tag);
-		target = new BlockPos(buf.readLong());
+		target = BlockPos.fromLong(buf.readLong());
 		int l = buf.readInt();
 		subPoints = new Vec3d[l];
 		for(int i=0; i<l; i++)
