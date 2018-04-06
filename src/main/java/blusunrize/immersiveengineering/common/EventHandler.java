@@ -317,11 +317,11 @@ public class EventHandler
 			{
 				Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
 				World w = DimensionManager.getWorld(curr.getLeft());
-                if(w!=null)
-                {
-                    IBlockState state = w.getBlockState(curr.getRight());
-                    w.notifyBlockUpdate(curr.getRight(), state,state, 3);
-                }
+				if(w!=null)
+				{
+					IBlockState state = w.getBlockState(curr.getRight());
+					w.notifyBlockUpdate(curr.getRight(), state,state, 3);
+				}
 			}
 		}
 	}
