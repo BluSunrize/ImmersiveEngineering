@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
@@ -78,9 +79,7 @@ public class MessageShaderManual implements IMessage
 				if(message.key==MessageType.SYNC)
 				{
 					Collection<String> received = ShaderRegistry.receivedShaders.get(playerName);
-					String[] ss = received.toArray(new String[received.size()+1]);
-					System.arraycopy(ss,0, ss,1, ss.length-1);
-					ss[0] = playerName;
+					String[] ss = received.toArray(new String[received.size()]);
 					ImmersiveEngineering.packetHandler.sendTo(new MessageShaderManual(MessageType.SYNC,ss), player);
 				}
 				else if(message.key==MessageType.UNLOCK && message.args.length>0)
@@ -111,11 +110,10 @@ public class MessageShaderManual implements IMessage
 		{
 			if(message.key==MessageType.SYNC && message.args.length>0)
 			{
-				// Clientbound sync message, the first arg is a player name
-				String name = message.args[0];
-				for(int i=1; i<message.args.length; i++)
-					if(message.args[i]!=null)
-						ShaderRegistry.receivedShaders.put(name, message.args[i]);
+				String name = ClientUtils.mc().player.getName();
+				for (String shader : message.args)
+					if(shader!=null)
+						ShaderRegistry.receivedShaders.put(name, shader);
 			}
 			return null;
 		}
