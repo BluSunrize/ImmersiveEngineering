@@ -110,7 +110,7 @@ public class MessageShaderManual implements IMessage
 		public IMessage onMessage(MessageShaderManual message, MessageContext ctx)
 		{
 			Minecraft.getMinecraft().addScheduledTask(() -> {
-				if(message.key==MessageType.SYNC && message.args.length>0)
+				if(message.key==MessageType.SYNC)
 				{
 					String name = ClientUtils.mc().player.getName();
 					for (String shader : message.args)
