@@ -83,7 +83,6 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		int meta = this.getMetaFromState(state);
 		if(state.getValue(this.property).isScaffold())
 			return true;
 		return super.isSideSolid(state, world, pos, side);
