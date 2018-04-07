@@ -38,14 +38,14 @@ public class MessageTileSync implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		this.pos = BlockPos.fromLong(buf.readLong());
+		this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
 		this.nbt =  ByteBufUtils.readTag(buf);
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeLong(this.pos.toLong());
+		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
 		ByteBufUtils.writeTag(buf, this.nbt);
 	}
 

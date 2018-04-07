@@ -31,13 +31,13 @@ public class MessageRequestBlockUpdate implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		pos = BlockPos.fromLong(buf.readLong());
+		pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeLong(pos.toLong());
+		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
 	}
 
 	public static class Handler implements IMessageHandler<MessageRequestBlockUpdate, IMessage>
