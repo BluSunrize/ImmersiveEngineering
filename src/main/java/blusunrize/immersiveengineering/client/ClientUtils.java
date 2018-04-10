@@ -1910,4 +1910,21 @@ public class ClientUtils
 
 		}
 	}
+
+	//Taken from TESR
+	public static void setLightmapDisabled(boolean disabled)
+	{
+		GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+
+		if (disabled)
+		{
+			GlStateManager.disableTexture2D();
+		}
+		else
+		{
+			GlStateManager.enableTexture2D();
+		}
+
+		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+	}
 }

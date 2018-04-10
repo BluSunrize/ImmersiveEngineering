@@ -1,6 +1,3 @@
 {
-	"parent":"immersiveengineering:item/ie_item_base",
-	"textures": {
-		"layer0":"immersiveengineering:items/drill_diesel"
-	}
+	"parent":"builtin/generated"
 }

@@ -12,16 +12,21 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
+import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
 import blusunrize.immersiveengineering.client.ClientProxy;
+import blusunrize.immersiveengineering.client.render.ItemRenderFluorescentTube;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -31,15 +36,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
+public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool, ITeslaEquipment
 {
 
 	public ItemFluorescentTube()
 	{
 		super("fluorescent_tube", 1);
+		//TODO this is SideOnly(CLIENT)
+		setTileEntityItemStackRenderer(new ItemRenderFluorescentTube());
 	}
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
@@ -155,5 +165,41 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 		while (hexCol.length()<6)
 			hexCol = "0"+hexCol;
 		return hexCol;
+	}
+
+	private static final String IS_LIT = "isLit";
+
+	public static boolean isLit(ItemStack stack)
+	{
+		return ItemNBTHelper.hasKey(stack, IS_LIT);
+	}
+
+	public static void setLit(ItemStack stack)
+	{
+		ItemNBTHelper.setInt(stack, IS_LIT, 35);
+	}
+
+	@Override
+	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg)
+	{
+		setLit(s);
+	}
+
+	@Override
+	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+	{
+		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+		int litTicksRemaining = ItemNBTHelper.getInt(stack, IS_LIT);
+		litTicksRemaining--;
+		if (litTicksRemaining<=0)
+			ItemNBTHelper.remove(stack, IS_LIT);
+		else
+			ItemNBTHelper.setInt(stack, IS_LIT, litTicksRemaining);
+	}
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
+	{
+		return !ItemStack.areItemsEqual(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
 	}
 }
