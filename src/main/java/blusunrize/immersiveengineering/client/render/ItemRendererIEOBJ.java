@@ -11,13 +11,11 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -26,6 +24,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
@@ -44,6 +43,7 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 	@Override
 	public void renderByItem(ItemStack stack, float partialTicks)
 	{
+		GlStateManager.enableCull();
 		partialTicks = mc().getRenderPartialTicks();
 		if (stack.getItem() instanceof IOBJModelCallback)
 		{
@@ -77,9 +77,28 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 					Matrix4 mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
 							ItemRendererIEOBJ.mat, partialTicks);
 					GlStateManager.multMatrix(mat.toFloatBuffer(transform));
-					//TODO fullbright
+					boolean wasLightmapEnabled, wasLightingEnabled;
+					{
+						GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+						wasLightmapEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
+						GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+						wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
+					}
+					boolean bright = callback.areGroupsFullbright(stack, groups);
+					if (bright)
+					{
+						GlStateManager.disableLighting();
+						ClientUtils.setLightmapDisabled(true);
+					}
 					renderQuadsForGroups(groups, callback, obj, quads, stack,
 							sCase, shader, bb, tes, visible);
+					if (bright)
+					{
+						if (wasLightingEnabled)
+							GlStateManager.enableLighting();
+						if (wasLightmapEnabled)
+							ClientUtils.setLightmapDisabled(false);
+					}
 					GlStateManager.popMatrix();
 				}
 				renderQuadsForGroups(visible.keySet().toArray(new String[0]), callback, obj, quads, stack,
@@ -93,14 +112,19 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible)
 	{
 		quadsForGroup.clear();
-		for (String g:groups)
+		for (String g : groups)
 		{
-			if (visible.getOrDefault(g, Boolean.FALSE)&&callback.shouldRenderGroup(stack, g))
+			if (visible.getOrDefault(g, Boolean.FALSE) && callback.shouldRenderGroup(stack, g))
 				model.addQuadsForGroup(callback, stack, g, sCase, shader, quadsForGroup);
 			visible.remove(g);
 		}
-		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
-		mc().getRenderItem().renderQuads(bb, quadsForGroup, -1, stack);
+		if (!callback.areGroupsFullbright(stack, groups))
+			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+		else
+			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
+		for (BakedQuad bq : quadsForGroup)
+			bq.pipe(vbc);
 		tes.draw();
 	}
 }

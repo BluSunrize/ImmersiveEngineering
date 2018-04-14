@@ -95,22 +95,22 @@ public class IESmartObjModel extends OBJBakedModel
 		if(!this.tempStack.isEmpty() && this.tempStack.getItem() instanceof IOBJModelCallback)
 			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix, tempEntity);
 
-//		Matrix4 matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
+		//matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
 		//Dynamic stuff to use when figurign out positioning for new items!
-//		if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)//FP_R
-//			matrix = new Matrix4().rotate(Math.toRadians(90), 0,1,0).rotate(.1,1,0,0).translate(.5, .125, .5);
-//		else if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)//FP_L
-//			matrix = new Matrix4().rotate(Math.toRadians(-90), 0,1,0).rotate(-.1,1,0,0).translate(-.5, .125, .5);
-//		else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND) //TP_R
-//			matrix = new Matrix4().translate(.59375, .375,.75);
-//		else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND) //TP_L
-//			matrix = new Matrix4().rotate(3.14159, 0,1,0).translate(-.59375, .375,.25);
-//		else if(cameraTransformType==TransformType.FIXED) //FIXED
-//			matrix = new Matrix4().rotate(1.57079, 0,1,0).scale(.75f,.75f,.75f).translate(.375, .5, .5);
-//		else if(cameraTransformType==TransformType.GUI) //INV
-//			matrix = new Matrix4().translate(.5, .3125,0).scale(.75,.625,.75).rotate(0.78539, 0,1,0).rotate(-0.13089, 0,0,1);
-//		else //GROUND
-//			matrix = new Matrix4().translate(.125, .125, .125).scale(.25, .25, .25);
+		//if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)//FP_R
+		//	matrix = new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0);
+		//else if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)//FP_L
+		//	matrix = new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0);
+		//else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND) //TP_R
+		//	matrix = new Matrix4().translate(0, .5, .1);
+		//else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND) //TP_L
+		//	matrix = new Matrix4().translate(0, .5, .1);
+		//else if(cameraTransformType==TransformType.FIXED) //FIXED
+		//	matrix = new Matrix4();
+		//else if(cameraTransformType==TransformType.GUI) //INV
+		//	matrix = new Matrix4().rotate(-Math.PI/4, 0, 0, 1).rotate(Math.PI/8, 0, 1, 0);
+		//else //GROUND
+		//	matrix = new Matrix4().translate(10, 5, 10).scale(1, 1, 1);
 
 		return Pair.of(this, matrix.toMatrix4f());
 	}

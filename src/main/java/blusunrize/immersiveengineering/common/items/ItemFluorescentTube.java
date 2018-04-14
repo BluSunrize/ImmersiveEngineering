@@ -14,10 +14,12 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
 import blusunrize.immersiveengineering.client.ClientProxy;
-import blusunrize.immersiveengineering.client.render.ItemRenderFluorescentTube;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -42,14 +44,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool, ITeslaEquipment
+public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool, ITeslaEquipment,
+		IOBJModelCallback<ItemStack>
 {
 
 	public ItemFluorescentTube()
 	{
 		super("fluorescent_tube", 1);
-		//TODO this is SideOnly(CLIENT)
-		setTileEntityItemStackRenderer(new ItemRenderFluorescentTube());
 	}
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
@@ -151,17 +152,17 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		if(pass==0)
-			return getRGBInt(stack);
+			return getRGBInt(stack, 1);
 		return super.getColourForIEItem(stack, pass);
 	}
-	public static int getRGBInt(ItemStack stack)
+	public static int getRGBInt(ItemStack stack, float factor)
 	{
 		float[] fRGB = getRGB(stack);
-		return (((int)(fRGB[0]*255)<<16)+((int)(fRGB[1]*255)<<8)+(int)(fRGB[2]*255));
+		return (((int)(fRGB[0]*255*factor)<<16)+((int)(fRGB[1]*255*factor)<<8)+(int)(fRGB[2]*255*factor));
 	}
 	public static String hexColorString(ItemStack stack)
 	{
-		String hexCol = Integer.toHexString(getRGBInt(stack));
+		String hexCol = Integer.toHexString(getRGBInt(stack, 1));
 		while (hexCol.length()<6)
 			hexCol = "0"+hexCol;
 		return hexCol;
@@ -201,5 +202,33 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
 	{
 		return !ItemStack.areItemsEqual(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
+	}
+
+	private static final String[][] special = {{"tube"}};
+	@Override
+	public String[][] getSpecialGroups(ItemStack stack, ItemCameraTransforms.TransformType transform, EntityLivingBase entity)
+	{
+		if (isLit(stack))
+			return special;
+		return IOBJModelCallback.EMPTY_STRING_A;
+	}
+
+	@Override
+	public boolean areGroupsFullbright(ItemStack stack, String[] groups)
+	{
+		return groups.length==1&&"tube".equals(groups[0])&&isLit(stack);
+	}
+
+	@Override
+	public int getRenderColour(ItemStack object, String group)
+	{
+		if ("tube".equals(group))
+		{
+			float min = .6F;
+			float mult = min+(isLit(object)? Utils.RAND.nextFloat()*(1-min):0);
+			return getRGBInt(object, mult) | 0xff000000;
+		}
+		else
+			return 0xff111111;
 	}
 }

@@ -510,7 +510,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					else if (OreDictionary.itemMatches(equipped, new ItemStack(IEContent.itemFluorescentTube), false))
 					{
 						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
-						ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped), true);
+						ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2,
+								event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped, 1), true);
 					}
 					else if(equipped.getItem() instanceof ItemRevolver || equipped.getItem() instanceof ItemSpeedloader)
 					{

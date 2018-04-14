@@ -1,5 +1,6 @@
 {
 	"parent":"builtin/entity",
+	"model": "immersiveengineering:fluorescent_tube.obj.ie",
 	"display": {
 		"thirdperson_righthand": {
 			"rotation": [ 0, 0, 0 ],

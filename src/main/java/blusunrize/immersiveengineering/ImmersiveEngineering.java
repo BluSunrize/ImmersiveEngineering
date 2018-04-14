@@ -49,7 +49,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION,
-		dependencies = "required-after:forge@[14.22.0.2447,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
+		dependencies = "required-after:forge@[14.22.0.2639,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
 		certificateFingerprint = "4cb49fcde3b43048c9889e0a3d083225da926334", acceptedMinecraftVersions = "[1.12,1.12.2]")
 public class ImmersiveEngineering
 {
