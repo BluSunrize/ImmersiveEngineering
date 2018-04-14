@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.models.ModelCoresample;
 import blusunrize.immersiveengineering.client.models.smart.FeedthroughModel;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
@@ -54,13 +55,12 @@ public class ImmersiveModelRegistry
 	{
 		for(Map.Entry<ModelResourceLocation, ItemModelReplacement> entry : itemModelReplacements.entrySet())
 		{
-			Object object = event.getModelRegistry().getObject(entry.getKey());
-			if(object instanceof IBakedModel)
+			IBakedModel object = event.getModelRegistry().getObject(entry.getKey());
+			if(object != null)
 			{
 				try
 				{
-					IBakedModel existingModel = (IBakedModel) object;
-					event.getModelRegistry().putObject(entry.getKey(), entry.getValue().createBakedModel(existingModel));
+					event.getModelRegistry().putObject(entry.getKey(), entry.getValue().createBakedModel(object));
 				} catch(Exception e)
 				{
 					e.printStackTrace();
@@ -103,10 +103,12 @@ public class ImmersiveModelRegistry
 	{
 		String objPath;
 		HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
+		boolean dynamic;
 
-		public ItemModelReplacement_OBJ(String path)
+		public ItemModelReplacement_OBJ(String path, boolean dynamic)
 		{
 			this.objPath = path;
+			this.dynamic = dynamic;
 			for(TransformType t : TransformType.values())
 				transformationMap.put(t, new Matrix4());
 		}
@@ -139,12 +141,14 @@ public class ImmersiveModelRegistry
 				for(String s : objModel.getMatLib().getMaterialNames())
 					if(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath().startsWith("#"))
 					{
-						FMLLog.severe("OBJLoader: Unresolved texture '%s' for obj model '%s'", objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(), modelLocation);
+						IELogger.error("OBJLoader: Unresolved texture '{}' for obj model '{}'",
+								objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(), modelLocation);
 						builder.put(s, missing);
 					} else
 						builder.put(s, textureGetter.apply(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation()));
 
-				return new IESmartObjModel(existingModel, objModel, new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM, builder.build(), transformationMap);
+				return new IESmartObjModel(existingModel, objModel, new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
+						DefaultVertexFormats.ITEM, builder.build(), transformationMap, dynamic);
 			} catch(Exception e)
 			{
 				e.printStackTrace();

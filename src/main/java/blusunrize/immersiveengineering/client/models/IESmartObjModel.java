@@ -18,8 +18,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -68,18 +66,22 @@ public class IESmartObjModel extends OBJBakedModel
 	ImmutableList<BakedQuad> bakedQuads;
 	ItemStack tempStack = ItemStack.EMPTY;
 	IBlockState tempState;
-	EntityLivingBase tempEntity;
+	public EntityLivingBase tempEntity;
+	public static EntityLivingBase tempEntityStatic;
 	VertexFormat format;
 	Map<String, String> texReplace = null;
-	private TransformType lastCameraTransform = TransformType.FIXED;
-	boolean hasDynamicFaces = false;
+	public TransformType lastCameraTransform = TransformType.FIXED;
+	boolean isDynamic;
 
-	public IESmartObjModel(IBakedModel baseModel, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transformationMap)
+	public IESmartObjModel(IBakedModel baseModel, OBJModel model, IModelState state, VertexFormat format,
+						   ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transformationMap,
+						   boolean isDynamic)
 	{
 		model.super(model, state, format, textures);
 		this.baseModel = baseModel;
 		this.transformationMap = transformationMap;
 		this.format = format;
+		this.isDynamic = isDynamic;
 	}
 
 	@Override
@@ -119,6 +121,12 @@ public class IESmartObjModel extends OBJBakedModel
 	}
 
 	@Override
+	public boolean isBuiltInRenderer()
+	{
+		return isDynamic;
+	}
+
+	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return overrideList;
@@ -128,6 +136,7 @@ public class IESmartObjModel extends OBJBakedModel
 		@Override
 		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 		{
+			tempEntityStatic = entity;
 			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
 			if (comp == null)
 				return originalModel;
@@ -168,7 +177,8 @@ public class IESmartObjModel extends OBJBakedModel
 						builder.put(s, sprite);
 					}
 					builder.put("missingno", missing);
-					IESmartObjModel bakedModel = new IESmartObjModel(newModel.baseModel, newModel.getModel(), newModel.getState(), newModel.getFormat(), builder.build(), transformationMap);
+					IESmartObjModel bakedModel = new IESmartObjModel(newModel.baseModel, newModel.getModel(), newModel.getState(),
+							newModel.getFormat(), builder.build(), transformationMap, isDynamic);
 					bakedModel.tempStack = stack;
 					bakedModel.tempEntity = entity;
 					model = bakedModel;
@@ -232,9 +242,11 @@ public class IESmartObjModel extends OBJBakedModel
 			{
 				IESmartObjModel model = null;
 				if(objstate!=null)
-					model = new IESmartObjModel(baseModel, getModel(), objstate, getFormat(), getTextures(), transformationMap);
+					model = new IESmartObjModel(baseModel, getModel(), objstate, getFormat(), getTextures(),
+							transformationMap, isDynamic);
 				if(model==null)
-					model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(), transformationMap);
+					model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(),
+							transformationMap, isDynamic);
 				model.tempState = blockState;
 				model.texReplace = tex;
 				quads = model.buildQuads();
@@ -245,8 +257,6 @@ public class IESmartObjModel extends OBJBakedModel
 		if(bakedQuads==null)
 			bakedQuads = buildQuads();
 		List<BakedQuad> quadList = Lists.newArrayList(bakedQuads);
-		if(hasDynamicFaces)
-			handleDynamicQuads(quadList);
 		return Collections.synchronizedList(quadList);
 	}
 
@@ -286,146 +296,146 @@ public class IESmartObjModel extends OBJBakedModel
 			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
+		for(String groupName : getModel().getMatLib().getGroups().keySet())
+		{
+			addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, quads);
+		}
+
+		if(callback != null)
+			quads = callback.modifyQuads(callbackObject, quads);
+		return ImmutableList.copyOf(quads);
+	}
+
+	public <T> void addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName, ShaderCase sCase,
+									 ItemStack shader, List<BakedQuad> quads)
+	{
 
 		int maxPasses = 1;
 		if(sCase!=null)
 			maxPasses = sCase.getLayers().length;
 		for(int pass=0; pass<maxPasses; pass++)
 		{
-			ShaderLayer shaderLayer = sCase!=null?sCase.getLayers()[pass]:null;
-			for(Group g : getModel().getMatLib().getGroups().values())
+			ShaderLayer shaderLayer = sCase != null ? sCase.getLayers()[pass] : null;
+			if (callback != null)
+				if (!callback.shouldRenderGroup(callbackObject, groupName))
+					continue;
+			if (sCase != null)
+				if (!sCase.renderModelPartForPass(shader, tempStack, groupName, pass))
+					continue;
+			Group g = getModel().getMatLib().getGroups().get(groupName);
+			Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<>());
+			Optional<TRSRTransformation> transform = Optional.empty();
+			if (this.getState() instanceof OBJState)
 			{
-				String groupName = g.getName();
-				if(callback != null)
-					if(!callback.shouldRenderGroup(callbackObject, groupName))
-						continue;
-				if(sCase != null)
-					if(!sCase.renderModelPartForPass(shader, tempStack, groupName, pass))
-						continue;
-				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
-				Optional<TRSRTransformation> transform = Optional.empty();
-				if(this.getState() instanceof OBJState)
-				{
-					OBJState state = (OBJState)this.getState();
-					if(state.parent != null)
-						transform = state.parent.apply(Optional.empty());
-					if(callback != null)
-						transform = callback.applyTransformations(callbackObject, groupName, transform);
-					if(state.getGroupsWithVisibility(true).contains(groupName))
-						faces.addAll(g.applyTransform(transform));
-				} else
-				{
-					transform = getState().apply(Optional.empty());
-					if(callback != null)
-						transform = callback.applyTransformations(callbackObject, groupName, transform);
+				OBJState state = (OBJState) this.getState();
+				if (state.parent != null)
+					transform = state.parent.apply(Optional.empty());
+				if (callback != null)
+					transform = callback.applyTransformations(callbackObject, groupName, transform);
+				if (state.getGroupsWithVisibility(true).contains(groupName))
 					faces.addAll(g.applyTransform(transform));
-				}
+			}
+			else
+			{
+				transform = getState().apply(Optional.empty());
+				if (callback != null)
+					transform = callback.applyTransformations(callbackObject, groupName, transform);
+				faces.addAll(g.applyTransform(transform));
+			}
 
-				int argb = 0xffffffff;
-				if(sCase != null)
-					argb = sCase.getARGBColourModifier(shader, tempStack, groupName, pass);
-				else if(callback != null)
-					argb = callback.getRenderColour(callbackObject, groupName);
+			int argb = 0xffffffff;
+			if (sCase != null)
+				argb = sCase.getARGBColourModifier(shader, tempStack, groupName, pass);
+			else if (callback != null)
+				argb = callback.getRenderColour(callbackObject, groupName);
 
-				boolean dynQuad = false;
-				if(callback!=null && Config.IEConfig.fancyItemAnimations && callback.isDynamicGroup(callbackObject, groupName))
+			boolean dynQuad = false;
+
+			float[] colour = {(argb >> 16 & 255) / 255f, (argb >> 8 & 255) / 255f, (argb & 255) / 255f, (argb >> 24 & 255) / 255f};
+
+			for (Face f : faces)
+			{
+				TextureAtlasSprite tempSprite = null;
+				if (this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite() && !"null".equals(f.getMaterialName()))
 				{
-					dynQuad = true;
-					if(!hasDynamicFaces)
-						hasDynamicFaces = true;
+					for (Vertex v : f.getVertices())
+						if (!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
+							v.setMaterial(this.getModel().getMatLib().getMaterial(v.getMaterial().getName()));
+					tempSprite = ModelLoader.White.INSTANCE;
 				}
-
-				float[] colour = {(argb >> 16 & 255) / 255f, (argb >> 8 & 255) / 255f, (argb & 255) / 255f, (argb >> 24 & 255) / 255f};
-
-				for(Face f : faces)
+				else
 				{
-					TextureAtlasSprite tempSprite = null;
-					if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite() && !"null".equals(f.getMaterialName()))
+					if (sCase != null)
 					{
-						for(Vertex v : f.getVertices())
-							if(!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
-								v.setMaterial(this.getModel().getMatLib().getMaterial(v.getMaterial().getName()));
-						tempSprite = ModelLoader.White.INSTANCE;
+						ResourceLocation rl = sCase.getReplacementSprite(shader, tempStack, groupName, pass);
+						if (rl != null)
+							tempSprite = ClientUtils.getSprite(rl);
 					}
-					else
+					if (tempSprite == null && callback != null)
+						tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
+					if (tempSprite == null && tempState != null && texReplace != null)
 					{
-						if(sCase!=null)
-						{
-							ResourceLocation rl = sCase.getReplacementSprite(shader, tempStack, groupName, pass);
-							if(rl!=null)
-								tempSprite = ClientUtils.getSprite(rl);
-						}
-						if(tempSprite==null && callback!=null)
-							tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
-						if(tempSprite==null&&tempState!=null&&texReplace!=null)
-						{
-							String s = texReplace.get(groupName);
-							if (s!=null)
-								tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
-						}
-						if(tempSprite==null && !"null".equals(f.getMaterialName()))
-							tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
+						String s = texReplace.get(groupName);
+						if (s != null)
+							tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
 					}
-					if(tempSprite==null)
-						tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
-					if(tempSprite != null)
+					if (tempSprite == null && !"null".equals(f.getMaterialName()))
+						tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
+				}
+				if (tempSprite == null)
+					tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+				if (tempSprite != null)
+				{
+					IVertexConsumer builder = new UnpackedBakedQuad.Builder(getFormat());
+					builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
+					builder.setTexture(tempSprite);
+					builder.setQuadTint(pass);
+					Normal faceNormal = f.getNormal();
+					TextureCoordinate[] uvs = new TextureCoordinate[4];
+					boolean renderFace = true;
+					for (int i = 0; i < 4; i++)
 					{
-						IVertexConsumer builder = dynQuad?new DynamicAccessQuad.Builder(getFormat(), groupName): new UnpackedBakedQuad.Builder(getFormat());
-						builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
-						builder.setTexture(tempSprite);
-						builder.setQuadTint(pass);
-						Normal faceNormal = f.getNormal();
-						TextureCoordinate[] uvs = new TextureCoordinate[4];
-						boolean renderFace = true;
-						for(int i=0; i<4; i++)
-						{
-							Vertex vertex = f.getVertices()[i];
-							//V-Flip is processed here already, rather than in the later method, since it's needed for easy UV comparissons on the Shader Layers
-							uvs[i] = vertex.hasTextureCoordinate() ? new TextureCoordinate(vertex.getTextureCoordinate().u,1-vertex.getTextureCoordinate().v,vertex.getTextureCoordinate().w) : TextureCoordinate.getDefaultUVs()[i];
+						Vertex vertex = f.getVertices()[i];
+						//V-Flip is processed here already, rather than in the later method, since it's needed for easy UV comparissons on the Shader Layers
+						uvs[i] = vertex.hasTextureCoordinate() ? new TextureCoordinate(vertex.getTextureCoordinate().u, 1 - vertex.getTextureCoordinate().v, vertex.getTextureCoordinate().w) : TextureCoordinate.getDefaultUVs()[i];
 
-							if(shaderLayer!=null)
+						if (shaderLayer != null)
+						{
+							double[] texBounds = shaderLayer.getTextureBounds();
+							if (texBounds != null)
 							{
-								double[] texBounds = shaderLayer.getTextureBounds();
-								if(texBounds!=null)
+								if (texBounds[0] > uvs[i].u || uvs[i].u > texBounds[2] || texBounds[1] > uvs[i].v || uvs[i].v > texBounds[3])//if any uvs are outside the layers bounds
 								{
-									if(texBounds[0]>uvs[i].u || uvs[i].u>texBounds[2] || texBounds[1]>uvs[i].v || uvs[i].v>texBounds[3])//if any uvs are outside the layers bounds
-									{
-										renderFace = false;
-										break;
-									}
-									double dU = texBounds[2] - texBounds[0];
-									double dV = texBounds[3] - texBounds[1];
-									//Rescaling to the partial bounds that the texture represents
-									uvs[i].u = (float)((uvs[i].u-texBounds[0])/dU);
-									uvs[i].v = (float)((uvs[i].v-texBounds[1])/dV);
+									renderFace = false;
+									break;
 								}
-								//Rescaling to the selective area of the texture that is used
-								double[] cutBounds = shaderLayer.getCutoutBounds();
-								if(cutBounds!=null)
-								{
-									double dU = cutBounds[2] - cutBounds[0];
-									double dV = cutBounds[3] - cutBounds[1];
-									uvs[i].u = (float)(cutBounds[0] + dU*uvs[i].u);
-									uvs[i].v = (float)(cutBounds[1] + dV*uvs[i].v);
-								}
+								double dU = texBounds[2] - texBounds[0];
+								double dV = texBounds[3] - texBounds[1];
+								//Rescaling to the partial bounds that the texture represents
+								uvs[i].u = (float) ((uvs[i].u - texBounds[0]) / dU);
+								uvs[i].v = (float) ((uvs[i].v - texBounds[1]) / dV);
+							}
+							//Rescaling to the selective area of the texture that is used
+							double[] cutBounds = shaderLayer.getCutoutBounds();
+							if (cutBounds != null)
+							{
+								double dU = cutBounds[2] - cutBounds[0];
+								double dV = cutBounds[3] - cutBounds[1];
+								uvs[i].u = (float) (cutBounds[0] + dU * uvs[i].u);
+								uvs[i].v = (float) (cutBounds[1] + dV * uvs[i].v);
 							}
 						}
-						if(renderFace)
-						{
-							for(int i=0; i<4; i++)
-								putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
-							if(builder instanceof UnpackedBakedQuad.Builder)
-								quads.add(((UnpackedBakedQuad.Builder)builder).build());
-							else if(builder instanceof DynamicAccessQuad.Builder)
-								quads.add(((DynamicAccessQuad.Builder)builder).build());
-						}
+					}
+					if (renderFace)
+					{
+						for (int i = 0; i < 4; i++)
+							putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
+						if (builder instanceof UnpackedBakedQuad.Builder)
+							quads.add(((UnpackedBakedQuad.Builder) builder).build());
 					}
 				}
 			}
 		}
-		if(callback != null)
-			quads = callback.modifyQuads(callbackObject, quads);
-		return ImmutableList.copyOf(quads);
 	}
 
 	protected final void putVertexData(IVertexConsumer builder, Vertex v, Normal faceNormal, TextureCoordinate texCoord, TextureAtlasSprite sprite, float[] colour)
@@ -470,29 +480,6 @@ public class IESmartObjModel extends OBJBakedModel
 					builder.put(e);
 			}
 		}
-	}
-
-	private void handleDynamicQuads(List<BakedQuad> quadList)
-	{
-		IOBJModelCallback callback = null;
-		Object callbackObject = null;
-		if(!this.tempStack.isEmpty() && tempStack.getItem() instanceof IOBJModelCallback)
-		{
-			callback = (IOBJModelCallback)tempStack.getItem();
-			callbackObject = this.tempStack;
-		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
-		{
-			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
-			callbackObject = this.tempState;
-		}
-
-		if(callback!=null)
-			for(int i = 0; i < quadList.size(); i++)
-			{
-				BakedQuad bq = quadList.get(i);
-				if(bq instanceof DynamicAccessQuad)
-					quadList.set(i, ((DynamicAccessQuad)bq).applyMatrix(callback.dynamicChanges(callbackObject, ((DynamicAccessQuad)bq).getName(), lastCameraTransform, tempEntity)));
-			}
 	}
 
 	static int getExtendedStateHash(IExtendedBlockState state)

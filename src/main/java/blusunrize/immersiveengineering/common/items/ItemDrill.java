@@ -68,6 +68,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
@@ -224,31 +225,50 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return transform;
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean isDynamicGroup(ItemStack stack, String group)
+	private static final String[][] ROTATING = {
+			{"drill_head", "upgrade_damage0"},
+			{"upgrade_damage1", "upgrade_damage2"},
+			{"upgrade_damage3", "upgrade_damage4"}
+	};
+	private static final String[][] FIXED = {
+			{"upgrade_damage1", "upgrade_damage2", "upgrade_damage3", "upgrade_damage4"}
+	};
+
+	private boolean shouldRotate(EntityLivingBase entity, ItemStack stack, TransformType transform)
 	{
-		return "drill_head".equals(group) ||"upgrade_damage0".equals(group) ||"upgrade_damage1".equals(group)||"upgrade_damage2".equals(group)||"upgrade_damage3".equals(group)||"upgrade_damage4".equals(group);
+		return entity!=null && canDrillBeUsed(stack, entity) &&
+				(entity.getHeldItem(EnumHand.MAIN_HAND)==stack||entity.getHeldItem(EnumHand.OFF_HAND)==stack) &&
+				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
+						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
 	}
-	private static final Matrix4 matAugers = new Matrix4().translate(.441f,0,0);
-	@SideOnly(Side.CLIENT)
+
 	@Override
-	public Matrix4 dynamicChanges(ItemStack stack, String group, TransformType cameraTransformType, @Nullable EntityLivingBase entity)
+	@SideOnly(Side.CLIENT)
+	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
 	{
-		if(entity!=null && canDrillBeUsed(stack, entity) && (entity.getHeldItem(EnumHand.MAIN_HAND)==stack||entity.getHeldItem(EnumHand.OFF_HAND)==stack) && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
-		{
-			//.069813f
-			float angle = entity.ticksExisted%60/60f * 6.28218f;
-			if("drill_head".equals(group) || "upgrade_damage0".equals(group))
-				return new Matrix4().rotate(angle, 1,0,0);
-			if("upgrade_damage1".equals(group) || "upgrade_damage2".equals(group))
-				return new Matrix4().translate(.441f,0,0).rotate(angle, 0,1,0);
-			if( "upgrade_damage3".equals(group) || "upgrade_damage4".equals(group))
-				return new Matrix4().translate(.441f,0,0).rotate(angle, 0,0,1);
-		}
-		else if("upgrade_damage1".equals(group) || "upgrade_damage2".equals(group) || "upgrade_damage3".equals(group) || "upgrade_damage4".equals(group))
+		if (shouldRotate(entity, stack, transform))
+			return ROTATING;
+		else
+			return FIXED;
+	}
+
+	private static final Matrix4 matAugers = new Matrix4().translate(.441f,0,0);
+	@Nonnull
+	@Override
+	public Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, EntityLivingBase entity, Matrix4 mat, float partialTicks)
+	{
+		mat.setIdentity();
+		if (groups==FIXED[0])
 			return matAugers;
-		return null;
+		//.069813f
+		float angle = (entity.ticksExisted%60+partialTicks)/60f * (float)(2*Math.PI);
+		if("drill_head".equals(groups[0]))
+			mat.rotate(angle, 1,0,0);
+		else if("upgrade_damage1".equals(groups[0]))
+			mat.translate(.441f,0,0).rotate(angle, 0,1,0);
+		else if( "upgrade_damage3".equals(groups[0]))
+			mat.translate(.441f,0,0).rotate(angle, 0,0,1);
+		return mat;
 	}
 
 	@Override
