@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
-import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
@@ -33,6 +33,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,7 +45,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool, ITeslaEquipment,
+public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool, IElectricEquipment,
 		IOBJModelCallback<ItemStack>
 {
 
@@ -168,34 +169,43 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 		return hexCol;
 	}
 
-	private static final String IS_LIT = "isLit";
+	private static final String LIT_TIME = "litTime";
+	private static final String LIT_STRENGTH = "litStrength";
 
 	public static boolean isLit(ItemStack stack)
 	{
-		return ItemNBTHelper.hasKey(stack, IS_LIT);
+		return ItemNBTHelper.hasKey(stack, LIT_TIME);
 	}
 
-	public static void setLit(ItemStack stack)
+	public static void setLit(ItemStack stack, float strength)
 	{
-		ItemNBTHelper.setInt(stack, IS_LIT, 35);
+		ItemNBTHelper.setInt(stack, LIT_TIME, 35);
+		ItemNBTHelper.setFloat(stack, LIT_STRENGTH, MathHelper.clamp(strength, 0, 1F));
 	}
 
 	@Override
-	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg)
+	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg,
+						 ElectricSource eSource)
 	{
-		setLit(s);
+		setLit(s, eSource.level);
 	}
 
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
 		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
-		int litTicksRemaining = ItemNBTHelper.getInt(stack, IS_LIT);
-		litTicksRemaining--;
-		if (litTicksRemaining<=0)
-			ItemNBTHelper.remove(stack, IS_LIT);
-		else
-			ItemNBTHelper.setInt(stack, IS_LIT, litTicksRemaining);
+		if (!worldIn.isRemote&&isLit(stack))
+		{
+			int litTicksRemaining = ItemNBTHelper.getInt(stack, LIT_TIME);
+			litTicksRemaining--;
+			if (litTicksRemaining <= 0)
+			{
+				ItemNBTHelper.remove(stack, LIT_TIME);
+				ItemNBTHelper.remove(stack, LIT_STRENGTH);
+			}
+			else
+				ItemNBTHelper.setInt(stack, LIT_TIME, litTicksRemaining);
+		}
 	}
 
 	@Override
@@ -224,8 +234,9 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	{
 		if ("tube".equals(group))
 		{
-			float min = .6F;
-			float mult = min+(isLit(object)? Utils.RAND.nextFloat()*(1-min):0);
+			boolean lit = isLit(object);
+			float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F:0);
+			float mult = min+(lit? Utils.RAND.nextFloat()*MathHelper.clamp(1-min, 0, .1F):0);
 			return getRGBInt(object, mult) | 0xff000000;
 		}
 		else

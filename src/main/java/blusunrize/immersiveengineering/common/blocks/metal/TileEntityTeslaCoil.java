@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -23,7 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
+import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.state.IBlockState;
@@ -61,6 +63,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	private Vec3d soundPos = null;
 	@SideOnly(Side.CLIENT)
 	public static ArrayListMultimap<BlockPos,LightningAnimation> effectMap;
+	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
 
 	@Override
 	public void update()
@@ -83,10 +86,9 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		int energyDrain = IEConfig.Machines.teslacoil_consumption;
 		if (lowPower)
 			energyDrain/=2;
-		if(world.getTotalWorldTime()%32==(timeKey&31) && canRun(energyDrain))
+		if(!world.isRemote && world.getTotalWorldTime()%32==(timeKey&31) && canRun(energyDrain))
 		{
-			if(!world.isRemote)
-				this.energyStorage.extractEnergy(energyDrain,false);
+			this.energyStorage.extractEnergy(energyDrain,false);
 
 			double radius = 6;
 			if (lowPower)
@@ -94,16 +96,13 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			AxisAlignedBB aabbSmall = new AxisAlignedBB(getPos().getX()+.5-radius,getPos().getY()+.5-radius,getPos().getZ()+.5-radius, getPos().getX()+.5+radius,getPos().getY()+.5+radius,getPos().getZ()+.5+radius);
 			AxisAlignedBB aabb = aabbSmall.grow(radius/2);
 			List<Entity> targetsAll = world.getEntitiesWithinAABB(Entity.class, aabb);
-			if (!world.isRemote)
-				for (Entity e:targetsAll)
-					if (e instanceof ITeslaEntity)
-						((ITeslaEntity) e).onHit(this, lowPower);
 			List<Entity> targets = targetsAll.stream().filter((e)->(e instanceof EntityLivingBase&&aabbSmall.intersects(e.getEntityBoundingBox()))).collect(Collectors.toList());
+			EntityLivingBase target = null;
 			if(!targets.isEmpty())
 			{
-				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.Machines.teslacoil_damage, lowPower);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.Machines.teslacoil_damage, lowPower);
 				int randomTarget = Utils.RAND.nextInt(targets.size());
-				EntityLivingBase target = (EntityLivingBase) targets.get(randomTarget);
+				target = (EntityLivingBase) targets.get(randomTarget);
 				if(target!=null)
 				{
 					if(!world.isRemote)
@@ -126,7 +125,15 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					}
 				}
 			}
-			else if(!world.isRemote && world.getTotalWorldTime()%128==(timeKey&127))
+			for (Entity e:targetsAll)
+				if (e!=target)
+				{
+					if (e instanceof ITeslaEntity)
+						((ITeslaEntity) e).onHit(this, lowPower);
+					else if (e instanceof EntityLivingBase)
+						IElectricEquipment.applyToEntity((EntityLivingBase)e, null, TC_FIELD);
+				}
+			if(targets.isEmpty() && world.getTotalWorldTime()%128==(timeKey&127))
 			{
 				//target up to 4 blocks away
 				double tV = (Utils.RAND.nextDouble()-.5)*8;

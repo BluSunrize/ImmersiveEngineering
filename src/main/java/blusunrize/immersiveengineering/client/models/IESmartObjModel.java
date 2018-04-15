@@ -109,8 +109,8 @@ public class IESmartObjModel extends OBJBakedModel
 		//	matrix = new Matrix4();
 		//else if(cameraTransformType==TransformType.GUI) //INV
 		//	matrix = new Matrix4().rotate(-Math.PI/4, 0, 0, 1).rotate(Math.PI/8, 0, 1, 0);
-		//else //GROUND
-		//	matrix = new Matrix4().translate(10, 5, 10).scale(1, 1, 1);
+		//if (cameraTransformType==TransformType.GROUND)//GROUND
+		//	matrix = new Matrix4().scale(.5, .5, .5).translate(0, .5, 0);
 
 		return Pair.of(this, matrix.toMatrix4f());
 	}

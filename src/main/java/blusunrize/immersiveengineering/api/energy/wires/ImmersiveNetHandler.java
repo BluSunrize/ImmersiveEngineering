@@ -614,11 +614,16 @@ public class ImmersiveNetHandler
 							if (iic != null)
 								damage = iic.getDamageAmount(e, conn.getLeft());
 						}
-						if (damage != 0 && e.attackEntityFrom(IEDamageSources.wireShock, damage))
+						if (damage != 0)
 						{
-							Vec3d v = e.getLookVec();
-							knockbackNoSource(e, damage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
-							iic.processDamage(e, damage, conn.getLeft());
+							IEDamageSources.ElectricDamageSource dmg = IEDamageSources.causeWireDamage(damage, conn.getLeft().cableType.getElectricSource());
+							if (dmg.apply(e))
+							{
+								damage = dmg.dmg;
+								Vec3d v = e.getLookVec();
+								knockbackNoSource(e, damage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
+								iic.processDamage(e, damage, conn.getLeft());
+							}
 						}
 					}
 				}

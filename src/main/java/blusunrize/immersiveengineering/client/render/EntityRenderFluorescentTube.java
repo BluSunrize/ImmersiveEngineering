@@ -15,12 +15,10 @@ import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -91,7 +89,7 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 		if (tubeActive.isEmpty())
 		{
 			tubeActive = new ItemStack(IEContent.itemFluorescentTube);
-			ItemFluorescentTube.setLit(tubeActive);
+			ItemFluorescentTube.setLit(tubeActive, 1);
 		}
 		GlStateManager.translate(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive:tube;

@@ -13,17 +13,21 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
-public interface ITeslaEquipment
+/**
+ * Use {@link IElectricEquipment} instead
+ */
+@Deprecated
+public interface ITeslaEquipment extends IElectricEquipment
 {
-	/**
-	 * Called whenever a Tesla coil attempts to damage the player
-	 * @param s The current ItemStack
-	 * @param eqSlot The equipment slot the Item is in
-	 * @param p The entity wearing/holding the item
-	 * @param cache A way for different ITeslaEquipment items to communicate with each other. It is empty when starting to check the equipment and is discarded after checking is done
-	 * @param dmg The damage source that would be used. Set the amount to 0 to prevent any damage from being done
-	 */
 	void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg);
+
+	@Override
+	default void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
+	{
+		if (dmg!=null)
+			onStrike(s, eqSlot, p, cache, dmg);
+	}
 }

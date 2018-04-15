@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -145,6 +146,12 @@ public abstract class WireType
 				.5625, .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_REDSTONE.getMeta()),
 				0, 0, (f)->f);
 	}
+
+	public IElectricEquipment.ElectricSource getElectricSource()
+	{
+		return COPPER.getElectricSource();
+	}
+
 	/**
 	 * DO NOT SUBCLASS THIS.
 	 * This is a core implementation as a base for IE's default wires
@@ -153,11 +160,16 @@ public abstract class WireType
 	private static class IEBASE extends WireType
 	{
 		final int ordinal;
+		private final IElectricEquipment.ElectricSource eSource;
 		public IEBASE(int ordinal)
 		{
 			super();
 			this.ordinal = ordinal;
 			WireApi.registerWireType(this);
+			if (canCauseDamage())
+				eSource = new IElectricEquipment.ElectricSource(.5F*(1+ordinal));
+			else
+				eSource = new IElectricEquipment.ElectricSource(-1);
 		}
 		@Override
 		public double getLossRatio()
@@ -254,6 +266,12 @@ public abstract class WireType
 				default:
 					return null;
 			}
+		}
+
+		@Override
+		public IElectricEquipment.ElectricSource getElectricSource()
+		{
+			return eSource;
 		}
 	}
 }
