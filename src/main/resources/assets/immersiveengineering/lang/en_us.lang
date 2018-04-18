@@ -875,7 +875,7 @@ chat.immersiveengineering.command.mineral.setDepletion.NFE=Error, '%1$s' is not 
 chat.immersiveengineering.command.mineral.setDepletion.sucess=Mineral depletion set to '%1$s'
 chat.immersiveengineering.command.shaders.help=§6Usage: /ie shaders <clear>§r
 chat.immersiveengineering.command.shaders.clear.help=§6Usage: /ie shaders clear [player]§r<br> Clear the received shaders for the given player. Clear for yourself if no player is specified.
-chat.immersiveengineering.command.shaders.clear.sucess=Received Shaders for '%1$s' where cleared
+chat.immersiveengineering.command.shaders.clear.sucess=Received Shaders for '%1$s' were cleared
 
 #SUBTITLES
 subtitle.immersiveengineering.dieselGenerator=Diesel Generator is being loud and obnoxious

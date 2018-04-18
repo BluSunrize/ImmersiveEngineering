@@ -9,37 +9,39 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.util.commands.CommandHandler.IESubCommand;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.ArrayList;
+import javax.annotation.Nonnull;
 
 /**
  * @author BluSunrize - 05.09.2016
  */
-public class CommandResetRenders extends IESubCommand
+public class CommandResetRenders extends CommandBase
 {
+	@Nonnull
 	@Override
-	public String getIdent()
+	public String getName()
 	{
 		return "resetrender";
 	}
 
+	@Nonnull
 	@Override
-	public void perform(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args)
+	public String getUsage(@Nonnull ICommandSender sender)
+	{
+		return "Reset the render caches of Immersive Engineering and its addons";
+	}
+
+	@Override
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
 	{
 		ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args)
-	{
-		return null;
-	}
-
-	@Override
-	public int getPermissionLevel()
+	public int getRequiredPermissionLevel()
 	{
 		return 0;
 	}
