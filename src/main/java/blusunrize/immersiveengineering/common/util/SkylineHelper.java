@@ -48,6 +48,7 @@ public class SkylineHelper
 		Vec3d pos = player.getPositionEyes(0);
 		Vec3d across = new Vec3d(vEnd.x-vStart.x, 0, vEnd.z-vStart.z);
 		double t = Utils.getCoeffForMinDistance(pos, vStart, across);
+		connection.getSubVertices(player.world);
 		pos = connection.getVecAt(t, vStart, across, across.lengthVector());
 		int tInt = MathHelper.clamp(0, (int)(t*16), 15);
 
