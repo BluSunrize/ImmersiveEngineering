@@ -162,12 +162,6 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 				renderAABB = new AxisAlignedBB(getPos(),getPos());
 		return renderAABB;
 	}
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
-	}
 
 	/*
 	//DEEP STORAGE

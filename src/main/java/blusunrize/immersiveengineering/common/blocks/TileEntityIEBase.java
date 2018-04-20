@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import net.minecraft.block.properties.IProperty;
@@ -171,5 +172,11 @@ public abstract class TileEntityIEBase extends TileEntity
 		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxConnector)
 			return (T)((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing);
 		return super.getCapability(capability, facing);
+	}
+	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		return super.getMaxRenderDistanceSquared() *
+				Config.IEConfig.increasedTileRenderdistance * Config.IEConfig.increasedTileRenderdistance;
 	}
 }

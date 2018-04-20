@@ -168,11 +168,6 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 			renderAABB = new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?6:0),getPos().getY()-6,getPos().getZ()-(facing.getAxis()==Axis.Z?0:6), getPos().getX()+(facing.getAxis()==Axis.Z?7:0),getPos().getY()+7,getPos().getZ()+(facing.getAxis()==Axis.Z?0:7));
 		return renderAABB;
 	}
-	@Override
-	public double getMaxRenderDistanceSquared()
-	{
-		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
-	}
 
 	@Override
 	public EnumFacing getFacing()

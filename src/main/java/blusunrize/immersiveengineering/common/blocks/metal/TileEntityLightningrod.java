@@ -229,12 +229,6 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				renderAABB = new AxisAlignedBB(getPos(),getPos());
 		return renderAABB;
 	}
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
-	}
 
 	@Override
 	public int extractEnergy(@Nullable EnumFacing from, int energy, boolean simulate)

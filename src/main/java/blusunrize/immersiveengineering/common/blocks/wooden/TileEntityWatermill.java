@@ -257,14 +257,6 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 				renderAABB = new AxisAlignedBB(getPos().getX(),getPos().getY(),getPos().getZ(), getPos().getX()+1,getPos().getY()+1,getPos().getZ()+1);
 		return renderAABB;
 	}
-	@Override
-	public double getMaxRenderDistanceSquared()
-	{
-		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
-		//		if(Config.getBoolean("increasedTileRenderdistance"))
-		//			return super.getMaxRenderDistanceSquared()*1.5;
-		//		return super.getMaxRenderDistanceSquared();
-	}
 
 	@Override
 	public EnumFacing getFacing()
