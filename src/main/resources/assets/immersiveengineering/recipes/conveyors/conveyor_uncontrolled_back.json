@@ -10,7 +10,7 @@
   },
   "ingredients": [
     {
-      "type": "immersiveengineering:stackable_nbt",
+      "type": "minecraft:item_nbt",
       "item": "immersiveengineering:conveyor",
       "nbt": {
         "conveyorType": "immersiveengineering:uncontrolled"
