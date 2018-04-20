@@ -277,4 +277,10 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	{
 		return 2;
 	}
+
+	@Override
+	public boolean hasEffect(ItemStack stack)
+	{
+		return false;//Remove glint effect since it doesn't work that well with models, see #2944
+	}
 }
