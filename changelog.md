@@ -10,7 +10,10 @@
 - Fixed the mineral command not workign with Vein names that contain a space (Malte)
 - Fixed shield having a really trippy enchantment glow (Malte)
 - Fixed conveyor recipe (Malte)
-- Fixed Skyhook crashign servers (Malte)
+- Fixed Skyhook crashing servers (Malte)
+- Fixed lag with redstone connectors (Malte)
+- Shift-clicking is no longer needed to connect wires to breaker switches etc (Malte)
+- Failed wire connection attempts no longer spam the chat (Malte)
 
 #####Version 0.12-80 - BUILT
 - Fixed multiblock rendering in the manual with Optifine and texture packs (Malte)
