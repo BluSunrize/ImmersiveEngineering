@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
@@ -213,12 +212,6 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			{
 				Matrix4 mat = new Matrix4(transform.get().getMatrix());
 				mat.translate(-.25f,0,0);
-				return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
-			}
-			if(!IEConfig.fancyItemAnimations && group.startsWith("upgrade_damage") && !"upgrade_damage0".equals(group))
-			{
-				Matrix4 mat = new Matrix4(transform.get().getMatrix());
-				mat.translate(.441f,0,0);
 				return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 			}
 		}
