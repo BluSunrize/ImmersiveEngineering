@@ -151,7 +151,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	}
 	public void markBlockForUpdate(BlockPos pos, @Nullable IBlockState newState)
 	{
-		IBlockState state = world.getBlockState(getPos());
+		IBlockState state = world.getBlockState(pos);
 		if(newState==null)
 			newState = state;
 		world.notifyBlockUpdate(pos,state,newState,3);

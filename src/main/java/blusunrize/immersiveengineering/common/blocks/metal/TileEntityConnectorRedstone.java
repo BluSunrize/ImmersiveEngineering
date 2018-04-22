@@ -92,7 +92,6 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public void setNetwork(RedstoneWireNetwork net)
 	{
 		wireNetwork = net;
-		refreshWireNetwork = false;
 	}
 
 	@Override
