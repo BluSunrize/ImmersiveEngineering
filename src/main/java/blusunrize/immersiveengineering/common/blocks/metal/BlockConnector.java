@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
+import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
@@ -23,11 +25,14 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -62,6 +67,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	{
 		return true;
 	}
+
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
@@ -77,53 +83,56 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			return "energy_meter";
 		return null;
 	}
+
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
 		BlockStateContainer base = super.createBlockState();
-		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState) ? ((ExtendedBlockState) base).getUnlistedProperties().toArray(new IUnlistedProperty[0]) : new IUnlistedProperty[0];
+		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]): new IUnlistedProperty[0];
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
 		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
 		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
 	}
+
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		state = super.getExtendedState(state, world, pos);
 		if(state instanceof IExtendedBlockState)
 		{
-			IExtendedBlockState ext = (IExtendedBlockState) state;
+			IExtendedBlockState ext = (IExtendedBlockState)state;
 			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof TileEntityImmersiveConnectable))
+			if(!(te instanceof TileEntityImmersiveConnectable))
 				return state;
 			state = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
 		}
 		return state;
 	}
+
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		IBlockState s = world.getBlockState(pos);
-		return s.getValue(property) == BlockTypes_Connector.ENERGY_METER;
+		return s.getValue(property)==BlockTypes_Connector.ENERGY_METER;
 	}
 
 	@Override
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
-		switch (BlockTypes_Connector.values()[stack.getItemDamage()])
+		switch(BlockTypes_Connector.values()[stack.getItemDamage()])
 		{
 			case TRANSFORMER:
 			case TRANSFORMER_HV:
-				for (int hh = 1; hh <= 2; hh++)
+				for(int hh = 1; hh <= 2; hh++)
 				{
 					BlockPos pos2 = pos.up(hh);
-					if (world.isOutsideBuildHeight(pos2) || !world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
+					if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 						return false;
 				}
-			break;
+				break;
 			case ENERGY_METER:
 				BlockPos pos2 = pos.up();
-				return !world.isOutsideBuildHeight(pos2) && world.getBlockState(pos2).getBlock().isReplaceable(world, pos2);
+				return !world.isOutsideBuildHeight(pos2)&&world.getBlockState(pos2).getBlock().isReplaceable(world, pos2);
 			case FEEDTHROUGH:
 				EnumFacing f = new TileEntityFeedthrough().getFacingForPlacement(player, pos, side, hitX, hitY, hitZ);
 				BlockPos forward = pos.offset(f, 1);
@@ -141,7 +150,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityConnectorLV)
 		{
-			TileEntityConnectorLV connector = (TileEntityConnectorLV) te;
+			TileEntityConnectorLV connector = (TileEntityConnectorLV)te;
 			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
 				this.dropBlockAsItem(connector.getWorld(), pos, world.getBlockState(pos), 0);
@@ -151,16 +160,45 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		}
 		if(te instanceof TileEntityConnectorRedstone)
 		{
-			TileEntityConnectorRedstone connector = (TileEntityConnectorRedstone) te;
+			TileEntityConnectorRedstone connector = (TileEntityConnectorRedstone)te;
 			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
 				this.dropBlockAsItem(connector.getWorld(), pos, world.getBlockState(pos), 0);
 				connector.getWorld().setBlockToAir(pos);
 				return;
 			}
-			if (connector.isRSInput())
+			if(connector.isRSInput())
 				connector.rsDirty = true;
 		}
+	}
+
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	{
+		//Select the wire if the player is sneaking
+		if(player!=null&&player.isSneaking())
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof TileEntityImmersiveConnectable)
+			{
+				TargetingInfo subTarget = null;
+				if(target.hitVec!=null)
+					subTarget = new TargetingInfo(target.sideHit, (float)target.hitVec.x-pos.getX(), (float)target.hitVec.y-pos.getY(), (float)target.hitVec.z-pos.getZ());
+				else
+					subTarget = new TargetingInfo(target.sideHit, 0, 0, 0);
+				BlockPos masterPos = ((TileEntityImmersiveConnectable)te).getConnectionMaster(null, subTarget);
+				if(masterPos!=pos)
+					te = world.getTileEntity(masterPos);
+				if(te instanceof TileEntityImmersiveConnectable)
+				{
+					WireType connected = ((TileEntityImmersiveConnectable)te).getCableLimiter(subTarget);
+					if(connected!=null)
+						return connected.getWireCoil();
+				}
+			}
+		}
+		Item item = Item.getItemFromBlock(this);
+		return item==Items.AIR?ItemStack.EMPTY: new ItemStack(item, 1, this.damageDropped(world.getBlockState(pos)));
 	}
 
 	@Override
@@ -201,19 +239,20 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		}
 		return null;
 	}
+
 	@Override
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
 		IBlockState ret = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
-		if (meta==BlockTypes_Connector.TRANSFORMER.getMeta())
+		if(meta==BlockTypes_Connector.TRANSFORMER.getMeta())
 		{
 			BlockPos pos2 = pos.offset(facing, -1);
 			IBlockState placedAgainst = world.getBlockState(pos2);
 			Block block = placedAgainst.getBlock();
-			if (block instanceof IPostBlock&&((IPostBlock)block).canConnectTransformer(world, pos2))
+			if(block instanceof IPostBlock&&((IPostBlock)block).canConnectTransformer(world, pos2))
 				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
 			TileEntity tile = world.getTileEntity(pos2);
-			if(tile instanceof IPostBlock && ((IPostBlock)tile).canConnectTransformer(world, pos2))
+			if(tile instanceof IPostBlock&&((IPostBlock)tile).canConnectTransformer(world, pos2))
 				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
 		}
 		return ret;
@@ -228,10 +267,10 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	@Override
 	public int getLightOpacity(IBlockState state, IBlockAccess w, BlockPos pos)
 	{
-		if (state.getValue(property)==BlockTypes_Connector.FEEDTHROUGH)
+		if(state.getValue(property)==BlockTypes_Connector.FEEDTHROUGH)
 		{
 			TileEntity te = w.getTileEntity(pos);
-			if (te instanceof TileEntityFeedthrough&&((TileEntityFeedthrough) te).offset==0)
+			if(te instanceof TileEntityFeedthrough&&((TileEntityFeedthrough)te).offset==0)
 				return 255;
 		}
 		return super.getLightOpacity(state, w, pos);
