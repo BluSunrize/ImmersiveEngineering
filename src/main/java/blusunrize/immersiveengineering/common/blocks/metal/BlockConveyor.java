@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
@@ -213,6 +214,6 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	@Override
 	public boolean isToolEffective(String type, IBlockState state)
 	{
-		return type.equals("IE_HAMMER")||super.isToolEffective(type, state);
+		return type.equals(Lib.TOOL_HAMMER)||super.isToolEffective(type, state);
 	}
 }

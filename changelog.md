@@ -6,6 +6,8 @@
     - Made the Fluorescent tube to be really fancy again! (Malte)
 - Changed renderdistance config to work as described (Malte)
 - Changed the images of wiring in the manual to use up-to-date pictures and feature connectors and relays (BluSunrize)
+- Shift-clicking is no longer needed to connect wires to breaker switches etc (Malte)
+- Failed wire connection attempts no longer spam the chat (Malte)
 - Changed Thermoelectric generator to cache its output values, improving performance (BluSunrize)
 - Fixed wires being invisible when logging into a server for the first time (Malte)
 - Fixed localization for treated wood banners (Malte)
@@ -14,8 +16,7 @@
 - Fixed conveyor recipe (Malte)
 - Fixed Skyhook crashing servers (Malte)
 - Fixed lag with redstone connectors (Malte)
-- Shift-clicking is no longer needed to connect wires to breaker switches etc (Malte)
-- Failed wire connection attempts no longer spam the chat (Malte)
+- Fixed blocks somtimes taking longer to break with the hammer (Malte)
 
 #####Version 0.12-80 - BUILT
 - Fixed multiblock rendering in the manual with Optifine and texture packs (Malte)
