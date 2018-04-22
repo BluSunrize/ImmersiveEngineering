@@ -6,6 +6,7 @@
     - Made the Fluorescent tube to be really fancy again! (Malte)
 - Changed renderdistance config to work as described (Malte)
 - Changed the images of wiring in the manual to use up-to-date pictures and feature connectors and relays (BluSunrize)
+- Changed Thermoelectric generator to cache its output values, improving performance (BluSunrize)
 - Fixed wires being invisible when logging into a server for the first time (Malte)
 - Fixed localization for treated wood banners (Malte)
 - Fixed the mineral command not workign with Vein names that contain a space (Malte)
