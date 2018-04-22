@@ -1,5 +1,6 @@
 #####Version 0.12-81
 - Added the ability to use Pick Block to take a connector's wire by sneaking (BluSunrize)
+- Added Magma blocks to the list of heatsources for the Thermoelectric generator (BluSunrize)
 - Changed fences to allow torches on top and prevent mobspawns (Malte)
 - Changed animated item models to use Item-TESRs rather than rebaking (Malte)
     - Made the Fluorescent tube to be really fancy again! (Malte)
@@ -10,7 +11,7 @@
 - Fixed the mineral command not workign with Vein names that contain a space (Malte)
 - Fixed shield having a really trippy enchantment glow (Malte)
 - Fixed conveyor recipe (Malte)
-- Fixed Skyhook crashign servers (Malte)
+- Fixed Skyhook crasdasdasdashign servers (Malte)
 
 #####Version 0.12-80 - BUILT
 - Fixed multiblock rendering in the manual with Optifine and texture packs (Malte)
