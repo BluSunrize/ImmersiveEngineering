@@ -1,4 +1,4 @@
-#####Version 0.12-81
+#####Version 0.12-81 - BUILT
 - Added the functionality for the Faraday Suit to protect against live wiring (Malte)
 - Added the ability to use Pick Block to take a connector's wire by sneaking (BluSunrize)
 - Added Magma blocks to the list of heatsources for the Thermoelectric generator (BluSunrize)
