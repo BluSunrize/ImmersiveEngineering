@@ -4,6 +4,8 @@
 - Added Magma blocks to the list of heatsources for the Thermoelectric generator (BluSunrize)
 - Added Efficiency, Unbreaking and Mending enchantments to the Engineer's Hammer and Wirecutter (BluSunrize)
     - Made those tools take damage when used to break blocks
+- Added compatibility for Forge's update checker (Malte)
+- Added support for Forge's memory Maven repo, this makes deleting old coremod versions unnecessary in Forge 2656+ (latest) (Malte)
 - Changed fences to allow torches on top and prevent mobspawns (Malte)
 - Changed animated item models to use Item-TESRs rather than rebaking (Malte)
     - Made the Fluorescent tube to be really fancy again! (Malte)

@@ -25,7 +25,8 @@ plugins {
 }
 */
 version = "${mainVersion}-${buildNumber}" + getBuildNumber()
-group= "blusunrize"
+group = "blusunrize"
+def archiveGroup = group
 archivesBaseName = "ImmersiveEngineering"
 
 sourceCompatibility = 1.8
@@ -117,6 +118,7 @@ task coreJar(type: Jar) {
     }
     manifest {
         attributes "FMLCorePlugin": "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
+        attributes 'Maven-Artifact': archiveGroup+':'+archivesBaseName+'-core:'+version
     }
     // Add a classifier to the JAR ('-core' at the end of the file name)
     // Distinguishes the mod JAR from the shipped one
@@ -155,16 +157,18 @@ task signMainJar(type: SignJar) {
 }
 build.dependsOn signMainJar
 jar.dependsOn signCoreJar
-
+def libPrefix = 'META-INF/libraries'
 jar {
     manifest {
-        attributes 'ContainedDeps': coreJar.archivePath.name
+        attributes 'ContainedDeps': libPrefix+'/'+coreJar.archivePath.name
         attributes "FMLAT": "ImmersiveEngineering_at.cfg"
+        attributes 'Maven-Artifact': archiveGroup+':'+archivesBaseName+':'+version
     }
     exclude 'blusunrize/immersiveengineering/common/asm/**'
     // Add the output of the mod JAR task to the main JAR for later extraction
     from(coreJar.archivePath.absolutePath) {
         include '*' // Due to the way Gradle's copy tasks work, we need this line for the JAR to get added
+        into libPrefix
     }
 }
 
@@ -201,6 +205,7 @@ task deobfJar(type: Jar) {
     classifier = 'deobf'
     manifest {
         attributes 'FMLAT': 'ImmersiveEngineering_at.cfg'
+        attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version
     }
 }
 
