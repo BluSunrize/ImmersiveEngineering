@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput
+
 def mainVersion = "0.12"
 def buildNumber = "81"
 
@@ -268,3 +270,71 @@ String getBuildNumber() {
     }
     return buildNumber
 }
+
+//Code for automatic update JSON generation
+class GenerateUpdateJSON extends DefaultTask {
+    static def initVersions = { mcFromIEVersion ->
+        mcFromIEVersion.put("0.8", "1.8.9")
+        mcFromIEVersion.put("0.9", "1.9.4")
+        mcFromIEVersion.put("0.10", "1.10.2")
+        mcFromIEVersion.put("0.11", "1.11.2")
+        mcFromIEVersion.put("0.12", "1.12.2")
+    }
+    static def VERSION_PREFIX = "#####Version "
+    static def BUILT_SUFFIX = " - BUILT"
+    static def RECOMMENDED = "-recommended"
+    static def LATEST = "-latest"
+    static def CF_URL = "https://minecraft.curseforge.com/projects/immersive-engineering"
+
+    @TaskAction
+    def generate() {
+        Map<String, String> mcFromIEVersion = new HashMap<>()
+        initVersions(mcFromIEVersion)
+        File changelog = new File("changelog.md")
+        if (!changelog.exists())
+            println "Changelog does not exist! Aborting!"
+        else {
+            Map<String, Map<String, String>> changelogForVersions = new HashMap<>()
+            Map<String, String> promos = new HashMap<>()
+            String currentVersion = null
+            String currentChangelog = ""
+            changelog.eachLine {line ->
+                if (line.startsWith(VERSION_PREFIX)) {
+                    if (currentVersion!=null) {
+                        String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
+                        String mcVer = mcFromIEVersion[mainVer]
+                        if (!changelogForVersions.containsKey(mcVer)) {
+                            promos.put(mcVer+RECOMMENDED, currentVersion)
+                            promos.put(mcVer+LATEST, currentVersion)
+                            changelogForVersions[mcVer] = new HashMap<>()
+                        }
+                        changelogForVersions[mcVer][currentVersion] = currentChangelog
+                    }
+                    if (line.endsWith(BUILT_SUFFIX)) {
+                        currentVersion = line.substring(VERSION_PREFIX.length(), line.length()-BUILT_SUFFIX.length())
+                    } else {
+                        currentVersion = (String) null
+                    }
+                    currentChangelog = ""
+                } else if (!line.isEmpty()) {
+                    if (currentChangelog.length()==0)
+                        currentChangelog += line
+                    else
+                        currentChangelog += "\n"+line
+                }
+            }
+            Map<String, Object> mainMap = new HashMap<>(changelogForVersions)
+            mainMap["homepage"] = CF_URL
+            mainMap["promos"] = promos
+            def outJson = JsonOutput.toJson(mainMap)
+            outJson = JsonOutput.prettyPrint(outJson)
+            File outF = new File("changelog.json")
+            outF.delete()
+            outF << outJson
+        }
+    }
+}
+
+task updateJson(type: GenerateUpdateJSON)
+
+build.finalizedBy updateJson

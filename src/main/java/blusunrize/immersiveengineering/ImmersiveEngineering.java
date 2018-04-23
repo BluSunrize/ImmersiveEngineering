@@ -50,7 +50,8 @@ import java.util.function.Function;
 
 @Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION,
 		dependencies = "required-after:forge@[14.22.0.2639,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
-		certificateFingerprint = "4cb49fcde3b43048c9889e0a3d083225da926334", acceptedMinecraftVersions = "[1.12,1.12.2]")
+		certificateFingerprint = "4cb49fcde3b43048c9889e0a3d083225da926334", acceptedMinecraftVersions = "[1.12,1.12.2]",
+		updateJSON = "https://gist.githubusercontent.com/malte0811/6d3088ffc46c6f90472743606b4d2647/raw/37062063c2b320286bed69a05eb6a92561b3f1a5/IETest2.json")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
