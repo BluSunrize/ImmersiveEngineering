@@ -1,6 +1,9 @@
 #####Version 0.12-81
+- Added the functionality for the Faraday Suit to protect against live wiring (Malte)
 - Added the ability to use Pick Block to take a connector's wire by sneaking (BluSunrize)
 - Added Magma blocks to the list of heatsources for the Thermoelectric generator (BluSunrize)
+- Added Efficiency, Unbreaking and Mending enchantments to the Engineer's Hammer and Wirecutter (BluSunrize)
+    - Made those tools take damage when used to break blocks
 - Changed fences to allow torches on top and prevent mobspawns (Malte)
 - Changed animated item models to use Item-TESRs rather than rebaking (Malte)
     - Made the Fluorescent tube to be really fancy again! (Malte)

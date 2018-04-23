@@ -109,7 +109,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public boolean canModify(ItemStack stack)
 	{
-		return stack.getItemDamage()!=1;
+		return stack.getMetadata()!=1;
 	}
 
 	@Override
@@ -176,14 +176,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
-		if(stack.getItemDamage()!=1)
+		if(stack.getMetadata()!=1)
 		{
 			String tag = getRevolverDisplayTag(stack);
 			if(!tag.isEmpty())
 				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver."+tag));
 			else if(ItemNBTHelper.hasKey(stack, "flavour"))
 				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
-			else if(stack.getItemDamage()==0)
+			else if(stack.getMetadata()==0)
 				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver"));
 
 //			ItemStack shader = getShaderItem(stack);

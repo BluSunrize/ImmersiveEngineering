@@ -34,7 +34,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -86,7 +85,7 @@ public class ImmersiveModelRegistry
 		{
 			ResourceLocation loc;
 			if(((ItemIEBase) stack.getItem()).getSubNames() != null && ((ItemIEBase) stack.getItem()).getSubNames().length > 0)
-				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName + "/" + ((ItemIEBase) stack.getItem()).getSubNames()[stack.getItemDamage()]);
+				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName + "/" + ((ItemIEBase) stack.getItem()).getSubNames()[stack.getMetadata()]);
 			else
 				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName);
 			itemModelReplacements.put(new ModelResourceLocation(loc, "inventory"), replacement);
