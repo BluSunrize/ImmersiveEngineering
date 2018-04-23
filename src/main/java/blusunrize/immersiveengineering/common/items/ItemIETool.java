@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -65,6 +66,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import static blusunrize.immersiveengineering.api.Lib.TOOL_HAMMER;
+import static blusunrize.immersiveengineering.api.Lib.TOOL_WIRECUTTER;
 
 public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 {
@@ -467,7 +471,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	public Set<String> getToolClasses(ItemStack stack)
 	{
 		int meta = stack.getMetadata();
-		return meta==HAMMER_META?ImmutableSet.of(Lib.TOOL_HAMMER): meta==CUTTER_META?ImmutableSet.of(Lib.TOOL_WIRECUTTER): new HashSet<String>();
+		return meta==HAMMER_META?ImmutableSet.of(TOOL_HAMMER): meta==CUTTER_META?ImmutableSet.of(Lib.TOOL_WIRECUTTER): new HashSet<String>();
 	}
 
 	@Override
@@ -483,5 +487,31 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	public boolean isTool(ItemStack item)
 	{
 		return item.getMetadata()!=MANUAL_META;
+	}
+
+	@Override
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	{
+		if (stack.getMetadata() == HAMMER_META)
+		{
+			if (state.getBlock() instanceof BlockIEBase)
+			{
+				if(((BlockIEBase) state.getBlock()).allowHammerHarvest(state))
+					return true;
+			}
+			else if (state.getBlock().isToolEffective(TOOL_HAMMER, state))
+				return true;
+		}
+		else if (stack.getMetadata() == CUTTER_META)
+		{
+			if (state.getBlock() instanceof BlockIEBase)
+			{
+				if(((BlockIEBase) state.getBlock()).allowWirecutterHarvest(state))
+					return true;
+			}
+			else if (state.getBlock().isToolEffective(TOOL_WIRECUTTER, state))
+				return true;
+		}
+		return super.canHarvestBlock(state, stack);
 	}
 }

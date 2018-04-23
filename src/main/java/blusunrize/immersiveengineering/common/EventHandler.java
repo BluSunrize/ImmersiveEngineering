@@ -350,27 +350,6 @@ public class EventHandler
 		ExcavatorHandler.allowPackets = false;
 	}
 
-	@SubscribeEvent
-	public void harvestCheck(PlayerEvent.HarvestCheck event)
-	{
-		if(event.getTargetBlock().getBlock() instanceof BlockIEBase)
-		{
-			if(!event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_HAMMER))
-			{
-				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().world, event.getEntityPlayer(), true);
-				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
-					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowHammerHarvest(event.getTargetBlock()))
-						event.setCanHarvest(true);
-			}
-			if(!event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_WIRECUTTER))
-			{
-				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().world, event.getEntityPlayer(), true);
-				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
-					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowWirecutterHarvest(event.getTargetBlock()))
-						event.setCanHarvest(true);
-			}
-		}
-	}
 	//	@SubscribeEvent
 	//	public void bloodMagicTeleposer(TeleposeEvent event)
 	//	{
