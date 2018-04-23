@@ -148,28 +148,11 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
 	{
-		if(stack.getMetadata()==HAMMER_META)
+		if(stack.getMetadata()==HAMMER_META||stack.getMetadata()==CUTTER_META)
 		{
-//			int nbtDamage = ItemNBTHelper.getInt(stack, "hammerDmg")+1;
-//			if(nbtDamage < hammerMaxDamage)
-//			{
-//				ItemStack container = stack.copy();
-//				ItemNBTHelper.setInt(container, "hammerDmg", nbtDamage);
-//				return container;
-//			}
 			ItemStack container = stack.copy();
 			this.damageIETool(container, 1, Utils.RAND, null);
 			return container;
-		}
-		else if(stack.getMetadata()==CUTTER_META)
-		{
-			int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
-			if(nbtDamage < cutterMaxDamage)
-			{
-				ItemStack container = stack.copy();
-				ItemNBTHelper.setInt(container, "cutterDmg", nbtDamage);
-				return container;
-			}
 		}
 		return ItemStack.EMPTY;
 	}
@@ -211,6 +194,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isDamaged(ItemStack stack)
 	{
@@ -492,24 +476,24 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
-		if (stack.getMetadata() == HAMMER_META)
+		if(stack.getMetadata()==HAMMER_META)
 		{
-			if (state.getBlock() instanceof BlockIEBase)
+			if(state.getBlock() instanceof BlockIEBase)
 			{
-				if(((BlockIEBase) state.getBlock()).allowHammerHarvest(state))
+				if(((BlockIEBase)state.getBlock()).allowHammerHarvest(state))
 					return true;
 			}
-			else if (state.getBlock().isToolEffective(TOOL_HAMMER, state))
+			else if(state.getBlock().isToolEffective(TOOL_HAMMER, state))
 				return true;
 		}
-		else if (stack.getMetadata() == CUTTER_META)
+		else if(stack.getMetadata()==CUTTER_META)
 		{
-			if (state.getBlock() instanceof BlockIEBase)
+			if(state.getBlock() instanceof BlockIEBase)
 			{
-				if(((BlockIEBase) state.getBlock()).allowWirecutterHarvest(state))
+				if(((BlockIEBase)state.getBlock()).allowWirecutterHarvest(state))
 					return true;
 			}
-			else if (state.getBlock().isToolEffective(TOOL_WIRECUTTER, state))
+			else if(state.getBlock().isToolEffective(TOOL_WIRECUTTER, state))
 				return true;
 		}
 		return super.canHarvestBlock(state, stack);
