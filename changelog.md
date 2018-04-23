@@ -20,6 +20,7 @@
 - Fixed Skyhook crashing servers (Malte)
 - Fixed lag with redstone connectors (Malte)
 - Fixed blocks somtimes taking longer to break with the hammer (Malte)
+- Fixed a divide-by-zero issue in the ExcavatorHandler for blacklisted dimensions (BluSunrize)
 
 #####Version 0.12-80 - BUILT
 - Fixed multiblock rendering in the manual with Optifine and texture packs (Malte)
