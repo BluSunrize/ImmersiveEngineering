@@ -51,7 +51,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	{
 		if(outputs==null)
 			return NonNullList.create();
-		float mod = !input.getItem().isDamageable()?1:(input.getMaxDamage()-input.getItemDamage())/(float)input.getMaxDamage();
+		float mod = !input.isItemStackDamageable()?1:(input.getMaxDamage()-input.getItemDamage())/(float)input.getMaxDamage();
 		NonNullList<ItemStack> outs = NonNullList.create();
 		for(Entry<ItemStack,Double> e : outputs.entrySet())
 		{
