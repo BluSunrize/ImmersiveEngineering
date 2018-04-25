@@ -48,7 +48,7 @@ public class ComparableItemStack
 
 	public ComparableItemStack(String oreName)
 	{
-		this(IEApi.getPreferredOreStack(oreName));
+		this(IEApi.getPreferredOreStack(oreName), true, false);
 		this.oreID = OreDictionary.getOreID(oreName);
 	}
 
@@ -114,7 +114,7 @@ public class ComparableItemStack
 			return new ComparableItemStack(nbt.getString("oreID"));
 		else if(nbt.hasKey("stack"))
 		{
-			ComparableItemStack comp = new ComparableItemStack(new ItemStack(nbt.getCompoundTag("stack")));
+			ComparableItemStack comp = new ComparableItemStack(new ItemStack(nbt.getCompoundTag("stack")), true, false);
 			comp.useNBT = nbt.getBoolean("useNBT");
 			return comp;
 		}

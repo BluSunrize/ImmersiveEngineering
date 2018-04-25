@@ -77,7 +77,6 @@ public class ApiUtils
 	{
 		if(!isExistingOreName(oreName))
 			return false;
-		ItemStack comp = copyStackWithAmount(stack, 1);
 		List<ItemStack> s = OreDictionary.getOres(oreName);
 		for(ItemStack st:s)
 			if(OreDictionary.itemMatches(st, stack, false))
@@ -169,6 +168,7 @@ public class ApiUtils
 		return Ingredient.fromStacks(list.toArray(new ItemStack[list.size()]));
 	}
 
+	@Deprecated
 	public static ComparableItemStack createComparableItemStack(ItemStack stack)
 	{
 		return createComparableItemStack(stack, true);

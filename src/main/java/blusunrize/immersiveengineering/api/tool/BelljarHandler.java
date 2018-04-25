@@ -114,7 +114,7 @@ public class BelljarHandler
 
 	public static ResourceLocation getSoilTexture(ItemStack soil)
 	{
-		return soilTextureMap.get(new ComparableItemStack(soil,false));
+		return soilTextureMap.get(new ComparableItemStack(soil,false, false));
 	}
 
 	public interface IPlantHandler extends IPlantRenderer
@@ -170,12 +170,12 @@ public class BelljarHandler
 		@Override
 		public boolean isValid(ItemStack seed)
 		{
-			return seed!=null&&getSeedSet().contains(new ComparableItemStack(seed,false));
+			return seed!=null&&getSeedSet().contains(new ComparableItemStack(seed,false, false));
 		}
 		@Override
 		public boolean isCorrectSoil(ItemStack seed, ItemStack soil)
 		{
-			IngredientStack reqSoil = seedSoilMap.get(new ComparableItemStack(seed,false));
+			IngredientStack reqSoil = seedSoilMap.get(new ComparableItemStack(seed,false, false));
 			return reqSoil.matchesItemStack(soil);
 		}
 		@Override
@@ -186,14 +186,14 @@ public class BelljarHandler
 		@Override
 		public ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile)
 		{
-			return seedOutputMap.get(new ComparableItemStack(seed,false));
+			return seedOutputMap.get(new ComparableItemStack(seed,false, false));
 		}
 
 		@Override
 		@SideOnly(Side.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false, false));
 			if(states!=null)
 				return states;
 			return null;
@@ -205,7 +205,7 @@ public class BelljarHandler
 		}
 		public void register(ItemStack seed, ItemStack[] output, IngredientStack soil, IBlockState... render)
 		{
-			ComparableItemStack comp = new ComparableItemStack(seed,false);
+			ComparableItemStack comp = new ComparableItemStack(seed,false, false);
 			getSeedSet().add(comp);
 			seedSoilMap.put(comp, soil);
 			seedOutputMap.put(comp, output);
@@ -226,7 +226,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false, false));
 			if(states!=null)
 			{
 				IBlockState[] ret = new IBlockState[states.length];
@@ -293,7 +293,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 		{
-			ComparableItemStack comp = new ComparableItemStack(seed,false);
+			ComparableItemStack comp = new ComparableItemStack(seed,false, false);
 			IBlockState[] renderStates = seedRenderMap.get(comp);
 			if(renderStates.length>0 && renderStates[0]!=null && renderStates[0].getBlock() instanceof BlockStem)
 			{
@@ -309,7 +309,7 @@ public class BelljarHandler
 				GlStateManager.popMatrix();
 				if(growth>=.5)
 				{
-					ItemStack[] fruit = seedOutputMap.get(new ComparableItemStack(seed,false));
+					ItemStack[] fruit = seedOutputMap.get(new ComparableItemStack(seed,false, false));
 					if(fruit!=null&&fruit.length>0&&!fruit[0].isEmpty())
 					{
 						Block fruitBlock = Block.getBlockFromItem(fruit[0].getItem());
@@ -343,7 +343,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false, false));
 			if(states!=null)
 				return states;
 			return null;
@@ -352,7 +352,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false, false));
 			if(states!=null && states.length>2)
 				return .6875f-(states.length)*.0625f;
 			return .6875f;
@@ -361,7 +361,7 @@ public class BelljarHandler
 		@SideOnly(Side.CLIENT)
 		public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 		{
-			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false));
+			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed,false, false));
 			if(states!=null)
 				GlStateManager.translate(0, (-1+growth)*(states.length-1), 0);
 			return false;
@@ -370,7 +370,7 @@ public class BelljarHandler
 
 	public static void init()
 	{
-		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT),false), new ResourceLocation("minecraft:blocks/farmland_wet"));
+		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT),false, false), new ResourceLocation("minecraft:blocks/farmland_wet"));
 		registerHandler(cropHandler);
 		registerHandler(stemHandler);
 		registerHandler(stackingHandler);
