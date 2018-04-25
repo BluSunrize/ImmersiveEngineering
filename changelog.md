@@ -1,3 +1,7 @@
+#####Version 0.12-82
+- Fixed Wirecutter getting consumed when cutting plates (BluSunrize)
+- Fixed Alloy Kiln consuming fuelsource container items (BluSunrize)
+
 #####Version 0.12-81 - BUILT
 - Added the functionality for the Faraday Suit to protect against live wiring (Malte)
 - Added the ability to use Pick Block to take a connector's wire by sneaking (BluSunrize)
