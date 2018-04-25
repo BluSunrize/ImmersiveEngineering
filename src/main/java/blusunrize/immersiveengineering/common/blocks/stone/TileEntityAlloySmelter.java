@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBool
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -167,12 +168,15 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 
 			if(burnTime<=10 && getRecipe()!=null)
 			{
-
-				if(TileEntityFurnace.isItemFuel(inventory.get(2)))
+				ItemStack fuel = inventory.get(2);
+				if(TileEntityFurnace.isItemFuel(fuel))
 				{
-					lastBurnTime = TileEntityFurnace.getItemBurnTime(inventory.get(2));
+					lastBurnTime = TileEntityFurnace.getItemBurnTime(fuel);
 					burnTime += lastBurnTime;
-					Utils.modifyInvStackSize(inventory, 2, -1);
+					Item itemFuel = fuel.getItem();
+					fuel.shrink(1);
+					if(fuel.isEmpty())
+						inventory.set(2, itemFuel.getContainerItem(fuel));
 					markContainingBlockForUpdate(null);
 				}
 			}
@@ -197,6 +201,8 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	}
 	public AlloyRecipe getRecipe()
 	{
+		if(inventory.get(0).isEmpty() || inventory.get(1).isEmpty())
+			return null;
 		AlloyRecipe recipe = AlloyRecipe.findRecipe(inventory.get(0), inventory.get(1));
 		if(recipe==null)
 			return null;
