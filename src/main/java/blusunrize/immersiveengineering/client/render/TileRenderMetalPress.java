@@ -58,8 +58,8 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 			MultiblockProcess process = te.processQueue.get(i);
 			if(process==null)
 				continue;
-			float transportTime = 52.5f/(float)process.maxTicks;
-			float pressTime = 3.75f/(float)process.maxTicks;
+			float transportTime = 52.5f/120f;
+			float pressTime = 3.75f/120f;
 			float fProcess = (process.processTick+(te.shouldRenderAsActive()?partialTicks:0))/(float)process.maxTicks;
 
 			if(fProcess<transportTime)
