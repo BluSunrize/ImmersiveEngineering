@@ -71,6 +71,10 @@ repositories {
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
+    maven { // ModMaven, there is a bunch of stuff on there
+        name 'ModMaven'
+        url "http://modmaven.k-4u.nl/"
+    }
     repositories {//Curseforge maven, in case some other maven goes offline
         maven {
             name = "CurseForge"
@@ -101,6 +105,7 @@ dependencies {
     compileOnly "opencomputers:OpenComputers:MC1.12.2:1.7.2.67"//li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
     compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
     compileOnly 'industrial-craft:industrialcraft-2:release:ex112'//'net.industrial-craft:industrialcraft-2:2.8.+'
+    compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2+"
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 

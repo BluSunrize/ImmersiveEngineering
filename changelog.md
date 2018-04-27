@@ -1,4 +1,5 @@
 #####Version 0.12-82
+- Added compat for farming Hemp to ActuallyAddition's farmer (BluSunrize)
 - Fixed Wirecutter getting consumed when cutting plates (BluSunrize)
 - Fixed Alloy Kiln consuming fuelsource container items (BluSunrize)
 - Fixed uncovered FluidPipes allowing mobspawns (BluSunrize)
