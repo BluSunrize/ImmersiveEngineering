@@ -268,10 +268,17 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public void invalidate()
 	{
 		synchronized (EventHandler.interdictionTiles) {
-			if (EventHandler.interdictionTiles.contains(this))
-				EventHandler.interdictionTiles.remove(this);
+			EventHandler.interdictionTiles.remove(this);
 		}
 		super.invalidate();
+	}
+
+	@Override
+	public void onChunkUnload(){
+		synchronized (EventHandler.interdictionTiles) {
+			EventHandler.interdictionTiles.remove(this);
+		}
+		super.onChunkUnload();
 	}
 
 	@Override

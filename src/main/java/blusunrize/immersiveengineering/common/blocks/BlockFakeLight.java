@@ -141,10 +141,16 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 		public void invalidate()
 		{
 			synchronized (EventHandler.interdictionTiles) {
-				if (EventHandler.interdictionTiles.contains(this))
-					EventHandler.interdictionTiles.remove(this);
+				EventHandler.interdictionTiles.remove(this);
 			}
 			super.invalidate();
+		}
+		@Override
+		public void onChunkUnload(){
+			synchronized (EventHandler.interdictionTiles) {
+				EventHandler.interdictionTiles.remove(this);
+			}
+			super.onChunkUnload();
 		}
 		@Override
 		public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
