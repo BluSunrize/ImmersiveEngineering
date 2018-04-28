@@ -3,7 +3,10 @@
 - Fixed Wirecutter getting consumed when cutting plates (BluSunrize)
 - Fixed Alloy Kiln consuming fuelsource container items (BluSunrize)
 - Fixed uncovered FluidPipes allowing mobspawns (BluSunrize)
+- Fixed spawn interdictors (Electric Lanterns, etc) not being removed on chunk unload (codewarrior0)
+- Fixed Metal Press animations and sounds with customized recipe times (codewarrior0)
 - Reduced the amount of ItemStacks being copied in rendering and recipe checking (Malte)
+- Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 
 #####Version 0.12-81 - BUILT
 - Added the functionality for the Faraday Suit to protect against live wiring (Malte)
