@@ -159,7 +159,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					if(!held.isEmpty() && held.getItem() instanceof ItemIEShield)
 					{
 						if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet") && ((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
-							ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(player.getName(), -1));
+							ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
 					}
 					else
 					{
@@ -167,7 +167,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						{
 							ItemStack s = player.inventory.mainInventory.get(i);
 							if(!s.isEmpty() && s.getItem() instanceof ItemIEShield && ((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(player.getName(), i));
+								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
 						}
 					}
 				}
@@ -179,7 +179,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			{
 				ItemStack held = event.player.getHeldItem(EnumHand.MAIN_HAND);
 				if(held.getItem() instanceof ItemChemthrower && ((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.player.getName(), true));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
 			}
 		}
 //		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
@@ -782,7 +782,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							{
 								if (player.world.getTotalWorldTime()%20==0)
 								{
-									ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(player.dimension, mop.getBlockPos()));
+									ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getBlockPos()));
 								}
 								int i = 0;
 								for(String s : text)
@@ -939,7 +939,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				}
 				if(Config.IEConfig.Tools.chemthrower_scroll && equipped.getItem() instanceof ItemChemthrower && ((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(player.getName(), event.getDwheel()<0));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getDwheel()<0));
 					event.setCanceled(true);
 				}
 			}

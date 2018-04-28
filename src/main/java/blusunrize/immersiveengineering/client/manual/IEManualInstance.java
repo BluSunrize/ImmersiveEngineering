@@ -309,7 +309,7 @@ public class IEManualInstance extends ManualInstance
 	public void openEntry(String entry)
 	{
 		if("shaderList".equalsIgnoreCase(entry))
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC,ClientUtils.mc().player.getName()));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC));
 	}
 
 	@Override

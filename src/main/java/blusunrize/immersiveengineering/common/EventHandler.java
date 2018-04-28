@@ -63,6 +63,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -312,20 +313,14 @@ public class EventHandler
 						itExplosion.remove();
 				}
 			}
-			synchronized (requestedBlockUpdates)
+			while (!requestedBlockUpdates.isEmpty())
 			{
-				while (!requestedBlockUpdates.isEmpty())
+				Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
+				World w = DimensionManager.getWorld(curr.getLeft());
+				if(w!=null)
 				{
-					Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
-					if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-					{
-						World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(curr.getLeft());
-						if(w!=null)
-						{
-							IBlockState state = w.getBlockState(curr.getRight());
-							w.notifyBlockUpdate(curr.getRight(), state,state, 3);
-						}
-					}
+					IBlockState state = w.getBlockState(curr.getRight());
+					w.notifyBlockUpdate(curr.getRight(), state,state, 3);
 				}
 			}
 		}
