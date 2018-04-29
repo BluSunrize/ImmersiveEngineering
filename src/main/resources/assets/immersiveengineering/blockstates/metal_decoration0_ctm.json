@@ -1,0 +1,19 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "cube_all"
+	},
+	"variants":
+	{
+		"type":
+		{
+			"rs_engineering": {"model": "immersiveengineering:ctm/metal_decoration0_redstone_engineering"},
+			"light_engineering": {"model": "immersiveengineering:ctm/metal_decoration0_light_engineering"},
+			"heavy_engineering": {"model": "immersiveengineering:ctm/metal_decoration0_heavy_engineering"},
+			"generator": {"model": "immersiveengineering:ctm/metal_decoration0_generator"},
+			"radiator": {"model": "immersiveengineering:ctm/metal_decoration0_radiator"}
+		}
+	}
+}

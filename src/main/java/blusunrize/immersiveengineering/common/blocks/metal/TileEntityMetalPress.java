@@ -64,8 +64,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		for(MultiblockProcess process : processQueue)
 		{
 			float tick = 1/(float)process.maxTicks;
-			float transportTime = 52.5f*tick;
-			float pressTime = 3.75f*tick;
+			float transportTime = 52.5f/120f;
+			float pressTime = 3.75f/120f;
 			float fProcess = process.processTick*tick;
 			if(fProcess>=transportTime && fProcess<transportTime+tick)
 				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F,1);
@@ -161,7 +161,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			if(recipe==null)
 				return;
 			ItemStack displayStack = recipe.getDisplayStack(stack);
-			float transformationPoint = 56.25f/(float)recipe.getTotalProcessTime();
+			float transformationPoint = 56.25f/120f;
 			MultiblockProcess process = new MultiblockProcessInWorld(recipe, transformationPoint, Utils.createNonNullItemStackListFromItemStack(displayStack));
 			if(master.addProcessToQueue(process, true))
 			{
@@ -225,7 +225,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<MetalPressRecipe> process)
 	{
-		return (process.recipe.getTotalProcessTime()-56.25f)/(float)process.recipe.getTotalProcessTime();
+		return 63.75f/120f;
 	}
 
 

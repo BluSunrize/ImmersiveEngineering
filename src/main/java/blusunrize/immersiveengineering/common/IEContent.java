@@ -253,7 +253,7 @@ public class IEContent
 		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
 		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetal_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
 
-		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metal_decoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setBlockLayer(BlockRenderLayer.CUTOUT).setHardness(3.0F).setResistance(15.0F);
+		blockMetalDecoration0 = new BlockMetalDecoration0();
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
 		blockMetalDecorationSlabs1 = (BlockIESlab)new BlockIEScaffoldSlab("metal_decoration1_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class)).setMetaHidden(0, 4).setHardness(3.0F).setResistance(15.0F);
@@ -545,7 +545,7 @@ public class IEContent
 
 	public static void init()
 	{
-		/**MINING LEVELS*/
+		/*MINING LEVELS*/
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.LEAD.getMeta()));
@@ -562,7 +562,7 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
 
-		/**WORLDGEN*/
+		/*WORLDGEN*/
 		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
@@ -570,7 +570,7 @@ public class IEContent
 		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
 
-		/**TILEENTITIES*/
+		/*TILEENTITIES*/
 		registerTile(TileEntityIESlab.class);
 
 		registerTile(TileEntityBalloon.class);
@@ -661,7 +661,7 @@ public class IEContent
 
 
 
-		/**ENTITIES*/
+		/*ENTITIES*/
 		int i = 0;
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShot"), EntityRevolvershot.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "skylineHook"), EntitySkylineHook.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
@@ -681,17 +681,17 @@ public class IEContent
 		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemChemthrower));
 		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRailgun));
 
-		/**SMELTING*/
+		/*SMELTING*/
 		itemMaterial.setBurnTime(6, 3200);
 		Item itemBlockStoneDecoration = Item.getItemFromBlock(blockStoneDecoration);
 		if(itemBlockStoneDecoration instanceof ItemBlockIEBase)
 			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
 
-		/**BANNERS*/
+		/*BANNERS*/
 		addBanner("hammer", "hmr", new ItemStack(itemTool,1,0));
 		addBanner("bevels", "bvl", "plateIron");
 		addBanner("ornate", "orn", "dustSilver");
-		addBanner("treatedwood", "twd", "plankTreatedWood");
+		addBanner("treated_wood", "twd", "plankTreatedWood");
 		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta())});
 		if(!BulletHandler.homingCartridges.isEmpty())
 		{
@@ -701,7 +701,7 @@ public class IEContent
 			addBanner("wolf", "wlf", wolfpackCartridge, 0,0);
 		}
 
-		/**ASSEMBLER RECIPE ADAPTERS*/
+		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialQueryConverters((o)->
 				o instanceof IngredientFluidStack? new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
@@ -909,6 +909,7 @@ public class IEContent
 		BelljarHandler.registerHandler(hempBelljarHandler);
 		hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial,4,4),new ItemStack(itemSeeds,2)},new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 
+		ThermoelectricHandler.registerSource(new IngredientStack(new ItemStack(Blocks.MAGMA)), 1300);
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);
 		ThermoelectricHandler.registerSourceInKelvin("blockUranium", 2000);
@@ -1030,13 +1031,13 @@ public class IEContent
 			ItemNBTHelper.setString(bag_rare, "rarity", EnumRarity.RARE.toString());
 
 			career_outfitter.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(bag_common, new EntityVillager.PriceInfo(8, 16))
+					new IEVillagerTrades.ItemstackForEmerald(bag_common, new EntityVillager.PriceInfo(8, 16))
 			);
 			career_outfitter.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(bag_uncommon, new EntityVillager.PriceInfo(12, 20))
+					new IEVillagerTrades.ItemstackForEmerald(bag_uncommon, new EntityVillager.PriceInfo(12, 20))
 			);
 			career_outfitter.addTrade(3,
-					new IEVillagerTrades.EmeraldForItemstack(bag_rare, new EntityVillager.PriceInfo(16, 24))
+					new IEVillagerTrades.ItemstackForEmerald(bag_rare, new EntityVillager.PriceInfo(16, 24))
 			);
 		}
 

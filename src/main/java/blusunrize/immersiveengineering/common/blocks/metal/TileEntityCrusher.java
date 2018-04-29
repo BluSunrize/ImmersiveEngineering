@@ -120,12 +120,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		//		return renderAABB;
 		return new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?2:1),getPos().getY(),getPos().getZ()-(facing.getAxis()==Axis.X?2:1), getPos().getX()+(facing.getAxis()==Axis.Z?3:2),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.X?3:2));
 	}
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
-	}
+
 	@Override
 	public float[] getBlockBounds()
 	{

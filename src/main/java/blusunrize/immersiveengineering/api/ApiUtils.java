@@ -77,7 +77,6 @@ public class ApiUtils
 	{
 		if(!isExistingOreName(oreName))
 			return false;
-		ItemStack comp = copyStackWithAmount(stack, 1);
 		List<ItemStack> s = OreDictionary.getOres(oreName);
 		for(ItemStack st:s)
 			if(OreDictionary.itemMatches(st, stack, false))
@@ -169,6 +168,7 @@ public class ApiUtils
 		return Ingredient.fromStacks(list.toArray(new ItemStack[list.size()]));
 	}
 
+	@Deprecated
 	public static ComparableItemStack createComparableItemStack(ItemStack stack)
 	{
 		return createComparableItemStack(stack, true);
@@ -624,7 +624,7 @@ public class ApiUtils
 				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset) || !coil.canConnectCable(stack, tileEntity))
 				{
 					if (!world.isRemote)
-						player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
+						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"), true);
 					return EnumActionResult.FAIL;
 				}
 
@@ -649,11 +649,11 @@ public class ApiUtils
 						int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 						maxLengthSq *= maxLengthSq;
 						if(array[0]!=world.provider.getDimension())
-							player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
+							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"), true);
 						else if(linkPos.equals(masterPos))
-							player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
+							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"), true);
 						else if( distanceSq > maxLengthSq)
-							player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"));
+							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"), true);
 						else
 						{
 							TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
@@ -661,7 +661,7 @@ public class ApiUtils
 							   !((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offsetLink)||
 							   !((IImmersiveConnectable) tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
 							   !coil.canConnectCable(stack, tileEntityLinkingPos))
-								player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
+								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
 							else
 							{
 								IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
@@ -675,7 +675,7 @@ public class ApiUtils
 											connectionExists = true;
 									}
 								if(connectionExists)
-									player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
+									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
 								else
 								{
 									Set<BlockPos> ignore = new HashSet<>();
@@ -724,7 +724,7 @@ public class ApiUtils
 									}
 									else
 									{
-										player.sendMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"));
+										player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
 										ImmersiveEngineering.proxy.addFailedConnection(tmpConn, failedReason, player);
 									}
 								}

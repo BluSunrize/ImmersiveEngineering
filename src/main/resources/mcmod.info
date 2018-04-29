@@ -6,7 +6,6 @@
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/BluSunrize/ImmersiveEngineering",
-  "updateUrl": "",
   "authorList": ["BluSunrize","Damien A.W. Hazard"],
   "credits": "All the great other Git Contributors, and the nerds on IRC!",
   "logoFile": "assets/immersiveengineering/logo.png",

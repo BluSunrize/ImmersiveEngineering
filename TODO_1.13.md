@@ -8,6 +8,7 @@
    - Merge `ImmersiveNetHandler.indirectConnectionsNoOut` and `ImmersiveNetHandler.indirectConnections`
    - Public methods shouldn't leave the net handler in an "inconsistent" state (diodes/single-direction edges) etc.
  - Remove config-mirroring fields from all over the place (e.g. `WireType.wireTransferRate`)
+ - Remove WireType parameter from ``IImmersiveConnectable.getConnectionMaster``
  
 Maybe:
  - Change the manual to:

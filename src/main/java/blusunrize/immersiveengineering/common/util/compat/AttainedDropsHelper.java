@@ -68,7 +68,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@Override
 			public boolean isCorrectSoil(ItemStack seed, ItemStack soil)
 			{
-				return !soil.isEmpty()&&soilOutputMap.containsKey(new ComparableItemStack(soil));
+				return !soil.isEmpty()&&soilOutputMap.containsKey(new ComparableItemStack(soil, true, false));
 			}
 			@Override
 			public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
@@ -83,7 +83,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@Override
 			public ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile)
 			{
-				ItemStack[] out = soilOutputMap.get(new ComparableItemStack(soil));
+				ItemStack[] out = soilOutputMap.get(new ComparableItemStack(soil, true, false));
 				if(out==null)
 					return new ItemStack[0];
 				return out;
@@ -117,7 +117,7 @@ public class AttainedDropsHelper extends IECompatModule
 				GlStateManager.popMatrix();
 				if(growth>=.5)
 				{
-					state = bulbMap.get(new ComparableItemStack(soil));
+					state = bulbMap.get(new ComparableItemStack(soil, true, false));
 					model = blockRenderer.getModelForState(state);
 					GlStateManager.pushMatrix();
 					float scale = (growth-.5f)*2f;
@@ -137,7 +137,7 @@ public class AttainedDropsHelper extends IECompatModule
 		Block bulbBlock = Block.REGISTRY.getObject(new ResourceLocation("attaineddrops:"+type+"_bulb"));
 		if(soilBlock!=null && bulbBlock!=null)
 		{
-			ComparableItemStack comp = new ComparableItemStack(new ItemStack(soilBlock));
+			ComparableItemStack comp = new ComparableItemStack(new ItemStack(soilBlock), true, true);
 			soilOutputMap.put(comp, new ItemStack[]{out});
 			bulbMap.put(comp, bulbBlock.getDefaultState());
 		}

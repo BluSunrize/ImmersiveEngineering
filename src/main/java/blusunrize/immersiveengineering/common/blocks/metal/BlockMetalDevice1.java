@@ -154,7 +154,11 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 			return !((TileEntityTeslaCoil)tile).dummy;
 		else if(tile instanceof TileEntityTurret)
 			return !((TileEntityTurret)tile).dummy;
-		return !(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation);
+		else if(tile instanceof TileEntityFluidPipe)
+			return !((TileEntityFluidPipe)tile).pipeCover.isEmpty();
+		else if(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation || tile instanceof TileEntityFloodlight)
+			return side==EnumFacing.DOWN;
+		return true;
 	}
 
 

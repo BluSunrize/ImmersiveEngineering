@@ -1,8 +1,5 @@
 ### Before reporting:
-If it's about the extra jar file named "ImmersiveEngineering-[version]-core":
-This is intentional. It's Forge convention to make Coremods into a seperate thing. This jar is not an unauthorized download, it is shipped with IE and automatically unpacked by Forge.
-
-Otherwise, please use the searchfuntion to make sure an issue hasn't been reported already. This avoids duplicates.
+Please use the search function to make sure an issue hasn't been reported already. This avoids duplicates.
 Also, please give this issue a descriptive name that contains the game version in the title, eg.: "[1.12] Capacitor Interaction Crash"
 
 ### Description of the issue:

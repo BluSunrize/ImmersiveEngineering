@@ -99,6 +99,9 @@ public class ExcavatorHandler
 			return null;
 
 		int dim = world.provider.getDimension();
+		int dimensionTotalWeight = getDimensionTotalWeight(dim);
+		if(dimensionTotalWeight<=0)
+			return null;
 		DimensionChunkCoords coords = new DimensionChunkCoords(dim, chunkX,chunkZ);
 		MineralWorldInfo worldInfo = mineralCache.get(coords);
 		if(worldInfo==null)
@@ -110,7 +113,7 @@ public class ExcavatorHandler
 			int query = r.nextInt();
 			if(!empty)
 			{
-				int weight = Math.abs(query%getDimensionTotalWeight(dim));
+				int weight = Math.abs(query%dimensionTotalWeight);
 				for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 					if(e.getKey().isValid()&&e.getKey().validDimension(dim))
 					{

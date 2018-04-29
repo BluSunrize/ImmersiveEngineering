@@ -37,7 +37,7 @@ public class MetalPress
 		ItemStack sMold = CraftTweakerHelper.toStack(mold);
 		if(!sOut.isEmpty() && !sMold.isEmpty())
 		{
-			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, ApiUtils.createComparableItemStack(sMold), energy);
+			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, ApiUtils.createComparableItemStack(sMold, true), energy);
 			if(inputSize > 0)
 				r.setInputSize(inputSize);
 			CraftTweakerAPI.apply(new Add(r));
@@ -111,13 +111,13 @@ public class MetalPress
 
 		public RemoveByMold(ItemStack mold)
 		{
-			this.mold = ApiUtils.createComparableItemStack(mold);
+			this.mold = ApiUtils.createComparableItemStack(mold, true);
 		}
 
 		@Override
 		public void apply()
 		{
-			removedRecipes = new ArrayList(MetalPressRecipe.recipeList.get(mold));
+			removedRecipes = new ArrayList<>(MetalPressRecipe.recipeList.get(mold));
 			MetalPressRecipe.recipeList.removeAll(mold);
 			for(MetalPressRecipe recipe : removedRecipes)
 				IECompatModule.jeiRemoveFunc.accept(recipe);

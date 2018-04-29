@@ -30,6 +30,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -256,6 +257,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}catch(Exception e)
 		{
 			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error reading NBT. You should probably report this.");
+			IELogger.logger.catching(Level.ERROR, e);
 		}
 	}
 	@Override
@@ -274,6 +276,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}catch(Exception e)
 		{
 			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You should probably report this.");
+			IELogger.logger.catching(Level.ERROR, e);
 		}
 	}
 	private void loadConnsFromNBT(NBTTagCompound nbt)
@@ -291,7 +294,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 					ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(this), con);
 				}
 				else
-					IELogger.error("CLIENT read connection as null");
+					IELogger.error("CLIENT read connection as null from {}", nbt);
 			}
 		}
 	}

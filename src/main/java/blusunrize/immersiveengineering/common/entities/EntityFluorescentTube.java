@@ -40,7 +40,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	
 	private int timer = 0;
 	public boolean active = false;
-	public float[] rgb;
+	public float[] rgb = new float[4];
 	boolean firstTick = true;
 	public float angleHorizontal = 0;
 	public float tubeLength = 1.5F;

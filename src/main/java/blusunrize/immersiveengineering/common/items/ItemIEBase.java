@@ -64,7 +64,7 @@ public class ItemIEBase extends Item implements IColouredItem
 	{
 		if(getSubNames()!=null)
 		{
-			String subName = stack.getItemDamage()<getSubNames().length?getSubNames()[stack.getItemDamage()]:"";
+			String subName = stack.getMetadata()<getSubNames().length?getSubNames()[stack.getMetadata()]:"";
 			return this.getUnlocalizedName()+"."+subName;
 		}
 		return this.getUnlocalizedName();

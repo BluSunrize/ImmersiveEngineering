@@ -1,5 +1,7 @@
+import groovy.json.JsonOutput
+
 def mainVersion = "0.12"
-def buildNumber = "80"
+def buildNumber = "82"
 
 // For those who want the bleeding edge
 buildscript {
@@ -23,14 +25,15 @@ plugins {
 }
 */
 version = "${mainVersion}-${buildNumber}" + getBuildNumber()
-group= "blusunrize"
+group = "blusunrize"
+def archiveGroup = group
 archivesBaseName = "ImmersiveEngineering"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.12.2-14.23.1.2582"
+    version = "1.12.2-14.23.3.2655"
     runDir = "run"
 
     replace '${version}', project.version
@@ -68,6 +71,10 @@ repositories {
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
+    maven { // ModMaven, there is a bunch of stuff on there
+        name 'ModMaven'
+        url "http://modmaven.k-4u.nl/"
+    }
     repositories {//Curseforge maven, in case some other maven goes offline
         maven {
             name = "CurseForge"
@@ -94,10 +101,11 @@ dependencies {
     compileOnly "slimeknights.mantle:Mantle:1.12-1.3.+"
     compileOnly "slimeknights:TConstruct:1.12-2.7.+"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
-    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.10.310"
-    compileOnly "li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
+    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.+"
+    compileOnly "opencomputers:OpenComputers:MC1.12.2:1.7.2.67"//li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
     compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
     compileOnly 'industrial-craft:industrialcraft-2:release:ex112'//'net.industrial-craft:industrialcraft-2:2.8.+'
+    compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2+"
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
@@ -115,6 +123,7 @@ task coreJar(type: Jar) {
     }
     manifest {
         attributes "FMLCorePlugin": "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
+        attributes 'Maven-Artifact': archiveGroup+':'+archivesBaseName+'-core:'+version
     }
     // Add a classifier to the JAR ('-core' at the end of the file name)
     // Distinguishes the mod JAR from the shipped one
@@ -153,16 +162,18 @@ task signMainJar(type: SignJar) {
 }
 build.dependsOn signMainJar
 jar.dependsOn signCoreJar
-
+def libPrefix = 'META-INF/libraries'
 jar {
     manifest {
-        attributes 'ContainedDeps': coreJar.archivePath.name
+        attributes 'ContainedDeps': libPrefix+'/'+coreJar.archivePath.name
         attributes "FMLAT": "ImmersiveEngineering_at.cfg"
+        attributes 'Maven-Artifact': archiveGroup+':'+archivesBaseName+':'+version
     }
     exclude 'blusunrize/immersiveengineering/common/asm/**'
     // Add the output of the mod JAR task to the main JAR for later extraction
     from(coreJar.archivePath.absolutePath) {
         include '*' // Due to the way Gradle's copy tasks work, we need this line for the JAR to get added
+        into libPrefix
     }
 }
 
@@ -199,6 +210,7 @@ task deobfJar(type: Jar) {
     classifier = 'deobf'
     manifest {
         attributes 'FMLAT': 'ImmersiveEngineering_at.cfg'
+        attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version
     }
 }
 
@@ -268,3 +280,71 @@ String getBuildNumber() {
     }
     return buildNumber
 }
+
+//Code for automatic update JSON generation
+class GenerateUpdateJSON extends DefaultTask {
+    static def initVersions = { mcFromIEVersion ->
+        mcFromIEVersion.put("0.8", "1.8.9")
+        mcFromIEVersion.put("0.9", "1.9.4")
+        mcFromIEVersion.put("0.10", "1.10.2")
+        mcFromIEVersion.put("0.11", "1.11.2")
+        mcFromIEVersion.put("0.12", "1.12.2")
+    }
+    static def VERSION_PREFIX = "#####Version "
+    static def BUILT_SUFFIX = " - BUILT"
+    static def RECOMMENDED = "-recommended"
+    static def LATEST = "-latest"
+    static def CF_URL = "https://minecraft.curseforge.com/projects/immersive-engineering"
+
+    @TaskAction
+    def generate() {
+        Map<String, String> mcFromIEVersion = new HashMap<>()
+        initVersions(mcFromIEVersion)
+        File changelog = new File("changelog.md")
+        if (!changelog.exists())
+            println "Changelog does not exist! Aborting!"
+        else {
+            Map<String, Map<String, String>> changelogForVersions = new HashMap<>()
+            Map<String, String> promos = new HashMap<>()
+            String currentVersion = null
+            String currentChangelog = ""
+            changelog.eachLine {line ->
+                if (line.startsWith(VERSION_PREFIX)) {
+                    if (currentVersion!=null) {
+                        String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
+                        String mcVer = mcFromIEVersion[mainVer]
+                        if (!changelogForVersions.containsKey(mcVer)) {
+                            promos.put(mcVer+RECOMMENDED, currentVersion)
+                            promos.put(mcVer+LATEST, currentVersion)
+                            changelogForVersions[mcVer] = new HashMap<>()
+                        }
+                        changelogForVersions[mcVer][currentVersion] = currentChangelog
+                    }
+                    if (line.endsWith(BUILT_SUFFIX)) {
+                        currentVersion = line.substring(VERSION_PREFIX.length(), line.length()-BUILT_SUFFIX.length())
+                    } else {
+                        currentVersion = (String) null
+                    }
+                    currentChangelog = ""
+                } else if (!line.isEmpty()) {
+                    if (currentChangelog.length()==0)
+                        currentChangelog += line
+                    else
+                        currentChangelog += "\n"+line
+                }
+            }
+            Map<String, Object> mainMap = new HashMap<>(changelogForVersions)
+            mainMap["homepage"] = CF_URL
+            mainMap["promos"] = promos
+            def outJson = JsonOutput.toJson(mainMap)
+            outJson = JsonOutput.prettyPrint(outJson)
+            File outF = new File("changelog.json")
+            outF.delete()
+            outF << outJson
+        }
+    }
+}
+
+task updateJson(type: GenerateUpdateJSON)
+
+build.finalizedBy updateJson

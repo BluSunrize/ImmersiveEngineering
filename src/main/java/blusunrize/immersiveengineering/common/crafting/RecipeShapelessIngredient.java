@@ -90,7 +90,7 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 					tool = s.copy();
 				else if(!remain.isEmpty() && getIngredients().get(toolDamageSlot).apply(remain))
 					tool = remain;
-				if(!tool.isEmpty() && tool.getItem().isDamageable())
+				if(!tool.isEmpty() && tool.isItemStackDamageable())
 				{
 					tool.setItemDamage(tool.getItemDamage() + 1);
 					if(tool.getItemDamage() > tool.getMaxDamage())

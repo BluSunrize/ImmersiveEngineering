@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
-import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
+import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.block.BlockDispenser;
@@ -183,7 +183,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			}
 			if(event.getSource().getTrueSource()!=null && event.getSource().getTrueSource() instanceof EntityLivingBase && event.getSource().getTrueSource().getDistanceSq(player)<4)
 			{
-				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
 				dmgsrc.apply(event.getSource().getTrueSource());
 				b = true;
 			}
@@ -276,5 +276,11 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	public int getSlotCount(ItemStack stack)
 	{
 		return 2;
+	}
+
+	@Override
+	public boolean hasEffect(ItemStack stack)
+	{
+		return false;//Remove glint effect since it doesn't work that well with models, see #2944
 	}
 }

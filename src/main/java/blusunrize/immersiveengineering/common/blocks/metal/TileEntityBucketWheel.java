@@ -190,12 +190,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 //				renderAABB = new AxisAlignedBB(getPos(), getPos());
 		return renderAABB;
 	}
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
-	}
+
 	@Override
 	public float[] getBlockBounds()
 	{

@@ -188,12 +188,6 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 				renderAABB = new AxisAlignedBB(getPos(),getPos());
 		return renderAABB;
 	}
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
-	}
 
 	@Override
 	public int getComparatorInputOverride()

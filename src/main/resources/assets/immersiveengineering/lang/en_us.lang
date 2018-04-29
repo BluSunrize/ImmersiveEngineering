@@ -875,7 +875,7 @@ chat.immersiveengineering.command.mineral.setDepletion.NFE=Error, '%1$s' is not 
 chat.immersiveengineering.command.mineral.setDepletion.sucess=Mineral depletion set to '%1$s'
 chat.immersiveengineering.command.shaders.help=§6Usage: /ie shaders <clear>§r
 chat.immersiveengineering.command.shaders.clear.help=§6Usage: /ie shaders clear [player]§r<br> Clear the received shaders for the given player. Clear for yourself if no player is specified.
-chat.immersiveengineering.command.shaders.clear.sucess=Received Shaders for '%1$s' where cleared
+chat.immersiveengineering.command.shaders.clear.sucess=Received Shaders for '%1$s' were cleared
 
 #SUBTITLES
 subtitle.immersiveengineering.dieselGenerator=Diesel Generator is being loud and obnoxious
@@ -1177,7 +1177,7 @@ ie.manual.entry.redstoneWires5=§lExcavator: §rOutputs a signal relative to the
 ie.manual.entry.thermoElectric.name=Thermoelectric Generator
 ie.manual.entry.thermoElectric.subtext=Hot and Cold
 ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
-ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The following list contains other, non-fluid blocks, which can be used as sources of temperature.
+ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The list on the following page contains other, non-fluid blocks, which can be used as sources of temperature.
 
 ie.manual.entry.blastfurnace.name=Crude Blast Furnace
 ie.manual.entry.blastfurnace.subtext=Simple Steel

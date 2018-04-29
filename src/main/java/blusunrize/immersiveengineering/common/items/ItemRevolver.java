@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -60,7 +59,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -111,7 +109,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public boolean canModify(ItemStack stack)
 	{
-		return stack.getItemDamage()!=1;
+		return stack.getMetadata()!=1;
 	}
 
 	@Override
@@ -178,14 +176,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
-		if(stack.getItemDamage()!=1)
+		if(stack.getMetadata()!=1)
 		{
 			String tag = getRevolverDisplayTag(stack);
 			if(!tag.isEmpty())
 				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver."+tag));
 			else if(ItemNBTHelper.hasKey(stack, "flavour"))
 				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
-			else if(stack.getItemDamage()==0)
+			else if(stack.getMetadata()==0)
 				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver"));
 
 //			ItemStack shader = getShaderItem(stack);
@@ -522,103 +520,51 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		return perspective;
 	}
 
+	private static final String[][] groups = {{"frame"}, {"cylinder"}};
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean isDynamicGroup(ItemStack stack, String group)
+	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
 	{
-		return "frame".equals(group) || "cylinder".equals(group);
+		return groups;
 	}
 
 	private static final Matrix4 matOpen = new Matrix4().translate(-.625, .25, 0).rotate(-.87266, 0, 0, 1);
 	private static final Matrix4 matClose = new Matrix4().translate(-.625, .25, 0);
 	private static final Matrix4 matCylinder = new Matrix4().translate(0, .6875, 0);
-	@SideOnly(Side.CLIENT)
+
+	@Nonnull
 	@Override
-	public Matrix4 dynamicChanges(ItemStack stack, String group, TransformType cameraTransformType, @Nullable EntityLivingBase entity)
+	public Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, EntityLivingBase entity,
+										 Matrix4 mat, float partialTicks)
 	{
-		if(entity instanceof EntityPlayer && (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
+		if(entity instanceof EntityPlayer && (transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
-			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT);
-			boolean left = cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND;
+			boolean main = (transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT);
+			boolean left = transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND;
 			//Re-grab stack because the other one doesn't do reloads properly
 			stack = main?entity.getHeldItemMainhand():entity.getHeldItemOffhand();
 			if(ItemNBTHelper.hasKey(stack, "reload"))
 			{
 				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
-				if("frame".equals(group))
+				if("frame".equals(groups[0]))
 				{
 					if(f < .35||f > 1.95)
 						return matClose;
 					else if(f < .5)
-						return new Matrix4().translate(-.625, .25, 0).rotate(-2.64*(f-.35), 0, 0, 1);
+						return mat.setIdentity().translate(-.625, .25, 0).rotate(-2.64*(f-.35), 0, 0, 1);
 					else if(f < 1.8)
 						return matOpen;
 					else
-						return new Matrix4().translate(-.625, .25, 0).rotate(-2.64*(1.95-f), 0, 0, 1);
+						return mat.setIdentity().translate(-.625, .25, 0).rotate(-2.64*(1.95-f), 0, 0, 1);
 				}
 				else if(f>2.5 && f<2.9)
-					return new Matrix4().translate(0, .6875, 0).rotate(-15.70795*(f-2.5), left?-1:1, 0, 0);
+					return mat.setIdentity().translate(0, .6875, 0).rotate(-15.70795*(f-2.5), left?-1:1, 0, 0);
 			}
-			else if("frame".equals(group) && ((EntityPlayer)entity).openContainer instanceof ContainerRevolver)
+			else if("frame".equals(groups[0]) && ((EntityPlayer)entity).openContainer instanceof ContainerRevolver)
 				return matOpen;
 		}
-		return "frame".equals(group)?matClose:matCylinder;
+		return "frame".equals(groups[0])?matClose:matCylinder;
 	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
-	{
-		if(!IEConfig.fancyItemAnimations && transform.isPresent() && ("frame".equals(group)||"cylinder".equals(group)))
-		{
-			Matrix4 mat = new Matrix4(transform.get().getMatrix());
-			if("frame".equals(group))
-				mat.translate(-.625, .25, 0);
-			else
-				mat.translate(0,.6875,0);
-			return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
-		}
-		return transform;
-	}
-
-	public String[] compileRender(ItemStack revolver)
-	{
-		HashSet<String> render = new HashSet<String>();
-		render.add("revolver_frame");
-		render.add("barrel");
-		render.add("cosmetic_compensator");
-		String tag = ItemNBTHelper.getString(revolver, "elite");
-		String flavour = ItemNBTHelper.getString(revolver, "flavour");
-		if(tag!=null && !tag.isEmpty() && specialRevolversByTag.containsKey(tag))
-		{
-			SpecialRevolver r = specialRevolversByTag.get(tag);
-			if(r!=null && r.renderAdditions!=null)
-				for(String ss : r.renderAdditions)
-					render.add(ss);
-		}
-		else if(flavour!=null && !flavour.isEmpty() && specialRevolversByTag.containsKey(flavour))
-		{
-			SpecialRevolver r = specialRevolversByTag.get(flavour);
-			if(r!=null && r.renderAdditions!=null)
-				for(String ss : r.renderAdditions)
-					render.add(ss);
-		}
-		NBTTagCompound upgrades = this.getUpgrades(revolver);
-		if(upgrades.getInteger("bullets")>0 && !render.contains("dev_mag"))
-			render.add("player_mag");
-		if(upgrades.getDouble("melee")>0 && !render.contains("dev_bayonet"))
-		{
-			render.add("bayonet_attachment");
-			render.add("player_bayonet");
-		}
-		if(upgrades.getBoolean("electro"))
-		{
-			render.add("player_electro_0");
-			render.add("player_electro_1");
-		}
-		return render.toArray(new String[render.size()]);
-	}
-
 
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player)

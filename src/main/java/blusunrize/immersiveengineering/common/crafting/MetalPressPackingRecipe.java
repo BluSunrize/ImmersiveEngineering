@@ -94,7 +94,7 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 
 	private PackedDelegate getOutputCached(ItemStack input)
 	{
-		ComparableItemStack comp = new ComparableItemStack(input);
+		ComparableItemStack comp = new ComparableItemStack(input, true, false);
 		if(this.cache.containsKey(comp))
 			return this.cache.get(comp);
 

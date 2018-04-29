@@ -1,7 +1,46 @@
 {
-	"parent":"immersiveengineering:item/ie_item_base",
-	"textures": {
-		"layer0":"immersiveengineering:items/fluorescent_tube",
-		"layer1":"immersiveengineering:items/fluorescent_tube_rod"
+	"parent":"builtin/entity",
+	"model": "immersiveengineering:fluorescent_tube.obj.ie",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 8.00, 7.50, 9.50 ],
+			"scale": [ 1.00, 1.00, 1.00 ]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ -8.00, 7.50, 9.50 ],
+			"scale": [ 1.00, 1.00, 1.00 ]
+		},
+		"firstperson_righthand": {
+			"rotation": [ 316, 0, 0 ],
+			"translation": [ 13.75, 8.00, 0.00 ],
+			"scale": [ 1.00, 1.33, 1.00 ]
+		},
+		"firstperson_lefthand": {
+			"rotation": [ 316, 0, 0 ],
+			"translation": [ -3.50, 8.00, 0.00 ],
+			"scale": [ 1.00, 1.00, 1.00 ]
+		},
+		"gui": {
+			"rotation": [ 0, 0, 318 ],
+			"translation": [ 9.00, -1.25, 0.00 ],
+			"scale": [ 1.00, 1.30, 1.00 ]
+		},
+		"head": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 0.00, 0.00, 0.00 ],
+			"scale": [ 1.00, 1.00, 1.00 ]
+		},
+		"fixed": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 0.00, 0.00, 0.00 ],
+			"scale": [ 1.00, 1.00, 1.00 ]
+		},
+		"ground": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 10.00, 5.00, 10.00 ],
+			"scale": [ 1.00, 1.00, 1.00 ]
+		}
 	}
 }

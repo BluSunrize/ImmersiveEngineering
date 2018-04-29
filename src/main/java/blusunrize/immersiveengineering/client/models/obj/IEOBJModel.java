@@ -38,7 +38,7 @@ public class IEOBJModel extends OBJModel
 	public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 	{
 		IBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
-		return new IESmartObjModel(preBaked, this, state, format, IESmartObjModel.getTexturesForOBJModel(preBaked), null);
+		return new IESmartObjModel(preBaked, this, state, format, IESmartObjModel.getTexturesForOBJModel(preBaked), null, false);//TODO possibly dynamic?
 	}
 
 	@Override

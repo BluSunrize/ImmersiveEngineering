@@ -1,13 +1,16 @@
 package blusunrize.immersiveengineering.common.util.chickenbones;
 
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.nio.FloatBuffer;
 
 /**
  * Copyright (C) 2013 Chicken-Bones
@@ -29,6 +32,7 @@ import java.math.RoundingMode;
 //And massive adjustments made to work with 1.8. BLARGH!
 public class Matrix4
 {
+	public static final Matrix4 IDENTITY = new Matrix4();
 	//m<row><column>
 	public double m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
 	public Matrix4()
@@ -520,5 +524,33 @@ public class Matrix4
 		temp = Double.doubleToLongBits(m33);
 		result = 31*result+(int)(temp^(temp>>>32));
 		return result;
+	}
+
+	public FloatBuffer toFloatBuffer(@Nullable FloatBuffer in)
+	{
+		if (in==null)
+			in = GLAllocation.createDirectFloatBuffer(16);
+		in.clear();
+		in.put((float)m00);
+		in.put((float)m10);
+		in.put((float)m20);
+		in.put((float)m30);
+
+		in.put((float)m01);
+		in.put((float)m11);
+		in.put((float)m21);
+		in.put((float)m31);
+
+		in.put((float)m02);
+		in.put((float)m12);
+		in.put((float)m22);
+		in.put((float)m32);
+
+		in.put((float)m03);
+		in.put((float)m13);
+		in.put((float)m23);
+		in.put((float)m33);
+		in.flip();
+		return in;
 	}
 }

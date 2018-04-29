@@ -29,7 +29,7 @@ public class ContainerCokeOven extends ContainerIEBase<TileEntityCokeOven>
 			}
 		});
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 85, 35));
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2,152, 17, false));
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2,152, 17, 0));
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3,152, 53));
 		slotCount=4;
 

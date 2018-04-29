@@ -9,7 +9,8 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import net.minecraft.entity.Entity;
@@ -27,7 +28,6 @@ import java.util.Map;
 
 public class IEDamageSources
 {
-
 	public static class IEDamageSource_Indirect extends EntityDamageSourceIndirect
 	{
 		public IEDamageSource_Indirect(String tag, Entity shot, Entity shooter)
@@ -49,29 +49,21 @@ public class IEDamageSources
 			super(tag);
 		}
 	}
-	public static class TeslaDamageSource extends DamageSource
+	public static class ElectricDamageSource extends DamageSource
 	{
-		public boolean isLowPower;
+		public IElectricEquipment.ElectricSource source;
 		public float dmg;
-		public TeslaDamageSource(String tag, boolean lowPower, float amount)
+		public ElectricDamageSource(String tag, IElectricEquipment.ElectricSource source, float amount)
 		{
 			super(tag);
-			isLowPower = lowPower;
+			this.source = source;
 			dmg = amount;
 			setDamageBypassesArmor();
 		}
 		public boolean apply(Entity e)
 		{
 			if (e instanceof EntityLivingBase)
-			{
-				Map<String, Object> cache = new HashMap<>();
-				for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
-				{
-					ItemStack s = ((EntityLivingBase)e).getItemStackFromSlot(slot);
-					if (!s.isEmpty()&&s.getItem() instanceof ITeslaEquipment)
-						((ITeslaEquipment)s.getItem()).onStrike(s, slot, (EntityLivingBase)e, cache, this);
-				}
-			}
+				IElectricEquipment.applyToEntity((EntityLivingBase)e, this, source);
 			if (dmg>0)
 				e.attackEntityFrom(this, dmg);
 			return dmg>0;
@@ -148,11 +140,20 @@ public class IEDamageSources
 	public static DamageSource razorWire = new IEDamageSource(Lib.DMG_RazorWire);
 
 	public static DamageSource razorShock = new IEDamageSource(Lib.DMG_RazorShock);
-	public static DamageSource wireShock = new IEDamageSource(Lib.DMG_WireShock);
 
-	public static TeslaDamageSource causeTeslaDamage(float amount, boolean lowPower)
+	// DO NOT USE EXCEPT FOR CHECKING WHETHER AN ENTITY IS VULNERABLE
+	public static DamageSource wireShock = new ElectricDamageSource(Lib.DMG_WireShock, WireType.COPPER.getElectricSource(), 1);
+
+	private static final IElectricEquipment.ElectricSource TC_LOW = new IElectricEquipment.ElectricSource(.25F);
+	private static final IElectricEquipment.ElectricSource TC_HIGH = new IElectricEquipment.ElectricSource(2);
+	public static ElectricDamageSource causeTeslaDamage(float amount, boolean lowPower)
 	{
-		return new TeslaDamageSource(Lib.DMG_Tesla, lowPower, amount);
+		return new ElectricDamageSource(Lib.DMG_Tesla, lowPower?TC_LOW:TC_HIGH, amount);
+	}
+
+	public static ElectricDamageSource causeWireDamage(float amount, IElectricEquipment.ElectricSource source)
+	{
+		return new ElectricDamageSource(Lib.DMG_WireShock, source, amount);
 	}
 
 	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)

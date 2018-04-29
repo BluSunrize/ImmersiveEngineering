@@ -169,13 +169,13 @@ public class ManualPageShader extends ManualPages
 		else if(button.id==102)
 		{
 			if(ApiUtils.hasPlayerIngredient(gui.mc.player,replicationCost) || gui.mc.player.capabilities.isCreativeMode)
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN,gui.mc.player.getName(),shader.getName()));
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN,shader.getName()));
 			gui.initGui();
 		}
 		else if(button.id==103)
 		{
 			String player = ManualUtils.mc().player.getName();
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.UNLOCK,player,shader.getName()));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.UNLOCK,shader.getName()));
 			ShaderRegistry.receivedShaders.put(player,shader.getName());
 			gui.initGui();
 		}

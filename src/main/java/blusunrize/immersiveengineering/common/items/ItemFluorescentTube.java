@@ -12,29 +12,41 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.client.ClientProxy;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
+public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool, IElectricEquipment,
+		IOBJModelCallback<ItemStack>
 {
 
 	public ItemFluorescentTube()
@@ -141,19 +153,93 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		if(pass==0)
-			return getRGBInt(stack);
+			return getRGBInt(stack, 1);
 		return super.getColourForIEItem(stack, pass);
 	}
-	public static int getRGBInt(ItemStack stack)
+	public static int getRGBInt(ItemStack stack, float factor)
 	{
 		float[] fRGB = getRGB(stack);
-		return (((int)(fRGB[0]*255)<<16)+((int)(fRGB[1]*255)<<8)+(int)(fRGB[2]*255));
+		return (((int)(fRGB[0]*255*factor)<<16)+((int)(fRGB[1]*255*factor)<<8)+(int)(fRGB[2]*255*factor));
 	}
 	public static String hexColorString(ItemStack stack)
 	{
-		String hexCol = Integer.toHexString(getRGBInt(stack));
+		String hexCol = Integer.toHexString(getRGBInt(stack, 1));
 		while (hexCol.length()<6)
 			hexCol = "0"+hexCol;
 		return hexCol;
+	}
+
+	private static final String LIT_TIME = "litTime";
+	private static final String LIT_STRENGTH = "litStrength";
+
+	public static boolean isLit(ItemStack stack)
+	{
+		return ItemNBTHelper.hasKey(stack, LIT_TIME);
+	}
+
+	public static void setLit(ItemStack stack, float strength)
+	{
+		ItemNBTHelper.setInt(stack, LIT_TIME, 35);
+		ItemNBTHelper.setFloat(stack, LIT_STRENGTH, MathHelper.clamp(strength, 0, 1F));
+	}
+
+	@Override
+	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg,
+						 ElectricSource eSource)
+	{
+		setLit(s, eSource.level);
+	}
+
+	@Override
+	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+	{
+		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+		if (!worldIn.isRemote&&isLit(stack))
+		{
+			int litTicksRemaining = ItemNBTHelper.getInt(stack, LIT_TIME);
+			litTicksRemaining--;
+			if (litTicksRemaining <= 0)
+			{
+				ItemNBTHelper.remove(stack, LIT_TIME);
+				ItemNBTHelper.remove(stack, LIT_STRENGTH);
+			}
+			else
+				ItemNBTHelper.setInt(stack, LIT_TIME, litTicksRemaining);
+		}
+	}
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
+	{
+		return !ItemStack.areItemsEqual(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
+	}
+
+	private static final String[][] special = {{"tube"}};
+	@Override
+	public String[][] getSpecialGroups(ItemStack stack, ItemCameraTransforms.TransformType transform, EntityLivingBase entity)
+	{
+		if (isLit(stack))
+			return special;
+		return IOBJModelCallback.EMPTY_STRING_A;
+	}
+
+	@Override
+	public boolean areGroupsFullbright(ItemStack stack, String[] groups)
+	{
+		return groups.length==1&&"tube".equals(groups[0])&&isLit(stack);
+	}
+
+	@Override
+	public int getRenderColour(ItemStack object, String group)
+	{
+		if ("tube".equals(group))
+		{
+			boolean lit = isLit(object);
+			float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F:0);
+			float mult = min+(lit? Utils.RAND.nextFloat()*MathHelper.clamp(1-min, 0, .1F):0);
+			return getRGBInt(object, mult) | 0xff000000;
+		}
+		else
+			return 0xff111111;
 	}
 }

@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
+import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,10 +21,11 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
 
-public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
+public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 {
 	public static ArmorMaterial mat;
 	public ItemFaradaySuit(EntityEquipmentSlot type)
@@ -39,12 +40,13 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 	}
 	
 	@Override
-	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource source)
+	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache,
+						 @Nullable DamageSource dSource, ElectricSource eSource)
 	{
-		if(!(source instanceof TeslaDamageSource))
+		if(!(dSource instanceof ElectricDamageSource))
 			return;
-		TeslaDamageSource dmg = (TeslaDamageSource)source;
-		if(dmg.isLowPower)
+		ElectricDamageSource dmg = (ElectricDamageSource)dSource;
+		if(dmg.source.level<1.75)
 		{
 			if (cache.containsKey("faraday"))
 				cache.put("faraday", (1<<armorType.getIndex())|((Integer)cache.get("faraday")));

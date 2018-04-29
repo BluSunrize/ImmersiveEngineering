@@ -265,7 +265,7 @@ public class IEManualInstance extends ManualInstance
 	public void openEntry(ManualEntry entry)
 	{
 		if("shaderList".equalsIgnoreCase(entry.getTitle()))//TODO this doesn't work any more
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC,ClientUtils.mc().player.getName()));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC));
 	}
 
 	@Override
@@ -304,7 +304,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		return IEConfig.badEyesight;
 	}
-	
+
 	public String formatConfigEntry(String rep, String splitKey)
 	{
 		String[] segment = rep.substring(0,rep.length()-1).split(splitKey);

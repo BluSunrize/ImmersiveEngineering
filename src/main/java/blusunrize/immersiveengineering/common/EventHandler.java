@@ -35,7 +35,7 @@ import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
-import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
+import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
@@ -63,6 +63,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -312,20 +313,14 @@ public class EventHandler
 						itExplosion.remove();
 				}
 			}
-			synchronized (requestedBlockUpdates)
+			while (!requestedBlockUpdates.isEmpty())
 			{
-				while (!requestedBlockUpdates.isEmpty())
+				Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
+				World w = DimensionManager.getWorld(curr.getLeft());
+				if(w!=null)
 				{
-					Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
-					if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-					{
-						World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(curr.getLeft());
-						if(w!=null)
-						{
-							IBlockState state = w.getBlockState(curr.getRight());
-							w.notifyBlockUpdate(curr.getRight(), state,state, 3);
-						}
-					}
+					IBlockState state = w.getBlockState(curr.getRight());
+					w.notifyBlockUpdate(curr.getRight(), state,state, 3);
 				}
 			}
 		}
@@ -350,27 +345,6 @@ public class EventHandler
 		ExcavatorHandler.allowPackets = false;
 	}
 
-	@SubscribeEvent
-	public void harvestCheck(PlayerEvent.HarvestCheck event)
-	{
-		if(event.getTargetBlock().getBlock() instanceof BlockIEBase)
-		{
-			if(!event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_HAMMER))
-			{
-				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().world, event.getEntityPlayer(), true);
-				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
-					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowHammerHarvest(event.getTargetBlock()))
-						event.setCanHarvest(true);
-			}
-			if(!event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_WIRECUTTER))
-			{
-				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().world, event.getEntityPlayer(), true);
-				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
-					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowWirecutterHarvest(event.getTargetBlock()))
-						event.setCanHarvest(true);
-			}
-		}
-	}
 	//	@SubscribeEvent
 	//	public void bloodMagicTeleposer(TeleposeEvent event)
 	//	{
@@ -443,7 +417,8 @@ public class EventHandler
 			float mod = 1.5f + ((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(("flux".equals(event.getSource().getDamageType())||IEDamageSources.razorShock.equals(event.getSource())||event.getSource() instanceof TeslaDamageSource) && event.getEntityLiving().getActivePotionEffect(IEPotions.conductive)!=null)
+		if(("flux".equals(event.getSource().getDamageType())||IEDamageSources.razorShock.equals(event.getSource())||
+				event.getSource() instanceof ElectricDamageSource) && event.getEntityLiving().getActivePotionEffect(IEPotions.conductive)!=null)
 		{
 			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.conductive).getAmplifier();
 			float mod = 1.5f + ((amp*amp)*.5f);

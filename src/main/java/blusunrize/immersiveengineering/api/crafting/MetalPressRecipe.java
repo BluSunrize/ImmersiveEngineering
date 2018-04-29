@@ -71,7 +71,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipeList = ArrayListMultimap.create();
 	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ItemStack mold, int energy)
 	{
-		return addRecipe(output, input, ApiUtils.createComparableItemStack(mold), energy);
+		return addRecipe(output, input, ApiUtils.createComparableItemStack(mold, true), energy);
 	}
 	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ComparableItemStack mold, int energy)
 	{
@@ -83,7 +83,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(mold.isEmpty() || input.isEmpty())
 			return null;
-		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold);
+		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold, false);
 		List<MetalPressRecipe> list = recipeList.get(comp);
 		for(MetalPressRecipe recipe : list)
 			if(recipe.matches(mold, input))
@@ -113,7 +113,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(itemStack.isEmpty())
 			return false;
-		return recipeList.containsKey(ApiUtils.createComparableItemStack(itemStack));
+		return recipeList.containsKey(ApiUtils.createComparableItemStack(itemStack, false));
 	}
 
 	@Override

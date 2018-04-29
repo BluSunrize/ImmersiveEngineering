@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -48,7 +49,7 @@ public class MessageSkyhookSync implements IMessage
 		entityID = buf.readInt();
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
 		connection = Connection.readFromNBT(tag);
-		target = new BlockPos(buf.readInt(),buf.readInt(),buf.readInt());
+		target = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
 		int l = buf.readInt();
 		subPoints = new Vec3d[l];
 		for(int i=0; i<l; i++)
@@ -61,9 +62,7 @@ public class MessageSkyhookSync implements IMessage
 	{
 		buf.writeInt(entityID);
 		ByteBufUtils.writeTag(buf,connection.writeToNBT());
-		buf.writeInt(target.getX());
-		buf.writeInt(target.getY());
-		buf.writeInt(target.getZ());
+		buf.writeInt(target.getX()).writeInt(target.getY()).writeInt(target.getZ());
 		buf.writeInt(subPoints.length);
 		for(Vec3d v : subPoints)
 		{
@@ -79,18 +78,20 @@ public class MessageSkyhookSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageSkyhookSync message, MessageContext ctx)
 		{
-			World world = ImmersiveEngineering.proxy.getClientWorld();
-			if(world!=null)
-			{
-				Entity ent = world.getEntityByID(message.entityID);
-				if(ent instanceof EntitySkylineHook)
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				World world = ImmersiveEngineering.proxy.getClientWorld();
+				if(world!=null)
 				{
-					((EntitySkylineHook)ent).connection = message.connection;
-					((EntitySkylineHook)ent).target = message.target;
-					((EntitySkylineHook)ent).subPoints = message.subPoints;
-					((EntitySkylineHook)ent).targetPoint = message.targetPoint;
+					Entity ent = world.getEntityByID(message.entityID);
+					if(ent instanceof EntitySkylineHook)
+					{
+						((EntitySkylineHook)ent).connection = message.connection;
+						((EntitySkylineHook)ent).target = message.target;
+						((EntitySkylineHook)ent).subPoints = message.subPoints;
+						((EntitySkylineHook)ent).targetPoint = message.targetPoint;
+					}
 				}
-			}
+			});
 			return null;
 		}
 	}

@@ -26,11 +26,11 @@
 			"coil_hv": {
 				"model": "immersiveengineering:ie_pillar",
 				"textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_hv_side", "top": "immersiveengineering:blocks/metal_decoration0_coil_hv_top", "bottom": "immersiveengineering:blocks/metal_decoration0_coil_hv_top"}},
-			"rs_engineering": {"model": "immersiveengineering:ctm/metal_decoration0_redstone_engineering"},
-			"light_engineering": {"model": "immersiveengineering:ctm/metal_decoration0_light_engineering"},
-			"heavy_engineering": {"model": "immersiveengineering:ctm/metal_decoration0_heavy_engineering"},
-			"generator": {"model": "immersiveengineering:ctm/metal_decoration0_generator"},
-			"radiator": {"model": "immersiveengineering:ctm/metal_decoration0_radiator"}
+			"rs_engineering": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_redstone_engineering"}},
+			"light_engineering": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_light_engineering"}},
+			"heavy_engineering": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_heavy_engineering"}},
+			"generator": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_generator"}},
+			"radiator": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_radiator"}}
 		}
 	}
 }

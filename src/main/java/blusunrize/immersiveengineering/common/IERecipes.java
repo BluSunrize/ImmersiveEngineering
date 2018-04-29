@@ -210,11 +210,11 @@ public class IERecipes
 		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
 		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold,1,2), 4800).setInputSize(4);
 
-		ComparableItemStack mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,5));
+		ComparableItemStack mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,5), false);
 		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 2));
-		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,6));
+		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,6), false);
 		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 3));
-		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,7));
+		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,7), false);
 		MetalPressRecipe.recipeList.put(mold, new MetalPressUnpackingRecipe(mold, 3200));
 	}
 
@@ -277,10 +277,10 @@ public class IERecipes
 	public static void postInitOreDictRecipes()
 	{
 		boolean allowHammerCrushing = !IEConfig.Tools.disableHammerCrushing;
-		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,0));
-		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,1));
-		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,2));
-		ComparableItemStack compMoldWire = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,4));
+		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,0), false);
+		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,1), false);
+		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,2), false);
+		ComparableItemStack compMoldWire = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold,1,4), false);
 
 		for(String name : OreDictionary.getOreNames())
 			if(ApiUtils.isExistingOreName(name))
