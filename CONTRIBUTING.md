@@ -1,6 +1,7 @@
 #### Issues
 ### General
 - Make sure to use to the latest version of Immersive Engineering (IE for short). You can download it [here](http://minecraft.curseforge.com/projects/immersive-engineering).
+- IE will create a file for its coremod in your `mods` folder. This is a `.jar` file called `ImmersiveEngineering-0.12-x-core.jar` before IE build 81 and Forge build 2656 and a directory called `memory-repo` afterwards. This is normal and not something to worry about. It's Forge convention to place coremods in separate files. The file is not downloaded, it is shipped with IE and automatically unpacked by Forge.
 - Your bug report should contain answers to these questions (If adding screenshots makes answering one of these questions easier, add them):
   - What is the bug? E.g. "The game crashed with this crash report: `<Link to crashlog>`".
   - What did you do to make it happen? E.g. "I threw a revolver into a crusher".
