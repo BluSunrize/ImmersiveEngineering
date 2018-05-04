@@ -131,6 +131,7 @@ public class TextSplitter
 						break line;
 					}
 				}
+				line = line.trim();
 				if (!line.isEmpty())
 					page.add(line);
 			}

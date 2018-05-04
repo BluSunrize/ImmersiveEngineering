@@ -38,6 +38,7 @@ public class ManualEntry
 	private String subtext;
 	private String category;
 	private final ResourceLocation location;
+	private List<String[]> linkData;
 
 	public ManualEntry(ManualInstance m, TextSplitter splitter, Supplier<String[]> fullText,
 					   String category, ResourceLocation location)
@@ -58,7 +59,9 @@ public class ManualEntry
 		String[] parts = getText.get();
 		title = parts[0];
 		subtext = parts[1];
-		splitter.split(manual.formatText(parts[2]));
+		String[] tmp = {parts[2]};//I want pointers... They would make this easier
+		linkData = ManualUtils.prepareEntryForLinks(tmp);
+		splitter.split(manual.formatText(tmp[0]));
 		TIntObjectMap<SpecialManualElement> specials = splitter.getSpecials();
 		List<List<String>> text = splitter.getEntryText();
 		pages = new ArrayList<>(text.size());
@@ -78,14 +81,14 @@ public class ManualEntry
 		int page = gui.page;
 		ManualPage toRender = pages.get(page);
 		int offsetText = 0;
-		int offsetSpecial = toRender.text.size()*manual.fontRenderer.FONT_HEIGHT;
+		int offsetSpecial = toRender.renderText.size()*manual.fontRenderer.FONT_HEIGHT;
 		ManualInstance manual = gui.getManual();
 		if (toRender.special.isAbove())
 		{
 			offsetText = toRender.special.getPixelsTaken();
 			offsetSpecial = 0;
 		}
-		ManualUtils.drawSplitString(manual.fontRenderer, toRender.text, x, y+offsetText,
+		ManualUtils.drawSplitString(manual.fontRenderer, toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
 		toRender.special.render(gui, x, y+offsetSpecial, mouseX, mouseY);
 	}
@@ -107,8 +110,13 @@ public class ManualEntry
 
 	public void addButtons(GuiManual guiManual, int x, int y, int page, List<GuiButton> pageButtons)
 	{
-		ManualUtils.addLinks(this, manual, guiManual, pages.get(page).text, x,
-				y+pages.get(page).special.getPixelsTaken(), pageButtons);
+		boolean uni = manual.fontRenderer.getUnicodeFlag();
+		manual.fontRenderer.setUnicodeFlag(true);
+		ManualPage p = pages.get(page);
+		p.renderText = new ArrayList<>(p.text);
+		ManualUtils.addLinks(this, manual, guiManual, p.renderText, x,
+				y+p.special.getPixelsTaken(), pageButtons, linkData);
+		manual.fontRenderer.setUnicodeFlag(uni);
 	}
 
 	public String getSubtext()
@@ -157,6 +165,7 @@ public class ManualEntry
 	}
 
 	private class ManualPage {
+		public List<String> renderText;
 		List<String> text;
 		@Nonnull
 		SpecialManualElement special;

@@ -8,6 +8,7 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
 import net.minecraft.client.Minecraft;
@@ -162,75 +163,95 @@ public class ManualUtils
 
 	private static final String THIS = "this";
 
-	//TODO clean up
-	public static void addLinks(ManualEntry entry, ManualInstance helper, GuiManual gui, List<String> text, int x, int y, List<GuiButton> pageButtons)
+	//Pass a single-element String array, to allow multiple outputs
+	public static List<String[]> prepareEntryForLinks(String[] entryA)
 	{
+		String entry = entryA[0];
 		List<String[]> repList = new ArrayList<String[]>();
-		int start;
 		int overflow = 0;
-		for (int i = 0;i<text.size();i++)
+		int start;
+		while ((start = entry.indexOf("<link")) >= 0 && overflow < 50)
 		{
-			String currLine = text.get(i);
-			while ((start = currLine.indexOf("<link")) >= 0 && overflow < 50)
+			overflow++;
+			int end = entry.indexOf(">", start);
+			String rep = entry.substring(start, end + 1);
+			String[] segment = rep.substring(0, rep.length() - 1).split(";");
+			if (segment.length < 3)
+				break;
+			String anchor = segment.length > 3 ? segment[3] : "-1";
+			String[] resultParts = segment[2].split("(?<= )");// Split and keep the whitespace at the end of the tokens
+			StringBuilder result = new StringBuilder();
+			List<String> forCompleteLink = new ArrayList<>(3*resultParts.length);
+			for (int iPart = 0; iPart < resultParts.length; iPart++)
 			{
-				overflow++;
-				int end = currLine.indexOf(">", start);
-				String rep = currLine.substring(start, end + 1);
-				String[] segment = rep.substring(0, rep.length() - 1).split(";");
-				if (segment.length < 3)
-					break;
-				String anchor = segment.length > 3 ? segment[3] : "-1";
-				String[] resultParts = segment[2].split(" ");
-				StringBuilder result = new StringBuilder();
-				for (int iPart = 0; iPart < resultParts.length; iPart++)
-				{
-					//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
-					String part = '\u00a7' + String.valueOf((char) (128 + repList.size())) + resultParts[iPart];
-					repList.add(new String[]{part, segment[1], anchor});
-					result.append(iPart > 0 ? " " : "").append(part);
-				}
-				currLine = currLine.substring(0, start)+result+currLine.substring(end+1);
+				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
+				String part = '\u00a7' + String.valueOf((char) (128 + repList.size())) + resultParts[iPart];
+				forCompleteLink.add(part);
+				forCompleteLink.add(segment[1]);
+				forCompleteLink.add(anchor);
+				result.append(part);
 			}
-			//TODO do I want this, and if not, what do I want? text.set(i, currLine);
+			repList.add(forCompleteLink.toArray(new String[0]));
+			entry = entry.substring(0, start) + result + entry.substring(end + 1);
 		}
+		entryA[0] = entry;
+		return repList;
+	}
 
-		for (String[] rep : repList)
+	public static void addLinks(ManualEntry entry, ManualInstance helper, GuiManual gui, List<String> text, int x, int y,
+								List<GuiButton> pageButtons, List<String[]> repList)
+	{
+		for (int linkIndex = 0; linkIndex < repList.size(); linkIndex++)
 		{
-			for (int line = 0; line < text.size(); line++)
+			String[] repComplete = repList.get(linkIndex);
+			String[] rep = new String[3];
+			List<GuiButtonManualLink> parts = new ArrayList<>();
+			for (int i = 0;i<repComplete.length/3;i++)
 			{
-				String s = text.get(line);
-				if ((start = s.indexOf(rep[0])) >= 0)
+				System.arraycopy(repComplete, 3*i, rep, 0, 3);
+				for (int line = 0; line < text.size(); line++)
 				{
-					String formatIdent = rep[0].substring(0, 2);
-					rep[0] = rep[0].substring(2);
-					int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
-					int by = line * helper.fontRenderer.FONT_HEIGHT;
-					ResourceLocation bkey = THIS.equals(rep[0])?new ResourceLocation(rep[1]):entry.getLocation();
-					int bw = helper.fontRenderer.getStringWidth(rep[0]);
-					int bAnchor = -1;
-					int bOffset = 0;
-					try
+					String s = text.get(line);
+					int start;
+					if ((start = s.indexOf(rep[0].trim())) >= 0)
 					{
-						if (rep[2].contains("+"))
+						String formatIdent = rep[0].substring(0, 2);
+						String element = rep[0].substring(2);
+						if (!s.substring(start).startsWith(rep[0]))//This can happen when whitespace is cut off at the end of a line
+							element = element.trim();
+						int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
+						int by = line * helper.fontRenderer.FONT_HEIGHT;
+						ResourceLocation bkey = THIS.equals(element) ? new ResourceLocation(rep[1]) : entry.getLocation();
+						int bw = helper.fontRenderer.getStringWidth(element);
+						int bAnchor = -1;
+						int bOffset = 0;
+						try
 						{
-							int plus = rep[2].indexOf('+');
-							bAnchor = Integer.parseInt(rep[2].substring(0, plus));
-							bOffset = Integer.parseInt(rep[2].substring(plus+1));
+							if (rep[2].contains("+"))
+							{
+								int plus = rep[2].indexOf('+');
+								bAnchor = Integer.parseInt(rep[2].substring(0, plus));
+								bOffset = Integer.parseInt(rep[2].substring(plus + 1));
+							}
+							else
+								bAnchor = Integer.parseInt(rep[2]);
 						}
-						else
-							bAnchor = Integer.parseInt(rep[2]);
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
+						GuiButtonManualLink btn = new GuiButtonManualLink(gui, 900 + linkIndex, x + bx, y + by, bw, (int) (helper.fontRenderer.FONT_HEIGHT * 1.5),
+								new ManualInstance.ManualLink(Objects.requireNonNull(helper.getEntry(bkey), bkey + " is not a known entry!"), bAnchor, bOffset), element);
+						parts.add(btn);
+						pageButtons.add(btn);
+						s = s.replaceFirst(formatIdent, "");
+						text.set(line, s);
+						break;
 					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-					pageButtons.add(new GuiButtonManualLink(gui, 900 + overflow, x + bx, y + by, bw, (int) (helper.fontRenderer.FONT_HEIGHT * 1.5),
-							new ManualInstance.ManualLink(Objects.requireNonNull(helper.getEntry(bkey), bkey+" is not a known entry!"), bAnchor, bOffset), rep[0]));
-					s = s.replaceFirst(formatIdent, "");
-					//TODO do I want this, and if not, what do I want? text.set(line, s);
-					break;
 				}
 			}
+			for (GuiButtonManualLink btn:parts)
+				btn.otherParts = parts;
 		}
 	}
 
