@@ -85,7 +85,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			AxisAlignedBB validBox = Block.FULL_BLOCK_AABB.offset(pos).grow(range);
 			List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, validBox);
 			for (EntityLivingBase entity:entities)
-				if (entity.getUniqueID().equals(targetId)&&isValidTarget(entity))
+				if (entity.getUniqueID().equals(targetId)&&isValidTarget(entity, true))
 				{
 					target = entity;
 					break;
@@ -95,18 +95,16 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 		if(target!=null)
 		{
-			double dX = target.posX-(getPos().getX()+.5);
-			double dY = target.posY-(getPos().getY()+.5);
-			double dZ = target.posZ-(getPos().getZ()+.5);
-			double dSq = dX*dX+dY*dY+dZ*dZ;
+			Vec3d delta = getGunToTargetVec(target);
+			double dSq = delta.lengthSquared();
 			if(dSq > range*range)
 				this.target=null;
 			else
 			if(world.isRemote)
 			{
 				float facingYaw = facing==EnumFacing.NORTH?180: facing==EnumFacing.WEST?-90: facing==EnumFacing.EAST?90: 0;
-				double yaw = (MathHelper.atan2(dX, dZ)*(180/Math.PI))-facingYaw;
-				this.rotationPitch = (float)(Math.atan2(Math.sqrt(dZ*dZ+dX*dX), dY)*(180/Math.PI))-90;
+				double yaw = (MathHelper.atan2(delta.x, delta.z)*(180/Math.PI))-facingYaw;
+				this.rotationPitch = (float)(Math.atan2(Math.sqrt(delta.x*delta.x+delta.z*delta.z), delta.y)*(180/Math.PI))-90;
 				if(this.rotationYaw==0)//moving from default
 					this.rotationYaw = (float)(yaw*.5);
 				else
@@ -135,7 +133,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
 				energyStorage.extractEnergy(energy, false);
-				if(target==null||target.isDead||world.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canSeeEntity(target))
+				if(target==null||target.isDead||world.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canShootEntity(target))
 				{
 					target = getTarget();
 					if(target!=null)
@@ -167,12 +165,43 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			target=null;
 	}
 
-	private boolean canSeeEntity(EntityLivingBase entity)
+	private boolean canShootEntity(EntityLivingBase entity)
 	{
-		return Utils.rayTraceForFirst(new Vec3d(getPos().getX()+.5, getPos().getY()+1.375, getPos().getZ()+.5), new Vec3d(entity.posX, entity.posY+entity.getEyeHeight(), entity.posZ), world, Collections.singleton(getPos().up()))==null;
-//		return this.world.rayTraceBlocks(, false, true, false)==null;
+		Vec3d start = getGunPosition();
+		Vec3d end = getTargetVector(entity);
+		//Don't shoot through walls
+		if (Utils.rayTraceForFirst(start, end, world, Collections.singleton(getPos().up()))
+				!=null)
+			return false;
+		//Don't shoot non-targeted entities between the turret and the target
+		AxisAlignedBB potentialCollateralArea = entity.getEntityBoundingBox().union(new AxisAlignedBB(pos.up()));
+		List<EntityLivingBase> potentialCollateral = world.getEntitiesWithinAABB(EntityLivingBase.class, potentialCollateralArea);
+		for (EntityLivingBase coll:potentialCollateral)
+		{
+			AxisAlignedBB entityBB = coll.getEntityBoundingBox().grow(.125f/2+.4);//Add the range of a revolver bullet in all directions
+			if (!isValidTarget(coll, false) && entityBB.calculateIntercept(start, end)!=null)
+				return false;
+		}
+		return true;
 	}
 
+	protected Vec3d getTargetVector(EntityLivingBase e)
+	{
+		return new Vec3d(e.posX, e.posY+.5*e.getEyeHeight(), e.posZ);
+	}
+
+	protected Vec3d getGunPosition()
+	{
+		return new Vec3d(pos.getX()+.5, pos.getY()+1.375, pos.getZ()+.5);
+	}
+
+	protected Vec3d getGunToTargetVec(EntityLivingBase target)
+	{
+		//target-gun
+		return getGunPosition().subtractReverse(getTargetVector(target));
+	}
+
+	@Nullable
 	private EntityLivingBase getTarget()
 	{
 		double range = getRange();
@@ -180,33 +209,34 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		if(list.isEmpty())
 			return null;
 		for(EntityLivingBase entity : list)
-			if (isValidTarget(entity))
+			if (isValidTarget(entity, true))
 				return entity;
 		return null;
 	}
-	public boolean isValidTarget(EntityLivingBase entity)
+	public boolean isValidTarget(EntityLivingBase entity, boolean checkCanShoot)
 	{
-		if(entity==null || entity.isDead || entity.getHealth()<=0 || !canSeeEntity(entity))
+		if (entity == null || entity.isDead || entity.getHealth() <= 0)
 			return false;
 		//Continue if blacklist and name is in list, or whitelist and name is not in list
-		if(whitelist ^ isListedName(targetList, entity.getName()))
+		if (whitelist ^ isListedName(targetList, entity.getName()))
 			return false;
 		//Same as above but for the owner of the pet, to prevent shooting wolves
-		if(entity instanceof IEntityOwnable)
+		if (entity instanceof IEntityOwnable)
 		{
-			Entity entityOwner = ((IEntityOwnable)entity).getOwner();
-			if(entityOwner!=null&&(whitelist ^ isListedName(targetList, entityOwner.getName())))
+			Entity entityOwner = ((IEntityOwnable) entity).getOwner();
+			if (entityOwner != null && (whitelist ^ isListedName(targetList, entityOwner.getName())))
 				return false;
 		}
 
-		if(entity instanceof EntityAnimal && !attackAnimals)
+		if (entity instanceof EntityAnimal && !attackAnimals)
 			return false;
-		if(entity instanceof EntityPlayer && !attackPlayers)
+		if (entity instanceof EntityPlayer && !attackPlayers)
 			return false;
-		if(!(entity instanceof EntityPlayer) && !(entity instanceof EntityAnimal) && !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
+		if (!(entity instanceof EntityPlayer) && !(entity instanceof EntityAnimal) && !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
 			return false;
 
-		return target==null || entity.getDistanceSq(getPos())<target.getDistanceSq(getPos());
+		if (target == null || entity.getDistanceSq(getPos()) < target.getDistanceSq(getPos())) return true;
+		return !checkCanShoot || canShootEntity(entity);
 	}
 	private boolean isListedName(List<String> list, String name)
 	{
@@ -245,6 +275,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			attackPlayers = message.getBoolean("attackPlayers");
 		if(message.hasKey("attackNeutrals"))
 			attackNeutrals = message.getBoolean("attackNeutrals");
+		target = null;
 		this.markDirty();
 	}
 

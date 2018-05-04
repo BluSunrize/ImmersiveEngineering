@@ -66,10 +66,7 @@ public class TileEntityTurretChem extends TileEntityTurret
 			{
 				tank.drain(consumed, true);
 				this.energyStorage.extractEnergy(energy, false);
-				double dX = target.posX-(getPos().getX()+.5);
-				double dY = target.posY-(getPos().getY()+.5);
-				double dZ = target.posZ-(getPos().getZ()+.5);
-				Vec3d v = new Vec3d(dX,dY,dZ).normalize();
+				Vec3d v = getGunToTargetVec(target).normalize();
 
 				int split = 8;
 				boolean isGas = fs.getFluid().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
@@ -85,7 +82,9 @@ public class TileEntityTurretChem extends TileEntityTurret
 				for(int i = 0; i < split; i++)
 				{
 					Vec3d vecDir = v.addVector(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
-					EntityChemthrowerShot chem = new EntityChemthrowerShot(world, getPos().getX()+.5+v.x*0.875,getPos().getY()+1.5+v.y*0.875,getPos().getZ()+.5+v.z*0.875, 0,0,0, fs);
+					Vec3d throwerPos = getGunPosition();
+					EntityChemthrowerShot chem = new EntityChemthrowerShot(world, throwerPos.x+v.x*0.875,throwerPos.y+v.y*0.875,
+							throwerPos.z+v.z*0.875, 0,0,0, fs);
 					chem.motionX = vecDir.x*range;
 					chem.motionY = vecDir.y*range;
 					chem.motionZ = vecDir.z*range;
