@@ -8,14 +8,19 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -66,32 +71,33 @@ public abstract class ManualInstance
 		return new GuiManual(this, texture);
 	}
 
-	public ArrayListMultimap<String, ManualEntry> manualContents = ArrayListMultimap.create();
+	public Multimap<String, ManualEntry> contentsByCategory = ArrayListMultimap.create();
+	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
 
 	public void addEntry(ManualEntry entry)
 	{
-		manualContents.put(entry.getCategory(), entry);
+		contentsByCategory.put(entry.getCategory(), entry);
+		contentsByName.put(entry.getLocation(), entry);
 	}
-	public ManualEntry getEntry(String category, String name)
+
+	@Nullable
+	public ManualEntry getEntry(ResourceLocation loc)
 	{
-		for(ManualEntry e : manualContents.get(category))
-			if(e.getTitle().equalsIgnoreCase(name))
-				return e;
-		return null;
+		return contentsByName.get(loc);
 	}
 
 	public HashMap<Integer, ManualLink> itemLinks = Maps.newHashMap();
 	public void indexRecipes()
 	{
 		itemLinks.clear();
-		for(ManualEntry entry : manualContents.values())
+		for(ManualEntry entry : contentsByCategory.values())
 		{
 			final int[] iP = {0};
 			entry.getSpecials().forEach((p)->
 			{
 				p.recalculateCraftingRecipes();
 				for(ItemStack s : p.getProvidedRecipes())
-					itemLinks.put(getItemHash(s), new ManualLink(entry, iP[0]));
+					itemLinks.put(getItemHash(s), new ManualLink(entry, iP[0], 0));
 				iP[0]++;
 			});
 		}
@@ -120,36 +126,50 @@ public abstract class ManualInstance
 
 	public Stream<ManualEntry> getAllEntries()
 	{
-		return manualContents.entries().stream().map(Map.Entry::getValue);
+		return contentsByCategory.entries().stream().map(Map.Entry::getValue);
 	}
 
 	public static class ManualLink
 	{
+		@Nonnull
 		private final ManualEntry key;
-		private final int page;
+		private final int anchor;
+		private final int offset;
 
-		public ManualLink(ManualEntry key, int page)
+		public ManualLink(@Nonnull ManualEntry key, int anchor, int offset)
 		{
 			this.key = key;
-			this.page = page;
+			this.anchor = anchor;
+			this.offset = offset;
 		}
 
+		@Nonnull
 		public ManualEntry getKey()
 		{
 			return key;
 		}
 
-		public int getPage()
+		public int getAnchor()
 		{
-			return page;
+			return anchor;
+		}
+
+		public int getOffset()
+		{
+			return offset;
 		}
 
 		public void changePage(GuiManual guiManual)
 		{
 			guiManual.previousSelectedEntry.push(guiManual.getSelectedEntry());
 			guiManual.setSelectedEntry(this.key);
-			guiManual.page = this.page;
+			guiManual.page = getPage();
 			guiManual.initGui();
+		}
+
+		public int getPage()
+		{
+			return getKey().getPageForAnchor(getAnchor())+getOffset();
 		}
 	}
 }

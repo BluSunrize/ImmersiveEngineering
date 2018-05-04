@@ -125,10 +125,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_" + i);
 
 		ImmersiveEngineering.proxy.clearRenderCaches();
-
-		if (ManualHelper.getManual()!=null)
-			ManualHelper.getManual().getAllEntries()
-					.forEach(ManualEntry::refreshPages);
+		ImmersiveEngineering.proxy.reloadManual();
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet<>();

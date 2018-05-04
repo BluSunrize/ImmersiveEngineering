@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.lib.manual.old.ManualPages;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -24,6 +22,7 @@ public class GeneralComputerHelper
 		added = true;
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 		{
+			/*
 			ManualHelper.getManual().addEntry("computer.general", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.general0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general2"),
@@ -56,6 +55,7 @@ public class GeneralComputerHelper
 //					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine2"));
 			ManualHelper.getManual().addEntry("computer.capacitor", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.capacitor0"));
 			ManualHelper.getManual().addEntry("computer.teslaCoil", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.teslaCoil0"));
+		*/
 		}
 	}
 }

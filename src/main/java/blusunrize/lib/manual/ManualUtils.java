@@ -8,12 +8,8 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -22,19 +18,14 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.io.IOUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.*;
-import java.util.function.Function;
 
 public class ManualUtils
 {
@@ -169,65 +160,78 @@ public class ManualUtils
 		}
 	}
 
-	public static String addLinks(ManualInstance helper, GuiManual gui, String text, int x, int y, int width, List<GuiButton> pageButtons)
+	private static final String THIS = "this";
+
+	//TODO clean up
+	public static void addLinks(ManualEntry entry, ManualInstance helper, GuiManual gui, List<String> text, int x, int y, List<GuiButton> pageButtons)
 	{
 		List<String[]> repList = new ArrayList<String[]>();
 		int start;
 		int overflow = 0;
-		while((start = text.indexOf("<link")) >= 0&&overflow < 50)
+		for (int i = 0;i<text.size();i++)
 		{
-			overflow++;
-			int end = text.indexOf(">", start);
-			String rep = text.substring(start, end+1);
-			String[] segment = rep.substring(0, rep.length()-1).split(";");
-			if(segment.length < 3)
-				break;
-			String page = segment.length > 3?segment[3]: "0";
-			String[] resultParts = segment[2].split(" ");
-			StringBuilder result = new StringBuilder();
-			for(int iPart=0; iPart<resultParts.length; iPart++)
+			String currLine = text.get(i);
+			while ((start = currLine.indexOf("<link")) >= 0 && overflow < 50)
 			{
-				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
-				String part = '\u00a7'+String.valueOf((char)(128+repList.size()))+resultParts[iPart];
-				repList.add(new String[]{part, segment[1], page});
-				result.append(iPart > 0 ? " " : "").append(part);
+				overflow++;
+				int end = currLine.indexOf(">", start);
+				String rep = currLine.substring(start, end + 1);
+				String[] segment = rep.substring(0, rep.length() - 1).split(";");
+				if (segment.length < 3)
+					break;
+				String anchor = segment.length > 3 ? segment[3] : "-1";
+				String[] resultParts = segment[2].split(" ");
+				StringBuilder result = new StringBuilder();
+				for (int iPart = 0; iPart < resultParts.length; iPart++)
+				{
+					//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
+					String part = '\u00a7' + String.valueOf((char) (128 + repList.size())) + resultParts[iPart];
+					repList.add(new String[]{part, segment[1], anchor});
+					result.append(iPart > 0 ? " " : "").append(part);
+				}
+				currLine = currLine.substring(0, start)+result+currLine.substring(end+1);
 			}
-			text = text.replaceFirst(rep, result.toString());
+			//TODO do I want this, and if not, what do I want? text.set(i, currLine);
 		}
 
-
-		List<String> list = helper.fontRenderer.listFormattedStringToWidth(text, width);
-
-		Iterator<String[]> itRep = repList.iterator();
-		while(itRep.hasNext())
+		for (String[] rep : repList)
 		{
-			String[] rep = itRep.next();
-			for(int yOff = 0; yOff < list.size(); yOff++)
+			for (int line = 0; line < text.size(); line++)
 			{
-				String s = list.get(yOff);
-				if((start = s.indexOf(rep[0])) >= 0)
+				String s = text.get(line);
+				if ((start = s.indexOf(rep[0])) >= 0)
 				{
-					String formatIdent = rep[0].substring(0,2);
+					String formatIdent = rep[0].substring(0, 2);
 					rep[0] = rep[0].substring(2);
 					int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
-					int by = yOff*helper.fontRenderer.FONT_HEIGHT;
-					String bkey = rep[1];
+					int by = line * helper.fontRenderer.FONT_HEIGHT;
+					ResourceLocation bkey = THIS.equals(rep[0])?new ResourceLocation(rep[1]):entry.getLocation();
 					int bw = helper.fontRenderer.getStringWidth(rep[0]);
-					int bpage = 0;
+					int bAnchor = -1;
+					int bOffset = 0;
 					try
 					{
-						bpage = Integer.parseInt(rep[2]);
-					} catch(Exception e)
-					{
+						if (rep[2].contains("+"))
+						{
+							int plus = rep[2].indexOf('+');
+							bAnchor = Integer.parseInt(rep[2].substring(0, plus));
+							bOffset = Integer.parseInt(rep[2].substring(plus+1));
+						}
+						else
+							bAnchor = Integer.parseInt(rep[2]);
 					}
-					pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx, y+by, bw, (int)(helper.fontRenderer.FONT_HEIGHT*1.5),
-							new ManualInstance.ManualLink(helper.getEntry("", bkey), bpage), rep[0]));//TODO Category!
-					text = text.replaceFirst(formatIdent, "");
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+					pageButtons.add(new GuiButtonManualLink(gui, 900 + overflow, x + bx, y + by, bw, (int) (helper.fontRenderer.FONT_HEIGHT * 1.5),
+							new ManualInstance.ManualLink(Objects.requireNonNull(helper.getEntry(bkey), bkey+" is not a known entry!"), bAnchor, bOffset), rep[0]));
+					s = s.replaceFirst(formatIdent, "");
+					//TODO do I want this, and if not, what do I want? text.set(line, s);
 					break;
 				}
 			}
 		}
-		return text;
 	}
 
 	public static String attemptStringTranslation(String tranlationKey, String arg)

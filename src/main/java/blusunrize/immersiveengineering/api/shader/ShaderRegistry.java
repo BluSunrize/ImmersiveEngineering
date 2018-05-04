@@ -12,8 +12,7 @@ import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.lib.manual.ManualEntry;
-import blusunrize.lib.manual.old.ManualPages;
-import blusunrize.lib.manual.old.ManualPages.PositionedItemStack;
+import blusunrize.lib.manual.SpecialManualElements;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -25,6 +24,8 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+
+import static blusunrize.lib.manual.SpecialManualElements.*;
 
 public class ShaderRegistry
 {
@@ -395,9 +396,9 @@ public class ShaderRegistry
 
 		if(manualEntry!=null)
 		{
-			ArrayList<PositionedItemStack[]> recipes = new ArrayList();
+			ArrayList<PositionedItemStack[]> recipes = new ArrayList<>();
 			NonNullList<ItemStack> shaderBags = NonNullList.withSize(ShaderRegistry.sortedRarityMap.size(), ItemStack.EMPTY);
-			recipes = new ArrayList();
+			recipes = new ArrayList<>();
 			for(int i=0; i<ShaderRegistry.sortedRarityMap.size(); i++)
 			{
 				EnumRarity outputRarity = ShaderRegistry.sortedRarityMap.get(i);

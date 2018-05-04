@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import blusunrize.lib.manual.old.ManualPages;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -41,30 +41,33 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ManualPageMultiblock extends ManualPages
+public class ManualPageMultiblock extends SpecialManualElements
 {
-	IMultiblock multiblock;
+	private IMultiblock multiblock;
 
-	boolean canTick = true;
-	boolean showCompleted = false;
-	int tick = 0;
+	private boolean canTick = true;
+	private boolean showCompleted = false;
+	private int tick = 0;
 
-	float scale = 50f;
-	float transX = 0;
-	float transY = 0;
-	float rotX=0;
-	float rotY=0;
-	List<String> componentTooltip;
-	MultiblockRenderInfo renderInfo;
-	MultiblockBlockAccess blockAccess;
+	private float scale = 50f;
+	private float transX = 0;
+	private float transY = 0;
+	private float rotX=0;
+	private float rotY=0;
+	private List<String> componentTooltip;
+	private MultiblockRenderInfo renderInfo;
+	private MultiblockBlockAccess blockAccess;
+	private int yOffTotal;
 
-	public ManualPageMultiblock(ManualInstance manual, String text, IMultiblock multiblock)
+	public ManualPageMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
-		super(manual, text);
+		super(manual);
 		this.multiblock = multiblock;
-
-		if(multiblock.getStructureManual()!=null)
-		{
+		renderInfo = new MultiblockRenderInfo(multiblock);
+		blockAccess = new MultiblockBlockAccess(renderInfo);
+		yOffTotal = (int)(transY+scale*Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight + renderInfo.structureWidth*renderInfo.structureWidth + renderInfo.structureLength*renderInfo.structureLength)/2);
+//		if(multiblock.getStructureManual()!=null)
+//		{
 //			scale = size[0] > size[1] ? width / size[0] - 10F : height / size[1] - 10F;
 //			if(scale * size[0] > width) {
 //				scale = width / size[0] - 10F;
@@ -75,18 +78,15 @@ public class ManualPageMultiblock extends ManualPages
 //
 //			w = size[0] * scale;
 //			h = size[1] * scale;
-		}
+//		}
 	}
 
-
 	@Override
-	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
 		int yOff = 0;
 		if(multiblock.getStructureManual()!=null)
 		{
-			this.renderInfo = new MultiblockRenderInfo(multiblock);
-			this.blockAccess = new MultiblockBlockAccess(renderInfo);
 			transX = x+60 + renderInfo.structureWidth/2;
 			transY = y+35 + (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight + renderInfo.structureWidth*renderInfo.structureWidth + renderInfo.structureLength*renderInfo.structureLength)/2;
 			rotX=25;
@@ -152,11 +152,11 @@ public class ManualPageMultiblock extends ManualPages
 					componentTooltip.add(s);
 				}
 		}
-		super.initPage(gui, x, yOff, pageButtons);
+		super.onOpened(gui, x, yOff, pageButtons);
 	}
 
 	@Override
-	public void renderPage(GuiManual gui, int x, int y, int mx, int my)
+	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
 	{
 		boolean openBuffer = false;
 		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
@@ -175,8 +175,6 @@ public class ManualPageMultiblock extends ManualPages
 				int structureLength = renderInfo.structureLength;
 				int structureWidth = renderInfo.structureWidth;
 				int structureHeight = renderInfo.structureHeight;
-
-				int yOffTotal = (int)(transY-y+scale*Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight + renderInfo.structureWidth*renderInfo.structureWidth + renderInfo.structureLength*renderInfo.structureLength)/2);
 
 				GlStateManager.enableRescaleNormal();
 				GlStateManager.pushMatrix();
@@ -243,15 +241,13 @@ public class ManualPageMultiblock extends ManualPages
 				RenderHelper.disableStandardItemLighting();
 
 				manual.fontRenderer.setUnicodeFlag(true);
-				if(localizedText != null && !localizedText.isEmpty())
-					manual.fontRenderer.drawSplitString(localizedText, x, y + yOffTotal, 120, manual.getTextColour());
 
 				manual.fontRenderer.setUnicodeFlag(false);
 				if(componentTooltip != null)
 				{
 					manual.fontRenderer.drawString("?", x + 116, y + yOffTotal / 2 - 4, manual.getTextColour(), false);
-					if(mx >= x + 116 && mx < x + 122 && my >= y + yOffTotal / 2 - 4 && my < y + yOffTotal / 2 + 4)
-						gui.drawHoveringText(componentTooltip, mx, my, manual.fontRenderer);
+					if(mouseX >= x + 116 && mouseX < x + 122 && mouseY >= y + yOffTotal / 2 - 4 && mouseY < y + yOffTotal / 2 + 4)
+						gui.drawHoveringText(componentTooltip, mouseX, mouseY, manual.fontRenderer);
 				}
 			}
 
@@ -272,12 +268,12 @@ public class ManualPageMultiblock extends ManualPages
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button)
+	public void mouseDragged(int x, int y, int clickX, int clickY, int mouseX, int mouseY, int lastX, int lastY, GuiButton button)
 	{
-		if((clickX>=40 && clickX<144 && mx>=20 && mx<164)&&(clickY>=30 && clickY<130 && my>=30 && my<180))
+		if((clickX>=40 && clickX<144 && mouseX>=20 && mouseX<164)&&(clickY>=30 && clickY<130 && mouseY>=30 && mouseY<180))
 		{
-			int dx = mx-lastX;
-			int dy = my-lastY;
+			int dx = mouseX-lastX;
+			int dy = mouseY-lastY;
 			rotY = rotY+(dx/104f)*80;
 			rotX = rotX+(dy/100f)*80;
 		}
@@ -311,9 +307,9 @@ public class ManualPageMultiblock extends ManualPages
 	}
 
 	@Override
-	public int getMaxLines()
+	public int getPixelsTaken()
 	{
-		return super.getMaxLines();//TODO
+		return yOffTotal;
 	}
 
 	static class MultiblockBlockAccess implements IBlockAccess
@@ -321,7 +317,7 @@ public class ManualPageMultiblock extends ManualPages
 		private final MultiblockRenderInfo data;
 		private final IBlockState[][][] structure;
 
-		public MultiblockBlockAccess(MultiblockRenderInfo data)
+		MultiblockBlockAccess(MultiblockRenderInfo data)
 		{
 			this.data = data;
 			final int[] index = {0};//Nasty workaround, but IDEA suggested it =P
@@ -420,17 +416,17 @@ public class ManualPageMultiblock extends ManualPages
 	{
 		public IMultiblock multiblock;
 		public ItemStack[][][] data;
-		public int blockCount = 0;
-		public int[] countPerLevel;
-		public int structureHeight = 0;
-		public int structureLength = 0;
-		public int structureWidth = 0;
-		public int showLayer = -1;
+		int blockCount = 0;
+		int[] countPerLevel;
+		int structureHeight = 0;
+		int structureLength = 0;
+		int structureWidth = 0;
+		int showLayer = -1;
 
 		private int blockIndex = -1;
 		private int maxBlockIndex;
 
-		public MultiblockRenderInfo(IMultiblock multiblock)
+		MultiblockRenderInfo(IMultiblock multiblock)
 		{
 			this.multiblock = multiblock;
 			init(multiblock.getStructureManual());
@@ -464,7 +460,7 @@ public class ManualPageMultiblock extends ManualPages
 			}
 		}
 
-		public void setShowLayer(int layer)
+		void setShowLayer(int layer)
 		{
 			showLayer = layer;
 			if(layer<0)
@@ -478,7 +474,7 @@ public class ManualPageMultiblock extends ManualPages
 			blockIndex = maxBlockIndex;
 		}
 
-		public void step()
+		void step()
 		{
 			int start = blockIndex;
 			do
@@ -500,7 +496,7 @@ public class ManualPageMultiblock extends ManualPages
 			return stack == null || stack.isEmpty();
 		}
 
-		public int getLimiter()
+		int getLimiter()
 		{
 			return blockIndex;
 		}

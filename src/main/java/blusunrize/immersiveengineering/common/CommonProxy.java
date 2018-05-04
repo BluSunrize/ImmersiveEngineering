@@ -235,4 +235,8 @@ public class CommonProxy implements IGuiHandler
 				new TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
 						64));
 	}
+
+	public void reloadManual()
+	{
+	}
 }

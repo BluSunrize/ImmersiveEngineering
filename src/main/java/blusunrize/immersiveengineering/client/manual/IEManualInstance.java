@@ -15,17 +15,16 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.IEItemFontRender;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual.MessageType;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.old.IManualPage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -203,24 +202,18 @@ public class IEManualInstance extends ManualInstance
 	{
 		return I18n.format("item.immersiveengineering.tool.manual.name");
 	}
-	LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
+	private LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
 	@Override
 	public void addEntry(ManualEntry entry)
 	{
 		super.addEntry(entry);
-		if(!categorySet.contains(entry.getCategory()))
-			categorySet.add(entry.getCategory());
+		categorySet.add(entry.getCategory());
 	}
-//TODO REMOVE
-	public void addEntry(String name, String category, IManualPage... pages)
-	{
-		//ieManualInstance.addEntry(name, category, pages);
-		IELogger.logger.error("NOT SUPPORTED YET");
-	}
+
 	@Override
 	public String[] getSortedCategoryList()
 	{
-		return categorySet.toArray(new String[categorySet.size()]);
+		return categorySet.toArray(new String[0]);
 	}
 	@Override
 	public String formatCategoryName(String s)
@@ -230,24 +223,22 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatEntryName(String s)
 	{
-		String unformatted = "ie.manual.entry." + s + ".name";
-		String formatted = I18n.format(unformatted);
-//		return "\uD83D\uDCBB";
-		return (improveReadability() ? TextFormatting.BOLD : "") + (unformatted.equals(formatted) ? s : formatted);
+		return (improveReadability() ? TextFormatting.BOLD : "") + s;
 	}
 	@Override
 	public String formatEntrySubtext(String s)
 	{
-		String unformatted = "ie.manual.entry." + s + ".subtext";//TODO make this work with the new system
-		String formatted = I18n.format(unformatted);
-		return unformatted.equals(formatted) ? "" : formatted;
+		return s;
 	}
+
+	//TODO this was changed to snake_case. Where else do I need to change it
+	private static final ResourceLocation SHADER_ENTRY = new ResourceLocation(ImmersiveEngineering.MODID, "shader_list");
 	@Override
 	public boolean showEntryInList(ManualEntry entry)
 	{
 		if(entry!=null && ManualHelper.CAT_UPDATE.equalsIgnoreCase(entry.getCategory()))
 			return IEConfig.showUpdateNews;
-		return !(entry != null && "shaderList".equalsIgnoreCase(entry.getTitle()));//TODO what should this do?
+		return !(entry != null && SHADER_ENTRY.equals(entry.getLocation()));
 	}
 	@Override
 	public boolean showCategoryInList(String category)
@@ -258,13 +249,14 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatLink(ManualLink link)
 	{
-		return TextFormatting.GOLD+"  -> "+link.getKey().getTitle()+", "+(link.getPage()+1);
+		return TextFormatting.GOLD+"  -> "+link.getKey().getTitle()+", "+
+				(link.getPage()+1);
 	}
 
 	@Override
 	public void openEntry(ManualEntry entry)
 	{
-		if("shaderList".equalsIgnoreCase(entry.getTitle()))//TODO this doesn't work any more
+		if(SHADER_ENTRY.equals(entry.getLocation()))
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC));
 	}
 

@@ -19,10 +19,10 @@ import blusunrize.immersiveengineering.common.util.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual.MessageType;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.SpecialManualElement;
 import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import blusunrize.lib.manual.old.ManualPages;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -39,7 +39,8 @@ import java.util.List;
 /**
  * @author BluSunrize - 11.11.2016
  */
-public class ManualPageShader extends ManualPages
+//TODO fix and clean up. Only changed to compile
+public class ManualPageShader extends SpecialManualElement
 {
 	final ShaderRegistry.ShaderRegistryEntry shader;
 
@@ -48,15 +49,24 @@ public class ManualPageShader extends ManualPages
 	IngredientStack replicationCost;
 	int example = 0;
 	boolean unlocked;
+	ManualInstance manual;
+
+	String text, localizedText;
 
 	public ManualPageShader(ManualInstance manual, ShaderRegistry.ShaderRegistryEntry shader)
 	{
-		super(manual, "");
+		this.manual = manual;
 		this.shader = shader;
 	}
 
 	@Override
-	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+	public int getPixelsTaken()
+	{
+		return 0;//TODO
+	}
+
+	@Override
+	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> buttons)
 	{
 		EntityPlayer player = ManualUtils.mc().player;
 		String username = player.getName();
@@ -81,12 +91,12 @@ public class ManualPageShader extends ManualPages
 						list.add(s);
 					}
 				}
-			exampleItems = list.toArray(new ItemStack[list.size()]);
+			exampleItems = list.toArray(new ItemStack[0]);
 			example = 0;
 			if(exampleItems.length>1)
 			{
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100, x+50, y, 10,16, 0));
-				pageButtons.add(new GuiButtonManualNavigation(gui, 101, x+100, y, 10,16, 1));
+				buttons.add(new GuiButtonManualNavigation(gui, 100, x+50, y, 10,16, 0));
+				buttons.add(new GuiButtonManualNavigation(gui, 101, x+100, y, 10,16, 1));
 			}
 		}
 		else
@@ -109,19 +119,18 @@ public class ManualPageShader extends ManualPages
 			String cost = Integer.toString(replicationCost.inputSize);
 			if(!ApiUtils.hasPlayerIngredient(gui.mc.player,replicationCost) && !gui.mc.player.capabilities.isCreativeMode)
 				cost = TextFormatting.RED+cost;
-			pageButtons.add(new GuiButtonManual(gui, 102, x+50, y+138, 70,12, TextFormatting.BOLD+I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
+			buttons.add(new GuiButtonManual(gui, 102, x+50, y+138, 70,12, TextFormatting.BOLD+I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
 		}
 		else
 		{
 			this.text += "<br><br>" + I18n.format("ie.manual.entry.shaderList.noInfo");
 			if(player.capabilities.isCreativeMode)
-				pageButtons.add(new GuiButtonManual(gui, 103, x+10, y+80, 100,16, I18n.format("ie.manual.entry.shaderList.unlock")).setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
+				buttons.add(new GuiButtonManual(gui, 103, x+10, y+80, 100,16, I18n.format("ie.manual.entry.shaderList.unlock")).setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
 		}
-		super.initPage(gui, x, y, pageButtons);
 	}
 
 	@Override
-	public void renderPage(GuiManual gui, int x, int y, int mx, int my)
+	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		RenderHelper.enableGUIStandardItemLighting();
@@ -151,9 +160,8 @@ public class ManualPageShader extends ManualPages
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button)
-	{
-	}
+	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, GuiButton button)
+	{}
 
 	@Override
 	public void buttonPressed(GuiManual gui, GuiButton button)
@@ -179,7 +187,6 @@ public class ManualPageShader extends ManualPages
 			ShaderRegistry.receivedShaders.put(player,shader.getName());
 			gui.initGui();
 		}
-		super.buttonPressed(gui, button);
 	}
 
 	@Override
@@ -187,4 +194,8 @@ public class ManualPageShader extends ManualPages
 	{
 		return false;
 	}
+
+	@Override
+	public void recalculateCraftingRecipes()
+	{}
 }

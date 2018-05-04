@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.lib.manual.old.IManualPage;
 
 /**
  * @author BluSunrize - 04.07.2015
@@ -35,9 +33,9 @@ public class ManualHelper
 	/**
 	 * Adds a new entry to the manual. if the Category is new, it will be added to the list of categories automatically 
 	 */
-	public static void addEntry(String name, String category, IManualPage... pages)
-	{
-		//ieManualInstance.addEntry(name, category, pages);
-		IELogger.logger.error("NOT SUPPORTED YET");
-	}
+	//public static void addEntry(String name, String category, IManualPage... pages)
+	//{
+	//	//ieManualInstance.addEntry(name, category, pages);
+	//	IELogger.logger.error("NOT SUPPORTED YET");
+	//}
 }

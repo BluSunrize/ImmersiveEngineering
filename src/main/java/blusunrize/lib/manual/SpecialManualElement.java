@@ -16,11 +16,12 @@ import java.util.List;
 
 public abstract class SpecialManualElement
 {
-	public abstract int getLinesTaken();
+	//The number of vertical pixels this element occupies.
+	public abstract int getPixelsTaken();
 
-	public abstract void onOpened(GuiManual m, int x, int y, List<GuiButton> buttons);
+	public abstract void onOpened(GuiManual gui, int x, int y, List<GuiButton> buttons);
 
-	public abstract void render(GuiManual m, int x, int y, int mouseX, int mouseY);
+	public abstract void render(GuiManual gui, int x, int y, int mouseX, int mouseY);
 
 	public abstract void buttonPressed(GuiManual gui, GuiButton button);
 

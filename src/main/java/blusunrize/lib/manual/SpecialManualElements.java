@@ -8,11 +8,6 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualInstance.ManualLink;
-import blusunrize.lib.manual.ManualUtils;
-import blusunrize.lib.manual.SpecialManualElement;
-import blusunrize.lib.manual.TextSplitter;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
@@ -33,8 +28,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.util.*;
-
-import static blusunrize.lib.manual.ManualUtils.addLinks;
 
 public abstract class SpecialManualElements extends SpecialManualElement
 {
@@ -62,7 +55,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, GuiButton button)
+	public void mouseDragged(int x, int y, int clickX, int clickY, int mouseX, int mouseY, int lastX, int lastY, GuiButton button)
 	{
 	}
 
@@ -103,7 +96,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	{
 		String[] resources;
 		int[][] sizing;
-		int size = 0;
+		int size;
 
 		public Image(ManualInstance helper, String... images)
 		{
@@ -126,16 +119,14 @@ public abstract class SpecialManualElements extends SpecialManualElement
 				{
 					e.printStackTrace();
 				}
+				if(resources[i]!=null&&!resources[i].isEmpty())
+					size += sizing[i][3]+5;
 			}
 		}
 
 		@Override
 		public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 		{
-			size = 0;
-			for(int i = 0; i < resources.length; i++)
-				if(resources[i]!=null&&!resources[i].isEmpty())
-					size += sizing[i][3]+5;
 			super.onOpened(gui, x, y, pageButtons);
 		}
 
@@ -172,9 +163,9 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		}
 
 		@Override
-		public int getLinesTaken()
+		public int getPixelsTaken()
 		{
-			return MathHelper.ceil(size/(double)manual.fontRenderer.FONT_HEIGHT);
+			return size;
 		}
 	}
 
@@ -306,9 +297,9 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		}
 
 		@Override
-		public int getLinesTaken()
+		public int getPixelsTaken()
 		{
-			return tableLines;
+			return tableLines*manual.fontRenderer.FONT_HEIGHT;
 		}
 	}
 
@@ -422,7 +413,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		}
 
 		@Override
-		public int getLinesTaken()
+		public int getPixelsTaken()
 		{
 			return 0;//TODO
 		}
@@ -530,7 +521,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		@Override
 		public void render(GuiManual gui, int x, int y, int mx, int my)
 		{
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.enableRescaleNormal();
 			RenderHelper.enableGUIStandardItemLighting();
 
 			int totalYOff = 0;
@@ -557,7 +548,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			}
 
 			totalYOff = 0;
-			GL11.glTranslated(0, 0, 300);
+			GlStateManager.translate(0, 0, 300);
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(false);
 			/*
@@ -581,8 +572,8 @@ public abstract class SpecialManualElements extends SpecialManualElement
 				}
 			}
 
-			GL11.glTranslated(0, 0, -300);
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.translate(0, 0, -300);
+			GlStateManager.disableRescaleNormal();
 			GlStateManager.enableBlend();
 			RenderHelper.disableStandardItemLighting();
 
@@ -640,14 +631,14 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		}
 
 		@Override
-		public int getLinesTaken()
+		public int getPixelsTaken()
 		{
 			int yOff = 0;
 			for (int i = 0; i < this.yOff.length; i++)
 			{
 				yOff += this.yOff[i]+8;
 			}
-			return MathHelper.ceil(yOff/(double) manual.fontRenderer.FONT_HEIGHT);
+			return yOff;
 		}
 	}
 
@@ -855,9 +846,9 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		}
 
 		@Override
-		public int getLinesTaken()
+		public int getPixelsTaken()
 		{
-			return MathHelper.ceil(yOff/(double)manual.fontRenderer.FONT_HEIGHT);
+			return yOff;
 		}
 	}
 

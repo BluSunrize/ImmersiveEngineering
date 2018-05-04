@@ -11,9 +11,11 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.SpecialManualElement;
+import blusunrize.lib.manual.SpecialManualElements;
+import blusunrize.lib.manual.SpecialManualElements.PositionedItemStack;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import blusunrize.lib.manual.old.ManualPages;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -27,16 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ManualPageBlueprint extends ManualPages
+public class ManualPageBlueprint extends SpecialManualElements
 {
-	ItemStack[] stacks;
-	ArrayList<PositionedItemStack[]> recipes = new ArrayList();
-	int recipePage;
-	int yOff;
+	private ItemStack[] stacks;
+	private ArrayList<PositionedItemStack[]> recipes = new ArrayList();
+	private int recipePage;
+	private int yOff;
 
-	public ManualPageBlueprint(ManualInstance manual, String text, ItemStack... stacks)
+	public ManualPageBlueprint(ManualInstance manual, ItemStack... stacks)
 	{
-		super(manual, text);
+		super(manual);
 		this.stacks = stacks;
 		recalculateCraftingRecipes();
 	}
@@ -78,18 +80,18 @@ public class ManualPageBlueprint extends ManualPages
 	}
 
 	@Override
-	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
 		if(this.recipes.size() > 1)
 		{
 			pageButtons.add(new GuiButtonManualNavigation(gui, 100+0, x-2, y+yOff/2-3, 8, 10, 0));
 			pageButtons.add(new GuiButtonManualNavigation(gui, 100+1, x+122-16, y+yOff/2-3, 8, 10, 1));
 		}
-		super.initPage(gui, x, y+yOff+2, pageButtons);
+		super.onOpened(gui, x, y+yOff+2, pageButtons);
 	}
 
 	@Override
-	public void renderPage(GuiManual gui, int x, int y, int mx, int my)
+	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		RenderHelper.enableGUIStandardItemLighting();
@@ -124,7 +126,7 @@ public class ManualPageBlueprint extends ManualPages
 						ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+pstack.y);
 						ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer, pstack.getStack(), x+pstack.x, y+pstack.y, null);
 
-						if(mx >= x+pstack.x&&mx < x+pstack.x+16&&my >= y+pstack.y&&my < y+pstack.y+16)
+						if(mouseX >= x+pstack.x&&mouseX < x+pstack.x+16&&mouseY >= y+pstack.y&&mouseY < y+pstack.y+16)
 							highlighted = pstack.getStack();
 					}
 		}
@@ -135,13 +137,10 @@ public class ManualPageBlueprint extends ManualPages
 		RenderHelper.disableStandardItemLighting();
 
 		manual.fontRenderer.setUnicodeFlag(uni);
-		if(localizedText!=null&&!localizedText.isEmpty())
-			ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y+yOff+2, 120, manual.getTextColour());
-		//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOff+2, 120, manual.getTextColour());
 
 		manual.fontRenderer.setUnicodeFlag(false);
 		if(!highlighted.isEmpty())
-			gui.renderToolTip(highlighted, mx, my);
+			gui.renderToolTip(highlighted, mouseX, mouseY);
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 	}
@@ -191,5 +190,11 @@ public class ManualPageBlueprint extends ManualPages
 				}
 			}
 		return false;
+	}
+
+	@Override
+	public int getPixelsTaken()
+	{
+		return 0;//TODO
 	}
 }

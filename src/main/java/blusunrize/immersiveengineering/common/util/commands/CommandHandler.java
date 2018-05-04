@@ -28,6 +28,7 @@ public class CommandHandler extends CommandTreeBase
 		if (client)
 		{
 			addSubcommand(new CommandResetRenders());
+			addSubcommand(new CommandManual());
 			name = "cie";
 		}
 		else

@@ -21,19 +21,20 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.*;
 
 public class GuiManual extends GuiScreen
 {
-	int xSize = 186;
-	int ySize = 198;
-	int guiLeft;
-	int guiTop;
-	int manualTick=0;
-	List<GuiButton> pageButtons = new ArrayList<>();
+	private int xSize = 186;
+	private int ySize = 198;
+	private int guiLeft;
+	private int guiTop;
+	private int manualTick=0;
+	private List<GuiButton> pageButtons = new ArrayList<>();
 
-	public String selectedCategory;
+	private String selectedCategory;
 	private ManualEntry selectedEntry;
 	public Stack<ManualEntry> previousSelectedEntry = new Stack<>();
 	public int page;
@@ -41,12 +42,12 @@ public class GuiManual extends GuiScreen
 
 	ManualInstance manual;
 	String texture;
-	boolean buttonHeld = false;
-	int[] lastClick;
-	int[] lastDrag;
-	GuiTextField searchField;
-	int hasSuggestions = -1;
-	int prevGuiScale = -1;
+	private boolean buttonHeld = false;
+	private int[] lastClick;
+	private int[] lastDrag;
+	private GuiTextField searchField;
+	private int hasSuggestions = -1;
+	private int prevGuiScale = -1;
 
 	public GuiManual(ManualInstance manual, String texture)
 	{
@@ -102,27 +103,27 @@ public class GuiManual extends GuiScreen
 		hasSuggestions = -1;
 		if(selectedEntry!=null)
 		{
-			selectedEntry.addButtons(this, guiLeft+32,guiTop+28, pageButtons);
+			selectedEntry.addButtons(this, guiLeft+32,guiTop+28, page, pageButtons);
 			buttonList.addAll(pageButtons);
 		}
 		else if(manual.getSortedCategoryList()==null||manual.getSortedCategoryList().length<=1)
 		{
 			ArrayList<ManualEntry> lHeaders = new ArrayList<>();
-			for(ManualEntry e : manual.manualContents.values())
+			for(ManualEntry e : manual.contentsByCategory.values())
 				if(manual.showEntryInList(e))
 					lHeaders.add(e);
-			ManualEntry[] entries = lHeaders.toArray(new ManualEntry[lHeaders.size()]);
+			ManualEntry[] entries = lHeaders.toArray(new ManualEntry[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168,
 					1f, entries));
 			textField = true;
 		}
-		else if(manual.manualContents.containsKey(selectedCategory))
+		else if(manual.contentsByCategory.containsKey(selectedCategory))
 		{
 			ArrayList<ManualEntry> lHeaders = new ArrayList<>();
-			for(ManualEntry e : manual.manualContents.get(selectedCategory))
+			for(ManualEntry e : manual.contentsByCategory.get(selectedCategory))
 				if(manual.showEntryInList(e))
 					lHeaders.add(e);
-			ManualEntry[] entries = lHeaders.toArray(new ManualEntry[lHeaders.size()]);
+			ManualEntry[] entries = lHeaders.toArray(new ManualEntry[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168,
 					1f, entries));
 			textField = true;
@@ -133,12 +134,12 @@ public class GuiManual extends GuiScreen
 			for(String cat : manual.getSortedCategoryList())
 				if(manual.showCategoryInList(cat))
 					lHeaders.add(cat);
-			String[] headers = lHeaders.toArray(new String[lHeaders.size()]);
+			String[] headers = lHeaders.toArray(new String[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168,
 					1f, headers));
 			textField = true;
 		}
-		if(manual.manualContents.containsKey(selectedCategory) || selectedEntry!=null)
+		if(manual.contentsByCategory.containsKey(selectedCategory) || selectedEntry!=null)
 			this.buttonList.add(new GuiButtonManualNavigation(this, 1, guiLeft+24,guiTop+10, 10,10, 0));
 
 		if(textField)
@@ -169,7 +170,7 @@ public class GuiManual extends GuiScreen
 		this.drawTexturedModalRect(guiLeft,guiTop, 0,0, xSize,ySize);
 		if(this.searchField!=null)
 		{
-			int l = searchField.getText()!=null?searchField.getText().length()*6:0;
+			int l = searchField.getText().length()*6;
 			if(l>20)
 				this.drawTexturedModalRect(guiLeft+166,guiTop+74, 136+(120-l),238, l,18);
 			if(this.hasSuggestions!=-1 && this.hasSuggestions<this.buttonList.size())
@@ -226,7 +227,7 @@ public class GuiManual extends GuiScreen
 		}
 		else
 		{
-			String title = manual.manualContents.containsKey(selectedCategory)?manual.formatCategoryName(selectedCategory) : manual.getManualName();
+			String title = manual.contentsByCategory.containsKey(selectedCategory)?manual.formatCategoryName(selectedCategory) : manual.getManualName();
 			manual.titleRenderPre();
 			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+title, guiLeft+xSize/2,guiTop+12, manual.getTitleColour(), 1, true);
 			manual.titleRenderPost();
@@ -293,7 +294,7 @@ public class GuiManual extends GuiScreen
 	}
 
 
-	public void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
+	private void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
 	{
 		int xx = (int)Math.floor(x/scale - (fr.getStringWidth(s)/2));
 		int yy = (int)Math.floor(y/scale - (fr.FONT_HEIGHT/2));
@@ -331,7 +332,7 @@ public class GuiManual extends GuiScreen
 		return tooltip;
 	}
 	@Override
-	public void drawHoveringText(List text, int x, int y, FontRenderer font)
+	public void drawHoveringText(List<String> text, int x, int y, @Nonnull FontRenderer font)
 	{
 		manual.tooltipRenderPre();
 		super.drawHoveringText(text,x,y,font);
@@ -388,7 +389,7 @@ public class GuiManual extends GuiScreen
 		}
 		else if(button==1)
 		{
-			if(searchField!=null && searchField.getText()!=null && !searchField.getText().isEmpty())
+			if(searchField != null && !searchField.getText().isEmpty())
 				searchField.setText("");
 			else if(selectedEntry!=null)
 				setSelectedEntry(previousSelectedEntry.isEmpty()?null:previousSelectedEntry.pop());
@@ -428,7 +429,7 @@ public class GuiManual extends GuiScreen
 		if(this.searchField!=null && this.searchField.textboxKeyTyped(c, i))
 		{
 			String search = searchField.getText();
-			if(search==null || search.trim().isEmpty())
+			if(search.trim().isEmpty())
 			{
 				hasSuggestions = -1;
 				this.initGui();
@@ -438,7 +439,7 @@ public class GuiManual extends GuiScreen
 				search = search.toLowerCase(Locale.ENGLISH);
 				ArrayList<ManualEntry> lHeaders = new ArrayList<>();
 				HashMap<String, ManualEntry> lSpellcheck = new HashMap<>();
-				for(ManualEntry e : manual.manualContents.values())
+				for(ManualEntry e : manual.contentsByCategory.values())
 				{
 					if(manual.showEntryInList(e))
 					{
@@ -448,7 +449,7 @@ public class GuiManual extends GuiScreen
 							lSpellcheck.put(e.getTitle(), e);
 					}
 				}
-				ArrayList<String> lCorrections = ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck.keySet().toArray(new String[lSpellcheck.keySet().size()]), 4);
+				ArrayList<String> lCorrections = ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck.keySet().toArray(new String[0]), 4);
 				List<ManualEntry> lCorrectionEntries = new ArrayList<>(lCorrections.size());
 				for(String key : lSpellcheck.keySet())
 					if(!lCorrections.contains(key))
@@ -462,13 +463,13 @@ public class GuiManual extends GuiScreen
 						}
 					}
 
-				ManualEntry[] entries = lHeaders.toArray(new ManualEntry[lHeaders.size()]);
+				ManualEntry[] entries = lHeaders.toArray(new ManualEntry[0]);
 				this.buttonList.set(0, new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148,
 						1f, entries));
 				if(!lCorrections.isEmpty())
 				{
 					GuiClickableList suggestions = new GuiClickableList(this, 11, guiLeft+180,guiTop+138, 100,80, 1f,
-							lCorrectionEntries.toArray(new ManualEntry[lCorrectionEntries.size()]));
+							lCorrectionEntries.toArray(new ManualEntry[0]));
 					if(hasSuggestions!=-1)
 						this.buttonList.set(hasSuggestions, suggestions);
 					else

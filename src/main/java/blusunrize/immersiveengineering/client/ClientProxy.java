@@ -73,9 +73,6 @@ import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.TextSplitter;
-import blusunrize.lib.manual.old.IManualPage;
-import blusunrize.lib.manual.old.ManualPages;
-import blusunrize.lib.manual.old.ManualPages.PositionedItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -554,6 +551,7 @@ public class ClientProxy extends CommonProxy
 		//			ManualHelper.addEntry("updateNews_"+subVersion, ManualHelper.CAT_UPDATE, pages.toArray(new IManualPage[pages.size()]));
 		//			subVersion++;
 		//		}
+		/*
 		NonNullList<ItemStack> tempItemList;
 		List<PositionedItemStack[]> tempRecipeList;
 		List<IManualPage> pages;
@@ -679,6 +677,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "silo1"),
 				new ManualPages.Text(ManualHelper.getManual(), "silo2"));
 
+		*/
 		Object[] wires = {
 				new ItemStack(IEContent.itemMaterial, 1, 20),
 				new ItemStack(IEContent.itemWireCoil, 1, 0),
@@ -709,11 +708,12 @@ public class ClientProxy extends CommonProxy
 		));
 		wiring.addSpecialElement(5, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,1)));
 		wiring.addSpecialElement(6, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,2)));
-		//TODO wiring.addSpecialElement(7, 0, new ManualPageMultiblock(ManualHelper.getManual(), MultiblockFeedthrough.instance));
+		wiring.addSpecialElement(7, 0, new ManualPageMultiblock(ManualHelper.getManual(), MultiblockFeedthrough.instance));
 		wiring.setCategory(ManualHelper.CAT_ENERGY);
 		wiring.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
 		ManualHelper.getManual().addEntry(wiring.create());
 
+		/*
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.DYNAMO.getMeta())),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator1", new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WATERMILL.getMeta()),new ItemStack(IEContent.itemMaterial,1,10)),
@@ -929,6 +929,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
+		*/
 
 
 		ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
@@ -947,7 +948,7 @@ public class ClientProxy extends CommonProxy
 	static ManualEntry mineralEntry;
 	public static void handleMineralManual()
 	{
-		if(ManualHelper.getManual()!=null)
+		/*if(ManualHelper.getManual()!=null)
 		{
 			ArrayList<IManualPage> pages = new ArrayList();
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals0"));
@@ -1036,7 +1037,7 @@ public class ClientProxy extends CommonProxy
 			//	ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
 			//	mineralEntry = ManualHelper.getManual().getEntry("minerals");
 			//}
-		}
+		}*/
 	}
 	static String[][][] formatToTable_ExcavatorMinerals()
 	{
@@ -1072,7 +1073,7 @@ public class ClientProxy extends CommonProxy
 
 	public void addChangelogToManual()
 	{
-		FontRenderer fr = ManualHelper.getManual().fontRenderer;
+		/*FontRenderer fr = ManualHelper.getManual().fontRenderer;
 		boolean isUnicode = fr.getUnicodeFlag();
 		fr.setUnicodeFlag(true);
 		try
@@ -1125,7 +1126,7 @@ public class ClientProxy extends CommonProxy
 		{
 			e.printStackTrace();
 		}
-		fr.setUnicodeFlag(isUnicode);
+		fr.setUnicodeFlag(isUnicode);*/
 	}
 
 	private int compareVersions(String checked, String current)
@@ -1569,7 +1570,7 @@ public class ClientProxy extends CommonProxy
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)
 	{
 		Entry<String,Integer>[] sortedMapArray = map.entrySet().toArray(new Entry[0]);
-		ArrayList<String[]> list = new ArrayList();
+		ArrayList<String[]> list = new ArrayList<>();
 		try{
 			for(int i=0; i<sortedMapArray.length; i++)
 			{
@@ -1649,6 +1650,14 @@ public class ClientProxy extends CommonProxy
 	{
 		ClientEventHandler.FAILED_CONNECTIONS.put(connection,
 				new ImmutablePair<>(reason, new AtomicInteger(200)));
+	}
+
+	@Override
+	public void reloadManual()
+	{
+		if (ManualHelper.getManual()!=null)
+			ManualHelper.getManual().getAllEntries()
+					.forEach(ManualEntry::refreshPages);
 	}
 
 	static

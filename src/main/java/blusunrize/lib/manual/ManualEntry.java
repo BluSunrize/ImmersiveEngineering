@@ -9,6 +9,8 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
+import com.google.common.base.Preconditions;
+import gnu.trove.map.TIntObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.IResource;
@@ -21,27 +23,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 //TODO links
 public class ManualEntry
 {
+	private static final int WIDTH = 120;//TODO
 	private final ManualInstance manual;
 	private List<ManualPage> pages;
 	private final TextSplitter splitter;
-	private final String fullText;
+	private final Supplier<String[]> getText;
 	private String title;
 	private String subtext;
 	private String category;
+	private final ResourceLocation location;
 
-	public ManualEntry(ManualInstance m, TextSplitter splitter, String fullText, String title, String subtext, String category)
+	public ManualEntry(ManualInstance m, TextSplitter splitter, Supplier<String[]> fullText,
+					   String category, ResourceLocation location)
 	{
 		this.manual = m;
 		this.splitter = splitter;
-		this.fullText = fullText;
-		this.title = title;
-		this.subtext = subtext;
+		this.getText = fullText;
 		this.category = category;
+		this.location = location;
 		refreshPages();
 	}
 
@@ -50,29 +55,34 @@ public class ManualEntry
 		boolean oldUni = manual.fontRenderer.getUnicodeFlag();
 		manual.fontRenderer.setUnicodeFlag(true);
 		manual.entryRenderPre();
-		splitter.split(fullText);
-		Map<Integer, SpecialManualElement> specials = splitter.getSpecials();
+		String[] parts = getText.get();
+		title = parts[0];
+		subtext = parts[1];
+		splitter.split(manual.formatText(parts[2]));
+		TIntObjectMap<SpecialManualElement> specials = splitter.getSpecials();
 		List<List<String>> text = splitter.getEntryText();
 		pages = new ArrayList<>(text.size());
 		for (int i = 0; i < text.size(); i++)
 		{
-			SpecialManualElement special = specials.getOrDefault(i, NOT_SPECIAL);
+			SpecialManualElement special = specials.get(i);
+			if (special==null)
+				special = NOT_SPECIAL;
 			pages.add(new ManualPage(text.get(i), special));
 		}
-		manual.fontRenderer.setUnicodeFlag(false);
+		manual.fontRenderer.setUnicodeFlag(oldUni);
 		manual.entryRenderPost();
 	}
 
 	public void renderPage(GuiManual gui, int x, int y, int mouseX, int mouseY)
 	{
-		int page = gui.page;//TODO is is 0 or 1 based?
+		int page = gui.page;
 		ManualPage toRender = pages.get(page);
 		int offsetText = 0;
 		int offsetSpecial = toRender.text.size()*manual.fontRenderer.FONT_HEIGHT;
 		ManualInstance manual = gui.getManual();
 		if (toRender.special.isAbove())
 		{
-			offsetText = manual.fontRenderer.FONT_HEIGHT*toRender.special.getLinesTaken();
+			offsetText = toRender.special.getPixelsTaken();
 			offsetSpecial = 0;
 		}
 		ManualUtils.drawSplitString(manual.fontRenderer, toRender.text, x, y+offsetText,
@@ -95,9 +105,10 @@ public class ManualEntry
 		return pages.stream().map((p)->p.special);
 	}
 
-	public void addButtons(GuiManual guiManual, int x, int y, List<GuiButton> pageButtons)
+	public void addButtons(GuiManual guiManual, int x, int y, int page, List<GuiButton> pageButtons)
 	{
-
+		ManualUtils.addLinks(this, manual, guiManual, pages.get(page).text, x,
+				y+pages.get(page).special.getPixelsTaken(), pageButtons);
 	}
 
 	public String getSubtext()
@@ -108,6 +119,11 @@ public class ManualEntry
 	public int getPageCount()
 	{
 		return pages.size();
+	}
+
+	public ResourceLocation getLocation()
+	{
+		return location;
 	}
 
 	public ItemStack getHighlightedStack(int page)
@@ -135,6 +151,11 @@ public class ManualEntry
 		pages.get(gui.page).special.mouseDragged(x, y, clickX, clickY, mx, my, lastX, lastY, button);
 	}
 
+	public int getPageForAnchor(int anchor)
+	{
+		return splitter.getPageForAnchor(anchor);
+	}
+
 	private class ManualPage {
 		List<String> text;
 		@Nonnull
@@ -149,12 +170,11 @@ public class ManualEntry
 
 	public static class ManualEntryBuilder
 	{
-		ManualInstance manual = null;
-		TextSplitter splitter = null;
-		String rawText = null;
-		private String title;
-		private String subtext;
+		ManualInstance manual;
+		TextSplitter splitter;
+		Supplier<String[]> getContent = null;
 		private String category;
+		private ResourceLocation location;
 
 		public ManualEntryBuilder(ManualInstance manual)
 		{
@@ -178,43 +198,59 @@ public class ManualEntry
 			this.category = category;
 		}
 
-		public void setText(String text)
+		public void setContent(String title, String subText, String mainText)
 		{
-			this.rawText = rawText;
-		}
-
-		public void setSubtext(String subtext)
-		{
-			this.subtext = subtext;
+			String[] content = {title, subText, mainText};
+			getContent = ()->content;
 		}
 
 		public void readFromFile(ResourceLocation name)
 		{
-			ResourceLocation realLoc = new ResourceLocation(name.getResourceDomain(),
-					"manual/" + Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
-							+ "/" + name.getResourcePath()+".txt");
-			IResource res = getResourceNullable(realLoc);
-			if (res == null)
-				res = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
-						"manual/en_us/" + name.getResourcePath()+".txt"));
-			if (res==null)
-				return;
-			try
-			{
-				byte[] bytes = IOUtils.toByteArray(res.getInputStream());
-				String content = new String(bytes);
-				int titleEnd = content.indexOf('\n');
-				title = content.substring(0, titleEnd);
-				content = content.substring(titleEnd+1);
-				int subtitleEnd = content.indexOf('\n');
-				subtext = content.substring(0, subtitleEnd);
-				content = content.substring(subtitleEnd+1);
-				rawText = content;
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			location = name;
+			getContent = ()-> {
+				ResourceLocation realLoc = new ResourceLocation(name.getResourceDomain(),
+						"manual/" + Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
+								+ "/" + name.getResourcePath()+".txt");
+				IResource res = getResourceNullable(realLoc);
+				if (res == null)
+					res = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
+							"manual/en_us/" + name.getResourcePath() + ".txt"));
+				if (res == null)
+					return new String[]{"ERROR", "This is not a good thing", "Could not find the file for "+name};
+				try
+				{
+					byte[] bytes = IOUtils.toByteArray(res.getInputStream());
+					String content = new String(bytes);
+					int titleEnd = content.indexOf('\n');
+					String title = content.substring(0, titleEnd);
+					content = content.substring(titleEnd + 1);
+					int subtitleEnd = content.indexOf('\n');
+					String subtext = content.substring(0, subtitleEnd);
+					content = content.substring(subtitleEnd + 1);
+					String rawText = content;
+					return new String[]{title, subtext, rawText};
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+					return new String[]{"ERROR", "This is not a good thing", "Please check the log file for errors"};
+				}
+			};
+		}
+
+		public void setLocation(ResourceLocation location)
+		{
+			this.location = location;
+		}
+
+		public ManualEntry create()
+		{
+			Preconditions.checkNotNull(manual);
+			Preconditions.checkNotNull(splitter);
+			Preconditions.checkNotNull(getContent);
+			Preconditions.checkNotNull(category);
+			Preconditions.checkNotNull(location);
+			return new ManualEntry(manual, splitter, getContent, category, location);
 		}
 
 		private static IResource getResourceNullable(ResourceLocation rl)
@@ -228,11 +264,6 @@ public class ManualEntry
 				return null;
 			}
 		}
-
-		public ManualEntry create()
-		{
-			return new ManualEntry(manual, splitter, rawText, title, subtext, category);
-		}
 	}
 	private static final SpecialManualElement NOT_SPECIAL = new SpecialManualElement()
 	{
@@ -242,7 +273,7 @@ public class ManualEntry
 		{}
 
 		@Override
-		public int getLinesTaken()
+		public int getPixelsTaken()
 		{
 			return 0;
 		}
