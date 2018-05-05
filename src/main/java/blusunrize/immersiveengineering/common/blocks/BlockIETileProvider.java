@@ -178,9 +178,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		}
 		if(tile instanceof ITileDrop)
 		{
-			ItemStack s = ((ITileDrop)tile).getTileDrop(harvesters.get(), state);
-			if(!s.isEmpty())
-				drops.add(s);
+			NonNullList<ItemStack> s = ((ITileDrop)tile).getTileDrops(harvesters.get(), state);
+			drops.addAll(s);
 		}
 		else
 			super.getDrops(drops, world, pos, state, fortune);
@@ -231,7 +230,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)
 		{
-			ItemStack s = ((ITileDrop)tile).getTileDrop(player, world.getBlockState(pos));
+			ItemStack s = ((ITileDrop)tile).getPickBlock(player, world.getBlockState(pos), target);
 			if(!s.isEmpty())
 				return s;
 		}

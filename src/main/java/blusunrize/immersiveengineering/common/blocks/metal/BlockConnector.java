@@ -197,8 +197,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				}
 			}
 		}
-		Item item = Item.getItemFromBlock(this);
-		return item==Items.AIR?ItemStack.EMPTY: new ItemStack(item, 1, this.damageDropped(world.getBlockState(pos)));
+		return super.getPickBlock(state, target, world, pos, player);
 	}
 
 	@Override

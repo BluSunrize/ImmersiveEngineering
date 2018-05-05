@@ -20,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -175,24 +176,19 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state)
+	public NonNullList<ItemStack> getTileDrops(@Nullable EntityPlayer player, IBlockState state)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if (info.canReplace())
 		{
 			if (offset==0)
-			{
-				NonNullList<ItemStack> ret = Utils.getDrops(stateForMiddle);
-				if (ret.size()>0)
-				{
-					for (int i = 1;i<ret.size();i++)
-						Utils.dropStackAtPos(world, pos, ret.get(i));
-					return ret.get(0);
-				}
-			}
+				return Utils.getDrops(stateForMiddle);
 			else
-				return new ItemStack(info.conn.getBlock(), 1, info.conn.getBlock().getMetaFromState(info.conn));
-			return ItemStack.EMPTY;
+			{
+				assert info.conn!=null;//If it's marked as replaceable it should have a state to replace with
+				return NonNullList.from(ItemStack.EMPTY,
+						new ItemStack(info.conn.getBlock(), 1, info.conn.getBlock().getMetaFromState(info.conn)));
+			}
 		}
 		else
 		{
@@ -201,8 +197,26 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			NBTTagCompound stateNbt = new NBTTagCompound();
 			Utils.stateToNBT(stateNbt, stateForMiddle);
 			stack.setTagInfo(MIDDLE_STATE, stateNbt);
-			return stack;
+			return NonNullList.from(ItemStack.EMPTY, stack);
 		}
+	}
+
+	@Override
+	public ItemStack getPickBlock(@Nullable EntityPlayer player, IBlockState state, RayTraceResult rayRes)
+	{
+		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
+		if (info.canReplace() && offset==0)
+		{
+			//getPickBlock needs a proper World, not an IBlockAccess, which is hard to emulate quickly.
+			// "world, pos" won't have anything remotely like the state this expects, I hope it won't notice.
+			try
+			{
+				return stateForMiddle.getBlock().getPickBlock(stateForMiddle, rayRes, world, pos, player);
+			}
+			catch (Exception x)// We can't predict what is going to happen with weird inputs. The block is mostly inert, so it shouldn't be too bad.
+			{}				   // No output as WAILA etc call this every tick (every frame?)
+		}
+		return getTileDrop(player, state);
 	}
 
 	@Override

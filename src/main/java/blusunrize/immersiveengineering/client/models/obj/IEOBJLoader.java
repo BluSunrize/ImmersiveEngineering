@@ -17,6 +17,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class IEOBJLoader implements ICustomModelLoader
@@ -34,32 +35,32 @@ public class IEOBJLoader implements ICustomModelLoader
 	}
 
 	@Override
-	public boolean accepts(ResourceLocation modelLocation)
+	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
 		return enabledDomains.contains(modelLocation.getResourceDomain()) && modelLocation.getResourcePath().endsWith(".obj.ie");
 	}
 
+	@Nonnull
 	@Override
-	public IModel loadModel(ResourceLocation modelLocation) throws Exception
+	public IModel loadModel(@Nonnull ResourceLocation modelLocation) throws Exception
 	{
-		ResourceLocation file = new ResourceLocation(modelLocation.getResourceDomain(), modelLocation.getResourcePath());
-		if(!cache.containsKey(file))
+		if(!cache.containsKey(modelLocation))
 		{
 			IModel model = OBJLoader.INSTANCE.loadModel(modelLocation);
 			if(model instanceof OBJModel)
 			{
-				IEOBJModel ieobj = new IEOBJModel(((OBJModel)model).getMatLib(), file);
+				IEOBJModel ieobj = new IEOBJModel(((OBJModel)model).getMatLib(), modelLocation);
 				cache.put(modelLocation, ieobj);
 			}
 		}
-		IEOBJModel model = cache.get(file);
+		IEOBJModel model = cache.get(modelLocation);
 		if(model == null)
 			return ModelLoaderRegistry.getMissingModel();
 		return model;
 	}
 
 	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
 			this.manager = resourceManager;
 			cache.clear();

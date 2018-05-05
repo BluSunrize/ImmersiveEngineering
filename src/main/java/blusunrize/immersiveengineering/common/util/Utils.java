@@ -1556,7 +1556,7 @@ public class Utils
 
 	public static NonNullList<ItemStack> getDrops(IBlockState state)
 	{
-		DropBlockAcess w = new DropBlockAcess(state);
+		IBlockAccess w = getSingleBlockWorldAccess(state);
 		NonNullList<ItemStack> ret = NonNullList.create();
 		state.getBlock().getDrops(ret, w, BlockPos.ORIGIN, state, 0);
 		return ret;
@@ -1575,10 +1575,15 @@ public class Utils
 		return state;
 	}
 
-	private static class DropBlockAcess implements IBlockAccess
+	public static IBlockAccess getSingleBlockWorldAccess(IBlockState state)
+	{
+		return new SingleBlockAcess(state);
+	}
+
+	private static class SingleBlockAcess implements IBlockAccess
 	{
 		IBlockState state;
-		public DropBlockAcess(IBlockState state) {
+		public SingleBlockAcess(IBlockState state) {
 			this.state = state;
 		}
 
