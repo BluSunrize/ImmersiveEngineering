@@ -6,6 +6,7 @@
 - Fixed spawn interdictors (Electric Lanterns, etc) not being removed on chunk unload (codewarrior0)
 - Fixed Metal Press animations and sounds with customized recipe times (codewarrior0)
 - Fixed some potential crashes in networking and reduced packet size (JamiesWhiteShirt)
+- Fixed 'removeRecipesForInput' in Crusher Craftweaker compat not working (BluSunrize)
 - Reduced the amount of ItemStacks being copied in rendering and recipe checking (Malte)
 - Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 

@@ -102,7 +102,7 @@ public class Crusher
 	@ZenMethod
 	public static void removeRecipesForInput(IItemStack input)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(input)));
+		CraftTweakerAPI.apply(new RemoveForInput(CraftTweakerHelper.toStack(input)));
 	}
 
 	private static class RemoveForInput implements IAction
