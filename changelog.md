@@ -1,4 +1,4 @@
-#####Version 0.12-82
+#####Version 0.12-82 - BUILT
 - Added compat for farming Hemp to ActuallyAddition's farmer (BluSunrize)
 - Fixed Wirecutter getting consumed when cutting plates (BluSunrize)
 - Fixed Alloy Kiln consuming fuelsource container items (BluSunrize)
