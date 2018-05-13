@@ -90,14 +90,14 @@ public abstract class IECompatModule
 						continue;
 
 					Boolean enabled = Config.IEConfig.compat.get(e.getKey());
-					if(enabled==null||!enabled.booleanValue())
+					if(enabled==null||!enabled)
 						continue;
 					IECompatModule m = e.getValue().newInstance();
 					modules.add(m);
 					m.preInit();
 				} catch(Exception exception)
 				{
-					IELogger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this!");
+					IELogger.logger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this and include the error message below!", exception);
 				}
 	}
 	public static void doModulesInit()
@@ -106,7 +106,7 @@ public abstract class IECompatModule
 			try{
 				compat.init();
 			}catch (Exception exception){
-				IELogger.error("Compat module for "+compat+" could not be initialized");
+				IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
 			}
 	}
 	public static void doModulesPostInit()
@@ -115,7 +115,7 @@ public abstract class IECompatModule
 			try{
 				compat.postInit();
 			}catch (Exception exception){
-				IELogger.error("Compat module for "+compat+" could not be postInitialized");
+				IELogger.logger.error("Compat module for "+compat+" could not be postInitialized. Report this and include the error message below!", exception);
 			}
 	}
 	//We don't want this to happen multiple times after all >_>
@@ -129,8 +129,7 @@ public abstract class IECompatModule
 				try{
 					compat.loadComplete();
 				}catch (Exception exception){
-					IELogger.error("Compat module for "+compat+" could not be initialized");
-					exception.printStackTrace();
+					IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
 				}
 		}
 	}
