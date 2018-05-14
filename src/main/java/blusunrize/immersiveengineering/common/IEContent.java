@@ -420,7 +420,7 @@ public class IEContent
 		return new ResourceLocation(unlocalized);
 	}
 
-	private static Fluid setupFluid(Fluid fluid)
+	public static Fluid setupFluid(Fluid fluid)
 	{
 		FluidRegistry.addBucketForFluid(fluid);
 		if(!FluidRegistry.registerFluid(fluid))

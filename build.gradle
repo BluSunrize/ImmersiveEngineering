@@ -101,7 +101,7 @@ dependencies {
     compileOnly "slimeknights.mantle:Mantle:1.12-1.3.+"
     compileOnly "slimeknights:TConstruct:1.12-2.7.+"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
-    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.+"
+    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.6.461"
     compileOnly "opencomputers:OpenComputers:MC1.12.2:1.7.2.67"//li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
     compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
     compileOnly 'industrial-craft:industrialcraft-2:release:ex112'//'net.industrial-craft:industrialcraft-2:2.8.+'
