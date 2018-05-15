@@ -69,10 +69,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import blusunrize.lib.manual.ManualEntry;
-import blusunrize.lib.manual.ManualUtils;
-import blusunrize.lib.manual.SpecialManualElements;
-import blusunrize.lib.manual.TextSplitter;
+import blusunrize.lib.manual.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -709,9 +706,12 @@ public class ClientProxy extends CommonProxy
 		wiring.addSpecialElement(5, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,1)));
 		wiring.addSpecialElement(6, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,2)));
 		wiring.addSpecialElement(7, 0, new ManualPageMultiblock(ManualHelper.getManual(), MultiblockFeedthrough.instance));
-		wiring.setCategory(ManualHelper.CAT_ENERGY);
 		wiring.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
-		ManualHelper.getManual().addEntry(wiring.create());
+		ManualInstance ieMan = ManualHelper.getManual();
+		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				ManualHelper.CAT_ENERGY)).getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				"test"));
+		ManualHelper.getManual().addEntry(energyCat, wiring.create());
 
 		/*
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,

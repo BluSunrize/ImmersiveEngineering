@@ -8,14 +8,18 @@
 
 package blusunrize.lib.manual.gui;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.Tree;
+import blusunrize.lib.manual.Tree.AbstractNode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -34,9 +38,9 @@ public class GuiManual extends GuiScreen
 	private int manualTick=0;
 	private List<GuiButton> pageButtons = new ArrayList<>();
 
-	private String selectedCategory;
-	private ManualEntry selectedEntry;
-	public Stack<ManualEntry> previousSelectedEntry = new Stack<>();
+	@Nonnull
+	public AbstractNode<ResourceLocation, ManualEntry> currentNode;
+	public Stack<ManualLink> previousSelectedEntry = new Stack<>();
 	public int page;
 	public static GuiManual activeManual;
 
@@ -53,6 +57,7 @@ public class GuiManual extends GuiScreen
 	{
 		super();
 		this.manual = manual;
+		this.currentNode = manual.contentTree.getRoot();
 		this.texture = texture;
 
 		prevGuiScale = Minecraft.getMinecraft().gameSettings.guiScale;
@@ -66,15 +71,15 @@ public class GuiManual extends GuiScreen
 		return false;
 	}
 
-	public ManualEntry getSelectedEntry()
+	public ManualEntry getCurrentPage()
 	{
-		return selectedEntry;
+		return currentNode.getLeafData();
 	}
-	public void setSelectedEntry(ManualEntry entry)
+	public void setCurrentNode(@Nonnull AbstractNode<ResourceLocation, ManualEntry> entry)
 	{
-		selectedEntry = entry;
-		if(entry!=null)
-			manual.openEntry(entry);
+		currentNode = entry;
+		if(currentNode.isLeaf())
+			manual.openEntry(currentNode.getLeafData());
 	}
 	public ManualInstance getManual()
 	{
@@ -101,45 +106,22 @@ public class GuiManual extends GuiScreen
 		this.buttonList.clear();
 		this.pageButtons.clear();
 		hasSuggestions = -1;
-		if(selectedEntry!=null)
+		if(currentNode.isLeaf())
 		{
-			selectedEntry.addButtons(this, guiLeft+32,guiTop+28, page, pageButtons);
+			currentNode.getLeafData().addButtons(this, guiLeft+32,guiTop+28, page, pageButtons);
 			buttonList.addAll(pageButtons);
-		}
-		else if(manual.getSortedCategoryList()==null||manual.getSortedCategoryList().length<=1)
-		{
-			ArrayList<ManualEntry> lHeaders = new ArrayList<>();
-			for(ManualEntry e : manual.contentsByCategory.values())
-				if(manual.showEntryInList(e))
-					lHeaders.add(e);
-			ManualEntry[] entries = lHeaders.toArray(new ManualEntry[0]);
-			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168,
-					1f, entries));
-			textField = true;
-		}
-		else if(manual.contentsByCategory.containsKey(selectedCategory))
-		{
-			ArrayList<ManualEntry> lHeaders = new ArrayList<>();
-			for(ManualEntry e : manual.contentsByCategory.get(selectedCategory))
-				if(manual.showEntryInList(e))
-					lHeaders.add(e);
-			ManualEntry[] entries = lHeaders.toArray(new ManualEntry[0]);
-			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168,
-					1f, entries));
-			textField = true;
 		}
 		else
 		{
-			ArrayList<String> lHeaders = new ArrayList<>();
-			for(String cat : manual.getSortedCategoryList())
-				if(manual.showCategoryInList(cat))
-					lHeaders.add(cat);
-			String[] headers = lHeaders.toArray(new String[0]);
+			ArrayList<AbstractNode<ResourceLocation, ManualEntry>> children = new ArrayList<>();
+			for(AbstractNode<ResourceLocation, ManualEntry> node: currentNode.getChildren())
+				if(manual.showNodeInList(node))
+					children.add(node);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168,
-					1f, headers));
+					1f, children));
 			textField = true;
 		}
-		if(manual.contentsByCategory.containsKey(selectedCategory) || selectedEntry!=null)
+		if(currentNode.getSuperNode()!=null)
 			this.buttonList.add(new GuiButtonManualNavigation(this, 1, guiLeft+24,guiTop+10, 10,10, 0));
 
 		if(textField)
@@ -198,8 +180,9 @@ public class GuiManual extends GuiScreen
 			}
 		}
 
-		if(selectedEntry!=null)
+		if(currentNode.isLeaf())
 		{
+			ManualEntry selectedEntry = currentNode.getLeafData();
 			mouseX-=guiLeft;
 			mouseY-=guiTop;
 			boolean b0 = mouseX>32&&mouseX<32+17 && mouseY>179&&mouseY<179+10;
@@ -227,7 +210,7 @@ public class GuiManual extends GuiScreen
 		}
 		else
 		{
-			String title = manual.contentsByCategory.containsKey(selectedCategory)?manual.formatCategoryName(selectedCategory) : manual.getManualName();
+			String title = ManualUtils.getTitleForNode(currentNode);
 			manual.titleRenderPre();
 			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+title, guiLeft+xSize/2,guiTop+12, manual.getTitleColour(), 1, true);
 			manual.titleRenderPost();
@@ -265,30 +248,25 @@ public class GuiManual extends GuiScreen
 			int sel = clickList.selectedOption;
 			if(sel>=0&&sel<clickList.headers.length)
 			{
-				if(clickList.entries==null)
-					selectedCategory = clickList.headers[sel];
-				else
-				{
-					if (button.id==0)
-						previousSelectedEntry.clear();
-					setSelectedEntry(clickList.entries[sel]);
-				}
+				if (button.id==0)
+					previousSelectedEntry.clear();
+				setCurrentNode(clickList.nodes.get(sel));
 			}
 			((GuiClickableList)button).selectedOption=-1;
 			this.initGui();
 		}
 		else if(button.id == 1)
 		{
-			if(selectedEntry!=null)
-				setSelectedEntry(previousSelectedEntry.isEmpty()?null:previousSelectedEntry.pop());
-			else if(selectedCategory!=null)
-				selectedCategory=null;
+			if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
+				previousSelectedEntry.pop().changePage(this, false);
+			else if (currentNode.getSuperNode()!=null)
+				setCurrentNode(currentNode.getSuperNode());
 			page=0;
 			this.initGui();
 		}
-		else if(pageButtons.contains(button) && selectedEntry!=null)
+		else if(pageButtons.contains(button) && currentNode.isLeaf())
 		{
-			selectedEntry.buttonPressed(this, button);
+			currentNode.getLeafData().buttonPressed(this, button);
 		}
 		buttonHeld=true;
 	}
@@ -320,9 +298,9 @@ public class GuiManual extends GuiScreen
 	public List<String> getItemToolTip(ItemStack stack)
 	{
 		List<String> tooltip = super.getItemToolTip(stack);
-		if(selectedEntry!=null)
+		if(currentNode.isLeaf())
 		{
-			if(selectedEntry.getHighlightedStack(page)==stack)
+			if(currentNode.getLeafData().getHighlightedStack(page)==stack)
 			{
 				ManualLink link = this.manual.getManualLink(stack);
 				if(link!=null)
@@ -344,14 +322,14 @@ public class GuiManual extends GuiScreen
 	{
 		super.handleMouseInput();
 		int wheel = Mouse.getEventDWheel();
-		if(wheel!=0 && selectedEntry!=null)
+		if(wheel!=0 && currentNode.isLeaf())
 		{
 			if(wheel>0 && page>0)
 			{
 				page--;
 				this.initGui();
 			}
-			else if(wheel<0 && page<selectedEntry.getPageCount()-1)
+			else if(wheel<0 && page<currentNode.getLeafData().getPageCount()-1)
 			{
 				page++;
 				this.initGui();
@@ -362,8 +340,9 @@ public class GuiManual extends GuiScreen
 	public void mouseClicked(int mx, int my, int button) throws IOException
 	{
 		super.mouseClicked(mx,my,button);
-		if(button==0 && selectedEntry!=null)
+		if(button==0 && currentNode.isLeaf())
 		{
+			ManualEntry selectedEntry = currentNode.getLeafData();
 			mx -= guiLeft;
 			my -= guiTop;
 			if(page>0 && mx>32&&mx<32+17 && my>179&&my<179+10)
@@ -383,7 +362,7 @@ public class GuiManual extends GuiScreen
 				{
 					ManualLink link = this.getManual().getManualLink(highlighted);
 					if(link!=null)
-						link.changePage(this);
+						link.changePage(this, true);
 				}
 			}
 		}
@@ -391,10 +370,10 @@ public class GuiManual extends GuiScreen
 		{
 			if(searchField != null && !searchField.getText().isEmpty())
 				searchField.setText("");
-			else if(selectedEntry!=null)
-				setSelectedEntry(previousSelectedEntry.isEmpty()?null:previousSelectedEntry.pop());
-			else if(selectedCategory!=null)
-				selectedCategory=null;
+			else if(currentNode.isLeaf() && !previousSelectedEntry.isEmpty())
+				previousSelectedEntry.pop().changePage(this, false);
+			else if(currentNode.getSuperNode()!=null)
+				setCurrentNode(currentNode.getSuperNode());
 			page=0;
 			this.initGui();
 		}
@@ -414,11 +393,11 @@ public class GuiManual extends GuiScreen
 	@Override
 	protected void mouseClickMove(int mx, int my, int button, long time)
 	{
-		if(lastClick!=null && selectedEntry!=null)
+		if(lastClick!=null && currentNode.isLeaf())
 		{
 			if(lastDrag==null)
 				lastDrag = new int[]{mx-guiLeft,my-guiTop};
-			selectedEntry.mouseDragged(this, guiLeft+32,guiTop+28, lastClick[0],lastClick[1], mx-guiLeft,
+			currentNode.getLeafData().mouseDragged(this, guiLeft+32,guiTop+28, lastClick[0],lastClick[1], mx-guiLeft,
 					my-guiTop, lastDrag[0],lastDrag[1], buttonList.get(button));
 			lastDrag = new int[]{mx-guiLeft,my-guiTop};
 		}
@@ -437,39 +416,40 @@ public class GuiManual extends GuiScreen
 			else
 			{
 				search = search.toLowerCase(Locale.ENGLISH);
-				ArrayList<ManualEntry> lHeaders = new ArrayList<>();
-				HashMap<String, ManualEntry> lSpellcheck = new HashMap<>();
-				for(ManualEntry e : manual.contentsByCategory.values())
+				ArrayList<AbstractNode<ResourceLocation, ManualEntry>> lHeaders = new ArrayList<>();
+				Set<AbstractNode<ResourceLocation, ManualEntry>> lSpellcheck = new HashSet<>();
+				final String searchFinal = search;
+				manual.contentTree.fullStream().forEach((node)->
 				{
-					if(manual.showEntryInList(e))
+					if(manual.showNodeInList(node))
 					{
-						if(e.getTitle().contains(search))
-							lHeaders.add(e);
+						String title = ManualUtils.getTitleForNode(node).toLowerCase(Locale.ENGLISH);
+						if(title.contains(searchFinal))
+							lHeaders.add(node);
 						else
-							lSpellcheck.put(e.getTitle(), e);
+							lSpellcheck.add(node);
 					}
-				}
-				ArrayList<String> lCorrections = ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck.keySet().toArray(new String[0]), 4);
-				List<ManualEntry> lCorrectionEntries = new ArrayList<>(lCorrections.size());
-				for(String key : lSpellcheck.keySet())
-					if(!lCorrections.contains(key))
+				});
+				List<AbstractNode<ResourceLocation, ManualEntry>> lCorrections =
+						ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck, 4,
+								ManualUtils::getTitleForNode);
+				for(AbstractNode<ResourceLocation, ManualEntry> node : lSpellcheck)
+					if(!lCorrections.contains(node))
 					{
-						ManualEntry e = lSpellcheck.get(key);
-						if (e.listForSearch(search))
+						if (node.isLeaf() && node.getLeafData().listForSearch(search))
 						{
-							lHeaders.add(e);
-							lCorrectionEntries.add(e);
+							lHeaders.add(node);
+							lCorrections.add(node);
 							break;
 						}
 					}
 
-				ManualEntry[] entries = lHeaders.toArray(new ManualEntry[0]);
 				this.buttonList.set(0, new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148,
-						1f, entries));
+						1f, lHeaders));
 				if(!lCorrections.isEmpty())
 				{
 					GuiClickableList suggestions = new GuiClickableList(this, 11, guiLeft+180,guiTop+138, 100,80, 1f,
-							lCorrectionEntries.toArray(new ManualEntry[0]));
+							lCorrections);
 					if(hasSuggestions!=-1)
 						this.buttonList.set(hasSuggestions, suggestions);
 					else

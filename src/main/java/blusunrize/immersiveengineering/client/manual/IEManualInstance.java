@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.util.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual.MessageType;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -37,7 +38,8 @@ public class IEManualInstance extends ManualInstance
 {
 	public IEManualInstance()
 	{
-		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png");
+		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png",
+				new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		this.fontRenderer.colorCode[0 + 6] = Lib.COLOUR_I_ImmersiveOrange;
 		this.fontRenderer.colorCode[16 + 6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
 		((IEItemFontRender)this.fontRenderer).createColourBackup();
@@ -202,19 +204,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		return I18n.format("item.immersiveengineering.tool.manual.name");
 	}
-	private LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
-	@Override
-	public void addEntry(ManualEntry entry)
-	{
-		super.addEntry(entry);
-		categorySet.add(entry.getCategory());
-	}
 
-	@Override
-	public String[] getSortedCategoryList()
-	{
-		return categorySet.toArray(new String[0]);
-	}
 	@Override
 	public String formatCategoryName(String s)
 	{
@@ -234,11 +224,13 @@ public class IEManualInstance extends ManualInstance
 	//TODO this was changed to snake_case. Where else do I need to change it
 	private static final ResourceLocation SHADER_ENTRY = new ResourceLocation(ImmersiveEngineering.MODID, "shader_list");
 	@Override
-	public boolean showEntryInList(ManualEntry entry)
+	public boolean showNodeInList(Tree.AbstractNode<ResourceLocation, ManualEntry> node)
 	{
-		if(entry!=null && ManualHelper.CAT_UPDATE.equalsIgnoreCase(entry.getCategory()))
+		ResourceLocation nodeLoc = node.isLeaf() ? node.getLeafData().getLocation() : node.getNodeData();
+		if (ImmersiveEngineering.MODID.equals(nodeLoc.getResourceDomain()) &&
+				nodeLoc.getResourcePath().startsWith(ManualHelper.CAT_UPDATE))
 			return IEConfig.showUpdateNews;
-		return !(entry != null && SHADER_ENTRY.equals(entry.getLocation()));
+		return !nodeLoc.equals(SHADER_ENTRY);
 	}
 	@Override
 	public boolean showCategoryInList(String category)

@@ -9,21 +9,26 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.List;
 
 public class GuiClickableList extends GuiButton
 {
 	String[] headers;
-	@Nullable
-	ManualEntry[] entries;
+	@Nonnull
+	List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes;
 	private float textScale;
 	private int offset;
 	private int maxOffset;
@@ -32,25 +37,15 @@ public class GuiClickableList extends GuiButton
 
 	private long prevWheelNano = 0;
 
-	GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, String[] headers)
+	GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale,
+					 @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes)
 	{
 		super(id, x, y, w, h, "");
 		this.gui = gui;
 		this.textScale = textScale;
-		this.headers = headers;
-
-		perPage = (h-8)/getFontHeight();
-		if(perPage< headers.length)
-			maxOffset = headers.length-perPage;
-	}
-
-	GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, @Nonnull ManualEntry[] entries)
-	{
-		super(id, x, y, w, h, "");
-		this.gui = gui;
-		this.textScale = textScale;
-		this.entries = entries;
-		this.headers = Arrays.stream(entries).map(ManualEntry::getTitle).toArray(String[]::new);
+		this.nodes = nodes;
+		this.headers = this.nodes.stream()
+				.map(ManualUtils::getTitleForNode).toArray(String[]::new);
 
 		perPage = (h-8)/getFontHeight();
 		if(perPage< headers.length)
@@ -62,7 +57,7 @@ public class GuiClickableList extends GuiButton
 		return (int) (gui.manual.fontRenderer.FONT_HEIGHT*textScale);
 	}
 	@Override
-	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
+	public void drawButton(@Nonnull Minecraft mc, int mx, int my, float partialTicks)
 	{
 		FontRenderer fr = gui.manual.fontRenderer;
 		boolean uni = fr.getUnicodeFlag();
@@ -84,7 +79,7 @@ public class GuiClickableList extends GuiButton
 			int j = offset+i;
 			if(j> headers.length-1)
 				j= headers.length-1;
-			String s = entries==null?gui.manual.formatCategoryName(headers[j]): headers[j];
+			String s = nodes ==null?gui.manual.formatCategoryName(headers[j]): headers[j];
 			fr.drawString(s, 0,0, col, false);
 		}
 		GlStateManager.scale(1/textScale,1/textScale,1/textScale);

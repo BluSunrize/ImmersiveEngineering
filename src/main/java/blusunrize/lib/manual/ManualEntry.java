@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-//TODO links
 public class ManualEntry
 {
 	private static final int WIDTH = 120;//TODO
@@ -36,17 +35,15 @@ public class ManualEntry
 	private final Supplier<String[]> getText;
 	private String title;
 	private String subtext;
-	private String category;
 	private final ResourceLocation location;
 	private List<String[]> linkData;
 
 	public ManualEntry(ManualInstance m, TextSplitter splitter, Supplier<String[]> fullText,
-					   String category, ResourceLocation location)
+					   ResourceLocation location)
 	{
 		this.manual = m;
 		this.splitter = splitter;
 		this.getText = fullText;
-		this.category = category;
 		this.location = location;
 		refreshPages();
 	}
@@ -91,11 +88,6 @@ public class ManualEntry
 		ManualUtils.drawSplitString(manual.fontRenderer, toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
 		toRender.special.render(gui, x, y+offsetSpecial, mouseX, mouseY);
-	}
-
-	public String getCategory()
-	{
-		return category;
 	}
 
 	public String getTitle()
@@ -164,6 +156,11 @@ public class ManualEntry
 		return splitter.getPageForAnchor(anchor);
 	}
 
+	public Tree.AbstractNode<ResourceLocation, ManualEntry> getTreeNode()
+	{
+		return manual.contentTree.fullStream().filter((e)->e.getLeafData()==this).findAny().orElse(null);
+	}
+
 	private class ManualPage {
 		public List<String> renderText;
 		List<String> text;
@@ -182,7 +179,6 @@ public class ManualEntry
 		ManualInstance manual;
 		TextSplitter splitter;
 		Supplier<String[]> getContent = null;
-		private String category;
 		private ResourceLocation location;
 
 		public ManualEntryBuilder(ManualInstance manual)
@@ -200,11 +196,6 @@ public class ManualEntry
 		public void addSpecialElement(int anchor, int offset, SpecialManualElement element)
 		{
 			splitter.addSpecialPage(anchor, offset, element);
-		}
-
-		public void setCategory(String category)
-		{
-			this.category = category;
 		}
 
 		public void setContent(String title, String subText, String mainText)
@@ -257,9 +248,8 @@ public class ManualEntry
 			Preconditions.checkNotNull(manual);
 			Preconditions.checkNotNull(splitter);
 			Preconditions.checkNotNull(getContent);
-			Preconditions.checkNotNull(category);
 			Preconditions.checkNotNull(location);
-			return new ManualEntry(manual, splitter, getContent, category, location);
+			return new ManualEntry(manual, splitter, getContent, location);
 		}
 
 		private static IResource getResourceNullable(ResourceLocation rl)

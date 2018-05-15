@@ -178,7 +178,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 			else
 			{
 				Set<String> keys = ShaderRegistry.shaderRegistry.keySet();
-				ArrayList<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name, keys.toArray(new String[keys.size()]), 4);
+				List<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name,
+						keys, 4, s->s);
 				if(!corrected.isEmpty())
 				{
 					IELogger.info("SHADER UPDATE: Fixing "+name+" to "+corrected.get(0));

@@ -51,7 +51,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	public void buttonPressed(GuiManual gui, GuiButton button)
 	{
 		if(button instanceof GuiButtonManualLink)
-			((GuiButtonManualLink)button).link.changePage(gui);
+			((GuiButtonManualLink)button).link.changePage(gui, true);
 	}
 
 	@Override

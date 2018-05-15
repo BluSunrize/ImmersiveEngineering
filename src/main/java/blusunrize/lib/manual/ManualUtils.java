@@ -8,7 +8,7 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
 import net.minecraft.client.Minecraft;
@@ -27,6 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.function.Function;
 
 public class ManualUtils
 {
@@ -61,6 +62,14 @@ public class ManualUtils
 			return !OreDictionary.getOres(name).isEmpty();
 	}
 
+	public static String getTitleForNode(AbstractNode<ResourceLocation, ManualEntry> node)
+	{
+		if (node.isLeaf())
+			return node.getLeafData().getTitle();
+		else
+			return I18n.format("manual."+node.getNodeData().toString().replace(':', '.'));
+	}
+
 	public static void drawTexturedRect(int x, int y, int w, int h, double... uv)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
@@ -73,23 +82,21 @@ public class ManualUtils
 		tessellator.draw();
 	}
 
-	public static ArrayList<String> getPrimitiveSpellingCorrections(String query, String[] valid, int maxDistance)
+	public static<T> List<T> getPrimitiveSpellingCorrections
+			(String query, Iterable<T> valid, int maxDistance, Function<T, String> getTitle)
 	{
-		ArrayList<String> list = new ArrayList<String>();
-		for(String s : valid)
+		List<T> ret = new ArrayList<>();
+		for(T node : valid)
+		{
+			String s = getTitle.apply(node);
 			if(s!=null && !s.trim().isEmpty())
 				if(getSpellingDistanceBetweenStrings(query,s)<maxDistance)
-					list.add(s);
-
-		Collections.sort(list, new Comparator<String>(){
-			@Override
-			public int compare(String s0, String s1)
-			{
-				return getSpellingDistanceBetweenStrings(s1,s0);
-			}
-		});
-
-		return list;
+					ret.add(node);
+		}
+		ret.sort(
+				(s0, s1) -> getSpellingDistanceBetweenStrings(getTitle.apply(s1), getTitle.apply(s0))
+		);
+		return ret;
 	}
 	public static int getSpellingDistanceBetweenStrings(String query, String target)
 	{

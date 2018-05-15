@@ -8,11 +8,8 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiManual;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,22 +26,22 @@ public abstract class ManualInstance
 {
 	public FontRenderer fontRenderer;
 	public String texture;
-	public ManualInstance(FontRenderer fontRenderer, String texture)
+	public ManualInstance(FontRenderer fontRenderer, String texture, ResourceLocation name)
 	{
 		this.fontRenderer = fontRenderer;
 		this.texture = texture;
+		contentTree = new Tree<>(name);
 	}
 
 	public abstract String getManualName();
 
-	public abstract String[] getSortedCategoryList();
 	public abstract String formatCategoryName(String s);
 	public abstract String formatEntryName(String s);
 	public abstract String formatEntrySubtext(String s);
 	public abstract String formatLink(ManualLink link);
 	public abstract String formatText(String s);
 	public abstract boolean showCategoryInList(String category);
-	public abstract boolean showEntryInList(ManualEntry entry);
+	public abstract boolean showNodeInList(Tree.AbstractNode<ResourceLocation, ManualEntry> node);
 
 	public abstract int getTitleColour();
 	public abstract int getSubTitleColour();
@@ -71,12 +68,12 @@ public abstract class ManualInstance
 		return new GuiManual(this, texture);
 	}
 
-	public Multimap<String, ManualEntry> contentsByCategory = ArrayListMultimap.create();
+	public final Tree<ResourceLocation, ManualEntry> contentTree;
 	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
 
-	public void addEntry(ManualEntry entry)
+	public void addEntry(Tree.Node<ResourceLocation, ManualEntry> node, ManualEntry entry)
 	{
-		contentsByCategory.put(entry.getCategory(), entry);
+		node.addNewLeaf(entry);
 		contentsByName.put(entry.getLocation(), entry);
 	}
 
@@ -90,7 +87,7 @@ public abstract class ManualInstance
 	public void indexRecipes()
 	{
 		itemLinks.clear();
-		for(ManualEntry entry : contentsByCategory.values())
+		getAllEntries().forEach((entry)->
 		{
 			final int[] iP = {0};
 			entry.getSpecials().forEach((p)->
@@ -100,7 +97,7 @@ public abstract class ManualInstance
 					itemLinks.put(getItemHash(s), new ManualLink(entry, iP[0], 0));
 				iP[0]++;
 			});
-		}
+		});
 	}
 	public ManualLink getManualLink(ItemStack stack)
 	{
@@ -126,7 +123,7 @@ public abstract class ManualInstance
 
 	public Stream<ManualEntry> getAllEntries()
 	{
-		return contentsByCategory.entries().stream().map(Map.Entry::getValue);
+		return contentTree.leafStream();
 	}
 
 	public static class ManualLink
@@ -159,10 +156,11 @@ public abstract class ManualInstance
 			return offset;
 		}
 
-		public void changePage(GuiManual guiManual)
+		public void changePage(GuiManual guiManual, boolean addCurrentToStack)
 		{
-			guiManual.previousSelectedEntry.push(guiManual.getSelectedEntry());
-			guiManual.setSelectedEntry(this.key);
+			if (addCurrentToStack)
+				guiManual.previousSelectedEntry.push(new ManualLink(key, -1, guiManual.page));
+			guiManual.setCurrentNode(this.key.getTreeNode());
 			guiManual.page = getPage();
 			guiManual.initGui();
 		}
