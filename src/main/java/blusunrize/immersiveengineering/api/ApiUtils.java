@@ -351,18 +351,18 @@ public class ApiUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(World world, BlockPos p, Connection conn)
+	public static Vec3d getVecForIICAt(World world, BlockPos pos, Connection conn)
 	{
-		Vec3d pos = Vec3d.ZERO;
+		Vec3d offset = Vec3d.ZERO;
 		//Force loading
-		IImmersiveConnectable iicStart = toIIC(p, world, false);
-		if(iicStart!=null)
-			pos = iicStart.getConnectionOffset(conn);
-		if (p.equals(conn.end))
-			pos = pos.addVector(conn.end.getX()-conn.start.getX(),
+		IImmersiveConnectable iicPos = toIIC(pos, world, false);
+		if(iicPos!=null)
+			offset = iicPos.getConnectionOffset(conn);
+		if (pos.equals(conn.end))
+			offset = offset.addVector(conn.end.getX()-conn.start.getX(),
 					conn.end.getY()-conn.start.getY(),
 					conn.end.getZ()-conn.start.getZ());
-		return pos;
+		return offset;
 	}
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)

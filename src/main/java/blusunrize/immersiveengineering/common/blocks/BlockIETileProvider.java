@@ -193,9 +193,6 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
-		if(tile instanceof IImmersiveConnectable)
-			if(!world.isRemote||!Minecraft.getMinecraft().isSingleplayer())
-				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile),world, !world.isRemote&&world.getGameRules().getBoolean("doTileDrops"));
 		tempTile.put(new DimensionBlockPos(pos, world.provider.getDimension()), tile);
 		super.breakBlock(world, pos, state);
 		world.removeTileEntity(pos);

@@ -138,6 +138,11 @@ public class ImmersiveNetHandler
 
 	public void removeConnection(World world, Connection con)
 	{
+		removeConnection(world, con, getVecForIICAt(world, con.start, con),getVecForIICAt(world, con.end, con));
+	}
+
+	public void removeConnection(World world, Connection con, Vec3d vecStart, Vec3d vecEnd)
+	{
 		if (con == null || world == null)
 			return;
 		int dim = world.provider.getDimension();
@@ -167,10 +172,10 @@ public class ImmersiveNetHandler
 				}
 			}
 		};
-		raytraceAlongCatenary(con, world, (p)->{
+		raytraceAlongCatenaryRelative(con, (p)->{
 			handle.accept(p.getLeft(), mapForDim);
 			return false;
-		}, (p)->handle.accept(p.getLeft(), mapForDim));
+		}, (p)->handle.accept(p.getLeft(), mapForDim), vecStart, vecEnd);
 
 		IImmersiveConnectable iic = toIIC(con.end, world);
 		if (iic != null)
@@ -315,12 +320,17 @@ public class ImmersiveNetHandler
 		}
 	}
 
+	public void clearAllConnectionsFor(BlockPos node, World world, boolean doDrops)
+	{
+		clearAllConnectionsFor(node, world, null, doDrops);
+	}
 	/**
 	 * Clears all connections to and from this node.
 	 */
-	public void clearAllConnectionsFor(BlockPos node, World world, boolean doDrops)
+	public void clearAllConnectionsFor(BlockPos node, World world, @Nullable IImmersiveConnectable iic, boolean doDrops)
 	{
-		IImmersiveConnectable iic = toIIC(node, world);
+		if (iic==null)
+			iic = toIIC(node, world);
 		if (iic != null)
 			iic.removeCable(null);
 
@@ -328,7 +338,8 @@ public class ImmersiveNetHandler
 		{
 			for (Connection con : getMultimap(world.provider.getDimension()).get(node))
 			{
-				removeConnection(world, con);
+				removeConnection(world, con, iic!=null?iic.getConnectionOffset(con):Vec3d.ZERO,
+						getVecForIICAt(world, con.end, con));
 				double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());
 				double dy = node.getY() + .5 + Math.signum(con.end.getY() - con.start.getY());
 				double dz = node.getZ() + .5 + Math.signum(con.end.getZ() - con.start.getZ());

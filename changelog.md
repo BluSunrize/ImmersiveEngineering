@@ -1,3 +1,8 @@
+#####Version 0.12-83
+- Fixed wires sometimes leaving behind the damage sources when broken (Malte)
+- Fixed the TConstruct compat module failing (Malte)
+- Improved log output when a compat module fails (Malte)
+
 #####Version 0.12-82 - BUILT
 - Added compat for farming Hemp to ActuallyAddition's farmer (BluSunrize)
 - Fixed Wirecutter getting consumed when cutting plates (BluSunrize)
