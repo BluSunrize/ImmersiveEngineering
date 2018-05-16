@@ -66,9 +66,10 @@ public class Lib
 	public static final String NBT_Earmuffs = "IE:Earmuffs";
 	public static final String NBT_EarmuffColour = "IE:EarmuffColour";
 	public static final String NBT_Powerpack = "IE:Powerpack";
+	public static final String NBT_DAMAGE = "Damage";
 
 	public static final int colour_nixieTubeText = 0xff9900;
-	
+
 	public static String DMG_RevolverCasull="ieRevolver_casull";
 	public static String DMG_RevolverAP="ieRevolver_armorPiercing";
 	public static String DMG_RevolverBuck="ieRevolver_buckshot";
@@ -85,6 +86,7 @@ public class Lib
 	public static String DMG_RazorWire = "ieRazorWire";
 	public static String DMG_RazorShock = "ieRazorShock";
 	public static String DMG_WireShock = "ieWireShock";
+
 
 	public static boolean BAUBLES = false;
 	public static boolean IC2 = false;

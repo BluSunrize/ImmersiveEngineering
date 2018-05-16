@@ -5,7 +5,8 @@
   },
   "recipes": {
     "ingredient_shapeless": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapelessIngredient",
-    "ingredient_shaped": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapedIngredient"
+    "ingredient_shaped": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapedIngredient",
+    "ie_item_repair": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryIEItemRepair"
   },
   "conditions": {
     "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryOreExists",

@@ -2,6 +2,8 @@
 - Fixed wires sometimes leaving behind the damage sources when broken (Malte)
 - Fixed the TConstruct compat module failing (Malte)
 - Improved log output when a compat module fails (Malte)
+- Hammers and wirecutters can be repaired properly now (Malte)
+- Wirecutters can be enchanted now (Malte)
 
 #####Version 0.12-82 - BUILT
 - Added compat for farming Hemp to ActuallyAddition's farmer (BluSunrize)

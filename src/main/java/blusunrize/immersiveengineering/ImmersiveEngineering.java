@@ -56,6 +56,7 @@ public class ImmersiveEngineering
 	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
+	public static final int DATA_FIXER_VERSION = 1;
 
 	@Mod.Instance(MODID)
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
