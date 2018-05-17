@@ -121,7 +121,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 				handler.setStackInSlot(i, ItemStack.EMPTY);
 				int craftable = recipes[i-6].getMaxCrafted(query);
 				if(craftable>0)
-					handler.setStackInSlot(i, Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.getCount() * craftable, 64)));
+					handler.setStackInSlot(i, Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.getCount() * craftable, 64 - (64 % recipes[i-6].output.getCount()))));
 			}
 	}
 
