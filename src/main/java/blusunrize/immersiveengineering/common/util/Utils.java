@@ -50,11 +50,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.*;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -385,6 +382,23 @@ public class Utils
 				return false;
 		}
 		return true;
+	}
+
+	public static Vec3d getLivingFrontPos(EntityLivingBase entity, double offset, double height, EnumHandSide hand, boolean useSteppedYaw, float partialTicks)
+	{
+		double offsetX = hand==EnumHandSide.LEFT?-.3125: hand==EnumHandSide.RIGHT?.3125: 0;
+
+		float yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks;
+		if(useSteppedYaw)
+			yaw = entity.prevRenderYawOffset+(entity.renderYawOffset-entity.prevRenderYawOffset)*partialTicks;
+		float pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
+
+		float yawCos = MathHelper.cos(-yaw*0.017453292F-(float)Math.PI);
+		float yawSin = MathHelper.sin(-yaw*0.017453292F-(float)Math.PI);
+		float pitchCos = -MathHelper.cos(-pitch*0.017453292F);
+		float pitchSin = MathHelper.sin(-pitch*0.017453292F);
+
+		return new Vec3d(entity.posX+offsetX*yawCos+offset*pitchCos*yawSin, entity.posY+offset*pitchSin+height, entity.posZ+offset*pitchCos*yawCos-offsetX*yawSin);
 	}
 
 	public static List<EntityLivingBase> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)

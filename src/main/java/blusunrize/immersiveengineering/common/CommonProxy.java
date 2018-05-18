@@ -184,6 +184,9 @@ public class CommonProxy implements IGuiHandler
 	public void spawnBubbleFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
 	}
+	public void spawnFractalFX(World world, double x, double y, double z, double scale, int prefixColour, float[][] colour)
+	{
+	}
 	public void draw3DBlockCauldron()
 	{
 	}

@@ -14,6 +14,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
@@ -64,6 +67,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -346,8 +350,20 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 					}
 				}
 			}
-		} else if(!player.isSneaking() && revolver.getItemDamage() == 0)
-			return new ActionResult(getShootCooldown(revolver)>0||ItemNBTHelper.hasKey(revolver,"reload") ? EnumActionResult.PASS : EnumActionResult.SUCCESS, revolver);
+		}
+		else if(!player.isSneaking()&&revolver.getItemDamage()==0)
+		{
+			if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
+				return new ActionResult(EnumActionResult.PASS, revolver);
+			NonNullList<ItemStack> bullets = getBullets(revolver);
+			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof ItemBullet&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
+			{
+				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
+				if(shader!=null)
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver, shader.getRight().getShaderType(), Utils.getLivingFrontPos(player, .75, player.height*.75, hand==EnumHand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1));
+			}
+			return new ActionResult(EnumActionResult.SUCCESS, revolver);
+		}
 		return new ActionResult(EnumActionResult.SUCCESS, revolver);
 	}
 

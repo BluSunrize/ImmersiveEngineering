@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.*;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -82,6 +83,14 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Regal", 4, EnumRarity.UNCOMMON, 0xffd8d4d1,0xff431c1d,0xffd8d4d1,0xffd8d4d1).setInfo(null,"Destiny","regal");
 		addShader("Harrowed", 4, EnumRarity.RARE, 0xff161321,0xff431c1d,0xff161321,0xff161321).setInfo(null,"Destiny","harrowed");
 		addShader("Taken", 5, EnumRarity.EPIC, 0xff111c26,0xff111c26,0xffbad7dd,0xff111c26, null,false,0xffffffff).setInfo(null,"Destiny","taken");
+		entry = addShader("IKELOS", 2, EnumRarity.EPIC, 0xff74665d, 0xff424348, 0xff424348, 0xff313131, "pipes",true,0xffc8b096).setInfo(null,"Destiny","ikelos");
+		addLayer(entry, "1_4", 0xff5f646a);
+		entry.setEffectFunction((world, shader, item, shaderType, pos) -> {
+			System.out.println("display fractals at "+pos);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, .1875, 2,null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, .1875, 2,null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, .1875, 2,null);
+		});
 
 		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e,0xff754697,0xff77b93d,0xff505050, null,false,0xffffffff).setInfo("Mecha","Neon Genesis Evangelion","angelsthesis");
 		addShader("Sutherland", 0, EnumRarity.RARE, 0xff44404f,0xff6b5eae,0xff702739,0xff44404f, "whitestripe",true,0xff702034).setInfo("Mecha","Code Geass","sutherland");

@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.ParticleFluidSplash;
+import blusunrize.immersiveengineering.client.fx.ParticleFractal;
 import blusunrize.immersiveengineering.client.fx.ParticleIEBubble;
 import blusunrize.immersiveengineering.client.fx.ParticleSparks;
 import blusunrize.immersiveengineering.client.gui.*;
@@ -184,39 +185,39 @@ public class ClientProxy extends CommonProxy
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj", false)
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-0.25, .125, .25).scale(.625f,.625f,.625f).rotate(-Math.PI*.375, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-0.5, .125, -.3125).scale(.625f,.625f,.625f).rotate(-Math.PI*.375, 0, 1, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.5,.5,-.5).scale(1,1,1).rotate(Math.PI, 0, 1, 0))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(0,.5,0).scale(1.125,1.125,1.125).rotate(-Math.PI*.25, 0, 1, 0))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.25,.25).scale(.5,.5,.5)));
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-0.25, .125, .25).scale(.625f, .625f, .625f).rotate(-Math.PI*.375, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-0.5, .125, -.3125).scale(.625f, .625f, .625f).rotate(-Math.PI*.375, 0, 1, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.5, .5, -.5).scale(1, 1, 1).rotate(Math.PI, 0, 1, 0))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(0, .5, 0).scale(1.125, 1.125, 1.125).rotate(-Math.PI*.25, 0, 1, 0))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25, .25, .25).scale(.5, .5, .5)));
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemToolbox), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/toolbox.obj", false)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.75, 1.25, .3125).rotate(-Math.PI*.75, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.125, 1.25, .9375).rotate(Math.PI*.25, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .1875, .3125).scale(.625,.625,.625).rotate(Math.PI, 0, 1, 0).rotate(-Math.PI*.5, 1, 0, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.25, -.4375, .3125).scale(.625,.625,.625).rotate(Math.PI*.5, 1, 0, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.5,.875,-.5).scale(1,1,1).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625,.75,0).scale(.875,.875,.875).rotate(-Math.PI*.6875, 0, 1, 0))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.5,.25).scale(.5,.5,.5)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.75, 1.25, .3125).rotate(-Math.PI*.75, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.125, 1.25, .9375).rotate(Math.PI*.25, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .1875, .3125).scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).rotate(-Math.PI*.5, 1, 0, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.25, -.4375, .3125).scale(.625, .625, .625).rotate(Math.PI*.5, 1, 0, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.5, .875, -.5).scale(1, 1, 1).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625, .75, 0).scale(.875, .875, .875).rotate(-Math.PI*.6875, 0, 1, 0))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25, .5, .25).scale(.5, .5, .5)));
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0,1,0).scale(.1875, .25, .25).translate(.25, .25, .5))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0,1,0).scale(.1875, .25, .25).translate(-.3, .25, .5))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .0625,-.03125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0,1,0).rotate(Math.toRadians(-10), 0,0,1))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0, .0625,-.03125).scale(.125, .125, .125).rotate(Math.toRadians(90), 0,1,0).rotate(Math.toRadians(10), 0,0,1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(.1875, -.0781225, -.15625).scale(.2, .2, .2).rotate(Math.toRadians(-40), 0,1,0).rotate(Math.toRadians(-35), 0,0,1))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.375, -.25,-.0625).scale(.1875, .1875, .1875).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1))
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0, 1, 0).scale(.1875, .25, .25).translate(.25, .25, .5))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0, 1, 0).scale(.1875, .25, .25).translate(-.3, .25, .5))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .0625, -.03125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0, 1, 0).rotate(Math.toRadians(-10), 0, 0, 1))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0, .0625, -.03125).scale(.125, .125, .125).rotate(Math.toRadians(90), 0, 1, 0).rotate(Math.toRadians(10), 0, 0, 1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(.1875, -.0781225, -.15625).scale(.2, .2, .2).rotate(Math.toRadians(-40), 0, 1, 0).rotate(Math.toRadians(-35), 0, 0, 1))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.375, -.25, -.0625).scale(.1875, .1875, .1875).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, 0, .0625).scale(.125, .125, .125)));
 		IEContent.itemRevolver.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemDrill, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/drill/drill_diesel.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375,.375,.375).translate(-1.5, 1.125, .875).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(.75,.75,.75).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(-.75,.75,.75).rotate(-Math.PI*.75, 0, 1, 0).rotate(-Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875,.0625,.15625).scale(.4375,.4375,.4375).rotate(-Math.PI*.25, 0, 0, 1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.5,.25,0).scale(.75,.75,.75).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125,.25,.25).scale(.5,.5,.5)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375, .375, .375).translate(-1.5, 1.125, .875).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(.75, .75, .75).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(-.75, .75, .75).rotate(-Math.PI*.75, 0, 1, 0).rotate(-Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875, .0625, .15625).scale(.4375, .4375, .4375).rotate(-Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.5, .25, 0).scale(.75, .75, .75).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .25, .25).scale(.5, .5, .5)));
 		IEContent.itemDrill.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemFluorescentTube, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/fluorescent_tube.obj", true)
@@ -230,64 +231,82 @@ public class ClientProxy extends CommonProxy
 		IEContent.itemFluorescentTube.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemChemthrower, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/chemthrower.obj", false)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.25,.25,.25).translate(-.5, 1.25, .75).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5,.5,.5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5,-.5,.5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.625, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.125,.125,-.25).scale(.3125,.3125,.3125).rotate(Math.PI, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875,.3125,0).scale(.4375,.4375,.4375).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(0,.25,.125).scale(.25,.25,.25)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.25, .25, .25).translate(-.5, 1.25, .75).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, .5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, -.5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.625, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.125, .125, -.25).scale(.3125, .3125, .3125).rotate(Math.PI, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875, .3125, 0).scale(.4375, .4375, .4375).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(0, .25, .125).scale(.25, .25, .25)));
 
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRailgun, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/railgun.obj", false)//TODO add the fancy render back?
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.125,.125,.125).translate(-.5, 1.5, .5).rotate(Math.PI*.46875, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.125,.125,.125).translate(-1.75, 1.625, .875).rotate(-Math.PI*.46875, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .5, -.3125).scale(.1875,.1875,.1875).rotate(Math.PI*.53125, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.1875, .5, -.3125).scale(.1875,.1875,.1875).rotate(-Math.PI*.46875, 0, 1, 0).rotate(-Math.PI*.25, 0, 0, 1))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875,.0625,.0625).scale(.125,.125,.125).rotate(-Math.PI*.25, 0, 0, 1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875,0,0).scale(.1875,.1875,.1875).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.1875, 0, 0, 1))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125,.125,.0625).scale(.125,.125,.125)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.125, .125, .125).translate(-.5, 1.5, .5).rotate(Math.PI*.46875, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.125, .125, .125).translate(-1.75, 1.625, .875).rotate(-Math.PI*.46875, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .5, -.3125).scale(.1875, .1875, .1875).rotate(Math.PI*.53125, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.1875, .5, -.3125).scale(.1875, .1875, .1875).rotate(-Math.PI*.46875, 0, 1, 0).rotate(-Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875, .0625, .0625).scale(.125, .125, .125).rotate(-Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875, 0, 0).scale(.1875, .1875, .1875).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.1875, 0, 0, 1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .125, .0625).scale(.125, .125, .125)));
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemShield), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/shield.obj", false)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(90), 0,1,0).rotate(.1,1,0,0).translate(.5, .125, .5))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0,1,0).rotate(-.1,1,0,0).translate(-.5, .125, .5))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.59375, .375,.75))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().rotate(3.14159, 0,1,0).translate(-.59375, .375,.25))
-				.setTransformations(TransformType.FIXED, new Matrix4().rotate(1.57079, 0,1,0).scale(.75f,.75f,.75f).translate(.375, .5, .5))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.375, .375,0).scale(.75,.625,.75).rotate(-2.35619, 0,1,0).rotate(0.13089, 0,0,1))
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(90), 0, 1, 0).rotate(.1, 1, 0, 0).translate(.5, .125, .5))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0, 1, 0).rotate(-.1, 1, 0, 0).translate(-.5, .125, .5))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.59375, .375, .75))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().rotate(3.14159, 0, 1, 0).translate(-.59375, .375, .25))
+				.setTransformations(TransformType.FIXED, new Matrix4().rotate(1.57079, 0, 1, 0).scale(.75f, .75f, .75f).translate(.375, .5, .5))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.375, .375, 0).scale(.75, .625, .75).rotate(-2.35619, 0, 1, 0).rotate(0.13089, 0, 0, 1))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .125, .125).scale(.25, .25, .25)));
 
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory<EntityRevolvershot>(){
+		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory<EntityRevolvershot>()
+		{
 			@Override
-			public Render createRenderFor(RenderManager manager){
+			public Render createRenderFor(RenderManager manager)
+			{
 				return new EntityRenderRevolvershot(manager);
-			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntitySkylineHook.class, new IRenderFactory<EntitySkylineHook>(){
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntitySkylineHook.class, new IRenderFactory<EntitySkylineHook>()
+		{
 			@Override
-			public Render createRenderFor(RenderManager manager){
+			public Render createRenderFor(RenderManager manager)
+			{
 				return new EntityRenderNone(manager);
-			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory<EntityChemthrowerShot>(){
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory<EntityChemthrowerShot>()
+		{
 			@Override
-			public Render createRenderFor(RenderManager manager){
+			public Render createRenderFor(RenderManager manager)
+			{
 				return new EntityRenderChemthrowerShot(manager);
-			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityRailgunShot.class, new IRenderFactory<EntityRailgunShot>(){
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityRailgunShot.class, new IRenderFactory<EntityRailgunShot>()
+		{
 			@Override
-			public Render createRenderFor(RenderManager manager){
+			public Render createRenderFor(RenderManager manager)
+			{
 				return new EntityRenderRailgunShot(manager);
-			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityIEExplosive.class, new IRenderFactory<EntityIEExplosive>(){
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityIEExplosive.class, new IRenderFactory<EntityIEExplosive>()
+		{
 			@Override
-			public Render createRenderFor(RenderManager manager){
+			public Render createRenderFor(RenderManager manager)
+			{
 				return new EntityRenderIEExplosive(manager);
-			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityFluorescentTube.class, new IRenderFactory<EntityFluorescentTube>(){
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityFluorescentTube.class, new IRenderFactory<EntityFluorescentTube>()
+		{
 			@Override
-			public Render createRenderFor(RenderManager manager){
+			public Render createRenderFor(RenderManager manager)
+			{
 				return new EntityRenderFluorescentTube(manager);
-			}});
+			}
+		});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
@@ -335,7 +354,8 @@ public class ClientProxy extends CommonProxy
 						throw new RuntimeException("WELP! apparently "+ieMetaBlock+" lacks an item!", npe);
 					}
 				}
-			} else if(block instanceof BlockIEFluid)
+			}
+			else if(block instanceof BlockIEFluid)
 				mapFluidState(block, ((BlockIEFluid)block).getFluid());
 			else
 				ModelLoader.setCustomModelResourceLocation(blockItem, 0, new ModelResourceLocation(loc, "inventory"));
@@ -356,7 +376,8 @@ public class ClientProxy extends CommonProxy
 						ModelBakery.registerItemVariants(ieMetaItem, loc);
 						ModelLoader.setCustomModelResourceLocation(ieMetaItem, meta, new ModelResourceLocation(loc, "inventory"));
 					}
-				} else
+				}
+				else
 				{
 					final ResourceLocation loc = new ResourceLocation("immersiveengineering", ieMetaItem.itemName);
 					ModelBakery.registerItemVariants(ieMetaItem, loc);
@@ -369,7 +390,8 @@ public class ClientProxy extends CommonProxy
 						}
 					});
 				}
-			} else
+			}
+			else
 			{
 				final ResourceLocation loc = Item.REGISTRY.getNameForObject(item);
 				ModelBakery.registerItemVariants(item, loc);
@@ -389,9 +411,11 @@ public class ClientProxy extends CommonProxy
 	public void preInitEnd()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
-			try{
+			try
+			{
 				compat.clientPreInit();
-			}catch (Exception exception){
+			} catch(Exception exception)
+			{
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
 	}
@@ -404,12 +428,14 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(handler);
 
-		keybind_magnetEquip.setKeyConflictContext(new IKeyConflictContext(){
+		keybind_magnetEquip.setKeyConflictContext(new IKeyConflictContext()
+		{
 			@Override
 			public boolean isActive()
 			{
-				return ClientUtils.mc().currentScreen == null;
+				return ClientUtils.mc().currentScreen==null;
 			}
+
 			@Override
 			public boolean conflicts(IKeyConflictContext other)
 			{
@@ -428,7 +454,7 @@ public class ClientProxy extends CommonProxy
 		//		revolverTextureMap.setBlurMipmapDirect(false, Minecraft.getMinecraft().gameSettings.mipmapLevels > 0);
 		//		ClientUtils.mc().renderEngine.loadTextureMap(revolverTextureResource, revolverTextureMap);
 
-		nixieFontOptional = IEConfig.nixietubeFont?new IENixieFontRender():ClientUtils.font();
+		nixieFontOptional = IEConfig.nixietubeFont?new IENixieFontRender(): ClientUtils.font();
 		nixieFont = new IENixieFontRender();
 		itemFont = new IEItemFontRender();
 		TileEntityTeslaCoil.effectMap = ArrayListMultimap.create();
@@ -510,10 +536,10 @@ public class ClientProxy extends CommonProxy
 
 		/**Colours*/
 		for(Item item : IEContent.registeredIEItems)
-			if(item instanceof IColouredItem && ((IColouredItem)item).hasCustomItemColours())
+			if(item instanceof IColouredItem&&((IColouredItem)item).hasCustomItemColours())
 				ClientUtils.mc().getItemColors().registerItemColorHandler(IEDefaultColourHandlers.INSTANCE, item);
 		for(Block block : IEContent.registeredIEBlocks)
-			if(block instanceof IColouredBlock && ((IColouredBlock)block).hasCustomBlockColours())
+			if(block instanceof IColouredBlock&&((IColouredBlock)block).hasCustomBlockColours())
 				ClientUtils.mc().getBlockColors().registerBlockColorHandler(IEDefaultColourHandlers.INSTANCE, block);
 
 		/**Render Layers*/
@@ -523,13 +549,16 @@ public class ClientProxy extends CommonProxy
 		render = skinMap.get("slim");
 		render.addLayer(new IEBipedLayerRenderer());
 	}
+
 	@Override
 	public void initEnd()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
-			try{
+			try
+			{
 				compat.clientInit();
-			}catch (Exception exception){
+			} catch(Exception exception)
+			{
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
 	}
@@ -561,54 +590,54 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "introduction0"),
 				new ManualPages.Text(ManualHelper.getManual(), "introduction1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "introductionHammer", new ItemStack(IEContent.itemTool,1,0)));
+				new ManualPages.Crafting(ManualHelper.getManual(), "introductionHammer", new ItemStack(IEContent.itemTool, 1, 0)));
 		ManualHelper.addEntry("ores", ManualHelper.CAT_GENERAL,
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresCopper", new ItemStack(IEContent.blockOre,1,0),new ItemStack(IEContent.itemMetal,1,0)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresBauxite", new ItemStack(IEContent.blockOre,1,1),new ItemStack(IEContent.itemMetal,1,1)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresLead", new ItemStack(IEContent.blockOre,1,2),new ItemStack(IEContent.itemMetal,1,2)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresSilver", new ItemStack(IEContent.blockOre,1,3),new ItemStack(IEContent.itemMetal,1,3)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresNickel", new ItemStack(IEContent.blockOre,1,4),new ItemStack(IEContent.itemMetal,1,4)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresUranium", new ItemStack(IEContent.blockOre,1,5),new ItemStack(IEContent.itemMetal,1,5)));
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresCopper", new ItemStack(IEContent.blockOre, 1, 0), new ItemStack(IEContent.itemMetal, 1, 0)),
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresBauxite", new ItemStack(IEContent.blockOre, 1, 1), new ItemStack(IEContent.itemMetal, 1, 1)),
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresLead", new ItemStack(IEContent.blockOre, 1, 2), new ItemStack(IEContent.itemMetal, 1, 2)),
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresSilver", new ItemStack(IEContent.blockOre, 1, 3), new ItemStack(IEContent.itemMetal, 1, 3)),
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresNickel", new ItemStack(IEContent.blockOre, 1, 4), new ItemStack(IEContent.itemMetal, 1, 4)),
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresUranium", new ItemStack(IEContent.blockOre, 1, 5), new ItemStack(IEContent.itemMetal, 1, 5)));
 		tempRecipeList = new ArrayList<>();
 		if(!IERecipes.hammerCrushingList.isEmpty())
 		{
 			for(String ore : IERecipes.hammerCrushingList)
-				tempRecipeList.add(new PositionedItemStack[]{ new PositionedItemStack(OreDictionary.getOres("ore"+ore), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(IEApi.getPreferredOreStack("dust"+ore), 78, 0)});
+				tempRecipeList.add(new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ore"+ore), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(IEApi.getPreferredOreStack("dust"+ore), 78, 0)});
 			if(!tempRecipeList.isEmpty())
 				ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing0", (Object[])tempRecipeList.toArray(new PositionedItemStack[tempRecipeList.size()][3])));
 		}
 		ManualHelper.addEntry("alloys", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "alloys0", (Object[])new PositionedItemStack[][]{
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
-		ManualHelper.addEntry("plates", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "plates0",(Object[])new PositionedItemStack[][]{
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,39),78,0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,31),78,0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,32),78,0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,36),78,0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,38),78,0)}}));
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"), 24, 0), new PositionedItemStack(OreDictionary.getOres("dustNickel"), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 2, 15), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"), 24, 0), new PositionedItemStack(OreDictionary.getOres("dustSilver"), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 2, 16), 78, 0)}}));
+		ManualHelper.addEntry("plates", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "plates0", (Object[])new PositionedItemStack[][]{
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 39), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 31), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 32), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 36), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 38), 78, 0)}}));
 		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial,1,5)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.CUSHION.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "hemp3", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta())));
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop, 1, 5), new ItemStack(IEContent.itemSeeds)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial, 1, 5)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.CUSHION.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "hemp3", new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.STRIPCURTAIN.getMeta())));
 		ManualHelper.addEntry("cokeoven", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.COKEBRICK.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.COKEBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockCokeOven.instance));
 		ManualHelper.addEntry("alloysmelter", ManualHelper.CAT_GENERAL,
-				new ManualPages.Crafting(ManualHelper.getManual(), "alloysmelter0", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.ALLOYBRICK.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "alloysmelter0", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "alloysmelter1", MultiblockAlloySmelter.instance));
 		ManualHelper.addEntry("blastfurnace", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "blastfurnace0"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
 		handleMineralManual();
 		ManualHelper.addEntry("components", ManualHelper.CAT_GENERAL,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial, 1, 8), new ItemStack(IEContent.itemMaterial, 1, 9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "components1", BlueprintCraftingRecipe.getTypedBlueprint("components")),
-				new ManualPageBlueprint(ManualHelper.getManual(), "components2", new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,26)),
-				new ManualPageBlueprint(ManualHelper.getManual(), "components3", new ItemStack(IEContent.itemMaterial,1,27)));
-		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.ItemDisplay(ManualHelper.getManual(), "graphite0", new ItemStack(IEContent.itemMaterial,1,18),new ItemStack(IEContent.itemMaterial,1,19)),new ManualPageBlueprint(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemGraphiteElectrode)));
+				new ManualPageBlueprint(ManualHelper.getManual(), "components2", new ItemStack(IEContent.itemMaterial, 1, 8), new ItemStack(IEContent.itemMaterial, 1, 9), new ItemStack(IEContent.itemMaterial, 1, 26)),
+				new ManualPageBlueprint(ManualHelper.getManual(), "components3", new ItemStack(IEContent.itemMaterial, 1, 27)));
+		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.ItemDisplay(ManualHelper.getManual(), "graphite0", new ItemStack(IEContent.itemMaterial, 1, 18), new ItemStack(IEContent.itemMaterial, 1, 19)), new ManualPageBlueprint(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemGraphiteElectrode)));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.Text(ManualHelper.getManual(), "shader2"));
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
 		pages = new ArrayList<IManualPage>();
@@ -617,57 +646,57 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("shaderList", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
 
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
-				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwood0",  new ItemStack(IEContent.blockTreatedWood,1,0)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockTreatedWood,1,1), new ItemStack(IEContent.blockTreatedWood,1,2), new ItemStack(IEContent.blockTreatedWoodSlabs,1,OreDictionary.WILDCARD_VALUE)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwood0", new ItemStack(IEContent.blockTreatedWood, 1, 0)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockTreatedWood, 1, 1), new ItemStack(IEContent.blockTreatedWood, 1, 2), new ItemStack(IEContent.blockTreatedWoodSlabs, 1, OreDictionary.WILDCARD_VALUE)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockWoodenStair)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.itemMaterial,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()),new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwoodPost0", new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.POST.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.itemMaterial, 1, 0), new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta()), new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwoodPost0", new ItemStack(IEContent.blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.POST.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwoodPost1"));
 		NonNullList<ItemStack> storageBlocks = NonNullList.withSize(BlockTypes_MetalsIE.values().length, ItemStack.EMPTY);
 		NonNullList<ItemStack> storageSlabs = NonNullList.withSize(BlockTypes_MetalsIE.values().length, ItemStack.EMPTY);
-		for(int i=0; i<BlockTypes_MetalsIE.values().length; i++)
+		for(int i = 0; i < BlockTypes_MetalsIE.values().length; i++)
 		{
-			storageBlocks.set(i, new ItemStack(IEContent.blockStorage,1,i));
-			storageSlabs.set(i, new ItemStack(IEContent.blockStorageSlabs,1,i));
+			storageBlocks.set(i, new ItemStack(IEContent.blockStorage, 1, i));
+			storageSlabs.set(i, new ItemStack(IEContent.blockStorageSlabs, 1, i));
 		}
 		tempItemList = NonNullList.create();
-		for(int i=0; i<BlockTypes_MetalsAll.values().length; i++)
+		for(int i = 0; i < BlockTypes_MetalsAll.values().length; i++)
 			if(!IEContent.blockSheetmetal.isMetaHidden(i))
-				tempItemList.add(new ItemStack(IEContent.blockSheetmetal,1,i));
+				tempItemList.add(new ItemStack(IEContent.blockSheetmetal, 1, i));
 		ItemStack[] sheetmetal = tempItemList.toArray(new ItemStack[tempItemList.size()]);
 
 		ManualHelper.addEntry("crate", ManualHelper.CAT_CONSTRUCTION,
-				new ManualPages.Crafting(ManualHelper.getManual(), "crate0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.CRATE.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "crate1", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta())));
-		ManualHelper.addEntry("barrel", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "barrel0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.BARREL.getMeta())));
-		ManualHelper.addEntry("concrete", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "concrete0", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()),new ItemStack(IEContent.blockStoneStair_concrete0,1,0),new ItemStack(IEContent.blockStoneStair_concrete1,1,0)));
-		ManualHelper.addEntry("balloon", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "balloon0", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.BALLOON.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "crate0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.CRATE.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "crate1", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta())));
+		ManualHelper.addEntry("barrel", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "barrel0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.BARREL.getMeta())));
+		ManualHelper.addEntry("concrete", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "concrete0", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()), new ItemStack(IEContent.blockStoneStair_concrete0, 1, 0), new ItemStack(IEContent.blockStoneStair_concrete1, 1, 0)));
+		ManualHelper.addEntry("balloon", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "balloon0", new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.BALLOON.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "balloon1"));
 		ManualHelper.addEntry("metalconstruction", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Text(ManualHelper.getManual(), "metalconstruction0"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "", storageBlocks,storageSlabs,sheetmetal),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", storageBlocks, storageSlabs, sheetmetal),
 				new ManualPages.Text(ManualHelper.getManual(), "metalconstruction1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()),new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "",new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta()), new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.STEEL_POST.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta()),new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "",new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta()), new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "metalconstruction2", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_STRUCTURAL.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.itemWireCoil,1,3),new ItemStack(IEContent.itemWireCoil,1,4)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "metalconstruction3", new ItemStack(IEContent.blockMetalLadder,1,0),new ItemStack(IEContent.blockMetalLadder,1,1),new ItemStack(IEContent.blockMetalLadder,1,2)));
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()), new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration2, 1, BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta()), new ItemStack(IEContent.blockMetalDecoration2, 1, BlockTypes_MetalDecoration2.STEEL_POST.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta()), new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration2, 1, BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta()), new ItemStack(IEContent.blockMetalDecoration2, 1, BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "metalconstruction2", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_STRUCTURAL.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.itemWireCoil, 1, 3), new ItemStack(IEContent.itemWireCoil, 1, 4)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "metalconstruction3", new ItemStack(IEContent.blockMetalLadder, 1, 0), new ItemStack(IEContent.blockMetalLadder, 1, 1), new ItemStack(IEContent.blockMetalLadder, 1, 2)));
 		ManualHelper.addEntry("multiblocks", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Text(ManualHelper.getManual(), "multiblocks0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()), new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()), new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.GENERATOR.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RADIATOR.getMeta())));
-		ManualHelper.addEntry("metalbarrel", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "metalbarrel0", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.BARREL.getMeta())));
-		ManualHelper.addEntry("workbench", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "workbench0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta())));
-		ManualHelper.addEntry("blueprints", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Text(ManualHelper.getManual(), "blueprints0"),new ManualPages.Text(ManualHelper.getManual(), "blueprints1"));
+		ManualHelper.addEntry("metalbarrel", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "metalbarrel0", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.BARREL.getMeta())));
+		ManualHelper.addEntry("workbench", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "workbench0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.WORKBENCH.getMeta())));
+		ManualHelper.addEntry("blueprints", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Text(ManualHelper.getManual(), "blueprints0"), new ManualPages.Text(ManualHelper.getManual(), "blueprints1"));
 		ManualHelper.addEntry("lighting", ManualHelper.CAT_CONSTRUCTION,
-				new ManualPages.Crafting(ManualHelper.getManual(), "lighting0", new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.LANTERN.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "lighting1", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting0", new ItemStack(IEContent.blockMetalDecoration2, 1, BlockTypes_MetalDecoration2.LANTERN.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting1", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "lighting2"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLOODLIGHT.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "lighting4"));
 		ManualHelper.addEntry("tank", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPageMultiblock(ManualHelper.getManual(), "tank0", MultiblockSheetmetalTank.instance),
@@ -696,22 +725,22 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "wiring4"),
 				new ManualPages.Text(ManualHelper.getManual(), "wiring5"),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringConnector",
-						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_LV.getMeta()),
-						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_MV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta()),
-						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_HV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta())),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringCapacitor", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringTransformer0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER_HV.getMeta())),
+						new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_LV.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.RELAY_LV.getMeta()),
+						new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_MV.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.RELAY_HV.getMeta()),
+						new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_HV.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.RELAY_HV.getMeta())),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringCapacitor", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()), new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()), new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringTransformer0", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.TRANSFORMER.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.TRANSFORMER_HV.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool,1,1)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool, 1, 1)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool, 1, 2)),
 				new ManualPageMultiblock(ManualHelper.getManual(), "wiringFeedthrough", MultiblockFeedthrough.instance));
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
-				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.DYNAMO.getMeta())),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator1", new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WATERMILL.getMeta()),new ItemStack(IEContent.itemMaterial,1,10)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator2", new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()),new ItemStack(IEContent.itemMaterial,1,11)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator3", new ItemStack(IEContent.itemMaterial,1,12)));
-		ManualHelper.getManual().addEntry("breaker", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "breaker0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.BREAKERSWITCH.getMeta()))   ,new ManualPages.Text(ManualHelper.getManual(), "breaker1"), new ManualPages.Crafting(ManualHelper.getManual(), "breaker2", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.REDSTONE_BREAKER.getMeta())));
-		ManualHelper.getManual().addEntry("eMeter", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "eMeter0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.ENERGY_METER.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.DYNAMO.getMeta())),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator1", new ItemStack(IEContent.blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.WATERMILL.getMeta()), new ItemStack(IEContent.itemMaterial, 1, 10)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator2", new ItemStack(IEContent.blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.WINDMILL.getMeta()), new ItemStack(IEContent.itemMaterial, 1, 11)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator3", new ItemStack(IEContent.itemMaterial, 1, 12)));
+		ManualHelper.getManual().addEntry("breaker", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "breaker0", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.BREAKERSWITCH.getMeta())), new ManualPages.Text(ManualHelper.getManual(), "breaker1"), new ManualPages.Crafting(ManualHelper.getManual(), "breaker2", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.REDSTONE_BREAKER.getMeta())));
+		ManualHelper.getManual().addEntry("eMeter", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "eMeter0", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.ENERGY_METER.getMeta())));
 		ManualHelper.getManual().addEntry("redstoneWires", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires0", new ItemStack(IEContent.itemWireCoil, 1, 5)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires1", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_REDSTONE.getMeta())),
@@ -719,10 +748,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires3"),
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires4"),
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires5"));
-		Map<String,Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
-		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"K");
+		Map<String, Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
+		String[][] table = formatToTable_ItemIntHashmap(sortedMap, "K");
 		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
-				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "thermoElectric1"),
 				new ManualPages.Table(ManualHelper.getManual(), "", table, false));
 		//		ManualHelper.addEntry("highvoltage", ManualHelper.CAT_ENERGY,
@@ -753,107 +782,107 @@ public class ClientProxy extends CommonProxy
 
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
 		tempItemList = NonNullList.create();
-		for(int i=0; i<16; i++)
-			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour",EnumDyeColor.byDyeDamage(i).getColorValue()));
+		for(int i = 0; i < 16; i++)
+			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour", EnumDyeColor.byDyeDamage(i).getColorValue()));
 		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_TOOLS,
 				new ManualPages.Crafting(ManualHelper.getManual(), "earmuffs0", new ItemStack(IEContent.itemEarmuffs)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1",(Object[])new PositionedItemStack[][]{
-						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(new ItemStack(Items.DYE,1,OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList,78,0)},
-						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.LEATHER_HELMET),new ItemStack(Items.IRON_HELMET)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.LEATHER_HELMET),"IE:Earmuffs",true),ItemNBTHelper.stackWithData(new ItemStack(Items.IRON_HELMET),"IE:Earmuffs",true)),78,0)}}));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1", (Object[])new PositionedItemStack[][]{
+						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs), 24, 0), new PositionedItemStack(new ItemStack(Items.DYE, 1, OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList, 78, 0)},
+						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs), 24, 0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.LEATHER_HELMET), new ItemStack(Items.IRON_HELMET)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.LEATHER_HELMET), "IE:Earmuffs", true), ItemNBTHelper.stackWithData(new ItemStack(Items.IRON_HELMET), "IE:Earmuffs", true)), 78, 0)}}));
 		ManualHelper.addEntry("toolbox", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "toolbox0", new ItemStack(IEContent.itemToolbox)), new ManualPages.Text(ManualHelper.getManual(), "toolbox1"));
 		ManualHelper.addEntry("shield", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "shield0", new ItemStack(IEContent.itemShield)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "shield1", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_FLASH.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "shield2", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_SHOCK.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "shield3", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.SHIELD_MAGNET.ordinal())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "shield1", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.SHIELD_FLASH.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "shield2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.SHIELD_SHOCK.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "shield3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.SHIELD_MAGNET.ordinal())));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_TOOLS,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,13)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill2", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_WATERPROOF.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill3", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_LUBE.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill4", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_DAMAGE.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "drill5", new ItemStack(IEContent.itemToolUpgrades,1, ToolUpgrades.DRILL_CAPACITY.ordinal())));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead, 1, 0)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_WATERPROOF.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_LUBE.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill4", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_DAMAGE.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "drill5", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_CAPACITY.ordinal())));
 		ManualHelper.addEntry("revolver", ManualHelper.CAT_TOOLS,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver,1,0), new ItemStack(IEContent.itemMaterial,1,13),new ItemStack(IEContent.itemMaterial,1,14),new ItemStack(IEContent.itemMaterial,1,15),new ItemStack(IEContent.itemMaterial,1,16)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver,1,1)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_BAYONET.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_MAGAZINE.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.REVOLVER_ELECTRO.ordinal())));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13), new ItemStack(IEContent.itemMaterial, 1, 14), new ItemStack(IEContent.itemMaterial, 1, 15), new ItemStack(IEContent.itemMaterial, 1, 16)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver, 1, 1)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_BAYONET.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_MAGAZINE.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_ELECTRO.ordinal())));
 		pages = new ArrayList<IManualPage>();
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", BlueprintCraftingRecipe.getTypedBlueprint("bullet")));
-		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1), new ItemStack(IEContent.itemMold,1,3)));
+		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet, 1, 0), new ItemStack(IEContent.itemBullet, 1, 1), new ItemStack(IEContent.itemMold, 1, 3)));
 		for(String key : BulletHandler.registry.keySet())
 			if(BulletHandler.registry.get(key).isProperCartridge())
-				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, BulletHandler.getBulletStack(key)));
+				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_"+key, BulletHandler.getBulletStack(key)));
 		ManualHelper.addEntry("bullets", ManualHelper.CAT_TOOLS, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("skyhook", ManualHelper.CAT_TOOLS,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial, 1, 13)),
 				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
 		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_TOOLS,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,13), new ItemStack(IEContent.itemToolUpgrades,1,0)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.DRILL_CAPACITY.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.CHEMTHROWER_FOCUS.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.CHEMTHROWER_MULTITANK.ordinal())));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13), new ItemStack(IEContent.itemToolUpgrades, 1, 0)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_CAPACITY.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.CHEMTHROWER_FOCUS.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.CHEMTHROWER_MULTITANK.ordinal())));
 		ManualHelper.addEntry("powerpack", ManualHelper.CAT_TOOLS,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "powerpack0", new ItemStack(IEContent.itemPowerpack)),
 				new ManualPages.Text(ManualHelper.getManual(), "powerpack1"));
 		ManualHelper.addEntry("railgun", ManualHelper.CAT_TOOLS,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "railgun0", new ItemStack(IEContent.itemRailgun,1,0), new ItemStack(IEContent.itemMaterial,1,13)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "railgun0", new ItemStack(IEContent.itemRailgun, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13)),
 				new ManualPages.Text(ManualHelper.getManual(), "railgun1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.RAILGUN_CAPACITORS.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,ToolUpgrades.RAILGUN_SCOPE.ordinal())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.RAILGUN_CAPACITORS.ordinal())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.RAILGUN_SCOPE.ordinal())));
 
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "conveyor0", new ResourceLocation("immersiveengineering", "conveyors/conveyor_basic"),new ResourceLocation("immersiveengineering", "conveyors/conveyor_uncontrolled")),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "conveyor0", new ResourceLocation("immersiveengineering", "conveyors/conveyor_basic"), new ResourceLocation("immersiveengineering", "conveyors/conveyor_uncontrolled")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor4", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":splitter")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor5", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":covered")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor6", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":verticalcovered")));
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":dropper")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":vertical")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor4", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":splitter")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor5", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":covered")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor6", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":verticalcovered")));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater2"));
 		ManualHelper.addEntry("sorter", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "sorter0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.SORTER.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "sorter0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.SORTER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "sorter1"));
 		ManualHelper.addEntry("fluidSorter", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "fluidSorter0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.FLUID_SORTER.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "fluidSorter0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.FLUID_SORTER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "fluidSorter1"));
 		ManualHelper.addEntry("turntable", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "turntable0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.TURNTABLE.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "turntable0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.TURNTABLE.getMeta())));
 		pages = new ArrayList<IManualPage>();
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())));
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
-		if(IEConfig.Machines.pump_infiniteWater || IEConfig.Machines.pump_placeCobble)
+		if(IEConfig.Machines.pump_infiniteWater||IEConfig.Machines.pump_placeCobble)
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes5", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PLACER.getMeta())));
-		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
-		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
-		ManualHelper.addEntry("belljar", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "belljar0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.BELLJAR.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "belljar1"));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes5", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PLACER.getMeta())));
+		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
+		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())), new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
+		ManualHelper.addEntry("belljar", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "belljar0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.BELLJAR.getMeta())), new ManualPages.Text(ManualHelper.getManual(), "belljar1"));
 		ManualHelper.addEntry("teslaCoil", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "teslaCoil0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TESLA_COIL.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "teslaCoil0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.TESLA_COIL.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil1"),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "teslaCoil2", new ItemStack(IEContent.itemsFaradaySuit[0]), new ItemStack(IEContent.itemsFaradaySuit[1]), new ItemStack(IEContent.itemsFaradaySuit[2]), new ItemStack(IEContent.itemsFaradaySuit[3]), new ItemStack(IEContent.itemFluorescentTube)),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil3"),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil4"));
 		ManualHelper.addEntry("razorwire", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "razorwire0", new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "razorwire0", new ItemStack(IEContent.blockMetalDecoration2, 1, BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())));
 		ManualHelper.addEntry("turret", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "turret0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "turret1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "turret2", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TURRET_CHEM.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret2", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.TURRET_CHEM.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "turret3"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "turret4", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TURRET_GUN.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret4", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.TURRET_GUN.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "turret5"));
 
 		ManualHelper.addEntry("improvedBlastfurnace", ManualHelper.CAT_HEAVYMACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace0", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace0", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "improvedBlastfurnace1", MultiblockBlastFurnaceAdvanced.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "improvedBlastfurnace2"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace3", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace3", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta())));
 		tempItemList = NonNullList.create();
 		IEContent.itemMold.getSubItems(ImmersiveEngineering.creativeTab, tempItemList);
 		ManualHelper.addEntry("metalPress", ManualHelper.CAT_HEAVYMACHINES,
@@ -861,7 +890,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "metalPress1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "metalPress2", BlueprintCraftingRecipe.getTypedBlueprint("molds")),
 				new ManualPageBlueprint(ManualHelper.getManual(), "metalPress3", tempItemList.toArray(new ItemStack[tempItemList.size()])),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "metalPress4", new ItemStack(IEContent.itemMold,1,5),new ItemStack(IEContent.itemMold,1,6),new ItemStack(IEContent.itemMold,1,7)));
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "metalPress4", new ItemStack(IEContent.itemMold, 1, 5), new ItemStack(IEContent.itemMold, 1, 6), new ItemStack(IEContent.itemMold, 1, 7)));
 		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
@@ -899,7 +928,7 @@ public class ClientProxy extends CommonProxy
 		//				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 		//				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
 		sortedMap = FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true);
-		String[][] table2 = formatToTable_ItemIntHashmap(sortedMap,"mB");
+		String[][] table2 = formatToTable_ItemIntHashmap(sortedMap, "mB");
 //		ManualHelper.addEntry("biodiesel", ManualHelper.CAT_HEAVYMACHINES,
 //				new ManualPages.Text(ManualHelper.getManual(), "biodiesel0"),
 //				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel1", MultiblockSqueezer.instance),
@@ -924,34 +953,40 @@ public class ClientProxy extends CommonProxy
 
 		ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
 	}
+
 	@Override
 	public void postInitEnd()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
-			try{
+			try
+			{
 				compat.clientPostInit();
-			}catch (Exception exception){
+			} catch(Exception exception)
+			{
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
 		ManualHelper.getManual().indexRecipes();
 	}
+
 	static ManualEntry mineralEntry;
+
 	public static void handleMineralManual()
 	{
 		if(ManualHelper.getManual()!=null)
 		{
 			ArrayList<IManualPage> pages = new ArrayList();
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals0"));
-			pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "minerals1", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta())));
+			pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "minerals1", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta())));
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals2"));
 
 			final ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
 
 			ArrayList<Integer> mineralIndices = new ArrayList();
-			for(int i=0; i<minerals.length; i++)
+			for(int i = 0; i < minerals.length; i++)
 				if(minerals[i].isValid())
 					mineralIndices.add(i);
-			Collections.sort(mineralIndices, new Comparator<Integer>(){
+			Collections.sort(mineralIndices, new Comparator<Integer>()
+			{
 				@Override
 				public int compare(Integer paramT1, Integer paramT2)
 				{
@@ -975,45 +1010,46 @@ public class ClientProxy extends CommonProxy
 					localizedName = minerals[i].name;
 
 				String s0 = "";
-				if(minerals[i].dimensionWhitelist!=null && minerals[i].dimensionWhitelist.length>0)
+				if(minerals[i].dimensionWhitelist!=null&&minerals[i].dimensionWhitelist.length > 0)
 				{
 					String validDims = "";
 					for(int dim : minerals[i].dimensionWhitelist)
-						validDims += (!validDims.isEmpty()?", ":"")+"<dim;"+dim+">";
-					s0 = I18n.format("ie.manual.entry.mineralsDimValid",localizedName,validDims);
+						validDims += (!validDims.isEmpty()?", ": "")+"<dim;"+dim+">";
+					s0 = I18n.format("ie.manual.entry.mineralsDimValid", localizedName, validDims);
 				}
-				else if(minerals[i].dimensionBlacklist!=null && minerals[i].dimensionBlacklist.length>0)
+				else if(minerals[i].dimensionBlacklist!=null&&minerals[i].dimensionBlacklist.length > 0)
 				{
 					String invalidDims = "";
 					for(int dim : minerals[i].dimensionBlacklist)
-						invalidDims += (!invalidDims.isEmpty()?", ":"")+"<dim;"+dim+">";
-					s0 = I18n.format("ie.manual.entry.mineralsDimInvalid",localizedName,invalidDims);
+						invalidDims += (!invalidDims.isEmpty()?", ": "")+"<dim;"+dim+">";
+					s0 = I18n.format("ie.manual.entry.mineralsDimInvalid", localizedName, invalidDims);
 				}
 				else
-					s0 = I18n.format("ie.manual.entry.mineralsDimAny",localizedName);
+					s0 = I18n.format("ie.manual.entry.mineralsDimAny", localizedName);
 
 				ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
-				for(int j = 0; j< minerals[i].oreOutput.size(); j++)
+				for(int j = 0; j < minerals[i].oreOutput.size(); j++)
 					formattedOutputs.add(j);
 				final int fi = i;
-				Collections.sort(formattedOutputs, new Comparator<Integer>(){
+				Collections.sort(formattedOutputs, new Comparator<Integer>()
+				{
 					@Override
 					public int compare(Integer paramT1, Integer paramT2)
 					{
-						return -Double.compare( minerals[fi].recalculatedChances[paramT1],  minerals[fi].recalculatedChances[paramT2]);
+						return -Double.compare(minerals[fi].recalculatedChances[paramT1], minerals[fi].recalculatedChances[paramT2]);
 					}
 				});
 
 				String s1 = "";
 				NonNullList<ItemStack> sortedOres = NonNullList.withSize(minerals[i].oreOutput.size(), ItemStack.EMPTY);
-				for(int j=0; j<formattedOutputs.size(); j++)
+				for(int j = 0; j < formattedOutputs.size(); j++)
 					if(!minerals[i].oreOutput.get(j).isEmpty())
 					{
 						int sorted = formattedOutputs.get(j);
-						s1 += "<br>" + new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0"," ")+"% "+ minerals[i].oreOutput.get(sorted).getDisplayName();
+						s1 += "<br>"+new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0", " ")+"% "+minerals[i].oreOutput.get(sorted).getDisplayName();
 						sortedOres.set(j, minerals[i].oreOutput.get(sorted));
 					}
-				String s2 = I18n.format("ie.manual.entry.minerals3", s0,s1);
+				String s2 = I18n.format("ie.manual.entry.minerals3", s0, s1);
 				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
 			}
 
@@ -1029,13 +1065,14 @@ public class ClientProxy extends CommonProxy
 			}
 		}
 	}
+
 	static String[][][] formatToTable_ExcavatorMinerals()
 	{
 		ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
 		String[][][] multiTables = new String[1][minerals.length][2];
 		int curTable = 0;
 		int totalLines = 0;
-		for(int i=0; i<minerals.length; i++)
+		for(int i = 0; i < minerals.length; i++)
 			if(minerals[i].isValid())
 			{
 				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
@@ -1043,16 +1080,16 @@ public class ClientProxy extends CommonProxy
 					name = minerals[i].name;
 				multiTables[curTable][i][0] = name;
 				multiTables[curTable][i][1] = "";
-				for(int j = 0; j< minerals[i].oreOutput.size(); j++)
+				for(int j = 0; j < minerals[i].oreOutput.size(); j++)
 					if(!minerals[i].oreOutput.get(j).isEmpty())
 					{
-						multiTables[curTable][i][1] += minerals[i].oreOutput.get(j).getDisplayName()+" "+( new DecimalFormat("#.00").format(minerals[i].recalculatedChances[j]*100)+"%" )+(j< minerals[i].oreOutput.size() -1?"\n":"");
+						multiTables[curTable][i][1] += minerals[i].oreOutput.get(j).getDisplayName()+" "+(new DecimalFormat("#.00").format(minerals[i].recalculatedChances[j]*100)+"%")+(j < minerals[i].oreOutput.size()-1?"\n": "");
 						totalLines++;
 					}
-				if(i<minerals.length-1 && totalLines+ minerals[i+1].oreOutput.size() >=13)
+				if(i < minerals.length-1&&totalLines+minerals[i+1].oreOutput.size() >= 13)
 				{
 					String[][][] newMultiTables = new String[multiTables.length+1][minerals.length][2];
-					System.arraycopy(multiTables,0, newMultiTables,0, multiTables.length);
+					System.arraycopy(multiTables, 0, newMultiTables, 0, multiTables.length);
 					multiTables = newMultiTables;
 					totalLines = 0;
 					curTable++;
@@ -1086,12 +1123,13 @@ public class ClientProxy extends CommonProxy
 					//parse new version
 					readVersion = "";
 					readLog = "";
-					for(int i = line.indexOf(' ') + 1; i < line.length() && line.charAt(i) != ' '; i++)
+					for(int i = line.indexOf(' ')+1; i < line.length()&&line.charAt(i)!=' '; i++)
 						readVersion += line.charAt(i);
 					readVersionBuilt = line.endsWith("BUILT");
-				} else
+				}
+				else
 				{
-					readLog += line + "\n";
+					readLog += line+"\n";
 				}
 			}
 			s.close();
@@ -1101,13 +1139,13 @@ public class ClientProxy extends CommonProxy
 			{
 				List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(e.getValue().replace("\t", "  "), 120);
 				final int LINES_PER_PAGE = 16;
-				int pageCount = l.size() / LINES_PER_PAGE + (l.size() % LINES_PER_PAGE == 0 ? 0 : 1);
+				int pageCount = l.size()/LINES_PER_PAGE+(l.size()%LINES_PER_PAGE==0?0: 1);
 				ManualPages.Text[] pages = new ManualPages.Text[pageCount];
 				for(int i = 0; i < pageCount; i++)
 				{
 					String nextPage = "";
-					for(int j = LINES_PER_PAGE * i; j < l.size() && j < (i + 1) * LINES_PER_PAGE; j++)
-						nextPage += l.get(j) + "\n";
+					for(int j = LINES_PER_PAGE*i; j < l.size()&&j < (i+1)*LINES_PER_PAGE; j++)
+						nextPage += l.get(j)+"\n";
 					pages[i] = new ManualPages.Text(ManualHelper.getManual(), nextPage);
 				}
 				ManualHelper.addEntry(e.getKey(), ManualHelper.CAT_UPDATE, pages);
@@ -1121,31 +1159,30 @@ public class ClientProxy extends CommonProxy
 
 	private int compareVersions(String checked, String current)
 	{
-		String num1 = checked == null ? "0" : checked.replaceAll("[^0-9]", "");
-		String num2 = current == null ? "0" : current.replaceAll("[^0-9]", "");
-		int n1 = num1.isEmpty() ? 0 : Integer.parseInt(num1);
-		int n2 = num2.isEmpty() ? 0 : Integer.parseInt(num2);
+		String num1 = checked==null?"0": checked.replaceAll("[^0-9]", "");
+		String num2 = current==null?"0": current.replaceAll("[^0-9]", "");
+		int n1 = num1.isEmpty()?0: Integer.parseInt(num1);
+		int n2 = num2.isEmpty()?0: Integer.parseInt(num2);
 		return Integer.compare(n1, n2);
 	}
 
 	private void addToMap(String readVersion, String currVersion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
 	{
-		if(readVersion != null)
+		if(readVersion!=null)
 		{
 			int compare = compareVersions(readVersion, currVersion);
-			if(readVersionBuilt || compare >= 0)
+			if(readVersionBuilt||compare >= 0)
 			{
 				if(!readVersionBuilt)
 					readVersion += " - UNRELEASED";
 				else if(compare > 0)
 					readVersion += " - NEW";
-				else if(compare == 0)
+				else if(compare==0)
 					readVersion += " - CURRENT";
 				entries.put(readVersion, readLog);
 			}
 		}
 	}
-
 
 
 	@Override
@@ -1204,6 +1241,7 @@ public class ClientProxy extends CommonProxy
 
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
 	}
+
 	@SubscribeEvent
 	public void textureStichPost(TextureStitchEvent.Post event)
 	{
@@ -1213,29 +1251,29 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		if(ID>=Lib.GUIID_Base_Item)
+		if(ID >= Lib.GUIID_Base_Item)
 		{
 			EntityEquipmentSlot slot = EntityEquipmentSlot.values()[ID/100];
 			ID %= 100;//Slot determined, get actual ID
 			ItemStack item = player.getItemStackFromSlot(slot);
-			if(!item.isEmpty() && item.getItem() instanceof IGuiItem && ((IGuiItem)item.getItem()).getGuiID(item)==ID)
+			if(!item.isEmpty()&&item.getItem() instanceof IGuiItem&&((IGuiItem)item.getItem()).getGuiID(item)==ID)
 			{
-				if(ID==Lib.GUIID_Manual && ManualHelper.getManual()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), item, false))
+				if(ID==Lib.GUIID_Manual&&ManualHelper.getManual()!=null&&OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 3), item, false))
 					return ManualHelper.getManual().getGui();
-				if(ID==Lib.GUIID_Revolver && item.getItem() instanceof IEItemInterfaces.IBulletContainer)
+				if(ID==Lib.GUIID_Revolver&&item.getItem() instanceof IEItemInterfaces.IBulletContainer)
 					return new GuiRevolver(player.inventory, world, slot, item);
-				if(ID==Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
+				if(ID==Lib.GUIID_Toolbox&&item.getItem() instanceof ItemToolbox)
 					return new GuiToolbox(player.inventory, world, slot, item);
 			}
 		}
 
-		if(ID>=Lib.GUIID_Base_Item)
+		if(ID >= Lib.GUIID_Base_Item)
 		{
 			ItemStack item = ItemStack.EMPTY;
-			for (EnumHand hand : EnumHand.values())
+			for(EnumHand hand : EnumHand.values())
 			{
 				ItemStack held = player.getHeldItem(hand);
-				if(!held.isEmpty() && held.getItem() instanceof IGuiItem && ((IGuiItem)held.getItem()).getGuiID(held)==ID)
+				if(!held.isEmpty()&&held.getItem() instanceof IGuiItem&&((IGuiItem)held.getItem()).getGuiID(held)==ID)
 					item = held;
 			}
 			if(!item.isEmpty())
@@ -1245,44 +1283,44 @@ public class ClientProxy extends CommonProxy
 		}
 		else
 		{
-			TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
+			TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 			if(te instanceof IGuiTile)
 			{
 				Object gui = null;
-				if(ID==Lib.GUIID_CokeOven && te instanceof TileEntityCokeOven)
-					gui = new GuiCokeOven(player.inventory, (TileEntityCokeOven) te);
-				if(ID==Lib.GUIID_AlloySmelter && te instanceof TileEntityAlloySmelter)
-					gui = new GuiAlloySmelter(player.inventory, (TileEntityAlloySmelter) te);
-				if(ID==Lib.GUIID_BlastFurnace && te instanceof TileEntityBlastFurnace)
-					gui = new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace) te);
-				if(ID==Lib.GUIID_WoodenCrate && te instanceof TileEntityWoodenCrate)
-					gui = new GuiCrate(player.inventory, (TileEntityWoodenCrate) te);
-				if(ID==Lib.GUIID_Workbench && te instanceof TileEntityModWorkbench)
-					gui = new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) te);
-				if(ID==Lib.GUIID_Sorter && te instanceof TileEntitySorter)
-					gui = new GuiSorter(player.inventory, (TileEntitySorter) te);
-				if(ID==Lib.GUIID_Squeezer && te instanceof TileEntitySqueezer)
-					gui = new GuiSqueezer(player.inventory, (TileEntitySqueezer) te);
-				if(ID==Lib.GUIID_Fermenter && te instanceof TileEntityFermenter)
-					gui = new GuiFermenter(player.inventory, (TileEntityFermenter) te);
-				if(ID==Lib.GUIID_Refinery && te instanceof TileEntityRefinery)
-					gui = new GuiRefinery(player.inventory, (TileEntityRefinery) te);
-				if(ID==Lib.GUIID_ArcFurnace && te instanceof TileEntityArcFurnace)
-					gui = new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) te);
-				if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
-					gui = new GuiAssembler(player.inventory, (TileEntityAssembler) te);
-				if(ID==Lib.GUIID_AutoWorkbench && te instanceof TileEntityAutoWorkbench)
-					gui = new GuiAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
-				if(ID==Lib.GUIID_Mixer && te instanceof TileEntityMixer)
-					gui = new GuiMixer(player.inventory, (TileEntityMixer) te);
-				if(ID==Lib.GUIID_Turret && te instanceof TileEntityTurret)
-					gui = new GuiTurret(player.inventory, (TileEntityTurret) te);
-				if(ID==Lib.GUIID_FluidSorter && te instanceof TileEntityFluidSorter)
-					gui = new GuiFluidSorter(player.inventory, (TileEntityFluidSorter) te);
-				if(ID==Lib.GUIID_Belljar && te instanceof TileEntityBelljar)
-					gui = new GuiBelljar(player.inventory, (TileEntityBelljar) te);
-				if(ID==Lib.GUIID_ToolboxBlock && te instanceof TileEntityToolbox)
-					gui = new GuiToolboxBlock(player.inventory, (TileEntityToolbox) te);
+				if(ID==Lib.GUIID_CokeOven&&te instanceof TileEntityCokeOven)
+					gui = new GuiCokeOven(player.inventory, (TileEntityCokeOven)te);
+				if(ID==Lib.GUIID_AlloySmelter&&te instanceof TileEntityAlloySmelter)
+					gui = new GuiAlloySmelter(player.inventory, (TileEntityAlloySmelter)te);
+				if(ID==Lib.GUIID_BlastFurnace&&te instanceof TileEntityBlastFurnace)
+					gui = new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace)te);
+				if(ID==Lib.GUIID_WoodenCrate&&te instanceof TileEntityWoodenCrate)
+					gui = new GuiCrate(player.inventory, (TileEntityWoodenCrate)te);
+				if(ID==Lib.GUIID_Workbench&&te instanceof TileEntityModWorkbench)
+					gui = new GuiModWorkbench(player.inventory, (TileEntityModWorkbench)te);
+				if(ID==Lib.GUIID_Sorter&&te instanceof TileEntitySorter)
+					gui = new GuiSorter(player.inventory, (TileEntitySorter)te);
+				if(ID==Lib.GUIID_Squeezer&&te instanceof TileEntitySqueezer)
+					gui = new GuiSqueezer(player.inventory, (TileEntitySqueezer)te);
+				if(ID==Lib.GUIID_Fermenter&&te instanceof TileEntityFermenter)
+					gui = new GuiFermenter(player.inventory, (TileEntityFermenter)te);
+				if(ID==Lib.GUIID_Refinery&&te instanceof TileEntityRefinery)
+					gui = new GuiRefinery(player.inventory, (TileEntityRefinery)te);
+				if(ID==Lib.GUIID_ArcFurnace&&te instanceof TileEntityArcFurnace)
+					gui = new GuiArcFurnace(player.inventory, (TileEntityArcFurnace)te);
+				if(ID==Lib.GUIID_Assembler&&te instanceof TileEntityAssembler)
+					gui = new GuiAssembler(player.inventory, (TileEntityAssembler)te);
+				if(ID==Lib.GUIID_AutoWorkbench&&te instanceof TileEntityAutoWorkbench)
+					gui = new GuiAutoWorkbench(player.inventory, (TileEntityAutoWorkbench)te);
+				if(ID==Lib.GUIID_Mixer&&te instanceof TileEntityMixer)
+					gui = new GuiMixer(player.inventory, (TileEntityMixer)te);
+				if(ID==Lib.GUIID_Turret&&te instanceof TileEntityTurret)
+					gui = new GuiTurret(player.inventory, (TileEntityTurret)te);
+				if(ID==Lib.GUIID_FluidSorter&&te instanceof TileEntityFluidSorter)
+					gui = new GuiFluidSorter(player.inventory, (TileEntityFluidSorter)te);
+				if(ID==Lib.GUIID_Belljar&&te instanceof TileEntityBelljar)
+					gui = new GuiBelljar(player.inventory, (TileEntityBelljar)te);
+				if(ID==Lib.GUIID_ToolboxBlock&&te instanceof TileEntityToolbox)
+					gui = new GuiToolboxBlock(player.inventory, (TileEntityToolbox)te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, true);
 				return gui;
@@ -1295,6 +1333,7 @@ public class ClientProxy extends CommonProxy
 	{
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, meta, new ModelResourceLocation(path, renderCase));
 	}
+
 	public static String getPropertyString(Map<IProperty, Comparable> propertyMap)
 	{
 		StringBuilder stringbuilder = new StringBuilder();
@@ -1308,7 +1347,7 @@ public class ClientProxy extends CommonProxy
 			stringbuilder.append("=");
 			stringbuilder.append(iproperty.getName(comparable));
 		}
-		if(stringbuilder.length() == 0)
+		if(stringbuilder.length()==0)
 			stringbuilder.append("normal");
 		return stringbuilder.toString();
 	}
@@ -1316,19 +1355,20 @@ public class ClientProxy extends CommonProxy
 
 	HashMap<String, IETileSound> soundMap = new HashMap<String, IETileSound>();
 	HashMap<BlockPos, IETileSound> tileSoundMap = new HashMap<BlockPos, IETileSound>();
+
 	@Override
 	public void handleTileSound(SoundEvent soundEvent, TileEntity tile, boolean tileActive, float volume, float pitch)
 	{
 		BlockPos pos = tile.getPos();
 		IETileSound sound = tileSoundMap.get(pos);
-		if(sound==null && tileActive)
+		if(sound==null&&tileActive)
 		{
 			sound = ClientUtils.generatePositionedIESound(soundEvent, volume, pitch, true, 0, pos);
 			tileSoundMap.put(pos, sound);
 		}
-		else if(sound!=null && !tileActive)
+		else if(sound!=null&&!tileActive)
 		{
-			sound.donePlaying=true;
+			sound.donePlaying = true;
 			ClientUtils.mc().getSoundHandler().stopSound(sound);
 			tileSoundMap.remove(pos);
 		}
@@ -1368,11 +1408,12 @@ public class ClientProxy extends CommonProxy
 		////			soundMap.put(soundName, sound);
 		//		}
 	}
+
 	@Override
 	public void stopTileSound(String soundName, TileEntity tile)
 	{
 		IETileSound sound = soundMap.get(soundName);
-		if(sound!=null && new BlockPos(sound.getXPosF(), sound.getYPosF(), sound.getZPosF()).equals(tile.getPos()))
+		if(sound!=null&&new BlockPos(sound.getXPosF(), sound.getYPosF(), sound.getZPosF()).equals(tile.getPos()))
 		{
 			ClientUtils.mc().getSoundHandler().stopSound(sound);
 			sound = null;
@@ -1387,9 +1428,9 @@ public class ClientProxy extends CommonProxy
 			for(Object render : ClientUtils.mc().getRenderManager().entityRenderMap.values())
 				if(RenderMinecart.class.isAssignableFrom(render.getClass()))
 				{
-					Object wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class, (RenderMinecart) render, "field_77013_a", "modelMinecart");
+					Object wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class, (RenderMinecart)render, "field_77013_a", "modelMinecart");
 					if(wrapped instanceof ModelMinecart)
-						ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class,(RenderMinecart)render, new ModelShaderMinecart((ModelMinecart) wrapped), "field_77013_a","modelMinecart");
+						ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class, (RenderMinecart)render, new ModelShaderMinecart((ModelMinecart)wrapped), "field_77013_a", "modelMinecart");
 				}
 			ModelShaderMinecart.rendersReplaced = true;
 		}
@@ -1427,36 +1468,48 @@ public class ClientProxy extends CommonProxy
 		//				Minecraft.getMinecraft().effectRenderer.addEffect(particle);
 		//			}
 	}
+
 	@Override
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
-		Particle particle = new ParticleSparks(world, x,y,z, mx,my,mz);
+		Particle particle = new ParticleSparks(world, x, y, z, mx, my, mz);
 		Minecraft.getMinecraft().effectRenderer.addEffect(particle);
 	}
+
 	@Override
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
 	{
-		ParticleRedstone particle = (ParticleRedstone)ClientUtils.mc().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x,y,z, 0,0,0);
-		particle.motionX*=mx;
-		particle.motionY*=my;
-		particle.motionZ*=mz;
-		particle.setRBGColorF(r,g,b);
+		ParticleRedstone particle = (ParticleRedstone)ClientUtils.mc().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x, y, z, 0, 0, 0);
+		particle.motionX *= mx;
+		particle.motionY *= my;
+		particle.motionZ *= mz;
+		particle.setRBGColorF(r, g, b);
 		particle.reddustParticleScale = size;
 	}
+
 	@Override
 	public void spawnFluidSplashFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
-		ParticleFluidSplash particle = new ParticleFluidSplash(world, x,y,z, mx,my,mz);
+		ParticleFluidSplash particle = new ParticleFluidSplash(world, x, y, z, mx, my, mz);
 		particle.setFluidTexture(fs);
 		ClientUtils.mc().effectRenderer.addEffect(particle);
 	}
+
 	@Override
 	public void spawnBubbleFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
-		ParticleIEBubble particle = new ParticleIEBubble(world, x,y,z, mx,my,mz);
+		ParticleIEBubble particle = new ParticleIEBubble(world, x, y, z, mx, my, mz);
 		ClientUtils.mc().effectRenderer.addEffect(particle);
 	}
 
+	@Override
+	public void spawnFractalFX(World world, double x, double y, double z, double scale, int prefixColour, float[][] colour)
+	{
+		if(prefixColour >= 0)
+			colour = prefixColour==1?ParticleFractal.COLOUR_ORANGE: prefixColour==2?ParticleFractal.COLOUR_RED: ParticleFractal.COLOUR_LIGHTNING;
+		ParticleFractal particle = new ParticleFractal(world, x, y, z, scale, colour[0], colour[1]);
+		ClientUtils.mc().effectRenderer.addEffect(particle);
+	}
 
 
 	@Override
@@ -1476,6 +1529,7 @@ public class ClientProxy extends CommonProxy
 			GlStateManager.shadeModel(7424);
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
 	}
+
 	@Override
 	public void drawSpecificFluidPipe(String configuration)
 	{
@@ -1486,7 +1540,7 @@ public class ClientProxy extends CommonProxy
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(0,0,1);
+		GlStateManager.translate(0, 0, 1);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
@@ -1500,11 +1554,13 @@ public class ClientProxy extends CommonProxy
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
 		GlStateManager.popMatrix();
 	}
+
 	static Map<String, Boolean> hasArmorModel = new HashMap<>();
+
 	@Override
 	public boolean armorHasCustomModel(ItemStack stack)
 	{
-		if(!stack.isEmpty() && stack.getItem() instanceof ItemArmor)
+		if(!stack.isEmpty()&&stack.getItem() instanceof ItemArmor)
 		{
 			Boolean b = hasArmorModel.get(stack.getUnlocalizedName());
 			if(b==null)
@@ -1513,8 +1569,10 @@ public class ClientProxy extends CommonProxy
 					ModelBiped model = stack.getItem().getArmorModel(ClientUtils.mc().player, stack, ((ItemArmor)stack.getItem()).getEquipmentSlot(), null);
 					b = model!=null&&model.getClass()!=ModelBiped.class; //Model isn't a base Biped
 					hasArmorModel.put(stack.getUnlocalizedName(), b);
-				}catch(Exception e){}
-			return b==null?false:b;
+				} catch(Exception e)
+				{
+				}
+			return b==null?false: b;
 		}
 		return false;
 	}
@@ -1523,7 +1581,7 @@ public class ClientProxy extends CommonProxy
 	public boolean drawConveyorInGui(String conveyor, EnumFacing facing)
 	{
 		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
-		if(con != null)
+		if(con!=null)
 		{
 			GlStateManager.pushMatrix();
 			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
@@ -1544,7 +1602,7 @@ public class ClientProxy extends CommonProxy
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(0,0,1);
+		GlStateManager.translate(0, 0, 1);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
@@ -1559,10 +1617,11 @@ public class ClientProxy extends CommonProxy
 
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)
 	{
-		Entry<String,Integer>[] sortedMapArray = map.entrySet().toArray(new Entry[0]);
+		Entry<String, Integer>[] sortedMapArray = map.entrySet().toArray(new Entry[0]);
 		ArrayList<String[]> list = new ArrayList();
-		try{
-			for(int i=0; i<sortedMapArray.length; i++)
+		try
+		{
+			for(int i = 0; i < sortedMapArray.length; i++)
 			{
 				String item = sortedMapArray[i].getKey();
 				if(ApiUtils.isExistingOreName(sortedMapArray[i].getKey()))
@@ -1576,10 +1635,12 @@ public class ClientProxy extends CommonProxy
 				{
 					int bt = sortedMapArray[i].getValue();
 					String am = bt+" "+valueType;
-					list.add(new String[]{item,am});
+					list.add(new String[]{item, am});
 				}
 			}
-		}catch(Exception e)	{}
+		} catch(Exception e)
+		{
+		}
 		String[][] table = list.toArray(new String[0][]);
 		return table;
 	}
@@ -1596,6 +1657,7 @@ public class ClientProxy extends CommonProxy
 	{
 		return ClientUtils.mc().world;
 	}
+
 	@Override
 	public EntityPlayer getClientPlayer()
 	{
@@ -1618,17 +1680,19 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void removeStateFromSmartModelCache(IExtendedBlockState state)
 	{
-		for (BlockRenderLayer r:BlockRenderLayer.values())
+		for(BlockRenderLayer r : BlockRenderLayer.values())
 			IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
 		IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state, null, ImmutableSet.of()));
 	}
+
 	@Override
 	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
 	{
-		for (BlockRenderLayer r:BlockRenderLayer.values())
+		for(BlockRenderLayer r : BlockRenderLayer.values())
 			ConnModelReal.cache.invalidate(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
 		ConnModelReal.cache.invalidate(new ExtBlockstateAdapter(state, null, ImmutableSet.of()));
 	}
+
 	@Override
 	public void clearConnectionModelCache()
 	{
@@ -1659,17 +1723,19 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
 		IEApi.renderCacheClearers.add(FeedthroughModel.CACHE::invalidateAll);
 	}
+
 	@Override
 	public void clearRenderCaches()
 	{
-		for (Runnable r:IEApi.renderCacheClearers)
+		for(Runnable r : IEApi.renderCacheClearers)
 			r.run();
 	}
+
 	private static void mapFluidState(Block block, Fluid fluid)
 	{
 		Item item = Item.getItemFromBlock(block);
 		FluidStateMapper mapper = new FluidStateMapper(fluid);
-		if(item != Items.AIR)
+		if(item!=Items.AIR)
 		{
 			ModelLoader.registerItemVariants(item);
 			ModelLoader.setCustomMeshDefinition(item, mapper);
@@ -1683,7 +1749,7 @@ public class ClientProxy extends CommonProxy
 
 		public FluidStateMapper(Fluid fluid)
 		{
-			this.location = new ModelResourceLocation(ImmersiveEngineering.MODID + ":fluid_block", fluid.getName());
+			this.location = new ModelResourceLocation(ImmersiveEngineering.MODID+":fluid_block", fluid.getName());
 		}
 
 		@Nonnull
