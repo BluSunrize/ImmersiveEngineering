@@ -1,4 +1,5 @@
 #####Version 0.12-83
+- Added the Extracting Conveyor. It pulls from inventories like a Hopper (BluSunrize)
 - Fixed wires sometimes leaving behind the damage sources when broken (Malte)
 - Fixed the TConstruct compat module failing (Malte)
 - Improved log output when a compat module fails (Malte)

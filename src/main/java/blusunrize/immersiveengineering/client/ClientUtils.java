@@ -1502,6 +1502,7 @@ public class ClientUtils
 	{
 		return createBakedBox(from, to, matrix, facing, vertices->vertices, textureGetter, colour);
 	}
+	@Nonnull
 	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, EnumFacing facing, Function<Vector3f[],Vector3f[]> vertexTransformer, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		HashSet<BakedQuad> quads = new HashSet<>();

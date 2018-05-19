@@ -835,10 +835,11 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "conveyor0", new ResourceLocation("immersiveengineering", "conveyors/conveyor_basic"), new ResourceLocation("immersiveengineering", "conveyors/conveyor_uncontrolled")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":dropper")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":vertical")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor4", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":splitter")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor5", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":covered")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor6", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":verticalcovered")));
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":extract")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor4", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":vertical")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor5", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":splitter")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor6", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":covered")),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "conveyor7", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":extractcovered"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":verticalcovered")));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),

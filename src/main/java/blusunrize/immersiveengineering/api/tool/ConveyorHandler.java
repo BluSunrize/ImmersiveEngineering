@@ -378,6 +378,15 @@ public class ConveyorHandler
 
 		}
 
+		default boolean isTicking(TileEntity tile)
+		{
+			return false;
+		}
+
+		default void onUpdate(TileEntity tile, EnumFacing facing)
+		{
+		}
+
 		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);
 		AxisAlignedBB highConveyorBounds = new AxisAlignedBB(0, 0, 0, 1, 1.125f, 1);
 
