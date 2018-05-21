@@ -207,9 +207,10 @@ public class ConveyorExtract extends ConveyorBasic
 					IItemHandler itemHandler = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite());
 					for(int i = 0; i < itemHandler.getSlots(); i++)
 					{
-						ItemStack extractItem = itemHandler.extractItem(i, 1, false);
+						ItemStack extractItem = itemHandler.extractItem(i, 1, true);
 						if(!extractItem.isEmpty())
 						{
+							extractItem = itemHandler.extractItem(i, 1, false);
 							EntityItem entity = new EntityItem(world, tile.getPos().getX()+.5, tile.getPos().getY()+.1875, tile.getPos().getZ()+.5, extractItem);
 							entity.motionX = 0;
 							entity.motionY = 0;
