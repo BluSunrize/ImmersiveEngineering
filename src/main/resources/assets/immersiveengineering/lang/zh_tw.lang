@@ -80,7 +80,7 @@ tile.immersiveengineering.wooden_device0.crate.name=木質儲存箱
 tile.immersiveengineering.wooden_device0.workbench.name=工程師裝配台
 tile.immersiveengineering.wooden_device0.sorter.name=物品路由器
 tile.immersiveengineering.wooden_device0.gunpowder_barrel.name=火藥桶
-tile.immersiveengineering.wooden_device0.reinforced_crate.name=强化儲存箱
+tile.immersiveengineering.wooden_device0.reinforced_crate.name=強化儲存箱
 tile.immersiveengineering.wooden_device0.turntable.name=工程轉盤
 tile.immersiveengineering.wooden_device0.fluid_sorter.name=液體路由器
 tile.immersiveengineering.wooden_device1.watermill.name=水車
@@ -354,7 +354,7 @@ item.immersiveengineering.revolver.nerf.name=玩具左輪
 item.immersiveengineering.revolver.oblivion.name=湮滅
 item.immersiveengineering.revolver.oathkeeper.name=誓約之守護
 item.immersiveengineering.revolver.bee.name=黃蜂左輪
-item.immersiveengineering.revolver.fenrir.name=芬里爾巨狼
+item.immersiveengineering.revolver.fenrir.name=芬裡爾巨狼
 item.immersiveengineering.revolver.earthshaker.name=§b撼地者§r
 item.immersiveengineering.revolver.warlord.name=光束
 item.immersiveengineering.revolver.superchief.name=超級領袖
@@ -390,7 +390,7 @@ item.immersiveengineering.toolupgrade.drill_damage.name=附加螺旋鑽
 item.immersiveengineering.toolupgrade.drill_capacity.name=大型燃料缸
 item.immersiveengineering.toolupgrade.revolver_bayonet.name=刺刀
 item.immersiveengineering.toolupgrade.revolver_magazine.name=擴充彈夾
-item.immersiveengineering.toolupgrade.revolver_electro.name=加强電子管
+item.immersiveengineering.toolupgrade.revolver_electro.name=加強電子管
 item.immersiveengineering.toolupgrade.chemthrower_focus.name=聚焦噴嘴
 item.immersiveengineering.toolupgrade.railgun_scope.name=瞄準鏡
 item.immersiveengineering.toolupgrade.railgun_capacitors.name=附加電容
@@ -576,7 +576,7 @@ modifier.thermalinversion.name=熱力反轉
 modifier.thermalinversion.desc=§o冰與火！§r\n在熱的環境中攻擊會凍傷敵人；在冷的環境中攻擊會灼傷敵人。
 #BOTANIA COMPAT
 item.immersiveengineering.bullet.terrasteel.name=葉綠彈
-ie.manual.entry.bullets_terrasteel=§l葉綠§l彈§r使用「特種子彈」藍圖和魔力金屬“泰拉鋼”製作，這讓它們能夠自動尋找並跟踪目標。
+ie.manual.entry.bullets_terrasteel=§l葉綠§l彈§r使用「特種子彈」藍圖和魔力金屬“泰拉鋼”製作，這讓它們能夠自動尋找並跟蹤目標。
 #BLOODMAGIC COMPAT
 item.immersiveengineering.bullet.crystalwill.name=水晶意志彈
 ie.manual.entry.bullets_crystalwill=§l水晶意志彈§r使用「特種子彈」和「惡魔意志水晶(Demon Will Crystal)」製作，其中的少量惡魔意志將會迫使子彈尋找附近的目標並給予無情的打擊。
@@ -670,7 +670,7 @@ chat.immersiveengineering.info.old_java=[Immersive Engineering] §4Warning: §r�
 
 chat.immersiveengineering.info.coresample.pos=%1$s 到 %2$s
 chat.immersiveengineering.info.coresample.mineral=%1$s礦脈
-chat.immersiveengineering.info.coresample.noMineral=没有礦物
+chat.immersiveengineering.info.coresample.noMineral=沒有礦物
 chat.immersiveengineering.info.coresample.yield=產出期望：%1$s礦石
 chat.immersiveengineering.info.coresample.infinite=無限產量
 chat.immersiveengineering.info.coresample.timestamp=樣本提取於：%1$s
@@ -681,8 +681,8 @@ chat.immersiveengineering.info.coresample.mapFail=該樣本不在此地圖的邊
 desc.immersiveengineering.info.reqMaterial=所需材料：
 desc.immersiveengineering.info.chance=概率：
 
-desc.immersiveengineering.info.blueprint.creates0=可制作：§6按住Shift查看§r
-desc.immersiveengineering.info.blueprint.creates1=可制作：
+desc.immersiveengineering.info.blueprint.creates0=可製作：§6按住Shift查看§r
+desc.immersiveengineering.info.blueprint.creates1=可製作：
 desc.immersiveengineering.info.blueprint.components=製作元件
 desc.immersiveengineering.info.blueprint.molds=金屬沖壓模具
 desc.immersiveengineering.info.blueprint.bullet=普通子彈
@@ -691,7 +691,7 @@ desc.immersiveengineering.info.blueprint.electrode=電弧爐電極
 
 desc.immersiveengineering.info.electrodeIntegrity=完整度
 
-desc.immersiveengineering.info.bullet.flareColour=信號颜色：%1$s
+desc.immersiveengineering.info.bullet.flareColour=信號顏色：%1$s
 
 desc.immersiveengineering.info.shader.applyTo=可應用於：
 desc.immersiveengineering.info.shader.immersiveengineering:revolver=左輪手槍
@@ -778,7 +778,7 @@ desc.immersiveengineering.flavour.drill.fuel=燃料：
 desc.immersiveengineering.flavour.drill.empty=沒有燃料
 
 desc.immersiveengineering.flavour.drillhead.size=採礦區域：%1$sx%1$sx%2$s
-desc.immersiveengineering.flavour.drillhead.level=採礦等级：%1$s
+desc.immersiveengineering.flavour.drillhead.level=採礦等級：%1$s
 desc.immersiveengineering.flavour.drillhead.speed=採礦速度：%1$s
 desc.immersiveengineering.flavour.drillhead.damage=攻擊傷害：%1$s
 
@@ -787,9 +787,9 @@ desc.immersiveengineering.flavour.skyhook=旅行的全新方式
 desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=允許採礦機械鑽在水下工作
 desc.immersiveengineering.flavour.toolupgrade.drill_lube=提升採礦機械鑽開採速度
 desc.immersiveengineering.flavour.toolupgrade.drill_damage=提升採礦機械鑽攻擊傷害,最高疊加至3
-desc.immersiveengineering.flavour.toolupgrade.drill_capacity=提升採礦機械鑽和化學噴射器的内部燃料儲量
+desc.immersiveengineering.flavour.toolupgrade.drill_capacity=提升採礦機械鑽和化學噴射器的內部燃料儲量
 desc.immersiveengineering.flavour.toolupgrade.revolver_bayonet=為左輪手槍添加近戰傷害
-desc.immersiveengineering.flavour.toolupgrade.revolver_magazine=提升左輪手槍弹夾容量
+desc.immersiveengineering.flavour.toolupgrade.revolver_magazine=提升左輪手槍彈夾容量
 desc.immersiveengineering.flavour.toolupgrade.revolver_electro=左輪手槍射擊造成電擊傷害
 desc.immersiveengineering.flavour.toolupgrade.chemthrower_focus=減少化學噴射器的噴射速度,並增加其範圍
 desc.immersiveengineering.flavour.toolupgrade.railgun_scope=可以讓磁軌砲視野放大
@@ -802,7 +802,7 @@ desc.immersiveengineering.flavour.toolupgrade.chemthrower_multitank=允許化學
 gui.immersiveengineering.empty=空
 gui.immersiveengineering.blastFurnace=高爐
 gui.immersiveengineering.blastFurnace.fuel=燃料
-gui.immersiveengineering.assembler.nospace=所有空位已满！
+gui.immersiveengineering.assembler.nospace=所有空位已滿！
 
 gui.immersiveengineering.config.earmuffs.soundcategory.music=音樂
 gui.immersiveengineering.config.earmuffs.soundcategory.record=音樂盒
@@ -840,7 +840,7 @@ chat.immersiveengineering.warning.connectionExists=連接已存在
 chat.immersiveengineering.warning.invalidPoint=存在無效連接點
 chat.immersiveengineering.info.averageLoss=兩點間平均能量損耗：%1$s%%
 chat.immersiveengineering.info.energyStorage=存儲能量：%1$s/%2$s Flux
-chat.immersiveengineering.info.tooHot=此容器無法承受該液體的温度!
+chat.immersiveengineering.info.tooHot=此容器無法承受該液體的溫度!
 chat.immersiveengineering.info.noGasAllowed=此容器無法承裝氣體!
 chat.immersiveengineering.info.rsSignal.invertedOn=反相紅石信號：開
 chat.immersiveengineering.info.rsSignal.invertedOff=反相紅石信號：關
@@ -853,30 +853,30 @@ chat.immersiveengineering.info.tesla.lowPower=能量模式：低
 chat.immersiveengineering.info.notOwner=只有持有者 '%1$s' 可以使用此方塊
 
 chat.immersiveengineering.info.coreDrill.progress=岩芯分析中：%1$s
-chat.immersiveengineering.info.coreDrill.result.mineral=§7岩芯分析完畢,發現%1$s§7矿脉
+chat.immersiveengineering.info.coreDrill.result.mineral=§7岩芯分析完畢,發現%1$s§7礦脈
 chat.immersiveengineering.info.coreDrill.result.depl=§7礦脈完整度為%1$s§7
 chat.immersiveengineering.info.coreDrill.result.none=岩芯分析完畢,未檢測到礦物
 chat.immersiveengineering.info.coreDrill.infinite=無限
 
 chat.immersiveengineering.info.pump.placeCobble.true=這個泵可以將液體替換為圓石.
 chat.immersiveengineering.info.pump.placeCobble.false=這個泵可以將不再把液體替換為圓石.§6警告：§f在處理大量液體時可能會產生延遲不建議使用!
-chat.immersiveengineering.info.energyTransfered=%1$sticks内平均能量流動：%2$s Flux/t
+chat.immersiveengineering.info.energyTransfered=%1$sticks內平均能量流動：%2$s Flux/t
 
 chat.immersiveengineering.command.available=§6可用命令：§r %1$s
-chat.immersiveengineering.command.help.help=§6用法：/ie help <命令> [子命令...]§r<br> 獲取指定命令的詳細信息,也可指定子命令以獲得對應信息
+chat.immersiveengineering.command.help.help=§6用法：/ie help <命令> [子命令...]§r<br> 獲取指定命令的詳細資訊,也可指定子命令以獲得對應資訊
 chat.immersiveengineering.command.mineral.help=§6用法：/ie mineral <list|get|set|setDepletion>§r
 chat.immersiveengineering.command.mineral.list.help=§6用法：/ie mineral list§r<br> 列出全部已註冊礦物
 chat.immersiveengineering.command.mineral.get.help=§6用法：/ie mineral get§r<br> 顯示當前區塊所含礦物
 chat.immersiveengineering.command.mineral.set.help=§6用法：/ie mineral set [礦物名]§r<br> 為當前區況設定礦物重載.不指定新礦藏則將清除礦物重載.
-chat.immersiveengineering.command.mineral.setDepletion.help=§6用法：/ie mineral setDepletion <数值>§r<br> 設定該區塊的礦物開採量.設定為-1表示該礦脈可無限開採.
+chat.immersiveengineering.command.mineral.setDepletion.help=§6用法：/ie mineral setDepletion <數值>§r<br> 設定該區塊的礦物開採量.設定為-1表示該礦脈可無限開採.
 chat.immersiveengineering.command.mineral.get=該區塊含有：%1$s
-chat.immersiveengineering.command.mineral.set.invalidMineral=§c'%1$s'不是一个有效礦物名.请使用'/ie mineral list'獲取有效礦物名列表.§r
+chat.immersiveengineering.command.mineral.set.invalidMineral=§c'%1$s'不是一個有效礦物名.請使用'/ie mineral list'獲取有效礦物名列表.§r
 chat.immersiveengineering.command.mineral.set.sucess=礦物重載已設定為'%1$s'.
 chat.immersiveengineering.command.mineral.set.clear=礦物重載(%1$s)已清除.
-chat.immersiveengineering.command.mineral.setDepletion.NFE=錯誤：'%1$s'不是一个有效數字
+chat.immersiveengineering.command.mineral.setDepletion.NFE=錯誤：'%1$s'不是一個有效數字
 chat.immersiveengineering.command.mineral.setDepletion.sucess=礦物開採量已設定為'%1$s'
 chat.immersiveengineering.command.shaders.help=§6用法: /ie shaders <clear>§r
-chat.immersiveengineering.command.shaders.clear.help=§6用法: /ie shaders clear [player]§r<br> 給指定的玩家清除皮膚.如果没有指定玩家則清除自己的.
+chat.immersiveengineering.command.shaders.clear.help=§6用法: /ie shaders clear [player]§r<br> 給指定的玩家清除皮膚.如果沒有指定玩家則清除自己的.
 chat.immersiveengineering.command.shaders.clear.sucess=皮膚'%1$s'已被清除
 
 #SUBTITLES
@@ -921,7 +921,7 @@ death.attack.ieRevolver_wolfpack.turret=%1$s was shredded by a turret's Wolfpack
 death.attack.ieRevolver_silver=%1$s 被 %2$s 的銀彈所淨化
 death.attack.ieRevolver_silver.item=%1$s was purified by %2$s's silver bullet fired from %3$s
 death.attack.ieRevolver_silver.turret=%1$s was purified by a turret's silver bullet
-death.attack.ieRevolver_potion=%2$s 的彈頭里的藥水濺到了 %1$s 身上
+death.attack.ieRevolver_potion=%2$s 的彈頭裡的藥水濺到了 %1$s 身上
 death.attack.ieRevolver_potion.item=%1$s was doused by %2$s's phial shot fired from %3$s
 death.attack.ieRevolver_potion.turret=%1$s was doused by a turret's phial shot
 
@@ -1019,28 +1019,28 @@ immersiveengineering.potion.flashed=Flashed
 ie.manual.category.update.name=最新動態!
 ie.manual.entry.updateNews_0.name=版本0.6更新內容
 ie.manual.entry.updateNews_0.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_00=親愛的工程師們!<br><br>自從你們上次與ImmersiveEngineering合作,許多東西都發生了改變!新的內容包括: 村民房屋、<link;lighting;§o§n全新的照明§r>、<link;barrel;§o§n木桶§r>、<link;tanksilo;§o§n儲罐§r>、<link;tanksilo;§o§n筒倉§r;1>和<link;fluidPipes;§o§n液體管道§r>、新的成就、<link;shader;§o§n左輪皮膚§r>、<link;assembler;§o§n裝配機§r>和<link;bottlingMachine;§o§n灌裝機§r>!
-ie.manual.entry.updateNews_01=然而最重要的是,能量傳輸的處理方式進行了較大的變更.為了避免錯誤的發生,請認真閱讀<link;wiring;§o§n基§o§n礎佈線§r>,尤其是第5頁,詳細的講解了線纜傳輸速率和接線器輸入輸出的區別.
+ie.manual.entry.updateNews_00=親愛的工程師們!<br><br>自從你們上次與ImmersiveEngineering合作,許多東西都發生了改變!新的內容包括: 村民房屋、 <link;lighting;§o§n全新的照明§r> 、 <link;barrel;§o§n木桶§r> 、 <link;tanksilo;§o§n儲罐§r> 、 <link;tanksilo;§o§n筒倉§r;1>和 <link;fluidPipes;§o§n液體管道§r> 、新的成就、 <link;shader;§o§n左輪皮膚§r> 、 <link;assembler;§o§n裝配機§r> 和 <link;bottlingMachine;§o§n灌裝機§r> !
+ie.manual.entry.updateNews_01=然而最重要的是,能量傳輸的處理方式進行了較大的變更.為了避免錯誤的發生,請認真閱讀 <link;wiring;§o§n基§o§n礎佈線§r> ,尤其是第5頁,詳細的講解了線纜傳輸速率和接線器輸入輸出的區別.
 
 ie.manual.entry.updateNews_1.name=版本0.6.1更新內容
 ie.manual.entry.updateNews_1.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_10=親愛的工程師們!<br><br>這次的更新為ImmersiveEngineering帶來了一些改動並添加了些許新的特性:<br><br><link;metalbarrel;§o§n金屬桶§r>提供了一個更穩定的可擕式液體存儲方案；電弧爐得到了進一步的改善,它現在能夠冶煉金屬同時還能夠回收舊工具和盔甲；用於遮蓋<link;fluidPipes;§o§n液體管道§r>的鷹架現在可以攀爬了.
+ie.manual.entry.updateNews_10=親愛的工程師們!<br><br>這次的更新為ImmersiveEngineering帶來了一些改動並添加了些許新的特性:<br><br> <link;metalbarrel;§o§n金屬桶§r> 提供了一個更穩定的可擕式液體存儲方案；電弧爐得到了進一步的改善,它現在能夠冶煉金屬同時還能夠回收舊工具和盔甲；用於遮蓋 <link;fluidPipes;§o§n液體管道§r> 的鷹架現在可以攀爬了.
 
 ie.manual.entry.updateNews_2.name=版本0.6.2更新內容
 ie.manual.entry.updateNews_2.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_20=親愛的工程師們!<br><br>這次的更新為ImmersiveEngineering帶來了一些改動並添加了些許新的特性：<br><br>一種新型鷹架被發明了出來.原本使用開放式鋼架結構進行支撐,然後在上面隨意搭幾塊木板的安全係數較低的結構正在逐漸被取代.鋁在裝飾方面竟出乎意料的實用,因此現在你本地的工程師商店裡已經有鋁制柵欄和鷹架出售了.
-ie.manual.entry.updateNews_21=一種全新的<link;breaker;§o§n斷路開關§r;2>被發明了出來.它能夠通過紅石信號進行控制並且可以連接高壓線纜.說到高壓線纜,因為它能夠危及生命的高壓,現在已經禁止連接到普通的斷路開關了,我們並不想找相關部門的麻煩.
+ie.manual.entry.updateNews_20=親愛的工程師們!<br><br>這次的更新為ImmersiveEngineering帶來了一些改動並添加了些許新的特性：<br><br>一種新型鷹架被發明瞭出來.原本使用開放式鋼架結構進行支撐,然後在上面隨意搭幾塊木板的安全係數較低的結構正在逐漸被取代.鋁在裝飾方面竟出乎意料的實用,因此現在你本地的工程師商店裡已經有鋁制柵欄和鷹架出售了.
+ie.manual.entry.updateNews_21=一種全新的 <link;breaker;§o§n斷路開關§r;2>被發明瞭出來.它能夠通過紅石信號進行控制並且可以連接高壓線纜.說到高壓線纜,因為它能夠危及生命的高壓,現在已經禁止連接到普通的斷路開關了,我們並不想找相關部門的麻煩.
 
 ie.manual.entry.updateNews_3.name=版本0.6.3更新內容
 ie.manual.entry.updateNews_3.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_30=親愛的工程師們!<br><br>這次的更新為ImmersiveEngineering帶來了一些改動並添加了些許新的特性：<br><br>在遭受劇烈腦震盪之後,首席工程師亞當準備著手設計<link;chemthrower;§o§n化學§o§n噴射器§r>,一種能夠把任何液體噴射到任何地方的設備.它還內置了一個點火裝置來引燃噴射的液體.我們覺得亞當可能是瘋掉了.
-ie.manual.entry.updateNews_31=科研部門的另一項新發明是<link;chargingStation;§o§n充 §o§n電站§r>,它能夠讓你將能量導入到你的物品當中為其充電.<br>助理工程師“眼鏡蛇”也展示了他的最新發明：<link;conveyor;§o§n卸貨輸送帶§r;2>,它能夠將通過它的物品放置到它下方的存儲容器中.<br>比<link;sorter;§o§n物品路由器§r>更棒的是,它能夠通過設置礦物辭典,NBT資料或模糊篩選來對物品進行過濾!
-ie.manual.entry.updateNews_32=其它一些值得一提的變動均和傳輸與裝飾相關:<br>- <link;shader;§o§n皮膚§r> 現在能夠被使用在礦車上<br>- <link;skyhook;§o§n工程師天鉤§r> 一個能讓你在電網上高速滑行並趕超礦車的工具<br> - <link;balloon;§o§n氣球§r>能夠讓你更方便的高空懸掛接線器並為之前提到的天鉤搭建架空索<br>- <link;concrete;§o§n混凝土§r> 當你從空索上掉落時為你提供一個硬著陸~
-ie.manual.entry.updateNews_33=最後,財政部門因為無法準確追蹤我們的用電量而時常找我們麻煩.在經過激烈的爭論之後,他們給了我們一份有關<link;eMeter;§o§n電流 §o§n互感器§r>的藍圖,一種能夠測量流通能量的儀器.不用說,當他們知道電弧爐的真正能耗之後他們變得更加不開心了.
+ie.manual.entry.updateNews_30=親愛的工程師們!<br><br>這次的更新為ImmersiveEngineering帶來了一些改動並添加了些許新的特性：<br><br>在遭受劇烈腦震盪之後,首席工程師亞當準備著手設計 <link;chemthrower;§o§n化學§o§n噴射器§r> ,一種能夠把任何液體噴射到任何地方的設備.它還內置了一個點火裝置來引燃噴射的液體.我們覺得亞當可能是瘋掉了.
+ie.manual.entry.updateNews_31=科研部門的另一項新發明是 <link;chargingStation;§o§n充 §o§n電站§r> ,它能夠讓你將能量導入到你的物品當中為其充電.<br>助理工程師“眼鏡蛇”也展示了他的最新發明： <link;conveyor;§o§n卸貨輸送帶§r;2>,它能夠將通過它的物品放置到它下方的存儲容器中.<br>比 <link;sorter;§o§n物品路由器§r> 更棒的是,它能夠通過設置礦物辭典,NBT資料或模糊篩選來對物品進行過濾!
+ie.manual.entry.updateNews_32=其它一些值得一提的變動均和傳輸與裝飾相關:<br>- <link;shader;§o§n皮膚§r> 現在能夠被使用在礦車上<br>- <link;skyhook;§o§n工程師天鉤§r> 一個能讓你在電網上高速滑行並趕超礦車的工具<br> - <link;balloon;§o§n氣球§r> 能夠讓你更方便的高空懸掛接線器並為之前提到的天鉤搭建架空索<br>- <link;concrete;§o§n混凝土§r> 當你從空索上掉落時為你提供一個硬著陸~
+ie.manual.entry.updateNews_33=最後,財政部門因為無法準確追蹤我們的用電量而時常找我們麻煩.在經過激烈的爭論之後,他們給了我們一份有關 <link;eMeter;§o§n電流 §o§n互感器§r> 的藍圖,一種能夠測量流通能量的儀器.不用說,當他們知道電弧爐的真正能耗之後他們變得更加不開心了.
 
 ie.manual.entry.updateNews_4.name=版本0.6.4更新內容
 ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_40=親愛的工程師們!<br><br>這次更新的變化不大.<br>能量傳輸系統的區塊短路bug被修復了.<br><link;furnaceHeater;§o§n外置加熱器§r>也進行了加強,現在可以和神秘的煉金爐和科技前沿的電力蒸餾器配合.<br><br>目前就是這些,我們希望讓它保持足夠穩定.
+ie.manual.entry.updateNews_40=親愛的工程師們!<br><br>這次更新的變化不大.<br>能量傳輸系統的區塊短路bug被修復了.<br> <link;furnaceHeater;§o§n外置加熱器§r> 也進行了加強,現在可以和神秘的煉金爐和科技前沿的電力蒸餾器配合.<br><br>目前就是這些,我們希望讓它保持足夠穩定.
 
 ie.manual.category.general.name=概念和資源
 ie.manual.category.construction.name=建築結構
@@ -1051,7 +1051,7 @@ ie.manual.category.heavymachines.name=重型機械
 
 ie.manual.entry.introduction.name=介紹
 ie.manual.entry.introduction.subtext=開始你的工程!
-ie.manual.entry.introduction0=諸位年輕的工程師，你們好!歡迎使用ImmersiveEngineering模組，這本手冊將會作為你的嚮導，介紹本模組應提供的新型機器的建造流程和使用方法.<br>那就讓我們從基礎的事情開始吧：ImmersiveEngineering是圍繞復古未來主義風格產生與能源運輸兩個要素而構建起來的.本模組使用通量(Flux)作為能源，它能與現有的大部分模組的能源通用.
+ie.manual.entry.introduction0=諸位元年輕的工程師，你們好!歡迎使用ImmersiveEngineering模組，這本手冊將會作為你的嚮導，介紹本模組應提供的新型機器的建造流程和使用方法.<br>那就讓我們從基礎的事情開始吧：ImmersiveEngineering是圍繞復古未來主義風格產生與能源運輸兩個要素而構建起來的.本模組使用通量(Flux)作為能源，它能與現有的大部分模組的能源通用.
 ie.manual.entry.introduction1=能源是通過§l線纜§r在§l接線器§r間來傳輸的.線纜的長度是有限制的，因此在這些線纜之間你需要更多的接線器來作為§l中繼§r.<br>你能在三種不同導線之間進行選擇，它們的差異在於不同的傳輸速率，分別為：<config;iA;wireTransferRate;l3> Flux/tick.你需要§l變壓器§r來在不同類型線纜間切換.
 ie.manual.entry.introductionHammer=工程師錘是你當前最重要的工具.它可以用於搭建諸如焦爐和高爐這樣的多方塊結構、<config;b;crushingOreRecipe;將礦石打碎成粉末、>或者是用來修改方塊的設置，比如木桿.
 
@@ -1061,59 +1061,59 @@ ie.manual.entry.oresCopper=§l銅礦石§r能在主世界<config;iA;ore_copper;1
 ie.manual.entry.oresBauxite=§l鋁土礦石§r能在主世界<config;iA;ore_bauxite;1>到<config;iA;ore_bauxite;2>層找到，需要用石鎬開採.<br><br>這種礦物能冶煉出鋁錠，與鋼一同加工能做出高壓電線.
 ie.manual.entry.oresLead=§l鉛礦石§r能在主世界<config;iA;ore_lead;1>到<config;iA;ore_lead;2>層找到，需要用鐵鎬開採.<br><br>這種礦物能冶煉出鉛錠，用來製作電容.
 ie.manual.entry.oresSilver=§l銀礦石§r能在主世界<config;iA;ore_silver;1>到<config;iA;ore_silver;2>層找到，需要用鐵鎬開採.<br><br>這種礦物能冶煉出銀錠，與黃金一同加工能做出琥珀合金，它是一種更為高效的導體.
-ie.manual.entry.oresNickel=§l鎳礦石§r能在主世界<config;iA;ore_nickel;1>到<config;iA;ore_nickel;2>層找到，需要用鐵鎬開採.<br><br>這種礦物能冶煉出鎳錠，與銅錠一同加工能做出康銅合金，用於製作<link;thermoElectric;§o§n熱傳導發電機§r;0>中的耐熱導線.
-ie.manual.entry.oresUranium=§l鈾礦石§r能在主世界<config;iA;ore_uranium;1>到<config;iA;ore_uranium;2>層找到，需要用鐵鎬開採.<br><br>這種礦物能冶煉出鈾錠，但目前沒有多少用途的金屬. 鈾塊可以用作<link;generator;§o§n熱傳導發電機§r;1>的熱源，並且金屬將在未來的工作中使用.
+ie.manual.entry.oresNickel=§l鎳礦石§r能在主世界<config;iA;ore_nickel;1>到<config;iA;ore_nickel;2>層找到，需要用鐵鎬開採.<br><br>這種礦物能冶煉出鎳錠，與銅錠一同加工能做出康銅合金，用於製作 <link;thermoElectric;§o§n熱傳導發電機§r;0>中的耐熱導線.
+ie.manual.entry.oresUranium=§l鈾礦石§r能在主世界<config;iA;ore_uranium;1>到<config;iA;ore_uranium;2>層找到，需要用鐵鎬開採.<br><br>這種礦物能冶煉出鈾錠，但目前沒有多少用途的金屬. 鈾塊可以用作 <link;generator;§o§n熱傳導發電機§r;1>的熱源，並且金屬將在未來的工作中使用.
 
 ie.manual.entry.oreProcessing.name=礦物處理
 ie.manual.entry.oreProcessing.subtext=粉碎 粉碎 粉碎
-ie.manual.entry.oreProcessing0=將礦石與錘子合成便可將其粉碎成粉末.這些粉末可以重新燒成錠，但更重要的是它們可以用於<link;alloys;§o§n冶煉合金§r>.
+ie.manual.entry.oreProcessing0=將礦石與錘子合成便可將其粉碎成粉末.這些粉末可以重新燒成錠，但更重要的是它們可以用於 <link;alloys;§o§n冶煉合金§r> .
 
 ie.manual.entry.alloys.name=合金
 ie.manual.entry.alloys.subtext=混合起來!
-ie.manual.entry.alloys0=你可以通過混合金屬粉末製造出各種不同用途的合金.具備溫差發電特性的康銅能夠用於製作<link;thermoElectric;§o§n熱傳導發電機§r;0 >，而琥珀合金製作的優質電導體被廣泛用於<link;wiring;§o§n中壓電器§r>中.
+ie.manual.entry.alloys0=你可以通過混合金屬粉末製造出各種不同用途的合金.具備溫差發電特性的康銅能夠用於製作 <link;thermoElectric;§o§n熱傳導發電機§r;0 >，而琥珀合金製作的優質電導體被廣泛用於 <link;wiring;§o§n中壓電器§r> 中.
 
 ie.manual.entry.plates.name=金屬板材
 ie.manual.entry.plates.subtext=平而光滑
-ie.manual.entry.plates0=金屬板是一種用於製作一些機器或方塊的必要材料.它們可以通過工程師錘打製金屬錠或使用<link;metalPress;§o§n金屬沖壓機§r>進行製作.
+ie.manual.entry.plates0=金屬板是一種用於製作一些機器或方塊的必要材料.它們可以通過工程師錘打製金屬錠或使用 <link;metalPress;§o§n金屬沖壓機§r> 進行製作.
 
 ie.manual.entry.components.name=製作元件
 ie.manual.entry.components.subtext=完整的一部份
 ie.manual.entry.components0=許多機器和工具由各種子元件構成。其中有些需要定期使用，這就是為什麼他們在本手冊中有自己的條目。 §6鐵質§r和§6鋼質§r機械元件是大多數多方塊結構和機械不可缺少的部分。
-ie.manual.entry.components1=正如你會發現自己更頻繁製作這些元件，建議為他們製作一個<link;blueprints;§o§n藍圖§r>。在<link;workbench;§o§n工程師配裝台§r>中使用此藍圖將允許您以降低的成本構建組件。<br>工作台的配方可在以下頁面找到。
-ie.manual.entry.components2=另一個，儘管不太經常使用的元件是§6真空管§r。這些真空管被用作電子機械中的元件，並用於<link;lighting;§o§n發光裝置§r>。
+ie.manual.entry.components1=正如你會發現自己更頻繁製作這些元件，建議為他們製作一個 <link;blueprints;§o§n藍圖§r> 。在 <link;workbench;§o§n工程師配裝台§r> 中使用此藍圖將允許您以降低的成本構建組件。<br>工作臺的配方可在以下頁面找到。
+ie.manual.entry.components2=另一個，儘管不太經常使用的元件是§6真空管§r。這些真空管被用作電子機械中的元件，並用於 <link;lighting;§o§n發光裝置§r> 。
 ie.manual.entry.components3=在需要精確計算的先進機械中很少使用但非常重要的組件是§6電路板§r。 它們不切實際龐大笨重，但可以在一秒鐘內完成基本的數學運算！
 
 ie.manual.entry.hemp.name=工業大麻
 ie.manual.entry.hemp.subtext=530紡織物
-ie.manual.entry.hemp0=工業大麻是一種備受矚目的作物!不僅其種子可以用於加工<link;biodiesel;§o§n生物柴油§r>，工業大麻纖維對於製作堅韌布料也至關重要.種子可以通過清理草叢獲得.
-ie.manual.entry.hemp1=堅韌布料是一種使用大麻纖維製作的極富彈性的材料.它被廣泛用於<link;generator;§o§n改良風車§r;3>、<link;balloon ;§o§n氣球§r>以及§o§n氣墊§r的製作.關於氣墊的詳細介紹可以在本條目的下一頁找到.
+ie.manual.entry.hemp0=工業大麻是一種備受矚目的作物!不僅其種子可以用於加工 <link;biodiesel;§o§n生物柴油§r> ，工業大麻纖維對於製作堅韌布料也至關重要.種子可以通過清理草叢獲得.
+ie.manual.entry.hemp1=堅韌布料是一種使用大麻纖維製作的極富彈性的材料.它被廣泛用於 <link;generator;§o§n改良風車§r;3>、 <link;balloon ;§o§n氣球§r> 以及§o§n氣墊§r的製作.關於氣墊的詳細介紹可以在本條目的下一頁找到.
 ie.manual.entry.hemp2=氣墊是一種用堅韌布料製成，並填充以空氣的簡易方塊.當有人掉落在上面時，它可以吸收衝擊力，籍此阻止摔傷事故發生，但它並不會像史萊姆方塊一樣把人再彈起來.
 ie.manual.entry.hemp3=簾幕是種可以安裝在門窗或者開口上阻擋視線的針織布.<br>當實體穿過它們時，它們將發出紅石信號.<br>他們可以像染皮革盔甲一樣染色。
 
 ie.manual.entry.cokeoven.name=焦爐
 ie.manual.entry.cokeoven.subtext=熱門焦點!
-ie.manual.entry.cokeoven0=焦爐是你在發展Immersive Engineering時所建造的第一台重要設備.它的功能十分簡單：讓煤以及煤塊在無氧環境下進行燃燒以產出焦煤，一種能長時間燃燒的燃料.更重要的是，這一加工過程能產生出§l雜酚油§r，它被用於<link;treated_wood;§o§n防腐木§r>的製作.同樣你可以用原木在裡面燒製得到木炭，同時得到少量的雜酚油.
+ie.manual.entry.cokeoven0=焦爐是你在發展Immersive Engineering時所建造的第一台重要設備.它的功能十分簡單：讓煤以及煤塊在無氧環境下進行燃燒以產出焦煤，一種能長時間燃燒的燃料.更重要的是，這一加工過程能產生出§l雜酚油§r，它被用於 <link;treated_wood;§o§n防腐木§r> 的製作.同樣你可以用原木在裡面燒製得到木炭，同時得到少量的雜酚油.
 ie.manual.entry.cokeovenBlock=搭建一個焦爐，首先需要27個焦爐方塊搭建出一個3x3x3的正方體結構，然後用工程師錘右擊側面的中心來完成建造.<br>看接下來的圖頁
 
 ie.manual.entry.alloysmelter.name=合金爐
 ie.manual.entry.alloysmelter.subtext=混和金屬
-ie.manual.entry.alloysmelter0=合金爐是由耐熱砂岩和磚製成的簡單爐子。在它內部於溫度足夠高，可以使金屬熔化成液體狀態並混合，從而形成一種<link;alloys;§o§n合金§r>。這允許製作像琥珀金和康銅這樣的重要合金，而無需繁瑣的粉塵混合。
+ie.manual.entry.alloysmelter0=合金爐是由耐熱砂岩和磚製成的簡單爐子。在它內部於溫度足夠高，可以使金屬熔化成液體狀態並混合，從而形成一種 <link;alloys;§o§n合金§r> 。這允許製作像琥珀金和康銅這樣的重要合金，而無需繁瑣的粉塵混合。
 ie.manual.entry.alloysmelter1=要製作合金爐，需要如上圖所示，將八塊爐磚佈置在2x2x2的立方體中，並用工程師錘右鍵其中任何一個方塊。
 
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
 ie.manual.entry.treatedwood0=防腐木實際上就是被雜酚油浸泡過的木板.然而，它是ImmersiveEngineering裡用到最重要的材料之一，為此你需要大量製作.
 ie.manual.entry.treatedwoodPost0=你的線纜接線器需要有一個依附點，這時用防腐木做成的木桿將會是最好選擇.它有四格高，所以你不能把將它放在空間不夠的地方
-ie.manual.entry.treatedwoodPost1=不過使用工程師錘子你也可以在木桿的頂端的側面位置加裝另一個<link;wiring;§o§n變壓器§r;3>，這使得它不怎麼顯眼. <br>在木桿側面支架下方放置方塊會使支架改變朝向.
+ie.manual.entry.treatedwoodPost1=不過使用工程師錘子你也可以在木桿的頂端的側面位置加裝另一個 <link;wiring;§o§n變壓器§r;3>，這使得它不怎麼顯眼. <br>在木桿側面支架下方放置方塊會使支架改變朝向.
 
 ie.manual.entry.concrete.name=混凝土
 ie.manual.entry.concrete.subtext=要塞建材
-ie.manual.entry.concrete0=混凝土是一種極為堅硬，防禦力極強的複合型材料.它的合成十分廉價，是<link;blastfurnace;§n§o高爐§r>所產生的礦渣的一種極佳用途.
+ie.manual.entry.concrete0=混凝土是一種極為堅硬，防禦力極強的複合型材料.它的合成十分廉價，是 <link;blastfurnace;§n§o高爐§r> 所產生的礦渣的一種極佳用途.
 
 ie.manual.entry.balloon.name=氣球
 ie.manual.entry.balloon.subtext=...製作99個就對了
 ie.manual.entry.balloon0=氣球其實就是一個麻布袋下面加一個加熱裝置讓它們保持懸浮.它們同樣會釋放光亮，但不同於火把的是，他們並沒有火災隱患.<br>氣球能夠像其它方塊一樣放置，或者，當沒有目標方塊時，它們會被放置在你前方的空氣方塊中.
-ie.manual.entry.balloon1=同<link;metalconstruction;§o§n鋼製接線器§r;5>類似，你可以將麻繩或鋼線連接到上面.<br>潛行右擊可以設置氣球的放置高度差，允許你將其放置在目標方塊上方最多5格高的地方.
+ie.manual.entry.balloon1=同 <link;metalconstruction;§o§n鋼製接線器§r;5>類似，你可以將麻繩或鋼線連接到上面.<br>潛行右擊可以設置氣球的放置高度差，允許你將其放置在目標方塊上方最多5格高的地方.
 
 ie.manual.entry.crate.name=木製儲物箱
 ie.manual.entry.crate.subtext=移動裝備了!
@@ -1126,12 +1126,12 @@ ie.manual.entry.barrel0=木桶是一種簡單的儲液容器.一個木桶可以�
 
 ie.manual.entry.jerrycan.name=油罐
 ie.manual.entry.jerrycan.subtext=比桶強多了
-ie.manual.entry.jerrycan0=油罐是一種用於盛放液體的簡易金屬容器.它們最多能夠存儲10桶液體，並能夠將液體灌注到機器或傾倒至世界當中.它們無法回收液體.值得一提的是，它們還能夠為一些消耗液體的物品比如<link;drill;§o§n採礦機械鑽§r>進行裝填，只需將兩者一起合成即可.
+ie.manual.entry.jerrycan0=油罐是一種用於盛放液體的簡易金屬容器.它們最多能夠存儲10桶液體，並能夠將液體灌注到機器或傾倒至世界當中.它們無法回收液體.值得一提的是，它們還能夠為一些消耗液體的物品比如 <link;drill;§o§n採礦機械鑽§r> 進行裝填，只需將兩者一起合成即可.
 
 ie.manual.entry.earmuffs.name=隔音耳罩
 ie.manual.entry.earmuffs.subtext=好大的噪音啊啊啊!!!
-ie.manual.entry.earmuffs0=隔音耳罩是用來保護你的聽力的設備.這個小東西對於那些時刻工作在<link;dieselgen;§o§n柴油§o§n發電機§r;>或其他噪音巨大的機械旁的工程師來說至關重要.<br>當佩戴此耳罩時，你聽到的噪音都已被減弱九成.
-ie.manual.entry.earmuffs1=在<link;workbench;§o§n工程師§o§n工作台§r;>中可對隔音耳罩進行詳細設定，比如選擇性過濾一些噪音，以及降噪的幅度.<br>你還可以像皮革護甲一樣為其染色.<br>將其與其它任何形式的頭盔合成在一起後，就可為目標頭盔附加上隔音的效果，再次將其合成可將耳罩移除並返還，方便進一步修改自定義設置.
+ie.manual.entry.earmuffs0=隔音耳罩是用來保護你的聽力的設備.這個小東西對於那些時刻工作在 <link;dieselgen;§o§n柴油§o§n發電機§r;>或其他噪音巨大的機械旁的工程師來說至關重要.<br>當佩戴此耳罩時，你聽到的噪音都已被減弱九成.
+ie.manual.entry.earmuffs1=在 <link;workbench;§o§n工程師§o§n工作臺§r;>中可對隔音耳罩進行詳細設定，比如選擇性過濾一些噪音，以及降噪的幅度.<br>你還可以像皮革護甲一樣為其染色.<br>將其與其它任何形式的頭盔合成在一起後，就可為目標頭盔附加上隔音的效果，再次將其合成可將耳罩移除並返還，方便進一步修改自定義設置.
 
 ie.manual.entry.shield.name=重鋼盾
 ie.manual.entry.shield.subtext=一人方陣
@@ -1147,8 +1147,8 @@ ie.manual.entry.toolbox1=潛行並右鍵單擊可以將工具箱放置為一個�
 
 ie.manual.entry.graphite.name=石墨
 ie.manual.entry.graphite.subtext=煤炭工業產品
-ie.manual.entry.graphite0=高定向熱解石墨(HOP)是一類結構複雜，且高度壓縮的碳材料，常用於特種工程結構.<br>HOP石墨粉可由八份焦煤粉在<link;biodiesel;§o§n工業擠壓機§r;1>中加工製得.這種粉末進一步燒製可得到HOP石墨錠.
-ie.manual.entry.graphite1=HOP石墨廣泛用於製作<link;arcfurnace;§o§n電弧爐§r>中的電極.製造這些電極需要用到<link;blueprints;§o§n工程師§o §n藍圖§r>，這種藍圖可在戰利品箱子中找到<config;b;arcfurnace_electrodeCrafting;，也可合成獲得>，亦可與村民交易得到.你還可以用金屬沖壓機製作石墨電極，這需要用到棍模具，單根電極消耗四塊HOP石墨，但此法製作的電極耐久較低.
+ie.manual.entry.graphite0=高定向熱解石墨(HOP)是一類結構複雜，且高度壓縮的碳材料，常用於特種工程結構.<br>HOP石墨粉可由八份焦煤粉在 <link;biodiesel;§o§n工業擠壓機§r;1>中加工製得.這種粉末進一步燒製可得到HOP石墨錠.
+ie.manual.entry.graphite1=HOP石墨廣泛用於製作 <link;arcfurnace;§o§n電弧爐§r> 中的電極.製造這些電極需要用到 <link;blueprints;§o§n工程師§o §n藍圖§r> ，這種藍圖可在戰利品箱子中找到<config;b;arcfurnace_electrodeCrafting;，也可合成獲得>，亦可與村民交易得到.你還可以用金屬沖壓機製作石墨電極，這需要用到棍模具，單根電極消耗四塊HOP石墨，但此法製作的電極耐久較低.
 
 ie.manual.entry.wiring.name=基礎佈線
 ie.manual.entry.wiring.subtext=滋滋滋!
@@ -1158,10 +1158,10 @@ ie.manual.entry.wiring2=注意到這些方塊還有一定的限制：接線器�
 ie.manual.entry.wiring3=並且線纜只能與之電壓相匹配的方塊相連.
 ie.manual.entry.wiring4=佈線中有兩個重要的數值需要注意：<br>每個接線器會有輸入值(§o<config;iA;wireConnectorInput>§r) 而每種線纜會有最大傳輸速率(§o<config;iA;wireTransferRate;l3>§r).<br>接線器會限制輸入輸出能量的大小，但多個接線器可以§o合併§r至同一根線纜，讓你能夠在遠距離傳輸後合併能量.然而要注意的是一定不要超過線纜的§o最大傳輸速率§r，否則線纜會§o燒毀§r.
 ie.manual.entry.wiring5=只要輸入和輸出端被加載，電線甚至可以經過 §o未加載區塊§r 傳遞能量.
-ie.manual.entry.wiringConnector=§l接線器§r是IE能源網絡的輸入輸出端.你可以把它加裝在電容器或者是其他支持ImmersiveFlux的設備上，它們將通過連接的線纜傳輸能量. $l繼電器§r可以連接線纜但不支持輸入輸出，它僅僅只是作為導線間的連接點.
+ie.manual.entry.wiringConnector=§l接線器§r是IE能源網絡的輸入輸出端.你可以把它加裝在電容器或者是其他支持ImmersiveFlux的設備上，它們將通過連接的線纜傳輸能量. $l繼電器§r可以連接線纜但不支援輸入輸出，它僅僅只是作為導線間的連接點.
 ie.manual.entry.wiringCapacitor=§l電容器§r作為能量儲存單元而存在.你可以用錘子調整每一面的配置，藍色為輸入，橙色為輸出，若為無色則任何線纜都不會與其相連接.潛行時使用錘子將會調整相對於你所面向的一面的配置.
 ie.manual.entry.wiringTransformer0=§l變壓器§r允許你在兩種不同類型的線纜間運輸能源.最弱的線纜會限制傳輸的速率.另外高壓變壓器可以直接變壓為低壓或中壓，所以你並不需要接兩個變壓器.
-ie.manual.entry.wiringTransformer1=你可以將<link;wiring;§o§n變壓器與木桿§r;3>像第四頁的第二張圖那樣搭建，然而只有非高壓變壓器才能這樣搭建.
+ie.manual.entry.wiringTransformer1=你可以將 <link;wiring;§o§n變壓器與木桿§r;3>像第四頁的第二張圖那樣搭建，然而只有非高壓變壓器才能這樣搭建.
 ie.manual.entry.wiringCutters=§l剪線鉗§r用於移除已經被安裝好的線纜.只需右擊便可移除線纜.
 ie.manual.entry.wiringVoltmeter=§l電壓表§r用於測量連接情況.右鍵右擊一個電容器能讀取當前的能量儲存，按住shift+右擊2個接線器還能計算它們之間的平均損耗.
 ie.manual.entry.wiringFeedthrough=§l穿心絕緣子§r允許從牆的一側連接配線到另一側的配線，而無需穿孔，他們可以用任何"正常"的固體方塊在中間來建立。所有常見類型的連接器（電源和紅石）都可用於建立相應導線類型的穿心絕緣子。
@@ -1175,8 +1175,8 @@ ie.manual.entry.generator3=改良風車是風車的升級版.雖然它有2倍的
 
 ie.manual.entry.breaker.name=斷路刀閘
 ie.manual.entry.breaker.subtext=扳開-扣合
-ie.manual.entry.breaker0=斷路刀閘是能夠讓線纜中的能量流動停止的一種簡單閘門.它們能夠連接兩種相同的線纜並僅有在激活時讓能量通過.它能夠被用於將高能耗機器從電網中分離或者在需要時連接附加發電機組!
-ie.manual.entry.breaker1=斷路刀閘在開啟狀態下會發射紅石信號；你可以使用工程師錘子來反轉它的輸出.<br>同時它們還是用來控制<link;lighting;§n電燈§r;1>的好方法!
+ie.manual.entry.breaker0=斷路刀閘是能夠讓線纜中的能量流動停止的一種簡單閘門.它們能夠連接兩種相同的線纜並僅有在啟動時讓能量通過.它能夠被用於將高能耗機器從電網中分離或者在需要時連接附加發電機組!
+ie.manual.entry.breaker1=斷路刀閘在開啟狀態下會發射紅石信號；你可以使用工程師錘子來反轉它的輸出.<br>同時它們還是用來控制 <link;lighting;§n電燈§r;1>的好方法!
 ie.manual.entry.breaker2=紅石斷路器功能同斷路刀閘類似，但是無法手動操控.取而代之，它需要一個紅石信號來斷開連接.而作為回報，它良好的絕緣性使其能夠連接高壓線纜!
 
 ie.manual.entry.eMeter.name=電流互感器
@@ -1188,8 +1188,8 @@ ie.manual.entry.redstoneWires.subtext=集成接線
 ie.manual.entry.redstoneWires0=紅石線纜是鍍鋁的紅石粉。這種線纜提供了一種簡單方法讓你在不損失任何信號強度的情況下長距離傳送紅石信號.
 ie.manual.entry.redstoneWires1=連接器的工作方式就像其他線纜接線器，但是，紅石電線不需要繼電器;連接器和繼電器是相同的方塊.<br>使用工程師錘子，連接器可以右鍵切換為輸入和輸出模式，SHIFT+右鍵可配置成16個色彩的頻率。
 ie.manual.entry.redstoneWires2=§6紅石探針連接器§r的功能足以和紅石比較器媲美。雖然它無法積極的比較紅石訊號，但是它可以知道容器內有多少東西。
-ie.manual.entry.redstoneWires3=另外，這些探針可以在兩個不同的頻道上運作，一個發送讀取到的訊號，一個接受訊號，這些頻道可以透過工程師錘來修改。<br><br>請注意：如同後面頁面寫的，許多IE的多方塊結構具有比較器的功能。在可用的狀況下，多方塊結構的紅石控制面是連接比較器的指定接口。
-ie.manual.entry.redstoneWires4=§l儲罐：§r詳細可以參考<link;tank;§o§n手冊頁面§r;1>。<br>§l儲倉：§r詳細可以參考<link;silo;§o§n手冊頁面§r;2>。<br>§l裝配機：§r輸出一個相對於內容物存量的訊號。<br>§l自動化工程師裝配台：§r輸出一個相對於內容物存量的訊號。<br>l工業擠壓機：§r輸出一個相對於內容物存量的訊號。<br>§l工業發酵機：§r輸出一個相對於內容物存量的訊號。
+ie.manual.entry.redstoneWires3=另外，這些探針可以在兩個不同的頻道上運作，一個發送讀取到的訊號，一個接受訊號，這些頻道可以透過工程師錘來修改。<br><br>請注意：如同後面頁面寫的，許多IE的多方塊結構具有比較器的功能。在可用的狀況下，多方塊結構的紅石控制面是連接比較器的指定介面。
+ie.manual.entry.redstoneWires4=§l儲罐：§r詳細可以參考 <link;tank;§o§n手冊頁面§r;1>。<br>§l儲倉：§r詳細可以參考 <link;silo;§o§n手冊頁面§r;2>。<br>§l裝配機：§r輸出一個相對於內容物存量的訊號。<br>§l自動化工程師裝配台：§r輸出一個相對於內容物存量的訊號。<br>l工業擠壓機：§r輸出一個相對於內容物存量的訊號。<br>§l工業發酵機：§r輸出一個相對於內容物存量的訊號。
 ie.manual.entry.redstoneWires5=§l挖掘機：§r輸出一個相對於礦脈中剩餘礦石的訊號。<br>§l電弧爐：§r輸出一個相對於內容物存量的訊號。<br>另外，將比較器連接到頂部的電極將根據其耐久度發送訊號。<br>§l攪拌混合機：§r輸出一個相對於內容物存量的訊號。<br>
 
 ie.manual.entry.thermoElectric.name=熱傳導發電機
@@ -1201,11 +1201,11 @@ ie.manual.entry.blastfurnace.name=粗製高爐
 ie.manual.entry.blastfurnace.subtext=簡易煉鋼!
 ie.manual.entry.blastfurnace0=粗製高爐用於提高鐵的含碳量，使之成為鋼.為了達成目的，只有含碳量高的燃料才被高爐所接受，特別是焦煤和木炭.<br><br>伴隨著鋼的冶煉，高爐冶煉還會產生礦渣，你必須定期清除否則高爐便會停止工作.理論上來說礦渣屬於廢棄物，但你還是可以用它來合成混凝土.
 ie.manual.entry.blastfurnaceBlock=搭建一個高爐，你需要用這27個方塊搭建出3x3x3的結構，然後用工程師錘右擊其中一面的中央方塊<br>見下一頁的圖.
-ie.manual.entry.blastfurnace1=粗製高爐無法自動化生產.所有輸入輸出必須通過手動打開GUI完成.如果你想要自動化冶煉鋼鐵，你可能需要查看<link;improvedBlastfurnace;§o§n精製高爐§r ;>的相關搭建信息.
+ie.manual.entry.blastfurnace1=粗製高爐無法自動化生產.所有輸入輸出必須通過手動打開GUI完成.如果你想要自動化冶煉鋼鐵，你可能需要查看 <link;improvedBlastfurnace;§o§n精製高爐§r ;>的相關搭建信息.
 
 ie.manual.entry.improvedBlastfurnace.name=精製高爐
 ie.manual.entry.improvedBlastfurnace.subtext=工業精煉
-ie.manual.entry.improvedBlastfurnace0=精製高爐是一種更專業的<link;blastfurnace;§o§n冶煉§o§n鋼鐵§r;>的方法.它不僅能夠自動化輸入輸出，它同樣可以通過配備鼓風機來添加灼熱空氣從而加快精煉的過程.<br>這種高爐是由強化高爐磚搭建，因此建議你將第一批鋼材用於升級高爐.
+ie.manual.entry.improvedBlastfurnace0=精製高爐是一種更專業的 <link;blastfurnace;§o§n冶煉§o§n鋼鐵§r;>的方法.它不僅能夠自動化輸入輸出，它同樣可以通過配備鼓風機來添加灼熱空氣從而加快精煉的過程.<br>這種高爐是由強化高爐磚搭建，因此建議你將第一批鋼材用於升級高爐.
 ie.manual.entry.improvedBlastfurnace1=<br>精製高爐的結構同它的粗製版本相似，但是磚塊被替換為了強化高爐磚並且上方需要一個漏斗作為輸入端.
 ie.manual.entry.improvedBlastfurnace2=鋼材會從高爐前面輸出，礦渣會從後面輸出，並且高爐會向連接的容器或輸送帶自動輸出產物.鐵和焦煤需要從上方輸入.
 ie.manual.entry.improvedBlastfurnace3=高爐鼓風機被用於加熱空氣並將其鼓入高爐以加快鐵的精煉過程.每個高爐可以最多在兩側各加裝一個鼓風機，每個鼓風機需要<config;i;preheater_consumption>Flux/t來運作.
@@ -1228,7 +1228,7 @@ ie.manual.entry.lighting4=一般來說，泛光燈需要紅石信號來啟動，
 ie.manual.entry.metalPress.name=金屬沖壓機
 ie.manual.entry.metalPress.subtext=壓力山大!
 ie.manual.entry.metalPress0=金屬沖壓機可用於自動將金屬擠壓成型.它的原理是用高壓活塞將模具壓到金屬錠上，以將金屬錠擠壓為板材，桿或其他金屬零件. <br>沖壓機結構如上圖所示，用工程師鎚敲擊活塞來完成搭建.
-ie.manual.entry.metalPress1=能量從上方輸入，物品通過輸送帶，沿著其顯示方向輸入輸出.底層中間的方塊便是紅石控制接口，手持工程師錘右擊可對其進行反相.
+ie.manual.entry.metalPress1=能量從上方輸入，物品通過輸送帶，沿著其顯示方向輸入輸出.底層中間的方塊便是紅石控制介面，手持工程師錘右擊可對其進行反相.
 ie.manual.entry.metalPress2=若想正常工作，需要在活塞上加裝一個模具.模具的製作如上圖所示，手持模具右鍵金屬沖壓機可將其放入.
 ie.manual.entry.metalPress3=模具如上所示精心製作，裁剪過程中，裁剪器會造成一些損壞。然後通過用手中的模具右鍵單擊多方塊就可以將它們插入到金屬沖壓機中。
 ie.manual.entry.metalPress4=封裝和解封裝模具可用於將4件或9件相同的物品壓入相關的儲存形式，並且可以再度解封裝回原本物品。這可以用來將錠合成為塊來儲存，或者自動製作簡單的方塊，如：砂岩。
@@ -1246,7 +1246,7 @@ ie.manual.entry.silo2=在輸出方塊旁放置一個比較器，可讓比較器�
 
 ie.manual.entry.metalbarrel.name=金屬桶
 ie.manual.entry.metalbarrel.subtext=拒絕滾動
-ie.manual.entry.metalbarrel0=金屬桶功能同<link;barrel;§o§n木桶§r;>完全一樣.它們的儲量相同，輸入輸出的配置方式也相同，但和木桶不同的是，金屬桶能夠存儲氣體和高溫液體.
+ie.manual.entry.metalbarrel0=金屬桶功能同 <link;barrel;§o§n木桶§r;>完全一樣.它們的儲量相同，輸入輸出的配置方式也相同，但和木桶不同的是，金屬桶能夠存儲氣體和高溫液體.
 
 ie.manual.entry.assembler.name=裝配機
 ie.manual.entry.assembler.subtext=需要一些裝配
@@ -1256,13 +1256,13 @@ ie.manual.entry.assembler2=輸入側不光可以輸入物品，還能夠輸入�
 
 ie.manual.entry.autoworkbench.name=自動化工程師裝配台
 ie.manual.entry.autoworkbench.subtext=給某些無法轉動木棍的
-ie.manual.entry.autoworkbench0=自動化工程師裝配台是首個成功的小規模工程.<br>機器能夠重複執行經由<link;blueprints;§o§n藍圖§r>組裝它詳細的物品.
+ie.manual.entry.autoworkbench0=自動化工程師裝配台是首個成功的小規模工程.<br>機器能夠重複執行經由 <link;blueprints;§o§n藍圖§r> 組裝它詳細的物品.
 ie.manual.entry.autoworkbench1=成功組裝時，可以在其繪圖表上放置藍圖.選擇要創建的項目後，將開始裝配過程.為了讓機器工作，當然需要提供材料和能量.<br>標有藍色點的兩個陰影是物品輸入端，電源輸入端位於上方。成品會被輸送到輸送帶的末端f.<br>繪圖表下方的紅石信號可用於控制.
 
 ie.manual.entry.bottlingMachine.name=灌裝機
 ie.manual.entry.bottlingMachine.subtext=裝滿它!
 ie.manual.entry.bottlingMachine0=灌裝機能夠將液體注入到容器當中.搭建結構如上方展示，輸送帶的方向很重要不過可以鏡像.為了完成該結構，用工程師錘右擊中間的輸送帶.
-ie.manual.entry.bottlingMachine1=液體的輸入端位於底層中央，物品通過輸送帶輸入.輸送帶的方向應該很清楚的展示了輸入輸出的方向.能量輸入端位於頂部.<br>通常情況下，灌裝機能夠裝填任何可裝填的容器(桶、玻璃瓶).他同樣能夠接受一些特定的液體容器，例如<link;drill;§o§n採礦機械鑽§r>或<link;jerrycan;§o§n油罐§r>.
+ie.manual.entry.bottlingMachine1=液體的輸入端位於底層中央，物品通過輸送帶輸入.輸送帶的方向應該很清楚的展示了輸入輸出的方向.能量輸入端位於頂部.<br>通常情況下，灌裝機能夠裝填任何可裝填的容器(桶、玻璃瓶).他同樣能夠接受一些特定的液體容器，例如 <link;drill;§o§n採礦機械鑽§r> 或 <link;jerrycan;§o§n油罐§r> .
 
 ie.manual.entry.chargingStation.name=充電站
 ie.manual.entry.chargingStation.subtext=養精蓄銳
@@ -1272,7 +1272,7 @@ ie.manual.entry.chargingStation1=在前面的電子管得到物品的電流充�
 ie.manual.entry.belljar.name=農業鐘
 ie.manual.entry.belljar.subtext=在地化的熱帶雨林
 ie.manual.entry.belljar0=農業鐘是一種促進植物生長的設備，它甚至允許在農業上有障礙的工程師種植作物並且收穫產量。
-ie.manual.entry.belljar1=農業鐘須要透過對應的接口接受電力、液體和物品。水和電力總是需要的，至於要不要肥料就看你自己了。圖形化介面裡，中間是土壤和種子的欄位，左邊是肥料欄位而右邊是輸出的東西。<br>玻璃罩頂部是唯一的自動輸出口。每個種子須要和正確的土壤配對才會生長，而泥土會自動變成耕地。
+ie.manual.entry.belljar1=農業鐘須要透過對應的介面接受電力、液體和物品。水和電力總是需要的，至於要不要肥料就看你自己了。圖形化介面裡，中間是土壤和種子的欄位，左邊是肥料欄位而右邊是輸出的東西。<br>玻璃罩頂部是唯一的自動輸出口。每個種子須要和正確的土壤配對才會生長，而泥土會自動變成耕地。
 
 ie.manual.entry.highvoltage.name=高壓電
 ie.manual.entry.highvoltage.subtext=你無法撼動的衝擊
@@ -1288,14 +1288,14 @@ ie.manual.entry.workbench0=在你的工程師職業生涯當中，可能會涉�
 
 ie.manual.entry.blueprints.name=工程師藍圖
 ie.manual.entry.blueprints.subtext=請閱讀下面**的說明書
-ie.manual.entry.blueprints0=僅僅是一塊木頭做成的九宮格工作台，是無法勝任製作結構異常精細的物品的.這些物品需要遵循精密的藍圖的指導才能在<link;workbench;§o§n工程師§o§n裝配台§r>中製作.<br><br>若你能獲得工程師藍圖(抑或你能製作出工程師藍圖)，你就可以把它放進工程師裝配台中以加工物品.
+ie.manual.entry.blueprints0=僅僅是一塊木頭做成的九宮格工作臺，是無法勝任製作結構異常精細的物品的.這些物品需要遵循精密的藍圖的指導才能在 <link;workbench;§o§n工程師裝配台§r> 中製作.<br><br>若你能獲得工程師藍圖(抑或你能製作出工程師藍圖)，你就可以把它放進工程師裝配台中以加工物品.
 ie.manual.entry.blueprints1=要藉助藍圖製作物品，首先你需要將材料放入中間的六個格子中，然後在右邊的格子中提取成品.鼠標指針指向輸出格時會顯示當前缺失的材料.
 
 ie.manual.entry.mixer.name=攪拌混合機
 ie.manual.entry.mixer.subtext=一大塊餅乾麵團!
 ie.manual.entry.mixer0=攪拌混合器是一種可溶解液體中的固體的多方塊結構，並將它們混合在一起。該結構如上所示，並且透過用工程師槌子右鍵中心金屬塊形成。.
 ie.manual.entry.mixer1=這台機器最常見的用途是將水，與2份砂1份礫石和1份黏土混合成液態混凝土，或將水與其它各種成分釀造成藥水<br>
-ie.manual.entry.mixer2=液體通過其電源底部的端口輸入到擠壓器中。 物品可以通過後面的兩個艙口輸入。前面的液體端口用作液體輸出.<br>向前方的控制面板施加紅石信號將停止機器的運作，可以通過使用工程師的錘子反轉。
+ie.manual.entry.mixer2=液體通過其電源底部的埠輸入到擠壓器中。 物品可以通過後面的兩個艙口輸入。前面的液體埠用作液體輸出.<br>向前方的控制台施加紅石信號將停止機器的運作，可以通過使用工程師的錘子反轉。
 
 ie.manual.entry.squeezer.name=工業擠壓機
 ie.manual.entry.squeezer.subtext=擠壓物質
@@ -1311,25 +1311,25 @@ ie.manual.entry.fermenter2T=以下列表顯示了可以發酵成乙醇的各種�
 
 ie.manual.entry.refinery.name=煉油廠
 ie.manual.entry.refinery.subtext=混合液體!
-ie.manual.entry.refinery0=煉油廠是一台可對一或兩種液體進行精煉的複雜多方塊設備.它廣泛用於將<link;squeezer;植物油>和<link;fermenter;乙醇>一起精煉為生物柴油.
-ie.manual.entry.refinery1=用工程師錘右擊其前面的中心位置以完成機器組裝.<br>煉油廠側面的兩個小孔為液體輸入端，而正前方的橙色端口則是液體輸出端.
+ie.manual.entry.refinery0=煉油廠是一台可對一或兩種液體進行精煉的複雜多方塊設備.它廣泛用於將 <link;squeezer;植物油>和 <link;fermenter;乙醇>一起精煉為生物柴油.
+ie.manual.entry.refinery1=用工程師錘右擊其前面的中心位置以完成機器組裝.<br>煉油廠側面的兩個小孔為液體輸入端，而正前方的橙色埠則是液體輸出端.
 
 ie.manual.entry.dieselgen.name=柴油發電機
 ie.manual.entry.dieselgen.subtext=比產量更重要的是：更高的產量.
-ie.manual.entry.dieselgen0=高電壓結構是令人著迷的，但要讓它變得有用，你得有一個發電機來輸出能源.<br>柴油發電機是其中一種產生這類能量的方式.它由複雜的多方塊方式組成並且將要用到<link;biodiesel;§o§n生物柴油§r>或者是其他燃料.由於其產出高，它將會快速消耗燃料來運作，所以請確保你有足夠的燃料來支撐它的運轉.
+ie.manual.entry.dieselgen0=高電壓結構是令人著迷的，但要讓它變得有用，你得有一個發電機來輸出能源.<br>柴油發電機是其中一種產生這類能量的方式.它由複雜的多方塊方式組成並且將要用到 <link;biodiesel;§o§n生物柴油§r> 或者是其他燃料.由於其產出高，它將會快速消耗燃料來運作，所以請確保你有足夠的燃料來支撐它的運轉.
 ie.manual.entry.dieselgen1=該機械由工程塊、發電機、散熱器塊組成，同時還用到了液體管道以及鷹架.將這些零件如上方所示形狀放置好，接著用工程師錘子敲一下位於中央的任意發電機模塊或散熱器模塊即可.
-ie.manual.entry.dieselgen2=燃料需要從發電機的底部位置輸入，而能量的輸出口允許增加至三個.它所擁有的<config;i;dieselGen_output>Flux/t的輸出量將會平均分散在各個連接點上.<br>用紅石信號激活右側的控制面板可以關閉發電機.
+ie.manual.entry.dieselgen2=燃料需要從發電機的底部位置輸入，而能量的輸出口允許增加至三個.它所擁有的<config;i;dieselGen_output>Flux/t的輸出量將會平均分散在各個連接點上.<br>用紅石信號啟動右側的控制台可以關閉發電機.
 ie.manual.entry.dieselgen3=下表列出了柴油發電機的所有有效燃料以及它們的燃燒時間，以刻計算.
 
 ie.manual.entry.biodiesel.name=生物柴油
 ie.manual.entry.biodiesel.subtext=綠色能源!
-ie.manual.entry.biodiesel0=燃料需要一個方便且高效的來源，但石油是一種不可再生資源，為此生物柴油成為了最終的解決方案!由植物油和乙醇混合而成，你製造出了一種液體燃料供<link;dieselgen;§o§n柴油發電機§r>使用.
-ie.manual.entry.biodiesel1=作物種子投入工業擠壓機加工能得到植物油.根據圖片搭建出相應的結構並使用工程師鎚敲打其中一面以完成組裝.能源可以從頂部或底部輸入，液體則可以從底部任意一面的端口輸出.
+ie.manual.entry.biodiesel0=燃料需要一個方便且高效的來源，但石油是一種不可再生資源，為此生物柴油成為了最終的解決方案!由植物油和乙醇混合而成，你製造出了一種液體燃料供 <link;dieselgen;§o§n柴油發電機§r> 使用.
+ie.manual.entry.biodiesel1=作物種子投入工業擠壓機加工能得到植物油.根據圖片搭建出相應的結構並使用工程師鎚敲打其中一面以完成組裝.能源可以從頂部或底部輸入，液體則可以從底部任意一面的埠輸出.
 ie.manual.entry.biodiesel1T=下方表格列出了多種能夠被壓榨為植物油的物品以及它們的產量.
 ie.manual.entry.biodiesel2=乙醇可以從發酵機那獲得.發酵機的搭建方式類似工業擠壓機，對功率的需求，能源接受以及液體輸出的方式也與工業擠壓機相同.
 ie.manual.entry.biodiesel2T=下方表格列出了多種能夠被壓榨為乙醇的物品以及它們的產量.
 ie.manual.entry.biodiesel3=為了最終把植物油加工成生物柴油，你需要把液體灌入煉油廠並提供充足的能源.根據圖片搭建相應的結構並用工程師錘右擊其前面的中心位置.
-ie.manual.entry.biodiesel4=煉油廠的正前方位置是作為液體輸出的，側面的小孔為輸入端，能源是通過組裝在其後方的接線器導入，通過對右側的控制面板輸入紅石信號可以停止其煉油過程.
+ie.manual.entry.biodiesel4=煉油廠的正前方位置是作為液體輸出的，側面的小孔為輸入端，能源是通過組裝在其後方的接線器導入，通過對右側的控制台輸入紅石信號可以停止其煉油過程.
 
 ie.manual.entry.conveyor.name=輸送帶
 ie.manual.entry.conveyor.subtext=誰還需要鐵路?
@@ -1353,8 +1353,8 @@ ie.manual.entry.teslaCoil.subtext=This one goes up to 11
 ie.manual.entry.teslaCoil0=特斯拉線圈一開始的設計是能量傳輸設備.然而，據估計，用它傳輸能量時損耗巨大.只有它能將半徑6米範圍內的生物烤成焦炭的特性吸引了工程師們的眼球，它也因此很快成為了理想的基地防禦設備.
 ie.manual.entry.teslaCoil1=自然地，它是個能耗大戶，平時會有<config;i;teslacoil_consumption>Flux的消耗，每次攻擊時還會消耗<config;i;teslacoil_consumption_active>Flux.<br>線圈只有在有紅石信號時才會工作.用工程師錘右擊可反轉此特性的效果.<br>它攻擊時不僅會造成傷害，還會附加滯留效果"眩暈"，這個效果會阻止實體傳送.
 ie.manual.entry.teslaCoil2=潛行時用工程師錘右擊可令線圈在高能和低能模式間切換.切換前需切斷電源.默認特斯拉線圈以高能模式工作.低能模式會令耗能減半，但同時也會令攻擊範圍減半.
-ie.manual.entry.teslaCoil3=若你身著全套法拉第套裝，低能模式的特斯拉線圈不會對你造成任何傷害，但仍然會造成雷擊.高能模式的線圈會直接熔毀法拉第套裝，從而會造成比不穿套裝時更高的傷害.<br>熒光管會在高頻高強度電場中發光，而特斯拉線圈則可以產生這種電場，因此工作中的特斯拉線圈會導致附近的熒光管發光.
-ie.manual.entry.teslaCoil4=熒光管受線圈影響的範圍大約是線圈攻擊範圍的1.5倍.熒光管可在工程師工作台中染色，還可用工程師錘子旋轉.
+ie.manual.entry.teslaCoil3=若你身著全套法拉第套裝，低能模式的特斯拉線圈不會對你造成任何傷害，但仍然會造成雷擊.高能模式的線圈會直接熔毀法拉第套裝，從而會造成比不穿套裝時更高的傷害.<br>螢光管會在高頻高強度電場中發光，而特斯拉線圈則可以產生這種電場，因此工作中的特斯拉線圈會導致附近的螢光管發光.
+ie.manual.entry.teslaCoil4=螢光管受線圈影響的範圍大約是線圈攻擊範圍的1.5倍.螢光管可在工程師工作臺中染色，還可用工程師錘子旋轉.
 
 ie.manual.entry.fluidPipes.name=液體傳輸
 ie.manual.entry.fluidPipes.subtext=專業水管工
@@ -1367,12 +1367,12 @@ ie.manual.entry.fluidPipes5=液體放置器可以當成管道系統的終點，�
 
 ie.manual.entry.sorter.name=物品路由器
 ie.manual.entry.sorter.subtext=左腳放黃色上，右手放綠色上
-ie.manual.entry.sorter0=物品路由器能夠接受物品並經過通道過濾後重新分配它們.將其放置並右鍵可打開交互界面，會顯示出六種根據顏色和方向劃分的過濾器.
+ie.manual.entry.sorter0=物品路由器能夠接受物品並經過通道過濾後重新分配它們.將其放置並右鍵可打開交互介面，會顯示出六種根據顏色和方向劃分的過濾器.
 ie.manual.entry.sorter1=當物品進入到路由器後，它會被轉至與其相匹配的輸出口，或者，如果沒有相匹配的輸出口，它會被轉入未設置過濾的輸出口.如果物品無法被分配，它將無法進入路由器.物品同樣無法被輸出到它進入路由器的方向.<br>潛行右鍵一側使其路由規則遵從礦物辭典.需要注意該路由規則對遊戲有著較高的負荷.
 
 ie.manual.entry.fluidSorter.name=液體路由器
 ie.manual.entry.fluidSorter.subtext=牛奶請往左，強酸請往右
-ie.manual.entry.fluidSorter0=液體路由器的工作原理和<link;sorter;§o§n物品路由器§r>很像，通過任何一邊將液體輸入，並根據六個過濾器設定將對應的液體輸出。將桶子或任意類型的液體容器放到 GUI 中的欄位中，可以將過濾器設定為該液體。
+ie.manual.entry.fluidSorter0=液體路由器的工作原理和 <link;sorter;§o§n物品路由器§r> 很像，通過任何一邊將液體輸入，並根據六個過濾器設定將對應的液體輸出。將桶子或任意類型的液體容器放到 GUI 中的欄位中，可以將過濾器設定為該液體。
 ie.manual.entry.fluidSorter1=當任何液體流入路由器時，它們將被導向到一個和過濾器匹配的出口。如果沒有任何匹配的過濾器，則液體會被導向未過濾的輸出。如果沒有可用或有效的路由，機器不會接受液體。<br>每個過濾器上方的按鈕都可以讓路由器遵守或忽略NBT標籤。
 
 ie.manual.entry.turntable.name=工程轉盤
@@ -1381,7 +1381,7 @@ ie.manual.entry.turntable0=轉盤將旋轉任何放置其上的方塊.<br>拿著
 
 ie.manual.entry.drill.name=採礦機械鑽
 ie.manual.entry.drill.subtext=我的鑽頭將打穿基岩!
-ie.manual.entry.drill0=這把手持的柴油動力機械鑽是採礦領域的一次卓越進步.通過可更換的鑽頭和升級，它的性能幾乎可以自由調整.想要改造它，只需將其放入<link;workbench;§o§n工程師裝配台§r>.<br>如若機械鑽的<link;biodiesel;§o§n生物柴油§r>耗盡，可以直接在煉油廠中填滿.
+ie.manual.entry.drill0=這把手持的柴油動力機械鑽是採礦領域的一次卓越進步.通過可更換的鑽頭和升級，它的性能幾乎可以自由調整.想要改造它，只需將其放入 <link;workbench;§o§n工程師裝配台§r> .<br>如若機械鑽的 <link;biodiesel;§o§n生物柴油§r> 耗盡，可以直接在煉油廠中填滿.
 ie.manual.entry.drill1=鑽頭將決定基礎採礦等級，速度，範圍以及攻擊傷害.當你在挖掘方塊時，鑽頭會受到磨損，但它能夠在鐵砧中被修復.
 ie.manual.entry.drill2=因為機械鑽由內燃機驅動，它無法在水下工作，除非你為它安裝了壓縮空氣罐.然而，在安裝這項升級後，它不僅能在水下工作，水下挖掘所造成的遲緩也會消失不見.
 ie.manual.entry.drill3=高級潤滑系統在正常基礎上為機械鑽提供了額外的潤滑效果，使其運行與挖掘更加快速.
@@ -1390,7 +1390,7 @@ ie.manual.entry.drill5=大型燃料缸允許機械鑽在內部存儲更多燃料
 
 ie.manual.entry.revolver.name=左輪手槍
 ie.manual.entry.revolver.subtext=通緝：死或生
-ie.manual.entry.revolver0=左輪手槍，一把來自文明時代的優雅武器，可謂是小型機械的智慧結晶.這裡，小型僅僅是相對而言，畢竟這把武器填裝的是12號彈藥.<br>和採礦機械鑽類似，左輪手槍同樣能夠在<link;workbench;§o§n工程師裝配台§r>進行改造.關於改造的詳細信息在本條目的最後一頁中有詳細敘述.
+ie.manual.entry.revolver0=左輪手槍，一把來自文明時代的優雅武器，可謂是小型機械的智慧結晶.這裡，小型僅僅是相對而言，畢竟這把武器填裝的是12號彈藥.<br>和採礦機械鑽類似，左輪手槍同樣能夠在 <link;workbench;§o§n工程師裝配台§r> 進行改造.關於改造的詳細資訊在本條目的最後一頁中有詳細敘述.
 ie.manual.entry.revolver1=左輪手槍可裝載不同類型的彈藥.若想裝填彈藥，潛行右鍵武器，之後將彈藥放入物品欄中.<br>若物品欄中有快速裝彈器，裝彈器將會在你發射出最後一顆子彈後對左輪進行裝填.
 ie.manual.entry.revolver2=通過在左輪上安插刺刀，你將得到一把近身格鬥武器，讓你能夠在近距離造成和鐵劍一樣的傷害.
 ie.manual.entry.revolver3=擴充彈夾讓你能夠在左輪手槍中額外裝填六發彈藥.該彈夾無法被快速裝彈器裝填.
@@ -1398,8 +1398,8 @@ ie.manual.entry.revolver4=加強電子管能夠在彈藥上附加電流.電擊�
 
 ie.manual.entry.bullets.name=左輪彈藥
 ie.manual.entry.bullets.subtext=
-ie.manual.entry.bullets0=左輪手槍彈藥需要工程師裝配台以及特定的<link;blueprints;§o§n工程師§o§n藍圖§r>才能製作.你自己就可以繪製一般軍火的製造藍圖，但一些高級軍火的藍圖需要你從他人手中購買才能得到.
-ie.manual.entry.bullets1=§l空§l彈頭§r和§l彈殼§r是所有彈頭的基礎.空彈殼可在<link;metalPress;§o§n金屬§o§n沖壓機§r >中用合適的模具合成，這樣製作可以節約材料.
+ie.manual.entry.bullets0=左輪手槍彈藥需要工程師裝配台以及特定的 <link;blueprints;§o§n工程師§o§n藍圖§r> 才能製作.你自己就可以繪製一般軍火的製造藍圖，但一些高級軍火的藍圖需要你從他人手中購買才能得到.
+ie.manual.entry.bullets1=§l空§l彈頭§r和§l彈殼§r是所有彈頭的基礎.空彈殼可在 <link;metalPress;§o§n金屬§o§n沖壓機§r >中用合適的模具合成，這樣製作可以節約材料.
 ie.manual.entry.bullets_casull=§l卡蘇爾彈§r可以通過使用“普通子彈”藍圖製作.它們是簡易的鉛彈，能夠造成中等的傷害.
 ie.manual.entry.bullets_armor_piercing=§l穿甲彈§r可以通過使用同種藍圖製作.它們能夠造成同等傷害但卻能通過高動能穿透裝甲.
 ie.manual.entry.bullets_buckshot=§l鹿彈§r可以通過使用同種藍圖製作.內含大量小型彈丸，彈道呈圓錐狀.短距離效果拔群.
@@ -1413,7 +1413,7 @@ ie.manual.entry.bullets_wolfpack=§l狼群彈§r是一種集束子彈，發射�
 ie.manual.entry.chemthrower.name=化學噴射器
 ie.manual.entry.chemthrower.subtext=燒毀一切!
 ie.manual.entry.chemthrower0=化學噴射器是一種能夠將內部儲液罐中液體噴射出去的裝置.該裝置能夠裝在任何液體或氣體，而且右鍵就會將其噴灑出去.<br>若噴射出的液體是可燃液體，它還有點燃液體的功能.潛行右鍵來使用點火裝置.
-ie.manual.entry.chemthrower1=同其它工具一樣，化學噴射器可以在<link;workbench;§o§n工程師裝配台§r>中進行改裝.這些升級將會影響儲罐的大小，噴射的範圍以及噴射速度.<br><br>大型燃料缸能夠增加化學噴射器的儲量至2000mb.
+ie.manual.entry.chemthrower1=同其它工具一樣，化學噴射器可以在 <link;workbench;§o§n工程師裝配台§r> 中進行改裝.這些升級將會影響儲罐的大小，噴射的範圍以及噴射速度.<br><br>大型燃料缸能夠增加化學噴射器的儲量至2000mb.
 ie.manual.entry.chemthrower2=聚焦噴嘴會降低噴射速度但會略微增加噴射範圍，讓你能夠更精準的擊中遠處目標.
 ie.manual.entry.chemthrower3=§6多重儲罐§r 讓你的化學噴射器可以攜帶更多液體。你可以潛行時用 <config;b;chemthrower_scroll;滾輪切換、或使用;> §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r 按鍵切換（如果你有設定的話）。<br>這個升級和 §6大型燃料缸§r 互相衝突.
 
@@ -1424,8 +1424,8 @@ ie.manual.entry.skyhook1=只需在接近接線器時按住右鍵，你就會勾�
 
 ie.manual.entry.shader.name=皮膚
 ie.manual.entry.shader.subtext=藍色！不，黃色！
-ie.manual.entry.shader0=皮膚是可以通過與村民交易或者世界上得到的物品。他們沒有明顯的用途，但他們可以裝配在<link;revolver;§o§n左輪手槍§r>， <link;drill;§o§n採礦機械鑽§r>， <link;chemthrower;§o§n化學噴射器§r> 和 <link;railgun;§o§n磁軌砲§r>(以及其他你尚未發現的東西)來改變物品的設計.只需將物品放在<link;workbench;§o§n工程師裝配台§r>中，並在對應的的插槽裝入皮膚.<br>您也可以將它們右鍵套用在礦車或<link;balloon;§o§n氣球§r>!
-ie.manual.entry.shader1=有關所有可用的皮膚，其外觀，引用和更多詳細信息的完整列表 <link;shaderList;§o§n點此§r>
+ie.manual.entry.shader0=皮膚是可以通過與村民交易或者世界上得到的物品。他們沒有明顯的用途，但他們可以裝配在 <link;revolver;§o§n左輪手槍§r> ， <link;drill;§o§n採礦機械鑽§r> ， <link;chemthrower;§o§n化學噴射器§r> 和 <link;railgun;§o§n磁軌砲§r> (以及其他你尚未發現的東西)來改變物品的設計.只需將物品放在 <link;workbench;§o§n工程師裝配台§r> 中，並在對應的的插槽裝入皮膚.<br>您也可以將它們右鍵套用在礦車或 <link;balloon;§o§n氣球§r> !
+ie.manual.entry.shader1=有關所有可用的皮膚，其外觀，引用和更多詳細資訊的完整清單 <link;shaderList;§o§n點此§r> 
 ie.manual.entry.shader2=皮膚獎勵包是包含隨機皮膚的物品。他們可以在板條箱中找到，經由村民交易或由BOSS掉落。皮膚的稀有性等於或優於袋子的稀有性。當使用一個包，你更可能得到一個你還沒有擁有的皮膚。
 ie.manual.entry.shader3=皮膚獎勵包可以製作成兩個較低水平的包。這將降低獲得稀有皮膚的機會，但提供了更多的嘗試。
 # 皮膚自身也可以製作成一個單一的下級包。
@@ -1444,7 +1444,7 @@ ie.manual.entry.railgun.name=磁軌炮
 ie.manual.entry.railgun.subtext=突破速度的束縛
 ie.manual.entry.railgun0=磁軌炮(更準確地說，是“便攜式電磁感應發射器”)是工程學上的奇蹟.它內含兩個導軌，電流可在導軌中流動，從而加速投擲物.<br>這個過程能量消耗巨大，可對各種物體進行加速.
 ie.manual.entry.railgun1=按住鼠標右鍵，一直充電到99%，然後發射物品欄的子彈.<br><br>可用的“砲彈”包括§6鐵桿§r、§6鋼桿§r <config;b;literalRailGun;、§6鋼筋§r、鐵路MOD的§6絕大多數導軌§r;>以及§6石墨棒§r.
-ie.manual.entry.railgun2=和其它IE工具一樣，軌道炮可以在<link;workbench;§o§n工程師裝配台§r>修改和定制<link;shader;§o§n皮§o§n膚§r>.<br><br>§6附加電容§r可以增加軌道炮的能量儲存和減少充電時間.
+ie.manual.entry.railgun2=和其它IE工具一樣，軌道炮可以在 <link;workbench;§o§n工程師裝配台§r> 修改和定制 <link;shader;§o§n皮§o§n膚§r> .<br><br>§6附加電容§r可以增加軌道炮的能量儲存和減少充電時間.
 ie.manual.entry.railgun3=§6瞄準鏡§r可以增加視野距離.潛行時可使用瞄準鏡，鼠標滾輪調節視角.
 
 ie.manual.entry.razorwire.name=刺網
@@ -1455,10 +1455,10 @@ ie.manual.entry.turret.name=砲塔
 ie.manual.entry.turret.subtext=你還在那裏嗎?
 ie.manual.entry.turret0=砲塔是您自動防禦工廠的下一步。它們具有復雜的光學系統，結合機械“大腦”，以有效地區分和獵捕目標，並使用內建武器來擊殺它們.<br>所有砲塔在其底部具有能量輸入口，並且需要紅石信號啟動，可以通過潛行使用工程師的錘子調整.
 ie.manual.entry.turret1=被放置後，砲塔會記住其所有者，不允許其他使用者破壞或修改它們。右鍵單擊可以啟動GUI，其中包含具有輸入ID的名稱列表以及多個定位選項。<br>默認情況下，列表是可能不會受到攻擊的目標的黑名單。這個列表使用生物名稱，所以白名單動物是可能的。
-ie.manual.entry.turret2=化學噴射砲塔利用<link;chemthrower;§o§n化學噴射器§r>的液體噴射能力;，從水到燃燒火焰，甚至柴油都可以啟動它們。
-ie.manual.entry.turret3=在砲塔底部和背面有一個液體端口，允許管道連接到它們。此外，GUI在左側有一個按鈕，如果它是易燃的，則可以禁用或啟用引燃火焰<br><br>§o此藍圖的提供者不對用戶的鄰居或可能招致的各種農場動物的損害負責，.§r
-ie.manual.entry.turret4=槍砲砲塔的特色是一個經過改造的<link;revolver;§o§n左輪手槍§r> 內部有一個更大更壯觀的槍管. 該結構還包括一個擴充的彈夾，允許增加彈藥的存儲空間.
-ie.manual.entry.turret5=自動插入彈藥和取出廢棄彈殼的端口位於底座的後部和底部。砲塔可以存儲多達一整組彈藥，GUI具有按鈕以切換自動排出彈殼.<br><br>§oNote 注意，某些彈藥可能會對用戶或他們的財產造成附附加傷害.§r
+ie.manual.entry.turret2=化學噴射砲塔利用 <link;chemthrower;§o§n化學噴射器§r> 的液體噴射能力;，從水到燃燒火焰，甚至柴油都可以啟動它們。
+ie.manual.entry.turret3=在砲塔底部和背面有一個液體埠，允許管道連接到它們。此外，GUI在左側有一個按鈕，如果它是易燃的，則可以禁用或啟用引燃火焰<br><br>§o此藍圖的提供者不對用戶的鄰居或可能招致的各種農場動物的損害負責，.§r
+ie.manual.entry.turret4=槍砲砲塔的特色是一個經過改造的 <link;revolver;§o§n左輪手槍§r> 內部有一個更大更壯觀的槍管. 該結構還包括一個擴充的彈夾，允許增加彈藥的存儲空間.
+ie.manual.entry.turret5=自動插入彈藥和取出廢棄彈殼的埠位於底座的後部和底部。砲塔可以存儲多達一整組彈藥，GUI具有按鈕以切換自動排出彈殼.<br><br>§oNote 注意，某些彈藥可能會對用戶或他們的財產造成附附加傷害.§r
 
 ie.manual.entry.maneuverGear.name=立體機動裝置
 ie.manual.entry.maneuverGear.subtext=進擊的大型殭屍
@@ -1469,7 +1469,7 @@ ie.manual.entry.maneuverGear2=§l§n推進：§r<br>在按住 <keybind;key.immer
 ie.manual.entry.crusher.name=粉碎機
 ie.manual.entry.crusher.subtext=管好你的手!
 ie.manual.entry.crusher0=粉碎礦物是提高產量的有效途徑，因為每個礦物都可以加工得到兩份可以燒製的礦粉.這台工業級粉碎機讓這個過程變得更加方便.其加工速度取決於能源供應.
-ie.manual.entry.crusher1=通過給前端的控制面板輸入紅石信號將暫停粉碎機的處理過程.<br>右擊正前面中心方塊以完成建造過程.它的前面是底部有一個輕型工程塊的寬面.
+ie.manual.entry.crusher1=通過給前端的控制台輸入紅石信號將暫停粉碎機的處理過程.<br>右擊正前面中心方塊以完成建造過程.它的前面是底部有一個輕型工程塊的寬面.
 # 然而粉碎機不僅僅是用於粉碎礦物.生物落入粉碎機將會受到持續的傷害而最終的掉落物會從粉碎機的輸出端輸出.同樣的，所有無法被處理的物品將會被銷毀.<br>
 
 ie.manual.entry.lightningrod.name=避雷針
@@ -1479,7 +1479,7 @@ ie.manual.entry.lightningrod1=當鋼柱被擊中時，產生的大量能量會�
 
 ie.manual.entry.minerals.name=礦床
 ie.manual.entry.minerals.subtext=礦石相關
-ie.manual.entry.minerals0=在你的世界中發現的礦床分佈對你來說並不新鮮.而如今我們一直忽略的是礦脈，其中混合著多種礦石的存在.由於它們細長的分佈，普通的礦工難以發現它們，但一種<link;excavator;§o§n特殊機器§r>或許能夠提供一些幫助.
+ie.manual.entry.minerals0=在你的世界中發現的礦床分佈對你來說並不新鮮.而如今我們一直忽略的是礦脈，其中混合著多種礦石的存在.由於它們細長的分佈，普通的礦工難以發現它們，但一種 <link;excavator;§o§n特殊機器§r> 或許能夠提供一些幫助.
 ie.manual.entry.minerals1=為了尋找並確定分佈在世界中的礦產，你會想要合成一個岩芯鑽井.你需要為它提供能源，並右擊或提供一個紅石信號來啟動鑽井.它將會鑽入區塊，提取出能確定分佈礦物的種類的岩芯樣本.鑽井的能耗有<config;i;coredrill_consumption>Flux/t，而且一次鑽井需要<config;i;coredrill_time>ticks來完整的獲取與檢測樣本.
 ie.manual.entry.minerals2=下面將會列出所有礦脈的種類以及在其中能夠找到的礦石種類.
 ie.manual.entry.minerals3=%1$s<br>它包含：%2$s
@@ -1491,30 +1491,30 @@ ie.manual.entry.arcfurnace.name=電弧爐
 ie.manual.entry.arcfurnace.subtext=不是反應堆
 ie.manual.entry.arcfurnace0=電弧爐是一種用於快速熔煉金屬的重型結構.它外表被鋼質外殼覆蓋，頂部裝有用於加熱的電極.
 ie.manual.entry.arcfurnace1=因為它的高速和同時加工多個物品的能力，電弧爐相當擅長冶煉金屬和煉鋼，但它的工作流程也比較複雜，需要時常維護才能保持功能正常運轉.<br>為保持工作，礦渣必須時常清理，損壞電極也應及時更換.
-ie.manual.entry.arcfurnace2=要搭建一台電弧爐，需要按照第一頁的方式進行建造，然後用工程師錘右擊煉藥鍋.<br><br>能量需要從後方的三個插孔中輸入，並且給前端的控制面板輸入紅石信號將會關閉機器.右擊控制面板，“桶”或外殼將會打開交互界面.
-ie.manual.entry.arcfurnace3=§l交互界面：§r<br>第一眼看過去可能會有些迷惑，但是它實際上表達很直白.<br><br>頂部的三個格子是<link;graphite;§o§n石墨電極§r;1>插槽.<br>左側的十二個格子用於輸入金屬和礦石.每一個格子都有一個用於顯示燒煉進度的溫度條.
+ie.manual.entry.arcfurnace2=要搭建一台電弧爐，需要按照第一頁的方式進行建造，然後用工程師錘右擊煉藥鍋.<br><br>能量需要從後方的三個插孔中輸入，並且給前端的控制台輸入紅石信號將會關閉機器.右擊控制台，“桶”或外殼將會打開交互介面.
+ie.manual.entry.arcfurnace3=§l交互介面：§r<br>第一眼看過去可能會有些迷惑，但是它實際上表達很直白.<br><br>頂部的三個格子是 <link;graphite;§o§n石墨電極§r;1>插槽.<br>左側的十二個格子用於輸入金屬和礦石.每一個格子都有一個用於顯示燒煉進度的溫度條.
 ie.manual.entry.arcfurnace4=右側的四個格子用於輸入“輔料”，這是指那些加工過程中加入的不同的原料.舉個例子，在熔煉鐵時加焦煤粉來製得鋼.<br>主料和輔料的輸入可分別通過電弧爐頂部電極左右兩側的輸入倉完成.
 ie.manual.entry.arcfurnace5=底部的七個格子有六個用於輸出成品，還有一個輸出礦渣.成品可以從電弧爐正面的"桶"中提取，礦渣則會通過電弧爐背後的通道導出.電弧爐會自動輸出成品和礦渣到鄰近的容器中(這包括輸送帶).
 
 ie.manual.entry.excavator.name=斗輪式挖掘機
 ie.manual.entry.excavator.subtext=比矮人更為高效
-ie.manual.entry.excavator0=斗輪式挖掘機可謂是現代機械的巔峰之作.它能夠將正常挖礦採集不到的<link;minerals;§o§n礦物§r;0>從礦脈中挖掘出來.作為代價，鬥輪式挖掘機擁有極為複雜的結構，並且需要消耗<config;i;excavator_consumption>Flux/t來維持運作.
-ie.manual.entry.excavator1=結構由兩部分組成：第一頁中的機器和前一頁展示的鬥輪，它正好能夠嵌入機器的“吊帶”位置.能量輸入端在機器的側面，後面添加了紅石控制面板以及物品輸出口.<br>當挖掘機開採礦物時，礦脈的範圍會緩慢減小，不過一個礦脈能夠支撐<config;i;excavator_depletion_days>天的連續開採.
+ie.manual.entry.excavator0=斗輪式挖掘機可謂是現代機械的巔峰之作.它能夠將正常挖礦採集不到的 <link;minerals;§o§n礦物§r;0>從礦脈中挖掘出來.作為代價，斗輪式挖掘機擁有極為複雜的結構，並且需要消耗<config;i;excavator_consumption>Flux/t來維持運作.
+ie.manual.entry.excavator1=結構由兩部分組成：第一頁中的機器和前一頁展示的斗輪，它正好能夠嵌入機器的“吊帶”位置.能量輸入端在機器的側面，後面添加了紅石控制台以及物品輸出口.<br>當挖掘機開採礦物時，礦脈的範圍會緩慢減小，不過一個礦脈能夠支撐<config;i;excavator_depletion_days>天的連續開採.
 
-ie.manual.category.computers.name=電腦控制支持
+ie.manual.category.computers.name=電腦控制支援
 
-ie.manual.entry.computer.general.name=基本信息 ☎
+ie.manual.entry.computer.general.name=基本資訊 ☎
 ie.manual.entry.computer.general.subtext=來自未來的科技
-ie.manual.entry.computer.general0=本手冊中介紹的大部分機械都可以用OpenCopmuters或ComputerCraft的電腦控制.若使用OpenComputers，需將機器與Adapter連接方可啟用電腦控制功能。若該機械有紅石接口，則這個接口也支持電腦控制;若需要其它機器的技術信息，請查閱對應條目.本條目的下一頁將介紹一些常用的返回值類型。
-ie.manual.entry.computer.general1=具有紅石接口的多方塊結構可以用電腦來控制（就跟用紅石一樣）：<br>§lenableComputerControl( enabled:bool)§r：啟用或停用計算機對機器的控制，如果啟用這個功能，機器會忽略紅石信號。當電腦被移除時，機器將不會自動重置。<br>§lsetEnabled(enable:bool)§r：啟用或停用機器，就像紅石信號一樣。這項設定只有在電腦控制啟用的時候才有效。
-ie.manual.entry.computer.general2=§lItem Stack§r（物品棧、物品堆疊）是一種常用的返回值類型。一般，它包含下列鍵：<br>§lname§r:物品的註冊名，例如原版的鵝卵石的註冊名是"minecraft:cobblestone"<br>§lsize§r：物品數量<br>§lnameUnlocalized§r：未經本地化的名字，例如鵝卵石對應"tile.stonebrick".僅適用於ComputerCraft.<br>§llabel§r:該物品的實際顯示名字。在鐵砧中重命名會影響這個鍵對應的值。
+ie.manual.entry.computer.general0=本手冊仲介紹的大部分機械都可以用OpenCopmuters或ComputerCraft的電腦控制.若使用OpenComputers，需將機器與Adapter連接方可啟用電腦控制功能。若該機械有紅石介面，則這個介面也支援電腦控制;若需要其它機器的技術資訊，請查閱對應條目.本條目的下一頁將介紹一些常用的返回值類型。
+ie.manual.entry.computer.general1=具有紅石介面的多方塊結構可以用電腦來控制（就跟用紅石一樣）：<br>§lenableComputerControl( enabled:bool)§r：啟用或停用計算機對機器的控制，如果啟用這個功能，機器會忽略紅石信號。當電腦被移除時，機器將不會自動重置。<br>§lsetEnabled(enable:bool)§r：啟用或停用機器，就像紅石信號一樣。這項設定只有在電腦控制啟用的時候才有效。
+ie.manual.entry.computer.general2=§lItem Stack§r（物品棧、物品堆疊）是一種常用的返回值類型。一般，它包含下列鍵：<br>§lname§r:物品的註冊名，例如原版的鵝卵石的註冊名是"minecraft:cobblestone"<br>§lsize§r：物品數量<br>§lnameUnlocalized§r：未經當地語系化的名字，例如鵝卵石對應"tile.stonebrick".僅適用於ComputerCraft.<br>§llabel§r:該物品的實際顯示名字。在鐵砧中重命名會影響這個鍵對應的值。
 ie.manual.entry.computer.general3=§lDamage§r:物品損害值或元數據(metadata)<br>§lmaxDamage§r:該物品損壞前可承受的最大損害值<br>§lmaxSize§r:該物品的最大可堆疊數量，通常是64<br>§lhasTag§r:是否有附加的NBT標籤。
-ie.manual.entry.computer.general4=§lFluid Stack§r（液體棧、液體堆疊）：這個類型代表了一定數量的液體。一般，該table中包含下列鍵:<br>§lname§r:該液體未經本地化的名字<br>§lamount§r:液體數量，以毫桶(milibuckets， mB)為單位<br>§lhasTag§r:是否有附加的NBT標籤.
+ie.manual.entry.computer.general4=§lFluid Stack§r（液體棧、液體堆疊）：這個類型代表了一定數量的液體。一般，該table中包含下列鍵:<br>§lname§r:該液體未經當地語系化的名字<br>§lamount§r:液體數量，以毫桶(milibuckets， mB)為單位<br>§lhasTag§r:是否有附加的NBT標籤.
 ie.manual.entry.computer.general5=§lFluid tanks§r類似於液體堆疊，不同之處在於這種液體在罐內。 返回的表格與液體堆疊的表格具有相同的條目。 另外，液體所在的容器的容量存儲在入口容器中。
 
 ie.manual.entry.computer.arcfurnace.name=電弧爐 ☎
 ie.manual.entry.computer.arcfurnace.subtext=不是反應堆
-ie.manual.entry.computer.arcFurnace0=§lsetEnabled(boolean active)§r:可控制電弧爐的開關，和紅石控制面板的效果類似.<br>§lisActive()§r:電弧爐工作時返回true，否則返回false<br>§lgetInputStack(int slot)§r:返回指定輸入格(取值範圍:1-12)的ItemStack.返回的table中還附帶兩個鍵:§lprogress§r，代表此輸入格當前工作進度;和§lmaxProgress§r，代表此輸入格完成時的進度
+ie.manual.entry.computer.arcFurnace0=§lsetEnabled(boolean active)§r:可控制電弧爐的開關，和紅石控制台的效果類似.<br>§lisActive()§r:電弧爐工作時返回true，否則返回false<br>§lgetInputStack(int slot)§r:返回指定輸入格(取值範圍:1-12)的ItemStack.返回的table中還附帶兩個鍵:§lprogress§r，代表此輸入格當前工作進度;和§lmaxProgress§r，代表此輸入格完成時的進度
 ie.manual.entry.computer.arcFurnace1=兩者均以tick為單位.<br>§lgetOutputStack(int slot)§r:返回指定輸出格(取值範圍:1-6)的ItemStack.<br>§lgetAdditiveStack(int slot)§r:returns the stack in the specified additive slot (1-4)<br>§lgetSlagStack()§r:返回爐渣格中的ItemStack<br>§lhasElectrodes()§r:當全部三個電極格中的電極均有效時返回true，否則返回false<br>§lgetElectrode(int slot)§r:根據給定的電極格(取值範圍1-4)返回對應的ItemStack
 ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r:返回電弧爐可儲存的最大能量數量<br>§lgetEnergyStored()§r:返回泛光燈儲存的能量數量
 
@@ -1527,17 +1527,17 @@ ie.manual.entry.computer.bottlingmachine1=§lgetTank()§r: 回傳液體儲罐的
 
 ie.manual.entry.computer.sampleDrill.name=岩芯鑽井 ☎
 ie.manual.entry.computer.sampleDrill.subtext=保證樣本有代表性
-ie.manual.entry.computer.sampleDrill0=岩芯鑽井的底部可連接電腦.<br>§lgetSampleProgress()§r:返回當前進度，1代表樣本分析已結束，0代表樣本分析還未開始.<br>§lisSamplingFinished()§r:樣本分析已接觸時返回true，否則返回false<br>§lgetVeinUnlocalizedName()§r:返回找到的礦脈的未本地化名
-ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r:返回找到的礦脈的本地化名<br>§lgetVeinIntegrity()§r:返回礦脈的完整度，1代表完整，0代表已採空， -1代表可無限開採.<br>§lgetEnergyStored()§r:返回鑽井儲存的能量數量<br>§lgetMaxEnergyStored()§r:返回鑽井最大可儲存的能量數.
+ie.manual.entry.computer.sampleDrill0=岩芯鑽井的底部可連接電腦.<br>§lgetSampleProgress()§r:返回當前進度，1代表樣本分析已結束，0代表樣本分析還未開始.<br>§lisSamplingFinished()§r:樣本分析已接觸時返回true，否則返回false<br>§lgetVeinUnlocalizedName()§r:返回找到的礦脈的未當地語系化名
+ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r:返回找到的礦脈的當地語系化名<br>§lgetVeinIntegrity()§r:返回礦脈的完整度，1代表完整，0代表已採空， -1代表可無限開採.<br>§lgetEnergyStored()§r:返回鑽井儲存的能量數量<br>§lgetMaxEnergyStored()§r:返回鑽井最大可儲存的能量數.
 
 ie.manual.entry.computer.crusher.name=粉碎機 ☎
 ie.manual.entry.computer.crusher.subtext=管好你的手!
-ie.manual.entry.computer.crusher0=§lsetEnabled(boolean active)§r:可控製粉碎機的開關，和紅石控制面板的效果類似.<br>§lisActive()§r:粉碎機工作時返回true，否則返回false<br>§lgetInputQueue()§r:返回代表粉碎機輸入序列的table.該table的鍵以數字命名，從1開始.每個鍵對應的值均為table，包含下列鍵:<br>"progress":當前進度<br>"maxProgress":完成時的進度
+ie.manual.entry.computer.crusher0=§lsetEnabled(boolean active)§r:可控製粉碎機的開關，和紅石控制台的效果類似.<br>§lisActive()§r:粉碎機工作時返回true，否則返回false<br>§lgetInputQueue()§r:返回代表粉碎機輸入序列的table.該table的鍵以數字命名，從1開始.每個鍵對應的值均為table，包含下列鍵:<br>"progress":當前進度<br>"maxProgress":完成時的進度
 ie.manual.entry.computer.crusher1="input":輸入的ItemStack<br>"output":主產物ItemStack<br>§lgetMaxEnergyStored()§r:返回粉碎機可儲存的最大能量數量<br>§lgetEnergyStored()§r:返回粉碎機儲存的能量數量
 
 ie.manual.entry.computer.dieselgen.name=柴油發電機 ☎
 ie.manual.entry.computer.dieselgen.subtext=比產量更重要的是：更高的產量.
-ie.manual.entry.computer.dieselgen0=§lsetEnabled(boolean active)§r:可控制柴油發電機的開關<br>§lisActive()§r:柴油發電機工作時返回true，否則返回false<br>§lgetTankInfo()§r:返回柴油發電機儲罐信息
+ie.manual.entry.computer.dieselgen0=§lsetEnabled(boolean active)§r:可控制柴油發電機的開關<br>§lisActive()§r:柴油發電機工作時返回true，否則返回false<br>§lgetTankInfo()§r:返回柴油發電機儲罐資訊
 
 ie.manual.entry.computer.energymeter.name=Current Transformer ☎
 ie.manual.entry.computer.energymeter.subtext=Just an ADC
@@ -1549,7 +1549,7 @@ ie.manual.entry.computer.excavator0=§lisActive()§r:挖掘機工作時返回tru
 
 ie.manual.entry.computer.squeezerAndFermenter.name=工業發酵機和工業壓榨機 ☎
 ie.manual.entry.computer.squeezerAndFermenter.subtext=重複發布
-ie.manual.entry.computer.squeezerAndFermenter0=工業發酵機和工業壓榨機的電腦支持高度相似.<br>§lgetRecipe(int slot)§r:根據指定的格子(取值範圍1-9)，返回用於描述一個recipe的3個tables和一個整數.第一個table是輸入的ItemStack，第二個table是輸出的ItemStack，第三個table是輸出的FluidStack，整數代表加工時間.若沒有找到合成，則返回字符串"No recipe found"
+ie.manual.entry.computer.squeezerAndFermenter0=工業發酵機和工業壓榨機的電腦支持高度相似.<br>§lgetRecipe(int slot)§r:根據指定的格子(取值範圍1-9)，返回用於描述一個recipe的3個tables和一個整數.第一個table是輸入的ItemStack，第二個table是輸出的ItemStack，第三個table是輸出的FluidStack，整數代表加工時間.若沒有找到合成，則返回字串"No recipe found"
 ie.manual.entry.computer.squeezerAndFermenter1=§lgetInputStack(int slot)§r:根據指定的輸入格(取值範圍1-9)返回ItemStack<br>§lgetOutputStack()§r:返回輸出格中的ItemStack <br>§lgetFluid()§r:返回液體輸出儲罐<br>§lgetEmptyCannisters§r:返回右上角格子中的空容器的ItemStack<br>§lgetFilledCannisters()§r:返回右下角格子中的滿容器的ItemStack<br>§lgetEnergyStored§r:返回該機器儲存的能量數量.
 ie.manual.entry.computer.squeezerAndFermenter2=§lgetMaxEnergyStored()§r:返回該機器可儲存的能量數量.
 
@@ -1574,7 +1574,7 @@ ie.manual.entry.computer.capacitor0=電容器六面均可與電腦連接<br>§lg
 
 ie.manual.entry.computer.teslaCoil.name=特斯拉線圈 ☎
 ie.manual.entry.computer.teslaCoil.subtext=不，這不是固態特斯拉線圈
-ie.manual.entry.computer.teslaCoil0=§lisActive()§r:若線圈已激活則返回true，否則返回false<br>§lsetRSMode(boolean)§r:設定線圈的紅石控制模式<br> §lsetPowerMode(boolean)§r: 設定線圈的工作模式，可設定為高能模式(true)或低能模式(false)(<link;teslaCoil;§o§nexplanation§r;2>).僅當線圈未啟動時有效.
+ie.manual.entry.computer.teslaCoil0=§lisActive()§r:若線圈已啟動則返回true，否則返回false<br>§lsetRSMode(boolean)§r:設定線圈的紅石控制模式<br> §lsetPowerMode(boolean)§r: 設定線圈的工作模式，可設定為高能模式(true)或低能模式(false)( <link;teslaCoil;§o§nexplanation§r;2>).僅當線圈未啟動時有效.
 
 ie.manual.entry.computer.mixer.name=攪拌混和機 ☎
 ie.manual.entry.computer.mixer.subtext=一大塊餅乾麵團！
