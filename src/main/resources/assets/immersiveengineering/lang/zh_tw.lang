@@ -1272,7 +1272,7 @@ ie.manual.entry.chargingStation1=在前面的電子管得到物品的電流充�
 ie.manual.entry.belljar.name=農業鐘
 ie.manual.entry.belljar.subtext=在地化的熱帶雨林
 ie.manual.entry.belljar0=農業鐘是一種促進植物生長的設備，它甚至允許在農業上有障礙的工程師種植作物並且收穫產量。
-ie.manual.entry.belljar1=農業鐘須要透過對應的介面接受電力、液體和物品。水和電力總是需要的，至於要不要肥料就看你自己了。圖形化介面裡，中間是土壤和種子的欄位，左邊是肥料欄位而右邊是輸出的東西。<br>玻璃罩頂部是唯一的自動輸出口。每個種子須要和正確的土壤配對才會生長，而泥土會自動變成耕地。
+ie.manual.entry.belljar1=農業鐘須要透過對應的介面接受電力、液體和物品。水和電力總是需要的，至於要不要肥料就看你自己了。圖形化介面裡，中間是土壤和種子的欄位，左邊是肥料欄位而右邊是輸出的東西。<br>玻璃罩前面是唯一的自動輸出口。每個種子須要和正確的土壤配對才會生長，而泥土會自動變成耕地。
 
 ie.manual.entry.highvoltage.name=高壓電
 ie.manual.entry.highvoltage.subtext=你無法撼動的衝擊
