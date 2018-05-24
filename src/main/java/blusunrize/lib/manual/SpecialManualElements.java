@@ -103,24 +103,18 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			super(helper);
 			resources = new String[images.length];
 			sizing = new int[images.length][4];
-			for(int i = 0; i < images.length; i++)
+			for (int i = 0; i < images.length; i++)
 			{
-				String[] split = images[i].split(";");
-				if(split.length < 5)
+				String[] split = images[i].split(",");
+				if (split.length < 5)
 					continue;
 				resources[i] = split[0];
-				try
-				{
-					sizing[i][0] = Integer.parseInt(split[1]);
-					sizing[i][1] = Integer.parseInt(split[2]);
-					sizing[i][2] = Integer.parseInt(split[3]);
-					sizing[i][3] = Integer.parseInt(split[4]);
-				} catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				if(resources[i]!=null&&!resources[i].isEmpty())
-					size += sizing[i][3]+5;
+				sizing[i][0] = Integer.parseInt(split[1]);
+				sizing[i][1] = Integer.parseInt(split[2]);
+				sizing[i][2] = Integer.parseInt(split[3]);
+				sizing[i][3] = Integer.parseInt(split[4]);
+				if (resources[i] != null && !resources[i].isEmpty())
+					size += sizing[i][3] + 5;
 			}
 		}
 
@@ -144,10 +138,11 @@ public abstract class SpecialManualElements extends SpecialManualElement
 				}
 			String lastResource = "";
 			yOff = 0;
+			GlStateManager.color(1, 1, 1, 1);
 			for(int i = 0; i < resources.length; i++)
 				if(resources[i]!=null&&!resources[i].isEmpty())
 				{
-					if(resources[i]!=lastResource)
+					if(!resources[i].equals(lastResource))
 						ManualUtils.bindTexture(resources[i]);
 					int xOff = 60-sizing[i][2]/2;
 					ManualUtils.drawTexturedRect(x+xOff, y+yOff, sizing[i][2], sizing[i][3], (sizing[i][0])/256f, (sizing[i][0]+sizing[i][2])/256f, (sizing[i][1])/256f, (sizing[i][1]+sizing[i][3])/256f);

@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
@@ -300,5 +301,37 @@ public class ManualUtils
 	public static void drawSplitString(FontRenderer fontRenderer, String localizedText, int x, int i, int i1, int textColour)
 	{
 		throw new UnsupportedOperationException();
+	}
+
+	public static void parseSpecials(String specials, TextSplitter splitter, ManualInstance instance)
+	{
+		specials = specials.replaceAll("\\\\\n\\s*", "");
+		Scanner sc = new Scanner(specials);
+		while (sc.hasNextLine())
+		{
+			String line = sc.nextLine();
+			String[] parts = line.split(";", 3);
+			int anchor, offset;
+			{
+				int plus = parts[0].indexOf('+');
+				anchor = Integer.parseInt(parts[0].substring(0, plus));
+				offset = Integer.parseInt(parts[0].substring(plus + 1));
+			}
+			ResourceLocation resLoc;
+			if (parts[1].indexOf(':') >= 0)
+				resLoc = new ResourceLocation(parts[1]);
+			else
+				resLoc = new ResourceLocation(instance.getDefaultResourceDomain(), parts[1]);
+			Function<String, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
+			splitter.addSpecialPage(anchor, offset, createElement.apply(parts[2]));
+		}
+	}
+
+	public static Object getStackFromString(String part)
+	{
+		int comma = part.indexOf(',');
+		ResourceLocation loc = new ResourceLocation(part.substring(0, comma));
+		int meta = Integer.parseInt(part.substring(comma+1));
+		return new ItemStack(Objects.requireNonNull(Item.REGISTRY.getObject(loc), loc.toString()), 1, meta);
 	}
 }

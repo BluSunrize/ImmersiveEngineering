@@ -52,6 +52,12 @@ public class IEManualInstance extends ManualInstance
 	}
 
 	@Override
+	public String getDefaultResourceDomain()
+	{
+		return ImmersiveEngineering.MODID;
+	}
+
+	@Override
 	public String formatText(String s)
 	{
 //		if(!s.contains(" "))//if it contains spaces, it's probably already translated.

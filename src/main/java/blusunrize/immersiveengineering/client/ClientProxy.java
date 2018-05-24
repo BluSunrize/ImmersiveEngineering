@@ -675,39 +675,24 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "silo2"));
 
 		*/
-		Object[] wires = {
-				new ItemStack(IEContent.itemMaterial, 1, 20),
-				new ItemStack(IEContent.itemWireCoil, 1, 0),
-				new ItemStack(IEContent.itemWireCoil, 1, 6),
-				new ItemStack(IEContent.itemMaterial, 1, 21),
-				new ItemStack(IEContent.itemWireCoil, 1, 1),
-				new ItemStack(IEContent.itemWireCoil, 1, 7),
-				new ItemStack(IEContent.itemMaterial, 1, 22),
-				new ItemStack(IEContent.itemMaterial, 1, 23),
-				new ItemStack(IEContent.itemWireCoil, 1, 2)
-		};
-		ManualEntry.ManualEntryBuilder wiring = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-		wiring.addSpecialElement(0, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(), wires));
-		wiring.addSpecialElement(1, 0, new SpecialManualElements.Image(ManualHelper.getManual(),
-				"immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"));
-		wiring.addSpecialElement(1, 1, new SpecialManualElements.Image(ManualHelper.getManual(),
-				"immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"));
-		wiring.addSpecialElement(2, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(),
-				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_LV.getMeta()),
-				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_MV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta()),
-				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_HV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta())
-		));
-		wiring.addSpecialElement(3, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(),
-				new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()),new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())
-		));
-		wiring.addSpecialElement(4, 0, new SpecialManualElements.CraftingMulti(ManualHelper.getManual(),
-				new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.TRANSFORMER_HV.getMeta())
-		));
-		wiring.addSpecialElement(5, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,1)));
-		wiring.addSpecialElement(6, 0, new SpecialManualElements.Crafting(ManualHelper.getManual(), new ItemStack(IEContent.itemTool,1,2)));
-		wiring.addSpecialElement(7, 0, new ManualPageMultiblock(ManualHelper.getManual(), MultiblockFeedthrough.instance));
-		wiring.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
+		//Register special elements
 		ManualInstance ieMan = ManualHelper.getManual();
+		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting_multi"), s -> {
+			String[] parts = s.split(";");
+			Object[] stacks = new ItemStack[parts.length];
+			for (int i = 0; i < parts.length; i++)
+				stacks[i] = ManualUtils.getStackFromString(parts[i]);
+			return new SpecialManualElements.CraftingMulti(ieMan, stacks);
+		});
+		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "image"),
+				s->new SpecialManualElements.Image(ieMan, s.split(";")));
+		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting"),
+				s-> new SpecialManualElements.Crafting(ieMan, ManualUtils.getStackFromString(s)));
+		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
+				s-> new ManualPageMultiblock(ieMan, MultiblockHandler.getByUniqueName(s)));
+
+		ManualEntry.ManualEntryBuilder wiring = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+		wiring.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
 		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
 				ManualHelper.CAT_ENERGY)).getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
 				"test"));

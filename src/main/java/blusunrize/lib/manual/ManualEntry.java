@@ -8,22 +8,26 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.base.Preconditions;
 import gnu.trove.map.TIntObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class ManualEntry
@@ -32,45 +36,57 @@ public class ManualEntry
 	private final ManualInstance manual;
 	private List<ManualPage> pages;
 	private final TextSplitter splitter;
-	private final Supplier<String[]> getText;
+	private final Function<TextSplitter, String[]> getContent;
 	private String title;
 	private String subtext;
 	private final ResourceLocation location;
 	private List<String[]> linkData;
 
-	public ManualEntry(ManualInstance m, TextSplitter splitter, Supplier<String[]> fullText,
-					   ResourceLocation location)
+	private ManualEntry(ManualInstance m, TextSplitter splitter, Function<TextSplitter, String[]> getContent,
+						ResourceLocation location)
 	{
 		this.manual = m;
 		this.splitter = splitter;
-		this.getText = fullText;
+		this.getContent = getContent;
 		this.location = location;
 		refreshPages();
 	}
 
 	public void refreshPages()
 	{
-		boolean oldUni = manual.fontRenderer.getUnicodeFlag();
-		manual.fontRenderer.setUnicodeFlag(true);
-		manual.entryRenderPre();
-		String[] parts = getText.get();
-		title = parts[0];
-		subtext = parts[1];
-		String[] tmp = {parts[2]};//I want pointers... They would make this easier
-		linkData = ManualUtils.prepareEntryForLinks(tmp);
-		splitter.split(manual.formatText(tmp[0]));
-		TIntObjectMap<SpecialManualElement> specials = splitter.getSpecials();
-		List<List<String>> text = splitter.getEntryText();
-		pages = new ArrayList<>(text.size());
-		for (int i = 0; i < text.size(); i++)
+		try
 		{
-			SpecialManualElement special = specials.get(i);
-			if (special==null)
-				special = NOT_SPECIAL;
-			pages.add(new ManualPage(text.get(i), special));
+			boolean oldUni = manual.fontRenderer.getUnicodeFlag();
+			manual.fontRenderer.setUnicodeFlag(true);
+			manual.entryRenderPre();
+			splitter.clearSpecialByAnchor();
+			String[] parts = getContent.apply(splitter);
+			title = parts[0];
+			subtext = parts[1];
+			String[] tmp = {parts[2]};//I want pointers... They would make this easier
+			linkData = ManualUtils.prepareEntryForLinks(tmp);
+			splitter.split(manual.formatText(tmp[0]));
+			TIntObjectMap<SpecialManualElement> specials = splitter.getSpecials();
+			List<List<String>> text = splitter.getEntryText();
+			pages = new ArrayList<>(text.size());
+			for (int i = 0; i < text.size(); i++)
+			{
+				SpecialManualElement special = specials.get(i);
+				if (special == null)
+					special = NOT_SPECIAL;
+				pages.add(new ManualPage(text.get(i), special));
+			}
+			manual.fontRenderer.setUnicodeFlag(oldUni);
+			manual.entryRenderPost();
 		}
-		manual.fontRenderer.setUnicodeFlag(oldUni);
-		manual.entryRenderPost();
+		catch (Throwable throwable)
+		{
+			CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Refreshing an IE manual entry");
+			CrashReportCategory crashreportcategory = crashreport.makeCategory("Entry being refreshed:");
+			crashreportcategory.addCrashSection("Entry name", location);
+			crashreportcategory.addCrashSection("Manual", manual.getManualName());
+			throw new ReportedException(crashreport);
+		}
 	}
 
 	public void renderPage(GuiManual gui, int x, int y, int mouseX, int mouseY)
@@ -178,8 +194,9 @@ public class ManualEntry
 	{
 		ManualInstance manual;
 		TextSplitter splitter;
-		Supplier<String[]> getContent = null;
+		Function<TextSplitter, String[]> getContent = null;
 		private ResourceLocation location;
+		private List<Triple<Integer, Integer, SpecialManualElement>> hardcodedSpecials = new ArrayList<>();
 
 		public ManualEntryBuilder(ManualInstance manual)
 		{
@@ -201,13 +218,17 @@ public class ManualEntry
 		public void setContent(String title, String subText, String mainText)
 		{
 			String[] content = {title, subText, mainText};
-			getContent = ()->content;
+			getContent = (splitter)->{
+				for (Triple<Integer, Integer, SpecialManualElement> special:hardcodedSpecials)
+					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+				return content;
+			};
 		}
 
 		public void readFromFile(ResourceLocation name)
 		{
 			location = name;
-			getContent = ()-> {
+			getContent = (splitter)-> {
 				ResourceLocation realLoc = new ResourceLocation(name.getResourceDomain(),
 						"manual/" + Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
 								+ "/" + name.getResourcePath()+".txt");
@@ -221,6 +242,17 @@ public class ManualEntry
 				{
 					byte[] bytes = IOUtils.toByteArray(res.getInputStream());
 					String content = new String(bytes);
+					int specialLength = content.indexOf("\n\n");
+					if (specialLength>=0)
+					{
+						for (Triple<Integer, Integer, SpecialManualElement> special:hardcodedSpecials)
+							splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+						String specials = content.substring(0, specialLength);
+						ManualUtils.parseSpecials(specials, splitter, manual);
+						content = content.substring(specialLength+2);
+					}
+					else
+						IELogger.info("No empty line found, assuming no special elements in file");
 					int titleEnd = content.indexOf('\n');
 					String title = content.substring(0, titleEnd);
 					content = content.substring(titleEnd + 1);
@@ -264,7 +296,7 @@ public class ManualEntry
 			}
 		}
 	}
-	private static final SpecialManualElement NOT_SPECIAL = new SpecialManualElement()
+	public static final SpecialManualElement NOT_SPECIAL = new SpecialManualElement()
 	{
 
 		@Override

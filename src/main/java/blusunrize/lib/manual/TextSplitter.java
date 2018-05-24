@@ -45,9 +45,14 @@ public class TextSplitter
 		this(m.fontRenderer::getStringWidth, 120, 179-28, m.fontRenderer.FONT_HEIGHT, tokenTransform);
 	}
 
-	public void clearSpecial()
+	public void clearSpecialByPage()
 	{
 		specialByPage.clear();
+	}
+
+	public void clearSpecialByAnchor()
+	{
+		specialByAnchor.clear();
 	}
 
 	public void addSpecialPage(int ref, int offset, SpecialManualElement element)
@@ -67,7 +72,7 @@ public class TextSplitter
 	@SuppressWarnings({"UnnecessaryLabelOnBreakStatement", "UnusedLabel"})
 	public void split(String in)
 	{
-		clearSpecial();
+		clearSpecialByPage();
 		entry.clear();
 		String[] wordsAndSpaces = splitWhitespace(in);
 		int pos = 0;

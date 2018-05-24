@@ -14,24 +14,44 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public abstract class ManualInstance
 {
 	public FontRenderer fontRenderer;
 	public String texture;
+	private Map<ResourceLocation, Function<String, SpecialManualElement>> specialElements = new HashMap<>();
 	public ManualInstance(FontRenderer fontRenderer, String texture, ResourceLocation name)
 	{
 		this.fontRenderer = fontRenderer;
 		this.texture = texture;
 		contentTree = new Tree<>(name);
 	}
+
+	public void registerSpecialElement(ResourceLocation resLoc, Function<String, SpecialManualElement> factory)
+	{
+		if (specialElements.containsKey(resLoc))
+			throw new IllegalArgumentException("Tried adding manual element type "+resLoc+" twice!");
+		specialElements.put(resLoc, factory);
+	}
+
+	public Function<String,SpecialManualElement> getElementFactory(ResourceLocation loc)
+	{
+		Function<String, SpecialManualElement> ret = specialElements.get(loc);
+		if (ret==null)
+			throw new IllegalArgumentException("No element type found for "+loc);
+		return ret;
+	}
+
+	public abstract String getDefaultResourceDomain();
 
 	public abstract String getManualName();
 
@@ -125,6 +145,7 @@ public abstract class ManualInstance
 	{
 		return contentTree.leafStream();
 	}
+
 
 	public static class ManualLink
 	{
