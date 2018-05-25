@@ -405,9 +405,9 @@ item.immersiveengineering.mold.gear.name=金屬沖壓模具：齒輪
 item.immersiveengineering.mold.rod.name=金屬沖壓模具：金屬桿
 item.immersiveengineering.mold.bullet_casing.name=金屬沖壓模具：彈殼
 item.immersiveengineering.mold.wire.name=金屬沖壓模具：線纜
-item.immersiveengineering.mold.packing4.name=金屬沖壓模具：2x2 封裝
-item.immersiveengineering.mold.packing9.name=金屬沖壓模具：3x3 封裝
-item.immersiveengineering.mold.unpacking.name=金屬沖壓模具：解封裝
+item.immersiveengineering.mold.packing4.name=金屬沖壓模具：2x2打包
+item.immersiveengineering.mold.packing9.name=金屬沖壓模具：3x3打包
+item.immersiveengineering.mold.unpacking.name=金屬沖壓模具：拆包
 
 item.immersiveengineering.graphite_electrode.name=石墨電極
 item.immersiveengineering.shader.name=皮膚
@@ -940,7 +940,7 @@ advancement.immersiveengineering:root.desc=請閱讀下面的說明書！
 advancement.immersiveengineering:openManual=請閱讀下面的說明書
 advancement.immersiveengineering:openManual.desc=打開工程師手冊
 advancement.immersiveengineering:craftHammer=HAMMAH!
-advancement.immersiveengineering:craftHammer.desc=製作一把工程師錘子
+advancement.immersiveengineering:craftHammer.desc=製作一把工程師槌子
 advancement.immersiveengineering:connectWire=電線上的鳥兒
 advancement.immersiveengineering:connectWire.desc=連接導線
 advancement.immersiveengineering:blastfurnace=真正的熱門話題
@@ -1053,7 +1053,7 @@ ie.manual.entry.introduction.name=介紹
 ie.manual.entry.introduction.subtext=開始你的工程!
 ie.manual.entry.introduction0=諸位元年輕的工程師，你們好!歡迎使用ImmersiveEngineering模組，這本手冊將會作為你的嚮導，介紹本模組應提供的新型機器的建造流程和使用方法.<br>那就讓我們從基礎的事情開始吧：ImmersiveEngineering是圍繞復古未來主義風格產生與能源運輸兩個要素而構建起來的.本模組使用通量(Flux)作為能源，它能與現有的大部分模組的能源通用.
 ie.manual.entry.introduction1=能源是通過§l線纜§r在§l接線器§r間來傳輸的.線纜的長度是有限制的，因此在這些線纜之間你需要更多的接線器來作為§l中繼§r.<br>你能在三種不同導線之間進行選擇，它們的差異在於不同的傳輸速率，分別為：<config;iA;wireTransferRate;l3> Flux/tick.你需要§l變壓器§r來在不同類型線纜間切換.
-ie.manual.entry.introductionHammer=工程師錘是你當前最重要的工具.它可以用於搭建諸如焦爐和高爐這樣的多方塊結構、<config;b;crushingOreRecipe;將礦石打碎成粉末、>或者是用來修改方塊的設置，比如木桿.
+ie.manual.entry.introductionHammer=工程師槌是你當前最重要的工具.它可以用於搭建諸如焦爐和高爐這樣的多方塊結構、<config;b;crushingOreRecipe;將礦石打碎成粉末、>或者是用來修改方塊的設置，比如木桿.
 
 ie.manual.entry.ores.name=礦石
 ie.manual.entry.ores.subtext=挖吧！挖吧！挖洞吧！
@@ -1074,7 +1074,7 @@ ie.manual.entry.alloys0=你可以通過混合金屬粉末製造出各種不同�
 
 ie.manual.entry.plates.name=金屬板材
 ie.manual.entry.plates.subtext=平而光滑
-ie.manual.entry.plates0=金屬板是一種用於製作一些機器或方塊的必要材料.它們可以通過工程師錘打製金屬錠或使用 <link;metalPress;§o§n金屬沖壓機§r> 進行製作.
+ie.manual.entry.plates0=金屬板是一種用於製作一些機器或方塊的必要材料.它們可以通過工程師槌打製金屬錠或使用 <link;metalPress;§o§n金屬沖壓機§r> 進行製作.
 
 ie.manual.entry.components.name=製作元件
 ie.manual.entry.components.subtext=完整的一部份
@@ -1093,18 +1093,18 @@ ie.manual.entry.hemp3=簾幕是種可以安裝在門窗或者開口上阻擋視�
 ie.manual.entry.cokeoven.name=焦爐
 ie.manual.entry.cokeoven.subtext=熱門焦點!
 ie.manual.entry.cokeoven0=焦爐是你在發展Immersive Engineering時所建造的第一台重要設備.它的功能十分簡單：讓煤以及煤塊在無氧環境下進行燃燒以產出焦煤，一種能長時間燃燒的燃料.更重要的是，這一加工過程能產生出§l雜酚油§r，它被用於 <link;treated_wood;§o§n防腐木§r> 的製作.同樣你可以用原木在裡面燒製得到木炭，同時得到少量的雜酚油.
-ie.manual.entry.cokeovenBlock=搭建一個焦爐，首先需要27個焦爐方塊搭建出一個3x3x3的正方體結構，然後用工程師錘右擊側面的中心來完成建造.<br>看接下來的圖頁
+ie.manual.entry.cokeovenBlock=搭建一個焦爐，首先需要27個焦爐方塊搭建出一個3x3x3的正方體結構，然後用工程師槌右擊側面的中心來完成建造.<br>看接下來的圖頁
 
 ie.manual.entry.alloysmelter.name=合金爐
 ie.manual.entry.alloysmelter.subtext=混和金屬
 ie.manual.entry.alloysmelter0=合金爐是由耐熱砂岩和磚製成的簡單爐子。在它內部於溫度足夠高，可以使金屬熔化成液體狀態並混合，從而形成一種 <link;alloys;§o§n合金§r> 。這允許製作像琥珀金和康銅這樣的重要合金，而無需繁瑣的粉塵混合。
-ie.manual.entry.alloysmelter1=要製作合金爐，需要如上圖所示，將八塊爐磚佈置在2x2x2的立方體中，並用工程師錘右鍵其中任何一個方塊。
+ie.manual.entry.alloysmelter1=要製作合金爐，需要如上圖所示，將八塊爐磚佈置在2x2x2的立方體中，並用工程師槌右鍵其中任何一個方塊。
 
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
 ie.manual.entry.treatedwood0=防腐木實際上就是被雜酚油浸泡過的木板.然而，它是ImmersiveEngineering裡用到最重要的材料之一，為此你需要大量製作.
 ie.manual.entry.treatedwoodPost0=你的線纜接線器需要有一個依附點，這時用防腐木做成的木桿將會是最好選擇.它有四格高，所以你不能把將它放在空間不夠的地方
-ie.manual.entry.treatedwoodPost1=不過使用工程師錘子你也可以在木桿的頂端的側面位置加裝另一個 <link;wiring;§o§n變壓器§r;3>，這使得它不怎麼顯眼. <br>在木桿側面支架下方放置方塊會使支架改變朝向.
+ie.manual.entry.treatedwoodPost1=不過使用工程師槌子你也可以在木桿的頂端的側面位置加裝另一個 <link;wiring;§o§n變壓器§r;3>，這使得它不怎麼顯眼. <br>在木桿側面支架下方放置方塊會使支架改變朝向.
 
 ie.manual.entry.concrete.name=混凝土
 ie.manual.entry.concrete.subtext=要塞建材
@@ -1176,7 +1176,7 @@ ie.manual.entry.generator3=改良風車是風車的升級版.雖然它有2倍的
 ie.manual.entry.breaker.name=斷路刀閘
 ie.manual.entry.breaker.subtext=扳開-扣合
 ie.manual.entry.breaker0=斷路刀閘是能夠讓線纜中的能量流動停止的一種簡單閘門.它們能夠連接兩種相同的線纜並僅有在啟動時讓能量通過.它能夠被用於將高能耗機器從電網中分離或者在需要時連接附加發電機組!
-ie.manual.entry.breaker1=斷路刀閘在開啟狀態下會發射紅石信號；你可以使用工程師錘子來反轉它的輸出.<br>同時它們還是用來控制 <link;lighting;§n電燈§r;1>的好方法!
+ie.manual.entry.breaker1=斷路刀閘在開啟狀態下會發射紅石信號；你可以使用工程師槌子來反轉它的輸出.<br>同時它們還是用來控制 <link;lighting;§n電燈§r;1>的好方法!
 ie.manual.entry.breaker2=紅石斷路器功能同斷路刀閘類似，但是無法手動操控.取而代之，它需要一個紅石信號來斷開連接.而作為回報，它良好的絕緣性使其能夠連接高壓線纜!
 
 ie.manual.entry.eMeter.name=電流互感器
@@ -1186,9 +1186,9 @@ ie.manual.entry.eMeter0=電流互感器是測量能量流動的一種儀器.它�
 ie.manual.entry.redstoneWires.name=紅石線纜
 ie.manual.entry.redstoneWires.subtext=集成接線
 ie.manual.entry.redstoneWires0=紅石線纜是鍍鋁的紅石粉。這種線纜提供了一種簡單方法讓你在不損失任何信號強度的情況下長距離傳送紅石信號.
-ie.manual.entry.redstoneWires1=連接器的工作方式就像其他線纜接線器，但是，紅石電線不需要繼電器;連接器和繼電器是相同的方塊.<br>使用工程師錘子，連接器可以右鍵切換為輸入和輸出模式，SHIFT+右鍵可配置成16個色彩的頻率。
+ie.manual.entry.redstoneWires1=連接器的工作方式就像其他線纜接線器，但是，紅石電線不需要繼電器;連接器和繼電器是相同的方塊.<br>使用工程師槌子，連接器可以右鍵切換為輸入和輸出模式，SHIFT+右鍵可配置成16個色彩的頻率。
 ie.manual.entry.redstoneWires2=§6紅石探針連接器§r的功能足以和紅石比較器媲美。雖然它無法積極的比較紅石訊號，但是它可以知道容器內有多少東西。
-ie.manual.entry.redstoneWires3=另外，這些探針可以在兩個不同的頻道上運作，一個發送讀取到的訊號，一個接受訊號，這些頻道可以透過工程師錘來修改。<br><br>請注意：如同後面頁面寫的，許多IE的多方塊結構具有比較器的功能。在可用的狀況下，多方塊結構的紅石控制面是連接比較器的指定介面。
+ie.manual.entry.redstoneWires3=另外，這些探針可以在兩個不同的頻道上運作，一個發送讀取到的訊號，一個接受訊號，這些頻道可以透過工程師槌來修改。<br><br>請注意：如同後面頁面寫的，許多IE的多方塊結構具有比較器的功能。在可用的狀況下，多方塊結構的紅石控制面是連接比較器的指定介面。
 ie.manual.entry.redstoneWires4=§l儲罐：§r詳細可以參考 <link;tank;§o§n手冊頁面§r;1>。<br>§l儲倉：§r詳細可以參考 <link;silo;§o§n手冊頁面§r;2>。<br>§l裝配機：§r輸出一個相對於內容物存量的訊號。<br>§l自動化工程師裝配台：§r輸出一個相對於內容物存量的訊號。<br>l工業擠壓機：§r輸出一個相對於內容物存量的訊號。<br>§l工業發酵機：§r輸出一個相對於內容物存量的訊號。
 ie.manual.entry.redstoneWires5=§l挖掘機：§r輸出一個相對於礦脈中剩餘礦石的訊號。<br>§l電弧爐：§r輸出一個相對於內容物存量的訊號。<br>另外，將比較器連接到頂部的電極將根據其耐久度發送訊號。<br>§l攪拌混合機：§r輸出一個相對於內容物存量的訊號。<br>
 
@@ -1200,7 +1200,7 @@ ie.manual.entry.thermoElectric1=在發電機的側面放置熱源和冷源各一
 ie.manual.entry.blastfurnace.name=粗製高爐
 ie.manual.entry.blastfurnace.subtext=簡易煉鋼!
 ie.manual.entry.blastfurnace0=粗製高爐用於提高鐵的含碳量，使之成為鋼.為了達成目的，只有含碳量高的燃料才被高爐所接受，特別是焦煤和木炭.<br><br>伴隨著鋼的冶煉，高爐冶煉還會產生礦渣，你必須定期清除否則高爐便會停止工作.理論上來說礦渣屬於廢棄物，但你還是可以用它來合成混凝土.
-ie.manual.entry.blastfurnaceBlock=搭建一個高爐，你需要用這27個方塊搭建出3x3x3的結構，然後用工程師錘右擊其中一面的中央方塊<br>見下一頁的圖.
+ie.manual.entry.blastfurnaceBlock=搭建一個高爐，你需要用這27個方塊搭建出3x3x3的結構，然後用工程師槌右擊其中一面的中央方塊<br>見下一頁的圖.
 ie.manual.entry.blastfurnace1=粗製高爐無法自動化生產.所有輸入輸出必須通過手動打開GUI完成.如果你想要自動化冶煉鋼鐵，你可能需要查看 <link;improvedBlastfurnace;§o§n精製高爐§r ;>的相關搭建信息.
 
 ie.manual.entry.improvedBlastfurnace.name=精製高爐
@@ -1214,7 +1214,7 @@ ie.manual.entry.metalconstruction.name=金屬結構
 ie.manual.entry.metalconstruction.subtext=鉚接
 ie.manual.entry.metalconstruction0=除了防腐木，加工過的金屬也可用於建築.你可以將絕大多數金屬製成塊或台階，你還可以用錘子把鐵錠敲成金屬板方塊.
 ie.manual.entry.metalconstruction1=鋼不僅是高壓設備不可或缺的一部分，還是非常有用的上好建築材料，鋼製鷹架可用於快速搭建建築結構，鋼圍欄能讓你建立防線抵禦敵人，鋼製臂架構是你搭建高壓繼電器的接點.
-ie.manual.entry.metalconstruction2=鋼製接線器的作用與普通接線器類似，但它們是純裝飾性物品，不能用於傳輸能量.<br>它們無法與普通線纜相連接，但能夠與麻線圈或鋼線圈連接(見下頁).<br>你可以手持工程師錘右擊來旋轉它們.
+ie.manual.entry.metalconstruction2=鋼製接線器的作用與普通接線器類似，但它們是純裝飾性物品，不能用於傳輸能量.<br>它們無法與普通線纜相連接，但能夠與麻線圈或鋼線圈連接(見下頁).<br>你可以手持工程師槌右擊來旋轉它們.
 ie.manual.entry.metalconstruction3=金屬梯子就是......用金屬做成的梯子。你可以爬上它們，它們看起來很酷。<br>你也可以把它們跟鷹架結合起來，使它們成為鷹架金屬梯子。
 
 ie.manual.entry.lighting.name=工程照明
@@ -1222,16 +1222,16 @@ ie.manual.entry.lighting.subtext=照亮荒蕪之地
 ie.manual.entry.lighting0=工廠長廊的深處可能會十分昏暗.為了能夠找到通往機器的路，你可能需要用一些燈來照亮這些區域.這些燈能夠提供等同於螢石塊的亮度.
 ie.manual.entry.lighting1=電燈是最早使用電能的發明之一.你需要用線纜將它們直接連至你的電網當中來使其工作.電能可以通過它們，因此你可以將它們連成一排.
 ie.manual.entry.lighting2=只需為它們提供一點點能量，它們就可以像正常燈一樣照亮周圍區域，不僅如此，它們還能防止敵對生物在半徑32格範圍內生成!
-ie.manual.entry.lighting3=泛光燈是一種強光源.儘管它們對電能的需求比普通電燈高一些，它們能夠產生一個32格遠的光錐.對其頂部或底部使用工程師錘來旋轉燈光或對其側面使用來改變傾角.
+ie.manual.entry.lighting3=泛光燈是一種強光源.儘管它們對電能的需求比普通電燈高一些，它們能夠產生一個32格遠的光錐.對其頂部或底部使用工程師槌來旋轉燈光或對其側面使用來改變傾角.
 ie.manual.entry.lighting4=一般來說，泛光燈需要紅石信號來啟動，然而，可以透過潛行使用工程師的錘子右鍵單擊底座調整成反向訊號
 
 ie.manual.entry.metalPress.name=金屬沖壓機
 ie.manual.entry.metalPress.subtext=壓力山大!
-ie.manual.entry.metalPress0=金屬沖壓機可用於自動將金屬擠壓成型.它的原理是用高壓活塞將模具壓到金屬錠上，以將金屬錠擠壓為板材，桿或其他金屬零件. <br>沖壓機結構如上圖所示，用工程師鎚敲擊活塞來完成搭建.
-ie.manual.entry.metalPress1=能量從上方輸入，物品通過輸送帶，沿著其顯示方向輸入輸出.底層中間的方塊便是紅石控制介面，手持工程師錘右擊可對其進行反相.
+ie.manual.entry.metalPress0=金屬沖壓機可用於自動將金屬擠壓成型.它的原理是用高壓活塞將模具壓到金屬錠上，以將金屬錠擠壓為板材，桿或其他金屬零件. <br>沖壓機結構如上圖所示，用工程師槌敲擊活塞來完成搭建.
+ie.manual.entry.metalPress1=能量從上方輸入，物品通過輸送帶，沿著其顯示方向輸入輸出.底層中間的方塊便是紅石控制介面，手持工程師槌右擊可對其進行反相.
 ie.manual.entry.metalPress2=若想正常工作，需要在活塞上加裝一個模具.模具的製作如上圖所示，手持模具右鍵金屬沖壓機可將其放入.
 ie.manual.entry.metalPress3=模具如上所示精心製作，裁剪過程中，裁剪器會造成一些損壞。然後通過用手中的模具右鍵單擊多方塊就可以將它們插入到金屬沖壓機中。
-ie.manual.entry.metalPress4=封裝和解封裝模具可用於將4件或9件相同的物品壓入相關的儲存形式，並且可以再度解封裝回原本物品。這可以用來將錠合成為塊來儲存，或者自動製作簡單的方塊，如：砂岩。
+ie.manual.entry.metalPress4=打包和拆包模具可用於將4件或9件相同的物品壓入相關的儲存形式，並且可以再度拆包回原本物品。這可以用來將錠合成為塊來儲存，或者自動製作簡單的方塊，如：砂岩。
 
 ie.manual.entry.tank.name=儲罐
 ie.manual.entry.tank.subtext=正好堆滿！
@@ -1250,7 +1250,7 @@ ie.manual.entry.metalbarrel0=金屬桶功能同 <link;barrel;§o§n木桶§r;>�
 
 ie.manual.entry.assembler.name=裝配機
 ie.manual.entry.assembler.subtext=需要一些裝配
-ie.manual.entry.assembler0=裝配機是一個能夠合成物品的複雜機器，和玩家合成類似。<br>為了建造這台機器，請按上圖展示搭建並用工程師錘右擊輸送帶。
+ie.manual.entry.assembler0=裝配機是一個能夠合成物品的複雜機器，和玩家合成類似。<br>為了建造這台機器，請按上圖展示搭建並用工程師槌右擊輸送帶。
 ie.manual.entry.assembler1=你敲擊的輸送帶將成為輸入端，上方會有藍色標記並且機器側面也會有箭頭指示.<br>裝配機內部最多可存儲三個合成表並且會按順序執行.前一個合成表的輸出產物可以作為後一個的輸入材料.<br>三個合成欄用於存儲合成表，而下方18格子用於存放材料.
 ie.manual.entry.assembler2=輸入側不光可以輸入物品，還能夠輸入液體用於裝填機器內部的三個儲罐.這些儲罐中的液體可以被用於取代合成表中的液體容器例如水桶. <br>機器的能量輸入在頂部中央的方塊.
 
@@ -1261,7 +1261,7 @@ ie.manual.entry.autoworkbench1=成功組裝時，可以在其繪圖表上放置�
 
 ie.manual.entry.bottlingMachine.name=灌裝機
 ie.manual.entry.bottlingMachine.subtext=裝滿它!
-ie.manual.entry.bottlingMachine0=灌裝機能夠將液體注入到容器當中。搭建結構如上方展示，輸送帶的方向很重要不過可以鏡像。為了完成該結構，用工程師錘右擊中間的輸送帶。
+ie.manual.entry.bottlingMachine0=灌裝機能夠將液體注入到容器當中。搭建結構如上方展示，輸送帶的方向很重要不過可以鏡像。為了完成該結構，用工程師槌右擊中間的輸送帶。
 ie.manual.entry.bottlingMachine1=液體的輸入端位於底層中央，物品通過輸送帶輸入。輸送帶的方向應該很清楚的展示了輸入輸出的方向。能量輸入端位於頂部。<br>通常情況下，灌裝機能夠裝填任何可裝填的容器(桶、玻璃瓶)。他同樣能夠接受一些特定的液體容器，例如 <link;drill;§o§n採礦機械鑽§r> 或 <link;jerrycan;§o§n油罐§r> 。
 
 ie.manual.entry.chargingStation.name=充電站
@@ -1299,45 +1299,45 @@ ie.manual.entry.mixer2=液體通過其電源底部的埠輸入到擠壓器中。
 
 ie.manual.entry.squeezer.name=工業擠壓機
 ie.manual.entry.squeezer.subtext=擠壓物質
-ie.manual.entry.squeezer0=工業擠壓機是一台利用巨型活塞將有機物質壓榨為汁液或油的多方塊設備.其結構如上圖所示，並需要工程師錘子敲擊帶工程塊一面中間的木桶以完成組裝.
+ie.manual.entry.squeezer0=工業擠壓機是一台利用巨型活塞將有機物質壓榨為汁液或油的多方塊設備.其結構如上圖所示，並需要工程師槌子敲擊帶工程塊一面中間的木桶以完成組裝.
 ie.manual.entry.squeezer1=物品可從帶有藍色點的兩個艙室輸入.帶有橙色點的艙室可用於輸出物品，而其下方的方塊則可用於液體輸出.
 ie.manual.entry.squeezer2T=以下列表顯示了可以榨成植物油的各種物品，以及它們產生的量。
 
 ie.manual.entry.fermenter.name=工業發酵機
 ie.manual.entry.fermenter.subtext=Skál!
-ie.manual.entry.fermenter0=工業發酵機是一台能將特定水果、穀物以及蔬菜發酵為乙醇的多方塊設備.其結構如上圖所示，並需要工程師錘子敲擊帶工程塊一面中間的大鍋以完成組裝.
+ie.manual.entry.fermenter0=工業發酵機是一台能將特定水果、穀物以及蔬菜發酵為乙醇的多方塊設備.其結構如上圖所示，並需要工程師槌子敲擊帶工程塊一面中間的大鍋以完成組裝.
 ie.manual.entry.fermenter1=物品可從帶有藍色點的兩個艙室輸入.帶有橙色點的艙室可用於輸出物品，而其下方的方塊則可用於液體輸出.
 ie.manual.entry.fermenter2T=以下列表顯示了可以發酵成乙醇的各種物品，以及它們產生的量。
 
 ie.manual.entry.refinery.name=煉油廠
 ie.manual.entry.refinery.subtext=混合液體!
 ie.manual.entry.refinery0=煉油廠是一台可對一或兩種液體進行精煉的複雜多方塊設備.它廣泛用於將 <link;squeezer;植物油>和 <link;fermenter;乙醇>一起精煉為生物柴油.
-ie.manual.entry.refinery1=用工程師錘右擊其前面的中心位置以完成機器組裝.<br>煉油廠側面的兩個小孔為液體輸入端，而正前方的橙色埠則是液體輸出端.
+ie.manual.entry.refinery1=用工程師槌右擊其前面的中心位置以完成機器組裝.<br>煉油廠側面的兩個小孔為液體輸入端，而正前方的橙色埠則是液體輸出端.
 
 ie.manual.entry.dieselgen.name=柴油發電機
 ie.manual.entry.dieselgen.subtext=比產量更重要的是：更高的產量.
 ie.manual.entry.dieselgen0=高電壓結構是令人著迷的，但要讓它變得有用，你得有一個發電機來輸出能源.<br>柴油發電機是其中一種產生這類能量的方式.它由複雜的多方塊方式組成並且將要用到 <link;biodiesel;§o§n生物柴油§r> 或者是其他燃料.由於其產出高，它將會快速消耗燃料來運作，所以請確保你有足夠的燃料來支撐它的運轉.
-ie.manual.entry.dieselgen1=該機械由工程塊、發電機、散熱器塊組成，同時還用到了液體管道以及鷹架.將這些零件如上方所示形狀放置好，接著用工程師錘子敲一下位於中央的任意發電機模塊或散熱器模塊即可.
+ie.manual.entry.dieselgen1=該機械由工程塊、發電機、散熱器塊組成，同時還用到了液體管道以及鷹架.將這些零件如上方所示形狀放置好，接著用工程師槌子敲一下位於中央的任意發電機模塊或散熱器模塊即可.
 ie.manual.entry.dieselgen2=燃料需要從發電機的底部位置輸入，而能量的輸出口允許增加至三個.它所擁有的<config;i;dieselGen_output>Flux/t的輸出量將會平均分散在各個連接點上.<br>用紅石信號啟動右側的控制台可以關閉發電機.
 ie.manual.entry.dieselgen3=下表列出了柴油發電機的所有有效燃料以及它們的燃燒時間，以刻計算.
 
 ie.manual.entry.biodiesel.name=生物柴油
 ie.manual.entry.biodiesel.subtext=綠色能源!
 ie.manual.entry.biodiesel0=燃料需要一個方便且高效的來源，但石油是一種不可再生資源，為此生物柴油成為了最終的解決方案!由植物油和乙醇混合而成，你製造出了一種液體燃料供 <link;dieselgen;§o§n柴油發電機§r> 使用.
-ie.manual.entry.biodiesel1=作物種子投入工業擠壓機加工能得到植物油.根據圖片搭建出相應的結構並使用工程師鎚敲打其中一面以完成組裝.能源可以從頂部或底部輸入，液體則可以從底部任意一面的埠輸出.
-ie.manual.entry.biodiesel1T=下方表格列出了多種能夠被壓榨為植物油的物品以及它們的產量.
-ie.manual.entry.biodiesel2=乙醇可以從發酵機那獲得.發酵機的搭建方式類似工業擠壓機，對功率的需求，能源接受以及液體輸出的方式也與工業擠壓機相同.
-ie.manual.entry.biodiesel2T=下方表格列出了多種能夠被壓榨為乙醇的物品以及它們的產量.
-ie.manual.entry.biodiesel3=為了最終把植物油加工成生物柴油，你需要把液體灌入煉油廠並提供充足的能源.根據圖片搭建相應的結構並用工程師錘右擊其前面的中心位置.
-ie.manual.entry.biodiesel4=煉油廠的正前方位置是作為液體輸出的，側面的小孔為輸入端，能源是通過組裝在其後方的接線器導入，通過對右側的控制台輸入紅石信號可以停止其煉油過程.
+ie.manual.entry.biodiesel1=作物種子投入工業擠壓機加工能得到植物油。根據圖片搭建出相應的結構並使用工程師槌敲打其中一面以完成組裝。能源可以從頂部或底部輸入，液體則可以從底部任意一面的埠輸出。
+ie.manual.entry.biodiesel1T=下方表格列出了多種能夠被壓榨為植物油的物品以及它們的產量。
+ie.manual.entry.biodiesel2=乙醇可以從發酵機那獲得.發酵機的搭建方式類似工業擠壓機，對功率的需求，能源接受以及液體輸出的方式也與工業擠壓機相同。
+ie.manual.entry.biodiesel2T=下方表格列出了多種能夠被壓榨為乙醇的物品以及它們的產量。
+ie.manual.entry.biodiesel3=為了最終把植物油加工成生物柴油，你需要把液體灌入煉油廠並提供充足的能源。根據圖片搭建相應的結構並用工程師槌右擊其前面的中心位置。
+ie.manual.entry.biodiesel4=煉油廠的正前方位置是作為液體輸出的，側面的小孔為輸入端，能源是通過組裝在其後方的接線器導入，通過對右側的控制台輸入紅石信號可以停止其煉油過程。
 
 ie.manual.entry.conveyor.name=輸送帶
 ie.manual.entry.conveyor.subtext=誰還需要鐵路?
 ie.manual.entry.conveyor0=輸送帶運輸是把附近物品搬回家的便捷途徑，當它有足夠的動力時可以搬運像是牛，羊之類的生物，它們真正的優勢在於物品的運輸。<br>把物品丟到輸送帶上即可實現搬運.如果末端是能夠接收物品的容器，那物品將會被放入到容器裡。
-ie.manual.entry.conveyor1=對著輸送帶的漏斗可以把物品輸出為可掉落形態，使用工程師錘右擊可以轉動傳送器的方向，潛行時右擊則可調整為上行或下行。<br>
+ie.manual.entry.conveyor1=對著輸送帶的漏斗可以把物品輸出為可掉落形態，使用工程師槌右擊可以轉動傳送器的方向，潛行時右擊則可調整為上行或下行。<br>
 ie.manual.entry.conveyor2=卸貨輸送帶僅僅是普通輸送帶中間多了一個艙口，允許貨物從中間傳輸到下面。<br>物品會自動輸送進下放的存儲容器或者，如果下方是空的物品會被扔在地上。
-ie.manual.entry.conveyor3=提取輸送帶具有和漏斗類似的功能，可以將物品從容器中取出，但是和漏斗不一樣的是，它沒有內部儲存空間，它會直接將提取的物品放到輸送帶上。<br>潛行+工程師錘右鍵可以改變它的方向。
-ie.manual.entry.conveyor4=垂直輸送帶可以貼在牆上，使垂直運輸物品稱為可能。用桶還可以讓它運輸實體。雖然可以運輸桶裝液體，但輸送帶還是不能直接運輸液體。<br>這種輸送帶可以自動將物品輸入容器中，也可以接收頂上的輸送帶掉下來的物品。
+ie.manual.entry.conveyor3=提取輸送帶具有和漏斗類似的功能，可以將物品從容器中取出，但是和漏斗不一樣的是，它沒有內部儲存空間，它會直接將提取的物品放到輸送帶上。<br>潛行+工程師槌右鍵可以改變它的方向。
+ie.manual.entry.conveyor4=垂直輸送帶可以貼在牆上，使垂直運輸物品稱為可能。由於輸送帶還是不能直接運輸液體，因此你可以利用桶子盛裝液體來傳輸。<br>這種輸送帶可以自動將物品輸入容器中，也可以接收頂上的輸送帶掉下來的物品。
 ie.manual.entry.conveyor5=分流輸送帶的功能很簡單，將運送來的物品和實體不斷交替地分流到左右兩側，籍此可以讓你的物品均勻地分配到多個工廠裡。
 ie.manual.entry.conveyor6=鷹架輸送帶的工作原理與普通輸送帶相似，但是它被一個鷹架覆蓋，防止玩家從中拾取物品。<br>您可以用其他類型的鷹架或玻璃點擊它以更改它的外觀。
 ie.manual.entry.conveyor7=同樣的，提取和垂直輸送帶也可以用鷹架進行覆蓋，以達到防止玩家從中拾取物品的效益，同時仍然像平時一樣運作。
@@ -1351,16 +1351,16 @@ ie.manual.entry.furnaceHeater2=還有更好的，當熔爐達到最高溫時，�
 ie.manual.entry.teslaCoil.name=特斯拉線圈
 ie.manual.entry.teslaCoil.subtext=This one goes up to 11
 ie.manual.entry.teslaCoil0=特斯拉線圈一開始的設計是能量傳輸設備.然而，據估計，用它傳輸能量時損耗巨大.只有它能將半徑6米範圍內的生物烤成焦炭的特性吸引了工程師們的眼球，它也因此很快成為了理想的基地防禦設備.
-ie.manual.entry.teslaCoil1=自然地，它是個能耗大戶，平時會有<config;i;teslacoil_consumption>Flux的消耗，每次攻擊時還會消耗<config;i;teslacoil_consumption_active>Flux.<br>線圈只有在有紅石信號時才會工作.用工程師錘右擊可反轉此特性的效果.<br>它攻擊時不僅會造成傷害，還會附加滯留效果"眩暈"，這個效果會阻止實體傳送.
-ie.manual.entry.teslaCoil2=潛行時用工程師錘右擊可令線圈在高能和低能模式間切換.切換前需切斷電源.默認特斯拉線圈以高能模式工作.低能模式會令耗能減半，但同時也會令攻擊範圍減半.
+ie.manual.entry.teslaCoil1=自然地，它是個能耗大戶，平時會有<config;i;teslacoil_consumption>Flux的消耗，每次攻擊時還會消耗<config;i;teslacoil_consumption_active>Flux.<br>線圈只有在有紅石信號時才會工作.用工程師槌右擊可反轉此特性的效果.<br>它攻擊時不僅會造成傷害，還會附加滯留效果"眩暈"，這個效果會阻止實體傳送.
+ie.manual.entry.teslaCoil2=潛行時用工程師槌右擊可令線圈在高能和低能模式間切換.切換前需切斷電源.默認特斯拉線圈以高能模式工作.低能模式會令耗能減半，但同時也會令攻擊範圍減半.
 ie.manual.entry.teslaCoil3=若你身著全套法拉第套裝，低能模式的特斯拉線圈不會對你造成任何傷害，但仍然會造成雷擊.高能模式的線圈會直接熔毀法拉第套裝，從而會造成比不穿套裝時更高的傷害.<br>螢光管會在高頻高強度電場中發光，而特斯拉線圈則可以產生這種電場，因此工作中的特斯拉線圈會導致附近的螢光管發光.
-ie.manual.entry.teslaCoil4=螢光管受線圈影響的範圍大約是線圈攻擊範圍的1.5倍.螢光管可在工程師工作臺中染色，還可用工程師錘子旋轉.
+ie.manual.entry.teslaCoil4=螢光管受線圈影響的範圍大約是線圈攻擊範圍的1.5倍.螢光管可在工程師工作臺中染色，還可用工程師槌子旋轉.
 
 ie.manual.entry.fluidPipes.name=液體傳輸
 ie.manual.entry.fluidPipes.subtext=專業水管工
 ie.manual.entry.fluidPipes0=液體傳輸在工程業變得越發重要.輸液管和液泵就是乾這個的.單獨使用，輸液管的液體傳輸速率較低，但如果用液泵輸入液體，速度便會增快不少.
-ie.manual.entry.fluidPipes1=你可以通過用工程師錘右擊一個管道來防止它連接那一側.<br>輸液管可以嵌入木製或鋼製鷹架中.只需手持鷹架右擊管道即可.破壞管道會返還鷹架.
-ie.manual.entry.fluidPipes2=液泵有兩個重要功能.它們能夠用於將液體高壓泵入管道中，讓傳輸速率變快，或者它們還能夠從世界當中抽取液體.用工程師錘右擊液泵底部會轉換輸入輸出端.
+ie.manual.entry.fluidPipes1=你可以通過用工程師槌右擊一個管道來防止它連接那一側.<br>輸液管可以嵌入木製或鋼製鷹架中.只需手持鷹架右擊管道即可.破壞管道會返還鷹架.
+ie.manual.entry.fluidPipes2=液泵有兩個重要功能.它們能夠用於將液體高壓泵入管道中，讓傳輸速率變快，或者它們還能夠從世界當中抽取液體.用工程師槌右擊液泵底部會轉換輸入輸出端.
 ie.manual.entry.fluidPipes3=為了使液泵能夠抽取液體方塊，它需要從頂部接受能量以及一個紅石信號.液泵同樣能夠用於從一些無法自動輸出的儲罐或液體容器中抽取液體.這同樣需要紅石信號，不過並不需要能量.
 ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;泵抽取的水方塊超過3x3，將當做無限水源.<br><br>;><config;b;pump_placeCobble;被抽取的水將以圓石取代，以減少流動水. 這種模式可以用工程師剪線鉗關閉.;>
 ie.manual.entry.fluidPipes5=液體放置器可以當成管道系統的終點，它可以將液體放置到世界中。這些側面可以在輸入、輸出、關閉中切換，可以使用一個紅石訊號將機器關閉。這個機器只會將液體輸出到和自身一樣的高度。
@@ -1491,7 +1491,7 @@ ie.manual.entry.arcfurnace.name=電弧爐
 ie.manual.entry.arcfurnace.subtext=不是反應堆
 ie.manual.entry.arcfurnace0=電弧爐是一種用於快速熔煉金屬的重型結構.它外表被鋼質外殼覆蓋，頂部裝有用於加熱的電極.
 ie.manual.entry.arcfurnace1=因為它的高速和同時加工多個物品的能力，電弧爐相當擅長冶煉金屬和煉鋼，但它的工作流程也比較複雜，需要時常維護才能保持功能正常運轉.<br>為保持工作，礦渣必須時常清理，損壞電極也應及時更換.
-ie.manual.entry.arcfurnace2=要搭建一台電弧爐，需要按照第一頁的方式進行建造，然後用工程師錘右擊煉藥鍋.<br><br>能量需要從後方的三個插孔中輸入，並且給前端的控制台輸入紅石信號將會關閉機器.右擊控制台，“桶”或外殼將會打開交互介面.
+ie.manual.entry.arcfurnace2=要搭建一台電弧爐，需要按照第一頁的方式進行建造，然後用工程師槌右擊煉藥鍋.<br><br>能量需要從後方的三個插孔中輸入，並且給前端的控制台輸入紅石信號將會關閉機器.右擊控制台，“桶”或外殼將會打開交互介面.
 ie.manual.entry.arcfurnace3=§l交互介面：§r<br>第一眼看過去可能會有些迷惑，但是它實際上表達很直白.<br><br>頂部的三個格子是 <link;graphite;§o§n石墨電極§r;1>插槽.<br>左側的十二個格子用於輸入金屬和礦石.每一個格子都有一個用於顯示燒煉進度的溫度條.
 ie.manual.entry.arcfurnace4=右側的四個格子用於輸入“輔料”，這是指那些加工過程中加入的不同的原料.舉個例子，在熔煉鐵時加焦煤粉來製得鋼.<br>主料和輔料的輸入可分別通過電弧爐頂部電極左右兩側的輸入倉完成.
 ie.manual.entry.arcfurnace5=底部的七個格子有六個用於輸出成品，還有一個輸出礦渣.成品可以從電弧爐正面的"桶"中提取，礦渣則會通過電弧爐背後的通道導出.電弧爐會自動輸出成品和礦渣到鄰近的容器中(這包括輸送帶).
