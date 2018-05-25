@@ -134,9 +134,9 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		IMultiblockRecipe recipe = readRecipeFromNBT(tag);
 		if(recipe!=null)
 			if(isInWorldProcessingMachine())
-				return new MultiblockProcessInWorld(recipe, tag.getFloat("process_transformationPoint"), Utils.loadItemStacksFromNBT(tag.getTag("process_inputItem")));
+				return new MultiblockProcessInWorld<>(recipe, tag.getFloat("process_transformationPoint"), Utils.loadItemStacksFromNBT(tag.getTag("process_inputItem")));
 			else
-				return new MultiblockProcessInMachine(recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
+				return new MultiblockProcessInMachine<>(recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
 		return null;
 	}
 	protected NBTTagCompound writeProcessToNBT(MultiblockProcess process)

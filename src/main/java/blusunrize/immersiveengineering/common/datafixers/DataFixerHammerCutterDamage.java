@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.items;
+package blusunrize.immersiveengineering.common.datafixers;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -24,7 +24,7 @@ public class DataFixerHammerCutterDamage implements IFixableData
 	@Override
 	public int getFixVersion()
 	{
-		return 0;
+		return 1;
 	}
 
 	@Nonnull
@@ -35,10 +35,10 @@ public class DataFixerHammerCutterDamage implements IFixableData
 				.equals(compound.getString("id")))
 		{
 			int meta = compound.getInteger("Damage");
-			NBTTagCompound stackTag = compound.getCompoundTag("tag");
 			if (meta == CUTTER_META || meta == HAMMER_META)
 			{
 				int damage;
+				NBTTagCompound stackTag = compound.getCompoundTag("tag");
 				if (meta==CUTTER_META)
 				{
 					damage = stackTag.getInteger("cutterDmg");

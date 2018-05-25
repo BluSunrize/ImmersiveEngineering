@@ -63,18 +63,18 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
-    maven { // McJty's CompatLayer
-        name 'K4 maven'
-        url "http://maven.k-4u.nl/"
-    }
+//    maven { // McJty's CompatLayer
+//        name 'K4 maven'
+//        url "http://maven.k-4u.nl/"
+//    }
     maven { // CraftTweaker (aka MineTweaker3)
         name 'jared maven'
         url "http://maven.blamejared.com/"
     }
-//    maven { // ModMaven, there is a bunch of stuff on there
-//        name 'ModMaven'
-//        url "http://modmaven.k-4u.nl/"
-//    }
+    maven { // ModMaven, there is a bunch of stuff on there
+        name 'ModMaven'
+        url "http://modmaven.k-4u.nl/"
+    }
     repositories {//Curseforge maven, in case some other maven goes offline
         maven {
             name = "CurseForge"

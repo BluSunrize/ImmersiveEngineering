@@ -39,6 +39,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.datafixers.IEDataFixers;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
@@ -113,6 +114,7 @@ public class IEContent
 {
 	public static ArrayList<Block> registeredIEBlocks = new ArrayList<Block>();
 	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
+	public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
 
 	public static BlockIEBase<BlockTypes_MetalsIE> blockOre;
 	public static BlockIEBase<BlockTypes_MetalsIE> blockStorage;
@@ -1071,6 +1073,7 @@ public class IEContent
 		});
 
 		TileEntityFluidPipe.initCovers();
+		IEDataFixers.register();
 	}
 
 	public static void postInit()
@@ -1189,6 +1192,7 @@ public class IEContent
 		String s = tile.getSimpleName();
 		s = s.substring(s.indexOf("TileEntity")+"TileEntity".length());
 		GameRegistry.registerTileEntity(tile, ImmersiveEngineering.MODID+":"+ s);
+		registeredIETiles.add(tile);
 	}
 
 	public static void addConfiguredWorldgen(IBlockState state, String name, int[] config)

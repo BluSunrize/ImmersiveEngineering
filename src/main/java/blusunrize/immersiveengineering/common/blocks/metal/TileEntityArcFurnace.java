@@ -45,12 +45,12 @@ import java.util.*;
 
 public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityArcFurnace,ArcFurnaceRecipe> implements ISoundTile,IGuiTile, IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
+	public int pouringMetal = 0;
 	public TileEntityArcFurnace()
 	{
 		super(MultiblockArcFurnace.instance, new int[]{5,5,5}, 64000, true);
 	}
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
-	public int pouringMetal = 0;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -677,12 +677,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			for(int i=0; i<4; i++)
 				additives.set(i, !multiblock.getInventory().get(12+i).isEmpty()? multiblock.getInventory().get(12+i).copy():ItemStack.EMPTY);
 			return recipe.getOutputs(input, additives);
-		}
-
-		@Override
-		protected void writeExtraDataToNBT(NBTTagCompound nbt)
-		{
-			super.writeExtraDataToNBT(nbt);
 		}
 
 		@Override

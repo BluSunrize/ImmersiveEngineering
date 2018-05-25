@@ -43,14 +43,14 @@ import java.util.List;
 
 public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySqueezer,SqueezerRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IGuiTile
 {
-	public TileEntitySqueezer()
-	{
-		super(MultiblockSqueezer.instance, new int[]{3,3,3}, 16000, true);
-	}
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public float animation_piston = 0;
 	public boolean animation_down = true;
+	public TileEntitySqueezer()
+	{
+		super(MultiblockSqueezer.instance, new int[]{3,3,3}, 16000, true);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

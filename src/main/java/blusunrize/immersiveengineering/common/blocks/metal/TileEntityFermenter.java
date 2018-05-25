@@ -43,13 +43,13 @@ import java.util.List;
 
 public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFermenter, FermenterRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile
 {
+
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public TileEntityFermenter()
 	{
 		super(MultiblockFermenter.instance, new int[]{3, 3, 3}, 16000, true);
 	}
-
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

@@ -191,7 +191,7 @@ public abstract class ManualPages implements IManualPage
 			for(int i = 0; i < resources.length; i++)
 				if(resources[i]!=null&&!resources[i].isEmpty())
 				{
-					if(resources[i]!=lastResource)
+					if(!resources[i].equals(lastResource))
 						ManualUtils.bindTexture(resources[i]);
 					int xOff = 60-sizing[i][2]/2;
 					ManualUtils.drawTexturedRect(x+xOff, y+yOff, sizing[i][2], sizing[i][3], (sizing[i][0])/256f, (sizing[i][0]+sizing[i][2])/256f, (sizing[i][1])/256f, (sizing[i][1]+sizing[i][3])/256f);
