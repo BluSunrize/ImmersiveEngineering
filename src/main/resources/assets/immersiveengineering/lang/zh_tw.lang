@@ -196,10 +196,10 @@ tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=忽
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=卸貨輸送帶
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=垂直輸送帶
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=分流輸送帶
-tile.immersiveengineering.conveyor.immersiveengineering:covered.name=加殼輸送帶
-tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=加殼垂直輸送帶
+tile.immersiveengineering.conveyor.immersiveengineering:covered.name=鷹架輸送帶
+tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=鷹架垂直輸送帶
 tile.immersiveengineering.conveyor.immersiveengineering:extract.name=提取輸送帶
-tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=加殼提取輸送帶
+tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=鷹架提取輸送帶
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=金屬沖壓機
 tile.immersiveengineering.metal_multiblock.crusher.name=粉碎機
@@ -1246,11 +1246,11 @@ ie.manual.entry.silo2=在輸出方塊旁放置一個比較器，可讓比較器�
 
 ie.manual.entry.metalbarrel.name=金屬桶
 ie.manual.entry.metalbarrel.subtext=拒絕滾動
-ie.manual.entry.metalbarrel0=金屬桶功能同 <link;barrel;§o§n木桶§r;>完全一樣.它們的儲量相同，輸入輸出的配置方式也相同，但和木桶不同的是，金屬桶能夠存儲氣體和高溫液體.
+ie.manual.entry.metalbarrel0=金屬桶功能同 <link;barrel;§o§n木桶§r;>完全一樣。它們的儲量相同，輸入輸出的配置方式也相同，但和木桶不同的是，金屬桶能夠存儲氣體和高溫液體。
 
 ie.manual.entry.assembler.name=裝配機
 ie.manual.entry.assembler.subtext=需要一些裝配
-ie.manual.entry.assembler0=裝配機是一個能夠合成物品的複雜機器，和玩家合成類似.<br>為了建造這台機器，請按上圖展示搭建並用工程師錘右擊輸送帶.
+ie.manual.entry.assembler0=裝配機是一個能夠合成物品的複雜機器，和玩家合成類似。<br>為了建造這台機器，請按上圖展示搭建並用工程師錘右擊輸送帶。
 ie.manual.entry.assembler1=你敲擊的輸送帶將成為輸入端，上方會有藍色標記並且機器側面也會有箭頭指示.<br>裝配機內部最多可存儲三個合成表並且會按順序執行.前一個合成表的輸出產物可以作為後一個的輸入材料.<br>三個合成欄用於存儲合成表，而下方18格子用於存放材料.
 ie.manual.entry.assembler2=輸入側不光可以輸入物品，還能夠輸入液體用於裝填機器內部的三個儲罐.這些儲罐中的液體可以被用於取代合成表中的液體容器例如水桶. <br>機器的能量輸入在頂部中央的方塊.
 
@@ -1261,13 +1261,13 @@ ie.manual.entry.autoworkbench1=成功組裝時，可以在其繪圖表上放置�
 
 ie.manual.entry.bottlingMachine.name=灌裝機
 ie.manual.entry.bottlingMachine.subtext=裝滿它!
-ie.manual.entry.bottlingMachine0=灌裝機能夠將液體注入到容器當中.搭建結構如上方展示，輸送帶的方向很重要不過可以鏡像.為了完成該結構，用工程師錘右擊中間的輸送帶.
-ie.manual.entry.bottlingMachine1=液體的輸入端位於底層中央，物品通過輸送帶輸入.輸送帶的方向應該很清楚的展示了輸入輸出的方向.能量輸入端位於頂部.<br>通常情況下，灌裝機能夠裝填任何可裝填的容器(桶、玻璃瓶).他同樣能夠接受一些特定的液體容器，例如 <link;drill;§o§n採礦機械鑽§r> 或 <link;jerrycan;§o§n油罐§r> .
+ie.manual.entry.bottlingMachine0=灌裝機能夠將液體注入到容器當中。搭建結構如上方展示，輸送帶的方向很重要不過可以鏡像。為了完成該結構，用工程師錘右擊中間的輸送帶。
+ie.manual.entry.bottlingMachine1=液體的輸入端位於底層中央，物品通過輸送帶輸入。輸送帶的方向應該很清楚的展示了輸入輸出的方向。能量輸入端位於頂部。<br>通常情況下，灌裝機能夠裝填任何可裝填的容器(桶、玻璃瓶)。他同樣能夠接受一些特定的液體容器，例如 <link;drill;§o§n採礦機械鑽§r> 或 <link;jerrycan;§o§n油罐§r> 。
 
 ie.manual.entry.chargingStation.name=充電站
 ie.manual.entry.chargingStation.subtext=養精蓄銳
-ie.manual.entry.chargingStation0=充電站允許你為工具或其它物品進行充電.能量能夠從底部或後部輸入，而物品可以手動放入或自動輸入.
-ie.manual.entry.chargingStation1=在前面的電子管得到物品的電流充電反饋時，充電站也將輸出一個相同的比較器信號.
+ie.manual.entry.chargingStation0=充電站允許你為工具或其它物品進行充電。能量能夠從底部或後部輸入，而物品可以手動放入或自動輸入。
+ie.manual.entry.chargingStation1=在前面的電子管得到物品的電流充電反饋時，充電站也將輸出一個相同的比較器信號。
 
 ie.manual.entry.belljar.name=農業鐘
 ie.manual.entry.belljar.subtext=在地化的熱帶雨林
@@ -1333,14 +1333,14 @@ ie.manual.entry.biodiesel4=煉油廠的正前方位置是作為液體輸出的�
 
 ie.manual.entry.conveyor.name=輸送帶
 ie.manual.entry.conveyor.subtext=誰還需要鐵路?
-ie.manual.entry.conveyor0=輸送帶運輸是把附近物品搬回家的便捷途徑，當它有足夠的動力時可以搬運像是牛，羊之類的生物，它們真正的優勢在於物品的運輸.<br>把物品丟到輸送帶上即可實現搬運.如果末端是能夠接收物品的容器，那物品將會被放入到容器裡.
-ie.manual.entry.conveyor1=對著輸送帶的漏斗可以把物品輸出為可掉落形態，使用工程師錘右擊可以轉動傳送器的方向，潛行時右擊則可調整為上行或下行.<br>
-ie.manual.entry.conveyor2=卸貨輸送帶僅僅是普通輸送帶中間多了一個艙口，允許貨物從中間傳輸到下面.<br>物品會自動輸送進下放的存儲容器或者，如果下方是空的物品會被扔在地上.
+ie.manual.entry.conveyor0=輸送帶運輸是把附近物品搬回家的便捷途徑，當它有足夠的動力時可以搬運像是牛，羊之類的生物，它們真正的優勢在於物品的運輸。<br>把物品丟到輸送帶上即可實現搬運.如果末端是能夠接收物品的容器，那物品將會被放入到容器裡。
+ie.manual.entry.conveyor1=對著輸送帶的漏斗可以把物品輸出為可掉落形態，使用工程師錘右擊可以轉動傳送器的方向，潛行時右擊則可調整為上行或下行。<br>
+ie.manual.entry.conveyor2=卸貨輸送帶僅僅是普通輸送帶中間多了一個艙口，允許貨物從中間傳輸到下面。<br>物品會自動輸送進下放的存儲容器或者，如果下方是空的物品會被扔在地上。
 ie.manual.entry.conveyor3=提取輸送帶具有和漏斗類似的功能，可以將物品從容器中取出，但是和漏斗不一樣的是，它沒有內部儲存空間，它會直接將提取的物品放到輸送帶上。<br>潛行+工程師錘右鍵可以改變它的方向。
-ie.manual.entry.conveyor4=垂直輸送帶可以貼在牆上，使垂直運輸物品稱為可能.用桶還可以讓它運輸實體.雖然用桶可以運輸實體，但輸送帶還是不能運輸液體.<br>這種輸送帶可以自動將物品輸入容器中，也可以接收頂上的輸送帶掉下來的物品.
-ie.manual.entry.conveyor5=分流輸送帶的功能很簡單，將運送來的物品和實體不斷交替地分流到左右兩側，籍此可以讓你的物品均勻地分配到多個工廠裡.
-ie.manual.entry.conveyor6=覆蓋輸送帶的工作原理與普通輸送帶相似，但是它被一個鷹架覆蓋，防止玩家從中拾取物品。<br>您可以用其他類型的腳手架或玻璃點擊它以更改封面的外觀。
-ie.manual.entry.conveyor7=同樣的，提取和垂直輸送帶也可以在鷹架中進行覆蓋，以達到防止玩家從中拾取物品的效益，同時仍然像平時一樣運作。
+ie.manual.entry.conveyor4=垂直輸送帶可以貼在牆上，使垂直運輸物品稱為可能。用桶還可以讓它運輸實體。雖然可以運輸桶裝液體，但輸送帶還是不能直接運輸液體。<br>這種輸送帶可以自動將物品輸入容器中，也可以接收頂上的輸送帶掉下來的物品。
+ie.manual.entry.conveyor5=分流輸送帶的功能很簡單，將運送來的物品和實體不斷交替地分流到左右兩側，籍此可以讓你的物品均勻地分配到多個工廠裡。
+ie.manual.entry.conveyor6=鷹架輸送帶的工作原理與普通輸送帶相似，但是它被一個鷹架覆蓋，防止玩家從中拾取物品。<br>您可以用其他類型的鷹架或玻璃點擊它以更改它的外觀。
+ie.manual.entry.conveyor7=同樣的，提取和垂直輸送帶也可以用鷹架進行覆蓋，以達到防止玩家從中拾取物品的效益，同時仍然像平時一樣運作。
 
 ie.manual.entry.furnaceHeater.name=外置加熱器
 ie.manual.entry.furnaceHeater.subtext=你現在可以用能量烹飪食物啦!
