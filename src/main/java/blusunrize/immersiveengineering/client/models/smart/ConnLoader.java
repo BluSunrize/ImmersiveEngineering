@@ -23,6 +23,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
 
@@ -96,19 +97,20 @@ public class ConnLoader implements ICustomModelLoader
 	}
 
 	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
 		ConnModelReal.cache.invalidateAll();
 	}
 
 	@Override
-	public boolean accepts(ResourceLocation modelLocation)
+	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
 		return modelLocation.getResourcePath().contains(RESOURCE_LOCATION);
 	}
 
+	@Nonnull
 	@Override
-	public IModel loadModel(ResourceLocation modelLocation)
+	public IModel loadModel(@Nonnull ResourceLocation modelLocation)
 	{
 		String resourcePath = modelLocation.getResourcePath();
 		int pos = resourcePath.indexOf("conn_");
@@ -141,15 +143,17 @@ public class ConnLoader implements ICustomModelLoader
 
 		public ConnModelBase(ResourceLocation b)
 		{
-			this(b, ImmutableMap.of("", ""));
+			this(b, ImmutableMap.of());
 		}
 
+		@Nonnull
 		@Override
 		public Collection<ResourceLocation> getDependencies()
 		{
 			return ImmutableList.of(base);
 		}
 
+		@Nonnull
 		@Override
 		public Collection<ResourceLocation> getTextures()
 		{
@@ -167,8 +171,9 @@ public class ConnLoader implements ICustomModelLoader
 			}
 		}
 
+		@Nonnull
 		@Override
-		public IBakedModel bake(IModelState state, VertexFormat format,	Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+		public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format, @Nonnull Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 		{
 			try
 			{
