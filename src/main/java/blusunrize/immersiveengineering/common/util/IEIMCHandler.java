@@ -23,17 +23,17 @@ public class IEIMCHandler
 
 	public static void init()
 	{
-		MESSAGE_HANDLERS.put("fluidpipeCover", Pair.of(IMCMessage::isFunctionMessage, imcMessage -> {
+		MESSAGE_HANDLERS.put("fluidpipe_cover", Pair.of(IMCMessage::isFunctionMessage, imcMessage -> {
 			Optional<Function<ItemStack, Boolean>> opFunc = imcMessage.getFunctionValue(ItemStack.class, Boolean.class);
 			opFunc.ifPresent(itemStackBooleanFunction -> TileEntityFluidPipe.validPipeCovers.add(itemStackBooleanFunction));
 		}));
 
-		MESSAGE_HANDLERS.put("fluidpipeCover", Pair.of(IMCMessage::isFunctionMessage, imcMessage -> {
+		MESSAGE_HANDLERS.put("fluidpipe_cover_climb", Pair.of(IMCMessage::isFunctionMessage, imcMessage -> {
 			Optional<Function<ItemStack, Boolean>> opFunc = imcMessage.getFunctionValue(ItemStack.class, Boolean.class);
 			opFunc.ifPresent(itemStackBooleanFunction -> TileEntityFluidPipe.climbablePipeCovers.add(itemStackBooleanFunction));
 		}));
 
-		MESSAGE_HANDLERS.put("shaderbagExclude", Pair.of(IMCMessage::isStringMessage, imcMessage -> {
+		MESSAGE_HANDLERS.put("shaderbag_exclude", Pair.of(IMCMessage::isStringMessage, imcMessage -> {
 			String s = imcMessage.getStringValue();
 			try
 			{
