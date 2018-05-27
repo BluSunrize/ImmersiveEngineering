@@ -232,11 +232,4 @@ public class CommonProxy implements IGuiHandler
 	public void clearRenderCaches()
 	{
 	}
-
-	public void addFailedConnection(Connection connection, BlockPos reason, EntityPlayer player)
-	{
-		ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(connection, reason, player.world),
-				new TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
-						64));
-	}
 }
