@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -30,6 +31,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,6 +49,8 @@ import java.util.function.Function;
 public class ConveyorExtract extends ConveyorBasic
 {
 	private EnumFacing extractDirection;
+	private int transferCooldown = -1;
+	private int transferTickrate = 8;
 	private float extension = -1;
 
 	public ConveyorExtract(EnumFacing conveyorDir)
@@ -195,8 +199,9 @@ public class ConveyorExtract extends ConveyorBasic
 	@Override
 	public void onUpdate(TileEntity tile, EnumFacing facing)
 	{
-		if(!tile.getWorld().isRemote&&isActive(tile)&&tile.getWorld().getTotalWorldTime()%8==0)
+		if(!tile.getWorld().isRemote&&isActive(tile)&&this.transferCooldown--<=0)
 		{
+			this.transferCooldown = 0;
 			World world = tile.getWorld();
 			BlockPos neighbour = tile.getPos().offset(this.extractDirection);
 			if(!world.isAirBlock(neighbour))
@@ -217,6 +222,8 @@ public class ConveyorExtract extends ConveyorBasic
 							entity.motionZ = 0;
 							world.spawnEntity(entity);
 							this.onItemDeployed(tile, entity, facing);
+							this.transferCooldown = this.transferTickrate;
+							return;
 						}
 					}
 				}
@@ -233,6 +240,19 @@ public class ConveyorExtract extends ConveyorBasic
 			if(dir==((IConveyorTile)tile).getFacing())
 				dir = dir.rotateY();
 			this.extractDirection = dir;
+			return true;
+		}
+		if(Utils.isWirecutter(heldItem))
+		{
+			if(this.transferTickrate==4)
+				this.transferTickrate = 8;
+			else if(this.transferTickrate==8)
+				this.transferTickrate = 16;
+			else if(this.transferTickrate==16)
+				this.transferTickrate = 20;
+			else if(this.transferTickrate==20)
+				this.transferTickrate = 4;
+			player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_INFO+"tickrate", this.transferTickrate), true);
 			return true;
 		}
 		return false;
@@ -276,6 +296,8 @@ public class ConveyorExtract extends ConveyorBasic
 	{
 		NBTTagCompound nbt = super.writeConveyorNBT();
 		nbt.setInteger("extractDirection", extractDirection.ordinal());
+		nbt.setInteger("transferCooldown", transferCooldown);
+		nbt.setInteger("transferTickrate", transferTickrate);
 		return nbt;
 	}
 
@@ -284,5 +306,7 @@ public class ConveyorExtract extends ConveyorBasic
 	{
 		super.readConveyorNBT(nbt);
 		extractDirection = EnumFacing.values()[nbt.getInteger("extractDirection")];
+		transferCooldown = nbt.getInteger("transferCooldown");
+		transferTickrate = nbt.getInteger("transferTickrate");
 	}
 }

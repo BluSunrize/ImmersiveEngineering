@@ -498,6 +498,13 @@ public class Utils
 		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER);
 	}
 
+	public static boolean isWirecutter(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_WIRECUTTER);
+	}
+
 	public static boolean canBlockDamageSource(EntityLivingBase entity, DamageSource damageSourceIn)
 	{
 		if(!damageSourceIn.isUnblockable() && entity.isActiveItemStackBlocking())
