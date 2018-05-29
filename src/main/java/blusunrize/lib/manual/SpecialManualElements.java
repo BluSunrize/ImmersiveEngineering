@@ -644,7 +644,13 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		int recipePage;
 		int yOff;
 
-		public CraftingMulti(ManualInstance manual, Object... stacks)
+		// Passing an Object[] for Object... is hard, and Object... and Object[] collide
+		public static CraftingMulti create(ManualInstance manual, Object... stacks)
+		{
+			return new CraftingMulti(manual, stacks);
+		}
+
+		public CraftingMulti(ManualInstance manual, Object[] stacks)
 		{
 			super(manual);
 			this.stacks = stacks;
@@ -909,7 +915,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			if(displayList==null||displayList.isEmpty())
 				return ItemStack.EMPTY;
 
-			int perm = (int)(System.nanoTime()/1000000000%displayList.size());
+			int perm = (int)(System.currentTimeMillis()/1000%displayList.size());
 			return displayList.get(perm);
 		}
 	}

@@ -10,10 +10,6 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -29,7 +25,6 @@ import blusunrize.immersiveengineering.client.fx.ParticleIEBubble;
 import blusunrize.immersiveengineering.client.fx.ParticleSparks;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
-import blusunrize.immersiveengineering.client.manual.ManualPageShader;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
@@ -41,20 +36,15 @@ import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
@@ -62,9 +52,7 @@ import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
@@ -72,7 +60,6 @@ import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.lib.manual.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -132,8 +119,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -679,15 +664,15 @@ public class ClientProxy extends CommonProxy
 		ManualInstance ieMan = ManualHelper.getManual();
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting_multi"), s -> {
 			String[] parts = s.split(";");
-			Object[] stacks = new ItemStack[parts.length];
+			Object[] stacksAndRecipes = new Object[parts.length];
 			for (int i = 0; i < parts.length; i++)
-				stacks[i] = ManualUtils.getStackFromString(parts[i]);
-			return new SpecialManualElements.CraftingMulti(ieMan, stacks);
+				stacksAndRecipes[i] = ManualUtils.getRecipeObjFromString(parts[i]);
+			return new SpecialManualElements.CraftingMulti(ieMan, stacksAndRecipes);
 		});
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "image"),
 				s->new SpecialManualElements.Image(ieMan, s.split(";")));
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting"),
-				s-> new SpecialManualElements.Crafting(ieMan, ManualUtils.getStackFromString(s)));
+				s-> new SpecialManualElements.Crafting(ieMan, ManualUtils.getRecipeObjFromString(s)));
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
 				s-> new ManualPageMultiblock(ieMan, MultiblockHandler.getByUniqueName(s)));
 

@@ -317,21 +317,34 @@ public class ManualUtils
 				anchor = Integer.parseInt(parts[0].substring(0, plus));
 				offset = Integer.parseInt(parts[0].substring(plus + 1));
 			}
-			ResourceLocation resLoc;
-			if (parts[1].indexOf(':') >= 0)
-				resLoc = new ResourceLocation(parts[1]);
-			else
-				resLoc = new ResourceLocation(instance.getDefaultResourceDomain(), parts[1]);
+			ResourceLocation resLoc = getLocationForManual(parts[1], instance);
 			Function<String, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
 			splitter.addSpecialPage(anchor, offset, createElement.apply(parts[2]));
 		}
 	}
 
-	public static Object getStackFromString(String part)
+	private static ResourceLocation getLocationForManual(String s, ManualInstance instance)
 	{
-		int comma = part.indexOf(',');
-		ResourceLocation loc = new ResourceLocation(part.substring(0, comma));
-		int meta = Integer.parseInt(part.substring(comma+1));
-		return new ItemStack(Objects.requireNonNull(Item.REGISTRY.getObject(loc), loc.toString()), 1, meta);
+		if (s.indexOf(':') >= 0)
+			return new ResourceLocation(s);
+		else
+			return new ResourceLocation(instance.getDefaultResourceDomain(), s);
+	}
+
+	public static Object getRecipeObjFromString(ManualInstance m, String part)
+	{
+		String[] split = part.split(",");
+		switch (split.length)
+		{
+			case 1:
+				return getLocationForManual(split[0], m);
+			case 2:
+				ResourceLocation loc = new ResourceLocation(split[0]);
+				int meta = Integer.parseInt(split[1]);
+				return new ItemStack(Objects.requireNonNull(Item.REGISTRY.getObject(loc), loc.toString()), 1, meta);
+			default:
+				if (split.length>2 && split.length)
+		}
+		throw new IllegalArgumentException("Can't create a recipe from "+part);
 	}
 }
