@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
 public class GuiRevolver extends GuiIEContainerBase
 {
@@ -45,7 +45,7 @@ public class GuiRevolver extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 		this.drawTexturedModalRect(guiLeft+(offset>0?offset:0),guiTop+77, 0,125, 176,89);
 

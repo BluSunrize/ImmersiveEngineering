@@ -28,7 +28,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,7 +102,7 @@ public class GuiFluidSorter extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 		for(int side=0; side<6; side++)
@@ -125,7 +124,7 @@ public class GuiFluidSorter extends GuiIEContainerBase
 			int x = guiLeft+30+(side/2)*58;
 			int y = guiTop+44+(side%2)*76;
 			String s = I18n.format("desc.immersiveengineering.info.blockSide."+EnumFacing.getFront(side).toString()).substring(0, 1);
-			GL11.glEnable(3042);
+			GlStateManager.enableBlend();
 			ClientUtils.font().drawString(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc, true);
 		}
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");

@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Collection;
 
@@ -172,9 +172,9 @@ public class ShaderCaseRevolver extends ShaderCase
 		if(modelPart.equals("cosmetic_compensator"))
 		{
 			if(pre)
-				GL11.glDisable(GL11.GL_CULL_FACE);
+				GlStateManager.disableCull();
 			else
-				GL11.glEnable(GL11.GL_CULL_FACE);
+				GlStateManager.enableCull();
 		}
 	}
 }

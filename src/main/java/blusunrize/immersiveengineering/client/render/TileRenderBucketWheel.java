@@ -124,12 +124,12 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 	//			return;
 	//		GL11.glPushMatrix();
 	//
-	//		GL11.glTranslated(x+.5, y+.5, z+.5);
+	//		GlStateManager.translate(x+.5, y+.5, z+.5);
 	//		GL11.glRotatef(wheel.facing==3?180: wheel.facing==5?-90: wheel.facing==4?90: 0, 0,1,0);
 	//
 	//		if(wheel.mirrored)
 	//		{
-	//			GL11.glScalef(1,1,-1);
+	//			GlStateManager.scale(1,1,-1);
 	//			GL11.glDisable(GL11.GL_CULL_FACE);
 	//		}
 	//
@@ -190,11 +190,11 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 	//
 	//		if(wheel.mirrored)
 	//		{
-	//			GL11.glScalef(1,1,-1);
+	//			GlStateManager.scale(1,1,-1);
 	//			GL11.glEnable(GL11.GL_CULL_FACE);
 	//		}
 	//
-	//		GL11.glPopMatrix();
+	//		GlStateManager.popMatrix();
 	//	}
 
 }

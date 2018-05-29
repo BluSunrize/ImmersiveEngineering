@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityToolbox;
 import blusunrize.immersiveengineering.common.gui.ContainerToolboxBlock;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ public class GuiToolboxBlock extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/toolbox.png");
 		this.drawTexturedModalRect(guiLeft,guiTop-17, 0,0, 176,ySize+17);
 	}

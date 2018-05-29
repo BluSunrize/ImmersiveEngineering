@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -25,9 +25,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class GuiSorter extends GuiIEContainerBase
 {
@@ -63,7 +66,7 @@ public class GuiSorter extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 		for(int side=0; side<6; side++)
@@ -71,7 +74,7 @@ public class GuiSorter extends GuiIEContainerBase
 			int x = guiLeft+ 30+ (side/2)*58;
 			int y = guiTop+ 44+ (side%2)*76;
 			String s = I18n.format("desc.immersiveengineering.info.blockSide."+EnumFacing.getFront(side).toString()).substring(0, 1);
-			GL11.glEnable(3042);
+			GlStateManager.enableBlend();
 			ClientUtils.font().drawString(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc, true);
 		}
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
@@ -125,11 +128,10 @@ public class GuiSorter extends GuiIEContainerBase
 		{
 			if (this.visible)
 			{
-				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 				this.hovered = mx >= this.x && my >= this.y && mx < this.x + this.width && my < this.y + this.height;
-				GL11.glEnable(GL11.GL_BLEND);
-				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				GlStateManager.enableBlend();
+				GlStateManager.tryBlendFuncSeparate(SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 				this.drawTexturedModalRect(this.x, this.y, 176+type*18,(active?3:21), this.width, this.height);
 				this.mouseDragged(mc, mx, my);
 			}

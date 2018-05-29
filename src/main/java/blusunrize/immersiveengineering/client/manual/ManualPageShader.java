@@ -24,14 +24,13 @@ import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,23 +122,23 @@ public class ManualPageShader extends ManualPages
 	@Override
 	public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 	{
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableGUIStandardItemLighting();
 		float scale = 2;
-		GL11.glScalef(scale,scale,scale);
+		GlStateManager.scale(scale,scale,scale);
 		boolean examples = exampleItems!=null && exampleItems.length>0;
 
 		ManualUtils.renderItem().renderItemAndEffectIntoGUI(shaderItem, (int)((x+10+(examples?0:34))/scale),(int)((y-8)/scale));
 		if(examples && example>=0&&example<exampleItems.length)
 			ManualUtils.renderItem().renderItemAndEffectIntoGUI(exampleItems[example], (int)((x+63)/scale),(int)((y-8)/scale));
 
-		GL11.glScalef(1/scale,1/scale,1/scale);
+		GlStateManager.scale(1/scale,1/scale,1/scale);
 
 		if(unlocked)
 			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(gui.mc.player.ticksExisted), x+102, y + 136);
 
 		RenderHelper.disableStandardItemLighting();
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		GlStateManager.disableRescaleNormal();
 
 		manual.fontRenderer.setUnicodeFlag(true);
 		String name = "§l"+shader.getName();

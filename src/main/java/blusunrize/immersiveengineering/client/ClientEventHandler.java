@@ -353,7 +353,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		connectionsRendered = true;
 	}
 	 */
@@ -752,13 +752,13 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					//					int chargeLevel = Math.min(99, (int)(duration/(float)chargeTime*100));
 					//					//					ClientUtils.drawTexturedRect(0,0, 64,32, 0/256f,64/256f, 96/256f,128/256f);
 					//
-					//					GL11.glScalef(1.5f,1.5f,1.5f);
+					//					GlStateManager.scale(1.5f,1.5f,1.5f);
 					//					int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
 					//					ClientProxy.nixieFont.setDrawTubeFlag(false);
 					//					//					ClientProxy.nixieFont.drawString((chargeLevel<10?"0"+chargeLevel:""+chargeLevel), 19,3, col);
 					//					ClientProxy.nixieFont.setDrawTubeFlag(true);
 					//
-					//					GL11.glPopMatrix();
+					//					GlStateManager.popMatrix();
 					//				}
 
 					RayTraceResult mop = ClientUtils.mc().objectMouseOver;

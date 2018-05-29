@@ -996,7 +996,7 @@ public class ClientUtils
 	//		Tessellator tes = tes();
 	//		GL11.glPushMatrix();
 	//		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-	//		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+	//		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 	//		tes.startDrawingQuads();
 	//		tes.setNormal(0.0F, -1.0F, 0.0F);
 	//		renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 0, metadata));
@@ -1021,7 +1021,7 @@ public class ClientUtils
 	//		tes.setNormal(1.0F, 0.0F, 0.0F);
 	//		renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
 	//		tes.draw();
-	//		GL11.glPopMatrix();
+	//		GlStateManager.popMatrix();
 	//	}
 
 	//Cheers boni =P
@@ -1288,7 +1288,7 @@ public class ClientUtils
 			//            this.drawGradientRect(l1 + i + 2, i2 - 3 + 1, l1 + i + 3, i2 + k + 3 - 1, i1, j1);
 			//            this.drawGradientRect(l1 - 3, i2 - 3, l1 + i + 3, i2 - 3 + 1, i1, i1);
 			//            this.drawGradientRect(l1 - 3, i2 + k + 2, l1 + i + 3, i2 + k + 3, j1, j1);
-			GL11.glTranslated(0, 0, 300);
+			GlStateManager.translate(0, 0, 300);
 			int j1 = -267386864;
 			drawGradientRect(j2 - 3, k2 - 4, j2 + k + 3, k2 - 3, j1, j1);
 			drawGradientRect(j2 - 3, k2 + i1 + 3, j2 + k + 3, k2 + i1 + 4, j1, j1);
@@ -1301,7 +1301,7 @@ public class ClientUtils
 			drawGradientRect(j2 + k + 2, k2 - 3 + 1, j2 + k + 3, k2 + i1 + 3 - 1, k1, l1);
 			drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
 			drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
-			GL11.glTranslated(0, 0, -300);
+			GlStateManager.translate(0, 0, -300);
 
 			for(int i2 = 0; i2 < list.size(); ++i2)
 			{

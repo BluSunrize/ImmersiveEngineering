@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.*;
@@ -165,7 +164,7 @@ public class GuiManual extends GuiScreen
 	public void drawScreen(int mx, int my, float f)
 	{
 		manualTick++;
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		boolean uni = manual.fontRenderer.getUnicodeFlag();
 		manual.fontRenderer.setUnicodeFlag(true);
 		manual.entryRenderPre();
@@ -210,7 +209,7 @@ public class GuiManual extends GuiScreen
 			boolean b0 = mx>32&&mx<32+17 && my>179&&my<179+10;
 			boolean b1 = mx>135&&mx<135+17 && my>179&&my<179+10;
 
-			GL11.glEnable(GL11.GL_BLEND);
+			GlStateManager.enableBlend();
 			if(page>0)
 				this.drawTexturedModalRect(guiLeft+ 32,guiTop+179, 0,216+(b0?20:0), 16,10);
 			if(page<entry.getPages().length-1)
@@ -224,7 +223,7 @@ public class GuiManual extends GuiScreen
 			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2,guiTop+183, manual.getPagenumberColour(), 1, false);
 			manual.titleRenderPost();
 
-			GL11.glColor3f(1,1,1);
+			GlStateManager.color(1,1,1);
 			IManualPage mPage = (page<0||page>=entry.getPages().length)?null: entry.getPages()[page];
 			if(mPage!=null)
 				mPage.renderPage(this, guiLeft+32,guiTop+28, mx+guiLeft,my+guiTop);
@@ -315,17 +314,17 @@ public class GuiManual extends GuiScreen
 		int xx = (int)Math.floor(x/scale - (fr.getStringWidth(s)/2));
 		int yy = (int)Math.floor(y/scale - (fr.FONT_HEIGHT/2));
 		if(scale!=1)
-			GL11.glScalef(scale, scale, scale);
+			GlStateManager.scale(scale, scale, scale);
 		fr.drawString(s, xx,yy, colour, shadow);
 		if(scale!=1)
-			GL11.glScalef(1/scale, 1/scale, 1/scale);
+			GlStateManager.scale(1/scale, 1/scale, 1/scale);
 	}
 
 	@Override
 	public void drawGradientRect(int x1, int y1, int x2, int y2, int colour1, int colour2)
 	{
 		super.drawGradientRect(x1, y1, x2, y2, colour1, colour2);
-		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.enableBlend();
 	}
 	@Override
 	public void renderToolTip(ItemStack stack, int x, int y)

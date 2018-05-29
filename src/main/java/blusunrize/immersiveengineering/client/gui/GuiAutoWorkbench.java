@@ -18,11 +18,11 @@ import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -134,7 +134,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 

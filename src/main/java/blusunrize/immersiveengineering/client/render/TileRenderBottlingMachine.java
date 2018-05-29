@@ -187,6 +187,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 
 					BufferBuilder worldrenderer = tessellator.getBuffer();
 
+					//TODO move to GlStateManager if that ever gets the stencil functions
 					GL11.glEnable(GL11.GL_STENCIL_TEST);
 
 					GlStateManager.colorMask(false, false, false, false);

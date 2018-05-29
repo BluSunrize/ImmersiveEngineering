@@ -10,10 +10,19 @@ package blusunrize.immersiveengineering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE;
+import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
+import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ZERO;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 public class IENixieFontRender extends FontRenderer
 {
@@ -73,84 +82,87 @@ public class IENixieFontRender extends FontRenderer
 		this.c_green=g;
 		this.c_blue=b;
 		this.c_alpha=a;
-		GL11.glColor4f(r, g, b, a);
+		GlStateManager.color(r, g, b, a);
 	}
 
 	@Override
 	protected float renderDefaultChar(int ic, boolean italic)
 	{
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFunc(770, 771, 0, 1);
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ZERO, ONE);
 		bindTexture(this.locationFontTexture);
 
 		float italicOffset = italic ? 1.0F : 0.0F;
 
-		GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-		GL11.glTexCoord2f(0, .125f);
-		GL11.glVertex3f(this.posX+italicOffset, this.posY, 0.0F);
-		GL11.glTexCoord2f(0, .1874f);
-		GL11.glVertex3f(this.posX-italicOffset, this.posY+7.99F, 0.0F);
-		GL11.glTexCoord2f(.0625f, .125f);
-		GL11.glVertex3f(this.posX+9-1+italicOffset, this.posY, 0.0F);
-		GL11.glTexCoord2f(.0625f, .1874f);
-		GL11.glVertex3f(this.posX+9-1-italicOffset, this.posY+7.99F, 0.0F);
-		GL11.glEnd();
+		Tessellator tes = Tessellator.getInstance();
+		BufferBuilder bb = tes.getBuffer();
+		drawBackground(bb, tes, italicOffset);
 
 		super.renderDefaultChar(ic, italic);
 
-		GL11.glColor4f(c_red*.875f,c_green*.875f,c_blue*.875f,c_alpha*.375f);
-		this.posX-=.5f;
-		this.posY-=.5f;
+		GlStateManager.color(c_red*.875f, c_green*.875f, c_blue*.875f, c_alpha*.375f);
+		this.posX -= .5f;
+		this.posY -= .5f;
 		super.renderDefaultChar(ic, italic);
-		this.posX+=1;
-		this.posY+=1;
+		this.posX += 1;
+		this.posY += 1;
 		super.renderDefaultChar(ic, italic);
-		this.posX-=.5f;
-		this.posY-=.5f;
+		this.posX -= .5f;
+		this.posY -= .5f;
 
-		if(this.drawTube)
-		{
-			GL11.glColor4f(1,1,1,c_alpha);
-			bindTexture(this.tubeOverlay);
-			GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-			GL11.glTexCoord2f(0, 0);
-			GL11.glVertex3f(this.posX-1+italicOffset, this.posY-3, 0.0F);
-			GL11.glTexCoord2f(0, .874f);
-			GL11.glVertex3f(this.posX-1-italicOffset, this.posY+10.99F, 0.0F);
-			GL11.glTexCoord2f(.625f, 0);
-			GL11.glVertex3f(this.posX+9+italicOffset, this.posY-3, 0.0F);
-			GL11.glTexCoord2f(.625f, .874f);
-			GL11.glVertex3f(this.posX+9-italicOffset, this.posY+10.99F, 0.0F);
-			GL11.glEnd();
-		}
-		GL11.glColor4f(c_red,c_green,c_blue,c_alpha);
+		if (this.drawTube)
+			drawTube(bb, tes, italicOffset);
+		GlStateManager.color(c_red, c_green, c_blue, c_alpha);
 
 		return 10;
+	}
+
+	private void drawBackground(BufferBuilder bb, Tessellator tes, float italicOffset)
+	{
+		bb.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		bb.pos(this.posX+italicOffset, this.posY, 0.0F).
+				tex(0, .125f).endVertex();
+		bb.pos(this.posX-italicOffset, this.posY+7.99F, 0.0F).
+				tex(0, .1874f).endVertex();
+		bb.pos(this.posX+9-1-italicOffset, this.posY+7.99F, 0.0F).
+				tex(.0625f, .1874f).endVertex();
+		bb.pos(this.posX+9-1+italicOffset, this.posY, 0.0F).
+				tex(.0625f, .125f).endVertex();
+		tes.draw();
+	}
+
+	private void drawTube(BufferBuilder bb, Tessellator tes, float italicOffset)
+	{
+		GlStateManager.color(1, 1, 1, c_alpha);
+		bindTexture(this.tubeOverlay);
+		bb.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		bb.pos(this.posX-1+italicOffset, this.posY-3, 0.0F).
+				tex(0, 0).endVertex();
+		bb.pos(this.posX-1-italicOffset, this.posY+10.99F, 0.0F).
+				tex(0, .874f).endVertex();
+		bb.pos(this.posX+9-italicOffset, this.posY+10.99F, 0.0F).
+				tex(.625f, .874f).endVertex();
+		bb.pos(this.posX+9+italicOffset, this.posY-3, 0.0F).
+				tex(.625f, 0).endVertex();
+		tes.draw();
 	}
 
 	@Override
 	protected float renderUnicodeChar(char ic, boolean italic)
 	{
-		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.enableBlend();
 		OpenGlHelper.glBlendFunc(770, 771, 0, 1);
 		bindTexture(this.locationFontTexture);
 
 		float italicOffset = italic ? 1.0F : 0.0F;
 
-		GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-		GL11.glTexCoord2f(0, .125f);
-		GL11.glVertex3f(this.posX+italicOffset, this.posY, 0.0F);
-		GL11.glTexCoord2f(0, .1874f);
-		GL11.glVertex3f(this.posX-italicOffset, this.posY+7.99F, 0.0F);
-		GL11.glTexCoord2f(.0625f, .125f);
-		GL11.glVertex3f(this.posX+5-1+italicOffset, this.posY, 0.0F);
-		GL11.glTexCoord2f(.0625f, .1874f);
-		GL11.glVertex3f(this.posX+5-1-italicOffset, this.posY+7.99F, 0.0F);
-		GL11.glEnd();
+		Tessellator tes = Tessellator.getInstance();
+		BufferBuilder bb = tes.getBuffer();
+		drawBackground(bb, tes, italicOffset);
 
 		super.renderUnicodeChar(ic, italic);
 
-		GL11.glColor4f(c_red*.875f,c_green*.875f,c_blue*.875f,c_alpha*.375f);
+		GlStateManager.color(c_red*.875f,c_green*.875f,c_blue*.875f,c_alpha*.375f);
 		this.posX-=.5f;
 		this.posY-=.5f;
 		super.renderUnicodeChar(ic, italic);
@@ -161,21 +173,8 @@ public class IENixieFontRender extends FontRenderer
 		this.posY-=.5f;
 
 		if(this.drawTube)
-		{
-			GL11.glColor4f(1,1,1,c_alpha);
-			bindTexture(this.tubeOverlay);
-			GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-			GL11.glTexCoord2f(0, 0);
-			GL11.glVertex3f(this.posX-1+italicOffset, this.posY-1, 0.0F);
-			GL11.glTexCoord2f(0, .874f);
-			GL11.glVertex3f(this.posX-1-italicOffset, this.posY+9.99F, 0.0F);
-			GL11.glTexCoord2f(.625f, 0);
-			GL11.glVertex3f(this.posX+5f+italicOffset, this.posY-1, 0.0F);
-			GL11.glTexCoord2f(.625f, .874f);
-			GL11.glVertex3f(this.posX+5f-italicOffset, this.posY+9.99F, 0.0F);
-			GL11.glEnd();
-		}
-		GL11.glColor4f(c_red,c_green,c_blue,c_alpha);
+			drawTube(bb, tes, italicOffset);
+		GlStateManager.color(c_red,c_green,c_blue,c_alpha);
 		return 6;
 	}
 

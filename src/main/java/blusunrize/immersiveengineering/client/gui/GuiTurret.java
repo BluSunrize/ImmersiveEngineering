@@ -22,12 +22,12 @@ import blusunrize.immersiveengineering.common.gui.ContainerTurret;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class GuiTurret extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/turret.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 

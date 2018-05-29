@@ -18,12 +18,12 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockM
 import blusunrize.immersiveengineering.common.gui.ContainerMixer;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -96,7 +96,7 @@ public class GuiMixer extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/mixer.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 

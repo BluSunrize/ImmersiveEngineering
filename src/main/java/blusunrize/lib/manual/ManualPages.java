@@ -24,8 +24,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.*;
 
@@ -314,9 +312,9 @@ public abstract class ManualPages implements IManualPage
 									if(horizontalBars)
 									{
 										float scale = .5f;
-										GL11.glScalef(1, scale, 1);
+										GlStateManager.scale(1, scale, 1);
 										gui.drawGradientRect(x, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale), x+120, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale+1), manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
-										GL11.glScalef(1, 1/scale, 1);
+										GlStateManager.scale(1, 1/scale, 1);
 									}
 
 									yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
@@ -383,7 +381,7 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.enableRescaleNormal();
 			RenderHelper.enableGUIStandardItemLighting();
 			highlighted = ItemStack.EMPTY;
 			int yOffset = 0;
@@ -401,7 +399,7 @@ public abstract class ManualPages implements IManualPage
 				lineSum = line0+line1;
 				int lastLines = length%lineSum;
 				int lastLine = lastLines==line0?line0: lastLines==0?line1: lastLines%line0;
-				GL11.glScalef(scale, scale, scale);
+				GlStateManager.scale(scale, scale, scale);
 				/**
 				 RenderItem.getInstance().renderWithColor=true;
 				 */
@@ -424,10 +422,10 @@ public abstract class ManualPages implements IManualPage
 							highlighted = stacks.get(item);
 					}
 				}
-				GL11.glScalef(1/scale, 1/scale, 1/scale);
+				GlStateManager.scale(1/scale, 1/scale, 1/scale);
 			}
 			RenderHelper.disableStandardItemLighting();
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.disableRescaleNormal();
 			GlStateManager.enableBlend();
 			if(localizedText!=null&&!localizedText.isEmpty())
 				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x, y+yOffset, 120, manual.getTextColour());
@@ -550,7 +548,7 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.enableRescaleNormal();
 			RenderHelper.enableGUIStandardItemLighting();
 
 			int totalYOff = 0;
@@ -577,7 +575,7 @@ public abstract class ManualPages implements IManualPage
 			}
 
 			totalYOff = 0;
-			GL11.glTranslated(0, 0, 300);
+			GlStateManager.translate(0, 0, 300);
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(false);
 			/**
@@ -601,8 +599,8 @@ public abstract class ManualPages implements IManualPage
 				}
 			}
 
-			GL11.glTranslated(0, 0, -300);
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.translate(0, 0, -300);
+			GlStateManager.disableRescaleNormal();
 			GlStateManager.enableBlend();
 			RenderHelper.disableStandardItemLighting();
 
@@ -769,7 +767,7 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.enableRescaleNormal();
 			RenderHelper.enableGUIStandardItemLighting();
 
 			highlighted = ItemStack.EMPTY;
@@ -789,7 +787,7 @@ public abstract class ManualPages implements IManualPage
 
 			}
 
-			GL11.glTranslated(0, 0, 300);
+			GlStateManager.translate(0, 0, 300);
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(false);
 			/**RenderItem.getInstance().renderWithColor=true;*/
@@ -807,8 +805,8 @@ public abstract class ManualPages implements IManualPage
 						}
 			}
 
-			GL11.glTranslated(0, 0, -300);
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.translate(0, 0, -300);
+			GlStateManager.disableRescaleNormal();
 			GlStateManager.enableBlend();
 			RenderHelper.disableStandardItemLighting();
 

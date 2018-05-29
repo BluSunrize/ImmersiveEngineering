@@ -63,11 +63,11 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		int max = IEConfig.Machines.coredrill_time;
 		if(tile.process>0 && tile.process<max)
 		{
-			GL11.glRotatef( ((tile.process+partialTicks)*22.5f)%360f, 0,1,0);
+			GlStateManager.rotate( ((tile.process+partialTicks)*22.5f)%360f, 0,1,0);
 			float push = tile.process/(float)max;
 			if(tile.process>max/2)
 				push = 1-push;
-			GL11.glTranslated(0,-2.8f*push,0);
+			GlStateManager.translate(0,-2.8f*push,0);
 		}
 
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
