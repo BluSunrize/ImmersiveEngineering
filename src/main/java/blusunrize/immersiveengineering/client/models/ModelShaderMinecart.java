@@ -92,12 +92,14 @@ public class ModelShaderMinecart extends ModelMinecart
 
 							ClientUtils.mc().getTextureManager().bindTexture(sCase.getReplacementSprite(shader, null, ""+part, pass));
 
-							sCase.modifyRender(shader, null, ""+part, pass, true, false);
-								if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
-									sideModelsMirrored[part].render(f5);
-								else
-									sideModels[part].render(f5);
-							sCase.modifyRender(shader, null, ""+part, pass, false, false);
+							if(layers[pass].isDynamicLayer())
+								layers[pass].modifyRender(true, part);
+							if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
+								sideModelsMirrored[part].render(f5);
+							else
+								sideModels[part].render(f5);
+							if(layers[pass].isDynamicLayer())
+								layers[pass].modifyRender(false, part);
 
 							GlStateManager.color(1,1,1,1);
 							GlStateManager.scale(1/scale,1/scale,1/scale);

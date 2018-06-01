@@ -41,6 +41,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidStack;
@@ -177,7 +178,7 @@ public class CommonProxy implements IGuiHandler
 	public void spawnBubbleFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
 	}
-	public void spawnFractalFX(World world, double x, double y, double z, double scale, int prefixColour, float[][] colour)
+	public void spawnFractalFX(World world, double x, double y, double z, Vec3d direction, double scale, int prefixColour, float[][] colour)
 	{
 	}
 	public void draw3DBlockCauldron()

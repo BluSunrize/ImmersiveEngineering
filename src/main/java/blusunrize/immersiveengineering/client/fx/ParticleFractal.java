@@ -34,7 +34,7 @@ public class ParticleFractal extends Particle
 //	private EntityLivingBase attachedEntity;
 //	private EnumHandSide attachedHand;
 
-	public ParticleFractal(World world, double x, double y, double z, double speedX, double speedY, double speedZ, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
+	public ParticleFractal(World world, double x, double y, double z, double speedX, double speedY, double speedZ, Vec3d direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
 	{
 		super(world, x, y, z, speedX, speedY, speedZ);
 		this.particleMaxAge = maxAge;
@@ -45,8 +45,9 @@ public class ParticleFractal extends Particle
 		this.colourIn = colourIn;
 
 		this.pointsList = new Vec3d[points];
-		Vec3d startPos = new Vec3d(0, -.5*scale, 0);
-		Vec3d end = new Vec3d(0, .5*scale, 0);
+		System.out.println("dir: "+direction);
+		Vec3d startPos = direction.scale(-.5);
+		Vec3d end = direction.scale(.5);
 		Vec3d dist = end.subtract(startPos);
 		for(int i = 0; i < points; i++)
 		{
@@ -62,9 +63,9 @@ public class ParticleFractal extends Particle
 		}
 	}
 
-	public ParticleFractal(World world, double x, double y, double z, double scale, float[] colourOut, float[] colourIn)
+	public ParticleFractal(World world, double x, double y, double z, Vec3d direction, double scale, float[] colourOut, float[] colourIn)
 	{
-		this(world, x, y, z, 0, 0, 0, scale, 10, 16, colourOut, colourIn);
+		this(world, x, y, z, 0, 0, 0, direction, scale, 10, 16, colourOut, colourIn);
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class ParticleFractal extends Particle
 		buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
 		for(int i = iStart; i < iEnd; i++)
 		{
-			vecRender = pointsList[i].scale(mod).rotateYaw(3.1415926535f*mod);
+			vecRender = pointsList[i].scale(mod);//.rotateYaw(3.1415926535f*mod);
 			buffer.pos(posX+vecRender.x, posY+vecRender.y, posZ+vecRender.z).color(colourOut[0], colourOut[1], colourOut[2], colourOut[3]).endVertex();
 			vectorsScaled[i] = vecRender;
 		}

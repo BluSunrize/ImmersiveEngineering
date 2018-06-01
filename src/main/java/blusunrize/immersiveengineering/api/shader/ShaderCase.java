@@ -91,10 +91,13 @@ public abstract class ShaderCase
 	}
 
 	/**
+	 * DEPRECATED. WILL BE REMOVED IN 1.13
+	 *
 	 * @param pre indicates whether this is before or after the part was rendered
 	 * @return make specific changes to the render, like GL calls
 	 */
-	public abstract void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory);
+	@Deprecated
+	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory){}
 
 	public static class ShaderLayer
 	{
@@ -158,5 +161,31 @@ public abstract class ShaderCase
 		{
 			return colour;
 		}
+
+		/**@return if this layer is dynamic and should be excluded from batched rendering
+		 */
+		public boolean isDynamicLayer()
+		{
+			return false;
+		}
+		/** modify the render, provided that the layer is flagged as dynamic
+		 */
+		public void modifyRender(boolean pre, float partialTick)
+		{
+		}
+	}
+
+	public static class DynamicShaderLayer extends ShaderLayer
+	{
+		public DynamicShaderLayer(ResourceLocation texture, int colour)
+		{
+			super(texture, colour);
+		}
+
+		@Override
+		public boolean isDynamicLayer()
+{
+	return true;
+}
 	}
 }

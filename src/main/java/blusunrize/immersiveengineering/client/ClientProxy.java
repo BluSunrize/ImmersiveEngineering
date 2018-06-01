@@ -110,6 +110,7 @@ import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -1519,11 +1520,11 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void spawnFractalFX(World world, double x, double y, double z, double scale, int prefixColour, float[][] colour)
+	public void spawnFractalFX(World world, double x, double y, double z, Vec3d direction, double scale, int prefixColour, float[][] colour)
 	{
 		if(prefixColour >= 0)
 			colour = prefixColour==1?ParticleFractal.COLOUR_ORANGE: prefixColour==2?ParticleFractal.COLOUR_RED: ParticleFractal.COLOUR_LIGHTNING;
-		ParticleFractal particle = new ParticleFractal(world, x, y, z, scale, colour[0], colour[1]);
+		ParticleFractal particle = new ParticleFractal(world, x, y, z, direction, scale, colour[0], colour[1]);
 		ClientUtils.mc().effectRenderer.addEffect(particle);
 	}
 

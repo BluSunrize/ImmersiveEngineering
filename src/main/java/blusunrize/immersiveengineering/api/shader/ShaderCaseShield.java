@@ -42,9 +42,4 @@ public class ShaderCaseShield extends ShaderCase
 			return pass==getLayers().length-1;
 		return true;
 	}
-
-	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
-	{
-	}
 }

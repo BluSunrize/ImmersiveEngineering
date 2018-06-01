@@ -49,10 +49,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Timer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
@@ -1674,6 +1671,19 @@ public class ClientUtils
 		return ret;
 	}
 
+	public static int pulseRGBAlpha(int rgb, int tickrate, float min, float max)
+	{
+		float f_alpha = mc().player.ticksExisted%(tickrate*2)/(float)tickrate;
+		if(f_alpha > 1)
+			f_alpha = 2-f_alpha;
+		return changeRGBAlpha(rgb, MathHelper.clamp(f_alpha, min, max));
+
+	}
+	public static int changeRGBAlpha(int rgb, float alpha)
+	{
+		return (rgb&0x00ffffff)|((int)(alpha*255)<<24);
+	}
+
 	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
 	{
 		wr.pos(x0, y0, z1).endVertex();
@@ -1926,6 +1936,29 @@ public class ClientUtils
 			GlStateManager.enableTexture2D();
 		}
 
+		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+	}
+
+	private static Optional<Boolean> lightmapState;
+	public static void toggleLightmap(boolean pre, boolean disabled)
+	{
+		GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		if(pre)
+		{
+			lightmapState = Optional.of(GL11.glIsEnabled(GL11.GL_TEXTURE_2D));
+			if (disabled)
+				GlStateManager.disableTexture2D();
+			else
+				GlStateManager.enableTexture2D();
+		}
+		else if(lightmapState.isPresent())
+		{
+			if (lightmapState.get())
+				GlStateManager.enableTexture2D();
+			else
+				GlStateManager.disableTexture2D();
+			lightmapState = Optional.empty();
+		}
 		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 	}
 }

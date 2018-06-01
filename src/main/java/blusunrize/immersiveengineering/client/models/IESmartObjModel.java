@@ -296,10 +296,12 @@ public class IESmartObjModel extends OBJBakedModel
 			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
+		Map<BakedQuad, ShaderLayer> shaderedQuadMap = new HashMap<>();
 		for(String groupName : getModel().getMatLib().getGroups().keySet())
 		{
-			addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, quads);
+			addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, shaderedQuadMap);
 		}
+		quads.addAll(shaderedQuadMap.keySet());
 
 		if(callback != null)
 			quads = callback.modifyQuads(callbackObject, quads);
@@ -307,7 +309,7 @@ public class IESmartObjModel extends OBJBakedModel
 	}
 
 	public <T> void addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName, ShaderCase sCase,
-									 ItemStack shader, List<BakedQuad> quads)
+									 ItemStack shader, Map<BakedQuad, ShaderLayer> quads)
 	{
 
 		int maxPasses = 1;
@@ -431,7 +433,12 @@ public class IESmartObjModel extends OBJBakedModel
 						for (int i = 0; i < 4; i++)
 							putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
 						if (builder instanceof UnpackedBakedQuad.Builder)
-							quads.add(((UnpackedBakedQuad.Builder) builder).build());
+						{
+							//It's ugly, but it should do the trick
+							quads.put(((UnpackedBakedQuad.Builder) builder).build(), shaderLayer!=null && shaderLayer.isDynamicLayer()?shaderLayer:null);
+//							if(shaderLayer==null || !shaderLayer.isDynamicLayer())
+//							quads.put(((UnpackedBakedQuad.Builder) builder).build(), null);
+						}
 					}
 				}
 			}
