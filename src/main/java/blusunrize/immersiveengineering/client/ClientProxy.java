@@ -1158,13 +1158,28 @@ public class ClientProxy extends CommonProxy
 		fr.setUnicodeFlag(isUnicode);
 	}
 
-	private int compareVersions(String checked, String current)
+	private int compareVersions(String vA, String vB)
 	{
-		String num1 = checked==null?"0": checked.replaceAll("[^0-9]", "");
-		String num2 = current==null?"0": current.replaceAll("[^0-9]", "");
-		int n1 = num1.isEmpty()?0: Integer.parseInt(num1);
-		int n2 = num2.isEmpty()?0: Integer.parseInt(num2);
-		return Integer.compare(n1, n2);
+		String[] vPartsA = vA.split("[\\D]");
+		String[] vPartsB = vB.split("[\\D]");
+		if (vPartsA.length==0&&vPartsB.length==0)
+			return vA.compareTo(vB);
+        else if (vPartsA.length==0)
+			return -1;
+		else if (vPartsB.length==0)
+			return 1;
+
+		int length = Math.min(vPartsA.length, vPartsB.length);
+		for (int i = 0;i<length;i++) {
+			int pA = Integer.parseInt(vPartsA[i]);
+			int pB = Integer.parseInt(vPartsB[i]);
+			if (pA!=pB) {
+				return Integer.compare(pA, pB);
+			}
+		}
+		if (vPartsA.length != vPartsB.length)
+			return Integer.compare(vPartsA.length, vPartsB.length);
+		return vA.compareTo(vB);
 	}
 
 	private void addToMap(String readVersion, String currVersion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
