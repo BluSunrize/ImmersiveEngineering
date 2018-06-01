@@ -1,5 +1,7 @@
 #####Version 0.12-83
 - Added the Extracting Conveyor. It pulls from inventories like a Hopper (BluSunrize)
+- Added even fancier Shaders with pulsing colours and dynamic rendering. Quite open for addon devs, too! (BluSunrize)
+    - Added the IKELOS shader to make use of this
 - Changed ItmeRouters to allow pulling as well, allowing for filtered extraction (BluSunrize)
 - Changed BlastFurnace to not start using a new piece of coke if there is nothing left to smelt (Malte)
 - Fixed wires sometimes leaving behind the damage sources when broken (Malte)
@@ -7,6 +9,7 @@
 - Fixed Hammers and Wirecutters to be properly repairable (Malte)
 - Fixed Wirecutters to be enchantable (Malte)
 - Fixed texture and model errors being spammed (Malte)
+- Fixed dropping conveyor spawning countless fake items in certain setups (Malte)
 - Improved log output when a compat module fails (Malte)
 
 #####Version 0.12-82 - BUILT
