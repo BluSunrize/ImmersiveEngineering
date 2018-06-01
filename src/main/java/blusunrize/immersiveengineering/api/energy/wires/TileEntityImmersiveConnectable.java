@@ -350,7 +350,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		ImmersiveNetHandler.INSTANCE.addProxy(new IICProxy(this));
+		if (!world.isRemote)
+			ImmersiveNetHandler.INSTANCE.addProxy(new IICProxy(this));
 	}
 	@Override
 	public void validate()

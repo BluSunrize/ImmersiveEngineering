@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.state.IBlockState;
@@ -109,6 +110,7 @@ public class ImmersiveNetHandler
 			for (Connection con : conns)
 				addBlockData(te.getWorld(), con);
 		resetCachedIndirectConnections(te.getWorld(), te.getPos());
+		setProxy(new DimensionBlockPos(te), null);
 	}
 
 	public void addBlockData(World world, Connection con)
@@ -235,6 +237,7 @@ public class ImmersiveNetHandler
 	{
 		getMultimap(world).clear();
 		blockWireMap.removeObject(world);
+		proxies.clear();
 	}
 	public void clearConnectionsOriginatingFrom(BlockPos node, World world)
 	{

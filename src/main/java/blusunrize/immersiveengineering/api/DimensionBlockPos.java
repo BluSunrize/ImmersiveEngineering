@@ -8,8 +8,12 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class DimensionBlockPos extends BlockPos
 {
@@ -30,6 +34,11 @@ public class DimensionBlockPos extends BlockPos
 	public DimensionBlockPos(BlockPos pos, int dim)
 	{
 		this(pos.getX(), pos.getY(), pos.getZ(), dim);
+	}
+
+	public DimensionBlockPos(TileEntity te)
+	{
+		this(te.getPos(), te.getWorld());
 	}
 
 	@Override
@@ -61,6 +70,7 @@ public class DimensionBlockPos extends BlockPos
 			return false;
 		return getZ() == other.getZ();
 	}
+	@Nonnull
 	@Override
 	public String toString() {
 		return "Dimension: "+dimension+" Pos: "+super.toString();
