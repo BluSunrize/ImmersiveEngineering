@@ -10,6 +10,8 @@
 - Fixed Wirecutters to be enchantable (Malte)
 - Fixed texture and model errors being spammed (Malte)
 - Fixed dropping conveyor spawning countless fake items in certain setups (Malte)
+- Fixed conveyors causing infinite loops in rare cases (Malte)
+- Fixed a crash when breaking a connector after dying (Malte)
 - Improved log output when a compat module fails (Malte)
 
 #####Version 0.12-82 - BUILT

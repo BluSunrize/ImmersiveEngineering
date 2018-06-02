@@ -95,7 +95,7 @@ import java.util.Map.Entry;
 
 public class EventHandler
 {
-	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
+	public static final ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<Integer, BlockPos>> requestedBlockUpdates = new LinkedList<>();

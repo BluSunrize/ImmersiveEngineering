@@ -368,8 +368,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void invalidate()
 	{
 		super.invalidate();
-		if (!world.isRemote||!Minecraft.getMinecraft().isSingleplayer())
-			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(pos, world, this,
-					!world.isRemote&&world.getGameRules().getBoolean("doTileDrops"));
+		if (world.isRemote)
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(pos, world, this, false);
 	}
 }
