@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.Utils;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.state.IBlockState;
@@ -25,8 +25,14 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IntHashMap;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -858,7 +864,10 @@ public class ImmersiveNetHandler
 					Set<Triple<Connection, Vec3d, Vec3d>> conns = info.in;
 					Set<Pair<Connection, BlockPos>> toBreak = new HashSet<>();
 					for (Triple<Connection, Vec3d, Vec3d> conn : conns)
-						if (!conn.getLeft().start.equals(pos) && !conn.getLeft().end.equals(pos))
+					{
+						Vec3d[] verts = conn.getLeft().getSubVertices(worldIn);
+						if (!Utils.isVecInBlock(verts[0], pos, conn.getLeft().start) &&
+								!Utils.isVecInBlock(verts[verts.length-1], pos, conn.getLeft().start))
 						{
 							BlockPos dropPos = pos;
 							if (ApiUtils.preventsConnection(worldIn, pos, newState, conn.getMiddle(), conn.getRight()))
@@ -872,6 +881,7 @@ public class ImmersiveNetHandler
 								toBreak.add(new ImmutablePair<>(conn.getLeft(), dropPos));
 							}
 						}
+					}
 					for (Pair<Connection, BlockPos> b : toBreak)
 						removeConnectionAndDrop(b.getLeft(), worldIn, b.getRight());
 				}

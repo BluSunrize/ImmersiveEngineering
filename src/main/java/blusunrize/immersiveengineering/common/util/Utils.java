@@ -1155,6 +1155,16 @@ public class Utils
 		return delta.dotProduct(across)/across.lengthSquared();
 	}
 
+	public static boolean isVecInBlock(Vec3d vec3d, BlockPos pos, BlockPos offset)
+	{
+		return vec3d.x >= pos.getX()-offset.getX() &&
+				vec3d.x <= pos.getX()-offset.getX()+1 &&
+				vec3d.y >= pos.getY()-offset.getY() &&
+				vec3d.y <= pos.getY()-offset.getY()+1 &&
+				vec3d.z >= pos.getZ()-offset.getZ() &&
+				vec3d.z <= pos.getZ()-offset.getZ()+1;
+	}
+
 	public static class InventoryCraftingFalse extends InventoryCrafting
 	{
 		private static final Container nullContainer = new Container()
