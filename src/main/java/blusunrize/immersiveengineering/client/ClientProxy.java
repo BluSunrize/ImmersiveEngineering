@@ -1635,22 +1635,22 @@ public class ClientProxy extends CommonProxy
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)
 	{
 		Entry<String, Integer>[] sortedMapArray = map.entrySet().toArray(new Entry[0]);
-		ArrayList<String[]> list = new ArrayList();
+		ArrayList<String[]> list = new ArrayList<>();
 		try
 		{
-			for(int i = 0; i < sortedMapArray.length; i++)
+			for(Entry<String, Integer> entry : sortedMapArray)
 			{
-				String item = sortedMapArray[i].getKey();
-				if(ApiUtils.isExistingOreName(sortedMapArray[i].getKey()))
+				String item = entry.getKey();
+				if(ApiUtils.isExistingOreName(entry.getKey()))
 				{
-					ItemStack is = OreDictionary.getOres(sortedMapArray[i].getKey()).get(0);
+					ItemStack is = OreDictionary.getOres(entry.getKey()).get(0);
 					if(!is.isEmpty())
 						item = is.getDisplayName();
 				}
 
 				if(item!=null)
 				{
-					int bt = sortedMapArray[i].getValue();
+					int bt = entry.getValue();
 					String am = bt+" "+valueType;
 					list.add(new String[]{item, am});
 				}
@@ -1658,8 +1658,7 @@ public class ClientProxy extends CommonProxy
 		} catch(Exception e)
 		{
 		}
-		String[][] table = list.toArray(new String[0][]);
-		return table;
+		return list.toArray(new String[0][]);
 	}
 
 

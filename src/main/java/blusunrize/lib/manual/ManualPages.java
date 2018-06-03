@@ -296,30 +296,34 @@ public abstract class ManualPages implements IManualPage
 				}
 
 				int yOff = 0;
-				for(int i = 0; i < localizedTable.length; i++)
-					if(localizedTable[i]!=null)
-						for(int j = 0; j < localizedTable[i].length; j++)
-							if(localizedTable[i][j]!=null)
+				for(String[] line : localizedTable)
+					if(line !=null)
+					{
+						int height = 0;
+						for(int j = 0; j < line.length; j++)
+							if(line[j]!=null)
 							{
 								int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-								ManualUtils.drawSplitString(manual.fontRenderer, localizedTable[i][j], xx, y+textHeight+yOff, w, manual.getTextColour());
+								ManualUtils.drawSplitString(manual.fontRenderer, line[j], xx, y+textHeight+yOff, w, manual.getTextColour());
 								//							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
-								if(j!=0)
-								{
-									int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
-
-									if(horizontalBars)
-									{
-										float scale = .5f;
-										GlStateManager.scale(1, scale, 1);
-										gui.drawGradientRect(x, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale), x+120, (int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale+1), manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
-										GlStateManager.scale(1, 1/scale, 1);
-									}
-
-									yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
-								}
+								int l = manual.fontRenderer.listFormattedStringToWidth(line[j], w).size();
+								if(l > height)
+									height = l;
 							}
+
+						if(horizontalBars)
+						{
+							float scale = .5f;
+							GlStateManager.scale(1, scale, 1);
+							int barHeight = (int) ((y+textHeight+yOff+height*manual.fontRenderer.FONT_HEIGHT)/scale);
+							gui.drawGradientRect(x, barHeight, x+120, barHeight+1,
+									manual.getTextColour() | 0xff000000, manual.getTextColour() | 0xff000000);
+							GlStateManager.scale(1, 1/scale, 1);
+						}
+
+						yOff += height*(manual.fontRenderer.FONT_HEIGHT+1);
+					}
 
 				if(bars!=null)
 					for(int i = 0; i < bars.length; i++)
