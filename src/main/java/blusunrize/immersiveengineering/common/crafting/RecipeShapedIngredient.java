@@ -159,8 +159,8 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 
 	protected boolean checkMatchDo(InventoryCrafting inv, NonNullList<Ingredient> ingredients, int startX, int startY, boolean mirror, boolean rotate)
 	{
-		for(int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
-			for(int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++)
+		for(int x = 0; x < inv.getWidth(); x++)
+			for(int y = 0; y < inv.getHeight(); y++)
 			{
 				int subX = x - startX;
 				int subY = y - startY;
