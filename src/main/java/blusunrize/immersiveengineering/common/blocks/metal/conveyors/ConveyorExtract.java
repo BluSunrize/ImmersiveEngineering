@@ -191,6 +191,17 @@ public class ConveyorExtract extends ConveyorBasic
 	}
 
 	@Override
+	public boolean isActive(TileEntity tile)
+	{
+		return true;
+	}
+
+	private boolean isPowered(TileEntity tile)
+	{
+		return tile.getWorld().isBlockIndirectlyGettingPowered(tile.getPos()) > 0;
+	}
+
+	@Override
 	public boolean isTicking(TileEntity tile)
 	{
 		return true;
@@ -199,7 +210,7 @@ public class ConveyorExtract extends ConveyorBasic
 	@Override
 	public void onUpdate(TileEntity tile, EnumFacing facing)
 	{
-		if(!tile.getWorld().isRemote&&isActive(tile)&&this.transferCooldown--<=0)
+		if(!tile.getWorld().isRemote&&!isPowered(tile)&&this.transferCooldown-- <= 0)
 		{
 			this.transferCooldown = 0;
 			World world = tile.getWorld();
