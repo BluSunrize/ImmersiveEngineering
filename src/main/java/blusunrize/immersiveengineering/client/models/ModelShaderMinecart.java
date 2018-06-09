@@ -103,8 +103,8 @@ public class ModelShaderMinecart extends ModelMinecart
 
 							GlStateManager.color(1,1,1,1);
 							GlStateManager.scale(1/scale,1/scale,1/scale);
-							if(upScale)
-								scale += .001f;
+//							if(upScale)
+//								scale += .001f;
 						}
 				}
 
