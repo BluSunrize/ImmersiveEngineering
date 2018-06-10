@@ -69,7 +69,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	{
 		String key = super.getModelCacheKey(tile, facing);
 		if(!cover.isEmpty())
-			key += "s"+cover.getItem().getRegistryName()+cover.getMetadata();
+			key += "es"+cover.getItem().getRegistryName()+cover.getMetadata();
 		return key;
 	}
 
