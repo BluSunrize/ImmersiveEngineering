@@ -70,9 +70,13 @@ public class ConveyorExtract extends ConveyorBasic
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
 	private static final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/storage_steel"));
+	@SideOnly(Side.CLIENT)
 	private static final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/wooden_device_turntable_bottom"));
+	@SideOnly(Side.CLIENT)
 	private static final TextureAtlasSprite texture_curtain = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/cloth_device_stripcurtain"));
+	@SideOnly(Side.CLIENT)
 	private static final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/metal_multiblock_assembler"));
 
 	@Override
