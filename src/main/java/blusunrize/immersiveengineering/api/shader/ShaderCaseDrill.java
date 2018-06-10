@@ -53,7 +53,7 @@ public class ShaderCaseDrill extends ShaderCase
 
 	}
 
-	public ShaderCase addHeadLayers(ShaderLayer... addedLayers)
+	public ShaderCaseDrill addHeadLayers(ShaderLayer... addedLayers)
 	{
 		addLayers(layers.length, addedLayers);
 		headLayers+=addedLayers.length;

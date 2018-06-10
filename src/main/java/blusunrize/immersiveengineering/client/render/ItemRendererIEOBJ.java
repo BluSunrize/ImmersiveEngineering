@@ -152,5 +152,8 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 			bq.pipe(vbc);
 		}
 		tes.draw();
+		if(lastShaderLayer!=null)//finish dynamic call on final layer
+			lastShaderLayer.modifyRender(false, partialTicks);
+
 	}
 }
