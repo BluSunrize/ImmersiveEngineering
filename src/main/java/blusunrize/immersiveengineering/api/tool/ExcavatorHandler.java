@@ -95,27 +95,28 @@ public class ExcavatorHandler
 	}
 	public static MineralWorldInfo getMineralWorldInfo(World world, int chunkX, int chunkZ)
 	{
+		return getMineralWorldInfo(world, new DimensionChunkCoords(world.provider.getDimension(), chunkX, chunkZ), false);
+	}
+	public static MineralWorldInfo getMineralWorldInfo(World world, DimensionChunkCoords chunkCoords, boolean guaranteed)
+	{
 		if(world.isRemote)
 			return null;
-
-		int dim = world.provider.getDimension();
-		int dimensionTotalWeight = getDimensionTotalWeight(dim);
+		int dimensionTotalWeight = getDimensionTotalWeight(chunkCoords.dimension);
 		if(dimensionTotalWeight<=0)
 			return null;
-		DimensionChunkCoords coords = new DimensionChunkCoords(dim, chunkX,chunkZ);
-		MineralWorldInfo worldInfo = mineralCache.get(coords);
+		MineralWorldInfo worldInfo = mineralCache.get(chunkCoords);
 		if(worldInfo==null)
 		{
 			MineralMix mix = null;
-			Random r = world.getChunkFromChunkCoords(chunkX, chunkZ).getRandomWithSeed(940610);
+			Random r = world.getChunkFromChunkCoords(chunkCoords.x, chunkCoords.z).getRandomWithSeed(940610);
 			double dd = r.nextDouble();
-			boolean empty = dd>mineralChance;
+			boolean empty = !guaranteed && dd>mineralChance;
 			int query = r.nextInt();
 			if(!empty)
 			{
 				int weight = Math.abs(query%dimensionTotalWeight);
 				for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
-					if(e.getKey().isValid()&&e.getKey().validDimension(dim))
+					if(e.getKey().isValid()&&e.getKey().validDimension(chunkCoords.dimension))
 					{
 						weight -= e.getValue();
 						if(weight < 0)
@@ -127,7 +128,7 @@ public class ExcavatorHandler
 			}
 			worldInfo = new MineralWorldInfo();
 			worldInfo.mineral = mix;
-			mineralCache.put(coords, worldInfo);
+			mineralCache.put(chunkCoords, worldInfo);
 		}
 		return worldInfo;
 	}

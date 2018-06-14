@@ -267,7 +267,7 @@ public class VillageEngineersHouse extends Village
 	@Override
 	protected VillagerProfession chooseForgeProfession(int count, net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession prof)
 	{
-		return IEVillagerHandler.villagerProfession_engineer;
+		return IEVillagerHandler.PROF_ENGINEER;
 	}
 //	protected int func_180779_c(int i, int previousProfession)
 //	{
