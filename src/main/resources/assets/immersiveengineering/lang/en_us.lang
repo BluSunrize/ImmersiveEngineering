@@ -425,6 +425,8 @@ item.immersiveengineering.fluorescent_tube.name=Fluorescent Tube
 item.immersiveengineering.powerpack.name=Capacitor Backpack
 item.immersiveengineering.shield.name=Heavy Plated Shield
 
+item.immersiveengineering.map_orevein.name=Mineral Deposit Map
+
 #CREATIVE
 itemGroup.immersiveengineering=Immersive Engineering
 
