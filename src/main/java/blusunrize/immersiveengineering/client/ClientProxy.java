@@ -666,13 +666,13 @@ public class ClientProxy extends CommonProxy
 			String[] parts = s.split(";");
 			Object[] stacksAndRecipes = new Object[parts.length];
 			for (int i = 0; i < parts.length; i++)
-				stacksAndRecipes[i] = ManualUtils.getRecipeObjFromString(parts[i]);
+				stacksAndRecipes[i] = ManualUtils.getRecipeObjFromString(ieMan, parts[i]);
 			return new SpecialManualElements.CraftingMulti(ieMan, stacksAndRecipes);
 		});
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "image"),
 				s->new SpecialManualElements.Image(ieMan, s.split(";")));
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting"),
-				s-> new SpecialManualElements.Crafting(ieMan, ManualUtils.getRecipeObjFromString(s)));
+				s-> new SpecialManualElements.Crafting(ieMan, ManualUtils.getRecipeObjFromString(ieMan, s)));
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
 				s-> new ManualPageMultiblock(ieMan, MultiblockHandler.getByUniqueName(s)));
 

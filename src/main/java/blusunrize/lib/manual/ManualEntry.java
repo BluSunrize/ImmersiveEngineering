@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 
 public class ManualEntry
 {
-	private static final int WIDTH = 120;//TODO
 	private final ManualInstance manual;
 	private List<ManualPage> pages;
 	private final TextSplitter splitter;

@@ -204,7 +204,7 @@ public class TextSplitter
 		return false;
 	}
 
-	private String[] splitWhitespace(String in)
+	public static String[] splitWhitespace(String in)
 	{
 		List<String> parts = new ArrayList<>();
 		for (int i = 0; i < in.length(); )
@@ -236,7 +236,7 @@ public class TextSplitter
 	 * @return &1: add
 	 * &2: end here
 	 */
-	private byte shouldSplit(char start, char here)
+	private static byte shouldSplit(char start, char here)
 	{
 		byte ret = 0b01;
 		if (Character.isWhitespace(start) ^ Character.isWhitespace(here))

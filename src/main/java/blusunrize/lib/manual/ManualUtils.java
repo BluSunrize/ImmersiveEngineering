@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -26,6 +27,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.function.Function;
@@ -143,6 +146,8 @@ public class ManualUtils
 		fontRenderer.textColor = colour;
 		FloatBuffer currentGLColor = BufferUtils.createFloatBuffer(16);
 		int line = 0;
+		//TODO remove
+		fontRenderer.drawString("", 0, 0, colour);
 		for(Iterator<String> iterator = text.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
 		{
 			String next = iterator.next();
@@ -165,8 +170,63 @@ public class ManualUtils
 						}
 				}
 			}
-			fontRenderer.drawString(next, x, y, colour, false);
+			drawJustifiedLine(next, fontRenderer, x, y, colour, 120);
+			line++;
 		}
+	}
+
+	private static Method renderChar;
+	//TODO make this an AT
+	static {
+		try
+		{
+			renderChar = FontRenderer.class.getDeclaredMethod("renderChar", char.class, boolean.class);
+			renderChar.setAccessible(true);
+		}
+		catch (NoSuchMethodException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	//TODO this will break with control chars
+	public static void drawJustifiedLine(String line, FontRenderer renderer, int x, int y, int colour, int lineLength)
+	{
+		String[] tokens = TextSplitter.splitWhitespace(line);
+
+		int spaceLength = 0;
+		int wordLength = 0;
+		for (String token:tokens) {
+			if (Character.isWhitespace(token.charAt(0))) {
+				spaceLength += renderer.getStringWidth(token);
+			} else {
+				//spaceLength += token.length()-1;
+				wordLength += renderer.getStringWidth(token);
+			}
+		}
+		double spaceMultiplier = (lineLength-wordLength)/(double)spaceLength;
+
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x, y, 0);
+		for (String token:tokens) {
+			if (Character.isWhitespace(token.charAt(0))) {
+				GlStateManager.translate(renderer.getStringWidth(token)*spaceMultiplier, 0, 0);
+			} else {
+				for (int i = 0;i<token.length();i++) {
+					try
+					{
+						float width = (float) renderChar.invoke(renderer, token.charAt(i), false);
+						GlStateManager.translate(width, 0, 0);
+					}
+					catch (IllegalAccessException | InvocationTargetException e)
+					{
+						e.printStackTrace();
+					}
+
+				}
+			}
+		}
+		GlStateManager.popMatrix();
 	}
 
 	private static final String THIS = "this";
@@ -342,8 +402,6 @@ public class ManualUtils
 				ResourceLocation loc = new ResourceLocation(split[0]);
 				int meta = Integer.parseInt(split[1]);
 				return new ItemStack(Objects.requireNonNull(Item.REGISTRY.getObject(loc), loc.toString()), 1, meta);
-			default:
-				if (split.length>2 && split.length)
 		}
 		throw new IllegalArgumentException("Can't create a recipe from "+part);
 	}
