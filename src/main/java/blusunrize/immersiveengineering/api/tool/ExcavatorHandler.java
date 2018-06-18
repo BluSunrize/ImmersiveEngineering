@@ -163,7 +163,7 @@ public class ExcavatorHandler
 		public MineralMix addReplacement(String original, String replacement)
 		{
 			if(replacementOres==null)
-				replacementOres = new HashMap();
+				replacementOres = new HashMap<>();
 			replacementOres.put(original, replacement);
 			return this;
 		}
