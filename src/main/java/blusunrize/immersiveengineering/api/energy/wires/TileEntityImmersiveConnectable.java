@@ -334,6 +334,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 				return true;
 			}
 		};
+		//TODO thread safety!
 		for (Connection c : conns)
 		{
 			IImmersiveConnectable end = ApiUtils.toIIC(c.end, world, false);
@@ -358,11 +359,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		super.validate();
 		if (!world.isRemote)
-			synchronized (world.getMinecraftServer().futureTaskQueue)
-			{
-					world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
-							()->ImmersiveNetHandler.INSTANCE.onTEValidated(this), null));
-			}
+			ApiUtils.addFutureServerTask(world, ()->ImmersiveNetHandler.INSTANCE.onTEValidated(this));
 	}
 	@Override
 	public void invalidate()

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -47,9 +48,11 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -438,11 +441,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
-//	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
-			((INeighbourChangeTile)tile).onNeighborBlockChange(pos);
+		if (!world.isRemote)
+			ApiUtils.addFutureServerTask(world, () ->
+			{
+				if (world.isBlockLoaded(pos))
+				{
+					TileEntity tile = world.getTileEntity(pos);
+					if (tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
+						((INeighbourChangeTile) tile).onNeighborBlockChange(fromPos);
+				}
+			});
 	}
 
 	@Override

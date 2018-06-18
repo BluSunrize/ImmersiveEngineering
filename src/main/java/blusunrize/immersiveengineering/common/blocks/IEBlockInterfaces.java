@@ -312,7 +312,7 @@ public class IEBlockInterfaces
 
 	public interface INeighbourChangeTile
 	{
-		void onNeighborBlockChange(BlockPos pos);
+		void onNeighborBlockChange(BlockPos otherPos);
 	}
 
 	public interface IPropertyPassthrough

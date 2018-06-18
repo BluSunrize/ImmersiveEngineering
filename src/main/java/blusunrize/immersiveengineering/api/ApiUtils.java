@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.common.util.concurrent.ListenableFutureTask;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -994,6 +995,16 @@ public class ApiUtils
 				retConn = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), retConn);
 		}
 		return retConn;
+	}
+
+	public static void addFutureServerTask(World world, Runnable task)
+	{
+		if (world.getMinecraftServer() != null)
+			synchronized (world.getMinecraftServer().futureTaskQueue)
+			{
+				world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
+						task, null));
+			}
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>
