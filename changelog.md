@@ -15,6 +15,8 @@
 - Fixed wires connected to transformers breaking when they shouldn't (Malte)
 - Fixed pipes accessing the world from wrong threads (Malte)
 - Added a config option to disable all use of the stencil buffer (Malte)
+- Fixed a dupe bug (Malte)
+- Fixed the skyhook for vertical wires (Malte)
 - Improved log output when a compat module fails (Malte)
 
 #####Version 0.12-82 - BUILT

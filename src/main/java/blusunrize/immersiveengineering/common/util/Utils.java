@@ -1151,8 +1151,15 @@ public class Utils
 	 */
 	public static double getCoeffForMinDistance(Vec3d point, Vec3d line, Vec3d across)
 	{
-		Vec3d delta = point.subtract(line);
-		return delta.dotProduct(across)/across.lengthSquared();
+		if (across.x==0&&across.z==0)
+		{
+			return (point.y-line.y)/across.y;
+		}
+		else
+		{
+			Vec3d delta = point.subtract(line);
+			return delta.dotProduct(across)/across.lengthVector();
+		}
 	}
 
 	public static boolean isVecInBlock(Vec3d vec3d, BlockPos pos, BlockPos offset)

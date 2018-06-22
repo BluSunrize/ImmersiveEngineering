@@ -29,10 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -663,7 +660,7 @@ public class ImmersiveNetHandler
 		public int length;
 		public Vec3d[] catenaryVertices;
 		public static final int vertices = 17;
-
+		public boolean vertical = false;
 		/**
 		 * Used to calculate the catenary vertices:
 		 * Y = a * cosh((( X-offsetX)/a)+offsetY
@@ -691,7 +688,10 @@ public class ImmersiveNetHandler
 		public Vec3d[] getSubVertices(Vec3d start, Vec3d end)
 		{
 			if(catenaryVertices==null)
+			{
 				catenaryVertices = getConnectionCatenary(this, start, end);
+				vertical = start.x==end.x && start.z==end.z;
+			}
 			return catenaryVertices;
 		}
 
@@ -703,7 +703,12 @@ public class ImmersiveNetHandler
 
 		public Vec3d getVecAt(double pos, Vec3d vStart, Vec3d across, double lengthHor)
 		{
-			return vStart.addVector(pos*across.x, catA * Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
+			getSubVertices(vStart, vStart.add(across));
+			pos = MathHelper.clamp(pos, 0, 1);
+			if (vertical)
+				return vStart.add(across.scale(pos/across.lengthVector()));
+			else
+				return vStart.addVector(pos*across.x, catA * Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
 					pos*across.z);
 		}
 

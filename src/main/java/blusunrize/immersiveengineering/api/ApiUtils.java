@@ -381,7 +381,13 @@ public class ApiUtils
 		boolean vertical = end.x==start.x && end.z==start.z;
 
 		if(vertical)
-			return new Vec3d[]{new Vec3d(start.x, start.y, start.z), new Vec3d(end.x, end.y, end.z)};
+		{
+			Vec3d[] ret = new Vec3d[vertices+1];
+			double height = end.y-start.y;
+			for (int i = 0;i<vertices+1;i++)
+				ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
+			return ret;
+		}
 
 		return getConnectionCatenary(start, end, connection.cableType.getSlack(), connection);
 	}

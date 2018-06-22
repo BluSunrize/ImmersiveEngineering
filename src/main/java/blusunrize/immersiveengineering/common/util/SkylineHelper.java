@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
+import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
 
 public class SkylineHelper
 {
@@ -46,13 +47,13 @@ public class SkylineHelper
 			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
 
 		Vec3d pos = player.getPositionEyes(0);
-		Vec3d across = new Vec3d(vEnd.x-vStart.x, 0, vEnd.z-vStart.z);
+		Vec3d across = new Vec3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
 		double t = Utils.getCoeffForMinDistance(pos, vStart, across);
 		connection.getSubVertices(player.world);
-		pos = connection.getVecAt(t, vStart, across, across.lengthVector());
-		int tInt = MathHelper.clamp(0, (int)(t*16), 15);
-
+		pos = connection.getVecAt(t, vStart, across, Math.sqrt(across.x*across.x+across.z*across.z));
 		Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
+		int tInt = MathHelper.clamp(0, (int)(t*vertices), vertices-1);
+
 		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x,pos.y,pos.z, connection, cc0, steps, tInt+1);
 		float speed = 1;
 		if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
