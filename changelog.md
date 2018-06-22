@@ -13,6 +13,8 @@
 - Fixed conveyors causing infinite loops in rare cases (Malte)
 - Fixed a crash when breaking a connector after dying (Malte)
 - Fixed wires connected to transformers breaking when they shouldn't (Malte)
+- Fixed pipes accessing the world from wrong threads (Malte)
+- Added a config option to disable all use of the stencil buffer (Malte)
 - Improved log output when a compat module fails (Malte)
 
 #####Version 0.12-82 - BUILT

@@ -87,10 +87,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRedstone;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -102,6 +99,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -153,13 +151,18 @@ public class ClientProxy extends CommonProxy
 	public static FontRenderer nixieFontOptional;
 	public static IENixieFontRender nixieFont;
 	public static IEItemFontRender itemFont;
+	public static boolean stencilBufferEnabled = false;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", Keyboard.KEY_S, "key.categories.gameplay");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", 0, "key.categories.gameplay");
 
 	@Override
 	public void preInit()
 	{
-		ClientUtils.mc().getFramebuffer().enableStencil();//Enabling FBO stencils
+		Framebuffer fb = ClientUtils.mc().getFramebuffer();
+		if (OpenGlHelper.framebufferSupported && IEConfig.stencilBufferEnabled && !fb.isStencilEnabled())
+		{
+			stencilBufferEnabled = fb.enableStencil();//Enabling FBO stencils
+		}
 		ModelLoaderRegistry.registerLoader(IEOBJLoader.instance);
 		OBJLoader.INSTANCE.addDomain("immersiveengineering");
 		IEOBJLoader.instance.addDomain("immersiveengineering");
