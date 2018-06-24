@@ -42,6 +42,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public EnumFacing facing=EnumFacing.NORTH;
 	public int dummy=0;
 	public boolean onPost=false;
+	protected Set<String> acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY);
 
 	public static boolean _Immovable()
 	{
@@ -125,13 +126,25 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		}
 		return false;
 	}
-	private boolean canAttach(WireType toAttach, @Nullable WireType atConn, @Nullable WireType other) {
+	private boolean canAttach(WireType toAttach, @Nullable WireType atConn, @Nullable WireType other)
+	{
 		if (atConn!=null)
 			return false;
+		String higherCat = getHigherWiretype();
+		String attachCat = toAttach.getCategory();
 		if (other==null)
-			return true;
-		String higher = getHigherWiretype();
-		return higher.equals(toAttach.getCategory())^higher.equals(other.getCategory());
+			return higherCat.equals(attachCat) || acceptableLowerWires.contains(attachCat);
+		boolean isHigher = higherCat.equals(toAttach.getCategory());
+		boolean isOtherHigher = higherCat.equals(other.getCategory());
+		if (isHigher^isOtherHigher)
+		{
+			if (isHigher)
+				return true;
+			else
+				return acceptableLowerWires.contains(attachCat);
+		}
+		else
+			return false;
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
