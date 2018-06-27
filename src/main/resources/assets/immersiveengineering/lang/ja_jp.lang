@@ -1,6 +1,3 @@
-#ImmersiveEngineering-0.12-79_ja_JP
-#Ice_ink
-
 ï»¿ Byte Order Mark, because fuck you IntelliJ
 # BLOCKS
 tile.immersiveengineering.ore.copper.name=銅鉱石
@@ -118,7 +115,7 @@ tile.immersiveengineering.sheetmetal_slab.gold.name=金の板金ハーフブロ�
 tile.immersiveengineering.metal_decoration0.coil_lv.name=銅のコイルブロック
 tile.immersiveengineering.metal_decoration0.coil_mv.name=エレクトラムのコイルブロック
 tile.immersiveengineering.metal_decoration0.coil_hv.name=高電圧コイルブロック
-tile.immersiveengineering.metal_decoration0.rs_engineering.name=レッドスト－ン機構ブロック
+tile.immersiveengineering.metal_decoration0.rs_engineering.name=レッドストーン機構ブロック
 tile.immersiveengineering.metal_decoration0.light_engineering.name=軽機構ブロック
 tile.immersiveengineering.metal_decoration0.heavy_engineering.name=重機構ブロック
 tile.immersiveengineering.metal_decoration0.generator.name=ジェネレーターブロック
@@ -1630,3 +1627,6 @@ desc.immersiveengineering.info.shader.details.darkfire=Named and designed after 
 desc.immersiveengineering.info.shader.details.erruption=No particular reference, just another use of vanilla textures, specificially the block breaking overlay.
 desc.immersiveengineering.info.shader.details.terra=Heavily inspired by Livingwood and Terrasteel materials, and incoporating some of Botania's textures.
 desc.immersiveengineering.info.shader.details.waaagh=Yellow makez da biggest BOOOMS!<br>Designed in obvious reference to the Orks in the 40k universe.
+
+#ImmersiveEngineering-0.12-79_ja_JP
+#Ice_ink
