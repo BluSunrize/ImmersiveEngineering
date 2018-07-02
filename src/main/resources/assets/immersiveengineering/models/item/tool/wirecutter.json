@@ -2,5 +2,27 @@
 	"parent":"item/handheld",
 	"textures": {
 		"layer0":"immersiveengineering:items/tool_wirecutter"
-	}
+	},
+    "display": {
+	    "thirdperson_righthand": {
+	        "rotation": [ 270, 180, -45 ],
+	        "translation": [ 0, -0.5, -2 ],
+	        "scale": [ 0.45, 0.45, 0.45 ]
+	    },
+	    "thirdperson_lefthand": {
+	        "rotation": [ 270, 180, 45 ],
+	        "translation": [ 0, -0.5, -2 ],
+	        "scale": [ 0.45, 0.45, 0.45 ]
+	    },
+	    "firstperson_righthand": {
+	        "rotation": [ -15, 150, -45 ],
+	        "translation": [ 1.13, 3.2, 1.13 ],
+	        "scale": [ 0.68, 0.68, 0.68 ]
+	    },
+	    "firstperson_lefthand": {
+	        "rotation": [ -25, 150, 45 ],
+	        "translation": [ 1.13, 3.2, 1.13 ],
+	        "scale": [ 0.68, 0.68, 0.68 ]
+	    }
+    }
 }
