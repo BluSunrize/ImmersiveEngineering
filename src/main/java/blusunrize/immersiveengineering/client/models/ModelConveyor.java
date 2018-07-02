@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockConveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -383,35 +382,49 @@ public class ModelConveyor implements IBakedModel
 		}
 	};
 
-	static HashMap<TransformType, Matrix4> horizTransformationMap = new HashMap<>();
-	static HashMap<TransformType, Matrix4> vertTransformationMap = new HashMap<>();
+	static HashMap<Pair<TransformType, IConveyorBelt.TransformOrient>, Matrix4> transformationMap = new HashMap<>();
 
 	static
 	{
-		horizTransformationMap.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.5, .5, .5).translate(0.25, .5, 0));
-		horizTransformationMap.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.5, .5, .5).translate(0.25, .5, 0));
-		horizTransformationMap.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .125, .125).scale(.3125, .3125, .3125).rotate(Math.toRadians(80), 1, 0, 0));
-		horizTransformationMap.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .125, .125).scale(.3125, .3125, .3125).rotate(Math.toRadians(80), 1, 0, 0));
+		Matrix4 mat;
+		mat = new Matrix4().scale(.5, .5, .5).translate(0.25, .5, 0);
+		transformationMap.put(Pair.of(TransformType.FIRST_PERSON_LEFT_HAND, IConveyorBelt.TransformOrient.HORIZONAL), mat);
+		transformationMap.put(Pair.of(TransformType.FIRST_PERSON_RIGHT_HAND, IConveyorBelt.TransformOrient.HORIZONAL), mat);
 
-		horizTransformationMap.put(TransformType.GUI, new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0));
-		horizTransformationMap.put(TransformType.FIXED, new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125));
-		horizTransformationMap.put(TransformType.GROUND, new Matrix4().scale(.25, .25, .25));
+		mat = new Matrix4().translate(0, .125, .125).scale(.3125, .3125, .3125).rotate(Math.toRadians(80), 1, 0, 0);
+		transformationMap.put(Pair.of(TransformType.THIRD_PERSON_LEFT_HAND, IConveyorBelt.TransformOrient.HORIZONAL), mat);
+		transformationMap.put(Pair.of(TransformType.THIRD_PERSON_RIGHT_HAND, IConveyorBelt.TransformOrient.HORIZONAL), mat);
 
-		vertTransformationMap.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(0, .25, .25).scale(.3125, .3125, .3125).rotate(Math.toRadians(-25), 1, 0, 0).rotate(Math.toRadians(0), 0, 0, 1));
-		vertTransformationMap.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(0, .25, .25).scale(.3125, .3125, .3125).rotate(Math.toRadians(-25), 1, 0, 0).rotate(Math.toRadians(0), 0, 0, 1));
-		vertTransformationMap.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, 0, .225).scale(.3125, .3125, .3125).rotate(Math.toRadians(35), 1, 0, 0));
-		vertTransformationMap.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, 0, .225).scale(.3125, .3125, .3125).rotate(Math.toRadians(35), 1, 0, 0));
+		mat = new Matrix4().translate(0, .25, .25).scale(.3125, .3125, .3125).rotate(Math.toRadians(-25), 1, 0, 0).rotate(Math.toRadians(0), 0, 0, 1);
+		transformationMap.put(Pair.of(TransformType.FIRST_PERSON_LEFT_HAND, IConveyorBelt.TransformOrient.VERTICAL), mat);
+		transformationMap.put(Pair.of(TransformType.FIRST_PERSON_RIGHT_HAND, IConveyorBelt.TransformOrient.VERTICAL), mat);
 
-		vertTransformationMap.put(TransformType.GUI, horizTransformationMap.get(TransformType.GUI));
-		vertTransformationMap.put(TransformType.FIXED, horizTransformationMap.get(TransformType.FIXED));
-		vertTransformationMap.put(TransformType.GROUND, horizTransformationMap.get(TransformType.GROUND));
+		mat = new Matrix4().translate(0, 0, .225).scale(.3125, .3125, .3125).rotate(Math.toRadians(35), 1, 0, 0);
+		transformationMap.put(Pair.of(TransformType.THIRD_PERSON_LEFT_HAND, IConveyorBelt.TransformOrient.VERTICAL), mat);
+		transformationMap.put(Pair.of(TransformType.THIRD_PERSON_RIGHT_HAND, IConveyorBelt.TransformOrient.VERTICAL), mat);
+
+		mat = new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0);
+		transformationMap.put(Pair.of(TransformType.GUI, IConveyorBelt.TransformOrient.HORIZONAL), mat);
+		transformationMap.put(Pair.of(TransformType.GUI, IConveyorBelt.TransformOrient.VERTICAL), mat);
+		mat = new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125);
+		transformationMap.put(Pair.of(TransformType.FIXED, IConveyorBelt.TransformOrient.HORIZONAL), mat);
+		transformationMap.put(Pair.of(TransformType.FIXED, IConveyorBelt.TransformOrient.VERTICAL), mat);
+
+		mat = new Matrix4().scale(.25, .25, .25);
+		transformationMap.put(Pair.of(TransformType.GROUND, IConveyorBelt.TransformOrient.HORIZONAL), mat);
+		transformationMap.put(Pair.of(TransformType.GROUND, IConveyorBelt.TransformOrient.VERTICAL), mat);
 	}
 
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
-		HashMap<TransformType, Matrix4> transformationMap = conveyor instanceof ConveyorVertical ? vertTransformationMap : horizTransformationMap;
-		Matrix4 matrix = transformationMap.containsKey(cameraTransformType) ? transformationMap.get(cameraTransformType) : new Matrix4();
+		IConveyorBelt.TransformOrient orient = conveyor == null ?
+			IConveyorBelt.TransformOrient.HORIZONAL :
+			conveyor.getModelTransform();
+		Pair<TransformType, IConveyorBelt.TransformOrient> key = Pair.of(cameraTransformType, orient);
+		Matrix4 matrix = transformationMap.containsKey(key) ?
+			transformationMap.get(key) :
+			new Matrix4();
 		return Pair.of(this, matrix.toMatrix4f());
 	}
 }

@@ -61,6 +61,12 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	}
 
 	@Override
+	public TransformOrient getModelTransform() {
+		// With the full-block cover, the horizontal form looks nicer.
+		return TransformOrient.HORIZONAL;
+	}
+
+	@Override
 	public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
 	{
 		super.onEntityCollision(tile, entity, facing);

@@ -452,6 +452,21 @@ public class ConveyorHandler
 		{
 			return baseModel;
 		}
+
+		enum TransformOrient {
+			HORIZONAL,
+			VERTICAL
+		}
+
+		/**
+		 * Called to get the orientations used for the item form.
+		 * HORIZONTAL holds it flat, at the back side.
+		 * VERTICAL holds it from the bottom-front of the vertical conveyor.
+		 */
+		@SideOnly(Side.CLIENT)
+		default TransformOrient getModelTransform() {
+			return TransformOrient.HORIZONAL;
+		}
 	}
 
 	public enum ConveyorDirection

@@ -61,6 +61,10 @@ public class ConveyorVertical extends ConveyorBasic
 		return false;
 	}
 
+	@Override
+	public TransformOrient getModelTransform() {
+		return TransformOrient.VERTICAL;
+	}
 
 	@Override
 	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
