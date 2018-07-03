@@ -108,7 +108,7 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	{
 		boolean wallL = renderWall(true);
 		boolean wallR = renderWall(false);
-		if(!isOnGround() || !(wallL||wallR))
+		if((!isOnGround() && !isStacked()) || !(wallL||wallR))
 			return Collections.singletonList(null);
 		List<AxisAlignedBB> list = new ArrayList<>(wallL&&wallR?2:1);
 		if(wallL)
