@@ -265,9 +265,7 @@ public class IEVillagerHandler
 				itemstack.setTranslatableName("item.immersiveengineering.map_orevein.name");
 				ItemNBTHelper.setLore(itemstack, mineralWorldInfo.mineral.name);
 
-				float avgWeight = ExcavatorHandler.getDimensionTotalWeight(chunkCoords.dimension)/(float)ExcavatorHandler.mineralList.size();
-				int mod = Math.round(avgWeight-ExcavatorHandler.mineralList.get(mineralWorldInfo.mineral));
-				recipeList.add(new MerchantRecipe(new ItemStack(Items.EMERALD, 8+mod+random.nextInt(4)), new ItemStack(IEContent.itemMetal), itemstack));
+				recipeList.add(new MerchantRecipe(new ItemStack(Items.EMERALD, 8+random.nextInt(8)), new ItemStack(IEContent.itemMetal), itemstack));
 			}
 		}
 	}
