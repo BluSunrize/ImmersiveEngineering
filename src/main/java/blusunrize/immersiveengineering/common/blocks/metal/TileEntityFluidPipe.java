@@ -141,9 +141,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 							else if(adjacentTile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite()))
 							{
 								IFluidHandler handler = adjacentTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
-								tankInfo = handler.getTankProperties();
-								if(tankInfo != null && tankInfo.length > 0)
-									fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
+								if(handler != null)
+								{
+									tankInfo = handler.getTankProperties();
+									if(tankInfo!=null&&tankInfo.length > 0)
+										fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
+								}
 							}
 					}
 				}
@@ -454,9 +457,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if (sideConfig[i] == 0 && con != null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 		{
 			IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
-			tankInfo = handler.getTankProperties();
-			if (tankInfo != null && tankInfo.length > 0)
-				connections |= mask;
+			if(handler != null)
+			{
+				tankInfo = handler.getTankProperties();
+				if(tankInfo!=null&&tankInfo.length > 0)
+					connections |= mask;
+			}
 		}
 		return oldConn!=connections;
 	}
@@ -474,9 +480,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			if (con != null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
 				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
-				tankInfo = handler.getTankProperties();
-				if (tankInfo != null && tankInfo.length > 0)
-					connections |= 1;
+				if(handler != null)
+				{
+					tankInfo = handler.getTankProperties();
+					if(tankInfo!=null&&tankInfo.length > 0)
+						connections |= 1;
+				}
 			}
 		}
 		return connections;
