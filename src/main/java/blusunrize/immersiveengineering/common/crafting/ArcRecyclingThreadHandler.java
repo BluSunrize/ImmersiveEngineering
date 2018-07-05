@@ -176,25 +176,15 @@ public class ArcRecyclingThreadHandler extends Thread
 	public static RecyclingCalculation getRecycleCalculation(ItemStack stack, IRecipe recipe)
 	{
 		NonNullList<Ingredient> inputs = recipe.getIngredients();
-
-		if(inputs!=null)
+		if(!inputs.isEmpty())
 		{
 			int inputSize = stack.getCount();
 			List<ItemStack> missingSub = new ArrayList<ItemStack>();
 			HashMap<ItemStack,Double> outputs = new HashMap<ItemStack,Double>();
-			for(Object in : inputs)
+			for(Ingredient in : inputs)
 				if(in!=null)
 				{
-					ItemStack inputStack = ItemStack.EMPTY;
-					if(in instanceof ItemStack)
-						inputStack = (ItemStack)in;
-					else if(in instanceof List)
-					{
-						final List<ItemStack> list = (List<ItemStack>) in;
-						inputStack = list.size() > 0 ? list.get(0) : ItemStack.EMPTY;
-					}
-					else if(in instanceof String)
-						inputStack = IEApi.getPreferredOreStack((String)in);
+					ItemStack inputStack = IEApi.getPreferredStackbyMod(in.getMatchingStacks());
 					if(inputStack.isEmpty())
 						continue;
 
