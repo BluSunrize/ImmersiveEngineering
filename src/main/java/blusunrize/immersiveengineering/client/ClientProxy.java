@@ -1722,13 +1722,6 @@ public class ClientProxy extends CommonProxy
 		ConnModelReal.cache.invalidateAll();
 	}
 
-	@Override
-	public void addFailedConnection(ImmersiveNetHandler.Connection connection, BlockPos reason, EntityPlayer player)
-	{
-		ClientEventHandler.FAILED_CONNECTIONS.put(connection,
-				new ImmutablePair<>(reason, new AtomicInteger(200)));
-	}
-
 	static
 	{
 		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);

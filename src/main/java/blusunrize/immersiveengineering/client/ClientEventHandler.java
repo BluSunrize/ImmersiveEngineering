@@ -136,58 +136,60 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if(event.side.isClient()&&event.phase==Phase.START&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
-		{
-			skyhookGrabableConnections.clear();
-			EntityPlayer player = event.player;
-			ItemStack stack = player.getActiveItemStack();
-			if(!stack.isEmpty()&&stack.getItem() instanceof ItemSkyhook)
+	    if(event.side.isClient()&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
+	    {
+	    	if(event.phase==Phase.START)
 			{
-				Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
-				if(line!=null)
-					skyhookGrabableConnections.add(line);
-			}
-		}
-
-		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getValue().decrementAndGet() <= 0);
-
-		if(event.side.isClient()&&event.phase==Phase.END&&event.player!=null)
-		{
-			if(this.shieldToggleTimer > 0)
-				this.shieldToggleTimer--;
-			if(ClientProxy.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
-				if(this.shieldToggleTimer <= 0)
-					this.shieldToggleTimer = 7;
-				else
+				skyhookGrabableConnections.clear();
+				EntityPlayer player = event.player;
+				ItemStack stack = player.getActiveItemStack();
+				if(!stack.isEmpty()&&stack.getItem() instanceof ItemSkyhook)
 				{
-					EntityPlayer player = event.player;
-					ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
-					if(!held.isEmpty()&&held.getItem() instanceof ItemIEShield)
-					{
-						if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
-							ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
-					}
+					Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
+					if(line!=null)
+						skyhookGrabableConnections.add(line);
+				}
+			}
+
+			if(event.phase==Phase.END)
+			{
+				if(this.shieldToggleTimer > 0)
+					this.shieldToggleTimer--;
+				if(ClientProxy.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
+					if(this.shieldToggleTimer <= 0)
+						this.shieldToggleTimer = 7;
 					else
 					{
-						for(int i = 0; i < player.inventory.mainInventory.size(); i++)
+						EntityPlayer player = event.player;
+						ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
+						if(!held.isEmpty()&&held.getItem() instanceof ItemIEShield)
 						{
-							ItemStack s = player.inventory.mainInventory.get(i);
-							if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
+							if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
+								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
+						}
+						else
+						{
+							for(int i = 0; i < player.inventory.mainInventory.size(); i++)
+							{
+								ItemStack s = player.inventory.mainInventory.get(i);
+								if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+									ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
+							}
 						}
 					}
+				if(this.shieldToggleButton!=ClientUtils.mc().gameSettings.keyBindBack.isKeyDown())
+					this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
+
+
+				if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
+				{
+					ItemStack held = event.player.getHeldItem(EnumHand.MAIN_HAND);
+					if(held.getItem() instanceof ItemChemthrower&&((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
+						ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
 				}
-			if(this.shieldToggleButton!=ClientUtils.mc().gameSettings.keyBindBack.isKeyDown())
-				this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
-
-
-			if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
-			{
-				ItemStack held = event.player.getHeldItem(EnumHand.MAIN_HAND);
-				if(held.getItem() instanceof ItemChemthrower&&((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
 			}
 		}
+
 //		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
 //		{
 //			EntityPlayer player = event.player;
@@ -203,6 +205,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 //			}
 //
 //		}
+	}
+
+	@SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event)
+	{
+		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getValue().decrementAndGet() <= 0);
 	}
 
 	@SubscribeEvent

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.client.ClientEventHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +21,9 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MessageObstructedConnection implements IMessage
 {
@@ -71,7 +75,8 @@ public class MessageObstructedConnection implements IMessage
 				ImmersiveNetHandler.Connection conn = new ImmersiveNetHandler.Connection(message.startB, message.endB, message.wireType,
 						(int)Math.sqrt(message.startB.distanceSq(message.endB)));
 				conn.getSubVertices(message.start, message.end);
-				ImmersiveEngineering.proxy.addFailedConnection(conn, message.blocking, null);
+				ClientEventHandler.FAILED_CONNECTIONS.put(conn,
+					new ImmutablePair<>(message.blocking, new AtomicInteger(200)));
 			});
 			return null;
 		}
