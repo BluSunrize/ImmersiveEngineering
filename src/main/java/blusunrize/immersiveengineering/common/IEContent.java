@@ -47,8 +47,7 @@ import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBulle
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.IEVillagerTrades;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import net.minecraft.block.Block;
@@ -57,14 +56,12 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
@@ -86,7 +83,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
@@ -97,9 +93,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -201,8 +195,6 @@ public class IEContent
 	public static Fluid fluidConcrete;
 
 	public static Fluid fluidPotion;
-
-	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
 	static {
 		fluidCreosote = setupFluid(new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000));
@@ -945,106 +937,9 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFeedthrough.instance);
 
-		/**ACHIEVEMENTS*/
-//		IEAchievements.init();
-
 		/**VILLAGE*/
-		VillagerRegistry villageRegistry = VillagerRegistry.instance();
-		if(IEConfig.villagerHouse)
-		{
-			villageRegistry.registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
-			MapGenStructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID + ":EngineersHouse");
-		}
-		if(IEConfig.enableVillagers)
-		{
-			villagerProfession_engineer = new VillagerRegistry.VillagerProfession(ImmersiveEngineering.MODID + ":engineer", "immersiveengineering:textures/models/villager_engineer.png", "immersiveengineering:textures/models/villager_engineer_zombie.png");
-			ForgeRegistries.VILLAGER_PROFESSIONS.register(villagerProfession_engineer);
-
-			VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".engineer");
-			career_engineer.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 0), new EntityVillager.PriceInfo(8, 16)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockWoodenDecoration, 1, 1), new EntityVillager.PriceInfo(-10, -6)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockClothDevice, 1, 1), new EntityVillager.PriceInfo(-3, -1))
-			);
-			career_engineer.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 1), new EntityVillager.PriceInfo(2, 6)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 1), new EntityVillager.PriceInfo(-8, -4)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 5), new EntityVillager.PriceInfo(-8, -4))
-			);
-			career_engineer.addTrade(3,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 2), new EntityVillager.PriceInfo(2, 6)),
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 7), new EntityVillager.PriceInfo(4, 8)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockStoneDecoration, 1, 5), new EntityVillager.PriceInfo(-6, -2))
-			);
-
-			VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".machinist");
-			career_machinist.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 6), new EntityVillager.PriceInfo(8, 16)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
-			);
-			career_machinist.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal, 1, 0), new EntityVillager.PriceInfo(4, 6)),
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal, 1, 1), new EntityVillager.PriceInfo(4, 6)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3))
-			);
-			career_machinist.addTrade(3,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
-					new IEVillagerTrades.ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
-			);
-			career_machinist.addTrade(4,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 0), new EntityVillager.PriceInfo(28, 40)),
-					new IEVillagerTrades.ItemstackForEmerald(itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
-			);
-			career_machinist.addTrade(5,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 1), new EntityVillager.PriceInfo(32, 48)),
-					new IEVillagerTrades.ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
-			);
-
-			VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".electrician");
-			career_electrician.addTrade(1,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 20), new EntityVillager.PriceInfo(8, 16)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 0), new EntityVillager.PriceInfo(-4, -2))
-			);
-			career_electrician.addTrade(2,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 21), new EntityVillager.PriceInfo(6, 12)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 2), new EntityVillager.PriceInfo(4, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-4, -1))
-			);
-			career_electrician.addTrade(3,
-					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 22), new EntityVillager.PriceInfo(4, 8)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 2), new EntityVillager.PriceInfo(-2, -1)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 6), new EntityVillager.PriceInfo(8, 12))
-			);
-			career_electrician.addTrade(4,
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 9), new EntityVillager.PriceInfo(8, 12)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemFluorescentTube), new EntityVillager.PriceInfo(8, 12)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[0]), new EntityVillager.PriceInfo(5, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[1]), new EntityVillager.PriceInfo(9, 11)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[2]), new EntityVillager.PriceInfo(5, 7)),
-					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
-			);
-
-			VillagerRegistry.VillagerCareer career_outfitter = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".outfitter");
-
-			ItemStack bag_common = new ItemStack(IEContent.itemShaderBag);
-			ItemNBTHelper.setString(bag_common, "rarity", EnumRarity.COMMON.toString());
-			ItemStack bag_uncommon = new ItemStack(IEContent.itemShaderBag);
-			ItemNBTHelper.setString(bag_uncommon, "rarity", EnumRarity.UNCOMMON.toString());
-			ItemStack bag_rare = new ItemStack(IEContent.itemShaderBag);
-			ItemNBTHelper.setString(bag_rare, "rarity", EnumRarity.RARE.toString());
-
-			career_outfitter.addTrade(1,
-					new IEVillagerTrades.ItemstackForEmerald(bag_common, new EntityVillager.PriceInfo(8, 16))
-			);
-			career_outfitter.addTrade(2,
-					new IEVillagerTrades.ItemstackForEmerald(bag_uncommon, new EntityVillager.PriceInfo(12, 20))
-			);
-			career_outfitter.addTrade(3,
-					new IEVillagerTrades.ItemstackForEmerald(bag_rare, new EntityVillager.PriceInfo(16, 24))
-			);
-		}
+		IEVillagerHandler.initIEVillagerHouse();
+		IEVillagerHandler.initIEVillagerTrades();
 
 		/**LOOT*/
 		if(IEConfig.villagerHouse)
