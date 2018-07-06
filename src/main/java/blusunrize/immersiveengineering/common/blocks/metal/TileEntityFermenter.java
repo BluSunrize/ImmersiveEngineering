@@ -46,6 +46,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
+
 	public TileEntityFermenter()
 	{
 		super(MultiblockFermenter.instance, new int[]{3, 3, 3}, 16000, true);
@@ -142,6 +143,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 				{
 					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory().get(10), null);
 					if(!full.isEmpty())
+					{
 						if(getInventory().get(9).getCount()==1&&!Utils.isFluidContainerFull(full))
 							getInventory().set(9, full.copy());
 						else
@@ -154,6 +156,8 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 							if(inventory.get(9).getCount() <= 0)
 								inventory.set(9, ItemStack.EMPTY);
 						}
+						update = true;
+					}
 				}
 			}
 			if(!inventory.get(8).isEmpty()&&world.getTotalWorldTime()%8==0)

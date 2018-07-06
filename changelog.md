@@ -28,6 +28,7 @@
 - Fixed obstructed connections not rendering properly in LAN worlds (JamiesWhiteShirt)
 - Fixed Razor Wire not having collision on upper wall section (TeamSpen210)
 - Fixed Arc Furnace recycling being broken (BluSunrize)
+- Fixed Squeezer and Fermenter not updating the GUI when filling buckets (BluSunrize)
 - Improved log output when a compat module fails (Malte)
 - Translations Added/Updated: ja_jp (iceink001), ru_ru (kellixon ), zh_tw (vongola12324)
 
