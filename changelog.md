@@ -22,6 +22,8 @@
 - Fixed pipes accessing the world from wrong threads (Malte)
 - Fixed a dupe bug (Malte)
 - Fixed the skyhook for vertical wires (Malte)
+- Fixed placing blocks against pipes not working as expected (Malte)
+- Fixed the garden cloche accepting any item into the fertilizer slot (Malte)
 - Fixed the workbench creating excess items (codewarrior0)
 - Fixed obstructed connections not rendering properly in LAN worlds (JamiesWhiteShirt)
 - Fixed Razor Wire not having collision on upper wall section (TeamSpen210)

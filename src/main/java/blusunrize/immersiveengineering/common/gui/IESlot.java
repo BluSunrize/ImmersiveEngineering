@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
@@ -37,6 +38,9 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
+
+import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SEED;
+import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SOIL;
 
 public abstract class IESlot extends Slot
 {
@@ -442,7 +446,12 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty() && (type==1?BelljarHandler.getHandler(itemStack)!=null: type!=2||BelljarHandler.getItemFertilizerHandler(itemStack)!=null);
+			if (itemStack.isEmpty())
+				return false;
+			if (type == SLOT_SEED)
+				return BelljarHandler.getHandler(itemStack) != null;
+			else
+				return type == SLOT_SOIL || BelljarHandler.getItemFertilizerHandler(itemStack) != null;
 		}
 	}
 
