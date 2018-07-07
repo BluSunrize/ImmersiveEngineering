@@ -571,13 +571,22 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			List<AxisAlignedBB> list = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
 			if(list!=null && !list.isEmpty())
 			{
+				RayTraceResult min = null;
+				double minDist = Double.POSITIVE_INFINITY;
 				for(AxisAlignedBB aabb : list)
 				{
 					RayTraceResult mop = this.rayTrace(pos, start, end, aabb.offset(-pos.getX(),-pos.getY(),-pos.getZ()));
 					if(mop!=null)
-						return mop;
+					{
+						double dist = mop.hitVec.squareDistanceTo(start);
+						if (dist<minDist)
+						{
+							min = mop;
+							minDist = dist;
+						}
+					}
 				}
-				return null;
+				return min;
 			}
 		}
 		return super.collisionRayTrace(state, world, pos, start, end);
