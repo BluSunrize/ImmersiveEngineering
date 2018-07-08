@@ -33,56 +33,63 @@ public class MultiblockLightningrod implements IMultiblock
 {
 	public static MultiblockLightningrod instance = new MultiblockLightningrod();
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
-	static{
-		for(int h=0;h<3;h++)
-			for(int l=0;l<3;l++)
-				for(int w=0;w<3;w++)
+
+	static
+	{
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 3; l++)
+				for(int w = 0; w < 3; w++)
 				{
 					if(l==1&&w==1)
-						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_HV.getMeta());
+						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.COIL_HV.getMeta());
 					else if(h==0)
 					{
 						if(l==1|w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0,1, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
 						if(l==1|w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockWoodenDecoration,1, BlockTypes_WoodenDecoration.FENCE.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta());
 					}
 					else if(h==2)
-						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_LV.getMeta());
+						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.COIL_LV.getMeta());
 				}
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
+
 	//@SideOnly(Side.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
 		GlStateManager.translate(1.5, 1.5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -91,6 +98,7 @@ public class MultiblockLightningrod implements IMultiblock
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}
+
 	@Override
 	public float getManualScale()
 	{
@@ -106,7 +114,7 @@ public class MultiblockLightningrod implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==IEContent.blockMetalDecoration0 && (state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+		return state.getBlock()==IEContent.blockMetalDecoration0&&(state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 	}
 
 	@Override
@@ -118,11 +126,11 @@ public class MultiblockLightningrod implements IMultiblock
 			side = side.getOpposite();
 
 		boolean mirror = false;
-		for(int l=0;l<3;l++)
-			for(int h=-1;h<=1;h++)
-				for(int w=-1;w<=1;w++)
+		for(int l = 0; l < 3; l++)
+			for(int h = -1; h <= 1; h++)
+				for(int w = -1; w <= 1; w++)
 				{
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 					if(l==1&&w==0)
@@ -165,11 +173,11 @@ public class MultiblockLightningrod implements IMultiblock
 
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
 		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
-		for(int l=0;l<3;l++)
-			for(int w=-1;w<=1;w++)
-				for(int h=-1;h<=1;h++)
+		for(int l = 0; l < 3; l++)
+			for(int w = -1; w <= 1; w++)
+				for(int h = -1; h <= 1; h++)
 				{
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 					world.setBlockState(pos2, state);
@@ -177,10 +185,10 @@ public class MultiblockLightningrod implements IMultiblock
 					if(curr instanceof TileEntityLightningrod)
 					{
 						TileEntityLightningrod tile = (TileEntityLightningrod)curr;
-						tile.formed=true;
-						tile.pos = (h+1)*9 + l*3 + (w+1);
-						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww : -ww)};
-						tile.mirrored=mirror;
+						tile.formed = true;
+						tile.pos = (h+1)*9+l*3+(w+1);
+						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww: -ww)};
+						tile.mirrored = mirror;
 						tile.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
@@ -195,6 +203,7 @@ public class MultiblockLightningrod implements IMultiblock
 			new IngredientStack("fenceTreatedWood", 4),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 3, BlockTypes_MetalDecoration0.COIL_HV.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 8, BlockTypes_MetalDecoration0.COIL_LV.getMeta()))};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

@@ -50,6 +50,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 		coresample = new ItemStack(nbt.getCompoundTag("coresample"));
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -62,26 +63,31 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
@@ -95,14 +101,14 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 		{
 			if(!getWorld().isRemote)
 			{
-				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
+				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				getWorld().setBlockToAir(getPos());
 				getWorld().spawnEntity(entityitem);
 			}
 			return true;
 		}
-		else if(!heldItem.isEmpty() && heldItem.getItem()==Items.FILLED_MAP && ItemNBTHelper.hasKey(coresample, "coords"))
+		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(coresample, "coords"))
 		{
 			if(!getWorld().isRemote)
 			{
@@ -140,7 +146,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	@Nullable
 	public ITextComponent getDisplayName()
 	{
-		return coresample.hasDisplayName()?new TextComponentString(coresample.getDisplayName()) : new TextComponentTranslation("item.immersiveengineering.coresample.name");
+		return coresample.hasDisplayName()?new TextComponentString(coresample.getDisplayName()): new TextComponentTranslation("item.immersiveengineering.coresample.name");
 	}
 
 	@Override
@@ -148,11 +154,13 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	{
 		return this.coresample;
 	}
+
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{
 		this.coresample = stack.copy();
 	}
+
 	@Override
 	public boolean preventInventoryDrop()
 	{
@@ -160,10 +168,11 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	}
 
 	private String[] overlay = null;
+
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
-		if(coresample!=null && ItemNBTHelper.hasKey(coresample, "coords"))
+		if(coresample!=null&&ItemNBTHelper.hasKey(coresample, "coords"))
 		{
 			if(overlay==null)
 			{
@@ -196,6 +205,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 		}
 		return new String[0];
 	}
+
 	@Override
 	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{

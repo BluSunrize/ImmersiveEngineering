@@ -46,7 +46,7 @@ public class ConnModelReal implements IBakedModel
 {
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
-			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH) + ":blocks/wire");
+			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":blocks/wire");
 	public static final Cache<Pair<Byte, ExtBlockstateAdapter>, IBakedModel> cache = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
@@ -63,19 +63,19 @@ public class ConnModelReal implements IBakedModel
 	{
 		if(side==null&&state instanceof IExtendedBlockState)
 		{
-			IExtendedBlockState ext = (IExtendedBlockState) state;
+			IExtendedBlockState ext = (IExtendedBlockState)state;
 			Object[] additional = null;
-			if (ext.getUnlistedProperties().containsKey(IEProperties.TILEENTITY_PASSTHROUGH))
+			if(ext.getUnlistedProperties().containsKey(IEProperties.TILEENTITY_PASSTHROUGH))
 			{
 				TileEntity te = ext.getValue(IEProperties.TILEENTITY_PASSTHROUGH);
-				if (te instanceof IEBlockInterfaces.ICacheData)
-					additional = ((IEBlockInterfaces.ICacheData) te).getCacheData();
+				if(te instanceof IEBlockInterfaces.ICacheData)
+					additional = ((IEBlockInterfaces.ICacheData)te).getCacheData();
 			}
 			int x = 0, z = 0;
-			if (ext.getUnlistedProperties().containsKey(IEProperties.CONNECTIONS))
+			if(ext.getUnlistedProperties().containsKey(IEProperties.CONNECTIONS))
 			{
 				Set<Connection> conns = ext.getValue(IEProperties.CONNECTIONS);
-				if (conns!=null&&conns.size()>0)
+				if(conns!=null&&conns.size() > 0)
 				{
 					BlockPos tmp = conns.iterator().next().start;
 					x = (tmp.getX()%16+16)%16;
@@ -86,10 +86,9 @@ public class ConnModelReal implements IBakedModel
 			Pair<Byte, ExtBlockstateAdapter> key = new ImmutablePair<>((byte)((x<<4)|z), ad);
 			try
 			{
-				IBakedModel ret = cache.get(key, ()->new AssembledBakedModel(ext, textureAtlasSprite, base, rand));
+				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(ext, textureAtlasSprite, base, rand));
 				return ret.getQuads(state, null, rand);
-			}
-			catch (ExecutionException e)
+			} catch(ExecutionException e)
 			{
 				e.printStackTrace();
 			}
@@ -151,11 +150,11 @@ public class ConnModelReal implements IBakedModel
 		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 		{
 			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-			if (layer != BlockRenderLayer.SOLID&&layer!=BlockRenderLayer.TRANSLUCENT)
+			if(layer!=BlockRenderLayer.SOLID&&layer!=BlockRenderLayer.TRANSLUCENT)
 				return basic.getQuads(state, side, rand);
 			if(lists==null)
 				lists = ClientUtils.convertConnectionFromBlockstate(extendedState, texture);
-			List<BakedQuad> l = new ArrayList<>(lists[layer==BlockRenderLayer.SOLID?0:1]);
+			List<BakedQuad> l = new ArrayList<>(lists[layer==BlockRenderLayer.SOLID?0: 1]);
 			l.addAll(basic.getQuads(state, side, rand));
 			return Collections.synchronizedList(l);
 		}
@@ -208,32 +207,33 @@ public class ConnModelReal implements IBakedModel
 		final String extraCacheKey;
 		final Set<Object> ignoredProperties;
 		Object[] additionalProperties = null;
+
 		public ExtBlockstateAdapter(IExtendedBlockState s, BlockRenderLayer l, Set<Object> ignored)
 		{
 			state = s;
 			layer = l;
 			ignoredProperties = ignored;
-			if (s.getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
+			if(s.getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
 			{
 				IOBJModelCallback callback = s.getValue(IOBJModelCallback.PROPERTY);
-				if (callback!=null)
+				if(callback!=null)
 					extraCacheKey = callback.getClass()+";"+callback.getCacheKey(state);
 				else
 					extraCacheKey = null;
 			}
 			else
 				extraCacheKey = null;
-			if (Config.IEConfig.enableDebug)
+			if(Config.IEConfig.enableDebug)
 			{
 				//Debug code for #2887
-				if (!this.equals(this)||this.hashCode()!=this.hashCode())
+				if(!this.equals(this)||this.hashCode()!=this.hashCode())
 				{
 					String debug = "Basic state:\n";
 					debug += toStringDebug(state);
 					debug += "Layer: "+layer+"\n";
 					debug += "Cache key: "+extraCacheKey+"\nAdditional:\n";
 					debug += "Ignored:\n";
-					for (Object o:ignoredProperties)
+					for(Object o : ignoredProperties)
 						debug += toStringDebug(o);
 					throw new IllegalStateException(debug);
 				}
@@ -242,40 +242,41 @@ public class ConnModelReal implements IBakedModel
 
 		private String toStringProp(IProperty<?> o)
 		{
-			if (o==null)
+			if(o==null)
 				return "PROPERTY WAS NULL";
 			return o.getClass()+": listed, Type: "+o.getValueClass()+", Name: "+o.getName();
 		}
 
 		private String toStringProp(IUnlistedProperty<?> o)
 		{
-			if (o==null)
+			if(o==null)
 				return "PROPERTY WAS NULL";
 			return o.getClass()+": unlisted, Type: "+o.getType()+", Name: "+o.getName();
 		}
 
-		private String toStringDebug(Object o) {
-			if (o==null)
+		private String toStringDebug(Object o)
+		{
+			if(o==null)
 				return "NULL";
-			if (o instanceof IBlockState)
+			if(o instanceof IBlockState)
 			{
 				String ret = "";
-				for (IProperty<?> p:((IBlockState) o).getPropertyKeys())
+				for(IProperty<?> p : ((IBlockState)o).getPropertyKeys())
 				{
-					ret += toStringProp(p)+" has value "+toStringDebug(((IBlockState) o).getValue(p))+"\n";
+					ret += toStringProp(p)+" has value "+toStringDebug(((IBlockState)o).getValue(p))+"\n";
 				}
-				if (o instanceof IExtendedBlockState)
+				if(o instanceof IExtendedBlockState)
 				{
-					for (Map.Entry<IUnlistedProperty<?>, Optional<?>> p:((IExtendedBlockState) o).getUnlistedProperties().entrySet())
+					for(Map.Entry<IUnlistedProperty<?>, Optional<?>> p : ((IExtendedBlockState)o).getUnlistedProperties().entrySet())
 					{
 						ret += toStringProp(p.getKey())+" has value "+toStringDebug(p.getValue().orElse(null))+"\n";
 					}
 				}
 				return ret;
 			}
-			if (o instanceof IUnlistedProperty)
+			if(o instanceof IUnlistedProperty)
 				return toStringProp((IUnlistedProperty)o);
-			if (o instanceof IProperty)
+			if(o instanceof IProperty)
 				return toStringProp((IProperty)o);
 			return o.getClass()+": "+o;
 		}
@@ -284,20 +285,20 @@ public class ConnModelReal implements IBakedModel
 		{
 			this(s, l, ignored);
 			additionalProperties = additional;
-			if (Config.IEConfig.enableDebug)
+			if(Config.IEConfig.enableDebug)
 			{
 				//Debug code for #2887
-				if (!this.equals(this)||this.hashCode()!=this.hashCode())
+				if(!this.equals(this)||this.hashCode()!=this.hashCode())
 				{
 					String debug = "Basic state:\n";
 					debug += toStringDebug(state);
 					debug += "Layer: "+layer+"\n";
 					debug += "Cache key: "+extraCacheKey+"\nAdditional:\n";
-					if (additionalProperties!=null)
-						for (Object o:additionalProperties)
+					if(additionalProperties!=null)
+						for(Object o : additionalProperties)
 							debug += toStringDebug(o);
 					debug += "Ignored:\n";
-					for (Object o:ignoredProperties)
+					for(Object o : ignoredProperties)
 						debug += toStringDebug(o);
 					throw new IllegalStateException(debug);
 				}
@@ -307,32 +308,30 @@ public class ConnModelReal implements IBakedModel
 		@Override
 		public boolean equals(Object obj)
 		{
-			if (obj == this)
+			if(obj==this)
 				return true;
-			if (!(obj instanceof ExtBlockstateAdapter))
+			if(!(obj instanceof ExtBlockstateAdapter))
 				return false;
-			ExtBlockstateAdapter o = (ExtBlockstateAdapter) obj;
-			if (o.layer!=layer)
+			ExtBlockstateAdapter o = (ExtBlockstateAdapter)obj;
+			if(o.layer!=layer)
 				return false;
-			if (extraCacheKey==null^o.extraCacheKey==null)
+			if(extraCacheKey==null^o.extraCacheKey==null)
 				return false;
-			if (extraCacheKey!=null&&!extraCacheKey.equals(o.extraCacheKey))
+			if(extraCacheKey!=null&&!extraCacheKey.equals(o.extraCacheKey))
 				return false;
-			if (!Utils.areArraysEqualIncludingBlockstates(additionalProperties, o.additionalProperties))
+			if(!Utils.areArraysEqualIncludingBlockstates(additionalProperties, o.additionalProperties))
 				return false;
-			if (!Utils.areStatesEqual(state, o.state, ignoredProperties, true))
-				return false;
-			return true;
+			return Utils.areStatesEqual(state, o.state, ignoredProperties, true);
 		}
 
 		@Override
 		public int hashCode()
 		{
-			int val = layer==null?0:layer.ordinal();
+			int val = layer==null?0: layer.ordinal();
 			final int prime = 31;
-			if (extraCacheKey!=null)
+			if(extraCacheKey!=null)
 				val = val*prime+extraCacheKey.hashCode();
-			val = prime*val + Utils.hashBlockstate(state, ignoredProperties, true);
+			val = prime*val+Utils.hashBlockstate(state, ignoredProperties, true);
 			val = prime*val+Arrays.hashCode(additionalProperties);
 			return val;
 		}

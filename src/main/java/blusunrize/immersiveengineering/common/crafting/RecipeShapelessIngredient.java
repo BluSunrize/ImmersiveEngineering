@@ -30,14 +30,16 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	{
 		super(group, result, wrapIngredients(recipe));
 	}
+
 	public RecipeShapelessIngredient(ResourceLocation group, ItemStack result, NonNullList<Ingredient> input)
 	{
 		super(group, input, result);
 	}
+
 	private static Object[] wrapIngredients(Object... recipe)
 	{
 		Object[] out = new Object[recipe.length];
-		for(int i=0; i<recipe.length; i++)
+		for(int i = 0; i < recipe.length; i++)
 			if(recipe[i] instanceof IngredientStack)
 				out[i] = new IngredientIngrStack((IngredientStack)recipe[i]);
 			else
@@ -60,14 +62,14 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting matrix)
 	{
-		if(nbtCopyTargetSlot >= 0 && nbtCopyTargetSlot < getIngredients().size())
+		if(nbtCopyTargetSlot >= 0&&nbtCopyTargetSlot < getIngredients().size())
 			for(int i = 0; i < matrix.getSizeInventory(); i++)
 			{
 				ItemStack slot = matrix.getStackInSlot(i);
 				if(getIngredients().get(nbtCopyTargetSlot).apply(slot))
 				{
 					ItemStack out = output.copy();
-					if(!matrix.getStackInSlot(nbtCopyTargetSlot).isEmpty() && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
+					if(!matrix.getStackInSlot(nbtCopyTargetSlot).isEmpty()&&matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
 						out.setTagCompound(matrix.getStackInSlot(nbtCopyTargetSlot).getTagCompound().copy());
 					return out;
 				}
@@ -78,29 +80,29 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
-		NonNullList<ItemStack>  remains = super.getRemainingItems(inv);
+		NonNullList<ItemStack> remains = super.getRemainingItems(inv);
 		for(int i = 0; i < remains.size(); i++)
 		{
 			ItemStack s = inv.getStackInSlot(i);
 			ItemStack remain = remains.get(i);
-			if(toolDamageSlot >= 0 && toolDamageSlot < getIngredients().size())
+			if(toolDamageSlot >= 0&&toolDamageSlot < getIngredients().size())
 			{
 				ItemStack tool = ItemStack.EMPTY;
-				if(remain.isEmpty() && !s.isEmpty() && getIngredients().get(toolDamageSlot).apply(s))
+				if(remain.isEmpty()&&!s.isEmpty()&&getIngredients().get(toolDamageSlot).apply(s))
 					tool = s.copy();
-				else if(!remain.isEmpty() && getIngredients().get(toolDamageSlot).apply(remain))
+				else if(!remain.isEmpty()&&getIngredients().get(toolDamageSlot).apply(remain))
 					tool = remain;
-				if(!tool.isEmpty() && tool.isItemStackDamageable())
+				if(!tool.isEmpty()&&tool.isItemStackDamageable())
 				{
-					tool.setItemDamage(tool.getItemDamage() + 1);
+					tool.setItemDamage(tool.getItemDamage()+1);
 					if(tool.getItemDamage() > tool.getMaxDamage())
 						tool = ItemStack.EMPTY;
 					remains.set(i, tool);
 				}
 			}
-			if(!s.isEmpty() && remain.isEmpty() && s.getItem() instanceof UniversalBucket)
+			if(!s.isEmpty()&&remain.isEmpty()&&s.getItem() instanceof UniversalBucket)
 			{
-				ItemStack empty = ((UniversalBucket) s.getItem()).getEmpty();
+				ItemStack empty = ((UniversalBucket)s.getItem()).getEmpty();
 				if(!empty.isEmpty())
 					remains.set(i, empty.copy());
 			}

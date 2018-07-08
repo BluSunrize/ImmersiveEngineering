@@ -36,7 +36,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 {
 	public BlockMetalDecoration1()
 	{
-		super("metal_decoration1", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class), ItemBlockIEBase.class, BlockFence.NORTH,BlockFence.SOUTH,BlockFence.WEST,BlockFence.EAST);
+		super("metal_decoration1", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class), ItemBlockIEBase.class, BlockFence.NORTH, BlockFence.SOUTH, BlockFence.WEST, BlockFence.EAST);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
@@ -49,12 +49,13 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	{
 		return true;
 	}
+
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
-		if(meta==0 && !itemBlock)
+		if(meta==0&&!itemBlock)
 			return "steel_fence";
-		else if(meta==4 && !itemBlock)
+		else if(meta==4&&!itemBlock)
 			return "aluminum_fence";
 		return null;
 	}
@@ -63,7 +64,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
 	{
 		int meta = this.getMetaFromState(world.getBlockState(pos));
-		if(meta==STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
+		if(meta==STEEL_FENCE.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 		{
 			IBlockState connector = world.getBlockState(pos.offset(facing));
 			return connector.getBlock() instanceof BlockMetalDecoration1&&this.getMetaFromState(connector)==meta;
@@ -75,8 +76,8 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
 	{
 		int meta = this.getMetaFromState(state);
-		if(meta==STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
-			return side != EnumFacing.UP && side != EnumFacing.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
+		if(meta==STEEL_FENCE.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
+			return side!=EnumFacing.UP&&side!=EnumFacing.DOWN?BlockFaceShape.MIDDLE_POLE: BlockFaceShape.CENTER;
 		return BlockFaceShape.SOLID;
 	}
 
@@ -105,10 +106,10 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		state  = super.getActualState(state, world, pos);
-		if(this.getMetaFromState(state)==STEEL_FENCE.getMeta() || this.getMetaFromState(state)==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
+		state = super.getActualState(state, world, pos);
+		if(this.getMetaFromState(state)==STEEL_FENCE.getMeta()||this.getMetaFromState(state)==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
-				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
+				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH: f==EnumFacing.SOUTH?BlockFence.SOUTH: f==EnumFacing.WEST?BlockFence.WEST: BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
 		return state;
 	}
 
@@ -117,7 +118,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	{
 		state = state.getActualState(worldIn, pos);
 		int meta = this.getMetaFromState(state);
-		if(meta==STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
+		if(meta==STEEL_FENCE.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 		{
 			addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.PILLAR_AABB);
 			if(state.getValue(BlockFence.NORTH).booleanValue())
@@ -132,12 +133,13 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		else
 			addCollisionBoxToList(pos, entityBox, collidingBoxes, new AxisAlignedBB(.0625f, 0, .0625f, .9375f, 1, .9375f));
 	}
+
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		int meta = this.getMetaFromState(state);
-		if(meta==STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
-			return new AxisAlignedBB(Utils.canFenceConnectTo(world,pos,EnumFacing.WEST,blockMaterial)?0:.375f,0,Utils.canFenceConnectTo(world,pos,EnumFacing.NORTH,blockMaterial)?0:.375f, Utils.canFenceConnectTo(world,pos,EnumFacing.EAST,blockMaterial)?1:.625f,1f,Utils.canFenceConnectTo(world,pos,EnumFacing.SOUTH,blockMaterial)?1:.625f);
+		if(meta==STEEL_FENCE.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
+			return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, EnumFacing.WEST, blockMaterial)?0: .375f, 0, Utils.canFenceConnectTo(world, pos, EnumFacing.NORTH, blockMaterial)?0: .375f, Utils.canFenceConnectTo(world, pos, EnumFacing.EAST, blockMaterial)?1: .625f, 1f, Utils.canFenceConnectTo(world, pos, EnumFacing.SOUTH, blockMaterial)?1: .625f);
 		return super.getBoundingBox(state, world, pos);
 	}
 
@@ -157,7 +159,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	@Override
 	public PathNodeType getAiPathNodeType(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		switch (state.getValue(property))
+		switch(state.getValue(property))
 		{
 			case STEEL_FENCE:
 			case ALUMINUM_FENCE:

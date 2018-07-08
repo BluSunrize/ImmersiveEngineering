@@ -16,8 +16,8 @@ import net.minecraft.world.IBlockAccess;
  */
 public interface IPostBlock
 {
-  /**
-   * Returns true if a transformer should render attached to this post
-   */
-  boolean canConnectTransformer(IBlockAccess world, BlockPos pos);
+	/**
+	 * Returns true if a transformer should render attached to this post
+	 */
+	boolean canConnectTransformer(IBlockAccess world, BlockPos pos);
 }

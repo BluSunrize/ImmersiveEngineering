@@ -26,6 +26,7 @@ public class ShaderCaseMinecart extends ShaderCase
 		super(layers);
 		initBooleans();
 	}
+
 	public ShaderCaseMinecart(Collection<ShaderLayer> layers)
 	{
 		super(layers);
@@ -44,10 +45,10 @@ public class ShaderCaseMinecart extends ShaderCase
 	{
 		mirrorSideForPass = new boolean[getLayers().length];
 		renderSides = new boolean[getLayers().length][7];
-		for(int i=0; i<mirrorSideForPass.length; i++)
+		for(int i = 0; i < mirrorSideForPass.length; i++)
 		{
 			mirrorSideForPass[i] = true;
-			for(int j=0; j<7; j++)
+			for(int j = 0; j < 7; j++)
 				renderSides[i][j] = true;
 		}
 	}
@@ -69,6 +70,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	{
 		return false;
 	}
+
 	@Override
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{

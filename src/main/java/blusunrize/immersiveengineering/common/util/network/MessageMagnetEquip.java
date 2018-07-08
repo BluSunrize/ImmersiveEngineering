@@ -20,10 +20,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class MessageMagnetEquip implements IMessage
 {
 	int fetchSlot;
+
 	public MessageMagnetEquip(int fetch)
 	{
 		this.fetchSlot = fetch;
 	}
+
 	public MessageMagnetEquip()
 	{
 	}
@@ -48,7 +50,7 @@ public class MessageMagnetEquip implements IMessage
 			EntityPlayerMP player = ctx.getServerHandler().player;
 			player.getServerWorld().addScheduledTask(() -> {
 				ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
-				if(message.fetchSlot>=0)
+				if(message.fetchSlot >= 0)
 				{
 					ItemStack s = player.inventory.mainInventory.get(message.fetchSlot);
 					if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))

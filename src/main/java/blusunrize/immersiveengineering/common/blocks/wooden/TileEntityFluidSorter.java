@@ -30,7 +30,7 @@ import java.util.ArrayList;
  */
 public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 {
-	public byte[] sortWithNBT = {1,1,1,1,1,1};
+	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
 	//	public static final int filterSlotsPerSide = 8;
 	public FluidStack[][] filters = new FluidStack[6][8];
 	private boolean isRouting = false;
@@ -41,21 +41,21 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		{
 			this.isRouting = true;
 			IFluidHandler[][] validOutputs = getValidOutputs(inputSide, stack, true);
-			if(validOutputs[0].length>0)
+			if(validOutputs[0].length > 0)
 			{
 				int rand = Utils.RAND.nextInt(validOutputs[0].length);
 				int accepted = validOutputs[0][rand].fill(stack.copy(), doFill);
-				if(accepted>0)
+				if(accepted > 0)
 				{
 					isRouting = false;
 					return accepted;
 				}
 			}
-			if(validOutputs[1].length>0)
+			if(validOutputs[1].length > 0)
 			{
 				int rand = Utils.RAND.nextInt(validOutputs[1].length);
 				int accepted = validOutputs[1][rand].fill(stack.copy(), doFill);
-				if(accepted>0)
+				if(accepted > 0)
 				{
 					isRouting = false;
 					return accepted;
@@ -68,7 +68,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 
 	public boolean doNBT(int side)
 	{
-		if(side>=0 && side<this.sortWithNBT.length)
+		if(side >= 0&&side < this.sortWithNBT.length)
 			return this.sortWithNBT[side]==1;
 		return false;
 	}
@@ -78,11 +78,13 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	{
 		return true;
 	}
+
 	@Override
 	public int getGuiID()
 	{
 		return Lib.GUIID_FluidSorter;
 	}
+
 	@Override
 	public TileEntity getGuiMaster()
 	{
@@ -110,7 +112,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		ArrayList<IFluidHandler> validFilteredInvOuts = new ArrayList<IFluidHandler>(6);
 		ArrayList<IFluidHandler> validUnfilteredInvOuts = new ArrayList<IFluidHandler>(6);
 		for(EnumFacing side : EnumFacing.values())
-			if(side!=inputSide && world.isBlockLoaded(getPos().offset(side)))
+			if(side!=inputSide&&world.isBlockLoaded(getPos().offset(side)))
 			{
 				boolean unmapped = true;
 				boolean allowed = false;
@@ -125,15 +127,15 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 								b &= FluidStack.areFluidStackTagsEqual(filterStack, fluidStack);
 							if(b)
 							{
-								allowed=true;
+								allowed = true;
 								break filterIteration;
 							}
 						}
 				}
-				if(allowed || (allowUnmapped&&unmapped))
+				if(allowed||(allowUnmapped&&unmapped))
 				{
 					TileEntity tile = Utils.getExistingTileEntity(world, getPos().offset(side));
-					if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+					if(tile!=null&&tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 					{
 						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
 						if(handler.fill(fluidStack.copy(), false) > 0)
@@ -154,21 +156,22 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		sortWithNBT = nbt.getByteArray("sortWithNBT");
-		for(int side=0; side<6; side++)
+		for(int side = 0; side < 6; side++)
 		{
 			NBTTagList filterList = nbt.getTagList("filter_"+side, 10);
-			for(int i=0; i<filterList.tagCount(); i++)
+			for(int i = 0; i < filterList.tagCount(); i++)
 				filters[side][i] = FluidStack.loadFluidStackFromNBT(filterList.getCompoundTagAt(i));
 		}
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setByteArray("sortWithNBT", sortWithNBT);
-		for(int side=0; side<6; side++)
+		for(int side = 0; side < 6; side++)
 		{
 			NBTTagList filterList = new NBTTagList();
-			for(int i=0; i<filters[side].length; i++)
+			for(int i = 0; i < filters[side].length; i++)
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				if(filters[side][i]!=null)
@@ -182,22 +185,23 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null)
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null)
 			return true;
 		return super.hasCapability(capability, facing);
 	}
+
 	IFluidHandler[] insertionHandlers = {
-			new SorterFluidHandler(this,EnumFacing.DOWN),
-			new SorterFluidHandler(this,EnumFacing.UP),
-			new SorterFluidHandler(this,EnumFacing.NORTH),
-			new SorterFluidHandler(this,EnumFacing.SOUTH),
-			new SorterFluidHandler(this,EnumFacing.WEST),
-			new SorterFluidHandler(this,EnumFacing.EAST)};
+			new SorterFluidHandler(this, EnumFacing.DOWN),
+			new SorterFluidHandler(this, EnumFacing.UP),
+			new SorterFluidHandler(this, EnumFacing.NORTH),
+			new SorterFluidHandler(this, EnumFacing.SOUTH),
+			new SorterFluidHandler(this, EnumFacing.WEST),
+			new SorterFluidHandler(this, EnumFacing.EAST)};
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null)
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null)
 			return (T)insertionHandlers[facing.ordinal()];
 		return super.getCapability(capability, facing);
 	}
@@ -206,6 +210,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	{
 		TileEntityFluidSorter tile;
 		EnumFacing facing;
+
 		SorterFluidHandler(TileEntityFluidSorter tile, EnumFacing facing)
 		{
 			this.tile = tile;
@@ -215,24 +220,27 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		@Override
 		public int fill(FluidStack resource, boolean doFill)
 		{
-			if(resource == null)
+			if(resource==null)
 				return 0;
 			return tile.routeFluid(facing, resource, doFill);
 		}
+
 		@Override
 		public FluidStack drain(FluidStack resource, boolean doDrain)
 		{
 			return null;
 		}
+
 		@Override
 		public FluidStack drain(int maxDrain, boolean doDrain)
 		{
 			return null;
 		}
+
 		@Override
 		public IFluidTankProperties[] getTankProperties()
 		{
-			return new IFluidTankProperties[]{new FluidTankProperties(null,0)};
+			return new IFluidTankProperties[]{new FluidTankProperties(null, 0)};
 		}
 	}
 }

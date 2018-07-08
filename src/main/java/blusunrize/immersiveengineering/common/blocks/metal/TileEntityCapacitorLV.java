@@ -39,17 +39,17 @@ import javax.annotation.Nonnull;
 
 public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IBlockOverlayText, IConfigurableSides, IComparatorOverride, ITileDrop
 {
-	public SideConfig[] sideConfig={SideConfig.NONE,SideConfig.INPUT,SideConfig.NONE,SideConfig.NONE,SideConfig.NONE,SideConfig.NONE};
-	FluxStorage energyStorage = new FluxStorage(getMaxStorage(),getMaxInput(),getMaxOutput());
+	public SideConfig[] sideConfig = {SideConfig.NONE, SideConfig.INPUT, SideConfig.NONE, SideConfig.NONE, SideConfig.NONE, SideConfig.NONE};
+	FluxStorage energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
 
-	public int comparatorOutput=0;
+	public int comparatorOutput = 0;
 
 	@Override
 	public void update()
 	{
 		if(!world.isRemote)
 		{
-			for(int i=0; i<6; i++)
+			for(int i = 0; i < 6; i++)
 				this.transferEnergy(i);
 
 			if(world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
@@ -57,12 +57,13 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 				int i = scaleStoredEnergyTo(15);
 				if(i!=this.comparatorOutput)
 				{
-					this.comparatorOutput=i;
+					this.comparatorOutput = i;
 					world.updateComparatorOutputLevel(getPos(), getBlockType());
 				}
 			}
 		}
 	}
+
 	public int scaleStoredEnergyTo(int scale)
 	{
 		return (int)(scale*(energyStorage.getEnergyStored()/(float)energyStorage.getMaxEnergyStored()));
@@ -70,7 +71,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 
 	protected void transferEnergy(int side)
 	{
-		if(this.sideConfig[side] != SideConfig.OUTPUT)
+		if(this.sideConfig[side]!=SideConfig.OUTPUT)
 			return;
 		EnumFacing fd = EnumFacing.getFront(side);
 		BlockPos outPos = getPos().offset(fd);
@@ -78,11 +79,13 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
 		this.energyStorage.modifyEnergyStored(-EnergyHelper.insertFlux(tileEntity, fd.getOpposite(), out, false));
 	}
+
 	@Override
 	public IEEnums.SideConfig getSideConfig(int side)
 	{
 		return this.sideConfig[side];
 	}
+
 	@Override
 	public boolean toggleSide(int side, EntityPlayer player)
 	{
@@ -92,6 +95,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 		return true;
 	}
+
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
@@ -107,10 +111,12 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	{
 		return IEConfig.Machines.capacitorLV_storage;
 	}
+
 	public int getMaxInput()
 	{
 		return IEConfig.Machines.capacitorLV_input;
 	}
+
 	public int getMaxOutput()
 	{
 		return IEConfig.Machines.capacitorLV_output;
@@ -119,33 +125,36 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 			nbt.setInteger("sideConfig_"+i, sideConfig[i].ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		if(nbt.hasKey("sideConfig"))//old NBT style
 		{
 			int[] old = nbt.getIntArray("sideConfig");
-			for(int i=0; i<old.length; i++)
+			for(int i = 0; i < old.length; i++)
 				sideConfig[i] = SideConfig.values()[old[i]+1];
 		}
 		else
-			for(int i=0; i<6; i++)
+			for(int i = 0; i < 6; i++)
 				sideConfig[i] = SideConfig.values()[nbt.getInteger("sideConfig_"+i)];
 		energyStorage.readFromNBT(nbt);
 	}
 
 
 	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
+
 	@Nonnull
 	@Override
 	public FluxStorage getFluxStorage()
 	{
 		return this.energyStorage;
 	}
+
 	@Nonnull
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)
@@ -154,6 +163,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 			return SideConfig.NONE;
 		return this.sideConfig[facing.ordinal()];
 	}
+
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
@@ -165,19 +175,20 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer && IEConfig.colourblindSupport)
+		if(hammer&&IEConfig.colourblindSupport)
 		{
 			SideConfig i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
 			SideConfig j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
 			};
 		}
 		return null;
 	}
+
 	@Override
 	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{
@@ -194,18 +205,19 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
-		if(energyStorage.getEnergyStored()>0)
+		if(energyStorage.getEnergyStored() > 0)
 			ItemNBTHelper.setInt(stack, "energyStorage", energyStorage.getEnergyStored());
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 			ItemNBTHelper.setInt(stack, "sideConfig_"+i, sideConfig[i].ordinal());
 		return stack;
 	}
+
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
 			energyStorage.setEnergy(ItemNBTHelper.getInt(stack, "energyStorage"));
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 			if(ItemNBTHelper.hasKey(stack, "sideConfig_"+i))
 				sideConfig[i] = SideConfig.values()[ItemNBTHelper.getInt(stack, "sideConfig_"+i)];
 	}

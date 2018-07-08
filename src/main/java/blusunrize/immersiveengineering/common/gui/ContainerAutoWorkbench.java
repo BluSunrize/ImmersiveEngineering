@@ -27,19 +27,19 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 		this.inventoryPlayer = inventoryPlayer;
 		this.addSlotToContainer(new IESlot.AutoBlueprint(this, this.inv, 0, 102, 69));
 
-		for(int i=0; i<16; i++)
+		for(int i = 0; i < 16; i++)
 			this.addSlotToContainer(new Slot(this.inv, 1+i, 7+(i%4)*18, 24+(i/4)*18));
-		slotCount=17;
+		slotCount = 17;
 
 		bindPlayerInv(inventoryPlayer);
 	}
 
 	private void bindPlayerInv(InventoryPlayer inventoryPlayer)
 	{
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 103+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 161));
 	}
 
@@ -55,14 +55,14 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
-		if (slotObject != null && slotObject.getHasStack())
+		if(slotObject!=null&&slotObject.getHasStack())
 		{
 			ItemStack stackInSlot = slotObject.getStack();
 			stack = stackInSlot.copy();
 
-			if (slot < slotCount)
+			if(slot < slotCount)
 			{
-				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
+				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(!stackInSlot.isEmpty())
@@ -75,10 +75,10 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 				else
 				{
 					boolean b = true;
-					for(int i=1; i<slotCount; i++)
+					for(int i = 1; i < slotCount; i++)
 					{
 						Slot s = inventorySlots.get(i);
-						if(s!=null && s.isItemValid(stackInSlot))
+						if(s!=null&&s.isItemValid(stackInSlot))
 							if(this.mergeItemStack(stackInSlot, i, i+1, true))
 							{
 								b = false;
@@ -92,17 +92,18 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 				}
 			}
 
-			if (stackInSlot.getCount() == 0)
+			if(stackInSlot.getCount()==0)
 				slotObject.putStack(ItemStack.EMPTY);
 			else
 				slotObject.onSlotChanged();
 
-			if (stackInSlot.getCount() == stack.getCount())
+			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;
 			slotObject.onTake(player, stack);
 		}
 		return stack;
 	}
+
 	@Override
 	public void onCraftMatrixChanged(IInventory p_75130_1_)
 	{

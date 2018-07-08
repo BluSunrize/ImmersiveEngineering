@@ -33,11 +33,12 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 	static double sqrt2Half = Math.sqrt(2)/2;
 	public static final double[][] octagon = {
 			{1, 0}, {sqrt2Half, sqrt2Half}, {0, 1}, {-sqrt2Half, sqrt2Half},
-			{-1, 0}, {-sqrt2Half, -sqrt2Half}, {0, -1}, {sqrt2Half, -sqrt2Half}	
+			{-1, 0}, {-sqrt2Half, -sqrt2Half}, {0, -1}, {sqrt2Half, -sqrt2Half}
 	};
 	private static Random r = new Random();
 	ResourceLocation modelLocation = new ResourceLocation("immersiveengineering:fluorescent_tube.obj");
 	TextureAtlasSprite tex;
+
 	public EntityRenderFluorescentTube(RenderManager renderManager)
 	{
 		super(renderManager);
@@ -50,9 +51,10 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 	{
 		return null;
 	}
+
 	@Override
 	public void doRender(EntityFluorescentTube entity, double x, double y, double z, float entityYaw,
-			float partialTicks)
+						 float partialTicks)
 	{
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder wr = tes.getBuffer();
@@ -68,7 +70,7 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 		GlStateManager.popMatrix();
 		GlStateManager.translate(-0.25, -1, 0);
 		GlStateManager.color(1, 1, 1);
-		if (tex==null)
+		if(tex==null)
 			tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/iron_block");
 
 		wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -84,15 +86,15 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 
 	static void drawTube(boolean active, float[] rgb, double length, BufferBuilder wr, Tessellator tes)
 	{
-		if (tube.isEmpty())
+		if(tube.isEmpty())
 			tube = new ItemStack(IEContent.itemFluorescentTube);
-		if (tubeActive.isEmpty())
+		if(tubeActive.isEmpty())
 		{
 			tubeActive = new ItemStack(IEContent.itemFluorescentTube);
 			ItemFluorescentTube.setLit(tubeActive, 1);
 		}
 		GlStateManager.translate(-.5, .25, -.5);
-		ItemStack renderStack = active?tubeActive:tube;
+		ItemStack renderStack = active?tubeActive: tube;
 		ItemFluorescentTube.setRGB(renderStack, rgb);
 		ItemRendererIEOBJ.INSTANCE.renderByItem(renderStack, mc().getRenderPartialTicks());
 	}

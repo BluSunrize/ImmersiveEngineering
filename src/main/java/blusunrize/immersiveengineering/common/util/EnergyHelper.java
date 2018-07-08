@@ -34,6 +34,7 @@ public class EnergyHelper
 			return true;
 		return stack.hasCapability(CapabilityEnergy.ENERGY, null);
 	}
+
 	public static int getEnergyStored(ItemStack stack)
 	{
 		if(stack.isEmpty())
@@ -44,6 +45,7 @@ public class EnergyHelper
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).getEnergyStored();
 		return 0;
 	}
+
 	public static int getMaxEnergyStored(ItemStack stack)
 	{
 		if(stack.isEmpty())
@@ -54,6 +56,7 @@ public class EnergyHelper
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).getMaxEnergyStored();
 		return 0;
 	}
+
 	public static int insertFlux(ItemStack stack, int energy, boolean simulate)
 	{
 		if(stack.isEmpty())
@@ -64,6 +67,7 @@ public class EnergyHelper
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(energy, simulate);
 		return 0;
 	}
+
 	public static int extractFlux(ItemStack stack, int energy, boolean simulate)
 	{
 		if(stack.isEmpty())
@@ -74,7 +78,9 @@ public class EnergyHelper
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(energy, simulate);
 		return 0;
 	}
-	static HashMap<Item,Boolean> reverseInsertion = new HashMap<Item,Boolean>();
+
+	static HashMap<Item, Boolean> reverseInsertion = new HashMap<Item, Boolean>();
+
 	public static int forceExtractFlux(ItemStack stack, int energy, boolean simulate)
 	{
 		if(stack.isEmpty())
@@ -95,7 +101,7 @@ public class EnergyHelper
 				insertFlux(stack, -energy, simulate);
 				drawn = stored-getEnergyStored(stack);
 				//if reverse insertion was succesful, it'll be the default approach in future
-				reverseInsertion.put(stack.getItem(),drawn>0?Boolean.TRUE:Boolean.FALSE);
+				reverseInsertion.put(stack.getItem(), drawn > 0?Boolean.TRUE: Boolean.FALSE);
 			}
 			return drawn;
 		}
@@ -103,9 +109,9 @@ public class EnergyHelper
 
 	public static boolean isFluxReceiver(TileEntity tile, EnumFacing facing)
 	{
-		if(tile == null)
+		if(tile==null)
 			return false;
-		if(tile instanceof IFluxReceiver && ((IFluxReceiver)tile).canConnectEnergy(facing))
+		if(tile instanceof IFluxReceiver&&((IFluxReceiver)tile).canConnectEnergy(facing))
 			return true;
 		if(tile.hasCapability(CapabilityEnergy.ENERGY, facing))
 			return tile.getCapability(CapabilityEnergy.ENERGY, facing).canReceive();
@@ -114,9 +120,9 @@ public class EnergyHelper
 
 	public static int insertFlux(TileEntity tile, EnumFacing facing, int energy, boolean simulate)
 	{
-		if(tile == null)
+		if(tile==null)
 			return 0;
-		if(tile instanceof IFluxReceiver && ((IFluxReceiver)tile).canConnectEnergy(facing))
+		if(tile instanceof IFluxReceiver&&((IFluxReceiver)tile).canConnectEnergy(facing))
 			return ((IFluxReceiver)tile).receiveEnergy(facing, energy, simulate);
 		if(tile.hasCapability(CapabilityEnergy.ENERGY, facing))
 			return tile.getCapability(CapabilityEnergy.ENERGY, facing).receiveEnergy(energy, simulate);
@@ -125,7 +131,8 @@ public class EnergyHelper
 
 	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IFluxProvider
 	{
-		@Nonnull FluxStorage getFluxStorage();
+		@Nonnull
+		FluxStorage getFluxStorage();
 
 		default void postEnergyTransferUpdate(int energy, boolean simulate)
 		{
@@ -135,7 +142,7 @@ public class EnergyHelper
 		@Override
 		default int extractEnergy(@Nullable EnumFacing fd, int amount, boolean simulate)
 		{
-			if(((TileEntity)this).getWorld().isRemote || getEnergySideConfig(fd) != SideConfig.OUTPUT)
+			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=SideConfig.OUTPUT)
 				return 0;
 			int r = getFluxStorage().extractEnergy(amount, simulate);
 			postEnergyTransferUpdate(-r, simulate);
@@ -157,7 +164,7 @@ public class EnergyHelper
 		@Override
 		default int receiveEnergy(@Nullable EnumFacing fd, int amount, boolean simulate)
 		{
-			if(((TileEntity)this).getWorld().isRemote || getEnergySideConfig(fd) != SideConfig.INPUT)
+			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=SideConfig.INPUT)
 				return 0;
 			int r = getFluxStorage().receiveEnergy(amount, simulate);
 			postEnergyTransferUpdate(r, simulate);
@@ -167,12 +174,13 @@ public class EnergyHelper
 
 	public interface IIEInternalFluxConnector extends IFluxConnection
 	{
-		@Nonnull SideConfig getEnergySideConfig(@Nullable EnumFacing facing);
+		@Nonnull
+		SideConfig getEnergySideConfig(@Nullable EnumFacing facing);
 
 		@Override
 		default boolean canConnectEnergy(@Nullable EnumFacing fd)
 		{
-			return getEnergySideConfig(fd) != SideConfig.NONE;
+			return getEnergySideConfig(fd)!=SideConfig.NONE;
 		}
 
 		IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing);
@@ -257,11 +265,13 @@ public class EnergyHelper
 		{
 			return ItemNBTHelper.insertFluxItem(container, energy, getMaxEnergyStored(container), simulate);
 		}
+
 		@Override
 		default int extractEnergy(ItemStack container, int energy, boolean simulate)
 		{
 			return ItemNBTHelper.extractFluxFromItem(container, energy, simulate);
 		}
+
 		@Override
 		default int getEnergyStored(ItemStack container)
 		{
@@ -276,7 +286,7 @@ public class EnergyHelper
 
 		public ItemEnergyStorage(ItemStack item)
 		{
-			assert(item.getItem() instanceof IIEEnergyItem);
+			assert (item.getItem() instanceof IIEEnergyItem);
 			this.stack = item;
 			this.ieEnergyItem = (IIEEnergyItem)item.getItem();
 		}

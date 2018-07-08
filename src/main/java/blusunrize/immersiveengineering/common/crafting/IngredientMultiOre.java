@@ -36,13 +36,13 @@ public class IngredientMultiOre extends Ingredient
 	{
 		super(0);
 		this.ores = new NonNullList[ores.length];
-		for(int i=0; i<ores.length; i++)
+		for(int i = 0; i < ores.length; i++)
 			this.ores[i] = OreDictionary.getOres(ores[i]);
 	}
 
 	private int totalSize()
 	{
-		int i=0;
+		int i = 0;
 		for(NonNullList<ItemStack> list : ores)
 			i += list.size();
 		return i;
@@ -52,13 +52,13 @@ public class IngredientMultiOre extends Ingredient
 	@Nonnull
 	public ItemStack[] getMatchingStacks()
 	{
-		if(array==null || this.array.length!=totalSize())
+		if(array==null||this.array.length!=totalSize())
 		{
 			NonNullList<ItemStack> lst = NonNullList.create();
 			for(NonNullList<ItemStack> list : ores)
 				for(ItemStack stack : list)
 				{
-					if(stack.getMetadata() == OreDictionary.WILDCARD_VALUE)
+					if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
 						stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
 					else
 						lst.add(stack);
@@ -73,14 +73,14 @@ public class IngredientMultiOre extends Ingredient
 	@SideOnly(Side.CLIENT)
 	public IntList getValidItemStacksPacked()
 	{
-		if(this.itemIds==null || this.itemIds.size()!=totalSize())
+		if(this.itemIds==null||this.itemIds.size()!=totalSize())
 		{
 			this.itemIds = new IntArrayList(totalSize());
 
 			for(NonNullList<ItemStack> list : ores)
 				for(ItemStack stack : list)
 				{
-					if(stack.getMetadata() == OreDictionary.WILDCARD_VALUE)
+					if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
 					{
 						NonNullList<ItemStack> lst = NonNullList.create();
 						stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
@@ -102,7 +102,7 @@ public class IngredientMultiOre extends Ingredient
 	@Override
 	public boolean apply(@Nullable ItemStack input)
 	{
-		if(input == null)
+		if(input==null)
 			return false;
 
 		for(NonNullList<ItemStack> list : ores)

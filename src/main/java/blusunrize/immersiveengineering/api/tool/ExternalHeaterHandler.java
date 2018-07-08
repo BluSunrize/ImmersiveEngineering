@@ -28,34 +28,37 @@ public class ExternalHeaterHandler
 
 	/**
 	 * @author BluSunrize - 09.12.2015
-	 * 
+	 * <p>
 	 * An interface to be implemented by TileEntities that want to allow direct interaction with the external heater
 	 */
 	public interface IExternalHeatable
 	{
-		/** 
+		/**
 		 * Called each tick<br>
 		 * Handle fueling as well as possible smelting speed increases here
+		 *
 		 * @param energyAvailable the amount of RF the furnace heater has stored and can supply
-		 * @param redstone whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
+		 * @param redstone        whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
 		 * @return the amount of RF consumed that tick. Should be lower or equal to "energyAvailable", obviously
 		 */
 		int doHeatTick(int energyAvailable, boolean redstone);
 	}
 
 	public static HashMap<Class<? extends TileEntity>, HeatableAdapter> adapterMap = new HashMap<Class<? extends TileEntity>, HeatableAdapter>();
+
 	/**
 	 * @author BluSunrize - 09.12.2015
-	 * 
+	 * <p>
 	 * An adapter to appyl to TileEntities that can't implement the IExternalHeatable interface
 	 */
 	public abstract static class HeatableAdapter<E extends TileEntity>
 	{
-		/** 
+		/**
 		 * Called each tick<br>
 		 * Handle fueling as well as possible smelting speed increases here
+		 *
 		 * @param energyAvailable the amount of RF the furnace heater has stored and can supply
-		 * @param canHeat whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
+		 * @param canHeat         whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
 		 * @return the amount of RF consumed that tick. Should be lower or equal to "energyAvailable", obviously
 		 */
 		public abstract int doHeatTick(E tileEntity, int energyAvailable, boolean canHeat);
@@ -68,13 +71,14 @@ public class ExternalHeaterHandler
 	{
 		adapterMap.put(c, adapter);
 	}
+
 	/**
 	 * @return a HeatableAdapter for the given TileEntity class
 	 */
 	public static HeatableAdapter getHeatableAdapter(Class<? extends TileEntity> c)
 	{
 		HeatableAdapter adapter = adapterMap.get(c);
-		if(adapter == null && c!=TileEntity.class && c.getSuperclass()!=TileEntity.class)
+		if(adapter==null&&c!=TileEntity.class&&c.getSuperclass()!=TileEntity.class)
 		{
 			adapter = getHeatableAdapter((Class<? extends TileEntity>)c.getSuperclass());
 			adapterMap.put(c, adapter);
@@ -98,8 +102,8 @@ public class ExternalHeaterHandler
 				return true;
 			if(!existingOutput.isItemEqual(output))
 				return false;
-			int stackSize = existingOutput.getCount() + output.getCount();
-			return stackSize<=tileEntity.getInventoryStackLimit() && stackSize<=output.getMaxStackSize();
+			int stackSize = existingOutput.getCount()+output.getCount();
+			return stackSize <= tileEntity.getInventoryStackLimit()&&stackSize <= output.getMaxStackSize();
 		}
 
 		@Override
@@ -111,21 +115,21 @@ public class ExternalHeaterHandler
 			{
 				boolean burning = tileEntity.isBurning();
 				int burnTime = tileEntity.getField(0);
-				if(burnTime<200)
+				if(burnTime < 200)
 				{
 					int heatAttempt = 4;
 					int heatEnergyRatio = Math.max(1, defaultFurnaceEnergyCost);
 					int energyToUse = Math.min(energyAvailable, heatAttempt*heatEnergyRatio);
 					int heat = energyToUse/heatEnergyRatio;
-					if(heat>0)
+					if(heat > 0)
 					{
 						tileEntity.setField(0, burnTime+heat);
 						energyConsumed += heat*heatEnergyRatio;
 						if(!burning)
-							updateFurnace(tileEntity, tileEntity.getField(0)>0);
+							updateFurnace(tileEntity, tileEntity.getField(0) > 0);
 					}
 				}
-				if(canCook&&tileEntity.getField(0)>=200&&tileEntity.getField(2)<199)
+				if(canCook&&tileEntity.getField(0) >= 200&&tileEntity.getField(2) < 199)
 				{
 					int energyToUse = defaultFurnaceSpeedupCost;
 					if(energyAvailable-energyConsumed > energyToUse)
@@ -137,6 +141,7 @@ public class ExternalHeaterHandler
 			}
 			return energyConsumed;
 		}
+
 		public void updateFurnace(TileEntity tileEntity, boolean active)
 		{
 			Block containing = tileEntity.getBlockType();
@@ -151,7 +156,7 @@ public class ExternalHeaterHandler
 				nbt.setBoolean("Active", active);
 				tileEntity.readFromNBT(nbt);
 				IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
-				tileEntity.getWorld().notifyBlockUpdate(tileEntity.getPos(), state,state, 3);
+				tileEntity.getWorld().notifyBlockUpdate(tileEntity.getPos(), state, state, 3);
 			}
 		}
 	}

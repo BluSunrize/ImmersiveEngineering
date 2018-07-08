@@ -46,7 +46,7 @@ public class ModelItemDynamicOverride implements IBakedModel
 	public ModelItemDynamicOverride(IBakedModel itemModel, @Nullable List<ResourceLocation> textures)
 	{
 		this.itemModel = itemModel;
-		if(textures != null)
+		if(textures!=null)
 		{
 			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 			Optional<TRSRTransformation> transform = Optional.of(TRSRTransformation.identity());
@@ -59,7 +59,7 @@ public class ModelItemDynamicOverride implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 	{
-		if(quads != null)
+		if(quads!=null)
 			return quads;
 		return itemModel.getQuads(state, side, rand);
 	}
@@ -113,14 +113,14 @@ public class ModelItemDynamicOverride implements IBakedModel
 		@Override
 		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 		{
-			if(!stack.isEmpty() && stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
+			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{
-				IEItemInterfaces.ITextureOverride texOverride = (IEItemInterfaces.ITextureOverride) stack.getItem();
+				IEItemInterfaces.ITextureOverride texOverride = (IEItemInterfaces.ITextureOverride)stack.getItem();
 				String key = texOverride.getModelCacheKey(stack);
-				if(key != null)
+				if(key!=null)
 				{
 					IBakedModel model = modelCache.get(key);
-					if(model == null)
+					if(model==null)
 					{
 						model = new ModelItemDynamicOverride(originalModel, texOverride.getTextures(stack, key));
 						modelCache.put(key, model);

@@ -34,7 +34,7 @@ public class ManualUtils
 		{
 			if(!OreDictionary.itemMatches((ItemStack)o, stack, false))
 				return false;
-			if(stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+			if(stack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
 				return true;
 			if(((ItemStack)o).hasTagCompound())
 				return ((ItemStack)o).getTagCompound().equals(stack.getTagCompound());
@@ -42,6 +42,7 @@ public class ManualUtils
 		}
 		return false;
 	}
+
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
 		for(int oid : OreDictionary.getOreIDs(stack))
@@ -49,6 +50,7 @@ public class ManualUtils
 				return true;
 		return false;
 	}
+
 	public static boolean isExistingOreName(String name)
 	{
 		if(!OreDictionary.doesOreNameExist(name))
@@ -73,20 +75,22 @@ public class ManualUtils
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		for(String s : valid)
-			if(s!=null && !s.trim().isEmpty())
-				if(getSpellingDistanceBetweenStrings(query,s)<maxDistance)
+			if(s!=null&&!s.trim().isEmpty())
+				if(getSpellingDistanceBetweenStrings(query, s) < maxDistance)
 					list.add(s);
 
-		Collections.sort(list, new Comparator<String>(){
+		Collections.sort(list, new Comparator<String>()
+		{
 			@Override
 			public int compare(String s0, String s1)
 			{
-				return getSpellingDistanceBetweenStrings(s1,s0);
+				return getSpellingDistanceBetweenStrings(s1, s0);
 			}
 		});
 
 		return list;
 	}
+
 	public static int getSpellingDistanceBetweenStrings(String query, String target)
 	{
 		query = query.toLowerCase(Locale.ENGLISH);
@@ -95,26 +99,26 @@ public class ManualUtils
 		String[] queryWords = query.split(" ");
 		String[] targetWords = target.split(" ");
 		int distance = 0;
-		for(int iWord=0; iWord<queryWords.length; iWord++)
+		for(int iWord = 0; iWord < queryWords.length; iWord++)
 		{
-			if(iWord>=targetWords.length)
+			if(iWord >= targetWords.length)
 				distance++;
 			else
 			{
 				int wordDistance = 0;
-				for(int iChar=0; iChar<queryWords[iWord].length(); iChar++)
-					if(iChar>=targetWords[iWord].length())
+				for(int iChar = 0; iChar < queryWords[iWord].length(); iChar++)
+					if(iChar >= targetWords[iWord].length())
 						distance++;
 					else
 					{
-						if(queryWords[iWord].charAt(iChar) != targetWords[iWord].charAt(iChar))
+						if(queryWords[iWord].charAt(iChar)!=targetWords[iWord].charAt(iChar))
 						{
 							wordDistance++;
-							if(iChar>0 && queryWords[iWord].charAt(iChar-1)==targetWords[iWord].charAt(iChar) && queryWords[iWord].charAt(iChar)==targetWords[iWord].charAt(iChar-1))
-								wordDistance-=2;//switched letters don't increase distance
+							if(iChar > 0&&queryWords[iWord].charAt(iChar-1)==targetWords[iWord].charAt(iChar)&&queryWords[iWord].charAt(iChar)==targetWords[iWord].charAt(iChar-1))
+								wordDistance -= 2;//switched letters don't increase distance
 						}
 					}
-				if(wordDistance>0)
+				if(wordDistance > 0)
 					wordDistance += targetWords[iWord].length()-queryWords[iWord].length();
 				distance += wordDistance;
 			}
@@ -135,21 +139,21 @@ public class ManualUtils
 		for(Iterator<String> iterator = list.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
 		{
 			String next = iterator.next();
-			if(line>0)
+			if(line > 0)
 			{
 				int currentColour = fontRenderer.textColor;
 				GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentGLColor);
 				//Resetting colour if GL colour differs from textColor
 				//that case happens because the formatting reset does not reset textColor
-				int glColourRGBA = ((int)(currentGLColor.get(0) * 255) << 16) + ((int)(currentGLColor.get(1) * 255) << 8) + ((int)(currentGLColor.get(2) * 255));
-				if(glColourRGBA != currentColour)
+				int glColourRGBA = ((int)(currentGLColor.get(0)*255)<<16)+((int)(currentGLColor.get(1)*255)<<8)+((int)(currentGLColor.get(2)*255));
+				if(glColourRGBA!=currentColour)
 				{
 					int j = 0;
 					for(; j < fontRenderer.colorCode.length; j++)
-						if(fontRenderer.colorCode[j] == glColourRGBA)
+						if(fontRenderer.colorCode[j]==glColourRGBA)
 						{
-							String code = Integer.toHexString(j % 16);
-							next = '\u00a7' + code + next;
+							String code = Integer.toHexString(j%16);
+							next = '\u00a7'+code+next;
 							break;
 						}
 				}
@@ -168,25 +172,30 @@ public class ManualUtils
 	}
 
 	static HashMap<String, ResourceLocation> resourceMap = new HashMap<String, ResourceLocation>();
+
 	public static Tessellator tes()
 	{
 		return Tessellator.getInstance();
 	}
+
 	public static Minecraft mc()
 	{
 		return Minecraft.getMinecraft();
 	}
+
 	public static void bindTexture(String path)
 	{
 		mc().getTextureManager().bindTexture(getResource(path));
 	}
+
 	public static ResourceLocation getResource(String path)
 	{
-		ResourceLocation rl = resourceMap.containsKey(path) ? resourceMap.get(path) : new ResourceLocation(path);
+		ResourceLocation rl = resourceMap.containsKey(path)?resourceMap.get(path): new ResourceLocation(path);
 		if(!resourceMap.containsKey(path))
 			resourceMap.put(path, rl);
 		return rl;
 	}
+
 	public static RenderItem renderItem()
 	{
 		return mc().getRenderItem();

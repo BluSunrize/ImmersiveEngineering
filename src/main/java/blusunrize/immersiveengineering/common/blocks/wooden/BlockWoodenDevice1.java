@@ -34,7 +34,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 {
 	public BlockWoodenDevice1()
 	{
-		super("wooden_device1",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4,Properties.AnimationProperty);
+		super("wooden_device1", Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4, Properties.AnimationProperty);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setAllNotNormalBlock();
@@ -51,14 +51,15 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 			return;
 		super.getDrops(drops, world, pos, state, fortune);
 	}
+
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityWoodenPost)
 		{
-			if(!((TileEntityWoodenPost)tileEntity).isDummy() && !world.isRemote && world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots)
-				world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, new ItemStack(this,1,this.getMetaFromState(state))));
+			if(!((TileEntityWoodenPost)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
+				world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
 	}
@@ -77,7 +78,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 				else if(facing==EnumFacing.DOWN)
 					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
 				else
-					return facing==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
+					return facing==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
 			}
 		}
 		return super.canBeConnectedTo(world, pos, facing);
@@ -93,11 +94,11 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 			if(te instanceof TileEntityWallmount)
 			{
 				if(side==EnumFacing.UP)
-					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 				else if(side==EnumFacing.DOWN)
-					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 				else
-					return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+					return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 			}
 		}
 		return BlockFaceShape.SOLID;
@@ -109,7 +110,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityWoodenPost)
 		{
-			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy>3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
+			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
 		if(te instanceof TileEntityWallmount)
 		{
@@ -118,7 +119,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 			else if(side==EnumFacing.DOWN)
 				return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
 			else
-				return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
+				return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
 		}
 		return super.isSideSolid(state, world, pos, side);
 	}
@@ -142,20 +143,20 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		if(stack.getItemDamage()==BlockTypes_WoodenDevice1.WATERMILL.getMeta())
 		{
 			EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
-			for(int hh=-2; hh<=2; hh++)
-				for(int ww=-2; ww<=2; ww++)
-					if((hh>-2&&hh<2)||(ww>-2&&ww<2))
+			for(int hh = -2; hh <= 2; hh++)
+				for(int ww = -2; ww <= 2; ww++)
+					if((hh > -2&&hh < 2)||(ww > -2&&ww < 2))
 					{
-						BlockPos pos2 = pos.add(f.getAxis()==Axis.Z?ww:0, hh, f.getAxis()==Axis.Z?0:ww);
+						BlockPos pos2 = pos.add(f.getAxis()==Axis.Z?ww: 0, hh, f.getAxis()==Axis.Z?0: ww);
 						if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 							return false;
 					}
 		}
 		else if(stack.getItemDamage()==BlockTypes_WoodenDevice1.POST.getMeta())
 		{
-			for(int hh=1; hh<=3; hh++)
+			for(int hh = 1; hh <= 3; hh++)
 			{
-				BlockPos pos2 = pos.add(0,hh,0);
+				BlockPos pos2 = pos.add(0, hh, 0);
 				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
 			}
@@ -349,16 +350,16 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	{
 		switch(type)
 		{
-		case WATERMILL:
-			return new TileEntityWatermill();
-		case WINDMILL:
-			return new TileEntityWindmill();
+			case WATERMILL:
+				return new TileEntityWatermill();
+			case WINDMILL:
+				return new TileEntityWindmill();
 //		case WINDMILL_ADVANCED:
 //			return new TileEntityWindmillAdvanced();
-		case POST:
-			return new TileEntityWoodenPost();
-		case WALLMOUNT:
-			return new TileEntityWallmount();
+			case POST:
+				return new TileEntityWoodenPost();
+			case WALLMOUNT:
+				return new TileEntityWallmount();
 		}
 		return null;
 	}

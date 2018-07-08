@@ -13,7 +13,6 @@ import blusunrize.lib.manual.ManualInstance;
 
 /**
  * @author BluSunrize - 04.07.2015
- *
  */
 public class ManualHelper
 {
@@ -24,15 +23,16 @@ public class ManualHelper
 	public static String CAT_TOOLS = "tools";
 	public static String CAT_HEAVYMACHINES = "heavymachines";
 	public static String CAT_UPDATE = "update";
-	
+
 	public static ManualInstance ieManualInstance;
 
 	public static ManualInstance getManual()
 	{
 		return ieManualInstance;
 	}
+
 	/**
-	 * Adds a new entry to the manual. if the Category is new, it will be added to the list of categories automatically 
+	 * Adds a new entry to the manual. if the Category is new, it will be added to the list of categories automatically
 	 */
 	public static void addEntry(String name, String category, IManualPage... pages)
 	{

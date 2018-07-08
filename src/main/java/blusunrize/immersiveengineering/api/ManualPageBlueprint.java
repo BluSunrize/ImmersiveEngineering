@@ -55,7 +55,7 @@ public class ManualPageBlueprint extends ManualPages
 					{
 						int h = (int)Math.ceil(recipe.inputs.length/2f);
 						PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];
-						for(int i=0; i<recipe.inputs.length; i++)
+						for(int i = 0; i < recipe.inputs.length; i++)
 							pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getSizedStackList(), 32+i%2*18, i/2*18);
 						int middle = (int)(h/2f*18)-8;
 						pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output, 86, middle);
@@ -170,7 +170,8 @@ public class ManualPageBlueprint extends ManualPages
 					for(ItemStack subStack : (ItemStack[])stack.stack)
 						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-				} else if(stack.stack instanceof List)
+				}
+				else if(stack.stack instanceof List)
 					for(ItemStack subStack : (List<ItemStack>)stack.stack)
 					{
 						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
@@ -180,7 +181,8 @@ public class ManualPageBlueprint extends ManualPages
 				{
 					if(((ItemStack)stack.stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 						return true;
-				} else if(stack.stack instanceof String)
+				}
+				else if(stack.stack instanceof String)
 				{
 					if(ManualUtils.isExistingOreName((String)stack.stack))
 						for(ItemStack subStack : OreDictionary.getOres((String)stack.stack))

@@ -23,7 +23,7 @@ public class GuiReactiveList extends GuiButton
 {
 	private final GuiScreen gui;
 	private String[] entries;
-	private int[] padding = {0,0,0,0};
+	private int[] padding = {0, 0, 0, 0};
 	private boolean needsSlider = false;
 	private int perPage;
 	private Function<String, String> translationFunction;
@@ -45,10 +45,11 @@ public class GuiReactiveList extends GuiButton
 		this.entries = entries;
 		recalculateEntries();
 	}
+
 	private void recalculateEntries()
 	{
 		perPage = (int)((this.height-padding[0]-padding[1])/(ClientUtils.mc().fontRenderer.FONT_HEIGHT*textScale));
-		if(perPage<entries.length)
+		if(perPage < entries.length)
 		{
 			needsSlider = true;
 			maxOffset = entries.length-perPage;
@@ -56,6 +57,7 @@ public class GuiReactiveList extends GuiButton
 		else
 			needsSlider = false;
 	}
+
 	public GuiReactiveList setPadding(int up, int down, int left, int right)
 	{
 		this.padding[0] = up;
@@ -65,17 +67,22 @@ public class GuiReactiveList extends GuiButton
 		recalculateEntries();
 		return this;
 	}
-	public GuiReactiveList setTranslationFunc(Function<String,String> func)
+
+	public GuiReactiveList setTranslationFunc(Function<String, String> func)
 	{
 		this.translationFunction = func;
 		return this;
 	}
-	/** @param mode 0: No scrolling<br>1: Scroll when hovered<br>2: Scroll all */
+
+	/**
+	 * @param mode 0: No scrolling<br>1: Scroll when hovered<br>2: Scroll all
+	 */
 	public GuiReactiveList setScrollMode(int mode)
 	{
 		this.scrollMode = mode;
 		return this;
 	}
+
 	public GuiReactiveList setFormatting(float textScale, boolean unicode)
 	{
 		this.textScale = textScale;
@@ -88,10 +95,12 @@ public class GuiReactiveList extends GuiButton
 	{
 		return this.offset;
 	}
+
 	public void setOffset(int offset)
 	{
 		this.offset = offset;
 	}
+
 	public int getMaxOffset()
 	{
 		return this.maxOffset;
@@ -105,33 +114,33 @@ public class GuiReactiveList extends GuiButton
 		fr.setUnicodeFlag(unicode);
 
 		int mmY = my-this.y;
-		int strWidth = width-padding[2]-padding[3]-(needsSlider?6:0);
+		int strWidth = width-padding[2]-padding[3]-(needsSlider?6: 0);
 		GlStateManager.color(1, 1, 1);
 		if(needsSlider)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-			this.drawTexturedModalRect(x+width-6,y, 16,136, 6,4);
-			this.drawTexturedModalRect(x+width-6,y+height-4, 16,144, 6,4);
-			for(int i=0;i<height-8; i+=2)
-				this.drawTexturedModalRect(x+width-6,y+4+i, 16,141, 6,2);
+			this.drawTexturedModalRect(x+width-6, y, 16, 136, 6, 4);
+			this.drawTexturedModalRect(x+width-6, y+height-4, 16, 144, 6, 4);
+			for(int i = 0; i < height-8; i += 2)
+				this.drawTexturedModalRect(x+width-6, y+4+i, 16, 141, 6, 2);
 
-			int sliderSize = Math.max(6,height-maxOffset*fr.FONT_HEIGHT);
-			float silderShift = (height-sliderSize)/(float)maxOffset * offset;
+			int sliderSize = Math.max(6, height-maxOffset*fr.FONT_HEIGHT);
+			float silderShift = (height-sliderSize)/(float)maxOffset*offset;
 
-			this.drawTexturedModalRect(x+width-5,y+silderShift+1, 20,129, 4,2);
-			this.drawTexturedModalRect(x+width-5,y+silderShift+sliderSize-4, 20,132, 4,3);
-			for(int i=0;i<sliderSize-7; i++)
-				this.drawTexturedModalRect(x+width-5,y+silderShift+3+i, 20,131, 4,1);
+			this.drawTexturedModalRect(x+width-5, y+silderShift+1, 20, 129, 4, 2);
+			this.drawTexturedModalRect(x+width-5, y+silderShift+sliderSize-4, 20, 132, 4, 3);
+			for(int i = 0; i < sliderSize-7; i++)
+				this.drawTexturedModalRect(x+width-5, y+silderShift+3+i, 20, 131, 4, 1);
 		}
 
-		GlStateManager.scale(textScale,textScale,1);
-		this.hovered = mx>=x&&mx<x+width && my>=y&&my<y+height;
+		GlStateManager.scale(textScale, textScale, 1);
+		this.hovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		boolean hasTarget = false;
-		for(int i=0; i<Math.min(perPage, entries.length); i++)
+		for(int i = 0; i < Math.min(perPage, entries.length); i++)
 		{
 			int j = offset+i;
 			int col = 0xE0E0E0;
-			boolean selectionHover = hovered && mmY>=i*fr.FONT_HEIGHT && mmY<(i+1)*fr.FONT_HEIGHT;
+			boolean selectionHover = hovered&&mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT;
 			if(selectionHover)
 			{
 				hasTarget = true;
@@ -144,26 +153,26 @@ public class GuiReactiveList extends GuiButton
 					hoverTimer++;
 				col = Lib.COLOUR_I_ImmersiveOrange;
 			}
-			if(j>entries.length-1)
-				j=entries.length-1;
-			String s = translationFunction!=null?translationFunction.apply(entries[j]):entries[j];
+			if(j > entries.length-1)
+				j = entries.length-1;
+			String s = translationFunction!=null?translationFunction.apply(entries[j]): entries[j];
 			int overLength = s.length()-fr.sizeStringToWidth(s, strWidth);
-			if(overLength>0)//String is too long
+			if(overLength > 0)//String is too long
 			{
-				if(selectionHover && hoverTimer>20)
+				if(selectionHover&&hoverTimer > 20)
 				{
 					int textOffset = (hoverTimer/10)%(s.length());
-					s = s.substring(textOffset)+" "+s.substring(0,textOffset);
+					s = s.substring(textOffset)+" "+s.substring(0, textOffset);
 				}
 				s = fr.trimStringToWidth(s, strWidth);
 			}
 			float tx = ((x+padding[2])/textScale);
 			float ty = ((y+padding[0]+(fr.FONT_HEIGHT*i))/textScale);
 			GlStateManager.translate(tx, ty, 0);
-			fr.drawString(s, 0,0, col, false);
+			fr.drawString(s, 0, 0, col, false);
 			GlStateManager.translate(-tx, -ty, 0);
 		}
-		GlStateManager.scale(1/textScale,1/textScale,1);
+		GlStateManager.scale(1/textScale, 1/textScale, 1);
 		if(!hasTarget)
 		{
 			targetEntry = -1;
@@ -174,29 +183,30 @@ public class GuiReactiveList extends GuiButton
 
 		//Handle DWheel
 		int mouseWheel = Mouse.getEventDWheel();
-		if(mouseWheel!=0 && maxOffset>0 && Mouse.getEventNanoseconds()!=prevWheelNano)
+		if(mouseWheel!=0&&maxOffset > 0&&Mouse.getEventNanoseconds()!=prevWheelNano)
 		{
 			prevWheelNano = Mouse.getEventNanoseconds();
-			if(mouseWheel<0 && offset<maxOffset)
+			if(mouseWheel < 0&&offset < maxOffset)
 				offset++;
-			if(mouseWheel>0 && offset>0)
+			if(mouseWheel > 0&&offset > 0)
 				offset--;
 		}
 	}
 
-	public int selectedOption=-1;
+	public int selectedOption = -1;
+
 	@Override
 	public boolean mousePressed(Minecraft mc, int mx, int my)
 	{
 		boolean b = super.mousePressed(mc, mx, my);
 		FontRenderer fr = ClientUtils.mc().fontRenderer;
-		selectedOption=-1;
+		selectedOption = -1;
 		if(b)
 		{
 			int mmY = my-this.y;
-			for(int i=0; i<Math.min(perPage, entries.length); i++)
-				if(mmY>=i*fr.FONT_HEIGHT && mmY<(i+1)*fr.FONT_HEIGHT)
-					selectedOption=offset+i;
+			for(int i = 0; i < Math.min(perPage, entries.length); i++)
+				if(mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT)
+					selectedOption = offset+i;
 		}
 		return selectedOption!=-1;
 	}

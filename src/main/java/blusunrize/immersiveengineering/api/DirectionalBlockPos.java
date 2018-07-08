@@ -37,7 +37,7 @@ public class DirectionalBlockPos extends BlockPos
 	@Override
 	public String toString()
 	{
-	     return MoreObjects.toStringHelper(this).add("x", this.getX()).add("y", this.getY()).add("z", this.getZ()).add("direction", this.direction.toString()).toString();
+		return MoreObjects.toStringHelper(this).add("x", this.getX()).add("y", this.getY()).add("z", this.getZ()).add("direction", this.direction.toString()).toString();
 	}
 
 	public TileEntity getTile(World world)

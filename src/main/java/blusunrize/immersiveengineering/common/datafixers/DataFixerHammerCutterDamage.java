@@ -31,15 +31,15 @@ public class DataFixerHammerCutterDamage implements IFixableData
 	@Override
 	public NBTTagCompound fixTagCompound(@Nonnull NBTTagCompound compound)
 	{
-		if (IEContent.itemTool.getRegistryName().toString()
+		if(IEContent.itemTool.getRegistryName().toString()
 				.equals(compound.getString("id")))
 		{
 			int meta = compound.getInteger("Damage");
-			if (meta == CUTTER_META || meta == HAMMER_META)
+			if(meta==CUTTER_META||meta==HAMMER_META)
 			{
 				int damage;
 				NBTTagCompound stackTag = compound.getCompoundTag("tag");
-				if (meta==CUTTER_META)
+				if(meta==CUTTER_META)
 				{
 					damage = stackTag.getInteger("cutterDmg");
 					stackTag.removeTag("cutterDmg");

@@ -29,7 +29,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,11 +47,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -76,15 +73,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	}
 
 	private static final Map<DimensionBlockPos, TileEntity> tempTile = new HashMap<>();
+
 	@SubscribeEvent
 	public static void onTick(TickEvent.ServerTickEvent ev)
 	{
-		if (ev.phase== TickEvent.Phase.END)
+		if(ev.phase==TickEvent.Phase.END)
 			tempTile.clear();
 	}
 
 	@Override
-	public boolean hasTileEntity(IBlockState state) {
+	public boolean hasTileEntity(IBlockState state)
+	{
 		return true;
 	}
 
@@ -94,42 +93,42 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		TileEntity basic = createBasicTE(world, state.getValue(property));
 		Collection<IProperty<?>> keys = state.getPropertyKeys();
-		if (basic instanceof IDirectionalTile)
+		if(basic instanceof IDirectionalTile)
 		{
 			EnumFacing newFacing = null;
-			if (keys.contains(IEProperties.FACING_HORIZONTAL))
+			if(keys.contains(IEProperties.FACING_HORIZONTAL))
 				newFacing = state.getValue(IEProperties.FACING_HORIZONTAL);
-			else if (keys.contains(IEProperties.FACING_ALL))
+			else if(keys.contains(IEProperties.FACING_ALL))
 				newFacing = state.getValue(IEProperties.FACING_ALL);
-			int type = ((IDirectionalTile) basic).getFacingLimitation();
-			if (newFacing!=null)
+			int type = ((IDirectionalTile)basic).getFacingLimitation();
+			if(newFacing!=null)
 			{
-				switch (type)
+				switch(type)
 				{
 					case 2:
 					case 4:
 					case 5:
 					case 6:
-						if (newFacing.getAxis()==Axis.Y)
+						if(newFacing.getAxis()==Axis.Y)
 							newFacing = null;
 						break;
 					case 3:
-						if (newFacing.getAxis()!=Axis.Y)
+						if(newFacing.getAxis()!=Axis.Y)
 							newFacing = null;
 						break;
 				}
-				if (newFacing!=null)
-					((IDirectionalTile) basic).setFacing(newFacing);
+				if(newFacing!=null)
+					((IDirectionalTile)basic).setFacing(newFacing);
 			}
 		}
-		if (basic instanceof IAttachedIntegerProperies)
+		if(basic instanceof IAttachedIntegerProperies)
 		{
-			IAttachedIntegerProperies tileIntProps = (IAttachedIntegerProperies) basic;
-			String[] names = ((IAttachedIntegerProperies) basic).getIntPropertyNames();
-			for (String propertyName:names)
+			IAttachedIntegerProperies tileIntProps = (IAttachedIntegerProperies)basic;
+			String[] names = ((IAttachedIntegerProperies)basic).getIntPropertyNames();
+			for(String propertyName : names)
 			{
 				PropertyInteger property = tileIntProps.getIntProperty(propertyName);
-				if (keys.contains(property))
+				if(keys.contains(property))
 					tileIntProps.setValue(propertyName, state.getValue(property));
 			}
 		}
@@ -141,9 +140,9 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	protected IBlockState getInitDefaultState()
 	{
 		IBlockState ret = super.getInitDefaultState();
-		if (ret.getPropertyKeys().contains(IEProperties.FACING_ALL))
+		if(ret.getPropertyKeys().contains(IEProperties.FACING_ALL))
 			ret = ret.withProperty(IEProperties.FACING_ALL, getDefaultFacing());
-		else if (ret.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
+		else if(ret.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
 			ret = ret.withProperty(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
 		return ret;
 	}
@@ -156,12 +155,12 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 //	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		DimensionBlockPos dpos = new DimensionBlockPos(pos, world instanceof World?((World) world).provider.getDimension():0);
-		if(tile==null && tempTile.containsKey(dpos))
+		DimensionBlockPos dpos = new DimensionBlockPos(pos, world instanceof World?((World)world).provider.getDimension(): 0);
+		if(tile==null&&tempTile.containsKey(dpos))
 			tile = tempTile.get(dpos);
-		if(tile != null && ( !(tile instanceof ITileDrop) || !((ITileDrop)tile).preventInventoryDrop()))
+		if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop()))
 		{
-			if(tile instanceof IIEInventory && ((IIEInventory)tile).getDroppedItems()!=null)
+			if(tile instanceof IIEInventory&&((IIEInventory)tile).getDroppedItems()!=null)
 			{
 				for(ItemStack s : ((IIEInventory)tile).getDroppedItems())
 					if(!s.isEmpty())
@@ -196,8 +195,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
-		if(tile instanceof IImmersiveConnectable && !world.isRemote)
-				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile), world, world.getGameRules().getBoolean("doTileDrops"));
+		if(tile instanceof IImmersiveConnectable&&!world.isRemote)
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile), world, world.getGameRules().getBoolean("doTileDrops"));
 		tempTile.put(new DimensionBlockPos(pos, world.provider.getDimension()), tile);
 		super.breakBlock(world, pos, state);
 		world.removeTileEntity(pos);
@@ -209,7 +208,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IAdditionalDrops)
 		{
 			Collection<ItemStack> stacks = ((IAdditionalDrops)tile).getExtraDrops(player, state);
-			if(stacks!=null && !stacks.isEmpty())
+			if(stacks!=null&&!stacks.isEmpty())
 				for(ItemStack s : stacks)
 					if(!s.isEmpty())
 						spawnAsEntity(world, pos, s);
@@ -237,7 +236,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				return s;
 		}
 		Item item = Item.getItemFromBlock(this);
-		return item == Items.AIR ? ItemStack.EMPTY : new ItemStack(item, 1, this.damageDropped(world.getBlockState(pos)));
+		return item==Items.AIR?ItemStack.EMPTY: new ItemStack(item, 1, this.damageDropped(world.getBlockState(pos)));
 	}
 
 
@@ -246,7 +245,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		super.eventReceived(state, worldIn, pos, eventID, eventParam);
 		TileEntity tileentity = worldIn.getTileEntity(pos);
-		return tileentity != null && tileentity.receiveClientEvent(eventID, eventParam);
+		return tileentity!=null&&tileentity.receiveClientEvent(eventID, eventParam);
 	}
 
 	protected EnumFacing getDefaultFacing()
@@ -263,26 +262,26 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IAttachedIntegerProperies)
 		{
 			for(String s : ((IAttachedIntegerProperies)tile).getIntPropertyNames())
-				state = applyProperty(state, ((IAttachedIntegerProperies)tile).getIntProperty(s),  ((IAttachedIntegerProperies)tile).getIntPropertyValue(s));
+				state = applyProperty(state, ((IAttachedIntegerProperies)tile).getIntProperty(s), ((IAttachedIntegerProperies)tile).getIntPropertyValue(s));
 		}
 
-		if(tile instanceof IDirectionalTile && (state.getPropertyKeys().contains(IEProperties.FACING_ALL) || state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)))
+		if(tile instanceof IDirectionalTile&&(state.getPropertyKeys().contains(IEProperties.FACING_ALL)||state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)))
 		{
 			PropertyDirection prop = state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
 			state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
 		}
 		if(tile instanceof IActiveState)
 		{
-			IProperty boolProp = ((IActiveState) tile).getBoolProperty(IActiveState.class);
+			IProperty boolProp = ((IActiveState)tile).getBoolProperty(IActiveState.class);
 			if(state.getPropertyKeys().contains(boolProp))
-				state = applyProperty(state, boolProp, ((IActiveState) tile).getIsActive());
+				state = applyProperty(state, boolProp, ((IActiveState)tile).getIsActive());
 		}
 
 		if(tile instanceof IDualState)
 		{
-			IProperty boolProp = ((IDualState) tile).getBoolProperty(IDualState.class);
+			IProperty boolProp = ((IDualState)tile).getBoolProperty(IDualState.class);
 			if(state.getPropertyKeys().contains(boolProp))
-				state = applyProperty(state, boolProp, ((IDualState) tile).getIsSecondState());
+				state = applyProperty(state, boolProp, ((IDualState)tile).getIsSecondState());
 		}
 
 		if(tile instanceof TileEntityMultiblockPart)
@@ -305,23 +304,23 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			if(!((IDirectionalTile)tile).canRotate(axis))
 				return false;
 			IBlockState state = world.getBlockState(pos);
-			if(state.getPropertyKeys().contains(IEProperties.FACING_ALL) || state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
+			if(state.getPropertyKeys().contains(IEProperties.FACING_ALL)||state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
 			{
 				PropertyDirection prop = state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
 				EnumFacing f = ((IDirectionalTile)tile).getFacing();
 				int limit = ((IDirectionalTile)tile).getFacingLimitation();
 
 				if(limit==0)
-					f = EnumFacing.VALUES[(f.ordinal() + 1) % EnumFacing.VALUES.length];
+					f = EnumFacing.VALUES[(f.ordinal()+1)%EnumFacing.VALUES.length];
 				else if(limit==1)
-					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateAround(axis.getAxis()).getOpposite():f.rotateAround(axis.getAxis());
-				else if(limit == 2 || limit == 5)
-					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateY():f.rotateYCCW();
-				if(f != ((IDirectionalTile)tile).getFacing())
+					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateAround(axis.getAxis()).getOpposite(): f.rotateAround(axis.getAxis());
+				else if(limit==2||limit==5)
+					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateY(): f.rotateYCCW();
+				if(f!=((IDirectionalTile)tile).getFacing())
 				{
 					EnumFacing old = ((IDirectionalTile)tile).getFacing();
 					((IDirectionalTile)tile).setFacing(f);
-					((IDirectionalTile)tile).afterRotation(old,f);
+					((IDirectionalTile)tile).afterRotation(old, f);
 					state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
 					world.setBlockState(pos, state.cycleProperty(prop));
 				}
@@ -354,9 +353,9 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 					extended = extended.withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
 				if(te.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 					extended = extended.withProperty(CapabilityShader.BLOCKSTATE_PROPERTY, te.getCapability(CapabilityShader.SHADER_CAPABILITY, null));
-				if(te instanceof IPropertyPassthrough && ((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
+				if(te instanceof IPropertyPassthrough&&((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
 					extended = extended.withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
-				if(te instanceof TileEntityImmersiveConnectable && ((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.CONNECTIONS))
+				if(te instanceof TileEntityImmersiveConnectable&&((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.CONNECTIONS))
 					extended = extended.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
 			}
 			state = extended;
@@ -392,32 +391,32 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof IConfigurableSides && Utils.isHammer(heldItem) && !world.isRemote)
+		if(tile instanceof IConfigurableSides&&Utils.isHammer(heldItem)&&!world.isRemote)
 		{
-			int iSide = player.isSneaking()?side.getOpposite().ordinal():side.ordinal();
+			int iSide = player.isSneaking()?side.getOpposite().ordinal(): side.ordinal();
 			if(((IConfigurableSides)tile).toggleSide(iSide, player))
 				return true;
 		}
-		if(tile instanceof IDirectionalTile && Utils.isHammer(heldItem) && ((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player) && !world.isRemote)
+		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player)&&!world.isRemote)
 		{
 			EnumFacing f = ((IDirectionalTile)tile).getFacing();
 			EnumFacing oldF = f;
 			int limit = ((IDirectionalTile)tile).getFacingLimitation();
 
 			if(limit==0)
-				f = EnumFacing.VALUES[(f.ordinal() + 1) % EnumFacing.VALUES.length];
+				f = EnumFacing.VALUES[(f.ordinal()+1)%EnumFacing.VALUES.length];
 			else if(limit==1)
-				f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite():f.rotateAround(side.getAxis());
-			else if(limit == 2 || limit == 5)
-				f = player.isSneaking()?f.rotateYCCW():f.rotateY();
+				f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite(): f.rotateAround(side.getAxis());
+			else if(limit==2||limit==5)
+				f = player.isSneaking()?f.rotateYCCW(): f.rotateY();
 			((IDirectionalTile)tile).setFacing(f);
-			((IDirectionalTile)tile).afterRotation(oldF,f);
+			((IDirectionalTile)tile).afterRotation(oldF, f);
 			tile.markDirty();
-			world.notifyBlockUpdate(pos,state,state,3);
+			world.notifyBlockUpdate(pos, state, state, 3);
 			world.addBlockEvent(tile.getPos(), tile.getBlockType(), 255, 0);
 			return true;
 		}
-		if(tile instanceof IHammerInteraction && Utils.isHammer(heldItem) && !world.isRemote)
+		if(tile instanceof IHammerInteraction&&Utils.isHammer(heldItem)&&!world.isRemote)
 		{
 			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hitX, hitY, hitZ);
 			if(b)
@@ -429,11 +428,11 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			if(b)
 				return b;
 		}
-		if(tile instanceof IGuiTile && hand == EnumHand.MAIN_HAND && !player.isSneaking())
+		if(tile instanceof IGuiTile&&hand==EnumHand.MAIN_HAND&&!player.isSneaking())
 		{
 			TileEntity master = ((IGuiTile)tile).getGuiMaster();
-			if(!world.isRemote && master!=null && ((IGuiTile)master).canOpenGui(player))
-				CommonProxy.openGuiForTile(player,(TileEntity & IGuiTile)master);
+			if(!world.isRemote&&master!=null&&((IGuiTile)master).canOpenGui(player))
+				CommonProxy.openGuiForTile(player, (TileEntity & IGuiTile)master);
 			return true;
 		}
 		return false;
@@ -442,14 +441,14 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
 	{
-		if (!world.isRemote)
+		if(!world.isRemote)
 			ApiUtils.addFutureServerTask(world, () ->
 			{
-				if (world.isBlockLoaded(pos))
+				if(world.isBlockLoaded(pos))
 				{
 					TileEntity tile = world.getTileEntity(pos);
-					if (tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
-						((INeighbourChangeTile) tile).onNeighborBlockChange(fromPos);
+					if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
+						((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
 				}
 			});
 	}
@@ -468,15 +467,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		this.hasColours = true;
 		return this;
 	}
+
 	@Override
 	public boolean hasCustomBlockColours()
 	{
 		return hasColours;
 	}
+
 	@Override
 	public int getRenderColour(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
-		if(worldIn!=null && pos!=null)
+		if(worldIn!=null&&pos!=null)
 		{
 			TileEntity tile = worldIn.getTileEntity(pos);
 			if(tile instanceof IColouredTile)
@@ -502,18 +503,18 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				double wMax = side.getAxis()==Axis.X?bb.maxZ: bb.maxX;
 				double hMin = side.getAxis()==Axis.Y?bb.minZ: bb.minY;
 				double hMax = side.getAxis()==Axis.Y?bb.maxZ: bb.maxY;
-				if(wMin==0&&hMin==0 && wMax==1&&hMax==1)
+				if(wMin==0&&hMin==0&&wMax==1&&hMax==1)
 					return BlockFaceShape.SOLID;
-				else if(hMin==0&&hMax==1 && wMin==(1-wMax))
+				else if(hMin==0&&hMax==1&&wMin==(1-wMax))
 				{
-					if(wMin>.375)
+					if(wMin > .375)
 						return BlockFaceShape.MIDDLE_POLE_THIN;
-					else if(wMin>.3125)
+					else if(wMin > .3125)
 						return BlockFaceShape.MIDDLE_POLE;
 					else
 						return BlockFaceShape.MIDDLE_POLE_THICK;
 				}
-				else if(hMin==wMin && hMax==wMax)
+				else if(hMin==wMin&&hMax==wMax)
 				{
 					if(wMin > .375)
 						return BlockFaceShape.CENTER_SMALL;
@@ -540,11 +541,12 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			{
 				float[] bounds = ((IBlockBounds)te).getBlockBounds();
 				if(bounds!=null)
-					return new AxisAlignedBB(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
+					return new AxisAlignedBB(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
 			}
 		}
 		return super.getBoundingBox(state, world, pos);
 	}
+
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, @Nullable Entity ent, boolean p_185477_7_)
 	{
@@ -552,16 +554,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(te instanceof IAdvancedCollisionBounds)
 		{
 			List<AxisAlignedBB> bounds = ((IAdvancedCollisionBounds)te).getAdvancedColisionBounds();
-			if(bounds!=null && !bounds.isEmpty())
+			if(bounds!=null&&!bounds.isEmpty())
 			{
 				for(AxisAlignedBB aabb : bounds)
-					if(aabb!=null && mask.intersects(aabb))
+					if(aabb!=null&&mask.intersects(aabb))
 						list.add(aabb);
 				return;
 			}
 		}
 		super.addCollisionBoxToList(state, world, pos, mask, list, ent, p_185477_7_);
 	}
+
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end)
 	{
@@ -569,17 +572,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(te instanceof IAdvancedSelectionBounds)
 		{
 			List<AxisAlignedBB> list = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
-			if(list!=null && !list.isEmpty())
+			if(list!=null&&!list.isEmpty())
 			{
 				RayTraceResult min = null;
 				double minDist = Double.POSITIVE_INFINITY;
 				for(AxisAlignedBB aabb : list)
 				{
-					RayTraceResult mop = this.rayTrace(pos, start, end, aabb.offset(-pos.getX(),-pos.getY(),-pos.getZ()));
+					RayTraceResult mop = this.rayTrace(pos, start, end, aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
 					if(mop!=null)
 					{
 						double dist = mop.hitVec.squareDistanceTo(start);
-						if (dist<minDist)
+						if(dist < minDist)
 						{
 							min = mop;
 							minDist = dist;
@@ -669,6 +672,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		return true;
 	}
+
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
@@ -684,7 +688,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput) te).getWeakRSOutput(blockState, side);
+			return ((IEBlockInterfaces.IRedstoneOutput)te).getWeakRSOutput(blockState, side);
 		return 0;
 	}
 
@@ -693,7 +697,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput) te).getStrongRSOutput(blockState, side);
+			return ((IEBlockInterfaces.IRedstoneOutput)te).getStrongRSOutput(blockState, side);
 		return 0;
 	}
 
@@ -708,7 +712,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput) te).canConnectRedstone(state, side);
+			return ((IEBlockInterfaces.IRedstoneOutput)te).canConnectRedstone(state, side);
 		return false;
 	}
 

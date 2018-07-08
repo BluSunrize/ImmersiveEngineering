@@ -44,43 +44,43 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState(this, new IProperty[] { LEVEL, IEProperties.INT_16}, FLUID_RENDER_PROPS.toArray(new IUnlistedProperty<?>[0]));
+		return new ExtendedBlockState(this, new IProperty[]{LEVEL, IEProperties.INT_16}, FLUID_RENDER_PROPS.toArray(new IUnlistedProperty<?>[0]));
 	}
 
 	@Override
 	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand)
 	{
-		if(!isSourceBlock(world, pos) && ForgeEventFactory.canCreateFluidSource(world, pos, state, false))
+		if(!isSourceBlock(world, pos)&&ForgeEventFactory.canCreateFluidSource(world, pos, state, false))
 		{
 			int adjacentSourceBlocks =
-					(isSourceBlock(world, pos.north()) ? 1 : 0) +
-							(isSourceBlock(world, pos.south()) ? 1 : 0) +
-							(isSourceBlock(world, pos.east()) ? 1 : 0) +
-							(isSourceBlock(world, pos.west()) ? 1 : 0);
-			if(adjacentSourceBlocks >= 2 && (world.getBlockState(pos.up(densityDir)).getMaterial().isSolid() || isSourceBlock(world, pos.up(densityDir))))
+					(isSourceBlock(world, pos.north())?1: 0)+
+							(isSourceBlock(world, pos.south())?1: 0)+
+							(isSourceBlock(world, pos.east())?1: 0)+
+							(isSourceBlock(world, pos.west())?1: 0);
+			if(adjacentSourceBlocks >= 2&&(world.getBlockState(pos.up(densityDir)).getMaterial().isSolid()||isSourceBlock(world, pos.up(densityDir))))
 				world.setBlockState(pos, state.withProperty(LEVEL, 0));
 		}
 
 		int level = state.getValue(LEVEL);
 		int timer = state.getValue(IEProperties.INT_16);
-		int quantaRemaining = quantaPerBlock - level;
+		int quantaRemaining = quantaPerBlock-level;
 		int expQuanta = -101;
-		if(timer>=Math.min(14,quantaRemaining))
+		if(timer >= Math.min(14, quantaRemaining))
 		{
 			IBlockState solidState;
-			if(level>=14)
+			if(level >= 14)
 				solidState = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CONCRETE_SHEET.getMeta());
-			else if(level>=10)
+			else if(level >= 10)
 				solidState = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CONCRETE_QUARTER.getMeta());
-			else if(level>=6)
+			else if(level >= 6)
 				solidState = IEContent.blockStoneDecorationSlabs.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta());
-			else if(level>=2)
+			else if(level >= 2)
 				solidState = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CONCRETE_THREEQUARTER.getMeta());
 			else
 				solidState = IEContent.blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta());
 			world.setBlockState(pos, solidState);
-			for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos,pos.add(1,1,1))))
-				living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet,Integer.MAX_VALUE));
+			for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos, pos.add(1, 1, 1))))
+				living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet, Integer.MAX_VALUE));
 			return;
 		}
 		else
@@ -93,23 +93,23 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 		// check adjacent block levels if non-source
 		if(quantaRemaining < quantaPerBlock)
 		{
-			if(world.getBlockState(pos.add( 0, -densityDir,  0)).getBlock() == this ||
-					world.getBlockState(pos.add(-1, -densityDir,  0)).getBlock() == this ||
-					world.getBlockState(pos.add( 1, -densityDir,  0)).getBlock() == this ||
-					world.getBlockState(pos.add( 0, -densityDir, -1)).getBlock() == this ||
-					world.getBlockState(pos.add( 0, -densityDir,  1)).getBlock() == this)
+			if(world.getBlockState(pos.add(0, -densityDir, 0)).getBlock()==this||
+					world.getBlockState(pos.add(-1, -densityDir, 0)).getBlock()==this||
+					world.getBlockState(pos.add(1, -densityDir, 0)).getBlock()==this||
+					world.getBlockState(pos.add(0, -densityDir, -1)).getBlock()==this||
+					world.getBlockState(pos.add(0, -densityDir, 1)).getBlock()==this)
 			{
-				expQuanta = quantaPerBlock - 1;
+				expQuanta = quantaPerBlock-1;
 			}
 			else
 			{
 				int maxQuanta = -100;
-				maxQuanta = getLargerQuanta(world, pos.add(-1, 0,  0), maxQuanta);
-				maxQuanta = getLargerQuanta(world, pos.add( 1, 0,  0), maxQuanta);
-				maxQuanta = getLargerQuanta(world, pos.add( 0, 0, -1), maxQuanta);
-				maxQuanta = getLargerQuanta(world, pos.add( 0, 0,  1), maxQuanta);
+				maxQuanta = getLargerQuanta(world, pos.add(-1, 0, 0), maxQuanta);
+				maxQuanta = getLargerQuanta(world, pos.add(1, 0, 0), maxQuanta);
+				maxQuanta = getLargerQuanta(world, pos.add(0, 0, -1), maxQuanta);
+				maxQuanta = getLargerQuanta(world, pos.add(0, 0, 1), maxQuanta);
 
-				expQuanta = maxQuanta - 1;
+				expQuanta = maxQuanta-1;
 			}
 
 			int total = level;
@@ -133,7 +133,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 			}
 
 			// decay calculation
-			if(expQuanta != quantaRemaining)
+			if(expQuanta!=quantaRemaining)
 			{
 				quantaRemaining = expQuanta;
 
@@ -141,7 +141,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 					world.setBlockToAir(pos);
 				else
 				{
-					world.setBlockState(pos, state.withProperty(LEVEL, quantaPerBlock - expQuanta), 2);
+					world.setBlockState(pos, state.withProperty(LEVEL, quantaPerBlock-expQuanta), 2);
 					world.scheduleUpdate(pos, this, tickRate);
 					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
@@ -159,7 +159,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 		}
 
 		// Flow outward if possible
-		int flowMeta = quantaPerBlock - quantaRemaining + 1;
+		int flowMeta = quantaPerBlock-quantaRemaining+1;
 		if(flowMeta >= quantaPerBlock)
 		{
 			world.setBlockState(pos, state.withProperty(IEProperties.INT_16, Math.min(15, timer+1)));
@@ -167,20 +167,20 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 			return;
 		}
 
-		if(isSourceBlock(world, pos) || !isFlowingVertically(world, pos))
+		if(isSourceBlock(world, pos)||!isFlowingVertically(world, pos))
 		{
-			if(world.getBlockState(pos.down(densityDir)).getBlock() == this)
+			if(world.getBlockState(pos.down(densityDir)).getBlock()==this)
 				flowMeta = 1;
 			boolean flowTo[] = getOptimalFlowDirections(world, pos);
 			boolean hasFlown = false;
 			if(flowTo[0])
-				hasFlown |= flowIntoBlockRet(world, pos.add(-1, 0,  0), flowMeta, timer);
+				hasFlown |= flowIntoBlockRet(world, pos.add(-1, 0, 0), flowMeta, timer);
 			if(flowTo[1])
-				hasFlown |= flowIntoBlockRet(world, pos.add( 1, 0,  0), flowMeta, timer);
+				hasFlown |= flowIntoBlockRet(world, pos.add(1, 0, 0), flowMeta, timer);
 			if(flowTo[2])
-				hasFlown |= flowIntoBlockRet(world, pos.add( 0, 0, -1), flowMeta, timer);
+				hasFlown |= flowIntoBlockRet(world, pos.add(0, 0, -1), flowMeta, timer);
 			if(flowTo[3])
-				hasFlown |= flowIntoBlockRet(world, pos.add( 0, 0,  1), flowMeta, timer);
+				hasFlown |= flowIntoBlockRet(world, pos.add(0, 0, 1), flowMeta, timer);
 
 			if(!hasFlown)
 			{

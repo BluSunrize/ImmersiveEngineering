@@ -40,6 +40,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000), new FluidTank(24000), new FluidTank(24000)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
+
 	public TileEntityRefinery()
 	{
 		super(MultiblockRefinery.instance, new int[]{3, 3, 5}, 16000, true);

@@ -33,14 +33,14 @@ public class ParticleFluidSplash extends Particle
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
 
 		this.motionX *= 0.30000001192092896D;
-		this.motionY = Math.random() * 0.20000000298023224D + 0.10000000149011612D;
+		this.motionY = Math.random()*0.20000000298023224D+0.10000000149011612D;
 		this.motionZ *= 0.30000001192092896D;
 		this.particleRed = 1.0F;
 		this.particleGreen = 1.0F;
 		this.particleBlue = 1.0F;
 		this.setSize(0.01F, 0.01F);
 		this.particleGravity = 0.06F;
-		this.particleMaxAge = (int)(8.0D / (Math.random() * 0.8D + 0.2D));
+		this.particleMaxAge = (int)(8.0D/(Math.random()*0.8D+0.2D));
 		this.particleScale = .375f;
 		this.setParticleTexture(ClientUtils.getSprite(FluidRegistry.WATER.getStill()));
 	}
@@ -60,7 +60,7 @@ public class ParticleFluidSplash extends Particle
 		if(this.particleMaxAge-- <= 0)
 			this.setExpired();
 
-		if (this.onGround)
+		if(this.onGround)
 		{
 			if(Math.random() < 0.5D)
 				this.setExpired();
@@ -72,14 +72,14 @@ public class ParticleFluidSplash extends Particle
 		IBlockState iblockstate = this.world.getBlockState(blockpos);
 		Material material = iblockstate.getMaterial();
 
-		if(material.isLiquid() || material.isSolid())
+		if(material.isLiquid()||material.isSolid())
 		{
 			double d0;
 			if(iblockstate.getBlock() instanceof BlockLiquid)
-				d0 = (double)(1.0F - BlockLiquid.getLiquidHeightPercent(iblockstate.getValue(BlockLiquid.LEVEL).intValue()));
+				d0 = (double)(1.0F-BlockLiquid.getLiquidHeightPercent(iblockstate.getValue(BlockLiquid.LEVEL).intValue()));
 			else
 				d0 = iblockstate.getBoundingBox(this.world, blockpos).maxY;
-			double d1 = (double)MathHelper.floor(this.posY) + d0;
+			double d1 = (double)MathHelper.floor(this.posY)+d0;
 			if(this.posY < d1)
 				this.setExpired();
 		}
@@ -89,9 +89,9 @@ public class ParticleFluidSplash extends Particle
 	{
 		this.setParticleTexture(ClientUtils.getSprite(fluid.getFluid().getStill(fluid)));
 		int argb = fluid.getFluid().getColor(fluid);
-		this.particleAlpha = ((argb>>24)&255)/255f;
-		this.particleRed = ((argb>>16)&255)/255f;
-		this.particleRed = ((argb>>8&255))/255f;
+		this.particleAlpha = ((argb >> 24)&255)/255f;
+		this.particleRed = ((argb >> 16)&255)/255f;
+		this.particleRed = ((argb >> 8&255))/255f;
 		this.particleRed = (argb&255)/255f;
 	}
 

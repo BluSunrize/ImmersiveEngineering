@@ -21,36 +21,37 @@ public class ContainerSorter extends Container
 {
 	TileEntitySorter tile;
 	int slotCount;
+
 	public ContainerSorter(InventoryPlayer inventoryPlayer, TileEntitySorter tile)
 	{
-		this.tile=tile;
-		for(int side=0; side<6; side++)
-			for(int i=0; i<TileEntitySorter.filterSlotsPerSide; i++)
+		this.tile = tile;
+		for(int side = 0; side < 6; side++)
+			for(int i = 0; i < TileEntitySorter.filterSlotsPerSide; i++)
 			{
-				int x = 4+ (side/2)*58 + (i<3?i*18: i>4?(i-5)*18: i==3?0: 36);
-				int y = 22+ (side%2)*76 + (i<3?0: i>4?36: 18);
+				int x = 4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
+				int y = 22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 				int id = side*TileEntitySorter.filterSlotsPerSide+i;
 				this.addSlotToContainer(new IESlot.Ghost(this, tile.filter, id, x, y));
 			}
-		slotCount=6*TileEntitySorter.filterSlotsPerSide;
+		slotCount = 6*TileEntitySorter.filterSlotsPerSide;
 
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 221));
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player)
 	{
-	     return tile!=null && tile.getWorld().getTileEntity(tile.getPos())==tile && player.getDistanceSq(tile.getPos().getX()+.5, tile.getPos().getY()+.5, tile.getPos().getZ()+.5)<=64;
+		return tile!=null&&tile.getWorld().getTileEntity(tile.getPos())==tile&&player.getDistanceSq(tile.getPos().getX()+.5, tile.getPos().getY()+.5, tile.getPos().getZ()+.5) <= 64;
 	}
 
 	@Override
 	public ItemStack slotClick(int id, int button, ClickType modifier, EntityPlayer player)
 	{
-		Slot slot = id<0?null: this.inventorySlots.get(id);
+		Slot slot = id < 0?null: this.inventorySlots.get(id);
 		if(!(slot instanceof IESlot.Ghost))
 			return super.slotClick(id, button, modifier, player);
 
@@ -59,33 +60,33 @@ public class ContainerSorter extends Container
 		if(!stackSlot.isEmpty())
 			stack = stackSlot.copy();
 
-		if (button==2)
+		if(button==2)
 			slot.putStack(ItemStack.EMPTY);
 		else if(button==0||button==1)
 		{
 			InventoryPlayer playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
-			if (stackSlot.isEmpty())
+			if(stackSlot.isEmpty())
 			{
-				if(!stackHeld.isEmpty() && slot.isItemValid(stackHeld))
+				if(!stackHeld.isEmpty()&&slot.isItemValid(stackHeld))
 				{
 					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
 				}
 			}
-			else if (stackHeld.isEmpty())
+			else if(stackHeld.isEmpty())
 			{
 				slot.putStack(ItemStack.EMPTY);
 			}
-			else if (slot.isItemValid(stackHeld))
+			else if(slot.isItemValid(stackHeld))
 			{
 				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
 			}
 		}
-		else if (button == 5)
+		else if(button==5)
 		{
 			InventoryPlayer playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
-			if (!slot.getHasStack())
+			if(!slot.getHasStack())
 			{
 				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
 			}

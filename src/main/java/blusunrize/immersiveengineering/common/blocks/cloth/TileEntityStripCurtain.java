@@ -45,20 +45,20 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	@Override
 	public void update()
 	{
-		if(!world.isRemote &&world.getTotalWorldTime()%4==((getPos().getX()^getPos().getZ())&3))
+		if(!world.isRemote&&world.getTotalWorldTime()%4==((getPos().getX()^getPos().getZ())&3))
 		{
 			List<Entity> entities = null;
-			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()== Axis.Z?4:5):((facing.ordinal()-2)%4)];
-			aabb = new AxisAlignedBB(aabb.minX,aabb.minY-.8125,aabb.minZ, aabb.maxX,aabb.maxY,aabb.maxZ).offset(getPos());
+			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
+			aabb = new AxisAlignedBB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
 			entities = world.getEntitiesWithinAABB(Entity.class, aabb);
-			if(!ceilingAttached && !entities.isEmpty() && redstoneSignal==0)
+			if(!ceilingAttached&&!entities.isEmpty()&&redstoneSignal==0)
 			{
 				redstoneSignal = 15;
 				markDirty();
 				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
 				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockType(), false);
 			}
-			if(entities.isEmpty() && redstoneSignal!=0)
+			if(entities.isEmpty()&&redstoneSignal!=0)
 			{
 				redstoneSignal = 0;
 				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
@@ -66,13 +66,14 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 			}
 		}
 	}
+
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(ceilingAttached && !entity.isDead && redstoneSignal ==0)
+		if(ceilingAttached&&!entity.isDead&&redstoneSignal==0)
 		{
-			AxisAlignedBB aabb = bounds[ceilingAttached ? (facing.getAxis() == Axis.Z ? 4 : 5) : ((facing.ordinal() - 2) % 4)];
-			aabb = new AxisAlignedBB(aabb.minX, aabb.minY - .8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
+			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
+			aabb = new AxisAlignedBB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
 			if(entity.getEntityBoundingBox().intersects(aabb))
 			{
 				redstoneSignal = 15;
@@ -82,6 +83,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 			}
 		}
 	}
+
 	@Override
 	public int getStrongRSOutput(IBlockState state, EnumFacing side)
 	{
@@ -89,6 +91,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 			return 0;
 		return getWeakRSOutput(state, facing);
 	}
+
 	@Override
 	public int getWeakRSOutput(IBlockState state, EnumFacing side)
 	{
@@ -96,6 +99,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 			return 0;
 		return redstoneSignal;
 	}
+
 	@Override
 	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
 	{
@@ -114,29 +118,31 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		if(facing!=null)
-			nbt.setInteger("facing",facing.ordinal());
+			nbt.setInteger("facing", facing.ordinal());
 		nbt.setBoolean("ceilingAttached", ceilingAttached);
 		nbt.setInteger("colour", colour);
 	}
 
 	AxisAlignedBB[] bounds = {
-			new AxisAlignedBB(0,0,0,1,.1875f,.0625f),
-			new AxisAlignedBB(0,0,.9375f,1,.1875f,1),
-			new AxisAlignedBB(0,0,0,.0625f,.1875f,1),
-			new AxisAlignedBB(.9375f,0,0,1,.1875f,1),
-			new AxisAlignedBB(0,.8125f,.46875f,1,1,.53125f),
-			new AxisAlignedBB(.46875f,.8125f,0,.53125f,1,1)
+			new AxisAlignedBB(0, 0, 0, 1, .1875f, .0625f),
+			new AxisAlignedBB(0, 0, .9375f, 1, .1875f, 1),
+			new AxisAlignedBB(0, 0, 0, .0625f, .1875f, 1),
+			new AxisAlignedBB(.9375f, 0, 0, 1, .1875f, 1),
+			new AxisAlignedBB(0, .8125f, .46875f, 1, 1, .53125f),
+			new AxisAlignedBB(.46875f, .8125f, 0, .53125f, 1, 1)
 	};
+
 	@Override
 	public float[] getBlockBounds()
 	{
-		AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()== Axis.Z?4:5):((facing.ordinal()-2)%4)];
-		return new float[]{(float)aabb.minX,(float)aabb.minY,(float)aabb.minZ, (float)aabb.maxX,(float)aabb.maxY,(float)aabb.maxZ};
+		AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
+		return new float[]{(float)aabb.minX, (float)aabb.minY, (float)aabb.minZ, (float)aabb.maxX, (float)aabb.maxY, (float)aabb.maxZ};
 	}
+
 	@Override
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
-		return Lists.newArrayList(bounds[ceilingAttached?(facing.getAxis()== Axis.Z?4:5):((facing.ordinal()-2)%4)]);
+		return Lists.newArrayList(bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)]);
 	}
 
 	@Override
@@ -144,31 +150,37 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
 		return false;
 	}
+
 	@Override
 	public void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer)
 	{
@@ -181,6 +193,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	{
 		return ceilingAttached;
 	}
+
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
@@ -198,11 +211,12 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(),1,state.getBlock().getMetaFromState(state));
+		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
 		if(colour!=0xffffff)
 			ItemNBTHelper.setInt(stack, "colour", colour);
 		return stack;
 	}
+
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{

@@ -21,8 +21,8 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 		TileEntity te = w.getTileEntity(bp);
 		if(te instanceof TileEntitySampleDrill)
 		{
-			TileEntitySampleDrill drill = (TileEntitySampleDrill) te;
-			if(drill.dummy == 0)
+			TileEntitySampleDrill drill = (TileEntitySampleDrill)te;
+			if(drill.dummy==0)
 				return new SampleDrillEnvironment(w, bp);
 		}
 		return null;
@@ -75,6 +75,7 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 				return new Object[]{te.getVein()};
 			return new Object[0];
 		}
+
 		@Callback
 		public Object[] getVeinLocalizedName(Context context, Arguments args)
 		{
@@ -83,6 +84,7 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 				return new Object[]{te.getVeinLocalizedName()};
 			return new Object[0];
 		}
+
 		@Callback
 		public Object[] getVeinIntegrity(Context context, Arguments args)
 		{

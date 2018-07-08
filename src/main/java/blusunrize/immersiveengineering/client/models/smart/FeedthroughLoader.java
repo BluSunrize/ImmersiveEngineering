@@ -56,7 +56,7 @@ public class FeedthroughLoader implements ICustomModelLoader
 		@Override
 		public Collection<ResourceLocation> getDependencies()
 		{
-			return INFOS.values().stream().map((i)->i.modelLoc).collect(Collectors.toCollection(ArrayList::new));
+			return INFOS.values().stream().map((i) -> i.modelLoc).collect(Collectors.toCollection(ArrayList::new));
 		}
 
 		@Nonnull

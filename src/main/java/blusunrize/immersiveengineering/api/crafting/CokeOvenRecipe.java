@@ -30,19 +30,21 @@ public class CokeOvenRecipe
 
 	public CokeOvenRecipe(ItemStack output, Object input, int time, int creosoteOutput)
 	{
-		this.output=output;
-		this.input=ApiUtils.convertToValidRecipeInput(input);
-		this.time=time;
-		this.creosoteOutput=creosoteOutput;
+		this.output = output;
+		this.input = ApiUtils.convertToValidRecipeInput(input);
+		this.time = time;
+		this.creosoteOutput = creosoteOutput;
 	}
 
 	public static ArrayList<CokeOvenRecipe> recipeList = new ArrayList<CokeOvenRecipe>();
+
 	public static void addRecipe(ItemStack output, Object input, int time, int creosoteOutput)
 	{
 		CokeOvenRecipe recipe = new CokeOvenRecipe(output, input, time, creosoteOutput);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
 	}
+
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
 		for(CokeOvenRecipe recipe : recipeList)
@@ -50,6 +52,7 @@ public class CokeOvenRecipe
 				return recipe;
 		return null;
 	}
+
 	public static List<CokeOvenRecipe> removeRecipes(ItemStack stack)
 	{
 		List<CokeOvenRecipe> list = new ArrayList();

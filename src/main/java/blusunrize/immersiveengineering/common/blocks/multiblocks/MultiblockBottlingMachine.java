@@ -36,47 +36,51 @@ public class MultiblockBottlingMachine implements IMultiblock
 {
 	public static MultiblockBottlingMachine instance = new MultiblockBottlingMachine();
 	static ItemStack[][][] structure = new ItemStack[3][2][3];
-	static{
-		for(int h=0;h<3;h++)
-			for(int l=0;l<2;l++)
-				for(int w=0;w<3;w++)
+
+	static
+	{
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 2; l++)
+				for(int w = 0; w < 3; w++)
 				{
 					if(h==0)
 					{
 						if(l==0&&w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
 						else if(l==1&&w==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 						else if(l==1&&w==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
 						if(l==0)
-							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor");
+							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor");
 						else if(l==1&&w==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 						else if(l==1&&w==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 					}
 					else if(h==2)
 					{
 						if(l==0&&w==1)
 							structure[h][l][w] = new ItemStack(Blocks.GLASS);
 						else if(l==1&&w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 					}
 				}
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
@@ -86,24 +90,27 @@ public class MultiblockBottlingMachine implements IMultiblock
 			ImmersiveEngineering.proxy.drawFluidPumpTop();
 			return true;
 		}
-		if(iterator>=6&&iterator<=8)
+		if(iterator >= 6&&iterator <= 8)
 			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.SOUTH);
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
+
 	//@SideOnly(Side.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta());
 		GlStateManager.translate(2.1875, 1.125, .8125);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -112,6 +119,7 @@ public class MultiblockBottlingMachine implements IMultiblock
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}
+
 	@Override
 	public float getManualScale()
 	{
@@ -127,7 +135,7 @@ public class MultiblockBottlingMachine implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock() == IEContent.blockConveyor;
+		return state.getBlock()==IEContent.blockConveyor;
 	}
 
 	@Override
@@ -140,21 +148,21 @@ public class MultiblockBottlingMachine implements IMultiblock
 
 
 		boolean mirrored = false;
-		boolean b = structureCheck(world,pos, side, mirrored);
+		boolean b = structureCheck(world, pos, side, mirrored);
 		if(!b)
 		{
 			mirrored = true;
-			b = structureCheck(world,pos, side, mirrored);
+			b = structureCheck(world, pos, side, mirrored);
 		}
 
 		if(!b)
 			return false;
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta());
 		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
-		for(int l=0; l<2; l++)
-			for(int w=-1; w<=1; w++)
-				for(int h=-1; h<=1; h++)
-					if(h<1 || w==0)
+		for(int l = 0; l < 2; l++)
+			for(int w = -1; w <= 1; w++)
+				for(int h = -1; h <= 1; h++)
+					if(h < 1||w==0)
 					{
 						int ww = mirrored?-w: w;
 						BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
@@ -177,7 +185,7 @@ public class MultiblockBottlingMachine implements IMultiblock
 
 	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
 	{
-		EnumFacing conveyorDir = mirror?dir.rotateYCCW():dir.rotateY();
+		EnumFacing conveyorDir = mirror?dir.rotateYCCW(): dir.rotateY();
 		for(int l = 0; l < 2; l++)
 			for(int h = -1; h <= 1; h++)
 				for(int w = -1; w <= 1; w++)
@@ -191,40 +199,47 @@ public class MultiblockBottlingMachine implements IMultiblock
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
 								return false;
-						} else if(w==-1&&l==1)
+						}
+						else if(w==-1&&l==1)
 						{
 							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
 								return false;
-						} else if(w==1&&l==1)
+						}
+						else if(w==1&&l==1)
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
-						} else
+						}
+						else
 						{
 							if(!Utils.isOreBlockAt(world, pos2, "scaffoldingSteel"))
 								return false;
 						}
-					} else if(h==0)
+					}
+					else if(h==0)
 					{
 						if(l==0)
 						{
 							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID+":conveyor", conveyorDir))
 								return false;
-						} else if(w==-1&&l==1)
+						}
+						else if(w==-1&&l==1)
 						{
 							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
 								return false;
-						} else if(w==1&&l==1)
+						}
+						else if(w==1&&l==1)
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
-						} else
+						}
+						else
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
 								return false;
 						}
 					}
-					else if(h==1 && w==0 && l==0)
+					else if(h==1&&w==0&&l==0)
 						if(!Utils.isOreBlockAt(world, pos2, "blockGlass"))
 							return false;
 
@@ -237,9 +252,10 @@ public class MultiblockBottlingMachine implements IMultiblock
 			new IngredientStack("blockSheetmetalIron", 2),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
-			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), 3)),
+			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor"), 3)),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())),
 			new IngredientStack("blockGlass", 1)};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

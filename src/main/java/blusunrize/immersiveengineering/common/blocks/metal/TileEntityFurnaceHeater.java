@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 
 public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IActiveState, IDirectionalTile
 {
-	public FluxStorage energyStorage = new FluxStorage(32000,Math.max(256, Math.max(IEConfig.Machines.heater_consumption, IEConfig.Machines.heater_speedupConsumption)));
+	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256, Math.max(IEConfig.Machines.heater_consumption, IEConfig.Machines.heater_speedupConsumption)));
 	//public int[] sockets = new int[6];
 	public boolean active = false;
 	public EnumFacing facing = EnumFacing.NORTH;
@@ -43,35 +43,35 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 		if(!world.isRemote)
 		{
 			boolean a = active;
-			boolean redstonePower = world.isBlockIndirectlyGettingPowered(getPos())>0;
-			if(active && !redstonePower)
-				active=false;
-			if(energyStorage.getEnergyStored()>3200||a)
+			boolean redstonePower = world.isBlockIndirectlyGettingPowered(getPos()) > 0;
+			if(active&&!redstonePower)
+				active = false;
+			if(energyStorage.getEnergyStored() > 3200||a)
 				for(EnumFacing fd : EnumFacing.VALUES)
-					{
-						TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
-						int consumed = 0;
-						if(tileEntity!=null)
-							if(tileEntity instanceof IExternalHeatable)
-								consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
-							else
-							{
-								ExternalHeaterHandler.HeatableAdapter adapter = ExternalHeaterHandler.getHeatableAdapter(tileEntity.getClass());
-								if(adapter!=null)
-									consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), redstonePower);
-							}
-						if(consumed>0)
+				{
+					TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
+					int consumed = 0;
+					if(tileEntity!=null)
+						if(tileEntity instanceof IExternalHeatable)
+							consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
+						else
 						{
-							this.energyStorage.extractEnergy(consumed, false);
-							if(!active)
-								active = true;
+							ExternalHeaterHandler.HeatableAdapter adapter = ExternalHeaterHandler.getHeatableAdapter(tileEntity.getClass());
+							if(adapter!=null)
+								consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), redstonePower);
 						}
+					if(consumed > 0)
+					{
+						this.energyStorage.extractEnergy(consumed, false);
+						if(!active)
+							active = true;
 					}
+				}
 			if(active!=a)
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
-				world.addBlockEvent(getPos(), this.getBlockType(), 1,active?1:0);
+				world.addBlockEvent(getPos(), this.getBlockType(), 1, active?1: 0);
 			}
 		}
 	}
@@ -96,13 +96,15 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
-		return inf==IActiveState.class?IEProperties.BOOLEANS[0]:null;
+		return inf==IActiveState.class?IEProperties.BOOLEANS[0]: null;
 	}
+
 	@Override
 	public boolean getIsActive()
 	{
-		return active || world.isBlockIndirectlyGettingPowered(getPos())>0;
+		return active||world.isBlockIndirectlyGettingPowered(getPos()) > 0;
 	}
+
 	//	@Override
 	//	public SideConfig getEnergySideConfig(int side)
 	//	{
@@ -135,6 +137,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 		//			sockets = new int[0];
 		active = nbt.getBoolean("active");
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -150,13 +153,16 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	{
 		return energyStorage;
 	}
+
 	@Nonnull
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		return facing==this.facing?SideConfig.INPUT:SideConfig.NONE;
+		return facing==this.facing?SideConfig.INPUT: SideConfig.NONE;
 	}
+
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, facing);
+
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
@@ -180,21 +186,25 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 1;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return placer.isSneaking();
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{

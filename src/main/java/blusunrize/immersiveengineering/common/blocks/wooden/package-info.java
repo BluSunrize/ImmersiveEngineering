@@ -3,4 +3,5 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import mcp.MethodsReturnNonnullByDefault;
+
 import javax.annotation.ParametersAreNonnullByDefault;

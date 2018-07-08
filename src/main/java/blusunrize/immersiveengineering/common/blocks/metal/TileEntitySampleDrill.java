@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -23,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -49,8 +47,8 @@ import java.util.ArrayList;
 public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks, IPlayerInteraction, IHasObjProperty
 {
 	public FluxStorage energyStorage = new FluxStorage(8000);
-	public int dummy=0;
-	public int process=0;
+	public int dummy = 0;
+	public int process = 0;
 	public boolean active = false;
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
@@ -64,37 +62,37 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(dummy!=0 || world.isAirBlock(getPos().add(0,-1,0)) || !sample.isEmpty())
+		if(dummy!=0||world.isAirBlock(getPos().add(0, -1, 0))||!sample.isEmpty())
 			return;
-		if (world.isRemote && active)
+		if(world.isRemote&&active)
 		{
 			process++;
 			return;
 		}
 
-		boolean powered = world.isBlockIndirectlyGettingPowered(getPos())>0;
+		boolean powered = world.isBlockIndirectlyGettingPowered(getPos()) > 0;
 		final boolean prevActive = active;
-		if(!active && powered)
+		if(!active&&powered)
 			active = true;
-		else if(active && !powered && process>= IEConfig.Machines.coredrill_time)
+		else if(active&&!powered&&process >= IEConfig.Machines.coredrill_time)
 			active = false;
 
 
-		if(active && process< IEConfig.Machines.coredrill_time)
-			if(energyStorage.extractEnergy(IEConfig.Machines.coredrill_consumption, false)== IEConfig.Machines.coredrill_consumption)
+		if(active&&process < IEConfig.Machines.coredrill_time)
+			if(energyStorage.extractEnergy(IEConfig.Machines.coredrill_consumption, false)==IEConfig.Machines.coredrill_consumption)
 			{
 				process++;
-				if(process>= IEConfig.Machines.coredrill_time)
+				if(process >= IEConfig.Machines.coredrill_time)
 				{
-					int cx = getPos().getX()>>4;
-					int cz = getPos().getZ()>>4;
+					int cx = getPos().getX() >> 4;
+					int cz = getPos().getZ() >> 4;
 					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, cx, cz);
-					this.sample = createCoreSample(world, (getPos().getX()>>4), (getPos().getZ()>>4), info);
+					this.sample = createCoreSample(world, (getPos().getX() >> 4), (getPos().getZ() >> 4), info);
 				}
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
 			}
-		if (prevActive!=active)
+		if(prevActive!=active)
 		{
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
@@ -105,10 +103,12 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		return process/(float)IEConfig.Machines.coredrill_time;
 	}
+
 	public boolean isSamplingFinished()
 	{
-		return process>= IEConfig.Machines.coredrill_time;
+		return process >= IEConfig.Machines.coredrill_time;
 	}
+
 	public String getVein()
 	{
 		if(sample.isEmpty())
@@ -120,7 +120,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		if(sample.isEmpty())
 			return -1;
-		return ExcavatorHandler.mineralVeinCapacity - sample.getTagCompound().getInteger("depletion");
+		return ExcavatorHandler.mineralVeinCapacity-sample.getTagCompound().getInteger("depletion");
 	}
 
 	@Nonnull
@@ -128,8 +128,8 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		ItemStack stack = new ItemStack(IEContent.itemCoresample);
 		ItemNBTHelper.setLong(stack, "timestamp", world.getTotalWorldTime());
-		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.provider.getDimension(), chunkX,chunkZ});
-		if (info==null)
+		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.provider.getDimension(), chunkX, chunkZ});
+		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)
 			ItemNBTHelper.setString(stack, "mineral", info.mineralOverride.name);
@@ -137,7 +137,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 			ItemNBTHelper.setString(stack, "mineral", info.mineral.name);
 		else
 			return stack;
-		if(ExcavatorHandler.mineralVeinCapacity<0||info.depletion<0)
+		if(ExcavatorHandler.mineralVeinCapacity < 0||info.depletion < 0)
 			ItemNBTHelper.setBoolean(stack, "infinite", true);
 		else
 			ItemNBTHelper.setInt(stack, "depletion", info.depletion);
@@ -154,6 +154,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		if(!sample.isEmpty())
 			nbt.setTag("sample", sample.writeToNBT(new NBTTagCompound()));
 	}
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -168,13 +169,14 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
 			if(dummy==0)
-				renderAABB = new AxisAlignedBB(getPos(), getPos().add(1,3,1));
+				renderAABB = new AxisAlignedBB(getPos(), getPos().add(1, 3, 1));
 			else
 				renderAABB = new AxisAlignedBB(getPos(), getPos());
 		return renderAABB;
@@ -185,26 +187,29 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Override
 	public FluxStorage getFluxStorage()
 	{
-		if(dummy>0)
+		if(dummy > 0)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0,-dummy,0));
+			TileEntity te = world.getTileEntity(getPos().add(0, -dummy, 0));
 			if(te instanceof TileEntitySampleDrill)
 				return ((TileEntitySampleDrill)te).getFluxStorage();
 		}
 		return energyStorage;
 	}
+
 	@Nonnull
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		return dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y?SideConfig.INPUT:SideConfig.NONE;
+		return dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y?SideConfig.INPUT: SideConfig.NONE;
 	}
+
 	IEForgeEnergyWrapper[] wrappers = {
 			new IEForgeEnergyWrapper(this, EnumFacing.NORTH),
 			new IEForgeEnergyWrapper(this, EnumFacing.SOUTH),
 			new IEForgeEnergyWrapper(this, EnumFacing.WEST),
 			new IEForgeEnergyWrapper(this, EnumFacing.EAST)
 	};
+
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
@@ -216,23 +221,25 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Override
 	public boolean isDummy()
 	{
-		return dummy>0;
+		return dummy > 0;
 	}
+
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		for(int i=1; i<=2; i++)
+		for(int i = 1; i <= 2; i++)
 		{
-			world.setBlockState(pos.add(0,i,0), state);
-			((TileEntitySampleDrill)world.getTileEntity(pos.add(0,i,0))).dummy = i;
+			world.setBlockState(pos.add(0, i, 0), state);
+			((TileEntitySampleDrill)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
 		}
 	}
+
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		for(int i=0; i<=2; i++)
-			if(world.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntitySampleDrill)
-				world.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
+		for(int i = 0; i <= 2; i++)
+			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntitySampleDrill)
+				world.setBlockToAir(getPos().add(0, -dummy, 0).add(0, i, 0));
 	}
 
 	@Override
@@ -240,7 +247,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		if(dummy!=0)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0,-dummy,0));
+			TileEntity te = world.getTileEntity(getPos().add(0, -dummy, 0));
 			if(te instanceof TileEntitySampleDrill)
 				return ((TileEntitySampleDrill)te).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 		}
@@ -257,7 +264,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		}
 		else if(!this.active)
 		{
-			if (energyStorage.getEnergyStored()>=IEConfig.Machines.coredrill_consumption)
+			if(energyStorage.getEnergyStored() >= IEConfig.Machines.coredrill_consumption)
 			{
 				this.active = true;
 				markDirty();
@@ -310,6 +317,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 
 	static ArrayList<String> displayList = Lists.newArrayList("drill_base");
+
 	@Override
 	public ArrayList<String> compileDisplayList()
 	{
@@ -328,13 +336,14 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 			return name;
 		return localizedName;
 	}
+
 	public float getVeinIntegrity()
 	{
-		if (sample.isEmpty())
+		if(sample.isEmpty())
 			return 0;
-		else if (ItemNBTHelper.hasKey(sample, "infinite"))
+		else if(ItemNBTHelper.hasKey(sample, "infinite"))
 			return -1;
-		else if (ItemNBTHelper.hasKey(sample, "depletion"))
+		else if(ItemNBTHelper.hasKey(sample, "depletion"))
 			return 1-ItemNBTHelper.getInt(sample, "depletion")/(float)ExcavatorHandler.mineralVeinCapacity;
 		return 0;
 	}

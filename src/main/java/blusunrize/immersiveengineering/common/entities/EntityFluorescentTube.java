@@ -37,7 +37,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	private static final DataParameter<Float> dataMarker_g = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> dataMarker_b = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> dataMarker_angleHorizontal = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
-	
+
 	private int timer = 0;
 	public boolean active = false;
 	public float[] rgb = new float[4];
@@ -51,6 +51,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		rotationYaw = angleVert;
 		rgb = ItemFluorescentTube.getRGB(tube);
 	}
+
 	public EntityFluorescentTube(World world)
 	{
 		super(world);
@@ -72,13 +73,13 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
 
-		if (this.onGround)
+		if(this.onGround)
 		{
 			this.motionX *= 0.699999988079071D;
 			this.motionZ *= 0.699999988079071D;
 			this.motionY *= -0.5D;
 		}
-		if (firstTick&&!world.isRemote&&rgb!=null)
+		if(firstTick&&!world.isRemote&&rgb!=null)
 		{
 			dataManager.set(dataMarker_r, rgb[0]);
 			dataManager.set(dataMarker_g, rgb[1]);
@@ -87,13 +88,13 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 			firstTick = false;
 		}
 		// tube logic
-		if (timer>0&&!world.isRemote)
+		if(timer > 0&&!world.isRemote)
 		{
 			timer--;
-			if (timer<=0)
+			if(timer <= 0)
 				dataManager.set(dataMarker_active, false);
 		}
-		if (world.isRemote)
+		if(world.isRemote)
 		{
 			active = dataManager.get(dataMarker_active);
 			rgb = new float[]{dataManager.get(dataMarker_r),
@@ -102,6 +103,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 			angleHorizontal = dataManager.get(dataMarker_angleHorizontal);
 		}
 	}
+
 	@Override
 	protected void entityInit()
 	{
@@ -135,7 +137,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
-		if (!isDead&&!world.isRemote)
+		if(!isDead&&!world.isRemote)
 		{
 			ItemStack tube = new ItemStack(IEContent.itemFluorescentTube);
 			ItemFluorescentTube.setRGB(tube, rgb);
@@ -151,27 +153,30 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	{
 		return !isDead;
 	}
+
 	@Override
 	public AxisAlignedBB getEntityBoundingBox()
 	{
 		return super.getEntityBoundingBox();
 	}
+
 	@Override
 	public void onHit(TileEntity te, boolean lowPower)
 	{
-		if(te instanceof TileEntityTeslaCoil && ((TileEntityTeslaCoil)te).energyStorage.extractEnergy(1, false) > 0)
+		if(te instanceof TileEntityTeslaCoil&&((TileEntityTeslaCoil)te).energyStorage.extractEnergy(1, false) > 0)
 		{
 			timer = 35;
 			dataManager.set(dataMarker_active, true);
 		}
 	}
+
 	@Override
 	public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d targetVec3, EnumHand hand)
 	{
 		if(Utils.isHammer(player.getHeldItem(hand)))
 		{
-			angleHorizontal+=(player.isSneaking()?10:1);
-			angleHorizontal%=360;
+			angleHorizontal += (player.isSneaking()?10: 1);
+			angleHorizontal %= 360;
 			dataManager.set(dataMarker_angleHorizontal, angleHorizontal);
 			return EnumActionResult.SUCCESS;
 		}

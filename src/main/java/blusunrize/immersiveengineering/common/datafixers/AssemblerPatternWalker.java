@@ -29,10 +29,10 @@ public class AssemblerPatternWalker extends Filtered
 	@Override
 	public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn)
 	{
-		for (int pattern = 0;pattern<3;pattern++)
+		for(int pattern = 0; pattern < 3; pattern++)
 		{
 			NBTTagList patternNBT = compound.getTagList("pattern"+pattern, Constants.NBT.TAG_COMPOUND);
-			for (int slot = 0;slot<patternNBT.tagCount();slot++)
+			for(int slot = 0; slot < patternNBT.tagCount(); slot++)
 			{
 				NBTTagCompound in = patternNBT.getCompoundTagAt(slot);
 				patternNBT.set(slot, fixer.process(FixTypes.ITEM_INSTANCE, in, versionIn));

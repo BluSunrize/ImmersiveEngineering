@@ -22,24 +22,31 @@ import java.util.List;
 public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 {
 	protected List<IngredientStack> inputList;
+
 	@Override
 	public List<IngredientStack> getItemInputs()
 	{
 		return inputList;
 	}
+
 	protected NonNullList<ItemStack> outputList;
+
 	@Override
 	public NonNullList<ItemStack> getItemOutputs()
 	{
 		return outputList;
 	}
+
 	protected List<FluidStack> fluidInputList;
+
 	@Override
 	public List<FluidStack> getFluidInputs()
 	{
 		return fluidInputList;
 	}
+
 	protected List<FluidStack> fluidOutputList;
+
 	@Override
 	public List<FluidStack> getFluidOutputs()
 	{
@@ -47,12 +54,15 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 	}
 
 	int totalProcessTime;
+
 	@Override
 	public int getTotalProcessTime()
 	{
 		return this.totalProcessTime;
 	}
+
 	int totalProcessEnergy;
+
 	@Override
 	public int getTotalProcessEnergy()
 	{
@@ -76,7 +86,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 		{
 			this.jeiItemInputList = new ArrayList[inputList.size()];
 			this.jeiTotalItemInputList = new ArrayList();
-			for(int i=0; i<inputList.size(); i++)
+			for(int i = 0; i < inputList.size(); i++)
 			{
 				IngredientStack ingr = inputList.get(i);
 				ArrayList list = new ArrayList();
@@ -99,10 +109,10 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 		{
 			this.jeiItemOutputList = new ArrayList[outputList.size()];
 			this.jeiTotalItemOutputList = new ArrayList();
-			for(int i=0; i<outputList.size(); i++)
+			for(int i = 0; i < outputList.size(); i++)
 			{
 				ItemStack s = outputList.get(i);
-				ArrayList<ItemStack> list = Lists.newArrayList(!s.isEmpty()?s.copy():ItemStack.EMPTY);
+				ArrayList<ItemStack> list = Lists.newArrayList(!s.isEmpty()?s.copy(): ItemStack.EMPTY);
 				this.jeiItemOutputList[i] = list;
 				this.jeiTotalItemOutputList.addAll(list);
 			}
@@ -112,7 +122,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 		if(fluidInputList!=null)
 		{
 			this.jeiFluidInputList = new ArrayList();
-			for(int i=0; i<fluidInputList.size(); i++)
+			for(int i = 0; i < fluidInputList.size(); i++)
 			{
 				FluidStack fs = fluidInputList.get(i);
 				if(fs!=null)
@@ -124,7 +134,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 		if(fluidOutputList!=null)
 		{
 			this.jeiFluidOutputList = new ArrayList();
-			for(int i=0; i<fluidOutputList.size(); i++)
+			for(int i = 0; i < fluidOutputList.size(); i++)
 			{
 				FluidStack fs = fluidOutputList.get(i);
 				if(fs!=null)
@@ -134,21 +144,25 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 		else
 			this.jeiFluidOutputList = Collections.emptyList();
 	}
+
 	@Override
 	public List<ItemStack> getJEITotalItemInputs()
 	{
 		return jeiTotalItemInputList;
 	}
+
 	@Override
 	public List<ItemStack> getJEITotalItemOutputs()
 	{
 		return jeiTotalItemOutputList;
 	}
+
 	@Override
 	public List<FluidStack> getJEITotalFluidInputs()
 	{
 		return jeiFluidInputList;
 	}
+
 	@Override
 	public List<FluidStack> getJEITotalFluidOutputs()
 	{

@@ -88,11 +88,11 @@ public class IESmartObjModel extends OBJBakedModel
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
 		this.lastCameraTransform = cameraTransformType;
-		if(transformationMap==null || transformationMap.isEmpty())
+		if(transformationMap==null||transformationMap.isEmpty())
 			return super.handlePerspective(cameraTransformType);
-		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy():new Matrix4();
+		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy(): new Matrix4();
 
-		if(!this.tempStack.isEmpty() && this.tempStack.getItem() instanceof IOBJModelCallback)
+		if(!this.tempStack.isEmpty()&&this.tempStack.getItem() instanceof IOBJModelCallback)
 			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix, tempEntity);
 
 		//matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
@@ -131,6 +131,7 @@ public class IESmartObjModel extends OBJBakedModel
 	{
 		return overrideList;
 	}
+
 	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList<>())
 	{
 		@Override
@@ -138,41 +139,41 @@ public class IESmartObjModel extends OBJBakedModel
 		{
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
-			if (comp == null)
+			if(comp==null)
 				return originalModel;
 			IBakedModel model = cachedBakedItemModels.getIfPresent(comp);
-			if (model == null)
+			if(model==null)
 			{
-				if (originalModel instanceof IESmartObjModel)
+				if(originalModel instanceof IESmartObjModel)
 				{
-					IESmartObjModel newModel = (IESmartObjModel) originalModel;
+					IESmartObjModel newModel = (IESmartObjModel)originalModel;
 
 					ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
 					builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
 					TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
 
-					for (String s : newModel.getModel().getMatLib().getMaterialNames())
+					for(String s : newModel.getModel().getMatLib().getMaterialNames())
 					{
 						TextureAtlasSprite sprite = null;
-						if (stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+						if(stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 						{
 							ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 							ItemStack shader = wrapper.getShaderItem();
-							if (!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
+							if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
 							{
-								ShaderCase sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
-								if (sCase != null)
+								ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
+								if(sCase!=null)
 								{
 									ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
 									sprite = ClientUtils.getSprite(rl);
 								}
 							}
 						}
-						if (sprite == null && stack.getItem() instanceof IOBJModelCallback)
-							sprite = ((IOBJModelCallback) stack.getItem()).getTextureReplacement(stack, s);
-						if (sprite == null)
+						if(sprite==null&&stack.getItem() instanceof IOBJModelCallback)
+							sprite = ((IOBJModelCallback)stack.getItem()).getTextureReplacement(stack, s);
+						if(sprite==null)
 							sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(newModel.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-						if (sprite == null)
+						if(sprite==null)
 							sprite = missing;
 						builder.put(s, sprite);
 					}
@@ -182,15 +183,16 @@ public class IESmartObjModel extends OBJBakedModel
 					bakedModel.tempStack = stack;
 					bakedModel.tempEntity = entity;
 					model = bakedModel;
-				} else
+				}
+				else
 					model = originalModel;
 				comp.copy();
 				cachedBakedItemModels.put(comp, model);
 			}
-			if (model instanceof IESmartObjModel)
+			if(model instanceof IESmartObjModel)
 			{
-				((IESmartObjModel) model).tempStack = stack;
-				((IESmartObjModel) model).tempEntity = entity;
+				((IESmartObjModel)model).tempStack = stack;
+				((IESmartObjModel)model).tempEntity = entity;
 			}
 			return model;
 		}
@@ -201,20 +203,21 @@ public class IESmartObjModel extends OBJBakedModel
 	{
 		OBJState objState = null;
 		Map<String, String> tex = null;
-		if (blockState instanceof IExtendedBlockState)
+		if(blockState instanceof IExtendedBlockState)
 		{
-			IExtendedBlockState ext = (IExtendedBlockState) blockState;
-			if (ext.getUnlistedNames().contains(Properties.AnimationProperty))
+			IExtendedBlockState ext = (IExtendedBlockState)blockState;
+			if(ext.getUnlistedNames().contains(Properties.AnimationProperty))
 			{
 				IModelState modState = ext.getValue(Properties.AnimationProperty);
-				if (modState instanceof OBJState)
-					objState = (OBJState) modState;
+				if(modState instanceof OBJState)
+					objState = (OBJState)modState;
 			}
-			if (ext.getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
+			if(ext.getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
 				tex = ext.getValue(IEProperties.OBJ_TEXTURE_REMAP);
 		}
 		return getQuads(blockState, side, rand, objState, tex, false);
 	}
+
 	public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand, OBJState objstate, Map<String, String> tex,
 									boolean addAnimationAndTex)
 	{
@@ -222,16 +225,16 @@ public class IESmartObjModel extends OBJBakedModel
 		this.tempState = blockState;
 		if(blockState instanceof IExtendedBlockState)
 		{
-			IExtendedBlockState exState = (IExtendedBlockState) blockState;
+			IExtendedBlockState exState = (IExtendedBlockState)blockState;
 			ExtBlockstateAdapter adapter;
-			if (objstate!=null)
+			if(objstate!=null)
 			{
-				if(objstate.parent==null || objstate.parent==TRSRTransformation.identity())
+				if(objstate.parent==null||objstate.parent==TRSRTransformation.identity())
 					objstate.parent = this.getState();
-				if(objstate.getVisibilityMap().containsKey(Group.ALL) || objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
+				if(objstate.getVisibilityMap().containsKey(Group.ALL)||objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
 					this.updateStateVisibilityMap(objstate);
 			}
-			if (addAnimationAndTex)
+			if(addAnimationAndTex)
 				adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(),
 						ExtBlockstateAdapter.CONNS_OBJ_CALLBACK, new Object[]{objstate, tex});
 			else
@@ -267,7 +270,7 @@ public class IESmartObjModel extends OBJBakedModel
 		ShaderCase sCase = null;
 		IOBJModelCallback callback = null;
 		Object callbackObject = null;
-		if(!this.tempStack.isEmpty() && tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		if(!this.tempStack.isEmpty()&&tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
 			ShaderWrapper wrapper = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 			if(wrapper!=null)
@@ -276,7 +279,8 @@ public class IESmartObjModel extends OBJBakedModel
 				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
 					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
 			}
-		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(CapabilityShader.BLOCKSTATE_PROPERTY))
+		}
+		else if(this.tempState!=null&&this.tempState instanceof IExtendedBlockState&&((IExtendedBlockState)this.tempState).getUnlistedNames().contains(CapabilityShader.BLOCKSTATE_PROPERTY))
 		{
 			ShaderWrapper wrapper = ((IExtendedBlockState)this.tempState).getValue(CapabilityShader.BLOCKSTATE_PROPERTY);
 			if(wrapper!=null)
@@ -287,11 +291,12 @@ public class IESmartObjModel extends OBJBakedModel
 			}
 		}
 
-		if(!this.tempStack.isEmpty() && tempStack.getItem() instanceof IOBJModelCallback)
+		if(!this.tempStack.isEmpty()&&tempStack.getItem() instanceof IOBJModelCallback)
 		{
 			callback = (IOBJModelCallback)tempStack.getItem();
 			callbackObject = this.tempStack;
-		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
+		}
+		else if(this.tempState!=null&&this.tempState instanceof IExtendedBlockState&&((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
 		{
 			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
@@ -303,7 +308,7 @@ public class IESmartObjModel extends OBJBakedModel
 		}
 		quads.addAll(shaderedQuadMap.keySet());
 
-		if(callback != null)
+		if(callback!=null)
 			quads = callback.modifyQuads(callbackObject, quads);
 		return ImmutableList.copyOf(quads);
 	}
@@ -315,78 +320,78 @@ public class IESmartObjModel extends OBJBakedModel
 		int maxPasses = 1;
 		if(sCase!=null)
 			maxPasses = sCase.getLayers().length;
-		for(int pass=0; pass<maxPasses; pass++)
+		for(int pass = 0; pass < maxPasses; pass++)
 		{
-			ShaderLayer shaderLayer = sCase != null ? sCase.getLayers()[pass] : null;
-			if (callback != null)
-				if (!callback.shouldRenderGroup(callbackObject, groupName))
+			ShaderLayer shaderLayer = sCase!=null?sCase.getLayers()[pass]: null;
+			if(callback!=null)
+				if(!callback.shouldRenderGroup(callbackObject, groupName))
 					continue;
-			if (sCase != null)
-				if (!sCase.renderModelPartForPass(shader, tempStack, groupName, pass))
+			if(sCase!=null)
+				if(!sCase.renderModelPartForPass(shader, tempStack, groupName, pass))
 					continue;
 			Group g = getModel().getMatLib().getGroups().get(groupName);
 			Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<>());
 			Optional<TRSRTransformation> transform = Optional.empty();
-			if (this.getState() instanceof OBJState)
+			if(this.getState() instanceof OBJState)
 			{
-				OBJState state = (OBJState) this.getState();
-				if (state.parent != null)
+				OBJState state = (OBJState)this.getState();
+				if(state.parent!=null)
 					transform = state.parent.apply(Optional.empty());
-				if (callback != null)
+				if(callback!=null)
 					transform = callback.applyTransformations(callbackObject, groupName, transform);
-				if (state.getGroupsWithVisibility(true).contains(groupName))
+				if(state.getGroupsWithVisibility(true).contains(groupName))
 					faces.addAll(g.applyTransform(transform));
 			}
 			else
 			{
 				transform = getState().apply(Optional.empty());
-				if (callback != null)
+				if(callback!=null)
 					transform = callback.applyTransformations(callbackObject, groupName, transform);
 				faces.addAll(g.applyTransform(transform));
 			}
 
 			int argb = 0xffffffff;
-			if (sCase != null)
+			if(sCase!=null)
 				argb = sCase.getARGBColourModifier(shader, tempStack, groupName, pass);
-			else if (callback != null)
+			else if(callback!=null)
 				argb = callback.getRenderColour(callbackObject, groupName);
 
 			boolean dynQuad = false;
 
-			float[] colour = {(argb >> 16 & 255) / 255f, (argb >> 8 & 255) / 255f, (argb & 255) / 255f, (argb >> 24 & 255) / 255f};
+			float[] colour = {(argb >> 16&255)/255f, (argb >> 8&255)/255f, (argb&255)/255f, (argb >> 24&255)/255f};
 
-			for (Face f : faces)
+			for(Face f : faces)
 			{
 				TextureAtlasSprite tempSprite = null;
-				if (this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite() && !"null".equals(f.getMaterialName()))
+				if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite()&&!"null".equals(f.getMaterialName()))
 				{
-					for (Vertex v : f.getVertices())
-						if (!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
+					for(Vertex v : f.getVertices())
+						if(!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
 							v.setMaterial(this.getModel().getMatLib().getMaterial(v.getMaterial().getName()));
 					tempSprite = ModelLoader.White.INSTANCE;
 				}
 				else
 				{
-					if (sCase != null)
+					if(sCase!=null)
 					{
 						ResourceLocation rl = sCase.getReplacementSprite(shader, tempStack, groupName, pass);
-						if (rl != null)
+						if(rl!=null)
 							tempSprite = ClientUtils.getSprite(rl);
 					}
-					if (tempSprite == null && callback != null)
+					if(tempSprite==null&&callback!=null)
 						tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
-					if (tempSprite == null && tempState != null && texReplace != null)
+					if(tempSprite==null&&tempState!=null&&texReplace!=null)
 					{
 						String s = texReplace.get(groupName);
-						if (s != null)
+						if(s!=null)
 							tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
 					}
-					if (tempSprite == null && !"null".equals(f.getMaterialName()))
+					if(tempSprite==null&&!"null".equals(f.getMaterialName()))
 						tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
 				}
-				if (tempSprite == null)
+				if(tempSprite==null)
 					tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
-				if (tempSprite != null)
+				if(tempSprite!=null)
 				{
 					IVertexConsumer builder = new UnpackedBakedQuad.Builder(getFormat());
 					builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
@@ -395,47 +400,47 @@ public class IESmartObjModel extends OBJBakedModel
 					Normal faceNormal = f.getNormal();
 					TextureCoordinate[] uvs = new TextureCoordinate[4];
 					boolean renderFace = true;
-					for (int i = 0; i < 4; i++)
+					for(int i = 0; i < 4; i++)
 					{
 						Vertex vertex = f.getVertices()[i];
 						//V-Flip is processed here already, rather than in the later method, since it's needed for easy UV comparissons on the Shader Layers
-						uvs[i] = vertex.hasTextureCoordinate() ? new TextureCoordinate(vertex.getTextureCoordinate().u, 1 - vertex.getTextureCoordinate().v, vertex.getTextureCoordinate().w) : TextureCoordinate.getDefaultUVs()[i];
+						uvs[i] = vertex.hasTextureCoordinate()?new TextureCoordinate(vertex.getTextureCoordinate().u, 1-vertex.getTextureCoordinate().v, vertex.getTextureCoordinate().w): TextureCoordinate.getDefaultUVs()[i];
 
-						if (shaderLayer != null)
+						if(shaderLayer!=null)
 						{
 							double[] texBounds = shaderLayer.getTextureBounds();
-							if (texBounds != null)
+							if(texBounds!=null)
 							{
-								if (texBounds[0] > uvs[i].u || uvs[i].u > texBounds[2] || texBounds[1] > uvs[i].v || uvs[i].v > texBounds[3])//if any uvs are outside the layers bounds
+								if(texBounds[0] > uvs[i].u||uvs[i].u > texBounds[2]||texBounds[1] > uvs[i].v||uvs[i].v > texBounds[3])//if any uvs are outside the layers bounds
 								{
 									renderFace = false;
 									break;
 								}
-								double dU = texBounds[2] - texBounds[0];
-								double dV = texBounds[3] - texBounds[1];
+								double dU = texBounds[2]-texBounds[0];
+								double dV = texBounds[3]-texBounds[1];
 								//Rescaling to the partial bounds that the texture represents
-								uvs[i].u = (float) ((uvs[i].u - texBounds[0]) / dU);
-								uvs[i].v = (float) ((uvs[i].v - texBounds[1]) / dV);
+								uvs[i].u = (float)((uvs[i].u-texBounds[0])/dU);
+								uvs[i].v = (float)((uvs[i].v-texBounds[1])/dV);
 							}
 							//Rescaling to the selective area of the texture that is used
 							double[] cutBounds = shaderLayer.getCutoutBounds();
-							if (cutBounds != null)
+							if(cutBounds!=null)
 							{
-								double dU = cutBounds[2] - cutBounds[0];
-								double dV = cutBounds[3] - cutBounds[1];
-								uvs[i].u = (float) (cutBounds[0] + dU * uvs[i].u);
-								uvs[i].v = (float) (cutBounds[1] + dV * uvs[i].v);
+								double dU = cutBounds[2]-cutBounds[0];
+								double dV = cutBounds[3]-cutBounds[1];
+								uvs[i].u = (float)(cutBounds[0]+dU*uvs[i].u);
+								uvs[i].v = (float)(cutBounds[1]+dV*uvs[i].v);
 							}
 						}
 					}
-					if (renderFace)
+					if(renderFace)
 					{
-						for (int i = 0; i < 4; i++)
+						for(int i = 0; i < 4; i++)
 							putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
-						if (builder instanceof UnpackedBakedQuad.Builder)
+						if(builder instanceof UnpackedBakedQuad.Builder)
 						{
 							//It's ugly, but it should do the trick
-							quads.put(((UnpackedBakedQuad.Builder) builder).build(), shaderLayer!=null && shaderLayer.isDynamicLayer()?shaderLayer:null);
+							quads.put(((UnpackedBakedQuad.Builder)builder).build(), shaderLayer!=null&&shaderLayer.isDynamicLayer()?shaderLayer: null);
 //							if(shaderLayer==null || !shaderLayer.isDynamicLayer())
 //							quads.put(((UnpackedBakedQuad.Builder) builder).build(), null);
 						}
@@ -449,7 +454,7 @@ public class IESmartObjModel extends OBJBakedModel
 	{
 		for(int e = 0; e < getFormat().getElementCount(); e++)
 		{
-			switch (getFormat().getElement(e).getUsage())
+			switch(getFormat().getElement(e).getUsage())
 			{
 				case POSITION:
 					builder.put(e, v.getPos().x, v.getPos().y, v.getPos().z, v.getPos().w);
@@ -460,11 +465,11 @@ public class IESmartObjModel extends OBJBakedModel
 						d = LightUtil.diffuseLight(v.getNormal().x, v.getNormal().y, v.getNormal().z);
 					else
 						d = LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
-					if(v.getMaterial() != null)
+					if(v.getMaterial()!=null)
 						builder.put(e,
-								d * v.getMaterial().getColor().x*colour[0],
-								d * v.getMaterial().getColor().y*colour[1],
-								d * v.getMaterial().getColor().z*colour[2],
+								d*v.getMaterial().getColor().x*colour[0],
+								d*v.getMaterial().getColor().y*colour[1],
+								d*v.getMaterial().getColor().z*colour[2],
 								v.getMaterial().getColor().w*colour[3]);
 					else
 						builder.put(e, d*colour[0], d*colour[1], d*colour[2], 1*colour[3]);
@@ -473,8 +478,8 @@ public class IESmartObjModel extends OBJBakedModel
 					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
 						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
 					builder.put(e,
-							sprite.getInterpolatedU(texCoord.u * 16),
-							sprite.getInterpolatedV((texCoord.v) * 16),//v-flip used to be processed here but was moved because of shader layers
+							sprite.getInterpolatedU(texCoord.u*16),
+							sprite.getInterpolatedV((texCoord.v)*16),//v-flip used to be processed here but was moved because of shader layers
 							0, 1);
 					break;
 				case NORMAL:
@@ -491,7 +496,7 @@ public class IESmartObjModel extends OBJBakedModel
 
 	static int getExtendedStateHash(IExtendedBlockState state)
 	{
-		return state.hashCode()*31 + state.getUnlistedProperties().hashCode();
+		return state.hashCode()*31+state.getUnlistedProperties().hashCode();
 	}
 
 	//	private final LoadingCache<Integer, IESmartObjModel> ieobjcache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<Integer, IESmartObjModel>()
@@ -504,22 +509,22 @@ public class IESmartObjModel extends OBJBakedModel
 
 	protected void updateStateVisibilityMap(OBJState state)
 	{
-		if (state.getVisibilityMap().containsKey(Group.ALL))
+		if(state.getVisibilityMap().containsKey(Group.ALL))
 		{
 			boolean operation = state.getVisibilityMap().get(Group.ALL);
 			state.getVisibilityMap().clear();
-			for (String s : this.getModel().getMatLib().getGroups().keySet())
+			for(String s : this.getModel().getMatLib().getGroups().keySet())
 			{
-				state.getVisibilityMap().put(s,  OBJState.Operation.SET_TRUE.performOperation(operation));
+				state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(operation));
 			}
 		}
-		else if (state.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
+		else if(state.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
 		{
 			List<String> exceptList = state.getGroupNamesFromMap().subList(1, state.getGroupNamesFromMap().size());
 			state.getVisibilityMap().remove(Group.ALL_EXCEPT);
-			for (String s : this.getModel().getMatLib().getGroups().keySet())
+			for(String s : this.getModel().getMatLib().getGroups().keySet())
 			{
-				if (!exceptList.contains(s))
+				if(!exceptList.contains(s))
 				{
 					state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(state.getVisibilityMap().get(s)));
 				}
@@ -527,7 +532,7 @@ public class IESmartObjModel extends OBJBakedModel
 		}
 		else
 		{
-			for (String s : state.getVisibilityMap().keySet())
+			for(String s : state.getVisibilityMap().keySet())
 			{
 				state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(state.getVisibilityMap().get(s)));
 			}
@@ -535,30 +540,36 @@ public class IESmartObjModel extends OBJBakedModel
 	}
 
 	static Field f_textures;
+
 	public static ImmutableMap<String, TextureAtlasSprite> getTexturesForOBJModel(IBakedModel model)
 	{
-		try{
+		try
+		{
 			if(f_textures==null)
 			{
 				f_textures = OBJBakedModel.class.getDeclaredField("textures");
 				f_textures.setAccessible(true);
 			}
 			return (ImmutableMap<String, TextureAtlasSprite>)f_textures.get(model);
-		}catch(Exception e){
+		} catch(Exception e)
+		{
 			e.printStackTrace();
 		}
 		return null;
 	}
+
 	public ImmutableMap<String, TextureAtlasSprite> getTextures()
 	{
-		try{
+		try
+		{
 			if(f_textures==null)
 			{
 				f_textures = OBJBakedModel.class.getDeclaredField("textures");
 				f_textures.setAccessible(true);
 			}
 			return (ImmutableMap<String, TextureAtlasSprite>)f_textures.get(this);
-		}catch(Exception e){
+		} catch(Exception e)
+		{
 			e.printStackTrace();
 		}
 		return null;

@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 
 /**
  * @author BluSunrize - 13.08.2015
- *
+ * <p>
  * An API class, for features that should be accessible in compatibility
  */
 public class IEApi
@@ -77,8 +77,9 @@ public class IEApi
 			return preferredStack;
 		}
 		ItemStack s = oreOutputPreference.get(oreName);
-		return s == null ? ItemStack.EMPTY : s.copy();
+		return s==null?ItemStack.EMPTY: s.copy();
 	}
+
 	public static ItemStack getPreferredStackbyMod(Collection<ItemStack> list)
 	{
 		ItemStack preferredStack = ItemStack.EMPTY;
@@ -91,7 +92,7 @@ public class IEApi
 				{
 					String modId = rl.getResourceDomain();
 					int idx = modId==null||modId.isEmpty()?-1: modPreference.indexOf(modId);
-					if(preferredStack.isEmpty() || (idx>=0 && (lastPref<0 || idx<lastPref)))
+					if(preferredStack.isEmpty()||(idx >= 0&&(lastPref < 0||idx < lastPref)))
 					{
 						preferredStack = stack;
 						lastPref = idx;
@@ -100,14 +101,16 @@ public class IEApi
 			}
 		return preferredStack.copy();
 	}
+
 	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
 	{
 		return getPreferredStackbyMod(Lists.newArrayList(array));
 	}
+
 	public static boolean isAllowedInCrate(ItemStack stack)
 	{
-		for (Predicate<ItemStack> check:forbiddenInCrates)
-			if (check.test(stack))
+		for(Predicate<ItemStack> check : forbiddenInCrates)
+			if(check.test(stack))
 				return false;
 		return true;
 	}

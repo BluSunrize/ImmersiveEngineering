@@ -30,7 +30,7 @@ import java.util.function.Function;
 
 /**
  * @author amadornes
- *         Blatantly stolen from Ama, since his stuff is good =3
+ * Blatantly stolen from Ama, since his stuff is good =3
  */
 public class BakedModelTransformer
 {
@@ -45,7 +45,7 @@ public class BakedModelTransformer
 		for(int i = 0; i < quads.length; i++)
 		{
 			quads[i] = new ArrayList<BakedQuad>();
-			for(BakedQuad quad : model.getQuads(state, (i == 6 ? null : EnumFacing.getFront(i)), rand))
+			for(BakedQuad quad : model.getQuads(state, (i==6?null: EnumFacing.getFront(i)), rand))
 				quads[i].add(transform(quad, transformer, formatRemapper));
 		}
 		return new TransformedModel(model, quads);
@@ -84,12 +84,12 @@ public class BakedModelTransformer
 
 	static float[][][] getUnpackedData(UnpackedBakedQuad unpackedQuad) throws Exception
 	{
-		if(f_unpackedData == null)
+		if(f_unpackedData==null)
 		{
 			f_unpackedData = ReflectionHelper.findField(UnpackedBakedQuad.class, "unpackedData");
 			f_unpackedData.setAccessible(true);
 		}
-		return (float[][][]) f_unpackedData.get(unpackedQuad);
+		return (float[][][])f_unpackedData.get(unpackedQuad);
 	}
 
 	private static final class TransformedModel implements IBakedModel
@@ -106,7 +106,7 @@ public class BakedModelTransformer
 		@Override
 		public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
 		{
-			return quads[side == null ? 6 : side.ordinal()];
+			return quads[side==null?6: side.ordinal()];
 		}
 
 		@Override

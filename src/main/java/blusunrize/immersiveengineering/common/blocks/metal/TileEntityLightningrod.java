@@ -40,43 +40,46 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	ArrayList<BlockPos> fenceNet = null;
 	int height;
 	private static final int[] size = {3, 3, 3};
-	public TileEntityLightningrod() {
+
+	public TileEntityLightningrod()
+	{
 		super(size);
 	}
+
 	@Override
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(!world.isRemote && formed && pos==13)
+		if(!world.isRemote&&formed&&pos==13)
 		{
-			if(energyStorage.getEnergyStored()>0)
+			if(energyStorage.getEnergyStored() > 0)
 			{
 				TileEntity tileEntity;
 				for(EnumFacing f : EnumFacing.HORIZONTALS)
-						{
-							tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f,2));
-							if(tileEntity instanceof IFluxReceiver)
-							{
-								IFluxReceiver ifr = (IFluxReceiver) tileEntity;
-								int accepted = ifr.receiveEnergy(f.getOpposite(), energyStorage.getEnergyStored(), true);
-								int extracted = energyStorage.extractEnergy(accepted, false);
-								ifr.receiveEnergy(f.getOpposite(), extracted, false);
-							}
-						}
+				{
+					tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f, 2));
+					if(tileEntity instanceof IFluxReceiver)
+					{
+						IFluxReceiver ifr = (IFluxReceiver)tileEntity;
+						int accepted = ifr.receiveEnergy(f.getOpposite(), energyStorage.getEnergyStored(), true);
+						int extracted = energyStorage.extractEnergy(accepted, false);
+						ifr.receiveEnergy(f.getOpposite(), extracted, false);
+					}
+				}
 			}
 
 			if(world.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
 				fenceNet = null;
 			if(fenceNet==null)
 				fenceNet = this.getFenceNet();
-			if(fenceNet!=null && world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127) && ( world.isThundering() || (world.isRaining()&&Utils.RAND.nextInt(10)==0) ))
+			if(fenceNet!=null&&world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127)&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
 			{
-				int i = this.height + this.fenceNet.size();
-				if(Utils.RAND.nextInt(4096*world.getHeight())<i*(getPos().getY()+i))
+				int i = this.height+this.fenceNet.size();
+				if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
 				{
 					this.energyStorage.setEnergy(IEConfig.Machines.lightning_output);
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
-					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(world, pos.getX(),pos.getY(),pos.getZ(), true);
+					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(world, pos.getX(), pos.getY(), pos.getZ(), true);
 					world.addWeatherEffect(entityLightningBolt);
 					world.spawnEntity(entityLightningBolt);
 				}
@@ -88,27 +91,27 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	{
 		this.height = 0;
 		boolean broken = false;
-		for(int i=getPos().getY()+2; i<world.getHeight()-1; i++)
+		for(int i = getPos().getY()+2; i < world.getHeight()-1; i++)
 		{
-			BlockPos pos = new BlockPos(getPos().getX(),i,getPos().getZ());
-			if(!broken && isFence(pos))
+			BlockPos pos = new BlockPos(getPos().getX(), i, getPos().getZ());
+			if(!broken&&isFence(pos))
 				this.height++;
 			else if(!world.isAirBlock(pos))
 				return null;
 			else
 			{
 				if(!broken)
-					broken=true;
+					broken = true;
 			}
 		}
 
 		ArrayList<BlockPos> openList = new ArrayList();
 		ArrayList<BlockPos> closedList = new ArrayList();
-		openList.add(getPos().add(0,height,0));
-		while(!openList.isEmpty() && closedList.size()<256)
+		openList.add(getPos().add(0, height, 0));
+		while(!openList.isEmpty()&&closedList.size() < 256)
 		{
 			BlockPos next = openList.get(0);
-			if(!closedList.contains(next) && isFence(next))
+			if(!closedList.contains(next)&&isFence(next))
 			{
 				closedList.add(next);
 				openList.add(next.offset(EnumFacing.WEST));
@@ -121,6 +124,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 		}
 		return closedList;
 	}
+
 	boolean isFence(BlockPos pos)
 	{
 		return Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
@@ -144,10 +148,10 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	public float[] getBlockBounds()
 	{
 		if(pos==22)
-			return new float[]{-.125f,0,-.125f,1.125f,1,1.125f};
-		if(pos%9==4 || (pos<18&&pos%9%2==1))
-			return new float[]{0,0,0,1,1,1};
-		if(pos<9)
+			return new float[]{-.125f, 0, -.125f, 1.125f, 1, 1.125f};
+		if(pos%9==4||(pos < 18&&pos%9%2==1))
+			return new float[]{0, 0, 0, 1, 1, 1};
+		if(pos < 9)
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		float xMin = 0;
 		float xMax = 1;
@@ -161,29 +165,29 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			{
 				yMin = -.5f;
 				yMax = 1.25f;
-				xMin = (facing.getAxis() == Axis.X ? (pos%9 > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.NORTH)) ? .8125f : .4375f;
-				xMax = (facing.getAxis() == Axis.X ? (pos%9 < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.NORTH)) ? .1875f : .5625f;
-				zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos%9 < 3 ^ facing == EnumFacing.NORTH)) ? .8125f : .4375f;
-				zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos%9 > 2 ^ facing == EnumFacing.NORTH)) ? .1875f : .5625f;
+				xMin = (facing.getAxis()==Axis.X?(pos%9 > 2^facing==EnumFacing.EAST): (pos%3==2^facing==EnumFacing.NORTH))?.8125f: .4375f;
+				xMax = (facing.getAxis()==Axis.X?(pos%9 < 3^facing==EnumFacing.EAST): (pos%3==0^facing==EnumFacing.NORTH))?.1875f: .5625f;
+				zMin = (facing.getAxis()==Axis.X?(pos%3==2^facing==EnumFacing.EAST): (pos%9 < 3^facing==EnumFacing.NORTH))?.8125f: .4375f;
+				zMax = (facing.getAxis()==Axis.X?(pos%3==0^facing==EnumFacing.EAST): (pos%9 > 2^facing==EnumFacing.NORTH))?.1875f: .5625f;
 			}
 			else
 			{
 				yMin = .25f;
 				yMax = .75f;
-				xMin = (facing.getAxis() == Axis.X ? (pos%9 > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.NORTH)) ? 1 : .625f;
-				xMax = (facing.getAxis() == Axis.X ? (pos%9 < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.NORTH)) ? 0 : .375f;
-				zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos%9 < 3 ^ facing == EnumFacing.NORTH)) ? 1 : .625f;
-				zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos%9 > 2 ^ facing == EnumFacing.NORTH)) ? 0 : .375f;
+				xMin = (facing.getAxis()==Axis.X?(pos%9 > 2^facing==EnumFacing.EAST): (pos%3==2^facing==EnumFacing.NORTH))?1: .625f;
+				xMax = (facing.getAxis()==Axis.X?(pos%9 < 3^facing==EnumFacing.EAST): (pos%3==0^facing==EnumFacing.NORTH))?0: .375f;
+				zMin = (facing.getAxis()==Axis.X?(pos%3==2^facing==EnumFacing.EAST): (pos%9 < 3^facing==EnumFacing.NORTH))?1: .625f;
+				zMax = (facing.getAxis()==Axis.X?(pos%3==0^facing==EnumFacing.EAST): (pos%9 > 2^facing==EnumFacing.NORTH))?0: .375f;
 			}
 		}
-		else if(pos>17)
+		else if(pos > 17)
 		{
 			yMin = .25f;
 			yMax = .75f;
-			xMin = offset[0]<0?.375f:0;
-			xMax = offset[0]>0?.625f:1;
-			zMin = offset[2]<0?.375f:0;
-			zMax = offset[2]>0?.625f:1;
+			xMin = offset[0] < 0?.375f: 0;
+			xMax = offset[0] > 0?.625f: 1;
+			zMin = offset[2] < 0?.375f: 0;
+			zMax = offset[2] > 0?.625f: 1;
 		}
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}
@@ -191,12 +195,16 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		if(pos<0)
+		if(pos < 0)
 			return ItemStack.EMPTY;
 		ItemStack s = ItemStack.EMPTY;
-		try{
+		try
+		{
 			s = MultiblockLightningrod.instance.getStructureManual()[pos/9][pos%9/3][pos%3];
-		}catch(Exception e){e.printStackTrace();}
+		} catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		return s.copy();
 	}
 
@@ -205,11 +213,13 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	{
 		return new IFluidTank[0];
 	}
+
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
 	{
 		return false;
 	}
+
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
@@ -218,15 +228,16 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
 			if(pos==4)
-				renderAABB = new AxisAlignedBB(getPos().add(-1,0,-1), getPos().add(2,5,2));
+				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 5, 2));
 			else
-				renderAABB = new AxisAlignedBB(getPos(),getPos());
+				renderAABB = new AxisAlignedBB(getPos(), getPos());
 		return renderAABB;
 	}
 
@@ -236,20 +247,23 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 		if(pos!=10&&pos!=12&&pos!=14&pos!=16)
 			return 0;
 		TileEntityLightningrod master = master();
-		return master==null?0:master.energyStorage.extractEnergy(energy, simulate);
+		return master==null?0: master.energyStorage.extractEnergy(energy, simulate);
 	}
+
 	@Override
 	public int getEnergyStored(@Nullable EnumFacing from)
 	{
 		TileEntityLightningrod master = master();
-		return master==null?0:master.energyStorage.getEnergyStored();
+		return master==null?0: master.energyStorage.getEnergyStored();
 	}
+
 	@Override
 	public int getMaxEnergyStored(@Nullable EnumFacing from)
 	{
 		TileEntityLightningrod master = master();
-		return master==null?0:master.energyStorage.getMaxEnergyStored();
+		return master==null?0: master.energyStorage.getMaxEnergyStored();
 	}
+
 	@Override
 	public boolean canConnectEnergy(@Nullable EnumFacing from)
 	{

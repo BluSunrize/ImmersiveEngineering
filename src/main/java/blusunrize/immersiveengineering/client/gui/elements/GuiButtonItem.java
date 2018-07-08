@@ -21,9 +21,10 @@ public class GuiButtonItem extends GuiButton
 {
 	public boolean state;
 	ItemStack item;
+
 	public GuiButtonItem(int buttonId, int x, int y, ItemStack stack, boolean state)
 	{
-		super(buttonId, x, y, 18,18, "");
+		super(buttonId, x, y, 18, 18, "");
 		this.state = state;
 		this.item = stack;
 	}
@@ -35,11 +36,11 @@ public class GuiButtonItem extends GuiButton
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
-			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+			this.hovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-			this.drawTexturedModalRect(x,y, 24+(state?18:0),128, width,height);
+			this.drawTexturedModalRect(x, y, 24+(state?18: 0), 128, width, height);
 			this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())
@@ -69,11 +70,11 @@ public class GuiButtonItem extends GuiButton
 	}
 
 	@Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
-    {
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+	{
 		boolean b = super.mousePressed(mc, mouseX, mouseY);
 		if(b)
 			this.state = !state;
 		return b;
-    }
+	}
 }

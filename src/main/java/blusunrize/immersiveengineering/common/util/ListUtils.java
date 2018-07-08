@@ -18,31 +18,37 @@ import java.util.List;
  */
 public final class ListUtils
 {
-    public static NonNullList<ItemStack> fromItem(ItemStack itemStack) {
-        NonNullList<ItemStack> list = NonNullList.create();
-        if (itemStack != null)
-        {
-            list.add(0, itemStack);
-        }
-        return list;
-    }
+	public static NonNullList<ItemStack> fromItem(ItemStack itemStack)
+	{
+		NonNullList<ItemStack> list = NonNullList.create();
+		if(itemStack!=null)
+		{
+			list.add(0, itemStack);
+		}
+		return list;
+	}
 
-    public static NonNullList<ItemStack> fromItems(ItemStack... itemStack) {
-        NonNullList<ItemStack> list = NonNullList.create();
-        for (int i = 0; i < itemStack.length; i++)
-        {
-            list.add(i, itemStack[i] != null ? (itemStack[i]) : ItemStack.EMPTY);
-        }
-        return list;
-    }
+	public static NonNullList<ItemStack> fromItems(ItemStack... itemStack)
+	{
+		NonNullList<ItemStack> list = NonNullList.create();
+		for(int i = 0; i < itemStack.length; i++)
+		{
+			list.add(i, itemStack[i]!=null?(itemStack[i]): ItemStack.EMPTY);
+		}
+		return list;
+	}
 
-    private ListUtils() {}
+	private ListUtils()
+	{
+	}
 
-    public static NonNullList<ItemStack> fromItems(List<ItemStack> stackList) {
-        NonNullList<ItemStack> list = NonNullList.create();
-        for (ItemStack itemStack : stackList) {
-            list.add(itemStack);
-        }
-        return list;
-    }
+	public static NonNullList<ItemStack> fromItems(List<ItemStack> stackList)
+	{
+		NonNullList<ItemStack> list = NonNullList.create();
+		for(ItemStack itemStack : stackList)
+		{
+			list.add(itemStack);
+		}
+		return list;
+	}
 }

@@ -23,17 +23,19 @@ public enum BlockTypes_MetalsIE implements IStringSerializable, BlockIEBase.IBlo
 	CONSTANTAN,
 	ELECTRUM,
 	STEEL;
-	
+
 	@Override
 	public String getName()
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

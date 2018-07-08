@@ -33,6 +33,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 		redstone = nbt.getBoolean("redstone");
 		invert = nbt.getBoolean("invert");
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -51,7 +52,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 			if(this.redstone)
 			{
 				BlockPos target = pos.offset(facing);
-				RotationUtil.rotateBlock(this.world, target, invert?facing:facing.getOpposite());
+				RotationUtil.rotateBlock(this.world, target, invert?facing: facing.getOpposite());
 			}
 		}
 	}
@@ -61,26 +62,31 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 1;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return placer.isSneaking();
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return !entity.isSneaking();
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{

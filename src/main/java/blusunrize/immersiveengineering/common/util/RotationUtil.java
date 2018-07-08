@@ -27,7 +27,9 @@ public class RotationUtil
 {
 	public static HashSet<Predicate<IBlockState>> permittedRotation = new HashSet<>();
 	public static HashSet<Predicate<TileEntity>> permittedTileRotation = new HashSet<>();
-	static{
+
+	static
+	{
 		permittedRotation.add(state -> {
 			//preventing extended pistons from rotating
 			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.getValue(BlockPistonBase.EXTENDED));
@@ -55,7 +57,7 @@ public class RotationUtil
 			if(tile instanceof TileEntityChest)
 			{
 				TileEntityChest chest = (TileEntityChest)tile;
-				return chest.adjacentChestXNeg!=null || chest.adjacentChestXPos!=null || chest.adjacentChestZNeg!=null || chest.adjacentChestZPos!=null;
+				return chest.adjacentChestXNeg!=null||chest.adjacentChestXPos!=null||chest.adjacentChestZNeg!=null||chest.adjacentChestZPos!=null;
 			}
 			return true;
 		});
@@ -77,7 +79,7 @@ public class RotationUtil
 		}
 		return state.getBlock().rotateBlock(world, pos, axis);
 	}
-	
+
 	public static boolean rotateEntity(Entity entity, EntityPlayer player)
 	{
 		if(entity instanceof EntityArmorStand)

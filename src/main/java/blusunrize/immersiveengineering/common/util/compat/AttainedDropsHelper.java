@@ -48,7 +48,7 @@ public class AttainedDropsHelper extends IECompatModule
 		final IBlockState blockstatePlant = blockPlant.getDefaultState();
 		IProperty propertyAge = null;
 		for(IProperty prop : blockstatePlant.getPropertyKeys())
-			if("age".equals(prop.getName()) && prop instanceof PropertyInteger)
+			if("age".equals(prop.getName())&&prop instanceof PropertyInteger)
 				propertyAge = prop;
 		final IProperty propertyAge_final = propertyAge;
 
@@ -61,7 +61,7 @@ public class AttainedDropsHelper extends IECompatModule
 		addType("prismarine", new ItemStack(Items.PRISMARINE_SHARD));
 		addType("blaze", new ItemStack(Items.BLAZE_ROD));
 		addType("gunpowder", new ItemStack(Items.GUNPOWDER));
-		addType("witherskull", new ItemStack(Items.SKULL,1,1));
+		addType("witherskull", new ItemStack(Items.SKULL, 1, 1));
 		addType("enderpearl", new ItemStack(Items.ENDER_PEARL));
 		BelljarHandler.registerHandler(new IPlantHandler()
 		{
@@ -70,16 +70,19 @@ public class AttainedDropsHelper extends IECompatModule
 			{
 				return !soil.isEmpty()&&soilOutputMap.containsKey(new ComparableItemStack(soil, true, false));
 			}
+
 			@Override
 			public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
 			{
-				return (growth<.5?.003125f:.0015625f)*fertilizer;
+				return (growth < .5?.003125f: .0015625f)*fertilizer;
 			}
+
 			@Override
 			public float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 			{
 				return .5f;
 			}
+
 			@Override
 			public ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile)
 			{
@@ -88,10 +91,11 @@ public class AttainedDropsHelper extends IECompatModule
 					return new ItemStack[0];
 				return out;
 			}
+
 			@Override
 			public boolean isValid(ItemStack seed)
 			{
-				return !seed.isEmpty() && seed.getItem()==itemSeed;
+				return !seed.isEmpty()&&seed.getItem()==itemSeed;
 			}
 
 			@Override
@@ -100,22 +104,24 @@ public class AttainedDropsHelper extends IECompatModule
 			{
 				return new IBlockState[0];
 			}
+
 			@Override
 			@SideOnly(Side.CLIENT)
 			public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 			{
 				return .875f;
 			}
+
 			@Override
 			@SideOnly(Side.CLIENT)
 			public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 			{
-				IBlockState state = blockstatePlant.withProperty(propertyAge_final, growth>=.5?7:Math.min(7,Math.round(7*growth*2)));
+				IBlockState state = blockstatePlant.withProperty(propertyAge_final, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
 				IBakedModel model = blockRenderer.getModelForState(state);
 				GlStateManager.pushMatrix();
 				blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
 				GlStateManager.popMatrix();
-				if(growth>=.5)
+				if(growth >= .5)
 				{
 					state = bulbMap.get(new ComparableItemStack(soil, true, false));
 					model = blockRenderer.getModelForState(state);
@@ -135,7 +141,7 @@ public class AttainedDropsHelper extends IECompatModule
 	{
 		Block soilBlock = Block.REGISTRY.getObject(new ResourceLocation("attaineddrops:"+type+"_soil"));
 		Block bulbBlock = Block.REGISTRY.getObject(new ResourceLocation("attaineddrops:"+type+"_bulb"));
-		if(soilBlock!=null && bulbBlock!=null)
+		if(soilBlock!=null&&bulbBlock!=null)
 		{
 			ComparableItemStack comp = new ComparableItemStack(new ItemStack(soilBlock), true, true);
 			soilOutputMap.put(comp, new ItemStack[]{out});

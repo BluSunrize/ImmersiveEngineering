@@ -36,7 +36,9 @@ import static java.lang.Math.min;
 public class IELootEntry extends LootEntryItem
 {
 	public static LootFunction blueprintRename;
-	static{
+
+	static
+	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setTag("display", new NBTTagCompound());
 		tag.getCompoundTag("display").setString("name", "Super Special BluPrintz");
@@ -61,9 +63,9 @@ public class IELootEntry extends LootEntryItem
 		for(LootFunction f : functions)
 			totalFunctions.add(f);
 		if(stack.getMetadata()!=0)
-			totalFunctions.add(new SetMetadata(new LootCondition[0], new RandomValueRange(stack.getMetadata(),stack.getMetadata())));
+			totalFunctions.add(new SetMetadata(new LootCondition[0], new RandomValueRange(stack.getMetadata(), stack.getMetadata())));
 		if(stack.getCount() > 1)
-			totalFunctions.add(new SetCount(new LootCondition[0], new RandomValueRange(stack.getMetadata(),stack.getMetadata())));
+			totalFunctions.add(new SetCount(new LootCondition[0], new RandomValueRange(stack.getMetadata(), stack.getMetadata())));
 		if(stack.getTagCompound()!=null)
 			totalFunctions.add(new SetNBT(new LootCondition[0], stack.getTagCompound()));
 		return totalFunctions.toArray(new LootFunction[totalFunctions.size()]);

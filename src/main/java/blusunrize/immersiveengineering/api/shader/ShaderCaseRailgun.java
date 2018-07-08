@@ -18,6 +18,7 @@ public class ShaderCaseRailgun extends ShaderCase
 	{
 		super(layers);
 	}
+
 	public ShaderCaseRailgun(Collection<ShaderLayer> layers)
 	{
 		super(layers);
@@ -38,12 +39,12 @@ public class ShaderCaseRailgun extends ShaderCase
 	@Override
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		if("sled".equals(modelPart) || "wires".equals(modelPart) || "tubes".equals(modelPart))//these pieces only render on the uncoloured pass
+		if("sled".equals(modelPart)||"wires".equals(modelPart)||"tubes".equals(modelPart))//these pieces only render on the uncoloured pass
 			return pass==getLayers().length-1;
 
 		if("grip".equals(modelPart))
 			return pass==0;
-		return pass != 0;
+		return pass!=0;
 
 	}
 

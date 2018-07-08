@@ -39,11 +39,11 @@ public class CommandShaders extends CommandBase
 	@Override
 	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
 	{
-		String player = args.length > 0 ? args[0].trim() : sender.getName();
-		if (ShaderRegistry.receivedShaders.containsKey(player))
+		String player = args.length > 0?args[0].trim(): sender.getName();
+		if(ShaderRegistry.receivedShaders.containsKey(player))
 			ShaderRegistry.receivedShaders.get(player).clear();
 		ShaderRegistry.recalculatePlayerTotalWeight(player);
-		sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND + "shaders.clear.sucess", player));
+		sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"shaders.clear.sucess", player));
 	}
 
 	@Nonnull

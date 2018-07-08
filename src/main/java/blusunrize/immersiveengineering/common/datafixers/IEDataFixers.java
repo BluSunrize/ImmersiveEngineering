@@ -55,20 +55,19 @@ public class IEDataFixers
 					TileEntityChargingStation.class);
 			Method isInWorld = TileEntityMultiblockMetal.class.getMethod("isInWorldProcessingMachine");
 
-			for (Class<? extends TileEntity> cl:IEContent.registeredIETiles)
+			for(Class<? extends TileEntity> cl : IEContent.registeredIETiles)
 			{
-				if (TileEntityMultiblockMetal.class.isAssignableFrom(cl))
+				if(TileEntityMultiblockMetal.class.isAssignableFrom(cl))
 				{
 					Object te = cl.newInstance();
-					if ((boolean)isInWorld.invoke(te))
+					if((boolean)isInWorld.invoke(te))
 						fixer.registerVanillaWalker(BLOCK_ENTITY, new MultiblockProcessWalker(cl));
 				}
-				if (IIEInventory.class.isAssignableFrom(cl) && !specialCases.contains(cl))
+				if(IIEInventory.class.isAssignableFrom(cl)&&!specialCases.contains(cl))
 					fixer.registerVanillaWalker(BLOCK_ENTITY,
 							new ItemStackDataLists(cl, "inventory"));
 			}
-		}
-		catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e)
+		} catch(NoSuchMethodException|IllegalAccessException|InstantiationException|InvocationTargetException e)
 		{
 			throw new RuntimeException(e);
 		}

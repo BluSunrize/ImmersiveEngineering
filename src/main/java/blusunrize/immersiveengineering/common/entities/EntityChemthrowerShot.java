@@ -36,7 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 
 
-@net.minecraftforge.fml.common.Optional.Interface(iface="elucent.albedo.lighting.ILightProvider", modid="albedo")
+@net.minecraftforge.fml.common.Optional.Interface(iface = "elucent.albedo.lighting.ILightProvider", modid = "albedo")
 public class EntityChemthrowerShot extends EntityIEProjectile implements ILightProvider
 {
 	private FluidStack fluid;
@@ -46,18 +46,21 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 	{
 		super(world);
 	}
+
 	public EntityChemthrowerShot(World world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
 	{
-		super(world, x,y,z, ax,ay,az);
+		super(world, x, y, z, ax, ay, az);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}
+
 	public EntityChemthrowerShot(World world, EntityLivingBase living, double ax, double ay, double az, FluidStack fluid)
 	{
 		super(world, living, ax, ay, az);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}
+
 	@Override
 	protected void entityInit()
 	{
@@ -70,10 +73,12 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 		if(this.getFluid()!=null)
 			this.dataManager.set(dataMarker_fluid, Optional.of(this.getFluid()));
 	}
+
 	public FluidStack getFluidSynced()
 	{
 		return this.dataManager.get(dataMarker_fluid).orNull();
 	}
+
 	public FluidStack getFluid()
 	{
 		return fluid;
@@ -86,7 +91,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 		{
 			FluidStack fluidStack = getFluid();
 			boolean isGas = fluidStack.getFluid().isGaseous(fluidStack)||ChemthrowerHandler.isGas(fluidStack.getFluid());
-			return (isGas?.025f:.05F) * (fluidStack.getFluid().getDensity(fluidStack)<0?-1:1);
+			return (isGas?.025f: .05F)*(fluidStack.getFluid().getDensity(fluidStack) < 0?-1: 1);
 		}
 		return super.getGravity();
 	}
@@ -94,20 +99,21 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 	@Override
 	public boolean canIgnite()
 	{
-		return ChemthrowerHandler.isFlammable(getFluid()==null?null:getFluid().getFluid());
+		return ChemthrowerHandler.isFlammable(getFluid()==null?null: getFluid().getFluid());
 	}
 
 	@Override
 	public void onEntityUpdate()
 	{
-		if(this.getFluid() == null && this.world.isRemote)
+		if(this.getFluid()==null&&this.world.isRemote)
 			this.fluid = getFluidSynced();
-		IBlockState state = world.getBlockState(new BlockPos(posX,posY,posZ));
+		IBlockState state = world.getBlockState(new BlockPos(posX, posY, posZ));
 		Block b = state.getBlock();
-		if(b!=null && this.canIgnite() && (state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
+		if(b!=null&&this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
 			this.setFire(6);
 		super.onEntityUpdate();
 	}
+
 	@Override
 	public void setFire(int seconds)
 	{
@@ -119,12 +125,12 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 	@Override
 	public void onImpact(RayTraceResult mop)
 	{
-		if(!this.world.isRemote && getFluid()!=null)
+		if(!this.world.isRemote&&getFluid()!=null)
 		{
 			FluidStack fluidStack = getFluid();
 			Fluid fluid = fluidStack.getFluid();
 			ChemthrowerEffect effect = ChemthrowerHandler.getEffect(fluid);
-			boolean fire = fluid.getTemperature(fluidStack)>1000;
+			boolean fire = fluid.getTemperature(fluidStack) > 1000;
 			if(effect!=null)
 			{
 				ItemStack thrower = ItemStack.EMPTY;
@@ -132,12 +138,12 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 				if(shooter!=null)
 					thrower = shooter.getHeldItem(EnumHand.MAIN_HAND);
 
-				if(mop.typeOfHit== Type.ENTITY&&mop.entityHit instanceof EntityLivingBase)
+				if(mop.typeOfHit==Type.ENTITY&&mop.entityHit instanceof EntityLivingBase)
 					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluidStack);
-				else if(mop.typeOfHit== Type.BLOCK)
+				else if(mop.typeOfHit==Type.BLOCK)
 					effect.applyToBlock(world, mop, shooter, thrower, fluidStack);
 			}
-			else if(mop.entityHit!=null && fluid.getTemperature(fluidStack)>500)
+			else if(mop.entityHit!=null&&fluid.getTemperature(fluidStack) > 500)
 			{
 				int tempDiff = fluid.getTemperature(fluidStack)-300;
 				int damage = Math.abs(tempDiff)/500;
@@ -147,7 +153,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 			if(mop.entityHit!=null)
 			{
 				int f = this.isBurning()?this.fire: fire?3: 0;
-				if(f>0)
+				if(f > 0)
 				{
 					mop.entityHit.setFire(f);
 					if(mop.entityHit.attackEntityFrom(DamageSource.IN_FIRE, 2))
@@ -164,9 +170,9 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 		FluidStack fluidStack = getFluid();
 		if(fluidStack!=null)
 		{
-			int light = this.isBurning()?15:fluidStack.getFluid().getLuminosity(fluidStack);
-			if(light>0)
-				return Light.builder().pos(this).radius(.05f*light).color(1,1,1).build();
+			int light = this.isBurning()?15: fluidStack.getFluid().getLuminosity(fluidStack);
+			if(light > 0)
+				return Light.builder().pos(this).radius(.05f*light).color(1, 1, 1).build();
 		}
 		return null;
 	}

@@ -46,7 +46,7 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	public void addListener(PlayerAdvancements playerAdvancements, ICriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
 	{
 		MultiblockTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
-		if(listeners == null)
+		if(listeners==null)
 		{
 			listeners = new MultiblockTrigger.Listeners(playerAdvancements);
 			this.listeners.put(playerAdvancements, listeners);
@@ -59,7 +59,7 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	{
 		MultiblockTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
 
-		if(listeners != null)
+		if(listeners!=null)
 		{
 			listeners.remove(listener);
 			if(listeners.isEmpty())

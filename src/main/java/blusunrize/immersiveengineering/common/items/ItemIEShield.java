@@ -62,7 +62,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		if (!stack.isEmpty())
+		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
 				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
@@ -71,18 +71,18 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				@Override
 				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 				{
-					return capability == CapabilityEnergy.ENERGY ||
-							capability == CapabilityShader.SHADER_CAPABILITY ||
+					return capability==CapabilityEnergy.ENERGY||
+							capability==CapabilityShader.SHADER_CAPABILITY||
 							super.hasCapability(capability, facing);
 				}
 
 				@Override
 				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 				{
-					if (capability == CapabilityEnergy.ENERGY)
-						return (T) energyStorage;
-					if (capability == CapabilityShader.SHADER_CAPABILITY)
-						return (T) shaders;
+					if(capability==CapabilityEnergy.ENERGY)
+						return (T)energyStorage;
+					if(capability==CapabilityShader.SHADER_CAPABILITY)
+						return (T)shaders;
 					return super.getCapability(capability, facing);
 				}
 			};
@@ -94,21 +94,21 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	{
 		if(slotChanged)
 			return true;
-		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null) && newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null)&&newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
-			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
-			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
 				return true;
 		}
-		return super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
+		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
-		if(this.getMaxEnergyStored(stack)>0)
+		if(this.getMaxEnergyStored(stack) > 0)
 		{
 			String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
 			list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
@@ -125,23 +125,23 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		if(ent instanceof EntityLivingBase)
 			inHand |= ((EntityLivingBase)ent).getHeldItem(EnumHand.OFF_HAND)==stack;
 
-		boolean blocking = ent instanceof EntityLivingBase && ((EntityLivingBase)ent).isActiveItemStackBlocking();
-		if(!inHand || !blocking)//Don't recharge if in use, to avoid flickering
+		boolean blocking = ent instanceof EntityLivingBase&&((EntityLivingBase)ent).isActiveItemStackBlocking();
+		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
-			if(getUpgrades(stack).hasKey("flash_cooldown") && this.extractEnergy(stack, 20, true)==20)
+			if(getUpgrades(stack).hasKey("flash_cooldown")&&this.extractEnergy(stack, 20, true)==20)
 			{
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInteger("flash_cooldown");
-				if(--cooldown<=0)
+				if(--cooldown <= 0)
 					getUpgrades(stack).removeTag("flash_cooldown");
 				else
 					getUpgrades(stack).setInteger("flash_cooldown", cooldown);
 			}
-			if(getUpgrades(stack).hasKey("shock_cooldown") && this.extractEnergy(stack, 20, true)==20)
+			if(getUpgrades(stack).hasKey("shock_cooldown")&&this.extractEnergy(stack, 20, true)==20)
 			{
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInteger("shock_cooldown");
-				if(--cooldown<=0)
+				if(--cooldown <= 0)
 					getUpgrades(stack).removeTag("shock_cooldown");
 				else
 					getUpgrades(stack).setInteger("shock_cooldown", cooldown);
@@ -157,7 +157,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 
 	public void hitShield(ItemStack stack, EntityPlayer player, DamageSource source, float amount, LivingAttackEvent event)
 	{
-		if(getUpgrades(stack).getBoolean("flash") && getUpgrades(stack).getInteger("flash_cooldown")<=0)
+		if(getUpgrades(stack).getBoolean("flash")&&getUpgrades(stack).getInteger("flash_cooldown") <= 0)
 		{
 			Vec3d look = player.getLookVec();
 			//Offsets Player position by look backwards, then truncates cone at 1
@@ -165,23 +165,23 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			for(EntityLivingBase t : targets)
 				if(!player.equals(t))
 				{
-					t.addPotionEffect(new PotionEffect(IEPotions.flashed,100,1));
+					t.addPotionEffect(new PotionEffect(IEPotions.flashed, 100, 1));
 					if(t instanceof EntityLiving)
 						((EntityLiving)t).setAttackTarget(null);
 				}
-			getUpgrades(stack).setInteger("flash_cooldown",40);
+			getUpgrades(stack).setInteger("flash_cooldown", 40);
 		}
-		if(getUpgrades(stack).getBoolean("shock") && getUpgrades(stack).getInteger("shock_cooldown")<=0)
+		if(getUpgrades(stack).getBoolean("shock")&&getUpgrades(stack).getInteger("shock_cooldown") <= 0)
 		{
 			boolean b = false;
-			if(event.getSource().isProjectile() && event.getSource().getImmediateSource()!=null)
+			if(event.getSource().isProjectile()&&event.getSource().getImmediateSource()!=null)
 			{
 				Entity projectile = event.getSource().getImmediateSource();
 				projectile.setDead();
 				event.setCanceled(true);
 				b = true;
 			}
-			if(event.getSource().getTrueSource()!=null && event.getSource().getTrueSource() instanceof EntityLivingBase && event.getSource().getTrueSource().getDistanceSq(player)<4)
+			if(event.getSource().getTrueSource()!=null&&event.getSource().getTrueSource() instanceof EntityLivingBase&&event.getSource().getTrueSource().getDistanceSq(player) < 4)
 			{
 				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
 				dmgsrc.apply(event.getSource().getTrueSource());
@@ -189,7 +189,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			}
 			if(b)
 			{
-				getUpgrades(stack).setInteger("shock_cooldown",40);
+				getUpgrades(stack).setInteger("shock_cooldown", 40);
 				player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
 			}
 		}
@@ -204,7 +204,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
-		return (getUpgrades(container).getBoolean("flash")||getUpgrades(container).getBoolean("shock"))?1600:0;
+		return (getUpgrades(container).getBoolean("flash")||getUpgrades(container).getBoolean("shock"))?1600: 0;
 	}
 
 	@Override
@@ -212,6 +212,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	{
 		return 72000;
 	}
+
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
 	{
@@ -219,6 +220,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		playerIn.setActiveHand(handIn);
 		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 	}
+
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack)
 	{
@@ -234,11 +236,12 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			return getUpgrades(object).getBoolean("shock");
 		return true;
 	}
+
 	@Override
 	public Matrix4 handlePerspective(ItemStack Object, TransformType cameraTransformType, Matrix4 perspective, EntityLivingBase entity)
 	{
-		if(entity!=null && entity.isHandActive())
-			if((entity.getActiveHand()==EnumHand.MAIN_HAND) == (entity.getPrimaryHand()==EnumHandSide.RIGHT))
+		if(entity!=null&&entity.isHandActive())
+			if((entity.getActiveHand()==EnumHand.MAIN_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT))
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
 					perspective.rotate(-.15, 1, 0, 0).translate(-.25, .5, -.4375);
@@ -260,18 +263,20 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	{
 		return true;
 	}
+
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv,0, 80,32, "SHIELD", stack, true),
-						new IESlot.Upgrades(container, inv,1,100,32, "SHIELD", stack, true)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "SHIELD", stack, true)
 //						new IESlot.Upgrades(container, invItem,2,100,32, "SHIELD", stack, true)
 				};
 
 	}
+
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{

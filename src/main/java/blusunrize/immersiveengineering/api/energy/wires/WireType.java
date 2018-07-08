@@ -20,9 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
@@ -42,14 +40,16 @@ public abstract class WireType
 	public static final String STRUCTURE_CATEGORY = "STRUCTURE";
 	public static final String REDSTONE_CATEGORY = "REDSTONE";
 	private static LinkedHashSet<WireType> values = new LinkedHashSet<WireType>();
+
 	public static LinkedHashSet<WireType> getValues()
 	{
 		return values;
 	}
+
 	public static WireType getValue(String name)
 	{
-		for(WireType type: values)
-			if(type!=null && type.getUniqueName().equals(name))
+		for(WireType type : values)
+			if(type!=null&&type.getUniqueName().equals(name))
 				return type;
 		return COPPER;
 	}
@@ -60,23 +60,39 @@ public abstract class WireType
 	}
 
 	public abstract String getUniqueName();
+
 	public abstract double getLossRatio();
+
 	public abstract int getTransferRate();
-	/**Try not to get to complex with determining colour here*/
+
+	/**
+	 * Try not to get to complex with determining colour here
+	 */
 	public abstract int getColour(Connection connection);
-	/**Determines how saggy the wire is*/
+
+	/**
+	 * Determines how saggy the wire is
+	 */
 	public abstract double getSlack();
+
 	@SideOnly(Side.CLIENT)
 	public abstract TextureAtlasSprite getIcon(Connection connection);
+
 	public abstract int getMaxLength();
+
 	public abstract ItemStack getWireCoil();
+
 	public ItemStack getWireCoil(Connection c)
 	{
 		return getWireCoil();
 	}
+
 	public abstract double getRenderDiameter();
+
 	public abstract boolean isEnergyWire();
-	public boolean canCauseDamage() {
+
+	public boolean canCauseDamage()
+	{
 		return false;
 	}
 
@@ -89,6 +105,7 @@ public abstract class WireType
 	{
 		return null;
 	}
+
 	/**
 	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
 	 * less that DELTA_NEAR in blusunrize.immersiveengineering.api.ApiUtils.handleVec (currently .3)
@@ -100,7 +117,7 @@ public abstract class WireType
 
 	//THESE VALUES ARE FOR IE's OWN WIRES!
 	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE",
-				"COPPER_INS", "ELECTRUM_INS"};
+			"COPPER_INS", "ELECTRUM_INS"};
 	public static double[] wireLossRatio;
 	public static int[] wireTransferRate;
 	public static int[] wireColouration;
@@ -132,19 +149,19 @@ public abstract class WireType
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
 				.5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_LV.getMeta()),
-				8*2F/COPPER.getTransferRate(), 2, (f)->f);
+				8*2F/COPPER.getTransferRate(), 2, (f) -> f);
 		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
 				.5625, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_MV.getMeta()),
-				8*5F/ELECTRUM.getTransferRate(), 5, (f)->f);
+				8*5F/ELECTRUM.getTransferRate(), 5, (f) -> f);
 		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
 				.75, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_HV.getMeta()),
-				8*15F/STEEL.getTransferRate(), 15, (f)->f);
+				8*15F/STEEL.getTransferRate(), 15, (f) -> f);
 		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
-				ImmutableMap.of(),  new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
+				ImmutableMap.of(), new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
 				.5625, .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_REDSTONE.getMeta()),
-				0, 0, (f)->f);
+				0, 0, (f) -> f);
 	}
 
 	public IElectricEquipment.ElectricSource getElectricSource()
@@ -161,72 +178,83 @@ public abstract class WireType
 	{
 		final int ordinal;
 		private final IElectricEquipment.ElectricSource eSource;
+
 		public IEBASE(int ordinal)
 		{
 			super();
 			this.ordinal = ordinal;
 			WireApi.registerWireType(this);
-			if (canCauseDamage())
+			if(canCauseDamage())
 				eSource = new IElectricEquipment.ElectricSource(.5F*(1+ordinal));
 			else
 				eSource = new IElectricEquipment.ElectricSource(-1);
 		}
+
 		@Override
 		public double getLossRatio()
 		{
 			return Math.abs(wireLossRatio[ordinal%6]);
 		}
+
 		@Override
 		public int getTransferRate()
 		{
 			return Math.abs(wireTransferRate[ordinal%6]);
 		}
+
 		@Override
 		public int getColour(Connection connection)
 		{
 			return wireColouration[ordinal];
 		}
+
 		@Override
 		public double getSlack()
 		{
 			return 1.005;
 		}
+
 		@Override
 		@SideOnly(Side.CLIENT)
 		public TextureAtlasSprite getIcon(Connection connection)
 		{
 			return iconDefaultWire;
 		}
+
 		@Override
 		public int getMaxLength()
 		{
 			return wireLength[ordinal%6];
 		}
+
 		@Override
 		public ItemStack getWireCoil()
 		{
-			return new ItemStack(ieWireCoil,1,ordinal);
+			return new ItemStack(ieWireCoil, 1, ordinal);
 		}
+
 		@Override
 		public String getUniqueName()
 		{
 			return uniqueNames[ordinal];
 		}
+
 		@Override
 		public double getRenderDiameter()
 		{
 			return renderDiameter[ordinal%6];
 		}
+
 		@Override
 		public boolean isEnergyWire()
 		{
-			return ordinal%6<3;
+			return ordinal%6 < 3;
 		}
 
 		@Override
 		public double getDamageRadius()
 		{
-			switch (ordinal)
+			switch(ordinal)
 			{
 				case 0://LV
 					return .05;
@@ -241,14 +269,14 @@ public abstract class WireType
 		@Override
 		public boolean canCauseDamage()
 		{
-			return ordinal<3;
+			return ordinal < 3;
 		}
 
 		@Nullable
 		@Override
 		public String getCategory()
 		{
-			switch (ordinal)
+			switch(ordinal)
 			{
 				case 0:
 				case 6:

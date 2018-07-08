@@ -26,11 +26,13 @@ public class MessageTileSync implements IMessage
 {
 	BlockPos pos;
 	NBTTagCompound nbt;
+
 	public MessageTileSync(TileEntityIEBase tile, NBTTagCompound nbt)
 	{
 		this.pos = tile.getPos();
 		this.nbt = nbt;
 	}
+
 	public MessageTileSync()
 	{
 	}
@@ -39,7 +41,7 @@ public class MessageTileSync implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		this.nbt =  ByteBufUtils.readTag(buf);
+		this.nbt = ByteBufUtils.readTag(buf);
 	}
 
 	@Override
@@ -56,7 +58,8 @@ public class MessageTileSync implements IMessage
 		{
 			WorldServer world = ctx.getServerHandler().player.getServerWorld();
 			world.addScheduledTask(() -> {
-				if (world.isBlockLoaded(message.pos)) {
+				if(world.isBlockLoaded(message.pos))
+				{
 					TileEntity tile = world.getTileEntity(message.pos);
 					if(tile instanceof TileEntityIEBase)
 						((TileEntityIEBase)tile).receiveMessageFromClient(message.nbt);
@@ -65,6 +68,7 @@ public class MessageTileSync implements IMessage
 			return null;
 		}
 	}
+
 	public static class HandlerClient implements IMessageHandler<MessageTileSync, IMessage>
 	{
 		@Override

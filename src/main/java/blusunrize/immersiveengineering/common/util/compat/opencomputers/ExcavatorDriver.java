@@ -5,7 +5,6 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
-import li.cil.oc.api.network.Node;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -20,9 +19,9 @@ public class ExcavatorDriver extends DriverSidedTileEntity
 		TileEntity te = w.getTileEntity(pos);
 		if(te instanceof TileEntityExcavator)
 		{
-			TileEntityExcavator exc = (TileEntityExcavator) te;
+			TileEntityExcavator exc = (TileEntityExcavator)te;
 			TileEntityExcavator master = exc.master();
-			if(master != null && exc.isRedstonePos())
+			if(master!=null&&exc.isRedstonePos())
 				return new ExcavatorEnvironment(w, master.getPos());
 		}
 		return null;
@@ -61,12 +60,14 @@ public class ExcavatorDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().active};
 		}
 
+		@Override
 		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
 		public Object[] enableComputerControl(Context context, Arguments args)
 		{
 			return super.enableComputerControl(context, args);
 		}
 
+		@Override
 		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
 		public Object[] setEnabled(Context context, Arguments args)
 		{

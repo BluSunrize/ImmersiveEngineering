@@ -34,6 +34,7 @@ public class IngredientFactoryStackableNBT implements IIngredientFactory
 	{
 		@Nonnull
 		private final ItemStack stack;
+
 		public IngredientStackableNBT(@Nonnull ItemStack match)
 		{
 			super(match);
@@ -43,7 +44,7 @@ public class IngredientFactoryStackableNBT implements IIngredientFactory
 		@Override
 		public boolean apply(@Nullable ItemStack input)
 		{
-			if (input==null||!super.apply(input))
+			if(input==null||!super.apply(input))
 				return false;
 			Optional<NBTTagCompound> tag1 = Optional.ofNullable(stack.getTagCompound());
 			Optional<NBTTagCompound> tag2 = Optional.ofNullable(input.getTagCompound());

@@ -35,75 +35,82 @@ public class MultiblockExcavator implements IMultiblock
 {
 	public static MultiblockExcavator instance = new MultiblockExcavator();
 	static ItemStack[][][] structure = new ItemStack[3][6][3];
-	static{
-		for(int h=0;h<3;h++)
-			for(int l=0;l<6;l++)
-				for(int w=0;w<3;w++)
+
+	static
+	{
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 6; l++)
+				for(int w = 0; w < 3; w++)
 				{
-					if(l>0&&w==1)
+					if(l > 0&&w==1)
 						continue;
 					if(l==0)
 					{
 						if(w==0&&h==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
 						else if((w==1&&h==1)||(w==0&&h==2))
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else if(w==0&&h==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RADIATOR.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RADIATOR.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
 					}
 					else if(w==0)
 					{
-						if(l<3 && h==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RADIATOR.getMeta());
-						else if(l<3)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.STEEL.getMeta());
+						if(l < 3&&h==2)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RADIATOR.getMeta());
+						else if(l < 3)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
 						else if(h==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 					}
 					else if(w==2)
 					{
 						if(l==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else if(l==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
 						else if(h==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 						else if(h==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
 					}
 				}
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
+
 	//@SideOnly(Side.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.EXCAVATOR.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.EXCAVATOR.getMeta());
 		GlStateManager.translate(2, 1.5, 2.875);
 		GlStateManager.rotate(-225, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -113,6 +120,7 @@ public class MultiblockExcavator implements IMultiblock
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}
+
 	@Override
 	public float getManualScale()
 	{
@@ -128,45 +136,45 @@ public class MultiblockExcavator implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==IEContent.blockMetalDecoration0 && (state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
+		return state.getBlock()==IEContent.blockMetalDecoration0&&(state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 	}
 
 	@Override
 	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
 	{
 		side = side.getOpposite();
-		if (side == EnumFacing.UP || side == EnumFacing.DOWN)
+		if(side==EnumFacing.UP||side==EnumFacing.DOWN)
 			side = EnumFacing.fromAngle(player.rotationYaw);
 
 		boolean mirror = false;
 		boolean b = this.structureCheck(world, pos, side, mirror);
-		if (!b)
+		if(!b)
 		{
 			mirror = true;
 			b = structureCheck(world, pos, side, mirror);
 		}
-		if (!b)
+		if(!b)
 			return false;
 
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.EXCAVATOR.getMeta());
 		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
-		for (int l = 0; l < 6; l++)
-			for (int w = -1; w <= 1; w++)
-				for (int h = -1; h <= 1; h++)
+		for(int l = 0; l < 6; l++)
+			for(int w = -1; w <= 1; w++)
+				for(int h = -1; h <= 1; h++)
 				{
-					if (l > 0 && w == 0)
+					if(l > 0&&w==0)
 						continue;
-					int ww = mirror ? -w : w;
+					int ww = mirror?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
-					if (curr instanceof TileEntityExcavator)
+					if(curr instanceof TileEntityExcavator)
 					{
-						TileEntityExcavator tile = (TileEntityExcavator) curr;
+						TileEntityExcavator tile = (TileEntityExcavator)curr;
 						tile.formed = true;
-						tile.pos = (h + 1) * 18 + l * 3 + (w + 1);
-						tile.offset = new int[]{(side == EnumFacing.WEST ? -l : side == EnumFacing.EAST ? l : side == EnumFacing.NORTH ? ww : -ww), h, (side == EnumFacing.NORTH ? -l : side == EnumFacing.SOUTH ? l : side == EnumFacing.EAST ? ww : -ww)};
+						tile.pos = (h+1)*18+l*3+(w+1);
+						tile.offset = new int[]{(side==EnumFacing.WEST?-l: side==EnumFacing.EAST?l: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?-l: side==EnumFacing.SOUTH?l: side==EnumFacing.EAST?ww: -ww)};
 						tile.mirrored = mirror;
 						tile.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
@@ -174,21 +182,21 @@ public class MultiblockExcavator implements IMultiblock
 				}
 
 		BlockPos wheelPos = pos.offset(side, 4);
-		if (MultiblockBucketWheel.instance.isBlockTrigger(world.getBlockState(wheelPos)))
+		if(MultiblockBucketWheel.instance.isBlockTrigger(world.getBlockState(wheelPos)))
 			MultiblockBucketWheel.instance.createStructure(world, wheelPos, side.rotateYCCW(), player);
 		return true;
 	}
 
 	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
 	{
-		for(int l=0;l<6;l++)
-			for(int w=-1;w<=1;w++)
-				for(int h=-1;h<=1;h++)
+		for(int l = 0; l < 6; l++)
+			for(int w = -1; w <= 1; w++)
+				for(int h = -1; h <= 1; h++)
 				{
-					if(l>0&&w==0)
+					if(l > 0&&w==0)
 						continue;
 
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos = startPos.offset(dir, l).offset(dir.rotateY(), ww).add(0, h, 0);
 
 					if(l==0)
@@ -216,12 +224,12 @@ public class MultiblockExcavator implements IMultiblock
 					}
 					else if(w==-1)
 					{
-						if(l<3 && h==1)
+						if(l < 3&&h==1)
 						{
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RADIATOR.getMeta()))
 								return false;
 						}
-						else if(l<3)
+						else if(l < 3)
 						{
 							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalSteel"))
 								return false;
@@ -276,6 +284,7 @@ public class MultiblockExcavator implements IMultiblock
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 9, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 5, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 3, BlockTypes_MetalDecoration0.RADIATOR.getMeta()))};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

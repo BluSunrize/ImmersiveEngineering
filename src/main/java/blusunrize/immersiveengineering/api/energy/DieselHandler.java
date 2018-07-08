@@ -18,7 +18,7 @@ import java.util.Set;
 
 /**
  * @author BluSunrize - 23.04.2015
- *
+ * <p>
  * The Fuel Handler for the Diesel Generator. Use this to register custom fuels
  */
 public class DieselHandler
@@ -32,13 +32,13 @@ public class DieselHandler
 	 */
 	public static void registerFuel(Fluid fuel, int time)
 	{
-		if(fuel != null)
+		if(fuel!=null)
 			dieselGenBurnTime.put(fuel.getName(), time);
 	}
 
 	public static int getBurnTime(Fluid fuel)
 	{
-		if(fuel != null)
+		if(fuel!=null)
 		{
 			String s = fuel.getName();
 			if(dieselGenBurnTime.containsKey(s))
@@ -49,7 +49,7 @@ public class DieselHandler
 
 	public static boolean isValidFuel(Fluid fuel)
 	{
-		if(fuel != null)
+		if(fuel!=null)
 			return dieselGenBurnTime.containsKey(fuel.getName());
 		return false;
 	}
@@ -66,22 +66,25 @@ public class DieselHandler
 
 	public static void registerDrillFuel(Fluid fuel)
 	{
-		if(fuel != null)
+		if(fuel!=null)
 			drillFuel.add(fuel);
 	}
 
 	public static boolean isValidDrillFuel(Fluid fuel)
 	{
-		return fuel != null && drillFuel.contains(fuel);
+		return fuel!=null&&drillFuel.contains(fuel);
 	}
-	
-	public static void removeFuel(Fluid fuel){
-		if(fuel != null){
+
+	public static void removeFuel(Fluid fuel)
+	{
+		if(fuel!=null)
+		{
 			dieselGenBurnTime.remove(fuel.getName());
 		}
 	}
-	
-	public static void removeDrillFuel(Fluid fuel){
+
+	public static void removeDrillFuel(Fluid fuel)
+	{
 		drillFuel.remove(fuel);
 	}
 }

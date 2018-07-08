@@ -24,13 +24,15 @@ public class ItemNBTHelper
 			stack.setTagCompound(new NBTTagCompound());
 		return stack.getTagCompound();
 	}
+
 	public static boolean hasTag(ItemStack stack)
 	{
 		return stack.hasTagCompound();
 	}
+
 	public static boolean hasKey(ItemStack stack, String key)
 	{
-		return hasTag(stack) && getTag(stack).hasKey(key);
+		return hasTag(stack)&&getTag(stack).hasKey(key);
 	}
 
 	public static void remove(ItemStack stack, String key)
@@ -48,86 +50,97 @@ public class ItemNBTHelper
 	{
 		getTag(stack).setInteger(key, val);
 	}
+
 	public static void modifyInt(ItemStack stack, String key, int mod)
 	{
 		modifyInt(getTag(stack), key, mod);
 	}
+
 	public static void modifyInt(NBTTagCompound tagCompound, String key, int mod)
 	{
 		tagCompound.setInteger(key, tagCompound.getInteger(key)+mod);
 	}
+
 	public static int getInt(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getInteger(key) : 0;
+		return hasTag(stack)?getTag(stack).getInteger(key): 0;
 	}
 
 	public static void setString(ItemStack stack, String key, String val)
 	{
 		getTag(stack).setString(key, val);
 	}
+
 	public static String getString(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getString(key) : "";
+		return hasTag(stack)?getTag(stack).getString(key): "";
 	}
 
 	public static void setLong(ItemStack stack, String key, long val)
 	{
 		getTag(stack).setLong(key, val);
 	}
+
 	public static long getLong(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getLong(key) : 0;
+		return hasTag(stack)?getTag(stack).getLong(key): 0;
 	}
 
 	public static void setIntArray(ItemStack stack, String key, int[] val)
 	{
 		getTag(stack).setIntArray(key, val);
 	}
+
 	public static int[] getIntArray(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getIntArray(key) : new int[0];
+		return hasTag(stack)?getTag(stack).getIntArray(key): new int[0];
 	}
 
 	public static void setFloat(ItemStack stack, String key, float val)
 	{
 		getTag(stack).setFloat(key, val);
 	}
+
 	public static void modifyFloat(NBTTagCompound tagCompound, String key, float mod)
 	{
 		tagCompound.setFloat(key, tagCompound.getFloat(key)+mod);
 	}
+
 	public static float getFloat(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getFloat(key) : 0;
+		return hasTag(stack)?getTag(stack).getFloat(key): 0;
 	}
 
 	public static void setBoolean(ItemStack stack, String key, boolean val)
 	{
 		getTag(stack).setBoolean(key, val);
 	}
+
 	public static boolean getBoolean(ItemStack stack, String key)
 	{
-		return hasTag(stack) && getTag(stack).getBoolean(key);
+		return hasTag(stack)&&getTag(stack).getBoolean(key);
 	}
 
 	public static void setTagCompound(ItemStack stack, String key, NBTTagCompound val)
 	{
 		getTag(stack).setTag(key, val);
 	}
+
 	public static NBTTagCompound getTagCompound(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getCompoundTag(key) : new NBTTagCompound();
+		return hasTag(stack)?getTag(stack).getCompoundTag(key): new NBTTagCompound();
 	}
 
 	public static void setFluidStack(ItemStack stack, String key, FluidStack val)
 	{
-		if(val!=null && val.getFluid()!=null)
+		if(val!=null&&val.getFluid()!=null)
 		{
 			setTagCompound(stack, key, val.writeToNBT(new NBTTagCompound()));
 		}
 		else
 			remove(stack, key);
 	}
+
 	public static FluidStack getFluidStack(ItemStack stack, String key)
 	{
 		if(hasTag(stack))
@@ -141,9 +154,10 @@ public class ItemNBTHelper
 	{
 		getTag(stack).setTag(key, val.writeToNBT(new NBTTagCompound()));
 	}
+
 	public static ItemStack getItemStack(ItemStack stack, String key)
 	{
-		if(hasTag(stack) && getTag(stack).hasKey(key))
+		if(hasTag(stack)&&getTag(stack).hasKey(key))
 			return new ItemStack(getTagCompound(stack, key));
 		return ItemStack.EMPTY;
 	}
@@ -169,6 +183,7 @@ public class ItemNBTHelper
 		}
 		return accepted;
 	}
+
 	public static int extractFluxFromItem(ItemStack container, int energy, boolean simulate)
 	{
 		int stored = getFluxStoredInItem(container);
@@ -180,6 +195,7 @@ public class ItemNBTHelper
 		}
 		return extracted;
 	}
+
 	public static int getFluxStoredInItem(ItemStack container)
 	{
 		return getInt(container, "energy");
@@ -187,8 +203,8 @@ public class ItemNBTHelper
 
 	public static ItemStack stackWithData(ItemStack stack, Object... data)
 	{
-		assert(data.length%2==0);
-		for(int i=0; i<data.length/2; i++)
+		assert (data.length%2==0);
+		for(int i = 0; i < data.length/2; i++)
 		{
 			Object key = data[i];
 			Object value = data[i+1];
@@ -219,10 +235,10 @@ public class ItemNBTHelper
 
 	public static NBTTagCompound combineTags(NBTTagCompound target, NBTTagCompound add, Pattern pattern)
 	{
-		if(target==null || target.hasNoTags())
+		if(target==null||target.hasNoTags())
 			return add.copy();
 		for(String key : add.getKeySet())
-			if(pattern==null || pattern.matcher(key).matches())
+			if(pattern==null||pattern.matcher(key).matches())
 				if(!target.hasKey(key))
 					target.setTag(key, add.getTag(key));
 				else
@@ -251,8 +267,8 @@ public class ItemNBTHelper
 							byte[] bytesTarget = target.getByteArray(key);
 							byte[] bytesAdd = add.getByteArray(key);
 							byte[] bytes = new byte[bytesTarget.length+bytesAdd.length];
-							System.arraycopy(bytesTarget,0, bytes,0, bytesTarget.length);
-							System.arraycopy(bytesAdd,0, bytes,bytesTarget.length, bytesAdd.length);
+							System.arraycopy(bytesTarget, 0, bytes, 0, bytesTarget.length);
+							System.arraycopy(bytesAdd, 0, bytes, bytesTarget.length, bytesAdd.length);
 							target.setByteArray(key, bytes);
 							break;
 						case 8: //String
@@ -261,7 +277,7 @@ public class ItemNBTHelper
 						case 9: //List
 							NBTTagList listTarget = (NBTTagList)target.getTag(key);
 							NBTTagList listAdd = (NBTTagList)add.getTag(key);
-							for(int i=0; i<listAdd.tagCount(); i++)
+							for(int i = 0; i < listAdd.tagCount(); i++)
 								listTarget.appendTag(listAdd.get(i));
 							target.setTag(key, listTarget);
 							break;
@@ -272,8 +288,8 @@ public class ItemNBTHelper
 							int[] intsTarget = target.getIntArray(key);
 							int[] intsAdd = add.getIntArray(key);
 							int[] ints = new int[intsTarget.length+intsAdd.length];
-							System.arraycopy(intsTarget,0, ints,0, intsTarget.length);
-							System.arraycopy(intsAdd,0, ints,intsTarget.length, intsAdd.length);
+							System.arraycopy(intsTarget, 0, ints, 0, intsTarget.length);
+							System.arraycopy(intsAdd, 0, ints, intsTarget.length, intsAdd.length);
 							target.setIntArray(key, ints);
 							break;
 					}

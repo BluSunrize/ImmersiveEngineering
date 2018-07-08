@@ -26,7 +26,7 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe, Al
 
 	public AlloySmelterRecipeCategory(IGuiHelper helper)
 	{
-		super("alloysmelter","tile.immersiveengineering.stone_device.alloy_smelter.name", helper.createDrawable(background, 8,13, 142, 60), AlloyRecipe.class, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta()));
+		super("alloysmelter", "tile.immersiveengineering.stone_device.alloy_smelter.name", helper.createDrawable(background, 8, 13, 142, 60), AlloyRecipe.class, new ItemStack(IEContent.blockStoneDevice, 1, BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta()));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe, Al
 		guiItemStacks.init(2, false, 111, 21);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
 		guiItemStacks.set(1, ingredients.getInputs(ItemStack.class).get(1));
-		if(ingredients.getOutputs(ItemStack.class).size()>0)
+		if(ingredients.getOutputs(ItemStack.class).size() > 0)
 			guiItemStacks.set(2, ingredients.getOutputs(ItemStack.class).get(0));
 	}
 

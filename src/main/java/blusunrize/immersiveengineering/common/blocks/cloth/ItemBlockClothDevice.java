@@ -29,6 +29,7 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 	{
 		super(b);
 	}
+
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
@@ -42,9 +43,9 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 			Vec3d pos = playerIn.getPositionVector().addVector(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
 			BlockPos bPos = new BlockPos(pos);
 			NBTTagCompound nbt = itemStackIn.getTagCompound();
-			int offset = nbt==null?0:nbt.getByte("offset");
+			int offset = nbt==null?0: nbt.getByte("offset");
 			bPos = bPos.up(offset);
-			if (worldIn.isAirBlock(bPos))
+			if(worldIn.isAirBlock(bPos))
 			{
 				if(!worldIn.isRemote)
 				{
@@ -58,33 +59,36 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 		}
 		return new ActionResult(EnumActionResult.PASS, itemStackIn);
 	}
+
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack stack = playerIn.getHeldItem(hand);
-		if(stack.getMetadata()==BlockTypes_ClothDevice.BALLOON.getMeta() && playerIn.isSneaking())
+		if(stack.getMetadata()==BlockTypes_ClothDevice.BALLOON.getMeta()&&playerIn.isSneaking())
 		{
 			increaseOffset(stack);
 			return EnumActionResult.SUCCESS;
 		}
 		return super.onItemUse(playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
 	}
+
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
 		String ret = super.getItemStackDisplayName(stack);
 		NBTTagCompound nbt = stack.getTagCompound();
-		if (nbt!=null&&nbt.getByte("offset")!=0)
-			ret+=" (+"+nbt.getByte("offset")+")";
+		if(nbt!=null&&nbt.getByte("offset")!=0)
+			ret += " (+"+nbt.getByte("offset")+")";
 		return ret;
 	}
+
 	private void increaseOffset(ItemStack s)
 	{
-		if (s.getTagCompound()==null)
+		if(s.getTagCompound()==null)
 			s.setTagCompound(new NBTTagCompound());
 		NBTTagCompound tag = s.getTagCompound();
 		byte offset = tag.getByte("offset");
-		tag.setByte("offset", (byte) ((offset+1)%5));
-	
+		tag.setByte("offset", (byte)((offset+1)%5));
+
 	}
 }

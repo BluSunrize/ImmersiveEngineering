@@ -14,9 +14,11 @@ import net.minecraft.world.World;
 /**
  * Implement this interface to allow a block to interface with IE redstone wires
  */
-public interface IRedstoneConnector extends IImmersiveConnectable {
+public interface IRedstoneConnector extends IImmersiveConnectable
+{
 	/**
 	 * Sets the RedstoneWireNetwork this connector is connected to. DO NOT update output values in here, all output values will be updated in batch.
+	 *
 	 * @param net the new network for this connector.
 	 */
 	void setNetwork(RedstoneWireNetwork net);
@@ -39,6 +41,7 @@ public interface IRedstoneConnector extends IImmersiveConnectable {
 	/**
 	 * Called when the RedstoneWireNetwork updates its RS input values.
 	 * As a general rule only stronger signals should override weaker signals, so you should never decrease the value of a channel in this method.
+	 *
 	 * @param signals the values of the RS channels up to this point. Modify this array to change output values.
 	 */
 	void updateInput(byte[] signals);

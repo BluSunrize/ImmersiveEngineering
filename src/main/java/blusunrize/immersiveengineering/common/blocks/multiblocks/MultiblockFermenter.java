@@ -37,32 +37,34 @@ public class MultiblockFermenter implements IMultiblock
 	public static MultiblockFermenter instance = new MultiblockFermenter();
 
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
-	static{
-		for(int h=0;h<3;h++)
-			for(int l=0;l<3;l++)
-				for(int w=0;w<3;w++)
+
+	static
+	{
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 3; l++)
+				for(int w = 0; w < 3; w++)
 					if(h==0)
 					{
 						if(l==0&&w==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
-						else if(l==1 && w>0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+						else if(l==1&&w > 0)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
 						if(l==0&&w==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else if(l==0&&w==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
-						else if(l>0 && w<2)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+						else if(l > 0&&w < 2)
 							structure[h][l][w] = new ItemStack(Items.CAULDRON);
 					}
 					else if(h==2)
 					{
-						if(l>0 && w<2)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1, BlockTypes_MetalsAll.IRON.getMeta());
+						if(l > 0&&w < 2)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 					}
 	}
 
@@ -88,37 +90,42 @@ public class MultiblockFermenter implements IMultiblock
 		}
 		return false;
 	}
+
 	@Override
 	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
 		if(!stack.isEmpty())
 		{
-			if(stack.getItem() == Items.CAULDRON)
+			if(stack.getItem()==Items.CAULDRON)
 				return Blocks.CAULDRON.getDefaultState();
 			else if(stack.getItem() instanceof ItemBlock)
 				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 		}
 		return null;
 	}
+
 	@Override
 	public float getManualScale()
 	{
 		return 13;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
+
 	//@SideOnly(Side.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.FERMENTER.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.FERMENTER.getMeta());
 		GlStateManager.translate(1.5, 1.5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -159,14 +166,14 @@ public class MultiblockFermenter implements IMultiblock
 
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.FERMENTER.getMeta());
 		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
-		for(int h=-1;h<=1;h++)
-			for(int l=-1;l<=1;l++)
-				for(int w=-1;w<=1;w++)
+		for(int h = -1; h <= 1; h++)
+			for(int l = -1; l <= 1; l++)
+				for(int w = -1; w <= 1; w++)
 				{
-					if((h==0&&w==0&&l==-1)||(h==0&&w==1&&l>-1)||(h==1&&(l<0||w>0)))
+					if((h==0&&w==0&&l==-1)||(h==0&&w==1&&l > -1)||(h==1&&(l < 0||w > 0)))
 						continue;
 
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 					world.setBlockState(pos2, state);
@@ -174,10 +181,10 @@ public class MultiblockFermenter implements IMultiblock
 					if(curr instanceof TileEntityFermenter)
 					{
 						TileEntityFermenter tile = (TileEntityFermenter)curr;
-						tile.formed=true;
-						tile.pos = (h+1)*9 + (l+1)*3 + (w+1);
-						tile.offset = new int[]{(side==EnumFacing.WEST?-l: side==EnumFacing.EAST?l: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l: side==EnumFacing.SOUTH?l: side==EnumFacing.EAST?ww : -ww)};
-						tile.mirrored=mirror;
+						tile.formed = true;
+						tile.pos = (h+1)*9+(l+1)*3+(w+1);
+						tile.offset = new int[]{(side==EnumFacing.WEST?-l: side==EnumFacing.EAST?l: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?-l: side==EnumFacing.SOUTH?l: side==EnumFacing.EAST?ww: -ww)};
+						tile.mirrored = mirror;
 						tile.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
@@ -187,14 +194,14 @@ public class MultiblockFermenter implements IMultiblock
 
 	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
 	{
-		for(int h=-1;h<=1;h++)
-			for(int l=-1;l<=1;l++)
-				for(int w=-1;w<=1;w++)
+		for(int h = -1; h <= 1; h++)
+			for(int l = -1; l <= 1; l++)
+				for(int w = -1; w <= 1; w++)
 				{
-					if((h==0&&w==0&&l==-1)||(h==0&&w==1&&l>-1)||(h==1&&(l<0||w>0)))
+					if((h==0&&w==0&&l==-1)||(h==0&&w==1&&l > -1)||(h==1&&(l < 0||w > 0)))
 						continue;
 
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos = startPos.offset(dir, l).offset(dir.rotateY(), ww).add(0, h, 0);
 
 					if(h==-1)
@@ -204,7 +211,7 @@ public class MultiblockFermenter implements IMultiblock
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
 						}
-						else if(l==0 && w>-1)
+						else if(l==0&&w > -1)
 						{
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDevice1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()))
 								return false;
@@ -227,7 +234,7 @@ public class MultiblockFermenter implements IMultiblock
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
 								return false;
 						}
-						else if(l>-1 && w<1)
+						else if(l > -1&&w < 1)
 						{
 							if(!Utils.isBlockAt(world, pos, Blocks.CAULDRON, 0))
 								return false;
@@ -235,7 +242,7 @@ public class MultiblockFermenter implements IMultiblock
 					}
 					else if(h==1)
 					{
-						if(l>-1&&w<1)
+						if(l > -1&&w < 1)
 						{
 							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalIron"))
 								return false;
@@ -252,6 +259,7 @@ public class MultiblockFermenter implements IMultiblock
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
 			new IngredientStack(new ItemStack(Items.CAULDRON, 4, 0)),
 			new IngredientStack("blockSheetmetalIron", 4)};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

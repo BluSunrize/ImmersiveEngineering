@@ -43,8 +43,6 @@ import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 import slimeknights.tconstruct.tools.TinkerTraits;
 
-import java.util.Locale;
-
 public class TConstructHelper extends IECompatModule
 {
 	public static final Material treatedWood = new Material("treatedwood", 0x653522);

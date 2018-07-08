@@ -39,8 +39,8 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		if(nbt.hasKey("fluids"))
 		{
 			fluids.clear();
-			NBTTagList tagList = nbt.getTagList("fluids",10);
-			for(int i=0; i<tagList.tagCount(); i++)
+			NBTTagList tagList = nbt.getTagList("fluids", 10);
+			for(int i = 0; i < tagList.tagCount(); i++)
 			{
 				FluidStack fs = FluidStack.loadFluidStackFromNBT(tagList.getCompoundTagAt(i));
 				if(fs!=null)
@@ -49,13 +49,14 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		}
 		return this;
 	}
+
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		NBTTagList tagList = new NBTTagList();
 		for(FluidStack fs : this.fluids)
 			if(fs!=null)
 				tagList.appendTag(fs.writeToNBT(new NBTTagCompound()));
-		nbt.setTag("fluids",tagList);
+		nbt.setTag("fluids", tagList);
 		return nbt;
 	}
 
@@ -69,7 +70,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	public FluidStack getFluid()
 	{
 		//grabbing the last fluid, for output reasons
-		return fluids.size()>0?fluids.get(fluids.size()-1):null;
+		return fluids.size() > 0?fluids.get(fluids.size()-1): null;
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		int capacity = this.capacity-getFluidAmount();
 		if(fs!=null)
 			capacity += fs.amount;
-		return new FluidTankInfo(fs,capacity);
+		return new FluidTankInfo(fs, capacity);
 	}
 
 	@Override
@@ -136,8 +137,8 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 				int amount = Math.min(resource.amount, fs.amount);
 				if(doDrain)
 				{
-					fs.amount-=amount;
-					if(fs.amount<=0)
+					fs.amount -= amount;
+					if(fs.amount <= 0)
 						it.remove();
 				}
 				return Utils.copyFluidStackWithAmount(resource, amount, true);
@@ -151,9 +152,9 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		int amount = Math.min(remove, removeFrom.amount);
 		if(doDrain)
 		{
-			removeFrom.amount-=amount;
-			if(removeFrom.amount<=0)
-			removeIt.remove();
+			removeFrom.amount -= amount;
+			if(removeFrom.amount <= 0)
+				removeIt.remove();
 		}
 		return Utils.copyFluidStackWithAmount(removeFrom, amount, true);
 	}

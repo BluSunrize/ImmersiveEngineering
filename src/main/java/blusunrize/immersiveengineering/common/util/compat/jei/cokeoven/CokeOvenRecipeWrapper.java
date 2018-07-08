@@ -25,11 +25,12 @@ public class CokeOvenRecipeWrapper implements IRecipeWrapper
 	private final List<ItemStack> inputs;
 	private final ItemStack output;
 	private final FluidStack creosote;
+
 	public CokeOvenRecipeWrapper(CokeOvenRecipe recipe)
 	{
 		this.inputs = (List<ItemStack>)(recipe.input instanceof List?recipe.input: Arrays.asList((ItemStack)recipe.input));
 		this.output = recipe.output;
-		this.creosote = new FluidStack(IEContent.fluidCreosote,recipe.creosoteOutput);
+		this.creosote = new FluidStack(IEContent.fluidCreosote, recipe.creosoteOutput);
 	}
 
 	@Override

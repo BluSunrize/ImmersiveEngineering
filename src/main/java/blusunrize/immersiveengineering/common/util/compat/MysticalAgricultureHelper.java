@@ -33,25 +33,26 @@ public class MysticalAgricultureHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
-		Item itemEssence = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture","crafting"));
+		Item itemEssence = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture", "crafting"));
 		if(itemEssence!=null)
-			for(int i=1; i<=5; i++)
+			for(int i = 1; i <= 5; i++)
 			{
-				Item itemSeeds = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture","tier"+i+"_inferium_seeds"));
-				Block blockCrop = Block.REGISTRY.getObject(new ResourceLocation("mysticalagriculture","tier"+i+"_inferium_crop"));
+				Item itemSeeds = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture", "tier"+i+"_inferium_seeds"));
+				Block blockCrop = Block.REGISTRY.getObject(new ResourceLocation("mysticalagriculture", "tier"+i+"_inferium_crop"));
 				if(itemSeeds!=null&&blockCrop!=null)
-					BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemEssence,i)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
+					BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemEssence, i)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 			}
 
 		try
 		{
 			Class c_Types = Class.forName("com.blakebr0.mysticalagriculture.lib.CropType$Type");
 			Method m_isEnabled = c_Types.getMethod("isEnabled");
-			if(c_Types!=null && m_isEnabled!=null)
+			if(c_Types!=null&&m_isEnabled!=null)
 				for(Object type : c_Types.getEnumConstants())
 					if((Boolean)m_isEnabled.invoke(type))
 						addType(((IStringSerializable)type).getName());
-		}catch(Exception e){
+		} catch(Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -61,7 +62,7 @@ public class MysticalAgricultureHelper extends IECompatModule
 		Item itemSeeds = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture:"+type+"_seeds"));
 		Item itemEssence = Item.REGISTRY.getObject(new ResourceLocation("mysticalagriculture:"+type+"_essence"));
 		Block blockCrop = Block.REGISTRY.getObject(new ResourceLocation("mysticalagriculture:"+type+"_crop"));
-		if(itemSeeds!=null && itemEssence!=null && blockCrop!=null)
+		if(itemSeeds!=null&&itemEssence!=null&&blockCrop!=null)
 			BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemEssence)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 	}
 }

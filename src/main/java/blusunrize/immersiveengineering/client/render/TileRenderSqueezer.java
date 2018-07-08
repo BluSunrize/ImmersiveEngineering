@@ -26,30 +26,30 @@ public class TileRenderSqueezer extends TileEntitySpecialRenderer<TileEntitySque
 	@Override
 	public void render(TileEntitySqueezer te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
-		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
-		
+
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock() != IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
-		
+
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
-		
+
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
 		if(te.mirrored)
-			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1:1,1,te.facing.getFrontOffsetZ()==0?-1:1);
-		
+			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1: 1, 1, te.facing.getFrontOffsetZ()==0?-1: 1);
+
 		float piston = te.animation_piston;
 		//Smoothstep!
-		piston = piston * piston * (3.0f - 2.0f * piston);
+		piston = piston*piston*(3.0f-2.0f*piston);
 
 //		float shift[] = new float[te.processQueue.size()];
 //		for(int i=0; i<shift.length; i++)
@@ -73,7 +73,7 @@ public class TileRenderSqueezer extends TileEntitySpecialRenderer<TileEntitySque
 //					else
 //						piston = 1 - (fProcess-.53125f)/.03125f;
 //		}
-		GlStateManager.translate(0,piston,0);
+		GlStateManager.translate(0, piston, 0);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
@@ -84,13 +84,13 @@ public class TileRenderSqueezer extends TileEntitySpecialRenderer<TileEntitySque
 		else
 			GlStateManager.shadeModel(7424);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation( -.5-blockPos.getX(), -.5- blockPos.getY(),  -.5-blockPos.getZ());
+		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
-		
+
 		GlStateManager.popMatrix();
 	}
 }

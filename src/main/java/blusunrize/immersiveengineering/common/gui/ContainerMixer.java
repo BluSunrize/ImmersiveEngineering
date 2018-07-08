@@ -27,14 +27,14 @@ public class ContainerMixer extends ContainerIEBase<TileEntityMixer> implements 
 		super(inventoryPlayer, tile);
 
 		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		for(int i=0; i<8; i++)
-			this.addSlotToContainer(new IESlot.ContainerCallback(this, inv, i, 7+(i%2)*21,7+(i/2)*18));
-		slotCount=8;
+		for(int i = 0; i < 8; i++)
+			this.addSlotToContainer(new IESlot.ContainerCallback(this, inv, i, 7+(i%2)*21, 7+(i/2)*18));
+		slotCount = 8;
 
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 86+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 144));
 	}
 
@@ -48,6 +48,7 @@ public class ContainerMixer extends ContainerIEBase<TileEntityMixer> implements 
 						return false;
 		return true;
 	}
+
 	@Override
 	public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject)
 	{

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.InventoryCrafting;
@@ -41,20 +40,20 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
 		int[] relevant = getRelevantStacks(inv);
-		if (relevant == null)
+		if(relevant==null)
 			return ItemStack.EMPTY;
 
 		ItemStack first = inv.getStackInSlot(relevant[0]);
 		ItemStack second = inv.getStackInSlot(relevant[1]);
-		IItemDamageableIE firstDamage = (IItemDamageableIE) first.getItem();
-		IItemDamageableIE secondDamage = (IItemDamageableIE) second.getItem();
+		IItemDamageableIE firstDamage = (IItemDamageableIE)first.getItem();
+		IItemDamageableIE secondDamage = (IItemDamageableIE)second.getItem();
 
-		int j = firstDamage.getMaxDamageIE(first) - firstDamage.getItemDamageIE(first);
-		int k = firstDamage.getMaxDamageIE(first) - secondDamage.getItemDamageIE(second);
-		int l = j + k + firstDamage.getMaxDamageIE(first) * 5 / 100;
-		int i1 = firstDamage.getMaxDamageIE(first) - l;
+		int j = firstDamage.getMaxDamageIE(first)-firstDamage.getItemDamageIE(first);
+		int k = firstDamage.getMaxDamageIE(first)-secondDamage.getItemDamageIE(second);
+		int l = j+k+firstDamage.getMaxDamageIE(first)*5/100;
+		int i1 = firstDamage.getMaxDamageIE(first)-l;
 
-		if (i1 < 0)
+		if(i1 < 0)
 			i1 = 0;
 
 		ItemStack ret = new ItemStack(first.getItem(), 1, first.getMetadata());
@@ -68,7 +67,7 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 	{
 		NonNullList<ItemStack> ret = super.getRemainingItems(inv);
 		int[] relevantStacks = getRelevantStacks(inv);
-		if (relevantStacks!=null)
+		if(relevantStacks!=null)
 		{
 			ret.set(relevantStacks[0], ItemStack.EMPTY);
 			ret.set(relevantStacks[1], ItemStack.EMPTY);
@@ -81,22 +80,22 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 	{
 		int[] ret = new int[2];
 		int indexInRet = 0;
-		for (int i = 0; i < inv.getSizeInventory(); ++i)
+		for(int i = 0; i < inv.getSizeInventory(); ++i)
 		{
 			ItemStack curr = inv.getStackInSlot(i);
 
-			if (tool.apply(curr) && curr.getItem() instanceof IItemDamageableIE)
+			if(tool.apply(curr)&&curr.getItem() instanceof IItemDamageableIE)
 			{
-				if (indexInRet>1)
+				if(indexInRet > 1)
 					return null;
 
 				ret[indexInRet] = i;
 
 				indexInRet++;
 			}
-			else if (!curr.isEmpty())
+			else if(!curr.isEmpty())
 				return null;
 		}
-		return indexInRet==2?ret:null;
+		return indexInRet==2?ret: null;
 	}
 }

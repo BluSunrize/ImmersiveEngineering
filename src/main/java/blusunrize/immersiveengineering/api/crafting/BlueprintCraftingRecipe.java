@@ -51,7 +51,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.blueprintCategory = blueprintCategory;
 		this.output = output;
 		this.inputs = new IngredientStack[inputs.length];
-		for(int io=0; io<inputs.length; io++)
+		for(int io = 0; io < inputs.length; io++)
 			this.inputs[io] = ApiUtils.createIngredientStack(inputs[io]);
 
 		this.inputList = Lists.newArrayList(this.inputs);
@@ -64,7 +64,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static ItemStack getTypedBlueprint(String type)
 	{
-		ItemStack stack = new ItemStack(itemBlueprint,1,0);
+		ItemStack stack = new ItemStack(itemBlueprint, 1, 0);
 		ItemNBTHelper.setString(stack, "blueprint", type);
 		return stack;
 	}
@@ -128,8 +128,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		//		}
 		//		if(inputList.isEmpty())
 		//			return true;
-		return getMaxCrafted(query)>0;
+		return getMaxCrafted(query) > 0;
 	}
+
 	public int getMaxCrafted(NonNullList<ItemStack> query)
 	{
 		HashMap<ItemStack, Integer> queryAmount = new HashMap<ItemStack, Integer>();
@@ -163,19 +164,19 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 				if(ingr.matchesItemStackIgnoringSize(compStack))
 				{
 					int taken = e.getValue()/req;
-					if(taken>0)
+					if(taken > 0)
 					{
 						e.setValue(e.getValue()-taken*req);
-						if(e.getValue()<=0)
+						if(e.getValue() <= 0)
 							queryIt.remove();
 						supplied += taken;
 					}
 				}
 			}
-			if(supplied<=0)
+			if(supplied <= 0)
 				return 0;
 			else
-				maxCrafted = maxCrafted==0?supplied:Math.min(maxCrafted, supplied);
+				maxCrafted = maxCrafted==0?supplied: Math.min(maxCrafted, supplied);
 		}
 		return maxCrafted;
 	}
@@ -194,7 +195,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			IngredientStack ingr = inputIt.next();
 			int inputSize = ingr.inputSize*crafted;
 
-			for(int i = 0; i< query.size(); i++)
+			for(int i = 0; i < query.size(); i++)
 			{
 				ItemStack queryStack = query.get(i);
 				if(!queryStack.isEmpty())
@@ -202,7 +203,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 					{
 						int taken = Math.min(queryStack.getCount(), inputSize);
 						consumed.add(ApiUtils.copyStackWithAmount(queryStack, taken));
-						if(taken>=queryStack.getCount() && queryStack.getItem().hasContainerItem(queryStack))
+						if(taken >= queryStack.getCount()&&queryStack.getItem().hasContainerItem(queryStack))
 							query.set(i, queryStack.getItem().getContainerItem(queryStack));
 						else
 							queryStack.shrink(taken);
@@ -218,6 +219,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		}
 		return consumed;
 	}
+
 	public ArrayList<IngredientStack> getFormattedInputs()
 	{
 		ArrayList<IngredientStack> formattedInputs = new ArrayList<IngredientStack>();
@@ -227,20 +229,20 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 				boolean isNew = true;
 				for(IngredientStack formatted : formattedInputs)
 				{
-					if(ingr.oreName!=null && ingr.oreName.equals(formatted.oreName))
-						isNew=false;
-					else if(ingr.stackList!=null && formatted.stackList!=null)
+					if(ingr.oreName!=null&&ingr.oreName.equals(formatted.oreName))
+						isNew = false;
+					else if(ingr.stackList!=null&&formatted.stackList!=null)
 					{
 						for(ItemStack iStack : ingr.stackList)
 							for(ItemStack iStack2 : formatted.stackList)
 								if(OreDictionary.itemMatches(iStack, iStack2, false))
 								{
-									isNew=false;
+									isNew = false;
 									break;
 								}
 					}
-					else if(!ingr.stack.isEmpty() && OreDictionary.itemMatches(ingr.stack, formatted.stack, false))
-						isNew=false;
+					else if(!ingr.stack.isEmpty()&&OreDictionary.itemMatches(ingr.stack, formatted.stack, false))
+						isNew = false;
 					if(!isNew)
 						formatted.inputSize += ingr.inputSize;
 				}
@@ -263,6 +265,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		if(!blueprintCategories.contains(blueprintCategory))
 			blueprintCategories.add(blueprintCategory);
 	}
+
 	public static BlueprintCraftingRecipe[] findRecipes(String blueprintCategory)
 	{
 		if(recipeList.containsKey(blueprintCategory))
@@ -286,6 +289,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	{
 		return 0;
 	}
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
@@ -296,20 +300,21 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		nbt.setString("blueprintCategory", this.blueprintCategory);
 		return nbt;
 	}
+
 	public static BlueprintCraftingRecipe loadFromNBT(NBTTagCompound nbt)
 	{
 		NBTTagList list = nbt.getTagList("inputs", 10);
 		IngredientStack[] inputs = new IngredientStack[list.tagCount()];
-		for(int i=0; i<inputs.length; i++)
+		for(int i = 0; i < inputs.length; i++)
 			inputs[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
 
 		List<BlueprintCraftingRecipe> recipeList = BlueprintCraftingRecipe.recipeList.get(nbt.getString("blueprintCategory"));
 		for(BlueprintCraftingRecipe recipe : recipeList)
 		{
 			boolean b = false;
-			for(int i=0; i<inputs.length; i++)
+			for(int i = 0; i < inputs.length; i++)
 			{
-				for(int j=0; j<recipe.inputs.length; j++)
+				for(int j = 0; j < recipe.inputs.length; j++)
 					if(recipe.inputs[j].matches(inputs[i]))
 					{
 						b = true;

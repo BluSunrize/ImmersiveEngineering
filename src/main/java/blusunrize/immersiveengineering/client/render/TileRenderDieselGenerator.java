@@ -26,13 +26,13 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer<TileEnt
 	@Override
 	public void render(TileEntityDieselGenerator te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
-		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
-		
+
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock() != IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
@@ -40,15 +40,15 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer<TileEnt
 
 //		boolean b = te.getEnergyStored(null)>0 && !te.isRSDisabled() && !te.processQueue.isEmpty();
 //		float angle = te.animation_barrelRotation+(b?18*partialTicks:0);
-		
+
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
-		
+
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		GlStateManager.translate(.5, .6875, .5);
-		
+
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
@@ -62,16 +62,16 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer<TileEnt
 //		float angle = ClientUtils.mc().player.ticksExisted%100/100f;
 //		GlStateManager.rotate(angle*360, te.facing.getFrontOffsetX(), 0, te.facing.getFrontOffsetZ());
 		GlStateManager.rotate(te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), te.facing.getFrontOffsetX(), 0, te.facing.getFrontOffsetZ());
-		
+
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation( -.5-blockPos.getX(), - blockPos.getY(),  -.5-blockPos.getZ());
+		worldRenderer.setTranslation(-.5-blockPos.getX(), -blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer,true);
+		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
-		
+
 		RenderHelper.enableStandardItemLighting();
-		
+
 		GlStateManager.popMatrix();
 	}
 }

@@ -57,8 +57,9 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 	@Override
 	public boolean matches(ItemStack mold, ItemStack input)
 	{
-		return input.getCount()>=this.totalAmount && getOutputCached(input)!=null;
+		return input.getCount() >= this.totalAmount&&getOutputCached(input)!=null;
 	}
+
 	@Override
 	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input)
 	{
@@ -68,11 +69,13 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 	public static class PackedDelegate extends MetalPressRecipe
 	{
 		private final ComparableItemStack mapKey;
+
 		public PackedDelegate(ComparableItemStack mapKey, ItemStack output, Object input, ComparableItemStack mold, int energy)
 		{
 			super(output, input, mold, energy);
 			this.mapKey = mapKey;
 		}
+
 		@Override
 		public boolean listInJEI()
 		{

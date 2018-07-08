@@ -319,7 +319,7 @@ public class IEContent
 		itemPowerpack = new ItemPowerpack();
 		itemShield = new ItemIEShield();
 
-		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky")
+		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky", "drillbreak")
 		{
 			@Override
 			public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)

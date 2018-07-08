@@ -26,15 +26,17 @@ public class RailgunHandler
 		projectilePropertyMap.add(Pair.of(stack, properties));
 		return properties;
 	}
+
 	public static RailgunProjectileProperties registerProjectileProperties(ItemStack stack, double damage, double gravity)
 	{
 		return registerProjectileProperties(ApiUtils.createIngredientStack(stack), damage, gravity);
 	}
+
 	public static RailgunProjectileProperties getProjectileProperties(ItemStack stack)
 	{
 		for(Pair<IngredientStack, RailgunProjectileProperties> pair : projectilePropertyMap)
-		if(pair.getLeft().matchesItemStack(stack))
-			return pair.getRight();
+			if(pair.getLeft().matchesItemStack(stack))
+				return pair.getRight();
 		return null;
 	}
 
@@ -42,7 +44,8 @@ public class RailgunHandler
 	{
 		public double damage;
 		public double gravity;
-		public int[][] colourMap = {{0x686868,0xa4a4a4,0xa4a4a4,0xa4a4a4,0x686868}};
+		public int[][] colourMap = {{0x686868, 0xa4a4a4, 0xa4a4a4, 0xa4a4a4, 0x686868}};
+
 		public RailgunProjectileProperties(double damage, double gravity)
 		{
 			this.damage = damage;
@@ -54,7 +57,7 @@ public class RailgunHandler
 			this.colourMap = map;
 			return this;
 		}
-		
+
 		/**
 		 * @return true to cancel normal damage application
 		 */

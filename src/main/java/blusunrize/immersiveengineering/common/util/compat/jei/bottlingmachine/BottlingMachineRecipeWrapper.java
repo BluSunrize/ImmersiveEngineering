@@ -27,9 +27,9 @@ public class BottlingMachineRecipeWrapper extends MultiblockRecipeWrapper
 	{
 		GlStateManager.pushMatrix();
 
-		ClientUtils.drawSlot(1,13,16,16);
-		ClientUtils.drawSlot(101,13,16,16);
-		ClientUtils.drawSlot(75,15, 16,48);
+		ClientUtils.drawSlot(1, 13, 16, 16);
+		ClientUtils.drawSlot(101, 13, 16, 16);
+		ClientUtils.drawSlot(75, 15, 16, 48);
 
 		ClientUtils.bindAtlas();
 		GlStateManager.translate(45F, 20F, 16.5F);

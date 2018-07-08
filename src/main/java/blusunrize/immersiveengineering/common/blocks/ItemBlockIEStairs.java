@@ -29,16 +29,18 @@ public class ItemBlockIEStairs extends ItemBlock
 	}
 
 	@Override
-	public int getMetadata (int damageValue)
+	public int getMetadata(int damageValue)
 	{
 		return damageValue;
 	}
+
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList)
 	{
 		if(this.isInCreativeTab(tab))
 			this.block.getSubBlocks(tab, itemList);
 	}
+
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{

@@ -136,9 +136,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-	    if(event.side.isClient()&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
-	    {
-	    	if(event.phase==Phase.START)
+		if(event.side.isClient()&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
+		{
+			if(event.phase==Phase.START)
 			{
 				skyhookGrabableConnections.clear();
 				EntityPlayer player = event.player;
@@ -1265,7 +1265,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 
 			tessellator.getBuffer().setTranslation(-px, -py, -pz);
 			ParticleFractal part;
-			while((part = ParticleFractal.PARTICLE_FRACTAL_DEQUE.pollFirst()) != null)
+			while((part = ParticleFractal.PARTICLE_FRACTAL_DEQUE.pollFirst())!=null)
 				part.render(tessellator, tessellator.getBuffer(), partial);
 			tessellator.getBuffer().setTranslation(0, 0, 0);
 

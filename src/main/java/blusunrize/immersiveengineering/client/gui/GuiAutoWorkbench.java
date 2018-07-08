@@ -29,11 +29,12 @@ import java.util.ArrayList;
 public class GuiAutoWorkbench extends GuiIEContainerBase
 {
 	TileEntityAutoWorkbench tile;
-	public GuiAutoWorkbench(InventoryPlayer inventoryPlayer, TileEntityAutoWorkbench tile )
+
+	public GuiAutoWorkbench(InventoryPlayer inventoryPlayer, TileEntityAutoWorkbench tile)
 	{
 		super(new ContainerAutoWorkbench(inventoryPlayer, tile));
 		this.tile = tile;
-		this.ySize=184;
+		this.ySize = 184;
 	}
 
 	@Override
@@ -42,18 +43,18 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 		this.buttonList.clear();
 		super.initGui();
 		Slot s = inventorySlots.getSlot(0);
-		if(s!=null && s.getHasStack() && s.getStack().getItem() instanceof ItemEngineersBlueprint)
+		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof ItemEngineersBlueprint)
 		{
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(s.getStack(),"blueprint"));
-			if(recipes!=null && recipes.length>0)
+			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(s.getStack(), "blueprint"));
+			if(recipes!=null&&recipes.length > 0)
 			{
 				int l = recipes.length;
 				int xx = guiLeft+121;
-				int yy = guiTop+(l>6?59-(l-3)/3*18: l>3?59: 68);
-				for(int i=0; i<l; i++)
-					if(recipes[i]!=null && !recipes[i].output.isEmpty())
+				int yy = guiTop+(l > 6?59-(l-3)/3*18: l > 3?59: 68);
+				for(int i = 0; i < l; i++)
+					if(recipes[i]!=null&&!recipes[i].output.isEmpty())
 					{
-						this.buttonList.add(new GuiButtonItem(i, xx+(i%3)*18,yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe));
+						this.buttonList.add(new GuiButtonItem(i, xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe));
 					}
 			}
 //			ItemStack stack = s.getStack();
@@ -80,13 +81,14 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 			else
 				tile.selectedRecipe = button.id;
 			NBTTagCompound message = new NBTTagCompound();
-			message.setInteger("recipe",tile.selectedRecipe);
+			message.setInteger("recipe", tile.selectedRecipe);
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.tile, message));
 			initGui();
 		}
 	}
 
 	NBTTagCompound lastMessage;
+
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state)
 	{
@@ -120,12 +122,12 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 		super.drawScreen(mx, my, partial);
 
 		ArrayList<String> tooltip = new ArrayList<String>();
-		if(mx>guiLeft+80&&mx<guiLeft+87 && my>guiTop+36&&my<guiTop+82)
+		if(mx > guiLeft+80&&mx < guiLeft+87&&my > guiTop+36&&my < guiTop+82)
 			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -136,10 +138,10 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
-		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+80,guiTop+36+(46-stored), guiLeft+87,guiTop+82, 0xffb51500, 0xff600b00);
+		ClientUtils.drawGradientRect(guiLeft+80, guiTop+36+(46-stored), guiLeft+87, guiTop+82, 0xffb51500, 0xff600b00);
 
 //		for(int i=0; i<((ContainerAutoWorkbench)inventorySlots).slotCount; i++)
 //		{

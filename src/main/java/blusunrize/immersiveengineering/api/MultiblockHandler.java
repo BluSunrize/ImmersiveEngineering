@@ -37,6 +37,7 @@ public class MultiblockHandler
 	{
 		multiblocks.add(multiblock);
 	}
+
 	public static ArrayList<IMultiblock> getMultiblocks()
 	{
 		return multiblocks;
@@ -49,7 +50,7 @@ public class MultiblockHandler
 		 * returns name of the Multiblock. This is used for the interdiction NBT system on the hammer, so this name /must/ be unique.
 		 */
 		String getUniqueName();
-		
+
 		/**
 		 * Check whether the given block can be used to trigger the structure creation of the multiblock.<br>
 		 * Basically, a less resource-intensive preliminary check to avoid checking every structure.
@@ -58,6 +59,7 @@ public class MultiblockHandler
 
 		/**
 		 * This method checks the structure and sets the new one.
+		 *
 		 * @return if the structure was valid and transformed
 		 */
 		boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player);
@@ -69,16 +71,16 @@ public class MultiblockHandler
 
 		default IBlockState getBlockstateFromStack(int index, ItemStack stack)
 		{
-			if(!stack.isEmpty() && stack.getItem() instanceof ItemBlock)
+			if(!stack.isEmpty()&&stack.getItem() instanceof ItemBlock)
 				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 			return null;
 		}
-		
+
 		/**
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
 		 */
 		IngredientStack[] getTotalMaterials();
-		
+
 		/**
 		 * Use this to overwrite the rendering of a Multiblock's Component
 		 */
@@ -89,12 +91,13 @@ public class MultiblockHandler
 		 * returns the scale modifier to be applied when rendering the structure in the IE manual
 		 */
 		float getManualScale();
-		
+
 		/**
 		 * returns true to add a button that will switch between the assembly of multiblocks and the finished render
 		 */
 		@SideOnly(Side.CLIENT)
 		boolean canRenderFormedStructure();
+
 		/**
 		 * use this function to render the complete multiblock
 		 */
@@ -119,6 +122,7 @@ public class MultiblockHandler
 		private final IMultiblock multiblock;
 		private final BlockPos clickedBlock;
 		private final ItemStack hammer;
+
 		public MultiblockFormEvent(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
 		{
 			super(player);
@@ -131,10 +135,12 @@ public class MultiblockHandler
 		{
 			return multiblock;
 		}
+
 		public BlockPos getClickedBlock()
 		{
 			return clickedBlock;
 		}
+
 		public ItemStack getHammer()
 		{
 			return hammer;

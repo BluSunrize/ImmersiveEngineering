@@ -20,17 +20,19 @@ public enum BlockTypes_Ore implements IStringSerializable, BlockIEBase.IBlockEnu
 	SILVER,
 	NICKEL,
 	URANIUM;
-	
+
 	@Override
 	public String getName()
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

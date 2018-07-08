@@ -38,7 +38,9 @@ public abstract class TileEntityIEBase extends TileEntity
 		super.readFromNBT(nbt);
 		this.readCustomNBT(nbt, false);
 	}
+
 	public abstract void readCustomNBT(NBTTagCompound nbt, boolean descPacket);
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
@@ -46,6 +48,7 @@ public abstract class TileEntityIEBase extends TileEntity
 		this.writeCustomNBT(nbt, false);
 		return nbt;
 	}
+
 	public abstract void writeCustomNBT(NBTTagCompound nbt, boolean descPacket);
 
 	@Override
@@ -55,6 +58,7 @@ public abstract class TileEntityIEBase extends TileEntity
 		this.writeCustomNBT(nbttagcompound, true);
 		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
 	}
+
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
@@ -62,6 +66,7 @@ public abstract class TileEntityIEBase extends TileEntity
 		writeCustomNBT(nbt, true);
 		return nbt;
 	}
+
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
@@ -72,7 +77,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public void rotate(Rotation rot)
 	{
-		if(rot!=Rotation.NONE && this instanceof IDirectionalTile && ((IDirectionalTile)this).canRotate(EnumFacing.UP))
+		if(rot!=Rotation.NONE&&this instanceof IDirectionalTile&&((IDirectionalTile)this).canRotate(EnumFacing.UP))
 		{
 			EnumFacing f = ((IDirectionalTile)this).getFacing();
 			switch(rot)
@@ -97,7 +102,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public void mirror(Mirror mirrorIn)
 	{
-		if(mirrorIn==Mirror.FRONT_BACK && this instanceof IDirectionalTile)
+		if(mirrorIn==Mirror.FRONT_BACK&&this instanceof IDirectionalTile)
 		{
 			((IDirectionalTile)this).setFacing(((IDirectionalTile)this).getFacing());
 			this.markDirty();
@@ -110,6 +115,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
 	}
+
 	public void receiveMessageFromServer(NBTTagCompound message)
 	{
 	}
@@ -117,44 +123,48 @@ public abstract class TileEntityIEBase extends TileEntity
 	public void onEntityCollision(World world, Entity entity)
 	{
 	}
+
 	@Override
 	public boolean receiveClientEvent(int id, int type)
 	{
-		if(id == 0 || id == 255)
+		if(id==0||id==255)
 		{
 			markContainingBlockForUpdate(null);
 			return true;
-		} else if(id == 254)
+		}
+		else if(id==254)
 		{
 			IBlockState state = world.getBlockState(pos);
 			if(state instanceof IExtendedBlockState)
-				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState) state);
+				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState)state);
 			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}
 		return super.receiveClientEvent(id, type);
 	}
+
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
 	{
-		if (world.isBlockLoaded(pos))
+		if(world.isBlockLoaded(pos))
 			newState = world.getBlockState(pos);
-		if (oldState.getBlock()!=newState.getBlock()||!(oldState.getBlock() instanceof BlockIEBase)||!(newState.getBlock() instanceof BlockIEBase))
+		if(oldState.getBlock()!=newState.getBlock()||!(oldState.getBlock() instanceof BlockIEBase)||!(newState.getBlock() instanceof BlockIEBase))
 			return true;
 		IProperty type = ((BlockIEBase)oldState.getBlock()).getMetaProperty();
-		return oldState.getValue(type) != newState.getValue(type);
+		return oldState.getValue(type)!=newState.getValue(type);
 	}
 
 	public void markContainingBlockForUpdate(@Nullable IBlockState newState)
 	{
 		markBlockForUpdate(getPos(), newState);
 	}
+
 	public void markBlockForUpdate(BlockPos pos, @Nullable IBlockState newState)
 	{
 		IBlockState state = world.getBlockState(pos);
 		if(newState==null)
 			newState = state;
-		world.notifyBlockUpdate(pos,state,newState,3);
+		world.notifyBlockUpdate(pos, state, newState, 3);
 		world.notifyNeighborsOfStateChange(pos, newState.getBlock(), true);
 	}
 
@@ -162,21 +172,23 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxConnector)
+		if(capability==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
 			return ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing)!=null;
 		return super.hasCapability(capability, facing);
 	}
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxConnector)
+		if(capability==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
 			return (T)((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing);
 		return super.getCapability(capability, facing);
 	}
+
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		return super.getMaxRenderDistanceSquared() *
-				Config.IEConfig.increasedTileRenderdistance * Config.IEConfig.increasedTileRenderdistance;
+		return super.getMaxRenderDistanceSquared()*
+				Config.IEConfig.increasedTileRenderdistance*Config.IEConfig.increasedTileRenderdistance;
 	}
 }

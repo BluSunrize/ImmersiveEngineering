@@ -18,6 +18,7 @@ public class ShaderCaseItem extends ShaderCase
 	{
 		super(layers);
 	}
+
 	public ShaderCaseItem(Collection<ShaderLayer> layers)
 	{
 		super(layers);

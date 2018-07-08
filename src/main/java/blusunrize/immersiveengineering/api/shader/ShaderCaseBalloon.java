@@ -18,6 +18,7 @@ public class ShaderCaseBalloon extends ShaderCase
 	{
 		super(layers);
 	}
+
 	public ShaderCaseBalloon(Collection<ShaderLayer> layers)
 	{
 		super(layers);

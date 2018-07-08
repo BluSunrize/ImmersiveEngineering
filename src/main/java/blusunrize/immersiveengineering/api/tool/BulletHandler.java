@@ -26,8 +26,8 @@ import java.util.function.Function;
 
 /**
  * @author BluSunrize - 12.08.2016
- *         <p>
- *         A registry for custom bullet types
+ * <p>
+ * A registry for custom bullet types
  */
 public class BulletHandler
 {
@@ -45,11 +45,13 @@ public class BulletHandler
 	{
 		registry.put(name, bullet);
 	}
+
 	public static IBullet getBullet(String name)
 	{
 		name = BulletHandler.handleLeagcyNames(name);
 		return registry.get(name);
 	}
+
 	public static String findRegistryName(IBullet bullet)
 	{
 		if(bullet!=null)
@@ -70,9 +72,9 @@ public class BulletHandler
 
 	public static String handleLeagcyNames(final String key)
 	{
-		if (key.equals("armorPiercing"))
+		if(key.equals("armorPiercing"))
 			return "armor_piercing";
-		if (key.equals("HE"))
+		if(key.equals("HE"))
 			return "he";
 		return key;
 	}
@@ -105,7 +107,7 @@ public class BulletHandler
 		 * @param shooter
 		 * @param cartridge
 		 * @param projectile
-		 * @param charged   whether the revolver has the electron tube upgrade
+		 * @param charged    whether the revolver has the electron tube upgrade
 		 * @return the given or a custom entity
 		 */
 		default Entity getProjectile(@Nullable EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean charged)
@@ -180,13 +182,13 @@ public class BulletHandler
 
 		float getDamage(boolean headshot)
 		{
-			return this.damage * (headshot ? 1.5f : 1f);
+			return this.damage*(headshot?1.5f: 1f);
 		}
 
 		@Override
 		public void onHitTarget(World world, RayTraceResult target, @Nullable EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
-			if(!world.isRemote && target.entityHit != null && damageSourceGetter != null)
+			if(!world.isRemote&&target.entityHit!=null&&damageSourceGetter!=null)
 				if(target.entityHit.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entityHit}), getDamage(headshot)))
 				{
 					if(resetHurt)

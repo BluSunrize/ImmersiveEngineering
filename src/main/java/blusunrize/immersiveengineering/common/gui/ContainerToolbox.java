@@ -27,22 +27,22 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 	@Override
 	int addSlots(InventoryPlayer iinventory)
 	{
-		int i=0;
+		int i = 0;
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 48, 24));
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 30, 42));
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 48, 42));
 
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 75, 24));
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 93, 24));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++,111, 24));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 111, 24));
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 75, 42));
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 93, 42));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++,111, 42));
-		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++,129, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 111, 42));
+		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 129, 42));
 
-		for(int j=0; j<6; j++)
+		for(int j = 0; j < 6; j++)
 			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 35+j*18, 77));
-		for(int j=0; j<7; j++)
+		for(int j = 0; j < 7; j++)
 			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 26+j*18, 112));
 
 		bindPlayerInventory(iinventory);
@@ -56,27 +56,29 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 			return false;
 		if(!IEApi.isAllowedInCrate(stack))
 			return false;
-		if(slotNumer<3)
+		if(slotNumer < 3)
 			return ToolboxHandler.isFood(stack);
-		else if(slotNumer<10)
+		else if(slotNumer < 10)
 			return ToolboxHandler.isTool(stack);
-		else if(slotNumer<16)
+		else if(slotNumer < 16)
 			return ToolboxHandler.isWiring(stack, world);
 		else
 			return true;
 	}
+
 	@Override
 	public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject)
 	{
 		return true;
 	}
 
-	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer)
+	{
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				this.addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 157+i*18));
 
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 215));
 	}
 }

@@ -29,11 +29,13 @@ public class MessageShaderManual implements IMessage
 {
 	MessageType key;
 	String[] args;
+
 	public MessageShaderManual(MessageType key, String... args)
 	{
 		this.key = key;
 		this.args = args;
 	}
+
 	public MessageShaderManual()
 	{
 	}
@@ -44,7 +46,7 @@ public class MessageShaderManual implements IMessage
 		this.key = MessageType.values()[buf.readInt()];
 		int l = buf.readInt();
 		args = new String[l];
-		for(int i=0; i<l; i++)
+		for(int i = 0; i < l; i++)
 			args[i] = ByteBufUtils.readUTF8String(buf);
 	}
 
@@ -81,20 +83,20 @@ public class MessageShaderManual implements IMessage
 				{
 					Collection<String> received = ShaderRegistry.receivedShaders.get(playerName);
 					String[] ss = received.toArray(new String[received.size()]);
-					ImmersiveEngineering.packetHandler.sendTo(new MessageShaderManual(MessageType.SYNC,ss), player);
+					ImmersiveEngineering.packetHandler.sendTo(new MessageShaderManual(MessageType.SYNC, ss), player);
 				}
-				else if(message.key==MessageType.UNLOCK && message.args.length>0)
+				else if(message.key==MessageType.UNLOCK&&message.args.length > 0)
 				{
 					ShaderRegistry.receivedShaders.put(playerName, message.args[0]);
 				}
-				else if(message.key==MessageType.SPAWN && message.args.length>0)
+				else if(message.key==MessageType.SPAWN&&message.args.length > 0)
 				{
 					if(!player.capabilities.isCreativeMode)
 						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(playerName).replicationCost);
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
 					ItemNBTHelper.setString(shaderStack, "shader_name", message.args[0]);
 					EntityItem entityitem = player.dropItem(shaderStack, false);
-					if(entityitem != null)
+					if(entityitem!=null)
 					{
 						entityitem.setNoPickupDelay();
 						entityitem.setOwner(player.getName());
@@ -104,6 +106,7 @@ public class MessageShaderManual implements IMessage
 			return null;
 		}
 	}
+
 	public static class HandlerClient implements IMessageHandler<MessageShaderManual, IMessage>
 	{
 		@Override
@@ -113,7 +116,7 @@ public class MessageShaderManual implements IMessage
 				if(message.key==MessageType.SYNC)
 				{
 					String name = ClientUtils.mc().player.getName();
-					for (String shader : message.args)
+					for(String shader : message.args)
 						if(shader!=null)
 							ShaderRegistry.receivedShaders.put(name, shader);
 				}

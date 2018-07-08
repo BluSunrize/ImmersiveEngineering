@@ -28,17 +28,17 @@ public class ArcFurnace
 	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives, @Optional String specialRecipeType)
 	{
 		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput == null)
+		if(oInput==null)
 			return;
 		Object[] adds = null;
-		if(additives != null)
+		if(additives!=null)
 		{
 			adds = new Object[additives.length];
 			for(int i = 0; i < additives.length; i++)
 				adds[i] = CraftTweakerHelper.toObject(additives[i]);
 		}
 		ArcFurnaceRecipe r = new ArcFurnaceRecipe(CraftTweakerHelper.toStack(output), oInput, CraftTweakerHelper.toStack(slag), time, energyPerTick, adds);
-		if(specialRecipeType != null)
+		if(specialRecipeType!=null)
 			r.setSpecialRecipeType(specialRecipeType);
 		CraftTweakerAPI.apply(new Add(r));
 	}
@@ -62,7 +62,7 @@ public class ArcFurnace
 		@Override
 		public String describe()
 		{
-			return "Adding ArcFurnace Recipe for " + recipe.output.getDisplayName();
+			return "Adding ArcFurnace Recipe for "+recipe.output.getDisplayName();
 		}
 	}
 
@@ -93,7 +93,7 @@ public class ArcFurnace
 		@Override
 		public String describe()
 		{
-			return "Removing ArcFurnace Recipe for " + output.getDisplayName();
+			return "Removing ArcFurnace Recipe for "+output.getDisplayName();
 		}
 	}
 }

@@ -39,36 +39,37 @@ import java.util.List;
 public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityBucketWheel>
 {
 	private static IBakedModel model = null;
+
 	@Override
 	public void render(TileEntityBucketWheel tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
-		if(!tile.formed || !tile.getWorld().isBlockLoaded(tile.getPos(), false) || tile.isDummy())
+		if(!tile.formed||!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.isDummy())
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-		if(state.getBlock() != IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
-		if (model==null)
+		if(model==null)
 		{
 			state = state.withProperty(IEProperties.DYNAMICRENDER, true);
 			state = state.withProperty(IEProperties.FACING_HORIZONTAL, EnumFacing.NORTH);
 			model = blockRenderer.getModelForState(state);
 		}
 		OBJState objState = null;
-		HashMap<String,String> texMap = new HashMap<>();
+		HashMap<String, String> texMap = new HashMap<>();
 		if(state instanceof IExtendedBlockState)
 		{
 			ArrayList<String> list = Lists.newArrayList("bucketWheel");
-			synchronized (tile.digStacks)
+			synchronized(tile.digStacks)
 			{
-				for(int i=0; i<tile.digStacks.size(); i++)
+				for(int i = 0; i < tile.digStacks.size(); i++)
 					if(!tile.digStacks.get(i).isEmpty())
 					{
 						list.add("dig"+i);
 						Block b = Block.getBlockFromItem(tile.digStacks.get(i).getItem());
 						IBlockState digState = b!=Blocks.AIR?b.getStateFromMeta(tile.digStacks.get(i).getMetadata()): Blocks.COBBLESTONE.getDefaultState();
 						IBakedModel digModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
-						if(digModel!=null && digModel.getParticleTexture()!=null)
+						if(digModel!=null&&digModel.getParticleTexture()!=null)
 							texMap.put("dig"+i, digModel.getParticleTexture().getIconName());
 					}
 			}
@@ -78,19 +79,19 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		Tessellator tessellator = Tessellator.getInstance();
 		GlStateManager.pushMatrix();
 
-		GlStateManager.translate(x + .5, y + .5, z + .5);
+		GlStateManager.translate(x+.5, y+.5, z+.5);
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		EnumFacing facing = tile.facing;
 		if(tile.mirrored)
 		{
-			GlStateManager.scale(facing.getAxis()== Axis.X?-1:1,1,facing.getAxis()== Axis.Z?-1:1);
+			GlStateManager.scale(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
 			GlStateManager.disableCull();
 		}
-		float dir = tile.facing == EnumFacing.SOUTH ? 90 : tile.facing == EnumFacing.NORTH ? -90 : tile.facing == EnumFacing.EAST ? 180 : 0;
+		float dir = tile.facing==EnumFacing.SOUTH?90: tile.facing==EnumFacing.NORTH?-90: tile.facing==EnumFacing.EAST?180: 0;
 		GlStateManager.rotate(dir, 0, 1, 0);
-		float rot = tile.rotation + (float)(tile.active ? IEConfig.Machines.excavator_speed * partialTicks : 0);
+		float rot = tile.rotation+(float)(tile.active?IEConfig.Machines.excavator_speed*partialTicks: 0);
 		GlStateManager.rotate(rot, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();
@@ -99,8 +100,8 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
 		List<BakedQuad> quads;
-		if (model instanceof IESmartObjModel)
-			quads = ((IESmartObjModel) model).getQuads(state, null, 0, objState, texMap, true);
+		if(model instanceof IESmartObjModel)
+			quads = ((IESmartObjModel)model).getQuads(state, null, 0, objState, texMap, true);
 		else
 			quads = model.getQuads(state, null, 0);
 		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorld(), tile.getPos());

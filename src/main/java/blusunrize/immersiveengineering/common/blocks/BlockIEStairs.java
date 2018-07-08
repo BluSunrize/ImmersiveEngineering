@@ -27,7 +27,7 @@ public class BlockIEStairs extends BlockStairs
 	public String name;
 	float explosionResistance;
 	BlockRenderLayer renderLayer = BlockRenderLayer.SOLID;
-	
+
 	public BlockIEStairs(String name, IBlockState state)
 	{
 		super(state);
@@ -40,13 +40,13 @@ public class BlockIEStairs extends BlockStairs
 		IEContent.registeredIEBlocks.add(this);
 		IEContent.registeredIEItems.add(new ItemBlockIEStairs(this));
 	}
-	
+
 	public BlockIEStairs setFlammable(boolean b)
 	{
 		this.isFlammable = b;
 		return this;
 	}
-	
+
 	public BlockIEStairs setHasFlavour(boolean hasFlavour)
 	{
 		this.hasFlavour = hasFlavour;
@@ -58,6 +58,7 @@ public class BlockIEStairs extends BlockStairs
 	{
 		return explosionResistance;
 	}
+
 	public BlockIEStairs setExplosionResistance(float explosionResistance)
 	{
 		this.explosionResistance = explosionResistance;

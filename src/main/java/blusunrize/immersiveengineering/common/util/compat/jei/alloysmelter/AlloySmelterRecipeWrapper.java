@@ -22,9 +22,10 @@ public class AlloySmelterRecipeWrapper implements IRecipeWrapper
 {
 	private final List<List<ItemStack>> inputs;
 	private final ItemStack output;
+
 	public AlloySmelterRecipeWrapper(AlloyRecipe recipe)
 	{
-		this.inputs = Arrays.asList(recipe.input0.getSizedStackList(),recipe.input1.getSizedStackList());
+		this.inputs = Arrays.asList(recipe.input0.getSizedStackList(), recipe.input1.getSizedStackList());
 		this.output = recipe.output;
 	}
 

@@ -32,42 +32,46 @@ public class MultiblockDieselGenerator implements IMultiblock
 {
 	public static MultiblockDieselGenerator instance = new MultiblockDieselGenerator();
 	static ItemStack[][][] structure = new ItemStack[3][5][3];
-	static{
-		for(int h=0;h<3;h++)
-			for(int l=0;l<5;l++)
-				for(int w=0;w<3;w++)
+
+	static
+	{
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 5; l++)
+				for(int w = 0; w < 3; w++)
 				{
 					if((h==2&&l==0)||(h==2&&(l==1||l==3)&&w!=1))
 						continue;
 					if(l==4)
-						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RADIATOR.getMeta());
+						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RADIATOR.getMeta());
 					else if(h==0)
 					{
 						if(l==0&&w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.GENERATOR.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.GENERATOR.getMeta());
 						else if(l==0||w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
 						if(l==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.GENERATOR.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.GENERATOR.getMeta());
 						else if(l==2&&w==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 					}
 					else if(h==2)
-						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
+						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 				}
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
@@ -101,14 +105,16 @@ public class MultiblockDieselGenerator implements IMultiblock
 	{
 		return true;
 	}
+
 	//@SideOnly(Side.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta());
 		GlStateManager.translate(2.5, 1.5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -118,6 +124,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}
+
 	@Override
 	public float getManualScale()
 	{
@@ -133,7 +140,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==IEContent.blockMetalDecoration0 && (state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.GENERATOR.getMeta());
+		return state.getBlock()==IEContent.blockMetalDecoration0&&(state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.GENERATOR.getMeta());
 	}
 
 	@Override
@@ -158,13 +165,13 @@ public class MultiblockDieselGenerator implements IMultiblock
 		{
 			IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta());
 			state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
-			for(int l=0;l<5;l++)
-				for(int w=-1;w<=1;w++)
-					for(int h=-1;h<=1;h++)
+			for(int l = 0; l < 5; l++)
+				for(int w = -1; w <= 1; w++)
+					for(int h = -1; h <= 1; h++)
 					{
 						if((l==0&&h==1)||(h==1&&(l==1||l==3)&&w!=0))
 							continue;
-						int ww = mirror?-w:w;
+						int ww = mirror?-w: w;
 						BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 						world.setBlockState(pos2, state);
@@ -172,10 +179,10 @@ public class MultiblockDieselGenerator implements IMultiblock
 						if(curr instanceof TileEntityDieselGenerator)
 						{
 							TileEntityDieselGenerator tile = (TileEntityDieselGenerator)curr;
-							tile.formed=true;
-							tile.pos = (h+1)*15 + l*3 + (w+1);
-							tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww : -ww)};
-							tile.mirrored=mirror;
+							tile.formed = true;
+							tile.pos = (h+1)*15+l*3+(w+1);
+							tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww: -ww)};
+							tile.mirrored = mirror;
 							tile.markDirty();
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
@@ -186,13 +193,13 @@ public class MultiblockDieselGenerator implements IMultiblock
 
 	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
 	{
-		for(int l=0;l<5;l++)
-			for(int w=-1;w<=1;w++)
-				for(int h=-1;h<=1;h++)
+		for(int l = 0; l < 5; l++)
+			for(int w = -1; w <= 1; w++)
+				for(int h = -1; h <= 1; h++)
 				{
 					if((l==0&&h==1)||(h==1&&(l==1||l==3)&&w!=0))
 						continue;
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos = startPos.offset(dir, l).offset(dir.rotateY(), ww).add(0, h, 0);
 
 					if(l==4)
@@ -207,7 +214,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.GENERATOR.getMeta()))
 								return false;
 						}
-						else if(l==0 || w==0)
+						else if(l==0||w==0)
 						{
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDevice1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()))
 								return false;
@@ -253,6 +260,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 13, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 4, BlockTypes_MetalDecoration0.GENERATOR.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 9, BlockTypes_MetalDecoration0.RADIATOR.getMeta()))};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

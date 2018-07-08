@@ -44,27 +44,27 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<Co
 	public IRecipeTransferError transferRecipe(@Nonnull ContainerAssembler container, @Nonnull IRecipeLayout recipeLayout, @Nonnull EntityPlayer player, boolean maxTransfer, boolean doTransfer)
 	{
 		for(int i = 0; i < 3; i++)
-			if(container.tile.patterns[i].recipe == null)
+			if(container.tile.patterns[i].recipe==null)
 			{
 				if(doTransfer)
 				{
 					IGuiItemStackGroup stacks = recipeLayout.getItemStacks();
 					NBTTagList tagList = new NBTTagList();
-					NonNullList<ItemStack> convertedInput = NonNullList.withSize(stacks.getGuiIngredients().size() - 1, ItemStack.EMPTY);
+					NonNullList<ItemStack> convertedInput = NonNullList.withSize(stacks.getGuiIngredients().size()-1, ItemStack.EMPTY);
 					int j = 0;
 					for(IGuiIngredient<ItemStack> ingr : stacks.getGuiIngredients().values())
 					{
 						if(j > 0)
 						{
 							List<ItemStack> list = ingr.getAllIngredients();
-							if(list != null && list.size() > 0)
-								convertedInput.set(j - 1, list.get(0));
+							if(list!=null&&list.size() > 0)
+								convertedInput.set(j-1, list.get(0));
 						}
 						j++;
 					}
 					for(int slot = 0; slot < Math.min(convertedInput.size(), 9); slot++)
 					{
-						container.putStackInSlot(i * 10 + slot, convertedInput.get(slot));
+						container.putStackInSlot(i*10+slot, convertedInput.get(slot));
 						NBTTagCompound itemTag = new NBTTagCompound();
 						if(!convertedInput.get(slot).isEmpty())
 							convertedInput.get(slot).writeToNBT(itemTag);
@@ -78,6 +78,6 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<Co
 				}
 				return null;
 			}
-		return JEIHelper.jeiHelpers.recipeTransferHandlerHelper().createUserErrorWithTooltip(I18n.translateToLocal(Lib.GUI + "assembler.nospace"));
+		return JEIHelper.jeiHelpers.recipeTransferHandlerHelper().createUserErrorWithTooltip(I18n.translateToLocal(Lib.GUI+"assembler.nospace"));
 	}
 }

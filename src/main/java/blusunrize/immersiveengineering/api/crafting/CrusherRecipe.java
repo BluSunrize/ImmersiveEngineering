@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * @author BluSunrize - 01.05.2015
- *
+ * <p>
  * The recipe for the crusher
  */
 public class CrusherRecipe extends MultiblockRecipe
@@ -56,7 +56,7 @@ public class CrusherRecipe extends MultiblockRecipe
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
-		if(secondaryOutput != null && secondaryChance != null)
+		if(secondaryOutput!=null&&secondaryChance!=null)
 			for(int i = 0; i < secondaryOutput.length; i++)
 				if(Utils.RAND.nextFloat() < secondaryChance[i])
 					list.add(secondaryOutput[i]);
@@ -74,12 +74,12 @@ public class CrusherRecipe extends MultiblockRecipe
 		ArrayList<ItemStack> newSecondaryOutput = new ArrayList<ItemStack>();
 		ArrayList<Float> newSecondaryChance = new ArrayList<Float>();
 		if(secondaryOutput!=null)
-			for(int i=0; i<secondaryOutput.length; i++)
+			for(int i = 0; i < secondaryOutput.length; i++)
 			{
 				newSecondaryOutput.add(secondaryOutput[i]);
 				newSecondaryChance.add(secondaryChance[i]);
 			}
-		for(int i=0; i<(outputs.length/2); i++)
+		for(int i = 0; i < (outputs.length/2); i++)
 			if(outputs[i*2]!=null)
 			{
 				Object o = ApiUtils.convertToValidRecipeInput(outputs[i*2]);
@@ -92,7 +92,7 @@ public class CrusherRecipe extends MultiblockRecipe
 			}
 		secondaryOutput = newSecondaryOutput.toArray(new ItemStack[newSecondaryOutput.size()]);
 		secondaryChance = new float[newSecondaryChance.size()];
-		int i=0;
+		int i = 0;
 		for(Float f : newSecondaryChance)
 			secondaryChance[i++] = f;
 
@@ -106,13 +106,15 @@ public class CrusherRecipe extends MultiblockRecipe
 	}
 
 	public static ArrayList<CrusherRecipe> recipeList = new ArrayList<CrusherRecipe>();
+
 	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
 	{
 		CrusherRecipe r = new CrusherRecipe(output, input, energy);
-		if(r.input!=null && !r.output.isEmpty())
+		if(r.input!=null&&!r.output.isEmpty())
 			recipeList.add(r);
 		return r;
 	}
+
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{
 		for(CrusherRecipe recipe : recipeList)
@@ -120,6 +122,7 @@ public class CrusherRecipe extends MultiblockRecipe
 				return recipe;
 		return null;
 	}
+
 	public static List<CrusherRecipe> removeRecipesForOutput(ItemStack stack)
 	{
 		List<CrusherRecipe> list = new ArrayList();
@@ -135,6 +138,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		}
 		return list;
 	}
+
 	public static List<CrusherRecipe> removeRecipesForInput(ItemStack stack)
 	{
 		List<CrusherRecipe> list = new ArrayList();
@@ -163,6 +167,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
 		return nbt;
 	}
+
 	public static CrusherRecipe loadFromNBT(NBTTagCompound nbt)
 	{
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));

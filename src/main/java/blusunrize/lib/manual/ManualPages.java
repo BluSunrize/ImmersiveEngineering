@@ -97,6 +97,7 @@ public abstract class ManualPages implements IManualPage
 			providedItems = new ArrayList<>(1);
 		providedItems.add(s);
 	}
+
 	@Override
 	public ItemStack[] getProvidedRecipes()
 	{
@@ -297,7 +298,7 @@ public abstract class ManualPages implements IManualPage
 
 				int yOff = 0;
 				for(String[] line : localizedTable)
-					if(line !=null)
+					if(line!=null)
 					{
 						int height = 0;
 						for(int j = 0; j < line.length; j++)
@@ -316,9 +317,9 @@ public abstract class ManualPages implements IManualPage
 						{
 							float scale = .5f;
 							GlStateManager.scale(1, scale, 1);
-							int barHeight = (int) ((y+textHeight+yOff+height*manual.fontRenderer.FONT_HEIGHT)/scale);
+							int barHeight = (int)((y+textHeight+yOff+height*manual.fontRenderer.FONT_HEIGHT)/scale);
 							gui.drawGradientRect(x, barHeight, x+120, barHeight+1,
-									manual.getTextColour() | 0xff000000, manual.getTextColour() | 0xff000000);
+									manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
 							GlStateManager.scale(1, 1/scale, 1);
 						}
 
@@ -506,15 +507,18 @@ public abstract class ManualPages implements IManualPage
 				{
 					w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
 					h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
-				} else if(rec instanceof ShapedOreRecipe)
+				}
+				else if(rec instanceof ShapedOreRecipe)
 				{
 					w = ((ShapedOreRecipe)rec).getWidth();
 					h = ((ShapedOreRecipe)rec).getHeight();
-				} else if(rec instanceof ShapedRecipes)
+				}
+				else if(rec instanceof ShapedRecipes)
 				{
 					w = ((ShapedRecipes)rec).recipeWidth;
 					h = ((ShapedRecipes)rec).recipeHeight;
-				} else
+				}
+				else
 					return;
 
 				PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
@@ -648,11 +652,13 @@ public abstract class ManualPages implements IManualPage
 					for(ItemStack subStack : (ItemStack[])stack)
 						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-				} else if(stack instanceof ItemStack)
+				}
+				else if(stack instanceof ItemStack)
 				{
 					if(((ItemStack)stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 						return true;
-				} else if(stack instanceof String)
+				}
+				else if(stack instanceof String)
 				{
 					if(ManualUtils.isExistingOreName((String)stack))
 						for(ItemStack subStack : OreDictionary.getOres((String)stack))
@@ -686,7 +692,7 @@ public abstract class ManualPages implements IManualPage
 
 			if(providedItems!=null)
 				this.providedItems.clear();
-			for(int iStack = 0; iStack < stacks.length ; iStack++)
+			for(int iStack = 0; iStack < stacks.length; iStack++)
 				if(stacks[iStack] instanceof PositionedItemStack[])
 				{
 					for(PositionedItemStack[] pisA : (PositionedItemStack[][])stacks)
@@ -727,19 +733,22 @@ public abstract class ManualPages implements IManualPage
 			NonNullList<Ingredient> ingredientsPre = recipe.getIngredients();
 			int w;
 			int h;
-			if(recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe)
+			if(recipe instanceof ShapelessRecipes||recipe instanceof ShapelessOreRecipe)
 			{
 				w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
 				h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
-			} else if(recipe instanceof ShapedOreRecipe)
+			}
+			else if(recipe instanceof ShapedOreRecipe)
 			{
 				w = ((ShapedOreRecipe)recipe).getWidth();
 				h = ((ShapedOreRecipe)recipe).getHeight();
-			} else if(recipe instanceof ShapedRecipes)
+			}
+			else if(recipe instanceof ShapedRecipes)
 			{
 				w = ((ShapedRecipes)recipe).getWidth();
 				h = ((ShapedRecipes)recipe).getHeight();
-			} else
+			}
+			else
 				return;
 
 			PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
@@ -852,7 +861,8 @@ public abstract class ManualPages implements IManualPage
 						for(ItemStack subStack : (ItemStack[])stack.stack)
 							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
-					} else if(stack.stack instanceof List)
+					}
+					else if(stack.stack instanceof List)
 						for(ItemStack subStack : (List<ItemStack>)stack.stack)
 						{
 							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
@@ -862,7 +872,8 @@ public abstract class ManualPages implements IManualPage
 					{
 						if(((ItemStack)stack.stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-					} else if(stack.stack instanceof String)
+					}
+					else if(stack.stack instanceof String)
 					{
 						if(ManualUtils.isExistingOreName((String)stack.stack))
 							for(ItemStack subStack : OreDictionary.getOres((String)stack.stack))
@@ -890,12 +901,12 @@ public abstract class ManualPages implements IManualPage
 			String page = segment.length > 3?segment[3]: "0";
 			String[] resultParts = segment[2].split(" ");
 			String result = "";
-			for(int iPart=0; iPart<resultParts.length; iPart++)
+			for(int iPart = 0; iPart < resultParts.length; iPart++)
 			{
 				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
 				String part = '\u00a7'+String.valueOf((char)(128+repList.size()))+resultParts[iPart];
 				repList.add(new String[]{part, segment[1], page});
-				result += (iPart>0?" ":"")+part;
+				result += (iPart > 0?" ": "")+part;
 			}
 			text = text.replaceFirst(rep, result);
 		}
@@ -912,7 +923,7 @@ public abstract class ManualPages implements IManualPage
 				String s = list.get(yOff);
 				if((start = s.indexOf(rep[0])) >= 0)
 				{
-					String formatIdent = rep[0].substring(0,2);
+					String formatIdent = rep[0].substring(0, 2);
 					rep[0] = rep[0].substring(2);
 					int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
 					int by = yOff*helper.fontRenderer.FONT_HEIGHT;
@@ -962,9 +973,11 @@ public abstract class ManualPages implements IManualPage
 						((ItemStack)stack).getItem().getSubItems(((ItemStack)stack).getItem().getCreativeTab(), list);
 						if(list.size() > 0)
 							displayList.addAll(list);
-					} else
+					}
+					else
 						displayList.add((ItemStack)stack);
-				} else if(stack instanceof Ingredient)
+				}
+				else if(stack instanceof Ingredient)
 				{
 					for(ItemStack subStack : ((Ingredient)stack).getMatchingStacks())
 					{
@@ -974,7 +987,8 @@ public abstract class ManualPages implements IManualPage
 							subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
 							if(list.size() > 0)
 								displayList.addAll(list);
-						} else
+						}
+						else
 							displayList.add(subStack);
 					}
 				}
@@ -988,7 +1002,8 @@ public abstract class ManualPages implements IManualPage
 							subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
 							if(list.size() > 0)
 								displayList.addAll(list);
-						} else
+						}
+						else
 							displayList.add(subStack);
 					}
 				}

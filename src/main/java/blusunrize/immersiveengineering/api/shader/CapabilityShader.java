@@ -39,16 +39,19 @@ public class CapabilityShader
 		{
 			this.shaderType = type;
 		}
+
 		public void setShaderType(String shaderType)
 		{
 			this.shaderType = shaderType;
 		}
+
 		public String getShaderType()
 		{
 			return shaderType;
 		}
 
 		public abstract void setShaderItem(@Nonnull ItemStack shader);
+
 		@Nonnull
 		public abstract ItemStack getShaderItem();
 	}
@@ -77,12 +80,13 @@ public class CapabilityShader
 			else
 				container.getTagCompound().removeTag(SHADER_NBT_KEY);
 		}
+
 		@Override
 		@Nullable
 		public ItemStack getShaderItem()
 		{
 			NBTTagCompound tagCompound = container.getTagCompound();
-			if(tagCompound == null || !tagCompound.hasKey(SHADER_NBT_KEY))
+			if(tagCompound==null||!tagCompound.hasKey(SHADER_NBT_KEY))
 				return ItemStack.EMPTY;
 			return new ItemStack(tagCompound.getCompoundTag(SHADER_NBT_KEY));
 		}
@@ -103,6 +107,7 @@ public class CapabilityShader
 		{
 			this.shader = shader;
 		}
+
 		@Override
 		@Nonnull
 		public ItemStack getShaderItem()
@@ -113,8 +118,9 @@ public class CapabilityShader
 		@Override
 		public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 		{
-			return capability == SHADER_CAPABILITY;
+			return capability==SHADER_CAPABILITY;
 		}
+
 		@Override
 		public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 		{
@@ -135,6 +141,7 @@ public class CapabilityShader
 			nbt.setString("IE:ShaderType", getShaderType());
 			return nbt;
 		}
+
 		@Override
 		public void deserializeNBT(NBTTagCompound nbt)
 		{
@@ -165,7 +172,7 @@ public class CapabilityShader
 			@Override
 			public void readNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, EnumFacing side, NBTBase nbt)
 			{
-				NBTTagCompound tags = (NBTTagCompound) nbt;
+				NBTTagCompound tags = (NBTTagCompound)nbt;
 				instance.setShaderType(tags.getString("IE:ShaderType"));
 				if(!tags.hasKey("IE:NoShader"))
 					instance.setShaderItem(new ItemStack(tags));

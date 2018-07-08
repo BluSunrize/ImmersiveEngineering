@@ -60,7 +60,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(this.conveyorBeltSubtype != null)
+		if(this.conveyorBeltSubtype!=null)
 			this.conveyorBeltSubtype.onEntityCollision(this, entity, facing);
 	}
 
@@ -74,7 +74,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompoundTag("conveyorBeltSubtypeNBT"));
 		}
 
-		if(descPacket && world!=null)
+		if(descPacket&&world!=null)
 			this.markContainingBlockForUpdate(null);
 	}
 
@@ -82,7 +82,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setInteger("facing", facing.ordinal());
-		if(conveyorBeltSubtype != null)
+		if(conveyorBeltSubtype!=null)
 		{
 			nbt.setString("conveyorBeltSubtype", ConveyorHandler.reverseClassRegistry.get(conveyorBeltSubtype.getClass()).toString());
 			nbt.setTag("conveyorBeltSubtypeNBT", conveyorBeltSubtype.writeConveyorNBT());
@@ -94,35 +94,41 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	{
 		return this.facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 5;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return !entity.isSneaking();
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
 		return true;
 	}
+
 	@Override
 	public void afterRotation(EnumFacing oldDir, EnumFacing newDir)
 	{
-		if(this.conveyorBeltSubtype != null)
+		if(this.conveyorBeltSubtype!=null)
 			this.conveyorBeltSubtype.afterRotation(oldDir, newDir);
 	}
 
@@ -143,7 +149,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
-		if(player.isSneaking() && conveyorBeltSubtype != null && conveyorBeltSubtype.changeConveyorDirection())
+		if(player.isSneaking()&&conveyorBeltSubtype!=null&&conveyorBeltSubtype.changeConveyorDirection())
 		{
 //			if(transportUp)
 //			{
@@ -169,13 +175,13 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		if(conveyorBeltSubtype!=null)
 		{
 			boolean update;
-			if(conveyorBeltSubtype.canBeDyed() && Utils.isDye(heldItem))
+			if(conveyorBeltSubtype.canBeDyed()&&Utils.isDye(heldItem))
 			{
 				EnumDyeColor dye = EnumDyeColor.byDyeDamage(Utils.getDye(heldItem));
 				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye.getColorValue());
 			}
 			else
-				update = conveyorBeltSubtype.playerInteraction(this, player, hand, heldItem, hitX,hitY,hitZ, side);
+				update = conveyorBeltSubtype.playerInteraction(this, player, hand, heldItem, hitX, hitY, hitZ, side);
 			if(update)
 			{
 				this.markDirty();
@@ -199,10 +205,11 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	static AxisAlignedBB COLISIONBB = new AxisAlignedBB(0, 0, 0, 1, .125F, 1);
+
 	@Override
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
-		if(conveyorBeltSubtype != null)
+		if(conveyorBeltSubtype!=null)
 		{
 			List<AxisAlignedBB> boxes = new ArrayList();
 			for(AxisAlignedBB aabb : conveyorBeltSubtype.getColisionBoxes(this, facing))
@@ -215,7 +222,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		if(conveyorBeltSubtype != null)
+		if(conveyorBeltSubtype!=null)
 		{
 			List<AxisAlignedBB> boxes = new ArrayList();
 			for(AxisAlignedBB aabb : conveyorBeltSubtype.getSelectionBoxes(this, facing))
@@ -238,7 +245,9 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			return true;
 		return super.hasCapability(capability, facing);
 	}
+
 	IItemHandler insertionHandler = new ConveyorInventoryHandler(this);
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
@@ -251,7 +260,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock());
-		if(conveyorBeltSubtype != null)
+		if(conveyorBeltSubtype!=null)
 			ItemNBTHelper.setString(stack, "conveyorType", ConveyorHandler.reverseClassRegistry.get(this.conveyorBeltSubtype.getClass()).toString());
 		return stack;
 	}
@@ -267,6 +276,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable
 	{
 		TileEntityConveyorBelt conveyor;
+
 		public ConveyorInventoryHandler(TileEntityConveyorBelt conveyor)
 		{
 			this.conveyor = conveyor;
@@ -277,6 +287,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		{
 			return 1;
 		}
+
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
@@ -288,7 +299,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		{
 			if(!simulate)
 			{
-				EntityItem entity = new EntityItem(conveyor.getWorld(), conveyor.getPos().getX() + .5, conveyor.getPos().getY() + .1875, conveyor.getPos().getZ() + .5, stack.copy());
+				EntityItem entity = new EntityItem(conveyor.getWorld(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
 				entity.motionX = 0;
 				entity.motionY = 0;
 				entity.motionZ = 0;
@@ -306,7 +317,8 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		}
 
 		@Override
-		public int getSlotLimit(int slot) {
+		public int getSlotLimit(int slot)
+		{
 			return 64;
 		}
 

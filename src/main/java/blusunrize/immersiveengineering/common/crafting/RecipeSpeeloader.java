@@ -30,14 +30,14 @@ public class RecipeSpeeloader extends ShapedOreRecipe
 	{
 		ItemStack speedloader = matrix.getStackInSlot(4);
 
-		if(!speedloader.isEmpty() && speedloader.getItem() instanceof ItemSpeedloader && ((ItemSpeedloader)speedloader.getItem()).isEmpty(speedloader))
+		if(!speedloader.isEmpty()&&speedloader.getItem() instanceof ItemSpeedloader&&((ItemSpeedloader)speedloader.getItem()).isEmpty(speedloader))
 		{
 			ItemStack out = speedloader.copy();
 			NonNullList<ItemStack> fill = NonNullList.withSize(8, ItemStack.EMPTY);
 			for(int i = 0; i < 8; i++)
 			{
 				int j = i >= 4?i+1: i;
-				fill.set(i, Utils.copyStackWithAmount(matrix.getStackInSlot(j),1));
+				fill.set(i, Utils.copyStackWithAmount(matrix.getStackInSlot(j), 1));
 			}
 			((ItemSpeedloader)out.getItem()).setContainedItems(out, fill);
 			return out;

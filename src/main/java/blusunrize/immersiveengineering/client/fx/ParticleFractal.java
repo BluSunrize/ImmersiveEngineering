@@ -25,8 +25,8 @@ public class ParticleFractal extends Particle
 	public static final Deque<ParticleFractal> PARTICLE_FRACTAL_DEQUE = new ArrayDeque<>();
 
 	public static final float[][] COLOUR_RED = {{.79f, .31f, .31f, .5f}, {1, .97f, .87f, .75f}};
-	public static final float[][] COLOUR_ORANGE = {{Lib.COLOUR_F_ImmersiveOrange[0],Lib.COLOUR_F_ImmersiveOrange[1],Lib.COLOUR_F_ImmersiveOrange[2], .5f}, {1, .97f, .87f, .75f}};
-	public static final float[][] COLOUR_LIGHTNING = {{77/255f,74/255f,152/255f, .75f}, {1, 1, 1, 1}};
+	public static final float[][] COLOUR_ORANGE = {{Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], .5f}, {1, .97f, .87f, .75f}};
+	public static final float[][] COLOUR_LIGHTNING = {{77/255f, 74/255f, 152/255f, .75f}, {1, 1, 1, 1}};
 
 	private Vec3d[] pointsList;
 	private float[] colourOut;

@@ -79,6 +79,7 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
 		list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack)
@@ -90,11 +91,11 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack)
 	{
 		int energy = getEnergyStored(itemStack);
-		if(energy>0)
+		if(energy > 0)
 		{
 			int pre = energy;
 			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
-				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot)) && !(player.getItemStackFromSlot(slot).getItem() instanceof ItemPowerpack))
+				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot))&&!(player.getItemStackFromSlot(slot).getItem() instanceof ItemPowerpack))
 					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
 			if(pre!=energy)
 				EnergyHelper.extractFlux(itemStack, pre-energy, false);
@@ -110,13 +111,15 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
 	{
-		return new ArmorProperties(0,0,0);
+		return new ArmorProperties(0, 0, 0);
 	}
+
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
 	{
 		return 0;
 	}
+
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot)
 	{
@@ -127,10 +130,11 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	{
 		return 100000;
 	}
+
 	@Override
-	public  ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		if (!stack.isEmpty())
+		if(!stack.isEmpty())
 			return new ICapabilityProvider()
 			{
 				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
@@ -138,14 +142,14 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 				@Override
 				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
 				{
-					return capability == CapabilityEnergy.ENERGY;
+					return capability==CapabilityEnergy.ENERGY;
 				}
 
 				@Nullable
 				@Override
 				public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 				{
-					return capability == CapabilityEnergy.ENERGY ? (T) energyStorage : null;
+					return capability==CapabilityEnergy.ENERGY?(T)energyStorage: null;
 				}
 			};
 		else

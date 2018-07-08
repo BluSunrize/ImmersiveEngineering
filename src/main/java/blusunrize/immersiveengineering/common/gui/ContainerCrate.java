@@ -21,21 +21,22 @@ public class ContainerCrate extends ContainerIEBase
 	public ContainerCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		super(inventoryPlayer, tile);
-		for(int i=0; i<tile.getInventory().size(); i++)
-			this.addSlotToContainer(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18){
+		for(int i = 0; i < tile.getInventory().size(); i++)
+			this.addSlotToContainer(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18)
+			{
 				@Override
 				public boolean isItemValid(ItemStack stack)
 				{
 					return IEApi.isAllowedInCrate(stack);
 				}
 			});
-		this.slotCount=tile.getInventory().size();
+		this.slotCount = tile.getInventory().size();
 		this.tile = tile;
 
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 87+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 }

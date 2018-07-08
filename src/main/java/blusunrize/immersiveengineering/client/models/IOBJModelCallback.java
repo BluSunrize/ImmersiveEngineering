@@ -56,13 +56,28 @@ public interface IOBJModelCallback<T>
 	};
 
 	@SideOnly(Side.CLIENT)
-	default TextureAtlasSprite getTextureReplacement(T object, String material){ return null; }
+	default TextureAtlasSprite getTextureReplacement(T object, String material)
+	{
+		return null;
+	}
+
 	@SideOnly(Side.CLIENT)
-	default boolean shouldRenderGroup(T object, String group){ return true; }
+	default boolean shouldRenderGroup(T object, String group)
+	{
+		return true;
+	}
+
 	@SideOnly(Side.CLIENT)
-	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform) { return transform; }
+	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform)
+	{
+		return transform;
+	}
+
 	@SideOnly(Side.CLIENT)
-	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity) { return perspective; }
+	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity)
+	{
+		return perspective;
+	}
 
 	@SideOnly(Side.CLIENT)
 	default int getRenderColour(T object, String group)

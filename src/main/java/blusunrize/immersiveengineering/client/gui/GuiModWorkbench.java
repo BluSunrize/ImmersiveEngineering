@@ -38,11 +38,12 @@ import java.util.ArrayList;
 public class GuiModWorkbench extends GuiIEContainerBase
 {
 	TileEntityModWorkbench workbench;
-	public GuiModWorkbench(InventoryPlayer inventoryPlayer, TileEntityModWorkbench tile )
+
+	public GuiModWorkbench(InventoryPlayer inventoryPlayer, TileEntityModWorkbench tile)
 	{
 		super(new ContainerModWorkbench(inventoryPlayer, tile));
 		workbench = tile;
-		this.ySize=168;
+		this.ySize = 168;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 		this.buttonList.clear();
 		super.initGui();
 		Slot s = inventorySlots.getSlot(0);
-		if(s!=null && s.getHasStack() && s.getStack().getItem() instanceof IConfigurableTool)
+		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof IConfigurableTool)
 		{
 			ItemStack stack = s.getStack();
 			IConfigurableTool tool = ((IConfigurableTool)stack.getItem());
@@ -59,21 +60,22 @@ public class GuiModWorkbench extends GuiIEContainerBase
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			if(boolArray!=null)
 				for(ToolConfigBoolean b : boolArray)
-					this.buttonList.add(new GuiButtonCheckbox(buttonid++, guiLeft+b.x,guiTop+b.y, tool.fomatConfigName(stack,b), b.value));
+					this.buttonList.add(new GuiButtonCheckbox(buttonid++, guiLeft+b.x, guiTop+b.y, tool.fomatConfigName(stack, b), b.value));
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
-					this.buttonList.add(new GuiSliderIE(buttonid++, guiLeft+f.x,guiTop+f.y, 80, tool.fomatConfigName(stack,f), f.value));
+					this.buttonList.add(new GuiSliderIE(buttonid++, guiLeft+f.x, guiTop+f.y, 80, tool.fomatConfigName(stack, f), f.value));
 		}
 	}
 
 	NBTTagCompound lastMessage;
+
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state)
 	{
 		super.mouseReleased(mouseX, mouseY, state);
 		Slot s = inventorySlots.getSlot(0);
-		if(s!=null && s.getHasStack() && s.getStack().getItem() instanceof IConfigurableTool)
+		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof IConfigurableTool)
 		{
 			ItemStack stack = s.getStack();
 			IConfigurableTool tool = ((IConfigurableTool)stack.getItem());
@@ -84,10 +86,10 @@ public class GuiModWorkbench extends GuiIEContainerBase
 			int iFloat = 0;
 			for(GuiButton button : this.buttonList)
 			{
-				if(button instanceof GuiButtonCheckbox && boolArray!=null)
-					message.setBoolean("b_"+boolArray[iBool++].name,((GuiButtonCheckbox)button).state);
-				if(button instanceof GuiSliderIE && floatArray!=null)
-					message.setFloat("f_"+floatArray[iFloat++].name,(float)((GuiSliderIE)button).sliderValue);
+				if(button instanceof GuiButtonCheckbox&&boolArray!=null)
+					message.setBoolean("b_"+boolArray[iBool++].name, ((GuiButtonCheckbox)button).state);
+				if(button instanceof GuiSliderIE&&floatArray!=null)
+					message.setFloat("f_"+floatArray[iFloat++].name, (float)((GuiSliderIE)button).sliderValue);
 			}
 			if(!message.equals(lastMessage))//Only send packets when values have changed
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.workbench, message));
@@ -99,14 +101,14 @@ public class GuiModWorkbench extends GuiIEContainerBase
 	public void drawScreen(int mx, int my, float partial)
 	{
 		super.drawScreen(mx, my, partial);
-		for(int i=0; i<((ContainerModWorkbench)inventorySlots).slotCount; i++)
+		for(int i = 0; i < ((ContainerModWorkbench)inventorySlots).slotCount; i++)
 		{
 			Slot s = inventorySlots.getSlot(i);
-			if(s instanceof IESlot.BlueprintOutput && !s.getHasStack())
+			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())
 			{
 				BlueprintCraftingRecipe recipe = ((IESlot.BlueprintOutput)s).recipe;
-				if(recipe!=null && !recipe.output.isEmpty())
-					if(isPointInRegion(s.xPos,s.yPos, 16,16, mx,my))
+				if(recipe!=null&&!recipe.output.isEmpty())
+					if(isPointInRegion(s.xPos, s.yPos, 16, 16, mx, my))
 					{
 						ArrayList<String> tooltip = new ArrayList<String>();
 						tooltip.add(recipe.output.getRarity().rarityColor+recipe.output.getDisplayName());
@@ -128,7 +130,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(TextFormatting.GRAY.toString() + ss.getCount() + "x " + ss.getDisplayName());
+							tooltip.add(TextFormatting.GRAY.toString()+ss.getCount()+"x "+ss.getDisplayName());
 
 						ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer);
 						RenderHelper.enableGUIStandardItemLighting();
@@ -143,25 +145,25 @@ public class GuiModWorkbench extends GuiIEContainerBase
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
-		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 
-		for(int i=0; i<((ContainerModWorkbench)inventorySlots).slotCount; i++)
+		for(int i = 0; i < ((ContainerModWorkbench)inventorySlots).slotCount; i++)
 		{
 			Slot s = inventorySlots.getSlot(i);
 
-			ClientUtils.drawColouredRect(guiLeft+ s.xPos-1, guiTop+ s.yPos-1, 17,1, 0x77222222);
-			ClientUtils.drawColouredRect(guiLeft+ s.xPos-1, guiTop+ s.yPos+0, 1,16, 0x77222222);
-			ClientUtils.drawColouredRect(guiLeft+ s.xPos+16, guiTop+ s.yPos+0, 1,17, 0x77999999);
-			ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+16, 16,1, 0x77999999);
-			if( !(s instanceof IESlot.BlueprintOutput) || s.getHasStack() || ((IESlot.BlueprintOutput)s).recipe.output.isEmpty())
-				ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+0, 16,16, 0x77444444);
+			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos-1, 17, 1, 0x77222222);
+			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos+0, 1, 16, 0x77222222);
+			ClientUtils.drawColouredRect(guiLeft+s.xPos+16, guiTop+s.yPos+0, 1, 17, 0x77999999);
+			ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+16, 16, 1, 0x77999999);
+			if(!(s instanceof IESlot.BlueprintOutput)||s.getHasStack()||((IESlot.BlueprintOutput)s).recipe.output.isEmpty())
+				ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0x77444444);
 		}
 
-		for(int i=0; i<((ContainerModWorkbench)inventorySlots).slotCount; i++)
+		for(int i = 0; i < ((ContainerModWorkbench)inventorySlots).slotCount; i++)
 		{
 			Slot s = inventorySlots.getSlot(i);
-			if(s instanceof IESlot.BlueprintOutput && !s.getHasStack())
+			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())
 			{
 				ItemStack ghostStack = ((IESlot.BlueprintOutput)s).recipe.output;
 				if(!ghostStack.isEmpty())
@@ -177,7 +179,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 
 					GlStateManager.disableLighting();
 					GlStateManager.disableDepth();
-					ClientUtils.drawColouredRect(guiLeft+ s.xPos+0, guiTop+ s.yPos+0, 16,16, 0x77444444);
+					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0x77444444);
 					GlStateManager.enableLighting();
 					GlStateManager.enableDepth();
 				}

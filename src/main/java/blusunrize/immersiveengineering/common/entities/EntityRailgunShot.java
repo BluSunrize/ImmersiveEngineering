@@ -33,14 +33,16 @@ public class EntityRailgunShot extends EntityIEProjectile
 		this.setSize(.5f, .5f);
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
+
 	public EntityRailgunShot(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
 	{
-		super(world, x,y,z, ax,ay,az);
+		super(world, x, y, z, ax, ay, az);
 		this.setSize(.5f, .5f);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
+
 	public EntityRailgunShot(World world, EntityLivingBase living, double ax, double ay, double az, ItemStack ammo)
 	{
 		super(world, living, ax, ay, az);
@@ -49,6 +51,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
+
 	@Override
 	protected void entityInit()
 	{
@@ -67,17 +70,20 @@ public class EntityRailgunShot extends EntityIEProjectile
 		if(!this.getAmmo().isEmpty())
 			this.dataManager.set(dataMarker_ammo, getAmmo());
 	}
+
 	public ItemStack getAmmoSynced()
 	{
 		return this.dataManager.get(dataMarker_ammo);
 	}
+
 	public ItemStack getAmmo()
 	{
 		return ammo;
 	}
+
 	public RailgunProjectileProperties getAmmoProperties()
 	{
-		if(ammoProperties==null && !ammo.isEmpty())
+		if(ammoProperties==null&&!ammo.isEmpty())
 			ammoProperties = RailgunHandler.getProjectileProperties(ammo);
 		return ammoProperties;
 	}
@@ -85,7 +91,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	@Override
 	public double getGravity()
 	{
-		return .005*(getAmmoProperties()!=null?getAmmoProperties().gravity:1);
+		return .005*(getAmmoProperties()!=null?getAmmoProperties().gravity: 1);
 	}
 
 	@Override
@@ -102,7 +108,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 		//			((WorldServer)world).func_147487_a("flame", posX,posY,posZ, 0, 0,0,0, 1);
 		//		else
 		//			world.spawnParticle("smoke", posX, posY, posZ, 0, 0, 0);
-		if(this.getAmmo().isEmpty() && this.world.isRemote)
+		if(this.getAmmo().isEmpty()&&this.world.isRemote)
 			this.ammo = getAmmoSynced();
 		super.onEntityUpdate();
 	}
@@ -110,7 +116,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	@Override
 	public void onImpact(RayTraceResult mop)
 	{
-		if(!this.world.isRemote && !getAmmo().isEmpty())
+		if(!this.world.isRemote&&!getAmmo().isEmpty())
 		{
 			if(mop.entityHit!=null)
 			{

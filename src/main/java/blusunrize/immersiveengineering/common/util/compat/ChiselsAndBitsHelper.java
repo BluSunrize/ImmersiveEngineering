@@ -50,15 +50,15 @@ public class ChiselsAndBitsHelper extends IECompatModule implements Function<Lis
 		list.add(IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.BARREL.getMeta()));
 		for(EnumFacing f : EnumFacing.values())
 		{
-			list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()).withProperty(IEProperties.FACING_ALL,f));
-			if(f.getAxis()!= Axis.Y)
-				list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.DYNAMO.getMeta()).withProperty(IEProperties.FACING_ALL,f));
+			list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()).withProperty(IEProperties.FACING_ALL, f));
+			if(f.getAxis()!=Axis.Y)
+				list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.DYNAMO.getMeta()).withProperty(IEProperties.FACING_ALL, f));
 //			if(f==EnumFacing.NORTH)
 //				list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).withProperty(IEProperties.FACING_ALL,f));
 		}
-		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).withProperty(IEProperties.FACING_ALL,EnumFacing.UP));
-		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).withProperty(IEProperties.FACING_ALL,EnumFacing.DOWN));
-		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).withProperty(IEProperties.FACING_ALL,EnumFacing.NORTH));
+		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).withProperty(IEProperties.FACING_ALL, EnumFacing.UP));
+		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).withProperty(IEProperties.FACING_ALL, EnumFacing.DOWN));
+		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH));
 
 
 		list.add(IEContent.blockWoodenDevice0.getStateFromMeta(BlockTypes_WoodenDevice0.CRATE.getMeta()));

@@ -28,7 +28,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -80,13 +79,13 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		TileEntity connector = null;
 		Connection line = null;
 		Connection con = ApiUtils.getTargetConnection(world, player, null, 0);
-		if (con != null)
+		if(con!=null)
 		{
 			connector = world.getTileEntity(con.start);
 			line = con;
 		}
 		ItemStack stack = player.getHeldItem(hand);
-		if (line != null && connector != null)
+		if(line!=null&&connector!=null)
 		{
 			SkylineHelper.spawnHook(player, connector, line);
 			player.setActiveHand(hand);

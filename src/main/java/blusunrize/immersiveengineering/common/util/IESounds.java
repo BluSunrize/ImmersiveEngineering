@@ -31,7 +31,7 @@ public class IESounds
 	public static SoundEvent revolverFire = registerSound("revolverFire");
 	public static SoundEvent revolverFireThump = registerSound("revolverFireThump");
 	public static SoundEvent revolverReload = registerSound("revolverReload");
-	public static SoundEvent spray= registerSound("spray");
+	public static SoundEvent spray = registerSound("spray");
 	public static SoundEvent sprayFire = registerSound("spray_fire");
 	public static SoundEvent chargeFast = registerSound("chargeFast");
 	public static SoundEvent chargeSlow = registerSound("chargeSlow");
@@ -49,6 +49,7 @@ public class IESounds
 		registeredEvents.add(event.setRegistryName(location));
 		return event;
 	}
+
 	public static void init()
 	{
 		for(SoundEvent event : registeredEvents)
@@ -58,6 +59,6 @@ public class IESounds
 	public static void PlaySoundForPlayer(Entity player, SoundEvent sound, float volume, float pitch)
 	{
 		if(player instanceof EntityPlayerMP)
-			((EntityPlayerMP) player).connection.sendPacket(new SPacketSoundEffect(sound, player.getSoundCategory(), player.posX, player.posY, player.posZ, volume, pitch));
+			((EntityPlayerMP)player).connection.sendPacket(new SPacketSoundEffect(sound, player.getSoundCategory(), player.posX, player.posY, player.posZ, volume, pitch));
 	}
 }

@@ -65,6 +65,7 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 
 	@SideOnly(Side.CLIENT)
 	ModelBiped armorModel;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
@@ -78,6 +79,7 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	{
 		return true;
 	}
+
 	@Override
 	public int getColourForIEItem(ItemStack stack, int renderPass)
 	{
@@ -87,11 +89,13 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 			return 0x486c94;
 		return ItemNBTHelper.getInt(stack, Lib.NBT_EarmuffColour);
 	}
+
 	@Override
 	public boolean hasColor(ItemStack stack)
 	{
 		return true;
 	}
+
 	@Override
 	public int getColor(ItemStack stack)
 	{
@@ -99,17 +103,19 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 			return 0x486c94;
 		return ItemNBTHelper.getInt(stack, Lib.NBT_EarmuffColour);
 	}
+
 	@Override
-    public void removeColor(ItemStack stack)
-    {
+	public void removeColor(ItemStack stack)
+	{
 		if(ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
 			ItemNBTHelper.remove(stack, Lib.NBT_EarmuffColour);
-    }
+	}
+
 	@Override
-    public void setColor(ItemStack stack, int color)
-    {
+	public void setColor(ItemStack stack, int color)
+	{
 		ItemNBTHelper.setInt(stack, Lib.NBT_EarmuffColour, color);
-    }
+	}
 
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
@@ -117,6 +123,7 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 		String hexCol = Integer.toHexString(this.getColourForIEItem(stack, 0));
 		list.add(I18n.format(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack)
@@ -146,20 +153,24 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
 	{
-		return new ArmorProperties(0,0,0);
+		return new ArmorProperties(0, 0, 0);
 	}
+
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
 	{
 		return 0;
 	}
+
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot)
 	{
 	}
 
 	public static LinkedHashSet<String> affectedSoundCategories = Sets.newLinkedHashSet();
-	static{
+
+	static
+	{
 		affectedSoundCategories.add("ambient");
 		affectedSoundCategories.add("weather");
 		affectedSoundCategories.add("record");
@@ -168,6 +179,7 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 		affectedSoundCategories.add("hostile");
 		affectedSoundCategories.add("player");
 	}
+
 	public static float getVolumeMod(ItemStack stack)
 	{
 		if(!ItemNBTHelper.hasKey(stack, "IE:Earmuffs:Volume"))
@@ -180,20 +192,23 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	{
 		return true;
 	}
+
 	@Override
 	public ToolConfigBoolean[] getBooleanOptions(ItemStack stack)
 	{
 		ToolConfigBoolean[] array = new ToolConfigBoolean[affectedSoundCategories.size()];
-		int i=-1;
+		int i = -1;
 		for(String cat : affectedSoundCategories)
-			array[++i] = new ToolConfigBoolean(cat,60+i/4*55,32+10*(i%4),!ItemNBTHelper.getBoolean(stack,"IE:Earmuffs:Cat_"+cat));
+			array[++i] = new ToolConfigBoolean(cat, 60+i/4*55, 32+10*(i%4), !ItemNBTHelper.getBoolean(stack, "IE:Earmuffs:Cat_"+cat));
 		return array;
 	}
+
 	@Override
 	public ToolConfigFloat[] getFloatOptions(ItemStack stack)
 	{
-		return new ToolConfigFloat[]{new ToolConfigFloat("reductionValue", 60,20, 1-getVolumeMod(stack))};
+		return new ToolConfigFloat[]{new ToolConfigFloat("reductionValue", 60, 20, 1-getVolumeMod(stack))};
 	}
+
 	@Override
 	public String fomatConfigName(ItemStack stack, ToolConfig config)
 	{
@@ -201,18 +216,20 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 			return I18n.format(Lib.GUI_CONFIG+"earmuffs.noisegate");
 		return I18n.format(Lib.GUI_CONFIG+"earmuffs.soundcategory."+config.name);
 	}
+
 	@Override
 	public String fomatConfigDescription(ItemStack stack, ToolConfig config)
 	{
 		return null;
 	}
+
 	@Override
 	public void applyConfigOption(ItemStack stack, String key, Object value)
 	{
 		if(value instanceof Boolean)
-			ItemNBTHelper.setBoolean(stack,"IE:Earmuffs:Cat_"+key, !(Boolean)value);
+			ItemNBTHelper.setBoolean(stack, "IE:Earmuffs:Cat_"+key, !(Boolean)value);
 		else if(value instanceof Float)
-			ItemNBTHelper.setFloat(stack,"IE:Earmuffs:Volume", 1-(Float)value);
+			ItemNBTHelper.setFloat(stack, "IE:Earmuffs:Volume", 1-(Float)value);
 	}
 
 	@Override

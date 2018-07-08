@@ -39,9 +39,9 @@ public class ExtraUtilsHelper extends IECompatModule
 		Block lillyBlock = Block.REGISTRY.getObject(new ResourceLocation("extrautils2:enderlilly"));
 		Item orchidSeeds = Item.REGISTRY.getObject(new ResourceLocation("extrautils2:redorchid"));
 		Block orchidBlock = Block.REGISTRY.getObject(new ResourceLocation("extrautils2:redorchid"));
-		if(lillySeeds!=null && lillyBlock!=null)
+		if(lillySeeds!=null&&lillyBlock!=null)
 			registerXUPlant(new ItemStack(lillySeeds), lillyBlock, new ItemStack(Blocks.END_STONE), new ItemStack[]{new ItemStack(Items.ENDER_PEARL)}, 7, .0000125f, false);
-		if(orchidSeeds!=null && orchidBlock!=null)
+		if(orchidSeeds!=null&&orchidBlock!=null)
 			registerXUPlant(new ItemStack(orchidSeeds), orchidBlock, new ItemStack(Blocks.REDSTONE_ORE), new ItemStack[]{new ItemStack(Items.REDSTONE)}, 6, .0125f, true);
 	}
 
@@ -63,16 +63,19 @@ public class ExtraUtilsHelper extends IECompatModule
 			DefaultPlantHandler handler = new DefaultPlantHandler()
 			{
 				private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
+
 				@Override
 				protected HashSet<ComparableItemStack> getSeedSet()
 				{
 					return validSeeds;
 				}
+
 				@Override
 				public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
 				{
-					return !useFertilizer?growthStep:(growthStep*fertilizer);
+					return !useFertilizer?growthStep: (growthStep*fertilizer);
 				}
+
 				@Override
 				@SideOnly(Side.CLIENT)
 				public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)

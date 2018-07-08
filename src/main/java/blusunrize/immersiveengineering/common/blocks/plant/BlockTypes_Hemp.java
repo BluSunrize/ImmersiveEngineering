@@ -21,17 +21,19 @@ public enum BlockTypes_Hemp implements IStringSerializable, IBlockEnum
 	BOTTOM3,
 	BOTTOM4,
 	TOP0;
-	
+
 	@Override
 	public String getName()
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

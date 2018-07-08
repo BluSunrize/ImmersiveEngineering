@@ -37,14 +37,14 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 	@Override
 	public void render(TileEntityBottlingMachine te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
-		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
 
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock() != IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
@@ -57,21 +57,21 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
 		if(te.mirrored)
-			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1:1,1,te.facing.getFrontOffsetZ()==0?-1:1);
+			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1: 1, 1, te.facing.getFrontOffsetZ()==0?-1: 1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.bottlingProcessQueue.size()][];
 		//Animations
 		float lift = 0;
 
-		for(int i=0; i<itemDisplays.length; i++)
+		for(int i = 0; i < itemDisplays.length; i++)
 		{
 			BottlingProcess process = te.bottlingProcessQueue.get(i);
-			if(process==null || process.processTick==process.maxProcessTick)
+			if(process==null||process.processTick==process.maxProcessTick)
 				continue;
 
 			//+partialTicks
-			float processTimer = ((float)process.processTick)/process.maxProcessTick * 120;
+			float processTimer = ((float)process.processTick)/process.maxProcessTick*120;
 
 			float itemX = -1.5f;//-1;
 			float itemY = -.15625f;// -.34375f;
@@ -85,27 +85,27 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 			else if(processTimer <= 85)//slide
 			{
 				itemX = 0;
-				if(processTimer<=55)
-					lift=(processTimer-35)/20f*.125f;
-				else if(processTimer<=65)
+				if(processTimer <= 55)
+					lift = (processTimer-35)/20f*.125f;
+				else if(processTimer <= 65)
 				{
 					lift = .125f;
 					itemFill = (processTimer-55)/10f;
 				}
 				else
 				{
-					lift =(85-processTimer)/20f*.125f;
+					lift = (85-processTimer)/20f*.125f;
 					itemFill = 1;
 				}
 				itemY += lift;
-				lift+=.0625;
+				lift += .0625;
 			}
 			else
 			{
 				itemX = (processTimer-85)/35f*1.5f;
 				itemFill = 1;
 			}
-			itemDisplays[i] = new float[]{processTimer,itemX,itemY,itemZ,itemFill};
+			itemDisplays[i] = new float[]{processTimer, itemX, itemY, itemZ, itemFill};
 
 		}
 
@@ -140,38 +140,38 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 		{
 			GlStateManager.pushMatrix();
 			float level = fs.amount/(float)te.tanks[0].getCapacity();
-			GlStateManager.translate(-.21875,.376,1.21875);
+			GlStateManager.translate(-.21875, .376, 1.21875);
 			GlStateManager.scale(scale, scale, scale);
 			float h = level*9;
-			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
-			GlStateManager.rotate(90,0,1,0);
-			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
-			GlStateManager.rotate(90,0,1,0);
-			GlStateManager.translate(-7,0,7);
-			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
-			GlStateManager.rotate(90,0,1,0);
-			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
+			GlStateManager.rotate(90, 0, 1, 0);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
+			GlStateManager.rotate(90, 0, 1, 0);
+			GlStateManager.translate(-7, 0, 7);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
+			GlStateManager.rotate(90, 0, 1, 0);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
 
-			GlStateManager.rotate(90,1,0,0);
-			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,7);
-			GlStateManager.translate(0,0,-h);
-			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,7);
+			GlStateManager.rotate(90, 1, 0, 0);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
+			GlStateManager.translate(0, 0, -h);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
 
 			GlStateManager.scale(1/scale, 1/scale, 1/scale);
-			GlStateManager.translate(0,-1,-1);
+			GlStateManager.translate(0, -1, -1);
 			GlStateManager.popMatrix();
 		}
 
 
 		//DRAW ITEMS HERE
-		for(int i=0; i<itemDisplays.length; i++)
+		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
 				BottlingProcess process = te.bottlingProcessQueue.get(i);
 				if(process==null)
 					continue;
 
-				ItemStack display = itemDisplays[i][4]==0||process.items.get(1).isEmpty()?process.items.get(0):process.items.get(1);
+				ItemStack display = itemDisplays[i][4]==0||process.items.get(1).isEmpty()?process.items.get(0): process.items.get(1);
 				scale = .4375f;
 
 				GlStateManager.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
@@ -179,7 +179,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 
 				if(itemDisplays[i][4]==0)
 					ClientUtils.mc().getRenderItem().renderItem(process.items.get(0), ItemCameraTransforms.TransformType.FIXED);
-				else if(itemDisplays[i][4]==1 || !ClientProxy.stencilBufferEnabled)
+				else if(itemDisplays[i][4]==1||!ClientProxy.stencilBufferEnabled)
 					ClientUtils.mc().getRenderItem().renderItem(display, ItemCameraTransforms.TransformType.FIXED);
 				else
 				{
@@ -204,7 +204,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 
 					GlStateManager.disableTexture2D();
 					worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-					ClientUtils.renderBox(worldrenderer, -.5,h0,-.5, .5,h1,.5);
+					ClientUtils.renderBox(worldrenderer, -.5, h0, -.5, .5, h1, .5);
 					tessellator.draw();
 					GlStateManager.enableTexture2D();
 
@@ -239,13 +239,13 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		GlStateManager.color(1,0,0,1);
+		GlStateManager.color(1, 0, 0, 1);
 		if(Minecraft.isAmbientOcclusionEnabled())
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5 - pos.getX(), -.5 - pos.getY(), -.5 - pos.getZ());
+		worldRenderer.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);

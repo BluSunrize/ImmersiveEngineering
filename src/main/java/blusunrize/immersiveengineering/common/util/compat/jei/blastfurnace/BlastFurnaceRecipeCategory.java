@@ -26,7 +26,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 
 	public BlastFurnaceRecipeCategory(IGuiHelper helper)
 	{
-		super("blastfurnace","gui.immersiveengineering.blastFurnace", helper.createDrawable(background, 8,8, 142, 65), BlastFurnaceRecipe.class, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE.getMeta()), new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta()));
+		super("blastfurnace", "gui.immersiveengineering.blastFurnace", helper.createDrawable(background, 8, 8, 142, 65), BlastFurnaceRecipe.class, new ItemStack(IEContent.blockStoneDevice, 1, BlockTypes_StoneDevices.BLAST_FURNACE.getMeta()), new ItemStack(IEContent.blockStoneDevice, 1, BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta()));
 	}
 
 	@Override

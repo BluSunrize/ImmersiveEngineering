@@ -50,8 +50,8 @@ public class ItemJerrycan extends ItemIEBase
 		FluidStack fs = FluidUtil.getFluidContained(stack);
 		if(fs!=null)
 		{
-			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON? TextFormatting.GRAY:fs.getFluid().getRarity().rarityColor;
-			list.add(rarity+fs.getLocalizedName()+ TextFormatting.GRAY+": "+fs.amount+"/"+10000+"mB");
+			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().rarityColor;
+			list.add(rarity+fs.getLocalizedName()+TextFormatting.GRAY+": "+fs.amount+"/"+10000+"mB");
 		}
 		else
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.empty"));
@@ -62,12 +62,12 @@ public class ItemJerrycan extends ItemIEBase
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity == null || !tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+		if(tileEntity==null||!tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
 		{
 			FluidStack fs = FluidUtil.getFluidContained(stack);
 			if(Utils.placeFluidBlock(world, pos.offset(side), fs))
 			{
-				if(fs.amount<=0)
+				if(fs.amount <= 0)
 					fs = null;
 				ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 				return EnumActionResult.SUCCESS;
@@ -79,8 +79,9 @@ public class ItemJerrycan extends ItemIEBase
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return ItemNBTHelper.hasKey(stack, "jerrycanDrain") || FluidUtil.getFluidContained(stack)!=null;
+		return ItemNBTHelper.hasKey(stack, "jerrycanDrain")||FluidUtil.getFluidContained(stack)!=null;
 	}
+
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
 	{
@@ -105,7 +106,7 @@ public class ItemJerrycan extends ItemIEBase
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		if (!stack.isEmpty())
+		if(!stack.isEmpty())
 			return new FluidHandlerItemStack(stack, 10000);
 		return null;
 	}

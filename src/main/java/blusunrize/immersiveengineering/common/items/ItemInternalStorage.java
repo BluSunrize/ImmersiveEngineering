@@ -41,7 +41,7 @@ public abstract class ItemInternalStorage extends ItemIEBase
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt)
 	{
-		if (!stack.isEmpty())
+		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack);
 		return null;
 	}
@@ -49,12 +49,12 @@ public abstract class ItemInternalStorage extends ItemIEBase
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)
 	{
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if (handler instanceof IItemHandlerModifiable)
+		if(handler instanceof IItemHandlerModifiable)
 		{
-			if (inventory.size()!=handler.getSlots())
+			if(inventory.size()!=handler.getSlots())
 				throw new IllegalArgumentException("Parameter inventory has "+inventory.size()+" slots, capability inventory has "+handler.getSlots());
-			for (int i = 0; i < handler.getSlots(); i++)
-				((IItemHandlerModifiable) handler).setStackInSlot(i, inventory.get(i));
+			for(int i = 0; i < handler.getSlots(); i++)
+				((IItemHandlerModifiable)handler).setStackInSlot(i, inventory.get(i));
 		}
 		else
 			IELogger.warn("No valid inventory handler found for "+stack);
@@ -63,13 +63,13 @@ public abstract class ItemInternalStorage extends ItemIEBase
 	public NonNullList<ItemStack> getContainedItems(ItemStack stack)
 	{
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if (handler instanceof IEItemStackHandler)
+		if(handler instanceof IEItemStackHandler)
 			return ((IEItemStackHandler)handler).getContainedItems();
-		else if (handler != null)
+		else if(handler!=null)
 		{
 			IELogger.warn("Inefficiently getting contained items. Why does "+stack+" have a non-IE IItemHandler?");
 			NonNullList<ItemStack> inv = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
-			for (int i = 0; i < handler.getSlots(); i++)
+			for(int i = 0; i < handler.getSlots(); i++)
 				inv.set(i, handler.getStackInSlot(i));
 			return inv;
 		}
@@ -83,14 +83,14 @@ public abstract class ItemInternalStorage extends ItemIEBase
 	{
 		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
 		//Update old inventories to caps
-		if (ItemNBTHelper.hasKey(stack, "Inv"))
+		if(ItemNBTHelper.hasKey(stack, "Inv"))
 		{
 			NBTTagList list = ItemNBTHelper.getTag(stack).getTagList("Inv", 10);
 			setContainedItems(stack, Utils.readInventory(list, getSlotCount(stack)));
 			ItemNBTHelper.remove(stack, "Inv");
 			//Sync the changes
-			if (entityIn instanceof EntityPlayerMP && !worldIn.isRemote)
-				((EntityPlayerMP) entityIn).connection.sendPacket(new SPacketSetSlot(-2, itemSlot, stack));
+			if(entityIn instanceof EntityPlayerMP&&!worldIn.isRemote)
+				((EntityPlayerMP)entityIn).connection.sendPacket(new SPacketSetSlot(-2, itemSlot, stack));
 		}
 	}
 }

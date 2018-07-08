@@ -16,22 +16,24 @@ public class ComparableItemStack
 {
 	public ItemStack stack;
 	public boolean useNBT;
-	public int oreID=-1;
+	public int oreID = -1;
 
 	public ComparableItemStack(ItemStack stack)
 	{
 		this(stack, true);
 	}
+
 	public ComparableItemStack(ItemStack stack, boolean matchOre)
 	{
 		this(stack, matchOre, true);
 	}
+
 	public ComparableItemStack(ItemStack stack, boolean matchOre, boolean copy)
 	{
 		if(stack==null)
 			throw new RuntimeException("You cannot instantiate a ComparableItemStack with null for an Item!");
 		this.stack = stack;
-		if (copy)
+		if(copy)
 			copy();
 		if(matchOre)
 		{
@@ -57,6 +59,7 @@ public class ComparableItemStack
 		this.useNBT = useNBT;
 		return this;
 	}
+
 	public ComparableItemStack setOreID(int oid)
 	{
 		this.oreID = oid;
@@ -68,13 +71,14 @@ public class ComparableItemStack
 	{
 		return "ComparableStack: {"+this.stack.toString()+"}; oreID: "+this.oreID+"; checkNBT: "+this.useNBT;
 	}
+
 	@Override
 	public int hashCode()
 	{
 		if(this.oreID!=-1)
 			return this.oreID;
-		int hash = (stack.getItemDamage()&0xffff)*31 + stack.getItem().hashCode()*31;
-		if(this.useNBT && stack.hasTagCompound())
+		int hash = (stack.getItemDamage()&0xffff)*31+stack.getItem().hashCode()*31;
+		if(this.useNBT&&stack.hasTagCompound())
 			hash += stack.getTagCompound().hashCode()*31;
 		return hash;
 	}
@@ -85,11 +89,11 @@ public class ComparableItemStack
 		if(!(object instanceof ComparableItemStack))
 			return false;
 
-		if(this.oreID!=-1 && ((ComparableItemStack)object).oreID!=-1)
-			return this.oreID == ((ComparableItemStack)object).oreID;
+		if(this.oreID!=-1&&((ComparableItemStack)object).oreID!=-1)
+			return this.oreID==((ComparableItemStack)object).oreID;
 
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
-		if(!OreDictionary.itemMatches(stack,otherStack, false))
+		if(!OreDictionary.itemMatches(stack, otherStack, false))
 			return false;
 		if(this.useNBT)
 			return ItemStack.areItemStackTagsEqual(stack, otherStack);
@@ -108,6 +112,7 @@ public class ComparableItemStack
 		}
 		return nbt;
 	}
+
 	public static ComparableItemStack readFromNBT(NBTTagCompound nbt)
 	{
 		if(nbt.hasKey("oreID"))

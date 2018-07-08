@@ -37,13 +37,16 @@ public class ThaumcraftHelper extends IECompatModule
 		//			else if(potion!=null && potion.getName().equals("potion.visexhaust"))
 		//				ChemthrowerHandler.registerEffect("fluxgoo", new ChemthrowerEffect_Potion(null,0, potion,100,0));
 
-		FMLInterModComms.sendMessage("thaumcraft", "harvestStackedCrop", new ItemStack(IEContent.blockCrop,5));
-		
-		try{
+		FMLInterModComms.sendMessage("thaumcraft", "harvestStackedCrop", new ItemStack(IEContent.blockCrop, 5));
+
+		try
+		{
 			Class c_TileSmelter = Class.forName("thaumcraft.common.tiles.crafting.TileSmelter");
 			if(c_TileSmelter!=null)
 				ExternalHeaterHandler.registerHeatableAdapter(c_TileSmelter, new AlchemyFurnaceAdapter());
-		}catch(Exception e){}
+		} catch(Exception e)
+		{
+		}
 	}
 
 	@Override
@@ -58,9 +61,11 @@ public class ThaumcraftHelper extends IECompatModule
 		Field f_furnaceBurnTime;
 		Method m_isEnabled;
 		Method m_setFurnaceState;
+
 		public AlchemyFurnaceAdapter()
 		{
-			try{
+			try
+			{
 				c_TileSmelter = Class.forName("thaumcraft.common.tiles.crafting.TileSmelter");
 				m_canSmelt = c_TileSmelter.getDeclaredMethod("canSmelt");
 				m_canSmelt.setAccessible(true);
@@ -69,8 +74,11 @@ public class ThaumcraftHelper extends IECompatModule
 				m_isEnabled = c_BlockStateUtils.getMethod("isEnabled", IBlockState.class);
 				Class c_BlockSmelter = Class.forName("thaumcraft.common.blocks.devices.BlockSmelter");
 				m_setFurnaceState = c_BlockSmelter.getMethod("setFurnaceState", World.class, BlockPos.class, boolean.class);
-			}catch(Exception e){}
+			} catch(Exception e)
+			{
+			}
 		}
+
 		boolean canSmelt(TileEntity tileEntity) throws Exception
 		{
 			if(m_canSmelt!=null)
@@ -82,29 +90,32 @@ public class ThaumcraftHelper extends IECompatModule
 		public int doHeatTick(TileEntity tileEntity, int energyAvailable, boolean redstone)
 		{
 			int energyConsumed = 0;
-			try{
+			try
+			{
 				int time = f_furnaceBurnTime.getInt(tileEntity);
-				boolean canSmelt = redstone || canSmelt(tileEntity);
+				boolean canSmelt = redstone||canSmelt(tileEntity);
 				if(canSmelt)
 				{
-					if(time<200)
+					if(time < 200)
 					{
 						int heatAttempt = Math.min(4, 200-time);
 						int heatEnergyRatio = Math.max(1, ExternalHeaterHandler.defaultFurnaceEnergyCost);
 						int energyToUse = Math.min(energyAvailable, heatAttempt*heatEnergyRatio);
 						int heat = energyToUse/heatEnergyRatio;
-						if(heat>0)
+						if(heat > 0)
 						{
 							time += heat;
 							energyConsumed += heat*heatEnergyRatio;
 							boolean enabled = (Boolean)m_isEnabled.invoke(null, tileEntity.getWorld().getBlockState(tileEntity.getPos()));
 							if(!enabled)
-								m_setFurnaceState.invoke(null, tileEntity.getWorld(),tileEntity.getPos(),true);
+								m_setFurnaceState.invoke(null, tileEntity.getWorld(), tileEntity.getPos(), true);
 						}
 					}
 					f_furnaceBurnTime.setInt(tileEntity, time);
 				}
-			}catch(Exception e){}
+			} catch(Exception e)
+			{
+			}
 			return energyConsumed;
 		}
 	}

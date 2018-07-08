@@ -20,10 +20,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class MessageChemthrowerSwitch implements IMessage
 {
 	boolean forward;
+
 	public MessageChemthrowerSwitch(boolean forward)
 	{
 		this.forward = forward;
 	}
+
 	public MessageChemthrowerSwitch()
 	{
 	}
@@ -48,7 +50,7 @@ public class MessageChemthrowerSwitch implements IMessage
 			EntityPlayerMP player = ctx.getServerHandler().player;
 			player.getServerWorld().addScheduledTask(() -> {
 				ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
-				if(equipped.getItem() instanceof ItemChemthrower&& ((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
+				if(equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 					((ItemChemthrower)equipped.getItem()).switchTank(equipped, message.forward);
 			});
 			return null;

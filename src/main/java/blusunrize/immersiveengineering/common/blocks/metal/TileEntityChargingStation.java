@@ -44,7 +44,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	public EnumFacing facing = EnumFacing.NORTH;
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	private boolean charging = true;
-	public int comparatorOutput=0;
+	public int comparatorOutput = 0;
 
 	@Override
 	public void update()
@@ -55,25 +55,25 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 			{
 				float charge = 0;
 				float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
-				if(max>0)
+				if(max > 0)
 					charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
 
-				for(int i=0; i<3; i++)
+				for(int i = 0; i < 3; i++)
 				{
 					long time = world.getTotalWorldTime();
-					if(charge>=1 || (time%12>=i*4&&time%12<=i*4+2))
+					if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 					{
 						int shift = i-1;
-						double x = getPos().getX()+.5+(facing==EnumFacing.WEST?-.46875:facing==EnumFacing.EAST?.46875: facing==EnumFacing.NORTH?(-.1875*shift): (.1875*shift));
+						double x = getPos().getX()+.5+(facing==EnumFacing.WEST?-.46875: facing==EnumFacing.EAST?.46875: facing==EnumFacing.NORTH?(-.1875*shift): (.1875*shift));
 						double y = getPos().getY()+.25;
-						double z = getPos().getZ()+.5+(facing==EnumFacing.NORTH?-.46875:facing==EnumFacing.SOUTH?.46875: facing==EnumFacing.EAST?(-.1875*shift): (.1875*shift));
-						ImmersiveEngineering.proxy.spawnRedstoneFX(world, x,y,z, .25,.25,.25, .5f, 1-charge,charge,0);
+						double z = getPos().getZ()+.5+(facing==EnumFacing.NORTH?-.46875: facing==EnumFacing.SOUTH?.46875: facing==EnumFacing.EAST?(-.1875*shift): (.1875*shift));
+						ImmersiveEngineering.proxy.spawnRedstoneFX(world, x, y, z, .25, .25, .25, .5f, 1-charge, charge, 0);
 					}
 				}
 			}
-			else if (charging)
+			else if(charging)
 			{
-				if (energyStorage.getEnergyStored()==0)
+				if(energyStorage.getEnergyStored()==0)
 				{
 					charging = false;
 					this.markContainingBlockForUpdate(null);
@@ -83,13 +83,13 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 				{
 					int stored = EnergyHelper.getEnergyStored(inventory.get(0));
 					int max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
-					int space = max - stored;
-					if(space>0)
+					int space = max-stored;
+					if(space > 0)
 					{
 						int energyDec = (10*stored)/max;
 						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.Machines.charger_consumption));
 						int accepted = Math.min(EnergyHelper.insertFlux(inventory.get(0), insert, true), this.energyStorage.extractEnergy(insert, true));
-						if((accepted=this.energyStorage.extractEnergy(accepted, false))>0)
+						if((accepted = this.energyStorage.extractEnergy(accepted, false)) > 0)
 							stored += EnergyHelper.insertFlux(inventory.get(0), accepted, false);
 						int energyDecNew = (10*stored)/max;
 						if(energyDec!=energyDecNew)
@@ -97,7 +97,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 					}
 				}
 			}
-			else if (energyStorage.getEnergyStored()>=energyStorage.getMaxEnergyStored()*.95)
+			else if(energyStorage.getEnergyStored() >= energyStorage.getMaxEnergyStored()*.95)
 			{
 				charging = true;
 				this.markContainingBlockForUpdate(null);
@@ -105,13 +105,13 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		}
 
 
-		if(!world.isRemote && world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
+		if(!world.isRemote&&world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
 		{
 			float charge = 0;
 			if(EnergyHelper.isFluxItem(inventory.get(0)))
 			{
 				float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
-				if(max>0)
+				if(max > 0)
 					charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
 			}
 			//				else
@@ -119,7 +119,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 			int i = (int)(15*charge);
 			if(i!=this.comparatorOutput)
 			{
-				this.comparatorOutput=i;
+				this.comparatorOutput = i;
 				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 			}
 		}
@@ -133,6 +133,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		inventory.set(0, new ItemStack(nbt.getCompoundTag("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -160,14 +161,17 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		return energyStorage;
 	}
+
 	@Nonnull
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		return facing==EnumFacing.DOWN||facing==this.facing.getOpposite()?SideConfig.INPUT:SideConfig.NONE;
+		return facing==EnumFacing.DOWN||facing==this.facing.getOpposite()?SideConfig.INPUT: SideConfig.NONE;
 	}
+
 	IEForgeEnergyWrapper wrapperDown = new IEForgeEnergyWrapper(this, EnumFacing.DOWN);
 	IEForgeEnergyWrapper wrapperDir = new IEForgeEnergyWrapper(this, facing.getOpposite());
+
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
@@ -205,16 +209,19 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
@@ -224,7 +231,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	@Override
 	public float[] getBlockBounds()
 	{
-		return new float[]{facing.getAxis()==Axis.X?0:.125f,0,facing.getAxis()==Axis.Z?0:.125f, facing.getAxis()==Axis.X?1:.875f,1,facing.getAxis()==Axis.Z?1:.875f};
+		return new float[]{facing.getAxis()==Axis.X?0: .125f, 0, facing.getAxis()==Axis.Z?0: .125f, facing.getAxis()==Axis.X?1: .875f, 1, facing.getAxis()==Axis.Z?1: .875f};
 	}
 
 	@Override
@@ -232,16 +239,19 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		return inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return EnergyHelper.isFluxItem(stack);
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 1;
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
@@ -256,7 +266,9 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 			return true;
 		return super.hasCapability(capability, facing);
 	}
-	IItemHandler insertionHandler = new IEInventoryHandler(1,this);
+
+	IItemHandler insertionHandler = new IEInventoryHandler(1, this);
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
@@ -270,7 +282,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		if(EnergyHelper.isFluxItem(heldItem))
 		{
-			ItemStack stored = !inventory.get(0).isEmpty()? inventory.get(0).copy():ItemStack.EMPTY;
+			ItemStack stored = !inventory.get(0).isEmpty()?inventory.get(0).copy(): ItemStack.EMPTY;
 			inventory.set(0, heldItem.copy());
 			player.setHeldItem(hand, stored);
 			markDirty();

@@ -23,13 +23,13 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 
-public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IDirectionalTile,IHammerInteraction, IBlockBounds, IActiveState, ILightValue
+public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IDirectionalTile, IHammerInteraction, IBlockBounds, IActiveState, ILightValue
 {
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.Machines.lantern_energyDraw;
 	private int maximumStorage = IEConfig.Machines.lantern_maximumStorage;
 	public boolean active = false;
-	private boolean interdictionList=false;
+	private boolean interdictionList = false;
 	private boolean flipped = false;
 
 	@Override
@@ -37,23 +37,24 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		if(world.isRemote)
 			return;
-		if(!interdictionList && IEConfig.Machines.lantern_spawnPrevent)
+		if(!interdictionList&&IEConfig.Machines.lantern_spawnPrevent)
 		{
-			synchronized (EventHandler.interdictionTiles) {
-				if (!EventHandler.interdictionTiles.contains(this))
+			synchronized(EventHandler.interdictionTiles)
+			{
+				if(!EventHandler.interdictionTiles.contains(this))
 					EventHandler.interdictionTiles.add(this);
 			}
-			interdictionList=true;
+			interdictionList = true;
 		}
 		boolean b = active;
 		if(energyStorage >= energyDraw)
 		{
 			energyStorage -= energyDraw;
 			if(!active)
-				active=true;
+				active = true;
 		}
 		else if(active)
-			active=false;
+			active = false;
 
 		if(active!=b)
 		{
@@ -66,21 +67,24 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public double getInterdictionRangeSquared()
 	{
-		return active?1024:0;
+		return active?1024: 0;
 	}
 
 	@Override
 	public void invalidate()
 	{
-		synchronized (EventHandler.interdictionTiles) {
+		synchronized(EventHandler.interdictionTiles)
+		{
 			EventHandler.interdictionTiles.remove(this);
 		}
 		super.invalidate();
 	}
 
 	@Override
-	public void onChunkUnload(){
-		synchronized (EventHandler.interdictionTiles) {
+	public void onChunkUnload()
+	{
+		synchronized(EventHandler.interdictionTiles)
+		{
 			EventHandler.interdictionTiles.remove(this);
 		}
 		super.onChunkUnload();
@@ -99,9 +103,9 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setBoolean("active",active);
-		nbt.setInteger("energyStorage",energyStorage);
-		nbt.setBoolean("flipped",flipped);
+		nbt.setBoolean("active", active);
+		nbt.setInteger("energyStorage", energyStorage);
+		nbt.setBoolean("flipped", flipped);
 	}
 
 	@Override
@@ -109,31 +113,35 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isEnergyOutput()
 	{
 		return true;
 	}
+
 	@Override
 	protected boolean isRelay()
 	{
 		return true;
 	}
+
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
-		if(amount > 0 && energyStorage < maximumStorage)
+		if(amount > 0&&energyStorage < maximumStorage)
 		{
 			if(!simulate)
 			{
-				int rec = Math.min(maximumStorage - energyStorage, energyDraw);
-				energyStorage+=rec;
+				int rec = Math.min(maximumStorage-energyStorage, energyDraw);
+				energyStorage += rec;
 				return rec;
 			}
-			return Math.min(maximumStorage - energyStorage, energyDraw);
+			return Math.min(maximumStorage-energyStorage, energyDraw);
 		}
 		return 0;
 	}
+
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
@@ -149,17 +157,17 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)? con.end.getX()-getPos().getX(): (con.end.equals(getPos())&& con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)? con.end.getZ()-getPos().getZ(): (con.end.equals(getPos())&& con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
-		if(Math.abs(xDif)>=Math.abs(zDif))
-			return new Vec3d(xDif<0?.25:xDif>0?.75:.5, flipped?.9375:.0625, .5);
-		return new Vec3d(.5, flipped?.9375:.0625, zDif<0?.25:zDif>0?.75:.5);
+		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(getPos())&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
+		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(getPos())&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
+		if(Math.abs(xDif) >= Math.abs(zDif))
+			return new Vec3d(xDif < 0?.25: xDif > 0?.75: .5, flipped?.9375: .0625, .5);
+		return new Vec3d(.5, flipped?.9375: .0625, zDif < 0?.25: zDif > 0?.75: .5);
 	}
 
 	@Override
 	public float[] getBlockBounds()
 	{
-		return new float[]{.1875f,0,.1875f, .8125f,1,.8125f};
+		return new float[]{.1875f, 0, .1875f, .8125f, 1, .8125f};
 	}
 
 	@Override
@@ -167,6 +175,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		return IEProperties.BOOLEANS[0];
 	}
+
 	@Override
 	public boolean getIsActive()
 	{
@@ -176,34 +185,39 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public int getLightValue()
 	{
-		return active?15:0;
+		return active?15: 0;
 	}
 
 
 	@Override
 	public EnumFacing getFacing()
 	{
-		return flipped?EnumFacing.UP:EnumFacing.NORTH;
+		return flipped?EnumFacing.UP: EnumFacing.NORTH;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return -1;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
@@ -215,7 +229,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
+		world.addBlockEvent(getPos(), getBlockType(), active?1: 0, 0);
 		return true;
 	}
 }

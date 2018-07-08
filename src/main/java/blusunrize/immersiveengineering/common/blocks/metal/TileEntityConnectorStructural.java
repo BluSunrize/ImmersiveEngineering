@@ -37,6 +37,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	{
 		return false;
 	}
+
 	@Override
 	protected boolean canTakeLV()
 	{
@@ -51,7 +52,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
-		rotation += player.isSneaking()?-22.5f:22.5f;
+		rotation += player.isSneaking()?-22.5f: 22.5f;
 		rotation %= 360;
 		markDirty();
 		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
@@ -64,12 +65,13 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setFloat("rotation", rotation);
 	}
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && world!=null)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT&&world!=null)
 			this.markContainingBlockForUpdate(null);
 	}
 
@@ -92,6 +94,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	{
 		return 0;
 	}
+
 	@Override
 	public int getMaxOutput()
 	{
@@ -105,6 +108,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 			return false;
 		return limitType==null||limitType==cableType;
 	}
+
 	@Override
 	public boolean isEnergyOutput()
 	{
@@ -114,9 +118,9 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
-		Matrix4 mat = transform.isPresent()?new Matrix4(transform.get().getMatrix()):new Matrix4();
-		mat = mat.translate(.5,0,.5).rotate(Math.toRadians(rotation),0,1,0).translate(-.5,0,-.5);
-		transform = Optional.of( new TRSRTransformation(mat.toMatrix4f()));
+		Matrix4 mat = transform.isPresent()?new Matrix4(transform.get().getMatrix()): new Matrix4();
+		mat = mat.translate(.5, 0, .5).rotate(Math.toRadians(rotation), 0, 1, 0).translate(-.5, 0, -.5);
+		transform = Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 		return transform;
 	}
 

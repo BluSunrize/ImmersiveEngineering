@@ -45,51 +45,62 @@ public class ModelConfigurableSides implements IBakedModel
 	private static final String RESOURCE_LOCATION = "models/block/smartmodel/"+MODEL_PREFIX;
 	//Holy shit, this type-chaining is messy. But I wanted to use lambdas!
 	private static HashMap<String, ITextureNamer> TYPES = new HashMap();
-	static{
-		TYPES.put("all6_", new ITextureNamer(){});//every side seperately
-		TYPES.put("s_", new ITextureNamer(){//all sides, same texture
+
+	static
+	{
+		TYPES.put("all6_", new ITextureNamer()
+		{
+		});//every side seperately
+		TYPES.put("s_", new ITextureNamer()
+		{//all sides, same texture
 			@Override
 			public String nameFromSide(EnumFacing side, SideConfig cfg)
 			{
 				return "side";
 			}
 		});
-		TYPES.put("hud_", new ITextureNamer(){//horizontal, up, down
+		TYPES.put("hud_", new ITextureNamer()
+		{//horizontal, up, down
 			@Override
 			public String nameFromSide(EnumFacing side, SideConfig cfg)
 			{
-				return side.ordinal()<2?side.getName():"side";
+				return side.ordinal() < 2?side.getName(): "side";
 			}
 		});
-		TYPES.put("hv_", new ITextureNamer(){//horizontal, vertical
+		TYPES.put("hv_", new ITextureNamer()
+		{//horizontal, vertical
 			@Override
 			public String nameFromSide(EnumFacing side, SideConfig cfg)
 			{
-				return side.ordinal()<2?"up":"side";
+				return side.ordinal() < 2?"up": "side";
 			}
 		});
-		TYPES.put("ud_", new ITextureNamer(){//up, down, sides not configureable
+		TYPES.put("ud_", new ITextureNamer()
+		{//up, down, sides not configureable
 			@Override
 			public String nameFromSide(EnumFacing side, SideConfig cfg)
 			{
-				return side.ordinal()<2?side.getName():"side";
+				return side.ordinal() < 2?side.getName(): "side";
 			}
+
 			@Override
 			public String nameFromCfg(EnumFacing side, SideConfig cfg)
 			{
-				return side.ordinal()<2?cfg.getTextureName():null;
+				return side.ordinal() < 2?cfg.getTextureName(): null;
 			}
 		});
-		TYPES.put("v_", new ITextureNamer(){//vertical, sides not configureable
+		TYPES.put("v_", new ITextureNamer()
+		{//vertical, sides not configureable
 			@Override
 			public String nameFromSide(EnumFacing side, SideConfig cfg)
 			{
-				return side.ordinal()<2?"up":"side";
+				return side.ordinal() < 2?"up": "side";
 			}
+
 			@Override
 			public String nameFromCfg(EnumFacing side, SideConfig cfg)
 			{
-				return side.ordinal()<2?cfg.getTextureName():null;
+				return side.ordinal() < 2?cfg.getTextureName(): null;
 			}
 		});
 	}
@@ -109,13 +120,13 @@ public class ModelConfigurableSides implements IBakedModel
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 	{
 		TextureAtlasSprite[] tex = new TextureAtlasSprite[6];
-		for(int i=0; i<tex.length; i++)
+		for(int i = 0; i < tex.length; i++)
 			tex[i] = this.textures[i][0];
 		char[] keyArray = "000000".toCharArray();
 		if(state instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState extended = (IExtendedBlockState)state;
-			for(int i=0; i<IEProperties.SIDECONFIG.length; i++)
+			for(int i = 0; i < IEProperties.SIDECONFIG.length; i++)
 				if(extended.getUnlistedNames().contains(IEProperties.SIDECONFIG[i]))
 				{
 					IEEnums.SideConfig config = extended.getValue(IEProperties.SIDECONFIG[i]);
@@ -127,11 +138,12 @@ public class ModelConfigurableSides implements IBakedModel
 					}
 				}
 		}
-		String key = name + String.copyValueOf(keyArray);
+		String key = name+String.copyValueOf(keyArray);
 		if(!modelCache.containsKey(key))
 			modelCache.put(key, bakeQuads(tex));
 		return modelCache.get(key);
 	}
+
 	private static List<BakedQuad> bakeQuads(TextureAtlasSprite[] sprites)
 	{
 		List<BakedQuad> quads = Lists.newArrayListWithExpectedSize(6);
@@ -158,11 +170,13 @@ public class ModelConfigurableSides implements IBakedModel
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isGui3d()
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isBuiltInRenderer()
 	{
@@ -176,21 +190,23 @@ public class ModelConfigurableSides implements IBakedModel
 	}
 
 	static final ItemCameraTransforms defaultTransforms = new ItemCameraTransforms(
-			new ItemTransformVec3f(new Vector3f(75,45,0),new Vector3f(0,.25f,0),new Vector3f(0.375f,0.375f,0.375f)), //thirdperson left
-			new ItemTransformVec3f(new Vector3f(75,45,0),new Vector3f(0,.15625f,0),new Vector3f(0.375f,0.375f,0.375f)), //thirdperson left
+			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, .25f, 0), new Vector3f(0.375f, 0.375f, 0.375f)), //thirdperson left
+			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, .15625f, 0), new Vector3f(0.375f, 0.375f, 0.375f)), //thirdperson left
 
-			new ItemTransformVec3f(new Vector3f(0,45,0),new Vector3f(0,0,0),new Vector3f(.4f,.4f,.4f)), //firstperson left
-			new ItemTransformVec3f(new Vector3f(0,225,0),new Vector3f(0,0,0),new Vector3f(.4f,.4f,.4f)), //firstperson right
+			new ItemTransformVec3f(new Vector3f(0, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.4f, .4f, .4f)), //firstperson left
+			new ItemTransformVec3f(new Vector3f(0, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.4f, .4f, .4f)), //firstperson right
 
-			new ItemTransformVec3f(new Vector3f(0,0,0),new Vector3f(0,0,0),new Vector3f(1,1,1)), //head
-			new ItemTransformVec3f(new Vector3f(30,225,0),new Vector3f(0,0,0),new Vector3f(.625f,.625f,.625f)), //gui
-			new ItemTransformVec3f(new Vector3f(0,0,0),new Vector3f(0,.1875f,0),new Vector3f(.25f,.25f,.25f)), //ground
-			new ItemTransformVec3f(new Vector3f(0,0,0),new Vector3f(0,0,0),new Vector3f(.5f,.5f,.5f))); //fixed
+			new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)), //head
+			new ItemTransformVec3f(new Vector3f(30, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.625f, .625f, .625f)), //gui
+			new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0, .1875f, 0), new Vector3f(.25f, .25f, .25f)), //ground
+			new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(.5f, .5f, .5f))); //fixed
+
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
 		return defaultTransforms;
 	}
+
 	@Override
 	public ItemOverrideList getOverrides()
 	{
@@ -216,7 +232,7 @@ public class ModelConfigurableSides implements IBakedModel
 		{
 			String resourcePath = modelLocation.getResourcePath();
 			int pos = resourcePath.indexOf(MODEL_PREFIX);
-			if(pos>=0)
+			if(pos >= 0)
 			{
 				pos += MODEL_PREFIX.length();
 				String sub = resourcePath.substring(pos);
@@ -231,7 +247,7 @@ public class ModelConfigurableSides implements IBakedModel
 						for(EnumFacing f : EnumFacing.VALUES)
 							for(SideConfig cfg : SideConfig.values())
 							{
-								String key = f.getName() + "_" + cfg.getTextureName();
+								String key = f.getName()+"_"+cfg.getTextureName();
 								String tex = name+"_"+e.getValue().getTextureName(f, cfg);
 								builder.put(key, new ResourceLocation(ImmersiveEngineering.MODID, "blocks/"+tex));
 							}
@@ -268,7 +284,7 @@ public class ModelConfigurableSides implements IBakedModel
 		}
 
 		@Override
-		public IBakedModel bake(IModelState state, VertexFormat format,	Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+		public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 		{
 			TextureAtlasSprite[][] tex = new TextureAtlasSprite[6][3];
 			for(EnumFacing f : EnumFacing.VALUES)
@@ -309,7 +325,7 @@ public class ModelConfigurableSides implements IBakedModel
 						ITextureNamer namer = TYPES.get(type);
 						newName = textures.get("name");
 						if(namer!=null)
-							rl = new ResourceLocation(newName+"_"+namer.getTextureName(f,cfg));
+							rl = new ResourceLocation(newName+"_"+namer.getTextureName(f, cfg));
 					}
 					builder.put(key, rl);
 				}
@@ -321,9 +337,9 @@ public class ModelConfigurableSides implements IBakedModel
 	{
 		default String getTextureName(EnumFacing side, SideConfig cfg)
 		{
-			String s = nameFromSide(side,cfg);
-			String c = nameFromCfg(side,cfg);
-			if(s!=null && c!=null)
+			String s = nameFromSide(side, cfg);
+			String c = nameFromCfg(side, cfg);
+			if(s!=null&&c!=null)
 				return s+"_"+c;
 			else if(s!=null)
 				return s;
@@ -336,6 +352,7 @@ public class ModelConfigurableSides implements IBakedModel
 		{
 			return side.getName();
 		}
+
 		default String nameFromCfg(EnumFacing side, SideConfig cfg)
 		{
 			return cfg.getTextureName();

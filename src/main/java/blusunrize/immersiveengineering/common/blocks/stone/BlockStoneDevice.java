@@ -30,7 +30,7 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 {
 	public BlockStoneDevice()
 	{
-		super("stone_device",Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDevices.class), ItemBlockIEBase.class, IEProperties.BOOLEANS[0]);
+		super("stone_device", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDevices.class), ItemBlockIEBase.class, IEProperties.BOOLEANS[0]);
 		setHardness(2.0F);
 		setResistance(20f);
 		this.setAllNotNormalBlock();
@@ -50,15 +50,16 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityBlastFurnaceAdvanced)
-			return ((TileEntityBlastFurnaceAdvanced)te).pos==1 || ((TileEntityBlastFurnaceAdvanced)te).pos==4 || ((TileEntityBlastFurnaceAdvanced)te).pos==7 || (((TileEntityBlastFurnaceAdvanced)te).pos==31);
+			return ((TileEntityBlastFurnaceAdvanced)te).pos==1||((TileEntityBlastFurnaceAdvanced)te).pos==4||((TileEntityBlastFurnaceAdvanced)te).pos==7||(((TileEntityBlastFurnaceAdvanced)te).pos==31);
 		return true;
 	}
 
-	private static final AxisAlignedBB AABB_CARPET = new AxisAlignedBB(0,0,0, 1,.0625,1);
-	private static final AxisAlignedBB AABB_QUARTER = new AxisAlignedBB(0,0,0, 1,.25,1);
-	private static final AxisAlignedBB AABB_THREEQUARTER = new AxisAlignedBB(0,0,0, 1,.75,1);
-	private static final AxisAlignedBB AABB_CORESAMPLE_X = new AxisAlignedBB(0,0,.28125f, 1,1,.71875f);
-	private static final AxisAlignedBB AABB_CORESAMPLE_Z = new AxisAlignedBB(.28125f,0,0, .71875f,1,1);
+	private static final AxisAlignedBB AABB_CARPET = new AxisAlignedBB(0, 0, 0, 1, .0625, 1);
+	private static final AxisAlignedBB AABB_QUARTER = new AxisAlignedBB(0, 0, 0, 1, .25, 1);
+	private static final AxisAlignedBB AABB_THREEQUARTER = new AxisAlignedBB(0, 0, 0, 1, .75, 1);
+	private static final AxisAlignedBB AABB_CORESAMPLE_X = new AxisAlignedBB(0, 0, .28125f, 1, 1, .71875f);
+	private static final AxisAlignedBB AABB_CORESAMPLE_Z = new AxisAlignedBB(.28125f, 0, 0, .71875f, 1, 1);
+
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -72,8 +73,8 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 		else if(meta==BlockTypes_StoneDevices.CORESAMPLE)
 		{
 			TileEntity te = world.getTileEntity(pos);
-			if(te!=null && te instanceof TileEntityCoresample)
-				return ((TileEntityCoresample)te).facing.getAxis()==Axis.Z?AABB_CORESAMPLE_Z:AABB_CORESAMPLE_X;
+			if(te!=null&&te instanceof TileEntityCoresample)
+				return ((TileEntityCoresample)te).facing.getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
 		}
 		return super.getBoundingBox(state, world, pos);
 	}

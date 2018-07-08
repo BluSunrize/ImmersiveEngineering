@@ -43,12 +43,13 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.*;
 
-public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,MixerRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IGuiTile
+public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, MixerRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile
 {
 	public TileEntityMixer()
 	{
-		super(MultiblockMixer.instance, new int[]{3,3,3}, 16000, true);
+		super(MultiblockMixer.instance, new int[]{3, 3, 3}, 16000, true);
 	}
+
 	public MultiFluidTank tank = new MultiFluidTank(8000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
@@ -63,6 +64,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 8);
 		outputAll = nbt.getBoolean("outputAll");
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -86,7 +88,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	public void update()
 	{
 		super.update();
-		if(isDummy() || isRSDisabled())
+		if(isDummy()||isRSDisabled())
 			return;
 
 		if(world.isRemote)
@@ -95,18 +97,18 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			{
 				if(Utils.RAND.nextInt(8)==0)
 				{
-					FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0):null;
+					FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0): null;
 					if(fs!=null)
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getFrontOffsetX()*.5f+(mirrored?facing.rotateYCCW():facing.rotateY()).getFrontOffsetX()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getFrontOffsetZ()*.5f+(mirrored?facing.rotateYCCW():facing.rotateY()).getFrontOffsetZ()*.5f);
+						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getFrontOffsetX()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getFrontOffsetX()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getFrontOffsetZ()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getFrontOffsetZ()*.5f);
 						float r = Utils.RAND.nextFloat()*.8125f;
 						float angleRad = (float)Math.toRadians(animation_agitator);
-						partPos = partPos.addVector(r*Math.cos(angleRad),0,r*Math.sin(angleRad));
+						partPos = partPos.addVector(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
 						if(Utils.RAND.nextBoolean())
-							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.x,partPos.y,partPos.z, 0,0,0);
+							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
 						else
-							ImmersiveEngineering.proxy.spawnFluidSplashFX(world, fs, partPos.x,partPos.y,partPos.z, 0,0,0);
+							ImmersiveEngineering.proxy.spawnFluidSplashFX(world, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
 					}
 				}
 				animation_agitator = (animation_agitator+9)%360;
@@ -116,10 +118,10 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		{
 			boolean update = false;
 			boolean foundRecipe = false;
-			if(energyStorage.getEnergyStored()>0 && processQueue.size()<this.getProcessQueueMaxLength())
+			if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
 			{
 				int tankAmount = tank.getFluidAmount();
-				if(tankAmount>0)
+				if(tankAmount > 0)
 				{
 					Set<Integer> usedInvSlots = new HashSet<Integer>();
 					for(MultiblockProcess<MixerRecipe> process : processQueue)
@@ -127,7 +129,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 							for(int i : ((MultiblockProcessInMachine<MixerRecipe>)process).inputSlots)
 								usedInvSlots.add(i);
 					NonNullList<ItemStack> components = NonNullList.withSize(this.inventory.size(), ItemStack.EMPTY);
-					for(int i=0; i<components.size(); i++)
+					for(int i = 0; i < components.size(); i++)
 						if(!usedInvSlots.contains(i))
 							components.set(i, inventory.get(i));
 
@@ -148,7 +150,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 				}
 			}
 
-			if(this.tank.getFluidTypes()>1 || !foundRecipe || outputAll)
+			if(this.tank.getFluidTypes() > 1||!foundRecipe||outputAll)
 			{
 				BlockPos outputPos = this.getPos().down().offset(facing.getOpposite(), 2);
 				IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, facing);
@@ -173,7 +175,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 					{
 						int totalOut = 0;
 						Iterator<FluidStack> it = this.tank.fluids.iterator();
-						while (it.hasNext())
+						while(it.hasNext())
 						{
 							FluidStack fs = it.next();
 							if(fs!=null)
@@ -187,7 +189,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 									totalOut += drained;
 									update = true;
 								}
-								if(totalOut>=80)
+								if(totalOut >= 80)
 									break;
 							}
 						}
@@ -205,12 +207,13 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos>1&&pos<9 && pos!=3)
-			return new float[]{0,0,0, 1,.5f,1};
+		if(pos > 1&&pos < 9&&pos!=3)
+			return new float[]{0, 0, 0, 1, .5f, 1};
 		if(pos==11)
-			return new float[]{facing==EnumFacing.WEST?.5f:0,0,facing==EnumFacing.NORTH?.5f:0, facing==EnumFacing.EAST?.5f:1,1,facing==EnumFacing.SOUTH?.5f:1};
-		return new float[]{0,0,0, 1,1,1};
+			return new float[]{facing==EnumFacing.WEST?.5f: 0, 0, facing==EnumFacing.NORTH?.5f: 0, facing==EnumFacing.EAST?.5f: 1, 1, facing==EnumFacing.SOUTH?.5f: 1};
+		return new float[]{0, 0, 0, 1, 1, 1};
 	}
+
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
@@ -220,24 +223,24 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			fw = fw.getOpposite();
 		if(pos==2)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			float minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .125f;
 			float maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .25f;
 			float minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .125f;
 			float maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .25f;
-			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .75f;
 			maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .875f;
 			minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .75f;
 			maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .875f;
-			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
 		else if(pos==4||pos==5||pos==7||pos==8)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			if(pos>5)
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			if(pos > 5)
 				fl = fl.getOpposite();
 			if(pos%3==2)
 				fw = fw.getOpposite();
@@ -245,7 +248,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			float maxX = fl==EnumFacing.EAST?.3125f: fl==EnumFacing.WEST?.9375f: fw==EnumFacing.EAST?.3125f: .9375f;
 			float minZ = fl==EnumFacing.NORTH?.6875f: fl==EnumFacing.SOUTH?.0625f: fw==EnumFacing.SOUTH?.0625f: .6875f;
 			float maxZ = fl==EnumFacing.SOUTH?.3125f: fl==EnumFacing.NORTH?.9375f: fw==EnumFacing.SOUTH?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			if(pos==4)
 			{
@@ -253,19 +256,19 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 				maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.625f: fw==EnumFacing.EAST?1.125f: 1;
 				minZ = fl==EnumFacing.NORTH?.375f: fl==EnumFacing.SOUTH?.625f: fw==EnumFacing.NORTH?-.125f: 0;
 				maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?1.125f: 1;
-				list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,.75f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 				minX = fl==EnumFacing.WEST?-.125f: fl==EnumFacing.EAST?.625f: fw==EnumFacing.WEST?-.125f: .875f;
 				maxX = fl==EnumFacing.EAST?1.125f: fl==EnumFacing.WEST?.375f: fw==EnumFacing.EAST?1.125f: .125f;
 				minZ = fl==EnumFacing.NORTH?-.125f: fl==EnumFacing.SOUTH?.625f: fw==EnumFacing.NORTH?-.125f: .875f;
 				maxZ = fl==EnumFacing.SOUTH?1.25f: fl==EnumFacing.NORTH?.375f: fw==EnumFacing.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,.75f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 				minX = fl==EnumFacing.WEST?-.125f: fl==EnumFacing.EAST?.875f: fw==EnumFacing.WEST?-.125f: .875f;
 				maxX = fl==EnumFacing.EAST?1.125f: fl==EnumFacing.WEST?.125f: fw==EnumFacing.EAST?1.125f: .125f;
 				minZ = fl==EnumFacing.NORTH?-.125f: fl==EnumFacing.SOUTH?.875f: fw==EnumFacing.NORTH?-.125f: .875f;
 				maxZ = fl==EnumFacing.SOUTH?1.25f: fl==EnumFacing.NORTH?.125f: fw==EnumFacing.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX,.75f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			}
 
 			return list;
@@ -273,7 +276,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		else if((pos==13||pos==14||pos==16||pos==17))
 		{
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(3);
-			if(pos%9>5)
+			if(pos%9 > 5)
 				fl = fl.getOpposite();
 			if(pos%3==2)
 				fw = fw.getOpposite();
@@ -281,19 +284,19 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			float maxX = fl==EnumFacing.EAST?1f: fl==EnumFacing.WEST?.8125f: fw==EnumFacing.EAST?1f: .8125f;
 			float minZ = fl==EnumFacing.NORTH?0f: fl==EnumFacing.SOUTH?.1875f: fw==EnumFacing.SOUTH?.1875f: 0f;
 			float maxZ = fl==EnumFacing.SOUTH?1f: fl==EnumFacing.NORTH?.8125f: fw==EnumFacing.SOUTH?1f: .8125f;
-			list.add(new AxisAlignedBB(minX,-.25,minZ, maxX,0,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, -.25, minZ, maxX, 0, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			minX = fl==EnumFacing.WEST?0f: fl==EnumFacing.EAST?.0625f: fw==EnumFacing.EAST?.0625f: .8125f;
 			maxX = fl==EnumFacing.EAST?1f: fl==EnumFacing.WEST?.9375f: fw==EnumFacing.EAST?.1875f: .9375f;
 			minZ = fl==EnumFacing.NORTH?0f: fl==EnumFacing.SOUTH?.0625f: fw==EnumFacing.SOUTH?.0625f: .8125f;
 			maxZ = fl==EnumFacing.SOUTH?1f: fl==EnumFacing.NORTH?.9375f: fw==EnumFacing.SOUTH?.1875f: .9375f;
-			list.add(new AxisAlignedBB(minX,0,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			minX = fl==EnumFacing.WEST?.8125f: fl==EnumFacing.EAST?.0625f: fw==EnumFacing.EAST?.1875f: 0f;
 			maxX = fl==EnumFacing.EAST?.1875f: fl==EnumFacing.WEST?.9375f: fw==EnumFacing.EAST?1f: .8125f;
 			minZ = fl==EnumFacing.NORTH?.8125f: fl==EnumFacing.SOUTH?.0625f: fw==EnumFacing.SOUTH?.1875f: 0f;
 			maxZ = fl==EnumFacing.SOUTH?.1875f: fl==EnumFacing.NORTH?.9375f: fw==EnumFacing.SOUTH?1f: .8125f;
-			list.add(new AxisAlignedBB(minX,0,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			return list;
 		}
@@ -304,7 +307,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			float maxX = fl==EnumFacing.EAST?.8125f: fl==EnumFacing.WEST?.6875f: fw==EnumFacing.EAST?1f: .8125f;
 			float minZ = fl==EnumFacing.NORTH?.1875f: fl==EnumFacing.SOUTH?.3125f: fw==EnumFacing.SOUTH?.1875f: 0f;
 			float maxZ = fl==EnumFacing.SOUTH?.8125f: fl==EnumFacing.NORTH?.6875f: fw==EnumFacing.SOUTH?1f: .8125f;
-			list.add(new AxisAlignedBB(minX,0,minZ, maxX,.625f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .625f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
 		else if(pos==22)
@@ -314,23 +317,25 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			float maxX = fl==EnumFacing.EAST?1.4375f: fl==EnumFacing.WEST?.4375f: fw==EnumFacing.EAST?1.4375f: .4375f;
 			float minZ = fl==EnumFacing.NORTH?-.4375f: fl==EnumFacing.SOUTH?.5625f: fw==EnumFacing.SOUTH?.5625f: -.4375f;
 			float maxZ = fl==EnumFacing.SOUTH?1.4375f: fl==EnumFacing.NORTH?.4375f: fw==EnumFacing.SOUTH?1.4375f: .4375f;
-			list.add(new AxisAlignedBB(minX,.1875,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .1875, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			minX = fl==EnumFacing.WEST?0f: fl==EnumFacing.EAST?.5f: fw==EnumFacing.EAST?0f: .4375f;
 			maxX = fl==EnumFacing.EAST?1f: fl==EnumFacing.WEST?.5f: fw==EnumFacing.EAST?.5625f: 1f;
 			minZ = fl==EnumFacing.NORTH?0f: fl==EnumFacing.SOUTH?.5f: fw==EnumFacing.SOUTH?0f: .4375f;
 			maxZ = fl==EnumFacing.SOUTH?1f: fl==EnumFacing.NORTH?.5f: fw==EnumFacing.SOUTH?.5625f: 1f;
-			list.add(new AxisAlignedBB(minX,0,minZ, maxX,.875,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .875, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 
 		}
 		return null;
 	}
+
 	@Override
 	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
+
 	@Override
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
@@ -374,6 +379,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	{
 		return new int[]{9};
 	}
+
 	@Override
 	public int[] getRedstonePos()
 	{
@@ -385,39 +391,46 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	{
 		return false;
 	}
+
 	@Override
 	public boolean additionalCanProcessCheck(MultiblockProcess<MixerRecipe> process)
 	{
 		return true;
 	}
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		BlockPos pos = getPos().offset(facing,2);
+		BlockPos pos = getPos().offset(facing, 2);
 		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
 		if(!output.isEmpty())
 			Utils.dropStackAtPos(world, pos, output, facing);
 	}
+
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
 	{
 	}
+
 	@Override
 	public void onProcessFinish(MultiblockProcess<MixerRecipe> process)
 	{
 	}
+
 	@Override
 	public int getMaxProcessPerTick()
 	{
 		return 8;
 	}
+
 	@Override
 	public int getProcessQueueMaxLength()
 	{
 		return 8;
 	}
+
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<MixerRecipe> process)
 	{
@@ -429,49 +442,58 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	{
 		return inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return true;
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 64;
 	}
+
 	@Override
 	public int[] getOutputSlots()
 	{
 		return new int[0];
 	}
+
 	@Override
 	public int[] getOutputTanks()
 	{
 		return new int[]{0};
 	}
+
 	@Override
 	public IFluidTank[] getInternalTanks()
 	{
 		return new IFluidTank[]{tank};
 	}
+
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntityMixer master = master();
-		if(master!=null &&( (pos==1&&(side==null||side==facing.getOpposite()))||(pos==3&&(side==null||side==(mirrored?facing.rotateY():facing.rotateYCCW()))) ))
+		if(master!=null&&((pos==1&&(side==null||side==facing.getOpposite()))||(pos==3&&(side==null||side==(mirrored?facing.rotateY(): facing.rotateYCCW())))))
 			return master.getInternalTanks();
 		return new FluidTank[0];
 	}
+
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
 	{
-		return side==null||side==(mirrored?facing.rotateY():facing.rotateYCCW());
+		return side==null||side==(mirrored?facing.rotateY(): facing.rotateYCCW());
 	}
+
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
 		return side==null||side==facing.getOpposite();
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
@@ -487,7 +509,9 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
-	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true,true,true,true,true,true,true,true}, new boolean[8]);
+
+	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]);
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
@@ -506,16 +530,18 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	{
 		return null;
 	}
+
 	@Override
 	protected MixerRecipe readRecipeFromNBT(NBTTagCompound tag)
 	{
 		return MixerRecipe.loadFromNBT(tag);
 	}
+
 	@Override
 	protected MultiblockProcess loadProcessFromNBT(NBTTagCompound tag)
 	{
 		IMultiblockRecipe recipe = readRecipeFromNBT(tag);
-		if(recipe!=null && recipe instanceof MixerRecipe)
+		if(recipe!=null&&recipe instanceof MixerRecipe)
 			return new MultiblockProcessMixer((MixerRecipe)recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
 		return null;
 	}
@@ -532,6 +558,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		{
 			return Collections.emptyList();
 		}
+
 		@Override
 		protected List<FluidStack> getRecipeFluidInputs(TileEntityMultiblockMetal multiblock)
 		{
@@ -539,12 +566,13 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		}
 
 		@Override
-		public boolean canProcess(TileEntityMultiblockMetal multiblock) {
-			if (!(multiblock instanceof TileEntityMixer))
+		public boolean canProcess(TileEntityMultiblockMetal multiblock)
+		{
+			if(!(multiblock instanceof TileEntityMixer))
 				return false;
-			TileEntityMixer mixer = (TileEntityMixer) multiblock;
+			TileEntityMixer mixer = (TileEntityMixer)multiblock;
 			// we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
-			return mixer.energyStorage.extractEnergy(energyPerTick, true) == energyPerTick && mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), false) != null;
+			return mixer.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick&&mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), false)!=null;
 		}
 
 		@Override
@@ -553,13 +581,13 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			int timerStep = this.maxTicks/this.recipe.fluidAmount;
 			if(this.processTick%timerStep==0)
 			{
-				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput,1,false), true);
+				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), true);
 				NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
-				for(int i=0; i<components.size(); i++)
+				for(int i = 0; i < components.size(); i++)
 					components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
 				FluidStack output = this.recipe.getFluidOutput(drained, components);
 
-				FluidStack fs = Utils.copyFluidStackWithAmount(output,1,false);
+				FluidStack fs = Utils.copyFluidStackWithAmount(output, 1, false);
 				((TileEntityMixer)multiblock).tank.fill(fs, true);
 			}
 			super.doProcessTick(multiblock);
@@ -571,7 +599,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			super.processFinish(multiblock);
 			if(this.recipe instanceof MixerRecipePotion)
 				for(int i : this.inputSlots)
-					if(!multiblock.getInventory().get(i).isEmpty() && PotionHelper.isReagent(multiblock.getInventory().get(i)))
+					if(!multiblock.getInventory().get(i).isEmpty()&&PotionHelper.isReagent(multiblock.getInventory().get(i)))
 					{
 						multiblock.getInventory().get(i).shrink(1);
 						if(multiblock.getInventory().get(i).getCount() <= 0)
@@ -585,11 +613,13 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	{
 		return formed;
 	}
+
 	@Override
 	public int getGuiID()
 	{
 		return Lib.GUIID_Mixer;
 	}
+
 	@Override
 	public TileEntity getGuiMaster()
 	{

@@ -42,20 +42,20 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 
 	private void bindPlayerInv(InventoryPlayer inventoryPlayer)
 	{
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 87+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 
 	public void rebindSlots()
 	{
 		//Don't rebind if the tool didn't change
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-			for (Slot slot:inventorySlots)
-				if (slot instanceof IESlot.Upgrades)
-					if (ItemStack.areItemsEqual(((IESlot.Upgrades) slot).upgradeableTool, inv.getStackInSlot(0)))
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+			for(Slot slot : inventorySlots)
+				if(slot instanceof IESlot.Upgrades)
+					if(ItemStack.areItemsEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
 						return;
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();
@@ -63,25 +63,25 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		slotCount = 1;
 
 		ItemStack tool = this.getSlot(0).getStack();
-		if (tool.getItem() instanceof IUpgradeableTool)
+		if(tool.getItem() instanceof IUpgradeableTool)
 		{
-			if (tool.getItem() instanceof ItemEngineersBlueprint)
-				((ItemEngineersBlueprint) tool.getItem()).updateOutputs(tool);
+			if(tool.getItem() instanceof ItemEngineersBlueprint)
+				((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
 			IItemHandler handler = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if (handler instanceof IEItemStackHandler)
-				((IEItemStackHandler) handler).setTile(tile);
-			Slot[] slots = ((IUpgradeableTool) tool.getItem()).getWorkbenchSlots(this, tool);
-			if (slots != null)
-				for (Slot s : slots)
+			if(handler instanceof IEItemStackHandler)
+				((IEItemStackHandler)handler).setTile(tile);
+			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool);
+			if(slots!=null)
+				for(Slot s : slots)
 				{
 					this.addSlotToContainer(s);
 					slotCount++;
 				}
 		}
-		if (tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		if(tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
 			ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			if (wrapper != null)
+			if(wrapper!=null)
 			{
 				this.shaderInv = new InventoryShader(this, wrapper);
 				this.addSlotToContainer(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
@@ -99,35 +99,35 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
-		if (slotObject != null && slotObject.getHasStack())
+		if(slotObject!=null&&slotObject.getHasStack())
 		{
 			ItemStack stackInSlot = slotObject.getStack();
 			stack = stackInSlot.copy();
 
-			if (slot < slotCount)
+			if(slot < slotCount)
 			{
-				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
+				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(!stackInSlot.isEmpty())
 			{
-				if(stackInSlot.getItem() instanceof IUpgradeableTool && ((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
+				if(stackInSlot.getItem() instanceof IUpgradeableTool&&((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
-				else if(stackInSlot.getItem() instanceof IConfigurableTool && ((IConfigurableTool)stackInSlot.getItem()).canConfigure(stackInSlot))
+				else if(stackInSlot.getItem() instanceof IConfigurableTool&&((IConfigurableTool)stackInSlot.getItem()).canConfigure(stackInSlot))
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
-				else if(slotCount>1)
+				else if(slotCount > 1)
 				{
 					boolean b = true;
-					for(int i=1; i<slotCount; i++)
+					for(int i = 1; i < slotCount; i++)
 					{
 						Slot s = inventorySlots.get(i);
-						if(s!=null && s.isItemValid(stackInSlot))
+						if(s!=null&&s.isItemValid(stackInSlot))
 							if(this.mergeItemStack(stackInSlot, i, i+1, true))
 							{
 								b = false;
@@ -141,12 +141,12 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 				}
 			}
 
-			if (stackInSlot.getCount() == 0)
+			if(stackInSlot.getCount()==0)
 				slotObject.putStack(ItemStack.EMPTY);
 			else
 				slotObject.onSlotChanged();
 
-			if (stackInSlot.getCount() == stack.getCount())
+			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;
 			slotObject.onTake(player, stack);
 		}
@@ -158,7 +158,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	{
 		ItemStack ret = super.slotClick(id, button, clickType, player);
 		tile.markContainingBlockForUpdate(null);
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 			detectAndSendChanges();
 		return ret;
 	}

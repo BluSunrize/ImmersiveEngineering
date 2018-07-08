@@ -30,11 +30,11 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.WeakHashMap;
 
 public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWindmill>
 {
 	private static List<BakedQuad>[] quads = new List[9];
+
 	@Override
 	public void render(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
@@ -45,7 +45,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		if(quads[tile.sails]==null)
 		{
 			IBlockState state = getWorld().getBlockState(blockPos);
-			if(state.getBlock() != IEContent.blockWoodenDevice1)
+			if(state.getBlock()!=IEContent.blockWoodenDevice1)
 				return;
 			state = state.getActualState(getWorld(), blockPos);
 			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
@@ -54,7 +54,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 			{
 				List<String> parts = new ArrayList<>();
 				parts.add("base");
-				for(int i=1; i<=tile.sails; i++)
+				for(int i = 1; i <= tile.sails; i++)
 					parts.add("sail_"+i);
 				state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(parts, true));
 			}
@@ -65,12 +65,12 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x + .5, y + .5, z + .5);
+		GlStateManager.translate(x+.5, y+.5, z+.5);
 
-		float dir = tile.facing == EnumFacing.SOUTH ? 0 : tile.facing == EnumFacing.NORTH ? 180 : tile.facing == EnumFacing.EAST ? 90 : -90;
-		float rot = 360 * (tile.rotation + (!tile.canTurn || tile.rotation == 0 ? 0 : partialTicks)*tile.perTick);
+		float dir = tile.facing==EnumFacing.SOUTH?0: tile.facing==EnumFacing.NORTH?180: tile.facing==EnumFacing.EAST?90: -90;
+		float rot = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*tile.perTick);
 
-		GlStateManager.rotate(rot, tile.facing.getAxis() == Axis.X ? 1 : 0, 0, tile.facing.getAxis() == Axis.Z ? 1 : 0);
+		GlStateManager.rotate(rot, tile.facing.getAxis()==Axis.X?1: 0, 0, tile.facing.getAxis()==Axis.Z?1: 0);
 		GlStateManager.rotate(dir, 0, 1, 0);
 
 		RenderHelper.disableStandardItemLighting();
@@ -86,9 +86,10 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();
 	}
+
 	public static void reset()
 	{
-		for(int i=0; i<quads.length; i++)
+		for(int i = 0; i < quads.length; i++)
 			quads[i] = null;
 	}
 }

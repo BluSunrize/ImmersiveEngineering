@@ -45,18 +45,19 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IGuiTile, IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
+public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler, IMultiblockRecipe> implements IGuiTile, IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
 	public boolean[] computerOn = new boolean[3];
 	public boolean isComputerControlled = false;
+
 	public TileEntityAssembler()
 	{
-		super(MultiblockAssembler.instance, new int[]{3,3,3}, 32000, true);
+		super(MultiblockAssembler.instance, new int[]{3, 3, 3}, 32000, true);
 	}
 
-	public FluidTank[] tanks = {new FluidTank(8000),new FluidTank(8000),new FluidTank(8000)};
+	public FluidTank[] tanks = {new FluidTank(8000), new FluidTank(8000), new FluidTank(8000)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(18+3, ItemStack.EMPTY);
-	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this),new CrafterPatternInventory(this),new CrafterPatternInventory(this)};
+	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this), new CrafterPatternInventory(this), new CrafterPatternInventory(this)};
 	public boolean recursiveIngredients = false;
 
 	@Override
@@ -70,7 +71,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		if(!descPacket)
 		{
 			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 18+3);
-			for(int iPattern=0; iPattern<patterns.length; iPattern++)
+			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
 				NBTTagList patternList = nbt.getTagList("pattern"+iPattern, 10);
 				patterns[iPattern] = new CrafterPatternInventory(this);
@@ -79,14 +80,15 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 		{
 			byte cOn = nbt.getByte("computerControlled");
-			isComputerControlled = (cOn & 1) != 0;
-			if (isComputerControlled)
+			isComputerControlled = (cOn&1)!=0;
+			if(isComputerControlled)
 			{
-				for (int i = 0; i < 3; i++)
-					computerOn[i] = (cOn & (2 << i)) != 0;
+				for(int i = 0; i < 3; i++)
+					computerOn[i] = (cOn&(2<<i))!=0;
 			}
 		}
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -98,29 +100,30 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		if(!descPacket)
 		{
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
-			for(int iPattern=0; iPattern<patterns.length; iPattern++)
+			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
 				NBTTagList patternList = new NBTTagList();
 				patterns[iPattern].writeToNBT(patternList);
 				nbt.setTag("pattern"+iPattern, patternList);
 			}
 		}
-		if (isComputerControlled)
+		if(isComputerControlled)
 		{
 			byte cOn = 1;
-			for (int i = 0; i < 3; i++)
-				if (computerOn[i])
+			for(int i = 0; i < 3; i++)
+				if(computerOn[i])
 					cOn |= 2<<i;
 			nbt.setByte("computerControlled", cOn);
 		}
 	}
+
 	@Override
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
 		if(message.hasKey("buttonID"))
 		{
 			int id = message.getInteger("buttonID");
-			if(id >= 0 && id < patterns.length)
+			if(id >= 0&&id < patterns.length)
 			{
 				CrafterPatternInventory pattern = patterns[id];
 				for(int i = 0; i < pattern.inv.size(); i++)
@@ -128,9 +131,10 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			}
 			else if(id==3)
 			{
-				recursiveIngredients=!recursiveIngredients;
+				recursiveIngredients = !recursiveIngredients;
 			}
-		} else if(message.hasKey("patternSync"))
+		}
+		else if(message.hasKey("patternSync"))
 		{
 			int r = message.getInteger("recipe");
 			NBTTagList list = message.getTagList("patternSync", 10);
@@ -142,34 +146,35 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			}
 		}
 	}
+
 	@Override
 	public void update()
 	{
 		super.update();
 
-		if (isDummy() || isRSDisabled() || world.isRemote || world.getTotalWorldTime() % 16 != ((getPos().getX() ^ getPos().getZ()) & 15))
+		if(isDummy()||isRSDisabled()||world.isRemote||world.getTotalWorldTime()%16!=((getPos().getX()^getPos().getZ())&15))
 			return;
 		boolean update = false;
 		NonNullList<ItemStack>[] outputBuffer = new NonNullList[patterns.length];
-		for (int p = 0; p < patterns.length; p++)
+		for(int p = 0; p < patterns.length; p++)
 		{
 			CrafterPatternInventory pattern = patterns[p];
-			if (isComputerControlled && !computerOn[p])
+			if(isComputerControlled&&!computerOn[p])
 				continue;
-			if (!pattern.inv.get(9).isEmpty() && canOutput(pattern.inv.get(9), p))
+			if(!pattern.inv.get(9).isEmpty()&&canOutput(pattern.inv.get(9), p))
 			{
 				ItemStack output = pattern.inv.get(9).copy();
 				ArrayList<ItemStack> queryList = new ArrayList<>();//List of all available inputs in the inventory
-				for (NonNullList<ItemStack> bufferedStacks : outputBuffer)
-					if (bufferedStacks != null)
-						for (ItemStack stack : bufferedStacks)
-							if (!stack.isEmpty())
+				for(NonNullList<ItemStack> bufferedStacks : outputBuffer)
+					if(bufferedStacks!=null)
+						for(ItemStack stack : bufferedStacks)
+							if(!stack.isEmpty())
 								queryList.add(stack.copy());
-				for (ItemStack stack : this.inventory)
-					if (!stack.isEmpty())
+				for(ItemStack stack : this.inventory)
+					if(!stack.isEmpty())
 						queryList.add(stack.copy());
 				int consumed = IEConfig.Machines.assembler_consumption;
-				if (this.energyStorage.extractEnergy(consumed, true) == consumed && this.hasIngredients(pattern, queryList))
+				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.hasIngredients(pattern, queryList))
 				{
 					this.energyStorage.extractEnergy(consumed, false);
 					NonNullList<ItemStack> outputList = NonNullList.create();//List of all outputs for the current recipe. This includes discarded containers
@@ -177,25 +182,25 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
 					AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
 					NonNullList<ItemStack> gridItems = NonNullList.withSize(9, ItemStack.EMPTY);
-					for (int i = 0; i < queries.length; i++)
-						if (queries[i] != null)
+					for(int i = 0; i < queries.length; i++)
+						if(queries[i]!=null)
 						{
 							AssemblerHandler.RecipeQuery recipeQuery = queries[i];
 							Optional<ItemStack> taken = Optional.absent();
-							for (int j = 0; j < outputBuffer.length; j++)
-								if (outputBuffer[j] != null)
+							for(int j = 0; j < outputBuffer.length; j++)
+								if(outputBuffer[j]!=null)
 								{
 									taken = consumeItem(recipeQuery.query, recipeQuery.querySize, outputBuffer[j], outputList);
-									if (taken.isPresent())
+									if(taken.isPresent())
 										break;
 								}
-							if (!taken.isPresent())
+							if(!taken.isPresent())
 								taken = this.consumeItem(recipeQuery.query, recipeQuery.querySize, inventory, outputList);
 							gridItems.set(i, taken.or(ItemStack.EMPTY));
 						}
 					NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
-					for (ItemStack rem : remainingItems)
-						if (!rem.isEmpty())
+					for(ItemStack rem : remainingItems)
+						if(!rem.isEmpty())
 							outputList.add(rem);
 					outputBuffer[p] = outputList;
 					update = true;
@@ -204,51 +209,52 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 		BlockPos outputPos = getPos().offset(facing, 2);
 		TileEntity inventoryTile = Utils.getExistingTileEntity(world, outputPos);
-		for (int buffer = 0; buffer < outputBuffer.length; buffer++)
-			if (outputBuffer[buffer] != null && outputBuffer[buffer].size() > 0)
-				for (int iOutput = 0; iOutput < outputBuffer[buffer].size(); iOutput++)
+		for(int buffer = 0; buffer < outputBuffer.length; buffer++)
+			if(outputBuffer[buffer]!=null&&outputBuffer[buffer].size() > 0)
+				for(int iOutput = 0; iOutput < outputBuffer[buffer].size(); iOutput++)
 				{
 					ItemStack output = outputBuffer[buffer].get(iOutput);
-					if (!output.isEmpty() && output.getCount() > 0)
+					if(!output.isEmpty()&&output.getCount() > 0)
 					{
-						if (!isRecipeIngredient(output, buffer) && inventoryTile != null)
+						if(!isRecipeIngredient(output, buffer)&&inventoryTile!=null)
 						{
 							output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-							if (output.isEmpty() || output.getCount() <= 0)
+							if(output.isEmpty()||output.getCount() <= 0)
 								continue;
 						}
 						int free = -1;
-						if (iOutput == 0)//Main recipe output
+						if(iOutput==0)//Main recipe output
 						{
-							if (this.inventory.get(18 + buffer).isEmpty() && free < 0)
-								free = 18 + buffer;
-							else if (!this.inventory.get(18 + buffer).isEmpty() && OreDictionary.itemMatches(output, this.inventory.get(18 + buffer), true) && this.inventory.get(18 + buffer).getCount() + output.getCount() <= this.inventory.get(18 + buffer).getMaxStackSize())
+							if(this.inventory.get(18+buffer).isEmpty()&&free < 0)
+								free = 18+buffer;
+							else if(!this.inventory.get(18+buffer).isEmpty()&&OreDictionary.itemMatches(output, this.inventory.get(18+buffer), true)&&this.inventory.get(18+buffer).getCount()+output.getCount() <= this.inventory.get(18+buffer).getMaxStackSize())
 							{
-								this.inventory.get(18 + buffer).grow(output.getCount());
+								this.inventory.get(18+buffer).grow(output.getCount());
 								free = -1;
 								continue;
 							}
-						} else
-							for (int i = 0; i < this.inventory.size(); i++)
+						}
+						else
+							for(int i = 0; i < this.inventory.size(); i++)
 							{
-								if (this.inventory.get(i).isEmpty() && free < 0)
+								if(this.inventory.get(i).isEmpty()&&free < 0)
 									free = i;
-								else if (!this.inventory.get(i).isEmpty() && OreDictionary.itemMatches(output, this.inventory.get(i), true) && this.inventory.get(i).getCount() + output.getCount() <= this.inventory.get(i).getMaxStackSize())
+								else if(!this.inventory.get(i).isEmpty()&&OreDictionary.itemMatches(output, this.inventory.get(i), true)&&this.inventory.get(i).getCount()+output.getCount() <= this.inventory.get(i).getMaxStackSize())
 								{
 									this.inventory.get(i).grow(output.getCount());
 									free = -1;
 									break;
 								}
 							}
-						if (free >= 0)
+						if(free >= 0)
 							this.inventory.set(free, output.copy());
 					}
 				}
-		for (int i = 0; i < 3; i++)
-			if (!isRecipeIngredient(this.inventory.get(18 + i), i) && inventoryTile != null)
-				this.inventory.set(18 + i, Utils.insertStackIntoInventory(inventoryTile, this.inventory.get(18 + i), facing.getOpposite()));
+		for(int i = 0; i < 3; i++)
+			if(!isRecipeIngredient(this.inventory.get(18+i), i)&&inventoryTile!=null)
+				this.inventory.set(18+i, Utils.insertStackIntoInventory(inventoryTile, this.inventory.get(18+i), facing.getOpposite()));
 
-		if (update)
+		if(update)
 		{
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
@@ -257,10 +263,10 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 
 	public Optional<ItemStack> consumeItem(Object query, int querySize, NonNullList<ItemStack> inventory, NonNullList<ItemStack> containerItems)
 	{
-		FluidStack fs = query instanceof FluidStack ? (FluidStack)query : (query instanceof IngredientStack && ((IngredientStack)query).fluid != null) ? ((IngredientStack)query).fluid : null;
-		if(fs != null)
+		FluidStack fs = query instanceof FluidStack?(FluidStack)query: (query instanceof IngredientStack&&((IngredientStack)query).fluid!=null)?((IngredientStack)query).fluid: null;
+		if(fs!=null)
 			for(FluidTank tank : tanks)
-				if(tank.getFluid() != null && tank.getFluid().containsFluid(fs))
+				if(tank.getFluid()!=null&&tank.getFluid().containsFluid(fs))
 				{
 					tank.drain(fs.amount, true);
 					markDirty();
@@ -268,8 +274,8 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					return Optional.of(ItemStack.EMPTY);
 				}
 		Optional<ItemStack> ret = Optional.absent();
-		for(int i = 0; i< inventory.size(); i++)
-			if(!inventory.get(i).isEmpty() && Utils.stackMatchesObject(inventory.get(i), query, true))
+		for(int i = 0; i < inventory.size(); i++)
+			if(!inventory.get(i).isEmpty()&&Utils.stackMatchesObject(inventory.get(i), query, true))
 			{
 				int taken = Math.min(querySize, inventory.get(i).getCount());
 				boolean doTake = true;
@@ -287,6 +293,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			return ret;
 		return Optional.absent();
 	}
+
 	public boolean hasIngredients(CrafterPatternInventory pattern, ArrayList<ItemStack> queryList)
 	{
 		boolean match = true;
@@ -297,14 +304,14 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			return false;
 		AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
 		for(AssemblerHandler.RecipeQuery recipeQuery : queries)
-			if(recipeQuery != null && recipeQuery.query != null)
+			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
-				FluidStack fs = recipeQuery.query instanceof FluidStack ? (FluidStack)recipeQuery.query : (recipeQuery.query instanceof IngredientStack && ((IngredientStack)recipeQuery.query).fluid != null) ? ((IngredientStack)recipeQuery.query).fluid : null;
-				if(fs != null)
+				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query: (recipeQuery.query instanceof IngredientStack&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
+				if(fs!=null)
 				{
 					boolean hasFluid = false;
 					for(FluidTank tank : tanks)
-						if(tank.getFluid() != null && tank.getFluid().containsFluid(fs))
+						if(tank.getFluid()!=null&&tank.getFluid().containsFluid(fs))
 						{
 							hasFluid = true;
 							break;
@@ -317,7 +324,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				while(it.hasNext())
 				{
 					ItemStack next = it.next();
-					if(!next.isEmpty() && Utils.stackMatchesObject(next, recipeQuery.query, true))
+					if(!next.isEmpty()&&Utils.stackMatchesObject(next, recipeQuery.query, true))
 					{
 						int taken = Math.min(querySize, next.getCount());
 						next.shrink(taken);
@@ -336,6 +343,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			}
 		return match;
 	}
+
 	public boolean canOutput(ItemStack output, int iPattern)
 	{
 		if(this.inventory.get(18+iPattern).isEmpty())
@@ -343,20 +351,21 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		else
 			return OreDictionary.itemMatches(output, this.inventory.get(18+iPattern), true)&&Utils.compareItemNBT(output, this.inventory.get(18+iPattern))&&this.inventory.get(18+iPattern).getCount()+output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize();
 	}
+
 	public boolean isRecipeIngredient(ItemStack stack, int slot)
 	{
 		if(stack.isEmpty())
 			return false;
-		if(slot-1<patterns.length||recursiveIngredients)
-			for(int p = recursiveIngredients?0:slot; p < patterns.length; p++)
+		if(slot-1 < patterns.length||recursiveIngredients)
+			for(int p = recursiveIngredients?0: slot; p < patterns.length; p++)
 			{
 				CrafterPatternInventory pattern = patterns[p];
-				for(int i=0; i<9; i++)
+				for(int i = 0; i < 9; i++)
 					if(!pattern.inv.get(i).isEmpty())
 					{
 						if(OreDictionary.itemMatches(pattern.inv.get(i), stack, false))
 							return true;
-						else if(pattern.inv.get(i).getItem()==stack.getItem() && !pattern.inv.get(i).getHasSubtypes() && pattern.inv.get(i).isItemStackDamageable())
+						else if(pattern.inv.get(i).getItem()==stack.getItem()&&!pattern.inv.get(i).getHasSubtypes()&&pattern.inv.get(i).isItemStackDamageable())
 							return true;
 					}
 			}
@@ -366,31 +375,31 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos<9 || pos==10||pos==13||pos==16 || pos==22)
-			return new float[]{0,0,0,1,1,1};
+		if(pos < 9||pos==10||pos==13||pos==16||pos==22)
+			return new float[]{0, 0, 0, 1, 1, 1};
 		float xMin = 0;
 		float yMin = 0;
 		float zMin = 0;
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if((pos%9<3 && facing==EnumFacing.SOUTH)||(pos%9>=6 && facing==EnumFacing.NORTH))
+		if((pos%9 < 3&&facing==EnumFacing.SOUTH)||(pos%9 >= 6&&facing==EnumFacing.NORTH))
 			zMin = .25f;
-		else if((pos%9<3 && facing==EnumFacing.NORTH)||(pos%9>=6 && facing==EnumFacing.SOUTH))
+		else if((pos%9 < 3&&facing==EnumFacing.NORTH)||(pos%9 >= 6&&facing==EnumFacing.SOUTH))
 			zMax = .75f;
-		else if((pos%9<3 && facing==EnumFacing.EAST)||(pos%9>=6 && facing==EnumFacing.WEST))
+		else if((pos%9 < 3&&facing==EnumFacing.EAST)||(pos%9 >= 6&&facing==EnumFacing.WEST))
 			xMin = .25f;
-		else if((pos%9<3 && facing==EnumFacing.WEST)||(pos%9>=6 && facing==EnumFacing.EAST))
+		else if((pos%9 < 3&&facing==EnumFacing.WEST)||(pos%9 >= 6&&facing==EnumFacing.EAST))
 			xMax = .75f;
-		if((pos%3==0 && facing==EnumFacing.EAST)||(pos%3==2 && facing==EnumFacing.WEST))
+		if((pos%3==0&&facing==EnumFacing.EAST)||(pos%3==2&&facing==EnumFacing.WEST))
 			zMin = .1875f;
-		else if((pos%3==0 && facing==EnumFacing.WEST)||(pos%3==2 && facing==EnumFacing.EAST))
+		else if((pos%3==0&&facing==EnumFacing.WEST)||(pos%3==2&&facing==EnumFacing.EAST))
 			zMax = .8125f;
-		else if((pos%3==0 && facing==EnumFacing.NORTH)||(pos%3==2 && facing==EnumFacing.SOUTH))
+		else if((pos%3==0&&facing==EnumFacing.NORTH)||(pos%3==2&&facing==EnumFacing.SOUTH))
 			xMin = .1875f;
-		else if((pos%3==0 && facing==EnumFacing.SOUTH)||(pos%3==2 && facing==EnumFacing.NORTH))
+		else if((pos%3==0&&facing==EnumFacing.SOUTH)||(pos%3==2&&facing==EnumFacing.NORTH))
 			xMax = .8125f;
-		return new float[]{xMin,yMin,zMin, xMax,yMax,zMax};
+		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}
 
 	@Override
@@ -398,6 +407,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		return new int[]{22};
 	}
+
 	@Override
 	public int[] getRedstonePos()
 	{
@@ -421,39 +431,46 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		return false;
 	}
+
 	@Override
 	public boolean additionalCanProcessCheck(MultiblockProcess<IMultiblockRecipe> process)
 	{
 		return false;
 	}
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		BlockPos pos = getPos().offset(facing,-1);
+		BlockPos pos = getPos().offset(facing, -1);
 		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
 		if(!output.isEmpty())
 			Utils.dropStackAtPos(world, pos, output, facing);
 	}
+
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
 	{
 	}
+
 	@Override
 	public void onProcessFinish(MultiblockProcess<IMultiblockRecipe> process)
 	{
 	}
+
 	@Override
 	public int getMaxProcessPerTick()
 	{
 		return 0;
 	}
+
 	@Override
 	public int getProcessQueueMaxLength()
 	{
 		return 0;
 	}
+
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
 	{
@@ -466,31 +483,37 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		return this.inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return true;
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 64;
 	}
+
 	@Override
 	public int[] getOutputSlots()
 	{
 		return new int[0];
 	}
+
 	@Override
 	public int[] getOutputTanks()
 	{
 		return new int[0];
 	}
+
 	@Override
 	public IFluidTank[] getInternalTanks()
 	{
 		return this.tanks;
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
@@ -506,15 +529,17 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			return ((pos==10&&facing==this.facing.getOpposite())||(pos==16&&facing==this.facing))&&master()!=null;
 		return super.hasCapability(capability, facing);
 	}
+
 	IItemHandler insertionHandler = new IEInventoryHandler(18, this, 0, true, false);
 	IItemHandler extractionHandler = new IEInventoryHandler(3, this, 18, false, true);
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityAssembler master = master();
-			if (master==null)
+			if(master==null)
 				return null;
 			if(pos==10&&facing==this.facing.getOpposite())
 				return (T)master.insertionHandler;
@@ -531,6 +556,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		return null;
 	}
+
 	@Override
 	protected IMultiblockRecipe readRecipeFromNBT(NBTTagCompound tag)
 	{
@@ -543,11 +569,13 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		return formed;
 	}
+
 	@Override
 	public int getGuiID()
 	{
 		return Lib.GUIID_Assembler;
 	}
+
 	@Override
 	public TileEntity getGuiMaster()
 	{
@@ -555,20 +583,21 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	}
 
 
-
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntityAssembler master = master();
-		if(master!=null && pos==1&&(side==null||side==facing.getOpposite()))
+		if(master!=null&&pos==1&&(side==null||side==facing.getOpposite()))
 			return master.tanks;
 		return new FluidTank[0];
 	}
+
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
 	{
 		return true;
 	}
+
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
@@ -588,10 +617,12 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		public NonNullList<ItemStack> inv = NonNullList.withSize(10, ItemStack.EMPTY);
 		public IRecipe recipe;
 		final TileEntityAssembler tile;
+
 		public CrafterPatternInventory(TileEntityAssembler tile)
 		{
 			this.tile = tile;
 		}
+
 		@Override
 		public int getSizeInventory()
 		{
@@ -599,9 +630,11 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 
 		@Override
-		public boolean isEmpty() {
-			for (ItemStack stack : inv) {
-				if (!stack.isEmpty())
+		public boolean isEmpty()
+		{
+			for(ItemStack stack : inv)
+			{
+				if(!stack.isEmpty())
 					return false;
 			}
 			return true;
@@ -612,44 +645,48 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			return inv.get(slot);
 		}
+
 		@Override
 		public ItemStack decrStackSize(int slot, int amount)
 		{
 			ItemStack stack = getStackInSlot(slot);
-			if(slot<9 && !stack.isEmpty())
+			if(slot < 9&&!stack.isEmpty())
 				if(stack.getCount() <= amount)
 					setInventorySlotContents(slot, ItemStack.EMPTY);
 				else
 				{
 					stack = stack.splitStack(amount);
-					if(stack.getCount() == 0)
+					if(stack.getCount()==0)
 						setInventorySlotContents(slot, ItemStack.EMPTY);
 				}
 			return stack;
 		}
+
 		@Override
 		public ItemStack removeStackFromSlot(int slot)
 		{
 			ItemStack stack = getStackInSlot(slot);
-			if (!stack.isEmpty())
+			if(!stack.isEmpty())
 				setInventorySlotContents(slot, ItemStack.EMPTY);
 			return stack;
 		}
+
 		@Override
 		public void setInventorySlotContents(int slot, ItemStack stack)
 		{
-			if(slot<9)
+			if(slot < 9)
 			{
 				inv.set(slot, stack);
-				if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
+				if(!stack.isEmpty()&&stack.getCount() > getInventoryStackLimit())
 					stack.setCount(getInventoryStackLimit());
 			}
 			recalculateOutput();
 		}
+
 		@Override
 		public void clear()
 		{
-			for(int i = 0; i< this.inv.size(); i++)
+			for(int i = 0; i < this.inv.size(); i++)
 				this.inv.set(i, ItemStack.EMPTY);
 		}
 
@@ -657,22 +694,23 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
 			this.recipe = Utils.findRecipe(invC, tile.getWorld());
-			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC):ItemStack.EMPTY);
+			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
 		}
+
 		public ArrayList<ItemStack> getTotalPossibleOutputs()
 		{
 			ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();
 			outputList.add(inv.get(9).copy());
-			for(int i=0; i<9; i++)
+			for(int i = 0; i < 9; i++)
 			{
 				FluidStack fs = FluidUtil.getFluidContained(inv.get(i));
-				if(fs != null)
+				if(fs!=null)
 				{
 					boolean hasFluid = false;
 					for(FluidTank tank : tile.tanks)
-						if(tank.getFluid()!=null && tank.getFluid().containsFluid(fs))
+						if(tank.getFluid()!=null&&tank.getFluid().containsFluid(fs))
 						{
-							hasFluid=true;
+							hasFluid = true;
 							break;
 						}
 					if(hasFluid)
@@ -688,43 +726,56 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					outputList.add(ss);
 			return outputList;
 		}
+
 		@Override
 		public String getName()
 		{
 			return "IECrafterPattern";
 		}
+
 		@Override
 		public boolean hasCustomName()
 		{
 			return false;
 		}
+
 		@Override
 		public int getInventoryStackLimit()
 		{
 			return 1;
 		}
+
 		@Override
 		public boolean isUsableByPlayer(EntityPlayer player)
 		{
 			return true;
 		}
+
 		@Override
-		public void openInventory(EntityPlayer player){}
+		public void openInventory(EntityPlayer player)
+		{
+		}
+
 		@Override
-		public void closeInventory(EntityPlayer player){}
+		public void closeInventory(EntityPlayer player)
+		{
+		}
+
 		@Override
 		public boolean isItemValidForSlot(int slot, ItemStack stack)
 		{
 			return true;
 		}
+
 		@Override
 		public void markDirty()
 		{
 			this.tile.markDirty();
 		}
+
 		public void writeToNBT(NBTTagList list)
 		{
-			for(int i = 0; i< this.inv.size(); i++)
+			for(int i = 0; i < this.inv.size(); i++)
 				if(!this.inv.get(i).isEmpty())
 				{
 					NBTTagCompound itemTag = new NBTTagCompound();
@@ -733,13 +784,14 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					list.appendTag(itemTag);
 				}
 		}
+
 		public void readFromNBT(NBTTagList list)
 		{
-			for (int i=0; i<list.tagCount(); i++)
+			for(int i = 0; i < list.tagCount(); i++)
 			{
 				NBTTagCompound itemTag = list.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<getSizeInventory())
+				int slot = itemTag.getByte("Slot")&255;
+				if(slot >= 0&&slot < getSizeInventory())
 					this.inv.set(slot, new ItemStack(itemTag));
 			}
 			recalculateOutput();
@@ -750,15 +802,18 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			return new TextComponentString(this.getName());
 		}
+
 		@Override
 		public int getField(int id)
 		{
 			return 0;
 		}
+
 		@Override
 		public void setField(int id, int value)
 		{
 		}
+
 		@Override
 		public int getFieldCount()
 		{

@@ -23,7 +23,8 @@ import net.minecraftforge.common.IPlantable;
 
 public class ItemIESeed extends ItemIEBase implements IPlantable
 {
-    private Block cropBlock;
+	private Block cropBlock;
+
 	public ItemIESeed(Block cropBlock, String... subNames)
 	{
 		super("seed", 64, subNames);
@@ -34,14 +35,14 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		if(side != EnumFacing.UP)
+		if(side!=EnumFacing.UP)
 			return EnumActionResult.PASS;
-		else if (player.canPlayerEdit(pos, side, stack) && player.canPlayerEdit(pos.add(0,1,0), side, stack))
+		else if(player.canPlayerEdit(pos, side, stack)&&player.canPlayerEdit(pos.add(0, 1, 0), side, stack))
 		{
 			IBlockState state = world.getBlockState(pos);
-			if(state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this) && world.isAirBlock(pos.add(0,1,0)))
+			if(state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this)&&world.isAirBlock(pos.add(0, 1, 0)))
 			{
-				world.setBlockState(pos.add(0,1,0), this.cropBlock.getDefaultState());
+				world.setBlockState(pos.add(0, 1, 0), this.cropBlock.getDefaultState());
 				stack.shrink(1);
 				return EnumActionResult.SUCCESS;
 			}

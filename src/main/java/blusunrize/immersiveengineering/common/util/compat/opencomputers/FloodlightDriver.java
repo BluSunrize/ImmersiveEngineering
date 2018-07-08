@@ -1,4 +1,3 @@
-
 package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
@@ -65,7 +64,7 @@ public class FloodlightDriver extends DriverSidedTileEntity
 		public void onDisconnect(Node node)
 		{
 			TileEntityFloodlight te = getTileEntity();
-			if(te != null)
+			if(te!=null)
 				te.controllingComputers--;
 		}
 
@@ -115,16 +114,16 @@ public class FloodlightDriver extends DriverSidedTileEntity
 		{
 			return new Object[]{getTileEntity().active};
 		}
-		
+
 		@Callback(direct = false, doc = "function():nil -- waits until the floodlightn can turn again")
 		public Object[] waitForCooldown(Context context, Arguments args)
 		{
 			TileEntityFloodlight te = getTileEntity();
-			if (te.turnCooldown>0)
+			if(te.turnCooldown > 0)
 				context.pause(te.turnCooldown/20F);
 			return null;
 		}
-		
-		
+
+
 	}
 }

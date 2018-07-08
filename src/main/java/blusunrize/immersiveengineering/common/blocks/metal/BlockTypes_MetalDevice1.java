@@ -35,11 +35,13 @@ public enum BlockTypes_MetalDevice1 implements IStringSerializable, BlockIEBase.
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

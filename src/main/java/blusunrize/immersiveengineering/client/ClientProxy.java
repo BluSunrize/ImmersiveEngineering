@@ -156,7 +156,7 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		Framebuffer fb = ClientUtils.mc().getFramebuffer();
-		if (OpenGlHelper.framebufferSupported && IEConfig.stencilBufferEnabled && !fb.isStencilEnabled())
+		if(OpenGlHelper.framebufferSupported&&IEConfig.stencilBufferEnabled&&!fb.isStencilEnabled())
 		{
 			stencilBufferEnabled = fb.enableStencil();//Enabling FBO stencils
 		}

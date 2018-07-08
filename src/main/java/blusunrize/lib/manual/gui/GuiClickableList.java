@@ -35,14 +35,15 @@ public class GuiClickableList extends GuiButton
 		this.translationType = translationType;
 
 		perPage = (h-8)/getFontHeight();
-		if(perPage<entries.length)
+		if(perPage < entries.length)
 			maxOffset = entries.length-perPage;
 	}
 
 	int getFontHeight()
 	{
-		return (int) (gui.manual.fontRenderer.FONT_HEIGHT*textScale);
+		return (int)(gui.manual.fontRenderer.FONT_HEIGHT*textScale);
 	}
+
 	@Override
 	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
 	{
@@ -55,23 +56,23 @@ public class GuiClickableList extends GuiButton
 		GlStateManager.scale(textScale, textScale, textScale);
 		GlStateManager.translate(x/textScale, y/textScale, 0);
 		GlStateManager.color(1, 1, 1);
-		this.hovered = mx>=x&&mx<x+width && my>=y&&my<y+height;
-		for(int i=0; i<Math.min(perPage, entries.length); i++)
+		this.hovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
+		for(int i = 0; i < Math.min(perPage, entries.length); i++)
 		{
 			int col = gui.manual.getTextColour();
-			if(hovered && mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
+			if(hovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
 				col = gui.manual.getHighlightColour();
 			if(i!=0)
 				GlStateManager.translate(0, getFontHeight(), 0);
 			int j = offset+i;
-			if(j>entries.length-1)
-				j=entries.length-1;
-			String s = translationType==-1?entries[j]: translationType==0?gui.manual.formatCategoryName(entries[j]):gui.manual.formatEntryName(entries[j]);
-			fr.drawString(s, 0,0, col, false);
+			if(j > entries.length-1)
+				j = entries.length-1;
+			String s = translationType==-1?entries[j]: translationType==0?gui.manual.formatCategoryName(entries[j]): gui.manual.formatEntryName(entries[j]);
+			fr.drawString(s, 0, 0, col, false);
 		}
-		GlStateManager.scale(1/textScale,1/textScale,1/textScale);
+		GlStateManager.scale(1/textScale, 1/textScale, 1/textScale);
 		GlStateManager.popMatrix();
-		if(maxOffset>0)
+		if(maxOffset > 0)
 		{
 			int h1 = offset*getFontHeight();
 			int h2 = height-8-maxOffset*getFontHeight();
@@ -90,28 +91,29 @@ public class GuiClickableList extends GuiButton
 
 		//Handle DWheel
 		int mouseWheel = Mouse.getEventDWheel();
-		if(mouseWheel!=0 && maxOffset>0 && Mouse.getEventNanoseconds()!=prevWheelNano)
+		if(mouseWheel!=0&&maxOffset > 0&&Mouse.getEventNanoseconds()!=prevWheelNano)
 		{
 			prevWheelNano = Mouse.getEventNanoseconds();
-			if(mouseWheel<0 && offset<maxOffset)
+			if(mouseWheel < 0&&offset < maxOffset)
 				offset++;
-			if(mouseWheel>0 && offset>0)
+			if(mouseWheel > 0&&offset > 0)
 				offset--;
 		}
 	}
 
-	public int selectedOption=-1;
+	public int selectedOption = -1;
+
 	@Override
 	public boolean mousePressed(Minecraft mc, int mx, int my)
 	{
 		boolean b = super.mousePressed(mc, mx, my);
-		selectedOption=-1;
+		selectedOption = -1;
 		if(b)
 		{
 			int mmY = my-this.y;
-			for(int i=0; i<Math.min(perPage, entries.length); i++)
-				if(mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
-					selectedOption=offset+i;
+			for(int i = 0; i < Math.min(perPage, entries.length); i++)
+				if(mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
+					selectedOption = offset+i;
 		}
 		return selectedOption!=-1;
 	}

@@ -78,6 +78,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 		return true;
 	}
+
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
@@ -102,11 +103,12 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	protected BlockStateContainer createBlockState()
 	{
 		BlockStateContainer base = super.createBlockState();
-		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]):new IUnlistedProperty[0];
+		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]): new IUnlistedProperty[0];
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
 		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
 		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
 	}
+
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -115,30 +117,30 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		if(tile instanceof TileEntityImmersiveConnectable&&state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)tile).genConnBlockstate());
 		if(tile instanceof TileEntityElectricLantern)
-			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityElectricLantern) tile).active);
+			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityElectricLantern)tile).active);
 		if(tile instanceof TileEntityFloodlight)
-			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityFloodlight) tile).active);
+			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityFloodlight)tile).active);
 		return state;
 	}
 
 	@Override
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
-		if (stack.getItemDamage() == BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta() || stack.getItemDamage() == BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta() || stack.getItemDamage() == BlockTypes_MetalDevice1.BELLJAR.getMeta())
+		if(stack.getItemDamage()==BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta()||stack.getItemDamage()==BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()||stack.getItemDamage()==BlockTypes_MetalDevice1.BELLJAR.getMeta())
 		{
-			for (int hh = 1; hh <= 2; hh++)
+			for(int hh = 1; hh <= 2; hh++)
 			{
 				BlockPos pos2 = pos.add(0, hh, 0);
-				if (world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
+				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))
 					return false;
 			}
 		}
-		else if (stack.getItemDamage() == BlockTypes_MetalDevice1.TESLA_COIL.getMeta())
+		else if(stack.getItemDamage()==BlockTypes_MetalDevice1.TESLA_COIL.getMeta())
 		{
 			BlockPos newPos = pos.offset(side);
 			return !world.isOutsideBuildHeight(newPos)&&world.getBlockState(newPos).getBlock().isReplaceable(world, newPos);
 		}
-		else if (stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_CHEM.getMeta() || stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_GUN.getMeta())
+		else if(stack.getItemDamage()==BlockTypes_MetalDevice1.TURRET_CHEM.getMeta()||stack.getItemDamage()==BlockTypes_MetalDevice1.TURRET_GUN.getMeta())
 		{
 			BlockPos newPos = pos.up();
 			return !world.isOutsideBuildHeight(newPos)&&world.getBlockState(newPos).getBlock().isReplaceable(world, newPos);
@@ -156,11 +158,10 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 			return !((TileEntityTurret)tile).dummy;
 		else if(tile instanceof TileEntityFluidPipe)
 			return !((TileEntityFluidPipe)tile).pipeCover.isEmpty();
-		else if(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation || tile instanceof TileEntityFloodlight)
+		else if(tile instanceof TileEntityElectricLantern||tile instanceof TileEntityChargingStation||tile instanceof TileEntityFloodlight)
 			return side==EnumFacing.DOWN;
 		return true;
 	}
-
 
 
 	@Override
@@ -384,9 +385,10 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 //		super.onNeighborChange(world, pos, fromPos);
 		super.neighborChanged(state, world, pos, block, fromPos);
-		if (world.getBlockState(pos).getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
+		if(world.getBlockState(pos).getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
 			TileEntityFluidPipe.indirectConnections.clear();
 	}
+
 	@Override
 	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
@@ -399,23 +401,24 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 		return true;
 	}
+
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		if (state.getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
+		if(state.getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
 		{
 			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof TileEntityFluidPipe)
+			if(te instanceof TileEntityFluidPipe)
 			{
-				TileEntityFluidPipe here = (TileEntityFluidPipe) te;
-				for (int i = 0;i<6;i++)
-					if (here.sideConfig[i]==-1)
+				TileEntityFluidPipe here = (TileEntityFluidPipe)te;
+				for(int i = 0; i < 6; i++)
+					if(here.sideConfig[i]==-1)
 					{
 						EnumFacing f = EnumFacing.VALUES[i];
 
 						TileEntity there = world.getTileEntity(pos.offset(f));
-						if (there instanceof TileEntityFluidPipe)
-							((TileEntityFluidPipe) there).toggleSide(f.getOpposite().ordinal());
+						if(there instanceof TileEntityFluidPipe)
+							((TileEntityFluidPipe)there).toggleSide(f.getOpposite().ordinal());
 					}
 			}
 		}

@@ -34,12 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds,IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
+public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public double lastEnergyPassed = 0;
 	public final ArrayList<Double> lastPackets = new ArrayList<>(25);
-	public boolean lower=true;
+	public boolean lower = true;
 	private int compVal = -1;
 
 	@Override
@@ -47,11 +47,13 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		return true;
 	}
+
 	@Override
 	protected boolean canTakeMV()
 	{
 		return true;
 	}
+
 	@Override
 	protected boolean canTakeHV()
 	{
@@ -67,20 +69,20 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if (!heldItem.isEmpty()&&heldItem.getItem() instanceof IWireCoil)
+		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IWireCoil)
 			return false;
 		int transfer = getAveragePower();
 		int packets = lastPackets.size();
 		if(lower)
 		{
-			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
+			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
 			if(above instanceof TileEntityEnergyMeter)
 				packets = ((TileEntityEnergyMeter)above).lastPackets.size();
 		}
 		String transferred = "0";
-		if(transfer>0)
+		if(transfer > 0)
 			transferred = Utils.formatDouble(transfer, "0.###");
-		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"energyTransfered",packets,transferred));
+		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"energyTransfered", packets, transferred));
 		return true;
 	}
 
@@ -88,13 +90,13 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(lower || world.isRemote)
+		if(lower||world.isRemote)
 			return;
-		if (((world.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal<0))
+		if(((world.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal < 0))
 			updateComparatorValues();
 		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
 		lastPackets.add(lastEnergyPassed);
-		if(lastPackets.size()>20)
+		if(lastPackets.size() > 20)
 			lastPackets.remove(0);
 		lastEnergyPassed = 0;
 	}
@@ -116,21 +118,22 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		if(lower)
 		{
-			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
+			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
 			if(above instanceof TileEntityEnergyMeter)
 				return ((TileEntityEnergyMeter)above).canConnectCable(cableType, target, offset);
 			return false;
 		}
 		return super.canConnectCable(cableType, target, offset);
 	}
+
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		if(lower)
 		{
-			TileEntity above = world.getTileEntity(getPos().add(0,1,0));
+			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
 			if(above instanceof TileEntityEnergyMeter)
-				((TileEntityEnergyMeter) above).connectCable(cableType, target, other);
+				((TileEntityEnergyMeter)above).connectCable(cableType, target, other);
 		}
 		else
 			super.connectCable(cableType, target, other);
@@ -139,7 +142,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
-		if (lower)
+		if(lower)
 			return pos.up();
 		else
 			return pos;
@@ -152,6 +155,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		nbt.setInteger("facing", facing.ordinal());
 		nbt.setBoolean("dummy", lower);
 	}
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -163,12 +167,12 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.getZ()-getPos().getZ(): (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
+		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
+		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
 		if(facing.getAxis()==Axis.X)
-			return new Vec3d(.5,.4375,zDif>0?.8125:.1875);
+			return new Vec3d(.5, .4375, zDif > 0?.8125: .1875);
 		else
-			return new Vec3d(xDif>0?.8125:.1875,.4375,.5);
+			return new Vec3d(xDif > 0?.8125: .1875, .4375, .5);
 	}
 
 	@Override
@@ -186,16 +190,17 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		world.setBlockState(pos.add(0,1,0), state);
-		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0,1,0))).lower = false;
-		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0,1,0))).facing = this.facing;
+		world.setBlockState(pos.add(0, 1, 0), state);
+		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0, 1, 0))).lower = false;
+		((TileEntityEnergyMeter)world.getTileEntity(pos.add(0, 1, 0))).facing = this.facing;
 	}
+
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		for(int i=0; i<=1; i++)
-			if(world.getTileEntity(getPos().add(0,!lower?-1:0,0).add(0,i,0)) instanceof TileEntityEnergyMeter)
-				world.setBlockToAir(getPos().add(0,!lower?-1:0,0).add(0,i,0));
+		for(int i = 0; i <= 1; i++)
+			if(world.getTileEntity(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0)) instanceof TileEntityEnergyMeter)
+				world.setBlockToAir(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0));
 	}
 
 	public int getAveragePower()
@@ -203,20 +208,20 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		TileEntityEnergyMeter te = this;
 		if(te.lower)
 		{
-			TileEntity tmp = world.getTileEntity(getPos().add(0,1,0));
+			TileEntity tmp = world.getTileEntity(getPos().add(0, 1, 0));
 			if(!(tmp instanceof TileEntityEnergyMeter))
 				return -1;
-			te = (TileEntityEnergyMeter) tmp;
+			te = (TileEntityEnergyMeter)tmp;
 		}
 		if(te.lastPackets.size()==0)
 			return 0;
 		double sum = 0;
-		synchronized (te.lastPackets)
+		synchronized(te.lastPackets)
 		{
-			for(double transfer: te.lastPackets)
+			for(double transfer : te.lastPackets)
 				sum += transfer;
 		}
-		return (int) Math.round(sum/te.lastPackets.size());
+		return (int)Math.round(sum/te.lastPackets.size());
 	}
 
 	@Override
@@ -225,22 +230,25 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 //		return new float[]{0,0,0,1,1,1};
 		return null;
 	}
+
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(.1875f,-.625f,.1875f, .8125f,.8125f,.8125f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+		List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(.1875f, -.625f, .1875f, .8125f, .8125f, .8125f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 		if(lower)
 		{
-			list.set(0, list.get(0).offset(0,1,0));
-			list.add(new AxisAlignedBB(0,0,0, 1,.375f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.set(0, list.get(0).offset(0, 1, 0));
+			list.add(new AxisAlignedBB(0, 0, 0, 1, .375f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 		}
 		return list;
 	}
+
 	@Override
 	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
+
 	@Override
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
@@ -252,55 +260,62 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
 		return false;
 	}
+
 	private void updateComparatorValues()
 	{
 		int oldVal = compVal;
 		int maxTrans = 0;
 		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-		if (conns==null)
+		if(conns==null)
 			compVal = 0;
 		else
 		{
-			for (Connection c : conns)
+			for(Connection c : conns)
 				maxTrans += c.cableType.getTransferRate();
 			maxTrans /= 2;
-			double val = getAveragePower() / (double) maxTrans;
-			compVal = (int) Math.ceil(15 * val);
+			double val = getAveragePower()/(double)maxTrans;
+			compVal = (int)Math.ceil(15*val);
 			TileEntity te = world.getTileEntity(pos.down());
-			if (te instanceof TileEntityEnergyMeter)
-				((TileEntityEnergyMeter) te).compVal = compVal;
+			if(te instanceof TileEntityEnergyMeter)
+				((TileEntityEnergyMeter)te).compVal = compVal;
 		}
-		if (oldVal!=compVal)
+		if(oldVal!=compVal)
 		{
 			world.updateComparatorOutputLevel(pos, getBlockType());
 			world.updateComparatorOutputLevel(pos.down(), getBlockType());
 		}
 	}
+
 	@Override
 	public int getComparatorInputOverride()
 	{

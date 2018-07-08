@@ -40,7 +40,7 @@ public class ModelShaderMinecart extends ModelMinecart
 		sideModelsMirrored[4].mirror = true;
 		ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
 		for(ModelBox cube : sideModelsMirrored[4].cubeList)
-			newCubes.add(new ModelBox(sideModelsMirrored[4], 0,0, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
+			newCubes.add(new ModelBox(sideModelsMirrored[4], 0, 0, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
 		sideModelsMirrored[4].cubeList = newCubes;
 	}
 
@@ -52,17 +52,17 @@ public class ModelShaderMinecart extends ModelMinecart
 		if(shadedCarts.containsKey(entity.getEntityId()))
 		{
 			shader = shadedCarts.get(entity.getEntityId());
-			if(shader != null && !shader.isEmpty() && shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader,null,"immersiveengineering:minecart");
+			if(shader!=null&&!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, "immersiveengineering:minecart");
 		}
 		if(sCase!=null)
 		{
 			GlStateManager.enableBlend();
 			OpenGlHelper.glBlendFunc(770, 771, 0, 1);
 
-			sideModels[5].rotationPointY = 4.0F - f2;
-			sideModelsMirrored[5].rotationPointY = 4.0F - f2;
-			for(int part=0;part<sideModels.length-1;part++)
+			sideModels[5].rotationPointY = 4.0F-f2;
+			sideModelsMirrored[5].rotationPointY = 4.0F-f2;
+			for(int part = 0; part < sideModels.length-1; part++)
 				if(sideModels[part]!=null)
 				{
 					float scale = 1;
@@ -70,13 +70,13 @@ public class ModelShaderMinecart extends ModelMinecart
 
 					//identify part 1+2, they shouldn'T render with additional?!
 
-					for(int pass=0; pass<layers.length; pass++)
+					for(int pass = 0; pass < layers.length; pass++)
 						if(sCase.renderModelPartForPass(shader, null, ""+part, pass))
 						{
 							int col = sCase.getARGBColourModifier(shader, null, ""+part, pass);
 							boolean upScale = pass!=layers.length-2;
-							GlStateManager.scale(scale,scale,scale);
-							GlStateManager.color((col>>16&255)/255f,(col>>8&255)/255f,(col&255)/255f,(col>>24&255)/255f);
+							GlStateManager.scale(scale, scale, scale);
+							GlStateManager.color((col >> 16&255)/255f, (col >> 8&255)/255f, (col&255)/255f, (col >> 24&255)/255f);
 
 //							if(pass==maxPasses-1)
 //								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_uncoloured.png");
@@ -101,8 +101,8 @@ public class ModelShaderMinecart extends ModelMinecart
 							if(layers[pass].isDynamicLayer())
 								layers[pass].modifyRender(false, part);
 
-							GlStateManager.color(1,1,1,1);
-							GlStateManager.scale(1/scale,1/scale,1/scale);
+							GlStateManager.color(1, 1, 1, 1);
+							GlStateManager.scale(1/scale, 1/scale, 1/scale);
 //							if(upScale)
 //								scale += .001f;
 						}

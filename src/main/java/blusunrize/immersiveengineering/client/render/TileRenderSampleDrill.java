@@ -37,7 +37,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
 		IBakedModel model = blockRenderer.getModelForState(state);
-		if(state.getBlock() != IEContent.blockMetalDevice1)
+		if(state.getBlock()!=IEContent.blockMetalDevice1)
 			return;
 //				.getModelFromBlockState(state, getWorld(), blockPos);
 		if(state instanceof IExtendedBlockState)
@@ -61,17 +61,17 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		//		GlStateManager.rotate(rot, 0,0,1);
 
 		int max = IEConfig.Machines.coredrill_time;
-		if(tile.process>0 && tile.process<max)
+		if(tile.process > 0&&tile.process < max)
 		{
-			GlStateManager.rotate( ((tile.process+partialTicks)*22.5f)%360f, 0,1,0);
+			GlStateManager.rotate(((tile.process+partialTicks)*22.5f)%360f, 0, 1, 0);
 			float push = tile.process/(float)max;
-			if(tile.process>max/2)
+			if(tile.process > max/2)
 				push = 1-push;
-			GlStateManager.translate(0,-2.8f*push,0);
+			GlStateManager.translate(0, -2.8f*push, 0);
 		}
 
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation( -.5-blockPos.getX(), -.5- blockPos.getY(),  -.5-blockPos.getZ());
+		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);

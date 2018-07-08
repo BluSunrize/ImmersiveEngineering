@@ -27,18 +27,18 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 	{
 		ItemStack bullet = ItemStack.EMPTY;
 		ItemStack potion = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
-				else if(potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
+				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
 				else
 					return false;
 		}
-		return !bullet.isEmpty() && !potion.isEmpty();
+		return !bullet.isEmpty()&&!potion.isEmpty();
 	}
 
 	@Override
@@ -46,13 +46,13 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 	{
 		ItemStack bullet = ItemStack.EMPTY;
 		ItemStack potion = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty() && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
-				else if(potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
+				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
 		}
 		ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);
@@ -63,7 +63,7 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width>=2 && height>=2;
+		return width >= 2&&height >= 2;
 	}
 
 	@Override
@@ -72,9 +72,9 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		return BulletHandler.getBulletStack("potion");
 	}
 
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-    {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-    }
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+	}
 }

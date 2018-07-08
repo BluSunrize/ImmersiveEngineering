@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.datafix.IDataFixer;
-import net.minecraft.util.datafix.IDataWalker;
 import net.minecraft.util.datafix.walkers.Filtered;
 import net.minecraftforge.common.util.Constants;
 
@@ -34,10 +33,10 @@ public class MultiblockProcessWalker extends Filtered
 	public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn)
 	{
 		NBTTagList queue = compound.getTagList("processQueue", Constants.NBT.TAG_COMPOUND);
-		for (int i = 0;i<queue.tagCount();i++)
+		for(int i = 0; i < queue.tagCount(); i++)
 		{
 			NBTTagCompound process = queue.getCompoundTagAt(i);
-			if (process.hasKey("process_inputItem", Constants.NBT.TAG_COMPOUND))
+			if(process.hasKey("process_inputItem", Constants.NBT.TAG_COMPOUND))
 				DataFixesManager.processItemStack(fixer, process, versionIn, PROCESS_INPUT_ITEM);
 
 		}

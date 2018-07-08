@@ -25,13 +25,13 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 	public boolean matches(InventoryCrafting inv, World world)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 				if(stack.isEmpty())
 				{
-					if(IEContent.itemShaderBag.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "rarity"))
+					if(IEContent.itemShaderBag.equals(stackInSlot.getItem())&&ItemNBTHelper.hasKey(stackInSlot, "rarity"))
 						stack = stackInSlot;
 					else
 						return false;
@@ -47,12 +47,12 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				ItemStack output = new ItemStack(IEContent.itemShaderBag,IEContent.itemShaderBag.equals(stackInSlot.getItem())?2:1);
+				ItemStack output = new ItemStack(IEContent.itemShaderBag, IEContent.itemShaderBag.equals(stackInSlot.getItem())?2: 1);
 				EnumRarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
 				if(next!=null)
 				{
@@ -67,18 +67,18 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width>=2 && height>=2;
+		return width >= 2&&height >= 2;
 	}
 
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemShaderBag,2);
+		return new ItemStack(IEContent.itemShaderBag, 2);
 	}
 
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-    {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-    }
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+	}
 }

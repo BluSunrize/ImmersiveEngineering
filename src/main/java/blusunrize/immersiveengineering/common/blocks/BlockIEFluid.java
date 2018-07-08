@@ -35,7 +35,7 @@ public class BlockIEFluid extends BlockFluidClassic
 	public BlockIEFluid(String name, Fluid fluid, Material material)
 	{
 		super(fluid, material);
-		this.setUnlocalizedName(ImmersiveEngineering.MODID + "." + name);
+		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 //		ImmersiveEngineering.registerBlock(this, ItemBlock.class, name);
 		IEContent.registeredIEBlocks.add(this);
@@ -48,6 +48,7 @@ public class BlockIEFluid extends BlockFluidClassic
 		this.fireSpread = fireSpread;
 		return this;
 	}
+
 	public BlockIEFluid setPotionEffects(PotionEffect... potionEffects)
 	{
 		this.potionEffects = potionEffects;
@@ -59,22 +60,24 @@ public class BlockIEFluid extends BlockFluidClassic
 	{
 		return this.flammability;
 	}
+
 	@Override
 	public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face)
 	{
 		return fireSpread;
 	}
+
 	@Override
 	public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face)
 	{
-		return this.flammability>0;
+		return this.flammability > 0;
 	}
 
 
 	@Override
 	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
 	{
-		if(potionEffects!=null && entity instanceof EntityLivingBase)
+		if(potionEffects!=null&&entity instanceof EntityLivingBase)
 		{
 			for(PotionEffect effect : potionEffects)
 				if(effect!=null)

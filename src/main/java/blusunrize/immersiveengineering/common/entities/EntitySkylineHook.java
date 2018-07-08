@@ -45,12 +45,14 @@ public class EntitySkylineHook extends Entity
 	public BlockPos target;
 	public Vec3d[] subPoints;
 	public int targetPoint;
+
 	public EntitySkylineHook(World world)
 	{
 		super(world);
-		this.setSize(.125f,.125f);
+		this.setSize(.125f, .125f);
 		//		this.noClip=true;
 	}
+
 	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, BlockPos target,
 							 Vec3d[] subPoints, int next)
 	{
@@ -64,29 +66,33 @@ public class EntitySkylineHook extends Entity
 		this.target = target;
 		this.subPoints = subPoints;
 
-		float f1 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-		this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX) * 180.0D / Math.PI) + 90.0F;
+		float f1 = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
+		this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX)*180.0D/Math.PI)+90.0F;
 
-		for (this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY) * 180.0D / Math.PI) - 90.0F; this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F);
+		for(this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY)*180.0D/Math.PI)-90.0F; this.rotationPitch-this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
+			;
 
-		while (this.rotationPitch - this.prevRotationPitch >= 180.0F)
+		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
 			this.prevRotationPitch += 360.0F;
-		while (this.rotationYaw - this.prevRotationYaw < -180.0F)
+		while(this.rotationYaw-this.prevRotationYaw < -180.0F)
 			this.prevRotationYaw -= 360.0F;
-		while (this.rotationYaw - this.prevRotationYaw >= 180.0F)
+		while(this.rotationYaw-this.prevRotationYaw >= 180.0F)
 			this.prevRotationYaw += 360.0F;
 	}
+
 	@Override
-	protected void entityInit() {}
+	protected void entityInit()
+	{
+	}
 
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean isInRangeToRenderDist(double p_70112_1_)
 	{
-		double d1 = this.getEntityBoundingBox().getAverageEdgeLength() * 4.0D;
+		double d1 = this.getEntityBoundingBox().getAverageEdgeLength()*4.0D;
 		d1 *= 64.0D;
-		return p_70112_1_ < d1 * d1;
+		return p_70112_1_ < d1*d1;
 	}
 
 
@@ -97,7 +103,7 @@ public class EntitySkylineHook extends Entity
 //		if(this.getControllingPassenger() instanceof EntityPlayer)
 //			player = ((EntityPlayer)this.getControllingPassenger());
 		List<Entity> list = this.getPassengers();
-		if(!list.isEmpty() && list.get(0) instanceof EntityPlayer)
+		if(!list.isEmpty()&&list.get(0) instanceof EntityPlayer)
 			player = (EntityPlayer)list.get(0);
 
 		if(this.ticksExisted==1&&!world.isRemote)
@@ -111,23 +117,23 @@ public class EntitySkylineHook extends Entity
 		//			this.setDead();
 		//		if(world.isRemote)
 		//			return;
-		if(subPoints!=null && targetPoint<subPoints.length-1)
+		if(subPoints!=null&&targetPoint < subPoints.length-1)
 		{
-			double dist = subPoints[targetPoint].distanceTo(new Vec3d(posX,posY,posZ));
+			double dist = subPoints[targetPoint].distanceTo(new Vec3d(posX, posY, posZ));
 			IELogger.debug("dist: "+dist);
-			if(dist<=0)
+			if(dist <= 0)
 			{
 				this.posX = subPoints[targetPoint].x;
 				this.posY = subPoints[targetPoint].y;
 				this.posZ = subPoints[targetPoint].z;
 				targetPoint++;
-				if (player instanceof EntityPlayerMP)
+				if(player instanceof EntityPlayerMP)
 					ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
 				IELogger.debug("next vertex: "+targetPoint);
 				return;
 			}
 			float speed = 2f;
-			if(player!=null && !player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
+			if(player!=null&&!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
 				speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
 			Vec3d moveVec = SkylineHelper.getSubMovementVector(new Vec3d(posX, posY, posZ), subPoints[targetPoint], speed);
 			motionX = moveVec.x;//*speed;
@@ -150,12 +156,12 @@ public class EntitySkylineHook extends Entity
 
 			double gDist = vEnd.distanceTo(new Vec3d(posX, posY, posZ));
 			IELogger.debug("distance to goal: "+gDist);
-			if(gDist<=.3)
+			if(gDist <= .3)
 			{
 				reachedTarget(end);
 				return;
 			}
-			else if(gDist>5)
+			else if(gDist > 5)
 			{
 				setDead();
 				return;
@@ -164,27 +170,28 @@ public class EntitySkylineHook extends Entity
 		this.posX += this.motionX;
 		this.posY += this.motionY;
 		this.posZ += this.motionZ;
-		float f1 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-		this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX) * 180.0D / Math.PI) + 90.0F;
+		float f1 = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
+		this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX)*180.0D/Math.PI)+90.0F;
 
-		for (this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY) * 180.0D / Math.PI) - 90.0F; this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F);
+		for(this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY)*180.0D/Math.PI)-90.0F; this.rotationPitch-this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
+			;
 
-		while (this.rotationPitch - this.prevRotationPitch >= 180.0F)
+		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
 			this.prevRotationPitch += 360.0F;
-		while (this.rotationYaw - this.prevRotationYaw < -180.0F)
+		while(this.rotationYaw-this.prevRotationYaw < -180.0F)
 			this.prevRotationYaw -= 360.0F;
-		while (this.rotationYaw - this.prevRotationYaw >= 180.0F)
+		while(this.rotationYaw-this.prevRotationYaw >= 180.0F)
 			this.prevRotationYaw += 360.0F;
 
-		this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
-		this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
+		this.rotationPitch = this.prevRotationPitch+(this.rotationPitch-this.prevRotationPitch)*0.2F;
+		this.rotationYaw = this.prevRotationYaw+(this.rotationYaw-this.prevRotationYaw)*0.2F;
 
-		if (this.isInWater())
+		if(this.isInWater())
 		{
-			for (int j = 0; j < 4; ++j)
+			for(int j = 0; j < 4; ++j)
 			{
 				float f3 = 0.25F;
-				this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * (double)f3, this.posY - this.motionY * (double)f3, this.posZ - this.motionZ * (double)f3, this.motionX, this.motionY, this.motionZ);
+				this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
 			}
 		}
 
@@ -193,10 +200,10 @@ public class EntitySkylineHook extends Entity
 			double dx = this.posX-this.prevPosX;
 			double dy = this.posY-this.prevPosY;
 			double dz = this.posZ-this.prevPosZ;
-			int distTrvl = Math.round(MathHelper.sqrt(dx*dx + dy*dy + dz*dz) * 100.0F);
+			int distTrvl = Math.round(MathHelper.sqrt(dx*dx+dy*dy+dz*dz)*100.0F);
 //			if(distTrvl>0)
 //				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
-			if (!world.isRemote&&SkylineHelper.isInBlock(player, world))
+			if(!world.isRemote&&SkylineHelper.isInBlock(player, world))
 			{
 //				setDead();
 //				player.setPosition(posX-3*dx, posY-3*dy+getMountedYOffset(),posZ-3*dz);
@@ -216,22 +223,22 @@ public class EntitySkylineHook extends Entity
 		this.setDead();
 		IELogger.debug("last tick at "+System.currentTimeMillis());
 		List<Entity> list = this.getPassengers();
-		if(list.isEmpty() || !(list.get(0) instanceof EntityPlayer))
+		if(list.isEmpty()||!(list.get(0) instanceof EntityPlayer))
 			return;
 //		if(!(this.getControllingPassenger() instanceof EntityPlayer))
 //			return;
 //		EntityPlayer player = (EntityPlayer)this.getControllingPassenger();
 		EntityPlayer player = (EntityPlayer)list.get(0);
 		ItemStack hook = player.getActiveItemStack();
-		if(hook.isEmpty() || !(hook.getItem() instanceof ItemSkyhook))
+		if(hook.isEmpty()||!(hook.getItem() instanceof ItemSkyhook))
 			return;
 		Optional<Connection> line = Optional.empty();
 		Set<Connection> possible = ImmersiveNetHandler.INSTANCE.getConnections(world, connection.end);
-		if (possible!=null)
+		if(possible!=null)
 		{
 			Vec3d look = player.getLookVec();
-			line = possible.stream().filter(c->!c.hasSameConnectors(connection))
-					.max(Comparator.comparingDouble(c-> {
+			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
+					.max(Comparator.comparingDouble(c -> {
 						Vec3d[] vertices = c.getSubVertices(world);
 						Vec3d across = vertices[vertices.length-1].subtract(vertices[0]).normalize();
 						return across.dotProduct(look);
@@ -276,11 +283,11 @@ public class EntitySkylineHook extends Entity
 
 		//		if (1 == 1.0F)
 		//		{
-		f1 = MathHelper.cos(-this.rotationYaw * 0.017453292F - (float)Math.PI);
-		f2 = MathHelper.sin(-this.rotationYaw * 0.017453292F - (float)Math.PI);
-		f3 = -MathHelper.cos(-this.rotationPitch * 0.017453292F);
-		f4 = MathHelper.sin(-this.rotationPitch * 0.017453292F);
-		return new Vec3d((double)(f2 * f3), (double)f4, (double)(f1 * f3));
+		f1 = MathHelper.cos(-this.rotationYaw*0.017453292F-(float)Math.PI);
+		f2 = MathHelper.sin(-this.rotationYaw*0.017453292F-(float)Math.PI);
+		f3 = -MathHelper.cos(-this.rotationPitch*0.017453292F);
+		f4 = MathHelper.sin(-this.rotationPitch*0.017453292F);
+		return new Vec3d((double)(f2*f3), (double)f4, (double)(f1*f3));
 		//		}
 		//		else
 		//		{
@@ -302,6 +309,7 @@ public class EntitySkylineHook extends Entity
 //		List<Entity> list = this.getPassengers();
 //		return list.isEmpty() ? null : (Entity)list.get(0);
 	}
+
 	@Override
 	public boolean shouldRiderSit()
 	{
@@ -311,13 +319,15 @@ public class EntitySkylineHook extends Entity
 	@Override
 	public boolean isInvisible()
 	{
-		return true;	
+		return true;
 	}
+
 	@Override
 	public boolean canRenderOnFire()
 	{
-		return false;	
+		return false;
 	}
+
 	@Override
 	public boolean isPushedByWater()
 	{
@@ -345,22 +355,26 @@ public class EntitySkylineHook extends Entity
 	{
 		return 0.0F;
 	}
+
 	@Override
 	public float getBrightness()
 	{
 		return 1.0F;
 	}
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBrightnessForRender()
 	{
 		return 15728880;
 	}
+
 	@Override
 	public boolean canBeCollidedWith()
 	{
 		return false;
 	}
+
 	@Override
 	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
 	{

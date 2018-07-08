@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockIEScaffoldSlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends BlockIESlab<E>
+public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIESlab<E>
 {
 	public BlockIEScaffoldSlab(String name, Material material, PropertyEnum property)
 	{
@@ -58,43 +58,43 @@ public class BlockIEScaffoldSlab<E extends Enum<E>&BlockIEBase.IBlockEnum> exten
 		{
 			int type = ((TileEntityIESlab)te).slabType;
 			if(type==0)
-				return new AxisAlignedBB(0,0,0, 1,.5f,1);
+				return new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
 			else if(type==1)
-				return new AxisAlignedBB(0,.5f,0, 1,1,1);
+				return new AxisAlignedBB(0, .5f, 0, 1, 1, 1);
 			else
 				return FULL_BLOCK_AABB;
 		}
 		else
-			return new AxisAlignedBB(0,0,0,1,.5f,1);
+			return new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
 	}
 
 	@Override
 	public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
 	{
 		super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
-		if (entityIn instanceof EntityLivingBase&&!((EntityLivingBase) entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (EntityLivingBase)entityIn))
+		if(entityIn instanceof EntityLivingBase&&!((EntityLivingBase)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (EntityLivingBase)entityIn))
 		{
 			float f5 = 0.15F;
-			if (entityIn.motionX < -f5)
+			if(entityIn.motionX < -f5)
 				entityIn.motionX = -f5;
-			if (entityIn.motionX > f5)
+			if(entityIn.motionX > f5)
 				entityIn.motionX = f5;
-			if (entityIn.motionZ < -f5)
+			if(entityIn.motionZ < -f5)
 				entityIn.motionZ = -f5;
-			if (entityIn.motionZ > f5)
+			if(entityIn.motionZ > f5)
 				entityIn.motionZ = f5;
 
 			entityIn.fallDistance = 0.0F;
-			if (entityIn.motionY < -0.15D)
+			if(entityIn.motionY < -0.15D)
 				entityIn.motionY = -0.15D;
 
-			if(entityIn.motionY<0 && entityIn instanceof EntityPlayer && entityIn.isSneaking())
+			if(entityIn.motionY < 0&&entityIn instanceof EntityPlayer&&entityIn.isSneaking())
 			{
-				entityIn.motionY=0;
+				entityIn.motionY = 0;
 				return;
 			}
 			if(entityIn.collidedHorizontally)
-				entityIn.motionY=.2;
+				entityIn.motionY = .2;
 		}
 	}
 
@@ -102,8 +102,8 @@ public class BlockIEScaffoldSlab<E extends Enum<E>&BlockIEBase.IBlockEnum> exten
 	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityIESlab && ((TileEntityIESlab)te).slabType==0)
-			return entity.posY-pos.getY()<.5;
+		if(te instanceof TileEntityIESlab&&((TileEntityIESlab)te).slabType==0)
+			return entity.posY-pos.getY() < .5;
 		return true;
 	}
 

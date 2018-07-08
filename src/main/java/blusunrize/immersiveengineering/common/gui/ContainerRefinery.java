@@ -26,60 +26,60 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 		super(inventoryPlayer, tile);
 
 		final TileEntityRefinery tileF = tile;
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 0, 37,15, 2)
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 0, 37, 15, 2)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
 				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				if (h==null||h.getTankProperties().length==0)
+				if(h==null||h.getTankProperties().length==0)
 					return false;
 				FluidStack fs = h.getTankProperties()[0].getContents();
 				if(fs==null)
 					return false;
 				if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
 					return false;
-				if(tileF.tanks[0].getFluidAmount()>0&&!fs.isFluidEqual(tileF.tanks[0].getFluid()))
+				if(tileF.tanks[0].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[0].getFluid()))
 					return false;
-				if(tileF.tanks[1].getFluidAmount()<=0)
+				if(tileF.tanks[1].getFluidAmount() <= 0)
 					return true;
 				List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
-				return incomplete!=null && !incomplete.isEmpty();
+				return incomplete!=null&&!incomplete.isEmpty();
 			}
 		});
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 37,54));
+		this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 37, 54));
 
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2, 85,15, 2)
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2, 85, 15, 2)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
 				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				if (h==null||h.getTankProperties().length==0)
+				if(h==null||h.getTankProperties().length==0)
 					return false;
 				FluidStack fs = h.getTankProperties()[0].getContents();
 				if(fs==null)
 					return false;
 				if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
 					return false;
-				if(tileF.tanks[1].getFluidAmount()>0&&!fs.isFluidEqual(tileF.tanks[1].getFluid()))
+				if(tileF.tanks[1].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[1].getFluid()))
 					return false;
-				if(tileF.tanks[0].getFluidAmount()<=0)
+				if(tileF.tanks[0].getFluidAmount() <= 0)
 					return true;
 				List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
-				return incomplete!=null && !incomplete.isEmpty();
+				return incomplete!=null&&!incomplete.isEmpty();
 			}
 		});
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 85,54));
+		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 85, 54));
 
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 4, 133,15, 0));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 5, 133,54));
-		slotCount=6;
+		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 4, 133, 15, 0));
+		this.addSlotToContainer(new IESlot.Output(this, this.inv, 5, 133, 54));
+		slotCount = 6;
 
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 143));
 	}
 }

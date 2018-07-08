@@ -18,7 +18,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IDirect
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public boolean inverted = false;
-	
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -38,26 +38,31 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IDirect
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
-		this.facing = facing;		
+		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{

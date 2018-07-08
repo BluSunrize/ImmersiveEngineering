@@ -26,17 +26,19 @@ public enum BlockTypes_StoneDecoration implements IStringSerializable, BlockIEBa
 	INSULATING_GLASS,
 	CONCRETE_SPRAYED,
 	ALLOYBRICK;
-	
+
 	@Override
 	public String getName()
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

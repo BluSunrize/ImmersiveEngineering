@@ -30,16 +30,18 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 		this.canInsert = canInsert;
 		this.canExtract = canExtract;
 	}
+
 	public IEInventoryHandler(int slots, IIEInventory inventory)
 	{
-		this(slots,inventory,0, new boolean[slots], new boolean[slots]);
-		for(int i=0; i<slots; i++)
+		this(slots, inventory, 0, new boolean[slots], new boolean[slots]);
+		for(int i = 0; i < slots; i++)
 			this.canExtract[i] = this.canInsert[i] = true;
 	}
+
 	public IEInventoryHandler(int slots, IIEInventory inventory, int slotOffset, boolean canInsert, boolean canExtract)
 	{
-		this(slots,inventory,slotOffset, new boolean[slots], new boolean[slots]);
-		for(int i=0; i<slots; i++)
+		this(slots, inventory, slotOffset, new boolean[slots], new boolean[slots]);
+		for(int i = 0; i < slots; i++)
 		{
 			this.canInsert[i] = canInsert;
 			this.canExtract[i] = canExtract;
@@ -55,18 +57,19 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		return this.inv.getInventory().get(this.slotOffset + slot);
+		return this.inv.getInventory().get(this.slotOffset+slot);
 	}
+
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 	{
-		if(!canInsert[slot] || stack.isEmpty())
+		if(!canInsert[slot]||stack.isEmpty())
 			return stack;
 		stack = stack.copy();
 
-		if(!inv.isStackValid(this.slotOffset + slot, stack))
+		if(!inv.isStackValid(this.slotOffset+slot, stack))
 			return stack;
-		
+
 		int offsetSlot = this.slotOffset+slot;
 		ItemStack currentStack = inv.getInventory().get(offsetSlot);
 
@@ -102,7 +105,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			if(!ItemHandlerHelper.canItemStacksStack(stack, currentStack))
 				return stack;
 
-			int accepted = Math.min(stack.getMaxStackSize(), inv.getSlotLimit(offsetSlot)) - currentStack.getCount();
+			int accepted = Math.min(stack.getMaxStackSize(), inv.getSlotLimit(offsetSlot))-currentStack.getCount();
 			if(accepted < stack.getCount())
 			{
 				if(!simulate)
@@ -132,10 +135,11 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			}
 		}
 	}
+
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate)
 	{
-		if(!canExtract[slot] || amount==0)
+		if(!canExtract[slot]||amount==0)
 			return ItemStack.EMPTY;
 
 		int offsetSlot = this.slotOffset+slot;
@@ -161,7 +165,8 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	}
 
 	@Override
-	public int getSlotLimit(int slot) {
+	public int getSlotLimit(int slot)
+	{
 		return 64;
 	}
 

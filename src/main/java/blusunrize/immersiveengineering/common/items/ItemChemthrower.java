@@ -75,7 +75,8 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		{
 			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().rarityColor;
 			return rarity+fs.getLocalizedName()+TextFormatting.GRAY+": "+fs.amount+"/"+capacity+"mB";
-		} else
+		}
+		else
 			return I18n.format(Lib.DESC_FLAVOUR+"drill.empty");
 
 	}
@@ -108,7 +109,8 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		{
 			if(!world.isRemote)
 				ItemNBTHelper.setBoolean(stack, "ignite", !ItemNBTHelper.getBoolean(stack, "ignite"));
-		} else
+		}
+		else
 			player.setActiveHand(hand);
 		return new ActionResult(EnumActionResult.SUCCESS, stack);
 	}
@@ -142,15 +144,16 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.world, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
 
 					// Apply momentum from the player.
-					chem.motionX = player.motionX + vecDir.x*range;
-					chem.motionY = player.motionY + vecDir.y*range;
-					chem.motionZ = player.motionZ + vecDir.z*range;
+					chem.motionX = player.motionX+vecDir.x*range;
+					chem.motionY = player.motionY+vecDir.y*range;
+					chem.motionZ = player.motionZ+vecDir.z*range;
 
 					// Apply a small amount of backforce.
-					if (!player.onGround) {
-						player.motionX -= vecDir.x * 0.0025 * range;
-						player.motionY -= vecDir.y * 0.0025 * range;
-						player.motionZ -= vecDir.z * 0.0025 * range;
+					if(!player.onGround)
+					{
+						player.motionX -= vecDir.x*0.0025*range;
+						player.motionY -= vecDir.y*0.0025*range;
+						player.motionZ -= vecDir.z*0.0025*range;
 					}
 					if(ignite)
 						chem.setFire(10);
@@ -164,9 +167,11 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 					else
 						player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spray, SoundCategory.PLAYERS, .5f, .75f);
 				}
-			} else
+			}
+			else
 				player.stopActiveHand();
-		} else
+		}
+		else
 			player.stopActiveHand();
 	}
 
@@ -204,7 +209,8 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fluidTag2);
 				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1", fluidTag);
 				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2", fluidTag1);
-			} else
+			}
+			else
 			{
 				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fluidTag1);
 				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1", fluidTag2);
@@ -231,9 +237,9 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if("base".equals(group)||"grip".equals(group)||"cage".equals(group)||"tanks".equals(group))
 			return true;
 		NBTTagCompound upgrades = this.getUpgrades(stack);
-		if("large_tank".equals(group) && upgrades.getInteger("capacity")>0)
+		if("large_tank".equals(group)&&upgrades.getInteger("capacity") > 0)
 			return true;
-		else if("multi_tank".equals(group) && upgrades.getBoolean("multitank"))
+		else if("multi_tank".equals(group)&&upgrades.getBoolean("multitank"))
 			return true;
 		else
 			return "tank".equals(group);
@@ -257,7 +263,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		if (!stack.isEmpty())
+		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
 				IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
@@ -266,18 +272,18 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 				@Override
 				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 				{
-					return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ||
-							capability == CapabilityShader.SHADER_CAPABILITY ||
+					return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY||
+							capability==CapabilityShader.SHADER_CAPABILITY||
 							super.hasCapability(capability, facing);
 				}
 
 				@Override
 				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 				{
-					if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-						return (T) fluids;
-					if (capability == CapabilityShader.SHADER_CAPABILITY)
-						return (T) shaders;
+					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+						return (T)fluids;
+					if(capability==CapabilityShader.SHADER_CAPABILITY)
+						return (T)shaders;
 					return super.getCapability(capability, facing);
 				}
 

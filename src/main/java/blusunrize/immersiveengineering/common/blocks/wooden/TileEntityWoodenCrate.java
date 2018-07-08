@@ -67,26 +67,28 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 				inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 27);
 		}
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		if(this.name!=null)
 			nbt.setString("name", this.name);
-		if(this.enchantments!=null && this.enchantments.tagCount()>0)
+		if(this.enchantments!=null&&this.enchantments.tagCount() > 0)
 			nbt.setTag("enchantments", this.enchantments);
 		if(!descPacket)
 		{
 			if(lootTable!=null)
-				nbt.setString("lootTable",lootTable.toString());
+				nbt.setString("lootTable", lootTable.toString());
 			else
 				writeInv(nbt, false);
 		}
 	}
+
 	public void writeInv(NBTTagCompound nbt, boolean toItem)
 	{
 		boolean write = false;
 		NBTTagList invList = new NBTTagList();
-		for(int i=0; i<this.inventory.size(); i++)
+		for(int i = 0; i < this.inventory.size(); i++)
 			if(!this.inventory.get(i).isEmpty())
 			{
 				if(toItem)
@@ -96,7 +98,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 				this.inventory.get(i).writeToNBT(itemTag);
 				invList.appendTag(itemTag);
 			}
-		if(!toItem || write)
+		if(!toItem||write)
 			nbt.setTag("inventory", invList);
 	}
 
@@ -104,7 +106,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	@Nullable
 	public ITextComponent getDisplayName()
 	{
-		return name!=null?new TextComponentString(name) : new TextComponentTranslation(getBlockMetadata()==0?"tile.immersiveengineering.wooden_device0.crate.name":"tile.immersiveengineering.wooden_device0.reinforced_crate.name");
+		return name!=null?new TextComponentString(name): new TextComponentTranslation(getBlockMetadata()==0?"tile.immersiveengineering.wooden_device0.crate.name": "tile.immersiveengineering.wooden_device0.reinforced_crate.name");
 	}
 
 	@Override
@@ -112,33 +114,36 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	{
 		return true;
 	}
+
 	@Override
 	public int getGuiID()
 	{
 		return Lib.GUIID_WoodenCrate;
 	}
+
 	@Override
 	public TileEntity getGuiMaster()
 	{
 		return this;
 	}
+
 	@Override
 	public void onGuiOpened(EntityPlayer player, boolean clientside)
 	{
-		if(this.lootTable!=null && !clientside)
+		if(this.lootTable!=null&&!clientside)
 		{
 			LootTable loottable = this.world.getLootTableManager().getLootTableFromLocation(this.lootTable);
 			this.lootTable = null;
 			Random random;
 			LootContext.Builder contextBuilder = new LootContext.Builder((WorldServer)this.world);
-			if(player != null)
+			if(player!=null)
 				contextBuilder.withLuck(player.getLuck());
 			LootContext context = contextBuilder.build();
 			Random rand = new Random();
 
 			List<ItemStack> list = loottable.generateLootForPools(rand, context);
 			List<Integer> listSlots = Lists.newArrayList();
-			for(int i=0; i<inventory.size(); i++)
+			for(int i = 0; i < inventory.size(); i++)
 				if(inventory.get(i).isEmpty())
 					listSlots.add(Integer.valueOf(i));
 			Collections.shuffle(listSlots, rand);
@@ -147,7 +152,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			Utils.shuffleLootItems(list, listSlots.size(), rand);
 			for(ItemStack itemstack : list)
 			{
-				int slot = listSlots.remove(listSlots.size() - 1).intValue();
+				int slot = listSlots.remove(listSlots.size()-1).intValue();
 				inventory.set(slot, itemstack);
 			}
 			this.markDirty();
@@ -159,16 +164,19 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	{
 		return inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return IEApi.isAllowedInCrate(stack);
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 64;
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
@@ -185,10 +193,11 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			stack.setTagCompound(tag);
 		if(this.name!=null)
 			stack.setStackDisplayName(this.name);
-		if(enchantments!=null && enchantments.tagCount()>0)
+		if(enchantments!=null&&enchantments.tagCount() > 0)
 			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
 	}
+
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{
@@ -200,6 +209,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			enchantments = stack.getEnchantmentTagList();
 		}
 	}
+
 	@Override
 	public boolean preventInventoryDrop()
 	{
@@ -219,7 +229,9 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			return true;
 		return super.hasCapability(capability, facing);
 	}
-	IItemHandler insertionHandler = new IEInventoryHandler(27,this);
+
+	IItemHandler insertionHandler = new IEInventoryHandler(27, this);
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{

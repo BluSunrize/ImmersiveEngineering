@@ -12,9 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * A simple storage object for IF and an example implementation of {@link IFluxStorage}.
- * 
+ *
  * @author BluSunrize - 18.01.2016
- * 
  */
 public class FluxStorage implements IFluxStorage
 {
@@ -29,10 +28,12 @@ public class FluxStorage implements IFluxStorage
 		this.limitReceive = limitReceive;
 		this.limitExtract = limitExtract;
 	}
+
 	public FluxStorage(int capacity, int limitTransfer)
 	{
 		this(capacity, limitTransfer, limitTransfer);
 	}
+
 	public FluxStorage(int capacity)
 	{
 		this(capacity, capacity, capacity);
@@ -41,13 +42,14 @@ public class FluxStorage implements IFluxStorage
 	public FluxStorage readFromNBT(NBTTagCompound nbt)
 	{
 		this.energy = nbt.getInteger("ifluxEnergy");
-		if(energy>capacity)
+		if(energy > capacity)
 			energy = capacity;
 		return this;
 	}
+
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		if(energy<0)
+		if(energy < 0)
 			energy = 0;
 		nbt.setInteger("ifluxEnergy", energy);
 		return nbt;
@@ -56,7 +58,7 @@ public class FluxStorage implements IFluxStorage
 	public void setCapacity(int capacity)
 	{
 		this.capacity = capacity;
-		if(energy>capacity) 
+		if(energy > capacity)
 			energy = capacity;
 	}
 
@@ -65,10 +67,12 @@ public class FluxStorage implements IFluxStorage
 		setLimitReceive(limitTransfer);
 		setMaxExtract(limitTransfer);
 	}
+
 	public void setLimitReceive(int limitReceive)
 	{
 		this.limitReceive = limitReceive;
 	}
+
 	public void setMaxExtract(int limitExtract)
 	{
 		this.limitExtract = limitExtract;
@@ -78,6 +82,7 @@ public class FluxStorage implements IFluxStorage
 	{
 		return limitReceive;
 	}
+
 	public int getLimitExtract()
 	{
 		return limitExtract;
@@ -86,17 +91,18 @@ public class FluxStorage implements IFluxStorage
 	public void setEnergy(int energy)
 	{
 		this.energy = energy;
-		if (this.energy>capacity)
+		if(this.energy > capacity)
 			this.energy = capacity;
-		else if (this.energy<0)
+		else if(this.energy < 0)
 			this.energy = 0;
 	}
+
 	public void modifyEnergyStored(int energy)
 	{
 		this.energy += energy;
-		if(this.energy>capacity)
+		if(this.energy > capacity)
 			this.energy = capacity;
-		else if(this.energy<0)
+		else if(this.energy < 0)
 			this.energy = 0;
 	}
 

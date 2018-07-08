@@ -34,12 +34,12 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 			return;
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x,y,z);
+		GlStateManager.translate(x, y, z);
 
 		int facing = te.getFacing().ordinal();
 		int off = te.dummyOffset;
 
-		float angle = facing==2?180:facing==4?-90:facing==5?90:0;
+		float angle = facing==2?180: facing==4?-90: facing==5?90: 0;
 
 //		GL11.glPushMatrix();
 //		GlStateManager.translate(facing>3?.5: facing==2&&mirror?1: facing==3&&!mirror?1:0, 0, facing<4?.5: facing==5&&mirror?1: facing==4&&!mirror?1:0);
@@ -58,21 +58,22 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 //		GlStateManager.popMatrix();
 		GlStateManager.pushMatrix();
 		GlStateManager.disableLighting();
-		GlStateManager.translate(.5,1.0625,.5);
+		GlStateManager.translate(.5, 1.0625, .5);
 //		float offset = off * (mirror?1f:.825f);
 //		GlStateManager.translate(facing<4?offset:0,0,facing>3?offset:0);
-		angle = facing==2?90:facing==4?180:facing==5?0:-90;
-		GlStateManager.rotate(180, 0,0,1);
-		GlStateManager.rotate(-angle, 0,1,0);
-		GlStateManager.rotate(-90, 1,0,0);
-		GlStateManager.translate(0,-.875,0);
-		GlStateManager.scale(.75f,.75f,.75f);
+		angle = facing==2?90: facing==4?180: facing==5?0: -90;
+		GlStateManager.rotate(180, 0, 0, 1);
+		GlStateManager.rotate(-angle, 0, 1, 0);
+		GlStateManager.rotate(-90, 1, 0, 0);
+		GlStateManager.translate(0, -.875, 0);
+		GlStateManager.scale(.75f, .75f, .75f);
 		if(!te.getInventory().get(0).isEmpty())
 		{
-			try{
+			try
+			{
 				ItemStack is = te.getInventory().get(0);
 				ClientUtils.mc().getRenderItem().renderItem(is, ItemCameraTransforms.TransformType.FIXED);
-			}catch(Exception e)
+			} catch(Exception e)
 			{
 				e.printStackTrace();
 			}

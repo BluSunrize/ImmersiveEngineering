@@ -20,6 +20,7 @@ import java.util.HashMap;
 public class IECustomStateMapper extends StateMapperBase
 {
 	public static HashMap<String, StateMapperBase> stateMappers = new HashMap<>();
+
 	public static StateMapperBase getStateMapper(IIEMetaBlock metaBlock)
 	{
 		String key = metaBlock.getIEBlockName();
@@ -37,15 +38,16 @@ public class IECustomStateMapper extends StateMapperBase
 	@Override
 	protected ModelResourceLocation getModelResourceLocation(IBlockState state)
 	{
-		try{
+		try
+		{
 			ResourceLocation rl = Block.REGISTRY.getNameForObject(state.getBlock());
 			IIEMetaBlock metaBlock = (IIEMetaBlock)state.getBlock();
 			String custom = metaBlock.getCustomStateMapping(state.getBlock().getMetaFromState(state), false);
 			if(custom!=null)
 				rl = new ResourceLocation(rl.toString()+"_"+custom);
-			String prop = metaBlock.appendPropertiesToState()?this.getPropertyString(state.getProperties()):null;
+			String prop = metaBlock.appendPropertiesToState()?this.getPropertyString(state.getProperties()): null;
 			return new ModelResourceLocation(rl, prop);
-		}catch(Exception e)
+		} catch(Exception e)
 		{
 			e.printStackTrace();
 			ResourceLocation rl = Block.REGISTRY.getNameForObject(state.getBlock());

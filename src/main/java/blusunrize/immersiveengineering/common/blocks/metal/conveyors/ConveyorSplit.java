@@ -76,8 +76,8 @@ public class ConveyorSplit extends ConveyorBasic
 		{
 			EnumFacing redirect = EnumFacing.values()[entity.getEntityData().getInteger(nbtKey)];
 			BlockPos nextPos = tile.getPos().offset(redirect);
-			double distNext = Math.abs((redirect.getAxis() == Axis.Z ? nextPos.getZ() : nextPos.getX()) + .5 - (redirect.getAxis() == Axis.Z ? entity.posZ : entity.posX));
-			if(distNext<.7)
+			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
+			if(distNext < .7)
 				super.handleInsertion(tile, entity, redirect, conDir, distX, distZ);
 		}
 	}
@@ -88,7 +88,7 @@ public class ConveyorSplit extends ConveyorBasic
 		if(!isActive(tile))
 			return;
 		EnumFacing redirect = null;
-		if(entity != null && !entity.isDead)
+		if(entity!=null&&!entity.isDead)
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 			if(entity.getEntityData().hasKey(nbtKey))
@@ -103,17 +103,17 @@ public class ConveyorSplit extends ConveyorBasic
 					TileEntity nextTile = tile.getWorld().getTileEntity(nextPos);
 					if(!(nextTile instanceof IConveyorTile))
 						this.outputFace = outputFace.getOpposite();
-					else if(((IConveyorTile)nextTile).getFacing() != this.outputFace)
+					else if(((IConveyorTile)nextTile).getFacing()!=this.outputFace)
 						this.outputFace = outputFace.getOpposite();
 				}
 			}
 		}
 		super.onEntityCollision(tile, entity, facing);
-		if(redirect != null)
+		if(redirect!=null)
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 			BlockPos nextPos = tile.getPos().offset(redirect);
-			double distNext = Math.abs((redirect.getAxis() == Axis.Z ? nextPos.getZ() : nextPos.getX()) + .5 - (redirect.getAxis() == Axis.Z ? entity.posZ : entity.posX));
+			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
 			double treshold = .4;
 			boolean contact = distNext < treshold;
 			if(contact)
@@ -142,13 +142,13 @@ public class ConveyorSplit extends ConveyorBasic
 			return vec;
 		EnumFacing redirect = EnumFacing.getFront(entity.getEntityData().getInteger(nbtKey));
 		BlockPos wallPos = conveyorTile.getPos().offset(facing);
-		double distNext = Math.abs((facing.getAxis() == Axis.Z ? wallPos.getZ() : wallPos.getX()) + .5 - (facing.getAxis() == Axis.Z ? entity.posZ : entity.posX));
+		double distNext = Math.abs((facing.getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(facing.getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distNext < 1.33)
 		{
-			double sideMove = Math.pow(1 + distNext, 0.1) * .2;
+			double sideMove = Math.pow(1+distNext, 0.1)*.2;
 			if(distNext < .8)
-				vec = new Vec3d(facing.getAxis() == Axis.X ? 0 : vec.x, vec.y, facing.getAxis() == Axis.Z ? 0 : vec.z);
-			vec = vec.addVector(redirect.getFrontOffsetX() * sideMove, 0, redirect.getFrontOffsetZ() * sideMove);
+				vec = new Vec3d(facing.getAxis()==Axis.X?0: vec.x, vec.y, facing.getAxis()==Axis.Z?0: vec.z);
+			vec = vec.addVector(redirect.getFrontOffsetX()*sideMove, 0, redirect.getFrontOffsetZ()*sideMove);
 		}
 		return vec;
 	}
@@ -205,17 +205,17 @@ public class ConveyorSplit extends ConveyorBasic
 		{
 			for(int iv = 0; iv < vertices.length; iv++)
 			{
-				vertices[iv].setZ((i + 1) * .0625f);
-				vertices2[iv].setX(vertices2[iv].getX() + .0625f);
-				vertices3[iv].setX(vertices3[iv].getX() - .0625f);
+				vertices[iv].setZ((i+1)*.0625f);
+				vertices2[iv].setX(vertices2[iv].getX()+.0625f);
+				vertices3[iv].setX(vertices3[iv].getX()-.0625f);
 			}
-			double v = 16 - i;
-			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing0, new double[]{1, v - 1, 15, v}, colour, true));
+			double v = 16-i;
+			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing0, new double[]{1, v-1, 15, v}, colour, true));
 			if(i < 7)
 			{
-				double u = 8 - i;
-				baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), facing, tex_casing0, new double[]{u - 1, 16, u, 8}, colour, true));
-				baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), facing, tex_casing0, new double[]{u - 1, 16, u, 8}, colour, false));
+				double u = 8-i;
+				baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, true));
+				baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
 		return baseModel;

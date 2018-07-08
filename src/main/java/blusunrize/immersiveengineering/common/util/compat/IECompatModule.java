@@ -28,8 +28,10 @@ public abstract class IECompatModule
 	public static HashMap<String, Class<? extends IECompatModule>> moduleClasses = new HashMap<String, Class<? extends IECompatModule>>();
 	public static Set<IECompatModule> modules = new HashSet<IECompatModule>();
 
-	public static Consumer<Object> jeiAddFunc = o -> {};
-	public static Consumer<Object> jeiRemoveFunc = o -> {};
+	public static Consumer<Object> jeiAddFunc = o -> {
+	};
+	public static Consumer<Object> jeiRemoveFunc = o -> {
+	};
 
 	static
 	{
@@ -100,48 +102,72 @@ public abstract class IECompatModule
 					IELogger.logger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this and include the error message below!", exception);
 				}
 	}
+
 	public static void doModulesInit()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
-			try{
+			try
+			{
 				compat.init();
-			}catch (Exception exception){
+			} catch(Exception exception)
+			{
 				IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
 			}
 	}
+
 	public static void doModulesPostInit()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
-			try{
+			try
+			{
 				compat.postInit();
-			}catch (Exception exception){
+			} catch(Exception exception)
+			{
 				IELogger.logger.error("Compat module for "+compat+" could not be postInitialized. Report this and include the error message below!", exception);
 			}
 	}
+
 	//We don't want this to happen multiple times after all >_>
 	public static boolean serverStartingDone = false;
+
 	public static void doModulesLoadComplete()
 	{
 		if(!serverStartingDone)
 		{
 			serverStartingDone = true;
 			for(IECompatModule compat : IECompatModule.modules)
-				try{
+				try
+				{
 					compat.loadComplete();
-				}catch (Exception exception){
+				} catch(Exception exception)
+				{
 					IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
 				}
 		}
 	}
 
 	public abstract void preInit();
+
 	public abstract void init();
+
 	public abstract void postInit();
-	public void loadComplete(){}
+
+	public void loadComplete()
+	{
+	}
+
 	@SideOnly(Side.CLIENT)
-	public void clientPreInit(){}
+	public void clientPreInit()
+	{
+	}
+
 	@SideOnly(Side.CLIENT)
-	public void clientInit(){}
+	public void clientInit()
+	{
+	}
+
 	@SideOnly(Side.CLIENT)
-	public void clientPostInit(){}
+	public void clientPostInit()
+	{
+	}
 }

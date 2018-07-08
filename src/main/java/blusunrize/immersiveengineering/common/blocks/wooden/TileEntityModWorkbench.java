@@ -34,7 +34,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	EnumFacing facing = EnumFacing.NORTH;
 	public boolean dummy = false;
-	public int dummyOffset=0;
+	public int dummyOffset = 0;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -48,6 +48,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 1);
 		//		}
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -62,12 +63,13 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			renderAABB = new AxisAlignedBB(getPos().getX()-1,getPos().getY(),getPos().getZ()-1, getPos().getX()+2,getPos().getY()+2,getPos().getZ()+2);
+			renderAABB = new AxisAlignedBB(getPos().getX()-1, getPos().getY(), getPos().getZ()-1, getPos().getX()+2, getPos().getY()+2, getPos().getZ()+2);
 		return renderAABB;
 	}
 
@@ -76,16 +78,19 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	{
 		return this.inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return true;
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 1;
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
@@ -96,26 +101,31 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
@@ -125,13 +135,13 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	@Override
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
-		if(!inventory.get(0).isEmpty() && inventory.get(0).getItem() instanceof IConfigurableTool)
+		if(!inventory.get(0).isEmpty()&&inventory.get(0).getItem() instanceof IConfigurableTool)
 			for(String key : message.getKeySet())
 			{
 				if(key.startsWith("b_"))
-					((IConfigurableTool) inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key.substring(2), message.getBoolean(key));
+					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key.substring(2), message.getBoolean(key));
 				else if(key.startsWith("f_"))
-					((IConfigurableTool) inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key.substring(2), message.getFloat(key));
+					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key.substring(2), message.getFloat(key));
 			}
 	}
 
@@ -140,10 +150,11 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	{
 		return this.dummy;
 	}
+
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		EnumFacing dummyDir = facing.getAxis()==Axis.X?(hitZ<.5?EnumFacing.NORTH:EnumFacing.SOUTH):(hitX<.5?EnumFacing.WEST:EnumFacing.EAST);
+		EnumFacing dummyDir = facing.getAxis()==Axis.X?(hitZ < .5?EnumFacing.NORTH: EnumFacing.SOUTH): (hitX < .5?EnumFacing.WEST: EnumFacing.EAST);
 		boolean mirror = false;
 		BlockPos dummyPos = pos.offset(dummyDir);
 		if(!world.getBlockState(dummyPos).getBlock().isReplaceable(world, dummyPos))
@@ -152,19 +163,20 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 			dummyPos = pos.offset(dummyDir);
 		}
 		mirror = dummyDir!=facing.rotateY();
-		dummyOffset=mirror?-1:1;
+		dummyOffset = mirror?-1: 1;
 		if(mirror)
 			this.dummy = true;
 		world.setBlockState(dummyPos, state);
 		TileEntityModWorkbench tileEntityDummy = ((TileEntityModWorkbench)world.getTileEntity(dummyPos));
 		tileEntityDummy.facing = this.facing;
 		tileEntityDummy.dummy = !mirror;
-		tileEntityDummy.dummyOffset=mirror?-1:1;
+		tileEntityDummy.dummyOffset = mirror?-1: 1;
 	}
+
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		EnumFacing dummyDir = dummy?facing.rotateYCCW():facing.rotateY();
+		EnumFacing dummyDir = dummy?facing.rotateYCCW(): facing.rotateY();
 		world.setBlockToAir(pos.offset(dummyDir));
 	}
 
@@ -173,17 +185,19 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	{
 		return true;
 	}
+
 	@Override
 	public int getGuiID()
 	{
 		return Lib.GUIID_Workbench;
 	}
+
 	@Override
 	public TileEntity getGuiMaster()
 	{
 		if(!dummy)
 			return this;
-		EnumFacing dummyDir = dummy?facing.rotateYCCW():facing.rotateY();
+		EnumFacing dummyDir = dummy?facing.rotateYCCW(): facing.rotateY();
 		TileEntity tileEntityModWorkbench = world.getTileEntity(pos.offset(dummyDir));
 		if(tileEntityModWorkbench instanceof TileEntityModWorkbench)
 			return tileEntityModWorkbench;

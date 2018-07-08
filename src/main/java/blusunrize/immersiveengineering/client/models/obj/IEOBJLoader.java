@@ -37,7 +37,7 @@ public class IEOBJLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
-		return enabledDomains.contains(modelLocation.getResourceDomain()) && modelLocation.getResourcePath().endsWith(".obj.ie");
+		return enabledDomains.contains(modelLocation.getResourceDomain())&&modelLocation.getResourcePath().endsWith(".obj.ie");
 	}
 
 	@Nonnull
@@ -54,7 +54,7 @@ public class IEOBJLoader implements ICustomModelLoader
 			}
 		}
 		IEOBJModel model = cache.get(modelLocation);
-		if(model == null)
+		if(model==null)
 			return ModelLoaderRegistry.getMissingModel();
 		return model;
 	}
@@ -62,8 +62,8 @@ public class IEOBJLoader implements ICustomModelLoader
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
-			this.manager = resourceManager;
-			cache.clear();
-			errors.clear();
+		this.manager = resourceManager;
+		cache.clear();
+		errors.clear();
 	}
 }

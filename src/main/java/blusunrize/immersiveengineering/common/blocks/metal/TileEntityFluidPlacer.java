@@ -36,7 +36,7 @@ import java.util.*;
 
 public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable, IConfigurableSides, IBlockOverlayText
 {
-	public int[] sideConfig = new int[] {1,0,1,1,1,1};
+	public int[] sideConfig = new int[]{1, 0, 1, 1, 1, 1};
 	public FluidTank tank = new FluidTank(4000);
 
 	private int tickCount = 0;
@@ -48,29 +48,29 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	@Override
 	public void update()
 	{
-		if(getWorld().isRemote || getWorld().isBlockIndirectlyGettingPowered(getPos())!=0)
+		if(getWorld().isRemote||getWorld().isBlockIndirectlyGettingPowered(getPos())!=0)
 			return;
 
 		if(tickCount%16==0)
 		{
 			if(tickCount%512==0)//Initial placement
 				prepareAreaCheck();
-			if(tank.getFluidAmount()>=Fluid.BUCKET_VOLUME && tank.getFluid().getFluid().getBlock()!=null && !layeredPlacementQueue.isEmpty())
+			if(tank.getFluidAmount() >= Fluid.BUCKET_VOLUME&&tank.getFluid().getFluid().getBlock()!=null&&!layeredPlacementQueue.isEmpty())
 			{
 				Queue<BlockPos> lowestLayer = layeredPlacementQueue.firstEntry().getValue();
-				if(lowestLayer==null || lowestLayer.isEmpty())
+				if(lowestLayer==null||lowestLayer.isEmpty())
 					layeredPlacementQueue.pollFirstEntry();
 				else
 				{
 					BlockPos targetPos = lowestLayer.poll();
 					IBlockState state = getWorld().getBlockState(targetPos);
-					if((state.getBlock().isAir(state,getWorld(),targetPos) || !state.getMaterial().isSolid()) && !isFullFluidBlock(targetPos, state))
-					if(tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
-					{
-						tank.drain(Fluid.BUCKET_VOLUME, true);
-						addConnectedSpaces(targetPos);
-						handleTempFluids();
-					}
+					if((state.getBlock().isAir(state, getWorld(), targetPos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(targetPos, state))
+						if(tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
+						{
+							tank.drain(Fluid.BUCKET_VOLUME, true);
+							addConnectedSpaces(targetPos);
+							handleTempFluids();
+						}
 				}
 			}
 		}
@@ -82,13 +82,13 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	//Mezz reported he was doing further work in this space for us, we should be able to remove this soon.
 	public static boolean tryPlaceFluid(@Nullable EntityPlayer player, World worldIn, FluidStack fluidStack, BlockPos pos)
 	{
-		if (worldIn == null || fluidStack == null || pos == null)
+		if(worldIn==null||fluidStack==null||pos==null)
 		{
 			return false;
 		}
 
 		Fluid fluid = fluidStack.getFluid();
-		if (fluid == null || !fluid.canBePlacedInWorld())
+		if(fluid==null||!fluid.canBePlacedInWorld())
 		{
 			return false;
 		}
@@ -98,18 +98,18 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		Material destMaterial = destBlockState.getMaterial();
 		boolean isDestNonSolid = !destMaterial.isSolid();
 		boolean isDestReplaceable = destBlockState.getBlock().isReplaceable(worldIn, pos);
-		if (!worldIn.isAirBlock(pos) && !isDestNonSolid && !isDestReplaceable)
+		if(!worldIn.isAirBlock(pos)&&!isDestNonSolid&&!isDestReplaceable)
 		{
 			return false; // Non-air, solid, unreplacable block. We can't put fluid here.
 		}
 
-		if (worldIn.provider.doesWaterVaporize() && fluid.doesVaporize(fluidStack))
+		if(worldIn.provider.doesWaterVaporize()&&fluid.doesVaporize(fluidStack))
 		{
 			fluid.vaporize(player, worldIn, pos, fluidStack);
 		}
 		else
 		{
-			if (!worldIn.isRemote && (isDestNonSolid || isDestReplaceable) && !destMaterial.isLiquid())
+			if(!worldIn.isRemote&&(isDestNonSolid||isDestReplaceable)&&!destMaterial.isLiquid())
 			{
 				worldIn.destroyBlock(pos, true);
 			}
@@ -147,21 +147,21 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	private void addConnectedSpaces(BlockPos pos)
 	{
 		for(EnumFacing facing : EnumFacing.values())
-			if(facing!=EnumFacing.UP && (pos!=getPos()||sideConfig[facing.ordinal()]==1))
+			if(facing!=EnumFacing.UP&&(pos!=getPos()||sideConfig[facing.ordinal()]==1))
 				addToQueue(pos.offset(facing));
 	}
 
 	private void addToQueue(BlockPos pos)
 	{
-		if(pos.getY()>=0 && pos.getY()<=255)//Within world borders
+		if(pos.getY() >= 0&&pos.getY() <= 255)//Within world borders
 			if(checkedPositions.add(pos))//Don't add checked positions
-				if(pos.distanceSq(getPos())<64*64)//Within max range
+				if(pos.distanceSq(getPos()) < 64*64)//Within max range
 					if(getWorld().isBlockLoaded(pos))
 					{
 						IBlockState state = getWorld().getBlockState(pos);
-						if(tank.getFluid()!=null && tank.getFluid().getFluid()==FluidRegistry.lookupFluidForBlock(state.getBlock()))
+						if(tank.getFluid()!=null&&tank.getFluid().getFluid()==FluidRegistry.lookupFluidForBlock(state.getBlock()))
 							tempFluids.add(pos);
-						if((state.getBlock().isAir(state,getWorld(),pos) || !state.getMaterial().isSolid()) && !isFullFluidBlock(pos, state))
+						if((state.getBlock().isAir(state, getWorld(), pos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(pos, state))
 							getQueueForYLevel(pos.getY()).add(pos);
 					}
 	}
@@ -177,7 +177,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	private boolean isFullFluidBlock(BlockPos pos, IBlockState state)
 	{
 		if(state.getBlock() instanceof IFluidBlock)
-			return Math.abs(((IFluidBlock)state.getBlock()).getFilledPercentage(getWorld(),pos))==1;
+			return Math.abs(((IFluidBlock)state.getBlock()).getFilledPercentage(getWorld(), pos))==1;
 		else if(state.getBlock() instanceof BlockLiquid)
 			return state.getBlock().getMetaFromState(state)==0;
 		return false;
@@ -187,8 +187,8 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		sideConfig = nbt.getIntArray("sideConfig");
-		if(sideConfig==null || sideConfig.length!=6)
-			sideConfig = new int[]{1,0,1,1,1,1};
+		if(sideConfig==null||sideConfig.length!=6)
+			sideConfig = new int[]{1, 0, 1, 1, 1, 1};
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
@@ -204,14 +204,15 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	@Override
 	public SideConfig getSideConfig(int side)
 	{
-		return (side>=0&&side<6)?SideConfig.values()[this.sideConfig[side]+1]: SideConfig.NONE;
+		return (side >= 0&&side < 6)?SideConfig.values()[this.sideConfig[side]+1]: SideConfig.NONE;
 	}
+
 	@Override
 	public boolean toggleSide(int side, EntityPlayer p)
 	{
 		sideConfig[side]++;
-		if(sideConfig[side]>1)
-			sideConfig[side]=-1;
+		if(sideConfig[side] > 1)
+			sideConfig[side] = -1;
 		prepareAreaCheck();
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
@@ -222,14 +223,15 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null||sideConfig[facing.ordinal()]==0) )
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||sideConfig[facing.ordinal()]==0))
 			return true;
 		return super.hasCapability(capability, facing);
 	}
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null||sideConfig[facing.ordinal()]==0) )
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||sideConfig[facing.ordinal()]==0))
 			return (T)tank;
 		return super.getCapability(capability, facing);
 	}
@@ -237,19 +239,20 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer && IEConfig.colourblindSupport)
+		if(hammer&&IEConfig.colourblindSupport)
 		{
 			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
 			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j)
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j)
 			};
 		}
 		return null;
 	}
+
 	@Override
 	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{

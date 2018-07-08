@@ -31,8 +31,8 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe, F
 
 	public FermenterRecipeCategory(IGuiHelper helper)
 	{
-		super("fermenter","tile.immersiveengineering.metal_multiblock.fermenter.name", helper.createDrawable(background, 6,12, 164,59), FermenterRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.FERMENTER.getMeta()));
-		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
+		super("fermenter", "tile.immersiveengineering.metal_multiblock.fermenter.name", helper.createDrawable(background, 6, 12, 164, 59), FermenterRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.FERMENTER.getMeta()));
+		tankOverlay = helper.createDrawable(background, 177, 31, 16, 47, -2, 2, -2, 2);
 	}
 
 	@Override
@@ -42,9 +42,9 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe, F
 		guiItemStacks.init(0, true, 1, 6);
 		guiItemStacks.init(1, false, 84, 40);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(ItemStack.class).size()>0)
+		if(ingredients.getOutputs(ItemStack.class).size() > 0)
 			guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(FluidStack.class).size()>0)
+		if(ingredients.getOutputs(FluidStack.class).size() > 0)
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 			guiFluidStacks.init(0, false, 106, 9, 16, 47, 24000, false, tankOverlay);

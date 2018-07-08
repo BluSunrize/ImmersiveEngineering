@@ -47,12 +47,12 @@ import java.util.function.Consumer;
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IIEInternalFluxHandler, IBlockBounds//, ic2.api.energy.tile.IEnergySink
 {
-	boolean inICNet=false;
+	boolean inICNet = false;
 	public EnumFacing facing = EnumFacing.DOWN;
 	private long lastTransfer = -1;
-	public int currentTickAccepted=0;
+	public int currentTickAccepted = 0;
 	public static int[] connectorInputValues = Config.IEConfig.Machines.wireConnectorInput;
-	private FluxStorage energyStorage = new FluxStorage(getMaxInput(),getMaxInput(),0);
+	private FluxStorage energyStorage = new FluxStorage(getMaxInput(), getMaxInput(), 0);
 
 	boolean firstTick = true;
 
@@ -66,10 +66,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			//					IC2Helper.loadIC2Tile(this);
 			//					this.inICNet = true;
 			//				}
-			if(energyStorage.getEnergyStored()>0)
+			if(energyStorage.getEnergyStored() > 0)
 			{
 				int temp = this.transferEnergy(energyStorage.getEnergyStored(), true, 0);
-				if(temp>0)
+				if(temp > 0)
 				{
 					energyStorage.modifyEnergyStored(-this.transferEnergy(temp, false, 0));
 					markDirty();
@@ -79,12 +79,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			}
 			currentTickAccepted = 0;
 		}
-		else if (firstTick)
+		else if(firstTick)
 		{
 			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-			if (conns!=null)
-				for (Connection conn:conns)
-					if (pos.compareTo(conn.end)<0&&world.isBlockLoaded(conn.end))
+			if(conns!=null)
+				for(Connection conn : conns)
+					if(pos.compareTo(conn.end) < 0&&world.isBlockLoaded(conn.end))
 						this.markContainingBlockForUpdate(null);
 			firstTick = false;
 		}
@@ -115,26 +115,31 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		return this.facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 0;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
@@ -156,13 +161,14 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		TileEntity tile = Utils.getExistingTileEntity(world, outPos);
 		return EnergyHelper.isFluxReceiver(tile, facing.getOpposite());
 	}
+
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
 		if(isRelay())
 			return 0;
 		int acceptanceLeft = getMaxOutput()-currentTickAccepted;
-		if(acceptanceLeft<=0)
+		if(acceptanceLeft <= 0)
 			return 0;
 		int toAccept = Math.min(acceptanceLeft, amount);
 
@@ -189,7 +195,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		//			ret = reConv;
 		//		}
 		if(!simulate)
-			currentTickAccepted+=ret;
+			currentTickAccepted += ret;
 		return ret;
 	}
 
@@ -201,6 +207,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		nbt.setLong("lastTransfer", lastTransfer);
 		energyStorage.writeToNBT(nbt);
 	}
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -220,6 +227,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
@@ -229,7 +237,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		//			if(Config.getBoolean("increasedRenderboxes"))
 		//			{
 		int inc = getRenderRadiusIncrease();
-		return new AxisAlignedBB(this.pos.getX()-inc,this.pos.getY()-inc,this.pos.getZ()-inc, this.pos.getX()+inc+1,this.pos.getY()+inc+1,this.pos.getZ()+inc+1);
+		return new AxisAlignedBB(this.pos.getX()-inc, this.pos.getY()-inc, this.pos.getZ()-inc, this.pos.getX()+inc+1, this.pos.getY()+inc+1, this.pos.getZ()+inc+1);
 		//				renderAABB = new AxisAlignedBB(this.pos.getX()-inc,this.pos.getY()-inc,this.pos.getZ()-inc, this.pos.getX()+inc+1,this.pos.getY()+inc+1,this.pos.getZ()+inc+1);
 		//			}
 		//			else
@@ -237,18 +245,20 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		//		}
 		//		return renderAABB;
 	}
+
 	int getRenderRadiusIncrease()
 	{
 		return WireType.COPPER.getMaxLength();
 	}
 
 	IEForgeEnergyWrapper energyWrapper;
+
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(facing!=this.facing || isRelay())
+		if(facing!=this.facing||isRelay())
 			return null;
-		if(energyWrapper==null || energyWrapper.side!=this.facing)
+		if(energyWrapper==null||energyWrapper.side!=this.facing)
 			energyWrapper = new IEForgeEnergyWrapper(this, this.facing);
 		return energyWrapper;
 	}
@@ -258,10 +268,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		return energyStorage;
 	}
+
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		return (!isRelay()&&facing==this.facing)?SideConfig.INPUT:SideConfig.NONE;
+		return (!isRelay()&&facing==this.facing)?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	@Override
@@ -271,17 +282,18 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return false;
 		return from==facing;
 	}
+
 	@Override
 	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
 	{
-		if(world.isRemote || isRelay())
+		if(world.isRemote||isRelay())
 			return 0;
 		if(world.getTotalWorldTime()==lastTransfer)
 			return 0;
 
-		int accepted = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
+		int accepted = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
 		accepted = Math.min(getMaxOutput()-energyStorage.getEnergyStored(), accepted);
-		if(accepted<=0)
+		if(accepted <= 0)
 			return 0;
 
 		if(!simulate)
@@ -302,6 +314,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return 0;
 		return energyStorage.getEnergyStored();
 	}
+
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
@@ -309,6 +322,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return 0;
 		return getMaxInput();
 	}
+
 	@Override
 	public int extractEnergy(EnumFacing from, int energy, boolean simulate)
 	{
@@ -322,23 +336,23 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		{
 			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this),
 					world, true);
-			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
+			int powerLeft = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
 			final int powerForSort = powerLeft;
 
-			if(outputs.size()<1)
+			if(outputs.size() < 1)
 				return 0;
 
 			int sum = 0;
-			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<>();
+			HashMap<AbstractConnection, Integer> powerSorting = new HashMap<>();
 			for(AbstractConnection con : outputs)
-				if (con.isEnergyOutput)
+				if(con.isEnergyOutput)
 				{
 					IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
-					if(con.cableType!=null && end!=null)
+					if(con.cableType!=null&&end!=null)
 					{
 						int atmOut = Math.min(powerForSort, con.cableType.getTransferRate());
 						int tempR = end.outputEnergy(atmOut, true, energyType);
-						if (tempR > 0)
+						if(tempR > 0)
 						{
 							powerSorting.put(con, tempR);
 							sum += tempR;
@@ -346,11 +360,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					}
 				}
 
-			if(sum>0)
+			if(sum > 0)
 				for(AbstractConnection con : powerSorting.keySet())
 				{
 					IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
-					if(con.cableType!=null && end!=null)
+					if(con.cableType!=null&&end!=null)
 					{
 						float prio = powerSorting.get(con)/(float)sum;
 						int output = (int)(powerForSort*prio);
@@ -358,7 +372,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						int tempR = end.outputEnergy(Math.min(output, con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
 						int maxInput = getMaxInput();
-						tempR -= (int) Math.max(0, Math.floor(tempR*con.getPreciseLossRate(tempR,maxInput)));
+						tempR -= (int)Math.max(0, Math.floor(tempR*con.getPreciseLossRate(tempR, maxInput)));
 						end.outputEnergy(tempR, simulate, energyType);
 						HashSet<IImmersiveConnectable> passedConnectors = new HashSet<IImmersiveConnectable>();
 						float intermediaryLoss = 0;
@@ -367,24 +381,24 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							float length = sub.length/(float)sub.cableType.getMaxLength();
 							float baseLoss = (float)sub.cableType.getLossRatio();
 							float mod = (((maxInput-tempR)/(float)maxInput)/.25f)*.1f;
-							intermediaryLoss = MathHelper.clamp(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
+							intermediaryLoss = MathHelper.clamp(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0, 1);
 
 							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).getOrDefault(sub, 0);
 							transferredPerCon += r;
 							if(!simulate)
 							{
-								ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).put(sub,transferredPerCon);
-								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start,world);
-								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end,world);
-								if(subStart!=null && passedConnectors.add(subStart))
+								ImmersiveNetHandler.INSTANCE.getTransferedRates(world.provider.getDimension()).put(sub, transferredPerCon);
+								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start, world);
+								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end, world);
+								if(subStart!=null&&passedConnectors.add(subStart))
 									subStart.onEnergyPassthrough(r-r*intermediaryLoss);
-								if(subEnd!=null && passedConnectors.add(subEnd))
+								if(subEnd!=null&&passedConnectors.add(subEnd))
 									subEnd.onEnergyPassthrough(r-r*intermediaryLoss);
 							}
 						}
 						received += r;
 						powerLeft -= r;
-						if(powerLeft<=0)
+						if(powerLeft <= 0)
 							break;
 					}
 				}
@@ -394,12 +408,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 	private void notifyAvailableEnergy(int energyStored, @Nullable Set<AbstractConnection> outputs)
 	{
-		if (outputs==null)
+		if(outputs==null)
 			outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(pos, world, true);
 		for(AbstractConnection con : outputs)
 		{
 			IImmersiveConnectable end = ApiUtils.toIIC(con.end, world);
-			if(con.cableType!=null && end!=null && end.allowEnergyToPass(null))
+			if(con.cableType!=null&&end!=null&&end.allowEnergyToPass(null))
 			{
 				Pair<Float, Consumer<Float>> e = getEnergyForConnection(con);
 				end.addAvailableEnergy(e.getKey(), e.getValue());
@@ -409,10 +423,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 	private Pair<Float, Consumer<Float>> getEnergyForConnection(@Nullable AbstractConnection c)
 	{
-		float loss = c!=null?c.getAverageLossRate():0;
+		float loss = c!=null?c.getAverageLossRate(): 0;
 		float max = (1-loss)*energyStorage.getEnergyStored();
-		Consumer<Float> extract = (energy)->{
-			energyStorage.modifyEnergyStored((int) (-energy/(1-loss)));
+		Consumer<Float> extract = (energy) -> {
+			energyStorage.modifyEnergyStored((int)(-energy/(1-loss)));
 		};
 		return new ImmutablePair<>(max, extract);
 	}
@@ -422,6 +436,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		return connectorInputValues[0];
 	}
+
 	public int getMaxOutput()
 	{
 		return connectorInputValues[0];
@@ -438,24 +453,24 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public float[] getBlockBounds()
 	{
 		float length = this instanceof TileEntityRelayHV?.875f: this instanceof TileEntityConnectorHV?.75f: this instanceof TileEntityConnectorMV?.5625f: .5f;
-		float wMin = this instanceof TileEntityConnectorStructural?.25f:.3125f;
-		float wMax = this instanceof TileEntityConnectorStructural?.75f:.6875f;
-		switch(facing.getOpposite() )
+		float wMin = this instanceof TileEntityConnectorStructural?.25f: .3125f;
+		float wMax = this instanceof TileEntityConnectorStructural?.75f: .6875f;
+		switch(facing.getOpposite())
 		{
 			case UP:
-				return new float[]{wMin,0,wMin,  wMax,length,wMax};
+				return new float[]{wMin, 0, wMin, wMax, length, wMax};
 			case DOWN:
-				return new float[]{wMin,1-length,wMin,  wMax,1,wMax};
+				return new float[]{wMin, 1-length, wMin, wMax, 1, wMax};
 			case SOUTH:
-				return new float[]{wMin,wMin,0,  wMax,wMax,length};
+				return new float[]{wMin, wMin, 0, wMax, wMax, length};
 			case NORTH:
-				return new float[]{wMin,wMin,1-length,  wMax,wMax,1};
+				return new float[]{wMin, wMin, 1-length, wMax, wMax, 1};
 			case EAST:
-				return new float[]{0,wMin,wMin,  length,wMax,wMax};
+				return new float[]{0, wMin, wMin, length, wMax, wMax};
 			case WEST:
-				return new float[]{1-length,wMin,wMin,  1,wMax,wMax};
+				return new float[]{1-length, wMin, wMin, 1, wMax, wMax};
 		}
-		return new float[]{0,0,0,1,1,1};
+		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
 	//	@Optional.Method(modid = "IC2")
