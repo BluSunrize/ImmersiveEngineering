@@ -1,4 +1,4 @@
-#####Version 0.12-83
+#####Version 0.12-83 - BUILT
 - Added the Extracting Conveyor. It pulls from inventories like a Hopper (BluSunrize)
 - Added even fancier Shaders with pulsing colours and dynamic rendering. Quite open for addon devs, too! (BluSunrize)
     - Added the IKELOS shader to make use of this
