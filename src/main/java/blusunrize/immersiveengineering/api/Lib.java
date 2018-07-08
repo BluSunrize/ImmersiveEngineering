@@ -9,6 +9,10 @@
 package blusunrize.immersiveengineering.api;
 
 
+import net.minecraft.item.EnumRarity;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.util.EnumHelper;
+
 public class Lib
 {
 	public static final String MODID = "immersiveengineering";
@@ -87,6 +91,7 @@ public class Lib
 	public static String DMG_RazorShock = "ieRazorShock";
 	public static String DMG_WireShock = "ieWireShock";
 
+	public static final EnumRarity RARITY_Masterwork = EnumHelper.addRarity("IE:MASTERWORK", TextFormatting.GOLD, "Masterwork");
 
 	public static boolean BAUBLES = false;
 	public static boolean IC2 = false;
