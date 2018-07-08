@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -50,6 +51,7 @@ public class ShaderRegistry
 		rarityWeightMap.put(EnumRarity.UNCOMMON, 7);
 		rarityWeightMap.put(EnumRarity.RARE, 5);
 		rarityWeightMap.put(EnumRarity.EPIC, 3);
+		rarityWeightMap.put(Lib.RARITY_Masterwork, 1);
 	}
 
 	/**
