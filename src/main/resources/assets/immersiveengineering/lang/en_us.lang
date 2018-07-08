@@ -1303,7 +1303,7 @@ ie.manual.entry.mixer.name=Mixer
 ie.manual.entry.mixer.subtext=Vats of Cookie Dough!
 ie.manual.entry.mixer0=The Mixer is a multiblock structure that dissolves solids in fluids, mixing them together. The structure is built as shown above and formed by using the Engineer's Hammer on the central sheetmetal block.
 ie.manual.entry.mixer1=The most common uses for this machine are the mixing of fluid concrete from water, 2 parts sand 1 part gravel and 1 part clay, or the creation of potions from water and their various ingredients.
-ie.manual.entry.mixer2=Fluids are input into the squeezer through the port at the bottom of its powersupply. Items can be input via the two hatches at the back. The fluid port at the front serves as the fluid output.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
+ie.manual.entry.mixer2=Fluids are input into the mixer through the port at the bottom of its powersupply. Items can be input via the two hatches at the back. The fluid port at the front serves as the fluid output.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
 
 ie.manual.entry.squeezer.name=Squeezer
 ie.manual.entry.squeezer.subtext=Pressing matters
