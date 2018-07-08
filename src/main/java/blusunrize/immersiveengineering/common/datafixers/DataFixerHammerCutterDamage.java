@@ -15,8 +15,8 @@ import net.minecraft.util.datafix.IFixableData;
 
 import javax.annotation.Nonnull;
 
-import static blusunrize.immersiveengineering.common.items.ItemIETool.CUTTER_META;
-import static blusunrize.immersiveengineering.common.items.ItemIETool.HAMMER_META;
+import static blusunrize.immersiveengineering.common.items.ItemEngineeringTool.CUTTER_META;
+import static blusunrize.immersiveengineering.common.items.ItemEngineeringTool.HAMMER_META;
 
 public class DataFixerHammerCutterDamage implements IFixableData
 {
@@ -31,7 +31,7 @@ public class DataFixerHammerCutterDamage implements IFixableData
 	@Override
 	public NBTTagCompound fixTagCompound(@Nonnull NBTTagCompound compound)
 	{
-		if (IEContent.itemTool.getRegistryName().toString()
+		if (IEContent.itemEngineeringTool.getRegistryName().toString()
 				.equals(compound.getString("id")))
 		{
 			int meta = compound.getInteger("Damage");

@@ -518,7 +518,7 @@ public class EventHandler
 			else
 				event.setCanceled(true);
 		if(event.getState().getBlock()==IEContent.blockMetalDecoration2 && IEContent.blockMetalDecoration2.getMetaFromState(event.getState())==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())
-			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,1), current, false))
+			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemEngineeringTool,1,1), current, false))
 				event.setCanceled(true);
 		TileEntity te = event.getEntityPlayer().getEntityWorld().getTileEntity(event.getPos());
 		if(te instanceof IEntityProof && !((IEntityProof)te).canEntityDestroy(event.getEntityPlayer()))

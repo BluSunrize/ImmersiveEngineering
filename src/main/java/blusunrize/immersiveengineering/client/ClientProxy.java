@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -131,7 +130,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
@@ -140,7 +138,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(Side.CLIENT)
@@ -186,7 +183,7 @@ public class ClientProxy extends CommonProxy
 			}
 		});
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj", false)
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemEngineeringTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj", false)
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-0.25, .125, .25).scale(.625f, .625f, .625f).rotate(-Math.PI*.375, 0, 1, 0))
@@ -529,7 +526,7 @@ public class ClientProxy extends CommonProxy
 		//		//CHEMTHROWER
 		//		MinecraftForgeClient.registerItemRenderer(IEContent.itemChemthrower, new ItemRenderChemthrower());
 		//		//VOLTMETER
-		//		MinecraftForgeClient.registerItemRenderer(IEContent.itemTool, new ItemRenderVoltmeter());
+		//		MinecraftForgeClient.registerItemRenderer(IEContent.itemEngineeringTool, new ItemRenderVoltmeter());
 		//		//RAILGUN
 		//		MinecraftForgeClient.registerItemRenderer(IEContent.itemRailgun, new ItemRenderRailgun());
 		//		/** TODO when there is an actual model for it =P
@@ -596,7 +593,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "introduction0"),
 				new ManualPages.Text(ManualHelper.getManual(), "introduction1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "introductionHammer", new ItemStack(IEContent.itemTool, 1, 0)));
+				new ManualPages.Crafting(ManualHelper.getManual(), "introductionHammer", new ItemStack(IEContent.itemEngineeringTool, 1, 0)));
 		ManualHelper.addEntry("ores", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresCopper", new ItemStack(IEContent.blockOre, 1, 0), new ItemStack(IEContent.itemMetal, 1, 0)),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresBauxite", new ItemStack(IEContent.blockOre, 1, 1), new ItemStack(IEContent.itemMetal, 1, 1)),
@@ -608,7 +605,7 @@ public class ClientProxy extends CommonProxy
 		if(!IERecipes.hammerCrushingList.isEmpty())
 		{
 			for(String ore : IERecipes.hammerCrushingList)
-				tempRecipeList.add(new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ore"+ore), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(IEApi.getPreferredOreStack("dust"+ore), 78, 0)});
+				tempRecipeList.add(new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ore"+ore), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemEngineeringTool, 1, 0), 42, 0), new PositionedItemStack(IEApi.getPreferredOreStack("dust"+ore), 78, 0)});
 			if(!tempRecipeList.isEmpty())
 				ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing0", (Object[])tempRecipeList.toArray(new PositionedItemStack[tempRecipeList.size()][3])));
 		}
@@ -616,11 +613,11 @@ public class ClientProxy extends CommonProxy
 				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"), 24, 0), new PositionedItemStack(OreDictionary.getOres("dustNickel"), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 2, 15), 78, 0)},
 				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"), 24, 0), new PositionedItemStack(OreDictionary.getOres("dustSilver"), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 2, 16), 78, 0)}}));
 		ManualHelper.addEntry("plates", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "plates0", (Object[])new PositionedItemStack[][]{
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 39), 78, 0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 31), 78, 0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 32), 78, 0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 36), 78, 0)},
-				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 38), 78, 0)}}));
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemEngineeringTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 39), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemEngineeringTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 31), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemEngineeringTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 32), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemEngineeringTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 36), 78, 0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemEngineeringTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 38), 78, 0)}}));
 		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop, 1, 5), new ItemStack(IEContent.itemSeeds)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial, 1, 5)),
@@ -737,8 +734,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringCapacitor", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()), new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()), new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringTransformer0", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.TRANSFORMER.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.TRANSFORMER_HV.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool, 1, 1)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool, 1, 2)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemEngineeringTool, 1, 1)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemEngineeringTool, 1, 2)),
 				new ManualPageMultiblock(ManualHelper.getManual(), "wiringFeedthrough", MultiblockFeedthrough.instance));
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.DYNAMO.getMeta())),
@@ -1282,7 +1279,7 @@ public class ClientProxy extends CommonProxy
 			ItemStack item = player.getItemStackFromSlot(slot);
 			if(!item.isEmpty()&&item.getItem() instanceof IGuiItem&&((IGuiItem)item.getItem()).getGuiID(item)==ID)
 			{
-				if(ID==Lib.GUIID_Manual&&ManualHelper.getManual()!=null&&OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 3), item, false))
+				if(ID==Lib.GUIID_Manual&&ManualHelper.getManual()!=null&&OreDictionary.itemMatches(new ItemStack(IEContent.itemEngineeringTool, 1, 3), item, false))
 					return ManualHelper.getManual().getGui();
 				if(ID==Lib.GUIID_Revolver&&item.getItem() instanceof IEItemInterfaces.IBulletContainer)
 					return new GuiRevolver(player.inventory, world, slot, item);

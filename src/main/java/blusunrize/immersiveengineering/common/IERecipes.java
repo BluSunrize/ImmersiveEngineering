@@ -102,7 +102,7 @@ public class IERecipes
 		//
 		for(int i=0; i<IEContent.itemMold.getSubNames().length; i++)
 			if(!IEContent.itemMold.isMetaHidden(i))
-				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(IEContent.itemMold,1,i), "plateSteel","plateSteel","plateSteel","plateSteel","plateSteel",new ItemStack(IEContent.itemTool, 1, 1));
+				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(IEContent.itemMold,1,i), "plateSteel","plateSteel","plateSteel","plateSteel","plateSteel",new ItemStack(IEContent.itemEngineeringTool, 1, 1));
 
 		//
 		//BULLETS
@@ -299,7 +299,7 @@ public class IERecipes
 								out = Utils.copyStackWithAmount(preferredDust, 2);
 								if(allowHammerCrushing)
 								{
-									addShapelessOredictRecipe("hammercrushing_"+ore, preferredDust, name,new ItemStack(IEContent.itemTool));
+									addShapelessOredictRecipe("hammercrushing_"+ore, preferredDust, name,new ItemStack(IEContent.itemEngineeringTool));
 									hammerCrushingList.add(ore);
 								}
 							}
