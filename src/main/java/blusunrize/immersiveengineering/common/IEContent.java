@@ -160,10 +160,10 @@ public class IEContent
 
 	public static ItemIEBase itemMaterial;
 	public static ItemIEBase itemMetal;
-	public static ItemIEBase itemEngineeringTool;
-	public static ItemIETool itemSteelPick;
-	public static ItemIETool itemSteelShovel;
-	public static ItemIETool itemSteelAxe;
+	public static ItemIEBase itemTool;
+	public static ItemToolBase itemSteelPick;
+	public static ItemToolBase itemSteelShovel;
+	public static ItemToolBase itemSteelAxe;
 	public static ItemIESword itemSteelSword;
 	public static ItemIEBase itemToolbox;
 	public static ItemIEBase itemWireCoil;
@@ -283,7 +283,7 @@ public class IEContent
 				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
 				"nugget_copper", "nugget_aluminum", "nugget_lead", "nugget_silver", "nugget_nickel", "nugget_uranium", "nugget_constantan", "nugget_electrum", "nugget_steel", "nugget_iron",
 				"plate_copper", "plate_aluminum", "plate_lead", "plate_silver", "plate_nickel", "plate_uranium", "plate_constantan", "plate_electrum", "plate_steel", "plate_iron", "plate_gold");
-		itemEngineeringTool = new ItemEngineeringTool();
+		itemTool = new ItemIETool();
 		itemSteelPick = new ItemIEPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel", "pickaxe", "ingotSteel");
 		itemSteelShovel = new ItemIEShovel(Lib.MATERIAL_Steel, "shovel_steel", "shovel", "ingotSteel");
 		itemSteelAxe = new ItemIEAxe(Lib.MATERIAL_Steel, "axe_steel", "axe", "ingotSteel");
@@ -695,7 +695,7 @@ public class IEContent
 			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
 
 		/*BANNERS*/
-		addBanner("hammer", "hmr", new ItemStack(itemEngineeringTool, 1, 0));
+		addBanner("hammer", "hmr", new ItemStack(itemTool, 1, 0));
 		addBanner("bevels", "bvl", "plateIron");
 		addBanner("ornate", "orn", "dustSilver");
 		addBanner("treated_wood", "twd", "plankTreatedWood");

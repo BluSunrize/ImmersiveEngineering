@@ -501,7 +501,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				if(!player.getHeldItem(hand).isEmpty())
 				{
 					ItemStack equipped = player.getHeldItem(hand);
-					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemEngineeringTool, 1, 2), equipped, false)||equipped.getItem() instanceof IWireCoil)
+					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 2), equipped, false)||equipped.getItem() instanceof IWireCoil)
 					{
 						if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
 						{
@@ -773,7 +773,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					if(mop!=null&&mop.getBlockPos()!=null)
 					{
 						TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
-						if(OreDictionary.itemMatches(new ItemStack(IEContent.itemEngineeringTool, 1, 2), equipped, true))
+						if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 2), equipped, true))
 						{
 							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText: 0xffffff;
 							String[] text = null;

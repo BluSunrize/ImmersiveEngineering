@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 /**
  * @author BluSunrize - 08.07.2018
  */
-public class ItemIEAxe extends ItemIETool
+public class ItemIEAxe extends ItemToolBase
 {
 	public ItemIEAxe(ToolMaterial materialIn, String name, String toolclass, String oreDict)
 	{

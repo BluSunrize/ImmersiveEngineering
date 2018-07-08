@@ -98,7 +98,7 @@ public class IEVillagerHandler
 		VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".machinist");
 		career_machinist.addTrade(1,
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 6), new EntityVillager.PriceInfo(8, 16)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemEngineeringTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
+				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
 		);
 		career_machinist.addTrade(2,
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 0), new EntityVillager.PriceInfo(4, 6)),
@@ -125,12 +125,12 @@ public class IEVillagerHandler
 		VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".electrician");
 		career_electrician.addTrade(1,
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 20), new EntityVillager.PriceInfo(8, 16)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemEngineeringTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
 				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 0), new EntityVillager.PriceInfo(-4, -2))
 		);
 		career_electrician.addTrade(2,
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 21), new EntityVillager.PriceInfo(6, 12)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemEngineeringTool, 1, 2), new EntityVillager.PriceInfo(4, 7)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 2), new EntityVillager.PriceInfo(4, 7)),
 				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-4, -1))
 		);
 		career_electrician.addTrade(3,

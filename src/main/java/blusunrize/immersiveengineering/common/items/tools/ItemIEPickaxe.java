@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 /**
  * @author BluSunrize - 08.07.2018
  */
-public class ItemIEPickaxe extends ItemIETool
+public class ItemIEPickaxe extends ItemToolBase
 {
 	public ItemIEPickaxe(ToolMaterial materialIn, String name, String toolclass, String oreDict)
 	{

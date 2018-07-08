@@ -197,7 +197,7 @@ public class VillageEngineersHouse extends Village
 			this.placeCrate(world,box,rand, 6,0,1);
 			this.placeCrate(world,box,rand, 8,0,2);
 			this.placeCrate(world,box,rand, 5,1,7);
-			this.placeItemframe(rand, world, 4,3,2, getCoordBaseMode().getOpposite(), new ItemStack(IEContent.itemEngineeringTool,1,0));
+			this.placeItemframe(rand, world, 4,3,2, getCoordBaseMode().getOpposite(), new ItemStack(IEContent.itemTool,1,0));
 		}catch(Exception e)
 		{
 			e.printStackTrace();

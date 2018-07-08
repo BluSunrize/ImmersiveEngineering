@@ -77,8 +77,8 @@
 //
 //	public static void init()
 //	{
-//		openManual = new AchievementIE("openManual", 0, 1, new ItemStack(IEContent.itemEngineeringTool,1,3), null);
-//		craftHammer = new AchievementIE("craftHammer", 3, 2, IEContent.itemEngineeringTool, openManual).setNormalCrafting();
+//		openManual = new AchievementIE("openManual", 0, 1, new ItemStack(IEContent.itemTool,1,3), null);
+//		craftHammer = new AchievementIE("craftHammer", 3, 2, IEContent.itemTool, openManual).setNormalCrafting();
 //		connectWire = new AchievementIE("connectWire", 0, -1, IEContent.itemWireCoil, openManual);
 //		blastfurnace = new AchievementIE("blastfurnace", 2, 1, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE.getMeta()), craftHammer);
 //		makeSteel = new AchievementIE("makeSteel", 2, -1, new ItemStack(IEContent.itemMetal,1,8), blastfurnace);

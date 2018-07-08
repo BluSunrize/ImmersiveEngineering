@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * @author BluSunrize - 08.07.2018
  */
-public class ItemIETool extends ItemTool
+public class ItemToolBase extends ItemTool
 {
 	protected static final Set<Block> PICKAXE_EFFECTIVE = Sets.newHashSet(Blocks.ACTIVATOR_RAIL, Blocks.COAL_ORE, Blocks.COBBLESTONE, Blocks.DETECTOR_RAIL, Blocks.DIAMOND_BLOCK, Blocks.DIAMOND_ORE, Blocks.DOUBLE_STONE_SLAB, Blocks.GOLDEN_RAIL, Blocks.GOLD_BLOCK, Blocks.GOLD_ORE, Blocks.ICE, Blocks.IRON_BLOCK, Blocks.IRON_ORE, Blocks.LAPIS_BLOCK, Blocks.LAPIS_ORE, Blocks.LIT_REDSTONE_ORE, Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.PACKED_ICE, Blocks.RAIL, Blocks.REDSTONE_ORE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.STONE, Blocks.STONE_SLAB, Blocks.STONE_BUTTON, Blocks.STONE_PRESSURE_PLATE);
 	protected static final Set<Block> AXE_EFFECTIVE = Sets.newHashSet(Blocks.PLANKS, Blocks.BOOKSHELF, Blocks.LOG, Blocks.LOG2, Blocks.CHEST, Blocks.PUMPKIN, Blocks.LIT_PUMPKIN, Blocks.MELON_BLOCK, Blocks.LADDER, Blocks.WOODEN_BUTTON, Blocks.WOODEN_PRESSURE_PLATE);
@@ -25,7 +25,7 @@ public class ItemIETool extends ItemTool
 	private final Set<String> toolClasses;
 	private final String oreDict;
 
-	protected ItemIETool(ToolMaterial materialIn, String name, String toolclass, String oreDict, Set<Block> effectiveBlocksIn, float attackDamageIn, float attackSpeedIn)
+	protected ItemToolBase(ToolMaterial materialIn, String name, String toolclass, String oreDict, Set<Block> effectiveBlocksIn, float attackDamageIn, float attackSpeedIn)
 	{
 		super(attackDamageIn, attackSpeedIn, materialIn, effectiveBlocksIn);
 

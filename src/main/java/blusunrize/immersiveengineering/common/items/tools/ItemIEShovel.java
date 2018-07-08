@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 /**
  * @author BluSunrize - 08.07.2018
  */
-public class ItemIEShovel extends ItemIETool
+public class ItemIEShovel extends ItemToolBase
 {
 	public ItemIEShovel(ToolMaterial materialIn, String name, String toolclass, String oreDict)
 	{

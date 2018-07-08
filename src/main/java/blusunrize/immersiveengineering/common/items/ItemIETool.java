@@ -72,14 +72,14 @@ import static blusunrize.immersiveengineering.api.Lib.TOOL_WIRECUTTER;
 import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.cutterDurabiliy;
 import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.hammerDurabiliy;
 
-public class ItemEngineeringTool extends ItemIEBase implements ITool, IGuiItem, IItemDamageableIE
+public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDamageableIE
 {
 	public static final int HAMMER_META = 0;
 	public static final int CUTTER_META = 1;
 	public static final int VOLTMETER_META = 2;
 	public static final int MANUAL_META = 3;
 
-	public ItemEngineeringTool()
+	public ItemIETool()
 	{
 		super("tool", 1, "hammer", "wirecutter", "voltmeter", "manual");
 		canRepair = false;//Uses a custom repair recipe to prevent #2990
