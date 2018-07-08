@@ -5,6 +5,7 @@
 - Added maps to the vanilla Catographer which lead to Mineral Veins (BluSunrize)
 - Added a config option to disable all use of the stencil buffer for old Intel GPUs (Malte)
 - Added normal tools (Axe, Pick, Shovel, Sword) made from Steel and Treated Wood. Good durability & efficiency, iron harvest level (BluSunrize)
+- Added a new rarity, "Masterwork". Currently only for Shaders (grabbags gained from secret advancements) but will have more use in the future! (BluSunrize)
 - Changed ItemRouters to allow pulling as well, allowing for filtered extraction (BluSunrize)
 - Changed BlastFurnace to not start using a new piece of coke if there is nothing left to smelt (Malte)
 - Changed the Excavator's Mineral Veins to consider the chunks in a radius of two around them, to avoid duplicate veins (BluSunrize)

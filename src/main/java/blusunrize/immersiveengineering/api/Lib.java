@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.api;
 
 
 import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.EnumHelper;
 
 public class Lib
@@ -91,6 +93,7 @@ public class Lib
 	public static String DMG_WireShock = "ieWireShock";
 
 	public static final ToolMaterial MATERIAL_Steel = EnumHelper.addToolMaterial( "IE:STEEL", 2, 641, 7.0f, 2.5f, 10);
+	public static final EnumRarity RARITY_Masterwork = EnumHelper.addRarity("IE:MASTERWORK", TextFormatting.GOLD, "Masterwork");
 
 	public static boolean BAUBLES = false;
 	public static boolean IC2 = false;
