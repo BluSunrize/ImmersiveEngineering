@@ -345,6 +345,11 @@ item.immersiveengineering.tool.voltmeter.name=Engineer's Voltmeter
 item.immersiveengineering.tool.manual.name=Engineer's Manual
 item.immersiveengineering.toolbox.name=Engineer's Toolbox
 
+item.immersiveengineering.pickaxe_steel.name=Steel Pickaxe
+item.immersiveengineering.shovel_steel.name=Steel Shovel
+item.immersiveengineering.axe_steel.name=Steel Axe
+item.immersiveengineering.sword_steel.name=Steel Sword
+
 item.immersiveengineering.revolver.name=Revolver
 item.immersiveengineering.revolver.dev.name=♛Royal Vanquisher♚
 item.immersiveengineering.revolver.infinity.name=Catalyst
