@@ -1147,7 +1147,7 @@ ie.manual.entry.shield.name=重型盾
 ie.manual.entry.shield.subtext=一夫当关
 ie.manual.entry.shield0=重型盾牌是直接由你熟悉的普通盾牌升级得到的。使用方式和普通盾牌一样，可阻挡前方的大部分进攻伤害，但其耐用性已经大大增加。
 ie.manual.entry.shield1=§6闪关灯§r是由灯泡和镁反光板结合而成的产物。受到攻击时，闪光灯会产生一束明亮的闪光，使敌人混乱并迷失方向。
-ie.manual.entry.shield2=将盾牌发射器装配到盾牌中可以反击攻击你敌人。当盾牌被击中时，会发出震动，对敌人造成轻微的伤害。此外，它会反弹发射物。
+ie.manual.entry.shield2=将磁轨炮装配到盾牌中可以反击攻击你敌人。当盾牌被击中时，会发出震动，对敌人造成轻微的伤害。此外，它会反弹发射物。
 ie.manual.entry.shield3=§6磁力手套§r能用一种简单的方式触发护盾。使用该升级配件，只需双击§l<keybind;key.immersiveengineering.magnetEquip>§r键，便能检索您的物品栏并将盾牌吸入你的右手。
 
 ie.manual.entry.toolbox.name=工程师工具箱
