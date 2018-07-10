@@ -29,9 +29,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class ActuallyAdditionsHelper extends IECompatModule
 {
 	@Override
@@ -107,26 +104,28 @@ public class ActuallyAdditionsHelper extends IECompatModule
 			if(farmer.getEnergy() >= use)
 			{
 				IBlockState state = world.getBlockState(pos);
-				if(IEContent.blockCrop==state.getBlock()&&state.getBlock().getMetaFromState(state)==4)//Fully Grown
+				BlockPos up = pos.up();
+				IBlockState stateUp = world.getBlockState(up);
+				if(IEContent.blockCrop==state.getBlock()&&state.getBlock().getMetaFromState(state)==4&&stateUp.getBlock()==IEContent.blockCrop)//Fully Grown
 				{
-					BlockPos up = pos.up();
-					IBlockState stateUp = world.getBlockState(up);
 					NonNullList<ItemStack> drops = NonNullList.create();
-					state.getBlock().getDrops(drops, world, pos, state, 0);
-					if(IEContent.blockCrop==stateUp.getBlock())
-						stateUp.getBlock().getDrops(drops, world, up, stateUp, 0);
-
+					stateUp.getBlock().getDrops(drops, world, up, stateUp, 0);
+					NonNullList<ItemStack> seeds = NonNullList.create();
 					for(ItemStack stack : drops)
 						if(stack.getItem()==IEContent.itemSeeds)
 						{
-							List<ItemStack> seed = Arrays.asList(new ItemStack(IEContent.itemSeeds));
-							if(farmer.canAddToSeeds(seed))
-							{
-								farmer.addToSeeds(seed);
-								stack.shrink(1);
-							}
-							break;
+							seeds.add(new ItemStack(IEContent.itemSeeds));
+							stack.shrink(1);
 						}
+					
+					if(!seeds.isEmpty()&&farmer.canAddToSeeds(seeds))
+					{
+						farmer.addToSeeds(seeds);
+						seeds.clear();
+					}
+
+					if(!seeds.isEmpty()) drops.addAll(seeds);
+
 					if(!drops.isEmpty()&&farmer.canAddToOutput(drops))
 					{
 						if(IEContent.blockCrop==stateUp.getBlock())
@@ -134,8 +133,6 @@ public class ActuallyAdditionsHelper extends IECompatModule
 							world.playEvent(2001, up, Block.getStateId(state));
 							world.setBlockToAir(up);
 						}
-						world.playEvent(2001, pos, Block.getStateId(state));
-						world.setBlockToAir(pos);
 						farmer.extractEnergy(use);
 						farmer.addToOutput(drops);
 					}
