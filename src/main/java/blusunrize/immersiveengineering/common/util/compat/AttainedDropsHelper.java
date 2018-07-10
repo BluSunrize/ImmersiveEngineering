@@ -120,6 +120,7 @@ public class AttainedDropsHelper extends IECompatModule
 				IBlockState state = plant.getDefaultState().withProperty(BlockCrops.AGE, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
 				IBakedModel model = blockRenderer.getModelForState(state);
 				GlStateManager.pushMatrix();
+				GlStateManager.translate(0, 0, 1);
 				blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
 				GlStateManager.popMatrix();
 				if(growth >= .5)
@@ -128,6 +129,7 @@ public class AttainedDropsHelper extends IECompatModule
 					model = blockRenderer.getModelForState(state);
 					if(model == null) return false;
 					GlStateManager.pushMatrix();
+					GlStateManager.translate(0, 0, 1);
 					float scale = (growth-.5f)*2f;
 					GlStateManager.translate(.5-scale/2, 1, -.5+scale/2);
 					GlStateManager.scale(scale, scale, scale);
