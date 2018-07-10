@@ -120,14 +120,14 @@ public class ActuallyAdditionsHelper extends IECompatModule
 						if(stack.getItem()==IEContent.itemSeeds)
 						{
 							List<ItemStack> seed = Arrays.asList(new ItemStack(IEContent.itemSeeds));
-							if(farmer.addToSeedInventory(seed, false))
+							if(farmer.canAddToSeeds(seed))
 							{
-								farmer.addToSeedInventory(seed, true);
+								farmer.addToSeeds(seed);
 								stack.shrink(1);
 							}
 							break;
 						}
-					if(!drops.isEmpty()&&farmer.addToOutputInventory(drops, false))
+					if(!drops.isEmpty()&&farmer.canAddToOutput(drops))
 					{
 						if(IEContent.blockCrop==stateUp.getBlock())
 						{
@@ -137,7 +137,7 @@ public class ActuallyAdditionsHelper extends IECompatModule
 						world.playEvent(2001, pos, Block.getStateId(state));
 						world.setBlockToAir(pos);
 						farmer.extractEnergy(use);
-						farmer.addToOutputInventory(drops, true);
+						farmer.addToOutput(drops);
 					}
 					return FarmerResult.SUCCESS;
 				}
