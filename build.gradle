@@ -105,8 +105,8 @@ dependencies {
     compileOnly "opencomputers:OpenComputers:MC1.12.2:1.7.2.67"//li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
     compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
     compileOnly 'industrial-craft:industrialcraft-2:release:ex112'//'net.industrial-craft:industrialcraft-2:2.8.+'
-//    compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2+" Modmaven is down!
-    compileOnly "actually-additions:ActuallyAdditions:1.12.2:r134"
+//    compileOnly "actually-additions:ActuallyAdditions:1.12.2:r137" -Leaving this for when r137 releases
+    compileOnly "actually-additions:ActuallyAdditions-1.12.2:r136:hotfix8"
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
