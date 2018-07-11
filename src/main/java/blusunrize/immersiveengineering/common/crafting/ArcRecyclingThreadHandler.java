@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Sets;
 import net.minecraft.item.*;
@@ -47,7 +46,7 @@ public class ArcRecyclingThreadHandler extends Thread
 				if("Recycling".equals(recipe.specialRecipeType))
 				{
 					prevRecipeIt.remove();
-					IECompatModule.jeiRemoveFunc.accept(recipe);
+					//IECompatModule.jeiRemoveFunc.accept(recipe);
 					r++;
 				}
 			}
