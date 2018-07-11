@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.BlockCrops;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,52 +23,53 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.HashMap;
-
 public class AttainedDropsHelper extends IECompatModule
 {
+	
+	public static final String AD_MODID = "attaineddrops2";
+	
+	/**
+	 * Map of soil stack meta to outputs, as defined in ADType below.  Soil meta is type.ordinal() + 1.
+	 */
+	private static Int2ObjectMap<ItemStack[]> outputMap = new Int2ObjectOpenHashMap<>();
+
+	/**
+	 * Map of soil stack meta to bulbs, as defined in ADType below.  Soil meta is type.ordinal() + 1.
+	 */
+	private static Int2ObjectMap<IBlockState> bulbMap = new Int2ObjectOpenHashMap<>();
+	
+	private Item seed;
+	private Block plant;
+	private Block bulb;
+	private Block soil;
+	private Item soilItem;
+
 	@Override
 	public void preInit()
 	{
 	}
 
-	static HashMap<ComparableItemStack, ItemStack[]> soilOutputMap = new HashMap<>();
-	static HashMap<ComparableItemStack, IBlockState> bulbMap = new HashMap<>();
-
 	@Override
 	public void init()
 	{
-		Block blockPlant = Block.REGISTRY.getObject(new ResourceLocation("attaineddrops:plant"));
-		final Item itemSeed = Item.REGISTRY.getObject(new ResourceLocation("attaineddrops:itemseed"));
-		if(blockPlant==null||itemSeed==null)
-			return;
-		final IBlockState blockstatePlant = blockPlant.getDefaultState();
-		IProperty propertyAge = null;
-		for(IProperty prop : blockstatePlant.getPropertyKeys())
-			if("age".equals(prop.getName())&&prop instanceof PropertyInteger)
-				propertyAge = prop;
-		final IProperty propertyAge_final = propertyAge;
+		seed = ForgeRegistries.ITEMS.getValue(new ResourceLocation(AD_MODID, "seed"));
+		plant = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(AD_MODID, "plant"));
+		bulb = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(AD_MODID, "bulb"));
+		soil = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(AD_MODID, "soil"));
+		soilItem = Item.getItemFromBlock(soil);
 
-		addType("slimeball", new ItemStack(Items.SLIME_BALL));
-		addType("bone", new ItemStack(Items.BONE));
-		addType("string", new ItemStack(Items.STRING));
-		addType("rottenflesh", new ItemStack(Items.ROTTEN_FLESH));
-		addType("ghasttear", new ItemStack(Items.GHAST_TEAR));
-		addType("spidereye", new ItemStack(Items.SPIDER_EYE));
-		addType("prismarine", new ItemStack(Items.PRISMARINE_SHARD));
-		addType("blaze", new ItemStack(Items.BLAZE_ROD));
-		addType("gunpowder", new ItemStack(Items.GUNPOWDER));
-		addType("witherskull", new ItemStack(Items.SKULL, 1, 1));
-		addType("enderpearl", new ItemStack(Items.ENDER_PEARL));
+		addTypes();
+
 		BelljarHandler.registerHandler(new IPlantHandler()
 		{
 			@Override
 			public boolean isCorrectSoil(ItemStack seed, ItemStack soil)
 			{
-				return !soil.isEmpty()&&soilOutputMap.containsKey(new ComparableItemStack(soil, true, false));
+				return soil.getItem()==AttainedDropsHelper.this.soilItem && soil.getMetadata() > 0 && soil.getMetadata() <= 15;
 			}
 
 			@Override
@@ -86,7 +87,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@Override
 			public ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile)
 			{
-				ItemStack[] out = soilOutputMap.get(new ComparableItemStack(soil, true, false));
+				ItemStack[] out = outputMap.get(soil.getMetadata());
 				if(out==null)
 					return new ItemStack[0];
 				return out;
@@ -95,7 +96,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@Override
 			public boolean isValid(ItemStack seed)
 			{
-				return !seed.isEmpty()&&seed.getItem()==itemSeed;
+				return seed.getItem()==AttainedDropsHelper.this.seed;
 			}
 
 			@Override
@@ -116,16 +117,19 @@ public class AttainedDropsHelper extends IECompatModule
 			@SideOnly(Side.CLIENT)
 			public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 			{
-				IBlockState state = blockstatePlant.withProperty(propertyAge_final, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
+				IBlockState state = plant.getDefaultState().withProperty(BlockCrops.AGE, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
 				IBakedModel model = blockRenderer.getModelForState(state);
 				GlStateManager.pushMatrix();
+				GlStateManager.translate(0, 0, 1);
 				blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
 				GlStateManager.popMatrix();
 				if(growth >= .5)
 				{
-					state = bulbMap.get(new ComparableItemStack(soil, true, false));
+					state = bulbMap.get(soil.getMetadata());
 					model = blockRenderer.getModelForState(state);
+					if(model == null) return false;
 					GlStateManager.pushMatrix();
+					GlStateManager.translate(0, 0, 1);
 					float scale = (growth-.5f)*2f;
 					GlStateManager.translate(.5-scale/2, 1, -.5+scale/2);
 					GlStateManager.scale(scale, scale, scale);
@@ -136,21 +140,51 @@ public class AttainedDropsHelper extends IECompatModule
 			}
 		});
 	}
-
-	static void addType(String type, ItemStack out)
+	
+	@SuppressWarnings("deprecation")
+	void addTypes()
 	{
-		Block soilBlock = Block.REGISTRY.getObject(new ResourceLocation("attaineddrops:"+type+"_soil"));
-		Block bulbBlock = Block.REGISTRY.getObject(new ResourceLocation("attaineddrops:"+type+"_bulb"));
-		if(soilBlock!=null&&bulbBlock!=null)
+		for(ADType type : ADType.values())
 		{
-			ComparableItemStack comp = new ComparableItemStack(new ItemStack(soilBlock), true, true);
-			soilOutputMap.put(comp, new ItemStack[]{out});
-			bulbMap.put(comp, bulbBlock.getDefaultState());
+			outputMap.put(type.ordinal() + 1, new ItemStack[]{type.getDrop()});
+			bulbMap.put(type.ordinal() + 1, this.bulb.getStateFromMeta(type.ordinal()));
 		}
 	}
 
 	@Override
 	public void postInit()
 	{
+	}
+
+	private enum ADType 
+	{
+		BLAZE(new ItemStack(Items.BLAZE_ROD)),
+		PEARL(new ItemStack(Items.ENDER_PEARL)),
+		BONE(new ItemStack(Items.BONE)),
+		SLIME(new ItemStack(Items.SLIME_BALL)),
+		FLESH(new ItemStack(Items.ROTTEN_FLESH)),
+		TEAR(new ItemStack(Items.GHAST_TEAR)),
+		GUNPOWDER(new ItemStack(Items.GUNPOWDER)),
+		STRING(new ItemStack(Items.STRING)),
+		EYE(new ItemStack(Items.SPIDER_EYE)),
+		PRISMARINE(new ItemStack(Items.PRISMARINE_SHARD)),
+		WITHER(new ItemStack(Items.SKULL, 1, 1)),
+		SHULKER(new ItemStack(Items.SHULKER_SHELL)),
+		LEATHER(new ItemStack(Items.LEATHER)),
+		FEATHER(new ItemStack(Items.FEATHER)),
+		PRISMARINE_C(new ItemStack(Items.PRISMARINE_CRYSTALS));
+
+		private final ItemStack drop;
+
+		ADType(ItemStack drop) 
+		{
+			this.drop = drop;
+		}
+
+		public ItemStack getDrop() 
+		{
+			return drop;
+		}
+		
 	}
 }
