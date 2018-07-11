@@ -186,6 +186,7 @@ public class ImmersiveEngineering
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler(false));
+		//todo, move this to a different place and make it integrate with JEI again
 		if(IEConfig.Machines.arcfurnace_recycle)
 			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
