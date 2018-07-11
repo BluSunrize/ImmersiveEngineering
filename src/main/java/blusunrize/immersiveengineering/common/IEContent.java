@@ -51,6 +51,7 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -402,17 +403,6 @@ public class IEContent
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(FluidRegistry.WATER, 1000));
 
-		/**POTIONS*/
-		HashSet<PotionType> mixerRegistered = new HashSet<>();
-		HashSet<PotionType> bottlingRegistered = new HashSet<>();
-		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-		{
-			if(mixerRegistered.add(mixPredicate.input))
-				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
-			if(bottlingRegistered.add(mixPredicate.output))
-				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output),
-						new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output, 250));
-		}
 
 		/**ORE DICT CRAWLING*/
 		IERecipes.postInitOreDictRecipes();
@@ -1004,6 +994,37 @@ public class IEContent
 
 	public static void postInit()
 	{
+		/**POTIONS*/
+		HashMap<PotionType, MixerRecipePotion> mixerRegistered = new HashMap<>();
+		HashSet<PotionType> bottlingRegistered = new HashSet<>();
+		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
+		{
+			if(mixerRegistered.containsKey(mixPredicate.output))
+			{
+				MixerRecipePotion recipe = mixerRegistered.get(mixPredicate.output);
+				List<ItemStack> ingrList = Lists.newArrayList(mixPredicate.reagent.getMatchingStacks());
+				recipe.addAlternateInput(mixPredicate.input, new IngredientStack(ingrList));
+
+				System.out.println("Registered Alternate Recipe for:  "+mixPredicate.output.getNamePrefixed("")+" = "+mixPredicate.input.getNamePrefixed("")+" with "+ingrList);
+			}
+			else
+			{
+				List<ItemStack> ingrList = Lists.newArrayList(mixPredicate.reagent.getMatchingStacks());
+				MixerRecipePotion recipe = new MixerRecipePotion(mixPredicate.output, mixPredicate.input, new IngredientStack(ingrList));
+				MixerRecipe.recipeList.add(recipe);
+				mixerRegistered.put(mixPredicate.output, recipe);
+
+				System.out.println("Registered Potion Recipe to make: "+mixPredicate.output.getNamePrefixed("")+" = "+mixPredicate.input.getNamePrefixed("")+" with "+ingrList);
+			}
+
+//			if(mixerRegistered.add(mixPredicate.input))
+//				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
+//			if(bottlingRegistered.add(mixPredicate.output))
+//				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output),
+//						new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output, 250));
+		}
+
+
 	}
 
 	public static void refreshFluidReferences()

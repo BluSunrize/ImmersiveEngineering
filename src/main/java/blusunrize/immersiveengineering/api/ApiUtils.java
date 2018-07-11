@@ -802,6 +802,8 @@ public class ApiUtils
 				return new IngredientStack(new ItemStack((Block)input, 1, OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Block)input));
 		}
+		else if(input instanceof Ingredient)
+			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
 		else if(input instanceof List&&!((List)input).isEmpty())
 		{
 			if(((List)input).get(0) instanceof ItemStack)

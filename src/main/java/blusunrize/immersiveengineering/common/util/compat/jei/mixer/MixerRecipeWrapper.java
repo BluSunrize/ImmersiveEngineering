@@ -13,12 +13,6 @@ import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionHelper;
-import net.minecraft.potion.PotionType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MixerRecipeWrapper extends MultiblockRecipeWrapper
 {
@@ -30,17 +24,10 @@ public class MixerRecipeWrapper extends MultiblockRecipeWrapper
 		if(recipe instanceof MixerRecipePotion)
 		{
 			potionWrapper = true;
-			recipeInputs = new List[]{new ArrayList()};
-			fluidOutputs.clear();
-			for(PotionHelper.MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-				if(mixPredicate.input==((MixerRecipePotion)recipe).inputPotionType)
-					for(ItemStack potionIngred : JEIHelper.modRegistry.getIngredientRegistry().getPotionIngredients())
-						if(mixPredicate.reagent.apply(potionIngred))
-						{
-							recipeInputs[0].add(potionIngred);
-							fluidOutputs.add(MixerRecipePotion.getFluidStackForType(mixPredicate.output, recipe.fluidAmount));
-						}
-
+			((MixerRecipePotion)recipe).getAlternateInputs().forEach(alternate -> {
+				fluidInputs.add(alternate.getLeft());
+				recipeInputs[0].add(alternate.getRight()[0].getExampleStack());
+			});
 		}
 	}
 
