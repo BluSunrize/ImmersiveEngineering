@@ -1,3 +1,16 @@
+#####Version 0.12-84
+- Changed handling of Potions in the mixer: (BluSunrize)
+    - Now supports MixPredicates as well as custom brewing recipes
+    - Shows properly in JEI, based on Potion output, rather than input
+    - Bottling recipes are consistent, anything you can mix, you can bottle (ideally)
+    - Added tooltips to Potion fluids to show which mod added the PotionType
+- Added a separate JEI Handler for Arc-Recycling (BluSunrize)
+- Changed Arc-Recycling to run in post-init (BluSunrize)
+- Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)
+- Fixed out-of-thread call to JEI functions causing crashes (BluSunrize)
+- Fixed depth-rendering issues in JEI handlers (BluSunrize)
+- Translations Added/Updated: zh_cn (DYColdWind)
+
 #####Version 0.12-83 - BUILT
 - Added the Extracting Conveyor. It pulls from inventories like a Hopper (BluSunrize)
 - Added even fancier Shaders with pulsing colours and dynamic rendering. Quite open for addon devs, too! (BluSunrize)
