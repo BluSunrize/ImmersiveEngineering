@@ -349,6 +349,25 @@ public class Utils
 		return "";
 	}
 
+	private static final HashMap<String, String> MODNAME_LOOKUP = new HashMap<>();
+
+	public static String getModName(String modid)
+	{
+		if(MODNAME_LOOKUP.containsKey(modid))
+			return MODNAME_LOOKUP.get(modid);
+		else
+		{
+			ModContainer modContainer = Loader.instance().getIndexedModList().get(modid);
+			if(modContainer!=null)
+			{
+				MODNAME_LOOKUP.put(modid, modContainer.getName());
+				return modContainer.getName();
+			}
+			return "";
+		}
+	}
+
+
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
 	{
 		return tile0.getPos().equals(tile1.getPos());

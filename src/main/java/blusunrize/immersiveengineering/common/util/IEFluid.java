@@ -8,14 +8,17 @@
 
 package blusunrize.immersiveengineering.common.util;
 
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Optional;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -78,6 +81,12 @@ public class IEFluid extends Fluid
 						else
 							tooltip.add(TextFormatting.BLUE+s1);
 					}
+				}
+				PotionType potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.tag);
+				if(potionType!=PotionTypes.EMPTY)
+				{
+					String modID = potionType.getRegistryName().getResourceDomain();
+					tooltip.add(TextFormatting.DARK_GRAY+I18n.translateToLocalFormatted(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)));
 				}
 			}
 		}
