@@ -45,6 +45,8 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		guiItemStacks.init(1, false, 100, 12);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
 		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
+		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
+		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
 
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, true, 75, 0, 16, 47, 4000, false, tankOverlay);

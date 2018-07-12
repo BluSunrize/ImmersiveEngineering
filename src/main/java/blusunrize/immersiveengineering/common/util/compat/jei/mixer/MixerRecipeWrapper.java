@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat.jei.mixer;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import net.minecraft.client.Minecraft;
 
@@ -34,11 +33,5 @@ public class MixerRecipeWrapper extends MultiblockRecipeWrapper
 	@Override
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-		for(int i = 0; i < recipeInputs.length; i++)
-		{
-			int x = 0+(i%2)*18;
-			int y = 0+i/2*18;
-			JEIHelper.slotDrawable.draw(minecraft, x, y);
-		}
 	}
 }

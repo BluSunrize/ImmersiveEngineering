@@ -44,6 +44,7 @@ public class CrusherRecipeWrapper extends MultiblockRecipeWrapper
 			}
 		}
 		GlStateManager.pushMatrix();
+		GlStateManager.enableDepth();
 		ClientUtils.bindAtlas();
 		GlStateManager.translate(50F, 20F, 16.5F);
 		GlStateManager.scale(50, -50, 50);

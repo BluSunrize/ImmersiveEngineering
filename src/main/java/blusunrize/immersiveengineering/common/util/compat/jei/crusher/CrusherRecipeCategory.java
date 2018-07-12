@@ -41,21 +41,22 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe, Crush
 		guiItemStacks.init(1, false, 82, 3);
 		outputSlots = new int[recipeWrapper.recipeOutputs.length][];
 		guiItemStacks.set(0, recipeWrapper.getItemIn());
+		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 		guiItemStacks.set(1, recipeWrapper.recipeOutputs[0]);
+		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
 		outputSlots[0] = new int[]{82, 3};
 		for(int i = 1; i < recipeWrapper.recipeOutputs.length; i++)
 		{
 			outputSlots[i] = new int[]{82+(i-1)%2*44, 21+(i-1)/2*18};
 			guiItemStacks.init(i+1, false, outputSlots[i][0], outputSlots[i][1]);
 			guiItemStacks.set(i+1, recipeWrapper.recipeOutputs[i]);
+			guiItemStacks.setBackground(i+1, JEIHelper.slotDrawable);
 		}
 	}
 
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		JEIHelper.slotDrawable.draw(minecraft, 82, 3);
-		JEIHelper.slotDrawable.draw(minecraft, 0, 3);
 	}
 
 	@Override

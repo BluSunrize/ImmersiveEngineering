@@ -39,20 +39,21 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 24, 16);
 		guiItemStacks.set(0, Lists.newArrayList(BlueprintCraftingRecipe.getTypedBlueprint(recipeWrapper.blueprintCategory)));
+		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 		for(int i = 0; i < recipeWrapper.recipeInputs.length; i++)
 		{
 			guiItemStacks.init(1+i, true, 80+i%2*18, 20+i/2*18);
 			guiItemStacks.set(1+i, recipeWrapper.recipeInputs[i]);
+			guiItemStacks.setBackground(1+i, JEIHelper.slotDrawable);
 		}
 		guiItemStacks.init(1+recipeWrapper.recipeInputs.length, false, 140, 24);
 		guiItemStacks.set(1+recipeWrapper.recipeInputs.length, recipeWrapper.recipeOutputs[0]);
+		guiItemStacks.setBackground(1+recipeWrapper.recipeInputs.length, JEIHelper.slotDrawable);
 	}
 
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		JEIHelper.slotDrawable.draw(minecraft, 24, 16);
-		JEIHelper.slotDrawable.draw(minecraft, 140, 24);
 	}
 
 	@Override
