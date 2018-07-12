@@ -350,26 +350,26 @@ public class IEContent
 	@SubscribeEvent
 	public static void registerPotions(RegistryEvent.Register<Potion> event)
 	{
-		/**POTIONS*/
+		/*POTIONS*/
 		IEPotions.init();
 	}
 
 	@SubscribeEvent
 	public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{
-		/**CRAFTING*/
+		/*CRAFTING*/
 		IERecipes.initCraftingRecipes(event.getRegistry());
 
-		/**FURNACE*/
+		/*FURNACE*/
 		IERecipes.initFurnaceRecipes();
 
-		/**BLUEPRINTS*/
+		/*BLUEPRINTS*/
 		IERecipes.initBlueprintRecipes();
 
-		/**BELLJAR*/
+		/*BELLJAR*/
 		BelljarHandler.init();
 
-		/**MULTIBLOCK RECIPES*/
+		/*MULTIBLOCK RECIPES*/
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial, 1, 6), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration, 1, 3), "blockCoal", 1800*9, 5000);
 		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL, 1, 1), "logWood", 900, 250);
@@ -406,7 +406,7 @@ public class IEContent
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(FluidRegistry.WATER, 1000));
 
 
-		/**ORE DICT CRAWLING*/
+		/*ORE DICT CRAWLING*/
 		IERecipes.postInitOreDictRecipes();
 	}
 
@@ -428,7 +428,7 @@ public class IEContent
 	public static void preInit()
 	{
 		WireType.init();
-		/**CONVEYORS*/
+		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			NBTTagCompound data = entity.getEntityData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
@@ -446,7 +446,7 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
 
-		/**BULLETS*/
+		/*BULLETS*/
 		ItemBullet.initBullets();
 
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
@@ -482,7 +482,7 @@ public class IEContent
 
 	public static void preInitEnd()
 	{
-		/**WOLFPACK BULLETS*/
+		/*WOLFPACK BULLETS*/
 		if(!BulletHandler.homingCartridges.isEmpty())
 		{
 			BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
@@ -492,7 +492,7 @@ public class IEContent
 
 	public static void registerOres()
 	{
-		/**ORE DICTIONARY*/
+		/*ORE DICTIONARY*/
 		registerToOreDict("ore", blockOre);
 		registerToOreDict("block", blockStorage);
 		registerToOreDict("slab", blockStorageSlabs);
@@ -936,7 +936,7 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
 
-		/**MULTIBLOCKS*/
+		/*MULTIBLOCKS*/
 		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
 		MultiblockHandler.registerMultiblock(MultiblockAlloySmelter.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
@@ -959,11 +959,11 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFeedthrough.instance);
 
-		/**VILLAGE*/
+		/*VILLAGE*/
 		IEVillagerHandler.initIEVillagerHouse();
 		IEVillagerHandler.initIEVillagerTrades();
 
-		/**LOOT*/
+		/*LOOT*/
 		if(IEConfig.villagerHouse)
 			LootTableList.register(VillageEngineersHouse.woodenCrateLoot);
 		for(ResourceLocation rl : EventHandler.lootInjections)
@@ -977,7 +977,7 @@ public class IEContent
 		//				OreDictionary.registerOre("blockFuelCoke", new ItemStack(rcCube,1,0));
 		//		}
 
-		/**BLOCK ITEMS FROM CRATES*/
+		/*BLOCK ITEMS FROM CRATES*/
 		IEApi.forbiddenInCrates.add((stack) -> {
 			if(stack.getItem()==IEContent.itemToolbox)
 				return true;
@@ -996,7 +996,7 @@ public class IEContent
 
 	public static void postInit()
 	{
-		/**POTIONS*/
+		/*POTIONS*/
 		HashSet<PotionType> bottlingRegistered = new HashSet<>();
 
 		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
@@ -1010,6 +1010,10 @@ public class IEContent
 				if(input.getItem()==Items.POTIONITEM&&output.getItem()==Items.POTIONITEM)
 					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
 			}
+
+		/*ARC FURNACE RECYCLING*/
+		if(IEConfig.Machines.arcfurnace_recycle)
+			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
 
 	public static void refreshFluidReferences()

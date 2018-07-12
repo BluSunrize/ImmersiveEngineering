@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -186,9 +185,6 @@ public class ImmersiveEngineering
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler(false));
-		//todo, move this to a different place and make it integrate with JEI again
-		if(IEConfig.Machines.arcfurnace_recycle)
-			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
 
 	@Mod.EventHandler

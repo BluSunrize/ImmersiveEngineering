@@ -24,16 +24,9 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.*;
 
-public class ArcRecyclingThreadHandler extends Thread
+public class ArcRecyclingThreadHandler
 {
 	static boolean hasProfiled = false;
-	public static List<ArcFurnaceRecipe> recipesToAdd = null;
-	private List<IRecipe> recipeList = null;
-
-	private ArcRecyclingThreadHandler(List<IRecipe> r)
-	{
-		recipeList = r;
-	}
 
 	public static void doRecipeProfiling()
 	{
@@ -46,22 +39,18 @@ public class ArcRecyclingThreadHandler extends Thread
 				if("Recycling".equals(recipe.specialRecipeType))
 				{
 					prevRecipeIt.remove();
-					//IECompatModule.jeiRemoveFunc.accept(recipe);
 					r++;
 				}
 			}
 		IELogger.info("Arc Recycling: Removed "+r+" old recipes");
-		recipesToAdd = null;
-		new ArcRecyclingThreadHandler(ForgeRegistries.RECIPES.getValues()).start();
-	}
+		List<IRecipe> recipeList = new ArrayList<>(ForgeRegistries.RECIPES.getValuesCollection());
 
-	@Override
-	public void run()
-	{
 		int threadAmount = Runtime.getRuntime().availableProcessors();
 		IELogger.info("Starting recipe profiler for Arc Recycling, using "+threadAmount+" Threads");
-		long timestamp = System.currentTimeMillis();
 		RegistryIterationThread[] threads = new RegistryIterationThread[threadAmount];
+
+		long timestamp = System.currentTimeMillis();
+
 		boolean divisable = recipeList.size()%threadAmount==0;
 		int limit = divisable?(recipeList.size()/threadAmount): (recipeList.size()/(threadAmount-1));
 		int leftOver = divisable?limit: (recipeList.size()-(threadAmount-1)*limit);
@@ -116,18 +105,16 @@ public class ArcRecyclingThreadHandler extends Thread
 		}
 		//HashSet to avoid duplicates
 		HashSet<String> finishedRecycles = new HashSet<String>();
-		List<ArcFurnaceRecipe> ret = new ArrayList<>();
 		for(RecyclingCalculation valid : validated)
 			if(finishedRecycles.add(valid.stack.toString())&&!valid.outputs.isEmpty())
-				ret.add(new ArcRecyclingRecipe(valid.outputs, valid.stack, 100, 512));
+				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(valid.outputs, valid.stack, 100, 512));
 		for(RecyclingCalculation invalid : Sets.newHashSet(nonValidated.values()))
 			if(finishedRecycles.add(invalid.stack.toString())&&!invalid.outputs.isEmpty())
 			{
-//				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
-				ret.add(new ArcRecyclingRecipe(invalid.outputs, invalid.stack, 100, 512));
+				//IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
+				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(invalid.outputs, invalid.stack, 100, 512));
 			}
 		IELogger.info("Finished recipe profiler for Arc Recycling, took "+(System.currentTimeMillis()-timestamp)+" milliseconds");
-		recipesToAdd = ret;
 		hasProfiled = true;
 	}
 
