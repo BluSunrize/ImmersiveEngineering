@@ -8,13 +8,16 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
+import net.minecraft.init.Items;
 import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -62,6 +65,9 @@ public class MixerRecipePotion extends MixerRecipe
 			MixerRecipe.recipeList.add(recipe);
 			REGISTERED.put(output, recipe);
 			System.out.println("Registered Potion Recipe to make: "+output.getRegistryName()+" = "+input.getRegistryName()+" with "+reagent.stackList);
+
+			BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), output),
+					new ItemStack(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
 		}
 	}
 
