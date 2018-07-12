@@ -51,7 +51,6 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -87,6 +86,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.AbstractBrewingRecipe;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
@@ -995,36 +997,19 @@ public class IEContent
 	public static void postInit()
 	{
 		/**POTIONS*/
-		HashMap<PotionType, MixerRecipePotion> mixerRegistered = new HashMap<>();
 		HashSet<PotionType> bottlingRegistered = new HashSet<>();
+
 		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-		{
-			if(mixerRegistered.containsKey(mixPredicate.output))
+			MixerRecipePotion.registerPotionRecipe(mixPredicate.output, mixPredicate.input, ApiUtils.createIngredientStack(mixPredicate.reagent));
+		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
+			if(recipe instanceof AbstractBrewingRecipe)
 			{
-				MixerRecipePotion recipe = mixerRegistered.get(mixPredicate.output);
-				List<ItemStack> ingrList = Lists.newArrayList(mixPredicate.reagent.getMatchingStacks());
-				recipe.addAlternateInput(mixPredicate.input, new IngredientStack(ingrList));
-
-				System.out.println("Registered Alternate Recipe for:  "+mixPredicate.output.getNamePrefixed("")+" = "+mixPredicate.input.getNamePrefixed("")+" with "+ingrList);
+				IngredientStack ingredientStack = ApiUtils.createIngredientStack(((AbstractBrewingRecipe)recipe).getIngredient());
+				ItemStack input = ((AbstractBrewingRecipe)recipe).getInput();
+				ItemStack output = ((AbstractBrewingRecipe)recipe).getOutput();
+				if(input.getItem()==Items.POTIONITEM&&output.getItem()==Items.POTIONITEM)
+					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
 			}
-			else
-			{
-				List<ItemStack> ingrList = Lists.newArrayList(mixPredicate.reagent.getMatchingStacks());
-				MixerRecipePotion recipe = new MixerRecipePotion(mixPredicate.output, mixPredicate.input, new IngredientStack(ingrList));
-				MixerRecipe.recipeList.add(recipe);
-				mixerRegistered.put(mixPredicate.output, recipe);
-
-				System.out.println("Registered Potion Recipe to make: "+mixPredicate.output.getNamePrefixed("")+" = "+mixPredicate.input.getNamePrefixed("")+" with "+ingrList);
-			}
-
-//			if(mixerRegistered.add(mixPredicate.input))
-//				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
-//			if(bottlingRegistered.add(mixPredicate.output))
-//				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output),
-//						new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output, 250));
-		}
-
-
 	}
 
 	public static void refreshFluidReferences()

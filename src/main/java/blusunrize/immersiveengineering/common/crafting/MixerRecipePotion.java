@@ -21,6 +21,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import java.util.Set;
  */
 public class MixerRecipePotion extends MixerRecipe
 {
+	private static final HashMap<PotionType, MixerRecipePotion> REGISTERED = new HashMap<>();
 	private final Set<Pair<FluidStack, IngredientStack[]>> alternateInputs = new HashSet<>();
 
 	public MixerRecipePotion(PotionType outputType, PotionType inputType, IngredientStack reagent)
@@ -44,6 +46,23 @@ public class MixerRecipePotion extends MixerRecipe
 	public Set<Pair<FluidStack, IngredientStack[]>> getAlternateInputs()
 	{
 		return alternateInputs;
+	}
+
+	public static void registerPotionRecipe(PotionType output, PotionType input, IngredientStack reagent)
+	{
+		if(REGISTERED.containsKey(output))
+		{
+			MixerRecipePotion recipe = REGISTERED.get(output);
+			recipe.addAlternateInput(input, reagent);
+			System.out.println("Registered Alternate Recipe for:  "+output.getRegistryName()+" = "+input.getRegistryName()+" with "+reagent.stackList);
+		}
+		else
+		{
+			MixerRecipePotion recipe = new MixerRecipePotion(output, input, reagent);
+			MixerRecipe.recipeList.add(recipe);
+			REGISTERED.put(output, recipe);
+			System.out.println("Registered Potion Recipe to make: "+output.getRegistryName()+" = "+input.getRegistryName()+" with "+reagent.stackList);
+		}
 	}
 
 	public static FluidStack getFluidStackForType(PotionType type, int amount)
