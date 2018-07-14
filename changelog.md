@@ -9,6 +9,10 @@
 - Added a particle trail to Minecarts that use fancy shaders (e.g. IKELOS) (BluSunrize)
 - Added the ability to pop Balloons by hitting them with a Projectile (BluSunrize)
 - Added Shader Particles to the Railgun and Drill (BluSunrize)
+- Added a "Noise" component to the revolver, which will make it attract nearby mobs when fired (BluSunrize)
+    - Adding a bit of a stealth/survival aspect
+    - Probably not super impactful in normal singleplayer, but could be fun for pack makers
+    - This will play into a larger customization system for the Revolver, to be implemented in the future
 - Re-Added some shader textures that got lost in the 1.11 update (BluSunrize)
 - Changed Arc-Recycling to run in init and be overall cleaner (Malte)
 - Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)

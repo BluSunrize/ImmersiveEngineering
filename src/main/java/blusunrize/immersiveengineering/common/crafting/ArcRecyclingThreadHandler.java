@@ -32,6 +32,7 @@ public class ArcRecyclingThreadHandler extends Thread
 	private ArrayListMultimap<ItemStack, RecyclingCalculation> nonValidated;
 	private List<IRecipe> recipeList = new ArrayList<>(ForgeRegistries.RECIPES.getValuesCollection());
 
+	@Override
 	public void run()
 	{
 		Iterator<ArcFurnaceRecipe> prevRecipeIt = ArcFurnaceRecipe.recipeList.iterator();
@@ -217,7 +218,7 @@ public class ArcRecyclingThreadHandler extends Thread
 					}
 				}
 			Map<ItemStack, Double> outputScaled = new IdentityHashMap<>(outputs.size());
-			for (Entry<ItemStack, Double> e:outputs.entrySet())
+			for(Entry<ItemStack, Double> e : outputs.entrySet())
 				outputScaled.put(e.getKey(), e.getValue()/inputSize);
 			if(!outputs.isEmpty()||!missingSub.isEmpty())
 			{

@@ -33,6 +33,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Biomes;
@@ -86,6 +87,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.lang.Math.min;
 
@@ -537,6 +539,24 @@ public class Utils
 		float f2 = -MathHelper.cos(-pitch*0.017453292F);
 		float f3 = MathHelper.sin(-pitch*0.017453292F);
 		return new Vec3d((double)(f1*f2), (double)f3, (double)(f*f2));
+	}
+
+	public static void attractEnemies(EntityLivingBase target, float radius)
+	{
+		attractEnemies(target, radius, null);
+	}
+
+	public static void attractEnemies(EntityLivingBase target, float radius, Predicate<EntityMob> predicate)
+	{
+		AxisAlignedBB aabb = new AxisAlignedBB(target.posX-radius, target.posY-radius, target.posZ-radius, target.posX+radius, target.posY+radius, target.posZ+radius);
+
+		List<EntityMob> list = target.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, aabb);
+		for(EntityMob mob : list)
+			if(predicate==null||predicate.test(mob))
+			{
+				mob.setAttackTarget(target);
+				mob.faceEntity(target, 180, 0);
+			}
 	}
 
 	public static boolean isHammer(ItemStack stack)
