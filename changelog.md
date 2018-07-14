@@ -10,7 +10,7 @@
 - Added the ability to pop Balloons by hitting them with a Projectile (BluSunrize)
 - Added Shader Particles to the Railgun and Drill (BluSunrize)
 - Re-Added some shader textures that got lost in the 1.11 update (BluSunrize)
-- Changed Arc-Recycling to run in post-init (BluSunrize)
+- Changed Arc-Recycling to run in init and be overall cleaner (Malte)
 - Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)
 - Fixed out-of-thread call to JEI functions causing crashes (BluSunrize)
 - Fixed depth-rendering issues in JEI handlers (BluSunrize)
