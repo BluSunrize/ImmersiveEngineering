@@ -108,11 +108,10 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 					}
 				});
 		addLayer(entry, "1_4", 0xff5f646a);
-		entry.setEffectFunction((world, shader, item, shaderType, pos) -> {
-			Vec3d dir = new Vec3d(0, 1, 0);
-			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir, .1875, 2, null);
-			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir, .1875, 2, null);
-			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir, .1875, 2, null);
+		entry.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(0, 1, 0), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(0, 0, 1), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(1, 0, 0), scale, 2, null);
 		});
 
 		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e, 0xff754697, 0xff77b93d, 0xff505050, null, false, 0xffffffff).setInfo("Mecha", "Neon Genesis Evangelion", "angelsthesis");

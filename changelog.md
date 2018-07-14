@@ -5,6 +5,7 @@
     - Bottling recipes are consistent, anything you can mix, you can bottle (ideally)
     - Added tooltips to Potion fluids to show which mod added the PotionType
 - Added a separate JEI Handler for Arc-Recycling (BluSunrize)
+- Added a particle trail to Minecarts that use fancy shaders (e.g. IKELOS) (BluSunrize)
 - Re-Added some shader textures that got lost in the 1.11 update (BluSunrize)
 - Changed Arc-Recycling to run in post-init (BluSunrize)
 - Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)

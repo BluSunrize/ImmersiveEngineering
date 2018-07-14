@@ -45,7 +45,6 @@ public class ParticleFractal extends Particle
 		this.colourIn = colourIn;
 
 		this.pointsList = new Vec3d[points];
-		System.out.println("dir: "+direction);
 		Vec3d startPos = direction.scale(-.5);
 		Vec3d end = direction.scale(.5);
 		Vec3d dist = end.subtract(startPos);

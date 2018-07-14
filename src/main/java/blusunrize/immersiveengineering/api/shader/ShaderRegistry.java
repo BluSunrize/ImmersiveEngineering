@@ -595,16 +595,20 @@ public class ShaderRegistry
 		{
 			CapabilityShader.ShaderWrapper wrapper = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 			if(wrapper!=null)
-			{
-				ItemStack shader = wrapper.getShaderItem();
-				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-				{
-					IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
-					ShaderRegistryEntry registryEntry = shaderRegistry.get(iShaderItem.getShaderName(shader));
-					if(registryEntry!=null)
-						return Triple.of(shader, registryEntry, registryEntry.getCase(wrapper.getShaderType()));
-				}
-			}
+				return getStoredShaderAndCase(wrapper);
+		}
+		return null;
+	}
+
+	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(CapabilityShader.ShaderWrapper wrapper)
+	{
+		ItemStack shader = wrapper.getShaderItem();
+		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+		{
+			IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
+			ShaderRegistryEntry registryEntry = shaderRegistry.get(iShaderItem.getShaderName(shader));
+			if(registryEntry!=null)
+				return Triple.of(shader, registryEntry, registryEntry.getCase(wrapper.getShaderType()));
 		}
 		return null;
 	}
@@ -625,7 +629,7 @@ public class ShaderRegistry
 		public IngredientStack replicationCost;
 
 		public IShaderEffectFunction effectFunction;
-		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos) -> {
+		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos, dir, scale) -> {
 		};
 
 		public ShaderRegistryEntry(String name, EnumRarity rarity, List<ShaderCase> cases)

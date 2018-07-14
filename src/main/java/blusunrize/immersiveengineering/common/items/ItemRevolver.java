@@ -371,7 +371,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			{
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver, shader.getRight().getShaderType(), Utils.getLivingFrontPos(player, .75, player.height*.75, hand==EnumHand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1));
+				{
+					Vec3d pos = Utils.getLivingFrontPos(player, .75, player.height*.75, hand==EnumHand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver, shader.getRight().getShaderType(), pos, player.getForward(), .125f);
+				}
 			}
 			return new ActionResult(EnumActionResult.SUCCESS, revolver);
 		}
