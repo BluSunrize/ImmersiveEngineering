@@ -201,31 +201,31 @@ public class ApiUtils
 
 	public static String getMetalComponentType(ItemStack stack, String... componentTypes)
 	{
-		ItemStack comp = copyStackWithAmount(stack, 1);
-		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
-			for(int iType = 0; iType < componentTypes.length; iType++)
-				if(oreName.startsWith(componentTypes[iType]))
-				{
-					List<ItemStack> s = OreDictionary.getOres(oreName);
-					for(ItemStack st : s)
-						if(ItemStack.areItemStacksEqual(comp, st))
-							return componentTypes[iType];
-				}
+		int[] ids = OreDictionary.getOreIDs(stack);
+		String[] oreNames = OreDictionary.getOreNames();
+		for(int id : ids)
+		{
+			String oreName = oreNames[id];
+			for(String componentType : componentTypes)
+				if(oreName.startsWith(componentType))
+					return componentType;
+		}
 		return null;
 	}
 
 	public static String[] getMetalComponentTypeAndMetal(ItemStack stack, String... componentTypes)
 	{
-		ItemStack comp = copyStackWithAmount(stack, 1);
-		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
-			for(int iType = 0; iType < componentTypes.length; iType++)
-				if(oreName.startsWith(componentTypes[iType]))
-				{
-					List<ItemStack> s = OreDictionary.getOres(oreName);
-					for(ItemStack st : s)
-						if(ItemStack.areItemStacksEqual(comp, st))
-							return new String[]{componentTypes[iType], oreName.substring(componentTypes[iType].length())};
-				}
+		int[] ids = OreDictionary.getOreIDs(stack);
+		String[] oreNames = OreDictionary.getOreNames();
+		for(int id : ids)
+		{
+			String oreName = oreNames[id];
+			for(String componentType : componentTypes)
+			{
+				if(oreName.startsWith(componentType))
+					return new String[]{componentType, oreName.substring(componentType.length())};
+			}
+		}
 		return null;
 	}
 

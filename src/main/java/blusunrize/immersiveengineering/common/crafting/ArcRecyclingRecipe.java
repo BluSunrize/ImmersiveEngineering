@@ -15,14 +15,14 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
-	HashMap<ItemStack, Double> outputs;
+	private Map<ItemStack, Double> outputs;
 
-	public ArcRecyclingRecipe(HashMap<ItemStack, Double> outputs, Object input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(Map<ItemStack, Double> outputs, Object input, int time, int energyPerTick)
 	{
 		super(null, input, ItemStack.EMPTY, time, energyPerTick);
 		this.outputs = outputs;

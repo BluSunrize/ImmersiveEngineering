@@ -542,8 +542,17 @@ public class IEContent
 		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL, 1, 1));
 	}
 
+	private static ArcRecyclingThreadHandler arcRecycleThread;
 	public static void init()
 	{
+
+		/*ARC FURNACE RECYCLING*/
+		if(IEConfig.Machines.arcfurnace_recycle)
+		{
+			arcRecycleThread = new ArcRecyclingThreadHandler();
+			arcRecycleThread.start();
+		}
+
 		/*MINING LEVELS*/
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
 		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
@@ -1010,10 +1019,17 @@ public class IEContent
 				if(input.getItem()==Items.POTIONITEM&&output.getItem()==Items.POTIONITEM)
 					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
 			}
-
-		/*ARC FURNACE RECYCLING*/
-		if(IEConfig.Machines.arcfurnace_recycle)
-			ArcRecyclingThreadHandler.doRecipeProfiling();
+		if(arcRecycleThread!=null)
+		{
+			try
+			{
+				arcRecycleThread.join();
+				arcRecycleThread.finishUp();
+			} catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void refreshFluidReferences()

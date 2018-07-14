@@ -72,7 +72,8 @@ public class IEApi
 	{
 		if(!oreOutputPreference.containsKey(oreName))
 		{
-			ItemStack preferredStack = ApiUtils.isExistingOreName(oreName)?getPreferredStackbyMod(OreDictionary.getOres(oreName)): null;
+			ItemStack preferredStack = ApiUtils.isExistingOreName(oreName)?
+					getPreferredStackbyMod(OreDictionary.getOres(oreName)): ItemStack.EMPTY;
 			oreOutputPreference.put(oreName, preferredStack);
 			return preferredStack;
 		}
