@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -53,7 +52,6 @@ public class Fermenter
 		public void apply()
 		{
 			FermenterRecipe.recipeList.add(recipe);
-			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -92,7 +90,6 @@ public class Fermenter
 				if(r!=null&&r.fluidOutput!=null&&r.fluidOutput.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
-					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}
@@ -132,7 +129,6 @@ public class Fermenter
 				if(r!=null&&OreDictionary.itemMatches(output, r.itemOutput, false))
 				{
 					removedRecipes.add(r);
-					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}
@@ -172,7 +168,6 @@ public class Fermenter
 				if(r!=null&&r.input.matchesItemStack(input))
 				{
 					removedRecipes.add(r);
-					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}

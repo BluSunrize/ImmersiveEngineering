@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -52,7 +51,6 @@ public class Mixer
 		public void apply()
 		{
 			MixerRecipe.recipeList.add(recipe);
-			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -89,7 +87,6 @@ public class Mixer
 				if(r!=null&&r.fluidOutput!=null&&r.fluidOutput.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
-					IECompatModule.jeiRemoveFunc.accept(r);
 					it.remove();
 				}
 			}

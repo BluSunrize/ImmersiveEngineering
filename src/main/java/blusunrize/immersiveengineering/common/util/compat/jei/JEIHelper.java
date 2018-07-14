@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMulti
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter.AlloySmelterRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceFuelCategory;
@@ -158,19 +157,6 @@ public class JEIHelper implements IModPlugin
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
 	{
-		final IRecipeRegistry registry = jeiRuntime.getRecipeRegistry();
-		IECompatModule.jeiAddFunc = recipe ->
-		{
-			IERecipeCategory factory = getFactory(recipe.getClass());
-			if(factory!=null)
-				registry.addRecipe(factory.getRecipeWrapper(recipe), factory.getUid());
-		};
-		IECompatModule.jeiRemoveFunc = recipe ->
-		{
-			IERecipeCategory factory = getFactory(recipe.getClass());
-			if(factory!=null)
-				registry.removeRecipe(factory.getRecipeWrapper(recipe), factory.getUid());
-		};
 	}
 
 	private IERecipeCategory getFactory(Class recipeClass)

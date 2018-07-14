@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -57,7 +56,6 @@ public class MetalPress
 		public void apply()
 		{
 			MetalPressRecipe.recipeList.put(recipe.mold, recipe);
-			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -87,8 +85,6 @@ public class MetalPress
 		public void apply()
 		{
 			removedRecipes = MetalPressRecipe.removeRecipes(output);
-			for(MetalPressRecipe recipe : removedRecipes)
-				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -119,8 +115,6 @@ public class MetalPress
 		{
 			removedRecipes = new ArrayList<>(MetalPressRecipe.recipeList.get(mold));
 			MetalPressRecipe.recipeList.removeAll(mold);
-			for(MetalPressRecipe recipe : removedRecipes)
-				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
