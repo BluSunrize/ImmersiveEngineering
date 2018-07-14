@@ -4,6 +4,7 @@
     - Shows properly in JEI, based on Potion output, rather than input
     - Bottling recipes are consistent, anything you can mix, you can bottle (ideally)
     - Added tooltips to Potion fluids to show which mod added the PotionType
+    - Added compat for KnightMiner's Inspirations, allowing their Splash and Lingering bottles to be filled
 - Added a separate JEI Handler for Arc-Recycling (BluSunrize)
 - Added a particle trail to Minecarts that use fancy shaders (e.g. IKELOS) (BluSunrize)
 - Added the ability to pop Balloons by hitting them with a Projectile (BluSunrize)

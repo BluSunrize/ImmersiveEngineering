@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class MixerRecipePotion extends MixerRecipe
 {
-	private static final HashMap<PotionType, MixerRecipePotion> REGISTERED = new HashMap<>();
+	public static final HashMap<PotionType, MixerRecipePotion> REGISTERED = new HashMap<>();
 	private final Set<Pair<FluidStack, IngredientStack[]>> alternateInputs = new HashSet<>();
 
 	public MixerRecipePotion(PotionType outputType, PotionType inputType, IngredientStack reagent)
@@ -57,14 +57,12 @@ public class MixerRecipePotion extends MixerRecipe
 		{
 			MixerRecipePotion recipe = REGISTERED.get(output);
 			recipe.addAlternateInput(input, reagent);
-			System.out.println("Registered Alternate Recipe for:  "+output.getRegistryName()+" = "+input.getRegistryName()+" with "+reagent.stackList);
 		}
 		else
 		{
 			MixerRecipePotion recipe = new MixerRecipePotion(output, input, reagent);
 			MixerRecipe.recipeList.add(recipe);
 			REGISTERED.put(output, recipe);
-			System.out.println("Registered Potion Recipe to make: "+output.getRegistryName()+" = "+input.getRegistryName()+" with "+reagent.stackList);
 
 			BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), output),
 					new ItemStack(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
