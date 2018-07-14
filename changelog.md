@@ -7,7 +7,7 @@
 - Added a separate JEI Handler for Arc-Recycling (BluSunrize)
 - Added a particle trail to Minecarts that use fancy shaders (e.g. IKELOS) (BluSunrize)
 - Added the ability to pop Balloons by hitting them with a Projectile (BluSunrize)
-- Added Shader Particles to the Railgun (BluSunrize)
+- Added Shader Particles to the Railgun and Drill (BluSunrize)
 - Re-Added some shader textures that got lost in the 1.11 update (BluSunrize)
 - Changed Arc-Recycling to run in post-init (BluSunrize)
 - Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)
