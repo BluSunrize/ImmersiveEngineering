@@ -12,6 +12,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -48,6 +51,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -171,19 +175,6 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		return true;
 	}
 
-	//	@Override
-	//	public Multimap getAttributeModifiers(ItemStack stack)
-	//	{
-	//		Multimap multimap = super.getAttributeModifiers(stack);
-	//		double melee = getUpgrades(stack).getDouble("melee");
-	//		if(melee!=0)
-	//			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", melee, 0));
-	//		double speed = getUpgrades(stack).getDouble("speed");
-	//		if(speed!=0)
-	//			multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", speed, 1));
-	//		return multimap;
-	//	}
-
 	@Override
 	public EnumAction getItemUseAction(ItemStack p_77661_1_)
 	{
@@ -194,21 +185,6 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
 		super.onUpdate(stack, world, ent, slot, inHand);
-		//		if(!world.isRemote && stack.getItemDamage()!=1 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
-		//		{
-		//			int l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "casings", ent);
-		//			if(l==0)
-		//				ItemNBTHelper.setDelayedSoundsForStack(stack, "cylinderFill", "tile.piston.in",.3f,3, 1,6,1);
-		//			l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "cylinderFill", ent);
-		//			if(l==0)
-		//				ItemNBTHelper.setDelayedSoundsForStack(stack, "cylinderClose", "fire.ignite",.6f,5, 1,6,1);
-		//			l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "cylinderClose", ent);
-		//			if(l==0)
-		//				ItemNBTHelper.setDelayedSoundsForStack(stack, "cylinderSpin", "note.hat",.1f,5, 5,8,1);
-		//			l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "cylinderSpin", ent);
-		//			if(l==0)
-		//				ItemNBTHelper.remove(stack, "blocked");
-		//		}
 	}
 
 	@Override
@@ -232,7 +208,15 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	{
 		int inUse = this.getMaxItemUseDuration(stack)-count;
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRNG().nextInt(20))
+		{
 			user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.spark, SoundCategory.PLAYERS, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
+			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+			if(shader!=null)
+			{
+				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.height*.75, user.getActiveHand()==EnumHand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, null, .0625f);
+			}
+		}
 	}
 
 	@Override
@@ -262,6 +246,13 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 					this.extractEnergy(stack, energy, false);
 					if(!world.isRemote)
 						user.world.spawnEntity(shot);
+
+					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+					if(shader!=null)
+					{
+						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.height*.75, user.getActiveHand()==EnumHand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, user.getForward(), .125f);
+					}
 				}
 			}
 		}
