@@ -15,6 +15,7 @@
     - This will play into a larger customization system for the Revolver, to be implemented in the future
 - Re-Added some shader textures that got lost in the 1.11 update (BluSunrize)
 - Changed Arc-Recycling to run in init and be overall cleaner (Malte)
+- Changed the recipe for Vacuum Tubes to use Nickel Plates (BluSunrize)
 - Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)
 - Fixed out-of-thread call to JEI functions causing crashes (BluSunrize)
 - Fixed depth-rendering issues in JEI handlers (BluSunrize)
