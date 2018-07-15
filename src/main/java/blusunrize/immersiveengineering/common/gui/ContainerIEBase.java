@@ -87,20 +87,28 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slotObject = this.inventorySlots.get(slot);
-		if (slotObject != null && slotObject.getHasStack()) {
+		if(slotObject!=null&&slotObject.getHasStack())
+		{
 			ItemStack itemstack1 = slotObject.getStack();
 			itemstack = itemstack1.copy();
-			if (slot < slotCount) {
-				if (!this.mergeItemStack(itemstack1, slotCount, this.inventorySlots.size(), true)) {
+			if(slot < slotCount)
+			{
+				if(!this.mergeItemStack(itemstack1, slotCount, this.inventorySlots.size(), true))
+				{
 					return ItemStack.EMPTY;
 				}
-			} else if (!this.mergeItemStack(itemstack1, 0, slotCount, false)) {
+			}
+			else if(!this.mergeItemStack(itemstack1, 0, slotCount, false))
+			{
 				return ItemStack.EMPTY;
 			}
 
-			if (itemstack1.isEmpty()) {
+			if(itemstack1.isEmpty())
+			{
 				slotObject.putStack(ItemStack.EMPTY);
-			} else {
+			}
+			else
+			{
 				slotObject.onSlotChanged();
 			}
 		}

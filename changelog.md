@@ -1,4 +1,4 @@
-#####Version 0.12-84
+#####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
     - Now supports MixPredicates as well as custom brewing recipes
     - Shows properly in JEI, based on Potion output, rather than input
@@ -19,6 +19,7 @@
 - Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)
 - Fixed out-of-thread call to JEI functions causing crashes (BluSunrize)
 - Fixed depth-rendering issues in JEI handlers (BluSunrize)
+- Fixed shiftclicking on IE's containers (BluSunrize)
 - Translations Added/Updated: zh_cn (DYColdWind)
 
 #####Version 0.12-83 - BUILT
