@@ -212,8 +212,8 @@ public class ClientProxy extends CommonProxy
 		IEContent.itemRevolver.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemDrill, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/drill/drill_diesel.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375, .375, .375).translate(-1.5, 1.125, .875).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .4375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(-.375, .4375, .375).translate(.25, 1, .5).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(.75, .75, .75).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
 				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(-.75, .75, .75).rotate(-Math.PI*.75, 0, 1, 0).rotate(-Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
 				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875, .0625, .15625).scale(.4375, .4375, .4375).rotate(-Math.PI*.25, 0, 0, 1))
@@ -232,8 +232,8 @@ public class ClientProxy extends CommonProxy
 		IEContent.itemFluorescentTube.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemChemthrower, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/chemthrower.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.25, .25, .25).translate(-.5, 1.25, .75).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, 	new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(-.375, .375, .375).translate(-.25, 1, .5).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, .5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
 				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, -.5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.625, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
 				.setTransformations(TransformType.FIXED, new Matrix4().translate(.125, .125, -.25).scale(.3125, .3125, .3125).rotate(Math.PI, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1))

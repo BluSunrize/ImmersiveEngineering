@@ -54,6 +54,8 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 					IESmartObjModel.tempEntityStatic);
 			if(model instanceof IESmartObjModel)
 			{
+				GlStateManager.disableCull();
+
 				ItemStack shader = ItemStack.EMPTY;
 				ShaderCase sCase = null;
 				if(!stack.isEmpty()&&stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
@@ -104,6 +106,7 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 				}
 				renderQuadsForGroups(visible.keySet().toArray(new String[0]), callback, obj, quads, stack,
 						sCase, shader, bb, tes, visible, partialTicks);
+				GlStateManager.enableCull();
 			}
 		}
 	}
