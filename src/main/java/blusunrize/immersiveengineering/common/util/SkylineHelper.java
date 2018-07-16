@@ -47,7 +47,7 @@ public class SkylineHelper
 		connection.getSubVertices(player.world);
 		pos = connection.getVecAt(t, vStart, across, Math.sqrt(across.x*across.x+across.z*across.z));
 		Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
-		int tInt = MathHelper.clamp(0, (int)(t*vertices), vertices-1);
+		int tInt = MathHelper.clamp((int)(t*vertices), 0, vertices-1);
 
 		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x, pos.y, pos.z, connection, cc0, steps, tInt+1);
 		float speed = 1;
