@@ -223,6 +223,8 @@ public class GuiManual extends GuiScreen
 			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttonList.size())
 				manual.fontRenderer.drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour(), false);
 		}
+		for (GuiButton btn:pageButtons)
+			btn.drawButton(mc, mouseX, mouseY, f);
 		manual.fontRenderer.setUnicodeFlag(uni);
 		super.drawScreen(mouseX, mouseY, f);
 		GlStateManager.enableBlend();

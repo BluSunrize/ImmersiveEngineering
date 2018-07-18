@@ -198,7 +198,7 @@ public class ManualUtils
 		}
 	}
 
-	//TODO this will break with control chars
+	//TODO this will break with control chars and is broken in general as well
 	public static void drawJustifiedLine(String line, FontRenderer renderer, int x, int y, int colour, int lineLength)
 	{
 		String[] tokens = TextSplitter.splitWhitespace(line);

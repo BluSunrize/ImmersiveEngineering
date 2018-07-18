@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -72,7 +73,10 @@ public class ManualElementCrafting extends SpecialManualElements
 
 	void checkRecipe(IRecipe rec, Object key, Object stack, int iStack)
 	{
-		if(!rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
+		boolean matches = !rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack);
+		if (!matches&&key instanceof ResourceLocation&&key.equals(rec.getRegistryName()))
+			matches = true;
+		if(matches)
 		{
 			NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
 			int w;

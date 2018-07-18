@@ -120,15 +120,16 @@ public class ManualEntry
 		return pages.stream().map((p) -> p.special);
 	}
 
-	public void addButtons(GuiManual guiManual, int x, int y, int page, List<GuiButton> pageButtons)
+	public void addButtons(GuiManual gui, int x, int y, int page, List<GuiButton> pageButtons)
 	{
 		boolean uni = manual.fontRenderer.getUnicodeFlag();
 		manual.fontRenderer.setUnicodeFlag(true);
 		ManualPage p = pages.get(page);
 		p.renderText = new ArrayList<>(p.text);
-		ManualUtils.addLinks(this, manual, guiManual, p.renderText, x,
+		ManualUtils.addLinks(this, manual, gui, p.renderText, x,
 				y+p.special.getPixelsTaken(), pageButtons, linkData);
 		manual.fontRenderer.setUnicodeFlag(uni);
+		pages.get(gui.page).special.onOpened(gui, x, y, pageButtons);
 	}
 
 	public String getSubtext()
