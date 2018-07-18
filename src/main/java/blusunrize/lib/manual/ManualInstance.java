@@ -10,6 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonObject;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +28,7 @@ public abstract class ManualInstance
 {
 	public FontRenderer fontRenderer;
 	public String texture;
-	private Map<ResourceLocation, Function<String, SpecialManualElement>> specialElements = new HashMap<>();
+	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
 
 	public ManualInstance(FontRenderer fontRenderer, String texture, ResourceLocation name)
 	{
@@ -36,16 +37,16 @@ public abstract class ManualInstance
 		contentTree = new Tree<>(name);
 	}
 
-	public void registerSpecialElement(ResourceLocation resLoc, Function<String, SpecialManualElement> factory)
+	public void registerSpecialElement(ResourceLocation resLoc, Function<JsonObject, SpecialManualElement> factory)
 	{
 		if(specialElements.containsKey(resLoc))
 			throw new IllegalArgumentException("Tried adding manual element type "+resLoc+" twice!");
 		specialElements.put(resLoc, factory);
 	}
 
-	public Function<String, SpecialManualElement> getElementFactory(ResourceLocation loc)
+	public Function<JsonObject, SpecialManualElement> getElementFactory(ResourceLocation loc)
 	{
-		Function<String, SpecialManualElement> ret = specialElements.get(loc);
+		Function<JsonObject, SpecialManualElement> ret = specialElements.get(loc);
 		if(ret==null)
 			throw new IllegalArgumentException("No element type found for "+loc);
 		return ret;

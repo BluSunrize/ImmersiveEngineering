@@ -10,10 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -65,8 +62,11 @@ import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.lib.manual.*;
+import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -124,12 +124,14 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(Side.CLIENT)
@@ -706,18 +708,34 @@ public class ClientProxy extends CommonProxy
 		//Register special elements
 		ManualInstance ieMan = ManualHelper.getManual();
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting_multi"), s -> {
-			String[] parts = s.split(";");
-			Object[] stacksAndRecipes = new Object[parts.length];
-			for(int i = 0; i < parts.length; i++)
-				stacksAndRecipes[i] = ManualUtils.getRecipeObjFromString(ieMan, parts[i]);
-			return new SpecialManualElements.CraftingMulti(ieMan, stacksAndRecipes);
+			JsonArray data = JsonUtils.getJsonArray(s, "recipes");
+			Object[] stacksAndRecipes = new Object[data.size()];
+			for (int i = 0;i<data.size();i++) {
+				stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(ieMan, data.get(i).getAsJsonObject());
+			}
+			return new ManualElementCraftingMulti(ieMan, stacksAndRecipes);
 		});
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "image"),
-				s -> new SpecialManualElements.Image(ieMan, s.split(";")));
+				s -> {
+					JsonArray data = JsonUtils.getJsonArray(s, "images");
+					ManualImage[] images = new ManualImage[data.size()];
+					for (int i = 0;i<data.size();i++) {
+						JsonObject img = data.get(i).getAsJsonObject();
+						ResourceLocation loc = ManualUtils.getLocationForManual(
+								JsonUtils.getString(img, "location"), ieMan);
+						int uMin = JsonUtils.getInt(img, "uMin");
+						int vMin = JsonUtils.getInt(img, "vMin");
+						int uSize = JsonUtils.getInt(img, "uSize");
+						int vSize = JsonUtils.getInt(img, "vSize");
+						images[i] = new ManualImage(loc, uMin, uSize, vMin, vSize);
+					}
+					return new ManualElementImage(ieMan, images);
+				});
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting"),
-				s -> new SpecialManualElements.Crafting(ieMan, ManualUtils.getRecipeObjFromString(ieMan, s)));
+				s -> new ManualElementCrafting(ieMan, ManualUtils.getRecipeObjFromJson(ieMan, s)));
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
-				s -> new ManualPageMultiblock(ieMan, MultiblockHandler.getByUniqueName(s)));
+				s -> new ManualPageMultiblock(ieMan,
+						MultiblockHandler.getByUniqueName(JsonUtils.getString(s, "name"))));
 
 		ManualEntry.ManualEntryBuilder wiring = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		wiring.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));

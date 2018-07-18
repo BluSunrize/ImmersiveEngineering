@@ -11,6 +11,8 @@ package blusunrize.lib.manual;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -22,6 +24,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.BufferUtils;
@@ -31,6 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
 public class ManualUtils
@@ -173,7 +177,8 @@ public class ManualUtils
 						}
 				}
 			}
-			drawJustifiedLine(next, fontRenderer, x, y, colour, 120);
+			//drawJustifiedLine(next, fontRenderer, x, y, colour, 120);
+			fontRenderer.drawString(next, x, y, colour, false);
 			line++;
 		}
 	}
@@ -379,27 +384,20 @@ public class ManualUtils
 		throw new UnsupportedOperationException();
 	}
 
-	public static void parseSpecials(String specials, TextSplitter splitter, ManualInstance instance)
+	public static void parseSpecials(JsonObject data, TextSplitter splitter, ManualInstance instance)
 	{
-		specials = specials.replaceAll("\\\\\n\\s*", "");
-		Scanner sc = new Scanner(specials);
-		while(sc.hasNextLine())
+		for(Entry<String, JsonElement> elementData : data.entrySet())
 		{
-			String line = sc.nextLine();
-			String[] parts = line.split(";", 3);
-			int anchor, offset;
-			{
-				int plus = parts[0].indexOf('+');
-				anchor = Integer.parseInt(parts[0].substring(0, plus));
-				offset = Integer.parseInt(parts[0].substring(plus+1));
-			}
-			ResourceLocation resLoc = getLocationForManual(parts[1], instance);
-			Function<String, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
-			splitter.addSpecialPage(anchor, offset, createElement.apply(parts[2]));
+			JsonObject elementJson = (JsonObject) elementData.getValue();
+			String type = JsonUtils.getString(elementJson, "type");
+			int offset = JsonUtils.getInt(elementJson, "offset", 0);
+			ResourceLocation resLoc = getLocationForManual(type, instance);
+			Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
+			splitter.addSpecialPage(elementData.getKey(), offset, createElement.apply(elementJson));
 		}
 	}
 
-	private static ResourceLocation getLocationForManual(String s, ManualInstance instance)
+	public static ResourceLocation getLocationForManual(String s, ManualInstance instance)
 	{
 		if(s.indexOf(':') >= 0)
 			return new ResourceLocation(s);
@@ -407,18 +405,9 @@ public class ManualUtils
 			return new ResourceLocation(instance.getDefaultResourceDomain(), s);
 	}
 
-	public static Object getRecipeObjFromString(ManualInstance m, String part)
+	public static Object getRecipeObjFromJson(ManualInstance m, JsonObject json)
 	{
-		String[] split = part.split(",");
-		switch(split.length)
-		{
-			case 1:
-				return getLocationForManual(split[0], m);
-			case 2:
-				ResourceLocation loc = new ResourceLocation(split[0]);
-				int meta = Integer.parseInt(split[1]);
-				return new ItemStack(Objects.requireNonNull(Item.REGISTRY.getObject(loc), loc.toString()), 1, meta);
-		}
-		throw new IllegalArgumentException("Can't create a recipe from "+part);
+		//TODO full support
+		return ManualUtils.getLocationForManual(JsonUtils.getString(json, "recipe"), m);
 	}
 }

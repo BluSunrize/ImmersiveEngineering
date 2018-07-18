@@ -11,6 +11,9 @@ package blusunrize.lib.manual;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import gnu.trove.map.TIntObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -18,6 +21,7 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -25,11 +29,13 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+@SuppressWarnings("WeakerAccess")
 public class ManualEntry
 {
 	private final ManualInstance manual;
@@ -195,7 +201,7 @@ public class ManualEntry
 		TextSplitter splitter;
 		Function<TextSplitter, String[]> getContent = null;
 		private ResourceLocation location;
-		private List<Triple<Integer, Integer, SpecialManualElement>> hardcodedSpecials = new ArrayList<>();
+		private List<Triple<String, Integer, SpecialManualElement>> hardcodedSpecials = new ArrayList<>();
 
 		public ManualEntryBuilder(ManualInstance manual)
 		{
@@ -209,7 +215,7 @@ public class ManualEntry
 			this.splitter = splitter;
 		}
 
-		public void addSpecialElement(int anchor, int offset, SpecialManualElement element)
+		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
 		{
 			splitter.addSpecialPage(anchor, offset, element);
 		}
@@ -218,40 +224,47 @@ public class ManualEntry
 		{
 			String[] content = {title, subText, mainText};
 			getContent = (splitter) -> {
-				for(Triple<Integer, Integer, SpecialManualElement> special : hardcodedSpecials)
+				for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
 					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
 				return content;
 			};
 		}
 
+		private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
 		public void readFromFile(ResourceLocation name)
 		{
 			location = name;
 			getContent = (splitter) -> {
-				ResourceLocation realLoc = new ResourceLocation(name.getResourceDomain(),
+				ResourceLocation langLoc = new ResourceLocation(name.getResourceDomain(),
 						"manual/"+Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
 								+"/"+name.getResourcePath()+".txt");
-				IResource res = getResourceNullable(realLoc);
-				if(res==null)
-					res = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
+				ResourceLocation dataLoc = new ResourceLocation(name.getResourceDomain(),
+						"manual/"+name.getResourcePath()+".json");
+				IResource resLang = getResourceNullable(langLoc);
+				IResource resData;
+				try
+				{
+					resData = Minecraft.getMinecraft().getResourceManager().getResource(dataLoc);
+				} catch(IOException e)
+				{
+					throw new RuntimeException(e);//50d9ee7d986cd28e7ea0b2493e0d902b1d676e75
+				}
+				if(resLang==null)
+					resLang = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
 							"manual/en_us/"+name.getResourcePath()+".txt"));
-				if(res==null)
+				if(resLang==null)
 					return new String[]{"ERROR", "This is not a good thing", "Could not find the file for "+name};
 				try
 				{
-					byte[] bytes = IOUtils.toByteArray(res.getInputStream());
-					String content = new String(bytes);
-					int specialLength = content.indexOf("\n\n");
-					if(specialLength >= 0)
-					{
-						for(Triple<Integer, Integer, SpecialManualElement> special : hardcodedSpecials)
-							splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
-						String specials = content.substring(0, specialLength);
-						ManualUtils.parseSpecials(specials, splitter, manual);
-						content = content.substring(specialLength+2);
-					}
-					else
-						IELogger.info("No empty line found, assuming no special elements in file");
+					JsonObject json = JsonUtils.gsonDeserialize(GSON, new InputStreamReader(resData.getInputStream()),
+							JsonObject.class, true);
+					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
+					String content = new String(bytesLang);
+					for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
+						splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+					assert json!=null;
+					ManualUtils.parseSpecials(json, splitter, manual);
 					int titleEnd = content.indexOf('\n');
 					String title = content.substring(0, titleEnd);
 					content = content.substring(titleEnd+1);

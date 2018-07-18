@@ -1,10 +1,10 @@
 package blusunrize.lib.manual;
 
 
-import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
@@ -13,17 +13,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+@SuppressWarnings("WeakerAccess")
 public class TextSplitter
 {
+	private static final String START = "start";
+
 	private final Function<String, Integer> width;
 	private final int lineWidth;
 	private final int pixelsPerLine;
-	private final TIntObjectMap<Map<Integer, SpecialManualElement>> specialByAnchor = new TIntObjectHashMap<>();
+	private final Map<String, Map<Integer, SpecialManualElement>> specialByAnchor = new HashMap<>();
 	private final TIntObjectMap<SpecialManualElement> specialByPage = new TIntObjectHashMap<>();
 	private final List<List<String>> entry = new ArrayList<>();
 	private final Function<String, String> tokenTransform;
 	private final int pixelsPerPage;
-	private TIntIntMap pageByAnchor = new TIntIntHashMap();
+	private TObjectIntMap<String> pageByAnchor = new TObjectIntHashMap<>();
 
 	public TextSplitter(Function<String, Integer> w, int lineWidthPixel, int pageHeightPixel,
 						int pixelsPerLine, Function<String, String> tokenTransform)
@@ -55,9 +58,9 @@ public class TextSplitter
 		specialByAnchor.clear();
 	}
 
-	public void addSpecialPage(int ref, int offset, SpecialManualElement element)
+	public void addSpecialPage(String ref, int offset, SpecialManualElement element)
 	{
-		if(offset < 0||(ref!=-1&&ref < 0))
+		if(offset < 0||ref==null||ref.isEmpty())
 		{
 			throw new IllegalArgumentException();
 		}
@@ -77,7 +80,7 @@ public class TextSplitter
 		String[] wordsAndSpaces = splitWhitespace(in);
 		int pos = 0;
 		List<String> overflow = new ArrayList<>();
-		updateSpecials(-1, 0);
+		updateSpecials(START, 0);
 		entry:
 		while(pos < wordsAndSpaces.length)
 		{
@@ -107,7 +110,7 @@ public class TextSplitter
 						}
 						else if(token.startsWith("<&")&&token.endsWith(">"))
 						{
-							int id = Integer.parseInt(token.substring(2, token.length()-1));
+							String id = token.substring(2, token.length()-1);
 							int pageForId = entry.size();
 							Map<Integer, SpecialManualElement> specialForId = specialByAnchor.get(id);
 							if(specialForId!=null&&specialForId.containsKey(0))
@@ -180,7 +183,7 @@ public class TextSplitter
 		return MathHelper.floor(pixels/(double)pixelsPerLine);
 	}
 
-	private boolean updateSpecials(int ref, int page)
+	private boolean updateSpecials(String ref, int page)
 	{
 		if(specialByAnchor.containsKey(ref))
 		{
@@ -196,7 +199,7 @@ public class TextSplitter
 			}
 			specialByPage.putAll(specialByPageTmp);
 		}
-		else if(ref!=-1)
+		else if(!ref.equals(START))
 		{//Default reference for page 0
 			System.out.println("WARNING: Reference "+ref+" was found, but no special pages were registered for it");
 		}

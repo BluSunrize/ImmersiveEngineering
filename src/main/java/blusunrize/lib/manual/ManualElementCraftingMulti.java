@@ -6,34 +6,37 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api;
+package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualUtils;
-import blusunrize.lib.manual.PositionedItemStack;
-import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.*;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
-public class ManualPageBlueprint extends SpecialManualElements
+public class ManualElementCraftingMulti extends SpecialManualElements
 {
-	private ItemStack[] stacks;
-	private ArrayList<PositionedItemStack[]> recipes = new ArrayList();
-	private int recipePage;
-	private int yOff;
+	Object[] stacks;
+	ArrayList<PositionedItemStack[]> recipes = new ArrayList<>();
+	int recipePage;
+	int yOff;
 
-	public ManualPageBlueprint(ManualInstance manual, ItemStack... stacks)
+	// Passing an Object[] for Object... is hard, and Object... and Object[] collide
+	public static ManualElementCraftingMulti create(ManualInstance manual, Object... stacks)
+	{
+		return new ManualElementCraftingMulti(manual, stacks);
+	}
+
+	public ManualElementCraftingMulti(ManualInstance manual, Object[] stacks)
 	{
 		super(manual);
 		this.stacks = stacks;
@@ -44,36 +47,82 @@ public class ManualPageBlueprint extends SpecialManualElements
 	public void recalculateCraftingRecipes()
 	{
 		this.recipes.clear();
-		List<String> cmCategories = BlueprintCraftingRecipe.blueprintCategories;
-		ArrayListMultimap<String, BlueprintCraftingRecipe> cmRecipes = BlueprintCraftingRecipe.recipeList;
+		Set<Integer> searchCrafting = new HashSet<>();
 
-		for(String category : cmCategories)
-			for(BlueprintCraftingRecipe recipe : cmRecipes.get(category))
-				for(int iStack = 0; iStack < stacks.length; iStack++)
-				{
-					ItemStack output = stacks[iStack];
-					if(!recipe.output.isEmpty()&&ManualUtils.stackMatchesObject(recipe.output, output)&&recipe.inputs!=null&&recipe.inputs.length > 0)
-					{
-						int h = (int)Math.ceil(recipe.inputs.length/2f);
-						PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];
-						for(int i = 0; i < recipe.inputs.length; i++)
-							pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getSizedStackList(), 32+i%2*18, i/2*18);
-						int middle = (int)(h/2f*18)-8;
-						pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output, 86, middle);
-						pIngredients[pIngredients.length-1] = new PositionedItemStack(BlueprintCraftingRecipe.getTypedBlueprint(category), 8, middle);
-
-						if(iStack < this.recipes.size())
-							this.recipes.add(iStack, pIngredients);
-						else
-							this.recipes.add(pIngredients);
-						if(h*18 > yOff)
-							yOff = h*18;
-					}
-				}
 		if(providedItems!=null)
 			this.providedItems.clear();
-		for(ItemStack stack : stacks)
-			this.addProvidedItem(stack);
+		for(int iStack = 0; iStack < stacks.length; iStack++)
+			if(stacks[iStack] instanceof PositionedItemStack[])
+			{
+				for(PositionedItemStack[] pisA : (PositionedItemStack[][])stacks)
+				{
+					for(PositionedItemStack pis : pisA)
+						if(pis!=null&&pis.y+18 > yOff)
+							yOff = pis.y+18;
+					this.recipes.add(pisA);
+				}
+			}
+			else if(stacks[iStack] instanceof ResourceLocation)
+			{
+				IRecipe recipe = CraftingManager.getRecipe((ResourceLocation)stacks[iStack]);
+				if(recipe!=null)
+					handleRecipe(recipe, iStack);
+			}
+			else
+			{
+				searchCrafting.add(iStack);
+				if(stacks[iStack] instanceof ItemStack)
+					this.addProvidedItem((ItemStack)stacks[iStack]);
+			}
+		if(!searchCrafting.isEmpty())
+		{
+			Iterator<IRecipe> itRecipes = CraftingManager.REGISTRY.iterator();
+			while(itRecipes.hasNext())
+			{
+				IRecipe recipe = itRecipes.next();
+				for(int iStack : searchCrafting)
+					if(!recipe.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(recipe.getRecipeOutput(), stacks[iStack]))
+						handleRecipe(recipe, iStack);
+			}
+		}
+	}
+
+	private void handleRecipe(IRecipe recipe, int iStack)
+	{
+		NonNullList<Ingredient> ingredientsPre = recipe.getIngredients();
+		int w;
+		int h;
+		if(recipe instanceof ShapelessRecipes||recipe instanceof ShapelessOreRecipe)
+		{
+			w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
+			h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
+		}
+		else if(recipe instanceof ShapedOreRecipe)
+		{
+			w = ((ShapedOreRecipe)recipe).getWidth();
+			h = ((ShapedOreRecipe)recipe).getHeight();
+		}
+		else if(recipe instanceof ShapedRecipes)
+		{
+			w = ((ShapedRecipes)recipe).getWidth();
+			h = ((ShapedRecipes)recipe).getHeight();
+		}
+		else
+			return;
+
+		PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
+		int xBase = (120-(w+2)*18)/2;
+		for(int hh = 0; hh < h; hh++)
+			for(int ww = 0; ww < w; ww++)
+				if(hh*w+ww < ingredientsPre.size())
+					pIngredients[hh*w+ww] = new PositionedItemStack(ingredientsPre.get(hh*w+ww), xBase+ww*18, hh*18);
+		pIngredients[pIngredients.length-1] = new PositionedItemStack(recipe.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
+		if(iStack < this.recipes.size())
+			this.recipes.add(iStack, pIngredients);
+		else
+			this.recipes.add(pIngredients);
+		if(h*18 > yOff)
+			yOff = h*18;
 	}
 
 	@Override
@@ -88,7 +137,7 @@ public class ManualPageBlueprint extends SpecialManualElements
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
+	public void render(GuiManual gui, int x, int y, int mx, int my)
 	{
 		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableGUIStandardItemLighting();
@@ -123,7 +172,7 @@ public class ManualPageBlueprint extends SpecialManualElements
 						ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+pstack.y);
 						ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer, pstack.getStack(), x+pstack.x, y+pstack.y, null);
 
-						if(mouseX >= x+pstack.x&&mouseX < x+pstack.x+16&&mouseY >= y+pstack.y&&mouseY < y+pstack.y+16)
+						if(mx >= x+pstack.x&&mx < x+pstack.x+16&&my >= y+pstack.y&&my < y+pstack.y+16)
 							highlighted = pstack.getStack();
 					}
 		}
@@ -133,11 +182,8 @@ public class ManualPageBlueprint extends SpecialManualElements
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 
-		manual.fontRenderer.setUnicodeFlag(uni);
-
-		manual.fontRenderer.setUnicodeFlag(false);
 		if(!highlighted.isEmpty())
-			gui.renderToolTip(highlighted, mouseX, mouseY);
+			gui.renderToolTip(highlighted, mx, my);
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 	}
@@ -194,6 +240,6 @@ public class ManualPageBlueprint extends SpecialManualElements
 	@Override
 	public int getPixelsTaken()
 	{
-		return 0;//TODO
+		return yOff;
 	}
 }
