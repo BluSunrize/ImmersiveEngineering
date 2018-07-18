@@ -31,11 +31,11 @@ public class MetalPress
 	public static void addRecipe(IItemStack output, IIngredient input, IItemStack mold, int energy, @Optional int inputSize)
 	{
 		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput == null)
+		if(oInput==null)
 			return;
 		ItemStack sOut = CraftTweakerHelper.toStack(output);
 		ItemStack sMold = CraftTweakerHelper.toStack(mold);
-		if(!sOut.isEmpty() && !sMold.isEmpty())
+		if(!sOut.isEmpty()&&!sMold.isEmpty())
 		{
 			MetalPressRecipe r = new MetalPressRecipe(sOut, oInput, ApiUtils.createComparableItemStack(sMold, true), energy);
 			if(inputSize > 0)
@@ -63,7 +63,7 @@ public class MetalPress
 		@Override
 		public String describe()
 		{
-			return "Adding Metal Press Recipe for " + recipe.output.getDisplayName();
+			return "Adding Metal Press Recipe for "+recipe.output.getDisplayName();
 		}
 	}
 
@@ -94,7 +94,7 @@ public class MetalPress
 		@Override
 		public String describe()
 		{
-			return "Removing Metal Press Recipes for " + output.getDisplayName();
+			return "Removing Metal Press Recipes for "+output.getDisplayName();
 		}
 	}
 
@@ -126,7 +126,7 @@ public class MetalPress
 		@Override
 		public String describe()
 		{
-			return "Removing Metal Press Recipes for Mold: " + mold.stack.getDisplayName();
+			return "Removing Metal Press Recipes for Mold: "+mold.stack.getDisplayName();
 		}
 	}
 }

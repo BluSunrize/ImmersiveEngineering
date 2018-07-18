@@ -57,11 +57,11 @@ public class TextSplitter
 
 	public void addSpecialPage(int ref, int offset, SpecialManualElement element)
 	{
-		if (offset < 0 || (ref != -1 && ref < 0))
+		if(offset < 0||(ref!=-1&&ref < 0))
 		{
 			throw new IllegalArgumentException();
 		}
-		if (!specialByAnchor.containsKey(ref))
+		if(!specialByAnchor.containsKey(ref))
 		{
 			specialByAnchor.put(ref, new HashMap<>());
 		}
@@ -79,53 +79,53 @@ public class TextSplitter
 		List<String> overflow = new ArrayList<>();
 		updateSpecials(-1, 0);
 		entry:
-		while (pos < wordsAndSpaces.length)
+		while(pos < wordsAndSpaces.length)
 		{
 			List<String> page = new ArrayList<>(overflow);
 			overflow.clear();
 			page:
-			while (page.size() < getLinesOnPage(entry.size()) && pos < wordsAndSpaces.length)
+			while(page.size() < getLinesOnPage(entry.size())&&pos < wordsAndSpaces.length)
 			{
 				String line = "";
 				int currWidth = 0;
 				line:
-				while (pos < wordsAndSpaces.length && currWidth < lineWidth)
+				while(pos < wordsAndSpaces.length&&currWidth < lineWidth)
 				{
 					String token = tokenTransform.apply(wordsAndSpaces[pos]);
 					int textWidth = getWidth(token);
-					if (currWidth + textWidth < lineWidth || line.length() == 0)
+					if(currWidth+textWidth < lineWidth||line.length()==0)
 					{
 						pos++;
-						if (token.equals("<np>"))
+						if(token.equals("<np>"))
 						{
 							page.add(line);
 							break page;
 						}
-						else if (token.equals("\n"))
+						else if(token.equals("\n"))
 						{
 							break line;
 						}
-						else if (token.startsWith("<&") && token.endsWith(">"))
+						else if(token.startsWith("<&")&&token.endsWith(">"))
 						{
-							int id = Integer.parseInt(token.substring(2, token.length() - 1));
+							int id = Integer.parseInt(token.substring(2, token.length()-1));
 							int pageForId = entry.size();
 							Map<Integer, SpecialManualElement> specialForId = specialByAnchor.get(id);
-							if (specialForId != null && specialForId.containsKey(0))
+							if(specialForId!=null&&specialForId.containsKey(0))
 							{
-								if (page.size() > getLinesOnPage(pageForId))
+								if(page.size() > getLinesOnPage(pageForId))
 								{
 									pageForId++;
 								}
 							}
 							//New page if there is already a special element on this page
-							if (updateSpecials(id, pageForId))
+							if(updateSpecials(id, pageForId))
 							{
 								page.add(line);
 								pos--;
 								break page;
 							}
 						}
-						else if (!Character.isWhitespace(token.charAt(0)) || line.length() != 0)
+						else if(!Character.isWhitespace(token.charAt(0))||line.length()!=0)
 						{//Don't add whitespace at the start of a line
 							line += token;
 							currWidth += textWidth;
@@ -137,16 +137,16 @@ public class TextSplitter
 					}
 				}
 				line = line.trim();
-				if (!line.isEmpty())
+				if(!line.isEmpty())
 					page.add(line);
 			}
-			if (!page.stream().allMatch(String::isEmpty))
+			if(!page.stream().allMatch(String::isEmpty))
 			{
 				int linesMax = getLinesOnPage(entry.size());
-				if (page.size() > linesMax)
+				if(page.size() > linesMax)
 				{
 					overflow.addAll(page.subList(linesMax, page.size()));
-					page = page.subList(0, linesMax - 1);
+					page = page.subList(0, linesMax-1);
 				}
 				entry.add(page);
 			}
@@ -155,16 +155,16 @@ public class TextSplitter
 
 	private int getWidth(String text)
 	{
-		switch (text)
+		switch(text)
 		{
 			case "<br>":
 			case "<np>":
 				return 0;
 			default:
-				if (text.startsWith("<link;"))
+				if(text.startsWith("<link;"))
 				{
-					text = text.substring(text.indexOf(';') + 1);
-					text = text.substring(text.indexOf(';') + 1, text.lastIndexOf(';'));
+					text = text.substring(text.indexOf(';')+1);
+					text = text.substring(text.indexOf(';')+1, text.lastIndexOf(';'));
 				}
 				return width.apply(text);
 		}
@@ -173,22 +173,22 @@ public class TextSplitter
 	private int getLinesOnPage(int id)
 	{
 		int pixels = pixelsPerPage;
-		if (specialByPage.containsKey(id))
+		if(specialByPage.containsKey(id))
 		{
-			pixels = pixelsPerPage - specialByPage.get(id).getPixelsTaken();
+			pixels = pixelsPerPage-specialByPage.get(id).getPixelsTaken();
 		}
-		return MathHelper.floor(pixels / (double) pixelsPerLine);
+		return MathHelper.floor(pixels/(double)pixelsPerLine);
 	}
 
 	private boolean updateSpecials(int ref, int page)
 	{
-		if (specialByAnchor.containsKey(ref))
+		if(specialByAnchor.containsKey(ref))
 		{
 			TIntObjectMap<SpecialManualElement> specialByPageTmp = new TIntObjectHashMap<>();
-			for (Map.Entry<Integer, SpecialManualElement> entry : specialByAnchor.get(ref).entrySet())
+			for(Map.Entry<Integer, SpecialManualElement> entry : specialByAnchor.get(ref).entrySet())
 			{
-				int specialPage = page + entry.getKey();
-				if (specialByPage.containsKey(specialPage))
+				int specialPage = page+entry.getKey();
+				if(specialByPage.containsKey(specialPage))
 				{
 					return true;
 				}
@@ -196,9 +196,9 @@ public class TextSplitter
 			}
 			specialByPage.putAll(specialByPageTmp);
 		}
-		else if (ref != -1)
+		else if(ref!=-1)
 		{//Default reference for page 0
-			System.out.println("WARNING: Reference " + ref + " was found, but no special pages were registered for it");
+			System.out.println("WARNING: Reference "+ref+" was found, but no special pages were registered for it");
 		}
 		pageByAnchor.put(ref, page);
 		return false;
@@ -207,22 +207,22 @@ public class TextSplitter
 	public static String[] splitWhitespace(String in)
 	{
 		List<String> parts = new ArrayList<>();
-		for (int i = 0; i < in.length(); )
+		for(int i = 0; i < in.length(); )
 		{
 			StringBuilder here = new StringBuilder();
 			char first = in.charAt(i);
 			here.append(first);
 			i++;
-			for (; i < in.length(); )
+			for(; i < in.length(); )
 			{
 				char hereC = in.charAt(i);
 				byte action = shouldSplit(first, hereC);
-				if ((action & 1) != 0)
+				if((action&1)!=0)
 				{
 					here.append(in.charAt(i));
 					i++;
 				}
-				if ((action & 2) != 0 || (action & 1) == 0)
+				if((action&2)!=0||(action&1)==0)
 				{
 					break;
 				}
@@ -239,18 +239,18 @@ public class TextSplitter
 	private static byte shouldSplit(char start, char here)
 	{
 		byte ret = 0b01;
-		if (Character.isWhitespace(start) ^ Character.isWhitespace(here))
+		if(Character.isWhitespace(start)^Character.isWhitespace(here))
 		{
 			ret = 0b10;
 		}
-		if (here == '<')
+		if(here=='<')
 		{
 			ret = 0b10;
 		}
-		if (start == '<')
+		if(start=='<')
 		{
 			ret = 0b01;
-			if (here == '>')
+			if(here=='>')
 			{
 				ret |= 0b10;
 			}

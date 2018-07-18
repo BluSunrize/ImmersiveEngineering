@@ -41,32 +41,41 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
 	private static final int[] size = {3, 3, 3};
-	public TileEntityBlastFurnace() {
+
+	public TileEntityBlastFurnace()
+	{
 		super(size);
 	}
-	public TileEntityBlastFurnace(int[] size) {
+
+	public TileEntityBlastFurnace(int[] size)
+	{
 		super(size);
 	}
+
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
-		return inf==IActiveState.class?IEProperties.BOOLEANS[0]:null;
+		return inf==IActiveState.class?IEProperties.BOOLEANS[0]: null;
 	}
+
 	@Override
 	public boolean getIsActive()
 	{
 		return this.active;
 	}
+
 	@Override
 	public boolean canOpenGui()
 	{
 		return formed;
 	}
+
 	@Override
 	public int getGuiID()
 	{
 		return Lib.GUIID_BlastFurnace;
 	}
+
 	@Override
 	public TileEntity getGuiMaster()
 	{
@@ -82,7 +91,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		return new ItemStack(IEContent.blockStoneDecoration,1,1);
+		return new ItemStack(IEContent.blockStoneDecoration, 1, 1);
 	}
 
 	@Override
@@ -99,23 +108,23 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 		{
 			boolean a = active;
 
-			if(burnTime>0)
+			if(burnTime > 0)
 			{
 				int processSpeed = 1;
-				if(process>0)
+				if(process > 0)
 					processSpeed = getProcessSpeed();
-				burnTime-=processSpeed;
-				if(process>0)
+				burnTime -= processSpeed;
+				if(process > 0)
 				{
 					if(inventory.get(0).isEmpty())
 					{
-						process=0;
-						processMax=0;
+						process = 0;
+						processMax = 0;
 					}
 					else
 					{
 						BlastFurnaceRecipe recipe = getRecipe();
-						if (recipe!=null&&recipe.time!=processMax)
+						if(recipe!=null&&recipe.time!=processMax)
 						{
 							processMax = 0;
 							process = 0;
@@ -125,26 +134,26 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 						{
 							process -= processSpeed;
 							processSpeed = 0;//Process speed is "used up"
-							if (!active)
+							if(!active)
 								active = true;
 						}
 					}
 					markContainingBlockForUpdate(null);
 				}
 
-				if(process<=0)
+				if(process <= 0)
 				{
-					if(processMax>0)
+					if(processMax > 0)
 					{
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							Utils.modifyInvStackSize(inventory, 0, -(recipe.input instanceof ItemStack ? ((ItemStack) recipe.input).getCount() : 1));
+							Utils.modifyInvStackSize(inventory, 0, -(recipe.input instanceof ItemStack?((ItemStack)recipe.input).getCount(): 1));
 							if(!inventory.get(2).isEmpty())
 								inventory.get(2).grow(recipe.output.copy().getCount());
 							else
 								inventory.set(2, recipe.output.copy());
-							if (!recipe.slag.isEmpty())
+							if(!recipe.slag.isEmpty())
 							{
 								if(!inventory.get(3).isEmpty())
 									inventory.get(3).grow(recipe.slag.copy().getCount());
@@ -152,25 +161,25 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 									inventory.set(3, recipe.slag.copy());
 							}
 						}
-						processMax=0;
+						processMax = 0;
 						burnTime -= process;
 					}
 					BlastFurnaceRecipe recipe = getRecipe();
 					if(recipe!=null)
 					{
-						this.process=recipe.time - processSpeed;
-						this.processMax= recipe.time;
-						this.active=true;
+						this.process = recipe.time-processSpeed;
+						this.processMax = recipe.time;
+						this.active = true;
 					}
 				}
 			}
 			else
 			{
 				if(active)
-					active=false;
+					active = false;
 			}
 
-			if(burnTime<=10 && getRecipe()!=null)
+			if(burnTime <= 10&&getRecipe()!=null)
 			{
 				if(BlastFurnaceRecipe.isValidBlastFuel(inventory.get(1)))
 				{
@@ -186,27 +195,28 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 
 				this.markDirty();
 				TileEntity tileEntity;
-				for(int yy=-1;yy<=1;yy++)
-					for(int xx=-1;xx<=1;xx++)
-						for(int zz=-1;zz<=1;zz++)
+				for(int yy = -1; yy <= 1; yy++)
+					for(int xx = -1; xx <= 1; xx++)
+						for(int zz = -1; zz <= 1; zz++)
 						{
 							tileEntity = Utils.getExistingTileEntity(world, getPos().add(xx, yy, zz));
-							if (tileEntity != null)
+							if(tileEntity!=null)
 								tileEntity.markDirty();
 							markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							world.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1, active ? 1 : 0);
+							world.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1, active?1: 0);
 						}
 			}
 		}
 	}
+
 	public BlastFurnaceRecipe getRecipe()
 	{
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
-		if((inventory.get(0).getCount() >= ((recipe.input instanceof ItemStack) ? ((ItemStack) recipe.input).getCount() : 1)
-				&& inventory.get(2).isEmpty() || (OreDictionary.itemMatches(inventory.get(2),recipe.output,true) && inventory.get(2).getCount() + recipe.output.getCount() <=getSlotLimit(2)) )
-				&& (inventory.get(3).isEmpty() || (OreDictionary.itemMatches(inventory.get(3),recipe.slag,true) && inventory.get(3).getCount() + recipe.slag.getCount() <=getSlotLimit(3)) ))
+		if((inventory.get(0).getCount() >= ((recipe.input instanceof ItemStack)?((ItemStack)recipe.input).getCount(): 1)
+				&&inventory.get(2).isEmpty()||(OreDictionary.itemMatches(inventory.get(2), recipe.output, true)&&inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
+				&&(inventory.get(3).isEmpty()||(OreDictionary.itemMatches(inventory.get(3), recipe.slag, true)&&inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
 			return recipe;
 		return null;
 	}
@@ -220,15 +230,16 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	public int[] getCurrentProcessesStep()
 	{
 		TileEntityBlastFurnace master = master();
-		if(master!=this && master!=null)
+		if(master!=this&&master!=null)
 			return master.getCurrentProcessesStep();
 		return new int[]{processMax-process};
 	}
+
 	@Override
 	public int[] getCurrentProcessesMax()
 	{
 		TileEntityBlastFurnace master = master();
-		if(master!=this && master!=null)
+		if(master!=this&&master!=null)
 			return master.getCurrentProcessesMax();
 		return new int[]{processMax};
 	}
@@ -286,30 +297,36 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	{
 		return this.inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot == 1 && BlastFurnaceRecipe.isValidBlastFuel(stack);
+		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1&&BlastFurnaceRecipe.isValidBlastFuel(stack);
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 64;
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
 	}
+
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		return new FluidTank[0];
 	}
+
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
 	{
 		return false;
 	}
+
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{

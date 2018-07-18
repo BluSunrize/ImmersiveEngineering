@@ -28,19 +28,19 @@ public class Crusher
 	public static void addRecipe(IItemStack output, IIngredient input, int energy, @Optional IItemStack secondaryOutput, @Optional double secondaryChance)
 	{
 		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput == null)
+		if(oInput==null)
 		{
-			CraftTweakerAPI.getLogger().logError("Did not add crusher recipe for " + output.getDisplayName() + ", input was null");
+			CraftTweakerAPI.getLogger().logError("Did not add crusher recipe for "+output.getDisplayName()+", input was null");
 			return;
 		}
 
 		CrusherRecipe r = new CrusherRecipe(CraftTweakerHelper.toStack(output), oInput, energy);
-		if(r.input == null)
+		if(r.input==null)
 		{
-			CraftTweakerAPI.getLogger().logError("Did not add crusher recipe for " + output.getDisplayName() + ", converted input was null");
+			CraftTweakerAPI.getLogger().logError("Did not add crusher recipe for "+output.getDisplayName()+", converted input was null");
 			return;
 		}
-		if(secondaryOutput != null)
+		if(secondaryOutput!=null)
 			r.addToSecondaryOutput(CraftTweakerHelper.toStack(secondaryOutput), (float)secondaryChance);
 		CraftTweakerAPI.apply(new Add(r));
 	}
@@ -64,7 +64,7 @@ public class Crusher
 		@Override
 		public String describe()
 		{
-			return "Adding Crusher Recipe for " + recipe.output.getDisplayName();
+			return "Adding Crusher Recipe for "+recipe.output.getDisplayName();
 		}
 	}
 
@@ -95,7 +95,7 @@ public class Crusher
 		@Override
 		public String describe()
 		{
-			return "Removing Crusher Recipe for output: " + output.getDisplayName();
+			return "Removing Crusher Recipe for output: "+output.getDisplayName();
 		}
 	}
 
@@ -126,7 +126,7 @@ public class Crusher
 		@Override
 		public String describe()
 		{
-			return "Removing Crusher Recipe for input: " + input.getDisplayName();
+			return "Removing Crusher Recipe for input: "+input.getDisplayName();
 		}
 	}
 }

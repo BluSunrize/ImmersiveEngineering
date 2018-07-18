@@ -23,9 +23,10 @@ import java.util.List;
 public class CommandHandler extends CommandTreeBase
 {
 	private final String name;
+
 	public CommandHandler(boolean client)
 	{
-		if (client)
+		if(client)
 		{
 			addSubcommand(new CommandResetRenders());
 			addSubcommand(new CommandManual());
@@ -50,7 +51,7 @@ public class CommandHandler extends CommandTreeBase
 	@Override
 	public int getRequiredPermissionLevel()
 	{
-		return name.equals("cie")?0:4;
+		return name.equals("cie")?0: 4;
 	}
 
 	@Nonnull
@@ -62,15 +63,17 @@ public class CommandHandler extends CommandTreeBase
 
 	private static final String start = "<";
 	private static final String end = ">";
+
 	@Nonnull
 	@Override
 	public List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args, @Nullable BlockPos pos)
 	{
 		List<String> ret = super.getTabCompletions(server, sender, args, pos);
-		for (int i = 0;i<ret.size();i++)
+		for(int i = 0; i < ret.size(); i++)
 		{
-			String curr =ret.get(i);
-			if (curr.indexOf(' ')>=0) {
+			String curr = ret.get(i);
+			if(curr.indexOf(' ') >= 0)
+			{
 				ret.set(i, start+curr+end);
 			}
 		}
@@ -82,28 +85,28 @@ public class CommandHandler extends CommandTreeBase
 	{
 		List<String> argsCleaned = new ArrayList<>(args.length);
 		String currentPart = null;
-		for (String s:args)
+		for(String s : args)
 		{
-			if (s.startsWith(start))
+			if(s.startsWith(start))
 			{
-				if (currentPart!=null)
+				if(currentPart!=null)
 					throw new CommandException("String opens twice (once \""+currentPart+"\", once \""+s+"\")");
 				currentPart = s;
 			}
-			else if (currentPart!=null)
+			else if(currentPart!=null)
 				currentPart += " "+s;
 			else
 				argsCleaned.add(s);
-			if (s.endsWith(end))
+			if(s.endsWith(end))
 			{
-				if (currentPart==null)
+				if(currentPart==null)
 					throw new CommandException("String closed without being openeed first! (\""+s+"\")");
-				if (currentPart.length()>=2)
+				if(currentPart.length() >= 2)
 					argsCleaned.add(currentPart.substring(1, currentPart.length()-1));
 				currentPart = null;
 			}
 		}
-		if (currentPart!=null)
+		if(currentPart!=null)
 			throw new CommandException("Unclosed string ("+currentPart+")");
 		super.execute(server, sender, argsCleaned.toArray(new String[0]));
 	}

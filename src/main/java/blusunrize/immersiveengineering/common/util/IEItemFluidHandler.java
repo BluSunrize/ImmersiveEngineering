@@ -43,17 +43,17 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 	@Override
 	public IFluidTankProperties[] getTankProperties()
 	{
-		return new FluidTankProperties[] { new FluidTankProperties(getFluid(), getCapacity()) };
+		return new FluidTankProperties[]{new FluidTankProperties(getFluid(), getCapacity())};
 	}
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(container.getCount() != 1 || resource == null || resource.amount <= 0 || !canFillFluidType(resource))
+		if(container.getCount()!=1||resource==null||resource.amount <= 0||!canFillFluidType(resource))
 			return 0;
 
 		FluidStack contained = getFluid();
-		if(contained == null)
+		if(contained==null)
 		{
 			int fillAmount = Math.min(getCapacity(), resource.amount);
 			if(doFill)
@@ -69,7 +69,7 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 			if(contained.isFluidEqual(resource))
 			{
 				int fillAmount = Math.min(getCapacity()-contained.amount, resource.amount);
-				if (doFill && fillAmount > 0)
+				if(doFill&&fillAmount > 0)
 				{
 					contained.amount += fillAmount;
 					setFluid(contained);

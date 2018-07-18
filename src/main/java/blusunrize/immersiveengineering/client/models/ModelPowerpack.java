@@ -44,7 +44,7 @@ public class ModelPowerpack extends ModelIEArmorBase
 
 	public ModelPowerpack(float modelSize, float p_i1149_2_, int textureWidthIn, int textureHeightIn)
 	{
-		super(modelSize,p_i1149_2_,textureWidthIn,textureHeightIn);
+		super(modelSize, p_i1149_2_, textureWidthIn, textureHeightIn);
 		modelParts = new ModelRenderer[8];
 		colouredParts = new ModelRenderer[4];
 
@@ -66,7 +66,7 @@ public class ModelPowerpack extends ModelIEArmorBase
 		this.modelParts[3] = new ModelRenderer(this, 0, 0);
 		this.modelParts[3].addBox(-1f, -4.0f, -1f, 2, 8, 2, 0);
 		this.modelParts[3].setRotationPoint(5f, 5, 3f);
-		this.modelParts[3].rotateAngleZ=3.14159f;
+		this.modelParts[3].rotateAngleZ = 3.14159f;
 		this.bipedBody.addChild(modelParts[3]);
 
 
@@ -120,28 +120,28 @@ public class ModelPowerpack extends ModelIEArmorBase
 		connector = new ModelRenderer(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, 0);
 		connector.setRotationPoint(4.5f, 0f, 0f);
-		connector.rotateAngleY=3.14159f;
+		connector.rotateAngleY = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
 		connector = new ModelRenderer(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, -.375f);
 		connector.setRotationPoint(6f, 0f, 0);
-		connector.rotateAngleY=3.14159f;
+		connector.rotateAngleY = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
 		connector = new ModelRenderer(this, 29, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 1, 3, 3, 0);
 		connector.setRotationPoint(6.25f, 0f, 0);
-		connector.rotateAngleY=3.14159f;
+		connector.rotateAngleY = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
 		connector = new ModelRenderer(this, 12, 8);
 		connector.addBox(-.5f, -1f, -1f, 2, 2, 2, 0);
 		connector.setRotationPoint(7.5f, 0f, 0f);
-		connector.rotateAngleY=3.14159f;
+		connector.rotateAngleY = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
-		for(int i=0; i<3; i++)
+		for(int i = 0; i < 3; i++)
 		{
 			float pos = 3.125f-i*2.25f;
 			ModelRenderer tube = new ModelRenderer(this, 56, 19);
@@ -172,7 +172,7 @@ public class ModelPowerpack extends ModelIEArmorBase
 		}
 
 		this.bipedHead.isHidden = true;
-		this.bipedHeadwear.isHidden=true;
+		this.bipedHeadwear.isHidden = true;
 		this.bipedLeftArm.isHidden = true;
 		this.bipedRightArm.isHidden = true;
 		this.bipedLeftLeg.isHidden = true;
@@ -186,7 +186,7 @@ public class ModelPowerpack extends ModelIEArmorBase
 		{
 			ItemStack chest = ((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 			float storage = 0;
-			if(!chest.isEmpty() && chest.getItem() instanceof ItemArmor)
+			if(!chest.isEmpty()&&chest.getItem() instanceof ItemArmor)
 			{
 				if(!(chest.getItem() instanceof ItemPowerpack))
 					chest = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
@@ -194,7 +194,7 @@ public class ModelPowerpack extends ModelIEArmorBase
 				if(chest.getItem() instanceof ItemPowerpack)
 				{
 					float max = EnergyHelper.getMaxEnergyStored(chest);
-					storage = max<=0?0:EnergyHelper.getEnergyStored(chest)/max;
+					storage = max <= 0?0: EnergyHelper.getEnergyStored(chest)/max;
 				}
 				this.modelParts[7].rotateAngleZ = 0.5235987f-(1.047197f*storage);
 			}
@@ -209,48 +209,48 @@ public class ModelPowerpack extends ModelIEArmorBase
 			for(EnumHand hand : EnumHand.values())
 			{
 				ItemStack stack = ((EntityLivingBase)entity).getHeldItem(hand);
-				if(!stack.isEmpty() && EnergyHelper.isFluxItem(stack))
+				if(!stack.isEmpty()&&EnergyHelper.isFluxItem(stack))
 				{
 					boolean right = (hand==EnumHand.MAIN_HAND)==(((EntityLivingBase)entity).getPrimaryHand()==EnumHandSide.RIGHT);
-					float angleX = (right?bipedRightArm:bipedLeftArm).rotateAngleX;
-					float angleZ = (right?bipedRightArm:bipedLeftArm).rotateAngleZ;
+					float angleX = (right?bipedRightArm: bipedLeftArm).rotateAngleX;
+					float angleZ = (right?bipedRightArm: bipedLeftArm).rotateAngleZ;
 					String cacheKey = keyFormat.format(angleX)+"_"+keyFormat.format(angleZ);
 					Vec3d[] vex = new Vec3d[0];
 					try
 					{
-						vex = (right?catenaryCacheRight:catenaryCacheLeft).get(cacheKey, ()->
+						vex = (right?catenaryCacheRight: catenaryCacheLeft).get(cacheKey, () ->
 						{
 							double armLength = .75f;
 							double x = .3125+(right?1: -1)*armLength*Math.sin(angleZ);
 							double y = armLength*Math.cos(angleX);
 							double z = armLength*Math.sin(angleX);
 
-							return ApiUtils.getConnectionCatenary(new Vec3d(.484375,-.75,.25), new Vec3d(x,-y,z), 1.5);
+							return ApiUtils.getConnectionCatenary(new Vec3d(.484375, -.75, .25), new Vec3d(x, -y, z), 1.5);
 						});
 					} catch(Exception e)
 					{
 					}
 
 					float vStep = 1f/vex.length;
-					int i=0;
+					int i = 0;
 					Tessellator tes = ClientUtils.tes();
 					BufferBuilder worldrenderer = tes.getBuffer();
 
 //					float[] colour = {.7f,.42f,.25f,1};
-					float[] colour = {.93f,.63f,.27f,1};
+					float[] colour = {.93f, .63f, .27f, 1};
 					worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
 					for(Vec3d v : vex)
 					{
-						worldrenderer.pos((right?-v.x:v.x)-.015625, -v.y, v.z).tex(vStep*i,0).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
-						worldrenderer.pos((right?-v.x:v.x)+.015625, -v.y, v.z).tex(vStep*i++,1).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x: v.x)-.015625, -v.y, v.z).tex(vStep*i, 0).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x: v.x)+.015625, -v.y, v.z).tex(vStep*i++, 1).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
 					}
 					tes.draw();
 					worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
-					i=0;
+					i = 0;
 					for(Vec3d v : vex)
 					{
-						worldrenderer.pos((right?-v.x:v.x), -v.y-.015625, v.z).tex(vStep*i,0).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
-						worldrenderer.pos((right?-v.x:v.x), -v.y+.015625, v.z).tex(vStep*i++,1).color(colour[0],colour[1],colour[2],colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x: v.x), -v.y-.015625, v.z).tex(vStep*i, 0).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
+						worldrenderer.pos((right?-v.x: v.x), -v.y+.015625, v.z).tex(vStep*i++, 1).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
 					}
 					tes.draw();
 				}
@@ -259,18 +259,19 @@ public class ModelPowerpack extends ModelIEArmorBase
 	}
 
 	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");
-	public static final Cache<String,  Vec3d[]> catenaryCacheLeft = CacheBuilder.newBuilder()
+	public static final Cache<String, Vec3d[]> catenaryCacheLeft = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
-	public static final Cache<String,  Vec3d[]> catenaryCacheRight = CacheBuilder.newBuilder()
+	public static final Cache<String, Vec3d[]> catenaryCacheRight = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
 
 	static ModelPowerpack modelInstance;
+
 	public static ModelPowerpack getModel()
 	{
 		if(modelInstance==null)
-			modelInstance = new ModelPowerpack(.0625f,0,64,32);
+			modelInstance = new ModelPowerpack(.0625f, 0, 64, 32);
 		return modelInstance;
 	}
 }

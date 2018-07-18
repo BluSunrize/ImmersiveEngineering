@@ -38,7 +38,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	@Override
 	public void update()
 	{
-		if(!world.isRemote && world.getTotalWorldTime() % 8 != ((getPos().getX() ^ getPos().getZ()) & 8))
+		if(!world.isRemote&&world.getTotalWorldTime()%8!=((getPos().getX()^getPos().getZ())&8))
 		{
 			int out = getComparatorSignal();
 			if(out!=lastOutput)
@@ -74,25 +74,26 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 			state = world.getBlockState(pos);
 			if(state.hasComparatorInputOverride())
 				return state.getComparatorInputOverride(world, pos);
-			else if(state.getMaterial() == Material.AIR)
+			else if(state.getMaterial()==Material.AIR)
 			{
 				EntityItemFrame entityitemframe = this.findItemFrame(world, facing, pos);
-				if(entityitemframe != null)
+				if(entityitemframe!=null)
 					return entityitemframe.getAnalogOutput();
 			}
 		}
 		return 0;
 	}
+
 	private EntityItemFrame findItemFrame(World world, final EnumFacing facing, BlockPos pos)
 	{
-		List<EntityItemFrame> list = world.getEntitiesWithinAABB(EntityItemFrame.class, new AxisAlignedBB(pos), entity -> entity!=null && entity.getHorizontalFacing()==facing);
-		return list.size()==1 ? list.get(0) : null;
+		List<EntityItemFrame> list = world.getEntitiesWithinAABB(EntityItemFrame.class, new AxisAlignedBB(pos), entity -> entity!=null&&entity.getHorizontalFacing()==facing);
+		return list.size()==1?list.get(0): null;
 	}
 
 	@Override
 	public void updateInput(byte[] signals)
 	{
-		signals[redstoneChannelSending] = (byte) Math.max(lastOutput, signals[redstoneChannelSending]);
+		signals[redstoneChannelSending] = (byte)Math.max(lastOutput, signals[redstoneChannelSending]);
 		rsDirty = false;
 	}
 
@@ -100,9 +101,9 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
-			redstoneChannel = (redstoneChannel + 1) % 16;
+			redstoneChannel = (redstoneChannel+1)%16;
 		else
-			redstoneChannelSending = (redstoneChannelSending + 1) % 16;
+			redstoneChannelSending = (redstoneChannelSending+1)%16;
 		markDirty();
 		wireNetwork.updateValues();
 		onChange();
@@ -129,8 +130,8 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	public Vec3d getConnectionOffset(Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
-		double conRadius = con.cableType.getRenderDiameter() / 2;
-		return new Vec3d(.5 + side.getFrontOffsetX()*(.375-conRadius), .5 + side.getFrontOffsetY()*(.375-conRadius), .5 + side.getFrontOffsetZ()*(.375-conRadius));
+		double conRadius = con.cableType.getRenderDiameter()/2;
+		return new Vec3d(.5+side.getFrontOffsetX()*(.375-conRadius), .5+side.getFrontOffsetY()*(.375-conRadius), .5+side.getFrontOffsetZ()*(.375-conRadius));
 	}
 
 	@Override
@@ -157,11 +158,11 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
-		if(MinecraftForgeClient.getRenderLayer()== BlockRenderLayer.SOLID)
+		if(MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.SOLID)
 			return false;
 		if("glass".equals(group))
-			return MinecraftForgeClient.getRenderLayer()== BlockRenderLayer.TRANSLUCENT;
-		return MinecraftForgeClient.getRenderLayer()== BlockRenderLayer.CUTOUT;
+			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
+		return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.CUTOUT;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -187,8 +188,8 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO + "redstoneChannel.rec", I18n.format("item.fireworksCharge." + EnumDyeColor.byMetadata(redstoneChannel).getUnlocalizedName())),
-				I18n.format(Lib.DESC_INFO + "redstoneChannel.send", I18n.format("item.fireworksCharge." + EnumDyeColor.byMetadata(redstoneChannelSending).getUnlocalizedName()))
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannel).getUnlocalizedName())),
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannelSending).getUnlocalizedName()))
 		};
 	}
 

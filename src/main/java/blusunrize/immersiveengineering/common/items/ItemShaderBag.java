@@ -44,6 +44,7 @@ public class ItemShaderBag extends ItemIEBase
 	{
 		return true;
 	}
+
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
@@ -55,7 +56,7 @@ public class ItemShaderBag extends ItemIEBase
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
-			for(int i=ShaderRegistry.sortedRarityMap.size()-1; i>=0; i--)
+			for(int i = ShaderRegistry.sortedRarityMap.size()-1; i >= 0; i--)
 			{
 				EnumRarity rarity = ShaderRegistry.sortedRarityMap.get(i);
 				ItemStack s = new ItemStack(this);
@@ -67,7 +68,7 @@ public class ItemShaderBag extends ItemIEBase
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		return getRarity(stack).rarityName +" "+ super.getItemStackDisplayName(stack);
+		return getRarity(stack).rarityName+" "+super.getItemStackDisplayName(stack);
 	}
 
 	@Override
@@ -88,14 +89,14 @@ public class ItemShaderBag extends ItemIEBase
 			if(ShaderRegistry.totalWeight.containsKey(stack.getRarity()))
 			{
 				String shader = ShaderRegistry.getRandomShader(player.getName(), player.getRNG(), stack.getRarity(), true);
-				if(shader==null || shader.isEmpty())
+				if(shader==null||shader.isEmpty())
 					return new ActionResult(EnumActionResult.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(IEContent.itemShader);
 				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
-				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity())<=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC) && ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity())>=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
+				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity()) <= ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC)&&ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity()) >= ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
 					Utils.unlockIEAdvancement(player, "main/secret_luckofthedraw");
 				stack.shrink(1);
-				if(stack.getCount()<=0)
+				if(stack.getCount() <= 0)
 					return new ActionResult(EnumActionResult.SUCCESS, shaderItem);
 				if(!player.inventory.addItemStackToInventory(shaderItem))
 					player.dropItem(shaderItem, false, true);

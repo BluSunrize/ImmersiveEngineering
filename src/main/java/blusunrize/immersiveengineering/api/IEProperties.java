@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -31,8 +30,8 @@ public class IEProperties
 	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("_0multiblockslave");//Name starts with '_0' to ensure priority when overriding models
 	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("_1dynamicrender");//Name starts with '_1' to ensure priority over anything but the multiblockslave property
 	public static final PropertySet CONNECTIONS = new PropertySet("conns");
-	
-//	public static final PropertyEnum[] SIDECONFIG = {
+
+	//	public static final PropertyEnum[] SIDECONFIG = {
 //			PropertyEnum.create("sideconfig_down", IEEnums.SideConfig.class),
 //			PropertyEnum.create("sideconfig_up", IEEnums.SideConfig.class),
 //			PropertyEnum.create("sideconfig_north", IEEnums.SideConfig.class),
@@ -63,31 +62,36 @@ public class IEProperties
 			PropertyBoolInverted.create("boolean1"),
 			PropertyBoolInverted.create("boolean2")
 	};
-	public static final PropertyInteger INT_4 = PropertyInteger.create("int_4", 0,3);
-	public static final PropertyInteger INT_16 = PropertyInteger.create("int_16", 0,15);
+	public static final PropertyInteger INT_4 = PropertyInteger.create("int_4", 0, 3);
+	public static final PropertyInteger INT_16 = PropertyInteger.create("int_16", 0, 15);
 
 	public static class ProperySideConfig implements IUnlistedProperty<SideConfig>
 	{
 		final String name;
+
 		public ProperySideConfig(String name)
 		{
 			this.name = name;
 		}
+
 		@Override
 		public String getName()
 		{
 			return name;
 		}
+
 		@Override
 		public boolean isValid(SideConfig value)
 		{
 			return true;
 		}
+
 		@Override
 		public Class<SideConfig> getType()
 		{
 			return IEEnums.SideConfig.class;
 		}
+
 		@Override
 		public String valueToString(SideConfig value)
 		{
@@ -102,43 +106,52 @@ public class IEProperties
 		{
 			return "obj_texture_remap";
 		}
+
 		@Override
 		public boolean isValid(HashMap value)
 		{
 			return true;
 		}
+
 		@Override
-		public Class<HashMap> getType() {
+		public Class<HashMap> getType()
+		{
 			return HashMap.class;
 		}
+
 		@Override
 		public String valueToString(HashMap value)
 		{
 			return value.toString();
 		}
 	};
-	
+
 	public static class PropertyBoolInverted extends PropertyHelper<Boolean>
 	{
 		private static final ImmutableList<Boolean> ALLOWED_VALUES = ImmutableList.of(false, true);
+
 		protected PropertyBoolInverted(String name)
 		{
 			super(name, Boolean.class);
 		}
+
 		@Override
 		public Collection<Boolean> getAllowedValues()
 		{
 			return ALLOWED_VALUES;
 		}
+
 		@Override
 		public Optional<Boolean> parseValue(String value)
 		{
 			return Optional.of(Boolean.parseBoolean(value));
 		}
+
 		public static PropertyBoolInverted create(String name)
 		{
 			return new PropertyBoolInverted(name);
 		}
+
 		@Override
 		public String getName(Boolean value)
 		{
@@ -165,7 +178,7 @@ public class IEProperties
 		@Override
 		public boolean isValid(Set value)
 		{
-			return value != null;
+			return value!=null;
 		}
 
 		@Override

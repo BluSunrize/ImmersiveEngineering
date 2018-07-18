@@ -33,12 +33,14 @@ import java.util.function.Predicate;
 public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 {
 	public static final int SLOT_COUNT = 23;
+
 	public ItemToolbox()
 	{
 		super("toolbox", 1);
 		ToolboxHandler.addToolType(new Predicate<ItemStack>()
 		{
 			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_tools);
+
 			@Override
 			public boolean test(ItemStack stack)
 			{
@@ -48,6 +50,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 		ToolboxHandler.addFoodType(new Predicate<ItemStack>()
 		{
 			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_foods);
+
 			@Override
 			public boolean test(ItemStack stack)
 			{
@@ -57,6 +60,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 		ToolboxHandler.addWiringType(new BiPredicate<ItemStack, World>()
 		{
 			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_wiring);
+
 			@Override
 			public boolean test(ItemStack stack, World world)
 			{
@@ -76,7 +80,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
+			CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND?EntityEquipmentSlot.MAINHAND: EntityEquipmentSlot.OFFHAND);
 		return new ActionResult(EnumActionResult.SUCCESS, stack);
 	}
 
@@ -91,15 +95,15 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 			if(!block.isReplaceable(world, pos))
 				pos = pos.offset(side);
 
-			if(stack.getCount() != 0 && player.canPlayerEdit(pos, side, stack) && world.mayPlace(IEContent.blockMetalDecoration2, pos, false, side, null))
+			if(stack.getCount()!=0&&player.canPlayerEdit(pos, side, stack)&&world.mayPlace(IEContent.blockMetalDecoration2, pos, false, side, null))
 			{
 				IBlockState toolbox = IEContent.blockMetalDecoration2.getStateFromMeta(BlockTypes_MetalDecoration2.TOOLBOX.getMeta());
 				if(world.setBlockState(pos, toolbox, 3))
 				{
-					IEContent.blockMetalDecoration2.onIEBlockPlacedBy(world, pos, toolbox, side, hitX,hitY,hitZ, player, stack);
+					IEContent.blockMetalDecoration2.onIEBlockPlacedBy(world, pos, toolbox, side, hitX, hitY, hitZ, player, stack);
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);
 				}
 				return EnumActionResult.SUCCESS;

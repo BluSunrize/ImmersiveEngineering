@@ -19,7 +19,7 @@ public class EnergyMeterDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, EnumFacing facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityEnergyMeter && ((TileEntityEnergyMeter) te).lower)
+		if(te instanceof TileEntityEnergyMeter&&((TileEntityEnergyMeter)te).lower)
 		{
 			return new EnergyMeterEnvironment(w, bp);
 		}

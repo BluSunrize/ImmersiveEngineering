@@ -22,10 +22,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class MessageBirthdayParty implements IMessage
 {
 	int entityId;
+
 	public MessageBirthdayParty(EntityLivingBase entity)
 	{
 		this.entityId = entity.getEntityId();
 	}
+
 	public MessageBirthdayParty()
 	{
 	}

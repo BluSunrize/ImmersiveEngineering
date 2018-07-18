@@ -34,7 +34,10 @@ import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.canMix;
@@ -48,14 +51,17 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		return false;
 	}
+
 	protected boolean canTakeMV()
 	{
 		return false;
 	}
+
 	protected boolean canTakeHV()
 	{
 		return false;
 	}
+
 	protected boolean isRelay()
 	{
 		return false;
@@ -65,6 +71,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void onEnergyPassthrough(int amount)
 	{
 	}
+
 	@Override
 	public boolean allowEnergyToPass(Connection con)
 	{
@@ -76,21 +83,25 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isEnergyOutput()
 	{
 		return false;
 	}
+
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
 		return 0;
 	}
+
 	@Override
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
 		return getPos();
-	}	
+	}
+
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
@@ -98,53 +109,57 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		boolean foundAccepting = (HV_CATEGORY.equals(category)&&canTakeHV())
 				||(MV_CATEGORY.equals(category)&&canTakeMV())
 				||(LV_CATEGORY.equals(category)&&canTakeLV());
-		if (!foundAccepting)
+		if(!foundAccepting)
 			return false;
-		return limitType==null||(this.isRelay() && canMix(limitType, cableType));
+		return limitType==null||(this.isRelay()&&canMix(limitType, cableType));
 	}
+
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		this.limitType = cableType;
 	}
+
 	@Override
 	public WireType getCableLimiter(TargetingInfo target)
 	{
 		return this.limitType;
 	}
+
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection != null ? connection.cableType : null;
+		WireType type = connection!=null?connection.cableType: null;
 		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(this));
-		if(outputs == null || outputs.size() == 0)
+		if(outputs==null||outputs.size()==0)
 		{
-			if(type == limitType || type == null)
+			if(type==limitType||type==null)
 				this.limitType = null;
 		}
 		this.markDirty();
-		if(world != null)
+		if(world!=null)
 		{
 			IBlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state,state, 3);
+			world.notifyBlockUpdate(pos, state, state, 3);
 		}
 	}
 
 	private List<Pair<Float, Consumer<Float>>> sources = new ArrayList<>();
 	private long lastSourceUpdate = 0;
+
 	@Override
 	public void addAvailableEnergy(float amount, Consumer<Float> consume)
 	{
 		long currentTime = world.getTotalWorldTime();
-		if (lastSourceUpdate!=currentTime)
+		if(lastSourceUpdate!=currentTime)
 		{
 			sources.clear();
 			Pair<Float, Consumer<Float>> own = getOwnEnergy();
-			if (own!=null)
+			if(own!=null)
 				sources.add(own);
 			lastSourceUpdate = currentTime;
 		}
-		if (amount>0&&consume!=null)
+		if(amount > 0&&consume!=null)
 			sources.add(new ImmutablePair<>(amount, consume));
 	}
 
@@ -159,12 +174,12 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		float baseDmg = getBaseDamage(c);
 		float max = getMaxDamage(c);
-		if (baseDmg==0||world.getTotalWorldTime()-lastSourceUpdate>1)
+		if(baseDmg==0||world.getTotalWorldTime()-lastSourceUpdate > 1)
 			return 0;
 		float damage = 0;
-		for (int i = 0;i<sources.size()&&damage<max;i++)
+		for(int i = 0; i < sources.size()&&damage < max; i++)
 		{
-			int consume = (int) Math.min(sources.get(i).getLeft(), (max-damage)/baseDmg);
+			int consume = (int)Math.min(sources.get(i).getLeft(), (max-damage)/baseDmg);
 			damage += baseDmg*consume;
 		}
 		return damage;
@@ -175,12 +190,12 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		float baseDmg = getBaseDamage(c);
 		float damage = 0;
-		for (int i = 0;i<sources.size()&&damage<amount;i++)
+		for(int i = 0; i < sources.size()&&damage < amount; i++)
 		{
 			float consume = Math.min(sources.get(i).getLeft(), (amount-damage)/baseDmg);
 			sources.get(i).getRight().accept(consume);
 			damage += baseDmg*consume;
-			if (consume==sources.get(i).getLeft())
+			if(consume==sources.get(i).getLeft())
 			{
 				sources.remove(i);
 				i--;
@@ -190,11 +205,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 
 	protected float getBaseDamage(Connection c)
 	{
-		if (c.cableType==COPPER)
+		if(c.cableType==COPPER)
 			return 8*2F/c.cableType.getTransferRate();
-		else if (c.cableType==ELECTRUM)
+		else if(c.cableType==ELECTRUM)
 			return 8*5F/c.cableType.getTransferRate();
-		else if (c.cableType==STEEL)
+		else if(c.cableType==STEEL)
 			return 8*15F/c.cableType.getTransferRate();
 		return 0;
 	}
@@ -212,6 +227,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		writeConnsToNBT(nbttagcompound);
 		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
 	}
+
 	@Override
 	public void onDataPacket(@Nonnull NetworkManager net, @Nonnull SPacketUpdateTileEntity pkt)
 	{
@@ -226,17 +242,18 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(id==-1||id==255)
 		{
 			IBlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state,state, 3);
+			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
-		} else if(id == 254)
+		}
+		else if(id==254)
 		{
 			IBlockState state = world.getBlockState(pos);
 			if(state instanceof IExtendedBlockState)
 			{
 				state = state.getActualState(world, getPos());
 				state = state.getBlock().getExtendedState(state, world, getPos());
-				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState) state);
-				ImmersiveEngineering.proxy.removeStateFromConnectionModelCache((IExtendedBlockState) state);
+				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState)state);
+				ImmersiveEngineering.proxy.removeStateFromConnectionModelCache((IExtendedBlockState)state);
 			}
 			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
@@ -247,45 +264,49 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public void readCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
-		try{
+		try
+		{
 			if(nbt.hasKey("limitType"))
 				limitType = ApiUtils.getWireTypeFromNBT(nbt, "limitType");
 			else
 				limitType = null;
-			if (nbt.hasKey("connectionList"))
+			if(nbt.hasKey("connectionList"))
 				loadConnsFromNBT(nbt);
-		}catch(Exception e)
+		} catch(Exception e)
 		{
 			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error reading NBT. You should probably report this.");
 			IELogger.logger.catching(Level.ERROR, e);
 		}
 	}
+
 	@Override
 	public void writeCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
-		try{
+		try
+		{
 			if(limitType!=null)
 				nbt.setString("limitType", limitType.getUniqueName());
-			if (descPacket)
+			if(descPacket)
 				writeConnsToNBT(nbt);
 
 			//			if(this.world!=null)
 			//			{
 			//				nbt.setIntArray("prevPos", new int[]{this.world.provider.dimensionId,xCoord,yCoord,zCoord});
 			//			}
-		}catch(Exception e)
+		} catch(Exception e)
 		{
 			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You should probably report this.");
 			IELogger.logger.catching(Level.ERROR, e);
 		}
 	}
+
 	private void loadConnsFromNBT(NBTTagCompound nbt)
 	{
-		if(world!=null && world.isRemote && !Minecraft.getMinecraft().isSingleplayer() && nbt!=null)
+		if(world!=null&&world.isRemote&&!Minecraft.getMinecraft().isSingleplayer()&&nbt!=null)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
 			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), world);
-			for(int i=0; i<connectionList.tagCount(); i++)
+			for(int i = 0; i < connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				Connection con = Connection.readFromNBT(conTag);
@@ -298,9 +319,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			}
 		}
 	}
+
 	private void writeConnsToNBT(NBTTagCompound nbt)
 	{
-		if(world!=null && !world.isRemote && nbt!=null)
+		if(world!=null&&!world.isRemote&&nbt!=null)
 		{
 			NBTTagList connectionList = new NBTTagList();
 			Set<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(this));
@@ -314,30 +336,30 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public Set<Connection> genConnBlockstate()
 	{
 		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-		if (conns == null)
+		if(conns==null)
 			return ImmutableSet.of();
 		Set<Connection> ret = new HashSet<Connection>()
 		{
 			@Override
 			public boolean equals(Object o)
 			{
-				if (o == this)
+				if(o==this)
 					return true;
-				if (!(o instanceof HashSet))
+				if(!(o instanceof HashSet))
 					return false;
-				HashSet<Connection> other = (HashSet<Connection>) o;
-				if (other.size() != this.size())
+				HashSet<Connection> other = (HashSet<Connection>)o;
+				if(other.size()!=this.size())
 					return false;
-				for (Connection c : this)
-					if (!other.contains(c))
+				for(Connection c : this)
+					if(!other.contains(c))
 						return false;
 				return true;
 			}
 		};
-		for (Connection c : conns)
+		for(Connection c : conns)
 		{
 			IImmersiveConnectable end = ApiUtils.toIIC(c.end, world, false);
-			if (end==null)
+			if(end==null)
 				continue;
 			// generate subvertices
 			c.getSubVertices(world);
@@ -346,23 +368,26 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 
 		return ret;
 	}
+
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
 		ImmersiveNetHandler.INSTANCE.addProxy(new IICProxy(this));
 	}
+
 	@Override
 	public void validate()
 	{
 		super.validate();
-		if (!world.isRemote)
-			synchronized (world.getMinecraftServer().futureTaskQueue)
+		if(!world.isRemote)
+			synchronized(world.getMinecraftServer().futureTaskQueue)
 			{
-					world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
-							()->ImmersiveNetHandler.INSTANCE.onTEValidated(this), null));
+				world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
+						() -> ImmersiveNetHandler.INSTANCE.onTEValidated(this), null));
 			}
 	}
+
 	@Override
 	public void invalidate()
 	{

@@ -13,7 +13,7 @@ import net.minecraft.util.NonNullList;
 
 /**
  * @author BluSunrize - 27.10.2015
- *
+ * <p>
  * An item that contains an internal inventory, like drill or revolver
  * Deprecated in favor of capabilities
  */
@@ -21,8 +21,8 @@ import net.minecraft.util.NonNullList;
 public interface IInternalStorageItem
 {
 	NonNullList<ItemStack> getContainedItems(ItemStack stack);
-	
+
 	void setContainedItems(ItemStack stack, NonNullList<ItemStack> stackList);
-	
+
 	int getInternalSlots(ItemStack stack);
 }

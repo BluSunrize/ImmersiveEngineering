@@ -31,7 +31,7 @@ public class TileEntityLadder extends TileEntityIEBase implements IDirectionalTi
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing",facing.ordinal());
+		nbt.setInteger("facing", facing.ordinal());
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class TileEntityLadder extends TileEntityIEBase implements IDirectionalTi
 			BlockMetalLadder ladder = (BlockMetalLadder)state.getBlock();
 			if(side.getAxis().isHorizontal()&&ladder.canAttachTo(world, pos.offset(side.getOpposite()), facing))
 				return side;
-			else if(ladder.getMetaFromState(state)>0)
+			else if(ladder.getMetaFromState(state) > 0)
 				return placer.getAdjustedHorizontalFacing().getOpposite();
 			else
 			{
@@ -61,26 +61,31 @@ public class TileEntityLadder extends TileEntityIEBase implements IDirectionalTi
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return -1;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{

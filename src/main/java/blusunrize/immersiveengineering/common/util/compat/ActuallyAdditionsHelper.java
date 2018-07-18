@@ -107,7 +107,7 @@ public class ActuallyAdditionsHelper extends IECompatModule
 			if(farmer.getEnergy() >= use)
 			{
 				IBlockState state = world.getBlockState(pos);
-				if(IEContent.blockCrop==state.getBlock() && state.getBlock().getMetaFromState(state)==4)//Fully Grown
+				if(IEContent.blockCrop==state.getBlock()&&state.getBlock().getMetaFromState(state)==4)//Fully Grown
 				{
 					BlockPos up = pos.up();
 					IBlockState stateUp = world.getBlockState(up);

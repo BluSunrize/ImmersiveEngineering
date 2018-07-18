@@ -48,7 +48,7 @@ public class Config
 
 	public static boolean seaonal_festive = false;
 
-	@net.minecraftforge.common.config.Config(modid=ImmersiveEngineering.MODID)
+	@net.minecraftforge.common.config.Config(modid = ImmersiveEngineering.MODID)
 	public static class IEConfig
 	{
 		//Wire Stuff
@@ -106,8 +106,8 @@ public class Config
 		public static boolean fancyItemHolding = true;
 
 
-		@Comment({"A list of all mods that IE has integrated compatability for","Setting any of these to false disables the respective compat"})
-		public static Map<String,Boolean> compat = Maps.newHashMap(Maps.toMap(IECompatModule.moduleClasses.keySet(), (s)->Boolean.TRUE));
+		@Comment({"A list of all mods that IE has integrated compatability for", "Setting any of these to false disables the respective compat"})
+		public static Map<String, Boolean> compat = Maps.newHashMap(Maps.toMap(IECompatModule.moduleClasses.keySet(), (s) -> Boolean.TRUE));
 
 		@Comment({"A config setting to enable debug features. These features may vary between releases, may cause crashes, and are unsupported. Do not enable unless asked to by a developer of IE."})
 		public static boolean enableDebug = false;
@@ -152,7 +152,7 @@ public class Config
 			@Comment({"Output modifier for the energy created by the Thermoelectric Generator"})
 			public static double thermoelectric_output = 1d;
 			@Comment({"The Flux that will be output by the lightning rod when it is struck"})
-			public static int lightning_output = 4 * 4000000;
+			public static int lightning_output = 4*4000000;
 			@Comment({"The Flux per tick that the Diesel Generator will output. The burn time of the fuel determines the total output"})
 			@Mapped(mapClass = Config.class, mapName = "manual_int")
 			public static int dieselGen_output = 4096;
@@ -395,7 +395,7 @@ public class Config
 			@Comment({"A whitelist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]"})
 			public static String[] powerpack_whitelist = new String[]{};
 			@Comment({"A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this"})
-			public static String[] powerpack_blacklist = new String[]{"embers:ashen_cloak_chest", "ic2:batpack","ic2:cf_pack","ic2:energy_pack","ic2:jetpack","ic2:jetpack_electric","ic2:lappack"};
+			public static String[] powerpack_blacklist = new String[]{"embers:ashen_cloak_chest", "ic2:batpack", "ic2:cf_pack", "ic2:energy_pack", "ic2:jetpack", "ic2:jetpack_electric", "ic2:lappack"};
 
 			@Comment({"A whitelist of tools allowed in the toolbox, formatting: [mod id]:[item name]"})
 			public static String[] toolbox_tools = new String[]{};
@@ -408,6 +408,7 @@ public class Config
 	}
 
 	static Configuration config;
+
 	public static void preInit(FMLPreInitializationEvent event)
 	{
 		onConfigUpdate();
@@ -448,7 +449,7 @@ public class Config
 		WireType.wireLossRatio = IEConfig.wireLossRatio;
 		WireType.wireTransferRate = IEConfig.wireTransferRate;
 		WireType.wireColouration =
-				(IEConfig.wireColouration.length!=IEConfig.wireColourationDefault.length)?IEConfig.wireColourationDefault:IEConfig.wireColouration;
+				(IEConfig.wireColouration.length!=IEConfig.wireColourationDefault.length)?IEConfig.wireColourationDefault: IEConfig.wireColouration;
 		WireType.wireLength = IEConfig.wireLength;
 	}
 
@@ -468,10 +469,11 @@ public class Config
 						{
 							Map map = (Map)mapField.get(null);
 							if(map!=null)
-								map.put(f.getName(),f.get(null));
+								map.put(f.getName(), f.get(null));
 						}
 					}
-				}catch(Exception e){
+				} catch(Exception e)
+				{
 					e.printStackTrace();
 				}
 			else if(f.getAnnotation(SubConfig.class)!=null)
@@ -484,17 +486,21 @@ public class Config
 	public @interface Mapped
 	{
 		Class mapClass();
+
 		String mapName();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
 	public @interface SubConfig
-	{}
+	{
+	}
 
 	@SubscribeEvent
-	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent ev) {
-		if (ev.getModID().equals(ImmersiveEngineering.MODID)) {
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent ev)
+	{
+		if(ev.getModID().equals(ImmersiveEngineering.MODID))
+		{
 			ConfigManager.sync(ImmersiveEngineering.MODID, net.minecraftforge.common.config.Config.Type.INSTANCE);
 			onConfigUpdate();
 		}

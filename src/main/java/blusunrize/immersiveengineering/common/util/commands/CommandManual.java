@@ -22,6 +22,7 @@ public class CommandManual extends CommandTreeBase
 	{
 		addSubcommand(new CommandReload());
 	}
+
 	@Nonnull
 	@Override
 	public String getName()

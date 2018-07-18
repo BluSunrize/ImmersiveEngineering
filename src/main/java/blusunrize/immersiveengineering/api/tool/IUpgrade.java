@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * @author BluSunrize - 29.05.2015
- *
+ * <p>
  * Upgrades for the drill (and possibly other items) are handled by this interface
  */
 public interface IUpgrade
@@ -25,13 +25,13 @@ public interface IUpgrade
 	 * Returns a set so an item can be used for multiple items
 	 */
 	Set<String> getUpgradeTypes(ItemStack upgrade);
-	
+
 	/**
 	 * @return whether the upgrade can be applied to the parsed target item
 	 * This should fired after comparing UpradeTypes, so you don't have to account for that
 	 */
 	boolean canApplyUpgrades(ItemStack target, ItemStack upgrade);
-	
+
 	/**
 	 * Applies the modifications to a HashMap. Do <b>NOT</b> apply upgrades to the target directly<br>
 	 * Valid modifications you can apply are Byte, byte[], Boolean, Integer, int[], Float, Double, String

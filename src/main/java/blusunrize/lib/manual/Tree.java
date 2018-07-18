@@ -117,11 +117,11 @@ public class Tree<NT, LT>
 
 		public Node<NT, LT> getOrCreateSubnode(NT data)
 		{
-			for (AbstractNode<NT, LT> child : children)
+			for(AbstractNode<NT, LT> child : children)
 			{
-				if (!child.isLeaf() && data.equals(child.getNodeData()))
+				if(!child.isLeaf()&&data.equals(child.getNodeData()))
 				{
-					return (Node<NT, LT>) child;
+					return (Node<NT, LT>)child;
 				}
 			}
 			return addNewSubnode(data);
@@ -135,11 +135,11 @@ public class Tree<NT, LT>
 
 		protected void stream(Stream.Builder<AbstractNode<NT, LT>> builder, boolean leafStream)
 		{
-			if (!leafStream)
+			if(!leafStream)
 			{
 				builder.accept(this);
 			}
-			for (AbstractNode<NT, LT> child : getChildren())
+			for(AbstractNode<NT, LT> child : getChildren())
 			{
 				child.stream(builder, leafStream);
 			}

@@ -23,19 +23,19 @@ public class ItemIEBase extends Item implements IColouredItem
 	public String itemName;
 	protected String[] subNames;
 	boolean[] isMetaHidden;
-	public boolean registerSubModels=true;
+	public boolean registerSubModels = true;
 	private int[] burnTime;
 
 	public ItemIEBase(String name, int stackSize, String... subNames)
 	{
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
-		this.setHasSubtypes(subNames!=null&&subNames.length>0);
+		this.setHasSubtypes(subNames!=null&&subNames.length > 0);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.setMaxStackSize(stackSize);
 		this.itemName = name;
-		this.subNames = subNames!=null&&subNames.length>0?subNames:null;
-		this.isMetaHidden = new boolean[this.subNames!=null?this.subNames.length:1];
-		this.burnTime = new int[this.subNames!=null?this.subNames.length:1];
+		this.subNames = subNames!=null&&subNames.length > 0?subNames: null;
+		this.isMetaHidden = new boolean[this.subNames!=null?this.subNames.length: 1];
+		this.burnTime = new int[this.subNames!=null?this.subNames.length: 1];
 //		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
@@ -44,6 +44,7 @@ public class ItemIEBase extends Item implements IColouredItem
 	{
 		return subNames;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
@@ -51,20 +52,21 @@ public class ItemIEBase extends Item implements IColouredItem
 		if(this.isInCreativeTab(tab))
 			if(getSubNames()!=null)
 			{
-				for(int i=0;i<getSubNames().length;i++)
+				for(int i = 0; i < getSubNames().length; i++)
 					if(!isMetaHidden(i))
-						list.add(new ItemStack(this,1,i));
+						list.add(new ItemStack(this, 1, i));
 			}
 			else
 				list.add(new ItemStack(this));
 
 	}
+
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
 		if(getSubNames()!=null)
 		{
-			String subName = stack.getMetadata()<getSubNames().length?getSubNames()[stack.getMetadata()]:"";
+			String subName = stack.getMetadata() < getSubNames().length?getSubNames()[stack.getMetadata()]: "";
 			return this.getUnlocalizedName()+"."+subName;
 		}
 		return this.getUnlocalizedName();
@@ -73,17 +75,19 @@ public class ItemIEBase extends Item implements IColouredItem
 	public ItemIEBase setMetaHidden(int... meta)
 	{
 		for(int i : meta)
-			if(i>=0 && i<this.isMetaHidden.length)
+			if(i >= 0&&i < this.isMetaHidden.length)
 				this.isMetaHidden[i] = true;
 		return this;
 	}
+
 	public ItemIEBase setMetaUnhidden(int... meta)
 	{
 		for(int i : meta)
-			if(i>=0 && i<this.isMetaHidden.length)
+			if(i >= 0&&i < this.isMetaHidden.length)
 				this.isMetaHidden[i] = false;
 		return this;
 	}
+
 	public boolean isMetaHidden(int meta)
 	{
 		return this.isMetaHidden[Math.max(0, Math.min(meta, this.isMetaHidden.length-1))];
@@ -97,10 +101,11 @@ public class ItemIEBase extends Item implements IColouredItem
 
 	public ItemIEBase setBurnTime(int meta, int burnTime)
 	{
-		if(meta>=0 && meta<this.burnTime.length)
+		if(meta >= 0&&meta < this.burnTime.length)
 			this.burnTime[meta] = burnTime;
 		return this;
 	}
+
 	@Override
 	public int getItemBurnTime(ItemStack itemStack)
 	{

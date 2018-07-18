@@ -24,11 +24,13 @@ import java.util.Map;
 
 public class MessageMineralListSync implements IMessage
 {
-	HashMap<MineralMix,Integer> map = new HashMap<MineralMix,Integer>();
-	public MessageMineralListSync(HashMap<MineralMix,Integer> map)
+	HashMap<MineralMix, Integer> map = new HashMap<MineralMix, Integer>();
+
+	public MessageMineralListSync(HashMap<MineralMix, Integer> map)
 	{
 		this.map = map;
 	}
+
 	public MessageMineralListSync()
 	{
 	}
@@ -37,13 +39,13 @@ public class MessageMineralListSync implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		int size = buf.readInt();
-		for(int i=0; i<size; i++)
+		for(int i = 0; i < size; i++)
 		{
 			NBTTagCompound tag = ByteBufUtils.readTag(buf);
 			MineralMix mix = MineralMix.readFromNBT(tag);
 			if(mix!=null)
 				map.put(mix, tag.getInteger("weight"));
-		}		
+		}
 
 	}
 
@@ -51,11 +53,11 @@ public class MessageMineralListSync implements IMessage
 	public void toBytes(ByteBuf buf)
 	{
 		buf.writeInt(map.size());
-		for(Map.Entry<MineralMix,Integer> e: map.entrySet())
+		for(Map.Entry<MineralMix, Integer> e : map.entrySet())
 		{
 			NBTTagCompound tag = e.getKey().writeToNBT();
 			tag.setInteger("weight", e.getValue());
-			ByteBufUtils.writeTag(buf,tag); 
+			ByteBufUtils.writeTag(buf, tag);
 		}
 	}
 
@@ -64,9 +66,10 @@ public class MessageMineralListSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageMineralListSync message, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(()->onMessageMain(message));
+			Minecraft.getMinecraft().addScheduledTask(() -> onMessageMain(message));
 			return null;
 		}
+
 		private void onMessageMain(MessageMineralListSync message)
 		{
 			ExcavatorHandler.mineralList.clear();

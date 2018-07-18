@@ -81,19 +81,19 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 		return Collections.emptyList();
 	}
 
-//	@Override
+	//	@Override
 	public Class<T> getRecipeClass()
 	{
 		return this.recipeClass;
 	}
 
-//	@Override
+	//	@Override
 	public String getRecipeCategoryUid()
 	{
 		return "ie."+uniqueName;
 	}
 
-//	@Override
+	//	@Override
 	public boolean isRecipeValid(T recipe)
 	{
 		return true;

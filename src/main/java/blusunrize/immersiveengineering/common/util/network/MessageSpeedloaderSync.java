@@ -26,11 +26,13 @@ public class MessageSpeedloaderSync implements IMessage
 {
 	int slot;
 	EnumHand hand;
+
 	public MessageSpeedloaderSync(int slot, EnumHand hand)
 	{
 		this.slot = slot;
 		this.hand = hand;
 	}
+
 	public MessageSpeedloaderSync()
 	{
 	}

@@ -24,13 +24,15 @@ import net.minecraft.item.ItemStack;
 public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe, CrusherRecipeWrapper>
 {
 	static ItemStack crusherStack;
+
 	public CrusherRecipeCategory(IGuiHelper helper)
 	{
-		super("crusher","tile.immersiveengineering.metal_multiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.CRUSHER.getMeta()));
-		crusherStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.CRUSHER.getMeta());
+		super("crusher", "tile.immersiveengineering.metal_multiblock.crusher.name", helper.createBlankDrawable(140, 50), CrusherRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.CRUSHER.getMeta()));
+		crusherStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.CRUSHER.getMeta());
 	}
 
 	int[][] outputSlots;
+
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, CrusherRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
@@ -40,11 +42,11 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe, Crush
 		outputSlots = new int[recipeWrapper.recipeOutputs.length][];
 		guiItemStacks.set(0, recipeWrapper.getItemIn());
 		guiItemStacks.set(1, recipeWrapper.recipeOutputs[0]);
-		outputSlots[0] = new int[]{82,3};
-		for(int i=1; i<recipeWrapper.recipeOutputs.length; i++)
+		outputSlots[0] = new int[]{82, 3};
+		for(int i = 1; i < recipeWrapper.recipeOutputs.length; i++)
 		{
-			outputSlots[i] = new int[]{82+(i-1)%2*44,21+(i-1)/2*18};
-			guiItemStacks.init(i+1, false, outputSlots[i][0],outputSlots[i][1]);
+			outputSlots[i] = new int[]{82+(i-1)%2*44, 21+(i-1)/2*18};
+			guiItemStacks.init(i+1, false, outputSlots[i][0], outputSlots[i][1]);
 			guiItemStacks.set(i+1, recipeWrapper.recipeOutputs[i]);
 		}
 	}
@@ -52,7 +54,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe, Crush
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		JEIHelper.slotDrawable.draw(minecraft, 82,3);
+		JEIHelper.slotDrawable.draw(minecraft, 82, 3);
 		JEIHelper.slotDrawable.draw(minecraft, 0, 3);
 	}
 

@@ -20,6 +20,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 	public int trackCountdown = 5;
 	public double redirectionSpeed = .25;
 	public EntityLivingBase targetOverride;
+
 	public EntityRevolvershotHoming(World world)
 	{
 		super(world);
@@ -40,15 +41,15 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 	{
 		super.onUpdate();
 
-		if(!world.isRemote && this.ticksExisted>trackCountdown)
+		if(!world.isRemote&&this.ticksExisted > trackCountdown)
 		{
 			EntityLivingBase target = getTarget();
 			if(target!=null)
 			{
 				Vec3d newMotion = new Vec3d(
-						motionX*(1-redirectionSpeed)+ (target.posX-this.posX)*redirectionSpeed,
-						motionY*(1-redirectionSpeed)+ ((target.posY+target.height/2)-this.posY)*redirectionSpeed,
-						motionZ*(1-redirectionSpeed)+ (target.posZ-this.posZ)*redirectionSpeed).normalize();
+						motionX*(1-redirectionSpeed)+(target.posX-this.posX)*redirectionSpeed,
+						motionY*(1-redirectionSpeed)+((target.posY+target.height/2)-this.posY)*redirectionSpeed,
+						motionZ*(1-redirectionSpeed)+(target.posZ-this.posZ)*redirectionSpeed).normalize();
 
 				this.motionX = newMotion.x;
 				this.motionY = newMotion.y;
@@ -59,14 +60,14 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 
 	public EntityLivingBase getTarget()
 	{
-		if(targetOverride!=null && !targetOverride.isDead)
+		if(targetOverride!=null&&!targetOverride.isDead)
 			return targetOverride;
 		double r = 20D;
-		AxisAlignedBB aabb = new AxisAlignedBB(posX-r,posY-r,posZ-r, posX+r,posY+r,posZ+r);
+		AxisAlignedBB aabb = new AxisAlignedBB(posX-r, posY-r, posZ-r, posX+r, posY+r, posZ+r);
 		EntityLivingBase target = null;
-		for(Object o: world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
-			if(o instanceof EntityLivingBase && !o.equals(this.shootingEntity))
-				if(target==null || ((EntityLivingBase)o).getDistanceSq(this)<target.getDistanceSq(this))
+		for(Object o : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
+			if(o instanceof EntityLivingBase&&!o.equals(this.shootingEntity))
+				if(target==null||((EntityLivingBase)o).getDistanceSq(this) < target.getDistanceSq(this))
 					target = (EntityLivingBase)o;
 		return target;
 	}

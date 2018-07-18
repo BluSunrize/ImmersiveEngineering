@@ -20,10 +20,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 public class MessageRequestBlockUpdate implements IMessage
 {
 	BlockPos pos;
+
 	public MessageRequestBlockUpdate(BlockPos pos)
 	{
 		this.pos = pos;
 	}
+
 	public MessageRequestBlockUpdate()
 	{
 	}
@@ -47,7 +49,8 @@ public class MessageRequestBlockUpdate implements IMessage
 		{
 			WorldServer world = ctx.getServerHandler().player.getServerWorld();
 			world.addScheduledTask(() -> {
-				if (world.isBlockLoaded(message.pos)) {
+				if(world.isBlockLoaded(message.pos))
+				{
 					int dim = world.provider.getDimension();
 					EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, message.pos));
 				}

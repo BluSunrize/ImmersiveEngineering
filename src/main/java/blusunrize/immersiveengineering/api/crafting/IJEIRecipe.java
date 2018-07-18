@@ -15,9 +15,16 @@ import java.util.List;
 
 public interface IJEIRecipe
 {
-	default boolean listInJEI() { return true; }
+	default boolean listInJEI()
+	{
+		return true;
+	}
+
 	List<ItemStack> getJEITotalItemInputs();
+
 	List<ItemStack> getJEITotalItemOutputs();
+
 	List<FluidStack> getJEITotalFluidInputs();
+
 	List<FluidStack> getJEITotalFluidOutputs();
 }

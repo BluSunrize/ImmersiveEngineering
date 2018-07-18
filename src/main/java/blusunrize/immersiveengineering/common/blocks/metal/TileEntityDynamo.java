@@ -29,13 +29,13 @@ import javax.annotation.Nullable;
 public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFluxConnector, IDirectionalTile, IRotationAcceptor
 {
 	public EnumFacing facing = EnumFacing.NORTH;
-	
+
 	@Override
 	public void inputRotation(double rotation, @Nonnull EnumFacing side)
 	{
 		if(side!=this.facing.getOpposite())
 			return;
-		int output = (int) (IEConfig.Machines.dynamo_output * rotation);
+		int output = (int)(IEConfig.Machines.dynamo_output*rotation);
 		for(EnumFacing fd : EnumFacing.VALUES)
 		{
 			BlockPos outputPos = getPos().offset(fd);
@@ -55,21 +55,25 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
@@ -83,6 +87,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 //		if(descPacket && world!=null)
 //			world.markBlockForUpdate(getPos());
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -95,12 +100,15 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	{
 		return SideConfig.OUTPUT;
 	}
+
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return true;
 	}
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this,null);
+
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
+
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{

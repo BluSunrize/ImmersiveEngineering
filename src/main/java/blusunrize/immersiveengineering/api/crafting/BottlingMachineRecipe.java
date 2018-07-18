@@ -30,6 +30,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	public final IngredientStack input;
 	public final FluidStack fluidInput;
 	public final ItemStack output;
+
 	public BottlingMachineRecipe(ItemStack output, Object input, FluidStack fluidInput)
 	{
 		this.output = output;
@@ -42,20 +43,23 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	}
 
 	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<BottlingMachineRecipe>();
+
 	public static void addRecipe(ItemStack output, Object input, FluidStack fluidInput)
 	{
 		BottlingMachineRecipe recipe = new BottlingMachineRecipe(output, input, fluidInput);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
 	}
+
 	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)
 	{
-		if(!input.isEmpty() && fluid!=null)
+		if(!input.isEmpty()&&fluid!=null)
 			for(BottlingMachineRecipe recipe : recipeList)
-				if(ApiUtils.stackMatchesObject(input, recipe.input) && fluid.containsFluid(recipe.fluidInput))
+				if(ApiUtils.stackMatchesObject(input, recipe.input)&&fluid.containsFluid(recipe.fluidInput))
 					return recipe;
 		return null;
 	}
+
 	public static List<BottlingMachineRecipe> removeRecipes(ItemStack stack)
 	{
 		List<BottlingMachineRecipe> list = new ArrayList();
@@ -84,6 +88,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
 		return nbt;
 	}
+
 	public static BottlingMachineRecipe loadFromNBT(NBTTagCompound nbt)
 	{
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));

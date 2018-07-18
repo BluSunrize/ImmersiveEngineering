@@ -24,6 +24,7 @@ public class MultiblockRecipeWrapper implements IRecipeWrapper
 	protected List<ItemStack> outputs;
 	protected List<FluidStack> fluidInputs;
 	protected List<FluidStack> fluidOutputs;
+
 	public MultiblockRecipeWrapper(MultiblockRecipe recipe)
 	{
 		recipe.setupJEI();
@@ -52,14 +53,17 @@ public class MultiblockRecipeWrapper implements IRecipeWrapper
 	{
 		return inputs;
 	}
+
 	public List<ItemStack> getItemOut()
 	{
 		return outputs;
 	}
+
 	public List<FluidStack> getFluidIn()
 	{
 		return fluidInputs;
 	}
+
 	public List<FluidStack> getFluidOut()
 	{
 		return fluidOutputs;

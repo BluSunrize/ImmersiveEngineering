@@ -38,22 +38,27 @@ public class MultiblockFeedthrough implements IMultiblock
 {
 	public static MultiblockFeedthrough instance = new MultiblockFeedthrough();
 	static ItemStack[][][] structure = new ItemStack[1][1][3];
-	static{
+
+	static
+	{
 		structure[0][0][0] = new ItemStack(IEContent.blockConnectors, 1);
 		structure[0][0][1] = new ItemStack(Blocks.BOOKSHELF, 1).setTranslatableName("tile.immersiveengineering.arb_solid.name");
 		structure[0][0][2] = new ItemStack(IEContent.blockConnectors, 1);
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
@@ -62,12 +67,13 @@ public class MultiblockFeedthrough implements IMultiblock
 	}
 
 	private ItemStack renderStack;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack==null||renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.FEEDTHROUGH.getMeta());
+			renderStack = new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.FEEDTHROUGH.getMeta());
 
 		GlStateManager.translate(.5, .5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
@@ -83,7 +89,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
 		IBlockState ret = IMultiblock.super.getBlockstateFromStack(index, stack);
-		if (stack==structure[0][0][0])
+		if(stack==structure[0][0][0])
 			return ret.withProperty(IEProperties.FACING_ALL, EnumFacing.SOUTH);
 		return ret;
 	}
@@ -112,36 +118,36 @@ public class MultiblockFeedthrough implements IMultiblock
 		IBlockState here = world.getBlockState(pos).getActualState(world, pos);
 		side = here.getValue(IEProperties.FACING_ALL);
 		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-		if (conns!=null&&!conns.isEmpty())
+		if(conns!=null&&!conns.isEmpty())
 			return false;
 		WireType wire = WireApi.getWireType(here);
-		if (wire==null)//This shouldn't ever happen
+		if(wire==null)//This shouldn't ever happen
 			return false;
 		BlockPos tmp = pos.offset(side);
 		IBlockState middle = world.getBlockState(tmp).getActualState(world, tmp);
-		if (!middle.isFullCube()||middle.getBlock().hasTileEntity(middle)||middle.getRenderType()!= EnumBlockRenderType.MODEL)
+		if(!middle.isFullCube()||middle.getBlock().hasTileEntity(middle)||middle.getRenderType()!=EnumBlockRenderType.MODEL)
 			return false;
 		tmp = pos.offset(side, 2);
 		IBlockState otherConn = world.getBlockState(tmp).getActualState(world, tmp);
-		if (WireApi.getWireType(otherConn)!=wire)
+		if(WireApi.getWireType(otherConn)!=wire)
 			return false;
-		if (otherConn.getValue(IEProperties.FACING_ALL)!=side.getOpposite())
+		if(otherConn.getValue(IEProperties.FACING_ALL)!=side.getOpposite())
 			return false;
 		conns = ImmersiveNetHandler.INSTANCE.getConnections(world, tmp);
-		if (conns!=null&&!conns.isEmpty())
+		if(conns!=null&&!conns.isEmpty())
 			return false;
 		IBlockState state = IEContent.blockConnectors.getDefaultState().withProperty(IEContent.blockConnectors.property,
 				BlockTypes_Connector.FEEDTHROUGH).withProperty(IEProperties.FACING_ALL, side);
-		for (int i = 0;i<=2;i++)
+		for(int i = 0; i <= 2; i++)
 		{
 			tmp = pos.offset(side, i);
 			world.setBlockState(tmp, state);
 			TileEntity te = world.getTileEntity(tmp);
-			if (te instanceof TileEntityFeedthrough)
+			if(te instanceof TileEntityFeedthrough)
 			{
-				((TileEntityFeedthrough) te).reference = wire;
-				((TileEntityFeedthrough) te).stateForMiddle = middle;
-				((TileEntityFeedthrough) te).offset = i-1;
+				((TileEntityFeedthrough)te).reference = wire;
+				((TileEntityFeedthrough)te).stateForMiddle = middle;
+				((TileEntityFeedthrough)te).offset = i-1;
 				world.checkLight(tmp);
 			}
 

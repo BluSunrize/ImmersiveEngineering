@@ -29,11 +29,13 @@ public enum BlockTypes_MetalDecoration0 implements IStringSerializable, BlockIEB
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

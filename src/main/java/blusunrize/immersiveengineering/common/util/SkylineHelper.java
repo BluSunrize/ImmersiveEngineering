@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
@@ -22,10 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Triple;
-
-import java.util.Map;
-import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
 
@@ -33,8 +28,8 @@ public class SkylineHelper
 {
 	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection)
 	{
-		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start:connection.end;
-		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end:connection.start;
+		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start: connection.end;
+		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end: connection.start;
 		IImmersiveConnectable iicStart = ApiUtils.toIIC(cc1, player.world);
 		IImmersiveConnectable iicEnd = ApiUtils.toIIC(cc0, player.world);
 		Vec3d vStart = new Vec3d(cc1);
@@ -53,7 +48,7 @@ public class SkylineHelper
 		int tInt = MathHelper.clamp(0, (int)(t*16), 15);
 
 		Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
-		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x,pos.y,pos.z, connection, cc0, steps, tInt+1);
+		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x, pos.y, pos.z, connection, cc0, steps, tInt+1);
 		float speed = 1;
 		if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
 			speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
@@ -81,18 +76,19 @@ public class SkylineHelper
 		int lPixel = (int)Math.max(1, (movementVec.lengthVector()/(.125*speed)));
 		return new Vec3d(movementVec.x/lPixel, movementVec.y/lPixel, movementVec.z/lPixel);
 	}
+
 	public static boolean isInBlock(EntityPlayer player, World w)
 	{
 		BlockPos init = player.getPosition();
 		AxisAlignedBB hitbox = player.getEntityBoundingBox();
 		hitbox = new AxisAlignedBB(hitbox.minX-1, hitbox.minY-1, hitbox.minZ-1, hitbox.maxX, hitbox.maxY, hitbox.maxZ);
-		
-		for (int xOff = 0;xOff<2;xOff++)
-			for (int yOff = 0;yOff<3;yOff++)
-				for (int zOff = 0;zOff<2;zOff++)
+
+		for(int xOff = 0; xOff < 2; xOff++)
+			for(int yOff = 0; yOff < 3; yOff++)
+				for(int zOff = 0; zOff < 2; zOff++)
 				{
 					Vec3d v = new Vec3d(init.getX()+xOff, init.getY()+yOff, init.getZ()+zOff);
-					if (hitbox.contains(v)&&!w.isAirBlock(new BlockPos(v)))
+					if(hitbox.contains(v)&&!w.isAirBlock(new BlockPos(v)))
 						return true;
 				}
 		return false;

@@ -41,6 +41,7 @@ public class ItemCoresample extends ItemIEBase
 	{
 		super("coresample", 1);
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
@@ -52,22 +53,22 @@ public class ItemCoresample extends ItemIEBase
 				String mineral = ItemNBTHelper.getString(stack, "mineral");
 				String unloc = Lib.DESC_INFO+"mineral."+mineral;
 				String loc = I18n.format(unloc);
-				list.add(I18n.format(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral:loc)));
+				list.add(I18n.format(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc)));
 			}
 			else
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.noMineral"));
 			int[] coords = ItemNBTHelper.getIntArray(stack, "coords");
 			boolean singleplayer = Minecraft.getMinecraft().isSingleplayer();
-			if (world==null || world.provider.getDimension()!=0)
+			if(world==null||world.provider.getDimension()!=0)
 			{
 				World clientWorld = Minecraft.getMinecraft().world;
-				if (clientWorld!=null&&clientWorld.provider.getDimension()==coords[0])
+				if(clientWorld!=null&&clientWorld.provider.getDimension()==coords[0])
 					world = clientWorld;
 			}
 			String s0 = (coords[1]*16)+", "+(coords[2]*16);
 			String s1 = (coords[1]*16+16)+", "+(coords[2]*16+16);
 			String s2;
-			if(world!=null && world.provider!=null)
+			if(world!=null&&world.provider!=null)
 			{
 				String name = world.provider.getDimensionType().getName();
 				if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
@@ -77,7 +78,7 @@ public class ItemCoresample extends ItemIEBase
 			else
 				s2 = "Dimension "+coords[0];
 			list.add(s2);
-			list.add(I18n.format(Lib.CHAT_INFO+"coresample.pos", s0,s1,""));
+			list.add(I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1, ""));
 
 			if(ItemNBTHelper.hasKey(stack, "infinite"))
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.infinite"));
@@ -85,16 +86,16 @@ public class ItemCoresample extends ItemIEBase
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.yield", ExcavatorHandler.mineralVeinCapacity-ItemNBTHelper.getInt(stack, "depletion")));
 
 			boolean hasStamp = ItemNBTHelper.hasKey(stack, "timestamp");
-			if(hasStamp && world!=null)
+			if(hasStamp&&world!=null)
 			{
 				long timestamp = ItemNBTHelper.getLong(stack, "timestamp");
 				long dist = world.getTotalWorldTime()-timestamp;
-				if(dist<0)
+				if(dist < 0)
 					list.add("Somehow this sample is dated in the future...are you a time traveller?!");
 				else
 					list.add(I18n.format(Lib.CHAT_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, ClientUtils.TimestampFormat.DHM)));
 			}
-			else if (hasStamp)
+			else if(hasStamp)
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.timezone"));
 			else
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.noTimestamp"));
@@ -113,14 +114,14 @@ public class ItemCoresample extends ItemIEBase
 			if(!block.isReplaceable(world, pos))
 				pos = pos.offset(side);
 
-			if(!stack.isEmpty() && player.canPlayerEdit(pos, side, stack) && world.mayPlace(IEContent.blockStoneDevice, pos, false, side, null))
+			if(!stack.isEmpty()&&player.canPlayerEdit(pos, side, stack)&&world.mayPlace(IEContent.blockStoneDevice, pos, false, side, null))
 			{
 				IBlockState toolbox = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CORESAMPLE.getMeta());
 				if(world.setBlockState(pos, toolbox, 3))
 				{
-					IEContent.blockStoneDevice.onIEBlockPlacedBy(world, pos, toolbox, side, hitX,hitY,hitZ, player, stack);
+					IEContent.blockStoneDevice.onIEBlockPlacedBy(world, pos, toolbox, side, hitX, hitY, hitZ, player, stack);
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);
 				}
 				return EnumActionResult.SUCCESS;

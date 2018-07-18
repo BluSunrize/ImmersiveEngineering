@@ -31,8 +31,8 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe, Cok
 
 	public CokeOvenRecipeCategory(IGuiHelper helper)
 	{
-		super("cokeoven","tile.immersiveengineering.stone_device.coke_oven.name", helper.createDrawable(background, 8,13, 142, 60), CokeOvenRecipe.class, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.COKE_OVEN.getMeta()));
-		tankOverlay = helper.createDrawable(background, 176,31, 16,47, -2,2,-2,2);
+		super("cokeoven", "tile.immersiveengineering.stone_device.coke_oven.name", helper.createDrawable(background, 8, 13, 142, 60), CokeOvenRecipe.class, new ItemStack(IEContent.blockStoneDevice, 1, BlockTypes_StoneDevices.COKE_OVEN.getMeta()));
+		tankOverlay = helper.createDrawable(background, 176, 31, 16, 47, -2, 2, -2, 2);
 	}
 
 	@Override
@@ -42,9 +42,9 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe, Cok
 		guiItemStacks.init(0, true, 21, 21);
 		guiItemStacks.init(1, false, 76, 21);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(ItemStack.class).size()>0)
+		if(ingredients.getOutputs(ItemStack.class).size() > 0)
 			guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(FluidStack.class).size()>0)
+		if(ingredients.getOutputs(FluidStack.class).size() > 0)
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 			guiFluidStacks.init(0, false, 121, 7, 16, 47, 12000, false, tankOverlay);

@@ -26,6 +26,7 @@ public class MessageObstructedConnection implements IMessage
 	private Vec3d start, end;
 	private BlockPos startB, endB, blocking;
 	private WireType wireType;
+
 	public MessageObstructedConnection(ImmersiveNetHandler.Connection conn, BlockPos blocking, World w)
 	{
 		this.blocking = blocking;
@@ -36,6 +37,7 @@ public class MessageObstructedConnection implements IMessage
 		endB = conn.end;
 		wireType = conn.cableType;
 	}
+
 	public MessageObstructedConnection()
 	{
 	}

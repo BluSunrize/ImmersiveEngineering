@@ -43,6 +43,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	{
 		super(world);
 	}
+
 	public EntityIEExplosive(World world, double x, double y, double z, EntityLivingBase igniter, IBlockState blockstate, float explosionPower)
 	{
 		super(world, x, y, z, igniter);
@@ -51,6 +52,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		this.explosionDropChance = 1/explosionPower;
 		this.setBlockSynced();
 	}
+
 	public EntityIEExplosive(World world, BlockPos pos, EntityLivingBase igniter, IBlockState blockstate, float explosionPower)
 	{
 		this(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, igniter, blockstate, explosionPower);
@@ -61,11 +63,13 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		this.explosionSmoke = smoke;
 		return this;
 	}
+
 	public EntityIEExplosive setFlaming(boolean fire)
 	{
 		this.explosionFire = fire;
 		return this;
 	}
+
 	public EntityIEExplosive setDropChance(float chance)
 	{
 		this.explosionDropChance = chance;
@@ -88,6 +92,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 			this.dataManager.set(dataMarker_fuse, this.getFuse());
 		}
 	}
+
 	public void getBlockSynced()
 	{
 		this.block = this.dataManager.get(dataMarker_block).orNull();
@@ -97,10 +102,10 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	@Override
 	public String getName()
 	{
-		if(this.block!=null && name==null)
+		if(this.block!=null&&name==null)
 		{
-			ItemStack s = new ItemStack(this.block.getBlock(),1,this.block.getBlock().getMetaFromState(this.block));
-			if(!s.isEmpty() && s.getItem()!= Items.AIR)
+			ItemStack s = new ItemStack(this.block.getBlock(), 1, this.block.getBlock().getMetaFromState(this.block));
+			if(!s.isEmpty()&&s.getItem()!=Items.AIR)
 				name = s.getDisplayName();
 		}
 		if(name!=null)
@@ -116,8 +121,9 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		tagCompound.setBoolean("explosionSmoke", explosionSmoke);
 		tagCompound.setBoolean("explosionFire", explosionFire);
 		if(this.block!=null)
-			tagCompound.setInteger("block",Block.getStateId(this.block));
+			tagCompound.setInteger("block", Block.getStateId(this.block));
 	}
+
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound tagCompound)
 	{
@@ -133,7 +139,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	@Override
 	public void onUpdate()
 	{
-		if(world.isRemote && this.block==null)
+		if(world.isRemote&&this.block==null)
 			this.getBlockSynced();
 
 		this.prevPosX = this.posX;
@@ -153,13 +159,13 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		}
 		int newFuse = this.getFuse()-1;
 		this.setFuse(newFuse);
-		if(newFuse--<=0)
+		if(newFuse-- <= 0)
 		{
 			this.setDead();
 
 			if(!this.world.isRemote)
 			{
-				Explosion explosion = new IEExplosion(world, this, posX,posY+(height/16f),posZ, explosionPower, explosionFire, explosionSmoke).setDropChance(explosionDropChance);
+				Explosion explosion = new IEExplosion(world, this, posX, posY+(height/16f), posZ, explosionPower, explosionFire, explosionSmoke).setDropChance(explosionDropChance);
 				if(!ForgeEventFactory.onExplosionStart(world, explosion))
 				{
 					explosion.doExplosionA();
@@ -170,7 +176,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		else
 		{
 			this.handleWaterMovement();
-			this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY+0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
 	}
 }

@@ -34,7 +34,7 @@ public class BlockMetalDecoration0 extends BlockIEBase<BlockTypes_MetalDecoratio
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
-		if(Loader.isModLoaded("ctm") && !itemBlock && meta > 2)
+		if(Loader.isModLoaded("ctm")&&!itemBlock&&meta > 2)
 			return "ctm";
 		return null;
 	}

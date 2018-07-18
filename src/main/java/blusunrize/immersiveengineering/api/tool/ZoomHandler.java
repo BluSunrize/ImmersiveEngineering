@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 /**
  * @author BluSunrize - 25.12.2015
- *
+ * <p>
  * A handler for IZoomTool fucntionality, allowing items to function as providers for zooming in
  */
 public class ZoomHandler
@@ -23,7 +23,7 @@ public class ZoomHandler
 
 	/**
 	 * @author BluSunrize - 25.12.2015
-	 *
+	 * <p>
 	 * An interface to be implemented by items to allow zooming in
 	 */
 	public interface IZoomTool
@@ -33,6 +33,7 @@ public class ZoomHandler
 		 * @return whether this item is valid for zooming in
 		 */
 		boolean canZoom(ItemStack stack, EntityPlayer player);
+
 		/**
 		 * @return the different steps of zoom the item has, sorted from low to high
 		 */

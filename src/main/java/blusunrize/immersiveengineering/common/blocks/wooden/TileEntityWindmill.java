@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
@@ -39,9 +38,9 @@ import java.util.ArrayList;
 public class TileEntityWindmill extends TileEntityIEBase implements ITickable, IDirectionalTile, ITileDrop, IPlayerInteraction, IHasObjProperty
 {
 	public EnumFacing facing = EnumFacing.NORTH;
-	public float prevRotation=0;
-	public float rotation=0;
-	public float turnSpeed=0;
+	public float prevRotation = 0;
+	public float rotation = 0;
+	public float turnSpeed = 0;
 	public float perTick = 0;
 	public int sails = 0;
 
@@ -74,13 +73,13 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 //			mod *= 1.25;
 //		else if(getPos().getY()<70)
 //			mod *= .33;
-		mod*=getSpeedModifier();
+		mod *= getSpeedModifier();
 
 
-		prevRotation = (float) (turnSpeed*mod);
+		prevRotation = (float)(turnSpeed*mod);
 		rotation += turnSpeed*mod;
 		rotation %= 1;
-		perTick = (float) (turnSpeed*mod);
+		perTick = (float)(turnSpeed*mod);
 
 		if(!world.isRemote)
 		{
@@ -88,11 +87,12 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 			if(tileEntity instanceof IRotationAcceptor)
 			{
 				IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
-				double power = turnSpeed*mod * 800;
+				double power = turnSpeed*mod*800;
 				dynamo.inputRotation(Math.abs(power), facing);
 			}
 		}
 	}
+
 	protected float getSpeedModifier()
 	{
 		return .5f+sails*.125f;
@@ -100,39 +100,39 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 	public boolean checkArea()
 	{
-		if (facing.getAxis()==EnumFacing.Axis.Y)
+		if(facing.getAxis()==EnumFacing.Axis.Y)
 			return false;
 
-		turnSpeed=0;
-		for(int hh=-4;hh<=4;hh++)
+		turnSpeed = 0;
+		for(int hh = -4; hh <= 4; hh++)
 		{
-			int r=Math.abs(hh)==4?1: Math.abs(hh)==3?2: Math.abs(hh)==2?3: 4;
-			for(int ww=-r;ww<=r;ww++)
-				if((hh!=0||ww!=0)&&!world.isAirBlock(getPos().add((facing.getAxis()==Axis.Z?ww:0),hh,(facing.getAxis()==Axis.Z?0:ww))))
+			int r = Math.abs(hh)==4?1: Math.abs(hh)==3?2: Math.abs(hh)==2?3: 4;
+			for(int ww = -r; ww <= r; ww++)
+				if((hh!=0||ww!=0)&&!world.isAirBlock(getPos().add((facing.getAxis()==Axis.Z?ww: 0), hh, (facing.getAxis()==Axis.Z?0: ww))))
 					return false;
 		}
 
 		int blocked = 0;
-		for(int hh=-4;hh<=4;hh++)
+		for(int hh = -4; hh <= 4; hh++)
 		{
-			int r=Math.abs(hh)==4?1: Math.abs(hh)==3?2: Math.abs(hh)==2?3: 4;
-			for(int ww=-r;ww<=r;ww++)
+			int r = Math.abs(hh)==4?1: Math.abs(hh)==3?2: Math.abs(hh)==2?3: 4;
+			for(int ww = -r; ww <= r; ww++)
 			{
-				for(int dd=1;dd<8;dd++)
+				for(int dd = 1; dd < 8; dd++)
 				{
 					BlockPos pos = getPos().add(0, hh, 0).offset(facing.getOpposite(), dd).offset(facing.rotateY(), ww);
-					if(!world.isBlockLoaded(pos) || world.isAirBlock(pos))
-						turnSpeed ++;
+					if(!world.isBlockLoaded(pos)||world.isAirBlock(pos))
+						turnSpeed++;
 					else if(world.getTileEntity(pos) instanceof TileEntityWindmill)
 					{
-						blocked+=20;
-						turnSpeed-=179;
+						blocked += 20;
+						turnSpeed -= 179;
 					}
 					else
 						blocked++;
 				}
 			}
-			if(blocked>100)
+			if(blocked > 100)
 				return false;
 		}
 
@@ -148,6 +148,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 		rotation = nbt.getFloat("rotation");
 		turnSpeed = nbt.getFloat("turnSpeed");
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -160,12 +161,13 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			renderAABB = new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?6:0),getPos().getY()-6,getPos().getZ()-(facing.getAxis()==Axis.Z?0:6), getPos().getX()+(facing.getAxis()==Axis.Z?7:0),getPos().getY()+7,getPos().getZ()+(facing.getAxis()==Axis.Z?0:7));
+			renderAABB = new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?6: 0), getPos().getY()-6, getPos().getZ()-(facing.getAxis()==Axis.Z?0: 6), getPos().getX()+(facing.getAxis()==Axis.Z?7: 0), getPos().getY()+7, getPos().getZ()+(facing.getAxis()==Axis.Z?0: 7));
 		return renderAABB;
 	}
 
@@ -174,26 +176,31 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 6;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
@@ -201,6 +208,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	static ArrayList<String> emptyDisplayList = new ArrayList();
+
 	@Override
 	public ArrayList<String> compileDisplayList()
 	{
@@ -210,7 +218,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(sails<8 && OreDictionary.itemMatches(new ItemStack(IEContent.itemMaterial,1,12), heldItem, false))
+		if(sails < 8&&OreDictionary.itemMatches(new ItemStack(IEContent.itemMaterial, 1, 12), heldItem, false))
 		{
 			this.sails++;
 			heldItem.shrink(1);
@@ -222,11 +230,12 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(),1,state.getBlock().getMetaFromState(state));
-		if(sails>0)
+		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+		if(sails > 0)
 			ItemNBTHelper.setInt(stack, "sails", sails);
 		return stack;
 	}
+
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{

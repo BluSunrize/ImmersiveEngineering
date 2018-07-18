@@ -202,7 +202,8 @@ public class IEContent
 
 	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
-	static {
+	static
+	{
 		fluidCreosote = setupFluid(new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000));
 		fluidPlantoil = setupFluid(new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000));
 		fluidEthanol = setupFluid(new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000));
@@ -227,7 +228,7 @@ public class IEContent
 		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
 		blockStoneDecoration.setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta);
 		int sprConcreteMeta = BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta();
-		blockStoneDecoration.setMetaHidden(sprConcreteMeta).setMetaBlockLayer(sprConcreteMeta, BlockRenderLayer.CUTOUT).setMetaLightOpacity(sprConcreteMeta, 0).setNotNormalBlock(sprConcreteMeta).setMetaHardness(sprConcreteMeta,.2f).setMetaHammerHarvest(sprConcreteMeta);
+		blockStoneDecoration.setMetaHidden(sprConcreteMeta).setMetaBlockLayer(sprConcreteMeta, BlockRenderLayer.CUTOUT).setMetaLightOpacity(sprConcreteMeta, 0).setNotNormalBlock(sprConcreteMeta).setMetaHardness(sprConcreteMeta, .2f).setMetaHammerHarvest(sprConcreteMeta);
 
 		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stone_decoration_slab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8, sprConcreteMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
 		blockStoneStair_hempcrete = new BlockIEStairs("stone_decoration_stairs_hempcrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
@@ -363,9 +364,9 @@ public class IEContent
 		BelljarHandler.init();
 
 		/**MULTIBLOCK RECIPES*/
-		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL,1,1), "logWood", 900, 250);
+		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial, 1, 6), new ItemStack(Items.COAL), 1800, 500);
+		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration, 1, 3), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL, 1, 1), "logWood", 900, 250);
 
 		IERecipes.initBlastFurnaceRecipes();
 
@@ -382,21 +383,21 @@ public class IEContent
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 40), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
-		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
+		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial, 1, 18), new ItemStack(itemMaterial, 8, 17), 19200);
 		Fluid fluidBlood = FluidRegistry.getFluid("blood");
 		if(fluidBlood!=null)
-			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood,5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
+			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood, 5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
 
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.REEDS, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.MELON, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, Items.APPLE, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), ItemStack.EMPTY, "cropPotato", 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.REEDS, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.MELON, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.APPLE, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, "cropPotato", 6400);
 
-		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8), 80);
+		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
 
-		MixerRecipe.addRecipe(new FluidStack(fluidConcrete,500), new FluidStack(FluidRegistry.WATER,500),new Object[]{"sand","sand",Items.CLAY_BALL,"gravel"}, 3200);
+		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(FluidRegistry.WATER, 500), new Object[]{"sand", "sand", Items.CLAY_BALL, "gravel"}, 3200);
 
-		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
+		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(FluidRegistry.WATER, 1000));
 
 		/**POTIONS*/
 		HashSet<PotionType> mixerRegistered = new HashSet<>();
@@ -406,7 +407,7 @@ public class IEContent
 			if(mixerRegistered.add(mixPredicate.input))
 				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
 			if(bottlingRegistered.add(mixPredicate.output))
-				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,250));
+				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output, 250));
 		}
 
 		/**ORE DICT CRAWLING*/
@@ -443,7 +444,7 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
 
@@ -455,30 +456,30 @@ public class IEContent
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
 		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
 		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
-		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron","oreNickel","oreTin","denseoreIron"}, new float[]{.5f,.25f,.20f,.05f});
-		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
+		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron", "oreNickel", "oreTin", "denseoreIron"}, new float[]{.5f, .25f, .20f, .05f});
+		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron", "oreGold"}, new float[]{.85f, .15f});
 		if(OreDictionary.doesOreNameExist("oreSulfur"))
 			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "oreSulfur"}, new float[]{.5f, .5f});
 		else
 			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", "dustSulfur"}, new float[]{.5f, .5f});
-		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum","oreTitanium","denseoreAluminum"}, new float[]{.90f,.05f,.05f});
-		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper","oreGold","oreNickel","denseoreCopper"}, new float[]{.65f,.25f,.05f,.05f});
+		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum", "oreTitanium", "denseoreAluminum"}, new float[]{.90f, .05f, .05f});
+		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper", "oreGold", "oreNickel", "denseoreCopper"}, new float[]{.65f, .25f, .05f, .05f});
 		if(OreDictionary.doesOreNameExist("oreTin"))
-			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin","denseoreTin"}, new float[]{.95f,.05f});
-		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold","oreCopper","oreNickel","denseoreGold"}, new float[]{.65f,.25f,.05f,.05f});
-		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel","orePlatinum","oreIron","denseoreNickel"}, new float[]{.85f,.05f,.05f,.05f});
+			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin", "denseoreTin"}, new float[]{.95f, .05f});
+		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold", "oreCopper", "oreNickel", "denseoreGold"}, new float[]{.65f, .25f, .05f, .05f});
+		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel", "orePlatinum", "oreIron", "denseoreNickel"}, new float[]{.85f, .05f, .05f, .05f});
 		if(OreDictionary.doesOreNameExist("orePlatinum"))
 			ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum", "oreNickel", "", "oreIridium", "denseorePlatinum"}, new float[]{.40f, .30f, .15f, .1f, .05f});
-		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium","oreLead","orePlutonium","denseoreUranium"}, new float[]{.55f,.3f,.1f,.05f}).addReplacement("oreUranium", "oreYellorium");
-		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz","oreCertusQuartz"}, new float[]{.6f,.4f});
-		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead","oreSilver","oreSulfur","denseoreLead","denseoreSilver"}, new float[]{.40f,.40f,.1f,.05f,.05f});
-		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead","oreSilver","denseoreLead"}, new float[]{.55f,.4f,.05f});
-		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver","oreLead","denseoreSilver"}, new float[]{.55f,.4f,.05f});
+		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium", "oreLead", "orePlutonium", "denseoreUranium"}, new float[]{.55f, .3f, .1f, .05f}).addReplacement("oreUranium", "oreYellorium");
+		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz", "oreCertusQuartz"}, new float[]{.6f, .4f});
+		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead", "oreSilver", "oreSulfur", "denseoreLead", "denseoreSilver"}, new float[]{.40f, .40f, .1f, .05f, .05f});
+		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead", "oreSilver", "denseoreLead"}, new float[]{.55f, .4f, .05f});
+		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver", "oreLead", "denseoreSilver"}, new float[]{.55f, .4f, .05f});
 		if(OreDictionary.doesOreNameExist("oreSulfur"))
-			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", "oreSulfur", "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
 		else
-			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","dustSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
-		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal","denseoreCoal","oreDiamond","oreEmerald"}, new float[]{.92f,.1f,.015f,.015f});
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", "dustSulfur", "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
+		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
 	}
 
 	public static void preInitEnd()
@@ -688,23 +689,23 @@ public class IEContent
 			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
 
 		/*BANNERS*/
-		addBanner("hammer", "hmr", new ItemStack(itemTool,1,0));
+		addBanner("hammer", "hmr", new ItemStack(itemTool, 1, 0));
 		addBanner("bevels", "bvl", "plateIron");
 		addBanner("ornate", "orn", "dustSilver");
 		addBanner("treated_wood", "twd", "plankTreatedWood");
-		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta())});
+		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.WINDMILL.getMeta())});
 		if(!BulletHandler.homingCartridges.isEmpty())
 		{
 			ItemStack wolfpackCartridge = BulletHandler.getBulletStack("wolfpack");
 			addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
 			addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
-			addBanner("wolf", "wlf", wolfpackCartridge, 0,0);
+			addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
 		}
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
-		AssemblerHandler.registerSpecialQueryConverters((o)->
-				o instanceof IngredientFluidStack? new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
+		AssemblerHandler.registerSpecialQueryConverters((o) ->
+				o instanceof IngredientFluidStack?new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
 		//Shaped
 		AssemblerHandler.registerRecipeAdapter(ShapedRecipes.class, new IRecipeAdapter<ShapedRecipes>()
 		{
@@ -785,14 +786,15 @@ public class IEContent
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
-		blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable,100,0));
-		blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA,40,0));
-		blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable,100,1));
-		blockFluidConcrete.setPotionEffects(new PotionEffect(MobEffects.SLOWNESS,20,3, false,false));
+		blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable, 100, 0));
+		blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA, 40, 0));
+		blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable, 100, 1));
+		blockFluidConcrete.setPotionEffects(new PotionEffect(MobEffects.SLOWNESS, 20, 3, false, false));
 
 		ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
 
-		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect(){
+		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect()
+		{
 			@Override
 			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 			{
@@ -801,36 +803,48 @@ public class IEContent
 					List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluid.tag);
 					for(PotionEffect e : effects)
 					{
-						PotionEffect newEffect = new PotionEffect(e.getPotion(),(int)Math.ceil(e.getDuration()*.05),e.getAmplifier());
+						PotionEffect newEffect = new PotionEffect(e.getPotion(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
 						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
 				}
 			}
+
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			{
+			}
+
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 			{
 
 			}
+
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			{
+			}
 		});
 
-		ChemthrowerHandler.registerEffect(fluidConcrete, new ChemthrowerEffect(){
+		ChemthrowerHandler.registerEffect(fluidConcrete, new ChemthrowerEffect()
+		{
 			@Override
 			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 			{
 				hit(target.world, target.getPosition(), EnumFacing.UP);
 			}
+
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			{
+			}
+
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
 			{
 				IBlockState hit = world.getBlockState(mop.getBlockPos());
-				if(hit.getBlock()!=blockStoneDecoration || hit.getBlock().getMetaFromState(hit)!=BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
+				if(hit.getBlock()!=blockStoneDecoration||hit.getBlock().getMetaFromState(hit)!=BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
 				{
 					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 					if(!world.isAirBlock(pos))
@@ -841,8 +855,12 @@ public class IEContent
 						hit(world, pos, mop.sideHit);
 				}
 			}
+
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid){}
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			{
+			}
+
 			private void hit(World world, BlockPos pos, EnumFacing side)
 			{
 				AxisAlignedBB aabb = new AxisAlignedBB(pos);
@@ -855,50 +873,53 @@ public class IEContent
 			}
 		});
 
-		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,0));
+		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 0));
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
-		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
+		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
-		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable,140,0),new PotionEffect(MobEffects.BLINDNESS,80,1)));
+		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(IEPotions.flammable, 140, 0), new PotionEffect(MobEffects.BLINDNESS, 80, 1)));
 		ChemthrowerHandler.registerFlammable("oil");
-		ChemthrowerHandler.registerEffect("fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,1));
+		ChemthrowerHandler.registerEffect("fuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 100, 1));
 		ChemthrowerHandler.registerFlammable("fuel");
-		ChemthrowerHandler.registerEffect("diesel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
+		ChemthrowerHandler.registerEffect("diesel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
 		ChemthrowerHandler.registerFlammable("diesel");
-		ChemthrowerHandler.registerEffect("kerosene", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,1));
+		ChemthrowerHandler.registerEffect("kerosene", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 100, 1));
 		ChemthrowerHandler.registerFlammable("kerosene");
-		ChemthrowerHandler.registerEffect("biofuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
+		ChemthrowerHandler.registerEffect("biofuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
 		ChemthrowerHandler.registerFlammable("biofuel");
-		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,60,2));
+		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 60, 2));
 		ChemthrowerHandler.registerFlammable("rocket_fuel");
 
-		RailgunHandler.registerProjectileProperties(new IngredientStack("stickIron"), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
-		RailgunHandler.registerProjectileProperties(new IngredientStack("stickAluminum"), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
-		RailgunHandler.registerProjectileProperties(new IngredientStack("stickSteel"), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemGraphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
+		RailgunHandler.registerProjectileProperties(new IngredientStack("stickIron"), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(new IngredientStack("stickAluminum"), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(new IngredientStack("stickSteel"), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(itemGraphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost= IEConfig.Machines.heater_speedupConsumption;
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.Machines.heater_speedupConsumption;
 		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new DefaultFurnaceAdapter());
 
 		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
 		{
 			private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
+
 			@Override
 			protected HashSet<ComparableItemStack> getSeedSet()
 			{
 				return validSeeds;
 			}
+
 			@Override
 			@SideOnly(Side.CLIENT)
 			public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 			{
 				int age = Math.min(4, Math.round(growth*4));
 				if(age==4)
-					return new IBlockState[]{blockCrop.getStateFromMeta(age),blockCrop.getStateFromMeta(age+1)};
+					return new IBlockState[]{blockCrop.getStateFromMeta(age), blockCrop.getStateFromMeta(age+1)};
 				return new IBlockState[]{blockCrop.getStateFromMeta(age)};
 			}
+
 			@Override
 			@SideOnly(Side.CLIENT)
 			public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
@@ -907,7 +928,7 @@ public class IEContent
 			}
 		};
 		BelljarHandler.registerHandler(hempBelljarHandler);
-		hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial,4,4),new ItemStack(itemSeeds,2)},new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
+		hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial, 4, 4), new ItemStack(itemSeeds, 2)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 
 		ThermoelectricHandler.registerSource(new IngredientStack(new ItemStack(Blocks.MAGMA)), 1300);
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
@@ -948,14 +969,14 @@ public class IEContent
 		if(IEConfig.villagerHouse)
 		{
 			villageRegistry.registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
-			MapGenStructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID + ":EngineersHouse");
+			MapGenStructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID+":EngineersHouse");
 		}
 		if(IEConfig.enableVillagers)
 		{
-			villagerProfession_engineer = new VillagerRegistry.VillagerProfession(ImmersiveEngineering.MODID + ":engineer", "immersiveengineering:textures/models/villager_engineer.png", "immersiveengineering:textures/models/villager_engineer_zombie.png");
+			villagerProfession_engineer = new VillagerRegistry.VillagerProfession(ImmersiveEngineering.MODID+":engineer", "immersiveengineering:textures/models/villager_engineer.png", "immersiveengineering:textures/models/villager_engineer_zombie.png");
 			ForgeRegistries.VILLAGER_PROFESSIONS.register(villagerProfession_engineer);
 
-			VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".engineer");
+			VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID+".engineer");
 			career_engineer.addTrade(1,
 					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 0), new EntityVillager.PriceInfo(8, 16)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockWoodenDecoration, 1, 1), new EntityVillager.PriceInfo(-10, -6)),
@@ -972,7 +993,7 @@ public class IEContent
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockStoneDecoration, 1, 5), new EntityVillager.PriceInfo(-6, -2))
 			);
 
-			VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".machinist");
+			VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID+".machinist");
 			career_machinist.addTrade(1,
 					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 6), new EntityVillager.PriceInfo(8, 16)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
@@ -996,7 +1017,7 @@ public class IEContent
 					new IEVillagerTrades.ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
 			);
 
-			VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".electrician");
+			VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID+".electrician");
 			career_electrician.addTrade(1,
 					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 20), new EntityVillager.PriceInfo(8, 16)),
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
@@ -1021,7 +1042,7 @@ public class IEContent
 					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
 			);
 
-			VillagerRegistry.VillagerCareer career_outfitter = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".outfitter");
+			VillagerRegistry.VillagerCareer career_outfitter = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID+".outfitter");
 
 			ItemStack bag_common = new ItemStack(IEContent.itemShaderBag);
 			ItemNBTHelper.setString(bag_common, "rarity", EnumRarity.COMMON.toString());
@@ -1056,14 +1077,14 @@ public class IEContent
 		//		}
 
 		/**BLOCK ITEMS FROM CRATES*/
-		IEApi.forbiddenInCrates.add((stack)-> {
-			if (stack.getItem()==IEContent.itemToolbox)
+		IEApi.forbiddenInCrates.add((stack) -> {
+			if(stack.getItem()==IEContent.itemToolbox)
 				return true;
-			if (stack.getItem()==IEContent.itemToolbox)
+			if(stack.getItem()==IEContent.itemToolbox)
 				return true;
-			if (OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
+			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
 				return true;
-			if (OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
+			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
 				return true;
 			return stack.getItem() instanceof ItemShulkerBox;
 		});
@@ -1087,28 +1108,28 @@ public class IEContent
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
 	{
-		if(metas==null||metas.length<1)
+		if(metas==null||metas.length < 1)
 		{
-			for(int meta=0; meta<item.getSubNames().length; meta++)
+			for(int meta = 0; meta < item.getSubNames().length; meta++)
 				if(!item.isMetaHidden(meta))
 				{
 					String name = item.getSubNames()[meta];
 					name = createOreDictName(name);
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1);
-					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
+						name = name.substring(0, 1).toUpperCase()+name.substring(1);
+					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
 				}
 		}
 		else
 		{
-			for(int meta: metas)
+			for(int meta : metas)
 				if(!item.isMetaHidden(meta))
 				{
 					String name = item.getSubNames()[meta];
 					name = createOreDictName(name);
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1);
-					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
+						name = name.substring(0, 1).toUpperCase()+name.substring(1);
+					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
 				}
 		}
 	}
@@ -1118,13 +1139,17 @@ public class IEContent
 		String upperName = name.toUpperCase();
 		StringBuilder sb = new StringBuilder();
 		boolean nextCapital = false;
-		for (int i = 0; i < name.length(); i++)
+		for(int i = 0; i < name.length(); i++)
 		{
-			if (name.charAt(i) == '_') {
+			if(name.charAt(i)=='_')
+			{
 				nextCapital = true;
-			} else {
+			}
+			else
+			{
 				char nextChar = name.charAt(i);
-				if (nextCapital) {
+				if(nextCapital)
+				{
 					nextChar = upperName.charAt(i);
 					nextCapital = false;
 				}
@@ -1136,26 +1161,26 @@ public class IEContent
 
 	public static void registerToOreDict(String type, BlockIEBase item, int... metas)
 	{
-		if(metas==null||metas.length<1)
+		if(metas==null||metas.length < 1)
 		{
-			for(int meta=0; meta<item.getMetaEnums().length; meta++)
+			for(int meta = 0; meta < item.getMetaEnums().length; meta++)
 				if(!item.isMetaHidden(meta))
 				{
 					String name = item.getMetaEnums()[meta].toString();
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
-					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
+						name = name.substring(0, 1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
+					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
 				}
 		}
 		else
 		{
-			for(int meta: metas)
+			for(int meta : metas)
 				if(!item.isMetaHidden(meta))
 				{
 					String name = item.getMetaEnums()[meta].toString();
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
-					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
+						name = name.substring(0, 1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
+					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
 				}
 		}
 	}
@@ -1163,36 +1188,36 @@ public class IEContent
 	public static void registerOre(String type, ItemStack ore, ItemStack ingot, ItemStack dust, ItemStack nugget, ItemStack plate, ItemStack block, ItemStack slab, ItemStack sheet, ItemStack slabSheet)
 	{
 		if(!ore.isEmpty())
-			OreDictionary.registerOre("ore" + type, ore);
+			OreDictionary.registerOre("ore"+type, ore);
 		if(!ingot.isEmpty())
-			OreDictionary.registerOre("ingot" + type, ingot);
+			OreDictionary.registerOre("ingot"+type, ingot);
 		if(!dust.isEmpty())
-			OreDictionary.registerOre("dust" + type, dust);
+			OreDictionary.registerOre("dust"+type, dust);
 		if(!nugget.isEmpty())
-			OreDictionary.registerOre("nugget" + type, nugget);
+			OreDictionary.registerOre("nugget"+type, nugget);
 		if(!plate.isEmpty())
-			OreDictionary.registerOre("plate" + type, plate);
+			OreDictionary.registerOre("plate"+type, plate);
 		if(!block.isEmpty())
-			OreDictionary.registerOre("block" + type, block);
+			OreDictionary.registerOre("block"+type, block);
 		if(!slab.isEmpty())
-			OreDictionary.registerOre("slab" + type, slab);
+			OreDictionary.registerOre("slab"+type, slab);
 		if(!sheet.isEmpty())
-			OreDictionary.registerOre("blockSheetmetal" + type, sheet);
+			OreDictionary.registerOre("blockSheetmetal"+type, sheet);
 		if(!slabSheet.isEmpty())
-			OreDictionary.registerOre("slabSheetmetal" + type, slabSheet);
+			OreDictionary.registerOre("slabSheetmetal"+type, slabSheet);
 	}
 
 	public static void registerTile(Class<? extends TileEntity> tile)
 	{
 		String s = tile.getSimpleName();
 		s = s.substring(s.indexOf("TileEntity")+"TileEntity".length());
-		GameRegistry.registerTileEntity(tile, ImmersiveEngineering.MODID+":"+ s);
+		GameRegistry.registerTileEntity(tile, ImmersiveEngineering.MODID+":"+s);
 	}
 
 	public static void addConfiguredWorldgen(IBlockState state, String name, int[] config)
 	{
-		if(config!=null && config.length>=5 && config[0]>0)
-			IEWorldGen.addOreGen(name, state, config[0],config[1],config[2], config[3],config[4]);
+		if(config!=null&&config.length >= 5&&config[0] > 0)
+			IEWorldGen.addOreGen(name, state, config[0], config[1], config[2], config[3], config[4]);
 	}
 
 	public static void addBanner(String name, String id, Object item, int... offset)
@@ -1200,7 +1225,7 @@ public class IEContent
 		name = ImmersiveEngineering.MODID+"_"+name;
 		id = "ie_"+id;
 		ItemStack craftingStack = ItemStack.EMPTY;
-		if(item instanceof ItemStack && (offset==null||offset.length<1))
+		if(item instanceof ItemStack&&(offset==null||offset.length < 1))
 			craftingStack = (ItemStack)item;
 		BannerPattern e = EnumHelper.addEnum(BannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
 		if(craftingStack.isEmpty())

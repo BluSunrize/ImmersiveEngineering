@@ -31,34 +31,41 @@ public class MultiblockAlloySmelter implements IMultiblock
 	public static MultiblockAlloySmelter instance = new MultiblockAlloySmelter();
 
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
-	static{
-		for(int h=0;h<2;h++)
-			for(int l=0;l<2;l++)
-				for(int w=0;w<2;w++)
-					structure[h][l][w]=new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.ALLOYBRICK.getMeta());
+
+	static
+	{
+		for(int h = 0; h < 2; h++)
+			for(int l = 0; l < 2; l++)
+				for(int w = 0; w < 2; w++)
+					structure[h][l][w] = new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta());
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
+
 	@Override
 	public float getManualScale()
 	{
 		return 20;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
@@ -74,7 +81,7 @@ public class MultiblockAlloySmelter implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==IEContent.blockStoneDecoration && state.getBlock().getMetaFromState(state)==BlockTypes_StoneDecoration.ALLOYBRICK.getMeta();
+		return state.getBlock()==IEContent.blockStoneDecoration&&state.getBlock().getMetaFromState(state)==BlockTypes_StoneDecoration.ALLOYBRICK.getMeta();
 	}
 
 	@Override
@@ -87,29 +94,29 @@ public class MultiblockAlloySmelter implements IMultiblock
 		if(!Utils.isBlockAt(world, pos.offset(f.rotateY()), IEContent.blockStoneDecoration, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta()))
 			pos = pos.offset(f.rotateYCCW());
 
-		for(int h=0;h<=1;h++)
-			for(int l=0;l<=1;l++)
-				for(int w=0;w<=1;w++)
+		for(int h = 0; h <= 1; h++)
+			for(int l = 0; l <= 1; l++)
+				for(int w = 0; w <= 1; w++)
 				{
-					BlockPos pos2 = pos.up(h).offset(f,l).offset(f.rotateY(),w);
+					BlockPos pos2 = pos.up(h).offset(f, l).offset(f.rotateY(), w);
 					if(!Utils.isBlockAt(world, pos2, IEContent.blockStoneDecoration, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta()))
 						return false;
 				}
 		IBlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta());
 		state = state.withProperty(IEProperties.FACING_HORIZONTAL, f.getOpposite());
-		for(int h=0;h<=1;h++)
-			for(int l=0;l<=1;l++)
-				for(int w=0;w<=1;w++)
+		for(int h = 0; h <= 1; h++)
+			for(int l = 0; l <= 1; l++)
+				for(int w = 0; w <= 1; w++)
 				{
-					BlockPos pos2 = pos.up(h).offset(f,l).offset(f.rotateY(),w);
+					BlockPos pos2 = pos.up(h).offset(f, l).offset(f.rotateY(), w);
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntityAlloySmelter)
 					{
-						TileEntityAlloySmelter currBlast = (TileEntityAlloySmelter) curr;
-						currBlast.offset=new int[]{pos2.getX()-pos.getX(),pos2.getY()-pos.getY(),pos2.getZ()-pos.getZ()};
-						currBlast.pos = (h+1)*9 + (l+1)*3 + (w+1);
-						currBlast.formed=true;
+						TileEntityAlloySmelter currBlast = (TileEntityAlloySmelter)curr;
+						currBlast.offset = new int[]{pos2.getX()-pos.getX(), pos2.getY()-pos.getY(), pos2.getZ()-pos.getZ()};
+						currBlast.pos = (h+1)*9+(l+1)*3+(w+1);
+						currBlast.formed = true;
 						currBlast.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 					}
@@ -118,6 +125,7 @@ public class MultiblockAlloySmelter implements IMultiblock
 	}
 
 	static final IngredientStack[] materials = new IngredientStack[]{new IngredientStack(new ItemStack(IEContent.blockStoneDecoration, 8, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta()))};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

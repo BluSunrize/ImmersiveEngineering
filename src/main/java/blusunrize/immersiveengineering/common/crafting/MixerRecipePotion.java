@@ -25,17 +25,18 @@ import net.minecraftforge.fluids.FluidStack;
 public class MixerRecipePotion extends MixerRecipe
 {
 	public final PotionType inputPotionType;
+
 	public MixerRecipePotion(PotionType inputType)
 	{
-		super(new FluidStack(IEContent.fluidPotion,1000), getFluidStackForType(inputType,1000), new Object[0], 6400);
+		super(new FluidStack(IEContent.fluidPotion, 1000), getFluidStackForType(inputType, 1000), new Object[0], 6400);
 		this.inputPotionType = inputType;
 	}
 
 	public static FluidStack getFluidStackForType(PotionType type, int amount)
 	{
-		if(type==PotionTypes.WATER || type==null)
-			return new FluidStack(FluidRegistry.WATER,amount);
-		FluidStack stack = new FluidStack(IEContent.fluidPotion,amount);
+		if(type==PotionTypes.WATER||type==null)
+			return new FluidStack(FluidRegistry.WATER, amount);
+		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
 		stack.tag = new NBTTagCompound();
 		stack.tag.setString("Potion", PotionType.REGISTRY.getNameForObject(type).toString());
 		return stack;
@@ -56,7 +57,7 @@ public class MixerRecipePotion extends MixerRecipe
 	@Override
 	public boolean matches(FluidStack fluid, NonNullList<ItemStack> components)
 	{
-		if(fluid!=null && fluid.containsFluid(this.fluidInput))
+		if(fluid!=null&&fluid.containsFluid(this.fluidInput))
 			for(PotionHelper.MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
 				if(mixPredicate.input==this.inputPotionType)
 					for(ItemStack stack : components)
@@ -68,8 +69,8 @@ public class MixerRecipePotion extends MixerRecipe
 	@Override
 	public int[] getUsedSlots(FluidStack fluid, NonNullList<ItemStack> components)
 	{
-		for(int i = 0; i< components.size(); i++)
-			if(!components.get(i).isEmpty() && PotionHelper.isReagent(components.get(i)))
+		for(int i = 0; i < components.size(); i++)
+			if(!components.get(i).isEmpty()&&PotionHelper.isReagent(components.get(i)))
 				return new int[]{i};
 		return new int[0];
 	}

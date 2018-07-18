@@ -23,12 +23,12 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 	public boolean matches(InventoryCrafting inv, World world)
 	{
 		ItemStack revolver = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty() && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), stackInSlot, false) && stackInSlot.getItemDamage()!=1)
+				if(revolver.isEmpty()&&OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver, 1, OreDictionary.WILDCARD_VALUE), stackInSlot, false)&&stackInSlot.getItemDamage()!=1)
 					revolver = stackInSlot;
 				else
 					return false;
@@ -41,12 +41,12 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
 		ItemStack revolver = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty() && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), stackInSlot, false) && stackInSlot.getItemDamage()!=1)
+				if(revolver.isEmpty()&&OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver, 1, OreDictionary.WILDCARD_VALUE), stackInSlot, false)&&stackInSlot.getItemDamage()!=1)
 					revolver = stackInSlot.copy();
 				else
 					return ItemStack.EMPTY;
@@ -58,7 +58,7 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width>=2 && height>=2;
+		return width >= 2&&height >= 2;
 	}
 
 	@Override
@@ -67,9 +67,9 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 		return ItemStack.EMPTY;
 	}
 
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-    {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-    }
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+	}
 }

@@ -31,7 +31,7 @@ public class BloodMagicHelper extends IECompatModule
 	public void init()
 	{
 		Item crystal = Item.REGISTRY.getObject(new ResourceLocation("bloodmagic:item_demon_crystal"));
-		if(crystal != null)
+		if(crystal!=null)
 			BlueprintCraftingRecipe.addRecipe("specialBullet", BulletHandler.getBulletStack("crystalwill"), new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, crystal);
 	}
 

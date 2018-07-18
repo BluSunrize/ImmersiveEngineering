@@ -28,10 +28,10 @@ public class BetterWithModsHelper extends IECompatModule
 		Item hempSeeds = Item.REGISTRY.getObject(new ResourceLocation("betterwithmods:hemp"));
 		Item material = Item.REGISTRY.getObject(new ResourceLocation("betterwithmods:material"));
 		Block hempBlock = Block.REGISTRY.getObject(new ResourceLocation("betterwithmods:hemp"));
-		if(hempSeeds!=null && material!=null && hempBlock!=null)
-			BelljarHandler.cropHandler.register(new ItemStack(hempSeeds), new ItemStack[]{new ItemStack(material,1,2),new ItemStack(hempSeeds,1)}, new ItemStack(Blocks.DIRT), hempBlock.getDefaultState());
+		if(hempSeeds!=null&&material!=null&&hempBlock!=null)
+			BelljarHandler.cropHandler.register(new ItemStack(hempSeeds), new ItemStack[]{new ItemStack(material, 1, 2), new ItemStack(hempSeeds, 1)}, new ItemStack(Blocks.DIRT), hempBlock.getDefaultState());
 		if(material!=null)
-			BelljarHandler.registerBasicItemFertilizer(new ItemStack(material,1,5), 1.25f);
+			BelljarHandler.registerBasicItemFertilizer(new ItemStack(material, 1, 5), 1.25f);
 	}
 
 	@Override

@@ -24,11 +24,13 @@ public enum BlockTypes_MetalLadder implements IStringSerializable, BlockIEBase.I
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

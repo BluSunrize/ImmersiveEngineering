@@ -28,6 +28,7 @@ import java.util.Map;
 public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 {
 	public static ArmorMaterial mat;
+
 	public ItemFaradaySuit(EntityEquipmentSlot type)
 	{
 		super(mat, 0, type);
@@ -38,7 +39,7 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 //		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
-	
+
 	@Override
 	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache,
 						 @Nullable DamageSource dSource, ElectricSource eSource)
@@ -46,9 +47,9 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 		if(!(dSource instanceof ElectricDamageSource))
 			return;
 		ElectricDamageSource dmg = (ElectricDamageSource)dSource;
-		if(dmg.source.level<1.75)
+		if(dmg.source.level < 1.75)
 		{
-			if (cache.containsKey("faraday"))
+			if(cache.containsKey("faraday"))
 				cache.put("faraday", (1<<armorType.getIndex())|((Integer)cache.get("faraday")));
 			else
 				cache.put("faraday", 1<<armorType.getIndex());
@@ -57,8 +58,8 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 		}
 		else
 		{
-			dmg.dmg*=1.2;
-			if((!(p instanceof EntityPlayer)||!((EntityPlayer)p).capabilities.isCreativeMode)&&s.attemptDamageItem(2, itemRand, (dmg.getTrueSource() instanceof EntityPlayerMP)?(EntityPlayerMP)dmg.getTrueSource():null))
+			dmg.dmg *= 1.2;
+			if((!(p instanceof EntityPlayer)||!((EntityPlayer)p).capabilities.isCreativeMode)&&s.attemptDamageItem(2, itemRand, (dmg.getTrueSource() instanceof EntityPlayerMP)?(EntityPlayerMP)dmg.getTrueSource(): null))
 				p.setItemStackToSlot(eqSlot, ItemStack.EMPTY);
 		}
 	}
@@ -66,6 +67,6 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
-		return "immersiveengineering:textures/models/armor_faraday"+(slot==EntityEquipmentSlot.LEGS?"_legs":"")+".png";
+		return "immersiveengineering:textures/models/armor_faraday"+(slot==EntityEquipmentSlot.LEGS?"_legs": "")+".png";
 	}
 }

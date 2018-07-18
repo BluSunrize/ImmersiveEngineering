@@ -26,26 +26,43 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 {
 	private boolean first = true;
 	private ItemStack stack;
-	public IEItemStackHandler(ItemStack stack) {
+
+	public IEItemStackHandler(ItemStack stack)
+	{
 		super();
 		this.stack = stack;
 	}
+
 	@Nonnull
-	private Runnable onChange = ()->{};
-	public void setTile(TileEntity tile) {
-		if (tile!=null) {
+	private Runnable onChange = () -> {
+	};
+
+	public void setTile(TileEntity tile)
+	{
+		if(tile!=null)
+		{
 			onChange = tile::markDirty;
-		} else {
-			onChange = ()->{};
+		}
+		else
+		{
+			onChange = () -> {
+			};
 		}
 	}
-	public void setInventoryForUpdate(IInventory inv) {
-		if (inv!=null) {
+
+	public void setInventoryForUpdate(IInventory inv)
+	{
+		if(inv!=null)
+		{
 			onChange = inv::markDirty;
-		} else {
-			onChange = ()->{};
+		}
+		else
+		{
+			onChange = () -> {
+			};
 		}
 	}
+
 	@Override
 	protected void onContentsChanged(int slot)
 	{
@@ -56,24 +73,25 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		return capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+		return capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 	}
 
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if (first) {
+		if(first)
+		{
 			int idealSize = ((ItemInternalStorage)stack.getItem()).getSlotCount(stack);
 			NonNullList<ItemStack> newList = NonNullList.withSize(idealSize, ItemStack.EMPTY);
-			for (int i = 0; i < Math.min(stacks.size(), idealSize); i++)
+			for(int i = 0; i < Math.min(stacks.size(), idealSize); i++)
 				newList.set(i, stacks.get(i));
 			stacks = newList;
 			stack = ItemStack.EMPTY;
 			first = false;
 		}
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T) this;
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return (T)this;
 		return null;
 	}
 

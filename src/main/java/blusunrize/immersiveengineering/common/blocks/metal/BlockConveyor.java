@@ -114,7 +114,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	public String getUnlocalizedName(ItemStack stack)
 	{
 		String subName = ItemNBTHelper.getString(stack, "conveyorType");
-		return super.getUnlocalizedName() + "." + subName;
+		return super.getUnlocalizedName()+"."+subName;
 	}
 
 	@Override
@@ -123,11 +123,11 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 		state = super.getExtendedState(state, world, pos);
 		if(state instanceof IExtendedBlockState)
 		{
-			IExtendedBlockState ext = (IExtendedBlockState) state;
+			IExtendedBlockState ext = (IExtendedBlockState)state;
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof TileEntityConveyorBelt))
 				return state;
-			state = ext.withProperty(ICONEYOR_PASSTHROUGH, ((TileEntityConveyorBelt) te).getConveyorSubtype());
+			state = ext.withProperty(ICONEYOR_PASSTHROUGH, ((TileEntityConveyorBelt)te).getConveyorSubtype());
 		}
 		return state;
 	}
@@ -157,18 +157,18 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	{
 		super.onIEBlockPlacedBy(world, pos, state, side, hitX, hitY, hitZ, placer, stack);
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical))
+		if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical))
 		{
-			TileEntityConveyorBelt conveyor = (TileEntityConveyorBelt) tile;
+			TileEntityConveyorBelt conveyor = (TileEntityConveyorBelt)tile;
 			EnumFacing f = conveyor.facing;
 			ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(stack, "conveyorType"));
 			IConveyorBelt subType = ConveyorHandler.getConveyor(rl, conveyor);
 			conveyor.setConveyorSubtype(subType);
 			tile = world.getTileEntity(pos.offset(f));
 			TileEntity tileUp = world.getTileEntity(pos.offset(f).add(0, 1, 0));
-			if(subType != null && (!(tile instanceof IConveyorTile) || ((IConveyorTile) tile).getFacing() == f.getOpposite()) && tileUp instanceof IConveyorTile && ((IConveyorTile) tileUp).getFacing() != f.getOpposite() && world.isAirBlock(pos.add(0, 1, 0)))
+			if(subType!=null&&(!(tile instanceof IConveyorTile)||((IConveyorTile)tile).getFacing()==f.getOpposite())&&tileUp instanceof IConveyorTile&&((IConveyorTile)tileUp).getFacing()!=f.getOpposite()&&world.isAirBlock(pos.add(0, 1, 0)))
 				subType.setConveyorDirection(ConveyorDirection.UP);
-			tile = world.getTileEntity(pos.offset(f.getOpposite()).add(0,1,0));
+			tile = world.getTileEntity(pos.offset(f.getOpposite()).add(0, 1, 0));
 //			if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing==f)
 //				conveyor.transportDown = true;
 //			if(conveyor.transportUp && conveyor.transportDown)
@@ -185,7 +185,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 			return side==((TileEntityConveyorVertical)te).facing;
 		else if(te instanceof TileEntityConveyorBelt)
 		{
-			return side == EnumFacing.DOWN && (((TileEntityConveyorBelt) te).getConveyorSubtype() == null || ((TileEntityConveyorBelt) te).getConveyorSubtype().getConveyorDirection() == ConveyorDirection.HORIZONTAL);
+			return side==EnumFacing.DOWN&&(((TileEntityConveyorBelt)te).getConveyorSubtype()==null||((TileEntityConveyorBelt)te).getConveyorSubtype().getConveyorDirection()==ConveyorDirection.HORIZONTAL);
 		}
 		return false;
 	}
@@ -211,6 +211,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isToolEffective(String type, IBlockState state)
 	{

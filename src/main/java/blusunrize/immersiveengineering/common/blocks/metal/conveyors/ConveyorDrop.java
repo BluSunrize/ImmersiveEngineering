@@ -33,9 +33,9 @@ public class ConveyorDrop extends ConveyorBasic
 	{
 		BlockPos posDown = tile.getPos().down();
 		TileEntity inventoryTile = tile.getWorld().getTileEntity(posDown);
-		boolean contact = Math.abs(facing.getAxis() == Axis.Z ? (tile.getPos().getZ() + .5 - entity.posZ) : (tile.getPos().getX() + .5 - entity.posX)) < .2;
+		boolean contact = Math.abs(facing.getAxis()==Axis.Z?(tile.getPos().getZ()+.5-entity.posZ): (tile.getPos().getX()+.5-entity.posX)) < .2;
 
-		if(contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile))
+		if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 		{
 			if(!tile.getWorld().isRemote)
 			{
@@ -50,16 +50,16 @@ public class ConveyorDrop extends ConveyorBasic
 				}
 			}
 		}
-		else if(contact && isEmptySpace(tile.getWorld(), posDown, inventoryTile))
+		else if(contact&&isEmptySpace(tile.getWorld(), posDown, inventoryTile))
 		{
 			entity.motionX = 0;
 			entity.motionZ = 0;
-			entity.setPosition(tile.getPos().getX() + .5, tile.getPos().getY() - .5, tile.getPos().getZ() + .5);
+			entity.setPosition(tile.getPos().getX()+.5, tile.getPos().getY()-.5, tile.getPos().getZ()+.5);
 			if(!(inventoryTile instanceof IConveyorTile))
-				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
+				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
 		}
 		else
-			super.handleInsertion(tile,entity,facing,conDir,distX,distZ);
+			super.handleInsertion(tile, entity, facing, conDir, distX, distZ);
 	}
 
 	boolean isEmptySpace(World world, BlockPos pos, TileEntity tile)

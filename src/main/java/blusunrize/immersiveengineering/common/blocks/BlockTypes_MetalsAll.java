@@ -25,17 +25,19 @@ public enum BlockTypes_MetalsAll implements IStringSerializable, BlockIEBase.IBl
 	STEEL,
 	IRON,
 	GOLD;
-	
+
 	@Override
 	public String getName()
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

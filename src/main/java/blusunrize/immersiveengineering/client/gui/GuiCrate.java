@@ -16,10 +16,10 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiCrate extends GuiIEContainerBase
 {
-	public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile )
+	public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		super(new ContainerCrate(inventoryPlayer, tile));
-		this.ySize=168;
+		this.ySize = 168;
 	}
 
 	@Override
@@ -33,6 +33,6 @@ public class GuiCrate extends GuiIEContainerBase
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
-		this.drawTexturedModalRect(guiLeft,guiTop, 0, 	0, xSize, ySize);
+		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 }

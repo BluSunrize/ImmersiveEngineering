@@ -26,7 +26,8 @@ public class IEClassTransformer implements IClassTransformer
 {
 	private static Map<String, MethodTransformer[]> transformerMap = Maps.newHashMap();
 
-	static{
+	static
+	{
 		transformerMap.put("net.minecraft.client.model.ModelBiped", new MethodTransformer[]{
 				new MethodTransformer("setRotationAngles", "func_78087_a", "(FFFFFFLnet/minecraft/entity/Entity;)V", methodNode ->
 				{
@@ -50,13 +51,13 @@ public class IEClassTransformer implements IClassTransformer
 				{
 					//INVOKEVIRTUAL net/minecraft/block/Block.onEntityCollidedWithBlock (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/entity/Entity;)V
 					Iterator<AbstractInsnNode> iterator = m.instructions.iterator();
-					while (iterator.hasNext())
+					while(iterator.hasNext())
 					{
 						AbstractInsnNode anode = iterator.next();
-						if (anode.getOpcode() == Opcodes.INVOKEVIRTUAL)
+						if(anode.getOpcode()==Opcodes.INVOKEVIRTUAL)
 						{
-							MethodInsnNode n = (MethodInsnNode) anode;
-							if (n.name.equals("onEntityCollidedWithBlock")||n.name.equals("func_180634_a"))
+							MethodInsnNode n = (MethodInsnNode)anode;
+							if(n.name.equals("onEntityCollidedWithBlock")||n.name.equals("func_180634_a"))
 							{
 								InsnList newInstructions = new InsnList();
 								newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 4));
@@ -84,10 +85,10 @@ public class IEClassTransformer implements IClassTransformer
 
 			for(MethodNode method : node.methods)
 				for(MethodTransformer methodTransformer : transformers)
-					if((methodTransformer.functionName.equals(method.name)||methodTransformer.srgName.equals(method.name)) && methodTransformer.functionDesc.equals(method.desc))
+					if((methodTransformer.functionName.equals(method.name)||methodTransformer.srgName.equals(method.name))&&methodTransformer.functionDesc.equals(method.desc))
 						methodTransformer.function.accept(method);
 
-			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES);
 			node.accept(writer);
 			return writer.toByteArray();
 		}

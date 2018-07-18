@@ -25,8 +25,8 @@ public class ConditionFactoryOreExists implements IConditionFactory
 	@Override
 	public BooleanSupplier parse(JsonContext context, JsonObject json)
 	{
-		String key = JsonUtils.getString(json , "ore");
-		boolean value = JsonUtils.getBoolean(json , "value", true);
-		return () -> ApiUtils.isExistingOreName(key) == value;
+		String key = JsonUtils.getString(json, "ore");
+		boolean value = JsonUtils.getBoolean(json, "value", true);
+		return () -> ApiUtils.isExistingOreName(key)==value;
 	}
 }

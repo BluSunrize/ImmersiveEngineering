@@ -33,11 +33,11 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 		ItemStack jerrycan = ItemStack.EMPTY;
 		ItemStack container = ItemStack.EMPTY;
 		int[] slots = getRelevantSlots(inv);
-		if (slots[0]>=0)
+		if(slots[0] >= 0)
 			jerrycan = inv.getStackInSlot(slots[0]);
-		if (slots[1]>=0)
+		if(slots[1] >= 0)
 			container = inv.getStackInSlot(slots[1]);
-		if(!jerrycan.isEmpty() && !container.isEmpty())
+		if(!jerrycan.isEmpty()&&!container.isEmpty())
 		{
 			IFluidHandler handler = FluidUtil.getFluidHandler(container);
 			FluidStack fs = handler.drain(Integer.MAX_VALUE, false);
@@ -54,19 +54,19 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 		ItemStack container = ItemStack.EMPTY;
 		FluidStack fs = null;
 		int[] slots = getRelevantSlots(inv);
-		if (slots[0]>=0)
+		if(slots[0] >= 0)
 		{
 			jerrycan = inv.getStackInSlot(slots[0]);
 			fs = FluidUtil.getFluidContained(jerrycan);
 		}
-		if (slots[1]>=0)
+		if(slots[1] >= 0)
 			container = inv.getStackInSlot(slots[1]);
-		if(fs!=null && !container.isEmpty())
+		if(fs!=null&&!container.isEmpty())
 		{
 			ItemStack newContainer = Utils.copyStackWithAmount(container, 1);
 			IFluidHandlerItem handler = FluidUtil.getFluidHandler(newContainer);
 			int accepted = handler.fill(fs, false);
-			if(accepted>0)
+			if(accepted > 0)
 			{
 				handler.fill(fs, true);
 				newContainer = handler.getContainer();// Because buckets are silly
@@ -81,13 +81,13 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 	private int[] getRelevantSlots(InventoryCrafting inv)
 	{
 		int[] ret = {-1, -1};
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(ret[0]<0 && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
+				if(ret[0] < 0&&IEContent.itemJerrycan.equals(stackInSlot.getItem())&&FluidUtil.getFluidContained(stackInSlot)!=null)
 					ret[0] = i;
-				else if(ret[1]<0 && FluidUtil.getFluidHandler(stackInSlot)!=null)
+				else if(ret[1] < 0&&FluidUtil.getFluidHandler(stackInSlot)!=null)
 					ret[1] = i;
 				else
 				{
@@ -101,7 +101,7 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width>=2 && height>=2;
+		return width >= 2&&height >= 2;
 	}
 
 	@Nonnull
@@ -117,7 +117,7 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 	{
 		NonNullList<ItemStack> remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
 		int[] inputs = getRelevantSlots(inv);
-		if (inputs[1]>=0)
+		if(inputs[1] >= 0)
 			remaining.set(inputs[1], ItemStack.EMPTY);
 		return remaining;
 	}

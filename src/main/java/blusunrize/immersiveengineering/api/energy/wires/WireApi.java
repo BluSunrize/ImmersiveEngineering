@@ -19,9 +19,11 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -33,10 +35,10 @@ public final class WireApi
 	public static void registerConnectorForRender(String key, ResourceLocation baseModel,
 												  @Nullable ImmutableMap<String, String> texReplacement)
 	{
-		if (ConnLoader.baseModels.containsKey(key))
-			IELogger.warn("Tried to register connector model for " + key + " twice. Active mod: " + Loader.instance().activeModContainer().getModId());
+		if(ConnLoader.baseModels.containsKey(key))
+			IELogger.warn("Tried to register connector model for "+key+" twice. Active mod: "+Loader.instance().activeModContainer().getModId());
 		ConnLoader.baseModels.put(key, baseModel);
-		if (texReplacement != null)
+		if(texReplacement!=null)
 			ConnLoader.textureReplacements.put(key, texReplacement);
 	}
 
@@ -90,8 +92,8 @@ public final class WireApi
 	@Nullable
 	public static WireType getWireType(IBlockState state)
 	{
-		for (Map.Entry<WireType, FeedthroughModelInfo> entry : INFOS.entrySet())
-			if (entry.getValue().isValidConnector(state))
+		for(Map.Entry<WireType, FeedthroughModelInfo> entry : INFOS.entrySet())
+			if(entry.getValue().isValidConnector(state))
 				return entry.getKey();
 		return null;
 	}
@@ -101,9 +103,9 @@ public final class WireApi
 	public static void registerWireType(WireType w)
 	{
 		String category = w.getCategory();
-		if (category != null)
+		if(category!=null)
 		{
-			if (!WIRES_BY_CATEGORY.containsKey(category))
+			if(!WIRES_BY_CATEGORY.containsKey(category))
 				WIRES_BY_CATEGORY.put(category, new HashSet<>());
 			WIRES_BY_CATEGORY.get(category).add(w);
 		}
@@ -112,12 +114,12 @@ public final class WireApi
 	public static boolean canMix(WireType a, WireType b)
 	{
 		String cat = a.getCategory();
-		return cat != null && cat.equals(b.getCategory());
+		return cat!=null&&cat.equals(b.getCategory());
 	}
 
 	public static Set<WireType> getWiresForType(@Nullable String category)
 	{
-		if (category == null)
+		if(category==null)
 			return ImmutableSet.of();
 		return WIRES_BY_CATEGORY.get(category);
 	}
@@ -148,7 +150,7 @@ public final class WireApi
 		{
 			modelLoc = model;
 			this.texLoc = texLoc;
-			for (int i = 0; i < 4; i++)
+			for(int i = 0; i < 4; i++)
 				this.uvs[i] = uvs[i];
 			texReplacements = texRepl;
 			this.connLength = connLength;
@@ -169,17 +171,17 @@ public final class WireApi
 
 		public boolean isValidConnector(IBlockState state)
 		{
-			if (matches != null)
+			if(matches!=null)
 			{
 				return matches.test(state);
 			}
 			else
 			{
-				assert conn != null;
-				if (state.getBlock() != conn.getBlock())
+				assert conn!=null;
+				if(state.getBlock()!=conn.getBlock())
 					return false;
-				for (IProperty<?> p : state.getPropertyKeys())
-					if (p != IEProperties.FACING_ALL && !state.getValue(p).equals(conn.getValue(p)))
+				for(IProperty<?> p : state.getPropertyKeys())
+					if(p!=IEProperties.FACING_ALL&&!state.getValue(p).equals(conn.getValue(p)))
 						return false;
 				return true;
 			}
@@ -197,16 +199,15 @@ public final class WireApi
 			try
 			{
 				model = ModelLoaderRegistry.getModel(modelLoc);
-			}
-			catch (Exception e)
+			} catch(Exception e)
 			{
 				e.printStackTrace();
 				model = ModelLoaderRegistry.getMissingModel();
 			}
-			if (model instanceof OBJModel)
+			if(model instanceof OBJModel)
 			{
-				OBJModel obj = (OBJModel) model;
-				obj = (OBJModel) obj.retexture(texReplacements);
+				OBJModel obj = (OBJModel)model;
+				obj = (OBJModel)obj.retexture(texReplacements);
 				model = obj.process(ImmutableMap.of("flip-v", "true"));
 			}
 			this.model = model.bake(model.getDefaultState(), format, bakedTextureGetter);

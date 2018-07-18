@@ -28,12 +28,12 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 {
 	public BlockMetalMultiblocks()
 	{
-		super("metal_multiblock",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalMultiblock.class), ItemBlockIEBase.class, IEProperties.DYNAMICRENDER,IEProperties.BOOLEANS[0],Properties.AnimationProperty,IEProperties.OBJ_TEXTURE_REMAP);
+		super("metal_multiblock", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalMultiblock.class), ItemBlockIEBase.class, IEProperties.DYNAMICRENDER, IEProperties.BOOLEANS[0], Properties.AnimationProperty, IEProperties.OBJ_TEXTURE_REMAP);
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.TANK.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta(), BlockRenderLayer.CUTOUT);
-		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta(), BlockRenderLayer.SOLID,BlockRenderLayer.TRANSLUCENT);
+		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		this.setAllNotNormalBlock();
 		lightOpacity = 0;
 	}
@@ -43,6 +43,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	{
 		return true;
 	}
+
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
@@ -289,53 +290,53 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 		if(te instanceof TileEntityMultiblockPart)
 		{
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)te;
-			if(tile instanceof TileEntityMultiblockMetal && ((TileEntityMultiblockMetal) tile).isRedstonePos())
+			if(tile instanceof TileEntityMultiblockMetal&&((TileEntityMultiblockMetal)tile).isRedstonePos())
 				return true;
 			if(te instanceof TileEntityMetalPress)
 			{
-				return tile.pos<3 || (tile.pos==7&&side==EnumFacing.UP);
+				return tile.pos < 3||(tile.pos==7&&side==EnumFacing.UP);
 			}
 			else if(te instanceof TileEntityCrusher)
 			{
-				return tile.pos%5==0 || tile.pos==2 || tile.pos==9 || (tile.pos==19 && side.getOpposite()==tile.facing);
+				return tile.pos%5==0||tile.pos==2||tile.pos==9||(tile.pos==19&&side.getOpposite()==tile.facing);
 			}
 			else if(te instanceof TileEntitySheetmetalTank)
 			{
-				return tile.pos==4||tile.pos==40||(tile.pos>=18&&tile.pos<36);
+				return tile.pos==4||tile.pos==40||(tile.pos >= 18&&tile.pos < 36);
 			}
 			else if(te instanceof TileEntitySilo)
 			{
-				return tile.pos==4||tile.pos==58||(tile.pos>=18&&tile.pos<54);
+				return tile.pos==4||tile.pos==58||(tile.pos >= 18&&tile.pos < 54);
 			}
-			else if(te instanceof TileEntitySqueezer || te instanceof TileEntityFermenter)
+			else if(te instanceof TileEntitySqueezer||te instanceof TileEntityFermenter)
 			{
-				return tile.pos==0||tile.pos==9 || tile.pos==5 || (tile.pos==11&&side.getOpposite()==tile.facing);
+				return tile.pos==0||tile.pos==9||tile.pos==5||(tile.pos==11&&side.getOpposite()==tile.facing);
 			}
 			else if(te instanceof TileEntityRefinery)
 			{
-				return tile.pos==2 || tile.pos==5||tile.pos==9 || (tile.pos==19&&side.getOpposite()==tile.facing) || (tile.pos==27&&side==tile.facing);
+				return tile.pos==2||tile.pos==5||tile.pos==9||(tile.pos==19&&side.getOpposite()==tile.facing)||(tile.pos==27&&side==tile.facing);
 			}
 			else if(te instanceof TileEntityDieselGenerator)
 			{
 				if(tile.pos==0||tile.pos==2)
 					return side.getAxis()==tile.facing.rotateY().getAxis();
-				else if(tile.pos>=15&&tile.pos<=17)
-					return side == EnumFacing.UP;
+				else if(tile.pos >= 15&&tile.pos <= 17)
+					return side==EnumFacing.UP;
 				else if(tile.pos==23)
-					return side==(tile.mirrored?tile.facing.rotateYCCW():tile.facing.rotateY());
+					return side==(tile.mirrored?tile.facing.rotateYCCW(): tile.facing.rotateY());
 			}
 			else if(te instanceof TileEntityExcavator)
 			{
-				if(tile.pos%18<9 || (tile.pos>=18&&tile.pos<36))
+				if(tile.pos%18 < 9||(tile.pos >= 18&&tile.pos < 36))
 					return true;
 			}
 			else if(te instanceof TileEntityArcFurnace)
 			{
-				if(tile.pos==2 || tile.pos==25 || tile.pos==52)
-					return side.getOpposite()==tile.facing || (tile.pos == 52 && side == EnumFacing.UP);
-				if(tile.pos==82 || tile.pos==86 || tile.pos==88 || tile.pos==112)
+				if(tile.pos==2||tile.pos==25||tile.pos==52)
+					return side.getOpposite()==tile.facing||(tile.pos==52&&side==EnumFacing.UP);
+				if(tile.pos==82||tile.pos==86||tile.pos==88||tile.pos==112)
 					return side==EnumFacing.UP;
-				if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
+				if((tile.pos >= 21&&tile.pos <= 23)||(tile.pos >= 46&&tile.pos <= 48)||(tile.pos >= 71&&tile.pos <= 73))
 					return side==tile.facing;
 			}
 		}

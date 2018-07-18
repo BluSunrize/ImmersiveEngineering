@@ -68,47 +68,47 @@ public class ModelConveyor implements IBakedModel
 		TileEntity tile = null;
 		String key = "default";
 		EnumFacing facing = EnumFacing.NORTH;
-		if(blockState == null)
-			key = conveyor != null ? ConveyorHandler.reverseClassRegistry.get(conveyor.getClass()).toString() : "immersiveengineering:conveyor";
+		if(blockState==null)
+			key = conveyor!=null?ConveyorHandler.reverseClassRegistry.get(conveyor.getClass()).toString(): "immersiveengineering:conveyor";
 		else
 		{
 			facing = blockState.getValue(IEProperties.FACING_ALL);
 			if(blockState instanceof IExtendedBlockState)
 			{
-				IExtendedBlockState exState = (IExtendedBlockState) blockState;
+				IExtendedBlockState exState = (IExtendedBlockState)blockState;
 				if(exState.getUnlistedNames().contains(BlockConveyor.ICONEYOR_PASSTHROUGH))
-					conveyor = ((IExtendedBlockState) blockState).getValue(BlockConveyor.ICONEYOR_PASSTHROUGH);
+					conveyor = ((IExtendedBlockState)blockState).getValue(BlockConveyor.ICONEYOR_PASSTHROUGH);
 				if(exState.getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
-					tile = ((IExtendedBlockState) blockState).getValue(IEProperties.TILEENTITY_PASSTHROUGH);
-				if(conveyor != null && tile != null)
+					tile = ((IExtendedBlockState)blockState).getValue(IEProperties.TILEENTITY_PASSTHROUGH);
+				if(conveyor!=null&&tile!=null)
 					key = conveyor.getModelCacheKey(tile, facing);
 			}
 		}
 		List<BakedQuad> cachedQuads = modelCache.get(key);
-		if(cachedQuads != null)
+		if(cachedQuads!=null)
 			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
 		else
 		{
-			if (conveyor==null)
+			if(conveyor==null)
 				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
 			Matrix4f facingMatrix = TRSRTransformation.getMatrix(facing);
-			if(conveyor != null)
+			if(conveyor!=null)
 				facingMatrix = conveyor.modifyBaseRotationMatrix(facingMatrix, tile, facing);
 			Matrix4 matrix = new Matrix4(facingMatrix);
-			ConveyorDirection conDir = conveyor != null ? conveyor.getConveyorDirection() : ConveyorDirection.HORIZONTAL;
-			boolean[] walls = conveyor != null && tile != null ? new boolean[]{conveyor.renderWall(tile, facing, 0), conveyor.renderWall(tile, facing, 1)} : new boolean[]{true, true};
+			ConveyorDirection conDir = conveyor!=null?conveyor.getConveyorDirection(): ConveyorDirection.HORIZONTAL;
+			boolean[] walls = conveyor!=null&&tile!=null?new boolean[]{conveyor.renderWall(tile, facing, 0), conveyor.renderWall(tile, facing, 1)}: new boolean[]{true, true};
 			TextureAtlasSprite tex_conveyor = ClientUtils.mc().getTextureMapBlocks().getMissingSprite();
 			TextureAtlasSprite tex_conveyor_colour = null;
 			int colourStripes = -1;
-			if(conveyor != null)
+			if(conveyor!=null)
 			{
-				tex_conveyor = ClientUtils.getSprite(tile != null ? (conveyor.isActive(tile) ? conveyor.getActiveTexture() : conveyor.getInactiveTexture()) : conveyor.getActiveTexture());
+				tex_conveyor = ClientUtils.getSprite(tile!=null?(conveyor.isActive(tile)?conveyor.getActiveTexture(): conveyor.getInactiveTexture()): conveyor.getActiveTexture());
 				if((colourStripes = conveyor.getDyeColour()) >= 0)
 					tex_conveyor_colour = ClientUtils.getSprite(conveyor.getColouredStripesTexture());
 			}
 			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
-			if(conveyor != null)
+			if(conveyor!=null)
 				cachedQuads = conveyor.modifyQuads(cachedQuads, tile, facing);
 			modelCache.put(key, cachedQuads);
 			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
@@ -119,171 +119,171 @@ public class ModelConveyor implements IBakedModel
 	{
 		Set<BakedQuad> quads = new LinkedHashSet<BakedQuad>();
 
-		Vector3f[] vertices = {new Vector3f(.0625f, 0, 1 - length), new Vector3f(.0625f, 0, 1), new Vector3f(.9375f, 0, 1), new Vector3f(.9375f, 0, 1 - length)};
+		Vector3f[] vertices = {new Vector3f(.0625f, 0, 1-length), new Vector3f(.0625f, 0, 1), new Vector3f(.9375f, 0, 1), new Vector3f(.9375f, 0, 1-length)};
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(rl_casing[0]);
 		TextureAtlasSprite tex_casing1 = ClientUtils.getSprite(rl_casing[1]);
 		TextureAtlasSprite tex_casing2 = ClientUtils.getSprite(rl_casing[2]);
 		float[] colour = {1, 1, 1, 1};
-		float[] colourStripes = {(stripeColour >> 16 & 255) / 255f, (stripeColour >> 8 & 255) / 255f, (stripeColour & 255) / 255f, 1};
+		float[] colourStripes = {(stripeColour >> 16&255)/255f, (stripeColour >> 8&255)/255f, (stripeColour&255)/255f, 1};
 
 		/**
 		 * Bottom & Top
 		 */
 		//Shift if up/down
 		for(int i = 0; i < 4; i++)
-			if((i == 0 || i == 3) ? conDir == ConveyorDirection.UP : conDir == ConveyorDirection.DOWN)
+			if((i==0||i==3)?conDir==ConveyorDirection.UP: conDir==ConveyorDirection.DOWN)
 				vertices[i].translate(0, length, 0);
 		//Draw bottom
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.DOWN,facing), tex_conveyor, new double[]{1, 0, 15, length * 16}, colour, true));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.DOWN, facing), tex_conveyor, new double[]{1, 0, 15, length*16}, colour, true));
 		//Expand verts to side
 		for(Vector3f v : vertices)
-			v.setX(v.getX() < .5f ? 0 : 1);
+			v.setX(v.getX() < .5f?0: 1);
 		//Draw bottom casing
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.DOWN,facing), tex_casing2, new double[]{0, 0, 16, length * 16}, colour, true));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.DOWN, facing), tex_casing2, new double[]{0, 0, 16, length*16}, colour, true));
 		//Shift verts to top
 		for(Vector3f v : vertices)
 			v.translate(0, .125f, 0);
 		//Draw top
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), tex_conveyor, new double[]{0, length * 16, 16, 0}, colour, false));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_conveyor, new double[]{0, length*16, 16, 0}, colour, false));
 		if(corners[0])
 		{
 			vertices = new Vector3f[]{new Vector3f(0, .1875f, .9375f), new Vector3f(0, .1875f, 1), new Vector3f(1, .1875f, 1), new Vector3f(1, .1875f, .9375f)};
 			//Shift if up/down
 			for(int i = 0; i < 4; i++)
-				vertices[i].translate(0, i == 0 || i == 3 ? (conDir == ConveyorDirection.UP ? .0625f : conDir == ConveyorDirection.DOWN ? length - .0625f : 0) : (conDir == ConveyorDirection.DOWN ? length : 0), 0);
+				vertices[i].translate(0, i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0), 0);
 			//Draw top casing back
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
 		}
 		if(corners[1])
 		{
-			vertices = new Vector3f[]{new Vector3f(0, .1875f, 1 - length), new Vector3f(0, .1875f, 1.0625f - length), new Vector3f(1, .1875f, 1.0625f - length), new Vector3f(1, .1875f, 1 - length)};
+			vertices = new Vector3f[]{new Vector3f(0, .1875f, 1-length), new Vector3f(0, .1875f, 1.0625f-length), new Vector3f(1, .1875f, 1.0625f-length), new Vector3f(1, .1875f, 1-length)};
 			//Shift if up/down
 			for(int i = 0; i < 4; i++)
-				vertices[i].translate(0, i == 1 || i == 2 ? (conDir == ConveyorDirection.UP ? length - .0625f : conDir == ConveyorDirection.DOWN ? .0625f : 0) : (conDir == ConveyorDirection.UP ? length : 0), 0);
+				vertices[i].translate(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
 			//Draw top casing front
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
 		}
 
 		/**
 		 * Sides
 		 */
-		vertices = new Vector3f[]{new Vector3f(0, 0, 1 - length), new Vector3f(0, 0, 1), new Vector3f(0, .125f, 1), new Vector3f(0, .125f, 1 - length)};
+		vertices = new Vector3f[]{new Vector3f(0, 0, 1-length), new Vector3f(0, 0, 1), new Vector3f(0, .125f, 1), new Vector3f(0, .125f, 1-length)};
 		for(int i = 0; i < 4; i++)
-			if((i == 0 || i == 3) ? conDir == ConveyorDirection.UP : conDir == ConveyorDirection.DOWN)
+			if((i==0||i==3)?conDir==ConveyorDirection.UP: conDir==ConveyorDirection.DOWN)
 				vertices[i].translate(0, length, 0);
 		//Draw left side
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), tex_casing1, new double[]{0, 0, 2, length * 16}, colour, false));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing1, new double[]{0, 0, 2, length*16}, colour, false));
 		//Shift upwards
 		for(int i = 0; i < 4; i++)
-			vertices[i].setY(vertices[i].getY() + ((i == 0 || i == 1) ? .125f : .0625f));
+			vertices[i].setY(vertices[i].getY()+((i==0||i==1)?.125f: .0625f));
 
 		//Shift back down and to the other side
 		for(int i = 0; i < 4; i++)
-			vertices[i].set(1, vertices[i].getY() - ((i == 0 || i == 1) ? .125f : .0625f));
+			vertices[i].set(1, vertices[i].getY()-((i==0||i==1)?.125f: .0625f));
 		//Draw right side
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), tex_casing1, new double[]{0, 0, 2, length * 16}, colour, true));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing1, new double[]{0, 0, 2, length*16}, colour, true));
 		//Shift upwards
 		for(int i = 0; i < 4; i++)
-			vertices[i].setY(vertices[i].getY() + ((i == 0 || i == 1) ? .125f : .0625f));
+			vertices[i].setY(vertices[i].getY()+((i==0||i==1)?.125f: .0625f));
 		/**
 		 * Corners
 		 */
 		if(corners[0])
 		{
 			vertices = new Vector3f[]{new Vector3f(0, .125f, .9375f), new Vector3f(0, .125f, 1), new Vector3f(0, .1875f, 1), new Vector3f(0, .1875f, .9375f)};
-			if(conDir != ConveyorDirection.HORIZONTAL)
+			if(conDir!=ConveyorDirection.HORIZONTAL)
 				for(int i = 0; i < 4; i++)
-					vertices[i].translate(0, i == 0 || i == 3 ? (conDir == ConveyorDirection.UP ? .0625f : conDir == ConveyorDirection.DOWN ? length - .0625f : 0) : (conDir == ConveyorDirection.DOWN ? length : 0), 0);
+					vertices[i].translate(0, i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0), 0);
 			//Back left
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, false));
 			for(Vector3f v : vertices)
 				v.translate(.0625f, 0, 0);
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, true));
 			//Shift right
 			for(Vector3f v : vertices)
 				v.setX(1);
 			//Back right
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, true));
 			for(Vector3f v : vertices)
 				v.translate(-.0625f, 0, 0);
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, false));
 		}
 		if(corners[1])
 		{
-			vertices = new Vector3f[]{new Vector3f(0, .125f, 1 - length), new Vector3f(0, .125f, 1.0625f - length), new Vector3f(0, .1875f, 1.0625f - length), new Vector3f(0, .1875f, 1 - length)};
-			if(conDir != ConveyorDirection.HORIZONTAL)
+			vertices = new Vector3f[]{new Vector3f(0, .125f, 1-length), new Vector3f(0, .125f, 1.0625f-length), new Vector3f(0, .1875f, 1.0625f-length), new Vector3f(0, .1875f, 1-length)};
+			if(conDir!=ConveyorDirection.HORIZONTAL)
 				for(int i = 0; i < 4; i++)
-					vertices[i].translate(0, i == 1 || i == 2 ? (conDir == ConveyorDirection.UP ? length - .0625f : conDir == ConveyorDirection.DOWN ? .0625f : 0) : (conDir == ConveyorDirection.UP ? length : 0), 0);
+					vertices[i].translate(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
 			//Front left
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
 			for(Vector3f v : vertices)
 				v.translate(.0625f, 0, 0);
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
 			//Shift right
 			for(Vector3f v : vertices)
 				v.setX(1);
 			//Front right
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
 			for(Vector3f v : vertices)
 				v.translate(-.0625f, 0, 0);
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
 		}
 
 
 		/**
 		 * Front & Back
 		 */
-		vertices = new Vector3f[]{new Vector3f(.0625f, 0, 1 - length), new Vector3f(.0625f, .125f, 1 - length), new Vector3f(.9375f, .125f, 1 - length), new Vector3f(.9375f, 0, 1 - length)};
+		vertices = new Vector3f[]{new Vector3f(.0625f, 0, 1-length), new Vector3f(.0625f, .125f, 1-length), new Vector3f(.9375f, .125f, 1-length), new Vector3f(.9375f, 0, 1-length)};
 		//Shift if up/down
-		if(conDir == ConveyorDirection.UP)
+		if(conDir==ConveyorDirection.UP)
 			for(Vector3f v : vertices)
 				v.translate(0, length, 0);
 		//Draw front
-		double frontUMax = (1 - length) * 16;
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_conveyor, new double[]{1, frontUMax + 2, 15, frontUMax}, colour, false));
+		double frontUMax = (1-length)*16;
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_conveyor, new double[]{1, frontUMax+2, 15, frontUMax}, colour, false));
 		//Expand to side and up
 		for(int i = 0; i < 4; i++)
-			vertices[i].set(vertices[i].getX() < .5f ? 0 : 1, vertices[i].getY() + (i == 1 || i == 2 ? .0625f : 0));
+			vertices[i].set(vertices[i].getX() < .5f?0: 1, vertices[i].getY()+(i==1||i==2?.0625f: 0));
 		//Draw front casing
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 3, 16, 0}, colour, false));
 		for(Vector3f v : vertices)
-			v.translate(0, (conDir == ConveyorDirection.UP ? -.0625f : conDir == ConveyorDirection.DOWN ? .0625f : 0), .0625f);
+			v.translate(0, (conDir==ConveyorDirection.UP?-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0), .0625f);
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 3, 16, 0}, colour, true));
 		//Undo expand, shift if up/down, shift to back
 		for(int i = 0; i < 4; i++)
 		{
 			Vector3f v = vertices[i];
-			v.setX(v.getX() < .5f ? .0625f : .9375f);
-			v.setY(v.getY() - (i == 1 || i == 2 ? .0625f : 0));
-			if(conDir == ConveyorDirection.UP)
-				v.translate(0, -(length - .0625f), 0);
-			if(conDir == ConveyorDirection.DOWN)
-				v.translate(0, (length - .0625f), 0);
-			v.translate(0, 0, length - .0625f);
+			v.setX(v.getX() < .5f?.0625f: .9375f);
+			v.setY(v.getY()-(i==1||i==2?.0625f: 0));
+			if(conDir==ConveyorDirection.UP)
+				v.translate(0, -(length-.0625f), 0);
+			if(conDir==ConveyorDirection.DOWN)
+				v.translate(0, (length-.0625f), 0);
+			v.translate(0, 0, length-.0625f);
 		}
 		//Draw back
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_conveyor, new double[]{1, 0, 15, 2}, colour, true));
 		//Expand to side and up
 		for(int i = 0; i < 4; i++)
-			vertices[i].set(vertices[i].getX() < .5f ? 0 : 1, vertices[i].getY() + (i == 1 || i == 2 ? .0625f : 0));
+			vertices[i].set(vertices[i].getX() < .5f?0: 1, vertices[i].getY()+(i==1||i==2?.0625f: 0));
 		//Draw back casing
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_casing2, new double[]{0, 0, 16, 3}, colour, true));
 		for(Vector3f v : vertices)
-			v.translate(0, conDir == ConveyorDirection.UP ? .0625f : conDir == ConveyorDirection.DOWN ? -.0625f : 0, -.0625f);
+			v.translate(0, conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?-.0625f: 0, -.0625f);
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_casing2, new double[]{0, 0, 16, 3}, colour, false));
 
 		/**
 		 * Walls
 		 */
-		float wallLength = length - .125f;
-		vertices = new Vector3f[]{new Vector3f(0, .1875f, .9375f - wallLength), new Vector3f(0, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f - wallLength)};
-		Vector3f[] vertices2 = new Vector3f[]{new Vector3f(0, .125f, .9375f - wallLength), new Vector3f(0, .125f, .9375f), new Vector3f(0, .1875f, .9375f), new Vector3f(0, .1875f, .9375f - wallLength)};
-		Vector3f[] vertices3 = new Vector3f[]{new Vector3f(.0625f, .125f, .9375f - wallLength), new Vector3f(.0625f, .125f, .9375f), new Vector3f(.0625f, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f - wallLength)};
-		Vector3f[] verticesColour = new Vector3f[]{new Vector3f(0, .1876f, corners[1] ? (1 - length) : (.9375f - wallLength)), new Vector3f(0, .1876f, corners[0] ? 1 : .9375f), new Vector3f(.0625f, .1876f, corners[0] ? 1 : .9375f), new Vector3f(.0625f, .1876f, corners[1] ? (1 - length) : (.9375f - wallLength))};
+		float wallLength = length-.125f;
+		vertices = new Vector3f[]{new Vector3f(0, .1875f, .9375f-wallLength), new Vector3f(0, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f-wallLength)};
+		Vector3f[] vertices2 = new Vector3f[]{new Vector3f(0, .125f, .9375f-wallLength), new Vector3f(0, .125f, .9375f), new Vector3f(0, .1875f, .9375f), new Vector3f(0, .1875f, .9375f-wallLength)};
+		Vector3f[] vertices3 = new Vector3f[]{new Vector3f(.0625f, .125f, .9375f-wallLength), new Vector3f(.0625f, .125f, .9375f), new Vector3f(.0625f, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f-wallLength)};
+		Vector3f[] verticesColour = new Vector3f[]{new Vector3f(0, .1876f, corners[1]?(1-length): (.9375f-wallLength)), new Vector3f(0, .1876f, corners[0]?1: .9375f), new Vector3f(.0625f, .1876f, corners[0]?1: .9375f), new Vector3f(.0625f, .1876f, corners[1]?(1-length): (.9375f-wallLength))};
 		for(int i = 0; i < 4; i++)
-			if(conDir != ConveyorDirection.HORIZONTAL)
+			if(conDir!=ConveyorDirection.HORIZONTAL)
 			{
-				float f = (i == 0 || i == 3) ? (conDir == ConveyorDirection.UP ? length - .0625f : .0625f) : (conDir == ConveyorDirection.UP ? .0625f : length - .0625f);
+				float f = (i==0||i==3)?(conDir==ConveyorDirection.UP?length-.0625f: .0625f): (conDir==ConveyorDirection.UP?.0625f: length-.0625f);
 				vertices[i].translate(0, f, 0);
 				vertices2[i].translate(0, f, 0);
 				vertices3[i].translate(0, f, 0);
@@ -292,11 +292,11 @@ public class ModelConveyor implements IBakedModel
 		//Draw left walls
 		if(walls[0])
 		{
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), tex_casing2, new double[]{0, wallLength * 16, 1, 1}, colour, false));
-			if(tex_conveyor_colour != null && stripeColour >= 0)
-				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), tex_conveyor_colour, new double[]{0, wallLength * 16, 1, 1}, colourStripes, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing2, new double[]{0, wallLength*16, 1, 1}, colour, false));
+			if(tex_conveyor_colour!=null&&stripeColour >= 0)
+				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_conveyor_colour, new double[]{0, wallLength*16, 1, 1}, colourStripes, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, true));
 		}
 		for(int i = 0; i < 4; i++)
 		{
@@ -308,11 +308,11 @@ public class ModelConveyor implements IBakedModel
 		//Draw right walls
 		if(walls[1])
 		{
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), tex_casing2, new double[]{15, wallLength * 16, 16, 1}, colour, false));
-			if(tex_conveyor_colour != null && stripeColour >= 0)
-				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP,facing), tex_conveyor_colour, new double[]{15, wallLength * 16, 16, 1}, colourStripes, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST,facing), tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST,facing), tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing2, new double[]{15, wallLength*16, 16, 1}, colour, false));
+			if(tex_conveyor_colour!=null&&stripeColour >= 0)
+				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_conveyor_colour, new double[]{15, wallLength*16, 16, 1}, colourStripes, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, true));
 		}
 
 		return quads;
@@ -337,11 +337,12 @@ public class ModelConveyor implements IBakedModel
 	}
 
 	TextureAtlasSprite tex_particle;
+
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		if(tex_particle == null)
-			tex_particle = ClientUtils.getSprite(conveyor != null ? conveyor.getInactiveTexture() : new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_off"));
+		if(tex_particle==null)
+			tex_particle = ClientUtils.getSprite(conveyor!=null?conveyor.getInactiveTexture(): new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_off"));
 		return tex_particle;
 	}
 
@@ -365,7 +366,7 @@ public class ModelConveyor implements IBakedModel
 		{
 			String key = ItemNBTHelper.getString(stack, "conveyorType");
 			IBakedModel model = itemModelCache.get(key);
-			if(model == null)
+			if(model==null)
 			{
 				model = new ModelConveyor(ConveyorHandler.getConveyor(new ResourceLocation(key), null));
 				itemModelCache.put(key, model);
@@ -390,7 +391,7 @@ public class ModelConveyor implements IBakedModel
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
-		Matrix4 matrix = transformationMap.containsKey(cameraTransformType) ? transformationMap.get(cameraTransformType) : new Matrix4();
+		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType): new Matrix4();
 		return Pair.of(this, matrix.toMatrix4f());
 	}
 }

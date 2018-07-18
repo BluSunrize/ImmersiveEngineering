@@ -32,8 +32,8 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, Ref
 
 	public RefineryRecipeCategory(IGuiHelper helper)
 	{
-		super("refinery","tile.immersiveengineering.metal_multiblock.refinery.name", helper.createDrawable(background, 6,10, 164,62), RefineryRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.REFINERY.getMeta()));
-		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
+		super("refinery", "tile.immersiveengineering.metal_multiblock.refinery.name", helper.createDrawable(background, 6, 10, 164, 62), RefineryRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.REFINERY.getMeta()));
+		tankOverlay = helper.createDrawable(background, 177, 31, 16, 47, -2, 2, -2, 2);
 	}
 
 	@Override
@@ -41,18 +41,18 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, Ref
 	{
 		List<List<FluidStack>> inputs = ingredients.getInputs(FluidStack.class);
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		if(inputs.size()>0)
+		if(inputs.size() > 0)
 		{
-			guiFluidStacks.init(0, true, 7,10, 16,47, 6000, false, tankOverlay);
+			guiFluidStacks.init(0, true, 7, 10, 16, 47, 6000, false, tankOverlay);
 			guiFluidStacks.set(0, inputs.get(0));
 
-			if(inputs.size()>1)
+			if(inputs.size() > 1)
 			{
-				guiFluidStacks.init(1, true, 55,10, 16,47, 6000, false, tankOverlay);
+				guiFluidStacks.init(1, true, 55, 10, 16, 47, 6000, false, tankOverlay);
 				guiFluidStacks.set(1, inputs.get(1));
 			}
 		}
-		guiFluidStacks.init(2, false, 103,10, 16,47, 6000, false, tankOverlay);
+		guiFluidStacks.init(2, false, 103, 10, 16, 47, 6000, false, tankOverlay);
 		guiFluidStacks.set(2, ingredients.getOutputs(FluidStack.class).get(0));
 
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);

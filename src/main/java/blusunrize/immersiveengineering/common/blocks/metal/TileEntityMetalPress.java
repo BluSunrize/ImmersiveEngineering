@@ -35,12 +35,13 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMetalPress,MetalPressRecipe> implements IPlayerInteraction, IConveyorAttachable
+public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMetalPress, MetalPressRecipe> implements IPlayerInteraction, IConveyorAttachable
 {
 	public TileEntityMetalPress()
 	{
-		super(MultiblockMetalPress.instance, new int[]{3,3,1}, 16000, true);
+		super(MultiblockMetalPress.instance, new int[]{3, 3, 1}, 16000, true);
 	}
+
 	//	public ItemStack[] inventory = new ItemStack[3];
 	//	public MetalPressRecipe[] curRecipes = new MetalPressRecipe[3];
 	//	public int[] process = new int[3];
@@ -59,7 +60,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	public void update()
 	{
 		super.update();
-		if(isDummy() || isRSDisabled() || world.isRemote)
+		if(isDummy()||isRSDisabled()||world.isRemote)
 			return;
 		for(MultiblockProcess process : processQueue)
 		{
@@ -67,12 +68,12 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			float transportTime = 52.5f/120f;
 			float pressTime = 3.75f/120f;
 			float fProcess = process.processTick*tick;
-			if(fProcess>=transportTime && fProcess<transportTime+tick)
-				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F,1);
-			if(fProcess>=(transportTime+pressTime) && fProcess<(transportTime+pressTime+tick))
-				world.playSound(null, getPos(), IESounds.metalpress_smash, SoundCategory.BLOCKS, .3F,1);
-			if(fProcess>=(1-transportTime) && fProcess<(1-transportTime+tick))
-				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F,1);
+			if(fProcess >= transportTime&&fProcess < transportTime+tick)
+				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
+			if(fProcess >= (transportTime+pressTime)&&fProcess < (transportTime+pressTime+tick))
+				world.playSound(null, getPos(), IESounds.metalpress_smash, SoundCategory.BLOCKS, .3F, 1);
+			if(fProcess >= (1-transportTime)&&fProcess < (1-transportTime+tick))
+				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
 		}
 	}
 
@@ -82,6 +83,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		super.readCustomNBT(nbt, descPacket);
 		mold = new ItemStack(nbt.getCompoundTag("mold"));
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -95,20 +97,20 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	{
 		TileEntityMetalPress master = master();
 		if(master!=null)
-			if(player.isSneaking() && !master.mold.isEmpty())
+			if(player.isSneaking()&&!master.mold.isEmpty())
 			{
 				if(heldItem.isEmpty())
 					player.setHeldItem(hand, master.mold.copy());
 				else if(!world.isRemote)
-					player.entityDropItem(master.mold.copy(),0);
-				master.mold= ItemStack.EMPTY;
+					player.entityDropItem(master.mold.copy(), 0);
+				master.mold = ItemStack.EMPTY;
 				this.updateMasterBlock(null, true);
 				return true;
 			}
 			else if(MetalPressRecipe.isValidMold(heldItem))
 			{
-				ItemStack tempMold = !master.mold.isEmpty()?master.mold.copy():ItemStack.EMPTY;
-				master.mold = Utils.copyStackWithAmount(heldItem,1);
+				ItemStack tempMold = !master.mold.isEmpty()?master.mold.copy(): ItemStack.EMPTY;
+				master.mold = Utils.copyStackWithAmount(heldItem, 1);
 				heldItem.shrink(1);
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;
@@ -118,7 +120,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 					if(heldItem.isEmpty())
 						player.setHeldItem(hand, tempMold);
 					else if(!world.isRemote)
-						player.entityDropItem(tempMold,0);
+						player.entityDropItem(tempMold, 0);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -130,8 +132,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	public float[] getBlockBounds()
 	{
 		if(pos==3||pos==5)
-			return new float[]{0,0,0, 1,.125f,1};
-		return new float[]{0,0,0, 1,1,1};
+			return new float[]{0, 0, 0, 1, .125f, 1};
+		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
 	@Override
@@ -149,7 +151,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(pos==3 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem && !((EntityItem)entity).getItem().isEmpty())
+		if(pos==3&&!world.isRemote&&entity!=null&&!entity.isDead&&entity instanceof EntityItem&&!((EntityItem)entity).getItem().isEmpty())
 		{
 			TileEntityMetalPress master = master();
 			if(master==null)
@@ -167,7 +169,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			{
 				master.addProcessToQueue(process, false);
 				stack.shrink(displayStack.getCount());
-				if(stack.getCount()<=0)
+				if(stack.getCount() <= 0)
 					entity.setDead();
 			}
 		}
@@ -178,6 +180,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	{
 		return new int[]{7};
 	}
+
 	@Override
 	public int[] getRedstonePos()
 	{
@@ -189,39 +192,46 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	{
 		return true;
 	}
+
 	@Override
 	public boolean additionalCanProcessCheck(MultiblockProcess<MetalPressRecipe> process)
 	{
 		return true;
 	}
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		BlockPos pos = getPos().offset(facing,2);
+		BlockPos pos = getPos().offset(facing, 2);
 		TileEntity inventoryTile = this.world.getTileEntity(pos);
 		if(inventoryTile!=null)
 			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
 		if(!output.isEmpty())
 			Utils.dropStackAtPos(world, pos, output, facing);
 	}
+
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
 	{
 	}
+
 	@Override
 	public void onProcessFinish(MultiblockProcess<MetalPressRecipe> process)
 	{
 	}
+
 	@Override
 	public int getMaxProcessPerTick()
 	{
 		return 3;
 	}
+
 	@Override
 	public int getProcessQueueMaxLength()
 	{
 		return 3;
 	}
+
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<MetalPressRecipe> process)
 	{
@@ -234,51 +244,61 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	{
 		return null;
 	}
+
 	@Override
 	public NonNullList<ItemStack> getDroppedItems()
 	{
 		return ListUtils.fromItem(mold);
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return false;
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 0;
 	}
+
 	@Override
 	public int[] getOutputSlots()
 	{
 		return null;
 	}
+
 	@Override
 	public int[] getOutputTanks()
 	{
 		return null;
 	}
+
 	@Override
 	public IFluidTank[] getInternalTanks()
 	{
 		return null;
 	}
+
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		return new IFluidTank[0];
 	}
+
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
 	{
 		return false;
 	}
+
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
 		return false;
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
@@ -293,13 +313,15 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityMetalPress master = master();
-			if(master == null)
+			if(master==null)
 				return false;
-			return pos == 3 && facing == this.facing.getOpposite();
+			return pos==3&&facing==this.facing.getOpposite();
 		}
 		return super.hasCapability(capability, facing);
 	}
+
 	IItemHandler insertionHandler = new MultiblockInventoryHandler_DirectProcessing(this);
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
@@ -308,7 +330,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			TileEntityMetalPress master = master();
 			if(master==null)
 				return null;
-			if(pos==3 && facing==this.facing.getOpposite())
+			if(pos==3&&facing==this.facing.getOpposite())
 				return (T)master.insertionHandler;
 			return null;
 		}
@@ -320,6 +342,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	{
 		return MetalPressRecipe.findRecipe(mold, inserting);
 	}
+
 	@Override
 	protected MetalPressRecipe readRecipeFromNBT(NBTTagCompound tag)
 	{

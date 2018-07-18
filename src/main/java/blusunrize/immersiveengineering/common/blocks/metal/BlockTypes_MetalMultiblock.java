@@ -33,31 +33,35 @@ public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBa
 	MIXER(true);
 
 	private boolean needsCustomState;
+
 	BlockTypes_MetalMultiblock(boolean needsCustomState)
 	{
 		this.needsCustomState = needsCustomState;
 	}
-	
+
 	@Override
 	public String getName()
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{
 		return false;
 	}
-	
+
 	public boolean needsCustomState()
 	{
 		return this.needsCustomState;
 	}
+
 	public String getCustomState()
 	{
 		/*String[] split = getName().split("_");

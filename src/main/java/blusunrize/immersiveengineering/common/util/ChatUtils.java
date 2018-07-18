@@ -27,16 +27,16 @@ public class ChatUtils
 	public static void sendClientNoSpamMessages(ITextComponent[] messages)
 	{
 		GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
-		for(int i=DELETION_ID+messages.length-1; i<=lastAdded; i++)
+		for(int i = DELETION_ID+messages.length-1; i <= lastAdded; i++)
 			chat.deleteChatLine(i);
-		for(int i=0; i<messages.length; i++)
+		for(int i = 0; i < messages.length; i++)
 			chat.printChatMessageWithOptionalDeletion(messages[i], DELETION_ID+i);
 		lastAdded = DELETION_ID+messages.length-1;
 	}
 
 	public static void sendServerNoSpamMessages(EntityPlayer player, ITextComponent... messages)
 	{
-		if(messages.length>0 && player instanceof EntityPlayerMP)
+		if(messages.length > 0&&player instanceof EntityPlayerMP)
 			ImmersiveEngineering.packetHandler.sendTo(new MessageNoSpamChatComponents(messages), (EntityPlayerMP)player);
 	}
 }

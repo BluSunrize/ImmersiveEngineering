@@ -22,17 +22,18 @@ import java.util.function.Function;
 
 /**
  * @author BluSunrize - 07.01.2016
- *
+ * <p>
  * The recipe for the metal press
  */
 public class MetalPressRecipe extends MultiblockRecipe
 {
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
-	
+
 	public final IngredientStack input;
 	public final ComparableItemStack mold;
 	public final ItemStack output;
+
 	public MetalPressRecipe(ItemStack output, Object input, ComparableItemStack mold, int energy)
 	{
 		this.output = output;
@@ -44,17 +45,19 @@ public class MetalPressRecipe extends MultiblockRecipe
 		this.inputList = Lists.newArrayList(this.input);
 		this.outputList = ListUtils.fromItem(this.output);
 	}
+
 	public MetalPressRecipe setInputSize(int size)
 	{
 		this.input.inputSize = size;
 		return this;
 	}
+
 	@Override
 	public void setupJEI()
 	{
 		super.setupJEI();
 		this.jeiItemInputList = new ArrayList[2];
-		this.jeiItemInputList[0] =Lists.newArrayList(jeiTotalItemInputList);
+		this.jeiItemInputList[0] = Lists.newArrayList(jeiTotalItemInputList);
 		this.jeiItemInputList[1] = Lists.newArrayList(mold.stack);
 		this.jeiTotalItemInputList.add(mold.stack);
 	}
@@ -63,25 +66,29 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		return this.input.matches(input);
 	}
+
 	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input)
 	{
 		return this;
 	}
 
 	public static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipeList = ArrayListMultimap.create();
+
 	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ItemStack mold, int energy)
 	{
 		return addRecipe(output, input, ApiUtils.createComparableItemStack(mold, true), energy);
 	}
+
 	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ComparableItemStack mold, int energy)
 	{
 		MetalPressRecipe r = new MetalPressRecipe(output, input, mold, energy);
 		recipeList.put(mold, r);
 		return r;
 	}
+
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input)
 	{
-		if(mold.isEmpty() || input.isEmpty())
+		if(mold.isEmpty()||input.isEmpty())
 			return null;
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold, false);
 		List<MetalPressRecipe> list = recipeList.get(comp);
@@ -90,6 +97,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 				return recipe.getActualRecipe(mold, input);
 		return null;
 	}
+
 	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
 	{
 		List<MetalPressRecipe> list = new ArrayList();
@@ -109,6 +117,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		}
 		return list;
 	}
+
 	public static boolean isValidMold(ItemStack itemStack)
 	{
 		if(itemStack.isEmpty())
@@ -122,7 +131,8 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public static HashMap<String, Function<NBTTagCompound,MetalPressRecipe>> deserializers = new HashMap<>();
+	public static HashMap<String, Function<NBTTagCompound, MetalPressRecipe>> deserializers = new HashMap<>();
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
@@ -130,9 +140,10 @@ public class MetalPressRecipe extends MultiblockRecipe
 		nbt.setTag("mold", mold.writeToNBT(new NBTTagCompound()));
 		return nbt;
 	}
+
 	public static MetalPressRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		if(nbt.hasKey("type") && deserializers.containsKey(nbt.getString("type")))
+		if(nbt.hasKey("type")&&deserializers.containsKey(nbt.getString("type")))
 			return deserializers.get(nbt.getString("type")).apply(nbt);
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
 		ComparableItemStack mold = ComparableItemStack.readFromNBT(nbt.getCompoundTag("mold"));

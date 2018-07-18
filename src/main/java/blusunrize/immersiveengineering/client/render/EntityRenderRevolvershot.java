@@ -48,8 +48,8 @@ public class EntityRenderRevolvershot extends Render
 		//		        GlStateManager.glRotatef(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		//		        GlStateManager.glRotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 		GlStateManager.disableCull();
-		GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * f1 - 90.0F, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * f1, 0.0F, 0.0F, 1.0F);
+		GlStateManager.rotate(entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*f1-90.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate(entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*f1, 0.0F, 0.0F, 1.0F);
 
 		//		tessellator.startDrawingQuads();
 		//        tessellator.addVertexWithUV(-7.0D, -2.0D, -2.0D, (double)f6, (double)f8);
@@ -68,26 +68,26 @@ public class EntityRenderRevolvershot extends Render
 		GlStateManager.scale(.25f, .25f, .25f);
 
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(0, .0,-.25).tex(5/32d, 10/32d).endVertex();
+		worldrenderer.pos(0, .0, -.25).tex(5/32d, 10/32d).endVertex();
 		worldrenderer.pos(0, .0, .25).tex(0/32d, 10/32d).endVertex();
 		worldrenderer.pos(0, .5, .25).tex(0/32d, 5/32d).endVertex();
-		worldrenderer.pos(0, .5,-.25).tex(5/32d, 5/32d).endVertex();
+		worldrenderer.pos(0, .5, -.25).tex(5/32d, 5/32d).endVertex();
 		tessellator.draw();
 
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(.375,	.125,0).tex(8/32d, 5/32d).endVertex();
-		worldrenderer.pos(0,	.125,0).tex(0/32d, 5/32d).endVertex();
-		worldrenderer.pos(0,	.375,0).tex(0/32d, 0/32d).endVertex();
-		worldrenderer.pos(.375,	.375,0).tex(8/32d, 0/32d).endVertex();
+		worldrenderer.pos(.375, .125, 0).tex(8/32d, 5/32d).endVertex();
+		worldrenderer.pos(0, .125, 0).tex(0/32d, 5/32d).endVertex();
+		worldrenderer.pos(0, .375, 0).tex(0/32d, 0/32d).endVertex();
+		worldrenderer.pos(.375, .375, 0).tex(8/32d, 0/32d).endVertex();
 		tessellator.draw();
 
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(.375,	.25,-.25).tex(8/32d, 5/32d).endVertex();
-		worldrenderer.pos(0,	.25,-.25).tex(0/32d, 5/32d).endVertex();
-		worldrenderer.pos(0,	.25, .25).tex(0/32d, 0/32d).endVertex();
-		worldrenderer.pos(.375,	.25, .25).tex(8/32d, 0/32d).endVertex();
+		worldrenderer.pos(.375, .25, -.25).tex(8/32d, 5/32d).endVertex();
+		worldrenderer.pos(0, .25, -.25).tex(0/32d, 5/32d).endVertex();
+		worldrenderer.pos(0, .25, .25).tex(0/32d, 0/32d).endVertex();
+		worldrenderer.pos(.375, .25, .25).tex(8/32d, 0/32d).endVertex();
 		tessellator.draw();
-		
+
 		GlStateManager.enableCull();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();

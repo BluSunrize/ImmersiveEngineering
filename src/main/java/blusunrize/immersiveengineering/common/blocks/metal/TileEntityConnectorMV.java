@@ -20,6 +20,7 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV
 	{
 		return true;
 	}
+
 	@Override
 	protected boolean canTakeLV()
 	{
@@ -39,12 +40,13 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV
 	{
 		return WireType.ELECTRUM.getMaxLength();
 	}
-	
+
 	@Override
 	public int getMaxInput()
 	{
 		return connectorInputValues[1];
 	}
+
 	@Override
 	public int getMaxOutput()
 	{

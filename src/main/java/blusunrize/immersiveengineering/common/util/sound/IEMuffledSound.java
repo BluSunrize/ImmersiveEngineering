@@ -40,11 +40,13 @@ public class IEMuffledSound implements ISound
 	{
 		return originalSound.createAccessor(handler);
 	}
+
 	@Override
 	public Sound getSound()
 	{
 		return originalSound.getSound();
 	}
+
 	@Override
 	public SoundCategory getCategory()
 	{
@@ -56,36 +58,43 @@ public class IEMuffledSound implements ISound
 	{
 		return originalSound.canRepeat();
 	}
+
 	@Override
 	public int getRepeatDelay()
 	{
 		return originalSound.getRepeatDelay();
 	}
+
 	@Override
 	public float getVolume()
 	{
 		return originalSound.getVolume()*volumeMod;
 	}
+
 	@Override
 	public float getPitch()
 	{
 		return originalSound.getPitch();
 	}
+
 	@Override
 	public float getXPosF()
 	{
 		return originalSound.getXPosF();
 	}
+
 	@Override
 	public float getYPosF()
 	{
 		return originalSound.getYPosF();
 	}
+
 	@Override
 	public float getZPosF()
 	{
 		return originalSound.getZPosF();
 	}
+
 	@Override
 	public AttenuationType getAttenuationType()
 	{

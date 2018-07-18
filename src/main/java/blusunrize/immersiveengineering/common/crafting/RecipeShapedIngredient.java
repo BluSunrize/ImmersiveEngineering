@@ -33,10 +33,12 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	int[] nbtCopyTargetSlot = null;
 	Pattern nbtCopyPredicate = null;
 	int lastMatch = 0;
+
 	public RecipeShapedIngredient(ResourceLocation group, ItemStack result, Object... recipe)
 	{
 		super(group, result, wrapIngredients(recipe));
 	}
+
 	public RecipeShapedIngredient(ResourceLocation group, ItemStack result, ShapedPrimer primer)
 	{
 		super(group, result, primer);
@@ -45,7 +47,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	private static Object[] wrapIngredients(Object... recipe)
 	{
 		Object[] out = new Object[recipe.length];
-		for(int i=0; i<recipe.length; i++)
+		for(int i = 0; i < recipe.length; i++)
 			if(recipe[i] instanceof IngredientStack)
 				out[i] = new IngredientIngrStack((IngredientStack)recipe[i]);
 			else
@@ -56,10 +58,10 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	public RecipeShapedIngredient allowQuarterTurn()
 	{
 		ingredientsQuarterTurn = NonNullList.withSize(getIngredients().size(), Ingredient.EMPTY);
-		int maxH = (height - 1);
+		int maxH = (height-1);
 		for(int h = 0; h < height; h++)
 			for(int w = 0; w < width; w++)
-				ingredientsQuarterTurn.set(w * height + (maxH - h), getIngredients().get(h * width + w));
+				ingredientsQuarterTurn.set(w*height+(maxH-h), getIngredients().get(h*width+w));
 		return this;
 	}
 
@@ -67,15 +69,15 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 
 	public RecipeShapedIngredient allowEighthTurn()
 	{
-		if(width != 3 || height != 3)//Recipe won't allow 8th turn when not a 3x3 square
+		if(width!=3||height!=3)//Recipe won't allow 8th turn when not a 3x3 square
 			return this;
 		ingredientsEighthTurn = NonNullList.withSize(getIngredients().size(), Ingredient.EMPTY);
-		int maxH = (height - 1);
+		int maxH = (height-1);
 		for(int h = 0; h < height; h++)
 			for(int w = 0; w < width; w++)
 			{
-				int i = h * width + w;
-				ingredientsEighthTurn.set(i + eighthTurnMap[i], getIngredients().get(i));
+				int i = h*width+w;
+				ingredientsEighthTurn.set(i+eighthTurnMap[i], getIngredients().get(i));
 			}
 		return this;
 	}
@@ -85,6 +87,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		this.nbtCopyTargetSlot = slot;
 		return this;
 	}
+
 	public RecipeShapedIngredient setNBTCopyPredicate(String pattern)
 	{
 		this.nbtCopyPredicate = Pattern.compile(pattern);
@@ -94,14 +97,14 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting matrix)
 	{
-		if(nbtCopyTargetSlot != null)
+		if(nbtCopyTargetSlot!=null)
 		{
 			ItemStack out = output.copy();
-			NBTTagCompound tag = out.hasTagCompound()?out.getTagCompound():new NBTTagCompound();
+			NBTTagCompound tag = out.hasTagCompound()?out.getTagCompound(): new NBTTagCompound();
 			for(int targetSlot : nbtCopyTargetSlot)
 			{
 				ItemStack s = matrix.getStackInSlot(targetSlot);
-				if(!s.isEmpty() && s.hasTagCompound())
+				if(!s.isEmpty()&&s.hasTagCompound())
 					tag = ItemNBTHelper.combineTags(tag, s.getTagCompound(), nbtCopyPredicate);
 			}
 			if(!tag.hasNoTags())
@@ -144,12 +147,12 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			lastMatch = 0;
 			return true;
 		}
-		else if(ingredientsQuarterTurn != null && checkMatchDo(inv, ingredientsQuarterTurn, startX, startY, mirror, true))
+		else if(ingredientsQuarterTurn!=null&&checkMatchDo(inv, ingredientsQuarterTurn, startX, startY, mirror, true))
 		{
 			lastMatch = 1;
 			return true;
 		}
-		else if(ingredientsEighthTurn != null && checkMatchDo(inv, ingredientsEighthTurn, startX, startY, mirror, false))
+		else if(ingredientsEighthTurn!=null&&checkMatchDo(inv, ingredientsEighthTurn, startX, startY, mirror, false))
 		{
 			lastMatch = 2;
 			return true;
@@ -162,24 +165,25 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		for(int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
 			for(int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++)
 			{
-				int subX = x - startX;
-				int subY = y - startY;
+				int subX = x-startX;
+				int subY = y-startY;
 				Ingredient target = Ingredient.EMPTY;
 
 				if(!rotate)
 				{
-					if(subX >= 0 && subY >= 0 && subX < width && subY < height)
+					if(subX >= 0&&subY >= 0&&subX < width&&subY < height)
 						if(mirror)
-							target = ingredients.get(width - subX - 1 + subY * width);
+							target = ingredients.get(width-subX-1+subY*width);
 						else
-							target = ingredients.get(subX + subY * width);
-				} else
+							target = ingredients.get(subX+subY*width);
+				}
+				else
 				{
-					if(subX >= 0 && subY >= 0 && subX < height && subY < width)
+					if(subX >= 0&&subY >= 0&&subX < height&&subY < width)
 						if(mirror)
-							target = ingredients.get(height - subX - 1 + subY * width);
+							target = ingredients.get(height-subX-1+subY*width);
 						else
-							target = ingredients.get(subY + subX * height);
+							target = ingredients.get(subY+subX*height);
 				}
 
 				ItemStack slot = inv.getStackInRowAndColumn(x, y);

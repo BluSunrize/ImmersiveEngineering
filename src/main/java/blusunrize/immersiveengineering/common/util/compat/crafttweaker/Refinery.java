@@ -56,14 +56,14 @@ public class Refinery
 		@Override
 		public String describe()
 		{
-			return "Adding Refinery Recipe for " + recipe.output.getLocalizedName();
+			return "Adding Refinery Recipe for "+recipe.output.getLocalizedName();
 		}
 	}
 
 	@ZenMethod
 	public static void removeRecipe(ILiquidStack output)
 	{
-		if(CraftTweakerHelper.toFluidStack(output) != null)
+		if(CraftTweakerHelper.toFluidStack(output)!=null)
 			CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toFluidStack(output)));
 	}
 
@@ -84,7 +84,7 @@ public class Refinery
 			while(it.hasNext())
 			{
 				RefineryRecipe r = it.next();
-				if(r != null && r.output.isFluidEqual(output))
+				if(r!=null&&r.output.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
 					IECompatModule.jeiRemoveFunc.accept(r);
@@ -96,7 +96,7 @@ public class Refinery
 		@Override
 		public String describe()
 		{
-			return "Removing Refinery Recipes for " + output.getLocalizedName();
+			return "Removing Refinery Recipes for "+output.getLocalizedName();
 		}
 	}
 }

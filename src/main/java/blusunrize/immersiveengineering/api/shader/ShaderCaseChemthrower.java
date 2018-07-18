@@ -21,6 +21,7 @@ public class ShaderCaseChemthrower extends ShaderCase
 	{
 		super(layers);
 	}
+
 	public ShaderCaseChemthrower(Collection<ShaderLayer> layers)
 	{
 		super(layers);
@@ -46,12 +47,12 @@ public class ShaderCaseChemthrower extends ShaderCase
 		if(pass==0)//first pass is just for the grip
 			return false;
 
-		if(pass==1 && "cage".equals(modelPart))//useful for a cage that is different from the base one
+		if(pass==1&&"cage".equals(modelPart))//useful for a cage that is different from the base one
 			return renderCageOnBase;
 
-		if(tanksUncoloured && "tanks".equals(modelPart))//if tanks should be unaffected by colour and only render on overlay
+		if(tanksUncoloured&&"tanks".equals(modelPart))//if tanks should be unaffected by colour and only render on overlay
 			return pass==getLayers().length-1;
-		if(!tanksUncoloured && "tanks".equals(modelPart))//if tanks should be coloured, the uncoloured pass must be ignored
+		if(!tanksUncoloured&&"tanks".equals(modelPart))//if tanks should be coloured, the uncoloured pass must be ignored
 			return pass!=getLayers().length-1;
 
 		return true;

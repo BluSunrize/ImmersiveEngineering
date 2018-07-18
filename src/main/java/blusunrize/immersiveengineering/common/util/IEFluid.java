@@ -55,7 +55,7 @@ public class IEFluid extends Fluid
 		@SideOnly(Side.CLIENT)
 		public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip)
 		{
-			if(fluidStack!=null && fluidStack.tag!=null)
+			if(fluidStack!=null&&fluidStack.tag!=null)
 			{
 				List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluidStack.tag);
 				if(effects.isEmpty())
@@ -67,10 +67,10 @@ public class IEFluid extends Fluid
 						String s1 = I18n.translateToLocal(potioneffect.getEffectName()).trim();
 						Potion potion = potioneffect.getPotion();
 
-						if(potioneffect.getAmplifier()>0)
+						if(potioneffect.getAmplifier() > 0)
 							s1 = s1+" "+I18n.translateToLocal("potion.potency."+potioneffect.getAmplifier()).trim();
 
-						if(potioneffect.getDuration()>20)
+						if(potioneffect.getDuration() > 20)
 							s1 = s1+" ("+Potion.getPotionDurationString(potioneffect, 1)+")";
 
 						if(potion.isBadEffect())
@@ -85,7 +85,7 @@ public class IEFluid extends Fluid
 		@Override
 		public String getLocalizedName(FluidStack stack)
 		{
-			if(stack==null || stack.tag==null)
+			if(stack==null||stack.tag==null)
 				return super.getLocalizedName(stack);
 			return I18n.translateToLocal(PotionUtils.getPotionTypeFromNBT(stack.tag).getNamePrefixed("potion.effect."));
 		}
@@ -93,8 +93,8 @@ public class IEFluid extends Fluid
 		@Override
 		public int getColor(FluidStack stack)
 		{
-			if(stack==null || stack.tag!=null)
-				return 0xff000000 | PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.tag));
+			if(stack==null||stack.tag!=null)
+				return 0xff000000|PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.tag));
 			return 0xff0000ff;
 		}
 	}
@@ -109,12 +109,14 @@ public class IEFluid extends Fluid
 			if(fs!=null)
 				buf.writeCompoundTag(fs.writeToNBT(new NBTTagCompound()));
 		}
+
 		@Override
 		public Optional<FluidStack> read(PacketBuffer buf) throws IOException
 		{
-			FluidStack fs = !buf.readBoolean()?null : FluidStack.loadFluidStackFromNBT(buf.readCompoundTag());
+			FluidStack fs = !buf.readBoolean()?null: FluidStack.loadFluidStackFromNBT(buf.readCompoundTag());
 			return Optional.fromNullable(fs);
 		}
+
 		@Override
 		public DataParameter<Optional<FluidStack>> createKey(int id)
 		{
@@ -124,7 +126,7 @@ public class IEFluid extends Fluid
 		@Override
 		public Optional<FluidStack> copyValue(Optional<FluidStack> value)
 		{
-			return value.isPresent()?Optional.of(value.get().copy()):Optional.absent();
+			return value.isPresent()?Optional.of(value.get().copy()): Optional.absent();
 		}
 	};
 }

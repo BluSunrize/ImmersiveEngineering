@@ -33,6 +33,7 @@ public class IEDefaultColourHandlers implements IItemColor, IBlockColor
 			return ((IColouredBlock)state.getBlock()).getRenderColour(state, worldIn, pos, tintIndex);
 		return 0xffffff;
 	}
+
 	@Override
 	public int colorMultiplier(ItemStack stack, int tintIndex)
 	{

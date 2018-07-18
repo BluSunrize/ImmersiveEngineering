@@ -18,6 +18,7 @@ public class ShaderCaseShield extends ShaderCase
 	{
 		super(layers);
 	}
+
 	public ShaderCaseShield(Collection<ShaderLayer> layers)
 	{
 		super(layers);
@@ -38,7 +39,7 @@ public class ShaderCaseShield extends ShaderCase
 	@Override
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		if("flash".equals(modelPart) || "shock".equals(modelPart))
+		if("flash".equals(modelPart)||"shock".equals(modelPart))
 			return pass==getLayers().length-1;
 		return true;
 	}

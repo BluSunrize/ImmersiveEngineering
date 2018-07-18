@@ -30,10 +30,10 @@ public class Squeezer
 	@ZenMethod
 	public static void addRecipe(IItemStack output, ILiquidStack fluid, IIngredient input, int energy)
 	{
-		if(CraftTweakerHelper.toObject(input) == null)
+		if(CraftTweakerHelper.toObject(input)==null)
 			return;
 		//Either output or fluid must not be null. 
-		if(CraftTweakerHelper.toStack(output).isEmpty() && (CraftTweakerHelper.toFluidStack(fluid) == null || CraftTweakerHelper.toFluidStack(fluid).getFluid() == null))
+		if(CraftTweakerHelper.toStack(output).isEmpty()&&(CraftTweakerHelper.toFluidStack(fluid)==null||CraftTweakerHelper.toFluidStack(fluid).getFluid()==null))
 			return;
 
 		SqueezerRecipe r = new SqueezerRecipe(CraftTweakerHelper.toFluidStack(fluid), CraftTweakerHelper.toStack(output), CraftTweakerHelper.toObject(input), energy);
@@ -59,16 +59,16 @@ public class Squeezer
 		@Override
 		public String describe()
 		{
-			String fluid = recipe.fluidOutput != null ? recipe.fluidOutput.getLocalizedName() : "null";
-			String out = !recipe.itemOutput.isEmpty() ? recipe.itemOutput.getDisplayName() : "null";
-			return "Adding Squeezer Recipe for Fluid " + fluid + " and Item " + out;
+			String fluid = recipe.fluidOutput!=null?recipe.fluidOutput.getLocalizedName(): "null";
+			String out = !recipe.itemOutput.isEmpty()?recipe.itemOutput.getDisplayName(): "null";
+			return "Adding Squeezer Recipe for Fluid "+fluid+" and Item "+out;
 		}
 	}
 
 	@ZenMethod
 	public static void removeFluidRecipe(ILiquidStack fluid)
 	{
-		if(CraftTweakerHelper.toFluidStack(fluid) != null)
+		if(CraftTweakerHelper.toFluidStack(fluid)!=null)
 			CraftTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(fluid)));
 	}
 
@@ -89,7 +89,7 @@ public class Squeezer
 			while(it.hasNext())
 			{
 				SqueezerRecipe r = it.next();
-				if(r != null && r.fluidOutput != null && r.fluidOutput.isFluidEqual(output))
+				if(r!=null&&r.fluidOutput!=null&&r.fluidOutput.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
 					IECompatModule.jeiRemoveFunc.accept(r);
@@ -101,7 +101,7 @@ public class Squeezer
 		@Override
 		public String describe()
 		{
-			return "Removing Squeezer Recipes for Fluid " + output.getLocalizedName();
+			return "Removing Squeezer Recipes for Fluid "+output.getLocalizedName();
 		}
 	}
 
@@ -129,7 +129,7 @@ public class Squeezer
 			while(it.hasNext())
 			{
 				SqueezerRecipe r = it.next();
-				if(r != null && OreDictionary.itemMatches(output, r.itemOutput, false))
+				if(r!=null&&OreDictionary.itemMatches(output, r.itemOutput, false))
 				{
 					removedRecipes.add(r);
 					IECompatModule.jeiRemoveFunc.accept(r);
@@ -141,14 +141,14 @@ public class Squeezer
 		@Override
 		public String describe()
 		{
-			return "Removing Squeezer Recipes for ItemStack " + output.getDisplayName();
+			return "Removing Squeezer Recipes for ItemStack "+output.getDisplayName();
 		}
 	}
 
 	@ZenMethod
 	public static void removeByInput(IItemStack stack)
 	{
-		if(CraftTweakerHelper.toStack(stack) != null)
+		if(CraftTweakerHelper.toStack(stack)!=null)
 			CraftTweakerAPI.apply(new RemoveByInput(CraftTweakerHelper.toStack(stack)));
 	}
 
@@ -169,7 +169,7 @@ public class Squeezer
 			while(it.hasNext())
 			{
 				SqueezerRecipe r = it.next();
-				if(r != null && r.input.matchesItemStack(input))
+				if(r!=null&&r.input.matchesItemStack(input))
 				{
 					removedRecipes.add(r);
 					IECompatModule.jeiRemoveFunc.accept(r);
@@ -181,7 +181,7 @@ public class Squeezer
 		@Override
 		public String describe()
 		{
-			return "Removing Squeezer Recipes for input " + input.getDisplayName();
+			return "Removing Squeezer Recipes for input "+input.getDisplayName();
 		}
 	}
 }

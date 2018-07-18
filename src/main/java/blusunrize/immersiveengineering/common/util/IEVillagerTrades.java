@@ -63,7 +63,7 @@ public class IEVillagerTrades
 		public void addMerchantRecipe(IMerchant merchant, MerchantRecipeList recipeList, Random random)
 		{
 			int i = 1;
-			if(this.priceInfo != null)
+			if(this.priceInfo!=null)
 				i = this.priceInfo.getPrice(random);
 			ItemStack itemstack;
 			ItemStack itemstack1;
@@ -71,7 +71,8 @@ public class IEVillagerTrades
 			{
 				itemstack = new ItemStack(Items.EMERALD);
 				itemstack1 = Utils.copyStackWithAmount(sellingItem, -i);
-			} else
+			}
+			else
 			{
 				itemstack = new ItemStack(Items.EMERALD, i, 0);
 				itemstack1 = Utils.copyStackWithAmount(sellingItem, 1);

@@ -10,7 +10,6 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
-import li.cil.oc.api.network.Node;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -32,9 +31,9 @@ public class CrusherDriver extends DriverSidedTileEntity
 		TileEntity te = w.getTileEntity(bp);
 		if(te instanceof TileEntityCrusher)
 		{
-			TileEntityCrusher crush = (TileEntityCrusher) te;
+			TileEntityCrusher crush = (TileEntityCrusher)te;
 			TileEntityCrusher master = crush.master();
-			if(master != null && crush.isRedstonePos())
+			if(master!=null&&crush.isRedstonePos())
 				return new CrusherEnvironment(w, master.getPos(), TileEntityCrusher.class);
 		}
 		return null;
@@ -78,12 +77,12 @@ public class CrusherDriver extends DriverSidedTileEntity
 			TileEntityCrusher master = getTileEntity();
 			Map<Integer, Object> ret = new HashMap<>();
 			List<MultiblockProcess<CrusherRecipe>> queue = master.processQueue;
-			for (int i = 0;i<queue.size();i++)
+			for(int i = 0; i < queue.size(); i++)
 			{
 				MultiblockProcess<CrusherRecipe> currTmp = queue.get(i);
-				if (currTmp instanceof MultiblockProcessInWorld)
+				if(currTmp instanceof MultiblockProcessInWorld)
 				{
-					MultiblockProcessInWorld<CrusherRecipe> curr = (MultiblockProcessInWorld<CrusherRecipe>) currTmp;
+					MultiblockProcessInWorld<CrusherRecipe> curr = (MultiblockProcessInWorld<CrusherRecipe>)currTmp;
 					Map<String, Object> recipe = new HashMap<>();
 					recipe.put("progress", curr.processTick);
 					recipe.put("maxProgress", curr.maxTicks);

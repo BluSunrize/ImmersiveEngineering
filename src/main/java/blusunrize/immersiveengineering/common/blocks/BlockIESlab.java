@@ -23,9 +23,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
+public class BlockIESlab<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
 {
-	public static final PropertyInteger prop_SlabType = PropertyInteger.create("slabtype", 0,2);
+	public static final PropertyInteger prop_SlabType = PropertyInteger.create("slabtype", 0, 2);
 
 	public BlockIESlab(String name, Material material, PropertyEnum<E> property)
 	{
@@ -80,9 +80,9 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile, ItemStack stack)
 	{
-		if(tile instanceof TileEntityIESlab && !player.capabilities.isCreativeMode)
+		if(tile instanceof TileEntityIESlab&&!player.capabilities.isCreativeMode)
 		{
-			spawnAsEntity(world, pos, new ItemStack(this, ((TileEntityIESlab)tile).slabType==2?2:1 , this.getMetaFromState(state)));
+			spawnAsEntity(world, pos, new ItemStack(this, ((TileEntityIESlab)tile).slabType==2?2: 1, this.getMetaFromState(state)));
 			return;
 		}
 		super.harvestBlock(world, player, pos, state, tile, stack);
@@ -128,13 +128,13 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 		{
 			int type = ((TileEntityIESlab)te).slabType;
 			if(type==0)
-				return new AxisAlignedBB(0,0,0, 1,.5f,1);
+				return new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
 			else if(type==1)
-				return new AxisAlignedBB(0,.5f,0, 1,1,1);
+				return new AxisAlignedBB(0, .5f, 0, 1, 1, 1);
 			else
-			return FULL_BLOCK_AABB;
+				return FULL_BLOCK_AABB;
 		}
 		else
-			return new AxisAlignedBB(0,0,0,1,.5f,1);
+			return new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
 	}
 }

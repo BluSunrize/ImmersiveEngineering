@@ -39,7 +39,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 		int consumed = IEConfig.Machines.preheater_consumption;
 		if(this.energyStorage.extractEnergy(consumed, true)==consumed)
 		{
-			if (!active)
+			if(!active)
 			{
 				active = true;
 				this.markContainingBlockForUpdate(null);
@@ -58,24 +58,26 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	@Override
 	public boolean isDummy()
 	{
-		return dummy>0;
+		return dummy > 0;
 	}
+
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		for(int i=1; i<=2; i++)
+		for(int i = 1; i <= 2; i++)
 		{
-			world.setBlockState(pos.add(0,i,0), state);
-			((TileEntityBlastFurnacePreheater)world.getTileEntity(pos.add(0,i,0))).dummy = i;
-			((TileEntityBlastFurnacePreheater)world.getTileEntity(pos.add(0,i,0))).facing = this.facing;
+			world.setBlockState(pos.add(0, i, 0), state);
+			((TileEntityBlastFurnacePreheater)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
+			((TileEntityBlastFurnacePreheater)world.getTileEntity(pos.add(0, i, 0))).facing = this.facing;
 		}
 	}
+
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		for(int i=0; i<=2; i++)
-			if(world.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntityBlastFurnacePreheater)
-				world.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
+		for(int i = 0; i <= 2; i++)
+			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntityBlastFurnacePreheater)
+				world.setBlockToAir(getPos().add(0, -dummy, 0).add(0, i, 0));
 	}
 
 	@Override
@@ -102,21 +104,24 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	@Override
 	public FluxStorage getFluxStorage()
 	{
-		if(dummy>0)
+		if(dummy > 0)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0,-dummy,0));
+			TileEntity te = world.getTileEntity(getPos().add(0, -dummy, 0));
 			if(te instanceof TileEntityBlastFurnacePreheater)
 				return ((TileEntityBlastFurnacePreheater)te).getFluxStorage();
 		}
 		return energyStorage;
 	}
+
 	@Nonnull
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		return dummy==2&&facing==EnumFacing.UP?SideConfig.INPUT:SideConfig.NONE;
+		return dummy==2&&facing==EnumFacing.UP?SideConfig.INPUT: SideConfig.NONE;
 	}
+
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, EnumFacing.UP);
+
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
@@ -130,37 +135,43 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return true;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
 		return true;
 	}
+
 	@Override
-	public  void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+	public void afterRotation(EnumFacing oldDir, EnumFacing newDir)
 	{
-		for(int i=0; i<=2; i++)
+		for(int i = 0; i <= 2; i++)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0,-dummy+i,0));
+			TileEntity te = world.getTileEntity(getPos().add(0, -dummy+i, 0));
 			if(te instanceof TileEntityBlastFurnacePreheater)
 			{
 				((TileEntityBlastFurnacePreheater)te).setFacing(newDir);

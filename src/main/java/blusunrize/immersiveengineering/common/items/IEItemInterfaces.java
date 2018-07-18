@@ -27,20 +27,31 @@ public class IEItemInterfaces
 		{
 			return false;
 		}
+
 		default int getColourForIEItem(ItemStack stack, int pass)
 		{
 			return 16777215;
 		}
 	}
+
 	public interface IGuiItem
 	{
 		int getGuiID(ItemStack stack);
 	}
+
 	public interface IAdvancedFluidItem
 	{
 		int getCapacity(ItemStack stack, int baseCapacity);
-		default boolean allowFluid(ItemStack container, FluidStack fluid){return true;}
-		default FluidStack getFluid(ItemStack container){return FluidUtil.getFluidContained(container);}
+
+		default boolean allowFluid(ItemStack container, FluidStack fluid)
+		{
+			return true;
+		}
+
+		default FluidStack getFluid(ItemStack container)
+		{
+			return FluidUtil.getFluidContained(container);
+		}
 	}
 
 	public interface ITextureOverride
@@ -52,13 +63,15 @@ public class IEItemInterfaces
 		List<ResourceLocation> getTextures(ItemStack stack, String key);
 	}
 
-	public interface  IBulletContainer
+	public interface IBulletContainer
 	{
 		NonNullList<ItemStack> getBullets(ItemStack container, boolean remote);
+
 		default NonNullList<ItemStack> getBullets(ItemStack container)
 		{
 			return getBullets(container, FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT);
 		}
+
 		int getBulletCount(ItemStack container);
 	}
 }

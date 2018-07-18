@@ -20,7 +20,7 @@ public class GeneralComputerHelper
 		if(added)
 			return;
 		added = true;
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
 		{
 			/*
 			ManualHelper.getManual().addEntry("computer.general", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.general0"),

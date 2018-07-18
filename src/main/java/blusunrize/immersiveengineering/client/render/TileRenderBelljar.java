@@ -42,14 +42,14 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 	@Override
 	public void render(TileEntityBelljar tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
-		if(tile.dummy!=0 || !tile.getWorld().isBlockLoaded(tile.getPos(), false))
+		if(tile.dummy!=0||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
 		if(!quads.containsKey(tile.getFacing()))
 		{
 			IBlockState state = getWorld().getBlockState(blockPos);
-			if(state.getBlock() != IEContent.blockMetalDevice1)
+			if(state.getBlock()!=IEContent.blockMetalDevice1)
 				return;
 			state = state.getActualState(getWorld(), blockPos);
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
@@ -95,9 +95,9 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 					if(plantQuadList==null)
 					{
 						IBakedModel plantModel = blockRenderer.getModelForState(s);
-						plantQuadList = new ArrayList<BakedQuad>(plantModel.getQuads(s,null,0));
+						plantQuadList = new ArrayList<BakedQuad>(plantModel.getQuads(s, null, 0));
 						for(EnumFacing f : EnumFacing.values())
-							plantQuadList.addAll(plantModel.getQuads(s,f,0));
+							plantQuadList.addAll(plantModel.getQuads(s, f, 0));
 						plantQuads.put(s, plantQuadList);
 					}
 					if(plantQuadList!=null)
@@ -125,6 +125,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 		GlStateManager.popMatrix();
 		RenderHelper.enableStandardItemLighting();
 	}
+
 	public static void reset()
 	{
 		quads.clear();

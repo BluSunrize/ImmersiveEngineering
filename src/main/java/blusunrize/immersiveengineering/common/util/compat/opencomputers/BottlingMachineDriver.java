@@ -1,23 +1,16 @@
 package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
-import li.cil.oc.api.network.Node;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-
-import java.util.HashMap;
 
 public class BottlingMachineDriver extends DriverSidedTileEntity
 {
@@ -28,9 +21,9 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 		TileEntity te = w.getTileEntity(bp);
 		if(te instanceof TileEntityBottlingMachine)
 		{
-			TileEntityBottlingMachine ref = (TileEntityBottlingMachine) te;
+			TileEntityBottlingMachine ref = (TileEntityBottlingMachine)te;
 			TileEntityBottlingMachine master = ref.master();
-			if(master != null && ref.isRedstonePos())
+			if(master!=null&&ref.isRedstonePos())
 				return new BottlingMachineEnvironment(w, master.getPos(), TileEntityBottlingMachine.class);
 		}
 		return null;

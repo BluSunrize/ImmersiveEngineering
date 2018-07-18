@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockM
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.AbstractManagedEnvironment;
@@ -34,8 +33,8 @@ public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends A
 	protected T getTileEntity()
 	{
 		TileEntity te = w.getTileEntity(pos);
-		if(te != null && myClass.isAssignableFrom(te.getClass()))
-			return (T) te;
+		if(te!=null&&myClass.isAssignableFrom(te.getClass()))
+			return (T)te;
 		return null;
 	}
 
@@ -50,7 +49,7 @@ public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends A
 		protected Object[] enableComputerControl(Context context, Arguments args)
 		{
 			boolean allow = args.checkBoolean(0);
-			if (allow)
+			if(allow)
 				getTileEntity().computerOn = Optional.of(true);
 			else
 				getTileEntity().computerOn = Optional.empty();
@@ -61,7 +60,7 @@ public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends A
 		{
 			boolean enabled = args.checkBoolean(0);
 			TileEntityMultiblockMetal<?, ?> te = getTileEntity();
-			if (!te.computerOn.isPresent())
+			if(!te.computerOn.isPresent())
 				throw new IllegalStateException("Computer control must be enabled to enable or disable the machine");
 			te.computerOn = Optional.of(enabled);
 			return null;

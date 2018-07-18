@@ -44,11 +44,13 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 	{
 		return new String[]{"orientation"};
 	}
+
 	@Override
 	public PropertyInteger getIntProperty(String name)
 	{
 		return IEProperties.INT_4;
 	}
+
 	@Override
 	public int getIntPropertyValue(String name)
 	{
@@ -66,32 +68,37 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return !entity.isSneaking();
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
@@ -117,20 +124,20 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 			orientation = 3;
 		else if(side==EnumFacing.DOWN)
 			orientation = 2;
-		else if(hitY<.5)
+		else if(hitY < .5)
 			orientation = 1;
 	}
 
 	@Override
 	public float[] getBlockBounds()
 	{
-		EnumFacing towards = orientation>1?facing.getOpposite():facing;
-		float minX = towards==EnumFacing.WEST?0:.3125f;
+		EnumFacing towards = orientation > 1?facing.getOpposite(): facing;
+		float minX = towards==EnumFacing.WEST?0: .3125f;
 		float minY = orientation==0?.375f: orientation==2?.3125f: 0;
-		float minZ = towards==EnumFacing.NORTH?0:.3125f;
-		float maxX = towards==EnumFacing.EAST?1:.6875f;
+		float minZ = towards==EnumFacing.NORTH?0: .3125f;
+		float maxX = towards==EnumFacing.EAST?1: .6875f;
 		float maxY = orientation==1?.625f: orientation==3?.6875f: 1;
-		float maxZ = towards==EnumFacing.SOUTH?1:.6875f;
-		return new float[]{minX,minY,minZ, maxX,maxY,maxZ};
+		float maxZ = towards==EnumFacing.SOUTH?1: .6875f;
+		return new float[]{minX, minY, minZ, maxX, maxY, maxZ};
 	}
 }

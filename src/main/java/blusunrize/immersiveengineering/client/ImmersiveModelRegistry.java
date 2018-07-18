@@ -55,7 +55,7 @@ public class ImmersiveModelRegistry
 		for(Map.Entry<ModelResourceLocation, ItemModelReplacement> entry : itemModelReplacements.entrySet())
 		{
 			IBakedModel object = event.getModelRegistry().getObject(entry.getKey());
-			if(object != null)
+			if(object!=null)
 			{
 				try
 				{
@@ -84,10 +84,10 @@ public class ImmersiveModelRegistry
 		if(stack.getItem() instanceof ItemIEBase)
 		{
 			ResourceLocation loc;
-			if(((ItemIEBase) stack.getItem()).getSubNames() != null && ((ItemIEBase) stack.getItem()).getSubNames().length > 0)
-				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName + "/" + ((ItemIEBase) stack.getItem()).getSubNames()[stack.getMetadata()]);
+			if(((ItemIEBase)stack.getItem()).getSubNames()!=null&&((ItemIEBase)stack.getItem()).getSubNames().length > 0)
+				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase)stack.getItem()).itemName+"/"+((ItemIEBase)stack.getItem()).getSubNames()[stack.getMetadata()]);
 			else
-				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName);
+				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase)stack.getItem()).itemName);
 			itemModelReplacements.put(new ModelResourceLocation(loc, "inventory"), replacement);
 		}
 	}
@@ -132,8 +132,8 @@ public class ImmersiveModelRegistry
 					}
 				};
 				ResourceLocation modelLocation = new ResourceLocation(objPath);
-				OBJModel objModel = (OBJModel) OBJLoader.INSTANCE.loadModel(modelLocation);
-				objModel = (OBJModel) objModel.process(flipData);
+				OBJModel objModel = (OBJModel)OBJLoader.INSTANCE.loadModel(modelLocation);
+				objModel = (OBJModel)objModel.process(flipData);
 				ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
 				builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
 				TextureAtlasSprite missing = textureGetter.apply(new ResourceLocation("missingno"));
@@ -143,7 +143,8 @@ public class ImmersiveModelRegistry
 						IELogger.error("OBJLoader: Unresolved texture '{}' for obj model '{}'",
 								objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(), modelLocation);
 						builder.put(s, missing);
-					} else
+					}
+					else
 						builder.put(s, textureGetter.apply(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation()));
 
 				return new IESmartObjModel(existingModel, objModel, new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),

@@ -29,7 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
-@Optional.Interface(iface="elucent.albedo.lighting.ILightProvider", modid="albedo")
+@Optional.Interface(iface = "elucent.albedo.lighting.ILightProvider", modid = "albedo")
 public class EntityRevolvershotFlare extends EntityRevolvershot implements ILightProvider
 {
 	boolean shootUp = false;
@@ -66,10 +66,12 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 	{
 		this.dataManager.set(dataMarker_colour, colour);
 	}
+
 	public int getColourSynced()
 	{
 		return this.dataManager.get(dataMarker_colour);
 	}
+
 	public int getColour()
 	{
 		return colour;
@@ -79,19 +81,19 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 	public void onUpdate()
 	{
 		super.onUpdate();
-		if(colour<0)
+		if(colour < 0)
 			colour = getColourSynced();
-		if(world.isRemote && ticksExisted%1==0)
+		if(world.isRemote&&ticksExisted%1==0)
 		{
-			float r = (getColour()>>16&255)/255f;
-			float g = (getColour()>>8&255)/255f;
+			float r = (getColour() >> 16&255)/255f;
+			float g = (getColour() >> 8&255)/255f;
 			float b = (getColour()&255)/255f;
-			ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX,posY,posZ, 0,0,0, 1, r,g,b);
-			if(ticksExisted>40)
-				for(int i=0; i<20; i++)
+			ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX, posY, posZ, 0, 0, 0, 1, r, g, b);
+			if(ticksExisted > 40)
+				for(int i = 0; i < 20; i++)
 				{
-					Vec3d v = new Vec3d(Utils.RAND.nextDouble()-.5,Utils.RAND.nextDouble()-.5,Utils.RAND.nextDouble()-.5);
-					ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x,posY+v.y,posZ+v.z, v.x/10,v.y/10,v.z/10, 1, r,g,b);
+					Vec3d v = new Vec3d(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
+					ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x, posY+v.y, posZ+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
 				}
 		}
 		if(ticksExisted==40)
@@ -99,17 +101,17 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 			motionX = 0;
 			motionY = -.1;
 			motionZ = 0;
-			float r = (getColour()>>16&255)/255f;
-			float g = (getColour()>>8&255)/255f;
+			float r = (getColour() >> 16&255)/255f;
+			float g = (getColour() >> 8&255)/255f;
 			float b = (getColour()&255)/255f;
-			for(int i=0; i<80; i++)
+			for(int i = 0; i < 80; i++)
 			{
-				Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1);
-				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x,posY+v.y,posZ+v.z, v.x/10,v.y/10,v.z/10, 1, r,g,b);
+				Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
+				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x, posY+v.y, posZ+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
 			}
 
 			lightPos = this.getPosition();
-			for(int i=0; i<128; i++)
+			for(int i = 0; i < 128; i++)
 				if(world.isAirBlock(lightPos))
 					lightPos = lightPos.down();
 				else
@@ -123,10 +125,10 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 	@Override
 	protected void onImpact(RayTraceResult mop)
 	{
-		if(ticksExisted<=40)
+		if(ticksExisted <= 40)
 		{
 			if(!this.world.isRemote)
-				if(mop.entityHit != null)
+				if(mop.entityHit!=null)
 				{
 					if(!mop.entityHit.isImmuneToFire())
 						mop.entityHit.setFire(8);
@@ -137,26 +139,26 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 					if(this.world.isAirBlock(pos))
 						this.world.setBlockState(pos, Blocks.FIRE.getDefaultState());
 				}
-			float r = (getColour()>>16&255)/255f;
-			float g = (getColour()>>8&255)/255f;
+			float r = (getColour() >> 16&255)/255f;
+			float g = (getColour() >> 8&255)/255f;
 			float b = (getColour()&255)/255f;
-			for(int i=0; i<80; i++)
+			for(int i = 0; i < 80; i++)
 			{
-				Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1,(Utils.RAND.nextDouble()-.5)*i>40?2:1);
-				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x,posY+v.y,posZ+v.z, v.x/10,v.y/10,v.z/10, 1, r,g,b);
+				Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
+				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x, posY+v.y, posZ+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
 			}
 		}
 		this.setDead();
 	}
 
 	@Nullable
-	@Optional.Method(modid="albedo")
+	@Optional.Method(modid = "albedo")
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Light provideLight()
 	{
-		float r = (getColour()>>16&255)/255f;
-		float g = (getColour()>>8&255)/255f;
+		float r = (getColour() >> 16&255)/255f;
+		float g = (getColour() >> 8&255)/255f;
 		float b = (getColour()&255)/255f;
 		if(lightPos!=null)
 			return Light.builder().pos(lightPos).radius(16).color(r, g, b).build();

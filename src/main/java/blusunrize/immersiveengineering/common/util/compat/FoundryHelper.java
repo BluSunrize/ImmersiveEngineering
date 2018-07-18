@@ -25,9 +25,9 @@ public class FoundryHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		ChemthrowerHandler.registerEffect("liquidenderpearl", new ChemthrowerEffect_RandomTeleport(null,0, .25f));
-		ChemthrowerHandler.registerEffect("liquidredstone", new ChemthrowerEffect_Potion(null,0, IEPotions.conductive,100,1));
-		ChemthrowerHandler.registerEffect("liquidglowstone", new ChemthrowerEffect_Potion(null,0, new PotionEffect(MobEffects.GLOWING,200,0),new PotionEffect(MobEffects.SPEED,200,0),new PotionEffect(MobEffects.JUMP_BOOST,200,0)));
+		ChemthrowerHandler.registerEffect("liquidenderpearl", new ChemthrowerEffect_RandomTeleport(null, 0, .25f));
+		ChemthrowerHandler.registerEffect("liquidredstone", new ChemthrowerEffect_Potion(null, 0, IEPotions.conductive, 100, 1));
+		ChemthrowerHandler.registerEffect("liquidglowstone", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(MobEffects.GLOWING, 200, 0), new PotionEffect(MobEffects.SPEED, 200, 0), new PotionEffect(MobEffects.JUMP_BOOST, 200, 0)));
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public class Excavator
 		public void apply()
 		{
 			this.mineral = ExcavatorHandler.addMineral(name, mineralWeight, failChance, ores, chances);
-			if(dimensions != null)
+			if(dimensions!=null)
 				if(blacklist)
 					this.mineral.dimensionBlacklist = dimensions;
 				else
@@ -68,7 +68,7 @@ public class Excavator
 		@Override
 		public String describe()
 		{
-			return "Adding MineralMix: " + name + " with weight " + mineralWeight;
+			return "Adding MineralMix: "+name+" with weight "+mineralWeight;
 		}
 	}
 
@@ -101,7 +101,7 @@ public class Excavator
 			while(it.hasNext())
 			{
 				Entry<MineralMix, Integer> e = it.next();
-				if(e.getKey().name.equalsIgnoreCase(name) && !mix.contains(e.getKey()))
+				if(e.getKey().name.equalsIgnoreCase(name)&&!mix.contains(e.getKey()))
 				{
 					mix.add(e.getKey());
 					weight.add(e.getValue());
@@ -113,7 +113,7 @@ public class Excavator
 		@Override
 		public String describe()
 		{
-			return "Removing MineralMix: " + name;
+			return "Removing MineralMix: "+name;
 		}
 	}
 
@@ -153,7 +153,7 @@ public class Excavator
 		@ZenMethod
 		public void addOre(String ore, double chance)
 		{
-			String[] newOres = new String[mix.ores.length + 1];
+			String[] newOres = new String[mix.ores.length+1];
 			float[] newChances = new float[newOres.length];
 			System.arraycopy(mix.ores, 0, newOres, 0, mix.ores.length);
 			System.arraycopy(mix.chances, 0, newChances, 0, mix.chances.length);

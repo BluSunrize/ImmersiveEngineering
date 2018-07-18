@@ -29,14 +29,16 @@ public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{
-		return ordinal()>2&&ordinal()<6;
+		return ordinal() > 2&&ordinal() < 6;
 	}
 }

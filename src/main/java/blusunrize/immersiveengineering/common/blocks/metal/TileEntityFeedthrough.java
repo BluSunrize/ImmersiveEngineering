@@ -58,7 +58,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setString(WIRE, reference.getUniqueName());
-		if (connPositive!=null)
+		if(connPositive!=null)
 		{
 			nbt.setInteger(POSITIVE_CON_X, connPositive.getX());
 			nbt.setInteger(POSITIVE_CON_Y, connPositive.getY());
@@ -77,7 +77,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		reference = WireType.getValue(nbt.getString(WIRE));
-		if (nbt.hasKey(POSITIVE_CON_X))
+		if(nbt.hasKey(POSITIVE_CON_X))
 			connPositive = new BlockPos(
 					nbt.getInteger(POSITIVE_CON_X),
 					nbt.getInteger(POSITIVE_CON_Y),
@@ -98,7 +98,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		return offset.getX()*facing.getFrontOffsetX()+
 				offset.getY()*facing.getFrontOffsetY()+
-				offset.getZ()*facing.getFrontOffsetZ()>0;
+				offset.getZ()*facing.getFrontOffsetZ() > 0;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	private Vec3d getOffset(boolean positive)
 	{
 		double l = INFOS.get(reference).connOffset;
-		int factor = positive?1:-1;
+		int factor = positive?1: -1;
 		return new Vec3d(.5+(.5+l)*facing.getFrontOffsetX()*factor, .5+(.5+l)*facing.getFrontOffsetY()*factor,
 				.5+(.5+l)*facing.getFrontOffsetZ()*factor);
 	}
@@ -118,10 +118,10 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if (!WireApi.canMix(reference, cableType))
+		if(!WireApi.canMix(reference, cableType))
 			return false;
 		boolean positive = isPositive(offset);
-		if (positive)
+		if(positive)
 			return connPositive==null;
 		else
 			return !hasNegative;
@@ -130,9 +130,9 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other, @Nullable Vec3i offset)
 	{
-		if (offset!=null)
+		if(offset!=null)
 		{
-			if (isPositive(offset))
+			if(isPositive(offset))
 				connPositive = ApiUtils.toBlockPos(other);
 			else
 				hasNegative = true;
@@ -142,14 +142,14 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public void removeCable(ImmersiveNetHandler.Connection connection)
 	{
-		if (connection==null)
+		if(connection==null)
 		{
 			connPositive = null;
 			hasNegative = false;
 		}
 		else
 		{
-			if (connection.end.equals(connPositive)||connection.start.equals(connPositive))
+			if(connection.end.equals(connPositive)||connection.start.equals(connPositive))
 				connPositive = null;
 			else
 				hasNegative = false;
@@ -178,14 +178,14 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	public ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
-		if (info.canReplace())
+		if(info.canReplace())
 		{
-			if (offset==0)
+			if(offset==0)
 			{
 				NonNullList<ItemStack> ret = Utils.getDrops(stateForMiddle);
-				if (ret.size()>0)
+				if(ret.size() > 0)
 				{
-					for (int i = 1;i<ret.size();i++)
+					for(int i = 1; i < ret.size(); i++)
 						Utils.dropStackAtPos(world, pos, ret.get(i));
 					return ret.get(0);
 				}
@@ -252,17 +252,17 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		for (int i = -1;i<=1;i+=2)
+		for(int i = -1; i <= 1; i += 2)
 		{
 			BlockPos tmp = pos.offset(facing, i);
 			world.setBlockState(tmp, state);
 			TileEntity te = world.getTileEntity(tmp);
-			if (te instanceof TileEntityFeedthrough)
+			if(te instanceof TileEntityFeedthrough)
 			{
-				((TileEntityFeedthrough) te).facing = facing;
-				((TileEntityFeedthrough) te).offset = i;
-				((TileEntityFeedthrough) te).reference = reference;
-				((TileEntityFeedthrough) te).stateForMiddle = stateForMiddle;
+				((TileEntityFeedthrough)te).facing = facing;
+				((TileEntityFeedthrough)te).offset = i;
+				((TileEntityFeedthrough)te).reference = reference;
+				((TileEntityFeedthrough)te).stateForMiddle = stateForMiddle;
 				world.checkLight(tmp);
 			}
 		}
@@ -271,22 +271,22 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		if (!formed)
+		if(!formed)
 			return;
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
-		for (int i = -1;i<=1;i++)
+		for(int i = -1; i <= 1; i++)
 		{
 			int offsetLocal = i-offset;
 			BlockPos replacePos = pos.offset(facing, offsetLocal);
-			if (!info.canReplace())
+			if(!info.canReplace())
 				world.setBlockToAir(replacePos);
-			else if (i!=offset)
+			else if(i!=offset)
 			{
 				TileEntity te = world.getTileEntity(replacePos);
-				if (te instanceof TileEntityFeedthrough)
+				if(te instanceof TileEntityFeedthrough)
 					((TileEntityFeedthrough)te).formed = false;
 				IBlockState newState = Blocks.AIR.getDefaultState();
-				switch (i)
+				switch(i)
 				{
 					case -1:
 						newState = info.conn.withProperty(IEProperties.FACING_ALL, facing);
@@ -311,18 +311,19 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 
 	private static float[] FULL_BLOCK = {0, 0, 0, 1, 1, 1};
 	private float[] aabb;
+
 	@Override
 	public float[] getBlockBounds()
 	{
-		if (offset==0)
+		if(offset==0)
 			return FULL_BLOCK;
-		if (aabb==null)
+		if(aabb==null)
 		{
 			float[] tmp = {
 					5F/16, 0, 5F/16,
-					11F/16, (float) INFOS.get(reference).connLength, 11F/16
+					11F/16, (float)INFOS.get(reference).connLength, 11F/16
 			};
-			aabb = Utils.rotateToFacing(tmp, offset>0?facing:facing.getOpposite());
+			aabb = Utils.rotateToFacing(tmp, offset > 0?facing: facing.getOpposite());
 		}
 		return aabb;
 	}
@@ -330,7 +331,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public Object[] getCacheData()
 	{
-		return new Object[] {
+		return new Object[]{
 				stateForMiddle, reference, facing
 		};
 	}

@@ -52,6 +52,7 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 	{
 		return getOutputCached(input)!=null;
 	}
+
 	@Override
 	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input)
 	{
@@ -61,11 +62,13 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 	public static class PackedDelegate extends MetalPressRecipe
 	{
 		private final ComparableItemStack mapKey;
+
 		public PackedDelegate(ComparableItemStack mapKey, ItemStack output, Object input, ComparableItemStack mold, int energy)
 		{
 			super(output, input, mold, energy);
 			this.mapKey = mapKey;
 		}
+
 		@Override
 		public boolean listInJEI()
 		{
@@ -92,17 +95,17 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 			return this.cache.get(comp);
 
 		comp.copy();
-		ItemStack out = MetalPressPackingRecipe.getPackedOutput(1,1, input);
+		ItemStack out = MetalPressPackingRecipe.getPackedOutput(1, 1, input);
 		int count = out.getCount();
 
-		if(count!=4 && count!=9)
+		if(count!=4&&count!=9)
 		{
 			this.cache.put(comp, null);
 			return null;
 		}
 
-		ItemStack rePacked = MetalPressPackingRecipe.getPackedOutput(count==4?2:3, count, out);
-		if(rePacked.isEmpty() || !OreDictionary.itemMatches(input, rePacked, true))
+		ItemStack rePacked = MetalPressPackingRecipe.getPackedOutput(count==4?2: 3, count, out);
+		if(rePacked.isEmpty()||!OreDictionary.itemMatches(input, rePacked, true))
 		{
 			this.cache.put(comp, null);
 			return null;

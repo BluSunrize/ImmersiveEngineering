@@ -28,18 +28,18 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+				if(powerpack.isEmpty()&&IEContent.itemPowerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
-				else if(armor.isEmpty() && isValidArmor(stackInSlot))
+				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;
 				else
 					return false;
 		}
-		if(!powerpack.isEmpty() && !armor.isEmpty() && !ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
+		if(!powerpack.isEmpty()&&!armor.isEmpty()&&!ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 			return true;
 		else return !armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack)&&powerpack.isEmpty();
 	}
@@ -49,24 +49,24 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
-		for(int i=0;i<inv.getSizeInventory();i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty() && IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+				if(powerpack.isEmpty()&&IEContent.itemPowerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
-				else if(armor.isEmpty() && isValidArmor(stackInSlot))
+				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;
 		}
 
-		if(!powerpack.isEmpty() && !armor.isEmpty() && !ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
+		if(!powerpack.isEmpty()&&!armor.isEmpty()&&!ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 		{
 			ItemStack output = armor.copy();
 			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, powerpack.copy());
 
 			return output;
 		}
-		else if(!armor.isEmpty() && ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
+		else if(!armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 		{
 			ItemStack output = armor.copy();
 			ItemNBTHelper.remove(output, Lib.NBT_Powerpack);
@@ -78,23 +78,23 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width>=2 && height>=2;
+		return width >= 2&&height >= 2;
 	}
 
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemPowerpack,1,0);
+		return new ItemStack(IEContent.itemPowerpack, 1, 0);
 	}
 
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{
 		NonNullList<ItemStack> remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
-		for(int i=0;i<remaining.size();i++)
+		for(int i = 0; i < remaining.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty() && ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Powerpack))
+			if(!stackInSlot.isEmpty()&&ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Powerpack))
 				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Powerpack));
 		}
 		return remaining;
@@ -102,9 +102,9 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 
 	private boolean isValidArmor(ItemStack stack)
 	{
-		if(!(stack.getItem() instanceof ItemArmor) || ((ItemArmor)stack.getItem()).armorType!=EntityEquipmentSlot.CHEST)
+		if(!(stack.getItem() instanceof ItemArmor)||((ItemArmor)stack.getItem()).armorType!=EntityEquipmentSlot.CHEST)
 			return false;
-		if (stack.getItem()==IEContent.itemPowerpack)
+		if(stack.getItem()==IEContent.itemPowerpack)
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
 		for(String s : Config.IEConfig.Tools.powerpack_whitelist)

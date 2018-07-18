@@ -46,7 +46,7 @@ public class IngredientIngrStack extends Ingredient
 	public ItemStack[] getMatchingStacks()
 	{
 		List<ItemStack> list = null;
-		if(array==null || this.array.length!=(list=this.ingredientStack.getSizedStackList()).size())
+		if(array==null||this.array.length!=(list = this.ingredientStack.getSizedStackList()).size())
 		{
 			if(list==null)
 				list = this.ingredientStack.getSizedStackList();
@@ -54,7 +54,7 @@ public class IngredientIngrStack extends Ingredient
 			List<ItemStack> list2 = new ArrayList<>(list.size());
 			for(ItemStack stack : list)
 			{
-				if(stack.getMetadata() == OreDictionary.WILDCARD_VALUE)
+				if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
 				{
 					NonNullList<ItemStack> lst = NonNullList.create();
 					stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
@@ -75,7 +75,7 @@ public class IngredientIngrStack extends Ingredient
 	public IntList getValidItemStacksPacked()
 	{
 		List<ItemStack> list = null;
-		if(this.itemIds==null || this.itemIds.size()!=(list=this.ingredientStack.getSizedStackList()).size())
+		if(this.itemIds==null||this.itemIds.size()!=(list = this.ingredientStack.getSizedStackList()).size())
 		{
 			if(list==null)
 				list = this.ingredientStack.getSizedStackList();
@@ -83,7 +83,7 @@ public class IngredientIngrStack extends Ingredient
 			this.itemIds = new IntArrayList(list.size());
 			for(ItemStack stack : list)
 			{
-				if(stack.getMetadata() == OreDictionary.WILDCARD_VALUE)
+				if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
 				{
 					NonNullList<ItemStack> lst = NonNullList.create();
 					stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
@@ -103,7 +103,7 @@ public class IngredientIngrStack extends Ingredient
 	@Override
 	public boolean apply(@Nullable ItemStack input)
 	{
-		if(input == null)
+		if(input==null)
 			return false;
 		return this.ingredientStack.matchesItemStack(input);
 	}

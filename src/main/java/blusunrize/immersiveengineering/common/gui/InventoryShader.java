@@ -43,7 +43,8 @@ public class InventoryShader implements IInventory
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isEmpty()
+	{
 		return this.shader.isEmpty();
 	}
 
@@ -71,7 +72,7 @@ public class InventoryShader implements IInventory
 		if(!this.shader.isEmpty())
 		{
 			ItemStack itemstack;
-			if(shader.getCount()<=j)
+			if(shader.getCount() <= j)
 			{
 				itemstack = this.shader.copy();
 				this.shader = ItemStack.EMPTY;
@@ -94,7 +95,7 @@ public class InventoryShader implements IInventory
 	public void setInventorySlotContents(int i, ItemStack stack)
 	{
 		this.shader = stack;
-		if(!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
+		if(!stack.isEmpty()&&stack.getCount() > this.getInventoryStackLimit())
 			stack.setCount(this.getInventoryStackLimit());
 		this.container.onCraftMatrixChanged(this);
 	}
@@ -104,15 +105,17 @@ public class InventoryShader implements IInventory
 	{
 		return "container."+name;
 	}
+
 	@Override
 	public boolean hasCustomName()
 	{
 		return false;
 	}
+
 	@Override
 	public ITextComponent getDisplayName()
 	{
-		return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
+		return this.hasCustomName()?new TextComponentString(this.getName()): new TextComponentTranslation(this.getName());
 	}
 
 	@Override
@@ -129,18 +132,24 @@ public class InventoryShader implements IInventory
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUsableByPlayer(EntityPlayer entityplayer)
+	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(EntityPlayer player)
+	{
+	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(EntityPlayer player)
+	{
+	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	{
 		return true;
 	}
 
@@ -150,15 +159,18 @@ public class InventoryShader implements IInventory
 	{
 		return 0;
 	}
+
 	@Override
 	public void setField(int id, int value)
 	{
 	}
+
 	@Override
 	public int getFieldCount()
 	{
 		return 0;
 	}
+
 	@Override
 	public void clear()
 	{

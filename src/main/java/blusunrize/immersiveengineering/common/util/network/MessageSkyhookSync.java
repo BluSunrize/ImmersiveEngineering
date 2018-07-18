@@ -39,6 +39,7 @@ public class MessageSkyhookSync implements IMessage
 		subPoints = entity.subPoints;
 		targetPoint = entity.targetPoint;
 	}
+
 	public MessageSkyhookSync()
 	{
 	}
@@ -52,7 +53,7 @@ public class MessageSkyhookSync implements IMessage
 		target = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
 		int l = buf.readInt();
 		subPoints = new Vec3d[l];
-		for(int i=0; i<l; i++)
+		for(int i = 0; i < l; i++)
 			subPoints[i] = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
 		targetPoint = buf.readInt();
 	}
@@ -61,7 +62,7 @@ public class MessageSkyhookSync implements IMessage
 	public void toBytes(ByteBuf buf)
 	{
 		buf.writeInt(entityID);
-		ByteBufUtils.writeTag(buf,connection.writeToNBT());
+		ByteBufUtils.writeTag(buf, connection.writeToNBT());
 		buf.writeInt(target.getX()).writeInt(target.getY()).writeInt(target.getZ());
 		buf.writeInt(subPoints.length);
 		for(Vec3d v : subPoints)

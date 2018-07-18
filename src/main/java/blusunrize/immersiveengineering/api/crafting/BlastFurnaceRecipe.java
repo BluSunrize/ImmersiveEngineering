@@ -32,19 +32,21 @@ public class BlastFurnaceRecipe
 
 	public BlastFurnaceRecipe(ItemStack output, Object input, int time, @Nonnull ItemStack slag)
 	{
-		this.output=output;
-		this.input=ApiUtils.convertToValidRecipeInput(input);
-		this.time=time;
-		this.slag=slag;
+		this.output = output;
+		this.input = ApiUtils.convertToValidRecipeInput(input);
+		this.time = time;
+		this.slag = slag;
 	}
 
 	public static ArrayList<BlastFurnaceRecipe> recipeList = new ArrayList<BlastFurnaceRecipe>();
+
 	public static void addRecipe(ItemStack output, Object input, int time, @Nonnull ItemStack slag)
 	{
 		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time, slag);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
 	}
+
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
 		for(BlastFurnaceRecipe recipe : recipeList)
@@ -54,6 +56,7 @@ public class BlastFurnaceRecipe
 		}
 		return null;
 	}
+
 	public static List<BlastFurnaceRecipe> removeRecipes(ItemStack stack)
 	{
 		List<BlastFurnaceRecipe> list = new ArrayList();
@@ -71,6 +74,7 @@ public class BlastFurnaceRecipe
 	}
 
 	public static ArrayList<BlastFurnaceFuel> blastFuels = new ArrayList();
+
 	public static class BlastFurnaceFuel
 	{
 		public final IngredientStack input;
@@ -82,12 +86,14 @@ public class BlastFurnaceRecipe
 			this.burnTime = burnTime;
 		}
 	}
+
 	public static BlastFurnaceFuel addBlastFuel(Object fuel, int burnTime)
 	{
 		BlastFurnaceFuel entry = new BlastFurnaceFuel(ApiUtils.createIngredientStack(fuel), burnTime);
 		blastFuels.add(entry);
 		return entry;
 	}
+
 	public static int getBlastFuelTime(ItemStack stack)
 	{
 		for(BlastFurnaceFuel e : blastFuels)
@@ -95,8 +101,9 @@ public class BlastFurnaceRecipe
 				return e.burnTime;
 		return 0;
 	}
+
 	public static boolean isValidBlastFuel(ItemStack stack)
 	{
-		return getBlastFuelTime(stack)>0;
+		return getBlastFuelTime(stack) > 0;
 	}
 }

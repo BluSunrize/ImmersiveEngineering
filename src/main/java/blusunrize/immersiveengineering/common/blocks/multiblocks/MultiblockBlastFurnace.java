@@ -32,12 +32,15 @@ public class MultiblockBlastFurnace implements IMultiblock
 	public static MultiblockBlastFurnace instance = new MultiblockBlastFurnace();
 
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
-	static{
-		for(int h=0;h<3;h++)
-			for(int l=0;l<3;l++)
-				for(int w=0;w<3;w++)
-					structure[h][l][w]=new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta());
+
+	static
+	{
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 3; l++)
+				for(int w = 0; w < 3; w++)
+					structure[h][l][w] = new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.BLASTBRICK.getMeta());
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
@@ -49,18 +52,21 @@ public class MultiblockBlastFurnace implements IMultiblock
 	{
 		return 16;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
@@ -76,7 +82,7 @@ public class MultiblockBlastFurnace implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==IEContent.blockStoneDecoration && (state.getBlock().getMetaFromState(state)==BlockTypes_StoneDecoration.BLASTBRICK.getMeta());
+		return state.getBlock()==IEContent.blockStoneDecoration&&(state.getBlock().getMetaFromState(state)==BlockTypes_StoneDecoration.BLASTBRICK.getMeta());
 	}
 
 	@Override
@@ -85,31 +91,31 @@ public class MultiblockBlastFurnace implements IMultiblock
 		EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
 		pos = pos.offset(f);
 
-		for(int h=-1;h<=1;h++)
-			for(int xx=-1;xx<=1;xx++)
-				for(int zz=-1;zz<=1;zz++)
+		for(int h = -1; h <= 1; h++)
+			for(int xx = -1; xx <= 1; xx++)
+				for(int zz = -1; zz <= 1; zz++)
 				{
 					if(!Utils.isBlockAt(world, pos.add(xx, h, zz), IEContent.blockStoneDecoration, BlockTypes_StoneDecoration.BLASTBRICK.getMeta()))
 						return false;
 				}
 		IBlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.BLAST_FURNACE.getMeta());
 		state = state.withProperty(IEProperties.FACING_HORIZONTAL, f.getOpposite());
-		for(int h=-1;h<=1;h++)
-			for(int l=-1;l<=1;l++)
-				for(int w=-1;w<=1;w++)
+		for(int h = -1; h <= 1; h++)
+			for(int l = -1; l <= 1; l++)
+				for(int w = -1; w <= 1; w++)
 				{
-					int xx = f==EnumFacing.EAST?l: f==EnumFacing.WEST?-l: f==EnumFacing.NORTH?-w:w;
-					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w:-w;
+					int xx = f==EnumFacing.EAST?l: f==EnumFacing.WEST?-l: f==EnumFacing.NORTH?-w: w;
+					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w: -w;
 
 					BlockPos pos2 = pos.add(xx, h, zz);
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntityBlastFurnace)
 					{
-						TileEntityBlastFurnace currBlast = (TileEntityBlastFurnace) curr;
-						currBlast.offset=new int[]{xx,h,zz};
-						currBlast.pos = (h+1)*9 + (l+1)*3 + (w+1);
-						currBlast.formed=true;
+						TileEntityBlastFurnace currBlast = (TileEntityBlastFurnace)curr;
+						currBlast.offset = new int[]{xx, h, zz};
+						currBlast.pos = (h+1)*9+(l+1)*3+(w+1);
+						currBlast.formed = true;
 						currBlast.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 					}
@@ -118,6 +124,7 @@ public class MultiblockBlastFurnace implements IMultiblock
 	}
 
 	static final IngredientStack[] materials = new IngredientStack[]{new IngredientStack(new ItemStack(IEContent.blockStoneDecoration, 27, BlockTypes_StoneDecoration.BLASTBRICK.getMeta()))};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

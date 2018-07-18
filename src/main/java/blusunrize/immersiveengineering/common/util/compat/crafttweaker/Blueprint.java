@@ -30,8 +30,8 @@ public class Blueprint
 	public static void addRecipe(String category, IItemStack output, IIngredient[] inputs)
 	{
 		Object[] oInputs = new Object[inputs.length];
-			for(int i = 0; i < inputs.length; i++)
-				oInputs[i] = CraftTweakerHelper.toObject(inputs[i]);
+		for(int i = 0; i < inputs.length; i++)
+			oInputs[i] = CraftTweakerHelper.toObject(inputs[i]);
 		BlueprintCraftingRecipe r = new BlueprintCraftingRecipe(category, CraftTweakerHelper.toStack(output), oInputs);
 		CraftTweakerAPI.apply(new Add(r));
 	}
@@ -58,7 +58,7 @@ public class Blueprint
 		@Override
 		public String describe()
 		{
-			return "Adding Blueprint Recipe for " + recipe.output.getDisplayName();
+			return "Adding Blueprint Recipe for "+recipe.output.getDisplayName();
 		}
 	}
 
@@ -106,7 +106,7 @@ public class Blueprint
 		@Override
 		public String describe()
 		{
-			return "Removing Blueprint Recipe for " + output.getDisplayName();
+			return "Removing Blueprint Recipe for "+output.getDisplayName();
 		}
 	}
 }

@@ -99,7 +99,7 @@ public class RecipeFactoryShapedIngredient implements IRecipeFactory
 			{
 				JsonArray jArray = JsonUtils.getJsonArray(json, "copy_nbt");
 				int[] array = new int[jArray.size()];
-				for(int i=0; i<array.length; i++)
+				for(int i = 0; i < array.length; i++)
 					array[i] = jArray.get(i).getAsInt();
 				recipe.setNBTCopyTargetRecipe(array);
 			}

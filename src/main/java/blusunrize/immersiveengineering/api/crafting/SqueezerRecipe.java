@@ -23,18 +23,19 @@ import java.util.Map;
 
 /**
  * @author BluSunrize - 20.02.2016
- *
+ * <p>
  * The recipe for the Squeezer
  */
 public class SqueezerRecipe extends MultiblockRecipe
 {
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
-	
+
 	public final IngredientStack input;
 	public final FluidStack fluidOutput;
 	@Nonnull
 	public final ItemStack itemOutput;
+
 	public SqueezerRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
 	{
 		this.fluidOutput = fluidOutput;
@@ -47,19 +48,22 @@ public class SqueezerRecipe extends MultiblockRecipe
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 		this.outputList = ListUtils.fromItem(this.itemOutput);
 	}
+
 	public SqueezerRecipe setInputSize(int size)
 	{
 		this.input.inputSize = size;
 		return this;
 	}
-	
+
 	public static ArrayList<SqueezerRecipe> recipeList = new ArrayList();
+
 	public static SqueezerRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
 	{
 		SqueezerRecipe r = new SqueezerRecipe(fluidOutput, itemOutput, input, energy);
 		recipeList.add(r);
 		return r;
 	}
+
 	public static SqueezerRecipe findRecipe(ItemStack input)
 	{
 		if(input.isEmpty())
@@ -93,13 +97,14 @@ public class SqueezerRecipe extends MultiblockRecipe
 	{
 		return 0;
 	}
-	
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
 		return nbt;
 	}
+
 	public static SqueezerRecipe loadFromNBT(NBTTagCompound nbt)
 	{
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
@@ -108,11 +113,12 @@ public class SqueezerRecipe extends MultiblockRecipe
 				return recipe;
 		return null;
 	}
+
 	public static Map<String, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
 	{
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		for(SqueezerRecipe recipe : recipeList)
-			if(recipe.fluidOutput!=null && recipe.fluidOutput.getFluid()==f)
+			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f)
 			{
 				ItemStack is = recipe.input.getExampleStack();
 				map.put(is.getDisplayName(), recipe.fluidOutput.amount);

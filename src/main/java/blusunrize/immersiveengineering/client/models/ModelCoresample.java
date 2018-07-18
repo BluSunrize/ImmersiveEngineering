@@ -52,10 +52,12 @@ public class ModelCoresample implements IBakedModel
 	{
 		this.mineral = mineral;
 	}
+
 	public ModelCoresample()
 	{
 		this(null);
 	}
+
 	public static final HashMap<String, ModelCoresample> modelCache = new HashMap<>();
 //	@Override
 //	public List<BakedQuad> getFaceQuads(EnumFacing p_177551_1_)
@@ -66,9 +68,10 @@ public class ModelCoresample implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand)
 	{
-		if(bakedQuads == null)
+		if(bakedQuads==null)
 		{
-			try{
+			try
+			{
 				bakedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
 				float width = .25f;
 				float depth = .25f;
@@ -77,76 +80,76 @@ public class ModelCoresample implements IBakedModel
 				int pixelLength = 0;
 
 				HashMap<TextureAtlasSprite, Integer> textureOre = new HashMap();
-				if(mineral!=null && mineral.oreOutput!=null)
+				if(mineral!=null&&mineral.oreOutput!=null)
 				{
-					for(int i=0; i<mineral.oreOutput.size(); i++)
+					for(int i = 0; i < mineral.oreOutput.size(); i++)
 						if(!mineral.oreOutput.get(i).isEmpty())
 						{
 							int weight = Math.max(2, Math.round(16*mineral.recalculatedChances[i]));
 							Block b = Block.getBlockFromItem(mineral.oreOutput.get(i).getItem());
 							IBlockState state = b!=null&&b!=Blocks.AIR?b.getStateFromMeta(mineral.oreOutput.get(i).getMetadata()): Blocks.STONE.getDefaultState();
 							IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-							if(model!=null && model.getParticleTexture()!=null)
+							if(model!=null&&model.getParticleTexture()!=null)
 								textureOre.put(model.getParticleTexture(), weight);
 							pixelLength += weight;
 						}
 				}
 				else
-					pixelLength=16;
+					pixelLength = 16;
 				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("blocks/stone"));
 
 				Vector2f[] stoneUVs = {
-						new Vector2f(textureStone.getInterpolatedU(16*wOff),textureStone.getInterpolatedV(16*dOff)),
-						new Vector2f(textureStone.getInterpolatedU(16*wOff),textureStone.getInterpolatedV(16*(dOff+depth))),
-						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)),textureStone.getInterpolatedV(16*(dOff+depth))),
-						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)),textureStone.getInterpolatedV(16*dOff))};
+						new Vector2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*dOff)),
+						new Vector2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*(dOff+depth))),
+						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)), textureStone.getInterpolatedV(16*(dOff+depth))),
+						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)), textureStone.getInterpolatedV(16*dOff))};
 
-				putVertexData(new Vector3f(0, -1, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff + width, 0, dOff), new Vector3f(wOff + width, 0, dOff + depth), new Vector3f(wOff, 0, dOff + depth)}, stoneUVs, textureStone);
-				putVertexData(new Vector3f(0, 1, 0), new Vector3f[]{new Vector3f(wOff, 1, dOff), new Vector3f(wOff, 1, dOff + depth), new Vector3f(wOff + width, 1, dOff + depth), new Vector3f(wOff + width, 1, dOff)}, stoneUVs, textureStone);
+				putVertexData(new Vector3f(0, -1, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff+width, 0, dOff), new Vector3f(wOff+width, 0, dOff+depth), new Vector3f(wOff, 0, dOff+depth)}, stoneUVs, textureStone);
+				putVertexData(new Vector3f(0, 1, 0), new Vector3f[]{new Vector3f(wOff, 1, dOff), new Vector3f(wOff, 1, dOff+depth), new Vector3f(wOff+width, 1, dOff+depth), new Vector3f(wOff+width, 1, dOff)}, stoneUVs, textureStone);
 				if(textureOre.isEmpty())
 				{
 					Vector2f[][] uvs = new Vector2f[4][];
-					for(int j=0; j<4; j++)
+					for(int j = 0; j < 4; j++)
 						uvs[j] = new Vector2f[]{
-								new Vector2f(textureStone.getInterpolatedU(j*4),textureStone.getInterpolatedV(0)),
-								new Vector2f(textureStone.getInterpolatedU(j*4),textureStone.getInterpolatedV(16)),
-								new Vector2f(textureStone.getInterpolatedU((j+1)*4),textureStone.getInterpolatedV(16)),
-								new Vector2f(textureStone.getInterpolatedU((j+1)*4),textureStone.getInterpolatedV(0))};
+								new Vector2f(textureStone.getInterpolatedU(j*4), textureStone.getInterpolatedV(0)),
+								new Vector2f(textureStone.getInterpolatedU(j*4), textureStone.getInterpolatedV(16)),
+								new Vector2f(textureStone.getInterpolatedU((j+1)*4), textureStone.getInterpolatedV(16)),
+								new Vector2f(textureStone.getInterpolatedU((j+1)*4), textureStone.getInterpolatedV(0))};
 
-					putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff, 1, dOff), new Vector3f(wOff + width, 1, dOff), new Vector3f(wOff + width, 0, dOff)}, uvs[0], textureStone);
-					putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff + width, 0, dOff + depth), new Vector3f(wOff + width, 1, dOff + depth), new Vector3f(wOff, 1, dOff + depth), new Vector3f(wOff, 0, dOff + depth)}, uvs[2], textureStone);
-					putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff + depth), new Vector3f(wOff, 1, dOff + depth), new Vector3f(wOff, 1, dOff), new Vector3f(wOff, 0, dOff)}, uvs[3], textureStone);
-					putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff + width, 0, dOff), new Vector3f(wOff + width, 1, dOff), new Vector3f(wOff + width, 1, dOff + depth), new Vector3f(wOff + width, 0, dOff + depth)}, uvs[1], textureStone);
+					putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff, 1, dOff), new Vector3f(wOff+width, 1, dOff), new Vector3f(wOff+width, 0, dOff)}, uvs[0], textureStone);
+					putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff+width, 0, dOff+depth), new Vector3f(wOff+width, 1, dOff+depth), new Vector3f(wOff, 1, dOff+depth), new Vector3f(wOff, 0, dOff+depth)}, uvs[2], textureStone);
+					putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff+depth), new Vector3f(wOff, 1, dOff+depth), new Vector3f(wOff, 1, dOff), new Vector3f(wOff, 0, dOff)}, uvs[3], textureStone);
+					putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff+width, 0, dOff), new Vector3f(wOff+width, 1, dOff), new Vector3f(wOff+width, 1, dOff+depth), new Vector3f(wOff+width, 0, dOff+depth)}, uvs[1], textureStone);
 				}
 				else
 				{
-					float h=0;
+					float h = 0;
 					for(TextureAtlasSprite sprite : textureOre.keySet())
 					{
 						int weight = textureOre.get(sprite);
-						int v = weight>8?16-weight:8;
+						int v = weight > 8?16-weight: 8;
 						Vector2f[][] uvs = new Vector2f[4][];
-						for(int j=0; j<4; j++)
+						for(int j = 0; j < 4; j++)
 							uvs[j] = new Vector2f[]{
-									new Vector2f(sprite.getInterpolatedU(j*4),sprite.getInterpolatedV(v)),
-									new Vector2f(sprite.getInterpolatedU(j*4),sprite.getInterpolatedV(v+weight)),
-									new Vector2f(sprite.getInterpolatedU((j+1)*4),sprite.getInterpolatedV(v+weight)),
-									new Vector2f(sprite.getInterpolatedU((j+1)*4),sprite.getInterpolatedV(v))};
+									new Vector2f(sprite.getInterpolatedU(j*4), sprite.getInterpolatedV(v)),
+									new Vector2f(sprite.getInterpolatedU(j*4), sprite.getInterpolatedV(v+weight)),
+									new Vector2f(sprite.getInterpolatedU((j+1)*4), sprite.getInterpolatedV(v+weight)),
+									new Vector2f(sprite.getInterpolatedU((j+1)*4), sprite.getInterpolatedV(v))};
 
 						float h1 = weight/(float)pixelLength;
-						putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, h, dOff), new Vector3f(wOff, h + h1, dOff), new Vector3f(wOff + width, h + h1, dOff), new Vector3f(wOff + width, h, dOff)}, uvs[0], sprite);
-						putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff + width, h, dOff + depth), new Vector3f(wOff + width, h + h1, dOff + depth), new Vector3f(wOff, h + h1, dOff + depth), new Vector3f(wOff, h, dOff + depth)}, uvs[2], sprite);
-						putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, h, dOff + depth), new Vector3f(wOff, h + h1, dOff + depth), new Vector3f(wOff, h + h1, dOff), new Vector3f(wOff, h, dOff)}, uvs[3], sprite);
-						putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff + width, h, dOff), new Vector3f(wOff + width, h + h1, dOff), new Vector3f(wOff + width, h + h1, dOff + depth), new Vector3f(wOff + width, h, dOff + depth)}, uvs[1], sprite);
+						putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, h, dOff), new Vector3f(wOff, h+h1, dOff), new Vector3f(wOff+width, h+h1, dOff), new Vector3f(wOff+width, h, dOff)}, uvs[0], sprite);
+						putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff+width, h, dOff+depth), new Vector3f(wOff+width, h+h1, dOff+depth), new Vector3f(wOff, h+h1, dOff+depth), new Vector3f(wOff, h, dOff+depth)}, uvs[2], sprite);
+						putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, h, dOff+depth), new Vector3f(wOff, h+h1, dOff+depth), new Vector3f(wOff, h+h1, dOff), new Vector3f(wOff, h, dOff)}, uvs[3], sprite);
+						putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff+width, h, dOff), new Vector3f(wOff+width, h+h1, dOff), new Vector3f(wOff+width, h+h1, dOff+depth), new Vector3f(wOff+width, h, dOff+depth)}, uvs[1], sprite);
 						h += h1;
 					}
 				}
-			}catch(Exception e)
+			} catch(Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
-		if(bakedQuads!=null && !bakedQuads.isEmpty())
+		if(bakedQuads!=null&&!bakedQuads.isEmpty())
 		{
 			List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(bakedQuads));
 			return quadList;
@@ -160,7 +163,7 @@ public class ModelCoresample implements IBakedModel
 		builder.setQuadOrientation(EnumFacing.getFacingFromVector(normal.x, normal.y, normal.z));
 		builder.setTexture(sprite);
 //		builder.setQuadColored();
-		for(int i=0; i<vertices.length; i++)
+		for(int i = 0; i < vertices.length; i++)
 		{
 			builder.put(0, vertices[i].x, vertices[i].y, vertices[i].z, 1);//Pos
 			float d = LightUtil.diffuseLight(normal.x, normal.y, normal.z);
@@ -177,16 +180,19 @@ public class ModelCoresample implements IBakedModel
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isGui3d()
 	{
 		return true;
 	}
+
 	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return false;
 	}
+
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
@@ -214,14 +220,14 @@ public class ModelCoresample implements IBakedModel
 			if(ItemNBTHelper.hasKey(stack, "mineral"))
 			{
 				String name = ItemNBTHelper.getString(stack, "mineral");
-				if(name!=null && !name.isEmpty())
+				if(name!=null&&!name.isEmpty())
 				{
 					if(!modelCache.containsKey(name))
 						for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
 							if(name.equals(mix.name))
 								modelCache.put(name, new ModelCoresample(mix));
 					IBakedModel model = modelCache.get(name);
-					if(model != null)
+					if(model!=null)
 						return model;
 				}
 			}
@@ -241,20 +247,23 @@ public class ModelCoresample implements IBakedModel
 //	}
 
 	static HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
-	static{
+
+	static
+	{
 		transformationMap.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(0, .28, 0).rotate(Math.toRadians(180), 1, 0, 0).rotate(Math.toRadians(-90), 0, 1, 0));
 		transformationMap.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(0, .28, 0).rotate(Math.toRadians(180), 1, 0, 0).rotate(Math.toRadians(-90), 0, 1, 0));
 		transformationMap.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.625, .625, .625).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
 		transformationMap.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.625, .625, .625).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
-		transformationMap.put(TransformType.GUI, new Matrix4().scale(1.25,1.25,1.25).rotate(Math.toRadians(180), 1,0,0).rotate(Math.toRadians(20), 0,1,0).rotate(Math.toRadians(-30), 0,0,1));
-		transformationMap.put(TransformType.FIXED, new Matrix4().scale(1.5,1.5,1.5).rotate(Math.toRadians(180), 1,0,0));
-		transformationMap.put(TransformType.GROUND, new Matrix4().scale(1.5,1.5,1.5).rotate(Math.toRadians(180), 1,0,0));
+		transformationMap.put(TransformType.GUI, new Matrix4().scale(1.25, 1.25, 1.25).rotate(Math.toRadians(180), 1, 0, 0).rotate(Math.toRadians(20), 0, 1, 0).rotate(Math.toRadians(-30), 0, 0, 1));
+		transformationMap.put(TransformType.FIXED, new Matrix4().scale(1.5, 1.5, 1.5).rotate(Math.toRadians(180), 1, 0, 0));
+		transformationMap.put(TransformType.GROUND, new Matrix4().scale(1.5, 1.5, 1.5).rotate(Math.toRadians(180), 1, 0, 0));
 	}
+
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
 //		if(transformationMap==null)
-		return  Pair.of(this, TRSRTransformation.identity().getMatrix());
+		return Pair.of(this, TRSRTransformation.identity().getMatrix());
 //		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType):new Matrix4();
 //		return Pair.of(this, matrix.toMatrix4f());
 	}

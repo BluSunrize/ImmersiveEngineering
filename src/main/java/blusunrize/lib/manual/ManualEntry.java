@@ -68,17 +68,16 @@ public class ManualEntry
 			TIntObjectMap<SpecialManualElement> specials = splitter.getSpecials();
 			List<List<String>> text = splitter.getEntryText();
 			pages = new ArrayList<>(text.size());
-			for (int i = 0; i < text.size(); i++)
+			for(int i = 0; i < text.size(); i++)
 			{
 				SpecialManualElement special = specials.get(i);
-				if (special == null)
+				if(special==null)
 					special = NOT_SPECIAL;
 				pages.add(new ManualPage(text.get(i), special));
 			}
 			manual.fontRenderer.setUnicodeFlag(oldUni);
 			manual.entryRenderPost();
-		}
-		catch (Throwable throwable)
+		} catch(Throwable throwable)
 		{
 			CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Refreshing an IE manual entry");
 			CrashReportCategory crashreportcategory = crashreport.makeCategory("Entry being refreshed:");
@@ -95,7 +94,7 @@ public class ManualEntry
 		int offsetText = 0;
 		int offsetSpecial = toRender.renderText.size()*manual.fontRenderer.FONT_HEIGHT;
 		ManualInstance manual = gui.getManual();
-		if (toRender.special.isAbove())
+		if(toRender.special.isAbove())
 		{
 			offsetText = toRender.special.getPixelsTaken();
 			offsetSpecial = 0;
@@ -112,7 +111,7 @@ public class ManualEntry
 
 	public Stream<SpecialManualElement> getSpecials()
 	{
-		return pages.stream().map((p)->p.special);
+		return pages.stream().map((p) -> p.special);
 	}
 
 	public void addButtons(GuiManual guiManual, int x, int y, int page, List<GuiButton> pageButtons)
@@ -148,8 +147,8 @@ public class ManualEntry
 
 	public boolean listForSearch(String search)
 	{
-		for (ManualPage p:pages)
-			if (p.special.listForSearch(search))
+		for(ManualPage p : pages)
+			if(p.special.listForSearch(search))
 				return true;
 		return false;
 	}
@@ -173,10 +172,11 @@ public class ManualEntry
 
 	public Tree.AbstractNode<ResourceLocation, ManualEntry> getTreeNode()
 	{
-		return manual.contentTree.fullStream().filter((e)->e.getLeafData()==this).findAny().orElse(null);
+		return manual.contentTree.fullStream().filter((e) -> e.getLeafData()==this).findAny().orElse(null);
 	}
 
-	private class ManualPage {
+	private class ManualPage
+	{
 		public List<String> renderText;
 		List<String> text;
 		@Nonnull
@@ -217,8 +217,8 @@ public class ManualEntry
 		public void setContent(String title, String subText, String mainText)
 		{
 			String[] content = {title, subText, mainText};
-			getContent = (splitter)->{
-				for (Triple<Integer, Integer, SpecialManualElement> special:hardcodedSpecials)
+			getContent = (splitter) -> {
+				for(Triple<Integer, Integer, SpecialManualElement> special : hardcodedSpecials)
 					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
 				return content;
 			};
@@ -227,24 +227,24 @@ public class ManualEntry
 		public void readFromFile(ResourceLocation name)
 		{
 			location = name;
-			getContent = (splitter)-> {
+			getContent = (splitter) -> {
 				ResourceLocation realLoc = new ResourceLocation(name.getResourceDomain(),
-						"manual/" + Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
-								+ "/" + name.getResourcePath()+".txt");
+						"manual/"+Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
+								+"/"+name.getResourcePath()+".txt");
 				IResource res = getResourceNullable(realLoc);
-				if (res == null)
+				if(res==null)
 					res = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
-							"manual/en_us/" + name.getResourcePath() + ".txt"));
-				if (res == null)
+							"manual/en_us/"+name.getResourcePath()+".txt"));
+				if(res==null)
 					return new String[]{"ERROR", "This is not a good thing", "Could not find the file for "+name};
 				try
 				{
 					byte[] bytes = IOUtils.toByteArray(res.getInputStream());
 					String content = new String(bytes);
 					int specialLength = content.indexOf("\n\n");
-					if (specialLength>=0)
+					if(specialLength >= 0)
 					{
-						for (Triple<Integer, Integer, SpecialManualElement> special:hardcodedSpecials)
+						for(Triple<Integer, Integer, SpecialManualElement> special : hardcodedSpecials)
 							splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
 						String specials = content.substring(0, specialLength);
 						ManualUtils.parseSpecials(specials, splitter, manual);
@@ -254,14 +254,13 @@ public class ManualEntry
 						IELogger.info("No empty line found, assuming no special elements in file");
 					int titleEnd = content.indexOf('\n');
 					String title = content.substring(0, titleEnd);
-					content = content.substring(titleEnd + 1);
+					content = content.substring(titleEnd+1);
 					int subtitleEnd = content.indexOf('\n');
 					String subtext = content.substring(0, subtitleEnd);
-					content = content.substring(subtitleEnd + 1);
+					content = content.substring(subtitleEnd+1);
 					String rawText = content;
 					return new String[]{title, subtext, rawText};
-				}
-				catch (IOException e)
+				} catch(IOException e)
 				{
 					e.printStackTrace();
 					return new String[]{"ERROR", "This is not a good thing", "Please check the log file for errors"};
@@ -288,19 +287,20 @@ public class ManualEntry
 			try
 			{
 				return Minecraft.getMinecraft().getResourceManager().getResource(rl);
-			}
-			catch (IOException e)
+			} catch(IOException e)
 			{
 				return null;
 			}
 		}
 	}
+
 	public static final SpecialManualElement NOT_SPECIAL = new SpecialManualElement()
 	{
 
 		@Override
 		public void onOpened(GuiManual m, int x, int y, List<GuiButton> buttons)
-		{}
+		{
+		}
 
 		@Override
 		public int getPixelsTaken()
@@ -310,16 +310,19 @@ public class ManualEntry
 
 		@Override
 		public void render(GuiManual m, int x, int y, int mouseX, int mouseY)
-		{}
+		{
+		}
 
 		@Override
 		public void buttonPressed(GuiManual gui, GuiButton button)
-		{}
+		{
+		}
 
 		@Override
 		public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY,
 								 GuiButton button)
-		{}
+		{
+		}
 
 		@Override
 		public boolean listForSearch(String searchTag)
@@ -329,6 +332,7 @@ public class ManualEntry
 
 		@Override
 		public void recalculateCraftingRecipes()
-		{}
+		{
+		}
 	};
 }

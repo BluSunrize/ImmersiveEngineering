@@ -21,16 +21,16 @@ public class ContainerBelljar extends ContainerIEBase
 		this.addSlotToContainer(new IESlot.Belljar(1, this, this.inv, 1, 62, 34));
 		this.addSlotToContainer(new IESlot.Belljar(2, this, this.inv, 2, 8, 59));
 
-		for(int i=0; i<4; i++)
+		for(int i = 0; i < 4; i++)
 			this.addSlotToContainer(new IESlot.Output(this, this.inv, 3+i, 116+i%2*18, 34+i/2*18));
 
-		this.slotCount=7;
+		this.slotCount = 7;
 		this.tile = tile;
 
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 143));
 	}
 }

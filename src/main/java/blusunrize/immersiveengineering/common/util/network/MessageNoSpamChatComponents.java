@@ -20,10 +20,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class MessageNoSpamChatComponents implements IMessage
 {
 	ITextComponent[] chatMessages;
+
 	public MessageNoSpamChatComponents(ITextComponent... chatMessages)
 	{
 		this.chatMessages = chatMessages;
 	}
+
 	public MessageNoSpamChatComponents()
 	{
 	}
@@ -33,7 +35,7 @@ public class MessageNoSpamChatComponents implements IMessage
 	{
 		int l = buf.readInt();
 		chatMessages = new ITextComponent[l];
-		for(int i=0; i<l; i++)
+		for(int i = 0; i < l; i++)
 			chatMessages[i] = ITextComponent.Serializer.jsonToComponent(ByteBufUtils.readUTF8String(buf));
 	}
 

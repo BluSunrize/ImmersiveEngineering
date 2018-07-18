@@ -20,6 +20,7 @@ public class ShaderCaseDrill extends ShaderCase
 	{
 		super(layers);
 	}
+
 	public ShaderCaseDrill(Collection<ShaderLayer> layers)
 	{
 		super(layers);
@@ -40,23 +41,23 @@ public class ShaderCaseDrill extends ShaderCase
 	@Override
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		if("drill_head".equals(modelPart) || "upgrade_damage0".equals(modelPart) || "upgrade_damage1".equals(modelPart) || "upgrade_damage2".equals(modelPart) || "upgrade_damage3".equals(modelPart) || "upgrade_damage4".equals(modelPart))
-			return pass>=getLayers().length-headLayers;
-		if(pass>=getLayers().length-headLayers)//Last pass on drills is just for the head and augers
+		if("drill_head".equals(modelPart)||"upgrade_damage0".equals(modelPart)||"upgrade_damage1".equals(modelPart)||"upgrade_damage2".equals(modelPart)||"upgrade_damage3".equals(modelPart)||"upgrade_damage4".equals(modelPart))
+			return pass >= getLayers().length-headLayers;
+		if(pass >= getLayers().length-headLayers)//Last pass on drills is just for the head and augers
 			return false;
-		if("upgrade_speed".equals(modelPart) || "upgrade_waterproof".equals(modelPart))//Upgrades only render on the uncoloured pass
+		if("upgrade_speed".equals(modelPart)||"upgrade_waterproof".equals(modelPart))//Upgrades only render on the uncoloured pass
 			return pass==getLayers().length-2;
 
 		if("drill_grip".equals(modelPart))
 			return pass==0;
-		return pass != 0;
+		return pass!=0;
 
 	}
 
 	public ShaderCase addHeadLayers(ShaderLayer... addedLayers)
 	{
 		addLayers(layers.length, addedLayers);
-		headLayers+=addedLayers.length;
+		headLayers += addedLayers.length;
 		return this;
 	}
 

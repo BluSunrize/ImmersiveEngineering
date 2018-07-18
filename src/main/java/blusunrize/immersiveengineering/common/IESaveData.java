@@ -40,10 +40,10 @@ public class IESaveData extends WorldSavedData
 	{
 		//Load new info from NBT
 		int[] savedDimensions = nbt.getIntArray("savedDimensions");
-		for(int dim: savedDimensions)
+		for(int dim : savedDimensions)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList"+dim, 10);
-			for(int i=0; i<connectionList.tagCount(); i++)
+			for(int i = 0; i < connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				Connection con = Connection.readFromNBT(conTag);
@@ -55,14 +55,14 @@ public class IESaveData extends WorldSavedData
 		}
 
 		NBTTagList proxies = nbt.getTagList("iicProxies", 10);
-		for (int i = 0;i<proxies.tagCount();i++)
+		for(int i = 0; i < proxies.tagCount(); i++)
 			ImmersiveNetHandler.INSTANCE.addProxy(IICProxy.readFromNBT(proxies.getCompoundTagAt(i)));
-		
+
 		EventHandler.validateConnsNextTick = true;
 
 		NBTTagList mineralList = nbt.getTagList("mineralDepletion", 10);
-		ExcavatorHandler.mineralCache.clear();		
-		for(int i=0; i<mineralList.tagCount(); i++)
+		ExcavatorHandler.mineralCache.clear();
+		for(int i = 0; i < mineralList.tagCount(); i++)
 		{
 			NBTTagCompound tag = mineralList.getCompoundTagAt(i);
 			DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(tag);
@@ -75,17 +75,17 @@ public class IESaveData extends WorldSavedData
 
 
 		NBTTagList receivedShaderList = nbt.getTagList("receivedShaderList", 10);
-		for(int i=0; i<receivedShaderList.tagCount(); i++)
+		for(int i = 0; i < receivedShaderList.tagCount(); i++)
 		{
 			NBTTagCompound tag = receivedShaderList.getCompoundTagAt(i);
-			String player = tag.getString("player"); 
+			String player = tag.getString("player");
 			ShaderRegistry.receivedShaders.get(player).clear();
 
 			NBTTagList playerReceived = tag.getTagList("received", 8);
-			for(int j=0; j<playerReceived.tagCount(); j++)
+			for(int j = 0; j < playerReceived.tagCount(); j++)
 			{
 				String s = playerReceived.getStringTagAt(j);
-				if(s!=null && !s.isEmpty())
+				if(s!=null&&!s.isEmpty())
 					ShaderRegistry.receivedShaders.put(player, s);
 			}
 		}
@@ -96,11 +96,11 @@ public class IESaveData extends WorldSavedData
 	{
 		Integer[] relDim = ImmersiveNetHandler.INSTANCE.getRelevantDimensions().toArray(new Integer[0]);
 		int[] savedDimensions = new int[relDim.length];
-		for(int ii=0; ii<relDim.length; ii++)
+		for(int ii = 0; ii < relDim.length; ii++)
 			savedDimensions[ii] = relDim[ii];
 
 		nbt.setIntArray("savedDimensions", savedDimensions);
-		for(int dim: savedDimensions)
+		for(int dim : savedDimensions)
 		{
 			NBTTagList connectionList = new NBTTagList();
 			for(Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(dim))
@@ -109,15 +109,15 @@ public class IESaveData extends WorldSavedData
 			}
 			nbt.setTag("connectionList"+dim, connectionList);
 		}
-		
+
 		NBTTagList proxies = new NBTTagList();
-		for (IICProxy iic:ImmersiveNetHandler.INSTANCE.proxies.values())
+		for(IICProxy iic : ImmersiveNetHandler.INSTANCE.proxies.values())
 			proxies.appendTag(iic.writeToNBT());
 		nbt.setTag("iicProxies", proxies);
 
 		NBTTagList mineralList = new NBTTagList();
-		for(Map.Entry<DimensionChunkCoords,MineralWorldInfo> e: ExcavatorHandler.mineralCache.entrySet())
-			if(e.getKey()!=null && e.getValue()!=null)
+		for(Map.Entry<DimensionChunkCoords, MineralWorldInfo> e : ExcavatorHandler.mineralCache.entrySet())
+			if(e.getKey()!=null&&e.getValue()!=null)
 			{
 				NBTTagCompound tag = e.getKey().writeToNBT();
 				tag.setTag("info", e.getValue().writeToNBT());
@@ -133,7 +133,7 @@ public class IESaveData extends WorldSavedData
 			tag.setString("player", player);
 			NBTTagList playerReceived = new NBTTagList();
 			for(String shader : ShaderRegistry.receivedShaders.get(player))
-				if(shader!=null && !shader.isEmpty())
+				if(shader!=null&&!shader.isEmpty())
 					playerReceived.appendTag(new NBTTagString(shader));
 			tag.setTag("received", playerReceived);
 			receivedShaderList.appendTag(tag);
@@ -149,15 +149,16 @@ public class IESaveData extends WorldSavedData
 		//		{
 		//			INSTANCE.get(dimension).markDirty();
 		//		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER && INSTANCE!=null)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER&&INSTANCE!=null)
 			INSTANCE.markDirty();
 	}
+
 	public static void setInstance(int dimension, IESaveData in)
 	{
 		//		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		//			INSTANCE.put(dimension, in);
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-			INSTANCE=in;
+			INSTANCE = in;
 	}
 
 }

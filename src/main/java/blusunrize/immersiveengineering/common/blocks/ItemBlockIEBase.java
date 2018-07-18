@@ -43,13 +43,13 @@ public class ItemBlockIEBase extends ItemBlock
 	public ItemBlockIEBase(Block b)
 	{
 		super(b);
-		if(((BlockIEBase)b).enumValues.length>1)
+		if(((BlockIEBase)b).enumValues.length > 1)
 			setHasSubtypes(true);
-		this.burnTime = new int[((BlockIEBase)b).enumValues!=null?((BlockIEBase)b).enumValues.length:1];
+		this.burnTime = new int[((BlockIEBase)b).enumValues!=null?((BlockIEBase)b).enumValues.length: 1];
 	}
 
 	@Override
-	public int getMetadata (int damageValue)
+	public int getMetadata(int damageValue)
 	{
 		return damageValue;
 	}
@@ -60,10 +60,11 @@ public class ItemBlockIEBase extends ItemBlock
 		if(this.isInCreativeTab(tab))
 			this.block.getSubBlocks(tab, itemList);
 	}
+
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		return ((BlockIEBase) this.block).getUnlocalizedName(stack);
+		return ((BlockIEBase)this.block).getUnlocalizedName(stack);
 	}
 
 	@Override
@@ -80,7 +81,7 @@ public class ItemBlockIEBase extends ItemBlock
 		{
 			String subName = ((BlockIEBase)this.block).getStateFromMeta(stack.getItemDamage()).getValue(((BlockIEBase)this.block).property).toString().toLowerCase(Locale.US);
 			String flavourKey = Lib.DESC_FLAVOUR+((BlockIEBase)this.block).name+"."+subName;
-			tooltip.add(TextFormatting.GRAY.toString()+ I18n.format(flavourKey));
+			tooltip.add(TextFormatting.GRAY.toString()+I18n.format(flavourKey));
 		}
 		super.addInformation(stack, world, tooltip, tooltipFlag);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
@@ -96,10 +97,11 @@ public class ItemBlockIEBase extends ItemBlock
 
 	public ItemBlockIEBase setBurnTime(int meta, int burnTime)
 	{
-		if(meta>=0 && meta<this.burnTime.length)
+		if(meta >= 0&&meta < this.burnTime.length)
 			this.burnTime[meta] = burnTime;
 		return this;
 	}
+
 	@Override
 	public int getItemBurnTime(ItemStack itemStack)
 	{
@@ -109,12 +111,12 @@ public class ItemBlockIEBase extends ItemBlock
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
 	{
-		if(!((BlockIEBase)this.block).canIEBlockBePlaced(world, pos, newState, side, hitX,hitY,hitZ, player, stack))
+		if(!((BlockIEBase)this.block).canIEBlockBePlaced(world, pos, newState, side, hitX, hitY, hitZ, player, stack))
 			return false;
 		boolean ret = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
 		if(ret)
 		{
-			((BlockIEBase)this.block).onIEBlockPlacedBy(world, pos, newState, side, hitX,hitY,hitZ, player, stack);
+			((BlockIEBase)this.block).onIEBlockPlacedBy(world, pos, newState, side, hitX, hitY, hitZ, player, stack);
 		}
 		return ret;
 	}
@@ -125,16 +127,16 @@ public class ItemBlockIEBase extends ItemBlock
 		ItemStack stack = player.getHeldItem(hand);
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
-		if (!block.isReplaceable(world, pos))
+		if(!block.isReplaceable(world, pos))
 			pos = pos.offset(side);
-		if(stack.getCount() > 0 && player.canPlayerEdit(pos, side, stack) && canBlockBePlaced(world, pos, side, stack))
+		if(stack.getCount() > 0&&player.canPlayerEdit(pos, side, stack)&&canBlockBePlaced(world, pos, side, stack))
 		{
 			int i = this.getMetadata(stack.getMetadata());
 			IBlockState iblockstate1 = this.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, i, player);
 			if(placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1))
 			{
 				SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-				world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+				world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 				if(!player.capabilities.isCreativeMode)
 					stack.shrink(1);
 			}
@@ -142,28 +144,31 @@ public class ItemBlockIEBase extends ItemBlock
 		}
 		return EnumActionResult.FAIL;
 	}
+
 	@Override
 	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack)
 	{
 		Block block = worldIn.getBlockState(pos).getBlock();
 
-		if(block == Blocks.SNOW_LAYER && block.isReplaceable(worldIn, pos))
+		if(block==Blocks.SNOW_LAYER&&block.isReplaceable(worldIn, pos))
 		{
 			side = EnumFacing.UP;
-		} else if(!block.isReplaceable(worldIn, pos))
+		}
+		else if(!block.isReplaceable(worldIn, pos))
 		{
 			pos = pos.offset(side);
 		}
 
 		return canBlockBePlaced(worldIn, pos, side, stack);
 	}
+
 	private boolean canBlockBePlaced(World w, BlockPos pos, EnumFacing side, ItemStack stack)
 	{
-		BlockIEBase blockIn = (BlockIEBase) this.block;
+		BlockIEBase blockIn = (BlockIEBase)this.block;
 		Block block = w.getBlockState(pos).getBlock();
-		AxisAlignedBB axisalignedbb = blockIn.getCollisionBoundingBox( blockIn.getStateFromMeta(stack.getItemDamage()), w, pos);
-		if (axisalignedbb != null && !w.checkNoEntityCollision(axisalignedbb.offset(pos), null)) return false;
-		return block.isReplaceable(w, pos) && blockIn.canPlaceBlockOnSide(w, pos, side);
+		AxisAlignedBB axisalignedbb = blockIn.getCollisionBoundingBox(blockIn.getStateFromMeta(stack.getItemDamage()), w, pos);
+		if(axisalignedbb!=null&&!w.checkNoEntityCollision(axisalignedbb.offset(pos), null)) return false;
+		return block.isReplaceable(w, pos)&&blockIn.canPlaceBlockOnSide(w, pos, side);
 	}
 
 	public static class ItemBlockIENoInventory extends ItemBlockIEBase
@@ -178,7 +183,8 @@ public class ItemBlockIEBase extends ItemBlock
 		public NBTTagCompound getNBTShareTag(ItemStack stack)
 		{
 			NBTTagCompound ret = super.getNBTShareTag(stack);
-			if (ret!=null) {
+			if(ret!=null)
+			{
 				ret = ret.copy();
 				ret.removeTag("inventory");
 			}

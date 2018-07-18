@@ -22,6 +22,7 @@ import java.awt.*;
 public class CrusherRecipeWrapper extends MultiblockRecipeWrapper
 {
 	float[] chances;
+
 	public CrusherRecipeWrapper(CrusherRecipe recipe)
 	{
 		super(recipe);
@@ -31,15 +32,15 @@ public class CrusherRecipeWrapper extends MultiblockRecipeWrapper
 	@Override
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-		for(int i=0; i<recipeOutputs.length-1; i++)
+		for(int i = 0; i < recipeOutputs.length-1; i++)
 		{
 			int x = 82+i%2*44;
 			int y = 21+i/2*18;
-			JEIHelper.slotDrawable.draw(minecraft, x,y);
-			if(i<chances.length)
+			JEIHelper.slotDrawable.draw(minecraft, x, y);
+			if(i < chances.length)
 			{
-				minecraft.fontRenderer.drawString(Utils.formatDouble(chances[i]*100,"0.##")+"%", x+19, y+6, Color.gray.getRGB());
-				GlStateManager.color(1,1,1,1);
+				minecraft.fontRenderer.drawString(Utils.formatDouble(chances[i]*100, "0.##")+"%", x+19, y+6, Color.gray.getRGB());
+				GlStateManager.color(1, 1, 1, 1);
 			}
 		}
 		GlStateManager.pushMatrix();

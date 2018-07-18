@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
 {
 	String blueprintCategory;
+
 	public WorkbenchRecipeWrapper(BlueprintCraftingRecipe recipe)
 	{
 		super(recipe);
@@ -27,7 +28,7 @@ public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
 	@Override
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-		for(int i=0; i<recipeInputs.length; i++)
+		for(int i = 0; i < recipeInputs.length; i++)
 			JEIHelper.slotDrawable.draw(minecraft, 80+i%2*18, 20+i/2*18);
 //		GlStateManager.pushMatrix();
 //		ClientUtils.bindAtlas();
@@ -38,7 +39,7 @@ public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
 //		minecraft.getRenderItem().renderItem(WorkbenchRecipeCategory.crusherStack, ItemCameraTransforms.TransformType.GUI);
 //		GlStateManager.popMatrix();
 	}
-	
+
 	@Override
 	public boolean handleClick(@Nonnull Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
 	{

@@ -20,6 +20,7 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	{
 		return true;
 	}
+
 	@Override
 	protected boolean canTakeMV()
 	{
@@ -51,6 +52,7 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	{
 		return connectorInputValues[2];
 	}
+
 	@Override
 	public int getMaxOutput()
 	{

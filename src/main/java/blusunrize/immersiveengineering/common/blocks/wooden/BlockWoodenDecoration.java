@@ -36,7 +36,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 {
 	public BlockWoodenDecoration()
 	{
-		super("wooden_decoration",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDecoration.class), ItemBlockIEBase.class, BlockFence.NORTH,BlockFence.SOUTH,BlockFence.WEST,BlockFence.EAST);
+		super("wooden_decoration", Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDecoration.class), ItemBlockIEBase.class, BlockFence.NORTH, BlockFence.SOUTH, BlockFence.WEST, BlockFence.EAST);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
@@ -49,10 +49,11 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	{
 		return true;
 	}
+
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
-		if(meta==0 && !itemBlock)
+		if(meta==0&&!itemBlock)
 			return "fence";
 		return null;
 	}
@@ -105,7 +106,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==FENCE.getMeta())
-			return side != EnumFacing.UP && side != EnumFacing.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
+			return side!=EnumFacing.UP&&side!=EnumFacing.DOWN?BlockFaceShape.MIDDLE_POLE: BlockFaceShape.CENTER;
 		return BlockFaceShape.SOLID;
 	}
 
@@ -129,10 +130,10 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		state  = super.getActualState(state, world, pos);
+		state = super.getActualState(state, world, pos);
 		if(this.getMetaFromState(state)==FENCE.getMeta())
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
-				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH:f==EnumFacing.SOUTH?BlockFence.SOUTH:f==EnumFacing.WEST?BlockFence.WEST:BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
+				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH: f==EnumFacing.SOUTH?BlockFence.SOUTH: f==EnumFacing.WEST?BlockFence.WEST: BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
 		return state;
 	}
 
@@ -208,28 +209,30 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 		else
 			addCollisionBoxToList(pos, entityBox, collidingBoxes, new AxisAlignedBB(.0625f, 0, .0625f, .9375f, 1, .9375f));
 	}
+
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==FENCE.getMeta())
-			return new AxisAlignedBB(Utils.canFenceConnectTo(world,pos,EnumFacing.WEST,blockMaterial)?0:.375f,0,Utils.canFenceConnectTo(world,pos,EnumFacing.NORTH,blockMaterial)?0:.375f, Utils.canFenceConnectTo(world,pos,EnumFacing.EAST,blockMaterial)?1:.625f,1f,Utils.canFenceConnectTo(world,pos,EnumFacing.SOUTH,blockMaterial)?1:.625f);
+			return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, EnumFacing.WEST, blockMaterial)?0: .375f, 0, Utils.canFenceConnectTo(world, pos, EnumFacing.NORTH, blockMaterial)?0: .375f, Utils.canFenceConnectTo(world, pos, EnumFacing.EAST, blockMaterial)?1: .625f, 1f, Utils.canFenceConnectTo(world, pos, EnumFacing.SOUTH, blockMaterial)?1: .625f);
 		else if(meta==BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
 			return FULL_BLOCK_AABB;
 
 		return super.getBoundingBox(state, world, pos);
 	}
+
 	private static int getBoundingBoxIdx(IBlockState state)
 	{
 		int i = 0;
 		if(state.getValue(BlockFence.NORTH))
-			i |= 1 << EnumFacing.NORTH.getHorizontalIndex();
+			i |= 1<<EnumFacing.NORTH.getHorizontalIndex();
 		if(state.getValue(BlockFence.EAST))
-			i |= 1 << EnumFacing.EAST.getHorizontalIndex();
+			i |= 1<<EnumFacing.EAST.getHorizontalIndex();
 		if(state.getValue(BlockFence.SOUTH))
-			i |= 1 << EnumFacing.SOUTH.getHorizontalIndex();
+			i |= 1<<EnumFacing.SOUTH.getHorizontalIndex();
 		if(state.getValue(BlockFence.WEST))
-			i |= 1 << EnumFacing.WEST.getHorizontalIndex();
+			i |= 1<<EnumFacing.WEST.getHorizontalIndex();
 		return i;
 	}
 
@@ -244,7 +247,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 	@Override
 	public PathNodeType getAiPathNodeType(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if (state.getValue(property) == FENCE)
+		if(state.getValue(property)==FENCE)
 			return PathNodeType.FENCE;
 		else
 			return super.getAiPathNodeType(state, world, pos);

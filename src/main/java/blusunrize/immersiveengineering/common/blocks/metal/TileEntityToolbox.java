@@ -56,6 +56,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		if(!descPacket)
 			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), ItemToolbox.SLOT_COUNT);
 	}
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -75,7 +76,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		{
 			if(!getWorld().isRemote)
 			{
-				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
+				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				getWorld().setBlockToAir(getPos());
 				getWorld().spawnEntity(entityitem);
@@ -89,7 +90,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	@Nullable
 	public ITextComponent getDisplayName()
 	{
-		return name!=null?new TextComponentString(name) : new TextComponentTranslation("item.immersiveengineering.toolbox.name");
+		return name!=null?new TextComponentString(name): new TextComponentTranslation("item.immersiveengineering.toolbox.name");
 	}
 
 	@Override
@@ -97,11 +98,13 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	{
 		return true;
 	}
+
 	@Override
 	public int getGuiID()
 	{
 		return Lib.GUIID_ToolboxBlock;
 	}
+
 	@Override
 	public TileEntity getGuiMaster()
 	{
@@ -113,16 +116,19 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	{
 		return inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		return IEApi.isAllowedInCrate(stack);
 	}
+
 	@Override
 	public int getSlotLimit(int slot)
 	{
 		return 64;
 	}
+
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
@@ -140,15 +146,17 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
 	}
+
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{
 		if(stack.getItem() instanceof ItemInternalStorage)
 		{
 			IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if (inv!=null) {
+			if(inv!=null)
+			{
 				inventory = NonNullList.withSize(inv.getSlots(), ItemStack.EMPTY);
-				for (int i = 0; i < inv.getSlots(); i++)
+				for(int i = 0; i < inv.getSlots(); i++)
 					inventory.set(i, inv.getStackInSlot(i));
 			}
 
@@ -157,6 +165,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 			enchantments = stack.getEnchantmentTagList();
 		}
 	}
+
 	@Override
 	public boolean preventInventoryDrop()
 	{
@@ -168,37 +177,43 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	{
 		return facing;
 	}
+
 	@Override
 	public void setFacing(EnumFacing facing)
 	{
 		this.facing = facing;
 	}
+
 	@Override
 	public int getFacingLimitation()
 	{
 		return 2;
 	}
+
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canRotate(EnumFacing axis)
 	{
 		return true;
 	}
 
-	private static final float[] boundsZ = {.125f,0,.25f,.875f,.625f,.75f};
-	private static final float[] boundsX = {.25f,0,.125f,.75f,.625f,.875f};
+	private static final float[] boundsZ = {.125f, 0, .25f, .875f, .625f, .75f};
+	private static final float[] boundsX = {.25f, 0, .125f, .75f, .625f, .875f};
+
 	@Override
 	public float[] getBlockBounds()
 	{
-		return facing.getAxis()==Axis.Z?boundsZ:boundsX;
+		return facing.getAxis()==Axis.Z?boundsZ: boundsX;
 	}
 }

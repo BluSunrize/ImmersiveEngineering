@@ -28,7 +28,7 @@ import java.util.*;
 
 /**
  * @author BluSunrize - 03.06.2015
- *
+ * <p>
  * The Handler for the Excavator. Chunk->Ore calculation is done here, as is registration
  */
 public class ExcavatorHandler
@@ -38,7 +38,7 @@ public class ExcavatorHandler
 	 */
 	public static LinkedHashMap<MineralMix, Integer> mineralList = new LinkedHashMap<MineralMix, Integer>();
 	public static HashMap<DimensionChunkCoords, MineralWorldInfo> mineralCache = new HashMap<DimensionChunkCoords, MineralWorldInfo>();
-	private static HashMap<Integer,Integer> dimensionBasedTotalWeight = new HashMap<Integer,Integer>();
+	private static HashMap<Integer, Integer> dimensionBasedTotalWeight = new HashMap<Integer, Integer>();
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
 	public static int[] defaultDimensionBlacklist = new int[0];
@@ -46,25 +46,27 @@ public class ExcavatorHandler
 
 	public static MineralMix addMineral(String name, int mineralWeight, float failChance, String[] ores, float[] chances)
 	{
-		assert ores.length == chances.length;
+		assert ores.length==chances.length;
 		MineralMix mix = new MineralMix(name, failChance, ores, chances);
 		mineralList.put(mix, mineralWeight);
 		return mix;
 	}
+
 	public static void recalculateChances(boolean mutePackets)
 	{
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 			e.getKey().recalculateChances();
 		dimensionBasedTotalWeight.clear();
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER && allowPackets && !mutePackets)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER&&allowPackets&&!mutePackets)
 		{
-			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>();
-			for(Map.Entry<MineralMix,Integer> e: ExcavatorHandler.mineralList.entrySet())
-				if(e.getKey()!=null && e.getValue()!=null)
+			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
+			for(Map.Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
+				if(e.getKey()!=null&&e.getValue()!=null)
 					packetMap.put(e.getKey(), e.getValue());
 			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
 		}
 	}
+
 	public static int getDimensionTotalWeight(int dim)
 	{
 		if(dimensionBasedTotalWeight.containsKey(dim))
@@ -73,10 +75,10 @@ public class ExcavatorHandler
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 		{
 			e.getKey().recalculateChances();
-			if(e.getKey().isValid() && e.getKey().validDimension(dim))
+			if(e.getKey().isValid()&&e.getKey().validDimension(dim))
 				totalWeight += e.getValue();
 		}
-		dimensionBasedTotalWeight.put(dim,totalWeight);
+		dimensionBasedTotalWeight.put(dim, totalWeight);
 		return totalWeight;
 	}
 
@@ -84,15 +86,16 @@ public class ExcavatorHandler
 	{
 		if(world.isRemote)
 			return null;
-		MineralWorldInfo info = getMineralWorldInfo(world,chunkX,chunkZ);
-		if(info==null || (info.mineral==null && info.mineralOverride==null))
+		MineralWorldInfo info = getMineralWorldInfo(world, chunkX, chunkZ);
+		if(info==null||(info.mineral==null&&info.mineralOverride==null))
 			return null;
 
-		if(mineralVeinCapacity>=0 && info.depletion>mineralVeinCapacity)
+		if(mineralVeinCapacity >= 0&&info.depletion > mineralVeinCapacity)
 			return null;
 
-		return info.mineralOverride!=null?info.mineralOverride:info.mineral;
+		return info.mineralOverride!=null?info.mineralOverride: info.mineral;
 	}
+
 	public static MineralWorldInfo getMineralWorldInfo(World world, int chunkX, int chunkZ)
 	{
 		if(world.isRemote)
@@ -100,16 +103,16 @@ public class ExcavatorHandler
 
 		int dim = world.provider.getDimension();
 		int dimensionTotalWeight = getDimensionTotalWeight(dim);
-		if(dimensionTotalWeight<=0)
+		if(dimensionTotalWeight <= 0)
 			return null;
-		DimensionChunkCoords coords = new DimensionChunkCoords(dim, chunkX,chunkZ);
+		DimensionChunkCoords coords = new DimensionChunkCoords(dim, chunkX, chunkZ);
 		MineralWorldInfo worldInfo = mineralCache.get(coords);
 		if(worldInfo==null)
 		{
 			MineralMix mix = null;
 			Random r = world.getChunkFromChunkCoords(chunkX, chunkZ).getRandomWithSeed(940610);
 			double dd = r.nextDouble();
-			boolean empty = dd>mineralChance;
+			boolean empty = dd > mineralChance;
 			int query = r.nextInt();
 			if(!empty)
 			{
@@ -131,9 +134,10 @@ public class ExcavatorHandler
 		}
 		return worldInfo;
 	}
+
 	public static void depleteMinerals(World world, int chunkX, int chunkZ)
 	{
-		MineralWorldInfo info = getMineralWorldInfo(world,chunkX,chunkZ);
+		MineralWorldInfo info = getMineralWorldInfo(world, chunkX, chunkZ);
 		info.depletion++;
 		IESaveData.setDirty(world.provider.getDimension());
 	}
@@ -147,8 +151,10 @@ public class ExcavatorHandler
 		public NonNullList<ItemStack> oreOutput;
 		public float[] recalculatedChances;
 		boolean isValid = false;
-		/**Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list*/
-		public HashMap<String,String> replacementOres;
+		/**
+		 * Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list
+		 */
+		public HashMap<String, String> replacementOres;
 		public int[] dimensionWhitelist = new int[0];
 		public int[] dimensionBlacklist = new int[0];
 
@@ -160,6 +166,7 @@ public class ExcavatorHandler
 			this.chances = chances;
 			this.dimensionBlacklist = defaultDimensionBlacklist.clone();
 		}
+
 		public MineralMix addReplacement(String original, String replacement)
 		{
 			if(replacementOres==null)
@@ -173,12 +180,12 @@ public class ExcavatorHandler
 			double chanceSum = 0;
 			NonNullList<ItemStack> existing = NonNullList.create();
 			ArrayList<Double> reChances = new ArrayList<>();
-			for(int i=0; i<ores.length; i++)
+			for(int i = 0; i < ores.length; i++)
 			{
 				String ore = ores[i];
-				if(replacementOres!=null && !ApiUtils.isExistingOreName(ore) && replacementOres.containsKey(ore))
+				if(replacementOres!=null&&!ApiUtils.isExistingOreName(ore)&&replacementOres.containsKey(ore))
 					ore = replacementOres.get(ore);
-				if(ore!=null && !ore.isEmpty() && ApiUtils.isExistingOreName(ore))
+				if(ore!=null&&!ore.isEmpty()&&ApiUtils.isExistingOreName(ore))
 				{
 					ItemStack preferredOre = IEApi.getPreferredOreStack(ore);
 					if(!preferredOre.isEmpty())
@@ -189,17 +196,17 @@ public class ExcavatorHandler
 					}
 				}
 			}
-			isValid = existing.size()>0;
+			isValid = existing.size() > 0;
 			oreOutput = existing;
 			recalculatedChances = new float[reChances.size()];
-			for(int i=0; i<reChances.size(); i++)
+			for(int i = 0; i < reChances.size(); i++)
 				recalculatedChances[i] = (float)(reChances.get(i)/chanceSum);
 		}
 
 		public ItemStack getRandomOre(Random rand)
 		{
 			float r = rand.nextFloat();
-			for(int i=0; i<recalculatedChances.length; i++)
+			for(int i = 0; i < recalculatedChances.length; i++)
 			{
 				r -= recalculatedChances[i];
 				if(r < 0)
@@ -212,16 +219,17 @@ public class ExcavatorHandler
 		{
 			return isValid;
 		}
+
 		public boolean validDimension(int dim)
 		{
-			if(dimensionWhitelist!=null&&dimensionWhitelist.length>0)
+			if(dimensionWhitelist!=null&&dimensionWhitelist.length > 0)
 			{
 				for(int white : dimensionWhitelist)
 					if(dim==white)
 						return true;
 				return false;
 			}
-			else if(dimensionBlacklist!=null&&dimensionBlacklist.length>0)
+			else if(dimensionBlacklist!=null&&dimensionBlacklist.length > 0)
 			{
 				for(int black : dimensionBlacklist)
 					if(dim==black)
@@ -269,22 +277,22 @@ public class ExcavatorHandler
 
 			NBTTagList tagList = tag.getTagList("ores", 8);
 			String[] ores = new String[tagList.tagCount()];
-			for(int i=0; i<ores.length; i++)
+			for(int i = 0; i < ores.length; i++)
 				ores[i] = tagList.getStringTagAt(i);
 
 			tagList = tag.getTagList("chances", 5);
 			float[] chances = new float[tagList.tagCount()];
-			for(int i=0; i<chances.length; i++)
+			for(int i = 0; i < chances.length; i++)
 				chances[i] = tagList.getFloatAt(i);
 
 			tagList = tag.getTagList("oreOutput", 10);
 			NonNullList<ItemStack> oreOutput = NonNullList.withSize(tagList.tagCount(), ItemStack.EMPTY);
-			for(int i = 0; i< oreOutput.size(); i++)
+			for(int i = 0; i < oreOutput.size(); i++)
 				oreOutput.set(i, new ItemStack(tagList.getCompoundTagAt(i)));
 
 			tagList = tag.getTagList("recalculatedChances", 5);
 			float[] recalculatedChances = new float[tagList.tagCount()];
-			for(int i=0; i<recalculatedChances.length; i++)
+			for(int i = 0; i < recalculatedChances.length; i++)
 				recalculatedChances[i] = tagList.getFloatAt(i);
 
 			boolean isValid = tag.getBoolean("isValid");
@@ -314,6 +322,7 @@ public class ExcavatorHandler
 			tag.setInteger("depletion", depletion);
 			return tag;
 		}
+
 		public static MineralWorldInfo readFromNBT(NBTTagCompound tag)
 		{
 			MineralWorldInfo info = new MineralWorldInfo();

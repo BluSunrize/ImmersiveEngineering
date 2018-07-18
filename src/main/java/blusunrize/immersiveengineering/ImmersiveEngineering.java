@@ -59,7 +59,7 @@ public class ImmersiveEngineering
 
 	@Mod.Instance(MODID)
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
-	@SidedProxy(clientSide="blusunrize.immersiveengineering.client.ClientProxy", serverSide="blusunrize.immersiveengineering.common.CommonProxy")
+	@SidedProxy(clientSide = "blusunrize.immersiveengineering.client.ClientProxy", serverSide = "blusunrize.immersiveengineering.common.CommonProxy")
 	public static CommonProxy proxy;
 
 	public static final SimpleNetworkWrapper packetHandler = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
@@ -84,20 +84,21 @@ public class ImmersiveEngineering
 		for(int b : IEConfig.Ores.oreDimBlacklist)
 			IEWorldGen.oreDimBlacklist.add(b);
 		IEApi.modPreference = Arrays.asList(IEConfig.preferredOres);
-		IEApi.prefixToIngotMap.put("ingot", new Integer[]{1,1});
-		IEApi.prefixToIngotMap.put("nugget", new Integer[]{1,9});
-		IEApi.prefixToIngotMap.put("block", new Integer[]{9,1});
-		IEApi.prefixToIngotMap.put("plate", new Integer[]{1,1});
-		IEApi.prefixToIngotMap.put("wire", new Integer[]{1,1});
-		IEApi.prefixToIngotMap.put("gear", new Integer[]{4,1});
-		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
-		IEApi.prefixToIngotMap.put("fence", new Integer[]{5,3});
+		IEApi.prefixToIngotMap.put("ingot", new Integer[]{1, 1});
+		IEApi.prefixToIngotMap.put("nugget", new Integer[]{1, 9});
+		IEApi.prefixToIngotMap.put("block", new Integer[]{9, 1});
+		IEApi.prefixToIngotMap.put("plate", new Integer[]{1, 1});
+		IEApi.prefixToIngotMap.put("wire", new Integer[]{1, 1});
+		IEApi.prefixToIngotMap.put("gear", new Integer[]{4, 1});
+		IEApi.prefixToIngotMap.put("rod", new Integer[]{2, 1});
+		IEApi.prefixToIngotMap.put("fence", new Integer[]{5, 3});
 		IECompatModule.doModulesPreInit();
 
 		new ThreadContributorSpecialsDownloader();
 
 		IEContent.preInitEnd();
 	}
+
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
@@ -138,13 +139,13 @@ public class ImmersiveEngineering
 
 		for(FMLInterModComms.IMCMessage message : FMLInterModComms.fetchRuntimeMessages(instance))
 		{
-			if(message.key.equals("fluidpipeCover") && message.isFunctionMessage())
+			if(message.key.equals("fluidpipeCover")&&message.isFunctionMessage())
 			{
 				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
 				if(opFunc.isPresent())
 					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
 			}
-			else if(message.key.equals("fluidpipeCoverClimb") && message.isFunctionMessage())
+			else if(message.key.equals("fluidpipeCoverClimb")&&message.isFunctionMessage())
 			{
 				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
 				if(opFunc.isPresent())
@@ -152,6 +153,7 @@ public class ImmersiveEngineering
 			}
 		}
 	}
+
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
@@ -162,11 +164,13 @@ public class ImmersiveEngineering
 		proxy.postInitEnd();
 		ShaderRegistry.compileWeight();
 	}
+
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		IECompatModule.doModulesLoadComplete();
 	}
+
 	@Mod.EventHandler
 	public void modIDMapping(FMLModIdMappingEvent event)
 	{
@@ -181,15 +185,14 @@ public class ImmersiveEngineering
 	public void wrongSignature(FMLFingerprintViolationEvent event)
 	{
 		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
-		for (String altCert:alternativeCerts)
-			if (event.getFingerprints().contains(altCert))
+		for(String altCert : alternativeCerts)
+			if(event.getFingerprints().contains(altCert))
 			{
-				System.out.println("[Immersive Engineering/Error] "+altCert+" is considered an alternative certificate (which may be ok to use in some cases). " +
+				System.out.println("[Immersive Engineering/Error] "+altCert+" is considered an alternative certificate (which may be ok to use in some cases). "+
 						"If you thought this was an official build you probably shouldn't use it.");
 				break;
 			}
 	}
-
 
 
 	@Mod.EventHandler
@@ -200,10 +203,11 @@ public class ImmersiveEngineering
 		if(IEConfig.Machines.arcfurnace_recycle)
 			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
+
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			World world = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
 			if(!world.isRemote)
@@ -211,9 +215,9 @@ public class ImmersiveEngineering
 				IELogger.info("WorldData loading");
 
 				//Clear out any info from previous worlds
-				for (int dim: ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
+				for(int dim : ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
 					ImmersiveNetHandler.INSTANCE.clearAllConnections(dim);
-				IESaveData worldData = (IESaveData) world.loadData(IESaveData.class, IESaveData.dataName);
+				IESaveData worldData = (IESaveData)world.loadData(IESaveData.class, IESaveData.dataName);
 
 				if(worldData==null)
 				{
@@ -269,10 +273,11 @@ public class ImmersiveEngineering
 		{
 			return ItemStack.EMPTY;
 		}
+
 		@Override
 		public ItemStack getIconItemStack()
 		{
-			return new ItemStack(IEContent.blockMetalDecoration0,1,0);
+			return new ItemStack(IEContent.blockMetalDecoration0, 1, 0);
 		}
 	};
 
@@ -292,13 +297,15 @@ public class ImmersiveEngineering
 		public void run()
 		{
 			Gson gson = new Gson();
-			try {
+			try
+			{
 				IELogger.info("Attempting to download special revolvers from GitHub");
 				URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/contributorRevolvers.json");
 				JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(url.openStream()));
 				while(parser.hasNext())
 				{
-					try{
+					try
+					{
 						JsonElement je = parser.next();
 						ItemRevolver.SpecialRevolver revolver = gson.fromJson(je, ItemRevolver.SpecialRevolver.class);
 						if(revolver!=null)
@@ -306,14 +313,15 @@ public class ImmersiveEngineering
 							if(revolver.uuid!=null)
 								for(String uuid : revolver.uuid)
 									ItemRevolver.specialRevolvers.put(uuid, revolver);
-							ItemRevolver.specialRevolversByTag.put(!revolver.tag.isEmpty()?revolver.tag:revolver.flavour, revolver);
+							ItemRevolver.specialRevolversByTag.put(!revolver.tag.isEmpty()?revolver.tag: revolver.flavour, revolver);
 						}
-					}catch(Exception excepParse)
+					} catch(Exception excepParse)
 					{
 						IELogger.warn("Error on parsing a SpecialRevolver");
 					}
 				}
-			} catch(Exception e) {
+			} catch(Exception e)
+			{
 				IELogger.info("Could not load contributor+special revolver list.");
 				e.printStackTrace();
 			}

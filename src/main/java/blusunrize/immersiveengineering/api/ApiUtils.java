@@ -10,15 +10,11 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -32,18 +28,13 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -78,11 +69,12 @@ public class ApiUtils
 		if(!isExistingOreName(oreName))
 			return false;
 		List<ItemStack> s = OreDictionary.getOres(oreName);
-		for(ItemStack st:s)
+		for(ItemStack st : s)
 			if(OreDictionary.itemMatches(st, stack, false))
 				return true;
 		return false;
 	}
+
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
 		return stackMatchesObject(stack, o, false);
@@ -91,28 +83,31 @@ public class ApiUtils
 	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
 	{
 		if(o instanceof ItemStack)
-			return OreDictionary.itemMatches((ItemStack)o, stack, false) && (!checkNBT || ((ItemStack)o).getItemDamage() == OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT((ItemStack)o, stack));
+			return OreDictionary.itemMatches((ItemStack)o, stack, false)&&(!checkNBT||((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)o, stack));
 		else if(o instanceof Collection)
 		{
 			for(Object io : (Collection)o)
-				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false) && (!checkNBT || ((ItemStack)io).getItemDamage() == OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT((ItemStack)io, stack)))
+				if(io instanceof ItemStack&&OreDictionary.itemMatches((ItemStack)io, stack, false)&&(!checkNBT||((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)io, stack)))
 					return true;
-		} else if(o instanceof IngredientStack)
+		}
+		else if(o instanceof IngredientStack)
 			return ((IngredientStack)o).matchesItemStack(stack);
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
-				if(OreDictionary.itemMatches(io, stack, false) && (!checkNBT || io.getItemDamage() == OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT(io, stack)))
+				if(OreDictionary.itemMatches(io, stack, false)&&(!checkNBT||io.getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT(io, stack)))
 					return true;
-		} else if(o instanceof FluidStack)
+		}
+		else if(o instanceof FluidStack)
 		{
 			FluidStack fs = FluidUtil.getFluidContained(stack);
-			return fs != null && fs.containsFluid((FluidStack)o);
+			return fs!=null&&fs.containsFluid((FluidStack)o);
 		}
 		else if(o instanceof String)
 			return compareToOreName(stack, (String)o);
 		return false;
 	}
+
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
 		if(stack.isEmpty())
@@ -121,6 +116,7 @@ public class ApiUtils
 		s2.setCount(amount);
 		return s2;
 	}
+
 	public static boolean stacksMatchIngredientList(List<IngredientStack> list, NonNullList<ItemStack> stacks)
 	{
 		ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(stacks.size());
@@ -143,21 +139,21 @@ public class ApiUtils
 							if(query.getCount() > amount)
 							{
 								query.shrink(amount);
-								amount=0;
+								amount = 0;
 							}
 							else
 							{
-								amount-=query.getCount();
+								amount -= query.getCount();
 								query.setCount(0);
 							}
 						}
-						if(query.getCount()<=0)
+						if(query.getCount() <= 0)
 							it.remove();
-						if(amount<=0)
+						if(amount <= 0)
 							break;
 					}
 				}
-				if(amount>0)
+				if(amount > 0)
 					return false;
 			}
 		return true;
@@ -177,8 +173,9 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
-		return createComparableItemStack(stack, copy, stack.hasTagCompound() && !stack.getTagCompound().hasNoTags());
+		return createComparableItemStack(stack, copy, stack.hasTagCompound()&&!stack.getTagCompound().hasNoTags());
 	}
+
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
 	{
 		ComparableItemStack comp = new ComparableItemStack(stack, true, copy);
@@ -198,11 +195,12 @@ public class ApiUtils
 	{
 		return getMetalComponentType(stack, componentType)!=null;
 	}
+
 	public static String getMetalComponentType(ItemStack stack, String... componentTypes)
 	{
 		ItemStack comp = copyStackWithAmount(stack, 1);
 		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
-			for(int iType=0; iType<componentTypes.length; iType++)
+			for(int iType = 0; iType < componentTypes.length; iType++)
 				if(oreName.startsWith(componentTypes[iType]))
 				{
 					List<ItemStack> s = OreDictionary.getOres(oreName);
@@ -212,11 +210,12 @@ public class ApiUtils
 				}
 		return null;
 	}
+
 	public static String[] getMetalComponentTypeAndMetal(ItemStack stack, String... componentTypes)
 	{
 		ItemStack comp = copyStackWithAmount(stack, 1);
 		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
-			for(int iType=0; iType<componentTypes.length; iType++)
+			for(int iType = 0; iType < componentTypes.length; iType++)
 				if(oreName.startsWith(componentTypes[iType]))
 				{
 					List<ItemStack> s = OreDictionary.getOres(oreName);
@@ -226,14 +225,17 @@ public class ApiUtils
 				}
 		return null;
 	}
+
 	public static boolean isIngot(ItemStack stack)
 	{
 		return isMetalComponent(stack, "ingot");
 	}
+
 	public static boolean isPlate(ItemStack stack)
 	{
 		return isMetalComponent(stack, "plate");
 	}
+
 	public static int getComponentIngotWorth(ItemStack stack)
 	{
 		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
@@ -241,7 +243,7 @@ public class ApiUtils
 		if(key!=null)
 		{
 			Integer[] relation = IEApi.prefixToIngotMap.get(key);
-			if(relation!=null && relation.length>1)
+			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
 				return (int)val;
@@ -249,6 +251,7 @@ public class ApiUtils
 		}
 		return 0;
 	}
+
 	public static ItemStack breakStackIntoIngots(ItemStack stack)
 	{
 		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
@@ -256,7 +259,7 @@ public class ApiUtils
 		if(type!=null)
 		{
 			Integer[] relation = IEApi.prefixToIngotMap.get(type[0]);
-			if(relation!=null && relation.length>1)
+			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
 				return copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+type[1]), (int)val);
@@ -264,6 +267,7 @@ public class ApiUtils
 		}
 		return ItemStack.EMPTY;
 	}
+
 	public static Object[] breakStackIntoPreciseIngots(ItemStack stack)
 	{
 		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
@@ -271,10 +275,10 @@ public class ApiUtils
 		if(type!=null)
 		{
 			Integer[] relation = IEApi.prefixToIngotMap.get(type[0]);
-			if(relation!=null && relation.length>1)
+			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return new Object[]{IEApi.getPreferredOreStack("ingot"+type[1]),val};
+				return new Object[]{IEApi.getPreferredOreStack("ingot"+type[1]), val};
 			}
 		}
 		return null;
@@ -282,7 +286,7 @@ public class ApiUtils
 
 	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
 	{
-		if(!stack.isEmpty() && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
@@ -293,11 +297,11 @@ public class ApiUtils
 
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
 	{
-		if(!stack.isEmpty() && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp.isEmpty() || temp.getCount() < stack.getCount())
+			if(temp.isEmpty()||temp.getCount() < stack.getCount())
 				return ItemHandlerHelper.insertItem(handler, stack, false);
 		}
 		return stack;
@@ -305,7 +309,7 @@ public class ApiUtils
 
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side, boolean simulate)
 	{
-		if(inventory != null && !stack.isEmpty() && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(inventory!=null&&!stack.isEmpty()&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
 			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
@@ -319,10 +323,11 @@ public class ApiUtils
 			return (BlockPos)object;
 		if(object instanceof TileEntity)
 			return ((TileEntity)object).getPos();
-		if (object instanceof IICProxy)
-			return ((IICProxy) object).getPos();
+		if(object instanceof IICProxy)
+			return ((IICProxy)object).getPos();
 		return null;
 	}
+
 	public static IImmersiveConnectable toIIC(Object object, World world)
 	{
 		return toIIC(object, world, true);
@@ -335,16 +340,16 @@ public class ApiUtils
 			return (IImmersiveConnectable)object;
 		else if(object instanceof BlockPos)
 		{
-			if (world!=null && world.isBlockLoaded((BlockPos)object))
+			if(world!=null&&world.isBlockLoaded((BlockPos)object))
 			{
 				TileEntity te = world.getTileEntity((BlockPos)object);
 				if(te instanceof IImmersiveConnectable)
-					return (IImmersiveConnectable) te;
+					return (IImmersiveConnectable)te;
 			}
-			if (allowProxies)
+			if(allowProxies)
 			{
 				DimensionBlockPos pos = new DimensionBlockPos((BlockPos)object, world);
-				if (ImmersiveNetHandler.INSTANCE.proxies.containsKey(pos))
+				if(ImmersiveNetHandler.INSTANCE.proxies.containsKey(pos))
 					return ImmersiveNetHandler.INSTANCE.proxies.get(pos);
 			}
 		}
@@ -358,7 +363,7 @@ public class ApiUtils
 		IImmersiveConnectable iicStart = toIIC(p, world, false);
 		if(iicStart!=null)
 			pos = iicStart.getConnectionOffset(conn);
-		if (p.equals(conn.end))
+		if(p.equals(conn.end))
 			pos = pos.addVector(conn.end.getX()-conn.start.getX(),
 					conn.end.getY()-conn.start.getY(),
 					conn.end.getZ()-conn.start.getZ());
@@ -367,17 +372,18 @@ public class ApiUtils
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
-		return vec0.addVector(vec1.x,vec1.y,vec1.z);
+		return vec0.addVector(vec1.x, vec1.y, vec1.z);
 	}
 
-	public static double acosh(double x) {
+	public static double acosh(double x)
+	{
 		//See http://mathworld.wolfram.com/InverseHyperbolicCosine.html
 		return Math.log(x+Math.sqrt(x+1)*Math.sqrt(x-1));
 	}
 
 	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
 	{
-		boolean vertical = end.x==start.x && end.z==start.z;
+		boolean vertical = end.x==start.x&&end.z==start.z;
 
 		if(vertical)
 			return new Vec3d[]{new Vec3d(start.x, start.y, start.z), new Vec3d(end.x, end.y, end.z)};
@@ -395,21 +401,21 @@ public class ApiUtils
 		double dx = (end.x)-(start.x);
 		double dy = (end.y)-(start.y);
 		double dz = (end.z)-(start.z);
-		double dw = Math.sqrt(dx*dx + dz*dz);
-		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * slack;
+		double dw = Math.sqrt(dx*dx+dz*dz);
+		double k = Math.sqrt(dx*dx+dy*dy+dz*dz)*slack;
 		double l = 0;
 		int limiter = 0;
-		while(limiter<300)
+		while(limiter < 300)
 		{
 			limiter++;
 			l += 0.01;
-			if (Math.sinh(l)/l >= Math.sqrt(k*k - dy*dy)/dw)
+			if(Math.sinh(l)/l >= Math.sqrt(k*k-dy*dy)/dw)
 				break;
 		}
 		double a = dw/2/l;
 		double offsetX = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double offsetY = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-		if (c!=null)
+		if(c!=null)
 		{
 			c.catOffsetX = offsetX;
 			c.catOffsetY = offsetY;
@@ -419,12 +425,12 @@ public class ApiUtils
 		Vec3d[] vex = new Vec3d[vertices+1];
 
 		vex[0] = new Vec3d(start.x, start.y, start.z);
-		for(int i=1; i<vertices; i++)
+		for(int i = 1; i < vertices; i++)
 		{
 			float posRelative = i/(float)vertices;
-			double x = 0 + dx * posRelative;
-			double z = 0 + dz * posRelative;
-			double y = a * Math.cosh((dw*posRelative-offsetX)/a)+offsetY;
+			double x = 0+dx*posRelative;
+			double z = 0+dz*posRelative;
+			double y = a*Math.cosh((dw*posRelative-offsetX)/a)+offsetY;
 			vex[i] = new Vec3d(start.x+x, start.y+y, start.z+z);
 		}
 		vex[vertices] = new Vec3d(end.x, end.y, end.z);
@@ -432,16 +438,19 @@ public class ApiUtils
 		return vex;
 	}
 
-	public static double getDim(Vec3d vec, int dim) {
-		return dim==0?vec.x:(dim==1?vec.y:vec.z);
+	public static double getDim(Vec3d vec, int dim)
+	{
+		return dim==0?vec.x: (dim==1?vec.y: vec.z);
 	}
 
-	public static BlockPos offsetDim(BlockPos p, int dim, int amount) {
-		return p.add(dim==0?amount:0, dim==1?amount:0, dim==2?amount:0);
+	public static BlockPos offsetDim(BlockPos p, int dim, int amount)
+	{
+		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
-	public static Vec3d offsetDim(Vec3d p, int dim, double amount) {
-		return p.addVector(dim==0?amount:0, dim==1?amount:0, dim==2?amount:0);
+	public static Vec3d offsetDim(Vec3d p, int dim, double amount)
+	{
+		return p.addVector(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
 	public static boolean raytraceAlongCatenary(Connection conn, World w, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
@@ -462,6 +471,7 @@ public class ApiUtils
 		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart.subtract(conn.start.getX(), conn.start.getY(), conn.start.getZ()),
 				vEnd.subtract(conn.start.getX(), conn.start.getY(), conn.start.getZ()));
 	}
+
 	public static boolean raytraceAlongCatenaryRelative(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 														Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
 	{
@@ -475,54 +485,54 @@ public class ApiUtils
 		halfScanned.put(conn.start, vStart);
 		halfScanned.put(conn.end, vEnd);
 		//Raytrace X&Z
-		for (int dim = 0; dim <= 2; dim += 2)
+		for(int dim = 0; dim <= 2; dim += 2)
 		{
-			int start = (int) Math.ceil(Math.min(getDim(vStart, dim), getDim(vEnd, dim)));
-			int end = (int) Math.ceil(Math.max(getDim(vStart, dim), getDim(vEnd, dim)));
-			for (int i = start; i < end; i ++)
+			int start = (int)Math.ceil(Math.min(getDim(vStart, dim), getDim(vEnd, dim)));
+			int end = (int)Math.ceil(Math.max(getDim(vStart, dim), getDim(vEnd, dim)));
+			for(int i = start; i < end; i++)
 			{
-				double factor = (i - getDim(vStart, dim)) / getDim(across, dim);
+				double factor = (i-getDim(vStart, dim))/getDim(across, dim);
 				Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
 
-				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 					return false;
 			}
 		}
 		//Raytrace Y
 		boolean vertical = vStart.x==vEnd.x&&vStart.z==vEnd.z;
-		if (vertical)
+		if(vertical)
 		{
-			for (int y = (int) Math.ceil(Math.min(vStart.y, vEnd.y)); y <= Math.floor(Math.max(vStart.y, vEnd.y)); y++)
+			for(int y = (int)Math.ceil(Math.min(vStart.y, vEnd.y)); y <= Math.floor(Math.max(vStart.y, vEnd.y)); y++)
 			{
 				Vec3d pos = new Vec3d(vStart.x, y, vStart.z);
-				if (handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 					return false;
 			}
 		}
 		else
 		{
-			double min = conn.catA + conn.catOffsetY + vStart.y;
-			for (int i = 0; i < 2; i++)
+			double min = conn.catA+conn.catOffsetY+vStart.y;
+			for(int i = 0; i < 2; i++)
 			{
-				double factor = i == 0 ? 1 : -1;
-				double max = i == 0 ? vEnd.y : vStart.y;
-				for (int y = (int) Math.ceil(min); y <= Math.floor(max); y++)
+				double factor = i==0?1: -1;
+				double max = i==0?vEnd.y: vStart.y;
+				for(int y = (int)Math.ceil(min); y <= Math.floor(max); y++)
 				{
-					double yReal = y - vStart.y;
+					double yReal = y-vStart.y;
 					double posRel;
 					Vec3d pos;
-					posRel = (factor * acosh((yReal - conn.catOffsetY) / conn.catA) * conn.catA + conn.catOffsetX) / lengthHor;
-					pos = new Vec3d(vStart.x + across.x * posRel, y, vStart.z + across.z * posRel);
+					posRel = (factor*acosh((yReal-conn.catOffsetY)/conn.catA)*conn.catA+conn.catOffsetX)/lengthHor;
+					pos = new Vec3d(vStart.x+across.x*posRel, y, vStart.z+across.z*posRel);
 
-					if (posRel >= 0 && posRel <= 1 && handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+					if(posRel >= 0&&posRel <= 1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 						return false;
 				}
 			}
 		}
-		for (Triple<BlockPos, Vec3d, Vec3d> p : near)
+		for(Triple<BlockPos, Vec3d, Vec3d> p : near)
 			close.accept(p);
-		for (Map.Entry<BlockPos, Vec3d> p : halfScanned.entrySet())
-			if (shouldStop.test(new ImmutableTriple<>(p.getKey(), p.getValue(), p.getValue())))
+		for(Map.Entry<BlockPos, Vec3d> p : halfScanned.entrySet())
+			if(shouldStop.test(new ImmutableTriple<>(p.getKey(), p.getValue(), p.getValue())))
 				return false;
 		return true;
 	}
@@ -534,25 +544,25 @@ public class ApiUtils
 		final double DELTA_HIT = 1e-5;
 		final double EPSILON = 1e-5;
 		boolean calledOther = false;
-		for (int i = start; i < 3; i++)
+		for(int i = start; i < 3; i++)
 		{
 			double coord = getDim(pos, i);
-			double diff = coord - Math.floor(coord);
-			if (diff < DELTA_HIT)
+			double diff = coord-Math.floor(coord);
+			if(diff < DELTA_HIT)
 			{
-				if (handleVec(offsetDim(pos, i, -(diff + EPSILON)), origPos, i + 1, halfScanned, done, shouldStop, near, offset))
+				if(handleVec(offsetDim(pos, i, -(diff+EPSILON)), origPos, i+1, halfScanned, done, shouldStop, near, offset))
 					return true;
 				calledOther = true;
 			}
-			diff = Math.ceil(coord) - coord;
-			if (diff < DELTA_HIT)
+			diff = Math.ceil(coord)-coord;
+			if(diff < DELTA_HIT)
 			{
-				if (handleVec(offsetDim(pos, i, diff + EPSILON), origPos, i + 1, halfScanned, done, shouldStop, near, offset))
+				if(handleVec(offsetDim(pos, i, diff+EPSILON), origPos, i+1, halfScanned, done, shouldStop, near, offset))
 					return true;
 				calledOther = true;
 			}
 		}
-		if (!calledOther)
+		if(!calledOther)
 		{
 			BlockPos blockPos = new BlockPos(pos);
 			return handlePos(origPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ()),
@@ -565,25 +575,25 @@ public class ApiUtils
 									 Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop, HashSet<Triple<BlockPos, Vec3d, Vec3d>> near)
 	{
 		final double DELTA_NEAR = .3;
-		if (!done.contains(posB))
+		if(!done.contains(posB))
 		{
-			if (halfScanned.containsKey(posB)&&!pos.equals(halfScanned.get(posB)))
+			if(halfScanned.containsKey(posB)&&!pos.equals(halfScanned.get(posB)))
 			{
 				Triple<BlockPos, Vec3d, Vec3d> added = new ImmutableTriple<>(posB, halfScanned.get(posB), pos);
 				boolean stop = shouldStop.test(added);
 				done.add(posB);
 				halfScanned.remove(posB);
 				near.removeIf((t) -> t.getLeft().equals(posB));
-				if (stop)
+				if(stop)
 					return true;
-				for (int i = 0;i<3;i++)
+				for(int i = 0; i < 3; i++)
 				{
 					double coord = getDim(pos, i);
 					double diff = coord-Math.floor(coord);
-					if (diff<DELTA_NEAR)
+					if(diff < DELTA_NEAR)
 						near.add(new ImmutableTriple<>(offsetDim(posB, i, -1), added.getMiddle(), added.getRight()));
 					diff = Math.ceil(coord)-coord;
-					if (diff<DELTA_NEAR)
+					if(diff < DELTA_NEAR)
 						near.add(new ImmutableTriple<>(offsetDim(posB, i, 1), added.getMiddle(), added.getRight()));
 				}
 			}
@@ -606,138 +616,139 @@ public class ApiUtils
 		else
 			return WireType.getValue(tag.getString(key));
 	}
-	
+
 	public static EnumActionResult doCoilUse(IWireCoil coil, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity instanceof IImmersiveConnectable && ((IImmersiveConnectable)tileEntity).canConnect())
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
+		{
+			ItemStack stack = player.getHeldItem(hand);
+			TargetingInfo target = new TargetingInfo(side, hitX, hitY, hitZ);
+			WireType wire = coil.getWireType(stack);
+			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, target);
+			Vec3i offset = pos.subtract(masterPos);
+			tileEntity = world.getTileEntity(masterPos);
+			if(!(tileEntity instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntity).canConnect())
+				return EnumActionResult.PASS;
+
+			if(!((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset)||!coil.canConnectCable(stack, tileEntity))
 			{
-				ItemStack stack = player.getHeldItem(hand);
-				TargetingInfo target = new TargetingInfo(side, hitX,hitY,hitZ);
-				WireType wire = coil.getWireType(stack);
-				BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, target);
-				Vec3i offset = pos.subtract(masterPos);
-				tileEntity = world.getTileEntity(masterPos);
-				if( !(tileEntity instanceof IImmersiveConnectable) || !((IImmersiveConnectable)tileEntity).canConnect())
-					return EnumActionResult.PASS;
-
-				if( !((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset) || !coil.canConnectCable(stack, tileEntity))
-				{
-					if (!world.isRemote)
-						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"), true);
-					return EnumActionResult.FAIL;
-				}
-
 				if(!world.isRemote)
-					if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
-					{
-						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(),masterPos.getX(),masterPos.getY(),masterPos.getZ(),
-								offset.getX(), offset.getY(), offset.getZ()});
-						NBTTagCompound targetNbt = new NBTTagCompound();
-						target.writeToNBT(targetNbt);
-						ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
-					}
+					player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"), true);
+				return EnumActionResult.FAIL;
+			}
+
+			if(!world.isRemote)
+				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
+				{
+					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), masterPos.getX(), masterPos.getY(), masterPos.getZ(),
+							offset.getX(), offset.getY(), offset.getZ()});
+					NBTTagCompound targetNbt = new NBTTagCompound();
+					target.writeToNBT(targetNbt);
+					ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
+				}
+				else
+				{
+					int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
+					BlockPos linkPos = new BlockPos(array[1], array[2], array[3]);
+					Vec3i offsetLink = BlockPos.NULL_VECTOR;
+					if(array.length==7)
+						offsetLink = new Vec3i(array[4], array[5], array[6]);
+					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
+					int distanceSq = (int)Math.ceil(linkPos.distanceSq(masterPos));
+					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
+					maxLengthSq *= maxLengthSq;
+					if(array[0]!=world.provider.getDimension())
+						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"), true);
+					else if(linkPos.equals(masterPos))
+						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"), true);
+					else if(distanceSq > maxLengthSq)
+						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"), true);
 					else
 					{
-						int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
-						BlockPos linkPos = new BlockPos(array[1],array[2],array[3]);
-						Vec3i offsetLink = BlockPos.NULL_VECTOR;
-						if (array.length==7)
-							offsetLink = new Vec3i(array[4], array[5], array[6]);
-						TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
-						int distanceSq = (int) Math.ceil( linkPos.distanceSq(masterPos) );
-						int maxLengthSq = coil.getMaxLength(stack); //not squared yet
-						maxLengthSq *= maxLengthSq;
-						if(array[0]!=world.provider.getDimension())
-							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"), true);
-						else if(linkPos.equals(masterPos))
-							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"), true);
-						else if( distanceSq > maxLengthSq)
-							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"), true);
+						TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
+						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||
+								!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, targetLink, offsetLink)||
+								!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
+								!coil.canConnectCable(stack, tileEntityLinkingPos))
+							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
 						else
 						{
-							TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
-							if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||
-							   !((IImmersiveConnectable) tileEntityLinkingPos).canConnectCable(wire, targetLink, offsetLink)||
-							   !((IImmersiveConnectable) tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
-							   !coil.canConnectCable(stack, tileEntityLinkingPos))
-								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
+							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
+							IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
+							boolean connectionExists = false;
+							Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
+							if(outputs!=null)
+								for(Connection con : outputs)
+								{
+									if(con.end.equals(Utils.toCC(nodeLink)))
+										connectionExists = true;
+								}
+							if(connectionExists)
+								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
 							else
 							{
-								IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-								IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
-								boolean connectionExists = false;
-								Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
-								if(outputs!=null)
-									for(Connection con : outputs)
+								Set<BlockPos> ignore = new HashSet<>();
+								ignore.addAll(nodeHere.getIgnored(nodeLink));
+								ignore.addAll(nodeLink.getIgnored(nodeHere));
+								Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
+										(int)Math.sqrt(distanceSq));
+								Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos));
+								Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(linkPos.getX()-masterPos.getX(),
+										linkPos.getY()-masterPos.getY(),
+										linkPos.getZ()-masterPos.getZ());
+								BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
+								boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p) -> {
+									if(ignore.contains(p.getLeft()))
+										return false;
+									IBlockState state = world.getBlockState(p.getLeft());
+									if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
 									{
-										if(con.end.equals(Utils.toCC(nodeLink)))
-											connectionExists = true;
+										failedReason.setPos(p.getLeft());
+										return true;
 									}
-								if(connectionExists)
-									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
+									return false;
+								}, (p) -> {
+								}, start, end);
+								if(canSee)
+								{
+									Connection conn = ImmersiveNetHandler.INSTANCE.addAndGetConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
+											(int)Math.sqrt(distanceSq), wire);
+
+
+									nodeHere.connectCable(wire, target, nodeLink, offset);
+									nodeLink.connectCable(wire, targetLink, nodeHere, offsetLink);
+									ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
+									IESaveData.setDirty(world.provider.getDimension());
+									Utils.unlockIEAdvancement(player, "main/connect_wire");
+
+									if(!player.capabilities.isCreativeMode)
+										coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
+									((TileEntity)nodeHere).markDirty();
+									world.addBlockEvent(masterPos, ((TileEntity)nodeHere).getBlockType(), -1, 0);
+									IBlockState state = world.getBlockState(masterPos);
+									world.notifyBlockUpdate(masterPos, state, state, 3);
+									((TileEntity)nodeLink).markDirty();
+									world.addBlockEvent(linkPos, ((TileEntity)nodeLink).getBlockType(), -1, 0);
+									state = world.getBlockState(linkPos);
+									world.notifyBlockUpdate(linkPos, state, state, 3);
+								}
 								else
 								{
-									Set<BlockPos> ignore = new HashSet<>();
-									ignore.addAll(nodeHere.getIgnored(nodeLink));
-									ignore.addAll(nodeLink.getIgnored(nodeHere));
-									Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
-											(int)Math.sqrt(distanceSq));
-									Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos));
-									Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(linkPos.getX()-masterPos.getX(),
-											linkPos.getY()-masterPos.getY(),
-											linkPos.getZ()-masterPos.getZ());
-									BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
-									boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p)->{
-										if (ignore.contains(p.getLeft()))
-											return false;
-										IBlockState state = world.getBlockState(p.getLeft());
-										if (ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
-										{
-											failedReason.setPos(p.getLeft());
-											return true;
-										}
-										return false;
-									}, (p)->{}, start, end);
-									if(canSee)
-									{
-										Connection conn = ImmersiveNetHandler.INSTANCE.addAndGetConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
-												(int)Math.sqrt(distanceSq), wire);
-
-
-										nodeHere.connectCable(wire, target, nodeLink, offset);
-										nodeLink.connectCable(wire, targetLink, nodeHere, offsetLink);
-										ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
-										IESaveData.setDirty(world.provider.getDimension());
-										Utils.unlockIEAdvancement(player, "main/connect_wire");
-
-										if(!player.capabilities.isCreativeMode)
-											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
-										((TileEntity)nodeHere).markDirty();
-										world.addBlockEvent(masterPos, ((TileEntity) nodeHere).getBlockType(), -1, 0);
-										IBlockState state = world.getBlockState(masterPos);
-										world.notifyBlockUpdate(masterPos, state,state, 3);
-										((TileEntity)nodeLink).markDirty();
-										world.addBlockEvent(linkPos, ((TileEntity) nodeLink).getBlockType(), -1, 0);
-										state = world.getBlockState(linkPos);
-										world.notifyBlockUpdate(linkPos, state,state, 3);
-									}
-									else
-									{
-										player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
-										ImmersiveEngineering.proxy.addFailedConnection(tmpConn, failedReason, player);
-									}
+									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
+									ImmersiveEngineering.proxy.addFailedConnection(tmpConn, failedReason, player);
 								}
 							}
 						}
-						ItemNBTHelper.remove(stack, "linkingPos");
-						ItemNBTHelper.remove(stack, "targettingInfo");
 					}
-				return EnumActionResult.SUCCESS;
-			}
+					ItemNBTHelper.remove(stack, "linkingPos");
+					ItemNBTHelper.remove(stack, "targettingInfo");
+				}
+			return EnumActionResult.SUCCESS;
+		}
 		return EnumActionResult.PASS;
 	}
-	
+
 	public static Object convertToValidRecipeInput(Object input)
 	{
 		if(input instanceof ItemStack)
@@ -771,31 +782,33 @@ public class ApiUtils
 		else if(input instanceof Item)
 		{
 			if(preferWildcard)
-				return new IngredientStack(new ItemStack((Item)input,1,OreDictionary.WILDCARD_VALUE));
+				return new IngredientStack(new ItemStack((Item)input, 1, OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Item)input));
 		}
 		else if(input instanceof Block)
 		{
 			if(preferWildcard)
-				return new IngredientStack(new ItemStack((Block)input,1,OreDictionary.WILDCARD_VALUE));
+				return new IngredientStack(new ItemStack((Block)input, 1, OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Block)input));
-		} else if(input instanceof List && !((List)input).isEmpty())
+		}
+		else if(input instanceof List&&!((List)input).isEmpty())
 		{
 			if(((List)input).get(0) instanceof ItemStack)
-				return new IngredientStack(((List<ItemStack>) input));
+				return new IngredientStack(((List<ItemStack>)input));
 			else if(((List)input).get(0) instanceof String)
 			{
 				ArrayList<ItemStack> itemList = new ArrayList();
-				for(String s : ((List<String>) input))
+				for(String s : ((List<String>)input))
 					itemList.addAll(OreDictionary.getOres(s));
 				return new IngredientStack(itemList);
 			}
-		} else if(input instanceof ItemStack[])
-			return new IngredientStack(Arrays.asList((ItemStack[]) input));
+		}
+		else if(input instanceof ItemStack[])
+			return new IngredientStack(Arrays.asList((ItemStack[])input));
 		else if(input instanceof String[])
 		{
 			ArrayList<ItemStack> itemList = new ArrayList();
-			for(String s : ((String[]) input))
+			for(String s : ((String[])input))
 				itemList.addAll(OreDictionary.getOres(s));
 			return new IngredientStack(itemList);
 		}
@@ -805,6 +818,7 @@ public class ApiUtils
 			return new IngredientStack((FluidStack)input);
 		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, String (OreDictionary name) or FluidStack; "+input+" is invalid");
 	}
+
 	public static IngredientStack createIngredientStack(Object input)
 	{
 		return createIngredientStack(input, false);
@@ -847,18 +861,19 @@ public class ApiUtils
 					return true;
 			}
 		}
-		for(int i=0; i<player.inventory.getSizeInventory(); i++)
+		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
 			{
 				amount -= itemstack.getCount();
-				if(amount<=0)
+				if(amount <= 0)
 					return true;
 			}
 		}
-		return amount <=0;
+		return amount <= 0;
 	}
+
 	public static void consumePlayerIngredient(EntityPlayer player, IngredientStack ingredient)
 	{
 		int amount = ingredient.inputSize;
@@ -873,11 +888,11 @@ public class ApiUtils
 				itemstack.shrink(taken);
 				if(itemstack.getCount() <= 0)
 					player.setHeldItem(hand, ItemStack.EMPTY);
-				if(amount<=0)
+				if(amount <= 0)
 					return;
 			}
 		}
-		for(int i=0; i<player.inventory.getSizeInventory(); i++)
+		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
@@ -887,7 +902,7 @@ public class ApiUtils
 				itemstack.shrink(taken);
 				if(itemstack.getCount() <= 0)
 					player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-				if(amount<=0)
+				if(amount <= 0)
 					return;
 			}
 		}
@@ -895,33 +910,33 @@ public class ApiUtils
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)
 	{
-		TreeMap<String,Integer> sortedMap = new TreeMap<String,Integer>(new ValueComparator(map, inverse));
+		TreeMap<String, Integer> sortedMap = new TreeMap<String, Integer>(new ValueComparator(map, inverse));
 		sortedMap.putAll(map);
 		return sortedMap;
 	}
 
-	public static <T extends TileEntity&IGeneralMultiblock> void checkForNeedlessTicking(T te)
+	public static <T extends TileEntity & IGeneralMultiblock> void checkForNeedlessTicking(T te)
 	{
-		if (!te.getWorld().isRemote&&te.isLogicDummy())
+		if(!te.getWorld().isRemote&&te.isLogicDummy())
 			EventHandler.REMOVE_FROM_TICKING.add(te);
 	}
 
 	public static boolean preventsConnection(World worldIn, BlockPos pos, IBlockState state, Vec3d a, Vec3d b)
 	{
-		if (state.getBlock().canCollideCheck(state, false))
+		if(state.getBlock().canCollideCheck(state, false))
 		{
 			List<AxisAlignedBB> aabbs = new ArrayList<>(1);
 			state.addCollisionBoxToList(worldIn, pos, Block.FULL_BLOCK_AABB.offset(pos),
 					aabbs, null, false);
-			for (AxisAlignedBB aabb:aabbs)
+			for(AxisAlignedBB aabb : aabbs)
 			{
 				aabb = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()).grow(1e-5);
-				if (aabb.contains(a) || aabb.contains(b))
+				if(aabb.contains(a)||aabb.contains(b))
 					return true;
 			}
 			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.addVector(pos.getX(), pos.getY(), pos.getZ()),
 					b.addVector(pos.getX(), pos.getY(), pos.getZ()));
-			return rayResult != null && rayResult.typeOfHit == RayTraceResult.Type.BLOCK;
+			return rayResult!=null&&rayResult.typeOfHit==RayTraceResult.Type.BLOCK;
 		}
 		return false;
 	}
@@ -930,18 +945,18 @@ public class ApiUtils
 	public static void knockbackNoSource(EntityLivingBase entity, double strength, double xRatio, double zRatio)
 	{
 		entity.isAirBorne = true;
-		float factor = MathHelper.sqrt(xRatio * xRatio + zRatio * zRatio);
+		float factor = MathHelper.sqrt(xRatio*xRatio+zRatio*zRatio);
 		entity.motionX /= 2;
 		entity.motionZ /= 2;
-		entity.motionX -= xRatio / (double)factor * strength;
-		entity.motionZ -= zRatio / (double)factor * strength;
+		entity.motionX -= xRatio/(double)factor*strength;
+		entity.motionZ -= zRatio/(double)factor*strength;
 
-		if (entity.onGround)
+		if(entity.onGround)
 		{
 			entity.motionY /= 2;
 			entity.motionY += strength;
 
-			if (entity.motionY > 0.4)
+			if(entity.motionY > 0.4)
 			{
 				entity.motionY = 0.4;
 			}
@@ -957,18 +972,18 @@ public class ApiUtils
 				.lookup(player.dimension);
 		AtomicReference<Connection> ret = new AtomicReference<>();
 		AtomicDouble minDistSq = new AtomicDouble(Double.POSITIVE_INFINITY);
-		Utils.rayTrace(start, end, world, (pos)->
+		Utils.rayTrace(start, end, world, (pos) ->
 		{
-			if (inDim != null && inDim.containsKey(pos))
+			if(inDim!=null&&inDim.containsKey(pos))
 			{
 				ImmersiveNetHandler.BlockWireInfo info = inDim.get(pos);
-				for (int i = 0; i < 2; i++)
+				for(int i = 0; i < 2; i++)
 				{
-					Set<Triple<Connection, Vec3d, Vec3d>> conns = i == 0 ? info.in : info.near;
-					for (Triple<Connection, Vec3d, Vec3d> conn : conns)
+					Set<Triple<Connection, Vec3d, Vec3d>> conns = i==0?info.in: info.near;
+					for(Triple<Connection, Vec3d, Vec3d> conn : conns)
 					{
 						Connection c = conn.getLeft();
-						if (ignored == null || !c.hasSameConnectors(ignored))
+						if(ignored==null||!c.hasSameConnectors(ignored))
 						{
 							Vec3d startRelative = start.addVector(-pos.getX(), -pos.getY(), -pos.getZ());
 							Vec3d across = conn.getRight().subtract(conn.getMiddle());
@@ -976,7 +991,7 @@ public class ApiUtils
 							t = MathHelper.clamp(0, t, 1);
 							Vec3d closest = conn.getMiddle().addVector(t*across.x, t*across.y, t*across.z);
 							double distSq = closest.squareDistanceTo(startRelative);
-							if (distSq<minDistSq.get())
+							if(distSq < minDistSq.get())
 							{
 								ret.set(c);
 								minDistSq.set(distSq);
@@ -987,10 +1002,10 @@ public class ApiUtils
 			}
 		});
 		Connection retConn = ret.get();
-		if (retConn!=null)
+		if(retConn!=null)
 		{
 			Vec3d across = new Vec3d(retConn.end).subtract(new Vec3d(retConn.start));
-			if (across.dotProduct(player.getLookVec())<0)
+			if(across.dotProduct(player.getLookVec()) < 0)
 				retConn = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), retConn);
 		}
 		return retConn;
@@ -1000,24 +1015,26 @@ public class ApiUtils
 	{
 		Map<String, Integer> base;
 		boolean inverse;
+
 		public ValueComparator(Map<String, Integer> base, boolean inverse)
 		{
 			this.base = base;
 			this.inverse = inverse;
 		}
+
 		@Override
 		public int compare(String s0, String s1)//Cant return equal to keys separate
 		{
 			if(inverse)
 			{
-				if (base.get(s0) <= base.get(s1))
+				if(base.get(s0) <= base.get(s1))
 					return -1;
 				else
 					return 1;
 			}
 			else
 			{
-				if (base.get(s0) >= base.get(s1))
+				if(base.get(s0) >= base.get(s1))
 					return -1;
 				else
 					return 1;
@@ -1029,8 +1046,8 @@ public class ApiUtils
 		{
 			if(!(obj instanceof ValueComparator))
 				return false;
-			ValueComparator other = (ValueComparator) obj;
-			return other.base == base && other.inverse == inverse;
+			ValueComparator other = (ValueComparator)obj;
+			return other.base==base&&other.inverse==inverse;
 		}
 	}
 
@@ -1045,6 +1062,7 @@ public class ApiUtils
 		}
 		return sprite;
 	}
+
 	@SideOnly(Side.CLIENT)
 	public static TextureAtlasSprite getRegisterSprite(TextureMap map, ResourceLocation path)
 	{
@@ -1064,14 +1082,14 @@ public class ApiUtils
 		int posPos = -1;
 		int normPos = -1;
 		int colorPos = -1;
-		for (int i = 0;i<f.getElements().size();i++)
-			if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.POSITION)
+		for(int i = 0; i < f.getElements().size(); i++)
+			if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.POSITION)
 				posPos = i;
-			else if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.NORMAL)
+			else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.NORMAL)
 				normPos = i;
-			else if (f.getElement(i).getUsage()== VertexFormatElement.EnumUsage.COLOR)
+			else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.COLOR)
 				colorPos = i;
-		if (posPos==-1)
+		if(posPos==-1)
 			return null;
 		final int posPosFinal = posPos;
 		final int normPosFinal = normPos;
@@ -1083,6 +1101,7 @@ public class ApiUtils
 		IVertexConsumer transformer = new IVertexConsumer()
 		{
 			int tintIndex = -1;
+
 			@Nonnull
 			@Override
 			public VertexFormat getVertexFormat()
@@ -1118,7 +1137,7 @@ public class ApiUtils
 			@Override
 			public void put(int element, @Nonnull float... data)
 			{
-				if (element==posPosFinal)
+				if(element==posPosFinal)
 				{
 					Vector3f newPos = mat.apply(new Vector3f(data[0], data[1], data[2]));
 					data = new float[3];
@@ -1126,7 +1145,7 @@ public class ApiUtils
 					data[1] = newPos.y;
 					data[2] = newPos.z;
 				}
-				else if (element==normPosFinal)
+				else if(element==normPosFinal)
 				{
 					Vector3f newNormal = inverse.apply(new Vector3f(data[0], data[1], data[2]));
 					data = new float[3];
@@ -1134,21 +1153,21 @@ public class ApiUtils
 					data[1] = newNormal.y;
 					data[2] = newNormal.z;
 				}
-				else if (element==colorPosFinal)
+				else if(element==colorPosFinal)
 				{
-					if (tintIndex!=-1&&colorMultiplier!=null)
+					if(tintIndex!=-1&&colorMultiplier!=null)
 					{
 						int multiplier = colorMultiplier.apply(tintIndex);
-						if (multiplier != 0)
+						if(multiplier!=0)
 						{
-							float r = (float) (multiplier >> 16 & 255) / 255.0F;
-							float g = (float) (multiplier >> 8 & 255) / 255.0F;
-							float b = (float) (multiplier & 255) / 255.0F;
+							float r = (float)(multiplier >> 16&255)/255.0F;
+							float g = (float)(multiplier >> 8&255)/255.0F;
+							float b = (float)(multiplier&255)/255.0F;
 							float[] oldData = data;
 							data = new float[4];
-							data[0] = oldData[0] * r;
-							data[1] = oldData[1] * g;
-							data[2] = oldData[2] * b;
+							data[0] = oldData[0]*r;
+							data[1] = oldData[1]*g;
+							data[2] = oldData[2]*b;
 							data[3] = oldData[3];
 						}
 					}
@@ -1156,7 +1175,7 @@ public class ApiUtils
 				ref.get().put(element, data);
 			}
 		};
-		return (q)->{
+		return (q) -> {
 			ref.set(new UnpackedBakedQuad.Builder(f));
 			q.pipe(transformer);
 			return ref.get().build();

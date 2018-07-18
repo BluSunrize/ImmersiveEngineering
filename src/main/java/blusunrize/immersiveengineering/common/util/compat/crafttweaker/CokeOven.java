@@ -27,7 +27,7 @@ public class CokeOven
 	public static void addRecipe(IItemStack output, int fuelOutput, IIngredient input, int time)
 	{
 		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput == null)
+		if(oInput==null)
 			return;
 
 		CokeOvenRecipe r = new CokeOvenRecipe(CraftTweakerHelper.toStack(output), oInput, time, fuelOutput);
@@ -53,7 +53,7 @@ public class CokeOven
 		@Override
 		public String describe()
 		{
-			return "Adding Coke Oven Recipe for " + recipe.output.getDisplayName();
+			return "Adding Coke Oven Recipe for "+recipe.output.getDisplayName();
 		}
 	}
 
@@ -84,7 +84,7 @@ public class CokeOven
 		@Override
 		public String describe()
 		{
-			return "Removing Coke Oven Recipe for " + output.getDisplayName();
+			return "Removing Coke Oven Recipe for "+output.getDisplayName();
 		}
 	}
 }

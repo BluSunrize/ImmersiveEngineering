@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 
 /**
  * @author BluSunrize - 04.07.2015
- *
  */
 public class ManualHelper
 {
@@ -23,7 +22,7 @@ public class ManualHelper
 	public static String CAT_TOOLS = "tools";
 	public static String CAT_HEAVYMACHINES = "heavymachines";
 	public static String CAT_UPDATE = "update";
-	
+
 	public static IEManualInstance ieManualInstance;
 
 	public static IEManualInstance getManual()

@@ -41,6 +41,7 @@ public class InventoryTile implements IInventory
 	{
 		return false;
 	}
+
 	@Override
 	public ITextComponent getDisplayName()
 	{
@@ -54,9 +55,12 @@ public class InventoryTile implements IInventory
 	}
 
 	@Override
-	public boolean isEmpty() {
-		for (ItemStack stack : inv.getInventory()) {
-			if (!stack.isEmpty()) {
+	public boolean isEmpty()
+	{
+		for(ItemStack stack : inv.getInventory())
+		{
+			if(!stack.isEmpty())
+			{
 				return false;
 			}
 		}
@@ -74,7 +78,7 @@ public class InventoryTile implements IInventory
 	{
 		ItemStack stack = inv.getInventory().get(index);
 		if(!stack.isEmpty())
-			if(stack.getCount()<=count)
+			if(stack.getCount() <= count)
 				inv.getInventory().set(index, ItemStack.EMPTY);
 			else
 			{
@@ -114,7 +118,7 @@ public class InventoryTile implements IInventory
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player)
 	{
-		return !tile.isInvalid() && tile.getDistanceSq(player.posX, player.posY, player.posZ)<64;
+		return !tile.isInvalid()&&tile.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
 	}
 
 	@Override
@@ -125,7 +129,7 @@ public class InventoryTile implements IInventory
 	@Override
 	public void closeInventory(EntityPlayer player)
 	{
-		for(int i=0; i<getSizeInventory(); i++)
+		for(int i = 0; i < getSizeInventory(); i++)
 			inv.doGraphicalUpdates(i);
 	}
 
@@ -155,7 +159,7 @@ public class InventoryTile implements IInventory
 	@Override
 	public void clear()
 	{
-		for(int i=0; i<inv.getInventory().size(); i++)
+		for(int i = 0; i < inv.getInventory().size(); i++)
 			inv.getInventory().set(i, ItemStack.EMPTY);
 	}
 

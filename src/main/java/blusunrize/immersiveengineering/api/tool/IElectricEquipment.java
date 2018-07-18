@@ -21,12 +21,13 @@ public interface IElectricEquipment
 {
 	/**
 	 * Called whenever an electric source attempts to damage the player, or is close to doing so
-	 * @param s The current ItemStack
+	 *
+	 * @param s      The current ItemStack
 	 * @param eqSlot The equipment slot the Item is in
-	 * @param p The entity wearing/holding the item
-	 * @param cache A way for different IElectricEquipment items to communicate with each other. It is empty when starting to check the equipment and is discarded after checking is done
-	 * @param dmg The damage source that would be used. Set the amount to 0 to prevent any damage from being done. null if no damage would be done
-	 * @param desc A description of the specific type of electric source.
+	 * @param p      The entity wearing/holding the item
+	 * @param cache  A way for different IElectricEquipment items to communicate with each other. It is empty when starting to check the equipment and is discarded after checking is done
+	 * @param dmg    The damage source that would be used. Set the amount to 0 to prevent any damage from being done. null if no damage would be done
+	 * @param desc   A description of the specific type of electric source.
 	 */
 	void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, @Nullable DamageSource dmg,
 				  ElectricSource desc);
@@ -37,10 +38,11 @@ public interface IElectricEquipment
 		for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 		{
 			ItemStack s = entity.getItemStackFromSlot(slot);
-			if (!s.isEmpty()&&s.getItem() instanceof IElectricEquipment)
+			if(!s.isEmpty()&&s.getItem() instanceof IElectricEquipment)
 				((IElectricEquipment)s.getItem()).onStrike(s, slot, entity, cache, dmg, source);
 		}
 	}
+
 	// this isn't just a float so it can be overridden, for special sources
 	class ElectricSource
 	{

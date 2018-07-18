@@ -23,27 +23,27 @@ public class TileRenderChargingStation extends TileEntitySpecialRenderer<TileEnt
 		{
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(x+.5, y+.3125, z+.5);
-			GlStateManager.scale(.75f,.75f,.75f);
+			GlStateManager.scale(.75f, .75f, .75f);
 			ClientUtils.bindAtlas();
 			switch(te.facing)
 			{
 				case NORTH:
-					GlStateManager.rotate(180, 0,1,0);
+					GlStateManager.rotate(180, 0, 1, 0);
 					break;
 				case SOUTH:
 					break;
 				case WEST:
-					GlStateManager.rotate(-90, 0,1,0);
+					GlStateManager.rotate(-90, 0, 1, 0);
 					break;
 				case EAST:
-					GlStateManager.rotate(90, 0,1,0);
+					GlStateManager.rotate(90, 0, 1, 0);
 					break;
 			}
 			if(!te.inventory.get(0).isEmpty())
 			{
 				GlStateManager.pushMatrix();
 				float scale = .625f;
-				GlStateManager.scale(scale,scale,1);
+				GlStateManager.scale(scale, scale, 1);
 				ClientUtils.mc().getRenderItem().renderItem(te.inventory.get(0), TransformType.FIXED);
 				GlStateManager.popMatrix();
 

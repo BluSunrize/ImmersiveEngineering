@@ -19,6 +19,7 @@ public class ShaderCaseRevolver extends ShaderCase
 	{
 		super(layers);
 	}
+
 	public ShaderCaseRevolver(Collection<ShaderLayer> layers)
 	{
 		super(layers);

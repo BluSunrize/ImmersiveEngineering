@@ -53,10 +53,10 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 			double ty = tile.getPos().getY();
 			double tz = tile.getPos().getZ();
 			float curWidth = GL11.glGetFloat(GL11.GL_LINE_WIDTH);
-			drawAnimation(animation, tx,ty,tz, new float[]{77/255f,74/255f,152/255f, .75f}, 4f);
-			drawAnimation(animation, tx,ty,tz, new float[]{1,1,1,1}, 1f);
+			drawAnimation(animation, tx, ty, tz, new float[]{77/255f, 74/255f, 152/255f, .75f}, 4f);
+			drawAnimation(animation, tx, ty, tz, new float[]{1, 1, 1, 1}, 1f);
 			GL11.glLineWidth(curWidth);
-			
+
 			GlStateManager.enableTexture2D();
 			GlStateManager.disableBlend();
 
@@ -65,22 +65,22 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 		GL11.glPopAttrib();
 		setLightmapDisabled(false);
 	}
-	
+
 	public static void drawAnimation(LightningAnimation animation, double tileX, double tileY, double tileZ, float[] rgba, float lineWidth)
 	{
-		GlStateManager.color(rgba[0],rgba[1],rgba[2],rgba[3]);
+		GlStateManager.color(rgba[0], rgba[1], rgba[2], rgba[3]);
 		GL11.glLineWidth(lineWidth);
 		Tessellator tes = ClientUtils.tes();
 		BufferBuilder worldrenderer = tes.getBuffer();
 		worldrenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
 		List<Vec3d> subs = animation.subPoints;
-		worldrenderer.pos(animation.startPos.x-tileX,animation.startPos.y-tileY,animation.startPos.z-tileZ).endVertex();
-		
-		for(int i=0; i<subs.size(); i++)
-			worldrenderer.pos(subs.get(i).x-tileX,subs.get(i).y-tileY,subs.get(i).z-tileZ).endVertex();
+		worldrenderer.pos(animation.startPos.x-tileX, animation.startPos.y-tileY, animation.startPos.z-tileZ).endVertex();
 
-		Vec3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector():animation.targetPos).addVector(-tileX,-tileY,-tileZ);
-		worldrenderer.pos(end.x,end.y,end.z).endVertex();
+		for(int i = 0; i < subs.size(); i++)
+			worldrenderer.pos(subs.get(i).x-tileX, subs.get(i).y-tileY, subs.get(i).z-tileZ).endVertex();
+
+		Vec3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector(): animation.targetPos).addVector(-tileX, -tileY, -tileZ);
+		worldrenderer.pos(end.x, end.y, end.z).endVertex();
 
 		tes.draw();
 	}

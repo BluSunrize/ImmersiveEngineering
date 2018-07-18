@@ -30,19 +30,21 @@ public class AlloyRecipe
 
 	public AlloyRecipe(ItemStack output, Object input0, Object input1, int time)
 	{
-		this.output=output;
-		this.input0=ApiUtils.createIngredientStack(input0);
-		this.input1=ApiUtils.createIngredientStack(input1);
-		this.time=time;
+		this.output = output;
+		this.input0 = ApiUtils.createIngredientStack(input0);
+		this.input1 = ApiUtils.createIngredientStack(input1);
+		this.time = time;
 	}
 
 	public static ArrayList<AlloyRecipe> recipeList = new ArrayList<AlloyRecipe>();
+
 	public static void addRecipe(ItemStack output, Object input0, Object input1, int time)
 	{
 		AlloyRecipe recipe = new AlloyRecipe(output, input0, input1, time);
 		if(recipe.input0!=null&&recipe.input1!=null)
 			recipeList.add(recipe);
 	}
+
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)
 	{
 		for(AlloyRecipe recipe : recipeList)
@@ -50,6 +52,7 @@ public class AlloyRecipe
 				return recipe;
 		return null;
 	}
+
 	public static List<AlloyRecipe> removeRecipes(ItemStack stack)
 	{
 		List<AlloyRecipe> list = new ArrayList();

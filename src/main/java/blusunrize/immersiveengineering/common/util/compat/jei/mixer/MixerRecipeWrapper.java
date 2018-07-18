@@ -23,6 +23,7 @@ import java.util.List;
 public class MixerRecipeWrapper extends MultiblockRecipeWrapper
 {
 	public boolean potionWrapper = false;
+
 	public MixerRecipeWrapper(MixerRecipe recipe)
 	{
 		super(recipe);
@@ -46,7 +47,7 @@ public class MixerRecipeWrapper extends MultiblockRecipeWrapper
 	@Override
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-		for(int i=0; i<recipeInputs.length; i++)
+		for(int i = 0; i < recipeInputs.length; i++)
 		{
 			int x = 0+(i%2)*18;
 			int y = 0+i/2*18;

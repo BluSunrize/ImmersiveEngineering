@@ -49,21 +49,22 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
-		String key = ItemNBTHelper.getString(stack,"blueprint");
-		if(key != null && !key.isEmpty() && BlueprintCraftingRecipe.blueprintCategories.contains(key))
+		String key = ItemNBTHelper.getString(stack, "blueprint");
+		if(key!=null&&!key.isEmpty()&&BlueprintCraftingRecipe.blueprintCategories.contains(key))
 		{
-			String formatKey = Lib.DESC_INFO + "blueprint." + key;
+			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.format(formatKey);
-			list.add(formatKey.equals(formatted)?key:formatted);
-			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+			list.add(formatKey.equals(formatted)?key: formatted);
+			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)||Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			{
-				list.add(I18n.format(Lib.DESC_INFO + "blueprint.creates1"));
+				list.add(I18n.format(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
 				if(recipes.length > 0)
 					for(int i = 0; i < recipes.length; i++)
-						list.add(" " + recipes[i].output.getDisplayName());
-			} else
-				list.add(I18n.format(Lib.DESC_INFO + "blueprint.creates0"));
+						list.add(" "+recipes[i].output.getDisplayName());
+			}
+			else
+				list.add(I18n.format(Lib.DESC_INFO+"blueprint.creates0"));
 		}
 	}
 
@@ -86,6 +87,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	{
 		return true;
 	}
+
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
@@ -99,29 +101,29 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		slots.add(new IESlot.BlueprintInput(container, inv, 4, 74, 57, stack));
 		slots.add(new IESlot.BlueprintInput(container, inv, 5, 92, 57, stack));
 
-		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
-		for(int i=0; i<recipes.length; i++)
+		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint"));
+		for(int i = 0; i < recipes.length; i++)
 		{
-			int y = 21 + (i < 9 ? i / 3 : (-(i - 6) / 3)) * 18;
-			slots.add(new IESlot.BlueprintOutput(container, inv, 6 + i, 118 + (i % 3 * 18), y, stack, recipes[i]));
+			int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
+			slots.add(new IESlot.BlueprintOutput(container, inv, 6+i, 118+(i%3*18), y, stack, recipes[i]));
 		}
 		return slots.toArray(new Slot[slots.size()]);
 	}
 
 	public void updateOutputs(ItemStack stack)
 	{
-		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
-		IItemHandlerModifiable handler = (IItemHandlerModifiable) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint"));
+		IItemHandlerModifiable handler = (IItemHandlerModifiable)stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		NonNullList<ItemStack> query = NonNullList.withSize(6, ItemStack.EMPTY);
-		for(int i=0; i<handler.getSlots(); i++)
-			if(i<6)
+		for(int i = 0; i < handler.getSlots(); i++)
+			if(i < 6)
 				query.set(i, handler.getStackInSlot(i));
 			else
 			{
 				handler.setStackInSlot(i, ItemStack.EMPTY);
 				int craftable = recipes[i-6].getMaxCrafted(query);
-				if(craftable>0)
-					handler.setStackInSlot(i, Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.getCount() * craftable, 64)));
+				if(craftable > 0)
+					handler.setStackInSlot(i, Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.getCount()*craftable, 64)));
 			}
 	}
 
@@ -129,24 +131,24 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	{
 		IItemHandlerModifiable handler = (IItemHandlerModifiable)stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		NonNullList<ItemStack> query = NonNullList.withSize(6, ItemStack.EMPTY);
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 			query.set(i, handler.getStackInSlot(i));
 		recipe.consumeInputs(query, crafted.getCount()/recipe.output.getCount());
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 			handler.setStackInSlot(i, query.get(i));
 	}
 
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
-		return 6 + BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint")).length;
+		return 6+BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint")).length;
 	}
 
 	@Override
 	public boolean canTakeFromWorkbench(ItemStack stack)
 	{
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 			if(!handler.getStackInSlot(i).isEmpty())
 				return false;
 		return true;

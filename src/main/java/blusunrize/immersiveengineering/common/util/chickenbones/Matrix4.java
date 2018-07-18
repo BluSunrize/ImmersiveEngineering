@@ -14,17 +14,17 @@ import java.nio.FloatBuffer;
 
 /**
  * Copyright (C) 2013 Chicken-Bones
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 //This file originally copied from CodeChickenLib, courtesy of Chicken-Bones.
 //This is a customized version created by Steven Blom (AtomicBlom) of the Steam and Steel development team.
@@ -35,10 +35,12 @@ public class Matrix4
 	public static final Matrix4 IDENTITY = new Matrix4();
 	//m<row><column>
 	public double m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
+
 	public Matrix4()
 	{
 		m00 = m11 = m22 = m33 = 1;
 	}
+
 	public Matrix4(double d00, double d01, double d02, double d03,
 				   double d10, double d11, double d12, double d13,
 				   double d20, double d21, double d22, double d23,
@@ -61,10 +63,12 @@ public class Matrix4
 		m32 = d32;
 		m33 = d33;
 	}
+
 	public Matrix4(Matrix4 mat)
 	{
 		set(mat);
 	}
+
 	public Matrix4(Matrix4f mat)
 	{
 		m00 = mat.m00;
@@ -111,28 +115,32 @@ public class Matrix4
 		}
 		translate(-.5, -.5, -.5);
 	}
+
 	public Matrix4 setIdentity()
 	{
 		m00 = m11 = m22 = m33 = 1;
 		m01 = m02 = m03 = m10 = m12 = m13 = m20 = m21 = m23 = m30 = m31 = m32 = 0;
 		return this;
 	}
+
 	public Matrix4 translate(Vector3f vec)
 	{
-		m03 += m00 * vec.x + m01 * vec.y + m02 * vec.z;
-		m13 += m10 * vec.x + m11 * vec.y + m12 * vec.z;
-		m23 += m20 * vec.x + m21 * vec.y + m22 * vec.z;
-		m33 += m30 * vec.x + m31 * vec.y + m32 * vec.z;
+		m03 += m00*vec.x+m01*vec.y+m02*vec.z;
+		m13 += m10*vec.x+m11*vec.y+m12*vec.z;
+		m23 += m20*vec.x+m21*vec.y+m22*vec.z;
+		m33 += m30*vec.x+m31*vec.y+m32*vec.z;
 		return this;
 	}
+
 	public Matrix4 translate(double x, double y, double z)
 	{
-		m03 += m00 * x + m01 * y + m02 * z;
-		m13 += m10 * x + m11 * y + m12 * z;
-		m23 += m20 * x + m21 * y + m22 * z;
-		m33 += m30 * x + m31 * y + m32 * z;
+		m03 += m00*x+m01*y+m02*z;
+		m13 += m10*x+m11*y+m12*z;
+		m23 += m20*x+m21*y+m22*z;
+		m33 += m30*x+m31*y+m32*z;
 		return this;
 	}
+
 	public Matrix4 scale(Vector3f vec)
 	{
 		m00 *= vec.x;
@@ -149,6 +157,7 @@ public class Matrix4
 		m32 *= vec.z;
 		return this;
 	}
+
 	public Matrix4 scale(double x, double y, double z)
 	{
 		m00 *= x;
@@ -165,11 +174,12 @@ public class Matrix4
 		m32 *= z;
 		return this;
 	}
+
 	public Matrix4 rotate(double angle, Vector3f axis)
 	{
 		double c = Math.cos(angle);
 		double s = Math.sin(angle);
-		double mc = 1.0f - c;
+		double mc = 1.0f-c;
 		double xy = axis.x*axis.y;
 		double yz = axis.y*axis.z;
 		double xz = axis.x*axis.z;
@@ -185,18 +195,18 @@ public class Matrix4
 		double f02 = xz*mc+ys;
 		double f12 = yz*mc-xs;
 		double f22 = axis.z*axis.z*mc+c;
-		double t00 = m00 * f00 + m01 * f10 + m02 * f20;
-		double t10 = m10 * f00 + m11 * f10 + m12 * f20;
-		double t20 = m20 * f00 + m21 * f10 + m22 * f20;
-		double t30 = m30 * f00 + m31 * f10 + m32 * f20;
-		double t01 = m00 * f01 + m01 * f11 + m02 * f21;
-		double t11 = m10 * f01 + m11 * f11 + m12 * f21;
-		double t21 = m20 * f01 + m21 * f11 + m22 * f21;
-		double t31 = m30 * f01 + m31 * f11 + m32 * f21;
-		m02 = m00 * f02 + m01 * f12 + m02 * f22;
-		m12 = m10 * f02 + m11 * f12 + m12 * f22;
-		m22 = m20 * f02 + m21 * f12 + m22 * f22;
-		m32 = m30 * f02 + m31 * f12 + m32 * f22;
+		double t00 = m00*f00+m01*f10+m02*f20;
+		double t10 = m10*f00+m11*f10+m12*f20;
+		double t20 = m20*f00+m21*f10+m22*f20;
+		double t30 = m30*f00+m31*f10+m32*f20;
+		double t01 = m00*f01+m01*f11+m02*f21;
+		double t11 = m10*f01+m11*f11+m12*f21;
+		double t21 = m20*f01+m21*f11+m22*f21;
+		double t31 = m30*f01+m31*f11+m32*f21;
+		m02 = m00*f02+m01*f12+m02*f22;
+		m12 = m10*f02+m11*f12+m12*f22;
+		m22 = m20*f02+m21*f12+m22*f22;
+		m32 = m30*f02+m31*f12+m32*f22;
 		m00 = t00;
 		m10 = t10;
 		m20 = t20;
@@ -207,11 +217,12 @@ public class Matrix4
 		m31 = t31;
 		return this;
 	}
+
 	public Matrix4 rotate(double angle, double x, double y, double z)
 	{
 		double c = Math.cos(angle);
 		double s = Math.sin(angle);
-		double mc = 1.0f - c;
+		double mc = 1.0f-c;
 		double xy = x*y;
 		double yz = y*z;
 		double xz = x*z;
@@ -227,18 +238,18 @@ public class Matrix4
 		double f02 = xz*mc+ys;
 		double f12 = yz*mc-xs;
 		double f22 = z*z*mc+c;
-		double t00 = m00 * f00 + m01 * f10 + m02 * f20;
-		double t10 = m10 * f00 + m11 * f10 + m12 * f20;
-		double t20 = m20 * f00 + m21 * f10 + m22 * f20;
-		double t30 = m30 * f00 + m31 * f10 + m32 * f20;
-		double t01 = m00 * f01 + m01 * f11 + m02 * f21;
-		double t11 = m10 * f01 + m11 * f11 + m12 * f21;
-		double t21 = m20 * f01 + m21 * f11 + m22 * f21;
-		double t31 = m30 * f01 + m31 * f11 + m32 * f21;
-		m02 = m00 * f02 + m01 * f12 + m02 * f22;
-		m12 = m10 * f02 + m11 * f12 + m12 * f22;
-		m22 = m20 * f02 + m21 * f12 + m22 * f22;
-		m32 = m30 * f02 + m31 * f12 + m32 * f22;
+		double t00 = m00*f00+m01*f10+m02*f20;
+		double t10 = m10*f00+m11*f10+m12*f20;
+		double t20 = m20*f00+m21*f10+m22*f20;
+		double t30 = m30*f00+m31*f10+m32*f20;
+		double t01 = m00*f01+m01*f11+m02*f21;
+		double t11 = m10*f01+m11*f11+m12*f21;
+		double t21 = m20*f01+m21*f11+m22*f21;
+		double t31 = m30*f01+m31*f11+m32*f21;
+		m02 = m00*f02+m01*f12+m02*f22;
+		m12 = m10*f02+m11*f12+m12*f22;
+		m22 = m20*f02+m21*f12+m22*f22;
+		m32 = m30*f02+m31*f12+m32*f22;
 		m00 = t00;
 		m10 = t10;
 		m20 = t20;
@@ -249,24 +260,25 @@ public class Matrix4
 		m31 = t31;
 		return this;
 	}
+
 	public Matrix4 leftMultiply(Matrix4 mat)
 	{
-		double n00 = m00 * mat.m00 + m10 * mat.m01 + m20 * mat.m02 + m30 * mat.m03;
-		double n01 = m01 * mat.m00 + m11 * mat.m01 + m21 * mat.m02 + m31 * mat.m03;
-		double n02 = m02 * mat.m00 + m12 * mat.m01 + m22 * mat.m02 + m32 * mat.m03;
-		double n03 = m03 * mat.m00 + m13 * mat.m01 + m23 * mat.m02 + m33 * mat.m03;
-		double n10 = m00 * mat.m10 + m10 * mat.m11 + m20 * mat.m12 + m30 * mat.m13;
-		double n11 = m01 * mat.m10 + m11 * mat.m11 + m21 * mat.m12 + m31 * mat.m13;
-		double n12 = m02 * mat.m10 + m12 * mat.m11 + m22 * mat.m12 + m32 * mat.m13;
-		double n13 = m03 * mat.m10 + m13 * mat.m11 + m23 * mat.m12 + m33 * mat.m13;
-		double n20 = m00 * mat.m20 + m10 * mat.m21 + m20 * mat.m22 + m30 * mat.m23;
-		double n21 = m01 * mat.m20 + m11 * mat.m21 + m21 * mat.m22 + m31 * mat.m23;
-		double n22 = m02 * mat.m20 + m12 * mat.m21 + m22 * mat.m22 + m32 * mat.m23;
-		double n23 = m03 * mat.m20 + m13 * mat.m21 + m23 * mat.m22 + m33 * mat.m23;
-		double n30 = m00 * mat.m30 + m10 * mat.m31 + m20 * mat.m32 + m30 * mat.m33;
-		double n31 = m01 * mat.m30 + m11 * mat.m31 + m21 * mat.m32 + m31 * mat.m33;
-		double n32 = m02 * mat.m30 + m12 * mat.m31 + m22 * mat.m32 + m32 * mat.m33;
-		double n33 = m03 * mat.m30 + m13 * mat.m31 + m23 * mat.m32 + m33 * mat.m33;
+		double n00 = m00*mat.m00+m10*mat.m01+m20*mat.m02+m30*mat.m03;
+		double n01 = m01*mat.m00+m11*mat.m01+m21*mat.m02+m31*mat.m03;
+		double n02 = m02*mat.m00+m12*mat.m01+m22*mat.m02+m32*mat.m03;
+		double n03 = m03*mat.m00+m13*mat.m01+m23*mat.m02+m33*mat.m03;
+		double n10 = m00*mat.m10+m10*mat.m11+m20*mat.m12+m30*mat.m13;
+		double n11 = m01*mat.m10+m11*mat.m11+m21*mat.m12+m31*mat.m13;
+		double n12 = m02*mat.m10+m12*mat.m11+m22*mat.m12+m32*mat.m13;
+		double n13 = m03*mat.m10+m13*mat.m11+m23*mat.m12+m33*mat.m13;
+		double n20 = m00*mat.m20+m10*mat.m21+m20*mat.m22+m30*mat.m23;
+		double n21 = m01*mat.m20+m11*mat.m21+m21*mat.m22+m31*mat.m23;
+		double n22 = m02*mat.m20+m12*mat.m21+m22*mat.m22+m32*mat.m23;
+		double n23 = m03*mat.m20+m13*mat.m21+m23*mat.m22+m33*mat.m23;
+		double n30 = m00*mat.m30+m10*mat.m31+m20*mat.m32+m30*mat.m33;
+		double n31 = m01*mat.m30+m11*mat.m31+m21*mat.m32+m31*mat.m33;
+		double n32 = m02*mat.m30+m12*mat.m31+m22*mat.m32+m32*mat.m33;
+		double n33 = m03*mat.m30+m13*mat.m31+m23*mat.m32+m33*mat.m33;
 		m00 = n00;
 		m01 = n01;
 		m02 = n02;
@@ -285,24 +297,25 @@ public class Matrix4
 		m33 = n33;
 		return this;
 	}
+
 	public Matrix4 multiply(Matrix4 mat)
 	{
-		double n00 = m00 * mat.m00 + m01 * mat.m10 + m02 * mat.m20 + m03 * mat.m30;
-		double n01 = m00 * mat.m01 + m01 * mat.m11 + m02 * mat.m21 + m03 * mat.m31;
-		double n02 = m00 * mat.m02 + m01 * mat.m12 + m02 * mat.m22 + m03 * mat.m32;
-		double n03 = m00 * mat.m03 + m01 * mat.m13 + m02 * mat.m23 + m03 * mat.m33;
-		double n10 = m10 * mat.m00 + m11 * mat.m10 + m12 * mat.m20 + m13 * mat.m30;
-		double n11 = m10 * mat.m01 + m11 * mat.m11 + m12 * mat.m21 + m13 * mat.m31;
-		double n12 = m10 * mat.m02 + m11 * mat.m12 + m12 * mat.m22 + m13 * mat.m32;
-		double n13 = m10 * mat.m03 + m11 * mat.m13 + m12 * mat.m23 + m13 * mat.m33;
-		double n20 = m20 * mat.m00 + m21 * mat.m10 + m22 * mat.m20 + m23 * mat.m30;
-		double n21 = m20 * mat.m01 + m21 * mat.m11 + m22 * mat.m21 + m23 * mat.m31;
-		double n22 = m20 * mat.m02 + m21 * mat.m12 + m22 * mat.m22 + m23 * mat.m32;
-		double n23 = m20 * mat.m03 + m21 * mat.m13 + m22 * mat.m23 + m23 * mat.m33;
-		double n30 = m30 * mat.m00 + m31 * mat.m10 + m32 * mat.m20 + m33 * mat.m30;
-		double n31 = m30 * mat.m01 + m31 * mat.m11 + m32 * mat.m21 + m33 * mat.m31;
-		double n32 = m30 * mat.m02 + m31 * mat.m12 + m32 * mat.m22 + m33 * mat.m32;
-		double n33 = m30 * mat.m03 + m31 * mat.m13 + m32 * mat.m23 + m33 * mat.m33;
+		double n00 = m00*mat.m00+m01*mat.m10+m02*mat.m20+m03*mat.m30;
+		double n01 = m00*mat.m01+m01*mat.m11+m02*mat.m21+m03*mat.m31;
+		double n02 = m00*mat.m02+m01*mat.m12+m02*mat.m22+m03*mat.m32;
+		double n03 = m00*mat.m03+m01*mat.m13+m02*mat.m23+m03*mat.m33;
+		double n10 = m10*mat.m00+m11*mat.m10+m12*mat.m20+m13*mat.m30;
+		double n11 = m10*mat.m01+m11*mat.m11+m12*mat.m21+m13*mat.m31;
+		double n12 = m10*mat.m02+m11*mat.m12+m12*mat.m22+m13*mat.m32;
+		double n13 = m10*mat.m03+m11*mat.m13+m12*mat.m23+m13*mat.m33;
+		double n20 = m20*mat.m00+m21*mat.m10+m22*mat.m20+m23*mat.m30;
+		double n21 = m20*mat.m01+m21*mat.m11+m22*mat.m21+m23*mat.m31;
+		double n22 = m20*mat.m02+m21*mat.m12+m22*mat.m22+m23*mat.m32;
+		double n23 = m20*mat.m03+m21*mat.m13+m22*mat.m23+m23*mat.m33;
+		double n30 = m30*mat.m00+m31*mat.m10+m32*mat.m20+m33*mat.m30;
+		double n31 = m30*mat.m01+m31*mat.m11+m32*mat.m21+m33*mat.m31;
+		double n32 = m30*mat.m02+m31*mat.m12+m32*mat.m22+m33*mat.m32;
+		double n33 = m30*mat.m03+m31*mat.m13+m32*mat.m23+m33*mat.m33;
 		m00 = n00;
 		m01 = n01;
 		m02 = n02;
@@ -321,6 +334,7 @@ public class Matrix4
 		m33 = n33;
 		return this;
 	}
+
 	public Matrix4 transpose()
 	{
 		double n00 = m00;
@@ -357,10 +371,12 @@ public class Matrix4
 		m33 = n33;
 		return this;
 	}
+
 	public Matrix4 copy()
 	{
 		return new Matrix4(this);
 	}
+
 	public Matrix4 set(Matrix4 mat)
 	{
 		m00 = mat.m00;
@@ -381,19 +397,22 @@ public class Matrix4
 		m33 = mat.m33;
 		return this;
 	}
+
 	public void apply(Matrix4 mat)
 	{
 		mat.multiply(this);
 	}
+
 	private void mult3x3(Vector3f vec)
 	{
-		double x = m00 * vec.x + m01 * vec.y + m02 * vec.z;
-		double y = m10 * vec.x + m11 * vec.y + m12 * vec.z;
-		double z = m20 * vec.x + m21 * vec.y + m22 * vec.z;
+		double x = m00*vec.x+m01*vec.y+m02*vec.z;
+		double y = m10*vec.x+m11*vec.y+m12*vec.z;
+		double z = m20*vec.x+m21*vec.y+m22*vec.z;
 		vec.x = (float)x;
 		vec.y = (float)y;
 		vec.z = (float)z;
 	}
+
 	public void apply(Vector3f vec)
 	{
 		mult3x3(vec);
@@ -401,13 +420,15 @@ public class Matrix4
 		vec.y += m13;
 		vec.z += m23;
 	}
+
 	private Vec3d mult3x3(Vec3d vec)
 	{
-		double x = m00 * vec.x + m01 * vec.y + m02 * vec.z;
-		double y = m10 * vec.x + m11 * vec.y + m12 * vec.z;
-		double z = m20 * vec.x + m21 * vec.y + m22 * vec.z;
-		return new Vec3d(x,y,z);
+		double x = m00*vec.x+m01*vec.y+m02*vec.z;
+		double y = m10*vec.x+m11*vec.y+m12*vec.z;
+		double z = m20*vec.x+m21*vec.y+m22*vec.z;
+		return new Vec3d(x, y, z);
 	}
+
 	public Vec3d apply(Vec3d vec)
 	{
 		return mult3x3(vec).addVector(m03, m13, m23);
@@ -415,9 +436,9 @@ public class Matrix4
 
 	private org.lwjgl.util.vector.Vector3f mult3x3(org.lwjgl.util.vector.Vector3f vec)
 	{
-		float x = (float) (m00 * vec.x + m01 * vec.y + m02 * vec.z);
-		float y = (float) (m10 * vec.x + m11 * vec.y + m12 * vec.z);
-		float z = (float) (m20 * vec.x + m21 * vec.y + m22 * vec.z);
+		float x = (float)(m00*vec.x+m01*vec.y+m02*vec.z);
+		float y = (float)(m10*vec.x+m11*vec.y+m12*vec.z);
+		float z = (float)(m20*vec.x+m21*vec.y+m22*vec.z);
 		return new org.lwjgl.util.vector.Vector3f(x, y, z);
 	}
 
@@ -432,14 +453,27 @@ public class Matrix4
 
 	public Matrix4f toMatrix4f()
 	{
-		return new Matrix4f((float)m00,(float)m01,(float)m02,(float)m03, (float)m10,(float)m11,(float)m12,(float)m13, (float)m20,(float)m21,(float)m22,(float)m23, (float)m30,(float)m31,(float)m32,(float)m33);
+		return new Matrix4f((float)m00, (float)m01, (float)m02, (float)m03, (float)m10, (float)m11, (float)m12, (float)m13, (float)m20, (float)m21, (float)m22, (float)m23, (float)m30, (float)m31, (float)m32, (float)m33);
 	}
+
 	public void fromMatrix4f(Matrix4f mat)
 	{
-		m00 = mat.m00;	m01 = mat.m01;	m02 = mat.m02;	m03 = mat.m03;
-		m10 = mat.m10;	m11 = mat.m11;	m12 = mat.m12;	m13 = mat.m13;
-		m20 = mat.m20;	m21 = mat.m21;	m22 = mat.m22;	m23 = mat.m23;
-		m30 = mat.m30;	m31 = mat.m31;	m32 = mat.m32;	m33 = mat.m33;
+		m00 = mat.m00;
+		m01 = mat.m01;
+		m02 = mat.m02;
+		m03 = mat.m03;
+		m10 = mat.m10;
+		m11 = mat.m11;
+		m12 = mat.m12;
+		m13 = mat.m13;
+		m20 = mat.m20;
+		m21 = mat.m21;
+		m22 = mat.m22;
+		m23 = mat.m23;
+		m30 = mat.m30;
+		m31 = mat.m31;
+		m32 = mat.m32;
+		m33 = mat.m33;
 	}
 
 	public final void invert()
@@ -467,7 +501,7 @@ public class Matrix4
 
 		Matrix4 matrix4 = (Matrix4)o;
 
-		if(Double.compare(matrix4.m00, m00)!=0)return false;
+		if(Double.compare(matrix4.m00, m00)!=0) return false;
 		if(Double.compare(matrix4.m01, m01)!=0) return false;
 		if(Double.compare(matrix4.m02, m02)!=0) return false;
 		if(Double.compare(matrix4.m03, m03)!=0) return false;
@@ -492,43 +526,43 @@ public class Matrix4
 		int result;
 		long temp;
 		temp = Double.doubleToLongBits(m00);
-		result = (int)(temp^(temp>>>32));
+		result = (int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m01);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m02);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m03);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m10);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m11);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m12);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m13);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m20);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m21);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m22);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m23);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m30);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m31);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m32);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		temp = Double.doubleToLongBits(m33);
-		result = 31*result+(int)(temp^(temp>>>32));
+		result = 31*result+(int)(temp^(temp >>> 32));
 		return result;
 	}
 
 	public FloatBuffer toFloatBuffer(@Nullable FloatBuffer in)
 	{
-		if (in==null)
+		if(in==null)
 			in = GLAllocation.createDirectFloatBuffer(16);
 		in.clear();
 		in.put((float)m00);

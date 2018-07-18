@@ -20,7 +20,7 @@ public class TeslaCoilDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, EnumFacing facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityTeslaCoil && !((TileEntityTeslaCoil) te).isDummy())
+		if(te instanceof TileEntityTeslaCoil&&!((TileEntityTeslaCoil)te).isDummy())
 		{
 			return new EnergyMeterEnvironment(w, bp);
 		}

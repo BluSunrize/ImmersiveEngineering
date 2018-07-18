@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
-import blusunrize.lib.manual.SpecialManualElement;
 import blusunrize.lib.manual.SpecialManualElements;
-import blusunrize.lib.manual.SpecialManualElements.PositionedItemStack;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.ArrayListMultimap;
@@ -59,7 +57,7 @@ public class ManualPageBlueprint extends SpecialManualElements
 					{
 						int h = (int)Math.ceil(recipe.inputs.length/2f);
 						PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];
-						for(int i=0; i<recipe.inputs.length; i++)
+						for(int i = 0; i < recipe.inputs.length; i++)
 							pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getSizedStackList(), 32+i%2*18, i/2*18);
 						int middle = (int)(h/2f*18)-8;
 						pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output, 86, middle);
@@ -171,7 +169,8 @@ public class ManualPageBlueprint extends SpecialManualElements
 					for(ItemStack subStack : (ItemStack[])stack.stack)
 						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-				} else if(stack.stack instanceof List)
+				}
+				else if(stack.stack instanceof List)
 					for(ItemStack subStack : (List<ItemStack>)stack.stack)
 					{
 						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
@@ -181,7 +180,8 @@ public class ManualPageBlueprint extends SpecialManualElements
 				{
 					if(((ItemStack)stack.stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 						return true;
-				} else if(stack.stack instanceof String)
+				}
+				else if(stack.stack instanceof String)
 				{
 					if(ManualUtils.isExistingOreName((String)stack.stack))
 						for(ItemStack subStack : OreDictionary.getOres((String)stack.stack))

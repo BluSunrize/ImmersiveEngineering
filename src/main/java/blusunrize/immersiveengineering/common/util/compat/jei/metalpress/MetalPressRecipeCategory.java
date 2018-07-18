@@ -24,10 +24,11 @@ import net.minecraft.item.ItemStack;
 public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe, MetalPressRecipeWrapper>
 {
 	static ItemStack metalPressStack;
+
 	public MetalPressRecipeCategory(IGuiHelper helper)
 	{
-		super("metalPress","tile.immersiveengineering.metal_multiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
-		metalPressStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
+		super("metalPress", "tile.immersiveengineering.metal_multiblock.metal_press.name", helper.createBlankDrawable(140, 50), MetalPressRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
+		metalPressStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
 	}
 
 	@Override

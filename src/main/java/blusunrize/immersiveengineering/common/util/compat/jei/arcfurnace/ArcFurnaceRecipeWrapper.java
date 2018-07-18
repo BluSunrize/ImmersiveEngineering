@@ -24,12 +24,13 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 	public String specialRecipeType;
 	int time;
 	int energy;
+
 	public ArcFurnaceRecipeWrapper(ArcFurnaceRecipe recipe)
 	{
 		super(recipe);
 		String name = this.getClass().getName();
 		int idx = name.indexOf("ArcFurnaceRecipeWrapper");
-		if(idx>=0 && idx+"ArcFurnaceRecipeWrapper".length()<name.length())
+		if(idx >= 0&&idx+"ArcFurnaceRecipeWrapper".length() < name.length())
 			specialRecipeType = name.substring(idx+"ArcFurnaceRecipeWrapper".length());
 		time = recipe.getTotalProcessTime();
 		energy = recipe.getTotalProcessEnergy()/time;
@@ -39,9 +40,9 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
 		String s = energy+" RF/t";
-		minecraft.fontRenderer.drawString(s, 54,38, 0x777777);
+		minecraft.fontRenderer.drawString(s, 54, 38, 0x777777);
 		s = time+" ticks";
-		minecraft.fontRenderer.drawString(s, 54,48, 0x777777);
+		minecraft.fontRenderer.drawString(s, 54, 48, 0x777777);
 	}
 
 	public static ArcFurnaceRecipeWrapper getWrapper(ArcFurnaceRecipe recipe)
@@ -50,9 +51,11 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 			return new ArcFurnaceRecipeWrapper(recipe);
 		else
 		{
-			try {
+			try
+			{
 				return getWrapperClass(recipe.specialRecipeType).getConstructor(ArcFurnaceRecipe.class).newInstance(recipe);
-			} catch (Exception e) {
+			} catch(Exception e)
+			{
 				IELogger.error("Adding an ArcFurnaceRecipe: "+recipe.specialRecipeType+", threw an error! Report this!");
 				e.printStackTrace();
 			}
@@ -61,6 +64,7 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 	}
 
 	private static HashMap<String, Class<? extends ArcFurnaceRecipeWrapper>> dynamicSubclasses = new HashMap();
+
 	public static Class<? extends ArcFurnaceRecipeWrapper> getWrapperClass(String subtype)
 	{
 		if(subtype==null)
@@ -92,33 +96,36 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 		String entitySuperClassName = Type.getInternalName(ArcFurnaceRecipeWrapper.class);
 		String entityProxySubClassName = ArcFurnaceRecipeWrapper.class.getSimpleName().concat(subtype);
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		cw.visit(Opcodes.V1_6,Opcodes.ACC_PUBLIC+Opcodes.ACC_SUPER,entityProxySubClassName,null,entitySuperClassName,null);
-		cw.visitSource(entityProxySubClassName.concat(".java"),null);
+		cw.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC+Opcodes.ACC_SUPER, entityProxySubClassName, null, entitySuperClassName, null);
+		cw.visitSource(entityProxySubClassName.concat(".java"), null);
 		//create constructor
 		String methodDescriptor = "(L"+Type.getInternalName(ArcFurnaceRecipe.class)+";)V";
-		MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC,"<init>",methodDescriptor,null,null);
+		MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", methodDescriptor, null, null);
 		mv.visitCode();
-		mv.visitVarInsn(Opcodes.ALOAD,0);
-		mv.visitVarInsn(Opcodes.ALOAD,1);
-		mv.visitMethodInsn(Opcodes.INVOKESPECIAL,entitySuperClassName,"<init>",methodDescriptor, false);
+		mv.visitVarInsn(Opcodes.ALOAD, 0);
+		mv.visitVarInsn(Opcodes.ALOAD, 1);
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, entitySuperClassName, "<init>", methodDescriptor, false);
 		mv.visitInsn(Opcodes.RETURN);
-		mv.visitMaxs(0,0);
+		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		cw.visitEnd();
-		return (Class<? extends ArcFurnaceRecipeWrapper>) new ProxyClassLoader(Thread.currentThread().getContextClassLoader(),cw.toByteArray()).loadClass(entityProxySubClassName.replaceAll("/","."));
+		return (Class<? extends ArcFurnaceRecipeWrapper>)new ProxyClassLoader(Thread.currentThread().getContextClassLoader(), cw.toByteArray()).loadClass(entityProxySubClassName.replaceAll("/", "."));
 	}
+
 	public static class ProxyClassLoader extends ClassLoader
 	{
 		private byte[] rawClassBytes;
-		public ProxyClassLoader(ClassLoader parentClassLoader,byte[] classBytes)
+
+		public ProxyClassLoader(ClassLoader parentClassLoader, byte[] classBytes)
 		{
 			super(parentClassLoader);
 			this.rawClassBytes = classBytes;
 		}
+
 		@Override
 		public Class findClass(String name)
 		{
-			return defineClass(name,this.rawClassBytes, 0,this.rawClassBytes.length);
+			return defineClass(name, this.rawClassBytes, 0, this.rawClassBytes.length);
 		}
 	}
 }

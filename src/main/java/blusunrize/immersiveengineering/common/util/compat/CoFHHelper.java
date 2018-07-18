@@ -24,7 +24,8 @@ public class CoFHHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		try{
+		try
+		{
 			final Class c_ingredientClass = Class.forName("cofh.core.util.crafting.FluidIngredientFactory$FluidIngredient");
 			final Field f_fluid = c_ingredientClass.getDeclaredField("fluid");
 			f_fluid.setAccessible(true);
@@ -34,13 +35,18 @@ public class CoFHHelper extends IECompatModule
 				public RecipeQuery apply(Object o)
 				{
 					if(c_ingredientClass.isAssignableFrom(o.getClass()))
-						try	{
+						try
+						{
 							return new RecipeQuery(f_fluid.get(o), 10000);
-						} catch(Exception e) {}
+						} catch(Exception e)
+						{
+						}
 					return null;
 				}
 			});
-		}catch(Exception e){}
+		} catch(Exception e)
+		{
+		}
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
-import li.cil.oc.api.network.Node;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -23,9 +22,9 @@ public class FermenterDriver extends DriverSidedTileEntity
 		TileEntity te = w.getTileEntity(bp);
 		if(te instanceof TileEntityFermenter)
 		{
-			TileEntityFermenter ferment = (TileEntityFermenter) te;
+			TileEntityFermenter ferment = (TileEntityFermenter)te;
 			TileEntityFermenter master = ferment.master();
-			if(master != null && ferment.isRedstonePos())
+			if(master!=null&&ferment.isRedstonePos())
 				return new FermenterEnvironment(w, master.getPos());
 		}
 		return null;
@@ -51,12 +50,12 @@ public class FermenterDriver extends DriverSidedTileEntity
 		public Object[] getRecipe(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if(slot < 1 || slot > 8)
+			if(slot < 1||slot > 8)
 				throw new IllegalArgumentException("Input slots are 1-8");
 			TileEntityFermenter master = getTileEntity();
-			FermenterRecipe recipe = FermenterRecipe.findRecipe(master.inventory.get(slot - 1));
-			if(recipe != null)
-				return new Object[]{master.inventory.get(slot - 1), recipe.itemOutput, recipe.fluidOutput, recipe.getTotalProcessTime()};
+			FermenterRecipe recipe = FermenterRecipe.findRecipe(master.inventory.get(slot-1));
+			if(recipe!=null)
+				return new Object[]{master.inventory.get(slot-1), recipe.itemOutput, recipe.fluidOutput, recipe.getTotalProcessTime()};
 			else
 				return null;
 		}
@@ -65,9 +64,9 @@ public class FermenterDriver extends DriverSidedTileEntity
 		public Object[] getInputStack(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if(slot < 1 || slot > 8)
+			if(slot < 1||slot > 8)
 				throw new IllegalArgumentException("Input slots are 1-8");
-			return new Object[]{getTileEntity().inventory.get(slot - 1)};
+			return new Object[]{getTileEntity().inventory.get(slot-1)};
 		}
 
 		@Callback(doc = "function():table -- returns the stack in the output slot")

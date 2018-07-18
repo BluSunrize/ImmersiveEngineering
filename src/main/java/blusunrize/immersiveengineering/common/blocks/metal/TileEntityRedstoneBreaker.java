@@ -24,12 +24,13 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	@Override
 	public void update()
 	{
-		if (!world.isRemote&&(world.isBlockIndirectlyGettingPowered(getPos())>0)==active)
+		if(!world.isRemote&&(world.isBlockIndirectlyGettingPowered(getPos()) > 0)==active)
 		{
 			active = !active;
 			ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world, pos);
 		}
 	}
+
 	@Override
 	protected boolean canTakeHV()
 	{
@@ -45,14 +46,14 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	@Override
 	public float[] getBlockBounds()
 	{
-		Vec3d start = new Vec3d(0,.125f,0);
-		Vec3d end = new Vec3d(1,.875f,1);
+		Vec3d start = new Vec3d(0, .125f, 0);
+		Vec3d end = new Vec3d(1, .875f, 1);
 		Matrix4 mat = new Matrix4(facing);
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return new float[]{(float) start.x, (float) start.y, (float) start.z,
-				(float) end.x, (float) end.y, (float) end.z};
+		return new float[]{(float)start.x, (float)start.y, (float)start.z,
+				(float)end.x, (float)end.y, (float)end.z};
 	}
 
 	@Override
@@ -60,10 +61,10 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	{
 		Matrix4 mat = new Matrix4(facing);
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
-		if (endOfLeftConnection==null)
+		if(endOfLeftConnection==null)
 			calculateLeftConn(mat);
 		boolean isLeft = con.end.equals(endOfLeftConnection)||con.start.equals(endOfLeftConnection);
-		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1.03125):new Vec3d(.875, .5, 1.03125));
+		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1.03125): new Vec3d(.875, .5, 1.03125));
 		return ret;
 	}
 
@@ -72,16 +73,19 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	{
 		return 0;
 	}
+
 	@Override
 	public int getStrongRSOutput(IBlockState state, EnumFacing side)
 	{
 		return 0;
 	}
+
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		return false;
 	}
+
 	@Override
 	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
 	{

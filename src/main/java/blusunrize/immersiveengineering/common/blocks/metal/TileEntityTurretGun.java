@@ -43,41 +43,46 @@ public class TileEntityTurretGun extends TileEntityTurret
 	{
 		return 16;
 	}
+
 	@Override
 	protected boolean canActivate()
 	{
-		return this.energyStorage.getEnergyStored()>= IEConfig.Machines.turret_gun_consumption && !inventory.get(0).isEmpty();
+		return this.energyStorage.getEnergyStored() >= IEConfig.Machines.turret_gun_consumption&&!inventory.get(0).isEmpty();
 	}
+
 	@Override
 	protected int getChargeupTicks()
 	{
 		return 5;
 	}
+
 	@Override
 	protected int getActiveTicks()
 	{
 		return 5;
 	}
+
 	@Override
 	protected boolean loopActivation()
 	{
 		return false;
 	}
+
 	@Override
 	protected void activate()
 	{
 		int energy = IEConfig.Machines.turret_gun_consumption;
 		ItemStack bulletStack = inventory.get(0);
-		if(!bulletStack.isEmpty() && this.energyStorage.extractEnergy(energy,true)==energy)
+		if(!bulletStack.isEmpty()&&this.energyStorage.extractEnergy(energy, true)==energy)
 		{
 			String key = ItemNBTHelper.getString(bulletStack, "bullet");
 			IBullet bullet = BulletHandler.getBullet(key);
 			if(bullet!=null&&bullet.isValidForTurret())
 			{
 				ItemStack casing = bullet.getCasing(bulletStack);
-				if(expelCasings||casing.isEmpty()|| inventory.get(1).isEmpty()||(OreDictionary.itemMatches(casing, inventory.get(1), false)&& inventory.get(1).getCount() + casing.getCount() <= inventory.get(1).getMaxStackSize()))
+				if(expelCasings||casing.isEmpty()||inventory.get(1).isEmpty()||(OreDictionary.itemMatches(casing, inventory.get(1), false)&&inventory.get(1).getCount()+casing.getCount() <= inventory.get(1).getMaxStackSize()))
 				{
-					this.energyStorage.extractEnergy(energy,false);
+					this.energyStorage.extractEnergy(energy, false);
 					this.sendRenderPacket();
 
 					double dX = target.posX-(getPos().getX()+.5);
@@ -90,7 +95,8 @@ public class TileEntityTurretGun extends TileEntityTurret
 					{
 						Entity entBullet = getBulletEntity(world, vec, bullet);
 						world.spawnEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
-					} else
+					}
+					else
 						for(int i = 0; i < count; i++)
 						{
 							Vec3d vecDir = vec.addVector(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
@@ -108,13 +114,14 @@ public class TileEntityTurretGun extends TileEntityTurret
 							double cY = getPos().getY()+1.375;
 							double cZ = getPos().getZ()+.5;
 							Vec3d vCasing = vec.rotateYaw(-1.57f);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0,0,0, 1,0);
+							world.spawnParticle(EnumParticleTypes.REDSTONE, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0, 1, 0);
 							EntityItem entCasing = new EntityItem(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
 							entCasing.motionX = 0;
 							entCasing.motionY = -0.01;
 							entCasing.motionZ = 0;
 							world.spawnEntity(entCasing);
-						} else
+						}
+						else
 						{
 							if(inventory.get(1).isEmpty())
 								inventory.set(1, casing.copy());
@@ -125,7 +132,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 					SoundEvent sound = bullet.getSound();
 					if(sound==null)
 						sound = IESounds.revolverFire;
-					world.playSound(null, getPos(), sound, SoundCategory.BLOCKS, 1,1);
+					world.playSound(null, getPos(), sound, SoundCategory.BLOCKS, 1, 1);
 				}
 			}
 		}
@@ -140,7 +147,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 
 	EntityRevolvershot getBulletEntity(World world, Vec3d vecDir, IBullet type)
 	{
-		EntityRevolvershot bullet = new EntityRevolvershot(world, getPos().getX()+.5+vecDir.x,getPos().getY()+1.375+vecDir.y,getPos().getZ()+.5+vecDir.z, 0,0,0, type);
+		EntityRevolvershot bullet = new EntityRevolvershot(world, getPos().getX()+.5+vecDir.x, getPos().getY()+1.375+vecDir.y, getPos().getZ()+.5+vecDir.z, 0, 0, 0, type);
 		bullet.motionX = vecDir.x;
 		bullet.motionY = vecDir.y;
 		bullet.motionZ = vecDir.z;
@@ -152,6 +159,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 	{
 		return inventory;
 	}
+
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
@@ -161,7 +169,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 	@Override
 	public void update()
 	{
-		if(world.isRemote&&!dummy&&cycleRender>0)
+		if(world.isRemote&&!dummy&&cycleRender > 0)
 			cycleRender--;
 		super.update();
 	}
@@ -172,6 +180,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 		if(message.hasKey("cycle"))
 			cycleRender = 5;
 	}
+
 	@Override
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
@@ -198,18 +207,20 @@ public class TileEntityTurretGun extends TileEntityTurret
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
 	}
 
-	IItemHandler itemHandler = new IEInventoryHandler(2,this, 0, new boolean[]{true,false},new boolean[]{false,true});
+	IItemHandler itemHandler = new IEInventoryHandler(2, this, 0, new boolean[]{true, false}, new boolean[]{false, true});
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(!dummy && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
+		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
 			return true;
 		return super.hasCapability(capability, facing);
 	}
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(!dummy && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
+		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
 			return (T)itemHandler;
 		return super.getCapability(capability, facing);
 	}

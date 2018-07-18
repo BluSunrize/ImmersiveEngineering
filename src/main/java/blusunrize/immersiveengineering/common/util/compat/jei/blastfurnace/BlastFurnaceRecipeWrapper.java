@@ -23,6 +23,7 @@ public class BlastFurnaceRecipeWrapper implements IRecipeWrapper
 	private final List<ItemStack> inputs;
 	private final ItemStack output;
 	private final ItemStack slag;
+
 	public BlastFurnaceRecipeWrapper(BlastFurnaceRecipe recipe)
 	{
 		this.inputs = (List<ItemStack>)(recipe.input instanceof List?recipe.input: Arrays.asList((ItemStack)recipe.input));
@@ -42,11 +43,12 @@ public class BlastFurnaceRecipeWrapper implements IRecipeWrapper
 	{
 		return output;
 	}
+
 	public ItemStack getSlagOutput()
 	{
 		return slag;
 	}
-	
+
 	@Override
 	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{

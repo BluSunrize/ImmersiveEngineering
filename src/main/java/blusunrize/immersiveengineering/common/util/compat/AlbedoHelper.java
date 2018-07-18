@@ -43,7 +43,7 @@ public class AlbedoHelper extends IECompatModule
 
 			Light.Builder builder = Light.builder();
 			builder.radius(2.5f);
-			builder.color(77/255f,74/255f,152/255f);
+			builder.color(77/255f, 74/255f, 152/255f);
 			for(Vec3d point : animation.subPoints)
 			{
 				builder.pos(point);

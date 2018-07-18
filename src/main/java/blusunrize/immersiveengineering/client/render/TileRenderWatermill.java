@@ -27,16 +27,17 @@ import java.util.List;
 public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWatermill>
 {
 	private static List<BakedQuad> quads;
+
 	@Override
 	public void render(TileEntityWatermill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
-		if (tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
+		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
-		if (quads==null)
+		if(quads==null)
 		{
 			final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 			IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-			if(state.getBlock() != IEContent.blockWoodenDevice1)
+			if(state.getBlock()!=IEContent.blockWoodenDevice1)
 				return;
 			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
 			quads = blockRenderer.getModelForState(state).getQuads(state, null, 0);
@@ -44,12 +45,12 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 		Tessellator tessellator = Tessellator.getInstance();
 		GlStateManager.pushMatrix();
 
-		GlStateManager.translate(x + .5, y + .5, z + .5);
+		GlStateManager.translate(x+.5, y+.5, z+.5);
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		final float dir = (tile.facing.getHorizontalAngle()+180)%180;
-		float wheelRotation = 360 * (tile.rotation + (!tile.canTurn || tile.rotation == 0 ? 0 : partialTicks)*(float)tile.perTick);
+		float wheelRotation = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*(float)tile.perTick);
 		GlStateManager.rotate(dir, 0, 1, 0);
 		GlStateManager.rotate(wheelRotation, 0, 0, 1);
 		RenderHelper.disableStandardItemLighting();
@@ -65,6 +66,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();
 	}
+
 	public static void reset()
 	{
 		quads = null;

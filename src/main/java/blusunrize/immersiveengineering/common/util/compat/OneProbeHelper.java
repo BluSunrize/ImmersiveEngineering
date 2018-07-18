@@ -75,23 +75,27 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 	{
 
 		@Override
-		public String getID() {
+		public String getID()
+		{
 			return ImmersiveEngineering.MODID+":"+"FluidInfo";
 		}
 
 		@Override
-		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
+		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof TileEntitySheetmetalTank) {
-				TileEntitySheetmetalTank master = ((TileEntitySheetmetalTank) te).master();
+			if(te instanceof TileEntitySheetmetalTank)
+			{
+				TileEntitySheetmetalTank master = ((TileEntitySheetmetalTank)te).master();
 				int current = master.tank.getFluidAmount();
 				int max = master.tank.getCapacity();
 
-				if(current > 0) {
+				if(current > 0)
+				{
 					probeInfo.progress(current, max,
 							probeInfo.defaultProgressStyle()
-								.suffix("mB")
-								.numberFormat(NumberFormat.COMPACT));
+									.suffix("mB")
+									.numberFormat(NumberFormat.COMPACT));
 				}
 			}
 		}
@@ -123,7 +127,7 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 				cur = ((IFluxProvider)te).getEnergyStored(null);
 				max = ((IFluxProvider)te).getMaxEnergyStored(null);
 			}
-			if(max>0)
+			if(max > 0)
 			{
 				probeInfo.progress(cur, max,
 						probeInfo.defaultProgressStyle()
@@ -139,14 +143,16 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data)
 		{
 		}
+
 		@Override
 		public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof IFluxReceiver || te instanceof IFluxProvider)
+			if(te instanceof IFluxReceiver||te instanceof IFluxProvider)
 				config.setRFMode(0);
 		}
 	}
+
 	public static class ProcessProvider implements IProbeInfoProvider
 	{
 
@@ -165,15 +171,16 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 				int[] curTicks = ((IEBlockInterfaces.IProcessTile)te).getCurrentProcessesStep();
 				int[] maxTicks = ((IEBlockInterfaces.IProcessTile)te).getCurrentProcessesMax();
 				int h = Math.max(4, (int)Math.ceil(12/(float)curTicks.length));
-				for(int i=0; i<curTicks.length; i++)
-					if(maxTicks[i]>0)
+				for(int i = 0; i < curTicks.length; i++)
+					if(maxTicks[i] > 0)
 					{
-						float f = curTicks[i]/(float)maxTicks[i] * 100;
-						probeInfo.progress((int)f, 100, probeInfo.defaultProgressStyle().showText(h>=10).suffix("%").height(h));
+						float f = curTicks[i]/(float)maxTicks[i]*100;
+						probeInfo.progress((int)f, 100, probeInfo.defaultProgressStyle().showText(h >= 10).suffix("%").height(h));
 					}
 			}
 		}
 	}
+
 	public static class TeslaCoilProvider implements IProbeInfoProvider
 	{
 
@@ -189,24 +196,25 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 			TileEntity te = world.getTileEntity(data.getPos());
 			if(te instanceof TileEntityTeslaCoil)
 			{
-				TileEntityTeslaCoil tc = (TileEntityTeslaCoil) te;
+				TileEntityTeslaCoil tc = (TileEntityTeslaCoil)te;
 				if(tc.dummy)
 				{
 					te = world.getTileEntity(data.getPos().offset(tc.facing, -1));
 					if(te instanceof TileEntityTeslaCoil)
-						tc = (TileEntityTeslaCoil) te;
+						tc = (TileEntityTeslaCoil)te;
 					else
 					{
 						probeInfo.text("<ERROR>");
 						return;
 					}
 				}
-				probeInfo.text(I18n.translateToLocal(Lib.CHAT_INFO+"rsControl."+(tc.redstoneControlInverted?"invertedOn":"invertedOff")));
-				probeInfo.text(I18n.translateToLocal(Lib.CHAT_INFO+"tesla."+(tc.lowPower?"lowPower":"highPower")));
+				probeInfo.text(I18n.translateToLocal(Lib.CHAT_INFO+"rsControl."+(tc.redstoneControlInverted?"invertedOn": "invertedOff")));
+				probeInfo.text(I18n.translateToLocal(Lib.CHAT_INFO+"tesla."+(tc.lowPower?"lowPower": "highPower")));
 
 			}
 		}
 	}
+
 	public static class SideConfigProvider implements IProbeInfoProvider
 	{
 
@@ -220,7 +228,7 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof IEBlockInterfaces.IConfigurableSides && data.getSideHit()!=null)
+			if(te instanceof IEBlockInterfaces.IConfigurableSides&&data.getSideHit()!=null)
 			{
 				boolean flip = player.isSneaking();
 				EnumFacing side = flip?data.getSideHit().getOpposite(): data.getSideHit();
@@ -230,13 +238,14 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 			}
 		}
 	}
+
 	public static class MultiblockDisplayOverride implements IBlockDisplayOverride
 	{
 		@Override
 		public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if (te instanceof TileEntityMultiblockPart)
+			if(te instanceof TileEntityMultiblockPart)
 			{
 				ItemStack stack = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
 				if(Tools.show(mode, Config.getRealConfig().getShowModName()))
@@ -246,7 +255,8 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 							.vertical()
 							.itemLabel(stack)
 							.text(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME);
-				} else
+				}
+				else
 				{
 					probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
 							.item(stack)

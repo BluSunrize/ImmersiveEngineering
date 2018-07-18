@@ -27,8 +27,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class MessageMinecartShaderSync implements IMessage
 {
 	int entityID;
-	boolean request=false;
+	boolean request = false;
 	ItemStack shader;
+
 	public MessageMinecartShaderSync(Entity entity, Object o)
 	{
 		this.entityID = entity.getEntityId();
@@ -37,6 +38,7 @@ public class MessageMinecartShaderSync implements IMessage
 		else
 			request = true;
 	}
+
 	public MessageMinecartShaderSync()
 	{
 	}
@@ -56,7 +58,7 @@ public class MessageMinecartShaderSync implements IMessage
 		buf.writeInt(this.entityID);
 		buf.writeBoolean(this.request);
 		if(!request)
-			ByteBufUtils.writeItemStack(buf,this.shader);
+			ByteBufUtils.writeItemStack(buf, this.shader);
 	}
 
 	public static class HandlerServer implements IMessageHandler<MessageMinecartShaderSync, IMessage>
@@ -67,7 +69,7 @@ public class MessageMinecartShaderSync implements IMessage
 			WorldServer world = ctx.getServerHandler().player.getServerWorld();
 			world.addScheduledTask(() -> {
 				Entity entity = world.getEntityByID(message.entityID);
-				if(entity!=null && entity.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+				if(entity!=null&&entity.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 				{
 					ShaderWrapper handler = entity.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 					if(handler!=null)
@@ -77,6 +79,7 @@ public class MessageMinecartShaderSync implements IMessage
 			return null;
 		}
 	}
+
 	public static class HandlerClient implements IMessageHandler<MessageMinecartShaderSync, IMessage>
 	{
 		@Override

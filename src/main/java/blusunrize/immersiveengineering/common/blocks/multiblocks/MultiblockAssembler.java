@@ -38,43 +38,47 @@ public class MultiblockAssembler implements IMultiblock
 {
 	public static MultiblockAssembler instance = new MultiblockAssembler();
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
-	static{
-		for(int h=0;h<3;h++)
-			for(int l=0;l<3;l++)
-				for(int w=0;w<3;w++)
+
+	static
+	{
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 3; l++)
+				for(int w = 0; w < 3; w++)
 				{
 					if(h==0)
 					{
 						if(l==1&&w!=1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
 						else if(l==1&&w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
-						if(w==0 || w==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
+						if(w==0||w==2)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 						else if(l==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor");
+							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor");
 					}
 					else if(h==2)
 					{
 						if(w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetalSlabs,1,BlockTypes_MetalsAll.IRON.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetalSlabs, 1, BlockTypes_MetalsAll.IRON.getMeta());
 					}
 				}
 	}
+
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
@@ -83,20 +87,23 @@ public class MultiblockAssembler implements IMultiblock
 			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.EAST);
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
+
 	//@SideOnly(Side.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ASSEMBLER.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ASSEMBLER.getMeta());
 		GlStateManager.translate(1.5, 1.5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -105,6 +112,7 @@ public class MultiblockAssembler implements IMultiblock
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}
+
 	@Override
 	public float getManualScale()
 	{
@@ -120,7 +128,7 @@ public class MultiblockAssembler implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock() == IEContent.blockConveyor;
+		return state.getBlock()==IEContent.blockConveyor;
 	}
 
 	@Override
@@ -132,11 +140,11 @@ public class MultiblockAssembler implements IMultiblock
 			side = side.getOpposite();
 
 		boolean mirror = false;
-		for(int l=0;l<3;l++)
-			for(int h=-1;h<=1;h++)
-				for(int w=-1;w<=1;w++)
+		for(int l = 0; l < 3; l++)
+			for(int h = -1; h <= 1; h++)
+				for(int w = -1; w <= 1; w++)
 				{
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 					if(h==-1)
@@ -159,7 +167,7 @@ public class MultiblockAssembler implements IMultiblock
 					}
 					else if(h==0)
 					{
-						if(w==-1 || w==1)
+						if(w==-1||w==1)
 						{
 							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
 								return false;
@@ -171,7 +179,7 @@ public class MultiblockAssembler implements IMultiblock
 						}
 						else
 						{
-							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID + ":conveyor", null))
+							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID+":conveyor", null))
 								return false;
 						}
 					}
@@ -193,11 +201,11 @@ public class MultiblockAssembler implements IMultiblock
 
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ASSEMBLER.getMeta());
 		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
-		for(int l=0;l<3;l++)
-			for(int w=-1;w<=1;w++)
-				for(int h=-1;h<=1;h++)
+		for(int l = 0; l < 3; l++)
+			for(int w = -1; w <= 1; w++)
+				for(int h = -1; h <= 1; h++)
 				{
-					int ww = mirror?-w:w;
+					int ww = mirror?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 					world.setBlockState(pos2, state);
@@ -205,10 +213,10 @@ public class MultiblockAssembler implements IMultiblock
 					if(curr instanceof TileEntityAssembler)
 					{
 						TileEntityAssembler tile = (TileEntityAssembler)curr;
-						tile.formed=true;
-						tile.pos = (h+1)*9 + l*3 + (w+1);
-						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww : -ww)};
-						tile.mirrored=mirror;
+						tile.formed = true;
+						tile.pos = (h+1)*9+l*3+(w+1);
+						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww: -ww)};
+						tile.mirrored = mirror;
 						tile.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
@@ -222,7 +230,8 @@ public class MultiblockAssembler implements IMultiblock
 			new IngredientStack("slabSheetmetalIron", 6),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
-			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), 2))};
+			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor"), 2))};
+
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{

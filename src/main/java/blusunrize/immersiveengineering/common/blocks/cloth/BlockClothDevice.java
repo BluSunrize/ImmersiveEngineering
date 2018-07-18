@@ -66,7 +66,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 		{
 			String hexCol = Integer.toHexString(ItemNBTHelper.getInt(stack, "colour"));
-			tooltip.add(I18n.translateToLocalFormatted(Lib.DESC_INFO + "colour", "<hexcol=" + hexCol + ":#" + hexCol + ">"));
+			tooltip.add(I18n.translateToLocalFormatted(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
 		}
 	}
 
@@ -75,6 +75,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 	{
 		return true;
 	}
+
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
@@ -95,15 +96,16 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		entityIn.fall(fallDistance, 0.0F);
 //        }
 	}
+
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		state = super.getExtendedState(state, world, pos);
-		if (state instanceof IExtendedBlockState)
+		if(state instanceof IExtendedBlockState)
 		{
-			IExtendedBlockState ext = (IExtendedBlockState) state;
+			IExtendedBlockState ext = (IExtendedBlockState)state;
 			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof TileEntityImmersiveConnectable)
+			if(te instanceof TileEntityImmersiveConnectable)
 				ext = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
 			state = ext;
 		}

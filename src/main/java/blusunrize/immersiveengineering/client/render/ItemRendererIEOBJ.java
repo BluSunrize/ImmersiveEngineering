@@ -40,38 +40,39 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 	public static final TileEntityItemStackRenderer INSTANCE = new ItemRendererIEOBJ();
 	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
 	private static final Matrix4 mat = new Matrix4();
+
 	@Override
 	public void renderByItem(ItemStack stack, float partialTicks)
 	{
 		GlStateManager.enableCull();
 		partialTicks = mc().getRenderPartialTicks();
-		if (stack.getItem() instanceof IOBJModelCallback)
+		if(stack.getItem() instanceof IOBJModelCallback)
 		{
-			IOBJModelCallback<ItemStack> callback = (IOBJModelCallback<ItemStack>) stack.getItem();
-			World w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.world:null;
+			IOBJModelCallback<ItemStack> callback = (IOBJModelCallback<ItemStack>)stack.getItem();
+			World w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.world: null;
 			IBakedModel model = mc().getRenderItem().getItemModelWithOverrides(stack, w,
 					IESmartObjModel.tempEntityStatic);
-			if (model instanceof IESmartObjModel)
+			if(model instanceof IESmartObjModel)
 			{
 				ItemStack shader = ItemStack.EMPTY;
 				ShaderCase sCase = null;
-				if (!stack.isEmpty() && stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+				if(!stack.isEmpty()&&stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 				{
 					CapabilityShader.ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-					if (wrapper != null)
+					if(wrapper!=null)
 					{
 						shader = wrapper.getShaderItem();
-						if (!shader.isEmpty() && shader.getItem() instanceof IShaderItem)
-							sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
+						if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+							sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
 					}
 				}
-				IESmartObjModel obj = (IESmartObjModel) model;
-				Map<String, Boolean> visible = new HashMap<>(((OBJModel.OBJState) obj.getState()).getVisibilityMap());
+				IESmartObjModel obj = (IESmartObjModel)model;
+				Map<String, Boolean> visible = new HashMap<>(((OBJModel.OBJState)obj.getState()).getVisibilityMap());
 				Tessellator tes = Tessellator.getInstance();
 				BufferBuilder bb = tes.getBuffer();
 				ItemCameraTransforms.TransformType transformType = obj.lastCameraTransform;
 				List<BakedQuad> quads = new ArrayList<>();// to reduce new alloc's
-				for (String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
+				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					GlStateManager.pushMatrix();
 					Matrix4 mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
@@ -85,18 +86,18 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 						wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
 					}
 					boolean bright = callback.areGroupsFullbright(stack, groups);
-					if (bright)
+					if(bright)
 					{
 						GlStateManager.disableLighting();
 						ClientUtils.setLightmapDisabled(true);
 					}
 					renderQuadsForGroups(groups, callback, obj, quads, stack,
 							sCase, shader, bb, tes, visible);
-					if (bright)
+					if(bright)
 					{
-						if (wasLightingEnabled)
+						if(wasLightingEnabled)
 							GlStateManager.enableLighting();
-						if (wasLightmapEnabled)
+						if(wasLightmapEnabled)
 							ClientUtils.setLightmapDisabled(false);
 					}
 					GlStateManager.popMatrix();
@@ -112,18 +113,18 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible)
 	{
 		quadsForGroup.clear();
-		for (String g : groups)
+		for(String g : groups)
 		{
-			if (visible.getOrDefault(g, Boolean.FALSE) && callback.shouldRenderGroup(stack, g))
+			if(visible.getOrDefault(g, Boolean.FALSE)&&callback.shouldRenderGroup(stack, g))
 				model.addQuadsForGroup(callback, stack, g, sCase, shader, quadsForGroup);
 			visible.remove(g);
 		}
-		if (!callback.areGroupsFullbright(stack, groups))
+		if(!callback.areGroupsFullbright(stack, groups))
 			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 		else
 			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
-		for (BakedQuad bq : quadsForGroup)
+		for(BakedQuad bq : quadsForGroup)
 			bq.pipe(vbc);
 		tes.draw();
 	}

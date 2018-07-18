@@ -34,42 +34,47 @@ public class TileEntityTurretChem extends TileEntityTurret
 	{
 		return 8;
 	}
+
 	@Override
 	protected boolean canActivate()
 	{
-		return tank.getFluidAmount()>0 && this.energyStorage.getEnergyStored()>= IEConfig.Machines.turret_chem_consumption;
+		return tank.getFluidAmount() > 0&&this.energyStorage.getEnergyStored() >= IEConfig.Machines.turret_chem_consumption;
 	}
+
 	@Override
 	protected int getChargeupTicks()
 	{
 		return 10;
 	}
+
 	@Override
 	protected int getActiveTicks()
 	{
 		return 1;
 	}
+
 	@Override
 	protected boolean loopActivation()
 	{
 		return true;
 	}
+
 	@Override
 	protected void activate()
 	{
 		FluidStack fs = this.tank.getFluid();
-		if(fs!=null && fs.getFluid()!=null)
+		if(fs!=null&&fs.getFluid()!=null)
 		{
 			int consumed = IEConfig.Tools.chemthrower_consumption;
 			int energy = IEConfig.Machines.turret_chem_consumption;
-			if(consumed<=fs.amount && this.energyStorage.extractEnergy(energy, true)>=energy)
+			if(consumed <= fs.amount&&this.energyStorage.extractEnergy(energy, true) >= energy)
 			{
 				tank.drain(consumed, true);
 				this.energyStorage.extractEnergy(energy, false);
 				double dX = target.posX-(getPos().getX()+.5);
 				double dY = target.posY-(getPos().getY()+.5);
 				double dZ = target.posZ-(getPos().getZ()+.5);
-				Vec3d v = new Vec3d(dX,dY,dZ).normalize();
+				Vec3d v = new Vec3d(dX, dY, dZ).normalize();
 
 				int split = 8;
 				boolean isGas = fs.getFluid().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
@@ -85,7 +90,7 @@ public class TileEntityTurretChem extends TileEntityTurret
 				for(int i = 0; i < split; i++)
 				{
 					Vec3d vecDir = v.addVector(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
-					EntityChemthrowerShot chem = new EntityChemthrowerShot(world, getPos().getX()+.5+v.x*0.875,getPos().getY()+1.5+v.y*0.875,getPos().getZ()+.5+v.z*0.875, 0,0,0, fs);
+					EntityChemthrowerShot chem = new EntityChemthrowerShot(world, getPos().getX()+.5+v.x*0.875, getPos().getY()+1.5+v.y*0.875, getPos().getZ()+.5+v.z*0.875, 0, 0, 0, fs);
 					chem.motionX = vecDir.x*range;
 					chem.motionY = vecDir.y*range;
 					chem.motionZ = vecDir.z*range;
@@ -96,9 +101,9 @@ public class TileEntityTurretChem extends TileEntityTurret
 				}
 				if(tick%4==0)
 					if(ignite)
-						world.playSound(null, getPos(), IESounds.sprayFire, SoundCategory.BLOCKS, .5F,1.5F);
+						world.playSound(null, getPos(), IESounds.sprayFire, SoundCategory.BLOCKS, .5F, 1.5F);
 					else
-						world.playSound(null, getPos(), IESounds.spray, SoundCategory.BLOCKS, .5F,.75F);
+						world.playSound(null, getPos(), IESounds.spray, SoundCategory.BLOCKS, .5F, .75F);
 			}
 		}
 	}
@@ -131,14 +136,15 @@ public class TileEntityTurretChem extends TileEntityTurret
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(!dummy && capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
+		if(!dummy&&capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
 			return true;
 		return super.hasCapability(capability, facing);
 	}
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(!dummy && capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
+		if(!dummy&&capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
 			return (T)tank;
 		return super.getCapability(capability, facing);
 	}

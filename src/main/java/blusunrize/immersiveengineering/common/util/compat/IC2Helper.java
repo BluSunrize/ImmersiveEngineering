@@ -34,10 +34,10 @@ public class IC2Helper extends IECompatModule
 			public RecipeQuery[] getQueriedInputs(AdvRecipe recipe)
 			{
 				IRecipeInput[] in = recipe.input;
-				if (in!=null)
+				if(in!=null)
 				{
 					RecipeQuery[] ret = new RecipeQuery[in.length];
-					for (int i = 0;i<in.length;i++)
+					for(int i = 0; i < in.length; i++)
 					{
 						IRecipeInput inStack = in[i];
 						ret[i] = new RecipeQuery(inStack.getInputs(), inStack.getAmount());
@@ -49,9 +49,9 @@ public class IC2Helper extends IECompatModule
 			}
 		});
 
-		Item cropRes = Item.REGISTRY.getObject(new ResourceLocation("ic2","crop_res"));
+		Item cropRes = Item.REGISTRY.getObject(new ResourceLocation("ic2", "crop_res"));
 		if(cropRes!=null)
-			BelljarHandler.registerBasicItemFertilizer(new ItemStack(cropRes,1,2), 1.25f);
+			BelljarHandler.registerBasicItemFertilizer(new ItemStack(cropRes, 1, 2), 1.25f);
 	}
 
 	@Override

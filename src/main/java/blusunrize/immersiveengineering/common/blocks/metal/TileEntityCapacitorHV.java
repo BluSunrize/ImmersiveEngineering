@@ -17,11 +17,13 @@ public class TileEntityCapacitorHV extends TileEntityCapacitorMV
 	{
 		return IEConfig.Machines.capacitorHV_storage;
 	}
+
 	@Override
 	public int getMaxInput()
 	{
 		return IEConfig.Machines.capacitorHV_input;
 	}
+
 	@Override
 	public int getMaxOutput()
 	{

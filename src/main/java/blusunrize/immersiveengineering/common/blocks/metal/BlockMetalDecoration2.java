@@ -38,7 +38,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 {
 	public BlockMetalDecoration2()
 	{
-		super("metal_decoration2", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.INT_4, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.CONNECTIONS);
+		super("metal_decoration2", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.CONNECTIONS);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setAllNotNormalBlock();
@@ -55,14 +55,15 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 			return;
 		super.getDrops(drops, world, pos, state, fortune);
 	}
+
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityWoodenPost)
 		{
-			if(!((TileEntityWoodenPost)tileEntity).isDummy() && !world.isRemote && world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots)
-				world.spawnEntity(new EntityItem(world, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, new ItemStack(this,1,this.getMetaFromState(state))));
+			if(!((TileEntityWoodenPost)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
+				world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
 	}
@@ -71,7 +72,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
 	{
 		int meta = this.getMetaFromState(world.getBlockState(pos));
-		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta() || meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
+		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta()||meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof TileEntityWallmount)
@@ -81,7 +82,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 				else if(facing==EnumFacing.DOWN)
 					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
 				else
-					return facing==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
+					return facing==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
 			}
 		}
 		return super.canBeConnectedTo(world, pos, facing);
@@ -93,7 +94,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityWoodenPost)
 		{
-			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy>3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
+			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
 		if(te instanceof TileEntityWallmount)
 		{
@@ -102,7 +103,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 			else if(side==EnumFacing.DOWN)
 				return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
 			else
-				return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing);
+				return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
 		}
 		return super.isSideSolid(state, world, pos, side);
 	}
@@ -112,17 +113,17 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
 	{
 		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta() || meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
+		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta()||meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof TileEntityWallmount)
 			{
 				if(side==EnumFacing.UP)
-					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 				else if(side==EnumFacing.DOWN)
-					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 				else
-					return side==(((TileEntityWallmount)te).orientation>1?((TileEntityWallmount)te).facing.getOpposite():((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER:BlockFaceShape.UNDEFINED;
+					return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 			}
 		}
 		return BlockFaceShape.SOLID;
@@ -131,9 +132,9 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	@Override
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
-		if(stack.getItemDamage()== BlockTypes_MetalDecoration2.STEEL_POST.getMeta() || stack.getItemDamage()== BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())
+		if(stack.getItemDamage()==BlockTypes_MetalDecoration2.STEEL_POST.getMeta()||stack.getItemDamage()==BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())
 		{
-			for(int hh=1; hh<=3; hh++)
+			for(int hh = 1; hh <= 3; hh++)
 			{
 				BlockPos pos2 = pos.up(hh);
 				if(world.isOutsideBuildHeight(pos2)||!world.getBlockState(pos2).getBlock().isReplaceable(world, pos2))

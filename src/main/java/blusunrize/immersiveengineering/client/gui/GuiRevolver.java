@@ -28,18 +28,18 @@ public class GuiRevolver extends GuiIEContainerBase
 	public GuiRevolver(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack revolver)
 	{
 		super(new ContainerRevolver(inventoryPlayer, world, slot, revolver));
-		if(!revolver.isEmpty() && revolver.getItem() instanceof IBulletContainer)
+		if(!revolver.isEmpty()&&revolver.getItem() instanceof IBulletContainer)
 			this.bullets[0] = ((IBulletContainer)revolver.getItem()).getBulletCount(revolver);
 		this.otherRevolver = !((ContainerRevolver)this.inventorySlots).secondRevolver.isEmpty();
 		if(this.otherRevolver)
 		{
 			this.bullets[1] = ((IBulletContainer)((ContainerRevolver)this.inventorySlots).secondRevolver.getItem()).getBulletCount(((ContainerRevolver)this.inventorySlots).secondRevolver);
-			this.offset = ((bullets[0]>=18?150:bullets[0]>8?136:74)+(bullets[1]>=18?150:bullets[1]>8?136:74)+4-176)/2;
-			if(this.offset>0)
+			this.offset = ((bullets[0] >= 18?150: bullets[0] > 8?136: 74)+(bullets[1] >= 18?150: bullets[1] > 8?136: 74)+4-176)/2;
+			if(this.offset > 0)
 				this.xSize += this.offset*2;
 		}
 		else
-			this.offset = ((bullets[0]>=18?150:bullets[0]>8?136:74)-176)/2;
+			this.offset = ((bullets[0] >= 18?150: bullets[0] > 8?136: 74)-176)/2;
 	}
 
 	@Override
@@ -47,12 +47,12 @@ public class GuiRevolver extends GuiIEContainerBase
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-		this.drawTexturedModalRect(guiLeft+(offset>0?offset:0),guiTop+77, 0,125, 176,89);
+		this.drawTexturedModalRect(guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);
 
-		int off = (offset<0?-offset:0);
-		for(int hand=0; hand<(otherRevolver?2:1); hand++)
+		int off = (offset < 0?-offset: 0);
+		for(int hand = 0; hand < (otherRevolver?2: 1); hand++)
 		{
-			int side = !otherRevolver?0: (hand==0)==(ImmersiveEngineering.proxy.getClientPlayer().getPrimaryHand()==EnumHandSide.RIGHT)?1:0;
+			int side = !otherRevolver?0: (hand==0)==(ImmersiveEngineering.proxy.getClientPlayer().getPrimaryHand()==EnumHandSide.RIGHT)?1: 0;
 			this.drawTexturedModalRect(guiLeft+off+00, guiTop+1, 00, 51, 74, 74);
 			if(bullets[side] >= 18)
 				this.drawTexturedModalRect(guiLeft+off+47, guiTop+1, 74, 51, 103, 74);

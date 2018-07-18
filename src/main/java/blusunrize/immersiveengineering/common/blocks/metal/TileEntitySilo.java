@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -48,31 +47,34 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	private boolean forceUpdate = false;
 
 	private static final int[] size = {7, 3, 3};
-	public TileEntitySilo() {
+
+	public TileEntitySilo()
+	{
 		super(size);
 	}
+
 	@Override
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 
-		if(pos==4 && !world.isRemote && !this.identStack.isEmpty() && storageAmount>0 && world.isBlockIndirectlyGettingPowered(getPos())>0 && world.getTotalWorldTime()%8==0)
+		if(pos==4&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.isBlockIndirectlyGettingPowered(getPos()) > 0&&world.getTotalWorldTime()%8==0)
 		{
 			updateComparatorValuesPart1();
 			for(EnumFacing f : EnumFacing.values())
 				if(f!=EnumFacing.UP)
 				{
 					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(f));
-					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
+					ItemStack stack = Utils.copyStackWithAmount(identStack, 1);
 					stack = Utils.insertStackIntoInventory(inventory, stack, f.getOpposite());
 					if(stack.isEmpty())
 					{
 						storageAmount--;
-						if(storageAmount<=0)
+						if(storageAmount <= 0)
 							identStack = ItemStack.EMPTY;
 						this.markDirty();
 						markContainingBlockForUpdate(null);
-						if(storageAmount<=0)
+						if(storageAmount <= 0)
 							break;
 					}
 				}
@@ -113,11 +115,13 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		return new FluidTank[0];
 	}
+
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
 	{
 		return false;
 	}
+
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
@@ -129,19 +133,19 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		if(pos==0||pos==2||pos==6||pos==8)
 		{
-			float xMin = (facing.getAxis() == Axis.X ? (pos > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.SOUTH)) ? .75f : 0;
-			float xMax = (facing.getAxis() == Axis.X ? (pos < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.SOUTH)) ? .25f : 1;
-			float zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos < 3 ^ facing == EnumFacing.SOUTH)) ? .75f : 0;
-			float zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos > 2 ^ facing == EnumFacing.SOUTH)) ? .25f : 1;
+			float xMin = (facing.getAxis()==Axis.X?(pos > 2^facing==EnumFacing.EAST): (pos%3==2^facing==EnumFacing.SOUTH))?.75f: 0;
+			float xMax = (facing.getAxis()==Axis.X?(pos < 3^facing==EnumFacing.EAST): (pos%3==0^facing==EnumFacing.SOUTH))?.25f: 1;
+			float zMin = (facing.getAxis()==Axis.X?(pos%3==2^facing==EnumFacing.EAST): (pos < 3^facing==EnumFacing.SOUTH))?.75f: 0;
+			float zMax = (facing.getAxis()==Axis.X?(pos%3==0^facing==EnumFacing.EAST): (pos > 2^facing==EnumFacing.SOUTH))?.25f: 1;
 			return new float[]{xMin, 0, zMin, xMax, 1, zMax};
 		}
-		return new float[]{0,0,0,1,1,1};
+		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		return pos==0||pos==2||pos==6||pos==8?new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()):new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
+		return pos==0||pos==2||pos==6||pos==8?new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta()): new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 	}
 
 	@Override
@@ -149,17 +153,19 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing.rotateYCCW()).offset(facing.getOpposite());
 	}
+
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
 			if(pos==4)
-				renderAABB = new AxisAlignedBB(getPos().add(-1,0,-1), getPos().add(2,7,2));
+				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 7, 2));
 			else
-				renderAABB = new AxisAlignedBB(getPos(),getPos());
+				renderAABB = new AxisAlignedBB(getPos(), getPos());
 		return renderAABB;
 	}
 
@@ -224,17 +230,19 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if((pos==4||pos==58) && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((pos==4||pos==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return true;
 		//		if(pos>30&&pos<44 && pos%5>0&&pos%5<4 )
 		//			return true;
 		return super.hasCapability(capability, facing);
 	}
+
 	IItemHandler insertionHandler = new SiloInventoryHandler(this);
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if((pos==4||pos==58) && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((pos==4||pos==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T)insertionHandler;
 		return super.getCapability(capability, facing);
 	}
@@ -242,6 +250,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	public static class SiloInventoryHandler implements IItemHandler
 	{
 		TileEntitySilo silo;
+
 		public SiloInventoryHandler(TileEntitySilo silo)
 		{
 			this.silo = silo;
@@ -252,10 +261,11 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		{
 			return 2;
 		}
+
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			if (slot==0)
+			if(slot==0)
 				return ItemStack.EMPTY;
 			else
 			{
@@ -270,7 +280,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 			stack = stack.copy();
 			TileEntitySilo silo = this.silo.master();
 			int space = maxStorage-silo.storageAmount;
-			if(slot!=0 || space<1 || stack.isEmpty() || (!silo.identStack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(silo.identStack,stack)))
+			if(slot!=0||space < 1||stack.isEmpty()||(!silo.identStack.isEmpty()&&!ItemHandlerHelper.canItemStacksStack(silo.identStack, stack)))
 				return stack;
 			int accepted = Math.min(space, stack.getCount());
 			if(!simulate)
@@ -293,7 +303,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
 			TileEntitySilo silo = this.silo.master();
-			if(slot!=1 || silo.storageAmount<1 || amount<1 || silo.identStack.isEmpty())
+			if(slot!=1||silo.storageAmount < 1||amount < 1||silo.identStack.isEmpty())
 				return ItemStack.EMPTY;
 			ItemStack out;
 			if(silo.storageAmount >= amount)
@@ -304,7 +314,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 			{
 				silo.updateComparatorValuesPart1();
 				silo.storageAmount -= out.getCount();
-				if(silo.storageAmount<=0 && !silo.lockItem)
+				if(silo.storageAmount <= 0&&!silo.lockItem)
 					silo.identStack = ItemStack.EMPTY;
 				silo.markDirty();
 				silo.markContainingBlockForUpdate(null);
@@ -326,7 +336,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		if(pos==4)
 			return (15*storageAmount)/maxStorage;
 		TileEntitySilo master = master();
-		if (offset[1]>=1&&offset[1]<=6&&master!=null) //6 layers of storage
+		if(offset[1] >= 1&&offset[1] <= 6&&master!=null) //6 layers of storage
 		{
 			int layer = offset[1]-1;
 			int vol = maxStorage/6;
@@ -336,29 +346,31 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		}
 		return 0;
 	}
+
 	private void updateComparatorValuesPart1()
 	{
-		int vol = maxStorage / 6;
-		for(int i=0; i<6; i++)
+		int vol = maxStorage/6;
+		for(int i = 0; i < 6; i++)
 		{
-			int filled = storageAmount - i * vol;
+			int filled = storageAmount-i*vol;
 			oldComps[i] = Math.min(15, Math.max((15*filled)/vol, 0));
 		}
 		masterCompOld = (15*storageAmount)/maxStorage;
 	}
+
 	private void updateComparatorValuesPart2()
 	{
-		int vol = maxStorage / 6;
+		int vol = maxStorage/6;
 		if((15*storageAmount)/maxStorage!=masterCompOld)
 			world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 		{
-			int filled = storageAmount - i * vol;
+			int filled = storageAmount-i*vol;
 			int now = Math.min(15, Math.max((15*filled)/vol, 0));
 			if(now!=oldComps[i])
 			{
-				for(int x=-1; x<=1; x++)
-					for(int z=-1; z<=1; z++)
+				for(int x = -1; x <= 1; x++)
+					for(int z = -1; z <= 1; z++)
 					{
 						BlockPos pos = getPos().add(-offset[0]+x, -offset[1]+i+1, -offset[2]+z);
 						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);

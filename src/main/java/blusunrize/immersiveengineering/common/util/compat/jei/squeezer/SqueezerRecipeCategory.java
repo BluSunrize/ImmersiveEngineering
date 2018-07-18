@@ -31,8 +31,8 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe, Squ
 
 	public SqueezerRecipeCategory(IGuiHelper helper)
 	{
-		super("squeezer","tile.immersiveengineering.metal_multiblock.squeezer.name", helper.createDrawable(background, 6,12, 164,59), SqueezerRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.SQUEEZER.getMeta()));
-		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
+		super("squeezer", "tile.immersiveengineering.metal_multiblock.squeezer.name", helper.createDrawable(background, 6, 12, 164, 59), SqueezerRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.SQUEEZER.getMeta()));
+		tankOverlay = helper.createDrawable(background, 177, 31, 16, 47, -2, 2, -2, 2);
 	}
 
 	@Override
@@ -42,9 +42,9 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe, Squ
 		guiItemStacks.init(0, true, 1, 22);
 		guiItemStacks.init(1, false, 84, 40);
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(ItemStack.class).size()>0)
+		if(ingredients.getOutputs(ItemStack.class).size() > 0)
 			guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(FluidStack.class).size()>0)
+		if(ingredients.getOutputs(FluidStack.class).size() > 0)
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 			guiFluidStacks.init(0, false, 106, 9, 16, 47, 24000, false, tankOverlay);

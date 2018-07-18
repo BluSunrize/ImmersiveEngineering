@@ -41,7 +41,7 @@ public class HarvestcraftHelper extends IECompatModule
 			if(!(o instanceof OreIngredient))
 				return null;
 			if(((OreIngredient)o).apply(waterBucket))
-				return new RecipeQuery(new FluidStack(FluidRegistry.WATER,1000), 1000);
+				return new RecipeQuery(new FluidStack(FluidRegistry.WATER, 1000), 1000);
 			return null;
 		});
 		final Fluid milk = FluidRegistry.getFluid("milk");
@@ -61,6 +61,7 @@ public class HarvestcraftHelper extends IECompatModule
 	static HashMap<String, Item> seeds = new HashMap<String, Item>();
 	static HashMap<String, Item> foods = new HashMap<String, Item>();
 	static HashMap<String, Block> crops = new HashMap<String, Block>();
+
 	@Override
 	public void postInit()
 	{
@@ -69,8 +70,8 @@ public class HarvestcraftHelper extends IECompatModule
 			Class c_Types = Class.forName("com.pam.harvestcraft.blocks.CropRegistry");
 			if(c_Types!=null)
 			{
-				Field f_seeds  = c_Types.getDeclaredField("seeds");
-				Field f_foods  = c_Types.getDeclaredField("foods");
+				Field f_seeds = c_Types.getDeclaredField("seeds");
+				Field f_foods = c_Types.getDeclaredField("foods");
 				Field f_crops = c_Types.getDeclaredField("crops");
 				f_seeds.setAccessible(true);
 				f_foods.setAccessible(true);
@@ -83,7 +84,8 @@ public class HarvestcraftHelper extends IECompatModule
 				for(String type : (String[])f_cropNames.get(null))
 					addType(type);
 			}
-		}catch(Exception e){
+		} catch(Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -93,7 +95,7 @@ public class HarvestcraftHelper extends IECompatModule
 		Item itemSeeds = seeds.get(type);
 		Item itemFood = foods.get(type);
 		Block blockCrop = crops.get(type);
-		if(itemSeeds!=null && itemFood!=null && blockCrop!=null)
-			BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemFood,3),new ItemStack(itemSeeds)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
+		if(itemSeeds!=null&&itemFood!=null&&blockCrop!=null)
+			BelljarHandler.cropHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemFood, 3), new ItemStack(itemSeeds)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 	}
 }

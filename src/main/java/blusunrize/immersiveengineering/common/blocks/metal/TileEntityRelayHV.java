@@ -35,6 +35,6 @@ public class TileEntityRelayHV extends TileEntityConnectorHV implements IOBJMode
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
-		return MinecraftForgeClient.getRenderLayer()== BlockRenderLayer.TRANSLUCENT;
+		return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
 	}
 }

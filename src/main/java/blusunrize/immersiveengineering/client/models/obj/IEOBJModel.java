@@ -56,9 +56,11 @@ public class IEOBJModel extends OBJModel
 	}
 
 	static Field f_modelLocation;
+
 	public ResourceLocation getResourceLocation()
 	{
-		try{
+		try
+		{
 			if(f_modelLocation==null)
 			{
 				f_modelLocation = OBJModel.class.getDeclaredField("modelLocation");
@@ -66,15 +68,19 @@ public class IEOBJModel extends OBJModel
 			}
 			if(f_modelLocation!=null)
 				return (ResourceLocation)f_modelLocation.get(this);
-		}catch(Exception e){
+		} catch(Exception e)
+		{
 			e.printStackTrace();
 		}
 		return null;
 	}
+
 	static Field f_customData;
+
 	public Object getCustomData()
 	{
-		try{
+		try
+		{
 			if(f_customData==null)
 			{
 				f_customData = OBJModel.class.getDeclaredField("customData");
@@ -82,14 +88,17 @@ public class IEOBJModel extends OBJModel
 			}
 			if(f_customData!=null)
 				return f_customData.get(this);
-		}catch(Exception e){
+		} catch(Exception e)
+		{
 			e.printStackTrace();
 		}
 		return null;
 	}
+
 	public void setCustomData(Object data)
 	{
-		try{
+		try
+		{
 			if(f_customData==null)
 			{
 				f_customData = OBJModel.class.getDeclaredField("customData");
@@ -97,7 +106,8 @@ public class IEOBJModel extends OBJModel
 			}
 			if(f_customData!=null)
 				f_customData.set(this, data);
-		}catch(Exception e){
+		} catch(Exception e)
+		{
 			e.printStackTrace();
 		}
 	}

@@ -59,7 +59,7 @@ public class CapacitorDriver extends DriverSidedTileEntity
 		@Override
 		public String preferredName()
 		{
-			return "ie_" + prefix + "_capacitor";
+			return "ie_"+prefix+"_capacitor";
 		}
 
 		@Override

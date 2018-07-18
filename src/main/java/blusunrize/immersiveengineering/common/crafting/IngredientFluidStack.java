@@ -28,6 +28,7 @@ public class IngredientFluidStack extends Ingredient
 		super(0);
 		this.fluid = fluid;
 	}
+
 	public IngredientFluidStack(Fluid fluid, int amount)
 	{
 		this(new FluidStack(fluid, amount));
@@ -39,6 +40,7 @@ public class IngredientFluidStack extends Ingredient
 	}
 
 	ItemStack[] cachedStacks;
+
 	@Override
 	public ItemStack[] getMatchingStacks()
 	{
@@ -52,14 +54,14 @@ public class IngredientFluidStack extends Ingredient
 	@Override
 	public boolean apply(@Nullable ItemStack stack)
 	{
-		if (stack == null)
+		if(stack==null)
 		{
 			return false;
 		}
 		else
 		{
 			FluidStack fs = FluidUtil.getFluidContained(stack);
-			return fs == null && this.fluid == null || fs != null && fs.containsFluid(fluid);
+			return fs==null&&this.fluid==null||fs!=null&&fs.containsFluid(fluid);
 		}
 	}
 }

@@ -28,7 +28,7 @@ public class BottlingMachine
 	public static void addRecipe(IItemStack output, IIngredient input, ILiquidStack fluid)
 	{
 		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput == null || output == null || fluid == null)
+		if(oInput==null||output==null||fluid==null)
 			return;
 
 		BottlingMachineRecipe r = new BottlingMachineRecipe(CraftTweakerHelper.toStack(output), oInput, CraftTweakerHelper.toFluidStack(fluid));
@@ -54,7 +54,7 @@ public class BottlingMachine
 		@Override
 		public String describe()
 		{
-			return "Adding Bottling Machine Recipe for " + recipe.output.getDisplayName();
+			return "Adding Bottling Machine Recipe for "+recipe.output.getDisplayName();
 		}
 	}
 
@@ -85,7 +85,7 @@ public class BottlingMachine
 		@Override
 		public String describe()
 		{
-			return "Removing Bottling Machine Recipe for " + output.getDisplayName();
+			return "Removing Bottling Machine Recipe for "+output.getDisplayName();
 		}
 	}
 }

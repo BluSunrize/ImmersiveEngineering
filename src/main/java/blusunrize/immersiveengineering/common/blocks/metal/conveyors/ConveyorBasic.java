@@ -31,7 +31,7 @@ public class ConveyorBasic implements IConveyorBelt
 	@Override
 	public boolean changeConveyorDirection()
 	{
-		direction = direction == ConveyorDirection.HORIZONTAL ? ConveyorDirection.UP : direction == ConveyorDirection.UP ? ConveyorDirection.DOWN : ConveyorDirection.HORIZONTAL;
+		direction = direction==ConveyorDirection.HORIZONTAL?ConveyorDirection.UP: direction==ConveyorDirection.UP?ConveyorDirection.DOWN: ConveyorDirection.HORIZONTAL;
 		return true;
 	}
 
@@ -57,7 +57,7 @@ public class ConveyorBasic implements IConveyorBelt
 	@Override
 	public boolean setDyeColour(int colour)
 	{
-		if(colour == this.dyeColour)
+		if(colour==this.dyeColour)
 			return false;
 		this.dyeColour = colour;
 		return true;
@@ -82,7 +82,7 @@ public class ConveyorBasic implements IConveyorBelt
 	public void readConveyorNBT(NBTTagCompound nbt)
 	{
 		direction = ConveyorDirection.values()[nbt.getInteger("direction")];
-		dyeColour = nbt.hasKey("dyeColour") ? nbt.getInteger("dyeColour") : -1;
+		dyeColour = nbt.hasKey("dyeColour")?nbt.getInteger("dyeColour"): -1;
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor");

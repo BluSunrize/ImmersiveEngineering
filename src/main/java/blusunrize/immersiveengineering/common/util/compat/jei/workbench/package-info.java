@@ -3,4 +3,5 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 
 import mcp.MethodsReturnNonnullByDefault;
+
 import javax.annotation.ParametersAreNonnullByDefault;

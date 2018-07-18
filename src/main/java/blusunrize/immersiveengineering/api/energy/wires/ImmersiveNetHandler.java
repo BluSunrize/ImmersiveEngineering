@@ -24,8 +24,14 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IntHashMap;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -57,20 +63,21 @@ public class ImmersiveNetHandler
 	public Map<DimensionBlockPos, IICProxy> proxies = new ConcurrentHashMap<>();
 
 	public IntHashMap<Map<BlockPos, BlockWireInfo>> blockWireMap = new IntHashMap<>();
-	
+
 	private ConcurrentHashMap<BlockPos, Set<Connection>> getMultimap(int dimension)
 	{
-		if (directConnections.get(dimension) == null)
+		if(directConnections.get(dimension)==null)
 		{
 			ConcurrentHashMap<BlockPos, Set<Connection>> mm = new ConcurrentHashMap<BlockPos, Set<Connection>>();
 			directConnections.put(dimension, mm);
 		}
 		return directConnections.get(dimension);
 	}
+
 	public HashMap<Connection, Integer> getTransferedRates(int dimension)
 	{
-		if (!transferPerTick.containsKey(dimension))
-			transferPerTick.put(dimension, new HashMap<Connection,Integer>());
+		if(!transferPerTick.containsKey(dimension))
+			transferPerTick.put(dimension, new HashMap<Connection, Integer>());
 		return transferPerTick.get(dimension);
 	}
 
@@ -78,22 +85,25 @@ public class ImmersiveNetHandler
 	{
 		addAndGetConnection(world, node, connection, distance, cableType);
 	}
+
 	public Connection addAndGetConnection(World world, BlockPos node, BlockPos connection, int distance, WireType cableType)
 	{
 		Connection conn = new Connection(node, connection, cableType, distance);
 		addConnection(world, node, conn);
 		addConnection(world, connection, new Connection(connection, node, cableType, distance));
 		if(world.isBlockLoaded(node))
-			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
+			world.addBlockEvent(node, world.getBlockState(node).getBlock(), -1, 0);
 		if(world.isBlockLoaded(connection))
-			world.addBlockEvent(connection, world.getBlockState(connection).getBlock(),-1,0);
+			world.addBlockEvent(connection, world.getBlockState(connection).getBlock(), -1, 0);
 		return conn;
 	}
+
 	public void addConnection(World world, BlockPos node, Connection con)
 	{
 		addConnection(world.provider.getDimension(), node, con);
 		resetCachedIndirectConnections(world, node);
 	}
+
 	public void addConnection(int world, BlockPos node, Connection con)
 	{
 		if(!getMultimap(world).containsKey(node))
@@ -105,8 +115,8 @@ public class ImmersiveNetHandler
 	public <T extends TileEntity & IImmersiveConnectable> void onTEValidated(T te)
 	{
 		Set<Connection> conns = getConnections(te.getWorld(), te.getPos());
-		if (conns != null)
-			for (Connection con : conns)
+		if(conns!=null)
+			for(Connection con : conns)
 				addBlockData(te.getWorld(), con);
 		resetCachedIndirectConnections(te.getWorld(), te.getPos());
 	}
@@ -114,23 +124,23 @@ public class ImmersiveNetHandler
 	public void addBlockData(World world, Connection con)
 	{
 		int dimId = world.provider.getDimension();
-		if (!blockWireMap.containsItem(dimId))
+		if(!blockWireMap.containsItem(dimId))
 			blockWireMap.addKey(dimId, new ConcurrentHashMap<>());
 		Map<BlockPos, BlockWireInfo> mapForDim = blockWireMap.lookup(dimId);
-		if (mapForDim==null||!world.isBlockLoaded(con.end))
+		if(mapForDim==null||!world.isBlockLoaded(con.end))
 			return;
 		raytraceAlongCatenary(con, world, (p) ->
 		{
-			if (!mapForDim.containsKey(p.getLeft()))
+			if(!mapForDim.containsKey(p.getLeft()))
 				mapForDim.put(p.getLeft(), new BlockWireInfo());
-			if (mapForDim.get(p.getLeft()).in.stream().noneMatch((c)->c.getLeft().hasSameConnectors(con)))
+			if(mapForDim.get(p.getLeft()).in.stream().noneMatch((c) -> c.getLeft().hasSameConnectors(con)))
 				mapForDim.get(p.getLeft()).in.add(new ImmutableTriple<>(con, p.getMiddle(), p.getRight()));
 			return false;
 		}, (p) ->
 		{
-			if (!mapForDim.containsKey(p.getLeft()))
+			if(!mapForDim.containsKey(p.getLeft()))
 				mapForDim.put(p.getLeft(), new BlockWireInfo());
-			if (mapForDim.get(p.getLeft()).near.stream().noneMatch((c)->c.getLeft().hasSameConnectors(con)))
+			if(mapForDim.get(p.getLeft()).near.stream().noneMatch((c) -> c.getLeft().hasSameConnectors(con)))
 				mapForDim.get(p.getLeft()).near.add(new ImmutableTriple<>(con, p.getMiddle(), p.getRight()));
 		});
 	}
@@ -138,7 +148,7 @@ public class ImmersiveNetHandler
 
 	public void removeConnection(World world, Connection con)
 	{
-		if (con == null || world == null)
+		if(con==null||world==null)
 			return;
 		int dim = world.provider.getDimension();
 		resetCachedIndirectConnections(world, con.start);
@@ -149,88 +159,96 @@ public class ImmersiveNetHandler
 		reverseConns.removeIf(con::hasSameConnectors);
 		forwardConns.removeIf(con::hasSameConnectors);
 		Map<BlockPos, BlockWireInfo> mapForDim = blockWireMap.lookup(world.provider.getDimension());
-		BiConsumer<BlockPos, Map<BlockPos, BlockWireInfo>> handle = (p, map)-> {
-			if (mapForDim!=null)
+		BiConsumer<BlockPos, Map<BlockPos, BlockWireInfo>> handle = (p, map) -> {
+			if(mapForDim!=null)
 			{
 				BlockWireInfo info = map.get(p);
-				if (info!=null)
+				if(info!=null)
 				{
-					for (int i = 0;i<2;i++)
+					for(int i = 0; i < 2; i++)
 					{
-						Set<Triple<Connection, Vec3d, Vec3d>> s = i==0?info.in:info.near;
-							s.removeIf((t) -> t.getLeft().hasSameConnectors(con));
-							if (s.isEmpty())
-								map.remove(p);
+						Set<Triple<Connection, Vec3d, Vec3d>> s = i==0?info.in: info.near;
+						s.removeIf((t) -> t.getLeft().hasSameConnectors(con));
+						if(s.isEmpty())
+							map.remove(p);
 					}
-					if (info.near.isEmpty()&&info.in.isEmpty())
+					if(info.near.isEmpty()&&info.in.isEmpty())
 						map.remove(p);
 				}
 			}
 		};
-		raytraceAlongCatenary(con, world, (p)->{
+		raytraceAlongCatenary(con, world, (p) -> {
 			handle.accept(p.getLeft(), mapForDim);
 			return false;
-		}, (p)->handle.accept(p.getLeft(), mapForDim));
+		}, (p) -> handle.accept(p.getLeft(), mapForDim));
 
 		IImmersiveConnectable iic = toIIC(con.end, world);
-		if (iic != null)
+		if(iic!=null)
 		{
 			iic.removeCable(con);
 			back.ifPresent(iic::removeCable);
 		}
 		iic = toIIC(con.start, world);
-		if (iic != null)
+		if(iic!=null)
 		{
 			iic.removeCable(con);
 			back.ifPresent(iic::removeCable);
 		}
 
-		if (world.isBlockLoaded(con.start))
+		if(world.isBlockLoaded(con.start))
 			world.addBlockEvent(con.start, world.getBlockState(con.start).getBlock(), -1, 0);
-		if (world.isBlockLoaded(con.end))
+		if(world.isBlockLoaded(con.end))
 			world.addBlockEvent(con.end, world.getBlockState(con.end).getBlock(), -1, 0);
 
 		IESaveData.setDirty(dim);
 	}
+
 	public Set<Integer> getRelevantDimensions()
 	{
 		return directConnections.keySet();
 	}
+
 	public Collection<Connection> getAllConnections(int dimensionId)
 	{
 		Set<Connection> ret = newSetFromMap(new ConcurrentHashMap<Connection, Boolean>());
-		for (Set<Connection> conlist : getMultimap(dimensionId).values())
+		for(Set<Connection> conlist : getMultimap(dimensionId).values())
 			ret.addAll(conlist);
 		return ret;
 	}
+
 	public Collection<Connection> getAllConnections(World world)
 	{
 		return getAllConnections(world.provider.getDimension());
 	}
+
 	@Nullable
 	public synchronized Set<Connection> getConnections(World world, BlockPos node)
 	{
-		if(world!=null && world.provider!=null)
+		if(world!=null&&world.provider!=null)
 		{
 			return getConnections(world.provider.getDimension(), node);
 		}
 		return null;
 	}
+
 	@Nullable
 	public synchronized Set<Connection> getConnections(int world, BlockPos node)
 	{
 		ConcurrentHashMap<BlockPos, Set<Connection>> map = getMultimap(world);
 		return map.get(node);
 	}
+
 	public void clearAllConnections(World world)
 	{
 		clearAllConnections(world.provider.getDimension());
 	}
+
 	public void clearAllConnections(int world)
 	{
 		getMultimap(world).clear();
 		blockWireMap.removeObject(world);
 	}
+
 	public void clearConnectionsOriginatingFrom(BlockPos node, World world)
 	{
 		resetCachedIndirectConnections(world, node);
@@ -244,7 +262,7 @@ public class ImmersiveNetHandler
 	@Deprecated
 	public void resetCachedIndirectConnections()
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			indirectConnections.clear();
 			indirectConnectionsIgnoreOut.clear();
@@ -256,25 +274,26 @@ public class ImmersiveNetHandler
 	/**
 	 * Resets the cached energy connections for all connectors connected to an IIC.
 	 * Call this when there are "more" wires (before removing and after adding)
-	 * @param w the world to reset the cache in
+	 *
+	 * @param w     the world to reset the cache in
 	 * @param start the starting block. If this is null, all cached connections for the dimension will be reset
 	 */
 	public void resetCachedIndirectConnections(World w, @Nullable BlockPos start)
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide()!=Side.SERVER)
+		if(FMLCommonHandler.instance().getEffectiveSide()!=Side.SERVER)
 		{
 			ImmersiveEngineering.proxy.clearConnectionModelCache();
 			return;
 		}
 		int dimension = w.provider.getDimension();
-		if (!directConnections.containsKey(dimension))
+		if(!directConnections.containsKey(dimension))
 			return;
-		if (start==null)
+		if(start==null)
 		{
-			for (BlockPos pos : directConnections.get(dimension).keySet())
+			for(BlockPos pos : directConnections.get(dimension).keySet())
 			{
 				IImmersiveConnectable iic = toIIC(pos, w);
-				if (iic != null)
+				if(iic!=null)
 				{
 					iic.onConnectivityUpdate(pos, dimension);
 				}
@@ -285,19 +304,19 @@ public class ImmersiveNetHandler
 		Set<BlockPos> open = new HashSet<>();
 		open.add(start);
 		Set<BlockPos> closed = new HashSet<>();
-		while (!open.isEmpty())
+		while(!open.isEmpty())
 		{
 			Iterator<BlockPos> it = open.iterator();
 			BlockPos next = it.next();
 			it.remove();
 			closed.add(next);
 			IImmersiveConnectable iic = toIIC(next, w);
-			if (iic!=null)
+			if(iic!=null)
 				iic.onConnectivityUpdate(next, dimension);
 			Set<Connection> connsAtBlock = connsForDim.get(next);
-			if (connsAtBlock!=null)
-				for (Connection c:connsAtBlock)
-					if (!closed.contains(c.end))
+			if(connsAtBlock!=null)
+				for(Connection c : connsAtBlock)
+					if(!closed.contains(c.end))
 						open.add(c.end);
 		}
 	}
@@ -305,12 +324,12 @@ public class ImmersiveNetHandler
 	public void removeConnectionAndDrop(Connection conn, World world, @Nullable BlockPos dropPos)
 	{
 		removeConnection(world, conn);
-		if (dropPos != null)
+		if(dropPos!=null)
 		{
-			double dx = dropPos.getX() + .5;
-			double dy = dropPos.getY() + .5;
-			double dz = dropPos.getZ() + .5;
-			if (world.getGameRules().getBoolean("doTileDrops"))
+			double dx = dropPos.getX()+.5;
+			double dy = dropPos.getY()+.5;
+			double dz = dropPos.getZ()+.5;
+			if(world.getGameRules().getBoolean("doTileDrops"))
 				world.spawnEntity(new EntityItem(world, dx, dy, dz, conn.cableType.getWireCoil(conn)));
 		}
 	}
@@ -321,18 +340,18 @@ public class ImmersiveNetHandler
 	public void clearAllConnectionsFor(BlockPos node, World world, boolean doDrops)
 	{
 		IImmersiveConnectable iic = toIIC(node, world);
-		if (iic != null)
+		if(iic!=null)
 			iic.removeCable(null);
 
 		if(getMultimap(world.provider.getDimension()).containsKey(node))
 		{
-			for (Connection con : getMultimap(world.provider.getDimension()).get(node))
+			for(Connection con : getMultimap(world.provider.getDimension()).get(node))
 			{
 				removeConnection(world, con);
-				double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());
-				double dy = node.getY() + .5 + Math.signum(con.end.getY() - con.start.getY());
-				double dz = node.getZ() + .5 + Math.signum(con.end.getZ() - con.start.getZ());
-				if (doDrops && world.getGameRules().getBoolean("doTileDrops"))
+				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
+				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
+				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
+				if(doDrops&&world.getGameRules().getBoolean("doTileDrops"))
 					world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 			}
 		}
@@ -342,14 +361,15 @@ public class ImmersiveNetHandler
 
 	public void setProxy(DimensionBlockPos pos, IICProxy p)
 	{
-		if (p==null)
+		if(p==null)
 			proxies.remove(pos);
 		else
 			proxies.put(pos, p);
 	}
+
 	public void addProxy(IICProxy p)
 	{
-		if (p==null)
+		if(p==null)
 			return;
 		setProxy(new DimensionBlockPos(p.getPos(), p.getDimension()), p);
 	}
@@ -368,19 +388,19 @@ public class ImmersiveNetHandler
 		boolean ret = false;
 		for(Connection con : getMultimap(world.provider.getDimension()).get(node))
 		{
-			if (con.cableType == type)
+			if(con.cableType==type)
 			{
 				removeConnection(world, con);
-				double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());
-				double dy = node.getY() + .5 + Math.signum(con.end.getY() - con.start.getY());
-				double dz = node.getZ() + .5 + Math.signum(con.end.getZ() - con.start.getZ());
-				if (world.getGameRules().getBoolean("doTileDrops"))
+				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
+				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
+				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
+				if(world.getGameRules().getBoolean("doTileDrops"))
 					world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 				ret = true;
 			}
 		}
 		if(world.isBlockLoaded(node))
-			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
+			world.addBlockEvent(node, world.getBlockState(node).getBlock(), -1, 0);
 
 		IESaveData.setDirty(dim);
 		return ret;
@@ -450,25 +470,26 @@ public class ImmersiveNetHandler
 		return closedList;
 	}
 	 */
-	
+
 	public Set<AbstractConnection> getIndirectEnergyConnections(BlockPos node, World world)
 	{
 		return getIndirectEnergyConnections(node, world, false);
 	}
+
 	public Set<AbstractConnection> getIndirectEnergyConnections(BlockPos node, World world, boolean ignoreIsEnergyOutput)
 	{
 		int dimension = world.provider.getDimension();
 		if(!ignoreIsEnergyOutput&&indirectConnections.containsKey(dimension)&&
 				indirectConnections.get(dimension).containsKey(node))
 			return indirectConnections.get(dimension).get(node);
-		else if(ignoreIsEnergyOutput&& indirectConnectionsIgnoreOut.containsKey(dimension)&&
+		else if(ignoreIsEnergyOutput&&indirectConnectionsIgnoreOut.containsKey(dimension)&&
 				indirectConnectionsIgnoreOut.get(dimension).containsKey(node))
 			return indirectConnectionsIgnoreOut.get(dimension).get(node);
 
 		PriorityQueue<Pair<IImmersiveConnectable, Float>> queue = new PriorityQueue<>(Comparator.comparingDouble(Pair::getRight));
 		Set<AbstractConnection> closedList = newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>());
 		List<BlockPos> checked = new ArrayList<>();
-		HashMap<BlockPos,BlockPos> backtracker = new HashMap<>();
+		HashMap<BlockPos, BlockPos> backtracker = new HashMap<>();
 
 		checked.add(node);
 		Set<Connection> conL = getConnections(world, node);
@@ -486,13 +507,13 @@ public class ImmersiveNetHandler
 		IImmersiveConnectable next;
 		final int closedListMax = 1200;
 
-		while(closedList.size()<closedListMax && !queue.isEmpty())
+		while(closedList.size() < closedListMax&&!queue.isEmpty())
 		{
 			Pair<IImmersiveConnectable, Float> pair = queue.poll();
 			next = pair.getLeft();
 			float loss = pair.getRight();
 			BlockPos nextPos = toBlockPos(next);
-			if(!checked.contains(nextPos)&&queue.stream().noneMatch((p)->p.getLeft().equals(nextPos)))
+			if(!checked.contains(nextPos)&&queue.stream().noneMatch((p) -> p.getLeft().equals(nextPos)))
 			{
 				boolean isOutput = next.isEnergyOutput();
 				if(ignoreIsEnergyOutput||isOutput)
@@ -515,7 +536,7 @@ public class ImmersiveNetHandler
 									{
 										connectionParts.add(0, conB);
 										distance += conB.length;
-										if(minimumType==null || conB.cableType.getTransferRate()<minimumType.getTransferRate())
+										if(minimumType==null||conB.cableType.getTransferRate() < minimumType.getTransferRate())
 											minimumType = conB.cableType;
 										break;
 									}
@@ -532,11 +553,11 @@ public class ImmersiveNetHandler
 							IImmersiveConnectable end = toIIC(con.end, world);
 
 							Optional<Pair<IImmersiveConnectable, Float>> existing =
-									queue.stream().filter((p)->p.getLeft()==end).findAny();
+									queue.stream().filter((p) -> p.getLeft()==end).findAny();
 							float newLoss = con.getBaseLoss()+loss;
-							if(end!=null && !checked.contains(con.end) && existing.map(Pair::getRight).orElse(Float.MAX_VALUE)>newLoss)
+							if(end!=null&&!checked.contains(con.end)&&existing.map(Pair::getRight).orElse(Float.MAX_VALUE) > newLoss)
 							{
-								existing.ifPresent(p1 -> queue.removeIf((p2) -> p1.getLeft() == p2.getLeft()));
+								existing.ifPresent(p1 -> queue.removeIf((p2) -> p1.getLeft()==p2.getLeft()));
 								queue.add(new ImmutablePair<>(end, newLoss));
 								backtracker.put(con.end, toBlockPos(next));
 							}
@@ -544,45 +565,46 @@ public class ImmersiveNetHandler
 				checked.add(toBlockPos(next));
 			}
 		}
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
-			if (ignoreIsEnergyOutput)
+			if(ignoreIsEnergyOutput)
 			{
-				if (!indirectConnectionsIgnoreOut.containsKey(dimension))
+				if(!indirectConnectionsIgnoreOut.containsKey(dimension))
 					indirectConnectionsIgnoreOut.put(dimension, new ConcurrentHashMap<>());
 				Map<BlockPos, Set<AbstractConnection>> conns = indirectConnectionsIgnoreOut.get(dimension);
-				if (!conns.containsKey(node))
+				if(!conns.containsKey(node))
 					conns.put(node, newSetFromMap(new ConcurrentHashMap<>()));
 				conns.get(node).addAll(closedList);
 			}
 			else
 			{
-				if (!indirectConnections.containsKey(dimension))
+				if(!indirectConnections.containsKey(dimension))
 					indirectConnections.put(dimension, new ConcurrentHashMap<>());
 				Map<BlockPos, Set<AbstractConnection>> conns = indirectConnections.get(dimension);
-				if (!conns.containsKey(node))
+				if(!conns.containsKey(node))
 					conns.put(node, newSetFromMap(new ConcurrentHashMap<>()));
 				conns.get(node).addAll(closedList);
 			}
 		}
 		return closedList;
 	}
+
 	//Called through ASM/coremod
 	@SuppressWarnings("unused")
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if (!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof EntityLivingBase&&
+		if(!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof EntityLivingBase&&
 				!e.isEntityInvulnerable(IEDamageSources.wireShock)&&
-				!(e instanceof EntityPlayer&&((EntityPlayer) e).capabilities.disableDamage))
+				!(e instanceof EntityPlayer&&((EntityPlayer)e).capabilities.disableDamage))
 		{
 			Map<BlockPos, BlockWireInfo> mapForDim = INSTANCE.blockWireMap.lookup(e.dimension);
-			if (mapForDim!=null)
+			if(mapForDim!=null)
 			{
 				BlockWireInfo info = mapForDim.get(p);
-				if (info!=null)
+				if(info!=null)
 				{
-					handleMapForDamage(info.in, (EntityLivingBase) e, p);
-					handleMapForDamage(info.near, (EntityLivingBase) e, p);
+					handleMapForDamage(info.in, (EntityLivingBase)e, p);
+					handleMapForDamage(info.near, (EntityLivingBase)e, p);
 				}
 			}
 		}
@@ -591,33 +613,33 @@ public class ImmersiveNetHandler
 	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, EntityLivingBase e, BlockPos here)
 	{
 		final double KNOCKBACK_PER_DAMAGE = 10;
-		if (!in.isEmpty())
+		if(!in.isEmpty())
 		{
 			AxisAlignedBB eAabb = e.getEntityBoundingBox();
-			for (Triple<Connection, Vec3d, Vec3d> conn : in)
-				if (conn.getLeft().cableType.canCauseDamage())
+			for(Triple<Connection, Vec3d, Vec3d> conn : in)
+				if(conn.getLeft().cableType.canCauseDamage())
 				{
 					double extra = conn.getLeft().cableType.getDamageRadius();
 					AxisAlignedBB includingExtra = eAabb.grow(extra).offset(-here.getX(), -here.getY(), -here.getZ());
 					boolean endpointsInEntity = includingExtra.contains(conn.getMiddle())||
 							includingExtra.contains(conn.getRight());
-					RayTraceResult rayRes = endpointsInEntity?null:includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
-					if (endpointsInEntity||(rayRes != null && rayRes.typeOfHit == RayTraceResult.Type.BLOCK))
+					RayTraceResult rayRes = endpointsInEntity?null: includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
+					if(endpointsInEntity||(rayRes!=null&&rayRes.typeOfHit==RayTraceResult.Type.BLOCK))
 					{
 						IImmersiveConnectable iic = toIIC(conn.getLeft().start, e.world);
 						float damage = 0;
-						if (iic != null)
+						if(iic!=null)
 							damage = iic.getDamageAmount(e, conn.getLeft());
-						if (damage == 0)
+						if(damage==0)
 						{
 							iic = toIIC(conn.getLeft().end, e.world);
-							if (iic != null)
+							if(iic!=null)
 								damage = iic.getDamageAmount(e, conn.getLeft());
 						}
-						if (damage != 0)
+						if(damage!=0)
 						{
 							IEDamageSources.ElectricDamageSource dmg = IEDamageSources.causeWireDamage(damage, conn.getLeft().cableType.getElectricSource());
-							if (dmg.apply(e))
+							if(dmg.apply(e))
 							{
 								damage = dmg.dmg;
 								Vec3d v = e.getLookVec();
@@ -656,15 +678,16 @@ public class ImmersiveNetHandler
 
 		public Connection(BlockPos start, BlockPos end, WireType cableType, int length)
 		{
-			this.start=start;
-			this.end=end;
-			this.cableType=cableType;
-			this.length=length;
+			this.start = start;
+			this.end = end;
+			this.cableType = cableType;
+			this.length = length;
 		}
 
-		public boolean hasSameConnectors(Connection con) {
+		public boolean hasSameConnectors(Connection con)
+		{
 			boolean n0 = start.equals(con.start)&&end.equals(con.end);
-			boolean n1  =start.equals(con.end)&&end.equals(con.start);
+			boolean n1 = start.equals(con.end)&&end.equals(con.start);
 			return n0||n1;
 		}
 
@@ -683,7 +706,7 @@ public class ImmersiveNetHandler
 
 		public Vec3d getVecAt(double pos, Vec3d vStart, Vec3d across, double lengthHor)
 		{
-			return vStart.addVector(pos*across.x, catA * Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
+			return vStart.addVector(pos*across.x, catA*Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
 					pos*across.z);
 		}
 
@@ -691,27 +714,28 @@ public class ImmersiveNetHandler
 		{
 			NBTTagCompound tag = new NBTTagCompound();
 			if(start!=null)
-				tag.setIntArray("start", new int[]{start.getX(),start.getY(),start.getZ()});
+				tag.setIntArray("start", new int[]{start.getX(), start.getY(), start.getZ()});
 			if(end!=null)
-				tag.setIntArray("end", new int[]{end.getX(),end.getY(),end.getZ()});
+				tag.setIntArray("end", new int[]{end.getX(), end.getY(), end.getZ()});
 			tag.setString("cableType", cableType.getUniqueName());
 			tag.setInteger("length", length);
 			return tag;
 		}
+
 		public static Connection readFromNBT(NBTTagCompound tag)
 		{
 			if(tag==null)
 				return null;
 			int[] iStart = tag.getIntArray("start");
-			BlockPos start = new BlockPos(iStart[0],iStart[1],iStart[2]);
+			BlockPos start = new BlockPos(iStart[0], iStart[1], iStart[2]);
 
 			int[] iEnd = tag.getIntArray("end");
-			BlockPos end = new BlockPos(iEnd[0],iEnd[1],iEnd[2]);
+			BlockPos end = new BlockPos(iEnd[0], iEnd[1], iEnd[2]);
 
 			WireType type = ApiUtils.getWireTypeFromNBT(tag, "cableType");
 
-			if(start!=null && end!=null && type!=null)
-				return new Connection(start,end, type, tag.getInteger("length"));
+			if(start!=null&&end!=null&&type!=null)
+				return new Connection(start, end, type, tag.getInteger("length"));
 			return null;
 		}
 
@@ -724,26 +748,27 @@ public class ImmersiveNetHandler
 			int cableComp = -1*Integer.compare(cableType.getTransferRate(), o.cableType.getTransferRate());
 			if(cableComp!=0)
 				return cableComp;
-			if (distComp!=0)
+			if(distComp!=0)
 				return distComp;
-			if (start.getX()!=o.start.getX())
-				return start.getX()>o.start.getX()?1:-1;
-				if (start.getY()!=o.start.getY())
-					return start.getY()>o.start.getY()?1:-1;
-					if (start.getZ()!=o.start.getZ())
-						return start.getZ()>o.start.getZ()?1:-1;
-						if (end.getX()!=o.end.getX())
-							return end.getX()>o.end.getX()?1:-1;
-							if (end.getY()!=o.end.getY())
-								return end.getY()>o.end.getY()?1:-1;
-								if (end.getZ()!=o.end.getZ())
-									return end.getZ()>o.end.getZ()?1:-1;
-									return 0;
+			if(start.getX()!=o.start.getX())
+				return start.getX() > o.start.getX()?1: -1;
+			if(start.getY()!=o.start.getY())
+				return start.getY() > o.start.getY()?1: -1;
+			if(start.getZ()!=o.start.getZ())
+				return start.getZ() > o.start.getZ()?1: -1;
+			if(end.getX()!=o.end.getX())
+				return end.getX() > o.end.getX()?1: -1;
+			if(end.getY()!=o.end.getY())
+				return end.getY() > o.end.getY()?1: -1;
+			if(end.getZ()!=o.end.getZ())
+				return end.getZ() > o.end.getZ()?1: -1;
+			return 0;
 		}
+
 		@Override
 		public boolean equals(Object obj)
 		{
-			if (!(obj instanceof Connection))
+			if(!(obj instanceof Connection))
 				return false;
 			return compareTo((Connection)obj)==0;
 		}
@@ -770,6 +795,7 @@ public class ImmersiveNetHandler
 	{
 		public Connection[] subConnections;
 		public boolean isEnergyOutput;
+
 		public AbstractConnection(BlockPos start, BlockPos end, WireType cableType, int length, Connection... subConnections)
 		{
 			this(start, end, cableType, length, true, subConnections);
@@ -777,9 +803,9 @@ public class ImmersiveNetHandler
 
 		public AbstractConnection(BlockPos start, BlockPos end, WireType cableType, int length, boolean output, Connection... subConnections)
 		{
-			super(start,end,cableType,length);
+			super(start, end, cableType, length);
 			this.isEnergyOutput = output;
-			this.subConnections=subConnections;
+			this.subConnections = subConnections;
 		}
 
 		public float getPreciseLossRate(int energyInput, int connectorMaxInput)
@@ -790,7 +816,7 @@ public class ImmersiveNetHandler
 				float mod = (((connectorMaxInput-energyInput)/(float)connectorMaxInput)/.25f)*.1f;
 				f += c.getBaseLoss(mod);
 			}
-			return Math.min(f,1);
+			return Math.min(f, 1);
 		}
 
 		public float getAverageLossRate()
@@ -800,16 +826,16 @@ public class ImmersiveNetHandler
 			{
 				f += c.getBaseLoss();
 			}
-			return Math.min(f,1);
+			return Math.min(f, 1);
 		}
 
 		@Override
 		public boolean equals(Object o)
 		{
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			if (!super.equals(o)) return false;
-			AbstractConnection that = (AbstractConnection) o;
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			if(!super.equals(o)) return false;
+			AbstractConnection that = (AbstractConnection)o;
 			return Arrays.equals(subConnections, that.subConnections);
 		}
 
@@ -817,7 +843,7 @@ public class ImmersiveNetHandler
 		public int hashCode()
 		{
 			int result = super.hashCode();
-			result = 31 * result + Arrays.hashCode(subConnections);
+			result = 31*result+Arrays.hashCode(subConnections);
 			return result;
 		}
 	}
@@ -836,21 +862,21 @@ public class ImmersiveNetHandler
 		public void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState, int flags)
 		{
 			Map<BlockPos, BlockWireInfo> worldMap = blockWireMap.lookup(worldIn.provider.getDimension());
-			if (worldMap != null && !worldIn.isRemote && (flags & 1) != 0 && newState.getBlock().canCollideCheck(newState, false))
+			if(worldMap!=null&&!worldIn.isRemote&&(flags&1)!=0&&newState.getBlock().canCollideCheck(newState, false))
 			{
 				BlockWireInfo info = worldMap.get(pos);
-				if (info != null)
+				if(info!=null)
 				{
 					Set<Triple<Connection, Vec3d, Vec3d>> conns = info.in;
 					Set<Pair<Connection, BlockPos>> toBreak = new HashSet<>();
-					for (Triple<Connection, Vec3d, Vec3d> conn : conns)
-						if (!conn.getLeft().start.equals(pos) && !conn.getLeft().end.equals(pos))
+					for(Triple<Connection, Vec3d, Vec3d> conn : conns)
+						if(!conn.getLeft().start.equals(pos)&&!conn.getLeft().end.equals(pos))
 						{
 							BlockPos dropPos = pos;
-							if (ApiUtils.preventsConnection(worldIn, pos, newState, conn.getMiddle(), conn.getRight()))
+							if(ApiUtils.preventsConnection(worldIn, pos, newState, conn.getMiddle(), conn.getRight()))
 							{
-								for (EnumFacing f : EnumFacing.VALUES)
-									if (worldIn.isAirBlock(pos.offset(f)))
+								for(EnumFacing f : EnumFacing.VALUES)
+									if(worldIn.isAirBlock(pos.offset(f)))
 									{
 										dropPos = dropPos.offset(f);
 										break;
@@ -858,7 +884,7 @@ public class ImmersiveNetHandler
 								toBreak.add(new ImmutablePair<>(conn.getLeft(), dropPos));
 							}
 						}
-					for (Pair<Connection, BlockPos> b : toBreak)
+					for(Pair<Connection, BlockPos> b : toBreak)
 						removeConnectionAndDrop(b.getLeft(), worldIn, b.getRight());
 				}
 			}
@@ -866,46 +892,57 @@ public class ImmersiveNetHandler
 
 		@Override
 		public void notifyLightSet(@Nonnull BlockPos pos)
-		{}
+		{
+		}
 
 		@Override
 		public void markBlockRangeForRenderUpdate(int x1, int y1, int z1, int x2, int y2, int z2)
-		{}
+		{
+		}
 
 		@Override
 		public void playSoundToAllNearExcept(EntityPlayer player, @Nonnull SoundEvent soundIn, @Nonnull SoundCategory category, double x, double y, double z, float volume, float pitch)
-		{}
+		{
+		}
 
 		@Override
 		public void playRecord(@Nonnull SoundEvent soundIn, @Nonnull BlockPos pos)
-		{}
+		{
+		}
 
 		@Override
 		public void spawnParticle(int particleID, boolean ignoreRange, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, @Nonnull int... parameters)
-		{}
+		{
+		}
 
 		@Override
 		public void spawnParticle(int id, boolean ignoreRange, boolean p_190570_3_, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @Nonnull int... parameters)
-		{}
+		{
+		}
 
 		@Override
 		public void onEntityAdded(@Nonnull Entity entityIn)
-		{}
+		{
+		}
 
 		@Override
 		public void onEntityRemoved(@Nonnull Entity entityIn)
-		{}
+		{
+		}
 
 		@Override
 		public void broadcastSound(int soundID, @Nonnull BlockPos pos, int data)
-		{}
+		{
+		}
 
 		@Override
 		public void playEvent(EntityPlayer player, int type, @Nonnull BlockPos blockPosIn, int data)
-		{}
+		{
+		}
 
 		@Override
 		public void sendBlockBreakProgress(int breakerId, @Nonnull BlockPos pos, int progress)
-		{}
+		{
+		}
 	}
 }

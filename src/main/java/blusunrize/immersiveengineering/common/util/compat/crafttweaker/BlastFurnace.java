@@ -30,7 +30,7 @@ public class BlastFurnace
 	public static void addRecipe(IItemStack output, IIngredient input, int time, @Optional IItemStack slag)
 	{
 		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput == null)
+		if(oInput==null)
 			return;
 
 		BlastFurnaceRecipe r = new BlastFurnaceRecipe(CraftTweakerHelper.toStack(output), oInput, time, CraftTweakerHelper.toStack(slag));
@@ -56,7 +56,7 @@ public class BlastFurnace
 		@Override
 		public String describe()
 		{
-			return "Adding Blast Furnace Recipe for " + recipe.output.getDisplayName();
+			return "Adding Blast Furnace Recipe for "+recipe.output.getDisplayName();
 		}
 	}
 
@@ -87,7 +87,7 @@ public class BlastFurnace
 		@Override
 		public String describe()
 		{
-			return "Removing Blast Furnace Recipe for " + output.getDisplayName();
+			return "Removing Blast Furnace Recipe for "+output.getDisplayName();
 		}
 	}
 
@@ -96,7 +96,7 @@ public class BlastFurnace
 	public static void addFuel(IIngredient input, int time)
 	{
 		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput == null)
+		if(oInput==null)
 			return;
 
 		CraftTweakerAPI.apply(new AddFuel(oInput, time));
@@ -124,7 +124,7 @@ public class BlastFurnace
 		@Override
 		public String describe()
 		{
-			return "Adding " + (fuel instanceof ItemStack ? ((ItemStack)fuel).getDisplayName() : (String)fuel) + " as Blast Furnace Fuel";
+			return "Adding "+(fuel instanceof ItemStack?((ItemStack)fuel).getDisplayName(): (String)fuel)+" as Blast Furnace Fuel";
 		}
 	}
 
@@ -164,7 +164,7 @@ public class BlastFurnace
 		@Override
 		public String describe()
 		{
-			return "Removing " + stack + " as Blast Furnace Fuel";
+			return "Removing "+stack+" as Blast Furnace Fuel";
 		}
 	}
 }

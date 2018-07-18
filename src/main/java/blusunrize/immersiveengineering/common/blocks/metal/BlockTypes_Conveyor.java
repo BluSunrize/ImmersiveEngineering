@@ -25,11 +25,13 @@ public enum BlockTypes_Conveyor implements IStringSerializable, BlockIEBase.IBlo
 	{
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
+
 	@Override
 	public int getMeta()
 	{
 		return ordinal();
 	}
+
 	@Override
 	public boolean listForCreative()
 	{

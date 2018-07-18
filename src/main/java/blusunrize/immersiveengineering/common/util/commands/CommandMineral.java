@@ -39,6 +39,7 @@ public class CommandMineral extends CommandTreeBase
 		addSubcommand(new CommandMineralSetDepletion());
 		addSubcommand(new CommandTreeHelp(this));
 	}
+
 	@Nonnull
 	@Override
 	public String getName()
@@ -60,12 +61,12 @@ public class CommandMineral extends CommandTreeBase
 	{
 		ArrayList<String> list = new ArrayList<>();
 		// subcommand argument autocomplete
-		if(args.length>1)
+		if(args.length > 1)
 		{
-			switch (args[0])
+			switch(args[0])
 			{
 				case "set":
-					if(args.length>2)
+					if(args.length > 2)
 						break;
 					for(MineralMix mineralMix : ExcavatorHandler.mineralList.keySet())
 						if(args[1].isEmpty()||mineralMix.name.toLowerCase(Locale.ENGLISH).startsWith(args[1].toLowerCase(Locale.ENGLISH)))
@@ -103,9 +104,9 @@ public class CommandMineral extends CommandTreeBase
 		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
 		{
 			StringBuilder s = new StringBuilder();
-			int i=0;
+			int i = 0;
 			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
-				s.append((i++) > 0 ? ", " : "").append(mm.name);
+				s.append((i++) > 0?", ": "").append(mm.name);
 			sender.sendMessage(new TextComponentString(s.toString()));
 		}
 	}
@@ -130,12 +131,12 @@ public class CommandMineral extends CommandTreeBase
 		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
 		{
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),
-					sender.getPosition().getX()>>4, sender.getPosition().getZ()>>4);
+					sender.getPosition().getX() >> 4, sender.getPosition().getZ() >> 4);
 			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+
 					CommandMineral.this.getName()+".get",
-					TextFormatting.GOLD+(info.mineral!=null?info.mineral.name:"null")+ TextFormatting.RESET,
-					TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name:"null")+ TextFormatting.RESET,
-					TextFormatting.GOLD+(""+info.depletion)+ TextFormatting.RESET));
+					TextFormatting.GOLD+(info.mineral!=null?info.mineral.name: "null")+TextFormatting.RESET,
+					TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name: "null")+TextFormatting.RESET,
+					TextFormatting.GOLD+(""+info.depletion)+TextFormatting.RESET));
 		}
 	}
 
@@ -160,30 +161,31 @@ public class CommandMineral extends CommandTreeBase
 		{
 
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),
-					sender.getPosition().getX()>>4, sender.getPosition().getZ()>>4);
-			if(args.length<1)
+					sender.getPosition().getX() >> 4, sender.getPosition().getZ() >> 4);
+			if(args.length < 1)
 				throw new CommandException("Need exactly one parameter");
 
 			StringBuilder name = new StringBuilder();
-			for (int i = 0; i < args.length; i++)
+			for(int i = 0; i < args.length; i++)
 			{
 				name.append(args[i]);
-				if (i<args.length-1)
+				if(i < args.length-1)
 					name.append(" ");
 			}
 			MineralMix mineral = null;
 			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
 				if(mm.name.equalsIgnoreCase(name.toString()))
-					mineral=mm;
+					mineral = mm;
 			if(mineral==null)
 				throw new CommandException(Lib.CHAT_COMMAND+
 						CommandMineral.this.getName()+".set.invalidMineral", name.toString());
 			info.mineralOverride = mineral;
 			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+
-					CommandMineral.this.getName()+".set.sucess",mineral.name));
+					CommandMineral.this.getName()+".set.sucess", mineral.name));
 			IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 		}
 	}
+
 	private class CommandMineralSetDepletion extends CommandBase
 	{
 		@Nonnull
@@ -205,12 +207,12 @@ public class CommandMineral extends CommandTreeBase
 		{
 
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),
-					sender.getPosition().getX()>>4, sender.getPosition().getZ()>>4);
+					sender.getPosition().getX() >> 4, sender.getPosition().getZ() >> 4);
 			if(args.length!=1)
 				throw new CommandException("Need exactly one parameter");
 			int depl = parseInt(args[0].trim());
 			info.depletion = depl;
-			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+CommandMineral.this.getName()+".setDepletion.sucess",(depl<0? I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
+			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+CommandMineral.this.getName()+".setDepletion.sucess", (depl < 0?I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"): Integer.toString(depl))));
 			IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 		}
 	}

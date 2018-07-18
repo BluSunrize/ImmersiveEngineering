@@ -80,6 +80,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			providedItems = new ArrayList<>(1);
 		providedItems.add(s);
 	}
+
 	@Override
 	public ItemStack[] getProvidedRecipes()
 	{
@@ -103,18 +104,18 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			super(helper);
 			resources = new String[images.length];
 			sizing = new int[images.length][4];
-			for (int i = 0; i < images.length; i++)
+			for(int i = 0; i < images.length; i++)
 			{
 				String[] split = images[i].split(",");
-				if (split.length < 5)
+				if(split.length < 5)
 					continue;
 				resources[i] = split[0];
 				sizing[i][0] = Integer.parseInt(split[1]);
 				sizing[i][1] = Integer.parseInt(split[2]);
 				sizing[i][2] = Integer.parseInt(split[3]);
 				sizing[i][3] = Integer.parseInt(split[4]);
-				if (resources[i] != null && !resources[i].isEmpty())
-					size += sizing[i][3] + 5;
+				if(resources[i]!=null&&!resources[i].isEmpty())
+					size += sizing[i][3]+5;
 			}
 		}
 
@@ -232,7 +233,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 								{
 									int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
 									int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
-									if (j!=0)
+									if(j!=0)
 										yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
 								}
 					tableLines = MathHelper.ceil(yOff/(double)manual.fontRenderer.FONT_HEIGHT);
@@ -258,8 +259,8 @@ public abstract class SpecialManualElements extends SpecialManualElement
 						for(int j = 0; j < localizedTable[i].length; j++)
 							if(localizedTable[i][j]!=null)
 							{
-								int xx = textOff.length > 0&&j > 0? textOff[j-1]: x;
-								int w = Math.max(10, 120-(j > 0? textOff[j-1]-x: 0));
+								int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
+								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
 								int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
 								ManualUtils.drawSplitString(manual.fontRenderer, localizedTable[i][j], xx, y+yOff, w, manual.getTextColour());
 								//							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
@@ -470,15 +471,18 @@ public abstract class SpecialManualElements extends SpecialManualElement
 				{
 					w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
 					h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
-				} else if(rec instanceof ShapedOreRecipe)
+				}
+				else if(rec instanceof ShapedOreRecipe)
 				{
 					w = ((ShapedOreRecipe)rec).getWidth();
 					h = ((ShapedOreRecipe)rec).getHeight();
-				} else if(rec instanceof ShapedRecipes)
+				}
+				else if(rec instanceof ShapedRecipes)
 				{
 					w = ((ShapedRecipes)rec).recipeWidth;
 					h = ((ShapedRecipes)rec).recipeHeight;
-				} else
+				}
+				else
 					return;
 
 				PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
@@ -610,11 +614,13 @@ public abstract class SpecialManualElements extends SpecialManualElement
 					for(ItemStack subStack : (ItemStack[])stack)
 						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-				} else if(stack instanceof ItemStack)
+				}
+				else if(stack instanceof ItemStack)
 				{
 					if(((ItemStack)stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 						return true;
-				} else if(stack instanceof String)
+				}
+				else if(stack instanceof String)
 				{
 					if(ManualUtils.isExistingOreName((String)stack))
 						for(ItemStack subStack : OreDictionary.getOres((String)stack))
@@ -629,7 +635,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		public int getPixelsTaken()
 		{
 			int yOff = 0;
-			for (int i = 0; i < this.yOff.length; i++)
+			for(int i = 0; i < this.yOff.length; i++)
 			{
 				yOff += this.yOff[i]+8;
 			}
@@ -665,7 +671,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 
 			if(providedItems!=null)
 				this.providedItems.clear();
-			for(int iStack = 0; iStack < stacks.length ; iStack++)
+			for(int iStack = 0; iStack < stacks.length; iStack++)
 				if(stacks[iStack] instanceof PositionedItemStack[])
 				{
 					for(PositionedItemStack[] pisA : (PositionedItemStack[][])stacks)
@@ -706,19 +712,22 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			NonNullList<Ingredient> ingredientsPre = recipe.getIngredients();
 			int w;
 			int h;
-			if(recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe)
+			if(recipe instanceof ShapelessRecipes||recipe instanceof ShapelessOreRecipe)
 			{
 				w = ingredientsPre.size() > 6?3: ingredientsPre.size() > 1?2: 1;
 				h = ingredientsPre.size() > 4?3: ingredientsPre.size() > 2?2: 1;
-			} else if(recipe instanceof ShapedOreRecipe)
+			}
+			else if(recipe instanceof ShapedOreRecipe)
 			{
 				w = ((ShapedOreRecipe)recipe).getWidth();
 				h = ((ShapedOreRecipe)recipe).getHeight();
-			} else if(recipe instanceof ShapedRecipes)
+			}
+			else if(recipe instanceof ShapedRecipes)
 			{
 				w = ((ShapedRecipes)recipe).getWidth();
 				h = ((ShapedRecipes)recipe).getHeight();
-			} else
+			}
+			else
 				return;
 
 			PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
@@ -825,7 +834,8 @@ public abstract class SpecialManualElements extends SpecialManualElement
 						for(ItemStack subStack : (ItemStack[])stack.stack)
 							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
-					} else if(stack.stack instanceof List)
+					}
+					else if(stack.stack instanceof List)
 						for(ItemStack subStack : (List<ItemStack>)stack.stack)
 						{
 							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
@@ -835,7 +845,8 @@ public abstract class SpecialManualElements extends SpecialManualElement
 					{
 						if(((ItemStack)stack.stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
-					} else if(stack.stack instanceof String)
+					}
+					else if(stack.stack instanceof String)
 					{
 						if(ManualUtils.isExistingOreName((String)stack.stack))
 							for(ItemStack subStack : OreDictionary.getOres((String)stack.stack))
@@ -881,9 +892,11 @@ public abstract class SpecialManualElements extends SpecialManualElement
 						((ItemStack)stack).getItem().getSubItems(((ItemStack)stack).getItem().getCreativeTab(), list);
 						if(list.size() > 0)
 							displayList.addAll(list);
-					} else
+					}
+					else
 						displayList.add((ItemStack)stack);
-				} else if(stack instanceof Ingredient)
+				}
+				else if(stack instanceof Ingredient)
 				{
 					for(ItemStack subStack : ((Ingredient)stack).getMatchingStacks())
 					{
@@ -893,7 +906,8 @@ public abstract class SpecialManualElements extends SpecialManualElement
 							subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
 							if(list.size() > 0)
 								displayList.addAll(list);
-						} else
+						}
+						else
 							displayList.add(subStack);
 					}
 				}
@@ -907,7 +921,8 @@ public abstract class SpecialManualElements extends SpecialManualElement
 							subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
 							if(list.size() > 0)
 								displayList.addAll(list);
-						} else
+						}
+						else
 							displayList.add(subStack);
 					}
 				}

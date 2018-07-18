@@ -29,14 +29,14 @@ public class ContainerBlastFurnace extends ContainerIEBase<TileEntityBlastFurnac
 			}
 		});
 		this.addSlotToContainer(new IESlot.BlastFuel(this, this.inv, 1, 52, 53));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 2,112, 17));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3,112, 53));
-		slotCount=4;
+		this.addSlotToContainer(new IESlot.Output(this, this.inv, 2, 112, 17));
+		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 112, 53));
+		slotCount = 4;
 
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
-		for (int i = 0; i < 9; i++)
+		for(int i = 0; i < 9; i++)
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 142));
 	}
 //
