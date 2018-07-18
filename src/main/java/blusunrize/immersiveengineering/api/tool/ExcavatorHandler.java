@@ -38,7 +38,7 @@ public class ExcavatorHandler
 	 */
 	public static LinkedHashMap<MineralMix, Integer> mineralList = new LinkedHashMap<MineralMix, Integer>();
 	public static HashMap<DimensionChunkCoords, MineralWorldInfo> mineralCache = new HashMap<DimensionChunkCoords, MineralWorldInfo>();
-	private static HashMap<Integer, Integer> dimensionBasedTotalWeight = new HashMap<Integer, Integer>();
+	private static HashMap<Integer, Set<MineralMix>> dimensionPermittedMinerals = new HashMap<Integer, Set<MineralMix>>();
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
 	public static int[] defaultDimensionBlacklist = new int[0];
@@ -56,7 +56,7 @@ public class ExcavatorHandler
 	{
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 			e.getKey().recalculateChances();
-		dimensionBasedTotalWeight.clear();
+		dimensionPermittedMinerals.clear();
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER&&allowPackets&&!mutePackets)
 		{
 			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
@@ -65,21 +65,6 @@ public class ExcavatorHandler
 					packetMap.put(e.getKey(), e.getValue());
 			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
 		}
-	}
-
-	public static int getDimensionTotalWeight(int dim)
-	{
-		if(dimensionBasedTotalWeight.containsKey(dim))
-			return dimensionBasedTotalWeight.get(dim);
-		int totalWeight = 0;
-		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
-		{
-			e.getKey().recalculateChances();
-			if(e.getKey().isValid()&&e.getKey().validDimension(dim))
-				totalWeight += e.getValue();
-		}
-		dimensionBasedTotalWeight.put(dim, totalWeight);
-		return totalWeight;
 	}
 
 	public static MineralMix getRandomMineral(World world, int chunkX, int chunkZ)
@@ -98,27 +83,28 @@ public class ExcavatorHandler
 
 	public static MineralWorldInfo getMineralWorldInfo(World world, int chunkX, int chunkZ)
 	{
+		return getMineralWorldInfo(world, new DimensionChunkCoords(world.provider.getDimension(), chunkX, chunkZ), false);
+	}
+
+	public static MineralWorldInfo getMineralWorldInfo(World world, DimensionChunkCoords chunkCoords, boolean guaranteed)
+	{
 		if(world.isRemote)
 			return null;
-
-		int dim = world.provider.getDimension();
-		int dimensionTotalWeight = getDimensionTotalWeight(dim);
-		if(dimensionTotalWeight <= 0)
-			return null;
-		DimensionChunkCoords coords = new DimensionChunkCoords(dim, chunkX, chunkZ);
-		MineralWorldInfo worldInfo = mineralCache.get(coords);
+		MineralWorldInfo worldInfo = mineralCache.get(chunkCoords);
 		if(worldInfo==null)
 		{
 			MineralMix mix = null;
-			Random r = world.getChunkFromChunkCoords(chunkX, chunkZ).getRandomWithSeed(940610);
+			Random r = world.getChunkFromChunkCoords(chunkCoords.x, chunkCoords.z).getRandomWithSeed(940610);
 			double dd = r.nextDouble();
-			boolean empty = dd > mineralChance;
-			int query = r.nextInt();
+
+			boolean empty = !guaranteed&&dd > mineralChance;
 			if(!empty)
 			{
-				int weight = Math.abs(query%dimensionTotalWeight);
-				for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
-					if(e.getKey().isValid()&&e.getKey().validDimension(dim))
+				MineralSelection selection = new MineralSelection(world, chunkCoords, 2);
+				if(selection.getTotalWeight() > 0)
+				{
+					int weight = selection.getRandomWeight(r);
+					for(Map.Entry<MineralMix, Integer> e : selection.getMinerals())
 					{
 						weight -= e.getValue();
 						if(weight < 0)
@@ -127,10 +113,11 @@ public class ExcavatorHandler
 							break;
 						}
 					}
+				}
 			}
 			worldInfo = new MineralWorldInfo();
 			worldInfo.mineral = mix;
-			mineralCache.put(coords, worldInfo);
+			mineralCache.put(chunkCoords, worldInfo);
 		}
 		return worldInfo;
 	}
@@ -170,7 +157,7 @@ public class ExcavatorHandler
 		public MineralMix addReplacement(String original, String replacement)
 		{
 			if(replacementOres==null)
-				replacementOres = new HashMap();
+				replacementOres = new HashMap<>();
 			replacementOres.put(original, replacement);
 			return this;
 		}
@@ -344,4 +331,50 @@ public class ExcavatorHandler
 			return info;
 		}
 	}
+
+	public static class MineralSelection
+	{
+		private final int totalWeight;
+		private final Set<Map.Entry<MineralMix, Integer>> validMinerals;
+
+		public MineralSelection(World world, DimensionChunkCoords chunkCoords, int radius)
+		{
+			Set<MineralMix> surrounding = new HashSet<>();
+			for(int xx = -radius; xx <= radius; xx++)
+				for(int zz = -radius; zz <= radius; zz++)
+					if(xx!=0||zz!=0)
+					{
+						DimensionChunkCoords offset = chunkCoords.withOffset(xx, zz);
+						MineralWorldInfo worldInfo = mineralCache.get(offset);
+						if(worldInfo!=null&&worldInfo.mineral!=null)
+							surrounding.add(worldInfo.mineral);
+					}
+
+			int weight = 0;
+			this.validMinerals = new HashSet<>();
+			for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
+				if(e.getKey().isValid()&&e.getKey().validDimension(chunkCoords.dimension)&&!surrounding.contains(e.getKey()))
+				{
+					validMinerals.add(e);
+					weight += e.getValue();
+				}
+			this.totalWeight = weight;
+		}
+
+		public int getTotalWeight()
+		{
+			return this.totalWeight;
+		}
+
+		public int getRandomWeight(Random random)
+		{
+			return Math.abs(random.nextInt()%this.totalWeight);
+		}
+
+		public Set<Map.Entry<MineralMix, Integer>> getMinerals()
+		{
+			return this.validMinerals;
+		}
+	}
+
 }

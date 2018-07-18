@@ -1,0 +1,7 @@
+{
+  "type": "immersiveengineering:ie_item_repair",
+  "tool": {
+    "item": "immersiveengineering:tool",
+    "data": 0
+  }
+}

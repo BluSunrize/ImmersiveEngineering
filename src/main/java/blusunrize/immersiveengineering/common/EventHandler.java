@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
@@ -20,6 +19,9 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
@@ -30,12 +32,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInt
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import net.minecraft.block.material.Material;
@@ -71,6 +71,7 @@ import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
+import net.minecraftforge.event.entity.minecart.MinecartUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -86,6 +87,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -93,7 +95,7 @@ import java.util.Map.Entry;
 
 public class EventHandler
 {
-	public static final ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<>();
+	public static final ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<Integer, BlockPos>> requestedBlockUpdates = new LinkedList<>();
@@ -158,17 +160,38 @@ public class EventHandler
 	{
 		if(!event.getPlayer().world.isRemote&&!event.getItem().isEmpty()&&event.getItem().getItem() instanceof IShaderItem)
 			if(event.getMinecart().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-//				if(event.getMinecart().hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
 			{
-				ShaderWrapper handler = event.getMinecart().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-				if(handler!=null)
+				ShaderWrapper wrapper = event.getMinecart().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+				if(wrapper!=null)
 				{
-					handler.setShaderItem(Utils.copyStackWithAmount(event.getItem(), 1));
-					ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.getMinecart(), handler), (EntityPlayerMP)event.getPlayer());
+					wrapper.setShaderItem(Utils.copyStackWithAmount(event.getItem(), 1));
+					ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.getMinecart(), wrapper), (EntityPlayerMP)event.getPlayer());
 					event.setCanceled(true);
 				}
 			}
 	}
+
+	@SubscribeEvent
+	public void onMinecartUpdate(MinecartUpdateEvent event)
+	{
+		if(event.getMinecart().ticksExisted%3==0 && event.getMinecart().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		{
+			ShaderWrapper wrapper = event.getMinecart().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+			if(wrapper!=null)
+			{
+				Vec3d prevPosVec = new Vec3d(event.getMinecart().prevPosX, event.getMinecart().prevPosY, event.getMinecart().prevPosZ);
+				Vec3d movVec = prevPosVec.subtract(event.getMinecart().posX, event.getMinecart().posY, event.getMinecart().posZ);
+				if(movVec.lengthSquared() > 0.0001)
+				{
+					movVec = movVec.normalize();
+					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(wrapper);
+					if(shader!=null)
+						shader.getMiddle().getEffectFunction().execute(event.getMinecart().world, shader.getLeft(), null, shader.getRight().getShaderType(), prevPosVec.addVector(0,.25,0).add(movVec), movVec.scale(1.5f), .25f);
+				}
+			}
+		}
+	}
+
 
 	public static List<ResourceLocation> lootInjections = Arrays.asList(new ResourceLocation(ImmersiveEngineering.MODID, "chests/stronghold_library"), new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith"));
 	static Field f_lootEntries;
@@ -274,15 +297,6 @@ public class EventHandler
 			if(invalidProxies > 0)
 				IELogger.info("Removed "+invalidProxies+" invalid connector proxies (used to transfer power through unloaded chunks)");
 			validateConnsNextTick = false;
-		}
-		if(event.phase==TickEvent.Phase.END&&ArcRecyclingThreadHandler.recipesToAdd!=null)
-		{
-			for(ArcFurnaceRecipe recipe : ArcRecyclingThreadHandler.recipesToAdd)
-			{
-				ArcFurnaceRecipe.recipeList.add(recipe);
-				IECompatModule.jeiAddFunc.accept(recipe);
-			}
-			ArcRecyclingThreadHandler.recipesToAdd = null;
 		}
 		if(event.phase==TickEvent.Phase.END&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
@@ -432,6 +446,8 @@ public class EventHandler
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
+		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof EntityPlayer&&((EntityPlayer)event.getSource().getTrueSource()).getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemDrill)
+			Utils.unlockIEAdvancement((EntityPlayer)event.getSource().getTrueSource(), "main/secret_drillbreak");
 	}
 
 	@SubscribeEvent

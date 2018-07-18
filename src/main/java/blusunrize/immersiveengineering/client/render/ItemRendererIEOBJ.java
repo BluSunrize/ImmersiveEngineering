@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -28,9 +29,8 @@ import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -54,6 +54,8 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 					IESmartObjModel.tempEntityStatic);
 			if(model instanceof IESmartObjModel)
 			{
+				GlStateManager.disableCull();
+
 				ItemStack shader = ItemStack.EMPTY;
 				ShaderCase sCase = null;
 				if(!stack.isEmpty()&&stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
@@ -71,7 +73,7 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 				Tessellator tes = Tessellator.getInstance();
 				BufferBuilder bb = tes.getBuffer();
 				ItemCameraTransforms.TransformType transformType = obj.lastCameraTransform;
-				List<BakedQuad> quads = new ArrayList<>();// to reduce new alloc's
+				Map<BakedQuad, ShaderLayer> quads = new LinkedHashMap<>();//new HashMap();// to reduce new alloc's
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					GlStateManager.pushMatrix();
@@ -92,7 +94,7 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 						ClientUtils.setLightmapDisabled(true);
 					}
 					renderQuadsForGroups(groups, callback, obj, quads, stack,
-							sCase, shader, bb, tes, visible);
+							sCase, shader, bb, tes, visible, partialTicks);
 					if(bright)
 					{
 						if(wasLightingEnabled)
@@ -103,14 +105,15 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 					GlStateManager.popMatrix();
 				}
 				renderQuadsForGroups(visible.keySet().toArray(new String[0]), callback, obj, quads, stack,
-						sCase, shader, bb, tes, visible);
+						sCase, shader, bb, tes, visible, partialTicks);
+				GlStateManager.enableCull();
 			}
 		}
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
-									  List<BakedQuad> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
-									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible)
+									  Map<BakedQuad, ShaderLayer> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
+									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible, float partialTicks)
 	{
 		quadsForGroup.clear();
 		for(String g : groups)
@@ -124,8 +127,36 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 		else
 			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
-		for(BakedQuad bq : quadsForGroup)
+		ShaderLayer lastShaderLayer = null;
+		for(BakedQuad bq : quadsForGroup.keySet())
+		{
+			//Switch to or between dynamic layers
+			boolean switchDynamic = quadsForGroup.get(bq)!=lastShaderLayer;
+			if(switchDynamic)
+			{
+				//interrupt batch
+				tes.draw();
+
+				if(lastShaderLayer!=null)//finish dynamic call on last layer
+					lastShaderLayer.modifyRender(false, partialTicks);
+
+				//set new layer
+				lastShaderLayer = quadsForGroup.get(bq);
+
+				if(lastShaderLayer!=null)//start dynamic call on layer
+					lastShaderLayer.modifyRender(true, partialTicks);
+				//start new batch
+				if(!callback.areGroupsFullbright(stack, groups))
+					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+				else
+					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+
+			}
 			bq.pipe(vbc);
+		}
 		tes.draw();
+		if(lastShaderLayer!=null)//finish dynamic call on final layer
+			lastShaderLayer.modifyRender(false, partialTicks);
+
 	}
 }

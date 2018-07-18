@@ -49,7 +49,7 @@ public class GeneralComputerHelper
 					new ManualPages.Text(ManualHelper.getManual(), "computer.refinery1"));
 			ManualHelper.getManual().addEntry("computer.assembler", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.assembler0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.assembler1"));
-			ManualHelper.getManual().addEntry("computer.mixer","computers", new ManualPages.Text(ManualHelper.getManual(), "computer.mixer0"), new ManualPages.Text(ManualHelper.getManual(), "computer.mixer1"));
+			ManualHelper.getManual().addEntry("computer.mixer", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.mixer0"), new ManualPages.Text(ManualHelper.getManual(), "computer.mixer1"));
 //			ManualHelper.getManual().addEntry("computer.bottlingMachine", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine0"),
 //					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine1"),
 //					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine2"));

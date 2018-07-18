@@ -33,6 +33,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Biomes;
@@ -50,11 +51,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.*;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -89,6 +87,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.lang.Math.min;
 
@@ -352,6 +351,25 @@ public class Utils
 		return "";
 	}
 
+	private static final HashMap<String, String> MODNAME_LOOKUP = new HashMap<>();
+
+	public static String getModName(String modid)
+	{
+		if(MODNAME_LOOKUP.containsKey(modid))
+			return MODNAME_LOOKUP.get(modid);
+		else
+		{
+			ModContainer modContainer = Loader.instance().getIndexedModList().get(modid);
+			if(modContainer!=null)
+			{
+				MODNAME_LOOKUP.put(modid, modContainer.getName());
+				return modContainer.getName();
+			}
+			return "";
+		}
+	}
+
+
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
 	{
 		return tile0.getPos().equals(tile1.getPos());
@@ -408,6 +426,23 @@ public class Utils
 				return false;
 		}
 		return true;
+	}
+
+	public static Vec3d getLivingFrontPos(EntityLivingBase entity, double offset, double height, EnumHandSide hand, boolean useSteppedYaw, float partialTicks)
+	{
+		double offsetX = hand==EnumHandSide.LEFT?-.3125: hand==EnumHandSide.RIGHT?.3125: 0;
+
+		float yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks;
+		if(useSteppedYaw)
+			yaw = entity.prevRenderYawOffset+(entity.renderYawOffset-entity.prevRenderYawOffset)*partialTicks;
+		float pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
+
+		float yawCos = MathHelper.cos(-yaw*0.017453292F-(float)Math.PI);
+		float yawSin = MathHelper.sin(-yaw*0.017453292F-(float)Math.PI);
+		float pitchCos = -MathHelper.cos(-pitch*0.017453292F);
+		float pitchSin = MathHelper.sin(-pitch*0.017453292F);
+
+		return new Vec3d(entity.posX+offsetX*yawCos+offset*pitchCos*yawSin, entity.posY+offset*pitchSin+height, entity.posZ+offset*pitchCos*yawCos-offsetX*yawSin);
 	}
 
 	public static List<EntityLivingBase> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)
@@ -506,11 +541,36 @@ public class Utils
 		return new Vec3d((double)(f1*f2), (double)f3, (double)(f*f2));
 	}
 
+	public static void attractEnemies(EntityLivingBase target, float radius)
+	{
+		attractEnemies(target, radius, null);
+	}
+
+	public static void attractEnemies(EntityLivingBase target, float radius, Predicate<EntityMob> predicate)
+	{
+		AxisAlignedBB aabb = new AxisAlignedBB(target.posX-radius, target.posY-radius, target.posZ-radius, target.posX+radius, target.posY+radius, target.posZ+radius);
+
+		List<EntityMob> list = target.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, aabb);
+		for(EntityMob mob : list)
+			if(predicate==null||predicate.test(mob))
+			{
+				mob.setAttackTarget(target);
+				mob.faceEntity(target, 180, 0);
+			}
+	}
+
 	public static boolean isHammer(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return false;
 		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER);
+	}
+
+	public static boolean isWirecutter(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_WIRECUTTER);
 	}
 
 	public static boolean canBlockDamageSource(EntityLivingBase entity, DamageSource damageSourceIn)
@@ -1159,22 +1219,39 @@ public class Utils
 
 	/* Reasoning for the formula for pos (below): pos should be the point on the catenary (horizontally) closest to the player position
 	A conn start, B conn across, C player pos
-	A+tB
-	C
+	P:=A+tB are the points on the line, t in [0, 1]
 	C-A=:D
-	D**2=(Cx-Ax-tBx)**2+(Cy-Ay-tBy)**2+(Cz-Az-tBz)**2
+	E:=|C-P| (Distance from the player to a point on the line)
+	E**2=(Cx-Ax-tBx)**2+(Cy-Ay-tBy)**2+(Cz-Az-tBz)**2
 	=(Dx-tBx)**2+(Dy-tBy)**2+(Dz-tBz)**2
 	=Dx**2-2tDxBx+t**2Bx**2+Dy**2-2tDyBy+t**2By**2+Dz**2-2tDzBz+t**2Bz**2
 	=t**2(Bx**2+By**2+Bz**2)-(2DxBx+2DyBy+2DzBz)t+Dz**2+Dy**2+Dx**2
 
-	D**2'=(2Bx**2+2*By**2+2Bz**2)*t-2DxBx-2DyBy-2DzBz=0
+	E**2'=(2Bx**2+2*By**2+2Bz**2)*t-2DxBx-2DyBy-2DzBz=0
 	t=(DxBx+DyBy+DzBz)/(Bx**2+By**2+Bz**2)
-	 =D*B/|B|
+	 =D*B/|B|**2
 	 */
 	public static double getCoeffForMinDistance(Vec3d point, Vec3d line, Vec3d across)
 	{
-		Vec3d delta = point.subtract(line);
-		return delta.dotProduct(across)/across.lengthSquared();
+		if(across.x==0&&across.z==0)
+		{
+			return (point.y-line.y)/across.y;
+		}
+		else
+		{
+			Vec3d delta = point.subtract(line);
+			return delta.dotProduct(across)/across.lengthSquared();
+		}
+	}
+
+	public static boolean isVecInBlock(Vec3d vec3d, BlockPos pos, BlockPos offset)
+	{
+		return vec3d.x >= pos.getX()-offset.getX()&&
+				vec3d.x <= pos.getX()-offset.getX()+1&&
+				vec3d.y >= pos.getY()-offset.getY()&&
+				vec3d.y <= pos.getY()-offset.getY()+1&&
+				vec3d.z >= pos.getZ()-offset.getZ()&&
+				vec3d.z <= pos.getZ()-offset.getZ()+1;
 	}
 
 	public static class InventoryCraftingFalse extends InventoryCrafting
@@ -1617,7 +1694,7 @@ public class Utils
 
 	public static NonNullList<ItemStack> getDrops(IBlockState state)
 	{
-		DropBlockAcess w = new DropBlockAcess(state);
+		IBlockAccess w = getSingleBlockWorldAccess(state);
 		NonNullList<ItemStack> ret = NonNullList.create();
 		state.getBlock().getDrops(ret, w, BlockPos.ORIGIN, state, 0);
 		return ret;
@@ -1636,11 +1713,16 @@ public class Utils
 		return state;
 	}
 
-	private static class DropBlockAcess implements IBlockAccess
+	public static IBlockAccess getSingleBlockWorldAccess(IBlockState state)
+	{
+		return new SingleBlockAcess(state);
+	}
+
+	private static class SingleBlockAcess implements IBlockAccess
 	{
 		IBlockState state;
 
-		public DropBlockAcess(IBlockState state)
+		public SingleBlockAcess(IBlockState state)
 		{
 			this.state = state;
 		}

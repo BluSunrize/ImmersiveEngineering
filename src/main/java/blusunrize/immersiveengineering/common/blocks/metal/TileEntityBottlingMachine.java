@@ -40,13 +40,13 @@ import java.util.List;
 
 public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEntityBottlingMachine, IMultiblockRecipe> implements IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8000)};
+	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
+
 	public TileEntityBottlingMachine()
 	{
 		super(MultiblockBottlingMachine.instance, new int[]{3, 2, 3}, 16000, true);
 	}
-
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8000)};
-	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

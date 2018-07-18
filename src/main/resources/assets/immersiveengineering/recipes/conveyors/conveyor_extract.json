@@ -1,0 +1,29 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": {
+      "conveyorType": "immersiveengineering:extract"
+    }
+  },
+  "pattern": [
+    "WS",
+    "MC"
+  ],
+  "key": {
+    "W": {
+      "item": "#plankTreatedWood"
+    },
+    "S": {
+      "item": "immersiveengineering:cloth_device",
+      "data": 2
+    },
+    "M": {
+      "item": "#componentIron"
+    },
+    "C": {
+      "item": "#baseConveyor"
+    }
+  }
+}

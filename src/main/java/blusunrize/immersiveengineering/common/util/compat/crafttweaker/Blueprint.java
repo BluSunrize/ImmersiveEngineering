@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -52,7 +51,6 @@ public class Blueprint
 				BlueprintCraftingRecipe.blueprintCategories.add(recipe.blueprintCategory);
 			BlueprintCraftingRecipe.recipeList.put(recipe.blueprintCategory, recipe);
 //			CraftTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
-			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -94,7 +92,6 @@ public class Blueprint
 					{
 						removedRecipes.add(ir);
 //						CraftTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ir);
-						IECompatModule.jeiRemoveFunc.accept(ir);
 						it.remove();
 					}
 				}

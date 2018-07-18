@@ -111,9 +111,4 @@ public class ShaderCaseRailgun extends ShaderCase
 //		if(this.additionalTexture!=null)
 //			i_railgunAdditional = ApiUtils.getRegisterSprite(map, this.baseTexturePath+additionalTexture);
 //	}
-
-	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
-	{
-	}
 }

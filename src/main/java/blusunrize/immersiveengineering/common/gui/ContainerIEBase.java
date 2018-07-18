@@ -85,123 +85,153 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
-		ItemStack stack = ItemStack.EMPTY;
-		Slot slotObject = inventorySlots.get(slot);
-
+		ItemStack itemstack = ItemStack.EMPTY;
+		Slot slotObject = this.inventorySlots.get(slot);
 		if(slotObject!=null&&slotObject.getHasStack())
 		{
-			ItemStack stackInSlot = slotObject.getStack();
-			stack = stackInSlot.copy();
-
+			ItemStack itemstack1 = slotObject.getStack();
+			itemstack = itemstack1.copy();
 			if(slot < slotCount)
 			{
-				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount+36), true))
+				if(!this.mergeItemStack(itemstack1, slotCount, this.inventorySlots.size(), true))
+				{
 					return ItemStack.EMPTY;
+				}
+			}
+			else if(!this.mergeItemStack(itemstack1, 0, slotCount, false))
+			{
+				return ItemStack.EMPTY;
+			}
+
+			if(itemstack1.isEmpty())
+			{
+				slotObject.putStack(ItemStack.EMPTY);
 			}
 			else
 			{
-				boolean b = false;
-				for(int i = 0; i < slotCount; i++)
-					if(this.getSlot(i).isItemValid(stackInSlot))
-						if(this.mergeItemStack(stackInSlot, i, i+1, false))
-						{
-							b = true;
-							break;
-						}
-				if(!b)
-					return ItemStack.EMPTY;
-			}
-
-			if(stackInSlot.getCount()==0)
-				slotObject.putStack(ItemStack.EMPTY);
-			else
 				slotObject.onSlotChanged();
-
-			if(stackInSlot.getCount()==stack.getCount())
-				return ItemStack.EMPTY;
-			slotObject.onTake(player, stackInSlot);
+			}
 		}
-		return stack;
+
+		return itemstack;
+//		ItemStack stack = ItemStack.EMPTY;
+//		Slot slotObject = inventorySlots.get(slot);
+//
+//		if(slotObject!=null&&slotObject.getHasStack())
+//		{
+//			ItemStack stackInSlot = slotObject.getStack();
+//			stack = stackInSlot.copy();
+//
+//			if(slot < slotCount)
+//			{
+//				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount+36), true))
+//					return ItemStack.EMPTY;
+//			}
+//			else
+//			{
+//				boolean b = false;
+//				for(int i = 0; i < slotCount; i++)
+//					if(this.getSlot(i).isItemValid(stackInSlot))
+//						if(this.mergeItemStack(stackInSlot, i, i+1, false))
+//						{
+//							b = true;
+//							break;
+//						}
+//				if(!b)
+//					return ItemStack.EMPTY;
+//			}
+//
+//			if(stackInSlot.getCount()==0)
+//				slotObject.putStack(ItemStack.EMPTY);
+//			else
+//				slotObject.onSlotChanged();
+//
+//			if(stackInSlot.getCount()==stack.getCount())
+//				return ItemStack.EMPTY;
+//			slotObject.onTake(player, stackInSlot);
+//		}
+//		return stack;
 	}
 
 	@Override
 	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection)
 	{
-		boolean flag = false;
-		int i = startIndex;
-
-		if(reverseDirection)
-			i = endIndex-1;
-
-		if(stack.isStackable())
-		{
-			while(!stack.isEmpty()&&(!reverseDirection&&i < endIndex||reverseDirection&&i >= startIndex))
-			{
-				Slot slot = this.inventorySlots.get(i);
-				ItemStack stackInSlot = slot.getStack();
-
-				if(!stackInSlot.isEmpty()&&areItemStacksEqual(stack, stackInSlot))
-				{
-					int j = stackInSlot.getCount()+stack.getCount();
-					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
-					if(j <= maxSize)
-					{
-						stack.setCount(0);
-						stackInSlot.setCount(j);
-						slot.onSlotChanged();
-						flag = true;
-					}
-					else if(stackInSlot.getCount() < maxSize)
-					{
-						stack.shrink(maxSize-stackInSlot.getCount());
-						stackInSlot.setCount(maxSize);
-						slot.onSlotChanged();
-					}
-				}
-
-				if(reverseDirection)
-					--i;
-				else
-					++i;
-			}
-		}
-
-		if(!stack.isEmpty())
-		{
-			if(reverseDirection)
-				i = endIndex-1;
-			else
-				i = startIndex;
-
-			while(!reverseDirection&&i < endIndex||reverseDirection&&i >= startIndex)
-			{
-				Slot slot = this.inventorySlots.get(i);
-				ItemStack stackInSlot = slot.getStack();
-				if(stackInSlot.isEmpty()&&slot.isItemValid(stack))
-				{
-					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
-					if(stack.getCount() <= maxSize)
-					{
-						slot.putStack(stack.copy());
-						slot.onSlotChanged();
-						stack.setCount(0);
-						flag = true;
-						break;
-					}
-					else
-					{
-						slot.putStack(Utils.copyStackWithAmount(stack, maxSize));
-						slot.onSlotChanged();
-						stack.shrink(maxSize);
-					}
-				}
-				if(reverseDirection)
-					--i;
-				else
-					++i;
-			}
-		}
-		return flag;
+		return super.mergeItemStack(stack, startIndex, endIndex, reverseDirection);
+//		boolean flag = false;
+//		int i = startIndex;
+//
+//		if(reverseDirection)
+//			i = endIndex-1;
+//
+//		if(stack.isStackable())
+//		{
+//			while(!stack.isEmpty()&&(!reverseDirection&&i < endIndex||reverseDirection&&i >= startIndex))
+//			{
+//				Slot slot = this.inventorySlots.get(i);
+//				ItemStack stackInSlot = slot.getStack();
+//
+//				if(!stackInSlot.isEmpty()&&areItemStacksEqual(stack, stackInSlot))
+//				{
+//					int j = stackInSlot.getCount()+stack.getCount();
+//					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
+//					if(j <= maxSize)
+//					{
+//						stack.setCount(0);
+//						stackInSlot.setCount(j);
+//						slot.onSlotChanged();
+//						flag = true;
+//					}
+//					else if(stackInSlot.getCount() < maxSize)
+//					{
+//						stack.shrink(maxSize-stackInSlot.getCount());
+//						stackInSlot.setCount(maxSize);
+//						slot.onSlotChanged();
+//					}
+//				}
+//
+//				if(reverseDirection)
+//					--i;
+//				else
+//					++i;
+//			}
+//		}
+//
+//		if(!stack.isEmpty())
+//		{
+//			if(reverseDirection)
+//				i = endIndex-1;
+//			else
+//				i = startIndex;
+//
+//			while(!reverseDirection&&i < endIndex||reverseDirection&&i >= startIndex)
+//			{
+//				Slot slot = this.inventorySlots.get(i);
+//				ItemStack stackInSlot = slot.getStack();
+//				if(stackInSlot.isEmpty()&&slot.isItemValid(stack))
+//				{
+//					int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
+//					if(stack.getCount() <= maxSize)
+//					{
+//						slot.putStack(stack.copy());
+//						slot.onSlotChanged();
+//						stack.setCount(0);
+//						flag = true;
+//						break;
+//					}
+//					else
+//					{
+//						slot.putStack(Utils.copyStackWithAmount(stack, maxSize));
+//						slot.onSlotChanged();
+//						stack.shrink(maxSize);
+//					}
+//				}
+//				if(reverseDirection)
+//					--i;
+//				else
+//					++i;
+//			}
+//		}
+//		return flag;
 	}
 
 	private static boolean areItemStacksEqual(ItemStack stackA, ItemStack stackB)

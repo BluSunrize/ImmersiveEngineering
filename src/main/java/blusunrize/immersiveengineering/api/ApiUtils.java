@@ -18,7 +18,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralM
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.network.MessageObstructedConnection;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.common.util.concurrent.ListenableFutureTask;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -42,6 +44,7 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -198,31 +201,31 @@ public class ApiUtils
 
 	public static String getMetalComponentType(ItemStack stack, String... componentTypes)
 	{
-		ItemStack comp = copyStackWithAmount(stack, 1);
-		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
-			for(int iType = 0; iType < componentTypes.length; iType++)
-				if(oreName.startsWith(componentTypes[iType]))
-				{
-					List<ItemStack> s = OreDictionary.getOres(oreName);
-					for(ItemStack st : s)
-						if(ItemStack.areItemStacksEqual(comp, st))
-							return componentTypes[iType];
-				}
+		int[] ids = OreDictionary.getOreIDs(stack);
+		String[] oreNames = OreDictionary.getOreNames();
+		for(int id : ids)
+		{
+			String oreName = oreNames[id];
+			for(String componentType : componentTypes)
+				if(oreName.startsWith(componentType))
+					return componentType;
+		}
 		return null;
 	}
 
 	public static String[] getMetalComponentTypeAndMetal(ItemStack stack, String... componentTypes)
 	{
-		ItemStack comp = copyStackWithAmount(stack, 1);
-		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
-			for(int iType = 0; iType < componentTypes.length; iType++)
-				if(oreName.startsWith(componentTypes[iType]))
-				{
-					List<ItemStack> s = OreDictionary.getOres(oreName);
-					for(ItemStack st : s)
-						if(ItemStack.areItemStacksEqual(comp, st))
-							return new String[]{componentTypes[iType], oreName.substring(componentTypes[iType].length())};
-				}
+		int[] ids = OreDictionary.getOreIDs(stack);
+		String[] oreNames = OreDictionary.getOreNames();
+		for(int id : ids)
+		{
+			String oreName = oreNames[id];
+			for(String componentType : componentTypes)
+			{
+				if(oreName.startsWith(componentType))
+					return new String[]{componentType, oreName.substring(componentType.length())};
+			}
+		}
 		return null;
 	}
 
@@ -356,18 +359,18 @@ public class ApiUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(World world, BlockPos p, Connection conn)
+	public static Vec3d getVecForIICAt(World world, BlockPos pos, Connection conn)
 	{
-		Vec3d pos = Vec3d.ZERO;
+		Vec3d offset = Vec3d.ZERO;
 		//Force loading
-		IImmersiveConnectable iicStart = toIIC(p, world, false);
-		if(iicStart!=null)
-			pos = iicStart.getConnectionOffset(conn);
-		if(p.equals(conn.end))
-			pos = pos.addVector(conn.end.getX()-conn.start.getX(),
+		IImmersiveConnectable iicPos = toIIC(pos, world, false);
+		if(iicPos!=null)
+			offset = iicPos.getConnectionOffset(conn);
+		if(pos.equals(conn.end))
+			offset = offset.addVector(conn.end.getX()-conn.start.getX(),
 					conn.end.getY()-conn.start.getY(),
 					conn.end.getZ()-conn.start.getZ());
-		return pos;
+		return offset;
 	}
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
@@ -386,7 +389,13 @@ public class ApiUtils
 		boolean vertical = end.x==start.x&&end.z==start.z;
 
 		if(vertical)
-			return new Vec3d[]{new Vec3d(start.x, start.y, start.z), new Vec3d(end.x, end.y, end.z)};
+		{
+			Vec3d[] ret = new Vec3d[vertices+1];
+			double height = end.y-start.y;
+			for(int i = 0; i < vertices+1; i++)
+				ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
+			return ret;
+		}
 
 		return getConnectionCatenary(start, end, connection.cableType.getSlack(), connection);
 	}
@@ -736,7 +745,9 @@ public class ApiUtils
 								else
 								{
 									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
-									ImmersiveEngineering.proxy.addFailedConnection(tmpConn, failedReason, player);
+									ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tmpConn, failedReason, player.world),
+											new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
+													64));
 								}
 							}
 						}
@@ -791,6 +802,8 @@ public class ApiUtils
 				return new IngredientStack(new ItemStack((Block)input, 1, OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Block)input));
 		}
+		else if(input instanceof Ingredient)
+			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
 		else if(input instanceof List&&!((List)input).isEmpty())
 		{
 			if(((List)input).get(0) instanceof ItemStack)
@@ -1009,6 +1022,16 @@ public class ApiUtils
 				retConn = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), retConn);
 		}
 		return retConn;
+	}
+
+	public static void addFutureServerTask(World world, Runnable task)
+	{
+		if(world.getMinecraftServer()!=null)
+			synchronized(world.getMinecraftServer().futureTaskQueue)
+			{
+				world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
+						task, null));
+			}
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>

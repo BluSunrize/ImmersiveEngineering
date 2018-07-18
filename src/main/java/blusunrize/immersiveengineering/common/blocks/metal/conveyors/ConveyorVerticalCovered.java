@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -32,7 +31,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.util.vector.Vector3f;
 
 import javax.annotation.Nullable;
@@ -52,7 +50,6 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	@Override
 	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
 	{
-//		String key = super.getModelCacheKey(tile, facing);
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
 		key += "f"+facing.ordinal();
 		key += "a"+(isActive(tile)?1: 0);
@@ -80,37 +77,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	@Override
 	public boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
 	{
-		if(heldItem.isEmpty()&&player.isSneaking()&&!cover.isEmpty())
-		{
-			if(!tile.getWorld().isRemote&&tile.getWorld().getGameRules().getBoolean("doTileDrops"))
-			{
-				EntityItem entityitem = player.dropItem(cover.copy(), false);
-				if(entityitem!=null)
-					entityitem.setNoPickupDelay();
-			}
-			cover = ItemStack.EMPTY;
-			return true;
-		}
-		else if(!heldItem.isEmpty()&&!player.isSneaking())
-			for(com.google.common.base.Function<ItemStack, Boolean> func : ConveyorCovered.validCoveyorCovers)
-				if(func.apply(heldItem)==Boolean.TRUE)
-				{
-					if(!OreDictionary.itemMatches(cover, heldItem, true))
-					{
-						if(!tile.getWorld().isRemote&&!cover.isEmpty()&&tile.getWorld().getGameRules().getBoolean("doTileDrops"))
-						{
-							EntityItem entityitem = player.dropItem(cover.copy(), false);
-							if(entityitem!=null)
-								entityitem.setNoPickupDelay();
-						}
-						cover = Utils.copyStackWithAmount(heldItem, 1);
-						heldItem.shrink(1);
-						if(heldItem.getCount() <= 0)
-							player.setHeldItem(hand, heldItem);
-						return true;
-					}
-				}
-		return false;
+		return ConveyorCovered.handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
 	}
 
 	static final List<AxisAlignedBB> selectionBoxes = Collections.singletonList(Block.FULL_BLOCK_AABB);

@@ -74,4 +74,12 @@ public class IEItemInterfaces
 
 		int getBulletCount(ItemStack container);
 	}
+
+	public interface IItemDamageableIE
+	{
+
+		int getMaxDamageIE(ItemStack stack);
+
+		int getItemDamageIE(ItemStack stack);
+	}
 }

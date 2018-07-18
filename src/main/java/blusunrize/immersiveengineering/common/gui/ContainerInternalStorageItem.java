@@ -21,6 +21,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public abstract class ContainerInternalStorageItem extends Container
 {
 	protected World world;
@@ -46,6 +48,7 @@ public abstract class ContainerInternalStorageItem extends Container
 
 	abstract int addSlots(InventoryPlayer iinventory);
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot)
 	{
@@ -112,11 +115,12 @@ public abstract class ContainerInternalStorageItem extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
-		return true;
+		return player.getItemStackFromSlot(equipmentSlot)==heldItem;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int par1, int par2, ClickType par3, EntityPlayer par4EntityPlayer)
 	{

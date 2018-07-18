@@ -49,10 +49,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Timer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
@@ -998,7 +995,7 @@ public class ClientUtils
 	//		Tessellator tes = tes();
 	//		GL11.glPushMatrix();
 	//		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-	//		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+	//		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 	//		tes.startDrawingQuads();
 	//		tes.setNormal(0.0F, -1.0F, 0.0F);
 	//		renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 0, metadata));
@@ -1023,7 +1020,7 @@ public class ClientUtils
 	//		tes.setNormal(1.0F, 0.0F, 0.0F);
 	//		renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
 	//		tes.draw();
-	//		GL11.glPopMatrix();
+	//		GlStateManager.popMatrix();
 	//	}
 
 	//Cheers boni =P
@@ -1292,7 +1289,7 @@ public class ClientUtils
 			//            this.drawGradientRect(l1 + i + 2, i2 - 3 + 1, l1 + i + 3, i2 + k + 3 - 1, i1, j1);
 			//            this.drawGradientRect(l1 - 3, i2 - 3, l1 + i + 3, i2 - 3 + 1, i1, i1);
 			//            this.drawGradientRect(l1 - 3, i2 + k + 2, l1 + i + 3, i2 + k + 3, j1, j1);
-			GL11.glTranslated(0, 0, 300);
+			GlStateManager.translate(0, 0, 300);
 			int j1 = -267386864;
 			drawGradientRect(j2-3, k2-4, j2+k+3, k2-3, j1, j1);
 			drawGradientRect(j2-3, k2+i1+3, j2+k+3, k2+i1+4, j1, j1);
@@ -1305,7 +1302,7 @@ public class ClientUtils
 			drawGradientRect(j2+k+2, k2-3+1, j2+k+3, k2+i1+3-1, k1, l1);
 			drawGradientRect(j2-3, k2-3, j2+k+3, k2-3+1, k1, k1);
 			drawGradientRect(j2-3, k2+i1+2, j2+k+3, k2+i1+3, l1, l1);
-			GL11.glTranslated(0, 0, -300);
+			GlStateManager.translate(0, 0, -300);
 
 			for(int i2 = 0; i2 < list.size(); ++i2)
 			{
@@ -1514,6 +1511,7 @@ public class ClientUtils
 		return createBakedBox(from, to, matrix, facing, vertices -> vertices, textureGetter, colour);
 	}
 
+	@Nonnull
 	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, EnumFacing facing, Function<Vector3f[], Vector3f[]> vertexTransformer, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		HashSet<BakedQuad> quads = new HashSet<>();
@@ -1686,6 +1684,20 @@ public class ClientUtils
 		ret += (in >> 16)&255;
 		ret += (in&255)<<16;
 		return ret;
+	}
+
+	public static int pulseRGBAlpha(int rgb, int tickrate, float min, float max)
+	{
+		float f_alpha = mc().player.ticksExisted%(tickrate*2)/(float)tickrate;
+		if(f_alpha > 1)
+			f_alpha = 2-f_alpha;
+		return changeRGBAlpha(rgb, MathHelper.clamp(f_alpha, min, max));
+
+	}
+
+	public static int changeRGBAlpha(int rgb, float alpha)
+	{
+		return (rgb&0x00ffffff)|((int)(alpha*255)<<24);
 	}
 
 	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
@@ -1948,6 +1960,30 @@ public class ClientUtils
 			GlStateManager.enableTexture2D();
 		}
 
+		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+	}
+
+	private static Optional<Boolean> lightmapState;
+
+	public static void toggleLightmap(boolean pre, boolean disabled)
+	{
+		GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		if(pre)
+		{
+			lightmapState = Optional.of(GL11.glIsEnabled(GL11.GL_TEXTURE_2D));
+			if(disabled)
+				GlStateManager.disableTexture2D();
+			else
+				GlStateManager.enableTexture2D();
+		}
+		else if(lightmapState.isPresent())
+		{
+			if(lightmapState.get())
+				GlStateManager.enableTexture2D();
+			else
+				GlStateManager.disableTexture2D();
+			lightmapState = Optional.empty();
+		}
 		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 	}
 }

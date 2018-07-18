@@ -32,6 +32,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
+
 public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -179,12 +181,12 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					active = false;
 			}
 
-			if(burnTime <= 10&&getRecipe()!=null)
+			if(burnTime <= 0&&getRecipe()!=null)
 			{
 				if(BlastFurnaceRecipe.isValidBlastFuel(inventory.get(1)))
 				{
-					burnTime += BlastFurnaceRecipe.getBlastFuelTime(inventory.get(1));
 					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory.get(1));
+					burnTime += lastBurnTime;
 					Utils.modifyInvStackSize(inventory, 1, -1);
 					markContainingBlockForUpdate(null);
 				}
@@ -209,6 +211,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 		}
 	}
 
+	@Nullable
 	public BlastFurnaceRecipe getRecipe()
 	{
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));

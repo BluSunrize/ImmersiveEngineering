@@ -124,11 +124,13 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 
 	@Nonnull
-	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, MineralWorldInfo info)
+	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, @Nullable MineralWorldInfo info)
 	{
 		ItemStack stack = new ItemStack(IEContent.itemCoresample);
 		ItemNBTHelper.setLong(stack, "timestamp", world.getTotalWorldTime());
 		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.provider.getDimension(), chunkX, chunkZ});
+		if(info==null)
+			return stack;
 		if(info.mineralOverride!=null)
 			ItemNBTHelper.setString(stack, "mineral", info.mineralOverride.name);
 		else if(info.mineral!=null)

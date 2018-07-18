@@ -24,6 +24,7 @@
 		"inventory,type=concrete_leaded": [{"textures": {"all": "immersiveengineering:blocks/stone_decoration_concrete_leaded"}}],
 		"inventory,type=insulating_glass": [{"textures": {"all": "immersiveengineering:blocks/stone_decoration_insulating_glass"}}],
 		"inventory,type=alloybrick": [{"textures": {"all": "immersiveengineering:blocks/stone_decoration_alloybrick"}}],
+		"inventory,type=concrete_sprayed": [{}],
 		"type":
 		{
 			"cokebrick": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_cokebrick" }},
@@ -35,16 +36,17 @@
 			"concrete_tile": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete_tile" }},
 			"concrete_leaded": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete_leaded" }},
 			"insulating_glass": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_insulating_glass" }},
-			"alloybrick": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_alloybrick" }}
+			"alloybrick": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_alloybrick" }},
+			"concrete_sprayed": {}
 		},
 		"slabtype":
 		{
-			0: {},
-			1: {
+			"0": {},
+			"1": {
 				"x": 180,
 				"uvlock": true
 			},
-			2: {
+			"2": {
 				"model": "cube_all"
 			}
 		}

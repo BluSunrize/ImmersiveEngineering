@@ -38,7 +38,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEntityDieselGenerator, IMultiblockRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile, ISoundTile, IFaceShape
+public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEntityDieselGenerator, IMultiblockRecipe>
+		implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile, ISoundTile, IFaceShape
 {
 	public TileEntityDieselGenerator()
 	{

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.AdvancedAABB;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -58,11 +59,13 @@ import java.util.function.Function;
 
 import static java.util.Collections.newSetFromMap;
 
-public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty, IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops
+public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty,
+		IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IAdvancedSelectionBounds,
+		IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
 {
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
-	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList();
-	public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList();
+	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList<>();
+	public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList<>();
 
 	public static void initCovers()
 	{
@@ -78,7 +81,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			@Nullable
 			@Override
-			public Boolean apply(@Nullable ItemStack input)
+			public Boolean apply(ItemStack input)
 			{
 				if(input.isEmpty())
 					return Boolean.FALSE;
@@ -92,7 +95,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			@Nullable
 			@Override
-			public Boolean apply(@Nullable ItemStack input)
+			public Boolean apply(ItemStack input)
 			{
 				if(input.isEmpty())
 					return Boolean.FALSE;
@@ -106,15 +109,16 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 	public int[] sideConfig = new int[]{0, 0, 0, 0, 0, 0};
 	public ItemStack pipeCover = ItemStack.EMPTY;
+	private byte connections = 0;
 
 	public static Set<DirectionalFluidOutput> getConnectedFluidHandlers(BlockPos node, World world)
 	{
 		if(indirectConnections.containsKey(node))
 			return indirectConnections.get(node);
 
-		ArrayList<BlockPos> openList = new ArrayList();
-		ArrayList<BlockPos> closedList = new ArrayList();
-		Set<DirectionalFluidOutput> fluidHandlers = Collections.newSetFromMap(new ConcurrentHashMap<DirectionalFluidOutput, Boolean>());
+		ArrayList<BlockPos> openList = new ArrayList<>();
+		ArrayList<BlockPos> closedList = new ArrayList<>();
+		Set<DirectionalFluidOutput> fluidHandlers = Collections.newSetFromMap(new ConcurrentHashMap<>());
 		openList.add(node);
 		while(!openList.isEmpty()&&closedList.size() < 1024)
 		{
@@ -139,9 +143,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 							else if(adjacentTile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite()))
 							{
 								IFluidHandler handler = adjacentTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
-								tankInfo = handler.getTankProperties();
-								if(tankInfo!=null&&tankInfo.length > 0)
-									fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
+								if(handler!=null)
+								{
+									tankInfo = handler.getTankProperties();
+									if(tankInfo!=null&&tankInfo.length > 0)
+										fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
+								}
 							}
 					}
 				}
@@ -157,6 +164,24 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			}
 		}
 		return fluidHandlers;
+	}
+
+	@Override
+	public void validate()
+	{
+		super.validate();
+		if(!world.isRemote)
+			ApiUtils.addFutureServerTask(world, () ->
+			{
+				boolean changed = false;
+				for(EnumFacing f : EnumFacing.VALUES)
+					changed |= updateConnectionByte(f);
+				if(changed)
+				{
+					world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
+					markContainingBlockForUpdate(null);
+				}
+			});
 	}
 
 	@Override
@@ -215,6 +240,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{0, 0, 0, 0, 0, 0};
 		pipeCover = new ItemStack(nbt.getCompoundTag("pipeCover"));
+		byte oldConns = connections;
+		connections = nbt.getByte("connections");
+		if(world!=null&&world.isRemote&&connections!=oldConns)
+		{
+			IBlockState state = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, state, state, 3);
+		}
 	}
 
 	@Override
@@ -223,6 +255,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		nbt.setIntArray("sideConfig", sideConfig);
 		if(!pipeCover.isEmpty())
 			nbt.setTag("pipeCover", (pipeCover.writeToNBT(new NBTTagCompound())));
+		nbt.setByte("connections", connections);
 	}
 
 
@@ -294,6 +327,18 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(!pipeCover.isEmpty())
 			return Lists.newArrayList(pipeCover);
 		return null;
+	}
+
+	@Override
+	public void onNeighborBlockChange(BlockPos otherPos)
+	{
+		EnumFacing dir = EnumFacing.getFacingFromVector(otherPos.getX()-pos.getX(),
+				otherPos.getY()-pos.getY(), otherPos.getZ()-pos.getZ());
+		if(updateConnectionByte(dir))
+		{
+			world.notifyNeighborsOfStateExcept(pos, getBlockType(), dir);
+			markContainingBlockForUpdate(null);
+		}
 	}
 
 	static class PipeFluidHandler implements IFluidHandler
@@ -410,25 +455,25 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		}
 	}
 
-	public byte getConnectionByte()
+	public boolean updateConnectionByte(EnumFacing dir)
 	{
-		byte connections = 0;
 		IFluidTankProperties[] tankInfo;
-		for(int i = 5; i >= 0; i--)
+		final byte oldConn = connections;
+		int i = dir.getIndex();
+		int mask = 1<<i;
+		connections &= ~mask;
+		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(dir));
+		if(sideConfig[i]==0&&con!=null&&con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 		{
-			//			TileEntity con = world.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
-			EnumFacing dir = EnumFacing.getFront(i);
-			TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(dir));
-			connections <<= 1;
-			if(sideConfig[i]==0&&con!=null&&con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
+			IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
+			if(handler!=null)
 			{
-				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
 				tankInfo = handler.getTankProperties();
 				if(tankInfo!=null&&tankInfo.length > 0)
-					connections |= 1;
+					connections |= mask;
 			}
 		}
-		return connections;
+		return oldConn!=connections;
 	}
 
 	public byte getAvailableConnectionByte()
@@ -444,9 +489,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			if(con!=null&&con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
 				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
-				tankInfo = handler.getTankProperties();
-				if(tankInfo!=null&&tankInfo.length > 0)
-					connections |= 1;
+				if(handler!=null)
+				{
+					tankInfo = handler.getTankProperties();
+					if(tankInfo!=null&&tankInfo.length > 0)
+						connections |= 1;
+				}
 			}
 		}
 		return connections;
@@ -456,18 +504,17 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		if(sideConfig[connection]==-1)
 			return 0;
-		byte thisConnections = getConnectionByte();
-		if((thisConnections&(1<<connection))==0)
+		if((connections&(1<<connection))==0)
 			return 0;
 
-		if(thisConnections!=3&&thisConnections!=12&&thisConnections!=48)
+		if(connections!=3&&connections!=12&&connections!=48)
 			return 1;
 		//		TileEntity con = world.getTileEntity(xCoord+(connection==4?-1: connection==5?1: 0),yCoord+(connection==0?-1: connection==1?1: 0),zCoord+(connection==2?-1: connection==3?1: 0));
 		TileEntity con = world.getTileEntity(getPos().offset(EnumFacing.getFront(connection)));
 		if(con instanceof TileEntityFluidPipe)
 		{
-			byte tileConnections = ((TileEntityFluidPipe)con).getConnectionByte();
-			if(thisConnections==tileConnections)
+			byte tileConnections = ((TileEntityFluidPipe)con).connections;
+			if(connections==tileConnections)
 				return 0;
 		}
 		return 1;
@@ -517,7 +564,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f).offset(getPos()));
 			return list;
 		}
-		byte connections = getConnectionByte();
 		if(/*connections==16||connections==32||*/connections==48)
 		{
 			list.add(new AxisAlignedBB(0, .25f, .25f, 1, .75f, .75f).offset(getPos()));
@@ -547,9 +593,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			list.add(new AxisAlignedBB(.25f, .25f, .25f, .75f, .75f, .75f).offset(getPos()));
 			for(int i = 0; i < 6; i++)
 			{
-				if((connections&0x1)==1)
+				if((connections&(1<<i))!=0)
 					list.add(new AxisAlignedBB(i==4?0: i==5?.875f: .125f, i==0?0: i==1?.875f: .125f, i==2?0: i==3?.875f: .125f, i==4?.125f: i==5?1: .875f, i==0?.125f: i==1?1: .875f, i==2?.125f: i==3?1: .875f).offset(getPos()));
-				connections >>= 1;
 			}
 		}
 		return list;
@@ -559,8 +604,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
-		byte connections = getAvailableConnectionByte();
-		byte availableConnections = getConnectionByte();
+		byte availableConnections = getAvailableConnectionByte();
 		double[] baseAABB = !pipeCover.isEmpty()?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
 		for(int i = 0; i < 6; i++)
 		{
@@ -568,13 +612,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			double size = getConnectionStyle(i)==0?.25: .125;
 			//			if(pipeCover!=null)
 			//				size = 0;
-			if((connections&0x1)==1)
-				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size).offset(getPos()), EnumFacing.getFront(i)));
 			if((availableConnections&0x1)==1)
+				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size).offset(getPos()), EnumFacing.getFront(i)));
+			if((connections&(1<<i))!=0)
 				baseAABB[i] += i%2==1?.125: -.125;
 			baseAABB[i] = Math.min(Math.max(baseAABB[i], 0), 1);
 			availableConnections = (byte)(availableConnections >> 1);
-			connections = (byte)(connections >> 1);
 		}
 		list.add(new AdvancedAABB(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]).offset(getPos()), null));
 		return list;
@@ -602,18 +645,17 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 	String getRenderCacheKey()
 	{
-		byte connections = getConnectionByte();
-		String key = "";
+		StringBuilder key = new StringBuilder();
 		for(int i = 0; i < 6; i++)
 		{
 			if((connections&(1<<i))!=0)
-				key += getConnectionStyle(i)==1?"2": "1";
+				key.append(getConnectionStyle(i)==1?"2": "1");
 			else
-				key += "0";
+				key.append("0");
 		}
 		if(!pipeCover.isEmpty())
-			key += "scaf:"+pipeCover;
-		return key;
+			key.append("scaf:").append(pipeCover);
+		return key.toString();
 	}
 
 	// Lowest 6 bits are conns, bits 8 to 14 (1&(b>>8)) ore conn style
@@ -647,7 +689,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public OBJState getOBJState()
 	{
-		byte connections = getConnectionByte();
 		String key = getRenderCacheKey();
 		return getStateFromKey(key);
 	}

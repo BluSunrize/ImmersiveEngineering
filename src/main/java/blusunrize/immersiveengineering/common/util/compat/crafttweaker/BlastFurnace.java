@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -50,7 +49,6 @@ public class BlastFurnace
 		public void apply()
 		{
 			BlastFurnaceRecipe.recipeList.add(recipe);
-			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -80,8 +78,6 @@ public class BlastFurnace
 		public void apply()
 		{
 			removedRecipes = BlastFurnaceRecipe.removeRecipes(output);
-			for(BlastFurnaceRecipe recipe : removedRecipes)
-				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -118,7 +114,6 @@ public class BlastFurnace
 		public void apply()
 		{
 			fuelRecipeKey = BlastFurnaceRecipe.addBlastFuel(fuel, burnTime);
-			IECompatModule.jeiAddFunc.accept(fuelRecipeKey);
 		}
 
 		@Override
@@ -154,7 +149,6 @@ public class BlastFurnace
 				if(e.input.matchesItemStack(stack))
 				{
 					removed = e;
-					IECompatModule.jeiRemoveFunc.accept(removed);
 					it.remove();
 					break;
 				}

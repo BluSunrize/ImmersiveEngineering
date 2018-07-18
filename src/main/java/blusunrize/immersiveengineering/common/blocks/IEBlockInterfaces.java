@@ -23,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -203,7 +204,24 @@ public class IEBlockInterfaces
 
 	public interface ITileDrop
 	{
-		ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state);
+		/**
+		 * Don't call this on generic TE'S, use getTileDrops or getPickBlock
+		 */
+		default ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state)
+		{
+			NonNullList<ItemStack> drops = getTileDrops(player, state);
+			return drops.size() > 0?drops.get(0): ItemStack.EMPTY;
+		}
+
+		default NonNullList<ItemStack> getTileDrops(@Nullable EntityPlayer player, IBlockState state)
+		{
+			return NonNullList.from(ItemStack.EMPTY, getTileDrop(player, state));
+		}
+
+		default ItemStack getPickBlock(@Nullable EntityPlayer player, IBlockState state, RayTraceResult rayRes)
+		{
+			return getTileDrop(player, state);
+		}
 
 		void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack);
 
@@ -337,7 +355,7 @@ public class IEBlockInterfaces
 
 	public interface INeighbourChangeTile
 	{
-		void onNeighborBlockChange(BlockPos pos);
+		void onNeighborBlockChange(BlockPos otherPos);
 	}
 
 	public interface IPropertyPassthrough

@@ -14,9 +14,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
@@ -44,8 +43,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.Function;
 
 @Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION,
 		dependencies = "required-after:forge@[14.23.3.2655,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
@@ -56,6 +53,7 @@ public class ImmersiveEngineering
 	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
+	public static final int DATA_FIXER_VERSION = 1;
 
 	@Mod.Instance(MODID)
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
@@ -137,21 +135,8 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageChemthrowerSwitch.Handler.class, MessageChemthrowerSwitch.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageObstructedConnection.Handler.class, MessageObstructedConnection.class, messageId++, Side.CLIENT);
 
-		for(FMLInterModComms.IMCMessage message : FMLInterModComms.fetchRuntimeMessages(instance))
-		{
-			if(message.key.equals("fluidpipeCover")&&message.isFunctionMessage())
-			{
-				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
-				if(opFunc.isPresent())
-					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
-			}
-			else if(message.key.equals("fluidpipeCoverClimb")&&message.isFunctionMessage())
-			{
-				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
-				if(opFunc.isPresent())
-					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
-			}
-		}
+		IEIMCHandler.init();
+		IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(instance));
 	}
 
 	@Mod.EventHandler
@@ -200,8 +185,6 @@ public class ImmersiveEngineering
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler(false));
-		if(IEConfig.Machines.arcfurnace_recycle)
-			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
 
 	@Mod.EventHandler

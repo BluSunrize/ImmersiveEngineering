@@ -47,6 +47,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, true, 48, 3, 58, 47, 4000, false, null);
 		guiFluidStacks.set(0, recipeWrapper.getFluidIn());
+
 		guiFluidStacks.init(1, false, 138, 2, 16, 47, 4000, false, tankOverlay);
 		guiFluidStacks.set(1, ingredients.getOutputs(FluidStack.class).get(0));
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
@@ -58,6 +59,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 			int y = 0+i/2*18;
 			guiItemStacks.init(i, true, x, y);
 			guiItemStacks.set(i, recipeWrapper.recipeInputs[i]);
+			guiItemStacks.setBackground(i, JEIHelper.slotDrawable);
 		}
 	}
 

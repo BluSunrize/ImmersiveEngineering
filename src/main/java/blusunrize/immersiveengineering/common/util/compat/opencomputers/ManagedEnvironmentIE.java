@@ -38,7 +38,7 @@ public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends A
 		return null;
 	}
 
-	public static abstract class ManagedEnvMultiblock<T2 extends TileEntityMultiblockMetal<?, ?>> extends ManagedEnvironmentIE<T2>
+	public abstract static class ManagedEnvMultiblock<T2 extends TileEntityMultiblockMetal<?, ?>> extends ManagedEnvironmentIE<T2>
 	{
 
 		public ManagedEnvMultiblock(World w, BlockPos p, Class<? extends TileEntityIEBase> teClass)

@@ -292,11 +292,11 @@ public class ModelConveyor implements IBakedModel
 		//Draw left walls
 		if(walls[0])
 		{
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing2, new double[]{0, wallLength*16, 1, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing2, new double[]{0, 15, 1, 1}, colour, false));
 			if(tex_conveyor_colour!=null&&stripeColour >= 0)
-				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_conveyor_colour, new double[]{0, wallLength*16, 1, 1}, colourStripes, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, true));
+				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_conveyor_colour, new double[]{0, 15, 1, 1}, colourStripes, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, true));
 		}
 		for(int i = 0; i < 4; i++)
 		{
@@ -308,11 +308,11 @@ public class ModelConveyor implements IBakedModel
 		//Draw right walls
 		if(walls[1])
 		{
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing2, new double[]{15, wallLength*16, 16, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_casing2, new double[]{15, 15, 16, 1}, colour, false));
 			if(tex_conveyor_colour!=null&&stripeColour >= 0)
-				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_conveyor_colour, new double[]{15, wallLength*16, 16, 1}, colourStripes, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, false));
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing1, new double[]{2, wallLength*16, 3, 1}, colour, true));
+				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), tex_conveyor_colour, new double[]{15, 15, 16, 1}, colourStripes, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, true));
 		}
 
 		return quads;

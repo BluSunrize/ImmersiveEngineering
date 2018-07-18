@@ -1,0 +1,6 @@
+{
+	"parent":"item/handheld",
+	"textures": {
+		"layer0":"immersiveengineering:items/tool_pick_steel"
+	}
+}

@@ -58,8 +58,7 @@ public class IERecipes
 
 		//Loop, special or colouration recipes
 		registry.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
-		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
-		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_Loop"));
+		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_loop"));
 		registry.register(new RecipeSpeeloader().setRegistryName(ImmersiveEngineering.MODID, "speedloader_load"));
 		registry.register(new RecipeJerrycan().setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
 		registry.register(new RecipeShaderBags().setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
@@ -95,7 +94,7 @@ public class IERecipes
 		//
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial, 1, 8), "plateIron", "plateIron", "ingotCopper");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial, 1, 9), "plateSteel", "plateSteel", "ingotCopper");
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial, 3, 26), "blockGlass", "wireCopper", "wireCopper", "dustRedstone");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial, 3, 26), "blockGlass", "plateNickel", "wireCopper", "dustRedstone");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(IEContent.itemMaterial, 1, 27), new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()), "plateCopper", "electronTube", "electronTube");
 
 		//

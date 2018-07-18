@@ -1,4 +1,64 @@
-#####Version 0.12-82
+#####Version 0.12-84 - BUILT
+- Changed handling of Potions in the mixer: (BluSunrize)
+    - Now supports MixPredicates as well as custom brewing recipes
+    - Shows properly in JEI, based on Potion output, rather than input
+    - Bottling recipes are consistent, anything you can mix, you can bottle (ideally)
+    - Added tooltips to Potion fluids to show which mod added the PotionType
+    - Added compat for KnightMiner's Inspirations, allowing their Splash and Lingering bottles to be filled
+- Added a separate JEI Handler for Arc-Recycling (BluSunrize)
+- Added a particle trail to Minecarts that use fancy shaders (e.g. IKELOS) (BluSunrize)
+- Added the ability to pop Balloons by hitting them with a Projectile (BluSunrize)
+- Added Shader Particles to the Railgun and Drill (BluSunrize)
+- Added a "Noise" component to the revolver, which will make it attract nearby mobs when fired (BluSunrize)
+    - Adding a bit of a stealth/survival aspect
+    - Probably not super impactful in normal singleplayer, but could be fun for pack makers
+    - This will play into a larger customization system for the Revolver, to be implemented in the future
+- Re-Added some shader textures that got lost in the 1.11 update (BluSunrize)
+- Changed Arc-Recycling to run in init and be overall cleaner (Malte)
+- Changed the recipe for Vacuum Tubes to use Nickel Plates (BluSunrize)
+- Fixed compatability with ActuallyAdditions and AttainedDrops (Shadows-of-Fire)
+- Fixed out-of-thread call to JEI functions causing crashes (BluSunrize)
+- Fixed depth-rendering issues in JEI handlers (BluSunrize)
+- Fixed shiftclicking on IE's containers (BluSunrize)
+- Translations Added/Updated: zh_cn (DYColdWind)
+
+#####Version 0.12-83 - BUILT
+- Added the Extracting Conveyor. It pulls from inventories like a Hopper (BluSunrize)
+- Added even fancier Shaders with pulsing colours and dynamic rendering. Quite open for addon devs, too! (BluSunrize)
+    - Added the IKELOS shader to make use of this
+- Added maps to the vanilla Catographer which lead to Mineral Veins (BluSunrize)
+- Added a config option to disable all use of the stencil buffer for old Intel GPUs (Malte)
+- Added normal tools (Axe, Pick, Shovel, Sword) made from Steel and Treated Wood. Good durability & efficiency, iron harvest level (BluSunrize)
+- Added a new rarity, "Masterwork". Currently only for Shaders (grabbags gained from secret advancements) but will have more use in the future! (BluSunrize)
+- Changed ItemRouters to allow pulling as well, allowing for filtered extraction (BluSunrize)
+- Changed BlastFurnace to not start using a new piece of coke if there is nothing left to smelt (Malte)
+- Changed the Excavator's Mineral Veins to consider the chunks in a radius of two around them, to avoid duplicate veins (BluSunrize)
+- Changed Chemical Thrower to factor in player-momentum to projectiles (TeamSpen210)
+- Fixed wires sometimes leaving behind the damage sources when broken (Malte)
+- Fixed the TConstruct compat module failing (Malte)
+- Fixed Hammers and Wirecutters to be properly repairable (Malte)
+- Fixed Wirecutters to be enchantable (Malte)
+- Fixed texture and model errors being spammed (Malte)
+- Fixed dropping conveyor spawning countless fake items in certain setups (Malte)
+- Fixed conveyors causing infinite loops in rare cases (Malte)
+- Fixed a crash when breaking a connector after dying (Malte)
+- Fixed wires connected to transformers breaking when they shouldn't (Malte)
+- Fixed horizotal wires on the breaker switch (Malte)
+- Fixed crashes with the Core Sample Drill in some dimensions (Malte)
+- Fixed pipes accessing the world from wrong threads (Malte)
+- Fixed a dupe bug (Malte)
+- Fixed the skyhook for vertical wires (Malte)
+- Fixed placing blocks against pipes not working as expected (Malte)
+- Fixed the garden cloche accepting any item into the fertilizer slot (Malte)
+- Fixed the workbench creating excess items (codewarrior0)
+- Fixed obstructed connections not rendering properly in LAN worlds (JamiesWhiteShirt)
+- Fixed Razor Wire not having collision on upper wall section (TeamSpen210)
+- Fixed Arc Furnace recycling being broken (BluSunrize)
+- Fixed Squeezer and Fermenter not updating the GUI when filling buckets (BluSunrize)
+- Improved log output when a compat module fails (Malte)
+- Translations Added/Updated: ja_jp (iceink001), ru_ru (kellixon ), zh_tw (vongola12324)
+
+#####Version 0.12-82 - BUILT
 - Added compat for farming Hemp to ActuallyAddition's farmer (BluSunrize)
 - Fixed Wirecutter getting consumed when cutting plates (BluSunrize)
 - Fixed Alloy Kiln consuming fuelsource container items (BluSunrize)
@@ -6,6 +66,7 @@
 - Fixed spawn interdictors (Electric Lanterns, etc) not being removed on chunk unload (codewarrior0)
 - Fixed Metal Press animations and sounds with customized recipe times (codewarrior0)
 - Fixed some potential crashes in networking and reduced packet size (JamiesWhiteShirt)
+- Fixed 'removeRecipesForInput' in Crusher Craftweaker compat not working (BluSunrize)
 - Reduced the amount of ItemStacks being copied in rendering and recipe checking (Malte)
 - Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 

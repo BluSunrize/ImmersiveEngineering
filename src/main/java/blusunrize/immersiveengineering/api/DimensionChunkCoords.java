@@ -41,6 +41,11 @@ public class DimensionChunkCoords extends ChunkPos
 		return "[dim:"+this.dimension+"; "+this.x+", "+this.z+"]";
 	}
 
+	public DimensionChunkCoords withOffset(int offsetX, int offsetZ)
+	{
+		return new DimensionChunkCoords(this.dimension, this.x+offsetX, this.z+offsetZ);
+	}
+
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound tag = new NBTTagCompound();

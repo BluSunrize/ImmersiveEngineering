@@ -43,7 +43,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 	}
 
 	@Override
-	public void onNeighborBlockChange(BlockPos pos)
+	public void onNeighborBlockChange(BlockPos otherPos)
 	{
 		boolean r = this.world.isBlockPowered(pos);
 		if(r!=this.redstone)

@@ -321,9 +321,7 @@ public class ConnModelReal implements IBakedModel
 				return false;
 			if(!Utils.areArraysEqualIncludingBlockstates(additionalProperties, o.additionalProperties))
 				return false;
-			if(!Utils.areStatesEqual(state, o.state, ignoredProperties, true))
-				return false;
-			return true;
+			return Utils.areStatesEqual(state, o.state, ignoredProperties, true);
 		}
 
 		@Override

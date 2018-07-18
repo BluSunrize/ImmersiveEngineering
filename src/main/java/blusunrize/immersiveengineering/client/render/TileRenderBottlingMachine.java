@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
@@ -178,7 +179,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 
 				if(itemDisplays[i][4]==0)
 					ClientUtils.mc().getRenderItem().renderItem(process.items.get(0), ItemCameraTransforms.TransformType.FIXED);
-				else if(itemDisplays[i][4]==1)
+				else if(itemDisplays[i][4]==1||!ClientProxy.stencilBufferEnabled)
 					ClientUtils.mc().getRenderItem().renderItem(display, ItemCameraTransforms.TransformType.FIXED);
 				else
 				{
@@ -187,6 +188,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 
 					BufferBuilder worldrenderer = tessellator.getBuffer();
 
+					//TODO move to GlStateManager if that ever gets the stencil functions
 					GL11.glEnable(GL11.GL_STENCIL_TEST);
 
 					GlStateManager.colorMask(false, false, false, false);

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -28,7 +29,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -180,9 +180,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		}
 		if(tile instanceof ITileDrop)
 		{
-			ItemStack s = ((ITileDrop)tile).getTileDrop(harvesters.get(), state);
-			if(!s.isEmpty())
-				drops.add(s);
+			NonNullList<ItemStack> s = ((ITileDrop)tile).getTileDrops(harvesters.get(), state);
+			drops.addAll(s);
 		}
 		else
 			super.getDrops(drops, world, pos, state, fortune);
@@ -196,9 +195,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
-		if(tile instanceof IImmersiveConnectable)
-			if(!world.isRemote||!Minecraft.getMinecraft().isSingleplayer())
-				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile), world, !world.isRemote&&world.getGameRules().getBoolean("doTileDrops"));
+		if(tile instanceof IImmersiveConnectable&&!world.isRemote)
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile), world, world.getGameRules().getBoolean("doTileDrops"));
 		tempTile.put(new DimensionBlockPos(pos, world.provider.getDimension()), tile);
 		super.breakBlock(world, pos, state);
 		world.removeTileEntity(pos);
@@ -233,7 +231,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)
 		{
-			ItemStack s = ((ITileDrop)tile).getTileDrop(player, world.getBlockState(pos));
+			ItemStack s = ((ITileDrop)tile).getPickBlock(player, world.getBlockState(pos), target);
 			if(!s.isEmpty())
 				return s;
 		}
@@ -442,11 +440,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
-//	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
-			((INeighbourChangeTile)tile).onNeighborBlockChange(pos);
+		if(!world.isRemote)
+			ApiUtils.addFutureServerTask(world, () ->
+			{
+				if(world.isBlockLoaded(pos))
+				{
+					TileEntity tile = world.getTileEntity(pos);
+					if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
+						((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
+				}
+			});
 	}
 
 	@Override
@@ -570,13 +574,22 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			List<AxisAlignedBB> list = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
 			if(list!=null&&!list.isEmpty())
 			{
+				RayTraceResult min = null;
+				double minDist = Double.POSITIVE_INFINITY;
 				for(AxisAlignedBB aabb : list)
 				{
 					RayTraceResult mop = this.rayTrace(pos, start, end, aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
 					if(mop!=null)
-						return mop;
+					{
+						double dist = mop.hitVec.squareDistanceTo(start);
+						if(dist < minDist)
+						{
+							min = mop;
+							minDist = dist;
+						}
+					}
 				}
-				return null;
+				return min;
 			}
 		}
 		return super.collisionRayTrace(state, world, pos, start, end);

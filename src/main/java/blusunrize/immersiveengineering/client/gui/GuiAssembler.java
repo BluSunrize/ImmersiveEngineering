@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -25,7 +26,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -107,7 +107,7 @@ public class GuiAssembler extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -122,9 +122,9 @@ public class GuiAssembler extends GuiIEContainerBase
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
 			{
 				ItemStack stack = tile.patterns[i].inv.get(9);
-				GL11.glPushMatrix();
-				GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(0.0F, 0.0F, 32.0F);
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 				RenderHelper.disableStandardItemLighting();
 				this.zLevel = 200.0F;
 				itemRender.zLevel = 200.0F;
@@ -139,13 +139,13 @@ public class GuiAssembler extends GuiIEContainerBase
 				itemRender.zLevel = 0.0F;
 
 
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glDisable(GL11.GL_DEPTH_TEST);
+				GlStateManager.disableLighting();
+				GlStateManager.disableDepth();
 				ClientUtils.drawColouredRect(guiLeft+27+i*58, guiTop+64, 16, 16, 0x77444444);
-				GL11.glEnable(GL11.GL_LIGHTING);
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
+				GlStateManager.enableLighting();
+				GlStateManager.enableDepth();
 
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 	}
 }

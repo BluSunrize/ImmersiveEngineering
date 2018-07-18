@@ -138,6 +138,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().inventory.get(17+slot)};
 		}
 
+		@Override
 		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
 		public Object[] enableComputerControl(Context context, Arguments args)
 		{
@@ -148,6 +149,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			return null;
 		}
 
+		@Override
 		@Callback(doc = "function(recipe:int) -- enables or disables the specified recipe")
 		public Object[] setEnabled(Context context, Arguments args)
 		{

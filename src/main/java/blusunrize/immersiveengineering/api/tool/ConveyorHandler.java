@@ -287,7 +287,7 @@ public class ConveyorHandler
 			if(conveyorDirection==ConveyorDirection.UP)
 				vY = 0.17D*vBase;
 			else if(conveyorDirection==ConveyorDirection.DOWN)
-				vY = -0.07000000000000001D*vBase;
+				vY = -0.07*vBase;
 
 			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
 				entity.onGround = false;
@@ -343,7 +343,8 @@ public class ConveyorHandler
 						ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
 				}
 
-				if(entity instanceof EntityItem)
+				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
+				if(entity instanceof EntityItem&&entity.ticksExisted > 1)
 				{
 					((EntityItem)entity).setNoDespawn();
 					handleInsertion(tile, (EntityItem)entity, facing, conveyorDirection, distX, distZ);
@@ -380,6 +381,15 @@ public class ConveyorHandler
 				}
 			}
 
+		}
+
+		default boolean isTicking(TileEntity tile)
+		{
+			return false;
+		}
+
+		default void onUpdate(TileEntity tile, EnumFacing facing)
+		{
 		}
 
 		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);

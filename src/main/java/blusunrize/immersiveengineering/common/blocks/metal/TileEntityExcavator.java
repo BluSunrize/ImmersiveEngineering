@@ -76,6 +76,8 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		if(world.isBlockLoaded(wheelPos)&&world.getTileEntity(wheelPos) instanceof TileEntityBucketWheel)
 		{
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);
+			if(info==null)
+				return 0;
 			float remain = (ExcavatorHandler.mineralVeinCapacity-info.depletion)/(float)ExcavatorHandler.mineralVeinCapacity;
 			return MathHelper.floor(Math.max(remain, 0)*15);
 		}
@@ -136,7 +138,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 						energyStorage.extractEnergy(consumed, false);
 						active = true;
 
-						if(target >= 0&&target < 8)
+						if(target >= 0)
 						{
 							int targetDown = (target+4)%8;
 							NBTTagCompound packet = new NBTTagCompound();

@@ -35,6 +35,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -307,6 +308,12 @@ public class EntityRevolvershot extends Entity
 //			if(bulletType==3)
 //				world.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
 			this.secondaryImpact(mop);
+		}
+		if(mop.typeOfHit==Type.BLOCK)
+		{
+			IBlockState state = this.world.getBlockState(mop.getBlockPos());
+			if(state.getBlock().getMaterial(state)!=Material.AIR)
+				state.getBlock().onEntityCollidedWithBlock(this.world, mop.getBlockPos(), state, this);
 		}
 		this.setDead();
 	}

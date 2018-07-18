@@ -21,23 +21,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Consumer;
 
 public abstract class IECompatModule
 {
 	public static HashMap<String, Class<? extends IECompatModule>> moduleClasses = new HashMap<String, Class<? extends IECompatModule>>();
 	public static Set<IECompatModule> modules = new HashSet<IECompatModule>();
 
-	public static Consumer<Object> jeiAddFunc = o -> {
-	};
-	public static Consumer<Object> jeiRemoveFunc = o -> {
-	};
-
 	static
 	{
 		moduleClasses.put("actuallyadditions", ActuallyAdditionsHelper.class);
 		moduleClasses.put("albedo", AlbedoHelper.class);
-		moduleClasses.put("attaineddrops", AttainedDropsHelper.class);
+		moduleClasses.put("attaineddrops2", AttainedDropsHelper.class);
 		moduleClasses.put("baubles", BaublesHelper.class);
 		moduleClasses.put("betterwithmods", BetterWithModsHelper.class);
 		moduleClasses.put("bloodmagic", BloodMagicHelper.class);
@@ -53,6 +47,7 @@ public abstract class IECompatModule
 		moduleClasses.put("foundry", FoundryHelper.class);
 		moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
 		moduleClasses.put("ic2", IC2Helper.class);
+		moduleClasses.put("inspirations", InspirationsHelper.class);
 		moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
 		moduleClasses.put("opencomputers", OCHelper.class);
 		moduleClasses.put("theoneprobe", OneProbeHelper.class);
@@ -92,14 +87,14 @@ public abstract class IECompatModule
 						continue;
 
 					Boolean enabled = Config.IEConfig.compat.get(e.getKey());
-					if(enabled==null||!enabled.booleanValue())
+					if(enabled==null||!enabled)
 						continue;
 					IECompatModule m = e.getValue().newInstance();
 					modules.add(m);
 					m.preInit();
 				} catch(Exception exception)
 				{
-					IELogger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this!");
+					IELogger.logger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this and include the error message below!", exception);
 				}
 	}
 
@@ -111,7 +106,7 @@ public abstract class IECompatModule
 				compat.init();
 			} catch(Exception exception)
 			{
-				IELogger.error("Compat module for "+compat+" could not be initialized");
+				IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
 			}
 	}
 
@@ -123,7 +118,7 @@ public abstract class IECompatModule
 				compat.postInit();
 			} catch(Exception exception)
 			{
-				IELogger.error("Compat module for "+compat+" could not be postInitialized");
+				IELogger.logger.error("Compat module for "+compat+" could not be postInitialized. Report this and include the error message below!", exception);
 			}
 	}
 
@@ -141,8 +136,7 @@ public abstract class IECompatModule
 					compat.loadComplete();
 				} catch(Exception exception)
 				{
-					IELogger.error("Compat module for "+compat+" could not be initialized");
-					exception.printStackTrace();
+					IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
 				}
 		}
 	}

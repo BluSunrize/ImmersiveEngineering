@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockDoor.EnumHingePosition;
 import net.minecraft.block.BlockSlab;
@@ -271,7 +272,7 @@ public class VillageEngineersHouse extends Village
 	@Override
 	protected VillagerProfession chooseForgeProfession(int count, net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession prof)
 	{
-		return IEContent.villagerProfession_engineer;
+		return IEVillagerHandler.PROF_ENGINEER;
 	}
 //	protected int func_180779_c(int i, int previousProfession)
 //	{

@@ -42,7 +42,9 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author BluSunrize - 29.03.2017
@@ -108,7 +110,15 @@ public class ConveyorCovered extends ConveyorBasic
 	@SideOnly(Side.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
 	{
-		ItemStack cover = !this.cover.isEmpty()?this.cover: defaultCover;
+		addCoverToQuads(baseModel, tile, facing, () -> this.cover, getConveyorDirection(), new boolean[]{
+				tile==null||this.renderWall(tile, facing, 0), tile==null||this.renderWall(tile, facing, 1)
+		});
+		return baseModel;
+	}
+
+	static void addCoverToQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing, Supplier<ItemStack> coverGet, ConveyorDirection conDir, boolean[] walls)
+	{
+		ItemStack cover = !coverGet.get().isEmpty()?coverGet.get(): defaultCover;
 		Block b = Block.getBlockFromItem(cover.getItem());
 		IBlockState state = !cover.isEmpty()?b.getStateFromMeta(cover.getMetadata()): Blocks.STONE.getDefaultState();
 		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
@@ -116,7 +126,6 @@ public class ConveyorCovered extends ConveyorBasic
 		{
 			TextureAtlasSprite sprite = model.getParticleTexture();
 			HashMap<EnumFacing, TextureAtlasSprite> sprites = new HashMap<>();
-			ConveyorDirection conDir = this.getConveyorDirection();
 
 			for(EnumFacing f : EnumFacing.VALUES)
 				for(BakedQuad q : model.getQuads(state, f, 0))
@@ -132,9 +141,6 @@ public class ConveyorCovered extends ConveyorBasic
 			float[] colour = {1, 1, 1, 1};
 			Matrix4 matrix = new Matrix4(facing);
 
-			boolean wallLeft = tile==null||this.renderWall(tile, facing, 0);
-			boolean wallRight = tile==null||this.renderWall(tile, facing, 1);
-
 			Function<Vector3f[], Vector3f[]> vertexTransformer = conDir==ConveyorDirection.HORIZONTAL?vertices -> vertices: vertices -> {
 				Vector3f[] ret = new Vector3f[vertices.length];
 				for(int i = 0; i < ret.length; i++)
@@ -143,14 +149,14 @@ public class ConveyorCovered extends ConveyorBasic
 			};
 
 			baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .75f, 0), new Vector3f(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
-			if(wallLeft)
+			if(walls[0])
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .1875f, 0), new Vector3f(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .1875f, 0), new Vector3f(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .1875f, .9375f), new Vector3f(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
-			if(wallRight)
+			if(walls[1])
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, .1875f, 0), new Vector3f(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
@@ -158,12 +164,18 @@ public class ConveyorCovered extends ConveyorBasic
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, .1875f, .9375f), new Vector3f(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 		}
-		return baseModel;
 	}
+
 
 	@Override
 	public boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
 	{
+		return handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
+	}
+
+	static boolean handleCoverInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, Supplier<ItemStack> coverGet, Consumer<ItemStack> coverSet)
+	{
+		final ItemStack cover = coverGet.get();
 		if(heldItem.isEmpty()&&player.isSneaking()&&!cover.isEmpty())
 		{
 			if(!tile.getWorld().isRemote&&tile.getWorld().getGameRules().getBoolean("doTileDrops"))
@@ -172,7 +184,7 @@ public class ConveyorCovered extends ConveyorBasic
 				if(entityitem!=null)
 					entityitem.setNoPickupDelay();
 			}
-			cover = ItemStack.EMPTY;
+			coverSet.accept(ItemStack.EMPTY);
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&!player.isSneaking())
@@ -187,7 +199,7 @@ public class ConveyorCovered extends ConveyorBasic
 							if(entityitem!=null)
 								entityitem.setNoPickupDelay();
 						}
-						cover = Utils.copyStackWithAmount(heldItem, 1);
+						coverSet.accept(Utils.copyStackWithAmount(heldItem, 1));
 						heldItem.shrink(1);
 						if(heldItem.getCount() <= 0)
 							player.setHeldItem(hand, heldItem);

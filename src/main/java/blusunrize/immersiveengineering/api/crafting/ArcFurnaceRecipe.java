@@ -264,7 +264,8 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static ArrayList invalidRecyclingOutput = new ArrayList();
 
 	/**
-	 * Set an item/oredict-entry to be an invalid output for the recycling process. Used for magical ingots that should be reclaimable or similar
+	 * Set an item/oredict-entry to be an invalid output for the recycling process.
+	 * Used for magical ingots that should not be reclaimable or similar
 	 */
 	public static void makeItemInvalidRecyclingOutput(Object stack)
 	{

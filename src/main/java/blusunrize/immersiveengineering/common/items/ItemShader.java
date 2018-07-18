@@ -8,15 +8,20 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.*;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.DynamicShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,16 +29,20 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverride
 {
@@ -82,6 +91,28 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Regal", 4, EnumRarity.UNCOMMON, 0xffd8d4d1, 0xff431c1d, 0xffd8d4d1, 0xffd8d4d1).setInfo(null, "Destiny", "regal");
 		addShader("Harrowed", 4, EnumRarity.RARE, 0xff161321, 0xff431c1d, 0xff161321, 0xff161321).setInfo(null, "Destiny", "harrowed");
 		addShader("Taken", 5, EnumRarity.EPIC, 0xff111c26, 0xff111c26, 0xffbad7dd, 0xff111c26, null, false, 0xffffffff).setInfo(null, "Destiny", "taken");
+		entry = addShader("IKELOS", 2, Lib.RARITY_Masterwork, 0xff74665d, 0xff424348, 0xff424348, 0xff313131).setInfo(null, "Destiny", "ikelos");
+		addDynamicLayer(entry, "circuit", 0xffefa117,
+				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
+				(pre, partialTick) -> {
+					if(pre)
+					{
+						GlStateManager.pushAttrib();
+						GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(.5f, .2f, 0, .5f));
+						ClientUtils.toggleLightmap(true, true);
+					}
+					else
+					{
+						ClientUtils.toggleLightmap(false, true);
+						GlStateManager.popAttrib();
+					}
+				});
+		addLayer(entry, "1_4", 0xff5f646a);
+		entry.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(0, 1, 0), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(0, 0, 1), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(1, 0, 0), scale, 2, null);
+		});
 
 		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e, 0xff754697, 0xff77b93d, 0xff505050, null, false, 0xffffffff).setInfo("Mecha", "Neon Genesis Evangelion", "angelsthesis");
 		addShader("Sutherland", 0, EnumRarity.RARE, 0xff44404f, 0xff6b5eae, 0xff702739, 0xff44404f, "whitestripe", true, 0xff702034).setInfo("Mecha", "Code Geass", "sutherland");
@@ -93,7 +124,11 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Matrix", 7, EnumRarity.RARE, 0xff053f3c, 0xffe1e1ff, 0xffd4ffff, 0xffffffff, "pipes", true, 0xff84ddd8).setInfo(null, null, "matrix");
 		addShader("Twili", 5, EnumRarity.EPIC, 0xff555d70, 0xff1a1e2b, 0xff222739, 0xff1db58e, "circuit", false, 0xff1db58e).setInfo(null, "The Legend of Zelda: Twilight Princess", "twili");
 		addShader("Usurper", 3, EnumRarity.EPIC, 0xff3e1e1e, 0xff5c6156, 0xff111010, 0xff737a6c, "circuit", false, 0xffca2f38).setInfo(null, "The Legend of Zelda: Twilight Princess", "usurper");
-		entry = addShader("Ancient", 6, EnumRarity.EPIC, 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2, "circuit", false, 0x99bc9377).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
+		entry = addShader("Ancient", 6, Lib.RARITY_Masterwork, 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
+		addDynamicLayer(entry, "1_6", 0xaafaf307,
+				(layer, superColour) -> ClientUtils.pulseRGBAlpha(0xff80fcf2, 60, .05f, .5f),
+				(pre, partialTick) -> ClientUtils.toggleLightmap(pre, true));
+		addLayer(entry, "circuit", 0x99bc9377);
 		((ShaderCaseDrill)entry.getCase("immersiveengineering:drill")).addHeadLayers(new ShaderLayer(new ResourceLocation("immersiveengineering", "items/drill_iron"), 0xff80fcf2));
 
 		addShader("Glacis", 6, EnumRarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd).setInfo(null, null, "glacis");
@@ -163,6 +198,17 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour));
 	}
 
+	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Integer, Integer> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
+	{
+		entry.getCase("immersiveengineering:revolver").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:drill").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:railgun").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:shield").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:minecart").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:balloon").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
+	}
+
 	public void setDefaultTextureBounds(ResourceLocation rl, double... bounds)
 	{
 		ShaderRegistry.defaultLayerBounds.put(rl, bounds);
@@ -179,8 +225,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 			else
 			{
 				Set<String> keys = ShaderRegistry.shaderRegistry.keySet();
-				List<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name,
-						keys, 4, s -> s);
+				ArrayList<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name, keys.toArray(new String[keys.size()]), 4);
 				if(!corrected.isEmpty())
 				{
 					IELogger.info("SHADER UPDATE: Fixing "+name+" to "+corrected.get(0));
@@ -291,5 +336,35 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		}
 //		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"));
 		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"), new ResourceLocation("immersiveengineering:items/shader_1"), new ResourceLocation("immersiveengineering:items/shader_2"));
+	}
+
+	private static class InternalDynamicShaderLayer extends DynamicShaderLayer
+	{
+		private final BiFunction<ShaderLayer, Integer, Integer> func_getColour;
+		private final BiConsumer<Boolean, Float> func_modifyRender;
+
+		public InternalDynamicShaderLayer(ResourceLocation texture, int colour, BiFunction<ShaderLayer, Integer, Integer> func_getColour, BiConsumer<Boolean, Float> func_modifyRender)
+		{
+			super(texture, colour);
+			this.func_getColour = func_getColour;
+			this.func_modifyRender = func_modifyRender;
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public int getColour()
+		{
+			if(func_getColour!=null)
+				return func_getColour.apply(this, super.getColour());
+			return super.getColour();
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void modifyRender(boolean pre, float partialTick)
+		{
+			if(func_modifyRender!=null)
+				func_modifyRender.accept(pre, partialTick);
+		}
 	}
 }

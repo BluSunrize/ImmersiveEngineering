@@ -33,7 +33,7 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 		Iterator<LightningAnimation> animationIt = TileEntityTeslaCoil.effectMap.get(tile.getPos()).iterator();
 
 		setLightmapDisabled(true);
-		GL11.glPushAttrib(GL11.GL_LIGHTING);
+		boolean wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
 		GlStateManager.disableLighting();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		while(animationIt.hasNext())
@@ -62,7 +62,10 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 
 			GlStateManager.popMatrix();
 		}
-		GL11.glPopAttrib();
+		if(wasLightingEnabled)
+			GlStateManager.enableLighting();
+		else
+			GlStateManager.disableLighting();
 		setLightmapDisabled(false);
 	}
 

@@ -8,9 +8,13 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
-import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualInstance.ManualEntry;
+import blusunrize.lib.manual.ManualPages;
+import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -18,12 +22,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-
-import static blusunrize.lib.manual.SpecialManualElements.PositionedItemStack;
 
 public class ShaderRegistry
 {
@@ -48,6 +51,7 @@ public class ShaderRegistry
 		rarityWeightMap.put(EnumRarity.UNCOMMON, 7);
 		rarityWeightMap.put(EnumRarity.RARE, 5);
 		rarityWeightMap.put(EnumRarity.EPIC, 3);
+		rarityWeightMap.put(Lib.RARITY_Masterwork, 1);
 	}
 
 	/**
@@ -375,21 +379,6 @@ public class ShaderRegistry
 		 */
 		T apply(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, int colour3, String additionalTexture, int colourAddtional);
 	}
-	/*
-	 * Balloon Shaders are disabled for now, it'S too much work to get it running with OBJ models
-	public static ShaderCaseBalloon registerShader_Balloon(String name, String overlayType, EnumRarity rarity, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
-	{
-		if(!shaderList.contains(name))
-			shaderList.add(name);
-		ShaderCaseBalloon shader = new ShaderCaseBalloon(overlayType, colourPrimary, colourSecondary, additionalTexture);
-		if(!shaderRegistry.containsKey(name))
-			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
-		else
-			shaderRegistry.get(name).addCase(shader);
-
-		return shader;
-	}
-	*/
 
 	public static ManualEntry manualEntry;
 	public static Item itemShader;
@@ -434,9 +423,9 @@ public class ShaderRegistry
 
 		if(manualEntry!=null)
 		{
-			ArrayList<PositionedItemStack[]> recipes = new ArrayList<>();
+			ArrayList<PositionedItemStack[]> recipes = new ArrayList();
 			NonNullList<ItemStack> shaderBags = NonNullList.withSize(ShaderRegistry.sortedRarityMap.size(), ItemStack.EMPTY);
-			recipes = new ArrayList<>();
+			recipes = new ArrayList();
 			for(int i = 0; i < ShaderRegistry.sortedRarityMap.size(); i++)
 			{
 				EnumRarity outputRarity = ShaderRegistry.sortedRarityMap.get(i);
@@ -475,8 +464,8 @@ public class ShaderRegistry
 //						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s1, 69, 0)});
 				}
 			}
-			//TODO manualEntry.getPages()[2] = new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2", shaderBags);
-			//TODO manualEntry.getPages()[3] = new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader3", (Object[])recipes.toArray(new PositionedItemStack[recipes.size()][3]));
+			manualEntry.getPages()[2] = new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2", shaderBags);
+			manualEntry.getPages()[3] = new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader3", (Object[])recipes.toArray(new PositionedItemStack[recipes.size()][3]));
 		}
 	}
 
@@ -600,6 +589,30 @@ public class ShaderRegistry
 		return list;
 	}
 
+	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(ItemStack itemStack)
+	{
+		if(!itemStack.isEmpty()&&itemStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		{
+			CapabilityShader.ShaderWrapper wrapper = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+			if(wrapper!=null)
+				return getStoredShaderAndCase(wrapper);
+		}
+		return null;
+	}
+
+	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(CapabilityShader.ShaderWrapper wrapper)
+	{
+		ItemStack shader = wrapper.getShaderItem();
+		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+		{
+			IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
+			ShaderRegistryEntry registryEntry = shaderRegistry.get(iShaderItem.getShaderName(shader));
+			if(registryEntry!=null)
+				return Triple.of(shader, registryEntry, registryEntry.getCase(wrapper.getShaderType()));
+		}
+		return null;
+	}
+
 	public static class ShaderRegistryEntry
 	{
 		public String name;
@@ -614,6 +627,10 @@ public class ShaderRegistry
 		public String info_reference;
 		public String info_details;
 		public IngredientStack replicationCost;
+
+		public IShaderEffectFunction effectFunction;
+		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos, dir, scale) -> {
+		};
 
 		public ShaderRegistryEntry(String name, EnumRarity rarity, List<ShaderCase> cases)
 		{
@@ -716,6 +733,20 @@ public class ShaderRegistry
 		{
 			this.replicationCost = replicationCost;
 			return this;
+		}
+
+		public ShaderRegistryEntry setEffectFunction(@Nonnull IShaderEffectFunction effectFunction)
+		{
+			this.effectFunction = effectFunction;
+			return this;
+		}
+
+		@Nonnull
+		public IShaderEffectFunction getEffectFunction()
+		{
+			if(effectFunction!=null)
+				return effectFunction;
+			return DEFAULT_EFFECT;
 		}
 	}
 }

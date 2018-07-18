@@ -20,13 +20,13 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Abst
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
@@ -69,21 +69,20 @@ import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.Lib.TOOL_HAMMER;
 import static blusunrize.immersiveengineering.api.Lib.TOOL_WIRECUTTER;
+import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.cutterDurabiliy;
+import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.hammerDurabiliy;
 
-public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
+public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDamageableIE
 {
 	public static final int HAMMER_META = 0;
 	public static final int CUTTER_META = 1;
 	public static final int VOLTMETER_META = 2;
 	public static final int MANUAL_META = 3;
-	static int hammerMaxDamage;
-	static int cutterMaxDamage;
 
 	public ItemIETool()
 	{
 		super("tool", 1, "hammer", "wirecutter", "voltmeter", "manual");
-		hammerMaxDamage = IEConfig.Tools.hammerDurabiliy;
-		cutterMaxDamage = IEConfig.Tools.cutterDurabiliy;
+		canRepair = false;//Uses a custom repair recipe to prevent #2990
 	}
 
 	@Override
@@ -130,12 +129,6 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				}
 			}
 		}
-		if(flag.isAdvanced()&&stack.getMetadata() < VOLTMETER_META)
-		{
-			int nbtDamage = ItemNBTHelper.getInt(stack, stack.getMetadata()==HAMMER_META?"hammerDmg": "cutterDmg");
-			int maxDamage = stack.getMetadata()==HAMMER_META?hammerMaxDamage: cutterMaxDamage;
-			list.add("Durability: "+(maxDamage-nbtDamage)+" / "+maxDamage);
-		}
 	}
 
 	@Override
@@ -146,7 +139,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 
 	@Nonnull
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
+	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		if(stack.getMetadata()==HAMMER_META||stack.getMetadata()==CUTTER_META)
 		{
@@ -169,14 +162,13 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		if(amount <= 0)
 			return;
 
-		String nbtKey = stack.getMetadata()==HAMMER_META?"hammerDmg": "cutterDmg";
-		int curDamage = ItemNBTHelper.getInt(stack, nbtKey);
+		int curDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE);
 		curDamage += amount;
 
 		if(player instanceof EntityPlayerMP)
 			CriteriaTriggers.ITEM_DURABILITY_CHANGED.trigger((EntityPlayerMP)player, stack, curDamage);
 
-		if(curDamage >= (stack.getMetadata()==HAMMER_META?hammerMaxDamage: cutterMaxDamage))
+		if(curDamage >= (stack.getMetadata()==HAMMER_META?hammerDurabiliy: cutterDurabiliy))
 		{
 			if(player!=null)
 			{
@@ -186,7 +178,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 			stack.shrink(1);
 			return;
 		}
-		ItemNBTHelper.setInt(stack, nbtKey, curDamage);
+		ItemNBTHelper.setInt(stack, Lib.NBT_DAMAGE, curDamage);
 	}
 
 	@Override
@@ -196,15 +188,25 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	}
 
 	@Override
-	public boolean isDamaged(ItemStack stack)
+	public int getMaxDamageIE(ItemStack stack)
 	{
-		return false;
+		if(stack.getMetadata()==HAMMER_META)
+			return hammerDurabiliy;
+		else if(stack.getMetadata()==CUTTER_META)
+			return cutterDurabiliy;
+		return 0;
 	}
 
 	@Override
-	public boolean isEnchantable(ItemStack stack)
+	public int getItemDamageIE(ItemStack stack)
 	{
-		return stack.getMetadata()==HAMMER_META;
+		return ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE);
+	}
+
+	@Override
+	public boolean isEnchantable(@Nonnull ItemStack stack)
+	{
+		return stack.getMetadata()==HAMMER_META||stack.getMetadata()==CUTTER_META;
 	}
 
 	@Override
@@ -323,9 +325,9 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				IESaveData.setDirty(world.provider.getDimension());
 				if(cut)
 				{
-					int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
-					if(nbtDamage < cutterMaxDamage)
-						ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
+					int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
+					if(nbtDamage < cutterDurabiliy)
+						ItemNBTHelper.setInt(stack, Lib.NBT_DAMAGE, nbtDamage);
 					else
 					{
 						player.renderBrokenItemStack(stack);
@@ -398,7 +400,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(stack.getMetadata()==MANUAL_META)
@@ -422,7 +424,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
 	{
 		if(getToolClasses(stack).contains(toolClass))
 			return 2;
@@ -433,21 +435,14 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		if(stack.getMetadata()==HAMMER_META)
-			return (ItemNBTHelper.getInt(stack, "hammerDmg") > 0);
-		else if(stack.getMetadata()==CUTTER_META)
-			return (ItemNBTHelper.getInt(stack, "cutterDmg") > 0);
-		return false;
+		return ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE) > 0;
 	}
 
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		if(stack.getMetadata()==HAMMER_META)
-			return ItemNBTHelper.getInt(stack, "hammerDmg")/(double)hammerMaxDamage;
-		else if(stack.getMetadata()==CUTTER_META)
-			return ItemNBTHelper.getInt(stack, "cutterDmg")/(double)cutterMaxDamage;
-		return 0;
+		double max = (double)getMaxDamageIE(stack);
+		return ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)/max;
 	}
 
 	@Nonnull
@@ -474,7 +469,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
 		if(stack.getMetadata()==HAMMER_META)
 		{

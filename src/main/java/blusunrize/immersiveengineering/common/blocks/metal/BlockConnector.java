@@ -25,8 +25,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -197,8 +195,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				}
 			}
 		}
-		Item item = Item.getItemFromBlock(this);
-		return item==Items.AIR?ItemStack.EMPTY: new ItemStack(item, 1, this.damageDropped(world.getBlockState(pos)));
+		return super.getPickBlock(state, target, world, pos, player);
 	}
 
 	@Override

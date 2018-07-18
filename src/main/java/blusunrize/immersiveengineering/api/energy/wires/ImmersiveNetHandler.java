@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.Utils;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.state.IBlockState;
@@ -28,10 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -119,6 +117,7 @@ public class ImmersiveNetHandler
 			for(Connection con : conns)
 				addBlockData(te.getWorld(), con);
 		resetCachedIndirectConnections(te.getWorld(), te.getPos());
+		setProxy(new DimensionBlockPos(te), null);
 	}
 
 	public void addBlockData(World world, Connection con)
@@ -147,6 +146,11 @@ public class ImmersiveNetHandler
 
 
 	public void removeConnection(World world, Connection con)
+	{
+		removeConnection(world, con, getVecForIICAt(world, con.start, con), getVecForIICAt(world, con.end, con));
+	}
+
+	public void removeConnection(World world, Connection con, Vec3d vecStart, Vec3d vecEnd)
 	{
 		if(con==null||world==null)
 			return;
@@ -177,10 +181,10 @@ public class ImmersiveNetHandler
 				}
 			}
 		};
-		raytraceAlongCatenary(con, world, (p) -> {
+		raytraceAlongCatenaryRelative(con, (p) -> {
 			handle.accept(p.getLeft(), mapForDim);
 			return false;
-		}, (p) -> handle.accept(p.getLeft(), mapForDim));
+		}, (p) -> handle.accept(p.getLeft(), mapForDim), vecStart, vecEnd);
 
 		IImmersiveConnectable iic = toIIC(con.end, world);
 		if(iic!=null)
@@ -247,6 +251,7 @@ public class ImmersiveNetHandler
 	{
 		getMultimap(world).clear();
 		blockWireMap.removeObject(world);
+		proxies.clear();
 	}
 
 	public void clearConnectionsOriginatingFrom(BlockPos node, World world)
@@ -334,12 +339,18 @@ public class ImmersiveNetHandler
 		}
 	}
 
+	public void clearAllConnectionsFor(BlockPos node, World world, boolean doDrops)
+	{
+		clearAllConnectionsFor(node, world, null, doDrops);
+	}
+
 	/**
 	 * Clears all connections to and from this node.
 	 */
-	public void clearAllConnectionsFor(BlockPos node, World world, boolean doDrops)
+	public void clearAllConnectionsFor(BlockPos node, World world, @Nullable IImmersiveConnectable iic, boolean doDrops)
 	{
-		IImmersiveConnectable iic = toIIC(node, world);
+		if(iic==null)
+			iic = toIIC(node, world);
 		if(iic!=null)
 			iic.removeCable(null);
 
@@ -347,7 +358,8 @@ public class ImmersiveNetHandler
 		{
 			for(Connection con : getMultimap(world.provider.getDimension()).get(node))
 			{
-				removeConnection(world, con);
+				removeConnection(world, con, iic!=null?iic.getConnectionOffset(con): Vec3d.ZERO,
+						getVecForIICAt(world, con.end, con));
 				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
 				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
 				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
@@ -665,7 +677,7 @@ public class ImmersiveNetHandler
 		public int length;
 		public Vec3d[] catenaryVertices;
 		public static final int vertices = 17;
-
+		public boolean vertical = false;
 		/**
 		 * Used to calculate the catenary vertices:
 		 * Y = a * cosh((( X-offsetX)/a)+offsetY
@@ -694,7 +706,10 @@ public class ImmersiveNetHandler
 		public Vec3d[] getSubVertices(Vec3d start, Vec3d end)
 		{
 			if(catenaryVertices==null)
+			{
 				catenaryVertices = getConnectionCatenary(this, start, end);
+				vertical = start.x==end.x&&start.z==end.z;
+			}
 			return catenaryVertices;
 		}
 
@@ -706,8 +721,13 @@ public class ImmersiveNetHandler
 
 		public Vec3d getVecAt(double pos, Vec3d vStart, Vec3d across, double lengthHor)
 		{
-			return vStart.addVector(pos*across.x, catA*Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
-					pos*across.z);
+			getSubVertices(vStart, vStart.add(across));
+			pos = MathHelper.clamp(pos, 0, 1);
+			if(vertical)
+				return vStart.add(across.scale(pos/across.lengthVector()));
+			else
+				return vStart.addVector(pos*across.x, catA*Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
+						pos*across.z);
 		}
 
 		public NBTTagCompound writeToNBT()
@@ -870,7 +890,10 @@ public class ImmersiveNetHandler
 					Set<Triple<Connection, Vec3d, Vec3d>> conns = info.in;
 					Set<Pair<Connection, BlockPos>> toBreak = new HashSet<>();
 					for(Triple<Connection, Vec3d, Vec3d> conn : conns)
-						if(!conn.getLeft().start.equals(pos)&&!conn.getLeft().end.equals(pos))
+					{
+						Vec3d[] verts = conn.getLeft().getSubVertices(worldIn);
+						if(!Utils.isVecInBlock(verts[0], pos, conn.getLeft().start)&&
+								!Utils.isVecInBlock(verts[verts.length-1], pos, conn.getLeft().start))
 						{
 							BlockPos dropPos = pos;
 							if(ApiUtils.preventsConnection(worldIn, pos, newState, conn.getMiddle(), conn.getRight()))
@@ -884,6 +907,7 @@ public class ImmersiveNetHandler
 								toBreak.add(new ImmutablePair<>(conn.getLeft(), dropPos));
 							}
 						}
+					}
 					for(Pair<Connection, BlockPos> b : toBreak)
 						removeConnectionAndDrop(b.getLeft(), worldIn, b.getRight());
 				}

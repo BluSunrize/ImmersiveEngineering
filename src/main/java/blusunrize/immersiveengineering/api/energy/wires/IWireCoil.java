@@ -20,18 +20,18 @@ public interface IWireCoil
 {
 	WireType getWireType(ItemStack stack);
 
-	public default boolean canConnectCable(ItemStack stack, TileEntity targetEntity)
+	default boolean canConnectCable(ItemStack stack, TileEntity targetEntity)
 	{
 		return true;
 	}
 
-	public default int getMaxLength(ItemStack stack)
+	default int getMaxLength(ItemStack stack)
 	{
 		WireType wire = getWireType(stack);
 		return wire.getMaxLength();
 	}
 
-	public default void consumeWire(ItemStack stack, int length)
+	default void consumeWire(ItemStack stack, int length)
 	{
 		stack.shrink(1);
 	}

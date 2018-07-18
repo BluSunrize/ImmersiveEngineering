@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.client.fx.ParticleFractal;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
@@ -111,6 +112,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientEventHandler implements IResourceManagerReloadListener
@@ -126,7 +128,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_"+i);
 
 		ImmersiveEngineering.proxy.clearRenderCaches();
-		ImmersiveEngineering.proxy.reloadManual();
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet<>();
@@ -135,58 +136,60 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if(event.side.isClient()&&event.phase==Phase.START&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
+		if(event.side.isClient()&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
 		{
-			skyhookGrabableConnections.clear();
-			EntityPlayer player = event.player;
-			ItemStack stack = player.getActiveItemStack();
-			if(!stack.isEmpty()&&stack.getItem() instanceof ItemSkyhook)
+			if(event.phase==Phase.START)
 			{
-				Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
-				if(line!=null)
-					skyhookGrabableConnections.add(line);
-			}
-		}
-
-		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getValue().decrementAndGet() <= 0);
-
-		if(event.side.isClient()&&event.phase==Phase.END&&event.player!=null)
-		{
-			if(this.shieldToggleTimer > 0)
-				this.shieldToggleTimer--;
-			if(ClientProxy.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
-				if(this.shieldToggleTimer <= 0)
-					this.shieldToggleTimer = 7;
-				else
+				skyhookGrabableConnections.clear();
+				EntityPlayer player = event.player;
+				ItemStack stack = player.getActiveItemStack();
+				if(!stack.isEmpty()&&stack.getItem() instanceof ItemSkyhook)
 				{
-					EntityPlayer player = event.player;
-					ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
-					if(!held.isEmpty()&&held.getItem() instanceof ItemIEShield)
-					{
-						if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
-							ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
-					}
+					Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
+					if(line!=null)
+						skyhookGrabableConnections.add(line);
+				}
+			}
+
+			if(event.phase==Phase.END)
+			{
+				if(this.shieldToggleTimer > 0)
+					this.shieldToggleTimer--;
+				if(ClientProxy.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
+					if(this.shieldToggleTimer <= 0)
+						this.shieldToggleTimer = 7;
 					else
 					{
-						for(int i = 0; i < player.inventory.mainInventory.size(); i++)
+						EntityPlayer player = event.player;
+						ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
+						if(!held.isEmpty()&&held.getItem() instanceof ItemIEShield)
 						{
-							ItemStack s = player.inventory.mainInventory.get(i);
-							if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
+							if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
+								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
+						}
+						else
+						{
+							for(int i = 0; i < player.inventory.mainInventory.size(); i++)
+							{
+								ItemStack s = player.inventory.mainInventory.get(i);
+								if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+									ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
+							}
 						}
 					}
+				if(this.shieldToggleButton!=ClientUtils.mc().gameSettings.keyBindBack.isKeyDown())
+					this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
+
+
+				if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
+				{
+					ItemStack held = event.player.getHeldItem(EnumHand.MAIN_HAND);
+					if(held.getItem() instanceof ItemChemthrower&&((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
+						ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
 				}
-			if(this.shieldToggleButton!=ClientUtils.mc().gameSettings.keyBindBack.isKeyDown())
-				this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
-
-
-			if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
-			{
-				ItemStack held = event.player.getHeldItem(EnumHand.MAIN_HAND);
-				if(held.getItem() instanceof ItemChemthrower&&((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
 			}
 		}
+
 //		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
 //		{
 //			EntityPlayer player = event.player;
@@ -202,6 +205,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 //			}
 //
 //		}
+	}
+
+	@SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event)
+	{
+		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getValue().decrementAndGet() <= 0);
 	}
 
 	@SubscribeEvent
@@ -352,7 +361,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		connectionsRendered = true;
 	}
 	 */
@@ -751,13 +760,13 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					//					int chargeLevel = Math.min(99, (int)(duration/(float)chargeTime*100));
 					//					//					ClientUtils.drawTexturedRect(0,0, 64,32, 0/256f,64/256f, 96/256f,128/256f);
 					//
-					//					GL11.glScalef(1.5f,1.5f,1.5f);
+					//					GlStateManager.scale(1.5f,1.5f,1.5f);
 					//					int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
 					//					ClientProxy.nixieFont.setDrawTubeFlag(false);
 					//					//					ClientProxy.nixieFont.drawString((chargeLevel<10?"0"+chargeLevel:""+chargeLevel), 19,3, col);
 					//					ClientProxy.nixieFont.setDrawTubeFlag(true);
 					//
-					//					GL11.glPopMatrix();
+					//					GlStateManager.popMatrix();
 					//				}
 
 					RayTraceResult mop = ClientUtils.mc().objectMouseOver;
@@ -1239,6 +1248,33 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		if(!chunkBorders&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK&&ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
 			chunkBorders = true;
 
+		float partial = event.getPartialTicks();
+		if(!ParticleFractal.PARTICLE_FRACTAL_DEQUE.isEmpty())
+		{
+			double px = TileEntityRendererDispatcher.staticPlayerX;
+			double py = TileEntityRendererDispatcher.staticPlayerY;
+			double pz = TileEntityRendererDispatcher.staticPlayerZ;
+
+			Tessellator tessellator = Tessellator.getInstance();
+
+			GlStateManager.disableTexture2D();
+			GlStateManager.enableBlend();
+			GlStateManager.disableCull();
+			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+
+			tessellator.getBuffer().setTranslation(-px, -py, -pz);
+			ParticleFractal part;
+			while((part = ParticleFractal.PARTICLE_FRACTAL_DEQUE.pollFirst())!=null)
+				part.render(tessellator, tessellator.getBuffer(), partial);
+			tessellator.getBuffer().setTranslation(0, 0, 0);
+
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+			GlStateManager.enableCull();
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture2D();
+		}
+
 		if(chunkBorders)
 		{
 			EntityPlayer player = ClientUtils.mc().player;
@@ -1293,7 +1329,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			Entity viewer = ClientUtils.mc().getRenderViewEntity();
 			if(viewer==null)
 				viewer = ClientUtils.mc().player;
-			float partial = ClientUtils.mc().getRenderPartialTicks();
 			double dx = viewer.lastTickPosX+(viewer.posX-viewer.lastTickPosX)*partial;
 			double dy = viewer.lastTickPosY+(viewer.posY-viewer.lastTickPosY)*partial;
 			double dz = viewer.lastTickPosZ+(viewer.posZ-viewer.lastTickPosZ)*partial;
@@ -1304,7 +1339,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
 			bb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			for(Map.Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+			for(Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 			{
 				Connection conn = entry.getKey();
 				bb.setTranslation(conn.start.getX()-dx,

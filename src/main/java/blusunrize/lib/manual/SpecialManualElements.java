@@ -24,8 +24,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.*;
 
@@ -254,31 +252,34 @@ public abstract class SpecialManualElements extends SpecialManualElement
 				gui.drawGradientRect(x, y-2, x+120, y-1, col, col);
 
 				int yOff = 0;
-				for(int i = 0; i < localizedTable.length; i++)
-					if(localizedTable[i]!=null)
-						for(int j = 0; j < localizedTable[i].length; j++)
-							if(localizedTable[i][j]!=null)
+				for(String[] line : localizedTable)
+					if(line!=null)
+					{
+						int height = 0;
+						for(int j = 0; j < line.length; j++)
+							if(line[j]!=null)
 							{
 								int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-								int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
-								ManualUtils.drawSplitString(manual.fontRenderer, localizedTable[i][j], xx, y+yOff, w, manual.getTextColour());
+								ManualUtils.drawSplitString(manual.fontRenderer, line[j], xx, y+textHeight+yOff, w, manual.getTextColour());
 								//							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
-								if(j!=0)
-								{
-									if(horizontalBars)
-									{
-										float scale = .5f;
-										GL11.glScalef(1, scale, 1);
-										gui.drawGradientRect(x, (int)((y+yOff+tableLines*manual.fontRenderer.FONT_HEIGHT)/scale), x+120,
-												(int)((y+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale+1), manual.getTextColour()|0xff000000,
-												manual.getTextColour()|0xff000000);
-										GL11.glScalef(1, 1/scale, 1);
-									}
-
-									yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
-								}
+								int l = manual.fontRenderer.listFormattedStringToWidth(line[j], w).size();
+								if(l > height)
+									height = l;
 							}
+
+						if(horizontalBars)
+						{
+							float scale = .5f;
+							GlStateManager.scale(1, scale, 1);
+							int barHeight = (int)((y+textHeight+yOff+height*manual.fontRenderer.FONT_HEIGHT)/scale);
+							gui.drawGradientRect(x, barHeight, x+120, barHeight+1,
+									manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
+							GlStateManager.scale(1, 1/scale, 1);
+						}
+
+						yOff += height*(manual.fontRenderer.FONT_HEIGHT+1);
+					}
 
 				if(bars!=null)
 					for(int i = 0; i < bars.length; i++)
@@ -346,7 +347,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		@Override
 		public void render(GuiManual gui, int x, int y, int mx, int my)
 		{
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.enableRescaleNormal();
 			RenderHelper.enableGUIStandardItemLighting();
 			highlighted = ItemStack.EMPTY;
 			int yOffset = 0;
@@ -364,7 +365,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 				lineSum = line0+line1;
 				int lastLines = length%lineSum;
 				int lastLine = lastLines==line0?line0: lastLines==0?line1: lastLines%line0;
-				GL11.glScalef(scale, scale, scale);
+				GlStateManager.scale(scale, scale, scale);
 				/*
 				 RenderItem.getInstance().renderWithColor=true;
 				 */
@@ -387,10 +388,10 @@ public abstract class SpecialManualElements extends SpecialManualElement
 							highlighted = stacks.get(item);
 					}
 				}
-				GL11.glScalef(1/scale, 1/scale, 1/scale);
+				GlStateManager.scale(1/scale, 1/scale, 1/scale);
 			}
 			RenderHelper.disableStandardItemLighting();
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.disableRescaleNormal();
 			GlStateManager.enableBlend();
 
 			manual.fontRenderer.setUnicodeFlag(false);
@@ -759,7 +760,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		@Override
 		public void render(GuiManual gui, int x, int y, int mx, int my)
 		{
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.enableRescaleNormal();
 			RenderHelper.enableGUIStandardItemLighting();
 
 			highlighted = ItemStack.EMPTY;
@@ -779,7 +780,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 
 			}
 
-			GL11.glTranslated(0, 0, 300);
+			GlStateManager.translate(0, 0, 300);
 			boolean uni = manual.fontRenderer.getUnicodeFlag();
 			manual.fontRenderer.setUnicodeFlag(false);
 			/**RenderItem.getInstance().renderWithColor=true;*/
@@ -797,8 +798,8 @@ public abstract class SpecialManualElements extends SpecialManualElement
 						}
 			}
 
-			GL11.glTranslated(0, 0, -300);
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.translate(0, 0, -300);
+			GlStateManager.disableRescaleNormal();
 			GlStateManager.enableBlend();
 			RenderHelper.disableStandardItemLighting();
 

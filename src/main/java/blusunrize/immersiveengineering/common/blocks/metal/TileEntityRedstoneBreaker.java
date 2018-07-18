@@ -64,7 +64,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 		if(endOfLeftConnection==null)
 			calculateLeftConn(mat);
 		boolean isLeft = con.end.equals(endOfLeftConnection)||con.start.equals(endOfLeftConnection);
-		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1.03125): new Vec3d(.875, .5, 1.03125));
+		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1): new Vec3d(.875, .5, 1));
 		return ret;
 	}
 

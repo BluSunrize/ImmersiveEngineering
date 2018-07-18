@@ -34,8 +34,6 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe,
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		JEIHelper.slotDrawable.draw(minecraft, 20, 3);
-		JEIHelper.slotDrawable.draw(minecraft, 102, 3);
 	}
 
 	@Override
@@ -46,8 +44,10 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe,
 		guiItemStacks.init(1, true, 71, 0);
 		guiItemStacks.init(2, false, 102, 3);
 		guiItemStacks.set(0, recipeWrapper.recipeInputs[0]);
+		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 		guiItemStacks.set(1, recipeWrapper.recipeInputs[1]);
 		guiItemStacks.set(2, ingredients.getOutputs(ItemStack.class).get(0));
+		guiItemStacks.setBackground(2, JEIHelper.slotDrawable);
 	}
 
 	@Override

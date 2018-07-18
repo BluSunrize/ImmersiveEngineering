@@ -1,0 +1,19 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:axe_steel"
+  },
+  "pattern": [
+    "SS",
+    "ST",
+    " T"
+  ],
+  "key": {
+    "S": {
+      "item": "#ingotSteel"
+    },
+    "T": {
+      "item": "#stickTreatedWood"
+    }
+  }
+}

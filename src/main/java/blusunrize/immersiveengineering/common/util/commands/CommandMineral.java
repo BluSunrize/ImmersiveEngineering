@@ -101,7 +101,7 @@ public class CommandMineral extends CommandTreeBase
 		}
 
 		@Override
-		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
+		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
 		{
 			StringBuilder s = new StringBuilder();
 			int i = 0;
@@ -128,7 +128,7 @@ public class CommandMineral extends CommandTreeBase
 		}
 
 		@Override
-		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
+		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
 		{
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),
 					sender.getPosition().getX() >> 4, sender.getPosition().getZ() >> 4);

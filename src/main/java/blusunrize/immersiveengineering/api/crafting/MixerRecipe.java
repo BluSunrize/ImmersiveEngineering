@@ -79,15 +79,19 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public boolean matches(FluidStack fluid, NonNullList<ItemStack> components)
 	{
-		if(fluid!=null&&fluid.containsFluid(this.fluidInput))
-		{
+		return compareToInputs(fluid, components, this.fluidInput, this.itemInputs);
+	}
 
+	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidStack fluidInput, IngredientStack[] itemInputs)
+	{
+		if(fluid!=null&&fluid.containsFluid(fluidInput))
+		{
 			ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(components.size());
 			for(ItemStack s : components)
 				if(!s.isEmpty())
 					queryList.add(s.copy());
 
-			for(IngredientStack add : this.itemInputs)
+			for(IngredientStack add : itemInputs)
 				if(add!=null)
 				{
 					int addAmount = add.inputSize;
@@ -121,6 +125,7 @@ public class MixerRecipe extends MultiblockRecipe
 		}
 		return false;
 	}
+
 
 	public int[] getUsedSlots(FluidStack input, NonNullList<ItemStack> components)
 	{

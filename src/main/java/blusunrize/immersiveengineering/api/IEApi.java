@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
+import com.google.common.collect.Lists;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -15,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
@@ -70,7 +72,8 @@ public class IEApi
 	{
 		if(!oreOutputPreference.containsKey(oreName))
 		{
-			ItemStack preferredStack = ApiUtils.isExistingOreName(oreName)?getPreferredStackbyMod(OreDictionary.getOres(oreName)): null;
+			ItemStack preferredStack = ApiUtils.isExistingOreName(oreName)?
+					getPreferredStackbyMod(OreDictionary.getOres(oreName)): ItemStack.EMPTY;
 			oreOutputPreference.put(oreName, preferredStack);
 			return preferredStack;
 		}
@@ -78,7 +81,7 @@ public class IEApi
 		return s==null?ItemStack.EMPTY: s.copy();
 	}
 
-	public static ItemStack getPreferredStackbyMod(List<ItemStack> list)
+	public static ItemStack getPreferredStackbyMod(Collection<ItemStack> list)
 	{
 		ItemStack preferredStack = ItemStack.EMPTY;
 		int lastPref = -1;
@@ -98,6 +101,11 @@ public class IEApi
 				}
 			}
 		return preferredStack.copy();
+	}
+
+	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
+	{
+		return getPreferredStackbyMod(Lists.newArrayList(array));
 	}
 
 	public static boolean isAllowedInCrate(ItemStack stack)

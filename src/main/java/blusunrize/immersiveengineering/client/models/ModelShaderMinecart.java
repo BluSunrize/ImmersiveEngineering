@@ -16,10 +16,10 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class ModelShaderMinecart extends ModelMinecart
 		}
 		if(sCase!=null)
 		{
-			GL11.glEnable(GL11.GL_BLEND);
+			GlStateManager.enableBlend();
 			OpenGlHelper.glBlendFunc(770, 771, 0, 1);
 
 			sideModels[5].rotationPointY = 4.0F-f2;
@@ -75,8 +75,8 @@ public class ModelShaderMinecart extends ModelMinecart
 						{
 							int col = sCase.getARGBColourModifier(shader, null, ""+part, pass);
 							boolean upScale = pass!=layers.length-2;
-							GL11.glScalef(scale, scale, scale);
-							GL11.glColor4f((col >> 16&255)/255f, (col >> 8&255)/255f, (col&255)/255f, (col >> 24&255)/255f);
+							GlStateManager.scale(scale, scale, scale);
+							GlStateManager.color((col >> 16&255)/255f, (col >> 8&255)/255f, (col&255)/255f, (col >> 24&255)/255f);
 
 //							if(pass==maxPasses-1)
 //								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_uncoloured.png");
@@ -92,21 +92,23 @@ public class ModelShaderMinecart extends ModelMinecart
 
 							ClientUtils.mc().getTextureManager().bindTexture(sCase.getReplacementSprite(shader, null, ""+part, pass));
 
-							sCase.modifyRender(shader, null, ""+part, pass, true, false);
+							if(layers[pass].isDynamicLayer())
+								layers[pass].modifyRender(true, part);
 							if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
 								sideModelsMirrored[part].render(f5);
 							else
 								sideModels[part].render(f5);
-							sCase.modifyRender(shader, null, ""+part, pass, false, false);
+							if(layers[pass].isDynamicLayer())
+								layers[pass].modifyRender(false, part);
 
-							GL11.glColor4f(1, 1, 1, 1);
-							GL11.glScalef(1/scale, 1/scale, 1/scale);
-							if(upScale)
-								scale += .001f;
+							GlStateManager.color(1, 1, 1, 1);
+							GlStateManager.scale(1/scale, 1/scale, 1/scale);
+//							if(upScale)
+//								scale += .001f;
 						}
 				}
 
-			GL11.glDisable(GL11.GL_BLEND);
+			GlStateManager.disableBlend();
 		}
 		else
 			super.render(entity, f0, f1, f2, f3, f4, f5);

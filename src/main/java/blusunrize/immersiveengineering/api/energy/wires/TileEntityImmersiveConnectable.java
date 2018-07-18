@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.ListenableFutureTask;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -356,6 +355,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 				return true;
 			}
 		};
+		//TODO thread safety!
 		for(Connection c : conns)
 		{
 			IImmersiveConnectable end = ApiUtils.toIIC(c.end, world, false);
@@ -373,7 +373,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		ImmersiveNetHandler.INSTANCE.addProxy(new IICProxy(this));
+		if(!world.isRemote)
+			ImmersiveNetHandler.INSTANCE.addProxy(new IICProxy(this));
 	}
 
 	@Override
@@ -381,18 +382,14 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		super.validate();
 		if(!world.isRemote)
-			synchronized(world.getMinecraftServer().futureTaskQueue)
-			{
-				world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
-						() -> ImmersiveNetHandler.INSTANCE.onTEValidated(this), null));
-			}
+			ApiUtils.addFutureServerTask(world, () -> ImmersiveNetHandler.INSTANCE.onTEValidated(this));
 	}
 
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		//if (world.isRemote)
-		//	ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(pos, world);
+		if(world.isRemote&&!Minecraft.getMinecraft().isSingleplayer())
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(pos, world, this, false);
 	}
 }

@@ -118,12 +118,14 @@ public class RefineryDriver extends DriverSidedTileEntity
 			return new Object[]{ret};
 		}
 
+		@Override
 		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
 		public Object[] enableComputerControl(Context context, Arguments args)
 		{
 			return super.enableComputerControl(context, args);
 		}
 
+		@Override
 		@Callback(doc = "function(enabled:bool):nil -- Enables or disables the machine. Call \"enableComputerControl(true)\" before using this and disable computer control before removing the computer")
 		public Object[] setEnabled(Context context, Arguments args)
 		{

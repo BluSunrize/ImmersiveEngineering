@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -58,7 +57,6 @@ public class Crusher
 		public void apply()
 		{
 			CrusherRecipe.recipeList.add(recipe);
-			IECompatModule.jeiAddFunc.accept(recipe);
 		}
 
 		@Override
@@ -88,8 +86,6 @@ public class Crusher
 		public void apply()
 		{
 			removedRecipes = CrusherRecipe.removeRecipesForOutput(output);
-			for(CrusherRecipe recipe : removedRecipes)
-				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override
@@ -102,7 +98,7 @@ public class Crusher
 	@ZenMethod
 	public static void removeRecipesForInput(IItemStack input)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(input)));
+		CraftTweakerAPI.apply(new RemoveForInput(CraftTweakerHelper.toStack(input)));
 	}
 
 	private static class RemoveForInput implements IAction
@@ -119,8 +115,6 @@ public class Crusher
 		public void apply()
 		{
 			removedRecipes = CrusherRecipe.removeRecipesForInput(input);
-			for(CrusherRecipe recipe : removedRecipes)
-				IECompatModule.jeiRemoveFunc.accept(recipe);
 		}
 
 		@Override

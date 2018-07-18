@@ -5,7 +5,7 @@
 		"transform": "forge:default-block",
 		"custom": { "flip-v": true },
 		"textures": {
-			"particle": "immmersiveengineering:blocks/storage_steel"
+			"particle": "immersiveengineering:blocks/storage_steel"
 		}
 	},
 	"variants":
@@ -91,6 +91,10 @@
 				"fixed": {"scale": [ 2,2,2 ]},
 				"gui": { "translation": [ 0,0,0 ], "rotation": [{ "x": 20}, { "y": 45 }], "scale": [ 1.5, 1.5, 1.5 ] }
 			}
+		}],
+		"inventory,type=toolbox": [{
+			"custom": {"flip-v": true},
+			"model": "immersiveengineering:toolbox.obj"
 		}],
 		"type":
 		{

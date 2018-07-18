@@ -98,9 +98,9 @@ public class IESmartObjModel extends OBJBakedModel
 		//matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
 		//Dynamic stuff to use when figurign out positioning for new items!
 		//if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)//FP_R
-		//	matrix = new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0);
+		//	matrix =  new Matrix4().scale(.375, .4375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0);
 		//else if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)//FP_L
-		//	matrix = new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0);
+		//	matrix = new Matrix4().scale(-.375, .4375, .375).translate(.25, 1, .5).rotate(-Math.PI*.5, 0, 1, 0);
 		//else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND) //TP_R
 		//	matrix = new Matrix4().translate(0, .5, .1);
 		//else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND) //TP_L
@@ -301,10 +301,12 @@ public class IESmartObjModel extends OBJBakedModel
 			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
+		Map<BakedQuad, ShaderLayer> shaderedQuadMap = new HashMap<>();
 		for(String groupName : getModel().getMatLib().getGroups().keySet())
 		{
-			addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, quads);
+			addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, shaderedQuadMap);
 		}
+		quads.addAll(shaderedQuadMap.keySet());
 
 		if(callback!=null)
 			quads = callback.modifyQuads(callbackObject, quads);
@@ -312,7 +314,7 @@ public class IESmartObjModel extends OBJBakedModel
 	}
 
 	public <T> void addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName, ShaderCase sCase,
-									 ItemStack shader, List<BakedQuad> quads)
+									 ItemStack shader, Map<BakedQuad, ShaderLayer> quads)
 	{
 
 		int maxPasses = 1;
@@ -436,7 +438,12 @@ public class IESmartObjModel extends OBJBakedModel
 						for(int i = 0; i < 4; i++)
 							putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
 						if(builder instanceof UnpackedBakedQuad.Builder)
-							quads.add(((UnpackedBakedQuad.Builder)builder).build());
+						{
+							//It's ugly, but it should do the trick
+							quads.put(((UnpackedBakedQuad.Builder)builder).build(), shaderLayer!=null&&shaderLayer.isDynamicLayer()?shaderLayer: null);
+//							if(shaderLayer==null || !shaderLayer.isDynamicLayer())
+//							quads.put(((UnpackedBakedQuad.Builder) builder).build(), null);
+						}
 					}
 				}
 			}

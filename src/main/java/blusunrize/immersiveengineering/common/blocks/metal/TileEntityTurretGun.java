@@ -85,10 +85,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 					this.energyStorage.extractEnergy(energy, false);
 					this.sendRenderPacket();
 
-					double dX = target.posX-(getPos().getX()+.5);
-					double dY = target.posY-(getPos().getY()+.5);
-					double dZ = target.posZ-(getPos().getZ()+.5);
-					Vec3d vec = new Vec3d(dX, dY, dZ).normalize();
+					Vec3d vec = getGunToTargetVec(target).normalize();
 
 					int count = bullet.getProjectileCount(null);
 					if(count==1)
@@ -147,7 +144,8 @@ public class TileEntityTurretGun extends TileEntityTurret
 
 	EntityRevolvershot getBulletEntity(World world, Vec3d vecDir, IBullet type)
 	{
-		EntityRevolvershot bullet = new EntityRevolvershot(world, getPos().getX()+.5+vecDir.x, getPos().getY()+1.375+vecDir.y, getPos().getZ()+.5+vecDir.z, 0, 0, 0, type);
+		Vec3d gunPos = getGunPosition();
+		EntityRevolvershot bullet = new EntityRevolvershot(world, gunPos.x+vecDir.x, gunPos.y+vecDir.y, gunPos.z+vecDir.z, 0, 0, 0, type);
 		bullet.motionX = vecDir.x;
 		bullet.motionY = vecDir.y;
 		bullet.motionZ = vecDir.z;

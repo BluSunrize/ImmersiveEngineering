@@ -20,8 +20,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +89,7 @@ public class ManualPageBlueprint extends SpecialManualElements
 	@Override
 	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
 	{
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableGUIStandardItemLighting();
 
 		highlighted = ItemStack.EMPTY;
@@ -111,7 +109,7 @@ public class ManualPageBlueprint extends SpecialManualElements
 
 		}
 
-		GL11.glTranslated(0, 0, 300);
+		GlStateManager.translate(0, 0, 300);
 		boolean uni = manual.fontRenderer.getUnicodeFlag();
 		manual.fontRenderer.setUnicodeFlag(false);
 		/**RenderItem.getInstance().renderWithColor=true;*/
@@ -129,8 +127,8 @@ public class ManualPageBlueprint extends SpecialManualElements
 					}
 		}
 
-		GL11.glTranslated(0, 0, -300);
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		GlStateManager.translate(0, 0, -300);
+		GlStateManager.disableRescaleNormal();
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 

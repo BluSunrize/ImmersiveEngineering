@@ -43,8 +43,6 @@ import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 import slimeknights.tconstruct.tools.TinkerTraits;
 
-import java.util.Locale;
-
 public class TConstructHelper extends IECompatModule
 {
 	public static final Material treatedWood = new Material("treatedwood", 0x653522);
@@ -59,11 +57,11 @@ public class TConstructHelper extends IECompatModule
 
 	static
 	{
-		fluidUranium = new FluidColouredMetal("uranium", 0x596552, 600);
+		fluidUranium = IEContent.setupFluid(new FluidColouredMetal("uranium", 0x596552, 600));
 		sendFluidForMelting("Uranium", fluidUranium);
 		blockMoltenUranium = new BlockIEFluid("molten_uranium", fluidUranium, net.minecraft.block.material.Material.LAVA);
 
-		fluidConstantan = new FluidColouredMetal("constantan", 0xf7866c, 518);
+		fluidConstantan = IEContent.setupFluid(new FluidColouredMetal("constantan", 0xf7866c, 518));
 		sendFluidForMelting("Constantan", fluidConstantan);
 		blockMoltenConstantan = new BlockIEFluid("molten_constantan", fluidConstantan, net.minecraft.block.material.Material.LAVA);
 	}
@@ -146,17 +144,6 @@ public class TConstructHelper extends IECompatModule
 		hemp.setRenderInfo(0xa68b78);
 	}
 
-	public static Fluid sendFluidForMelting(String ore, int colour, int temp)
-	{
-		Fluid fluid = new FluidColouredMetal(ore.toLowerCase(Locale.ENGLISH), colour, temp);
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("fluid", fluid.getName());
-		tag.setString("ore", ore);
-		tag.setBoolean("toolforge", true);
-		FMLInterModComms.sendMessage("tconstruct", "integrateSmeltery", tag);
-		return fluid;
-	}
-
 	public static Fluid sendFluidForMelting(String ore, Fluid fluid)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
@@ -207,7 +194,6 @@ public class TConstructHelper extends IECompatModule
 			this.setTemperature(temp);
 			this.setDensity(2000);
 			this.setViscosity(10000);
-			FluidRegistry.registerFluid(this);
 		}
 
 		@Override

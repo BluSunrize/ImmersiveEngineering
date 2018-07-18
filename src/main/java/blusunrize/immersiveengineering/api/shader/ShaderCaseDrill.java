@@ -54,7 +54,7 @@ public class ShaderCaseDrill extends ShaderCase
 
 	}
 
-	public ShaderCase addHeadLayers(ShaderLayer... addedLayers)
+	public ShaderCaseDrill addHeadLayers(ShaderLayer... addedLayers)
 	{
 		addLayers(layers.length, addedLayers);
 		headLayers += addedLayers.length;
@@ -126,9 +126,4 @@ public class ShaderCaseDrill extends ShaderCase
 //		if(this.additionalTexture!=null)
 //			i_drillAdditional = ApiUtils.getRegisterSprite(map, this.baseTexturePath+additionalTexture);
 //	}
-
-	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
-	{
-	}
 }

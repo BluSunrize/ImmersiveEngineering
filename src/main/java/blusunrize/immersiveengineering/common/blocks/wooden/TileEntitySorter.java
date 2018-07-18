@@ -29,6 +29,10 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 {
@@ -177,39 +181,8 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		for(EnumFacing side : EnumFacing.values())
 			if(side!=inputSide)
 			{
-				boolean unmapped = true;
-				boolean allowed = false;
-				filterIteration:
-				{
-					for(ItemStack filterStack : filter.filters[side.ordinal()])
-						if(!filterStack.isEmpty())
-						{
-							unmapped = false;
-
-							boolean b = OreDictionary.itemMatches(filterStack, stack, true);
-
-							if(!b&&doFuzzy(side.ordinal()))
-								b = filterStack.getItem().equals(stack.getItem());
-
-							if(!b&&doOredict(side.ordinal()))
-								for(String name : OreDictionary.getOreNames())
-									if(Utils.compareToOreName(stack, name)&&Utils.compareToOreName(filterStack, name))
-									{
-										b = true;
-										break;
-									}
-
-							if(doNBT(side.ordinal()))
-								b &= Utils.compareItemNBT(filterStack, stack);
-							if(b)
-							{
-								allowed = true;
-								break filterIteration;
-							}
-
-						}
-				}
-				if(allowed)
+				EnumFilterResult result = checkStackAgainstFilter(stack, side, allowUnmapped);
+				if(result==EnumFilterResult.VALID_FILTERED)
 				{
 					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
 					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
@@ -217,7 +190,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 					else if(allowThrowing)
 						validFilteredEntityOuts.add(side.ordinal());
 				}
-				else if(allowUnmapped&&unmapped)
+				else if(result==EnumFilterResult.VALID_UNFILTERED)
 				{
 					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
 					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
@@ -235,6 +208,118 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		};
 	}
 
+	public ItemStack pullItem(EnumFacing outputSide, int amount, boolean simulate)
+	{
+		if(!world.isRemote&&!isRouting)
+		{
+			isRouting = true;
+			for(EnumFacing side : EnumFacing.values())
+				if(side!=outputSide)
+				{
+					TileEntity neighbourTile = world.getTileEntity(getPos().offset(side));
+					if(neighbourTile!=null&&neighbourTile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()))
+					{
+						Predicate<ItemStack> concatFilter = null;
+						IItemHandler itemHandler = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+						for(int i = 0; i < itemHandler.getSlots(); i++)
+						{
+							ItemStack extractItem = itemHandler.extractItem(i, amount, simulate);
+							if(!extractItem.isEmpty())
+							{
+								if(concatFilter==null)//Init the filter here, to save on resources
+									concatFilter = this.concatFilters(outputSide, side);
+								if(concatFilter.test(extractItem))
+								{
+									isRouting = false;
+									return extractItem;
+								}
+							}
+						}
+					}
+				}
+			isRouting = false;
+		}
+		return ItemStack.EMPTY;
+	}
+
+	private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean oredict, boolean nbt)
+	{
+		boolean b = OreDictionary.itemMatches(filterStack, stack, true);
+		if(!b&&fuzzy)
+			b = filterStack.getItem().equals(stack.getItem());
+		if(!b&&oredict)
+			for(String name : OreDictionary.getOreNames())
+				if(Utils.compareToOreName(stack, name)&&Utils.compareToOreName(filterStack, name))
+				{
+					b = true;
+					break;
+				}
+		if(nbt)
+			b &= Utils.compareItemNBT(filterStack, stack);
+		return b;
+	}
+
+	/**
+	 * @param stack         the stack to check
+	 * @param side          the side the filter is on
+	 * @param allowUnmapped whether unmapped results are allowed
+	 * @return If the stack is permitted by the given filter
+	 */
+	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, EnumFacing side, boolean allowUnmapped)
+	{
+		boolean unmapped = true;
+		for(ItemStack filterStack : filter.filters[side.ordinal()])
+			if(!filterStack.isEmpty())
+			{
+				unmapped = false;
+				if(compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doOredict(side.ordinal()), doNBT(side.ordinal())))
+					return EnumFilterResult.VALID_FILTERED;
+			}
+		if(allowUnmapped&&unmapped)
+			return EnumFilterResult.VALID_UNFILTERED;
+		return EnumFilterResult.INVALID;
+	}
+
+	/**
+	 * @return A Predicate representing the concatinated filters of two sides.<br>
+	 * If one filter is empty, uses the full filter of the other side, else the matching items make up the filter
+	 */
+	private Predicate<ItemStack> concatFilters(EnumFacing side0, EnumFacing side1)
+	{
+		final List<ItemStack> concat = new ArrayList<>();
+		for(ItemStack filterStack : filter.filters[side0.ordinal()])
+			if(!filterStack.isEmpty())
+				concat.add(filterStack);
+
+		Predicate<ItemStack> matchFilter = concat.isEmpty()?(stack) -> true: new Predicate<ItemStack>()
+		{
+			final Set<ItemStack> filter = new HashSet<>(concat);
+
+			@Override
+			public boolean test(ItemStack stack)
+			{
+				for(ItemStack filterStack : filter)
+					if(compareStackToFilterstack(stack, filterStack, doFuzzy(side0.ordinal()), doOredict(side0.ordinal()), doNBT(side0.ordinal())))
+						return true;
+				return false;
+			}
+		};
+
+		for(ItemStack filterStack : filter.filters[side1.ordinal()])
+			if(!filterStack.isEmpty()&&matchFilter.test(filterStack))
+				concat.add(filterStack);
+
+		final boolean concatFuzzy = doFuzzy(side0.ordinal())|doFuzzy(side1.ordinal());
+		final boolean concatOredict = doOredict(side0.ordinal())|doOredict(side1.ordinal());
+		final boolean concatNBT = doNBT(side0.ordinal())|doNBT(side1.ordinal());
+
+		return concat.isEmpty()?stack -> true: stack -> {
+			for(ItemStack filterStack : concat)
+				if(compareStackToFilterstack(stack, filterStack, concatFuzzy, concatOredict, concatNBT))
+					return true;
+			return false;
+		};
+	}
 
 	//	public void outputItem(ItemStack stack, EnumFacing side)
 	//	{
@@ -306,6 +391,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		return super.getCapability(capability, facing);
 	}
 
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		return id==0;
+	}
+
 	public static class SorterInventoryHandler implements IItemHandlerModifiable
 	{
 		TileEntitySorter sorter;
@@ -338,7 +429,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
-			return ItemStack.EMPTY;
+			return sorter.pullItem(this.side, amount, simulate);
 		}
 
 		@Override
@@ -530,9 +621,10 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		}
 	}
 
-	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	private enum EnumFilterResult
 	{
-		return id==0;
+		INVALID,
+		VALID_FILTERED,
+		VALID_UNFILTERED
 	}
 }

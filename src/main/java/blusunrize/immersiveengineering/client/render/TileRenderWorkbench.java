@@ -42,7 +42,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 		float angle = facing==2?180: facing==4?-90: facing==5?90: 0;
 
 //		GL11.glPushMatrix();
-//		GL11.glTranslated(facing>3?.5: facing==2&&mirror?1: facing==3&&!mirror?1:0, 0, facing<4?.5: facing==5&&mirror?1: facing==4&&!mirror?1:0);
+//		GlStateManager.translate(facing>3?.5: facing==2&&mirror?1: facing==3&&!mirror?1:0, 0, facing<4?.5: facing==5&&mirror?1: facing==4&&!mirror?1:0);
 //		if(mirror)
 //		{
 //			GL11.glScaled(-1, 1, 1);
@@ -55,7 +55,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 //			GL11.glScaled(-1, 1, 1);
 //			GL11.glEnable(GL11.GL_CULL_FACE);
 //		}
-//		GL11.glPopMatrix();
+//		GlStateManager.popMatrix();
 		GlStateManager.pushMatrix();
 		GlStateManager.disableLighting();
 		GlStateManager.translate(.5, 1.0625, .5);

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
@@ -26,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
@@ -38,7 +40,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop, ITickable, IGeneralMultiblock
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	private IConveyorBelt conveyorBeltSubtype;
@@ -130,6 +132,19 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			this.conveyorBeltSubtype.afterRotation(oldDir, newDir);
 	}
 
+	@Override
+	public boolean isLogicDummy()
+	{
+		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking(this);
+	}
+
+	@Override
+	public void update()
+	{
+		ApiUtils.checkForNeedlessTicking(this);
+		if(this.conveyorBeltSubtype!=null)
+			this.conveyorBeltSubtype.onUpdate(this, getFacing());
+	}
 
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
