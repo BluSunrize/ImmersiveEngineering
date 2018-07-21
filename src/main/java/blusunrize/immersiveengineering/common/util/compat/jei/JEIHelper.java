@@ -169,6 +169,9 @@ public class JEIHelper implements IModPlugin
 		modRegistry.addRecipeClickArea(GuiAssembler.class, 26, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
 		modRegistry.addRecipeClickArea(GuiAssembler.class, 84, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
 		modRegistry.addRecipeClickArea(GuiAssembler.class, 142, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
+
+		modRegistry.addRecipeClickArea(GuiModWorkbench.class, 4, 41, 53, 18, "ie.workbench");
+		modRegistry.addRecipeClickArea(GuiAutoWorkbench.class, 90, 12, 39, 37, "ie.workbench");
 	}
 
 	@Override
