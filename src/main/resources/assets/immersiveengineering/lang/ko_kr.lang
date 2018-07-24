@@ -1030,22 +1030,22 @@ immersiveengineering.potion.flashed=역류성
 ie.manual.category.update.name=업데이트 소식!
 ie.manual.entry.updateNews_0.name=v0.6.0에서 추가된 것
 ie.manual.entry.updateNews_0.subtext=과거, 현재; 미래
-ie.manual.entry.updateNews_00=엔지니어에게!<br><br>당신이 마지막으로 이머시브 엔지니어링에서 일한 이후로, 많은 것들이 바뀌었습니다! 새로나온 것들: 주민 집, <링크;밝기;§o§n새로운 §o§n빛§r>, <링크;통;§o§n나무 §o§n통§r>, <링크;탱크사일로;§o§n탱크§r>, <링크;탱크사일로;§o§n사일로§r;1>, <링크;유체 파이프;§o§n유체 §o§n파이프§r>, 업적, <링크;셰이더;§o§n셰이더§r>, <링크;조립기;§o§n조립기§r>, <링크;병조림기;§o§n병§o§n조림기§r>!
-ie.manual.entry.updateNews_01=하지만 가장 중요한 것은 에너지 전달 방식이 많이 바뀌었다는 점입니다. 실수를 피하려면 <링크;전선;§o§n전선§r>, 특히 5 페이지, 전선의 전송 속도와 연결기의 입력 및 출력 간의 새로운 차이점을 자세히 설명하는 부분을 읽어야 합니다.
+ie.manual.entry.updateNews_00=엔지니어에게!<br><br>당신이 마지막으로 이머시브 엔지니어링에서 일한 이후로, 많은 것들이 바뀌었습니다! 새로나온 것들: 주민 집, <link;밝기;§o§n새로운 §o§n빛§r>, <link;통;§o§n나무 §o§n통§r>, <link;탱크사일로;§o§n탱크§r>, <link;탱크사일로;§o§n사일로§r;1>, <link;유체 파이프;§o§n유체 §o§n파이프§r>, 업적, <link;셰이더;§o§n셰이더§r>, <link;조립기;§o§n조립기§r>, <link;병조림기;§o§n병§o§n조림기§r>!
+ie.manual.entry.updateNews_01=하지만 가장 중요한 것은 에너지 전달 방식이 많이 바뀌었다는 점입니다. 실수를 피하려면 <link;전선;§o§n전선§r>, 특히 5 페이지, 전선의 전송 속도와 연결기의 입력 및 출력 간의 새로운 차이점을 자세히 설명하는 부분을 읽어야 합니다.
 
 ie.manual.entry.updateNews_1.name=v0.6.1에서 추가된 것
 ie.manual.entry.updateNews_1.subtext=과거, 현재; 미래
-ie.manual.entry.updateNews_10=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br><링크;금속 통;§o§n금속 §o§n통§r>이 더 안정적으로 공급하며, 휴대용 유체 저장고로서 사용됩니다, 아크 화로가 오래 된 도구와 갑옷을 재활용할 뿐만 아니라 특정 금속을 합금할 수 있도록 개선되었습니다, 그리고 비계는 <링크;유체 파이프;§o§n유체 §o§n파이프§r>가 지금 상승할 수 있도록 사용됩니다.
+ie.manual.entry.updateNews_10=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br><link;금속 통;§o§n금속 §o§n통§r>이 더 안정적으로 공급하며, 휴대용 유체 저장고로서 사용됩니다, 아크 화로가 오래 된 도구와 갑옷을 재활용할 뿐만 아니라 특정 금속을 합금할 수 있도록 개선되었습니다, 그리고 비계는 <link;유체 파이프;§o§n유체 §o§n파이프§r>가 지금 상승할 수 있도록 사용됩니다.
 
 ie.manual.entry.updateNews_2.name=v0.6.2에서 추가된 것
 ie.manual.entry.updateNews_2.subtext=과거, 현재; 미래
 ie.manual.entry.updateNews_20=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>비계의 새로운 변형이 발명되었는데, 이것은 위에 있는 안전하지 않은 개방형 강철 스트럿을 나무 목재로 대체합니다. 알루미늄은 장식용으로 매우 유용한 것으로 판명되었으며, 이제 울타리와 비계가 현지 엔지니어의 작업장에서 사용될 수 있게 되었습니다.
-ie.manual.entry.updateNews_21=새로운 종류의 <링크;부하;§o§n부하스위치§r;2>가 레드스톤 신호로 제어하고 HV선을 수용하도록 개발되었습니다. 이후에는 전압 유도로 인해 HV선을 일반 차단기에 연결하는 것이 금지됩니다. 우리는 노조와의 분쟁을 원치 않습니다.
+ie.manual.entry.updateNews_21=새로운 종류의 <link;부하;§o§n부하스위치§r;2>가 레드스톤 신호로 제어하고 HV선을 수용하도록 개발되었습니다. 이후에는 전압 유도로 인해 HV선을 일반 차단기에 연결하는 것이 금지됩니다. 우리는 노조와의 분쟁을 원치 않습니다.
 
 ie.manual.entry.updateNews_3.name=v0.6.3에서 추가된 것
 ie.manual.entry.updateNews_3.subtext=과거, 현재; 미래
-ie.manual.entry.updateNews_30=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>심한 뇌진탕을 겪은 후, 수석 엔지니어 애덤스가 어디에나 유체를 뿌릴 수 있는 장치인, <링크;화학 투척기;§o§n화학 §o§n투척기§r>의 계획 초안을 작성했습니다. 또한 파일럿 램프가 내장되어 유체 분사를 점화합니다. 우리는 아담스가 미쳤다고 생각합니다.
-ie.manual.entry.updateNews_31=연구 부서의 또 다른 새로운 발명품은 <링크;충전소;§o§n충전§o§n소§r>이고, 아이템에 에너지를 삽입하고 충전할 수 있습니다.<br>엔지니어"코브라"는 그의 최신 발명품을 제공했습니다, 그것은 <링크;컨베이어;§o§n하강 §o§n컨베이어§r;2>이고, 그것은 그것을 통과하는 아이템을 아래의 인벤토리로 떨어뜨립니다.<br>To top it all off the <link;sorter;§o§nItem §o§nRouter§r> has had its interface designed to allow for OreDictionary-, NBT-based and Fuzzy filtering of items!
+ie.manual.entry.updateNews_30=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>심한 뇌진탕을 겪은 후, 수석 엔지니어 애덤스가 어디에나 유체를 뿌릴 수 있는 장치인, <link;화학 투척기;§o§n화학 §o§n투척기§r>의 계획 초안을 작성했습니다. 또한 파일럿 램프가 내장되어 유체 분사를 점화합니다. 우리는 아담스가 미쳤다고 생각합니다.
+ie.manual.entry.updateNews_31=연구 부서의 또 다른 새로운 발명품은 <link;충전소;§o§n충전§o§n소§r>이고, 아이템에 에너지를 삽입하고 충전할 수 있습니다.<br>엔지니어"코브라"는 그의 최신 발명품을 제공했습니다, 그것은 <link;컨베이어;§o§n하강 §o§n컨베이어§r;2>이고, 그것은 그것을 통과하는 아이템을 아래의 인벤토리로 떨어뜨립니다.<br>To top it all off the <link;분류기;§o§n아이템 §o§n라우터§r> has had its interface designed to allow for OreDictionary-, NBT-based and Fuzzy filtering of items!
 ie.manual.entry.updateNews_32=Other noteable additions all around the topic of transport and decoration include:<br>- <link;shader;§o§nShaders§r> can be applied to Minecarts<br>- <link;skyhook;§o§nThe §o§nEngineer's §o§nSkyhook§r>, a tool to allow you to zip along your powerlines and overtake those Minecarts<br>- <link;balloon;§o§nBalloons§r>, as a convenient way to suspend connectors in the air and form the skylines for the afore mentioned hook<br>- <link;concrete;§o§nConcrete§r> that will make for a hard landing when you fall off the skyline
 ie.manual.entry.updateNews_33=Finally, the financial department has been hassling us for not keeping track of our power usage. After a heated argument, the have presented us with the blueprints for the <link;eMeter;§o§nCurrent §o§nTransformer§r>, a device that can measure the energy flowing through it. Needless to say they are even less happy now that they know how much energy an Arc Furnace really consumes.
 
