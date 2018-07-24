@@ -192,7 +192,7 @@ tile.immersiveengineering.metal_device1.belljar.name=정원 덮개
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=컨베이어 벨트
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.name=컨베이어 벨트
-tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=레드스톤 통제 무시
+tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=레드스톤 통제 무시 블록
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=하강 컨베이어 벨트
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=수직 컨베이어 벨트
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=분할 컨베이어 벨트
@@ -224,7 +224,7 @@ tile.immersiveengineering.hemp.name=산업용 대마
 
 tile.immersiveengineering.cloth_device.cushion.name=점프 베개
 tile.immersiveengineering.cloth_device.balloon.name=풍선
-tile.immersiveengineering.cloth_device.stripcurtain.name=스트립 커튼
+tile.immersiveengineering.cloth_device.stripcurtain.name=줄무늬 커튼
 
 tile.immersiveengineering.molten_uranium.name=녹은 우라늄
 tile.immersiveengineering.molten_constantan.name=녹은 콘스탄탄
@@ -257,17 +257,17 @@ item.immersiveengineering.metal.ingot_uranium.name=우라늄괴
 item.immersiveengineering.metal.ingot_constantan.name=콘스탄탄괴
 item.immersiveengineering.metal.ingot_electrum.name=일렉트륨괴
 item.immersiveengineering.metal.ingot_steel.name=강철괴
-item.immersiveengineering.metal.dust_copper.name=구리 기개
-item.immersiveengineering.metal.dust_aluminum.name=알루미늄 기개
-item.immersiveengineering.metal.dust_lead.name=납 기개
-item.immersiveengineering.metal.dust_silver.name=은 기개
-item.immersiveengineering.metal.dust_nickel.name=니켈 기개
-item.immersiveengineering.metal.dust_uranium.name=우라늄 기개
-item.immersiveengineering.metal.dust_constantan.name=콘스탄탄 기개
-item.immersiveengineering.metal.dust_electrum.name=일렉트륨 기개
-item.immersiveengineering.metal.dust_steel.name=강철 기개
-item.immersiveengineering.metal.dust_iron.name=철 기개
-item.immersiveengineering.metal.dust_gold.name=금 기개
+item.immersiveengineering.metal.dust_copper.name=구리 가루
+item.immersiveengineering.metal.dust_aluminum.name=알루미늄 가루
+item.immersiveengineering.metal.dust_lead.name=납 가루
+item.immersiveengineering.metal.dust_silver.name=은 가루
+item.immersiveengineering.metal.dust_nickel.name=니켈 가루
+item.immersiveengineering.metal.dust_uranium.name=우라늄 가루
+item.immersiveengineering.metal.dust_constantan.name=콘스탄탄 가루
+item.immersiveengineering.metal.dust_electrum.name=일렉트륨 가루
+item.immersiveengineering.metal.dust_steel.name=강철 가루
+item.immersiveengineering.metal.dust_iron.name=철 가루
+item.immersiveengineering.metal.dust_gold.name=금 가루
 item.immersiveengineering.metal.nugget_copper.name=구리 조각
 item.immersiveengineering.metal.nugget_aluminum.name=알루미늄 조각
 item.immersiveengineering.metal.nugget_lead.name=납 조각
@@ -299,9 +299,9 @@ item.immersiveengineering.material.hemp_fiber.name=산업용 대마 섬유
 item.immersiveengineering.material.hemp_fabric.name=강력천
 item.immersiveengineering.material.coal_coke.name=코크스
 item.immersiveengineering.material.slag.name=슬래그
-item.immersiveengineering.material.component_iron.name=철 기계 구성 요소
-item.immersiveengineering.material.component_steel.name=강철 기계 구성 요소
-item.immersiveengineering.material.waterwheel_segment.name=물레방아 분할
+item.immersiveengineering.material.component_iron.name=철 기계 부품
+item.immersiveengineering.material.component_steel.name=강철 기계 부품
+item.immersiveengineering.material.waterwheel_segment.name=물레방아 분할 부품
 item.immersiveengineering.material.windmill_blade.name=풍차 날
 item.immersiveengineering.material.windmill_sail.name=풍차 돛
 item.immersiveengineering.material.wooden_grip.name=나무 그립
@@ -384,8 +384,8 @@ item.immersiveengineering.bullet.potion.linger.name=잔류형 작은 유리병 �
 item.immersiveengineering.bullet.flare.name=폭발 카트리지
 
 item.immersiveengineering.drill.diesel.name=채굴 드릴
-item.immersiveengineering.drillhead.iron.name=철 드릴헤드
-item.immersiveengineering.drillhead.steel.name=강철 드릴헤드
+item.immersiveengineering.drillhead.iron.name=철 드릴 헤드
+item.immersiveengineering.drillhead.steel.name=강철 드릴 헤드
 
 item.immersiveengineering.skyhook.name=엔지니어의 열기구
 
@@ -601,7 +601,7 @@ desc.immersiveengineering.info.attachedTo=%1$s, %2$s, %3$s 로 접속 중
 desc.immersiveengineering.info.attachedToDim=%4$s 차원에 있는 %1$s, %2$s, %3$s로 접속 중
 desc.immersiveengineering.info.energyStored=에너지 저장: %1$s Flux
 desc.immersiveengineering.info.energyStoredEU=에너지 저장: %1$s EU
-desc.immersiveengineering.info.blastFuelTime=폭발 연료: %1$s Ticks
+desc.immersiveengineering.info.blastFuelTime=폭발 연료: %1$s Tick
 desc.immersiveengineering.info.gasStored=가스 저장: %1$s
 desc.immersiveengineering.info.colour=색: %1$s
 desc.immersiveengineering.info.day=%1$s일
@@ -674,7 +674,7 @@ desc.immersiveengineering.info.mineral.Lapis=청금석
 desc.immersiveengineering.info.mineral.Coal=석탄
 desc.immersiveengineering.info.mineral.Wolframite=철망간 중석
 
-chat.immersiveengineering.info.old_java=[이머시브 엔지니어링] §4주의: §r당신의 Java 버전은 %1$s입니다. 이 버전은 엔지니어의 매뉴얼에 충돌을 야기합니다. 이 충돌은 우리가 고칠 수 없습니다. 충돌 예방을 위해 Java의 최신 버전(Java 8을 권장)을 다운로드하거나 런처로 돌아가야 합니다.
+chat.immersiveengineering.info.old_java=[이머시브 엔지니어링] §4주의: §r당신의 Java 버전은 %1$s입니다. 이 버전은 엔지니어의 설명서에 충돌을 야기합니다. 이 충돌은 우리가 고칠 수 없습니다. 충돌 예방을 위해 Java의 최신 버전(Java 8을 권장)을 다운로드하거나 런처로 돌아가야 합니다.
 
 chat.immersiveengineering.info.coresample.pos=%1$s에서 %2$s로
 chat.immersiveengineering.info.coresample.mineral=%1$s-광먁
@@ -947,7 +947,7 @@ death.attack.ieWireShock=%1$s가 실시간 전선 주변을 충분히 주의하�
 advancement.immersiveengineering:root=이머시브 엔지니어링
 advancement.immersiveengineering:root.desc=설명서를 참고하세요!
 advancement.immersiveengineering:openManual=설명서를 참고하세요
-advancement.immersiveengineering:openManual.desc=엔지니어의 매뉴얼 획득
+advancement.immersiveengineering:openManual.desc=엔지니어의 설명서 획득
 advancement.immersiveengineering:craftHammer=망치!
 advancement.immersiveengineering:craftHammer.desc=엔지니어의 망치 제작
 advancement.immersiveengineering:connectWire=전선위의 새들
@@ -1030,110 +1030,110 @@ immersiveengineering.potion.flashed=역류성
 ie.manual.category.update.name=업데이트 소식!
 ie.manual.entry.updateNews_0.name=v0.6.0에서 추가된 것
 ie.manual.entry.updateNews_0.subtext=과거, 현재; 미래
-ie.manual.entry.updateNews_00=엔지니어에게!<br><br>당신이 마지막으로 이머시브 엔지니어링에서 일한 이후로, 많은 것들이 바뀌었습니다! 새로나온 것들: 주민 집, <link;밝기;§o§n새로운 §o§n빛§r>, <link;통;§o§n나무 §o§n통§r>, <link;탱크사일로;§o§n탱크§r>, <link;탱크사일로;§o§n사일로§r;1>, <link;유체 파이프;§o§n유체 §o§n파이프§r>, 업적, <link;셰이더;§o§n셰이더§r>, <link;조립기;§o§n조립기§r>, <link;병조림기;§o§n병§o§n조림기§r>!
-ie.manual.entry.updateNews_01=하지만 가장 중요한 것은 에너지 전달 방식이 많이 바뀌었다는 점입니다. 실수를 피하려면 <link;전선;§o§n전선§r>, 특히 5 페이지, 전선의 전송 속도와 연결기의 입력 및 출력 간의 새로운 차이점을 자세히 설명하는 부분을 읽어야 합니다.
+ie.manual.entry.updateNews_00=엔지니어에게!<br><br>당신이 마지막으로 이머시브 엔지니어링에서 일한 이후로, 많은 것들이 바뀌었습니다! 새로나온 것들: 주민 집, <link;lighting;§o§n새로운 §o§n빛§r>, <link;barrel;§o§n나무 §o§n통§r>, <link;tanksilo;§o§n탱크§r>, <link;tanksilo;§o§n사일로§r;1>, <link;fluidPipes;§o§n유체 §o§n파이프§r>, 업적, <link;shader;§o§n셰이더§r>, <link;assembler;§o§n조립기§r>, <link;bottlingMachine;§o§n병§o§n조림기§r>!
+ie.manual.entry.updateNews_01=하지만 가장 중요한 것은 에너지 전달 방식이 많이 바뀌었다는 점입니다. 실수를 피하려면 <link;wiring;§o§n전선§r>, 특히 5 페이지, 전선의 전송 속도와 연결기의 입력 및 출력 간의 새로운 차이점을 자세히 설명하는 부분을 읽어야 합니다.
 
 ie.manual.entry.updateNews_1.name=v0.6.1에서 추가된 것
 ie.manual.entry.updateNews_1.subtext=과거, 현재; 미래
-ie.manual.entry.updateNews_10=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br><link;금속 통;§o§n금속 §o§n통§r>이 더 안정적으로 공급하며, 휴대용 유체 저장고로서 사용됩니다, 아크 화로가 오래 된 도구와 갑옷을 재활용할 뿐만 아니라 특정 금속을 합금할 수 있도록 개선되었습니다, 그리고 비계는 <link;유체 파이프;§o§n유체 §o§n파이프§r>가 지금 상승할 수 있도록 사용됩니다.
+ie.manual.entry.updateNews_10=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br><link;metalbarrel;§o§n금속 §o§n통§r>이 더 안정적으로 공급하며, 휴대용 유체 저장고로서 사용됩니다, 아크 화로가 오래 된 도구와 갑옷을 재활용할 뿐만 아니라 특정 금속을 합금할 수 있도록 개선되었습니다, 그리고 비계는 <link;fluidPipes;§o§n유체 §o§n파이프§r>가 지금 상승할 수 있도록 사용됩니다.
 
 ie.manual.entry.updateNews_2.name=v0.6.2에서 추가된 것
 ie.manual.entry.updateNews_2.subtext=과거, 현재; 미래
 ie.manual.entry.updateNews_20=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>비계의 새로운 변형이 발명되었는데, 이것은 위에 있는 안전하지 않은 개방형 강철 스트럿을 나무 목재로 대체합니다. 알루미늄은 장식용으로 매우 유용한 것으로 판명되었으며, 이제 울타리와 비계가 현지 엔지니어의 작업장에서 사용될 수 있게 되었습니다.
-ie.manual.entry.updateNews_21=새로운 종류의 <link;부하;§o§n부하스위치§r;2>가 레드스톤 신호로 제어하고 HV선을 수용하도록 개발되었습니다. 이후에는 전압 유도로 인해 HV선을 일반 차단기에 연결하는 것이 금지됩니다. 우리는 노조와의 분쟁을 원치 않습니다.
+ie.manual.entry.updateNews_21=새로운 종류의 <link;breaker;§o§n부하 스위치§r;2>가 레드스톤 신호로 제어하고 고압선을 수용하도록 개발되었습니다. 이후에는 전압 유도로 인해 고압선을 일반 차단기에 연결하는 것이 금지됩니다. 우리는 노조와의 분쟁을 원치 않습니다.
 
 ie.manual.entry.updateNews_3.name=v0.6.3에서 추가된 것
 ie.manual.entry.updateNews_3.subtext=과거, 현재; 미래
-ie.manual.entry.updateNews_30=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>심한 뇌진탕을 겪은 후, 수석 엔지니어 애덤스가 어디에나 유체를 뿌릴 수 있는 장치인, <link;화학 투척기;§o§n화학 §o§n투척기§r>의 계획 초안을 작성했습니다. 또한 파일럿 램프가 내장되어 유체 분사를 점화합니다. 우리는 아담스가 미쳤다고 생각합니다.
-ie.manual.entry.updateNews_31=연구 부서의 또 다른 새로운 발명품은 <link;충전소;§o§n충전§o§n소§r>이고, 아이템에 에너지를 삽입하고 충전할 수 있습니다.<br>엔지니어"코브라"는 그의 최신 발명품을 제공했습니다, 그것은 <link;컨베이어;§o§n하강 §o§n컨베이어§r;2>이고, 그것은 그것을 통과하는 아이템을 아래의 인벤토리로 떨어뜨립니다.<br>To top it all off the <link;분류기;§o§n아이템 §o§n라우터§r> has had its interface designed to allow for OreDictionary-, NBT-based and Fuzzy filtering of items!
-ie.manual.entry.updateNews_32=Other noteable additions all around the topic of transport and decoration include:<br>- <link;shader;§o§nShaders§r> can be applied to Minecarts<br>- <link;skyhook;§o§nThe §o§nEngineer's §o§nSkyhook§r>, a tool to allow you to zip along your powerlines and overtake those Minecarts<br>- <link;balloon;§o§nBalloons§r>, as a convenient way to suspend connectors in the air and form the skylines for the afore mentioned hook<br>- <link;concrete;§o§nConcrete§r> that will make for a hard landing when you fall off the skyline
-ie.manual.entry.updateNews_33=Finally, the financial department has been hassling us for not keeping track of our power usage. After a heated argument, the have presented us with the blueprints for the <link;eMeter;§o§nCurrent §o§nTransformer§r>, a device that can measure the energy flowing through it. Needless to say they are even less happy now that they know how much energy an Arc Furnace really consumes.
+ie.manual.entry.updateNews_30=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>심한 뇌진탕을 겪은 후, 수석 엔지니어 애덤스가 어디에나 유체를 뿌릴 수 있는 장치인, <link;chemthrower;§o§n화학 §o§n투척기§r>의 계획 초안을 작성했습니다. 또한 파일럿 램프가 내장되어 유체 분사를 점화합니다. 우리는 아담스가 미쳤다고 생각합니다.
+ie.manual.entry.updateNews_31=연구 부서의 또 다른 새로운 발명품은 <link;chargingStation;§o§n충전§o§n소§r>이고, 아이템에 에너지를 삽입하고 충전할 수 있습니다.<br>엔지니어"코브라"는 그의 최신 발명품을 제공했습니다, 그것은 <link;conveyor;§o§n하강 §o§n컨베이어§r;2>이고, 그것은 그것을 통과하는 아이템을 아래의 인벤토리로 떨어뜨립니다.<br><link;sorter;§o§n아이템 §o§n라우터§r>는 아이템에 대한 오어딕셔네리, NBT기반 및 푸지 필터링을 허용하도록 설계된 인터페이스를 가지고 있습니다!
+ie.manual.entry.updateNews_32=운송 및 장식의 모든 주제에 대한 기타 주목할 만한 추가 사항은 다음과 같습니다:<br>- <link;shader;§o§n셰이더§r>는 마인카트에 적용될 수 있습니다<br>- <link;skyhook;§o§n엔지니어의 §o§n열기구§r>는 당신이 당신의 파워 라인을 따라 지퍼를 채우고 그 마인카트를 추월할 수 있게 해 주는 도구입니다<br>- <link;balloon;§o§n풍선§r>은 공중에 연결기를 매달고 앞서 언급된 열기구를 위한 스카이 라인을 형성하는 편리한 방법입니다<br>- <link;concrete;§o§n콘크리트§r>는 당신이 스카이 라인에서 떨어질 때, 그것은 착륙을 어렵게 만들 것입니다.
+ie.manual.entry.updateNews_33=마침내, 재정부는 우리의 전력 사용량을 추적하지 못한 것에 대해 우리를 재촉했습니다. 열띤 논쟁 끝에, 우리에게 흐르는 에너지를 측정할 수 있는 장치인 <link;eMeter;§o§n전류 §o§n변압기§r>의 청사진을 보여주었습니다. 말할 필요도 없이, 그들은 이제 한 대의 아크 화로가 실제로 얼마나 많은 에너지를 소비하는지를 알게 되었기 때문에 훨씬 덜 행복합니다.
 
 ie.manual.entry.updateNews_4.name=v0.6.4에서 추가된 것
 ie.manual.entry.updateNews_4.subtext=과거, 현재; 미래
-ie.manual.entry.updateNews_40=엔지니어에게!<br><br>The past update has brought only little changes.<br>The energy transmission is fixed again, the engineer it that broke has been dunked into cold water as punishment.<br>The <link;furnaceHeater;§o§nFurnace §o§nHeater§r> has seen some improvements that now allow it to heat up Alchemical Furnaces from Thaumcraft or Evaporators from Cutting Edge.<br><br>That's all for now, let's hope it stays sufficiently stable.
+ie.manual.entry.updateNews_40=엔지니어에게!<br><br>과거의 업데이트는 약간의 변화만 가져왔습니다.<br>에너지 전송은 다시 고정되고, 그것을 고장 낸 기술자는 벌로 차가운 물에 빠졌습니다.<br><link;furnaceHeater;§o§n화로 §o§n가열기§r>는 사움크래프트의 화학 화로또는 커팅 엣지의 증발기를 가열할 수 있는 몇 가지 개선 사항을 확인했습니다.<br><br>그것이 지금의 전부입니다. 그것이 충분히 안정적이기를 바랍니다.
 
-ie.manual.category.general.name=Overview and Resources
-ie.manual.category.construction.name=Construction
-ie.manual.category.energy.name=Power, wires, generators
-ie.manual.category.tools.name=Tools
-ie.manual.category.machines.name=Simple Machines
-ie.manual.category.heavymachines.name=Heavy Machinery
+ie.manual.category.general.name=개요 및 리소스
+ie.manual.category.construction.name=건설
+ie.manual.category.energy.name=파워, 전선, 발전기
+ie.manual.category.tools.name=도구
+ie.manual.category.machines.name=경형 기계
+ie.manual.category.heavymachines.name=중형 기계
 
-ie.manual.entry.introduction.name=Introduction
-ie.manual.entry.introduction.subtext=Getting into Engineering
-ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
-ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a limited distance of blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config;iA;wireTransferRate;l3> Flux/tick. To switch between different types of wire, you will need to use §ltransformers§r.
-ie.manual.entry.introductionHammer=The Engineer's Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config;b;crushingOreRecipe;, crushing ores into dust ; >or configuring blocks like Wooden Posts.
+ie.manual.entry.introduction.name=소개
+ie.manual.entry.introduction.subtext=엔지니어링 입문
+ie.manual.entry.introduction0=동료 엔지니어 여러분 안녕하십니까? 이머시브 엔지니어링에 오신 것을 환영합니다. 이 저널은 이 모드가 제공해야 하는 모든 새로운 기계 및 기능을 설정하기 위한 가이드 역할을 합니다.<br>먼저 기초부터 시작합시다: 이머시브 엔지니어링은 재생 에너지의 생성과 전달이라는 개념을 기반으로 합니다. 이 모드에 사용되는 에너지는 RF이고, 현재 이용 가능한 많은 다른 모드들과 공유된 특성입니다.
+ie.manual.entry.introduction1=에너지는 §l전선§r의 사용으로 인해 §l연결기§r사이로 전송됩니다. 전선은 블록의 제한된 거리만 연결할 수 있습니다, 그래서 전선 간의 §l중계기§r 와 같은 더 많은 연결기를 사용하는 것이 필요합니다.<br>세가지 다른 유형의 전선 중에서 선택할 수 있습니다, 전선 유형이 서로 다릅니다, <config;iA;전선 전송도;l3> Flux/tick. 다른 유형의 전선 간의 전환을 하고싶다면, §l변환기§r가 필요합니다.
+ie.manual.entry.introductionHammer=엔지니어의 망치는 사용자의 판단에 가장 중요한 도구입니다. 코크스 오븐 및 용광로와 같은 멀티블록을 형성하는 데 사용되거나<config;b;광석 분쇄 조합법;, 광석 분쇄 ; > 나무 송전탑과 같은 블록을 구성합니다.
 
-ie.manual.entry.ores.name=Ores
-ie.manual.entry.ores.subtext=Diggy diggy hole
-ie.manual.entry.oresCopper=§lCopper Ore§r is found in the world between layers <config;iA;ore_copper;1> and <config;iA;ore_copper;2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
-ie.manual.entry.oresBauxite=§lBauxite Ore§r is found in the world between layers <config;iA;ore_bauxite;1> and <config;iA;ore_bauxite;2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into aluminium ingots, which, together with steel, are used to create high-voltage wires.
-ie.manual.entry.oresLead=§lLead Ore§r is found in the world between layers <config;iA;ore_lead;1> and <config;iA;ore_lead;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into lead ingots, which are used in creating capacitors.
-ie.manual.entry.oresSilver=§lSilver Ore§r is found in the world between layers <config;iA;ore_silver;1> and <config;iA;ore_silver;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
-ie.manual.entry.oresNickel=§lNickel Ore§r is found in the world between layers <config;iA;ore_nickel;1> and <config;iA;ore_nickel;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;generator;§o§nThermoelectric §o§nGenerators§r;1>.
-ie.manual.entry.oresUranium=§lUranium Ore§r is found in the world between layers <config;iA;ore_uranium;1> and <config;iA;ore_uranium;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;generator;§o§nThermoelectric §o§nGenerator§r;1> and the metal will be used in future endeavours.
+ie.manual.entry.ores.name=광석
+ie.manual.entry.ores.subtext=구멍을 팝니다.
+ie.manual.entry.oresCopper=§l구리 광석§r은 <config;iA;ore_copper;1>과 <config;iA;ore_copper;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 돌 곡괭이가 필요합니다.<br><br>광석은 구리 전선, 코일, 그리고 IE구조의 다른 필수적인 부분을 만드는 데 사용되는 구리괴로 제련될 것입니다.
+ie.manual.entry.oresBauxite=§l보크사이트 광석§r은 <config;iA;ore_bauxite;1>과 <config;iA;ore_bauxite;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 돌 곡괭이가 필요합니다.<br><br>광석은 알루미늄괴로 제련되는데, 강철과 함께 고압 전선을 만드는 데 사용됩니다.
+ie.manual.entry.oresLead=§l납 광석§r은 <config;iA;ore_lead;1>과 <config;iA;ore_lead;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 축전기를 만드는 데 사용되는 연괴로 제련됩니다.
+ie.manual.entry.oresSilver=§l은 광석§r은 <config;iA;ore_silver;1>과 <config;iA;ore_silver;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 은괴로 제련되는데, 은은 금과 함께 일렉트륨으로 합금되어 훨씬 더 효과적인 전도체가 됩니다.
+ie.manual.entry.oresNickel=§l니켈 광석§r은 <config;iA;ore_nickel;1>과 <config;iA;ore_nickel;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 니켈괴로 제련될 것이며 구리를 합금하여 콘스탄탄을 생성하고, 열저항 전도체로 <link;generator;§o§n열전기 §o§n발전기§r;1>의 발전에 사용됩니다.
+ie.manual.entry.oresUranium=§l우라늄 광석§r은 <config;iA;ore_uranium;1>과 <config;iA;ore_uranium;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 우라늄괴로 제련되나, 현재 그 금속은 많이 쓰이지 않습니다. 우라늄 블록은 <link;generator;§o§n열전기 §o§n발전기§r;1>으로 열원 역할을 할 수 있고 장래의 노력에 사용될 것입니다.
 
-ie.manual.entry.oreProcessing.name=Ore Processing
-ie.manual.entry.oreProcessing.subtext=Crush crush crush
-ie.manual.entry.oreProcessing0=Crafting ores with an Engineer's Hammer allows you to crush them into dusts. This dust can be smelted into ingots, but more importantly, is used to <link;alloys;§o§ncreate §o§nmetallic §o§nalloys§r>.
+ie.manual.entry.oreProcessing.name=금속 가공
+ie.manual.entry.oreProcessing.subtext=부숩니다.
+ie.manual.entry.oreProcessing0=엔지니어의 망치로 광석을 부수면 가루가 됩니다. 이 가루는 주괴가 될 수 있지만, 더 중요한 것은, <link;alloys;§o§n금속 §o§n합금 §o§n제조§r>에 사용됩니다.
 
-ie.manual.entry.alloys.name=Alloys
-ie.manual.entry.alloys.subtext=Mixed Metal Arts
-ie.manual.entry.alloys0=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link;generator;§o§nthermoelectric §o§ngenerator§r;1> and electrum is an excellent electric conductor used in <link;wiring;§o§nmedium-voltage §o§narchitecture§r>.
+ie.manual.entry.alloys.name=합금
+ie.manual.entry.alloys.subtext=금속을 혼합합니다.
+ie.manual.entry.alloys0=가루를 혼합하면 합금 혼합이 생성되며, 합금 혼합을 합금으로 만들 수 있습니다. 콘스탄탄에는 열전 속성이 있고 <link;generator;§o§n열전기 §o§n발전기§r;1>를 만드는데 사용되고 일렉트륨은 뛰어난 전기 전도체로 <link;wiring;§o§n중압 §o§n구조체§r>에 사용됩니다.
 
-ie.manual.entry.plates.name=Metal Plates
-ie.manual.entry.plates.subtext=Flat as a flounder
-ie.manual.entry.plates0=Metal Plates are a crafting material required for the creation of some machines or blocks. They are made by hammering an ingot with an Engineer's Hammer or in a <link;metalPress;§o§nMetal §o§nPress§r>.
+ie.manual.entry.plates.name=금속판
+ie.manual.entry.plates.subtext=평평합니다.
+ie.manual.entry.plates0=금속판은 일부 기계 또는 블록을 만드는 데 필요한 제작 재료입니다. 그들은 엔지니어의 망치를 이용하여 주괴를 두드려 만들거나 <link;metalPress;§o§n금속 §o§n압축기§r>로 만듭니다.
 
-ie.manual.entry.components.name=Crafting Components
-ie.manual.entry.components.subtext=Integral Pieces
-ie.manual.entry.components0=Many machines and tools are constructed from various sub-components. Some of these you will have to use on a regular basis, which is why they have their own entry in this manual. The §6Iron§r and §6Steel Mechanical Components§r are integral to the majority of Multiblocks and machinery.
-ie.manual.entry.components1=As you will find yourself creating these components more frequently, it may be advisable to draft a <link;blueprints;§o§nBlueprint§r> for them. Using this blueprint in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> will allow you to construct the components at a reduced cost.<br>The workbench recipes are found on the following page.
-ie.manual.entry.components2=Another, albeit less frequently used component are §6Vacuum Tubes§r. These glass tubes are used as elements in electronic machinery and used in <link;lighting;§o§nlight emitting devices§r>.
-ie.manual.entry.components3=A rarely used, but crucial component in advanced machinery that requires precise calculation is the §6Circuit Board§r. They are impractically large and clunky, but can perform basic mathematic operations in under a second!
+ie.manual.entry.components.name=부품 제작
+ie.manual.entry.components.subtext=조각 통합
+ie.manual.entry.components0=많은 기계와 공구는 다양한 준부품로 구성되어 있습니다. 이 중 일부는 정기적으로 사용해야 하며, 따라서 이 설명서에 직접 입력해야 합니다. §6철§r과 §6강철 기술 요소§r는 멀티블록과 기계의 장점으로 통합합니다.
+ie.manual.entry.components1=이러한 구성 부품을 보다 자주 생성할 수 있기 때문에, 그들을 위한 <link;blueprints;§o§n청사진§r>을 작성하는 것이 바람직할 것입니다. <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 이 청사진을 사용하면 저렴한 비용으로 구성 부품을 구성할 수 있습니다.<br>워크벤치의 조합법은 다음 페이지에서 확인할 수 있습니다.
+ie.manual.entry.components2=또 다른 구성 부품은 사용 빈도가 낮지만 §6진공 튜브§r가 사용됩니다. 유리 관은 전자 기계에서 부품으로 사용되고 <link;lighting;§o§n발광 소자§r>에서 사용됩니다.
+ie.manual.entry.components3=정밀한 계산이 필요한 첨단 기계의 중요한 부품은 §6회로판§r입니다. 그들은 실제적으로 크고 투박하지만 1초 안에 기초적인 수학적인 운용을 할 수 있습니다!
 
-ie.manual.entry.hemp.name=Industrial Hemp
-ie.manual.entry.hemp.subtext=530 fabric it
-ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link;refinery;§o§nBiodiesel§r>, the hemp fibers are also useful for the creation of Tough Fabric. The seeds can be gathered by breaking tall grass.
-ie.manual.entry.hemp1=Tough Fabric is a resilient weave made from hemp fiber. It's used to create <link;generator;§o§nImproved §o§nWindmills§r;3> as well as <link;balloon;§o§nBalloons§r> and §o§nJump §o§nCushions§r (detailed on the next page).
-ie.manual.entry.hemp2=Jump Cushions are simple blocks created from tough fabric and inflated with air. They are capable of absorbing impacts and prevent falldamage when landed upon, but, unlike slime blocks, will not bounce you back up.
-ie.manual.entry.hemp3=Strip Curtains are pieces of fabric that are mounted to doorframes or other openings to serve in blocking the view.<br>When an entity passes through them, they will emit a redstone signal. Rightclick them with the hammer to enable strong signals.<br>They can be dyed in the same way leather armor can.
+ie.manual.entry.hemp.name=산업용 대마
+ie.manual.entry.hemp.subtext=530은 그것을 짭니다
+ie.manual.entry.hemp0=산업용 대마는 놀라운 식물입니다! 씨앗들은 <link;refinery;§o§n바이오디젤§r>의 생성에 유용할 뿐만 아니라, 대마는 강력천의 생성에도 유용합니다. 그 씨앗은 장초를 부수고 모을 수 있습니다.
+ie.manual.entry.hemp1=강력천은 대마 섬유로 만든 탄력성 있는 천입니다. <link;generator;§o§n강화 §o§n풍차§r;3>와 <link;balloon;§o§n풍선§r>, §o§n점프 §o§n베개§r를 만드는 데 사용됩니다(다음 페이지에 자세히 설명되어 있습니다).
+ie.manual.entry.hemp2=점프 블록은 강력천으로 만들어지고 공기가 주입되는 간단한 블록입니다. 그들은 착륙할 때 충격을 흡수하고, 손상을 방지할 수 있지만, 슬라임 블록과는 달리, 여러분을 다시 일으키지는 않을 것입니다.
+ie.manual.entry.hemp3=줄무늬 커튼은 뷰를 차단하는 데 사용되는 도어 프레임에 장착되는 천 조각입니다.<br>어떤 엔티티가 그것들을 통과할 때, 그들은 레드스톤 신호를 내보낼 것입니다. 강한 신호를 보낼 수 있도록 망치로 신호를 우클릭합니다.<br>가죽 갑옷과 같은 방법으로 염색될 수 있습니다.
 
-ie.manual.entry.cokeoven.name=Coke Oven
-ie.manual.entry.cokeoven.subtext=Hot topic!
-ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will need to create in order to proceed with Immersive Engineering. Its functionality is simple, it will heat up coal or blocks of coal without supplying it with oxygen, creating Coal Coke, a carbon rich fuel. More importantly, this process creates §lCreosote Oil§r, which is used as a <link;treated_wood;§o§npreservative §o§nfor §o§nwood§r>. Similarly you can also burn wooden logs into charcoal with this oven, albeit with a smaller yield of creosote.
-ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
+ie.manual.entry.cokeoven.name=코크스 오븐
+ie.manual.entry.cokeoven.subtext=핫 이슈!
+ie.manual.entry.cokeoven0=코크스 오븐은 이머시브 엔지니어링을 진행하기 위해 만들 처음으로 중요한 기계입니다. 기능도 간단하고, 산소 공급 없이 석탄이나 석탄 블록을 가열해 탄소가 풍부한 연료인 코크스를 만듭니다. 더 중요한 것은, 이 과정이 <link;treated_wood;§o§n나무를 §o§n위한 §o§n방부제§r>로 사용되는 §l크레오소트유§r를 만들어 낸다는 것입니다. 마찬가지로 나무를 이 오븐으로 구워 숯으로 만들 수도 있습니다.
+ie.manual.entry.cokeovenBlock=코크스 오븐을 구성하려면 이 블록 중 27개를 3x3x3 정육면체에 정렬하고 엔지니어의 망치로 측면 중앙 블록 중 하나를 우클릭합니다.<br>다이어그램은 다음 페이지를 참조하세요.
 
-ie.manual.entry.alloysmelter.name=Alloy Kiln
-ie.manual.entry.alloysmelter.subtext=Mixin' Metals
-ie.manual.entry.alloysmelter0=The Alloy Kiln is a simple furnace made out of heat resistant sandstone and bricks. Within it, temperatures are high enough to allow metals to be melted into a fluid state and mixed, creating an <link;alloys;§o§nalloy§r>.<br>This allows the creation of important alloys like Electrum and Constantan without requiring the tedious mixing of dusts.
-ie.manual.entry.alloysmelter1=To form the Kiln, arrange 8 of the Kiln Bricks in a 2x2x2 cube, as shown above, and rightclick one of the sides' blocks with an Engineer's Hammer.
+ie.manual.entry.alloysmelter.name=합금 가마
+ie.manual.entry.alloysmelter.subtext=금속 혼합!
+ie.manual.entry.alloysmelter0=합금 가마는 내열 사암과 벽돌로 만들어진 단순한 용광로입니다. 그 안의 온도는 금속을 액체 상태로 녹여 <link;alloys;§o§n합금§r>을 만들 수 있을 정도로 높습니다.<br>이를 통해 지루한 가루 혼합 없이 일렉트륨 및 콘스탄탄과 같은 중요한 합금을 제작할 수 있습니다.
+ie.manual.entry.alloysmelter1=가마를 형성하려면 위에 표시된 것처럼 가마 벽돌 8개를 2x2x2큐브로 배열하고 측면 블록 중 하나를 엔지니어의 망치로 우클릭합니다.
 
-ie.manual.entry.treatedwood.name=Treated Wood
-ie.manual.entry.treatedwood.subtext=Highly Durable
-ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
-ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post.
-ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;8> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
+ie.manual.entry.treatedwood.name=방부목
+ie.manual.entry.treatedwood.subtext=강력한 안정성
+ie.manual.entry.treatedwood0=방부목은 아주 간단하게 크레오소트유로 덮인 나무 판자입니다. 하지만 이것은 여러분이 이머시브 엔지니어링에서 사용하게 될 가장 중요한 자료 중 하나이므로 여러분은 그것을 많이 만들 준비를 하는 것이 좋습니다.
+ie.manual.entry.treatedwoodPost0=방부목으로 만든 송전탑은 전선 연결기에 대한 뛰어난 부착 지점을 제공합니다. 높이가 4블록이므로 적당한 간격을 두지 않고는 배치할 수 없습니다.<br>맨 위 블록의 측면에 망치를 사용하여 기둥에 팔을 부착합니다.
+ie.manual.entry.treatedwoodPost1=막대기에 <link;wiring;§o§n변압기§r;8>를 설치할 수도 있고, 이로 인해 방해를 덜 받습니다.<br>나무 기둥 아래에 블록을 놓으면 팔이 거꾸로 뒤집어 집니다.
 
-ie.manual.entry.concrete.name=Concrete
-ie.manual.entry.concrete.subtext=Fortress Material
-ie.manual.entry.concrete0=Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for the excess slag produced by the <link;blastfurnace;§n§oBlast §n§oFurnace§r>.
+ie.manual.entry.concrete.name=콘크리트
+ie.manual.entry.concrete.subtext=요새 재료
+ie.manual.entry.concrete0=콘크리트는 매우 단단하고 내성이 강한 복합 재료입니다. 이 제품은 제작 비용이 저렴하고 <link;blastfurnace;§n§o용광로§r>에서 생산된 과잉 슬래그에 대한 우수한 사용 비용을 제공합니다.
 
-ie.manual.entry.balloon.name=Balloon
-ie.manual.entry.balloon.subtext=...just make 99 of them
-ie.manual.entry.balloon0=Balloons are sacks of fabric with a heatsource below to keep them afloat. They will also emit light, but despite the torch, they are not a fire hazard.<br>Balloons can be placed like normal blocks, or, when no block is targeted, they will be placed in the air infront of you.
-ie.manual.entry.balloon1=Similar to <link;metalconstruction;§o§nStructural §o§nConnectors§r;5>, you can attach Hemp Rope and Steel Wire to the balloon.<br>Sneak-clicking allows you to set a height offset for the balloon, allowing you to place it up to 5 blocks above the target.<br>You can also use dyes on a placed balloon; which part you dye depends on where you target it.<br>Rightclicking with an Engineer's Hammer will toggle the balloon's design between horizontal or vertical stripes.
+ie.manual.entry.balloon.name=풍선
+ie.manual.entry.balloon.subtext=99개로 만들어
+ie.manual.entry.balloon0=풍선은 물 위에 떠 있게 하기 위해 아래에 열기구가 있는 천을 이은 것입니다. 그것들은 또한 빛을 내지만, 횃불에도 불구하고, 화재의 위험이 되지 않습니다.<br>풍선은 일반 블록처럼 배치할 수도 있고, 블록이 표적이 되지 않으면 여러분 앞에 놓이게 됩니다.
+ie.manual.entry.balloon1=<link;metalconstruction;§o§n구조 §o§n연결기§r;5>와 마찬가지로 풍선에 대마 밧줄과 강철 전선을 부착할 수 있습니다.<br>클릭하면 풍선의 높이 오프셋을 설정할 수 있으므로 목표 위로 5블록까지 배치할 수 있습니다.<br>또한 배치된 풍선에 염료를 사용할 수 있습니다. 염색하는 부분은 목표물이 어디인지에 따라 달라집니다.<br>엔지니어의 망치로 우클릭하면 풍선 설계가 수평 또는 수직 줄무늬로 전환됩니다.
 
-ie.manual.entry.crate.name=Wooden Storage Crate
-ie.manual.entry.crate.subtext=Move that gear up!
-ie.manual.entry.crate0=Wooden storage crates are blocks quite similar to a chest. Crafted with treated wood, they offer 27 slots of storage, however, when broken, they will keep that storage, allowing you to move them together with their contents.<br>Like chests, they will output a comparator signal based on the amount of items stored.
-ie.manual.entry.crate1=The reinforced storage crate offers the same capacity as a normal crate, but unlike them, these creates are impervious to explosions. No longer will pesky creepers or ill-placed mining charges destroy your valueables!<br>The upgrade recipe will keep the contents of the crate.
+ie.manual.entry.crate.name=나무 저장 상자
+ie.manual.entry.crate.subtext=기어를 올려!
+ie.manual.entry.crate0=나무 보관 상자는 상자와 꽤 비슷한 블록입니다. 처리된 목재로 제작된 이 제품은 27개의 저장 슬롯을 제공하지만, 고장 나면 스토리지를 유지하여 내용물과 함께 이동할 수 있습니다.<br>상자와 마찬가지로, 저장된 아이템의 양을 기준으로 비교기 신호를 출력합니다.
+ie.manual.entry.crate1=강화 저장 상자는 일반적인 상자와 동일한 용량을 제공하지만, 이와 달리 이러한 상자는 폭발에 영향을 받지 않습니다. 더 이상 성가신 크리퍼나 잘못 배치된 채굴 비용은 당신의 가치관을 파괴하지 않을 것입니다!<br>업그레이드 방법은 상자의 내용물을 보관합니다.
 
-ie.manual.entry.barrel.name=Wooden Barrel
-ie.manual.entry.barrel.subtext=Doesn't roll
-ie.manual.entry.barrel0=Wooden barrels are simple containers that can store fluid. They will store up to 12 buckets, but because they are wooden, they can't store any gasses or hot fluids.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
+ie.manual.entry.barrel.name=나무 통
+ie.manual.entry.barrel.subtext=구르지 마
+ie.manual.entry.barrel0=나무 통은 유체를 저장할 수 있는 간단한 용기입니다. 그들은 12양동이까지 저장할 수 있지만 나무로 만들어졌기 때문에 가스나 뜨거운 유체를 저장할 수 없습니다.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
 
 ie.manual.entry.jerrycan.name=Jerrycan
 ie.manual.entry.jerrycan.subtext=Better than buckets
