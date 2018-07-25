@@ -428,7 +428,7 @@ item.immersiveengineering.faraday_suit_legs.name=패러데이 각반
 item.immersiveengineering.faraday_suit_feet.name=패러데이 부츠
 item.immersiveengineering.fluorescent_tube.name=형광등
 item.immersiveengineering.powerpack.name=축전기 가방
-item.immersiveengineering.shield.name=중형 판 방패
+item.immersiveengineering.shield.name=중형 방패
 
 item.immersiveengineering.map_orevein.name=광물 저장소 지도
 
@@ -1055,7 +1055,7 @@ ie.manual.entry.updateNews_40=엔지니어에게!<br><br>과거의 업데이트�
 
 ie.manual.category.general.name=개요 및 리소스
 ie.manual.category.construction.name=건설
-ie.manual.category.energy.name=파워, 전선, 발전기
+ie.manual.category.energy.name=전력, 배선, 발전기
 ie.manual.category.tools.name=도구
 ie.manual.category.machines.name=경형 기계
 ie.manual.category.heavymachines.name=중형 기계
@@ -1092,7 +1092,7 @@ ie.manual.entry.components.subtext=조각 통합
 ie.manual.entry.components0=많은 기계와 공구는 다양한 준부품로 구성되어 있습니다. 이 중 일부는 정기적으로 사용해야 하며, 따라서 이 설명서에 직접 입력해야 합니다. §6철§r과 §6강철 기술 요소§r는 멀티블록과 기계의 장점으로 통합합니다.
 ie.manual.entry.components1=이러한 구성 부품을 보다 자주 생성할 수 있기 때문에, 그들을 위한 <link;blueprints;§o§n청사진§r>을 작성하는 것이 바람직할 것입니다. <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 이 청사진을 사용하면 저렴한 비용으로 구성 부품을 구성할 수 있습니다.<br>워크벤치의 조합법은 다음 페이지에서 확인할 수 있습니다.
 ie.manual.entry.components2=또 다른 구성 부품은 사용 빈도가 낮지만 §6진공 튜브§r가 사용됩니다. 유리 관은 전자 기계에서 부품으로 사용되고 <link;lighting;§o§n발광 소자§r>에서 사용됩니다.
-ie.manual.entry.components3=정밀한 계산이 필요한 첨단 기계의 중요한 부품은 §6회로판§r입니다. 그들은 실제적으로 크고 투박하지만 1초 안에 기초적인 수학적인 운용을 할 수 있습니다!
+ie.manual.entry.components3=정밀한 계산이 필요한 첨단 기계의 중요한 부품은 §6회로 기판§r입니다. 그들은 실제적으로 크고 투박하지만 1초 안에 기초적인 수학적인 운용을 할 수 있습니다!
 
 ie.manual.entry.hemp.name=산업용 대마
 ie.manual.entry.hemp.subtext=530은 그것을 짭니다
@@ -1113,7 +1113,7 @@ ie.manual.entry.alloysmelter1=가마를 형성하려면 위에 표시된 것처�
 
 ie.manual.entry.treatedwood.name=방부목
 ie.manual.entry.treatedwood.subtext=강력한 안정성
-ie.manual.entry.treatedwood0=방부목은 아주 간단하게 크레오소트유로 덮인 나무 판자입니다. 하지만 이것은 여러분이 이머시브 엔지니어링에서 사용하게 될 가장 중요한 자료 중 하나이므로 여러분은 그것을 많이 만들 준비를 하는 것이 좋습니다.
+ie.manual.entry.treatedwood0=방부목은 아주 간단하게 크레오소트유로 덮인 나무 목재입니다. 하지만 이것은 여러분이 이머시브 엔지니어링에서 사용하게 될 가장 중요한 자료 중 하나이므로 여러분은 그것을 많이 만들 준비를 하는 것이 좋습니다.
 ie.manual.entry.treatedwoodPost0=방부목으로 만든 송전탑은 전선 연결기에 대한 뛰어난 부착 지점을 제공합니다. 높이가 4블록이므로 적당한 간격을 두지 않고는 배치할 수 없습니다.<br>맨 위 블록의 측면에 망치를 사용하여 기둥에 팔을 부착합니다.
 ie.manual.entry.treatedwoodPost1=막대기에 <link;wiring;§o§n변압기§r;8>를 설치할 수도 있고, 이로 인해 방해를 덜 받습니다.<br>나무 기둥 아래에 블록을 놓으면 팔이 거꾸로 뒤집어 집니다.
 
@@ -1133,156 +1133,156 @@ ie.manual.entry.crate1=강화 저장 상자는 일반적인 상자와 동일한 
 
 ie.manual.entry.barrel.name=나무 통
 ie.manual.entry.barrel.subtext=구르지 마
-ie.manual.entry.barrel0=나무 통은 유체를 저장할 수 있는 간단한 용기입니다. 그들은 12양동이까지 저장할 수 있지만 나무로 만들어졌기 때문에 가스나 뜨거운 유체를 저장할 수 없습니다.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
+ie.manual.entry.barrel0=나무 통은 유체를 저장할 수 있는 간단한 용기입니다. 그들은 12양동이까지 저장할 수 있지만 나무로 만들어졌기 때문에 가스나 뜨거운 유체를 저장할 수 없습니다.<br>망치를 사용하여 통의 상단 또는 하단을 우클릭하면 입력, 출력또는 무연결사이에서 전환됩니다.
 
-ie.manual.entry.jerrycan.name=Jerrycan
-ie.manual.entry.jerrycan.subtext=Better than buckets
-ie.manual.entry.jerrycan0=Jerrycans are simple metal containers used to carry fluids. They can store up to 10 buckets and can pour that fluid into the world as well as into machines. They can not pick up fluids. Additionally, they can be used to refill other fluid-consuming items like the <link;drill;§o§nMining §o§nDrill§r> by crafting them together.
+ie.manual.entry.jerrycan.name=젤리캔
+ie.manual.entry.jerrycan.subtext=양동이보다 좋습니다.
+ie.manual.entry.jerrycan0=젤리캔은 유체를 저장하는데 사용되는 간단한 금속 용기입니다. 최대 10양동이를 저장할 수 있고 그 유체를 기계뿐만 아니라 세계로 부을 수 있습니다. 유체를 추출할 수 없습니다. 또한, 함께 만들어서 <link;drill;§o§n채굴 §o§n드릴§r>과 같은 다른 연료 아이템들을 다시 채우는데 사용할 수 있습니다.
 
-ie.manual.entry.earmuffs.name=Ear Defenders
-ie.manual.entry.earmuffs.subtext=LOUD NOISES!
-ie.manual.entry.earmuffs0=Ear Defenders are devices for protecting your hearing. They are quite important for engineers that work in close proximity to <link;dieselgen;§o§nDiesel §o§nGenerators§r;> or other loud machinery.<br>While wearing Ear Defenders, all noises are reduced by 90%%.
-ie.manual.entry.earmuffs1=Placing the Ear Defenders in the <link;workbench;§o§nEngineer's §o§nWorkbench§r;> allows you to specify which types of noises you want cancelled and by how much their volume should be reduced.<br>You can dye them like you would leather armor.<br>Crafting them with any other helmet will attach the defenders to that piece of equipment, crafting the helmet alone will remove the defenders again, to allow further customizing.
+ie.manual.entry.earmuffs.name=귀마개
+ie.manual.entry.earmuffs.subtext=소음 차단!
+ie.manual.entry.earmuffs0=귀마개는 청력을 보호하는 장치입니다. <link;dieselgen;§o§n정유 §o§n발전기§r;>나 다른 시끄러운 기계 근처에서 일하는 엔지니어들에게는 매우 중요합니다.<br>귀마개를 착용하는 동안 모든 소음이 90%%로 감소합니다.
+ie.manual.entry.earmuffs1=귀마개를 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r;>에 놓으면 취소할 소음의 유형과 그 양을 줄여야 하는 소음의 양을 지정할 수 있습니다.<br>가죽 갑옷처럼 염색할 수 있습니다.<br>다른 투구로 문지르면 그 장비에 수비수들이 부착될 것이고, 투구만 만들면 또 다시 수비수들을 제거할 수 있어, 더 많은 맞춤이 가능할 것입니다.
 
-ie.manual.entry.shield.name=Heavy Plated Shield
-ie.manual.entry.shield.subtext=One Man Phalanx
-ie.manual.entry.shield0=The Heavy Plated Shield is a direct upgrade to the normal wooden shields you might be acquainted with. In similar fashion, this shield will block most incoming damage from the front, but its durability has been increased considerably, and it sports the ability to be upgraded.
-ie.manual.entry.shield1=The §6Flashbulb§r upgrade adds a bright lightbulb and reflector screen to the shield. Upon being attacked, the device will produce a bright, blinding flash, disorienting everyone in front of the user.
-ie.manual.entry.shield2=Adding §6Shock Emitters§r to the shield allows you to retaliate against attacking enemies. When the shield is struck, it will emit a shock, inflicting minor damage to the aggressor. Additionally, it will vapourize projectiles rather than just stopping them.
-ie.manual.entry.shield3=The §6Magnetic Glove§r serves as an easy way to access the shield when threatened. With this upgrade equipped, simply double-tapping the §l<keybind;key.immersiveengineering.magnetEquip>§r Key will have you retrieve the shield from your inventory and place it in your offhand slot.
+ie.manual.entry.shield.name=중형 방패
+ie.manual.entry.shield.subtext=원맨 파알란스
+ie.manual.entry.shield0=중형 방패는 여러분이 잘 알고 있을지도 모르는 일반적인 나무 방패의 직접 업그레이드입니다. 비슷한 방식으로 전면에서 들어오는 피해를 대부분 차단하지만 내구성이 크게 향상돼 업그레이드 가능성을 과시합니다.
+ie.manual.entry.shield1=§6플래시전구§r 업그레이드는 실드에 밝은 전구와 반사경 화면을 추가합니다. 이 장치는 공격을 받는 즉시 밝고 눈을 멀게 하는 섬광을 만들어 사용자 앞에 있는 모든 사람들을 혼란스럽게 합니다.
+ie.manual.entry.shield2=§6충격 발생기§r를 방패에 추가하면 적을 공격하는 것에 대해 보복할 수 있습니다. 방패가 맞으면, 공격자에게 경미한 피해를 주면서 충격을 줄 것입니다. 또한, 단순히 발사체를 멈추는 것이 아니라 발사체를 증발시킬 것입니다.
+ie.manual.entry.shield3=§6자석 장갑§r은 위협을 받을 때 실드에 쉽게 접근할 수 있는 방법입니다. 이 업그레이드가 장착되면, §l<keybind;key.immersiveengineering.magnetEquip>§r 키를 두번 누르고 인벤토리에서 방패를 검색하여 즉시 슬롯에 넣을 수 있습니다.
 
-ie.manual.entry.toolbox.name=Engineer's Toolbox
-ie.manual.entry.toolbox.subtext=The Engineer's Handbag
-ie.manual.entry.toolbox0=The toolbox is a simple, carried container, used to store all the essentials of an engineer! Hovering over the relevant slots tells you what they will accept.<br>'Food' and 'Anything' are quite self-explanatory, 'Wiring' slots are for coils, connectors and similar items, and 'Tools' will store any IE tool as well as picks, shovels and axes!
-ie.manual.entry.toolbox1=Sneaking and right-clicking allows the toolbox to be placed as a block. While placed, it's inventory can still be accessed with a rightclick. Sneaking and right-clicking again will pick the toolbox up.
+ie.manual.entry.toolbox.name=엔지니어의 도구 상자
+ie.manual.entry.toolbox.subtext=엔지니어의 핸드백
+ie.manual.entry.toolbox0=도구 상자는 엔지니어의 모든 필수품을 보관하는 간단하고 운반된 용기입니다! 그들이 수용할 것이 무엇인지를 알려 주는 것과 관련된 슬롯들이 여러분에게 알려줍니다.<br>'음식'과 '모든 것'은 자명하고, '전선'슬롯은 코일, 연결기 및 유사한 아이템을 위한 것이며 '도구'는 모든 IE도구와 곡괭이, 삽, 도끼를 저장합니다!
+ie.manual.entry.toolbox1=우클릭을 하면 도구 상자를 블록으로 배치할 수 있습니다. 배치된 동안에도 우클릭으로 인벤토리에 액세스 할 수 있습니다. 우클릭을 다시 하면 도구 상자가 선택됩니다.
 
-ie.manual.entry.graphite.name=Graphite
-ie.manual.entry.graphite.subtext=Coal stuff
-ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;squeezer;§o§nIndustrial §o§nSqueezer§r>. That dust can then be smelted into an ingot.
-ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager. You can also create electrodes in the metal press, using the rod mold on 4 ingots, but the electrodes crafted this way have less durability.
+ie.manual.entry.graphite.name=흑연
+ie.manual.entry.graphite.subtext=석탄 덩어리
+ie.manual.entry.graphite0=HOP는 특수한 엔지니어링 구조에 사용되는 복합적인 고압축 탄소 물질입니다.<br>HOP 흑연 가루는 <link;squeezer;§o§n산업용 §o§n압착기§r>에 있는 코크스 가루 8개를 압축하여 생성됩니다. 가루는 주괴로 변환될 수 있습니다.
+ie.manual.entry.graphite1=HOP 흑연의 가장 일반적인 용도는 <link;arcfurnace;§o§n아크 §o§n화로§r>로부터 사용할 전극을 만드는 것입니다. 이 전극들은 어떤 상자에서 <config;b;arcfurnace_electrodeCrafting; craft,>찾을 수 있거나 마을 사람과 교역할 수 있는 <link;blueprints;§o§n엔지니어의 §o§n청사진§r>으로 만들어졌습니다. 금속 압축기에서 4개의 주괴에 로드 금형을 사용하여 전극을 만들 수도 있지만 이렇게 조작된 전극은 내구성이 떨어집니다.
 
-ie.manual.entry.wiring.name=Basic Wiring
-ie.manual.entry.wiring.subtext=Bzzzt!
-ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.
-ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transfer rate between two points depends on the weakest type of wire between them.
-ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
-ie.manual.entry.wiring3=and wires can only connect to blocks that match the voltage.
-ie.manual.entry.wiring4=There are two important values to note about wiring:<br>Each connector has an input value (§o<config;iA;wireConnectorInput>§r) and each wire has a maximum transfer rate (§o<config;iA;wireTransferRate;l3>§r).<br>The connector limits how much power can be in- and output, but multiple connectors can §ounify§r into a single wire, allowing you to combine the transfer over longer ranges. Note however that the §omaximum transfer rate of the wire must not be exceeded, or else the wire will §oburn up§r.
-ie.manual.entry.wiring5=Wires will transfer energy even through §ounloaded chunks§r as long as the input and output chunks are loaded.<br>Uninsulated wires connected to an energy source will cause damage to players and mobs too close to them. Insulated wires are available for low and medium voltage.<br>Sneaking when using the "Pick Block" function on a connector will pick the connected wire from your inventory.<br>Wire connections will break if a block obstructing the wire is placed.
-ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other Flux handlers and they will transfer power through connected wires. §lRelays§r will still accept wires but can't in- or output, they serve as connection points between wires.
-ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
-ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
-ie.manual.entry.wiringTransformer1=You can attach <link;wiring;§o§ntransformers §o§nto §o§nwooden §o§npoles§r;3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
-ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the wires connected to a block by simply rightclicking it.
-ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Aiming it at any energy storage or rightclicking it will read its current storage. Sneak+rightclick two connectors to calculate the average loss between them.
-ie.manual.entry.wiringFeedthrough=Feedthrough Insulators allow connecting wiring from one side of a wall to wiring on the other side without a hole. They can be created with any "normal" solid block in the middle. All common types of connectors (power and redstone) can be used to create feedthrough insulators for the corresponding wire type.
+ie.manual.entry.wiring.name=기본 전선
+ie.manual.entry.wiring.subtext=지지직!
+ie.manual.entry.wiring0=이머시브 엔지니어링의 에너지 망은 중요한 4가지 블록을 가지고 있습니다: 에너지를 저장하는 §l축전기§r, 망의 입출력을 담당하는 §l연결기§r, 전선을 함께 연결하는 §l중계기§r, 다른 종류의 전선을 전환하는 §l변압기§r
+ie.manual.entry.wiring1=두 블록을 연결하려면 첫번째 블록을 전선 코일로 클릭한 다음 두번째 블록에서 동일한 코일을 사용합니다. 두 지점 사이의 총 전송 속도는 가장 약한 유형의 전선에 따라 달라집니다.
+ie.manual.entry.wiring2=제한 사항은 블록을 기준으로 적용됩니다: 연결기와 중계기는 이미 연결된 유형의 전선만 사용하고 변압기는 다른 유형의 전선만 사용합니다,<br>[cont]
+ie.manual.entry.wiring3=전선은 전압에 맞는 블록에만 연결할 수 있습니다.
+ie.manual.entry.wiring4=배선에 대해 두가지 중요한 값을 기록해야 합니다:<br>각 연결기에는 입력 값이 있고(§o<config;iA;wireConnectorInput>§r) 각 전선은 최대 전송 속도를 가집니다(§o<config;iA;wireTransferRate;l3>§r).<br>연결기는 출력 및 입력 전력의 양을 제한하지만, 여러 연결기가 단일 전선으로 §o통합§r되어 더 긴 범위의 전송을 결합할 수 있습니다. 그러나 전선의 §o최대 전송 속도§r를 초과하면 안 됩니다. 그렇지 않으면 전선이 §o타버립니다§r.
+ie.manual.entry.wiring5=전선은 입력 및 출력 청크가 로드되는 한 §o언로드된 청크§r를 통해서도 에너지를 전송합니다.<br>전선을 에너지원에 연결하지 않으면 플레이어들과 몹들에게 피해를 줄 수 있습니다. 저압 및 중압에 절연 전선을 사용할 수 있습니다.<br>연결기에서 "블록 선택" 기능을 사용할 때 스누핑이 인벤토리에서 연결된 전선을 선택합니다.<br>전선을 방해하는 블록이 있으면 전선 연결이 끊어집니다.
+ie.manual.entry.wiringConnector=§l연결기§r는 IE 에너지 망으로 입출력됩니다. 축전기 또는 기타 플럭스 처리기에 이러한 물질을 배치할 수 있으며, 이들 물질은 연결된 전선을 통해 전력을 전달합니다. §l중계기§r는 여전히 전선을 수용하지만 입출력할 수 없으며 전선 간의 연결 지점 역할을 합니다.
+ie.manual.entry.wiringCapacitor=§l축전기§r는 에너지 저장 단위로 사용됩니다. 망치를 사용하여 각 측면의 구성을 조정할 수 있습니다. 파란색은 입력을 나타내고 주황색은 출력을 나타내며 무색은 전혀 연결을 방해하지 않습니다. 망치를 사용하는 동안 살짝 얼굴을 돌려 클릭한 쪽과 반대쪽을 구성합니다.
+ie.manual.entry.wiringTransformer0=§l변압기§r는 당신이 다른 종류의 전선 사이에서 전환할 수 있게 해 줍니다. 가장 약한 전선은 전송 속도를 제한합니다. 고압 변압기는 저압또는 중압으로 이동할 수 있으므로 두 변압기를 연결할 필요가 없습니다.
+ie.manual.entry.wiringTransformer1=4페이지의 두번째 이미지에서 볼 수 있는 것처럼 <link;wiring;§o§n변압기를 §o§n나무 §o§n기둥에;3> 부착할 수 있지만, 이와 같이 비 고압 변압기만 배치할 수 있습니다.
+ie.manual.entry.wiringCutters=The §l전선 절단기§r는 블록에 연결된 모든 전선을 우클릭하여 제거하는 데 사용됩니다.
+ie.manual.entry.wiringVoltmeter=§l볼트미터§r는 연결을 측정하는데 사용됩니다. 임의의 에너지 저장고에서 목표를 설정하거나 올바르게 선택하면 현재 저장고를 읽게 됩니다. 축전기 2개를 우클릭하여 평균 손실을 계산합니다.
+ie.manual.entry.wiringFeedthrough=피드스루 절연체를 사용하면 벽 한쪽에서 다른 쪽으로 전선을 구멍 없이 연결할 수 있습니다. 중간에 "일반" 솔리드 블록을 사용하여 작성할 수 있습니다. 모든 일반적인 유형의 연결기(전력 및 레드스톤)를 사용하여 해당 전선 유형에 대한 피드스루 절연체를 만들 수 있습니다.
 
-ie.manual.entry.generator.name=Power Generation
+ie.manual.entry.generator.name=전력 발전
 ie.manual.entry.generator.subtext=
-ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate Flux, you can use the kinetic forces of windmills and waterwheels. Connecting these to a dynamo will generate power based on how fast they turn.
-ie.manual.entry.generator1=The Water Wheel is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three water wheels can be placed against each other.
-ie.manual.entry.generator2=The Windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends the space in front of it, with its kinetic output reducing greatly if the airflow is obscured. Additionally, weather conditions like rain or thunderstorms result in stronger winds and increased rotation speeds.
-ie.manual.entry.generator3=Your wind-based power generation can be improved by covering the blades of your windmill in cloth. Doing so increases the surface area and with it the rotation speed and energy output.<br>The required sails are crafted from <link;hemp;§o§ntough §o§nhemp §o§nfabric§r;1> and applied to the windmill by rightclicking it in world.
+ie.manual.entry.generator0=전력 전송은 도움이 될만합니다. 실제로 플럭스를 생산하기 위해서는 풍차와 물레방아 에너지를 사용할 수 있습니다. 이를 발전기에 연결하면 회전 속도에 따라 전력이 발생합니다.
+ie.manual.entry.generator1=물레방아는 발전기에 동력을 공급하는 꽤 쉬운 방법입니다. 회전 속도는 주위를 흐르는 물을 기반으로 하기 때문에 최적의 결과를 위해서는 위쪽에서 아래쪽으로 가는 반원형으로 물을 돌리는 것이 좋습니다. 최대 3개의 물레방아를 서로 맞대어 놓을 수 있습니다.
+ie.manual.entry.generator2=풍차는 매우 강력한 것은 아니지만, 자유롭고 쉬운 발전 방법입니다. 그 속도는 공기 흐름이 방해를 받으면 운동 출력이 크게 감소하면서 전방의 공간에 따라 달라집니다. 게다가, 비나 뇌우 같은 날씨 조건은 더 강한 바람과 더 높은 회전 속도를 초래합니다.
+ie.manual.entry.generator3=풍력 발전은 풍차 날개를 천으로 덮어 발전시킬 수 있습니다. 이렇게 하면 표면적이 증가하고 회전 속도와 에너지 출력이 증가합니다.<br>필요한 돛은 <link;hemp;§o§n강력 §o§n대마 §o§n천§r;1>으로 만들어져 있고, 세계에서 그것을 우클릭해서 풍차에 적용됩니다.
 
-ie.manual.entry.breaker.name=Breaker Switch
-ie.manual.entry.breaker.subtext=Clap on - Clap off
-ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to separate power-hungry machinery from the network or hook up an additional set of generators when needed!
-ie.manual.entry.breaker1=Due to the high risk, these switches will not accept HV wires.<br>They will also emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Hammer.<br>Additionally they are an excellent way to control your <link;lighting;powered lights;1>!
-ie.manual.entry.breaker2=The Redstone Breaker is similar to a normal breaker switch, but cannot be operated manually. Instead, it will require a redstone signal to break the connection. In return, this device is insulated well enough to allow the connection of HV wires as well!
+ie.manual.entry.breaker.name=부하 스위치
+ie.manual.entry.breaker.subtext=켜기 - 끄기
+ie.manual.entry.breaker0=부하 스위치는 전선을 통한 전력 흐름을 차단할 수 있는 스위치입니다. 이들은 동일한 유형의 두개의 전선을 연결할 수 있으며, 전원이 작동될 때만 통과할 수 있습니다. 이는 전력 소모가 많은 기계를 네트워크에서 분리하거나 필요할 때 추가 발전기 세트를 연결하는 데 사용할 수 있습니다!
+ie.manual.entry.breaker1=위험이 높으므로 이러한 스위치는 고압 전선을 허용하지 않습니다.<br>또한 스위치를 켜면 레드 스톤 신호를 내보냅니다. 이 동작은 엔지니어의 망치로 스위치를 클릭하여 반전할 수 있습니다.<br>또한 이러한 기능은 <link;lighting;전원 표시등;1>을 제어할 수 있는 탁월한 방법입니다!
+ie.manual.entry.breaker2=레드스톤 차단기는 일반 부하 스위치와 비슷하지만 수동으로 작동할 수는 없습니다. 대신 연결을 끊으려면 레드스톤 신호가 필요합니다. 따라서 이 장치는 고압 전선도 충분히 연결할 수 있을 만큼 절연이 잘 되어 있습니다!
 
-ie.manual.entry.eMeter.name=Current Transformer
-ie.manual.entry.eMeter.subtext=88 Flux per hour!
-ie.manual.entry.eMeter0=The Current Transformer is a measurement device for electrical power. It can be hooked up in any powerline and will keep track of energy transferred through it, returning an average Flux/t upon rightclick.
+ie.manual.entry.eMeter.name=전류 변압기
+ie.manual.entry.eMeter.subtext=시간당 88 Flux!
+ie.manual.entry.eMeter0=전류 변압기는 전력 측정 장치입니다. 그것은 어떤 전원선에서도 연결될 수 있고 그것을 통해 전달되는 에너지를 계속 추적할 수 있으며, 우클릭 시 평균 Flux/t가 반환됩니다.
 
-ie.manual.entry.redstoneWires.name=Redstone Wires
-ie.manual.entry.redstoneWires.subtext=Integration Takeover
-ie.manual.entry.redstoneWires0=§6Redstone Wires§r are aluminium coated in redstone dust. The resulting cables provide an easy way to transfer redstone signals over long distance without losing any signal strength.
-ie.manual.entry.redstoneWires1=The §6connectors§r work like any other wire connector in terms of connecting them, however, redstone wiring does not require relays; connectors and relays are the same block.<br>Using the Engineer's Hammer, the connectors can be switched between in- and output mode (rightclick) and configured between 16 coloured frequencies (sneak-rightclick).
-ie.manual.entry.redstoneWires2=§6Redstone Probe Connectors§r have a functionality partially comparable to Redstone Comparators. While they are not able to actively compare signals, they are able to read inventories for how full they are.
-ie.manual.entry.redstoneWires3=Additionally, these probes can operate on two channels, sending their read signal on one, and still receiving signals on another. These channels can be changed by using the Engineer's Hammer.<br><br>Note that many of IE's multiblocks feature comparator-functionality, as described on the following pages. Where available, the redstone control surface of the multiblock is the designated spot to connect a comparator.
-ie.manual.entry.redstoneWires4=§lTank: §rAs detailed in its <link;tank;§o§nmanual §o§nentry§r;1><br>§lSilo: §rAs detailed in its <link;silo;§o§nmanual §o§nentry§r;2><br>§lAssembler: §rOutputs a signal relative to the fill of the inventory.<br>§lAutoWorkbench: §rOutputs a signal relative to the fill of the inventory.<br>§lSqueezer: §rOutputs a signal relative to the fill of the inventory.<br>§lFermenter: §rOutputs a signal relative to the fill of the inventory.
-ie.manual.entry.redstoneWires5=§lExcavator: §rOutputs a signal relative to the remaining ore in the vein.<br>§lArcFurnace: §rOutputs a signal relative to the fill of the inventory.<br>Additionally, connecting a comparator to the electrodes at the top will send a signal based on their integrity.<br>§lMixer: §rOutputs a signal relative to the fill of the inventory.<br>
+ie.manual.entry.redstoneWires.name=레드스톤 전선
+ie.manual.entry.redstoneWires.subtext=통합 테이크오버
+ie.manual.entry.redstoneWires0=§6레드스톤 전선§r은 레드스톤 가루로 코팅된 알루미늄입니다. 그 결과로 생긴 전선은 어떤 신호 강도도 잃지 않고 원격으로 레드스톤 신호를 쉽게 전송할 수 있는 방법을 제공합니다.
+ie.manual.entry.redstoneWires1=§6연결기§r는 다른 전선 연결기와 마찬가지로 연결되지만, 레드스톤 전선에는 중계기가 필요하지 않으며 연결기와 중계기는 동일한 블록입니다.<br>엔지니어의 망치를 사용하여 연결기를 입출력 모드(우클릭)로 전환하고 16개의 색상 주파수(우클릭)로 구성할 수 있습니다.
+ie.manual.entry.redstoneWires2=§6레드스톤 프로브 연결기§r에는 레드스톤 비교기와 부분적으로 유사한 기능이 있습니다. 그들은 신호를 적극적으로 비교할 수는 없지만, 그들은 그들이 얼마나 가득 찼는지를 알기 위해 목록을 읽을 수 있습니다.
+ie.manual.entry.redstoneWires3=또한 이러한 프로브는 두채널에서 작동하여 하나의 채널에서 판독 신호를 전송하고 다른 채널에서도 신호를 수신할 수 있습니다. 이러한 채널은 엔지니어의 망치를 사용하여 변경할 수 있습니다.<br><br>다음 페이지에 설명된 것처럼 많은 IE의 다중 잠금 장치가 비교 기능을 제공합니다. 가능한 경우, 멀티 블록의 레드스톤 제어 표면이 비교기를 연결하는 지정된 지점입니다.
+ie.manual.entry.redstoneWires4=§l탱크: §r<link;tank;§o§n설명서 §o§n초장§r;1>에 자세히 설명되어 있습니다.<br>§l사일로: §r<link;silo;§o§n설명서 §o§n초장§r;2>에 자세히 설명되어 있습니다.<br>§l조립기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>§l자동 워크벤치: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>§l압착기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>§l발효기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.
+ie.manual.entry.redstoneWires5=§l굴착기: §r덩굴의 나머지 광석을 기준으로 신호를 출력합니다.<br>§l아크 화로: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>또한 비교기 상단의 전극에 연결하면 그 무결성에 기초한 신호를 전송할 것입니다.<br>§l혼합기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>
 
-ie.manual.entry.thermoElectric.name=Thermoelectric Generator
-ie.manual.entry.thermoElectric.subtext=Hot and Cold
-ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
-ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The list on the following page contains other, non-fluid blocks, which can be used as sources of temperature.
+ie.manual.entry.thermoElectric.name=열전기 발전기
+ie.manual.entry.thermoElectric.subtext=온과 냉
+ie.manual.entry.thermoElectric0=열전가 발전기는 발전의 또 다른 설정이며 기계적 부품을 사용하지 않고도 작동합니다. 대신 두 요소 사이의 온도 비교를 사용합니다.
+ie.manual.entry.thermoElectric1=한쪽에 뜨거운 유체를 넣고 반대쪽에는 차가운 유체를 넣으면 두 온도의 차이에 따라 에너지가 발생합니다.<br>다음 페이지의 목록은 다른 비유체 블록을 포함하고 있으며, 이를 온도 요소로 사용할 수 있습니다.
 
-ie.manual.entry.blastfurnace.name=Crude Blast Furnace
-ie.manual.entry.blastfurnace.subtext=Simple Steel
-ie.manual.entry.blastfurnace0=The Crude Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br><br>Along with steel, the furnace will also create slag, which you must remove or the furnace will cease to function. While technically a waste product, you can use slag to create concrete.
-ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
-ie.manual.entry.blastfurnace1=The Crude Blast Furnace is not automateable. All in- and outputs must be arranged manually through its GUI. If you want to automate the creation of steel, you should probably look into creating an <link;improvedBlastfurnace;§o§nImproved §o§nBlast §o§nFurnace§r;>.
+ie.manual.entry.blastfurnace.name=원유 용광로
+ie.manual.entry.blastfurnace.subtext=강철을 간단하게
+ie.manual.entry.blastfurnace0=원유 용광로는 철의 탄소 함량을 증가시켜 강철로 변환하는 데 사용됩니다. 이를 달성하기 위해 순수한 고탄소 연료(특히 코크스 및 활성탄)만 사용할 수 있습니다.<br><br>또한 철과 함께 슬래그도 생성되므로 이를 제거해야 합니다. 그렇지 않으면 용광로의 기능이 중단됩니다. 기술적으로 폐기물은 슬래그를 사용하여 콘크리트를 만들 수 있습니다.
+ie.manual.entry.blastfurnaceBlock=용광로를 형성하려면 블록 중 27개를 3x3x3 정육면체에 정렬하고 엔지니어의 망치로 측면 중앙 블록 중 하나를 우클릭합니다.<br>다이어그램은 다음 페이지를 참조하세요.
+ie.manual.entry.blastfurnace1=원유 용광로는 자동으로 가동되지 않습니다. 모든 입출력은 GUI를 통해 수동으로 정렬해야 합니다. 강철 생성을 자동화하려면 <link;improvedBlastfurnace;§o§n강화 §o§n용광로§r;> 생성을 고려해야 합니다.
 
-ie.manual.entry.improvedBlastfurnace.name=Improved Blast Furnace
-ie.manual.entry.improvedBlastfurnace.subtext=Industrialized Refinement
-ie.manual.entry.improvedBlastfurnace0=The Improved Blast Furnace is a much more professional way of <link;blastfurnace;§o§ncreating §o§nsteel§r;>. Not only does it allow the automation of in- and outputs, it can also be outfitted with preheaters to speed up the refinement process by addition of hot air.<br>The furnace is made from reinforced bricks, so you'd be advised to spend your first batches of steel on this upgrade.
-ie.manual.entry.improvedBlastfurnace1=The structure of the Furnace is similar to its crude predecessor, but the bricks have been reinforced and a hopper was added at the top to funnel in the inputs.
-ie.manual.entry.improvedBlastfurnace2=Steel is output at the front of the furnace, slag at the back, and the furnace will automatically output to connected inventories or conveyor belts. Iron and Coal Coke are fed in through the top.
-ie.manual.entry.improvedBlastfurnace3=Blast Furnace Preheaters are used to heat up air and then blow it into the furnace to speed up the refinement process of iron. Each furnace can have up to two preheaters connected to the ports on the each side, and each preheater requires <config;i;preheater_consumption> Flux/t to operate.
+ie.manual.entry.improvedBlastfurnace.name=강화 용광로
+ie.manual.entry.improvedBlastfurnace.subtext=산업용 정제
+ie.manual.entry.improvedBlastfurnace0=강화 용광로는 <link;blastfurnace;§o§n강철을 §o§n만드는§r;> 훨씬 전문적인 방법입니다. 입력 및 출력을 자동화할 수 있을 뿐만 아니라, 뜨거운 공기를 추가하여 정제 과정을 가속화할 수 있는 예비 기기도 갖출 수 있습니다.<br>용광로는 강화 벽돌로 만들어졌기 때문에 이번 업그레이드에는 처음으로 강철을 사용하는 것이 좋습니다.
+ie.manual.entry.improvedBlastfurnace1=용광로의 구조는 거친 기존 것과 유사하지만 벽돌은 보강되었고 입력 물 속의 깔때기 모양으로 상단에 호퍼가 추가되었습니다.
+ie.manual.entry.improvedBlastfurnace2=강철은 용광로 전면에서, 슬래그는 후면에서, 용광로는 연결된 인벤토리 또는 컨베이어 벨트로 자동으로 출력됩니다. 철과 코크스는 위를 통해 공급됩니다.
+ie.manual.entry.improvedBlastfurnace3=용광로 예열기는 철의 정제 과정을 가속화하기 위해 공기를 가열한 다음 이를 용광로에 불어넣는 데 사용됩니다. 각 용해로는 양 측의 포트에 최대 두 개의 예열기를 연결할 수 있으며, 각 예열기는 작동을 위해 <config;i;preheater_consumption> Flux/t이 필요합니다.
 
-ie.manual.entry.metalconstruction.name=Metal Constructions
-ie.manual.entry.metalconstruction.subtext=Riveting
-ie.manual.entry.metalconstruction0=Apart from Treated Wood, processed metals make for common construction blocks. You can craft almost any metal into blocks and slabs, or hammer iron ingots into a sheetmetal block.
-ie.manual.entry.metalconstruction1=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays.
-ie.manual.entry.metalconstruction2=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
-ie.manual.entry.metalconstruction3=Metal ladders are...well, ladders made from metal. You can climb them, and they look cool.<br>You can also combine them with Scaffolding to make them into Covered Ladders.
+ie.manual.entry.metalconstruction.name=금속 시공
+ie.manual.entry.metalconstruction.subtext=집중
+ie.manual.entry.metalconstruction0=방부목을 제외하고, 가공된 금속은 일반적인 건설 블록을 만듭니다. 당신은 거의 모든 금속을 블록과 반 블록으로 만들 수 있고, 철괴를 망치로 두드려 판금을 만들 수 있습니다.
+ie.manual.entry.metalconstruction1=강철은 고압 구조의 필수적인 부분일 뿐만 아니라 건축에도 매우 유용합니다. 강철 비계를 사용하여 신속하게 청소 가능한 구조를 만들 수 있으며, 강철 울타리는 악을 막아 주고 구조 팔은 고압 중계기의 훌륭한 연결 지점을 제공합니다.
+ie.manual.entry.metalconstruction2=구조 연결기는 일반 연결기와 유사하게 작동하지만 에너지를 전달하는 대신 순전히 장식적입니다.<br>일반적인 전선은 허용하지 않지만, 대마 밧줄과 강철 전선은 허용합니다(다음 페이지 참조).<br>엔지니어의 망치를 사용하여 이 망치를 우클릭하여 회전할 수도 있습니다.
+ie.manual.entry.metalconstruction3=금속 사다리는...음, 금속으로 만든 사다리이죠. 여러분은 그것을 오를 수 있고, 그것은 멋져 보입니다.<br>또한 비계와 결합하여 도금된 사다리로 만들 수도 있습니다.
 
-ie.manual.entry.lighting.name=Engineered Lighting
-ie.manual.entry.lighting.subtext=Lighting up the Wasteland
-ie.manual.entry.lighting0=Deep in the halls of the factories, it can be quite dark. In order to still find your way around the machines, you should probably light up the place with some Lanterns. These Lanterns provide almost as much light as a glowstone block would.
-ie.manual.entry.lighting1=Powered Lanterns are one of the first ever invented uses for electric power. To run these, you need to connect them directly to your power grid using wires. They will allow power to be transferred through them, so you can link them in a row.<br>Using the Engineer's Hammer on them will flip them upside down.
-ie.manual.entry.lighting2=As long as they are supplied with a little bit of power, they will light up the surrounding area like a normal Lantern, but additionally, they will also prevent hostile mobs to spawn in a 32 block radius!
-ie.manual.entry.lighting3=Floodlights are strong lightsources. While they require more power than a simple Powered Lantern, they will create a cone of light up to 32 blocks long. Use an Engineer's Hammer on the top or bottom faces of the block to rotate the light or click its sides to change its pitch.
-ie.manual.entry.lighting4=Generally, Floodlights require a redstone signal to run, however their control-behavior can be inverted by sneaking and right-clicking their base with an Engineer's Hammer.
+ie.manual.entry.lighting.name=공학 조명
+ie.manual.entry.lighting.subtext=더러운 세상을 밝힙니다.
+ie.manual.entry.lighting0=공장의 복도 깊숙한 곳에서는, 꽤 어두울 수 있습니다. 그래도 기계 주변에서 길을 찾으려면, 아마도 그 곳에 랜턴을 켜야 할 것입니다. 이 랜터은 발광석보다 많은 빛을 제공합니다.
+ie.manual.entry.lighting1=파워 랜턴은 전력을 위해 발명된 최초의 아이템 중 하나입니다. 실행하려면 전선을 사용하여 전원 그리드에 직접 연결해야 합니다. 전원 공급 장치를 통해 전원이 전송되므로 한 줄로 연결할 수 있습니다.<br>엔지니어의 망치를 사용하여 거꾸로 뒤집습니다.
+ie.manual.entry.lighting2=조금만 전력을 공급 받는다면 주변 지역을 정상적인 랜턴처럼 밝힐 뿐만 아니라 32블럭 반경 내에 적대적인 몹이 발생하는 것을 막을 수 있습니다.
+ie.manual.entry.lighting3=투광 조명등은 강한 조명등입니다. 단순한 파워 랜턴보다 더 많은 전력을 필요로 하지만, 그들은 최대 32블록 길이의 원뿔 모양의 빛을 만들어 낼 것입니다. 블록의 상단 또는 하단 면에 있는 엔지니어의 망치를 사용하여 조명을 회전하거나 측면을 클릭하여 정도를 변경합니다.
+ie.manual.entry.lighting4=일반적으로 투광 조명등은 레드스톤 신호를 실행해야 하지만 제어 장치는 엔지니어의 망치로 베이스를 몰래 열고 우클릭하여 반전될 수 있습니다.
 
-ie.manual.entry.metalPress.name=Metal Press
-ie.manual.entry.metalPress.subtext=Under Pressure!
-ie.manual.entry.metalPress0=The Metal Press is an automated way of shaping metal. It uses a high pressure piston to press a mold onto an ingot, forming it into a plate, rod or other metal components.<br>The structure is created as shown above, to form the multiblock, click the piston with an Engineer's Hammer.
-ie.manual.entry.metalPress1=Power is input through the top, and items through the conveyors, obviously in the direction of movement. The lower middle block is the redstone control port, rightclicking it with an Engineer's Hammer allows you to invert the redstone control.
-ie.manual.entry.metalPress2=To actually work, the metal press requires a mold to be attached to the piston. These molds are created in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> using the blueprint displayed above.
-ie.manual.entry.metalPress3=Molds are crafted as shown above, with the wirecutter taking some damage for every crafting operation. They are then inserted into the metal press by right-clicking the multiblock with a mold in hand.
-ie.manual.entry.metalPress4=The packing and unpacking molds can be used to compress 4 or 9 of the same item into their relevant storage form, as well as unpack them again. This can be utilized to store ingots as blocks, or automatically create simple blocks like Sandstone.
+ie.manual.entry.metalPress.name=금속 압축기
+ie.manual.entry.metalPress.subtext=압력 속으로!
+ie.manual.entry.metalPress0=금속 압축기는 금속을 형성하는 자동화된 방법입니다. 고압 피스톤을 사용하여 주괴을 틀로 눌러 판, 막대기 또는 기타 금속 구성 요소를 형성합니다.<br>이 구조는 위와 같이 생성되어 멀티블록을 형성합니다. 엔지니어의 망치로 피스톤을 클릭합니다.
+ie.manual.entry.metalPress1=상단을 통해 전력이 입력되고 컨베이어를 통해 아이템이 이동하는 방향으로 입력됩니다. 아래쪽 중간 블록은 레드스톤 통제 포트로, 엔지니어의 망치를 사용하여 우클릭하면 레드스톤 통제기를 역행할 수 있습니다.
+ie.manual.entry.metalPress2=실제로 작동하기 위해서는 틀을 피스톤에 부착해야 합니다. 이러한 틀은 위에 표시된 청사진을 사용하여 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 작성됩니다.
+ie.manual.entry.metalPress3=틀은 위와 같이 제작되며, 전선 절단기가 제작할 때마다 약간의 손상을 입힙니다. 그런 다음 틀을 손에 들고 멀티블록을 우클릭하여 금속 압축기에 삽입합니다.
+ie.manual.entry.metalPress4=압축 및 압축 풀기 틀을 사용하여 동일한 아이템의 4~9개를 압축하고 다시 압축을 풀 수 있습니다. 이 기능을 사용하여 주괴를 블록으로 저장하거나 사암과 같은 간단한 블록을 자동으로 작성할 수 있습니다.
 
-ie.manual.entry.tank.name=Tank
-ie.manual.entry.tank.subtext=Full to the brim!
-ie.manual.entry.tank0=The Tank is a multiblock that provides space for large amounts of fluid. It will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block. Fluids can only be extracted from the bottom center block.
-ie.manual.entry.tank1=Applying a redstone signal to the bottom center block will make the tank output automatically, a comparator placed there will emit a redstone signal proportional to how full the tank is. Attaching the comparator to one of the top 4 layers results in a signal proportional to the height of the comparator. For example, a comparator attached to the second layer of a tank would not emit any signal until the tank is 1/4 full and have a signal strength of 15 if the tank is half full or more.
+ie.manual.entry.tank.name=탱크
+ie.manual.entry.tank.subtext=가득 채워!
+ie.manual.entry.tank0=탱크는 다량의 유체를 담을 수 있는 공간을 제공하는 멀티블록입니다. 이 장치는 최대 유체 512양동이를 저장하며, 유체는 상단 또는 하단 블록을 통해 유입될 수 있습니다. 유체는 중앙 하단 블록에서만 추출할 수 있습니다.
+ie.manual.entry.tank1=하단 중앙 블록에 레드스톤 신호를 적용하면 탱크가 자동으로 출력되고, 여기에 배치된 비교기가 탱크가 가득 찬 정도에 비례하여 레드스톤 신호를 출력합니다. 상단 4개의 층 중 하나에 비교기를 부착하면 비교기의 높이에 비례하는 신호가 발생합니다. 예를 들어 탱크의 2층에 부착된 비교기는 탱크가 1/4가득 찰 때까지 어떤 신호를 방출하지 않으며 탱크가 절반 이상일 경우 신호 강도가 15입니다.
 
-ie.manual.entry.silo.name=Silo
-ie.manual.entry.silo.subtext=Full to the brim!
-ie.manual.entry.silo0=Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equaling the capacity of 24 chests.
-ie.manual.entry.silo1=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically.
-ie.manual.entry.silo2=A comparator attached to the bottom center block will it emit a redstone signal proportional to how full the silo is. Attaching the comparator to one of the top 6 layers results in a signal proportional to the height of the comparator. For example, a comparator attached to the third layer of a silo would not emit any signal until the tank is 2/6 full and have a signal strength of 15 if the silo is half full or more.
+ie.manual.entry.silo.name=사일로
+ie.manual.entry.silo.subtext=가득 채워!
+ie.manual.entry.silo0=사일로는 동일한 유형의 많은 아이템에 공간을 제공하므로 씨앗, 슬래그 또는 조약돌의 대량 저장에도 적합합니다. 그들은 41472개의 아이템을 담을 수 있는 공간을 가지고 있는데, 이것은 24상자의 용량과 같습니다.
+ie.manual.entry.silo1=아이템은 상단을 통해 입력되고 하단에서 추출되어야 합니다. 하단 블록에 레드스톤 신호를 적용하면 자동으로 출력됩니다.
+ie.manual.entry.silo2=하단 중앙 블록에 부착된 비교기는 사일로의 가득 찬 정도에 비례하는 레드스톤 신호를 방출합니다. 상위 6개 층 중 하나에 비교기를 부착하면 비교기의 높이에 비례하는 신호가 발생합니다. 예를 들어, 사일로의 3층에 부착된 비교기는 탱크가 2/6으로 찰 때까지 어떤 신호를 방출하지 않으며 사일로가 절반 이상 찰 경우 15의 신호 강도를 갖습니다.
 
-ie.manual.entry.metalbarrel.name=Metal Barrel
-ie.manual.entry.metalbarrel.subtext=Doesn't roll
-ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids, and won't output automatically if receiving a redstone signal
+ie.manual.entry.metalbarrel.name=금속 통
+ie.manual.entry.metalbarrel.subtext=구르지 마!
+ie.manual.entry.metalbarrel0=금속 통은 <link;barrel;§o§n나무 §o§n통§r;>과 똑같이 작동합니다. 동일한 양의 유체를 저장하고 입출력은 동일한 방식으로 구성되지만, 나무 버전과 달리 가스와 뜨거운 유체를 저장할 수 있으며, 레드스톤 신호를 받는다면 자동으로 출력을 할 수 없습니다.
 
-ie.manual.entry.assembler.name=Assembler
-ie.manual.entry.assembler.subtext=Some assembly required
-ie.manual.entry.assembler0=The Assembler is a complex machine capable of crafting items, similar to how a player would.<br>To form the structure, build it like demonstrated above and use the hammer on one of the conveyors.
-ie.manual.entry.assembler1=The conveyor you clicked will be the input side, indicated by the blue marker above it and the arrow on the side of the machine.<br>The Assembler allows for up to 3 recipes to be stored inside it that will be performed in order. The outputs of previous recipes can be used as inputs for the following.<br>The 3 crafting grids store the recipes, and the 18 slots below them are the inventory for materials.
-ie.manual.entry.assembler2=The input side, in addition to an item input also features a fluid input to fill the three internal tanks of the machine. Fluid in these tanks can be used to replace fluid containers like water buckets in recipes.<br>Power for the machine is input through the top center block.
+ie.manual.entry.assembler.name=조립기
+ie.manual.entry.assembler.subtext=조립이 필요해요
+ie.manual.entry.assembler0=조립기는 플레이어가 만드는 것과 비슷한 아이템을 만들 수 있는 복잡한 기계입니다.<br>구조물을 형성하려면 위에서 설명한 대로 제작하고 컨베이어 중 하나에서 망치를 사용하세요.
+ie.manual.entry.assembler1=클릭한 컨베이어는 입력 측이며, 그 위에 파란색 표시와 기계 측면에 있는 화살표로 표시됩니다.<br>조립기는 순서대로 수행할 수 있는 최대 3가지의 조합법을 그 안에 저장할 수 있습니다. 이전 조합법의 결과물은 다음에 대한 입력으로 사용될 수 있습니다.<br>3개의 조합대는 조리법을 저장하며, 그 아래에 있는 18개의 슬롯은 재료의 인벤토리입니다.
+ie.manual.entry.assembler2=입력 면은 아이템 입력 이외에도 기계의 내부 탱크 3개를 채우기 위한 유체 입력 기능도 갖추고 있습니다. 이 탱크의 유체은 조합법에서 물 양동이와 같은 유체 용기를 대체하는 데 사용될 수 있습니다.<br>기계의 전원은 상단 중앙 블록을 통해 입력됩니다.
 
-ie.manual.entry.autoworkbench.name=Automated Workbench
-ie.manual.entry.autoworkbench.subtext=For those who can't drive stick
-ie.manual.entry.autoworkbench0=The Automatic Workbench is one of the first major successes of small-scale engineering.<br>The machine is able to follow a set of instructions described by a <link;blueprints;§o§nBlueprint§r> to assemble the items detailed by it.
-ie.manual.entry.autoworkbench1=Upon assembling the multiblocks, a Blueprint can be placed on its drawing table. After selecting the item that should be created, it will begin the assembly process. In order for the machine to work, it will need to be supplied with materials and power of course.<br>Item inputs are the two hatches marked with blue dots, the power input lies above them. Finished items are dropped at the end of the conveyor belt.<br>A redstone signal below the drawing table can be used for control.
+ie.manual.entry.autoworkbench.name=자동 워크벤치
+ie.manual.entry.autoworkbench.subtext=운전을 못하는 사람들을 위해
+ie.manual.entry.autoworkbench0=자동 워크벤치는 소규모 엔지니어링의 첫번째 주요 성공 사례 중 하나입니다.<br>기계는 <link;blueprints;§o§n청사진§r>에 의해 설명된 일련의 지침을 따라 상세한 아이템을 조립할 수 있습니다.
+ie.manual.entry.autoworkbench1=멀티블록을 조립하는 즉시 도면 테이블에 청사진을 배치할 수 있습니다. 생성해야 할 아이템을 선택하면 조합 과정이 시작됩니다. 기계가 작동하기 위해서는 재료와 전력을 공급받아야 합니다.<br>아이템 입력은 파란색 점으로 표시된 두 해치이며, 전원 입력은 그 위에 있습니다. 완성품은 컨베이어 벨트 끝에 떨어집니다.<br>도면 테이블 아래의 레드스톤 신호를 사용하여 제어할 수 있습니다.
 
-ie.manual.entry.bottlingMachine.name=Bottling Machine
-ie.manual.entry.bottlingMachine.subtext=Fill 'er up!
-ie.manual.entry.bottlingMachine0=The Bottling Machine fills fluids into containers.<br>The structure is created as shown above, but can be mirrored. To form it, rightclick the central coveyor with an Engineer's Hammer. The direction of the conveyors is important.
-ie.manual.entry.bottlingMachine1=Fluid is input through the ports on the lower block of the metal tank. Energy is input through the port at the top of the opposing side.<br>Generally, the Bottling Machine will be able to fill any container that has a filled version available (bucket, glass bottle). It will also accept other items that can store fluids, like the <link;drill;§o§nMining §o§nDrill§r> or a <link;jerrycan;§o§nJerrycan§r>.<br>Additionally, special recipes may be available.
+ie.manual.entry.bottlingMachine.name=병조림기
+ie.manual.entry.bottlingMachine.subtext=채워라!
+ie.manual.entry.bottlingMachine0=병조림기는 액체를 용기로 채웁니다.<br>구조는 위에 표시된 대로 생성되지만 대칭될 수 있습니다. 이를 구성하려면 엔지니어의 망치로 중앙 커버를 오른쪽 클릭합니다. 컨베이어의 방향이 중요합니다.
+ie.manual.entry.bottlingMachine1=유체는 금속 탱크의 하부 블록에 있는 포트를 통해 입력됩니다. 에너지는 반대쪽 상단에 있는 포트를 통해 입력됩니다.<br>일반적으로 병조림기은 사용 가능한 채워진 버전(양동이, 유리병)이 있는 모든 용기를 채울 수 있습니다. <link;drill;§o§n채굴 §o§n드릴§r>나 <link;jerrycan;§o§n젤리캔§r>와 같이 유체를 저장할 수 있는 다른 아이템들도 받을 것입니다.<br>또한, 특별한 조합법이 제공될 수도 있습니다.
 
-ie.manual.entry.chargingStation.name=Charging Station
-ie.manual.entry.chargingStation.subtext=Charge your glasses!
-ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.
-ie.manual.entry.chargingStation1=The electron tubes at the front give a feedback about the current charge of the item, but the block will also output a comparator signal for the same purposes.
+ie.manual.entry.chargingStation.name=충전소
+ie.manual.entry.chargingStation.subtext=유리 충전!
+ie.manual.entry.chargingStation0=충전소는 도구 및 기타 아이템을 충전할 수 있는 장치입니다. 에너지는 하단이나 후면을 통해 입력할 수 있으며 아이템은 수동으로 배치하거나 자동으로 삽입할 수 있습니다.
+ie.manual.entry.chargingStation1=앞에 있는 전자 튜브는 항목의 현재 전하에 대한 피드백을 제공하지만, 블록은 동일한 목적으로 비교기 신호를 출력합니다.
 
-ie.manual.entry.belljar.name=Garden Cloche
-ie.manual.entry.belljar.subtext=Localized Rainforest
-ie.manual.entry.belljar0=The Garden Cloche, or Belljar, is a device designed to hasten the growth of plants. It allows even the an agriculturally challenged engineer to grow plants and harvest their yield.
+ie.manual.entry.belljar.name=정원 덮개
+ie.manual.entry.belljar.subtext=현지화된 열대 우림
+ie.manual.entry.belljar0=정원 덮개는 식물의 성장을 촉진하기 위해 고안된 장치입니다. 그것은 심지어 농업에 어려움을 겪는 기술자도 식물을 재배하고 수확할 수 있게 해 줍니다.
 ie.manual.entry.belljar1=The device accepts power, fluid and items through its respective ports. Water and power are always required, various fertilizers are optional. The GUI features slots for soil and seed in the middle, fertilizer on the left and outputs on the right.<br>The hatch on the front of the glass dome is the only automatic output. Every seed needs to be paired with the correct soil to grow on, with dirt being automatically recognized as farmland.
 
 ie.manual.entry.highvoltage.name=High-Voltage
