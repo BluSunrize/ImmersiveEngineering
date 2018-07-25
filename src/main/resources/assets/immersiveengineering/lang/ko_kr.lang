@@ -1283,28 +1283,28 @@ ie.manual.entry.chargingStation1=앞에 있는 전자 튜브는 항목의 현재
 ie.manual.entry.belljar.name=정원 덮개
 ie.manual.entry.belljar.subtext=현지화된 열대 우림
 ie.manual.entry.belljar0=정원 덮개는 식물의 성장을 촉진하기 위해 고안된 장치입니다. 그것은 심지어 농업에 어려움을 겪는 기술자도 식물을 재배하고 수확할 수 있게 해 줍니다.
-ie.manual.entry.belljar1=The device accepts power, fluid and items through its respective ports. Water and power are always required, various fertilizers are optional. The GUI features slots for soil and seed in the middle, fertilizer on the left and outputs on the right.<br>The hatch on the front of the glass dome is the only automatic output. Every seed needs to be paired with the correct soil to grow on, with dirt being automatically recognized as farmland.
+ie.manual.entry.belljar1=이 장치는 각 포트를 통해 전원, 유체 및 아이템을 수신합니다. 물과 전력은 항상 필요하며, 다양한 비료는 선택 사항입니다. GUI에는 토양과 씨의 슬롯, 왼쪽의 비료 및 오른쪽의 출력이 있습니다.<br>글라스 돔 전면에 있는 해치만이 유일한 자동 출력입니다. 모든 씨앗은 자랄 수 있는 올바른 토양과 쌍을 이루어야 하며, 먼지는 자동적으로 농지로 인식되어야 합니다.
 
-ie.manual.entry.highvoltage.name=High-Voltage
-ie.manual.entry.highvoltage.subtext=You can't shake the shock
-ie.manual.entry.highvoltage0=High-Voltage wires have the highest available transfer rate (<config;iA;wireTransferRate;2> Flux/t) and will need special connectors. Note that on High voltage connections, §oConnectors and Relays are different blocks§r, Relays will not be able to in- or output to the energy net. Furthermore, §oRelays can only be placed on the underside of the block.§r<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.
+ie.manual.entry.highvoltage.name=고압
+ie.manual.entry.highvoltage.subtext=충격을 줄 순 없어
+ie.manual.entry.highvoltage0=고압 전선은 전송 속도가 가장 높고(<config;iA;wireTransferRate;2> Flux/t) 특수 연결기가 필요합니다. 고압 연결부인, §o연결기 및 중계기§r는 서로 다른 블록이며 중계기는 에너지 넷에 입출력할 수 없습니다. 자세히 말하자면, §o중계기는 블록 하부에만 배치할 수 있습니다.§r<br>고압에서 저압또는 중압연결로 전환하려면 고압 변압기가 필요하며, 가장 낮은 티어의 전선은 전체 연결의 전송 속도를 제한합니다.
 
-ie.manual.entry.multiblocks.name=Multiblock Constructions
-ie.manual.entry.multiblocks.subtext=Where's my Allen Wrench?
-ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube seems to be a task unmanageable without the use of magic or possibly shrink rays. So in order to create more complex machines, you will need component blocks. The most common ones have been listed on the following pages.
+ie.manual.entry.multiblocks.name=멀티블록 시공
+ie.manual.entry.multiblocks.subtext=내 앨런 렌치 어디 있어?
+ie.manual.entry.multiblocks0=복잡한 기계를 1x1x1 정육면체에 장착하는 것은 마법이나 수축 가능성이 없이는 감당할 수 없는 작업으로 보입니다. 따라서 더 복잡한 기계를 만들기 위해서는 구성 요소 블록이 필요합니다. 가장 일반적인 것들이 다음 페이지에 나열되어 있습니다.
 
-ie.manual.entry.workbench.name=Engineer's Workbench
-ie.manual.entry.workbench.subtext=Overclocking
-ie.manual.entry.workbench0=Over the course of your Engineering career you may come to deal with some tools that can be optimized and modified. To apply these modifications, you should use a properly equipped Engineer's Workbench.<br>Rightclick the Workbench, insert the item into the slot and insert applicable upgrades into the new slots that appear.
+ie.manual.entry.workbench.name=엔지니어의 워크벤치
+ie.manual.entry.workbench.subtext=오버클로킹
+ie.manual.entry.workbench0=엔지니어링 경력을 쌓는 동안 최적화되고 수정될 수 있는 몇가지 도구를 사용하게 될 수도 있습니다. 이러한 수정 사항을 적용하려면 적절한 장비를 갖춘 엔지니어의 워크벤치를 사용해야 합니다.<br>워크벤치를 우클릭하고 아이템을 슬롯에 삽입한 다음 해당 업그레이드를 나타나는 새 슬롯에 삽입합니다.
 
-ie.manual.entry.blueprints.name=Engineer's Blueprints
-ie.manual.entry.blueprints.subtext=RTFM
-ie.manual.entry.blueprints0=There are certain items which are very complex in their construction and require more than just a simple block of wood with a grid on it. These items will need to be created under the instructions of precise Blueprints on an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br><br>Should you come across an Engineer's Blueprint (or maybe even create one yourself), you can place it in the slot of the Engineer's Workbench.
-ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you insert the required materials into the 6 slots in the middle, and retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item.
+ie.manual.entry.blueprints.name=엔지니어의 청사진
+ie.manual.entry.blueprints.subtext=설명서를 참고하세요.
+ie.manual.entry.blueprints0=건축에 매우 복잡하고 그리드가 달린 단순한 나무 블록 이상의 것이 필요한 특정한 아이템들이 있습니다. 이러한 아이템은 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에 있는 정확한 청사진의 지침에 따라 생성해야 합니다.<br><br>엔지니어의 청사진(또는 직접 생성)을 발견한 경우 엔지니어의 워크벤치 슬롯에 배치할 수 있습니다.
+ie.manual.entry.blueprints1=청사진에 자세히 설명된 아이템을 생성하려면 필요한 재료를 중간에 있는 6개의 슬롯에 삽입하고 출력 슬롯에서 오른쪽으로 결과를 가져옵니다. 이러한 출력 슬롯 위에 마우스를 올려 놓으면 각 아이템에 어떤 재료가 필요한지 정확히 알 수 있습니다.
 
-ie.manual.entry.mixer.name=Mixer
-ie.manual.entry.mixer.subtext=Vats of Cookie Dough!
-ie.manual.entry.mixer0=The Mixer is a multiblock structure that dissolves solids in fluids, mixing them together. The structure is built as shown above and formed by using the Engineer's Hammer on the central sheetmetal block.
+ie.manual.entry.mixer.name=혼합기
+ie.manual.entry.mixer.subtext=쿠키 반죽에 따라 다릅니다!
+ie.manual.entry.mixer0=혼합기는 유체 속의 고체들을 녹여 함께 섞는 멀티블록 구조입니다. 구조물은 위 그림과 같이 건설되며, 중앙 판금 블록의 엔지니어의 망치를 사용하여 형성됩니다.
 ie.manual.entry.mixer1=The most common uses for this machine are the mixing of fluid concrete from water, 2 parts sand 1 part gravel and 1 part clay, or the creation of potions from water and their various ingredients.
 ie.manual.entry.mixer2=Fluids are input into the mixer through the port at the bottom of its powersupply. Items can be input via the two hatches at the back. The fluid port at the front serves as the fluid output.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
 
