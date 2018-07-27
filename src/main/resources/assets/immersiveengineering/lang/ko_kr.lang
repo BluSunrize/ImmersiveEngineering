@@ -187,7 +187,7 @@ tile.immersiveengineering.metal_device1.sample_drill.name=간단한 코어 드�
 tile.immersiveengineering.metal_device1.tesla_coil.name=테슬라 코일
 tile.immersiveengineering.metal_device1.floodlight.name=투광 조명등
 tile.immersiveengineering.metal_device1.turret_chem.name=체임트로버 포탑
-tile.immersiveengineering.metal_device1.turret_gun.name=총 탑
+tile.immersiveengineering.metal_device1.turret_gun.name=총 포탑
 tile.immersiveengineering.metal_device1.belljar.name=정원 덮개
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=컨베이어 벨트
@@ -923,16 +923,16 @@ death.attack.ieRevolver_dragonsbreath.item=%1$s이 %2$s이 사용한 %3$s에 불
 death.attack.ieRevolver_dragonsbreath.turret=%1$s이 포탑에 불타 사망했습니다
 death.attack.ieRevolver_homing=%1$s이 %2$s의 자동유도 탄환에 맞아 사망했습니다
 death.attack.ieRevolver_homing.item=%1$s이 %2$s의 %3$s로부터 발사된 자동유도 탄환에 맞아 사망했습니다
-death.attack.ieRevolver_homing.turret=%1$s이 총탑의 자동유도 탄환에 맞아 사망했습니다
+death.attack.ieRevolver_homing.turret=%1$s이 총 포탑의 자동유도 탄환에 맞아 사망했습니다
 death.attack.ieRevolver_wolfpack=%1&s는 %2&s의 울프팩 회전에 의해 잘게 조각났습니다
 death.attack.ieRevolver_wolfpack.item=%1$s는 %3$s로부터 발사된 %2$s의 울프팩 회전에 의해 잘게 조각났습니다
-death.attack.ieRevolver_wolfpack.turret=%1$s는 총탑의 울프팩 회전에 의해 잘게 조각났습니다
+death.attack.ieRevolver_wolfpack.turret=%1$s는 총 포탑의 울프팩 회전에 의해 잘게 조각났습니다
 death.attack.ieRevolver_silver=%1$s는 %2$s의 은 탄환에 맞아 정제되었습니다
 death.attack.ieRevolver_silver.item=%1$s는 %3$s에서 발사된 %2$s의 은 탄환에 맞아 정제되었습니다
-death.attack.ieRevolver_silver.turret=%1$s은 총탑의 은 탄환에 맞아 정제되었습니다
+death.attack.ieRevolver_silver.turret=%1$s은 총 포탑의 은 탄환에 맞아 정제되었습니다
 death.attack.ieRevolver_potion=%1$s는 %2$s의 작은 유리병 투척으로 살해당했습니다
 death.attack.ieRevolver_potion.item=%1$s는 %3$s에서 발사된 %2$s의 작은 유리병 투척으로 살해당했습니다
-death.attack.ieRevolver_potion.turret=%1$s은 총탑의 작은 유리병 투척으로 살해당했습니다
+death.attack.ieRevolver_potion.turret=%1$s은 총 포탑의 작은 유리병 투척으로 살해당했습니다
 
 death.attack.ieCrushed=%1$s가 충돌사당했습니다
 death.attack.ieAcid=%1$s가 산에 녹았습니다
@@ -1147,7 +1147,7 @@ ie.manual.entry.earmuffs1=귀마개를 <link;workbench;§o§n엔지니어의 §o
 ie.manual.entry.shield.name=중형 방패
 ie.manual.entry.shield.subtext=원맨 파알란스
 ie.manual.entry.shield0=중형 방패는 여러분이 잘 알고 있을지도 모르는 일반적인 나무 방패의 직접 업그레이드입니다. 비슷한 방식으로 전면에서 들어오는 피해를 대부분 차단하지만 내구성이 크게 향상돼 업그레이드 가능성을 과시합니다.
-ie.manual.entry.shield1=§6플래시전구§r 업그레이드는 실드에 밝은 전구와 반사경 화면을 추가합니다. 이 장치는 공격을 받는 즉시 밝고 눈을 멀게 하는 섬광을 만들어 사용자 앞에 있는 모든 사람들을 혼란스럽게 합니다.
+ie.manual.entry.shield1=§6플래시전구§r 업그레이드는 방패에 밝은 전구와 반사경 화면을 추가합니다. 이 장치는 공격을 받는 즉시 밝고 눈을 멀게 하는 섬광을 만들어 사용자 앞에 있는 모든 사람들을 혼란스럽게 합니다.
 ie.manual.entry.shield2=§6충격 발생기§r를 방패에 추가하면 적을 공격하는 것에 대해 보복할 수 있습니다. 방패가 맞으면, 공격자에게 경미한 피해를 주면서 충격을 줄 것입니다. 또한, 단순히 발사체를 멈추는 것이 아니라 발사체를 증발시킬 것입니다.
 ie.manual.entry.shield3=§6자석 장갑§r은 위협을 받을 때 실드에 쉽게 접근할 수 있는 방법입니다. 이 업그레이드가 장착되면, §l<keybind;key.immersiveengineering.magnetEquip>§r 키를 두번 누르고 인벤토리에서 방패를 검색하여 즉시 슬롯에 넣을 수 있습니다.
 
@@ -1395,7 +1395,7 @@ ie.manual.entry.drill.subtext=내 드릴이 기반암을 뚫을 거야!
 ie.manual.entry.drill0=정유 드릴은 광산 분야에서 큰 발전을 이룬 것입니다. 교체 가능한 드릴 헤드와 업그레이드를 통해 그 특성은 거의 완전히 수정할 수 있습니다. 수정하려면 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에 배치합니다.<br>드릴은 <link;refinery;§o§n바이오디젤§r>에서 떨어져 나와 정제기에서 직접 충전할 수 있습니다.
 ie.manual.entry.drill1=§6드릴 헤드§r는 기본 §6채굴 레벨§r, §6속도§r 및 §6규모§r와 §6공격 데미지§r를 결정합니다. 블록을 파내면 드릴 헤드가 손상되지만 모루에서 수리할 수 있습니다.
 ie.manual.entry.drill2=드릴은 연소 엔진에 의해 구동되기 때문에 가압 공기 탱크 업그레이드를 통해 제공되지 않는 한 물 속에서 작동하지 않습니다. 하지만 이러한 업그레이드 장치를 갖추면 물 속에서 잠수하는 동안만 작동하는 것이 아니라 물 속에서 파낼 때 일반적으로 나타나는 감속을 무시할 수 있습니다.
-ie.manual.entry.drill3=§6강화 윤활 시스템§r은 드릴에 정기적으로 윤활유를 추가로 공급하여 드릴 헤드에 가해지는 손상을 줄입니다.
+ie.manual.entry.drill3=§6고급 윤활 시스템§r은 드릴에 정기적으로 윤활유를 추가로 공급하여 드릴 헤드에 가해지는 손상을 줄입니다.
 ie.manual.entry.drill4=드릴에 §6추가 나사송곳§r을 투입함으로써, 그것의 파괴적인 잠재력은 증가하여, 살아 있는 생명체에 대한 그것의 피해를 증가시키고 더 빨리 달리고 땅을 팝니다.<br>업그레이드는 최대 세번까지 가능합니다.
 ie.manual.entry.drill5=§6대형 연료 탱크§r는 드릴이 내부에 더 많은 연료를 저장할 수 있게 해주므로 연료를 주입하기 전에 드릴을 사용할 수 있는 시간이 늘어납니다.
 
@@ -1425,107 +1425,107 @@ ie.manual.entry.chemthrower.name=화학 투척기
 ie.manual.entry.chemthrower.subtext=모두 태웁니다!
 ie.manual.entry.chemthrower0=화학 투척기은 내부 탱크로부터 액체를 유도하는 장치입니다. 장치에 유체, 가스, 액체를 넣을 수 있으며 우클릭하면 장치가 밖으로 배출됩니다.<br>인화성이 높은 경우에는 유체를 점화하는 기능도 있습니다. 파일럿 라이트를 전환하려면, 우클릭합니다.
 ie.manual.entry.chemthrower1=다른 도구들과 마찬가지로, <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서도 화학 투척기를 개조할 수 있습니다. 이러한 업그레이드는 탱크 크기, 범위 및 확산에 영향을 미칩니다.<br><br>§6대형 탱크§r는 화학 투척기의 유체 용량을 2000mb까지 증가시킵니다.
-ie.manual.entry.chemthrower2=The §6Focused Nozzle§r decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
-ie.manual.entry.chemthrower3=The §6Multitank§r allows the Chemthrower to store up to three different Fluids. You can select the active tank by <config;b;chemthrower_scroll;sneaking and using the scrollwheel, or through use of;using> the keybind §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r if it has been set in the options.<br>This upgrade is mutually exclusive to the §6Large Tank§r.
+ie.manual.entry.chemthrower2=§6집중 노즐§r은 분무된 유체의 확산을 줄이고 범위를 약간 늘려 더 정확하게 추가적인 대상을 맞출 수 있습니다.
+ie.manual.entry.chemthrower3=§6멀티 탱크§r를 통해 화학 투척기는 최대 세개의 다른 유체를 저장할 수 있습니다. <config;b;chemthrower_scroll;스크롤 바퀴를 몰래 사용하거나;using> 설정된 경우 키빈드§l<keybind;key.immersiveengineering.chemthrowerSwitch>§r를 사용하여 활성 탱크를 선택할 수 있습니다.<br>이 업그레이드는 §6대형 탱크§r와 상호 배타적입니다.
 
-ie.manual.entry.skyhook.name=Engineer's Skyhook
-ie.manual.entry.skyhook.subtext=Booker, catch!
-ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables.<br>With it, engineers can quickly traverse the length of a powerline to move between substations or other installations.
-ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a connector and you will be attached to the wire.<br>Releasing the button at any time or sneaking will cause you to dismount.<br>You cannot start in the middle of a wire, you must attach at a connector.
+ie.manual.entry.skyhook.name=엔지니어의 열기구
+ie.manual.entry.skyhook.subtext=부커, 잡아!
+ie.manual.entry.skyhook0=엔지니어의 열기구는 전선, 대마 밧줄 또는 강철 전선에 연결하도록 설계된 동력식 손잡이 시스템입니다.<br>이 기능을 사용하면 엔지니어가 전원 라인을 빠르게 통과하여 교체 또는 다른 설치 간에 이동할 수 있습니다.
+ie.manual.entry.skyhook1=연결기에 가까이 있는 동안 우클릭을 하면 전선에 연결됩니다.<br>언제든지 버튼을 놓거나 몰래 들어가면 내릴 수 있습니다.<br>전선 중간에서 시작할 수 없으므로 연결기에 연결해야 합니다.
 
-ie.manual.entry.shader.name=Shaders
-ie.manual.entry.shader.subtext=Blue! No, yellow!
-ie.manual.entry.shader0=Shaders are items you can find in the world or aquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r>, <link;drill;§o§nDrills§r>, <link;chemthrower;§o§nChemical §o§nThrowers§r>, <link;shield;§o§nPlated §o§nShield§r> or <link;railgun;§o§nRailguns§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the appropriate slot.<br>You can also apply them to a Minecart or a <link;balloon;§o§nBalloon§r> by rightclicking!
-ie.manual.entry.shader1=For a full list of all available shaders, their looks, references and more details, <link;shaderList;§o§ncheck §o§nhere§r>
-ie.manual.entry.shader2=Shader Grabbags are items containing a random shader. They can be found in crates, traded from villagers or dropped by bosses. The rarity of the contained shader is equal to, or better than the rarity of the bag. When using a bag, you are more likely to get a shader you do not yet own, than one you already posess.
-ie.manual.entry.shader3=Shaders bags can be crafted into two bags of a lower level. This will lower your chances of getting rarer shaders but provide you with more attempts.
-//Shaders themselves can also be crafted into a single bag of the lower level.
+ie.manual.entry.shader.name=셰이더
+ie.manual.entry.shader.subtext=노란색이 아니라 파란색입니다!
+ie.manual.entry.shader0=셰이더는 마을 주민과 교역을 함으로써 당신이 세계에서 또는 어디에서나 볼 수 있는 아이템입니다. 그들은 그들 스스로 목적을 가지고 있지는 않지만, 그들은 <link;revolver;§o§n리볼버§r>, <link;drill;§o§n드릴§r>, <link;chemthrower;§o§n화학 §o§n투척기§r>, <link;shield;§o§n판 §o§n방패§r>, <link;railgun;§o§n레일건§r>에 장착되어 아이템의 디자인을 바꿀 수 있습니다. <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에 아이템을 넣고 적절한 슬롯에 셰이더를 장착하기만 하면 됩니다.<br>유클릭으로 마인카트 또는 <link;balloon;§o§n풍선§r>에도 적용할 수 있습니다!
+ie.manual.entry.shader1=사용 가능한 모든 셰이더, 생김새, 추천서, 자세한 내용은 <link;shaderList;§o§n여기를 §o§n참고하세요§r>
+ie.manual.entry.shader2=셰이더 그래백은 무작위 셰이더가 포함된 아이템입니다. 그들은 마을 주민으로부터 거래되거나 보스에 의해 버려진 상자에서 발견될 수 있습니다. 포함된 셰이더의 희귀성은 가방의 희귀성과 동일하거나 더 좋습니다. 가방을 사용할 때, 여러분은 여러분이 이미 가지고 있는 것보다 아직 갖고 있지 않은 셰이더를 얻을 가능성이 더 높습니다.
+ie.manual.entry.shader3=셰이더 가방은 더 낮은 레벨의 두개의 가방으로 제작할 수 있습니다. 이것은 당신이 드물게 셰이더를 얻을 가능성을 낮출 것이지만 당신에게 더 많은 시도를 제공할 것입니다.
+//또한 셰이더 자체를 하위 레벨의 단일 가방에 제작할 수 있습니다.
 
-ie.manual.entry.shaderList.name=List of Shaders
-ie.manual.entry.shaderList.noInfo=You have not unlocked this shader yet!
-ie.manual.entry.shaderList.unlock=Unlock this shader
-ie.manual.entry.shaderList.order=Acquire:
+ie.manual.entry.shaderList.name=셰이더 목록
+ie.manual.entry.shaderList.noInfo=아직 이 셰이더의 잠금을 해제하지 않았습니다!
+ie.manual.entry.shaderList.unlock=셰이더 잠금 해제
+ie.manual.entry.shaderList.order=획득:
 
-ie.manual.entry.powerpack.name=Capacitor Backpack
-ie.manual.entry.powerpack.subtext=Do....Ray....Egon!
-ie.manual.entry.powerpack0=Energy storage takes space and some heavy weight components. As such, storing large amounts of energy in each tool individually is inefficient and makes them akward to wield.<br>The Capacitor Backpack acts as a compromise, offering a centralized storage of energy for any powered tools to tap into.
-ie.manual.entry.powerpack1=The backpack charges any tools held in main- or offhand as well as any armorpieces you are wearing.<br>The capacitor can be worn on your back like a piece of chest armor, or you may attach it to most common sets of armor in order to gain the benefit of a power-supply as well as protection.
+ie.manual.entry.powerpack.name=축전기 가방
+ie.manual.entry.powerpack.subtext=도...레이...에곤!
+ie.manual.entry.powerpack0=에너지 저장은 공간과 무거운 부품을 필요로 합니다. 따라서 각 도구에 많은 양의 에너지를 개별적으로 저장하는 것은 비효율적이며 이를 휘두르게 만듭니다.<br>축전기 가방은 절충의 역할을 하며, 모든 전동 공구가 사용할 수 있는 에너지를 중앙 집중식으로 저장합니다.
+ie.manual.entry.powerpack1=가방은 당신이 착용하고 있는 갑옷과 더불어 메인 또는 즉석에서 소지하고 있는 모든 도구를 충전합니다.<br>축전기는 흉갑처럼 등에 착용하거나 대부분의 일반적인 갑옷에 부착하여 전력 공급과 보호의 이점을 누릴 수 있습니다.
 
-ie.manual.entry.railgun.name=Railgun
-ie.manual.entry.railgun.subtext=Velocitas Eradico
-ie.manual.entry.railgun0=The Railgun (or more accurately the Portable Induction Catapult) is a marvel of engineering. It consists of two rails through which an electric current flows and accelerates a sled, and by that, a projectile.<br>The process is energy intensive but will accelerate various projectiles to high speeds.
-ie.manual.entry.railgun1=To launch a projectile from your inventory, click and hold the use button till the charge level reaches 99, then release.<br><br>Valid projectiles include, for instance, §6iron§r and §6steel rods§r<config;b;literalRailGun;, §6rebar§r and almost §6every rail§r from Railcraft;>, as well as §6graphite electrodes§r.<br><br>Due to the low internal energy storage, it is recommended to use the Railgun along with a <link;powerpack;§o§nCapacitor §o§nBackpack§r>.
-ie.manual.entry.railgun2=As with other IE tools, the railgun can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> and be customized with <link;shader;§o§nShaders§r>.<br><br>The §6Additional Capacitors§r greatly reduce the railgun's charge time.
-ie.manual.entry.railgun3=The §6Precision Scope§r allows you to zoom in with the railgun. Sneak to use the scope and use the mouse wheel to switch between magnification levels.
+ie.manual.entry.railgun.name=레일건
+ie.manual.entry.railgun.subtext=벨로시타스 에라디코
+ie.manual.entry.railgun0=레일건(또는 더 정확히 말하면 휴대용 유도 전기 도금)은 공학적으로 놀라운 것입니다. 전기가 흐르면서 썰매를 가속시키는 두개의 레일로 구성되어 있습니다.<br>이 과정은 에너지 집약적이지만 다양한 발사체를 빠른 속도로 가속합니다.
+ie.manual.entry.railgun1=인벤토리에서 발사체를 발사하려면 충전 레벨이 99에 도달할 때까지 사용 버튼을 클릭한 후 놓습니다.<br><br>유효한 발사체에는 §6흑연 전극§r뿐만 아니라 §6철§r 및 §6강철 막대기§r, <config;b;literalRailGun;, §6철근§r 및 레일크래프트의 §6모든 레일§r이 포함됩니다;>.<br><br>내부 에너지 저장소가 낮기 때문에, 레일건을 <link;powerpack;§o§n축전기 §o§n가방§r>과 함께 사용하는 것이 좋습니다.
+ie.manual.entry.railgun2=다른 IE도구와 마찬가지로 레일건은 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 수정할 수 있으며 <link;shader;§o§n셰이더§r>로 사용자 지정할 수 있습니다.<br><br>§6추가 축전지§r는 레일 건의 충전 시간을 크게 줄입니다.
+ie.manual.entry.railgun3=§6정밀 스코프§r를 사용하면 레일건으로 확대할 수 있습니다. 스코프를 살짝 사용하고 마우스 휠을 사용하여 확대 레벨 간을 전환합니다.
 
-ie.manual.entry.razorwire.name=Razorwire
-ie.manual.entry.razorwire.subtext=Oversized eggslicer
-ie.manual.entry.razorwire0=Razorwire is a wire with sharpened pieces of metal attached. It will slow and cut any entity that tries to move through it.<br>Razorwire can only be removed with Wirecutters, any other attempts will damage the player.<br>Additionally, a LV wire can be connected to electrify the razorwire for extra damage.
+ie.manual.entry.razorwire.name=레이저 전선
+ie.manual.entry.razorwire.subtext=특대형 달걀 껍질
+ie.manual.entry.razorwire0=레이저 전선은 날카로운 금속 조각들이 부착된 전선입니다. 그것은 그것을 통해 움직이려고 하는 어떠한 티어도 느리게 하고 자를 것입니다.<br>레이저 전선은 전선 절단기만 제거할 수 있으며, 다른 시도는 플레이어를 손상시킵니다.<br>또한 저압 전선을 연결하여 추가 손상을 확인할 수 있습니다.
 
-ie.manual.entry.turret.name=Turrets
-ie.manual.entry.turret.subtext=Are you still there?
-ie.manual.entry.turret0=Turrets are the next step in automated defense of your factory. They feature a complex optical system combined with mechanical "brain" to effectively distinguish and acquire targets and use the inbuilt weaponry to neutralize them.<br>All turrets feature energy ports at their base, and require a redstone signal to be active, although this behaviour can be inverted by sneaking and rightclicking it with an Engineer's Hammer.
-ie.manual.entry.turret1=Upon being placed, Turrets will remember their owner and will not allow other users to break or modify them. Rightclicking the turret brings up the GUI which features a list of names with an entry field, as well as multiple targeting options.<br>By the default the list is a blacklist of targets that may not be attacked. This list utilizes creatures names, so whitelisting animals is possible.
-ie.manual.entry.turret2=The Chemthrower Turret utilizes the fluid propelling capabilities of the <link;chemthrower;§o§neponymous §o§ntool§r> to cover targets in anything, ranging from water to douse flames, to diesel oil to start them.
-ie.manual.entry.turret3=The turret features a fluid port in the bottom and back of the base to allow pipes to connect to it. Additionally, the GUI has a button on the left which dis- or enables the pilot flame, igniting the dispensed fluid, provided that it is flammable.<br><br>§oThe providers of this blueprint are not liable for any damage to user, neighbours or various farm animals that may incur.§r
-ie.manual.entry.turret4=The Gun Turret features a heavily modified version of the <link;revolver;§o§nRevolver's§r> internals in a far bigger and more imposing casing. The construction also involves an extended magazine to allow for increased internal storage of ammunition.
-ie.manual.entry.turret5=A port for the automatic insertion of ammo and extraction of spent casing is located within the back and bottom of the base. The turret can store up to a full stack of cartridges and the GUI features a button to toggle the automatic expulsion of spent casings.<br><br>§oNote that certain ammunitions may cause collateral damage to the user or their property.§r
+ie.manual.entry.turret.name=회전 포탑
+ie.manual.entry.turret.subtext=듣고 계세요?
+ie.manual.entry.turret0=회전 포탑은 공장을 자동으로 방어하기 위한 다음 단계입니다. 그들은 목표물을 효과적으로 구별하고 획득하고 그들을 중화시키기 위해 내장된 무기를 사용하기 위해 기계적인 "두뇌"와 결합된 복잡한 광학 시스템이 특징입니다.<br>모든 회전 포탑은 베이스에 에너지 포트가 있으며, 이 동작을 엔지니어의 망치로 우클릭하면 역방향으로 전환할 수 있지만 레드스톤 신호가 활성화되어야 합니다.
+ie.manual.entry.turret1=회전 포탑은 배치되는 즉시 자신의 소유자를 기억하고 다른 사용자들이 이를 어기거나 수정하는 것을 허용하지 않을 것입니다. 회전 포탑을 우클릭하면 입력 필드가 포함된 이름 목록과 다수의 표적 지정 옵션이 포함된 GUI가 나타납니다.<br>기본적으로 목록은 공격받지 않을 수 있는 대상의 블랙리스트입니다. 이 목록은 생물의 이름을 사용하기 때문에 동물을 희게 하는 것이 가능합니다.
+ie.manual.entry.turret2=화학 투척기 포탑은 <link;chemthrower;§o§n이름이 붙은 §o§n도구§r>의 유체 추진 능력을 활용하여 물에서부터 불꽃, 정유 등 모든 대상을 커버합니다.
+ie.manual.entry.turret3=포탑은 베이스 하부와 후면에 유체 포트가 부착되어 있어 파이프가 베이스에 연결될 수 있습니다. 또한 GUI 왼쪽에 버튼이 있어 인화성이 높을 경우 분사된 유체에 불이 붙어 파일럿 불꽃이 일어날 수 있습니다.<br><br>§o이 청사진의 제공자들은 발생할 수 있는 사용자, 이웃 또는 다양한 농장 동물들에 대한 어떠한 피해도 책임지지 않습니다.§r
+ie.manual.entry.turret4=총 포탑은 <link;revolver;§o§n리볼버의§r>의 내부 부품을 크고 화려한 케이스로 개조했습니다. 이 공사는 또한 탄약의 내부 보관을 증가시키기 위해 연장 매거진을 포함합니다.
+ie.manual.entry.turret5=탄약 자동 삽입과 사용 후 덮개의 추출을 위한 포트는 기초의 후면과 바닥에 위치합니다. 포탑은 최대 카트리지 스택을 저장할 수 있으며 GUI에는 사용 후 케이스 자동 배출 버튼이 있습니다.<br><br>§o특정 탄약이 유저나 유저의 재산에 부수적인 손상을 입힐 수 있음에 유의합니다.§r
 
-ie.manual.entry.maneuverGear.name=3D Maneuver Gear
-ie.manual.entry.maneuverGear.subtext=Attack on upscaled zombies
-ie.manual.entry.maneuverGear0=The 3D Maneuver Gear is a marvel of engineering. It consists of a harness of leather straps, two grappling hooks and a pressurized air propulsion system.<br>The gear is equipped in the <config;b;baubles;Baubles belt slot or the ;>leggings slot and powered with Flux charge.
-ie.manual.entry.maneuverGear1=§l§nControls:§r<br>Holding the <keybind;key.immersiveengineering.3dgear> Key will switch you to the Maneuver Gear controls. In this controlmode, the mousebuttons will fire the hooks at the cost of some Flux charge. While the hooks are embedded in an object, holding the button will pull you to that object. A doubleclick will dislodge the hook and return it to you.<br>Double-tapping the <keybind;key.immersiveengineering.3dgear> Key will return both hooks.
-ie.manual.entry.maneuverGear2=§l§nPropulsion:§r<br>Pressing the jump key while the <keybind;key.immersiveengineering.3dgear> Key is held will expend some of the pressurized air to give you a quick burst of speed in the direction you are looking. After not using the propulsion system for few seconds, the internal compressor will quickly refill the tank at the cost of Flux charge.<br>Should you land from a height prone to damage you, the system will automatically expend pressurized air to cushion your fall.
+ie.manual.entry.maneuverGear.name=3D 기동 장비
+ie.manual.entry.maneuverGear.subtext=확대된 좀비 공격
+ie.manual.entry.maneuverGear0=3D 기동 장비는 놀라운 공학 기술입니다. 그것은 가죽 벨트, 두개의 갈고리와 가압 공기 추진 시스템으로 구성됩니다.<br>기어는 <config;b;baubles;방울 벨트 슬롯 또는 ;> 각반 슬롯에 장착되며 플럭스 충전 기능을 갖추고 있습니다.
+ie.manual.entry.maneuverGear1=§l§n조절:§r<br><keybind;key.immersiveengineering.3dgear>키를 누르고 있으면 기동 기어 조절로 전환됩니다. 이 제어 장치에서 마우스 단추는 약간의 플럭스 비용으로 갈고리에 불을 붙입니다. 갈고리가 개체에 포함되어 있는 동안 버튼을 누르면 해당 개체로 이동할 수 있습니다. 더블 클릭을 하면 갈고리가 제거되어 사용자에게 반환됩니다.<br><keybind;key.immersiveengineering.3dgear>키를 두번 누르면 양쪽 갈고리가 모두 돌아갑니다.
+ie.manual.entry.maneuverGear2=§l§n추진:§r<br><keybind;key.immersiveengineering.3dgear>키를 잡고 있는 동안 점프 키를 누르면 일부 가압 공기가 소비되어 보고 있는 방향으로 빠르게 속도를 높일 수 있습니다. 몇초 동안 추진 시스템을 사용하지 않은 후에, 내부 압축기는 빠르게 플럭스 전하의 비용으로 탱크를 충전합니다.<br>손상을 입기 쉬운 높이에서 착륙할 경우 시스템이 자동으로 가압된 공기를 사용하여 추락을 완화합니다.
 
-ie.manual.entry.crusher.name=Crusher
-ie.manual.entry.crusher.subtext=Keep your hands out!
-ie.manual.entry.crusher0=Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine's processing speed depends on the power supplied to it.
-ie.manual.entry.crusher1=Applying a redstone signal to the control panel at the front will halt the crushers process, this behavior can be inverted by use of the Engineer's Hammer.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
-//However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops. Likewise, all items that cannot be processed will be destroyed.<br>
+ie.manual.entry.crusher.name=분해기
+ie.manual.entry.crusher.subtext=손 치워!
+ie.manual.entry.crusher0=광석을 분쇄하는 것은 그 산출량을 증가시키는 효과적인 방법입니다. 각 광석은 당신이 냄새 맡을 수 있는 두개의 분진을 생성합니다. 이 산업용 분해기는 그렇게 하는 빠른 방법입니다. 기계의 처리 속도는 기계에 공급되는 전원에 따라 달라집니다.
+ie.manual.entry.crusher1=전면의 제어판에 레드스톤 신호를 적용하면 분해 과정이 정지되며, 엔지니어의 망치를 사용하면 이러한 동작이 역전될 수 있습니다.<br>구조물은 전면의 중앙 블록을 마우스 오른쪽 버튼으로 클릭하여 형성됩니다. 전면은 구조물의 넓은 측면으로 아래쪽에 가벼운 엔지니어링 블록이 있습니다.
+//그러나 그것은 광석을 부수는 데만 사용되는 것은 아닙니다. 이 기계에 떨어지는 모든 생명체는 심각한 피해를 입을 것이고 분해기는 관련된 물방울을 방출할 것입니다. 마찬가지로 처리할 수 없는 모든 아이템은 삭제됩니다.<br>
 
-ie.manual.entry.lightningrod.name=Lightning Rod
-ie.manual.entry.lightningrod.subtext=Thunderstruck!
-ie.manual.entry.lightningrod0=Lightning is a phenomenon of nature. It contains a huge amount of raw power, and this lightning rod is able to harness that power.<br>By stacking a lot of steel fences on this multiblock, you increase the chance of a lightning bolt striking it during rain or thunderstorms.
-ie.manual.entry.lightningrod1=When the steel pole is struck, the huge amounts of energy created are stored in the base of the lightning rod and then slowly distributed to the energy connections at the sides.<br><br>You can improve the chances of the Lightning Rod getting struck by creating a "net" of steel fences connected to the topmost fence.
+ie.manual.entry.lightningrod.name=빛나는 막대기
+ie.manual.entry.lightningrod.subtext=벼락 맞았다!
+ie.manual.entry.lightningrod0=번개는 자연 현상입니다. 그것은 엄청난 양의 원시 전력을 포함하고 있고, 이 빛나는 막대기는 그 전력을 이용할 수 있습니다.<br>멀티블록에 강철 울타리를 많이 쌓으면 비가 오거나 뇌우가 내릴 때 번개가 칠 확률이 높아집니다.
+ie.manual.entry.lightningrod1=강철 기둥에 부딪히면, 생성된 엄청난 양의 에너지가 빛나는 막대기의 바닥에 저장되고 그리고나서 측면의 에너지 연결에 천천히 분산됩니다.<br><br>맨 위 울타리에 연결된 강철 울타리의 "그물"을 만들어 빛나는 막대기가 맞을 확률을 높일 수 있습니다.
 
-ie.manual.entry.minerals.name=Mineral Deposits
-ie.manual.entry.minerals.subtext=Oresome
-ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What you have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
-ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. Supply the machine with power and rightclick it or use redstone to activate it. It drills into the chunk and extracts a core sample which shows if and what mineral was found and its yield.
-ie.manual.entry.minerals2=The Drill consumes <config;i;coredrill_consumption> Flux/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyse a sample.<br><br>The sample can also be placed as a block by sneaking and rightclicking. Using a map on the sample block will set a marker for the chunk.<br><br>The following pages list every type of vein and the ores that can be retrieved from them.
-ie.manual.entry.minerals3=%1$s<br>It consists of %2$s.
-ie.manual.entry.mineralsDimValid=§l%1$s§r is a mineral vein that can be found in the %2$s.
-ie.manual.entry.mineralsDimInvalid=§l%1$s§r is a mineral vein that can be found anywhere but in the %2$s.
-ie.manual.entry.mineralsDimAny=§l%1$s§r is a mineral vein that can be found in any Dimension.
+ie.manual.entry.minerals.name=광상
+ie.manual.entry.minerals.subtext=광석들이 있어요
+ie.manual.entry.minerals0=당신의 세계에서 발견되는 광석 매장량은 당신에게 새로운 것이 아닙니다. 하지만 지금까지 여러분이 고려하지 않은 것은 다른 광석들의 혼합을 포함하고 있는 광석 덩굴들입니다. 그들의 넓고 얇은 확산 때문에, 일반적인 광부들은 그들을 찾을 수 없지만, <link;excavator;§o§n특별한 §o§n기계§r>가 그것을 도울 수 있을지도 모릅니다.
+ie.manual.entry.minerals1=세계에서 광물을 찾고 결정하기 위해서는 코어 표본 드릴을 만드는 것이 좋습니다. 기계에 전원을 공급하고 우클릭하거나 레드스톤을 사용하여 기계를 작동합니다. 그것은 청크를 드릴로 뚫고 어떤 광물이 발견되었는지 그리고 그것의 산출량을 보여 주는 코어 표본을 추출합니다.
+ie.manual.entry.minerals2=Drill은 <config;i;coredrill_consumption>Flux/t를 소비하고 <config;i;coredrill_time>tick을 사용하여 샘플을 완전히 검색하고 분석합니다.<br><br>또한 표본을 몰래 하거나 우클릭하여 블록으로 배치할 수 있습니다. 표본 블록의 맵을 사용하면 청크에 대한 지점을 설정합니다.<br><br>다음 페이지는 그들로부터 회수될 수 있는 모든 종류의 덩굴과 광석을 나열하고 있습니다.
+ie.manual.entry.minerals3=%1$s<br>%2$s으로 구성되어 있습니다.
+ie.manual.entry.mineralsDimValid=§l%1$s§r은 %2$s에서 찾을 수 있는 광맥입니다.
+ie.manual.entry.mineralsDimInvalid=§l%1$s§r은 어디서나 찾을 수 있지만 특히 %2$s에서 찾을 수 있는 광맥입니다.
+ie.manual.entry.mineralsDimAny=§l%1$s§r은 극소수의 차원에서 찾을 수 있는 광맥입니다.
 
-ie.manual.entry.arcfurnace.name=Arc Furnace
-ie.manual.entry.arcfurnace.subtext=Not a reactor
-ie.manual.entry.arcfurnace0=The Arc Furnace is a massive structure used to quickly smelt metals. It consists of a steel vat topped by electrodes which heat up the metal.
-ie.manual.entry.arcfurnace1=The furnace excels at smelting ores and creating steel due to its high speed and its ability to process multiple items at the same time, but it is also complex in its workings and will require maintenance in order to continue functioning.<br>Slag must be removed from the machine or it will cease to function, and degrading electrodes need to be replaced over time.
-ie.manual.entry.arcfurnace2=To form the structure, assemble it as shown on the first page, then click the cauldron with an Engineer's Hammer.<br><br>Energy is input through the three connectors at the back, and supplying the control panel at the front with a redstone signal will turn off the machine. Right-clicking the panel, 'bucket' or vat will open the interface.
-ie.manual.entry.arcfurnace3=§lInterface:§r<br>The interface may look confusing upon first seeing it, but it's quite straight forward.<br><br>The three slots at the top are for the <link;graphite;§o§nGraphite §o§nElectrodes§r;1>.<br>The twelve slots on the left are the input slots for metals and ores. Each slot has a temperature bar next to it, representing the progress of smelting.
-ie.manual.entry.arcfurnace4=The four slots on the right are for "additives", different materials added to the molten metal during the crafting process. An example of these would be adding Coke Dust to melting Iron in order to create Steel.<br>Inputs and additives are inserted through the two hatches at the top of the structure, inputs to the left and additives to the right of the electrodes.
-ie.manual.entry.arcfurnace5=The seven slots at the bottom are six output slots and a slot for slag. Outputs are retrieved from the 'bucket' at the front of the structure, slag through the port at the back of the machine. The Arc Furnace will automatically push output and slag to connected inventories (this includes Conveyor Belts).
+ie.manual.entry.arcfurnace.name=아크 화로
+ie.manual.entry.arcfurnace.subtext=반응기가 아닙니다.
+ie.manual.entry.arcfurnace0=아크 화로는 금속의 제련을 빨리 하는 데 사용되는 거대한 구조물입니다. 그것은 금속을 가열하는 전극에 의해 위에 올려진 강철 볼트로 구성되어 있습니다.
+ie.manual.entry.arcfurnace1=화로는 빠른 속도와 동시에 여러 품목을 처리할 수 있는 능력으로 광석을 제련하고 강철을 만드는 데 탁월하지만, 작업이 복잡하고 지속적인 유지가 필요합니다.<br>슬래그를 기계에서 제거해야 합니다. 그렇지 않으면 더 이상 기능을 발휘하지 못하게 되고 시간이 지나면서 전극의 열화를 교체해야 합니다.
+ie.manual.entry.arcfurnace2=구조물을 형성하려면 첫번째 페이지와 같이 조립한 다음 기술자의 망치가 달린 솥을 클릭합니다.<br><br>후면에 있는 3개의 연결기를 통해 에너지가 입력되며, 전면에 있는 조작 패널에 레드스톤 신호가 공급되면 기계가 꺼집니다. 패널을 우클릭하면 '양동이' 또는 VAT가 인터페이스를 엽니다.
+ie.manual.entry.arcfurnace3=§l인터페이스:§r<br>인터페이스를 처음 봤을 때 인터페이스가 혼란스러워 보일 수도 있지만, 상당히 직설적입니다.<br><br>상단에 있는 3개의 슬롯은 <link;graphite;§o§n흑연 §o§n전극§r;1>을 위한 것입니다.<br>왼쪽에 있는 12개의 슬롯은 금속과 광석의 투입 구멍입니다. 각 슬롯 옆에는 용해 진행 상황을 나타내는 온도계가 있습니다.
+ie.manual.entry.arcfurnace4=오른쪽에 있는 4개의 슬롯은 제작 과정에서 용해된 금속에 다른 재료가 추가되는 "첨가제"입니다. 강철을 만들기 위해 철을 녹이는 과정에 코크스 가루를 추가하는 것이 이러한 예입니다.<br>입력물 및 첨가제는 구조물의 상단에 있는 두개의 해치를 통해 삽입되며, 입력물은 왼쪽에, 첨가제는 전극의 오른쪽에 삽입합니다.
+ie.manual.entry.arcfurnace5=하단의 슬롯 7개는 출력 슬롯 6개와 슬래그 슬롯 1개입니다. 출력은 구조물 전면의 '양도이'에서 기계 후면의 포트를 통해 슬래그를 찾습니다. 아크 화로는 자동으로 출력물과 슬래그를 연결된 인벤토리로 밀어넣습니다(컨베이어 벨트 포함).
 
-ie.manual.entry.excavator.name=Excavator
-ie.manual.entry.excavator.subtext=Better than Dwarves
-ie.manual.entry.excavator0=The Excavator is one of the pinnacles of modern engineering. It is able to dig up <link;minerals;§o§nminerals§r;0> from veins inaccessible by normal mining. In return however, the excavator is a complex structure which requires <config;i;excavator_consumption> Flux/t in order to operate.
-ie.manual.entry.excavator1=The structure is comprised of two pieces: The engine shown on the first page and the bucket wheel displayed on the second, which fits into the 'braces' of the engine as displayed on the previous page. The energy input for the engine is on its side, the back features a redstone control panel and the item output.<br>As the excavator digs up ores, the yield of the vein slowly decreases, but a vein of minerals can last for <config;i;excavator_depletion_days> days of consecutive digging.
+ie.manual.entry.excavator.name=굴착기
+ie.manual.entry.excavator.subtext=더 쉽게 파집니다.
+ie.manual.entry.excavator0=굴착기는 현대 공학의 선구자 중 하나입니다. 그것은 정상적인 광산이 접근할 수 없는 <link;minerals;§o§n광맥§r;0>으로부터 광물을 파낼 수 있습니다. 그러나 그 대신 굴착기는 작동하기 위해 <config;i;excavator_consumption>Flux/t가 필요한 복잡한 구조입니다.
+ie.manual.entry.excavator1=구조물은 두 조각으로 구성됩니다: 첫번째 페이지에 표시된 엔진과 두번째 페이지에 표시된 양동이 바퀴는 이전 페이지에 표시된 대로 엔진의 '브레이스'에 맞습니다. 엔진의 에너지 입력은 그 쪽에 있고, 뒷면에는 레드스톤 조작 패널과 아이템 출력이 있습니다.<br>굴착기가 광석을 파냄에 따라, 광맥의 수율은 천천히 감소하지만, 광맥은 <config;i;excavator_depletion_days>일 동안 연속적으로 채굴될 수 있습니다.
 
-ie.manual.category.computers.name=Computer support
+ie.manual.category.computers.name=컴퓨터 지원
 
-ie.manual.entry.computer.general.name=General information ☎
-ie.manual.entry.computer.general.subtext=Technology from the future
-ie.manual.entry.computer.general0=Many of the machines described in this manual can be controlled using computers from OpenComputers. An Adapter has to be used to connect the machine to the network. If the machine is a multiblock that has a redstone port, that is where you can attach your computer. Otherwise please check the machine-specific entry in this chapter. The following pages describe some commonly used return types and methods.
-ie.manual.entry.computer.general1=Multiblocks with a redstone port can be enabled and disabled using computers as well as redstone:<br>§lenableComputerControl( enabled:bool)§r: This enables or disables computer control for the machine. The machine will ignore redstone signals while this is enabled. This will not automatically reset when the computer is removed.<br>§lsetEnabled(enable:bool)§r: Enables or disables the machine, like a redstone signal would. This only works if computer control is enabled.
-ie.manual.entry.computer.general2=§lItem stacks§r are a very common return type. They consist of a table containing these entries:<br>§lname§r: the internal name of the item, e.g. "minecraft:cobblestone" for cobblestone<br>§lsize§r: the size of the item stack<br>§llabel§r: The name of the stack. Changes when the stack is renamed in an anvil.
-ie.manual.entry.computer.general3=§ldamage§r: The damage (or, in most cases, metadata) of the item stack<br>§lmaxDamage§r: The maximum amount of damage the item can have before breaking<br>§lmaxSize§r: the maximum stack size for this item. 64 in most cases<br>§lhasTag§r: whether the stack has a nbt tag
-ie.manual.entry.computer.general4=§lFluid stacks§r: A fluid stack represents some amount of a specific fluid that isn't necessarily in a tank. These entries are available in the returned table:<br>§lname§r: the unlocalized name of the fluid<br>§lamount§r: the amount of fluid, in millibuckets<br>§lhasTag§r: whether the fluid has a nbt tag
-ie.manual.entry.computer.general5=§lFluid tanks§r are similar to fluid stacks, with the difference that this fluid is inside a tank. The returned table has the same entries as the table for a fluid stack. Additionally the capacity of the tank the fluid is in is stored in the entry §lcapacity§r
+ie.manual.entry.computer.general.name=종합 안내 ☎
+ie.manual.entry.computer.general.subtext=미래 기술
+ie.manual.entry.computer.general0=이 설명서에 설명된 많은 기계들은 오픈컴퓨터즈의 컴퓨터를 사용하여 제어할 수 있습니다. 시스템을 네트워크에 연결하려면 어댑터를 사용해야 합니다. 컴퓨터가 여러개의 후면 포트가 있는 멀티블록인 경우, 여기서 컴퓨터를 연결할 수 있습니다. 그렇지 않으면 이 장에서 기계별 항목을 확인하세요. 다음 페이지에서는 일반적으로 사용되는 반환 유형 및 방법에 대해 설명합니다.
+ie.manual.entry.computer.general1=레드스톤 포트가 있는 멀티블록은 레드스톤뿐만 아니라 컴퓨터를 사용하여 활성화하거나 비활성화할 수 있습니다:<br>§l컴퓨터 조절 허용(enabled:bool)§r: 그러면 기계에 대한 컴퓨터 제어가 활성화되거나 비활성화됩니다. 이 기능이 활성화되어 있는 동안 기기는 레드스톤 신호를 무시합니다. 컴퓨터를 제거해도 자동으로 재설정되지 않습니다.<br>§l설정 허용(enable:bool)§r: 레드스톤 신호처럼 기계를 활성화하거나 비활성화합니다. 이는 컴퓨터 제어가 활성화된 경우에만 작동합니다.
+ie.manual.entry.computer.general2=§l아이템 더미§r는 가장 잘 쓰이는 되돌리기 유형입니다. 이러한 아이템이 포함된 표로 구성됩니다:<br>§l이름§r: 아이템의 내부 이름입니다, 예시: "minecraft:cobblestone"은 조약돌을 의미합니다.<br>§l규모§r: 아이템 더미의 규모를 의미합니다.<br>§l표§r: 더미의 이름입니다. 모루에서 더미의 이름이 변경되는 시점이 변경됩니다.
+ie.manual.entry.computer.general3=§l손상도§r: 아이템 더미의 손상이나 더 많은 개수, 메타데이터를 의미합니다.<br>§l최대 손상도§r: 부서지기 직전의 아이템의 최대 손상도를 의미합니다.<br>§l최대 규모§r: 아이템의 최대 규모입니다. 최대가 64개입니다.<br>§l해쉬태그§r: NBT 태그가 있는 더미입니다.
+ie.manual.entry.computer.general4=§l유체 더미§r: 유체 더미는 탱크에 반드시 있을 필요 없는 특정 양의 유체를 나타냅니다. 이 아이템은 반환된 테이블에서 사용할 수 있습니다.:<br>§l이름§r: 유체의 지역화되지 않은 이름입니다.<br>§l양§r: 마이크로양동이에서의 유체의 양입니다.<br>§l해시태그§r: NBT 태그가 있는 더미입니다.
+ie.manual.entry.computer.general5=§l유체 탱크§r는 유체 더미와 유사하나, 유채 탱크에는 유체가 탱크에 있는 것을 의미합니다. 반환된 테이블에는 유체 더미 테이블과 동일한 아이템이 있습니다. 또한 유체가 들어 있는 탱크의 용량은 입구 §l용량§r에 저장됩니다.
 
-ie.manual.entry.computer.arcfurnace.name=Arc Furnace ☎
-ie.manual.entry.computer.arcfurnace.subtext=Not a reactor
-ie.manual.entry.computer.arcFurnace0=§lisActive()§r: returns a boolean that is true if the arc furnace is currently processing something and false otherwise<br>§lgetInputStack(int slot)§r:returns the stack in the specified input slot (1-12). The table additionally has the keys §lprogress§r and §lmaxProgress§r to store the current progress and the progress at which it will be finished on the
+ie.manual.entry.computer.arcfurnace.name=아크 화로 ☎
+ie.manual.entry.computer.arcfurnace.subtext=반응기가 아닙니다.
+ie.manual.entry.computer.arcFurnace0=§l활성()§r: returns a boolean that is true if the arc furnace is currently processing something and false otherwise<br>§lgetInputStack(int slot)§r:returns the stack in the specified input slot (1-12). The table additionally has the keys §lprogress§r and §lmaxProgress§r to store the current progress and the progress at which it will be finished on the
 ie.manual.entry.computer.arcFurnace1=specified slot (both values in ticks)<br>§lgetOutputStack(int slot)§r:returns the stack in the specified output slot(1-6)<br>§lgetAdditiveStack(int slot)§r: returns the stack in the specified additive slot (1-4)<br>§lgetSlagStack()§r: returns the stack in the slag slot<br>§lhasElectrodes()§r:returns a boolean indicating whether all 3 electrodes in the arc furnace are valid<br>§lgetElectrode(int slot)§r: returns the item stack of the specified electrode (1-4)
 ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this arc furnace<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this arc furnace
 
