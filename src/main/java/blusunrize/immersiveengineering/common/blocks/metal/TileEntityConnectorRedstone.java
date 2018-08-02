@@ -106,8 +106,10 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		if(!isInvalid()&&isRSOutput())
 		{
 			markDirty();
-			markContainingBlockForUpdate(null);
-			markBlockForUpdate(pos.offset(facing), null);
+			IBlockState stateHere = world.getBlockState(pos);
+			markContainingBlockForUpdate(stateHere);
+			markBlockForUpdate(pos.offset(facing), stateHere);
+
 		}
 	}
 
