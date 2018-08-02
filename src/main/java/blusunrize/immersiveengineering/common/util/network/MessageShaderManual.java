@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -115,10 +116,14 @@ public class MessageShaderManual implements IMessage
 			Minecraft.getMinecraft().addScheduledTask(() -> {
 				if(message.key==MessageType.SYNC)
 				{
-					String name = ClientUtils.mc().player.getName();
-					for(String shader : message.args)
-						if(shader!=null)
-							ShaderRegistry.receivedShaders.put(name, shader);
+					EntityPlayer player = ClientUtils.mc().player;
+					if (player!=null)
+					{
+						String name = player.getName();
+						for(String shader : message.args)
+							if(shader!=null)
+								ShaderRegistry.receivedShaders.put(name, shader);
+					}
 				}
 			});
 			return null;

@@ -76,9 +76,12 @@ public class MessageTileSync implements IMessage
 		{
 			Minecraft.getMinecraft().addScheduledTask(() -> {
 				World world = ImmersiveEngineering.proxy.getClientWorld();
-				TileEntity tile = world.getTileEntity(message.pos);
-				if(tile instanceof TileEntityIEBase)
-					((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
+				if (world!=null) // This can happen if the task is scheduled right before leaving the world
+				{
+					TileEntity tile = world.getTileEntity(message.pos);
+					if(tile instanceof TileEntityIEBase)
+						((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
+				}
 			});
 			return null;
 		}
