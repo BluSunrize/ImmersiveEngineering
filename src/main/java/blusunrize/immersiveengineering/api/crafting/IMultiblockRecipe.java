@@ -27,6 +27,11 @@ public interface IMultiblockRecipe
 {
 	List<IngredientStack> getItemInputs();
 
+	default boolean shouldCheckItemAvailability()
+	{
+		return true;
+	}
+
 	List<FluidStack> getFluidInputs();
 
 	NonNullList<ItemStack> getItemOutputs();

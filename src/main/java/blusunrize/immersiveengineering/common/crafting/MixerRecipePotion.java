@@ -108,6 +108,4 @@ public class MixerRecipePotion extends MixerRecipe
 				return new int[]{i};
 		return new int[0];
 	}
-
-
 }

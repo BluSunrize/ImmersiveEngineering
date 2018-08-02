@@ -675,7 +675,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		public void doProcessTick(TileEntityMultiblockMetal multiblock)
 		{
 			NonNullList<ItemStack> inv = multiblock.getInventory();
-			if(recipe.getItemInputs()!=null&&inv!=null)
+			if(recipe.shouldCheckItemAvailability()&&recipe.getItemInputs()!=null&&inv!=null)
 			{
 				NonNullList<ItemStack> query = NonNullList.withSize(inputSlots.length, ItemStack.EMPTY);
 				for(int i = 0; i < inputSlots.length; i++)

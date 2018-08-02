@@ -578,17 +578,30 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 		@Override
 		public void doProcessTick(TileEntityMultiblockMetal multiblock)
 		{
-			int timerStep = this.maxTicks/this.recipe.fluidAmount;
-			if(this.processTick%timerStep==0)
+			int timerStep = Math.max(this.maxTicks/this.recipe.fluidAmount, 1);
+			if(timerStep!=0&&this.processTick%timerStep==0)
 			{
-				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), true);
-				NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
-				for(int i = 0; i < components.size(); i++)
-					components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
-				FluidStack output = this.recipe.getFluidOutput(drained, components);
+				int amount = this.recipe.fluidAmount/maxTicks;
+				int leftover = this.recipe.fluidAmount%maxTicks;
+				if(leftover > 0)
+				{
+					double distBetweenExtra = maxTicks/(double)leftover;
+					if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
+					{
+						amount++;
+					}
+				}
+				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, amount, false), true);
+				if(drained!=null)
+				{
+					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
+					for(int i = 0; i < components.size(); i++)
+						components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
+					FluidStack output = this.recipe.getFluidOutput(drained, components);
 
-				FluidStack fs = Utils.copyFluidStackWithAmount(output, 1, false);
-				((TileEntityMixer)multiblock).tank.fill(fs, true);
+					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.amount, false);
+					((TileEntityMixer)multiblock).tank.fill(fs, true);
+				}
 			}
 			super.doProcessTick(multiblock);
 		}
