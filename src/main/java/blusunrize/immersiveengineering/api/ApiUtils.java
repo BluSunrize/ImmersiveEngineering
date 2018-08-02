@@ -804,17 +804,22 @@ public class ApiUtils
 		}
 		else if(input instanceof Ingredient)
 			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
-		else if(input instanceof List&&!((List)input).isEmpty())
+		else if(input instanceof List)
 		{
-			if(((List)input).get(0) instanceof ItemStack)
-				return new IngredientStack(((List<ItemStack>)input));
-			else if(((List)input).get(0) instanceof String)
+			if (!((List)input).isEmpty())
 			{
-				ArrayList<ItemStack> itemList = new ArrayList();
-				for(String s : ((List<String>)input))
-					itemList.addAll(OreDictionary.getOres(s));
-				return new IngredientStack(itemList);
+				if(((List)input).get(0) instanceof ItemStack)
+					return new IngredientStack(((List<ItemStack>)input));
+				else if(((List)input).get(0) instanceof String)
+				{
+					ArrayList<ItemStack> itemList = new ArrayList();
+					for(String s : ((List<String>)input))
+						itemList.addAll(OreDictionary.getOres(s));
+					return new IngredientStack(itemList);
+				}
 			}
+			else
+				return new IngredientStack(ItemStack.EMPTY);
 		}
 		else if(input instanceof ItemStack[])
 			return new IngredientStack(Arrays.asList((ItemStack[])input));
