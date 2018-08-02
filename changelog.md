@@ -1,3 +1,10 @@
+#####Version 0.12-85
+ - Fixed up the skyhook, including one crash (Malte)
+ - Fixed some rare crashes when closing a world (Malte)
+ - Fixed redstone connectors not closing doors using weak signals (Malte)
+ - Fixed the mixer crashing if the recipe is trying to process too much fluid (Malte)
+ 
+
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
     - Now supports MixPredicates as well as custom brewing recipes

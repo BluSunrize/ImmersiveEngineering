@@ -109,7 +109,6 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 			IBlockState stateHere = world.getBlockState(pos);
 			markContainingBlockForUpdate(stateHere);
 			markBlockForUpdate(pos.offset(facing), stateHere);
-
 		}
 	}
 
