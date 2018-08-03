@@ -10,7 +10,6 @@
   },
   "conditions": {
     "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryOreExists",
-    "mod_installed": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryModInstalled",
     "config": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryIEConfig"
   }
 }

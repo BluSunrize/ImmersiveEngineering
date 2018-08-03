@@ -1,8 +1,8 @@
 {
   "conditions": [
     {
-      "type": "immersiveengineering:mod_installed",
-      "mod": "thaumcraft"
+      "type": "forge:mod_loaded",
+      "modid": "thaumcraft"
     }
   ],
   "type": "forge:ore_shapeless",
