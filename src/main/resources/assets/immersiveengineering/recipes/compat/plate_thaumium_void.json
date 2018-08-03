@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "immersiveengineering:mod_installed",
+      "mod": "thaumcraft"
+    }
+  ],
+  "type": "forge:ore_shapeless",
+  "result": {
+    "item": "thaumcraft:plate",
+    "data": 3
+  },
+  "ingredients": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotVoid"
+    },
+    {
+      "item": "immersiveengineering:tool",
+      "data": 0
+    }
+  ]
+}
