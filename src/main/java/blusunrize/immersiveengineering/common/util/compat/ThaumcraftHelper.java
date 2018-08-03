@@ -41,9 +41,9 @@ public class ThaumcraftHelper extends IECompatModule
 
 		try
 		{
-			Class c_TileSmelter = Class.forName("thaumcraft.common.tiles.crafting.TileSmelter");
+			Class c_TileSmelter = Class.forName("thaumcraft.common.tiles.essentia.TileSmelter");
 			if(c_TileSmelter!=null)
-				ExternalHeaterHandler.registerHeatableAdapter(c_TileSmelter, new AlchemyFurnaceAdapter());
+				ExternalHeaterHandler.registerHeatableAdapter(c_TileSmelter, new AlchemyFurnaceAdapter(c_TileSmelter));
 		} catch(Exception e)
 		{
 		}
@@ -62,17 +62,17 @@ public class ThaumcraftHelper extends IECompatModule
 		Method m_isEnabled;
 		Method m_setFurnaceState;
 
-		public AlchemyFurnaceAdapter()
+		public AlchemyFurnaceAdapter(Class _class)
 		{
 			try
 			{
-				c_TileSmelter = Class.forName("thaumcraft.common.tiles.crafting.TileSmelter");
+				c_TileSmelter = _class;
 				m_canSmelt = c_TileSmelter.getDeclaredMethod("canSmelt");
 				m_canSmelt.setAccessible(true);
 				f_furnaceBurnTime = c_TileSmelter.getDeclaredField("furnaceBurnTime");
 				Class c_BlockStateUtils = Class.forName("thaumcraft.common.lib.utils.BlockStateUtils");
 				m_isEnabled = c_BlockStateUtils.getMethod("isEnabled", IBlockState.class);
-				Class c_BlockSmelter = Class.forName("thaumcraft.common.blocks.devices.BlockSmelter");
+				Class c_BlockSmelter = Class.forName("thaumcraft.common.blocks.essentia.BlockSmelter");
 				m_setFurnaceState = c_BlockSmelter.getMethod("setFurnaceState", World.class, BlockPos.class, boolean.class);
 			} catch(Exception e)
 			{
@@ -115,6 +115,7 @@ public class ThaumcraftHelper extends IECompatModule
 				}
 			} catch(Exception e)
 			{
+				e.printStackTrace();
 			}
 			return energyConsumed;
 		}
