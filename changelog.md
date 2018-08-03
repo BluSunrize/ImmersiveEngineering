@@ -1,9 +1,13 @@
 #####Version 0.12-85
- - Fixed up the skyhook, including one crash (Malte)
- - Fixed some rare crashes when closing a world (Malte)
- - Fixed redstone connectors not closing doors using weak signals (Malte)
- - Fixed the mixer crashing if the recipe is trying to process too much fluid (Malte)
- 
+- Re-Added Thaumcraft compat
+    - Added hammering of plates for Brass, Thaumium and Void Metal 
+    - Golems can farm hemp
+    - Purifying Fluid and Liquid Death work in the Chemthrower
+    - Made the External Heater work with the Essentia Smelter 
+- Fixed up the skyhook, including one crash (Malte)
+- Fixed some rare crashes when closing a world (Malte)
+- Fixed redstone connectors not closing doors using weak signals (Malte)
+- Fixed the mixer crashing if the recipe is trying to process too much fluid (Malte)
 
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)

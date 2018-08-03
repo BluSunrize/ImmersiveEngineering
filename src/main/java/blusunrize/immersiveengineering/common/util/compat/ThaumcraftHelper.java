@@ -8,11 +8,16 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Damage;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -30,14 +35,22 @@ public class ThaumcraftHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		//		ChemthrowerHandler.registerEffect("fluiddeath", new ChemthrowerEffect_Damage(DamageSourceThaumcraft.dissolve,4));
-		//		for(Potion potion : Potion.potionTypes)
-		//			if(potion!=null && potion.getName().equals("potion.warpward"))
-		//				ChemthrowerHandler.registerEffect("fluidpure", new ChemthrowerEffect_Potion(null,0, potion,100,0));
-		//			else if(potion!=null && potion.getName().equals("potion.visexhaust"))
-		//				ChemthrowerHandler.registerEffect("fluxgoo", new ChemthrowerEffect_Potion(null,0, potion,100,0));
-
 		FMLInterModComms.sendMessage("thaumcraft", "harvestStackedCrop", new ItemStack(IEContent.blockCrop, 5));
+
+		Potion potion_ward = Potion.getPotionFromResourceLocation("thaumcraft:warpward");
+		if(potion_ward!=null)
+			ChemthrowerHandler.registerEffect("purifying_fluid", new ChemthrowerEffect_Potion(null, 0, potion_ward, 100, 0));
+		try
+		{
+			Class c_DamageSourceThaumcraft = Class.forName("thaumcraft.api.damagesource.DamageSourceThaumcraft");
+			if(c_DamageSourceThaumcraft!=null)
+			{
+				DamageSource dmg_dissolve = (DamageSource)c_DamageSourceThaumcraft.getField("dissolve").get(null);
+				ChemthrowerHandler.registerEffect("liquid_death", new ChemthrowerEffect_Damage(dmg_dissolve, 4));
+			}
+		} catch(Exception e)
+		{
+		}
 
 		try
 		{
