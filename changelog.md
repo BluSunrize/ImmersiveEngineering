@@ -9,6 +9,7 @@
 - Fixed some rare crashes when closing a world (Malte)
 - Fixed redstone connectors not closing doors using weak signals (Malte)
 - Fixed the mixer crashing if the recipe is trying to process too much fluid (Malte)
+- Fixed Machinist selling iron and steel drills in the wrong order (BluSunrize)
 
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
