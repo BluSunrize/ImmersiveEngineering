@@ -1,9 +1,10 @@
 #####Version 0.12-85
-- Re-Added Thaumcraft compat
+- Re-Added Thaumcraft compat (BluSunrize)
     - Added hammering of plates for Brass, Thaumium and Void Metal 
     - Golems can farm hemp
     - Purifying Fluid and Liquid Death work in the Chemthrower
-    - Made the External Heater work with the Essentia Smelter 
+    - Made the External Heater work with the Essentia Smelter
+- Added a tooltip-display to Speedloaders and Revolvers to display their currently loaded ammo (BluSunrize)
 - Fixed up the skyhook, including one crash (Malte)
 - Fixed some rare crashes when closing a world (Malte)
 - Fixed redstone connectors not closing doors using weak signals (Malte)

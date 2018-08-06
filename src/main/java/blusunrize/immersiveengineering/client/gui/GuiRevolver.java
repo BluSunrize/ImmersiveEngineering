@@ -13,10 +13,13 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class GuiRevolver extends GuiIEContainerBase
@@ -62,4 +65,52 @@ public class GuiRevolver extends GuiIEContainerBase
 		}
 	}
 
+
+	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount)
+	{
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
+		GlStateManager.color(1, 1, 1, 1);
+
+		RenderHelper.disableStandardItemLighting();
+
+		ClientUtils.drawTexturedRect(0, 1, 74, 74, 0/256f, 74/256f, 51/256f, 125/256f);
+		if(bulletAmount >= 18)
+			ClientUtils.drawTexturedRect(47, 1, 103, 74, 74/256f, 177/256f, 51/256f, 125/256f);
+		else if(bulletAmount > 8)
+			ClientUtils.drawTexturedRect(57, 1, 79, 39, 57/256f, 136/256f, 12/256f, 51/256f);
+
+		RenderHelper.enableGUIStandardItemLighting();
+		GlStateManager.enableDepth();
+
+		RenderItem ir = ClientUtils.mc().getRenderItem();
+		int[][] slots = ContainerRevolver.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
+		for(int i = 0; i < bulletAmount; i++)
+		{
+			ItemStack b = bullets.get(i);
+			if(!b.isEmpty())
+			{
+				int x;
+				int y;
+				if(i==0)
+				{
+					x = 29;
+					y = 3;
+				}
+				else if(i-1 < slots.length)
+				{
+					x = slots[i-1][0];
+					y = slots[i-1][1];
+				}
+				else
+				{
+					int ii = i-(slots.length+1);
+					x = ii==0?48: ii==1?29: ii==3?2: 10;
+					y = ii==1?57: ii==3?30: ii==4?11: 49;
+				}
+				ir.renderItemIntoGUI(b, x, y);
+			}
+		}
+
+		GlStateManager.disableDepth();
+	}
 }

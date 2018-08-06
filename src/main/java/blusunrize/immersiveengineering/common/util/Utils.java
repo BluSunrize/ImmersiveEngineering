@@ -86,6 +86,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -367,6 +368,24 @@ public class Utils
 			}
 			return "";
 		}
+	}
+
+	public static <T> int findSequenceInList(List<T> list, T[] sequence, BiPredicate<T, T> predicate)
+	{
+		if(list.size() <= 0||list.size() < sequence.length)
+			return -1;
+
+		for(int i = 0; i < list.size(); i++)
+			if(predicate.test(sequence[0], list.get(i)))
+			{
+				boolean found = true;
+				for(int j = 1; j < sequence.length; j++)
+					if(!(found = predicate.test(sequence[j], list.get(i+j))))
+						break;
+				if(found)
+					return i;
+			}
+		return -1;
 	}
 
 
