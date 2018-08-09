@@ -1,36 +1,57 @@
 {
-	"forge_marker": 1,
-	"defaults":
-	{
-		"transform": "forge:default-block",
-		"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion" },
-		"model": "cube_all",
-		"custom": {
-			"flip-v": true
-		}
-	},
-	"variants":
-	{
-		"inventory,type=cushion": [{"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}}],
-		"inventory,type=balloon":	[{"model": "immersiveengineering:balloon.obj.ie"}],
-		"type":
-		{
-			"cushion": {"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}},
-			"balloon":	{"model": "immersiveengineering:smartmodel/conn_balloon"}
-		},
-		"facing":
-		{
-			"down": {},
-			"up": {},
-			"north": {},
-			"south": {},
-			"west": {},
-			"east": {}
-		},
-		"boolean0":
-		{
-			"true":{},
-			"false":{}
-		}
-	}
+  "forge_marker": 1,
+  "defaults": {
+    "transform": "forge:default-block",
+    "textures": {
+      "all": "immersiveengineering:blocks/cloth_device_cushion"
+    },
+    "model": "cube_all",
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "inventory,type=cushion": [
+      {
+        "textures": {
+          "all": "immersiveengineering:blocks/cloth_device_cushion"
+        }
+      }
+    ],
+    "inventory,type=balloon": [
+      {
+        "model": "immersiveengineering:balloon.obj.ie"
+      }
+    ],
+    "inventory,type=shader_banner": [
+      {
+        "model": "immersiveengineering:ie_empty"
+      }
+    ],
+    "type": {
+      "cushion": {
+        "textures": {
+          "all": "immersiveengineering:blocks/cloth_device_cushion"
+        }
+      },
+      "balloon": {
+        "model": "immersiveengineering:smartmodel/conn_balloon"
+      },
+      "shader_banner": {
+        "model": "immersiveengineering:ie_empty"
+      }
+    },
+    "facing": {
+      "down": {},
+      "up": {},
+      "north": {},
+      "south": {},
+      "west": {},
+      "east": {}
+    },
+    "boolean0": {
+      "true": {},
+      "false": {}
+    }
+  }
 }

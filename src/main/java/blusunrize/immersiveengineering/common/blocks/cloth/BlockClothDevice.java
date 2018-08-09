@@ -41,11 +41,14 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		super("cloth_device", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY, IEProperties.CONNECTIONS);
 		setHardness(0.8F);
 		setHasColours();
-		setMetaLightOpacity(1, 0);
-		setMetaLightOpacity(2, 0);
-		setMetaBlockLayer(1, BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		setMetaLightOpacity(BlockTypes_ClothDevice.BALLOON.getMeta(), 0);
+		setMetaLightOpacity(BlockTypes_ClothDevice.STRIPCURTAIN.getMeta(), 0);
+		setMetaLightOpacity(BlockTypes_ClothDevice.SHADER_BANNER.getMeta(), 0);
+		setMetaBlockLayer(BlockTypes_ClothDevice.BALLOON.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock(BlockTypes_ClothDevice.BALLOON.getMeta());
 		setNotNormalBlock(BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
+		setNotNormalBlock(BlockTypes_ClothDevice.SHADER_BANNER.getMeta());
+		setMetaHidden(BlockTypes_ClothDevice.SHADER_BANNER.getMeta());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -190,6 +193,8 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 				return new TileEntityBalloon();
 			case STRIPCURTAIN:
 				return new TileEntityStripCurtain();
+			case SHADER_BANNER:
+				return new TileEntityShaderBanner();
 		}
 		return null;
 	}

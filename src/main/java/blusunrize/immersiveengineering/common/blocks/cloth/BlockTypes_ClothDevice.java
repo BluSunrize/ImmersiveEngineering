@@ -17,7 +17,8 @@ public enum BlockTypes_ClothDevice implements IStringSerializable, BlockIEBase.I
 {
 	CUSHION,
 	BALLOON,
-	STRIPCURTAIN;
+	STRIPCURTAIN,
+	SHADER_BANNER;
 
 	@Override
 	public String getName()
