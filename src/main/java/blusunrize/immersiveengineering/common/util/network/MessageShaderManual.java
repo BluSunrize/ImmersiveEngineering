@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -116,7 +115,7 @@ public class MessageShaderManual implements IMessage
 			Minecraft.getMinecraft().addScheduledTask(() -> {
 				if(message.key==MessageType.SYNC)
 				{
-					EntityPlayer player = ClientUtils.mc().player;
+					EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
 					if (player!=null)
 					{
 						String name = player.getName();
