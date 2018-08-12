@@ -38,7 +38,10 @@
         "model": "immersiveengineering:smartmodel/conn_balloon"
       },
       "shader_banner": {
-        "model": "immersiveengineering:ie_empty"
+        "model": "immersiveengineering:ie_empty",
+        "textures": {
+          "particle": "immersiveengineering:blocks/cloth_device_cushion"
+        }
       }
     },
     "facing": {

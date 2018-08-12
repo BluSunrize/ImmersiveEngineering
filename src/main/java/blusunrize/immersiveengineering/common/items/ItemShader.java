@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
@@ -269,7 +270,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				{
 					boolean wall = blockState.getBlock()==Blocks.WALL_BANNER;
 					int orientation = wall?blockState.getValue(BlockBanner.FACING).getIndex(): blockState.getValue(BlockBanner.ROTATION);
-					System.out.println("creating IE banner wall: "+wall+", orientation "+orientation);
 					world.setBlockState(pos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.SHADER_BANNER.getMeta()).withProperty(IEProperties.FACING_ALL, EnumFacing.SOUTH));
 					tile = world.getTileEntity(pos);
 					if(tile instanceof TileEntityShaderBanner)
@@ -282,6 +282,23 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 					}
 				}
 			}
+			else if(tile instanceof TileEntityShaderBanner)
+			{
+				ItemStack current = ((TileEntityShaderBanner)tile).shader.getShaderItem();
+				if(!current.isEmpty() && !world.isRemote && !player.capabilities.isCreativeMode)
+				{
+					double dx = pos.getX()+.5+side.getFrontOffsetX();
+					double dy = pos.getY()+.5+side.getFrontOffsetY();
+					double dz = pos.getZ()+.5+side.getFrontOffsetZ();
+					EntityItem entityitem = new EntityItem(world, dx, dy, dz, current.copy());
+					entityitem.setDefaultPickupDelay();
+					world.spawnEntity(entityitem);
+				}
+				((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(player.getHeldItem(hand), 1));
+				tile.markDirty();
+				return EnumActionResult.SUCCESS;
+			}
+
 		}
 		return EnumActionResult.FAIL;
 	}

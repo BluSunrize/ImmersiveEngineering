@@ -21,6 +21,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -84,9 +85,10 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public NonNullList<ItemStack> getTileDrops(@Nullable EntityPlayer player, IBlockState state)
 	{
-		return new ItemStack(Items.BANNER, 1, 15);
+		NonNullList<ItemStack> list = NonNullList.from(ItemStack.EMPTY,  new ItemStack(Items.BANNER, 1, 15), this.shader.getShaderItem());
+		return list;
 	}
 
 	@Override
