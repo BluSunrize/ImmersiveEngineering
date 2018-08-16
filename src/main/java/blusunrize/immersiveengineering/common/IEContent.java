@@ -47,6 +47,7 @@ import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBulle
 import blusunrize.immersiveengineering.common.items.tools.*;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
+import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
@@ -450,6 +451,8 @@ public class IEContent
 		ItemBullet.initBullets();
 
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+
+		IELootFunctions.preInit();
 
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
 		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
