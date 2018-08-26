@@ -501,10 +501,10 @@ public class IERecipes
 		addOreDictArcAlloyingRecipe(new ItemStack(IEContent.itemMetal, 2, 7), "Silver", 100, 512, "dustGold");
 		//Common Alloys
 		addOreDictArcAlloyingRecipe("ingotInvar", 3, "Nickel", 200, 512, "dustIron", "dustIron");
-		addOreDictArcAlloyingRecipe("ingotBronze", 4, "Tin", 200, 512, "dustCopper", "dustCopper", "dustCopper");
-		addOreDictArcAlloyingRecipe("ingotBrass", 4, "Zinc", 200, 512, "dustCopper", "dustCopper", "dustCopper");
-		addOreDictArcAlloyingRecipe("ingotBlueAlloy", 1, "Silver", 100, 512, "dustNikolite", "dustNikolite", "dustNikolite", "dustNikolite");
-		addOreDictArcAlloyingRecipe("ingotRedAlloy", 1, "Copper", 100, 512, "dustRedstone", "dustRedstone", "dustRedstone", "dustRedstone");
+		addOreDictArcAlloyingRecipe("ingotBronze", 4, "Tin", 200, 512, new IngredientStack("dustCopper", 3));
+		addOreDictArcAlloyingRecipe("ingotBrass", 4, "Zinc", 200, 512, new IngredientStack("dustCopper", 3));
+		addOreDictArcAlloyingRecipe("ingotBlueAlloy", 1, "Silver", 100, 512, new IngredientStack("dustNikolite", 4));
+		addOreDictArcAlloyingRecipe("ingotRedAlloy", 1, "Copper", 100, 512, new IngredientStack("dustRedstone", 4));
 
 		//Recycling
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.itemWireCoil, 1, OreDictionary.WILDCARD_VALUE));

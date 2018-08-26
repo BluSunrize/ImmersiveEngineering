@@ -108,43 +108,44 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 
 			if(this.processQueue.size() < this.getProcessQueueMaxLength())
 			{
-				Set<Integer> usedInvSlots = new HashSet<Integer>();
-				//			final int[] usedInvSlots = new int[8];
+				Map<Integer, Integer> usedInvSlots = new HashMap<Integer, Integer>();
 				for(MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
 					if(process instanceof MultiblockProcessInMachine)
-						for(int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).inputSlots)
-							usedInvSlots.add(i);
+					{
+						int[] inputSlots = ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).getInputSlots();
+						int[] inputAmounts = ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).getInputAmounts();
+						for(int i = 0; i < inputSlots.length; i++)
+							if(usedInvSlots.containsKey(inputSlots[i]))
+								usedInvSlots.put(inputSlots[i], usedInvSlots.get(inputSlots[i])+inputAmounts[i]);
+							else
+								usedInvSlots.put(inputSlots[i], inputAmounts[i]);
+					}
 
-				//			Integer[] preferredSlots = new Integer[]{0,1,2,3,4,5,6,7};
-				//			Arrays.sort(preferredSlots, 0,8, new Comparator<Integer>(){
-				//				@Override
-				//				public int compare(Integer arg0, Integer arg1)
-				//				{
-				//					return Integer.compare(usedInvSlots[arg0],usedInvSlots[arg1]);
-				//				}});
 				NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
 				for(int i = 0; i < 4; i++)
-					additives.set(i, !inventory.get(12+i).isEmpty()?inventory.get(12+i).copy(): ItemStack.EMPTY);
+					if(!inventory.get(12+i).isEmpty())
+					{
+						additives.set(i, inventory.get(12+i).copy());
+						if(usedInvSlots.containsKey(12+i))
+							additives.get(i).shrink(usedInvSlots.get(12+i));
+					}
+
 				for(int slot = 0; slot < 12; slot++)
-					if(!usedInvSlots.contains(slot))
+					if(!usedInvSlots.containsKey(slot))
 					{
 						ItemStack stack = this.getInventory().get(slot);
-						//				if(stack!=null)
-						//				{
-						//					stack = stack.copy();
-						////					stack.stackSize-=usedInvSlots[slot];
-						//				}
 						if(!stack.isEmpty()&&stack.getCount() > 0)
 						{
 							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
-
 							if(recipe!=null)
 							{
 								MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, slot, 12, 13, 14, 15);
 								if(this.addProcessToQueue(process, true))
 								{
 									this.addProcessToQueue(process, false);
-									usedInvSlots.add(slot);
+									int[] consumedAdditives = recipe.getConsumedAdditives(additives, true);
+									if(consumedAdditives!=null)
+										process.setInputAmounts(1, consumedAdditives[0], consumedAdditives[1], consumedAdditives[2], consumedAdditives[3]);
 									//							update = true;
 								}
 							}
