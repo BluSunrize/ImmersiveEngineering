@@ -43,7 +43,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -62,24 +61,22 @@ public class JEIHelper implements IModPlugin
 		//NBT Ignorance
 		subtypeRegistry.registerSubtypeInterpreter(Item.getItemFromBlock(IEContent.blockConveyor), new ISubtypeInterpreter()
 		{
-			@Nullable
 			@Override
-			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
+			public String apply(ItemStack itemStack)
 			{
 				if(!itemStack.isEmpty()&&ItemNBTHelper.hasKey(itemStack, "conveyorType"))
 					return ItemNBTHelper.getString(itemStack, "conveyorType");
-				return null;
+				return NONE;
 			}
 		});
 		subtypeRegistry.registerSubtypeInterpreter(IEContent.itemBullet, new ISubtypeInterpreter()
 		{
-			@Nullable
 			@Override
-			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
+			public String apply(@Nonnull ItemStack itemStack)
 			{
 				if(!itemStack.isEmpty()&&itemStack.getMetadata()==2&&ItemNBTHelper.hasKey(itemStack, "bullet"))
 					return ItemNBTHelper.getString(itemStack, "bullet");
-				return null;
+				return NONE;
 			}
 		});
 	}
