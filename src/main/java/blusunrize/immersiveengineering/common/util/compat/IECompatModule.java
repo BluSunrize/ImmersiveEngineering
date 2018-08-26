@@ -83,7 +83,7 @@ public abstract class IECompatModule
 				try
 				{
 					//IC2 Classic is not supported.
-					if("IC2".equals(e.getKey())&&Loader.isModLoaded("IC2-Classic-Spmod"))
+					if("ic2".equals(e.getKey())&&Loader.isModLoaded("ic2-classic-spmod"))
 						continue;
 
 					Boolean enabled = Config.IEConfig.compat.get(e.getKey());
