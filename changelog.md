@@ -5,6 +5,7 @@
     - Purifying Fluid and Liquid Death work in the Chemthrower
     - Made the External Heater work with the Essentia Smelter
 - Added a tooltip-display to Speedloaders and Revolvers to display their currently loaded ammo (BluSunrize)
+- Re-Added the "Super Secret BluPrintz" easteregg (BluSunrize)
 - Fixed up the skyhook, including one crash (Malte)
 - Fixed some rare crashes when closing a world (Malte)
 - Fixed redstone connectors not closing doors using weak signals (Malte)
@@ -12,6 +13,8 @@
 - Fixed Machinist selling iron and steel drills in the wrong order (BluSunrize)
 - Fixed balloon colouring on dedicated servers (Malte)
 - Fixed a dupe bug (Malte)
+- Fixed a crash involving metal ladders (Malte)
+- Fixed Crafttweaker Integration to allow removing Potion mixing recipes  (BluSunrize)
 - Fixed an edgecase crash with Cartographer Maps (BluSunrize)
 
 #####Version 0.12-84 - BUILT
