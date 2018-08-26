@@ -107,11 +107,12 @@ dependencies {
     compileOnly 'industrial-craft:industrialcraft-2:release:ex112'//'net.industrial-craft:industrialcraft-2:2.8.+'
 //    compileOnly "actually-additions:ActuallyAdditions:1.12.2:r137" -Leaving this for when r137 releases
     compileOnly "actually-additions:ActuallyAdditions-1.12.2:r136:hotfix8"
+    compileOnly 'baubles:Baubles:1.12:1.5.2'
     deobfCompile 'elucent:albedo:2.0-SNAPSHOT'
 }
 
 reobf {
-    coreJar {mappingType = 'SEARGE'}
+    coreJar { mappingType = 'SEARGE' }
 }
 
 task coreJar(type: Jar) {
@@ -124,7 +125,7 @@ task coreJar(type: Jar) {
     }
     manifest {
         attributes "FMLCorePlugin": "blusunrize.immersiveengineering.common.asm.IELoadingPlugin"
-        attributes 'Maven-Artifact': archiveGroup+':'+archivesBaseName+'-core:'+version
+        attributes 'Maven-Artifact': archiveGroup + ':' + archivesBaseName + '-core:' + version
     }
     // Add a classifier to the JAR ('-core' at the end of the file name)
     // Distinguishes the mod JAR from the shipped one
@@ -166,9 +167,9 @@ jar.dependsOn signCoreJar
 def libPrefix = 'META-INF/libraries'
 jar {
     manifest {
-        attributes 'ContainedDeps': libPrefix+'/'+coreJar.archivePath.name
+        attributes 'ContainedDeps': libPrefix + '/' + coreJar.archivePath.name
         attributes "FMLAT": "ImmersiveEngineering_at.cfg"
-        attributes 'Maven-Artifact': archiveGroup+':'+archivesBaseName+':'+version
+        attributes 'Maven-Artifact': archiveGroup + ':' + archivesBaseName + ':' + version
     }
     exclude 'blusunrize/immersiveengineering/common/asm/**'
     // Add the output of the mod JAR task to the main JAR for later extraction
@@ -211,7 +212,7 @@ task deobfJar(type: Jar) {
     classifier = 'deobf'
     manifest {
         attributes 'FMLAT': 'ImmersiveEngineering_at.cfg'
-        attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version
+        attributes 'Maven-Artifact': group + ':' + archivesBaseName + ':' + version
     }
 }
 
@@ -273,10 +274,10 @@ uploadArchives {
 
 String getBuildNumber() {
     String buildNumber = System.getenv("BUILD_NUMBER") != null ? System.getenv("BUILD_NUMBER") : ""
-    if(buildNumber.equals("")) {
+    if (buildNumber.equals("")) {
         buildNumber = System.getenv("bamboo_buildNumber") != null ? "." + System.getenv("bamboo_buildNumber") : ""
     }
-    if(!buildNumber.equals("")) {
+    if (!buildNumber.equals("")) {
         buildNumber = "-" + buildNumber
     }
     return buildNumber
@@ -300,25 +301,26 @@ class GenerateUpdateJSON extends DefaultTask {
     int compareVersions(String vA, String vB) {
         String[] vPartsA = vA.split("[\\D]")
         String[] vPartsB = vB.split("[\\D]")
-        if (vPartsA.length==0&&vPartsB.length==0)
+        if (vPartsA.length == 0 && vPartsB.length == 0)
             return vA <=> vB
-        else if (vPartsA.length==0)
+        else if (vPartsA.length == 0)
             return -1
-        else if (vPartsB.length==0)
+        else if (vPartsB.length == 0)
             return 1
 
         int length = Math.min(vPartsA.length, vPartsB.length)
-        for (int i = 0;i<length;i++) {
+        for (int i = 0; i < length; i++) {
             int pA = Integer.parseInt(vPartsA[i])
             int pB = Integer.parseInt(vPartsB[i])
-            if (pA!=pB) {
-                return pA<=>pB
+            if (pA != pB) {
+                return pA <=> pB
             }
         }
         if (vPartsA.length != vPartsB.length)
             return vPartsA.length <=> vPartsB.length
         return vA <=> vB
     }
+
     @TaskAction
     def generate() {
         Map<String, String> mcFromIEVersion = new HashMap<>()
@@ -328,38 +330,41 @@ class GenerateUpdateJSON extends DefaultTask {
             println "Changelog does not exist! Aborting!"
         else {
             Map<String, Map<String, String>> changelogForVersions = new HashMap<>()
-            Map<String, String> promos = new TreeMap<>({String s1, String s2->
-                compareVersions(s1, s2)})
+            Map<String, String> promos = new TreeMap<>({ String s1, String s2 ->
+                compareVersions(s1, s2)
+            })
             String currentVersion = null
             String currentChangelog = ""
-            changelog.eachLine {line ->
+            changelog.eachLine { line ->
                 if (line.startsWith(VERSION_PREFIX)) {
-                    if (currentVersion!=null) {
+                    if (currentVersion != null) {
                         String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
                         String mcVer = mcFromIEVersion[mainVer]
                         if (!changelogForVersions.containsKey(mcVer)) {
-                            promos.put(mcVer+RECOMMENDED, currentVersion)
-                            promos.put(mcVer+LATEST, currentVersion)
-                            changelogForVersions[mcVer] = new TreeMap<>({String s1, String s2->
-                                compareVersions(s1, s2)})
+                            promos.put(mcVer + RECOMMENDED, currentVersion)
+                            promos.put(mcVer + LATEST, currentVersion)
+                            changelogForVersions[mcVer] = new TreeMap<>({ String s1, String s2 ->
+                                compareVersions(s1, s2)
+                            })
                         }
                         changelogForVersions[mcVer][currentVersion] = currentChangelog
                     }
                     if (line.endsWith(BUILT_SUFFIX)) {
-                        currentVersion = line.substring(VERSION_PREFIX.length(), line.length()-BUILT_SUFFIX.length())
+                        currentVersion = line.substring(VERSION_PREFIX.length(), line.length() - BUILT_SUFFIX.length())
                     } else {
                         currentVersion = (String) null
                     }
                     currentChangelog = ""
                 } else if (!line.isEmpty()) {
-                    if (currentChangelog.length()==0)
+                    if (currentChangelog.length() == 0)
                         currentChangelog += line
                     else
-                        currentChangelog += "\n"+line
+                        currentChangelog += "\n" + line
                 }
             }
-            Map<String, Object> mainMap = new TreeMap<>({String s1, String s2->
-                compareVersions(s1, s2)})
+            Map<String, Object> mainMap = new TreeMap<>({ String s1, String s2 ->
+                compareVersions(s1, s2)
+            })
             mainMap.putAll(changelogForVersions)
             mainMap["homepage"] = CF_URL
             mainMap["promos"] = promos

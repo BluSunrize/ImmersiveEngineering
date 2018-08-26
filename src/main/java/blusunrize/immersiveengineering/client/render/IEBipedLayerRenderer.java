@@ -19,10 +19,16 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 {
 	public static boolean rendersAssigned = false;
+	public static Map<UUID, Pair<ItemStack, Integer>> POWERPACK_PLAYERS = new HashMap<>();
 
 	@Override
 	public void doRenderLayer(EntityLivingBase living, float limbSwing, float prevLimbSwing, float partialTicks, float rotation, float yaw, float pitch, float scale)
@@ -60,14 +66,35 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 		if(!living.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()&&ItemNBTHelper.hasKey(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST), "IE:Powerpack"))
 		{
 			ItemStack powerpack = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST), Lib.NBT_Powerpack);
-			if(!powerpack.isEmpty())
-			{
-				GlStateManager.pushMatrix();
-				ModelBiped model = IEContent.itemPowerpack.getArmorModel(living, powerpack, EntityEquipmentSlot.CHEST, null);
-				ClientUtils.bindTexture(IEContent.itemPowerpack.getArmorTexture(powerpack, living, EntityEquipmentSlot.CHEST, null));
-				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
-				GlStateManager.popMatrix();
-			}
+			addWornPowerpack(living, powerpack);
+		}
+
+		if(POWERPACK_PLAYERS.containsKey(living.getUniqueID()))
+		{
+			Pair<ItemStack, Integer> entry = POWERPACK_PLAYERS.get(living.getUniqueID());
+			renderPowerpack(entry.getLeft(), living, limbSwing, prevLimbSwing, partialTicks, rotation, yaw, pitch, scale);
+			int time = entry.getValue()-1;
+			if(time <= 0)
+				POWERPACK_PLAYERS.remove(living.getUniqueID());
+			else
+				POWERPACK_PLAYERS.put(living.getUniqueID(), Pair.of(entry.getLeft(), time));
+		}
+	}
+
+	public static void addWornPowerpack(EntityLivingBase living, ItemStack powerpack)
+	{
+		POWERPACK_PLAYERS.put(living.getUniqueID(), Pair.of(powerpack, 5));
+	}
+
+	private void renderPowerpack(ItemStack powerpack, EntityLivingBase living, float limbSwing, float prevLimbSwing, float partialTicks, float rotation, float yaw, float pitch, float scale)
+	{
+		if(!powerpack.isEmpty())
+		{
+			GlStateManager.pushMatrix();
+			ModelBiped model = IEContent.itemPowerpack.getArmorModel(living, powerpack, EntityEquipmentSlot.CHEST, null);
+			ClientUtils.bindTexture(IEContent.itemPowerpack.getArmorTexture(powerpack, living, EntityEquipmentSlot.CHEST, null));
+			model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
+			GlStateManager.popMatrix();
 		}
 	}
 

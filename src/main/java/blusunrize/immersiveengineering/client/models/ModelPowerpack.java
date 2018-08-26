@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.common.items.ItemPowerpack;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -185,20 +186,23 @@ public class ModelPowerpack extends ModelIEArmorBase
 		if(entity instanceof EntityLivingBase)
 		{
 			ItemStack chest = ((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			ItemStack powerpack = null;
 			float storage = 0;
-			if(!chest.isEmpty()&&chest.getItem() instanceof ItemArmor)
-			{
-				if(!(chest.getItem() instanceof ItemPowerpack))
-					chest = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
+			if(!chest.isEmpty()&&chest.getItem() instanceof ItemPowerpack)
+				powerpack = chest;
+			else if(!chest.isEmpty()&&chest.getItem() instanceof ItemArmor&&ItemNBTHelper.hasKey(chest, "IE:Powerpack"))
+				powerpack = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
+			else if(IEBipedLayerRenderer.POWERPACK_PLAYERS.containsKey(entity.getUniqueID()))
+				powerpack = IEBipedLayerRenderer.POWERPACK_PLAYERS.get(entity.getUniqueID()).getLeft();
 
-				if(chest.getItem() instanceof ItemPowerpack)
-				{
-					float max = EnergyHelper.getMaxEnergyStored(chest);
-					storage = max <= 0?0: EnergyHelper.getEnergyStored(chest)/max;
-				}
+			if(powerpack!=null)
+			{
+				float max = EnergyHelper.getMaxEnergyStored(powerpack);
+				storage = max <= 0?0: EnergyHelper.getEnergyStored(powerpack)/max;
 				this.modelParts[7].rotateAngleZ = 0.5235987f-(1.047197f*storage);
 			}
 		}
+
 		GlStateManager.enableBlend();
 		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
 		GlStateManager.disableBlend();

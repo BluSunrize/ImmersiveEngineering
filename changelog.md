@@ -6,6 +6,7 @@
     - Made the External Heater work with the Essentia Smelter
 - Added a tooltip-display to Speedloaders and Revolvers to display their currently loaded ammo (BluSunrize)
 - Re-Added the "Super Secret BluPrintz" easteregg (BluSunrize)
+- Added the ability to use the Capacitor Backpack as a Bauble (BluSunrize) 
 - Fixed up the skyhook, including one crash (Malte)
 - Fixed some rare crashes when closing a world (Malte)
 - Fixed redstone connectors not closing doors using weak signals (Malte)
