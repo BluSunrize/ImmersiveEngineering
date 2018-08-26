@@ -12,6 +12,7 @@
 - Fixed Machinist selling iron and steel drills in the wrong order (BluSunrize)
 - Fixed balloon colouring on dedicated servers (Malte)
 - Fixed a dupe bug (Malte)
+- Fixed an edgecase crash with Cartographer Maps (BluSunrize)
 
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
