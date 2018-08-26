@@ -37,6 +37,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nullable;
@@ -196,18 +197,19 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		int heldDye = Utils.getDye(heldItem);
 		if(heldDye==-1)
 			return false;
-		heldDye = EnumDyeColor.byMetadata(15-heldDye).getColorValue();
+		int color = ObfuscationReflectionHelper.getPrivateValue(EnumDyeColor.class, EnumDyeColor.byMetadata(15-heldDye),
+				"field_193351_w");
 		if(target==0)
 		{
-			if(colour0==heldDye)
+			if(colour0==color)
 				return false;
-			colour0 = heldDye;
+			colour0 = color;
 		}
 		else
 		{
-			if(colour1==heldDye)
+			if(colour1==color)
 				return false;
-			colour1 = heldDye;
+			colour1 = color;
 		}
 		markContainingBlockForUpdate(null);
 		return true;
