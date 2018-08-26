@@ -10,6 +10,8 @@
 - Fixed redstone connectors not closing doors using weak signals (Malte)
 - Fixed the mixer crashing if the recipe is trying to process too much fluid (Malte)
 - Fixed Machinist selling iron and steel drills in the wrong order (BluSunrize)
+- Fixed balloon colouring on dedicated servers (Malte)
+- Fixed a dupe bug (Malte)
 
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)

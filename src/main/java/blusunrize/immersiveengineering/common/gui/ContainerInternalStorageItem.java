@@ -38,7 +38,7 @@ public abstract class ContainerInternalStorageItem extends Container
 		this.world = world;
 		this.player = iinventory.player;
 		this.equipmentSlot = entityEquipmentSlot;
-		this.heldItem = heldItem;
+		this.heldItem = heldItem.copy();
 		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setInventoryForUpdate(iinventory);
@@ -117,7 +117,7 @@ public abstract class ContainerInternalStorageItem extends Container
 	@Override
 	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
-		return player.getItemStackFromSlot(equipmentSlot)==heldItem;
+		return ItemStack.areItemsEqual(player.getItemStackFromSlot(equipmentSlot), heldItem);
 	}
 
 	@Nonnull
