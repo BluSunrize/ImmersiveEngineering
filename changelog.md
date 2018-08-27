@@ -1,4 +1,4 @@
-#####Version 0.12-85
+#####Version 0.12-85 - BUILT
 - Re-Added Thaumcraft compat (BluSunrize)
     - Added hammering of plates for Brass, Thaumium and Void Metal 
     - Golems can farm hemp
