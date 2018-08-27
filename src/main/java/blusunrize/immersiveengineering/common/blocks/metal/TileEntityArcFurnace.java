@@ -114,11 +114,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					{
 						int[] inputSlots = ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).getInputSlots();
 						int[] inputAmounts = ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).getInputAmounts();
-						for(int i = 0; i < inputSlots.length; i++)
-							if(usedInvSlots.containsKey(inputSlots[i]))
-								usedInvSlots.put(inputSlots[i], usedInvSlots.get(inputSlots[i])+inputAmounts[i]);
-							else
-								usedInvSlots.put(inputSlots[i], inputAmounts[i]);
+						if(inputAmounts!=null)
+							for(int i = 0; i < inputSlots.length; i++)
+								if(usedInvSlots.containsKey(inputSlots[i]))
+									usedInvSlots.put(inputSlots[i], usedInvSlots.get(inputSlots[i])+inputAmounts[i]);
+								else
+									usedInvSlots.put(inputSlots[i], inputAmounts[i]);
 					}
 
 				NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -663,7 +664,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		IMultiblockRecipe recipe = readRecipeFromNBT(tag);
 		if(recipe!=null&&recipe instanceof ArcFurnaceRecipe)
-			return new MultiblockProcessArcFurnace((ArcFurnaceRecipe)recipe, tag.getIntArray("process_inputSlots"));
+		{
+			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace((ArcFurnaceRecipe)recipe, tag.getIntArray("process_inputSlots"));
+			if(tag.hasKey("process_inputAmounts"))
+				process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
+			return process;
+		}
 		return null;
 	}
 

@@ -663,6 +663,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			return this.inputSlots;
 		}
 
+		@Nullable
 		public int[] getInputAmounts()
 		{
 			return this.inputAmounts;
@@ -785,6 +786,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			if(inputSlots!=null)
 				nbt.setIntArray("process_inputSlots", inputSlots);
+			if(inputAmounts!=null)
+				nbt.setIntArray("process_inputAmounts", inputAmounts);
 			if(inputTanks!=null)
 				nbt.setIntArray("process_inputTanks", inputTanks);
 		}

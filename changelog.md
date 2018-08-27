@@ -18,6 +18,7 @@
 - Fixed Crafttweaker Integration to allow removing Potion mixing recipes  (BluSunrize)
 - Fixed an edgecase crash with Cartographer Maps (BluSunrize)
 - Fixed ArcFurnace requiring additional inputs to start a recipe (BluSunrize)
+- Fixed upgrades vanishing in the Workbench (Malte)
 
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
