@@ -19,6 +19,7 @@
 - Fixed an edgecase crash with Cartographer Maps (BluSunrize)
 - Fixed ArcFurnace requiring additional inputs to start a recipe (BluSunrize)
 - Fixed upgrades vanishing in the Workbench (Malte)
+- Fixed Lightningrod not playing nice with other mods' energy transport (BluSunrize)
 
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
