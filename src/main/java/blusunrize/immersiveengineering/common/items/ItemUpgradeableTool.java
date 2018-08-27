@@ -45,7 +45,9 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	@Override
 	public void clearUpgrades(ItemStack stack)
 	{
-		ItemNBTHelper.remove(stack, "upgrades");
+		NBTTagCompound nbt = stack.getTagCompound();
+		if(nbt!=null)
+			nbt.removeTag("upgrades");
 	}
 
 	@Override

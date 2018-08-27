@@ -1233,13 +1233,16 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
 	}
 
+	private static ItemStack sampleDrill = ItemStack.EMPTY;
 	@SubscribeEvent
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
 		//Overlay renderer for the sample drill
 		boolean chunkBorders = false;
+		if(sampleDrill.isEmpty())
+			sampleDrill = new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta());
 		for(EnumHand hand : EnumHand.values())
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), ClientUtils.mc().player.getHeldItem(hand), true))
+			if(OreDictionary.itemMatches(sampleDrill, ClientUtils.mc().player.getHeldItem(hand), true))
 			{
 				chunkBorders = true;
 				break;
