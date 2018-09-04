@@ -258,4 +258,10 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 			return new Vec3d(facing.getFrontOffsetX()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, facing.getFrontOffsetZ()!=0?.5: zDif < 0&&wallN?.125: .875);
 		}
 	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
 }

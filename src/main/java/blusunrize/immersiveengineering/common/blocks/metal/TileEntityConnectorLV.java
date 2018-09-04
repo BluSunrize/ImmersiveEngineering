@@ -473,36 +473,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
-	//	@Optional.Method(modid = "IC2")
-	//	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	//	{
-	//		return Lib.IC2 && canConnectEnergy(direction);
-	//	}
-	//	@Optional.Method(modid = "IC2")
-	//	public double getDemandedEnergy()
-	//	{
-	//		return ModCompatability.convertRFtoEU(getMaxInput(), getIC2Tier());
-	//	}
-	//	@Optional.Method(modid = "IC2")
-	//	public int getSinkTier()
-	//	{
-	//		return getIC2Tier();
-	//	}
-	//	int getIC2Tier()
-	//	{
-	//		return this.canTakeHV()?3: this.canTakeMV()?2: 1;
-	//	}
-	//	@Optional.Method(modid = "IC2")
-	//	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
-	//	{
-	//		int rf = ModCompatability.convertEUtoRF(amount);
-	//		if(rf>this.getMaxInput())//More Input than allowed results in blocking
-	//			return amount;
-	//		int rSimul = transferEnergy(rf, true, 1);
-	//		if(rSimul==0)//This will prevent full power void but allow partial transfer
-	//			return amount;
-	//		int r = transferEnergy(rf, false, 1);
-	//		double eu = ModCompatability.convertRFtoEU(r, getIC2Tier());
-	//		return amount-eu;
-	//	}
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
 }

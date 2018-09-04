@@ -633,4 +633,10 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		turnCooldown = 20;
 		shouldUpdate = true;
 	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
 }

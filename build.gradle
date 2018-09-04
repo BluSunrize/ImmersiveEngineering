@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 
 def mainVersion = "0.12"
-def buildNumber = "85"
+def buildNumber = "86"
 
 // For those who want the bleeding edge
 buildscript {

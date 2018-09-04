@@ -1039,6 +1039,22 @@ public class ApiUtils
 			}
 	}
 
+	public static void moveConnectionEnd(Connection conn, BlockPos newEnd, World world)
+	{
+		IImmersiveConnectable otherSide = ApiUtils.toIIC(conn.start, world);
+		Vec3d start = ApiUtils.getVecForIICAt(world, conn.start, conn);
+		Vec3d end = ApiUtils.getVecForIICAt(world, conn.end, conn);
+		if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
+		{
+			ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);
+			Connection newConn = new Connection(conn.start, newEnd, conn.cableType, conn.length);
+			ImmersiveNetHandler.INSTANCE.addConnection(world, conn.start, newConn);
+			ImmersiveNetHandler.INSTANCE.addConnection(world, newEnd,
+					new Connection(newEnd, conn.start, conn.cableType, conn.length));
+			ImmersiveNetHandler.INSTANCE.addBlockData(world, newConn);
+		}
+	}
+
 	public static class ValueComparator implements java.util.Comparator<String>
 	{
 		Map<String, Integer> base;

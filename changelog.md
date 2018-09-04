@@ -1,3 +1,6 @@
+#####Version 0.12-86
+ - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
+
 #####Version 0.12-85 - BUILT
 - Re-Added Thaumcraft compat (BluSunrize)
     - Added hammering of plates for Brass, Thaumium and Void Metal 

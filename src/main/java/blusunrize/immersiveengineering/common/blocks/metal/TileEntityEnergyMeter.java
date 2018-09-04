@@ -321,4 +321,10 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		return compVal;
 	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
 }

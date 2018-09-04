@@ -342,4 +342,10 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		return false;
 	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
 }

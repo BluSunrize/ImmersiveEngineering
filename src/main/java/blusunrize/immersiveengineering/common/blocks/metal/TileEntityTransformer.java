@@ -463,4 +463,10 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		return MV_CATEGORY;
 	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
 }

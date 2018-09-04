@@ -4,7 +4,9 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -50,8 +52,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	EnumFacing facing = EnumFacing.NORTH;
 	public int offset = 0;
 	@Nullable
-	private BlockPos connPositive = null;
-	private boolean hasNegative = false;
+	public BlockPos connPositive = null;
+	public boolean hasNegative = false;
 	private boolean formed = true;
 
 	@Override
@@ -287,33 +289,68 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		if(!formed)
 			return;
-		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
-		for(int i = -1; i <= 1; i++)
+		TileEntityFeedthrough master;
 		{
-			int offsetLocal = i-offset;
-			BlockPos replacePos = pos.offset(facing, offsetLocal);
-			if(!info.canReplace())
-				world.setBlockToAir(replacePos);
-			else if(i!=offset)
+			TileEntity tmp = world.getTileEntity(pos.offset(facing, -offset));
+			if(tmp instanceof TileEntityFeedthrough)
+				master = (TileEntityFeedthrough)tmp;
+			else
+				master = null;
+		}
+		disassembleBlock(-1, master);
+		disassembleBlock(1, master);
+		disassembleBlock(0, master);
+	}
+
+	private void disassembleBlock(int toBreak, @Nullable TileEntityFeedthrough master)
+	{
+		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
+		int offsetLocal = toBreak-offset;
+		BlockPos replacePos = pos.offset(facing, offsetLocal);
+		if(!info.canReplace())
+			world.setBlockToAir(replacePos);
+		else if(toBreak!=offset)
+		{
+			TileEntity te = world.getTileEntity(replacePos);
+			if(te instanceof TileEntityFeedthrough)
+				((TileEntityFeedthrough)te).formed = false;
+			IBlockState newState = Blocks.AIR.getDefaultState();
+			switch(toBreak)
 			{
-				TileEntity te = world.getTileEntity(replacePos);
-				if(te instanceof TileEntityFeedthrough)
-					((TileEntityFeedthrough)te).formed = false;
-				IBlockState newState = Blocks.AIR.getDefaultState();
-				switch(i)
-				{
-					case -1:
-						newState = info.conn.withProperty(IEProperties.FACING_ALL, facing);
-						break;
-					case 0:
-						newState = stateForMiddle;
-						break;
-					case 1:
-						newState = info.conn.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
-						break;
-				}
-				world.setBlockState(replacePos, newState);
+				case -1:
+					newState = info.conn.withProperty(IEProperties.FACING_ALL, facing);
+					break;
+				case 0:
+					newState = stateForMiddle;
+					Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, replacePos);
+					if(conns!=null)
+					{
+						if(master!=null)
+							for(Connection c : conns)
+							{
+								BlockPos newPos = null;
+								if(c.end.equals(master.connPositive))
+								{
+									if(offset!=1)
+										newPos = replacePos.offset(facing);
+								}
+								else if(offset!=-1)
+									newPos = replacePos.offset(facing, -1);
+								if(newPos!=null)
+								{
+									Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
+									ApiUtils.moveConnectionEnd(reverse, newPos, world);
+									IELogger.info("Moving "+reverse.start+"->"+reverse.end+" to "+newPos);
+								}
+							}
+					}
+					break;
+				case 1:
+					newState = info.conn.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
+					break;
 			}
+			world.setBlockState(replacePos, newState);//TODO move wires properly
+
 		}
 	}
 
@@ -366,5 +403,24 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	protected float getMaxDamage(ImmersiveNetHandler.Connection c)
 	{
 		return INFOS.get(reference).maxDmg;
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		if(id==253)
+		{
+			world.checkLight(pos);
+			return true;
+		}
+		return super.receiveClientEvent(id, arg);
+	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		if(c.end.equals(connPositive))
+			connPositive = newEnd;
+		return true;
 	}
 }

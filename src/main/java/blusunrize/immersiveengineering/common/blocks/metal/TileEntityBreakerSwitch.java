@@ -369,4 +369,12 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		if(world!=null)
 			markContainingBlockForUpdate(null);
 	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		if(c.end.equals(endOfLeftConnection))
+			endOfLeftConnection = newEnd;
+		return true;
+	}
 }
