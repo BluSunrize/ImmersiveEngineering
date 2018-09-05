@@ -183,11 +183,14 @@ public class ArcRecyclingThreadHandler extends Thread
 			List<ItemStack> missingSub = new ArrayList<>();
 			Map<ItemStack, Double> outputs = new IdentityHashMap<>();
 			for(Ingredient in : inputs)
-				if(in!=null)
+				if(in!=null&&in!=Ingredient.EMPTY)
 				{
 					ItemStack inputStack = IEApi.getPreferredStackbyMod(in.getMatchingStacks());
 					if(inputStack.isEmpty())
-						continue;
+					{
+						IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getRegistryName()+")");
+						return null;
+					}
 
 					Object[] brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
 					if(brokenDown==null)
