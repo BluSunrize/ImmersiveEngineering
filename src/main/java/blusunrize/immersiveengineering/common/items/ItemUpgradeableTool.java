@@ -16,6 +16,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -45,9 +46,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	@Override
 	public void clearUpgrades(ItemStack stack)
 	{
-		NBTTagCompound nbt = stack.getTagCompound();
-		if(nbt!=null)
-			nbt.removeTag("upgrades");
+		ItemNBTHelper.remove(stack, "upgrades");
 	}
 
 	@Override
@@ -58,6 +57,8 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	@Override
 	public void recalculateUpgrades(ItemStack stack)
 	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
 		clearUpgrades(stack);
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
