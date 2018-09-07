@@ -3,8 +3,11 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"custom": { "flip-v": true },
-		"model": "immersiveengineering:smartmodel/conn_floodlight"
+      "model": "immersiveengineering:smartmodel/connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/metal_device/floodlight.obj.ie"
+      }
 	},
 	"variants":
 	{
@@ -73,7 +76,11 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:smartmodel/conn_floodlight_on"
+              "custom": {
+                "textures": {
+                  "#immersiveengineering:blocks/metal_device1_floodlight": "immersiveengineering:blocks/metal_device1_floodlight_on"
+                }
+              }
 			}
 		}
 	}

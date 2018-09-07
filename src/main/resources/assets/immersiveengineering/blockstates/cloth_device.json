@@ -16,7 +16,12 @@
 		"type":
 		{
 			"cushion": {"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}},
-			"balloon":	{"model": "immersiveengineering:smartmodel/conn_balloon"}
+          "balloon": {
+            "model": "immersiveengineering:smartmodel/connector",
+            "custom": {
+              "base": "immersiveengineering:block/balloon.obj.ie"
+            }
+          }
 		},
 		"facing":
 		{

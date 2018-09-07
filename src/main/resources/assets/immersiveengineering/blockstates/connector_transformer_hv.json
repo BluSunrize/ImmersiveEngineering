@@ -3,8 +3,11 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"custom": { "flip-v": true },
-		"model": "immersiveengineering:smartmodel/conn_transformer_hv_left"
+      "model": "immersiveengineering:smartmodel/connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/transformer_hv_left.obj"
+      }
 	},
 	"variants":
 	{
@@ -28,7 +31,9 @@
 		{
 			"false": {},
 			"true": {
-				"model": "immersiveengineering:smartmodel/conn_transformer_hv_right"
+              "custom": {
+                "base": "immersiveengineering:block/connector/transformer_hv_right.obj"
+              }
 			}
 		},
 		"boolean1":
