@@ -9,12 +9,10 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.ModelData;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -28,7 +26,6 @@ import net.minecraftforge.common.model.IModelState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
 public class ConnLoader implements ICustomModelLoader
@@ -56,7 +53,7 @@ public class ConnLoader implements ICustomModelLoader
 	public IModel loadModel(@Nonnull ResourceLocation modelLocation)
 	{
 		if(modelLocation.equals(DATA_BASED_LOC))
-			return new ConnModelBase(null);
+			return new ConnModelBase();
 		String resourcePath = modelLocation.getResourcePath();
 		int pos = resourcePath.indexOf("conn_");
 		if(pos >= 0)
@@ -79,68 +76,56 @@ public class ConnLoader implements ICustomModelLoader
 	{
 		private static final ResourceLocation WIRE_LOC = new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":blocks/wire");
 		@Nullable
-		final ResourceLocation base;
-		@Nonnull
-		final ImmutableMap<String, String> texReplace;
-		@Nonnull
-		final ImmutableMap<String, String> customBase;
-		@Nullable
-		private IModel baseModel;
+		private final ModelData baseData;
 
-		public ConnModelBase(@Nullable ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
+		public ConnModelBase(@Nonnull ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
 							 @Nonnull ImmutableMap<String, String> customBase)
 		{
-			base = b;
-			texReplace = t;
-			this.customBase = customBase;
+			this(new ModelData(b, ModelData.asJsonObject(customBase), t));
 		}
 
-		public ConnModelBase(@Nullable ResourceLocation b)
+		public ConnModelBase(@Nonnull ResourceLocation b)
 		{
 			this(b, ImmutableMap.of(), ImmutableMap.of());
+		}
+
+		public ConnModelBase()
+		{
+			baseData = null;
+		}
+
+		public ConnModelBase(@Nullable ModelData newData)
+		{
+			this.baseData = newData;
 		}
 
 		@Nonnull
 		@Override
 		public Collection<ResourceLocation> getDependencies()
 		{
-			if(base==null)
+			if(baseData==null)
 				return ImmutableList.of();
-			attemptToLoadBase(false);
-			if(baseModel!=null)
+			baseData.attemptToLoad(false);
+			if(baseData.getModel()!=null)
 			{
-				List<ResourceLocation> ret = new ArrayList<>(baseModel.getDependencies());
-				ret.add(0, base);
+				List<ResourceLocation> ret = new ArrayList<>(baseData.getModel().getDependencies());
+				ret.add(0, baseData.location);
 				return ret;
 			}
 			else
-				return ImmutableList.of(base);
-		}
-
-		private void attemptToLoadBase(boolean throwError)
-		{
-			try
-			{
-				assert base!=null;
-				baseModel = ModelLoaderRegistry.getModel(base);
-				baseModel = baseModel.retexture(texReplace).process(customBase);
-			} catch(Exception e)
-			{
-				if(throwError)
-					throw new RuntimeException(e);
-			}
+				return ImmutableList.of(baseData.location);
 		}
 
 		@Nonnull
 		@Override
 		public Collection<ResourceLocation> getTextures()
 		{
-			if(base==null)
+			if(baseData==null)
 				return ImmutableList.of();
-			attemptToLoadBase(false);
-			if(baseModel!=null)
+			baseData.attemptToLoad(false);
+			if(baseData.getModel()!=null)
 			{
-				List<ResourceLocation> ret = new ArrayList<>(baseModel.getTextures());
+				List<ResourceLocation> ret = new ArrayList<>(baseData.getModel().getTextures());
 				ret.add(WIRE_LOC);
 				return ret;
 			}
@@ -152,9 +137,10 @@ public class ConnLoader implements ICustomModelLoader
 		@Override
 		public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format, @Nonnull Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 		{
-			attemptToLoadBase(true);
-			assert baseModel!=null;
-			return new ConnModelReal(baseModel.bake(state, format, bakedTextureGetter));
+			assert baseData!=null;
+			baseData.attemptToLoad(true);
+			assert baseData.getModel()!=null;
+			return new ConnModelReal(baseData.getModel().bake(state, format, bakedTextureGetter));
 		}
 
 		private static final ImmutableSet<String> ownKeys = ImmutableSet.of("base", "custom", "textures");
@@ -163,51 +149,10 @@ public class ConnLoader implements ICustomModelLoader
 		@Override
 		public IModel process(ImmutableMap<String, String> customData)
 		{
-			String baseLocStr = customData.get("base");
-			ResourceLocation baseLoc = this.base;
-			if(baseLocStr!=null)
-				baseLoc = new ResourceLocation(asString(baseLocStr));
-			ImmutableMap<String, String> customBase = ImmutableMap.of();
-			ImmutableMap<String, String> texReplacements = ImmutableMap.of();
-			if(customData.containsKey("custom"))
-			{
-				JsonObject obj = new JsonParser().parse(customData.get("custom")).getAsJsonObject();
-				customBase = asMap(obj);
-			}
-			ImmutableMap.Builder<String, String> leftoverKeys = ImmutableMap.builder();
-			for(Entry<String, String> e : customData.entrySet())
-				if(!ownKeys.contains(e.getKey()))
-					leftoverKeys.put(e);
-			leftoverKeys.putAll(customBase);
-			customBase = leftoverKeys.build();
-			if(customData.containsKey("textures"))
-			{
-				JsonObject obj = new JsonParser().parse(customData.get("textures")).getAsJsonObject();
-				texReplacements = asMap(obj);
-			}
-			if(!(baseLoc==base||baseLoc.equals(base))||!customBase.equals(this.customBase)
-					||!texReplacements.equals(this.texReplace))
-				return new ConnModelBase(baseLoc, texReplacements, customBase);
+			ModelData newData = ModelData.fromMap(customData, ownKeys, "base");
+			if(!newData.equals(baseData))
+				return new ConnModelBase(newData);
 			return this;
-		}
-
-		private ImmutableMap<String, String> asMap(JsonObject obj)
-		{
-			ImmutableMap.Builder<String, String> b = ImmutableMap.builder();
-			for(Entry<String, JsonElement> e : obj.entrySet())
-			{
-				JsonElement val = e.getValue();
-				if(val.isJsonPrimitive()&&val.getAsJsonPrimitive().isString())
-					b.put(e.getKey(), val.getAsString());
-				else
-					b.put(e.getKey(), val.toString());
-			}
-			return b.build();
-		}
-
-		private String asString(String json)
-		{
-			return new JsonParser().parse(json).getAsString();
 		}
 	}
 }

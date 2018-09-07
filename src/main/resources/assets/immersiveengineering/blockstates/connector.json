@@ -164,7 +164,12 @@
       },
       "relay_hv": {
         "custom": {
-          "base": "immersiveengineering:block/connector/relay_hv.obj"
+          "base": "immersiveengineering:block/multilayer",
+          "custom": {
+            "TRANSLUCENT": {
+              "model": "immersiveengineering:block/connector/relay_hv.obj"
+            }
+          }
         }
       },
       "connector_structural": {
