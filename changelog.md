@@ -1,7 +1,7 @@
 #####Version 0.12-86
  - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
  - Fixed arc recycling calculations failing in rare cases (Malte)
- - Re-Added razor wires hurting players trying to break them without wirecutters
+ - Re-Added razor wires hurting players trying to break them without wirecutters (Malte)
 
 #####Version 0.12-85 - BUILT
 - Re-Added Thaumcraft compat (BluSunrize)
