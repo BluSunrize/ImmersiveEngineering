@@ -178,7 +178,11 @@ public class ConnLoader implements ICustomModelLoader
 						String layerAsStr = ele.getAsString();
 						if(MultiLayerModel.LAYERS_BY_NAME.containsKey(layerAsStr))
 							layers.add(MultiLayerModel.LAYERS_BY_NAME.get(layerAsStr));
+						else
+							throw new RuntimeException("Invalid layer \""+layerAsStr+"\" in wire model");
 					}
+					else
+						throw new RuntimeException("Layers in wire models must be strings! Invalid value: "+ele.toString());
 				}
 			}
 			layers = ImmutableSet.copyOf(layers);
