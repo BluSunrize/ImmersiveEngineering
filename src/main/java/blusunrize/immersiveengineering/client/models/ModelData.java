@@ -61,22 +61,23 @@ public class ModelData
 		return model;
 	}
 
-	public static ModelData fromMap(ImmutableMap<String, String> customData, ImmutableSet<String> ownKeys, String base)
+	public static ModelData fromMap(ImmutableMap<String, String> customData, ImmutableSet<String> ownKeys, String base,
+									ImmutableMap<String, String> texReplacements)
 	{
-		return fromJson(asJsonObject(customData), ownKeys, base);
+		return fromJson(asJsonObject(customData), ownKeys, base, texReplacements);
 	}
 
-	public static ModelData fromJson(JsonObject customData, Collection<String> ownKeys)
+	public static ModelData fromJson(JsonObject customData, Collection<String> ownKeys, ImmutableMap<String, String> texReplacements)
 	{
-		return fromJson(customData, ownKeys, "model");
+		return fromJson(customData, ownKeys, "model", texReplacements);
 	}
 
-	public static ModelData fromJson(JsonObject customData, Collection<String> knownKeys, String modelKey)
+	public static ModelData fromJson(JsonObject customData, Collection<String> knownKeys, String modelKey,
+									 ImmutableMap<String, String> texReplacements)
 	{
 		String baseLocStr = customData.get(modelKey).getAsString();
 		ResourceLocation baseLoc = new ResourceLocation(baseLocStr);
 		JsonObject customBase = new JsonObject();
-		ImmutableMap<String, String> texReplacements = ImmutableMap.of();
 		if(customData.has("custom"))
 			customBase = customData.get("custom").getAsJsonObject();
 		for(Entry<String, JsonElement> e : customData.entrySet())
@@ -85,7 +86,10 @@ public class ModelData
 		if(customData.has("textures"))
 		{
 			JsonObject obj = customData.get("textures").getAsJsonObject();
-			texReplacements = asMap(obj, true);
+			ImmutableMap.Builder<String, String> b = ImmutableMap.builder();
+			b.putAll(texReplacements);
+			b.putAll(asMap(obj, true));
+			texReplacements = b.build();
 		}
 		return new ModelData(baseLoc, customBase, texReplacements);
 	}

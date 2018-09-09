@@ -205,7 +205,7 @@
         "custom": {
           "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
           "layers": [
-            "SOLID",
+            "CUTOUT",
             "TRANSLUCENT"
           ]
         }

@@ -85,11 +85,13 @@ public class ConnLoader implements ICustomModelLoader
 		private final ModelData baseData;
 		@Nonnull
 		private final ImmutableSet<BlockRenderLayer> layers;
+		@Nonnull
+		private final ImmutableMap<String, String> externalTextures;
 
 		public ConnModelBase(@Nonnull ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
 							 @Nonnull ImmutableMap<String, String> customBase, @Nonnull ImmutableSet<BlockRenderLayer> layers)
 		{
-			this(new ModelData(b, ModelData.asJsonObject(customBase), t), layers);
+			this(new ModelData(b, ModelData.asJsonObject(customBase), t), layers, ImmutableMap.of());
 		}
 
 		public ConnModelBase(@Nonnull ResourceLocation b)
@@ -101,12 +103,15 @@ public class ConnLoader implements ICustomModelLoader
 		{
 			baseData = null;
 			layers = ALL_LAYERS;
+			externalTextures = ImmutableMap.of();
 		}
 
-		public ConnModelBase(@Nullable ModelData newData, @Nonnull ImmutableSet<BlockRenderLayer> layers)
+		public ConnModelBase(@Nullable ModelData newData, @Nonnull ImmutableSet<BlockRenderLayer> layers,
+							 @Nonnull ImmutableMap<String, String> externalTextures)
 		{
 			this.baseData = newData;
 			this.layers = layers;
+			this.externalTextures = externalTextures;
 		}
 
 		@Nonnull
@@ -160,7 +165,7 @@ public class ConnLoader implements ICustomModelLoader
 		public IModel process(ImmutableMap<String, String> customData)
 		{
 			JsonObject obj = ModelData.asJsonObject(customData);
-			ModelData newData = ModelData.fromJson(obj, ownKeys, "base");
+			ModelData newData = ModelData.fromJson(obj, ownKeys, "base", externalTextures);
 			Collection<BlockRenderLayer> layers = ALL_LAYERS;
 			if(obj.has("layers")&&obj.get("layers").isJsonArray())
 			{
@@ -178,7 +183,7 @@ public class ConnLoader implements ICustomModelLoader
 			}
 			layers = ImmutableSet.copyOf(layers);
 			if(!newData.equals(baseData)||!layers.equals(this.layers))
-				return new ConnModelBase(newData, (ImmutableSet<BlockRenderLayer>)layers);
+				return new ConnModelBase(newData, (ImmutableSet<BlockRenderLayer>)layers, externalTextures);
 			return this;
 		}
 
@@ -186,7 +191,13 @@ public class ConnLoader implements ICustomModelLoader
 		@Override
 		public IModel retexture(ImmutableMap<String, String> textures)
 		{
-			//TODO
+			if(baseData!=null)
+			{
+				if(!textures.equals(baseData.textures))
+					return new ConnModelBase(new ModelData(baseData.location, baseData.data, textures), layers, textures);
+			}
+			else if(!externalTextures.equals(textures))
+				return new ConnModelBase(null, layers, textures);
 			return this;
 		}
 	}

@@ -117,7 +117,7 @@ public class MultiLayerModel implements IModel
 				JsonElement ele = parser.parse(customData.get(layerStr));
 				if(ele.isJsonObject())
 				{
-					ModelData data = ModelData.fromJson(ele.getAsJsonObject(), ImmutableList.of());
+					ModelData data = ModelData.fromJson(ele.getAsJsonObject(), ImmutableList.of(), ImmutableMap.of());
 					newSubs.put(layer, ImmutableList.of(data));
 				}
 				else if(ele.isJsonArray())
@@ -126,7 +126,7 @@ public class MultiLayerModel implements IModel
 					List<ModelData> models = new ArrayList<>();
 					for(JsonElement subEle : array)
 						if(subEle.isJsonObject())
-							models.add(ModelData.fromJson(ele.getAsJsonObject(), ImmutableList.of()));
+							models.add(ModelData.fromJson(ele.getAsJsonObject(), ImmutableList.of(), ImmutableMap.of()));
 					newSubs.put(layer, models);
 				}
 			}

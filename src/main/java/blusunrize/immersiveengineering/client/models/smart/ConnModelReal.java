@@ -145,7 +145,7 @@ public class ConnModelReal implements IBakedModel
 		IExtendedBlockState extendedState;
 		List<BakedQuad>[] lists;
 		TextureAtlasSprite texture;
-		private final ImmutableSet<BlockRenderLayer> layers;
+		private final ImmutableSet<BlockRenderLayer> layers;//TODO remove
 
 		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b,
 								   ImmutableSet<BlockRenderLayer> layers)

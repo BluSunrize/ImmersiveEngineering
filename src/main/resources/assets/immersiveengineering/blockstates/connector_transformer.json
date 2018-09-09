@@ -5,7 +5,7 @@
 		"model": "immersiveengineering:smartmodel/connector",
 		"custom": {
 			"flip-v": true,
-          "base": "immersiveengineering:block/connector/transformer_mv_right.obj",
+			"base": "immersiveengineering:block/connector/transformer_mv_left.obj",
           "layers": [
             "SOLID"
           ]
