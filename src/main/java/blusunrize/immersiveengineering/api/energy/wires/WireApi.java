@@ -32,6 +32,7 @@ public final class WireApi
 	public static final Map<WireType, FeedthroughModelInfo> INFOS = new HashMap<>();
 
 	@SideOnly(Side.CLIENT)
+	@Deprecated//This should be done in JSON in IE 86+
 	public static void registerConnectorForRender(String key, ResourceLocation baseModel,
 												  @Nullable ImmutableMap<String, String> texReplacement)
 	{
