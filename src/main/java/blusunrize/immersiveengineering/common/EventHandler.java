@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInt
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRazorWire;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
@@ -551,7 +552,10 @@ public class EventHandler
 				event.setCanceled(true);
 		if(event.getState().getBlock()==IEContent.blockMetalDecoration2&&IEContent.blockMetalDecoration2.getMetaFromState(event.getState())==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())
 			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 1), current, false))
+			{
 				event.setCanceled(true);
+				TileEntityRazorWire.applyDamage(event.getEntityLiving());
+			}
 		TileEntity te = event.getEntityPlayer().getEntityWorld().getTileEntity(event.getPos());
 		if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getEntityPlayer()))
 			event.setCanceled(true);

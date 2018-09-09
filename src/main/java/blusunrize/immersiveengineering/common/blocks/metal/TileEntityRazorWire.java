@@ -96,10 +96,15 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		{
 			entity.motionX *= 0.2D;
 			entity.motionZ *= 0.2D;
-			int protection = (!((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.FEET).isEmpty()?1: 0)+(!((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty()?1: 0);
-			float dmg = protection==2?.5f: protection==1?1: 1.5f;
-			entity.attackEntityFrom(IEDamageSources.razorWire, dmg);
+			applyDamage((EntityLivingBase)entity);
 		}
+	}
+
+	public static void applyDamage(EntityLivingBase entity)
+	{
+		int protection = (!entity.getItemStackFromSlot(EntityEquipmentSlot.FEET).isEmpty()?1: 0)+(!entity.getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty()?1: 0);
+		float dmg = protection==2?.5f: protection==1?1: 1.5f;
+		entity.attackEntityFrom(IEDamageSources.razorWire, dmg);
 	}
 
 	@Override
