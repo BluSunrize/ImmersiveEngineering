@@ -6,7 +6,10 @@
       "model": "immersiveengineering:smartmodel/connector",
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie"
+        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
+        "layers": [
+          "SOLID"
+        ]
       }
 	},
 	"variants":

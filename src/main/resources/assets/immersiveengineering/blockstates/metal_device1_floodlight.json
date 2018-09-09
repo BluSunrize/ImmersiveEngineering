@@ -6,7 +6,11 @@
       "model": "immersiveengineering:smartmodel/connector",
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/metal_device/floodlight.obj.ie"
+		  "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
+		  "layers": [
+			  "SOLID",
+			  "TRANSLUCENT"
+		  ]
       }
 	},
 	"variants":

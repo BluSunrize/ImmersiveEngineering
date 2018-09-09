@@ -10,13 +10,18 @@ package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.models.ModelData;
+import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerModel;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
@@ -32,6 +37,7 @@ public class ConnLoader implements ICustomModelLoader
 {
 	public static final String RESOURCE_LOCATION = "models/block/smartmodel/conn_";
 	public static final ResourceLocation DATA_BASED_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "models/block/smartmodel/connector");
+	public static final ImmutableSet<BlockRenderLayer> ALL_LAYERS = ImmutableSet.copyOf(BlockRenderLayer.values());
 	//Do not manually write to these in IE 0.12-77+. Use blusunrize.immersiveengineering.api.energy.wires.WireApi.registerConnectorForRender()
 	public static Map<String, ImmutableMap<String, String>> textureReplacements = new HashMap<>();
 	public static Map<String, ResourceLocation> baseModels = new HashMap<>();
@@ -63,10 +69,10 @@ public class ConnLoader implements ICustomModelLoader
 			ResourceLocation r = baseModels.get(name);
 			if(r!=null)
 			{
+				ImmutableMap<String, String> texRepl = ImmutableMap.of();
 				if(textureReplacements.containsKey(name))
-					return new ConnModelBase(r, textureReplacements.get(name), ImmutableMap.of());
-				else
-					return new ConnModelBase(r);
+					texRepl = textureReplacements.get(name);
+				return new ConnModelBase(r, texRepl, ImmutableMap.of("flip-v", "true"), ALL_LAYERS);
 			}
 		}
 		return ModelLoaderRegistry.getMissingModel();
@@ -77,26 +83,30 @@ public class ConnLoader implements ICustomModelLoader
 		private static final ResourceLocation WIRE_LOC = new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":blocks/wire");
 		@Nullable
 		private final ModelData baseData;
+		@Nonnull
+		private final ImmutableSet<BlockRenderLayer> layers;
 
 		public ConnModelBase(@Nonnull ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
-							 @Nonnull ImmutableMap<String, String> customBase)
+							 @Nonnull ImmutableMap<String, String> customBase, @Nonnull ImmutableSet<BlockRenderLayer> layers)
 		{
-			this(new ModelData(b, ModelData.asJsonObject(customBase), t));
+			this(new ModelData(b, ModelData.asJsonObject(customBase), t), layers);
 		}
 
 		public ConnModelBase(@Nonnull ResourceLocation b)
 		{
-			this(b, ImmutableMap.of(), ImmutableMap.of());
+			this(b, ImmutableMap.of(), ImmutableMap.of(), ALL_LAYERS);
 		}
 
 		public ConnModelBase()
 		{
 			baseData = null;
+			layers = ALL_LAYERS;
 		}
 
-		public ConnModelBase(@Nullable ModelData newData)
+		public ConnModelBase(@Nullable ModelData newData, @Nonnull ImmutableSet<BlockRenderLayer> layers)
 		{
 			this.baseData = newData;
+			this.layers = layers;
 		}
 
 		@Nonnull
@@ -140,18 +150,43 @@ public class ConnLoader implements ICustomModelLoader
 			assert baseData!=null;
 			baseData.attemptToLoad(true);
 			assert baseData.getModel()!=null;
-			return new ConnModelReal(baseData.getModel().bake(state, format, bakedTextureGetter));
+			return new ConnModelReal(baseData.getModel().bake(state, format, bakedTextureGetter), layers);
 		}
 
-		private static final ImmutableSet<String> ownKeys = ImmutableSet.of("base", "custom", "textures");
+		private static final ImmutableSet<String> ownKeys = ImmutableSet.of("base", "custom", "textures", "layers");
 
 		@Nonnull
 		@Override
 		public IModel process(ImmutableMap<String, String> customData)
 		{
-			ModelData newData = ModelData.fromMap(customData, ownKeys, "base");
-			if(!newData.equals(baseData))
-				return new ConnModelBase(newData);
+			JsonObject obj = ModelData.asJsonObject(customData);
+			ModelData newData = ModelData.fromJson(obj, ownKeys, "base");
+			Collection<BlockRenderLayer> layers = ALL_LAYERS;
+			if(obj.has("layers")&&obj.get("layers").isJsonArray())
+			{
+				JsonArray arr = obj.get("layers").getAsJsonArray();
+				layers = new ArrayList<>(arr.size());
+				for(JsonElement ele : arr)
+				{
+					if(ele.isJsonPrimitive()&&ele.getAsJsonPrimitive().isString())
+					{
+						String layerAsStr = ele.getAsString();
+						if(MultiLayerModel.LAYERS_BY_NAME.containsKey(layerAsStr))
+							layers.add(MultiLayerModel.LAYERS_BY_NAME.get(layerAsStr));
+					}
+				}
+			}
+			layers = ImmutableSet.copyOf(layers);
+			if(!newData.equals(baseData)||!layers.equals(this.layers))
+				return new ConnModelBase(newData, (ImmutableSet<BlockRenderLayer>)layers);
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public IModel retexture(ImmutableMap<String, String> textures)
+		{
+			//TODO
 			return this;
 		}
 	}

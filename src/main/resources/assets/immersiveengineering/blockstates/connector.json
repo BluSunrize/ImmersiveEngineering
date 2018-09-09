@@ -133,12 +133,18 @@
     {
       "connector_lv": {
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_lv.obj"
+          "base": "immersiveengineering:block/connector/connector_lv.obj",
+          "layers": [
+            "SOLID"
+          ]
         }
       },
       "relay_lv": {
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_lv.obj"
+          "base": "immersiveengineering:block/connector/connector_lv.obj",
+          "layers": [
+            "SOLID"
+          ]
         },
         "textures": {
           "#immersiveengineering:blocks/connector_connector_lv": "immersiveengineering:blocks/connector_relay_lv"
@@ -146,12 +152,18 @@
       },
       "connector_mv":	{
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_mv.obj"
+          "base": "immersiveengineering:block/connector/connector_mv.obj",
+          "layers": [
+            "SOLID"
+          ]
         }
       },
       "relay_mv":	{
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_mv.obj"
+          "base": "immersiveengineering:block/connector/connector_mv.obj",
+          "layers": [
+            "SOLID"
+          ]
         },
         "textures": {
           "#immersiveengineering:blocks/connector_connector_mv": "immersiveengineering:blocks/connector_relay_mv"
@@ -159,32 +171,43 @@
       },
       "connector_hv": {
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_hv.obj"
+          "base": "immersiveengineering:block/connector/connector_hv.obj",
+          "layers": [
+            "SOLID"
+          ]
         }
       },
       "relay_hv": {
         "custom": {
-          "base": "immersiveengineering:block/multilayer",
-          "custom": {
-            "TRANSLUCENT": {
-              "model": "immersiveengineering:block/connector/relay_hv.obj"
-            }
-          }
+          "base": "immersiveengineering:block/connector/relay_hv.obj",
+          "layers": [
+            "TRANSLUCENT"
+          ]
         }
       },
       "connector_structural": {
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_structural.obj.ie"
+          "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+          "layers": [
+            "SOLID"
+          ]
         }
       },
       "connector_redstone": {
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_redstone.obj.ie"
+          "base": "immersiveengineering:block/connector/connector_redstone.obj.ie",
+          "layers": [
+            "SOLID"
+          ]
         }
       },
       "connector_probe": {
         "custom": {
-          "base": "immersiveengineering:block/connector/connector_probe.obj.ie"
+          "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
+          "layers": [
+            "SOLID",
+            "TRANSLUCENT"
+          ]
         }
       },
       "feedthrough": {

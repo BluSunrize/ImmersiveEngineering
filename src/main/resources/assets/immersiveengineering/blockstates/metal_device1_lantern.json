@@ -6,7 +6,10 @@
 		"model": "immersiveengineering:smartmodel/connector",
 		"custom": {
 			"flip-v": true,
-			"base": "immersiveengineering:block/metal_device/e_lantern.obj"
+          "base": "immersiveengineering:block/metal_device/e_lantern.obj",
+          "layers": [
+            "SOLID"
+          ]
 		}
 	},
 	"variants":

@@ -19,7 +19,10 @@
           "balloon": {
             "model": "immersiveengineering:smartmodel/connector",
             "custom": {
-              "base": "immersiveengineering:block/balloon.obj.ie"
+              "base": "immersiveengineering:block/balloon.obj.ie",
+              "layers": [
+                "SOLID"
+              ]
             }
           }
 		},

@@ -32,6 +32,17 @@ import java.util.function.Function;
 public class MultiLayerModel implements IModel
 {
 	public static MultiLayerModel INSTANCE = new MultiLayerModel();
+
+	public static final Map<String, BlockRenderLayer> LAYERS_BY_NAME;
+
+	static
+	{
+		ImmutableMap.Builder<String, BlockRenderLayer> builder = new Builder<>();
+		for(BlockRenderLayer layer : BlockRenderLayer.values())
+			builder.put(layer.name(), layer);
+		LAYERS_BY_NAME = builder.build();
+	}
+
 	private final Map<BlockRenderLayer, List<ModelData>> subModels;
 
 	public MultiLayerModel(Map<BlockRenderLayer, List<ModelData>> subModels)
@@ -91,17 +102,6 @@ public class MultiLayerModel implements IModel
 		}
 		return new BakedMultiLayerModel(baked);
 	}
-
-	private static final Map<String, BlockRenderLayer> LAYERS_BY_NAME;
-
-	static
-	{
-		ImmutableMap.Builder<String, BlockRenderLayer> builder = new Builder<>();
-		for(BlockRenderLayer layer : BlockRenderLayer.values())
-			builder.put(layer.name(), layer);
-		LAYERS_BY_NAME = builder.build();
-	}
-
 	@Nonnull
 	@Override
 	public IModel process(ImmutableMap<String, String> customData)

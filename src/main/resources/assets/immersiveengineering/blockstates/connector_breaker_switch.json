@@ -6,7 +6,10 @@
       "model": "immersiveengineering:smartmodel/connector",
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/connector/breaker_switch_off.obj.ie"
+        "base": "immersiveengineering:block/connector/breaker_switch_off.obj.ie",
+        "layers": [
+          "SOLID"
+        ]
       }
 	},
 	"variants":

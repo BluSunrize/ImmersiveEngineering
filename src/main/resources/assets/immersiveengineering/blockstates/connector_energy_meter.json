@@ -6,7 +6,10 @@
       "model": "immersiveengineering:smartmodel/connector",
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/connector/e_meter.obj"
+        "base": "immersiveengineering:block/connector/e_meter.obj",
+        "layers": [
+          "SOLID"
+        ]
       }
 	},
 	"variants":
