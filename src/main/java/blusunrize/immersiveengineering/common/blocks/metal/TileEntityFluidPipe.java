@@ -29,6 +29,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -42,6 +43,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -110,6 +112,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public int[] sideConfig = new int[]{0, 0, 0, 0, 0, 0};
 	public ItemStack pipeCover = ItemStack.EMPTY;
 	private byte connections = 0;
+	@Nullable
+	private EnumDyeColor color = null;
 
 	public static Set<DirectionalFluidOutput> getConnectedFluidHandlers(BlockPos node, World world)
 	{
@@ -240,9 +244,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{0, 0, 0, 0, 0, 0};
 		pipeCover = new ItemStack(nbt.getCompoundTag("pipeCover"));
+		EnumDyeColor oldColor = color;
+		if(nbt.hasKey("color", NBT.TAG_INT))
+			color = EnumDyeColor.byMetadata(nbt.getInteger("color"));
+		else
+			color = null;
 		byte oldConns = connections;
 		connections = nbt.getByte("connections");
-		if(world!=null&&world.isRemote&&connections!=oldConns)
+		if(world!=null&&world.isRemote&&(connections!=oldConns||color!=oldColor))
 		{
 			IBlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
@@ -256,6 +265,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(!pipeCover.isEmpty())
 			nbt.setTag("pipeCover", (pipeCover.writeToNBT(new NBTTagCompound())));
 		nbt.setByte("connections", connections);
+		if(color!=null)
+			nbt.setInteger("color", color.getMetadata());
 	}
 
 
@@ -655,6 +666,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		}
 		if(!pipeCover.isEmpty())
 			key.append("scaf:").append(pipeCover);
+		key.append(color);
 		return key.toString();
 	}
 
@@ -992,6 +1004,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&!player.isSneaking())
+		{
 			for(Function<ItemStack, Boolean> func : validPipeCovers)
 				if(func.apply(heldItem)==Boolean.TRUE)
 				{
@@ -1010,6 +1023,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						return true;
 					}
 				}
+			int heldDye = Utils.getDye(heldItem);
+			if(heldDye!=-1)
+			{
+				color = EnumDyeColor.byDyeDamage(heldDye);
+				markContainingBlockForUpdate(null);
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -1024,7 +1045,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			if(box instanceof AdvancedAABB)
 			{
 				if(box.grow(.002).contains(new Vec3d(getPos().getX()+hitX, getPos().getY()+hitY, getPos().getZ()+hitZ)))
-					if(box instanceof AdvancedAABB&&((AdvancedAABB)box).fd!=null)
+					if(((AdvancedAABB)box).fd!=null)
 						fd = ((AdvancedAABB)box).fd;
 			}
 		if(fd!=null)
@@ -1047,5 +1068,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public boolean hasOutputConnection(EnumFacing side)
 	{
 		return side!=null&&sideConfig[side.ordinal()]==0;
+	}
+
+	@Override
+	public int getRenderColour(IBlockState object, String group)
+	{
+		if(color!=null)
+			return color.getColorValue()|(0xff000000);
+		return 0xffffffff;
 	}
 }
