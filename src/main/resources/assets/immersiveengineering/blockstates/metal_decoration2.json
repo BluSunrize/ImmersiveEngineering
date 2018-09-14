@@ -122,6 +122,9 @@
 			},
 			"toolbox": {
 				"model": "immersiveengineering:toolbox.obj"
+			},
+			"steel_slope": {
+				"model": "immersiveengineering:lantern.obj.ie"//TODO
 			}
 		},
 		"facing":

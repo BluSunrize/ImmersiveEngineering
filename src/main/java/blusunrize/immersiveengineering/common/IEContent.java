@@ -608,6 +608,7 @@ public class IEContent
 		registerTile(TileEntityLantern.class);
 		registerTile(TileEntityRazorWire.class);
 		registerTile(TileEntityToolbox.class);
+		registerTile(TileEntitySlope.class);
 
 		registerTile(TileEntityConnectorLV.class);
 		registerTile(TileEntityRelayLV.class);
