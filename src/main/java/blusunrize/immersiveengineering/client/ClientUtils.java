@@ -1576,27 +1576,29 @@ public class ClientUtils
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
+		if(invert)
+			facing = facing.getOpposite();
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 		builder.setQuadOrientation(facing);
 		builder.setTexture(sprite);
 		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[invert?3: 0]);
+		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
 		vId = invert?2: 1;
 		u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[invert?2: 1], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[invert?2: 1]);
+		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
 		vId = invert?1: 2;
 		u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[invert?1: 2], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[invert?1: 2]);
-		vId = invert?1: 3;
+		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
+		vId = invert?0: 3;
 		u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[invert?0: 3], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[invert?0: 3]);
+		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
 		BakedQuad tmp = builder.build();
 		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, format, basePos): tmp;
 	}
 
-	protected static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
+	public static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
 		for(int e = 0; e < format.getElementCount(); e++)
 			switch(format.getElement(e).getUsage())

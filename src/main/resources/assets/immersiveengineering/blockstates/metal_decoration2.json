@@ -92,6 +92,21 @@
 				"gui": { "translation": [ 0,0,0 ], "rotation": [{ "x": 20}, { "y": 45 }], "scale": [ 1.5, 1.5, 1.5 ] }
 			}
 		}],
+      "inventory,type=steel_slope": [
+        {
+          "model": "immersiveengineering:slope.obj.ie",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.5, 0.5, 0.5 ],
+				"firstperson_righthand": {"translation": [ -0.125, 0.125, 0 ]},
+				"firstperson_lefthand": {"translation": [ -0.125, 0.125, 0 ]},
+				"thirdperson_righthand": { "translation": [ -0.0625, 0.125, 0.125 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"thirdperson_lefthand": { "translation": [ -0.0625, -0.125, 0.25 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"fixed": {"scale": [ 2,2,2 ]},
+				"gui": { "translation": [ 0,0,0 ], "rotation": [{ "x": 20}, { "y": 45 }], "scale": [ 1.5, 1.5, 1.5 ] }
+          }
+        }
+      ],
 		"inventory,type=toolbox": [{
 			"custom": {"flip-v": true},
 			"model": "immersiveengineering:toolbox.obj"
@@ -121,10 +136,13 @@
 				"model": "immersiveengineering:smartmodel/conn_razor_wire"
 			},
 			"toolbox": {
-				"model": "immersiveengineering:toolbox.obj"
+              "model": "immersiveengineering:toolbox.obj",
+              "custom": {
+                "flip-v": true
+              }
 			},
 			"steel_slope": {
-				"model": "immersiveengineering:lantern.obj.ie"//TODO
+              "model": "immersiveengineering:slope.obj.ie"
 			}
 		},
 		"facing":

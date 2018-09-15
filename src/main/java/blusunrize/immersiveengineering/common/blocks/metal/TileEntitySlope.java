@@ -8,35 +8,38 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.EnumFacing.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.obj.OBJModel.Normal;
+import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.util.EnumFacing.NORTH;
-import static net.minecraft.util.EnumFacing.UP;
+import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
+import static net.minecraft.util.EnumFacing.*;
 
 public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallback<IBlockState>, INeighbourChangeTile,
 		IDirectionalTile, IBlockBounds
@@ -222,22 +225,102 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 	{
 		float lowerHeight = slopePosition/(float)totalLength;
 		float upperHeight = (slopePosition+1F)/totalLength;
+		double lowerV = 16*lowerHeight;
+		double upperV = 16*upperHeight;
 		TextureAtlasSprite tas = quads.get(0).getSprite();
 		quads = new ArrayList<>();
-		//TODO transform!
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, new Vector3f[]{
-				new Vector3f(0, upperHeight, 0),
-				new Vector3f(0, lowerHeight, 1),
-				new Vector3f(1, lowerHeight, 1),
-				new Vector3f(1, upperHeight, 0)
-		}, UP, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1}, false));
+		Matrix4 mat = new Matrix4(facing);
+		Vector3f[] vertices = {
+				new Vector3f(0, upperHeight, 0),//0
+				new Vector3f(0, lowerHeight, 1),//1
+				new Vector3f(1, lowerHeight, 1),//2
+				new Vector3f(1, upperHeight, 0),//3
+				new Vector3f(0, 0, 0),//4
+				new Vector3f(0, 0, 1),//5
+				new Vector3f(1, 0, 1),//6
+				new Vector3f(1, 0, 0),//7
+		};
+		for(int i = 0; i < vertices.length; i++)
+		{
+			vertices[i] = mat.apply(vertices[i]);
+		}
+		//TOP
+		addCulledQuad(quads, DefaultVertexFormats.ITEM, Arrays.copyOf(vertices, 4),
+				UP, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
+		//BOTTOM
+		addCulledQuad(quads, DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 7, 6, 5, 4),
+				DOWN, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
+		//SIDES
+		addSides(quads, vertices, tas, lowerV, upperV, false);
+		addSides(quads, vertices, tas, lowerV, upperV, true);
+		if(isAtEnd(true))
+			//HIGHER END
+			addCulledQuad(quads, DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 0, 3, 7, 4),
+					NORTH, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
+
 		return quads;
+	}
+
+	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vector3f[] vertices, EnumFacing side,
+							   TextureAtlasSprite tas, double[] uvs, float[] alpha)
+	{
+		quads.add(ClientUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, false));
+		quads.add(ClientUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, true));
+	}
+
+	private void addSides(List<BakedQuad> quads, Vector3f[] vertices, TextureAtlasSprite tas, double lowerV,
+						  double upperV, boolean invert)
+	{
+		quads.add(createSide(DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 5, 1, 0, 4),
+				WEST, tas, new double[]{0, 0, 16}, lowerV, upperV, invert));
+		quads.add(createSide(DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 7, 3, 2, 6),
+				EAST, tas, new double[]{0, 0, 16}, upperV, lowerV, invert));
+	}
+
+	@SideOnly(Side.CLIENT)
+	private BakedQuad createSide(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite,
+								 double[] uvs, double leftV, double rightV, boolean invert)
+	{
+		facing = Utils.rotateFacingTowardsDir(facing, this.facing);
+		if(invert)
+			facing = facing.getOpposite();
+		float[] colour = {1, 1, 1, 1};
+		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
+		builder.setQuadOrientation(facing);
+		builder.setTexture(sprite);
+		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(),
+				facing.getDirectionVec().getZ());
+		int vertexId = invert?3: 0;
+		int u = vertexId > 1?2: 0;
+		putVertexData(format, builder, vertices[vertexId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
+		vertexId = invert?2: 1;
+		u = vertexId > 1?2: 0;
+		double v = invert?rightV: leftV;
+		putVertexData(format, builder, vertices[vertexId], faceNormal, uvs[u], v, sprite, colour, 1);
+		vertexId = invert?1: 2;
+		u = vertexId > 1?2: 0;
+		v = invert?leftV: rightV;
+		putVertexData(format, builder, vertices[vertexId], faceNormal, uvs[u], v, sprite, colour, 1);
+		vertexId = invert?0: 3;
+		u = vertexId > 1?2: 0;
+		putVertexData(format, builder, vertices[vertexId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
+		return builder.build();
+	}
+
+	private Vector3f[] getArrayByIndices(Vector3f[] in, int... indices)
+	{
+		Vector3f[] ret = new Vector3f[indices.length];
+		for(int i = 0; i < indices.length; i++)
+		{
+			ret[i] = in[indices[i]];
+		}
+		return ret;
 	}
 
 	@Override
 	public String getCacheKey(IBlockState object)
 	{
-		return totalLength+","+slopePosition;
+		return totalLength+","+slopePosition+","+facing.name();
 	}
 
 	@Override
