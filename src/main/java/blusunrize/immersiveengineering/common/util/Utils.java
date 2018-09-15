@@ -1732,6 +1732,51 @@ public class Utils
 		return state;
 	}
 
+	public static AxisAlignedBB transformAABB(AxisAlignedBB original, EnumFacing facing)
+	{
+		double minX = 0, minZ = 0, maxX = 0, maxZ = 0;
+		EnumFacing right = facing.rotateY();
+		switch(facing)
+		{
+			case NORTH:
+				minZ = original.minZ;
+				maxZ = original.maxZ;
+				break;
+			case SOUTH:
+				minZ = 1-original.minZ;
+				maxZ = 1-original.maxZ;
+				break;
+			case WEST:
+				minX = original.minZ;
+				maxX = original.maxZ;
+				break;
+			case EAST:
+				minX = 1-original.minZ;
+				maxX = 1-original.maxZ;
+				break;
+		}
+		switch(right)
+		{
+			case EAST:
+				minX = original.minX;
+				maxX = original.maxX;
+				break;
+			case WEST:
+				minX = 1-original.minX;
+				maxX = 1-original.maxX;
+				break;
+			case SOUTH:
+				minZ = 1-original.minX;
+				maxZ = 1-original.maxX;
+				break;
+			case NORTH:
+				minZ = original.minX;
+				maxZ = original.maxX;
+				break;
+		}
+		return new AxisAlignedBB(minX, original.minY, minZ, maxX, original.maxY, maxZ);
+	}
+
 	public static IBlockAccess getSingleBlockWorldAccess(IBlockState state)
 	{
 		return new SingleBlockAcess(state);

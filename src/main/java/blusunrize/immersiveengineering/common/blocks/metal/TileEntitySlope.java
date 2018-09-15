@@ -10,23 +10,28 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fml.relauncher.Side;
@@ -42,7 +47,7 @@ import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
 import static net.minecraft.util.EnumFacing.*;
 
 public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallback<IBlockState>, INeighbourChangeTile,
-		IDirectionalTile, IBlockBounds
+		IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds
 {
 	private int totalLength = 1;
 	private int slopePosition = 0;
@@ -57,6 +62,7 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 		{
 			IBlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
+			bounds = null;
 		}
 		facing = EnumFacing.VALUES[nbt.getInteger("facing")];
 	}
@@ -101,12 +107,14 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 				other.totalLength = toEnd-1;
 				if (positive)
 					other.slopePosition -= slopePosition+1;
+				other.bounds = null;
 				updateNoNeighbours(other.pos);
 			});
 			forEachSlopeBlockBeyond(!positive, true, true, other->{
 				other.totalLength = totalLength-toEnd;
 				if (!positive)
 					other.slopePosition -= this.slopePosition;
+				other.bounds = null;
 				updateNoNeighbours(other.pos);
 			});
 
@@ -119,14 +127,17 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 				other.totalLength = totalLength;
 				if (positive)
 					other.slopePosition += oldLength;
+				other.bounds = null;
 				updateNoNeighbours(other.pos);
 			});
 			forEachSlopeBlockBeyond(!positive, false, false, other->{
 				other.totalLength = totalLength;
 				if (!positive)
 					other.slopePosition += totalLength-oldLength;
+				other.bounds = null;
 				updateNoNeighbours(other.pos);
 			});
+			bounds = null;
 		}
 		updateNoNeighbours(pos);
 	}
@@ -191,6 +202,7 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 		this.facing = facing;
 		totalLength = 1;
 		slopePosition = 0;
+		bounds = null;
 		if (world!=null)
 			world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
 	}
@@ -219,6 +231,40 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 		return axis.getAxis()==Axis.Y;
 	}
 
+	private List<AxisAlignedBB> bounds = null;
+
+	@Override
+	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	{
+		return getBounds();
+	}
+
+	@Override
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	{
+		return false;
+	}
+
+	@Override
+	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	{
+		return getBounds();
+	}
+
+	private List<AxisAlignedBB> getBounds()
+	{
+		if(bounds==null)
+		{
+			double lowerH = (slopePosition+.5)/totalLength;
+			double upperH = (slopePosition+1.)/totalLength;
+			bounds = ImmutableList.of(
+					Utils.transformAABB(new AxisAlignedBB(0, 0, 0, 1, lowerH, 1), facing).offset(pos),
+					Utils.transformAABB(new AxisAlignedBB(0, lowerH, 0, 1, upperH, .5), facing).offset(pos)
+			);
+		}
+		return bounds;
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
@@ -241,9 +287,7 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 				new Vector3f(1, 0, 0),//7
 		};
 		for(int i = 0; i < vertices.length; i++)
-		{
 			vertices[i] = mat.apply(vertices[i]);
-		}
 		//TOP
 		addCulledQuad(quads, DefaultVertexFormats.ITEM, Arrays.copyOf(vertices, 4),
 				UP, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
@@ -261,16 +305,34 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 		return quads;
 	}
 
+	private static final Matrix4 SHRINK;
+
+	static
+	{
+		SHRINK = new Matrix4();
+		SHRINK.translate(.5, .5, .5);
+		SHRINK.scale(.999, .999, .999);
+		SHRINK.translate(-.5, -.5, -.5);
+	}
+
 	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vector3f[] vertices, EnumFacing side,
 							   TextureAtlasSprite tas, double[] uvs, float[] alpha)
 	{
+		side = Utils.rotateFacingTowardsDir(side, this.facing);
 		quads.add(ClientUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, false));
+		for(int i = 0; i < vertices.length; i++)
+			vertices[i] = SHRINK.apply(vertices[i]);
 		quads.add(ClientUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, true));
 	}
 
 	private void addSides(List<BakedQuad> quads, Vector3f[] vertices, TextureAtlasSprite tas, double lowerV,
 						  double upperV, boolean invert)
 	{
+		if(invert)
+		{
+			for(int i = 0; i < vertices.length; i++)
+				vertices[i] = SHRINK.apply(vertices[i]);
+		}
 		quads.add(createSide(DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 5, 1, 0, 4),
 				WEST, tas, new double[]{0, 0, 16}, lowerV, upperV, invert));
 		quads.add(createSide(DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 7, 3, 2, 6),
@@ -326,9 +388,8 @@ public class TileEntitySlope extends TileEntityIEBase implements IOBJModelCallba
 	@Override
 	public float[] getBlockBounds()
 	{
-		float height = (.5F+slopePosition)/totalLength;
 		return new float[]{
-				0, 0, 0, 1, height, 1
+				0, 0, 0, 1, (slopePosition+.5F)/totalLength, 1
 		};
 	}
 }
