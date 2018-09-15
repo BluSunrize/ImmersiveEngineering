@@ -22,7 +22,8 @@ public enum BlockTypes_MetalDecoration2 implements IStringSerializable, BlockIEB
 	LANTERN,
 	RAZOR_WIRE,
 	TOOLBOX,
-	STEEL_SLOPE;
+	STEEL_SLOPE,
+	ALU_SLOPE;
 
 	@Override
 	public String getName()

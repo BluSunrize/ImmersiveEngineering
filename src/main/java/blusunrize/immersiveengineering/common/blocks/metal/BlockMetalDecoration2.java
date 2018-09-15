@@ -46,6 +46,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		this.setAllNotNormalBlock();
 		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.CUTOUT, BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.STEEL_SLOPE.getMeta(), BlockRenderLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.ALU_SLOPE.getMeta(), BlockRenderLayer.CUTOUT);
 		lightOpacity = 0;
 		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.STEEL_POST.getMeta(), EnumPushReaction.BLOCK);
 		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta(), EnumPushReaction.BLOCK);
@@ -173,7 +174,8 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 			case TOOLBOX:
 				return new TileEntityToolbox();
 			case STEEL_SLOPE:
-				return new TileEntitySlope();
+			case ALU_SLOPE:
+				return new TileEntityStructuralArm();
 		}
 		return null;
 	}
