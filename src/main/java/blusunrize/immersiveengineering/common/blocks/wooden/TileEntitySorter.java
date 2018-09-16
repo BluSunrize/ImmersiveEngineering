@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -53,73 +52,23 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		if(!world.isRemote&&!isRouting)
 		{
 			this.isRouting = true;
-			Integer[][] validOutputs = getValidOutputs(inputSide, stack, true, false);
+			EnumFacing[][] validOutputs = getValidOutputs(inputSide, stack);
+			stack = doInsert(stack, validOutputs[0], simulate);
+			stack = doInsert(stack, validOutputs[1], simulate);
+			this.isRouting = false;
+		}
+		return stack;
+	}
 
-			if(validOutputs[0].length > 0)
-			{
-				int rand = Utils.RAND.nextInt(validOutputs[0].length);
-				stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[0][rand]), simulate);
-				if(!stack.isEmpty())
-					for(int i = 0; i < validOutputs[0].length; i++)
-						if(i!=rand)
-						{
-							stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[0][i]), simulate);
-							if(stack.isEmpty())
-							{
-								isRouting = false;
-								return ItemStack.EMPTY;
-							}
-						}
-
-			}
-			if(!stack.isEmpty()&&validOutputs[1].length > 0)
-			{
-				if(!simulate)
-				{
-					int rand = Utils.RAND.nextInt(validOutputs[1].length);
-					EnumFacing fd = EnumFacing.getFront(validOutputs[1][rand]);
-					EntityItem ei = new EntityItem(world, getPos().getX()+.5+fd.getFrontOffsetX(), getPos().getY()+.5+fd.getFrontOffsetY(), getPos().getZ()+.5+fd.getFrontOffsetZ(), stack.copy());
-					ei.motionX = (0.075F*fd.getFrontOffsetX());
-					ei.motionY = 0.025000000372529D;
-					ei.motionZ = (0.075F*fd.getFrontOffsetZ());
-					this.world.spawnEntity(ei);
-				}
-				isRouting = false;
-				return ItemStack.EMPTY;
-			}
-			if(validOutputs[2].length > 0)
-			{
-				int rand = Utils.RAND.nextInt(validOutputs[2].length);
-				stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[2][rand]), simulate);
-				if(!stack.isEmpty())
-					for(int i = 0; i < validOutputs[2].length; i++)
-						if(i!=rand)
-						{
-							stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[2][i]), simulate);
-							if(stack.isEmpty())
-							{
-								isRouting = false;
-								return ItemStack.EMPTY;
-							}
-						}
-
-			}
-			if(!stack.isEmpty()&&validOutputs[3].length > 0)
-			{
-				if(!simulate)
-				{
-					int rand = Utils.RAND.nextInt(validOutputs[3].length);
-					EnumFacing fd = EnumFacing.getFront(validOutputs[1][rand]);
-					EntityItem ei = new EntityItem(world, getPos().getX()+.5+fd.getFrontOffsetX(), getPos().getY()+.5+fd.getFrontOffsetY(), getPos().getZ()+.5+fd.getFrontOffsetZ(), stack.copy());
-					ei.motionX = (0.075F*fd.getFrontOffsetX());
-					ei.motionY = 0.025000000372529D;
-					ei.motionZ = (0.075F*fd.getFrontOffsetZ());
-					this.world.spawnEntity(ei);
-				}
-				isRouting = false;
-				return ItemStack.EMPTY;
-			}
-			isRouting = false;
+	private ItemStack doInsert(ItemStack stack, EnumFacing[] sides, boolean simulate)
+	{
+		int lengthFiltered = sides.length;
+		while(lengthFiltered > 0 && !stack.isEmpty())
+		{
+			int rand = Utils.RAND.nextInt(lengthFiltered);
+			stack = this.outputItemToInv(stack, sides[rand], simulate);
+			sides[rand] = sides[lengthFiltered-1];
+			lengthFiltered--;
 		}
 		return stack;
 	}
@@ -170,41 +119,25 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			this.sideFilter = message.getIntArray("sideConfig");
 	}
 
-	public Integer[][] getValidOutputs(EnumFacing inputSide, ItemStack stack, boolean allowUnmapped, boolean allowThrowing)
+	public EnumFacing[][] getValidOutputs(EnumFacing inputSide, ItemStack stack)
 	{
 		if(stack.isEmpty())
-			return new Integer[][]{{}, {}, {}, {}};
-		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>(6);
-		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>(6);
-		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>(6);
-		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>(6);
+			return new EnumFacing[][]{{}, {}, {}, {}};
+		List<EnumFacing> validFiltered = new ArrayList<>(6);
+		List<EnumFacing> validUnfiltered = new ArrayList<>(6);
 		for(EnumFacing side : EnumFacing.values())
 			if(side!=inputSide)
 			{
-				EnumFilterResult result = checkStackAgainstFilter(stack, side, allowUnmapped);
+				EnumFilterResult result = checkStackAgainstFilter(stack, side);
 				if(result==EnumFilterResult.VALID_FILTERED)
-				{
-					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
-					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
-						validFilteredInvOuts.add(side.ordinal());
-					else if(allowThrowing)
-						validFilteredEntityOuts.add(side.ordinal());
-				}
+						validFiltered.add(side);
 				else if(result==EnumFilterResult.VALID_UNFILTERED)
-				{
-					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
-					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
-						validUnfilteredInvOuts.add(side.ordinal());
-					else if(allowThrowing)
-						validUnfilteredEntityOuts.add(side.ordinal());
-				}
+						validUnfiltered.add(side);
 			}
 
-		return new Integer[][]{
-				validFilteredInvOuts.toArray(new Integer[validFilteredInvOuts.size()]),
-				validFilteredEntityOuts.toArray(new Integer[validFilteredEntityOuts.size()]),
-				validUnfilteredInvOuts.toArray(new Integer[validUnfilteredInvOuts.size()]),
-				validUnfilteredEntityOuts.toArray(new Integer[validUnfilteredEntityOuts.size()])
+		return new EnumFacing[][]{
+				validFiltered.toArray(new EnumFacing[0]),
+				validUnfiltered.toArray(new EnumFacing[0])
 		};
 	}
 
@@ -262,10 +195,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	/**
 	 * @param stack         the stack to check
 	 * @param side          the side the filter is on
-	 * @param allowUnmapped whether unmapped results are allowed
 	 * @return If the stack is permitted by the given filter
 	 */
-	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, EnumFacing side, boolean allowUnmapped)
+	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, EnumFacing side)
 	{
 		boolean unmapped = true;
 		for(ItemStack filterStack : filter.filters[side.ordinal()])
@@ -275,7 +207,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 				if(compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doOredict(side.ordinal()), doNBT(side.ordinal())))
 					return EnumFilterResult.VALID_FILTERED;
 			}
-		if(allowUnmapped&&unmapped)
+		if(unmapped)
 			return EnumFilterResult.VALID_UNFILTERED;
 		return EnumFilterResult.INVALID;
 	}

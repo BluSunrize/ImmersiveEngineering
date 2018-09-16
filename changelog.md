@@ -4,6 +4,7 @@
  - Re-Added structural arms (Malte)
  - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
  - Fixed arc recycling calculations failing in rare cases (Malte)
+ - Fixed lag with long chains of routers
 
 #####Version 0.12-85 - BUILT
 - Re-Added Thaumcraft compat (BluSunrize)
