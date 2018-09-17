@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -25,6 +26,8 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author BluSunrize - 02.03.2017
@@ -34,20 +37,40 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
 	//	public static final int filterSlotsPerSide = 8;
 	public FluidStack[][] filters = new FluidStack[6][8];
-	private boolean isRouting = false;
+	/**
+	 * The positions of the routers that have been used in the current "outermost" `routeFluid` call.
+	 * Necessary to stop "blocks" of routers (and similar setups) from causing massive lag (using just a boolean
+	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
+	 */
+	private static Set<BlockPos> usedRouters = null;
 
 	public int routeFluid(EnumFacing inputSide, FluidStack stack, boolean doFill)
 	{
 		int ret = 0;
-		if(!world.isRemote&&!isRouting)
+		if(!world.isRemote&&canRoute())
 		{
-			this.isRouting = true;
+			boolean first = startRouting();
 			EnumFacing[][] validOutputs = getValidOutputs(inputSide, stack);
 			ret += doInsert(stack, validOutputs[0], doFill);
 			ret += doInsert(stack, validOutputs[1], doFill);
-			this.isRouting = false;
+			if(first)
+				usedRouters = null;
 		}
 		return ret;
+	}
+
+	private boolean canRoute()
+	{
+		return usedRouters==null||!usedRouters.contains(pos);
+	}
+
+	private boolean startRouting()
+	{
+		boolean first = usedRouters==null;
+		if(first)
+			usedRouters = new HashSet<>();
+		usedRouters.add(pos);
+		return first;
 	}
 
 	private int doInsert(FluidStack stack, EnumFacing[] sides, boolean doFill)

@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -38,9 +39,13 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	public SorterInventory filter;
 	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
 	public static final int filterSlotsPerSide = 8;
-	private boolean isRouting = false;
-
-
+	/**
+	 * The positions of the routers that have been used in the current "outermost" `routeItem` call.
+	 * Necessary to stop "blocks" of routers (and similar setups) from causing massive lag (using just a boolean
+	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
+	 */
+	private static Set<BlockPos> routed = null;
+	
 	public TileEntitySorter()
 	{
 		filter = new SorterInventory(this);
@@ -49,15 +54,30 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 	public ItemStack routeItem(EnumFacing inputSide, ItemStack stack, boolean simulate)
 	{
-		if(!world.isRemote&&!isRouting)
+		if(!world.isRemote&&canRoute())
 		{
-			this.isRouting = true;
+			boolean first = startRouting();
 			EnumFacing[][] validOutputs = getValidOutputs(inputSide, stack);
 			stack = doInsert(stack, validOutputs[0], simulate);
 			stack = doInsert(stack, validOutputs[1], simulate);
-			this.isRouting = false;
+			if(first)
+				routed = null;
 		}
 		return stack;
+	}
+
+	private boolean canRoute()
+	{
+		return routed==null||!routed.contains(pos);
+	}
+
+	private boolean startRouting()
+	{
+		boolean first = routed==null;
+		if(first)
+			routed = new HashSet<>();
+		routed.add(pos);
+		return first;
 	}
 
 	private ItemStack doInsert(ItemStack stack, EnumFacing[] sides, boolean simulate)
@@ -143,9 +163,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 	public ItemStack pullItem(EnumFacing outputSide, int amount, boolean simulate)
 	{
-		if(!world.isRemote&&!isRouting)
+		if(!world.isRemote&&canRoute())
 		{
-			isRouting = true;
+			boolean first = startRouting();
 			for(EnumFacing side : EnumFacing.values())
 				if(side!=outputSide)
 				{
@@ -163,14 +183,16 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 									concatFilter = this.concatFilters(outputSide, side);
 								if(concatFilter.test(extractItem))
 								{
-									isRouting = false;
+									if(first)
+										routed = null;
 									return extractItem;
 								}
 							}
 						}
 					}
 				}
-			isRouting = false;
+			if(first)
+				routed = null;
 		}
 		return ItemStack.EMPTY;
 	}
