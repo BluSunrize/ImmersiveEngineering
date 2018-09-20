@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 public class GuiFluidSorter extends GuiIEContainerBase
 {
-	TileEntityFluidSorter tile;
+	public TileEntityFluidSorter tile;
 	InventoryPlayer playerInventory;
 
 	public GuiFluidSorter(InventoryPlayer inventoryPlayer, TileEntityFluidSorter tile)
@@ -89,13 +89,7 @@ public class GuiFluidSorter extends GuiIEContainerBase
 				if(mouseX > x&&mouseX < x+16&&mouseY > y&&mouseY < y+16)
 				{
 					FluidStack fs = FluidUtil.getFluidContained(playerInventory.getItemStack());
-					tile.filters[side][i] = fs;
-					NBTTagCompound tag = new NBTTagCompound();
-					tag.setInteger("filter_side", side);
-					tag.setInteger("filter_slot", i);
-					if(fs!=null)
-						tag.setTag("filter", fs.writeToNBT(new NBTTagCompound()));
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+					setFluidInSlot(side, i, fs);
 				}
 			}
 	}
@@ -159,5 +153,16 @@ public class GuiFluidSorter extends GuiIEContainerBase
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 			this.initGui();
 		}
+	}
+
+	public void setFluidInSlot(int side, int slot, FluidStack fluid)
+	{
+		tile.filters[side][slot] = fluid;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("filter_side", side);
+		tag.setInteger("filter_slot", slot);
+		if(fluid!=null)
+			tag.setTag("filter", fluid.writeToNBT(new NBTTagCompound()));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 	}
 }

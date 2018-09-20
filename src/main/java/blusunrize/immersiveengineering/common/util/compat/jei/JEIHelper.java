@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.client.gui.GuiFluidSorter;
+import blusunrize.immersiveengineering.client.gui.GuiIEContainerBase;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
@@ -42,7 +44,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -59,25 +60,15 @@ public class JEIHelper implements IModPlugin
 	public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry)
 	{
 		//NBT Ignorance
-		subtypeRegistry.registerSubtypeInterpreter(Item.getItemFromBlock(IEContent.blockConveyor), new ISubtypeInterpreter()
-		{
-			@Override
-			public String apply(ItemStack itemStack)
-			{
-				if(!itemStack.isEmpty()&&ItemNBTHelper.hasKey(itemStack, "conveyorType"))
-					return ItemNBTHelper.getString(itemStack, "conveyorType");
-				return NONE;
-			}
+		subtypeRegistry.registerSubtypeInterpreter(Item.getItemFromBlock(IEContent.blockConveyor), itemStack -> {
+			if(!itemStack.isEmpty()&&ItemNBTHelper.hasKey(itemStack, "conveyorType"))
+				return ItemNBTHelper.getString(itemStack, "conveyorType");
+			return ISubtypeInterpreter.NONE;
 		});
-		subtypeRegistry.registerSubtypeInterpreter(IEContent.itemBullet, new ISubtypeInterpreter()
-		{
-			@Override
-			public String apply(@Nonnull ItemStack itemStack)
-			{
-				if(!itemStack.isEmpty()&&itemStack.getMetadata()==2&&ItemNBTHelper.hasKey(itemStack, "bullet"))
-					return ItemNBTHelper.getString(itemStack, "bullet");
-				return NONE;
-			}
+		subtypeRegistry.registerSubtypeInterpreter(IEContent.itemBullet, itemStack -> {
+			if(!itemStack.isEmpty()&&itemStack.getMetadata()==2&&ItemNBTHelper.hasKey(itemStack, "bullet"))
+				return ItemNBTHelper.getString(itemStack, "bullet");
+			return ISubtypeInterpreter.NONE;
 		});
 	}
 
@@ -109,7 +100,7 @@ public class JEIHelper implements IModPlugin
 		categories.put(ArcRecyclingRecipe.class, ArcFurnaceRecipeCategory.getRecycling(guiHelper));
 		categories.put(BottlingMachineRecipe.class, new BottlingMachineRecipeCategory(guiHelper));
 		categories.put(MixerRecipe.class, new MixerRecipeCategory(guiHelper));
-		registry.addRecipeCategories(categories.values().toArray(new IRecipeCategory[categories.size()]));
+		registry.addRecipeCategories(categories.values().toArray(new IRecipeCategory[0]));
 	}
 
 	@Override
@@ -123,6 +114,8 @@ public class JEIHelper implements IModPlugin
 		jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(IEContent.blockMetalMultiblock, 1, OreDictionary.WILDCARD_VALUE));
 
 		modRegistry.getRecipeTransferRegistry().addRecipeTransferHandler(new AssemblerRecipeTransferHandler(), VanillaRecipeCategoryUid.CRAFTING);
+		modRegistry.addGhostIngredientHandler(GuiIEContainerBase.class, new IEGhostItemHandler());
+		modRegistry.addGhostIngredientHandler(GuiFluidSorter.class, new FluidSorterGhostHandler());
 		modRegistry.addRecipeCatalyst(new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ASSEMBLER.getMeta()), VanillaRecipeCategoryUid.CRAFTING);
 
 		for(IERecipeCategory<Object, IRecipeWrapper> cat : categories.values())
@@ -133,22 +126,22 @@ public class JEIHelper implements IModPlugin
 //		modRegistry.addRecipeHandlers(categories);
 
 		IELogger.info("Adding recipes to JEI!!");
-		modRegistry.addRecipes(new ArrayList(CokeOvenRecipe.recipeList), "ie.cokeoven");
-		modRegistry.addRecipes(new ArrayList(AlloyRecipe.recipeList), "ie.alloysmelter");
-		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.recipeList), "ie.blastfurnace");
-		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.blastFuels), "ie.blastfurnace.fuel");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(MetalPressRecipe.recipeList.values(), input -> input.listInJEI())), "ie.metalPress");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(CrusherRecipe.recipeList, input -> input.listInJEI())), "ie.crusher");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(BlueprintCraftingRecipe.recipeList.values(), input -> input.listInJEI())), "ie.workbench");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(SqueezerRecipe.recipeList, input -> input.listInJEI())), "ie.squeezer");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(FermenterRecipe.recipeList, input -> input.listInJEI())), "ie.fermenter");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(RefineryRecipe.recipeList, input -> input.listInJEI())), "ie.refinery");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> input instanceof ArcRecyclingRecipe&&input.listInJEI())), "ie.arcFurnace.recycling");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> {
+		modRegistry.addRecipes(new ArrayList<>(CokeOvenRecipe.recipeList), "ie.cokeoven");
+		modRegistry.addRecipes(new ArrayList<>(AlloyRecipe.recipeList), "ie.alloysmelter");
+		modRegistry.addRecipes(new ArrayList<>(BlastFurnaceRecipe.recipeList), "ie.blastfurnace");
+		modRegistry.addRecipes(new ArrayList<>(BlastFurnaceRecipe.blastFuels), "ie.blastfurnace.fuel");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(MetalPressRecipe.recipeList.values(), IJEIRecipe::listInJEI)), "ie.metalPress");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.crusher");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(BlueprintCraftingRecipe.recipeList.values(), IJEIRecipe::listInJEI)), "ie.workbench");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(SqueezerRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.squeezer");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(FermenterRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.fermenter");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(RefineryRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.refinery");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> input instanceof ArcRecyclingRecipe&&input.listInJEI())), "ie.arcFurnace.recycling");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> {
 			return !(input instanceof ArcRecyclingRecipe)&&input.listInJEI();
 		})), "ie.arcFurnace");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(BottlingMachineRecipe.recipeList, input -> input.listInJEI())), "ie.bottlingMachine");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(MixerRecipe.recipeList, input -> input.listInJEI())), "ie.mixer");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(BottlingMachineRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.bottlingMachine");
+		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(MixerRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.mixer");
 	}
 
 	@Override

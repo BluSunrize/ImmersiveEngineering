@@ -9,21 +9,20 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerSorter extends Container
+import javax.annotation.Nonnull;
+
+public class ContainerSorter extends ContainerIEBase<TileEntitySorter>
 {
-	TileEntitySorter tile;
 	int slotCount;
 
 	public ContainerSorter(InventoryPlayer inventoryPlayer, TileEntitySorter tile)
 	{
+		super(inventoryPlayer, tile);
 		this.tile = tile;
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < TileEntitySorter.filterSlotsPerSide; i++)
@@ -43,57 +42,12 @@ public class ContainerSorter extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
 		return tile!=null&&tile.getWorld().getTileEntity(tile.getPos())==tile&&player.getDistanceSq(tile.getPos().getX()+.5, tile.getPos().getY()+.5, tile.getPos().getZ()+.5) <= 64;
 	}
 
-	@Override
-	public ItemStack slotClick(int id, int button, ClickType modifier, EntityPlayer player)
-	{
-		Slot slot = id < 0?null: this.inventorySlots.get(id);
-		if(!(slot instanceof IESlot.Ghost))
-			return super.slotClick(id, button, modifier, player);
-
-		ItemStack stack = ItemStack.EMPTY;
-		ItemStack stackSlot = slot.getStack();
-		if(!stackSlot.isEmpty())
-			stack = stackSlot.copy();
-
-		if(button==2)
-			slot.putStack(ItemStack.EMPTY);
-		else if(button==0||button==1)
-		{
-			InventoryPlayer playerInv = player.inventory;
-			ItemStack stackHeld = playerInv.getItemStack();
-			if(stackSlot.isEmpty())
-			{
-				if(!stackHeld.isEmpty()&&slot.isItemValid(stackHeld))
-				{
-					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
-				}
-			}
-			else if(stackHeld.isEmpty())
-			{
-				slot.putStack(ItemStack.EMPTY);
-			}
-			else if(slot.isItemValid(stackHeld))
-			{
-				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
-			}
-		}
-		else if(button==5)
-		{
-			InventoryPlayer playerInv = player.inventory;
-			ItemStack stackHeld = playerInv.getItemStack();
-			if(!slot.getHasStack())
-			{
-				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
-			}
-		}
-		return stack;
-	}
-
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{

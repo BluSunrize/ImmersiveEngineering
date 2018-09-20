@@ -52,6 +52,7 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -92,6 +93,7 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -347,6 +349,23 @@ public class IEContent
 
 		registerOres();
 	}
+
+	@SubscribeEvent
+	public static void missingItems(RegistryEvent.MissingMappings<Item> event)
+	{
+		Set<String> knownMissing = ImmutableSet.of(
+				"fluidethanol",
+				"fluidconcrete",
+				"fluidbiodiesel",
+				"fluidplantoil",
+				"fluidcreosote"
+		);
+		for(Mapping<Item> missing : event.getMappings())
+			if(knownMissing.contains(missing.key.getResourcePath()))
+				missing.ignore();
+	}
+
+
 
 	@SubscribeEvent
 	public static void registerPotions(RegistryEvent.Register<Potion> event)
