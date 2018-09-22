@@ -3,6 +3,7 @@
  - Re-Added razor wires hurting players trying to break them without wirecutters (Malte)
  - Re-Added coloured pipes (Malte)
  - Re-Added structural arms (Malte)
+ - Removed the additional http request for the changelog in the manual (Malte)
  - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
  - Fixed arc recycling calculations failing in rare cases (Malte)
  - Fixed lag with certain setups of routers (Malte)

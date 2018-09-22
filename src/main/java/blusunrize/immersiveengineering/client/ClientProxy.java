@@ -76,6 +76,9 @@ import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -97,6 +100,7 @@ import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -117,6 +121,9 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.common.ForgeVersion.CheckResult;
+import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
@@ -125,16 +132,20 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -1109,51 +1120,29 @@ public class ClientProxy extends CommonProxy
 		fr.setUnicodeFlag(true);
 		try
 		{
-			URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.md");
-			Scanner s = new Scanner(url.openStream());
-			//sorted map to keep the chronological order
-			Map<String, String> entries = new LinkedHashMap<>();
-			String readVersion = null;
-			String readLog = "";
-			String currVersion = ImmersiveEngineering.VERSION;
-			boolean readVersionBuilt = false;
-			while(s.hasNextLine())
+			SortedMap<ComparableVersion, Pair<String, IManualPage[]>> allChanges = new TreeMap<>(Comparator.reverseOrder());
+			ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
+			//Included changelog
+			IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
+					"changelog.json"));
+			JsonElement ele = new JsonParser().parse(new InputStreamReader(resource.getInputStream()));
+			JsonObject upToCurrent = ele.getAsJsonObject();
+			for(Entry<String, JsonElement> entry : upToCurrent.entrySet())
 			{
-				String line = s.nextLine();
-				if(line.startsWith("#####"))
-				{
-					//add read log to map
-					addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
-					//parse new version
-					readVersion = "";
-					readLog = "";
-					for(int i = line.indexOf(' ')+1; i < line.length()&&line.charAt(i)!=' '; i++)
-						readVersion += line.charAt(i);
-					readVersionBuilt = line.endsWith("BUILT");
-				}
-				else
-				{
-					readLog += line+"\n";
-				}
+				ComparableVersion version = new ComparableVersion(entry.getKey());
+				Pair<String, IManualPage[]> manualEntry = addVersionToManual(currIEVer, version,
+						entry.getValue().getAsString(), false);
+				if(manualEntry!=null)
+					allChanges.put(version, manualEntry);
 			}
-			s.close();
-			addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
-			//add to manual
-			for(Entry<String, String> e : entries.entrySet())
-			{
-				List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(e.getValue().replace("\t", "  "), 120);
-				final int LINES_PER_PAGE = 16;
-				int pageCount = l.size()/LINES_PER_PAGE+(l.size()%LINES_PER_PAGE==0?0: 1);
-				ManualPages.Text[] pages = new ManualPages.Text[pageCount];
-				for(int i = 0; i < pageCount; i++)
-				{
-					String nextPage = "";
-					for(int j = LINES_PER_PAGE*i; j < l.size()&&j < (i+1)*LINES_PER_PAGE; j++)
-						nextPage += l.get(j)+"\n";
-					pages[i] = new ManualPages.Text(ManualHelper.getManual(), nextPage);
-				}
-				ManualHelper.addEntry(e.getKey(), ManualHelper.CAT_UPDATE, pages);
-			}
+			//Changelog from update JSON
+			CheckResult result = ForgeVersion.getResult(Loader.instance().activeModContainer());
+			if(result.status!=Status.PENDING&&result.status!=Status.FAILED)
+				for(Entry<ComparableVersion, String> e : result.changes.entrySet())
+					allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
+
+			for(Pair<String, IManualPage[]> entry : allChanges.values())
+				ManualHelper.addEntry(entry.getLeft(), ManualHelper.CAT_UPDATE, entry.getRight());
 		} catch(IOException e)
 		{
 			e.printStackTrace();
@@ -1161,50 +1150,33 @@ public class ClientProxy extends CommonProxy
 		fr.setUnicodeFlag(isUnicode);
 	}
 
-	private int compareVersions(String vA, String vB)
+	private Pair<String, IManualPage[]> addVersionToManual(ComparableVersion currVer, ComparableVersion version, String changes, boolean ahead)
 	{
-		String[] vPartsA = vA.split("[\\D]");
-		String[] vPartsB = vB.split("[\\D]");
-		if(vPartsA.length==0&&vPartsB.length==0)
-			return vA.compareTo(vB);
-		else if(vPartsA.length==0)
-			return -1;
-		else if(vPartsB.length==0)
-			return 1;
-
-		int length = Math.min(vPartsA.length, vPartsB.length);
-		for(int i = 0; i < length; i++)
+		String title = version.toString();
+		if(ahead)
+			title += I18n.format("ie.manual.newerVersion");
+		else
 		{
-			int pA = Integer.parseInt(vPartsA[i]);
-			int pB = Integer.parseInt(vPartsB[i]);
-			if(pA!=pB)
-			{
-				return Integer.compare(pA, pB);
-			}
+			int cmp = currVer.compareTo(version);
+			if(cmp==0)
+				title += I18n.format("ie.manual.currentVersion");
+			else if(cmp < 0)
+				return null;
 		}
-		if(vPartsA.length!=vPartsB.length)
-			return Integer.compare(vPartsA.length, vPartsB.length);
-		return vA.compareTo(vB);
-	}
 
-	private void addToMap(String readVersion, String currVersion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
-	{
-		if(readVersion!=null)
+		List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(changes.replace("\t", "  "), 120);
+		final int LINES_PER_PAGE = 16;
+		int pageCount = l.size()/LINES_PER_PAGE+(l.size()%LINES_PER_PAGE==0?0: 1);
+		ManualPages.Text[] pages = new ManualPages.Text[pageCount];
+		for(int i = 0; i < pageCount; i++)
 		{
-			int compare = compareVersions(readVersion, currVersion);
-			if(readVersionBuilt||compare >= 0)
-			{
-				if(!readVersionBuilt)
-					readVersion += " - UNRELEASED";
-				else if(compare > 0)
-					readVersion += " - NEW";
-				else if(compare==0)
-					readVersion += " - CURRENT";
-				entries.put(readVersion, readLog);
-			}
+			StringBuilder nextPage = new StringBuilder();
+			for(int j = LINES_PER_PAGE*i; j < l.size()&&j < (i+1)*LINES_PER_PAGE; j++)
+				nextPage.append(l.get(j)).append("\n");
+			pages[i] = new ManualPages.Text(ManualHelper.getManual(), nextPage.toString());
 		}
+		return new ImmutablePair<>(title, pages);
 	}
-
 
 	@Override
 	public void serverStarting()

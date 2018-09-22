@@ -1025,9 +1025,12 @@ immersiveengineering.potion.concreteFeet=Concrete Feet
 immersiveengineering.potion.flashed=Flashed
 
 #MANUAL
-#ie.manual.entry..name=
-#ie.manual.entry..subtext=
+ie.manual.currentVersion= - CURRENT
+ie.manual.newerVersion= - NEW
+#ie.manual.entry.name=
+#ie.manual.entry.subtext=
 #ie.manual.entry.=
+
 
 ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews_0.name=What's new in v0.6.0
