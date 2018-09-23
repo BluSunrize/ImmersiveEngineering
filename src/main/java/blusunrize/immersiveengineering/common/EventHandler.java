@@ -147,13 +147,11 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttach(AttachCapabilitiesEvent event)
+	public void onCapabilitiesAttach(AttachCapabilitiesEvent<Entity> event)
 	{
 		if(event.getObject() instanceof EntityMinecart)
-		{
-			EntityMinecart entityMinecart = (EntityMinecart)event.getObject();
-			event.addCapability(new ResourceLocation("immersiveengineering:shader"), new ShaderWrapper_Direct("immersiveengineering:minecart"));
-		}
+			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
+					new ShaderWrapper_Direct("immersiveengineering:minecart"));
 	}
 
 	@SubscribeEvent
