@@ -198,10 +198,16 @@
 		},
 		"int_4":
 		{
-			0:{},
-			1:{"model": "immersiveengineering:wooden_device/wallmount_inverted.obj"},
-			2:{"model": "immersiveengineering:wooden_device/wallmount_sideways.obj"},
-			3:{"model": "immersiveengineering:wooden_device/wallmount_sideways_inverted.obj"}
+          "0": {},
+          "1": {
+            "model": "immersiveengineering:wooden_device/wallmount_inverted.obj"
+          },
+          "2": {
+            "model": "immersiveengineering:wooden_device/wallmount_sideways.obj"
+          },
+          "3": {
+            "model": "immersiveengineering:wooden_device/wallmount_sideways_inverted.obj"
+          }
 		}
 	}
 }

@@ -4,7 +4,6 @@
 	{
 		"transform": "forge:default-block",
 		"model": "forge:multi-layer",
-		//"model": "immersiveengineering:metal_device/charging_station.obj",
 		"custom": {
 			"base": "immersiveengineering:metal_device1_charging_station#normal",
 			"Solid": "immersiveengineering:metal_device1_charging_station#normal",
