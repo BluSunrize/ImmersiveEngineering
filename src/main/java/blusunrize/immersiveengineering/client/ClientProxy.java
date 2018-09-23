@@ -100,7 +100,6 @@ import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -145,6 +144,7 @@ import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -1118,14 +1118,13 @@ public class ClientProxy extends CommonProxy
 		FontRenderer fr = ManualHelper.getManual().fontRenderer;
 		boolean isUnicode = fr.getUnicodeFlag();
 		fr.setUnicodeFlag(true);
-		try
+		SortedMap<ComparableVersion, Pair<String, IManualPage[]>> allChanges = new TreeMap<>(Comparator.reverseOrder());
+		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
+		//Included changelog
+		try(InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
+				"changelog.json")).getInputStream())
 		{
-			SortedMap<ComparableVersion, Pair<String, IManualPage[]>> allChanges = new TreeMap<>(Comparator.reverseOrder());
-			ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
-			//Included changelog
-			IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
-					"changelog.json"));
-			JsonElement ele = new JsonParser().parse(new InputStreamReader(resource.getInputStream()));
+			JsonElement ele = new JsonParser().parse(new InputStreamReader(in));
 			JsonObject upToCurrent = ele.getAsJsonObject();
 			for(Entry<String, JsonElement> entry : upToCurrent.entrySet())
 			{
@@ -1135,18 +1134,18 @@ public class ClientProxy extends CommonProxy
 				if(manualEntry!=null)
 					allChanges.put(version, manualEntry);
 			}
-			//Changelog from update JSON
-			CheckResult result = ForgeVersion.getResult(Loader.instance().activeModContainer());
-			if(result.status!=Status.PENDING&&result.status!=Status.FAILED)
-				for(Entry<ComparableVersion, String> e : result.changes.entrySet())
-					allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
-
-			for(Pair<String, IManualPage[]> entry : allChanges.values())
-				ManualHelper.addEntry(entry.getLeft(), ManualHelper.CAT_UPDATE, entry.getRight());
-		} catch(IOException e)
+		} catch(IOException x)
 		{
-			e.printStackTrace();
+			x.printStackTrace();
 		}
+		//Changelog from update JSON
+		CheckResult result = ForgeVersion.getResult(Loader.instance().activeModContainer());
+		if(result.status!=Status.PENDING&&result.status!=Status.FAILED)
+			for(Entry<ComparableVersion, String> e : result.changes.entrySet())
+				allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
+
+		for(Pair<String, IManualPage[]> entry : allChanges.values())
+			ManualHelper.addEntry(entry.getLeft(), ManualHelper.CAT_UPDATE, entry.getRight());
 		fr.setUnicodeFlag(isUnicode);
 	}
 

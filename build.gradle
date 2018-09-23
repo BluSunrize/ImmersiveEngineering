@@ -337,7 +337,7 @@ class GenerateUpdateJSON extends DefaultTask {
             })
             String currentVersion = null
             String currentChangelog = ""
-            changelog.eachLine { line ->
+            changelog.eachLine('ISO-8859-1', { line ->
                 if (line.startsWith(VERSION_PREFIX)) {
                     if (currentVersion != null) {
                         String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
@@ -364,7 +364,7 @@ class GenerateUpdateJSON extends DefaultTask {
                         currentChangelog += "\n" + line
                 }
                 return null
-            }
+            })
             Map<String, Object> mainMap = new TreeMap<>({ String s1, String s2 ->
                 compareVersions(s1, s2)
             })
