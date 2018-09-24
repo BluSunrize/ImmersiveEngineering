@@ -76,7 +76,7 @@ public class IEClassTransformer implements IClassTransformer
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass)
 	{
-		if(transformerMap.containsKey(transformedName))
+		if(basicClass!=null&&transformerMap.containsKey(transformedName))
 		{
 			MethodTransformer[] transformers = transformerMap.get(transformedName);
 			ClassReader reader = new ClassReader(basicClass);
