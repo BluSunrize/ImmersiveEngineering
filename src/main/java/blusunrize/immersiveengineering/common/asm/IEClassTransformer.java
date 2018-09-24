@@ -49,7 +49,7 @@ public class IEClassTransformer implements IClassTransformer
 		transformerMap.put("net.minecraft.entity.Entity", new MethodTransformer[]{
 				new MethodTransformer("doBlockCollisions", "func_145775_I", "()V", (m) ->
 				{
-					//INVOKEVIRTUAL net/minecraft/block/Block.onEntityCollidedWithBlock (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/entity/Entity;)V
+					//INVOKEVIRTUAL net/minecraft/block/Block.onEntityCollision (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/entity/Entity;)V
 					Iterator<AbstractInsnNode> iterator = m.instructions.iterator();
 					while(iterator.hasNext())
 					{
@@ -57,7 +57,7 @@ public class IEClassTransformer implements IClassTransformer
 						if(anode.getOpcode()==Opcodes.INVOKEVIRTUAL)
 						{
 							MethodInsnNode n = (MethodInsnNode)anode;
-							if(n.name.equals("onEntityCollidedWithBlock")||n.name.equals("func_180634_a"))
+							if(n.name.equals("onEntityCollision")||n.name.equals("func_180634_a"))
 							{
 								InsnList newInstructions = new InsnList();
 								newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 4));

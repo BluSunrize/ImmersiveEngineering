@@ -280,9 +280,9 @@ public class ConveyorHandler
 			BlockPos pos = conveyorTile.getPos();
 
 			double vBase = 1.15;
-			double vX = 0.1*vBase*facing.getFrontOffsetX();
+			double vX = 0.1*vBase*facing.getXOffset();
 			double vY = entity.motionY;
-			double vZ = 0.1*vBase*facing.getFrontOffsetZ();
+			double vZ = 0.1*vBase*facing.getZOffset();
 
 			if(conveyorDirection==ConveyorDirection.UP)
 				vY = 0.17D*vBase;
@@ -332,7 +332,7 @@ public class ConveyorHandler
 				if(contact&&conveyorDirection==ConveyorDirection.UP&&!tile.getWorld().getBlockState(pos.offset(facing).up()).isFullBlock())
 				{
 					double move = .4;
-					entity.setPosition(entity.posX+move*facing.getFrontOffsetX(), entity.posY+1*move, entity.posZ+move*facing.getFrontOffsetZ());
+					entity.setPosition(entity.posX+move*facing.getXOffset(), entity.posY+1*move, entity.posZ+move*facing.getZOffset());
 				}
 				if(!contact)
 					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);

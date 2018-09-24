@@ -305,7 +305,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			TileEntityCrusher master = master();
 			if(master==null)
 				return;
-			Vec3d center = new Vec3d(master.getPos()).addVector(.5, .75, .5);
+			Vec3d center = new Vec3d(master.getPos()).add(.5, .75, .5);
 			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getEntityBoundingBox().intersects(crusherInternal))
 				return;

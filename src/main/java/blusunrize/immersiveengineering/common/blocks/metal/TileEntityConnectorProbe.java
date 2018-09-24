@@ -131,7 +131,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = con.cableType.getRenderDiameter()/2;
-		return new Vec3d(.5+side.getFrontOffsetX()*(.375-conRadius), .5+side.getFrontOffsetY()*(.375-conRadius), .5+side.getFrontOffsetZ()*(.375-conRadius));
+		return new Vec3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
 	}
 
 	@Override
@@ -188,8 +188,8 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannel).getUnlocalizedName())),
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannelSending).getUnlocalizedName()))
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannel).getTranslationKey())),
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannelSending).getTranslationKey()))
 		};
 	}
 

@@ -228,7 +228,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	{
 		if(entity instanceof EntityArrow||entity instanceof EntityRevolvershot)
 		{
-			Vec3d pos = new Vec3d(getPos()).addVector(.5, .5, .5);
+			Vec3d pos = new Vec3d(getPos()).add(.5, .5, .5);
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_BLAST, SoundCategory.BLOCKS, 1.5f, 0.7f);
 			world.setBlockToAir(getPos());
 			world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, pos.x, pos.y, pos.z, 0, .05, 0);

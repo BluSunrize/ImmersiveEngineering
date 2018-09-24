@@ -58,7 +58,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 
-		if(pos==4&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.isBlockIndirectlyGettingPowered(getPos()) > 0&&world.getTotalWorldTime()%8==0)
+		if(pos==4&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.getRedstonePowerFromNeighbors(getPos()) > 0&&world.getTotalWorldTime()%8==0)
 		{
 			updateComparatorValuesPart1();
 			for(EnumFacing f : EnumFacing.values())

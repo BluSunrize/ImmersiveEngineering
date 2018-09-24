@@ -86,7 +86,7 @@ public class TileEntityTurretChem extends TileEntityTurret
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&this.ignite;
 				for(int i = 0; i < split; i++)
 				{
-					Vec3d vecDir = v.addVector(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
+					Vec3d vecDir = v.add(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
 					Vec3d throwerPos = getGunPosition();
 					EntityChemthrowerShot chem = new EntityChemthrowerShot(world, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
 							throwerPos.z+v.z*0.875, 0, 0, 0, fs);

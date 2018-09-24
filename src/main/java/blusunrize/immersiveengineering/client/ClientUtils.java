@@ -416,9 +416,9 @@ public class ClientUtils
 			0xFFFFFF//WHITE
 	};
 
-	public static int getFormattingColour(TextFormatting rarityColor)
+	public static int getFormattingColour(TextFormatting color)
 	{
-		return rarityColor.ordinal() < 16?chatColours[rarityColor.ordinal()]: 0;
+		return color.ordinal() < 16?chatColours[color.ordinal()]: 0;
 	}
 
 	public static int getDarkenedTextColour(int colour)
@@ -1216,7 +1216,7 @@ public class ClientUtils
 
 		for(int k = 0; k < list.size(); ++k)
 			if(k==0)
-				list.set(k, stack.getRarity().rarityColor+(String)list.get(k));
+				list.set(k, stack.getRarity().color+(String)list.get(k));
 			else
 				list.set(k, TextFormatting.GRAY+(String)list.get(k));
 
@@ -1354,7 +1354,7 @@ public class ClientUtils
 	public static void addFluidTooltip(FluidStack fluid, List<String> tooltip, int tankCapacity)
 	{
 		if(fluid!=null&&fluid.getFluid()!=null)
-			tooltip.add(fluid.getFluid().getRarity(fluid).rarityColor+fluid.getLocalizedName());
+			tooltip.add(fluid.getFluid().getRarity(fluid).color+fluid.getLocalizedName());
 		else
 			tooltip.add(I18n.format("gui.immersiveengineering.empty"));
 		if(fluid!=null&&fluid.getFluid() instanceof IEFluid)

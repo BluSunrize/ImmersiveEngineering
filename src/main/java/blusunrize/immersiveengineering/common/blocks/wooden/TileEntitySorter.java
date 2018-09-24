@@ -281,10 +281,10 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	//		stack = Utils.insertStackIntoInventory(inventory, stack, side.getOpposite());
 	//		if(stack != null)
 	//		{
-	//			EntityItem ei = new EntityItem(world, getPos().getX()+.5+side.getFrontOffsetX(), getPos().getY()+.5+side.getFrontOffsetY(), getPos().getZ()+.5+side.getFrontOffsetZ(), stack.copy());
-	//			ei.motionX = (0.075F * side.getFrontOffsetX());
+	//			EntityItem ei = new EntityItem(world, getPos().getX()+.5+side.getXOffset(), getPos().getY()+.5+side.getYOffset(), getPos().getZ()+.5+side.getZOffset(), stack.copy());
+	//			ei.motionX = (0.075F * side.getXOffset());
 	//			ei.motionY = 0.025000000372529D;
-	//			ei.motionZ = (0.075F * side.getFrontOffsetZ());
+	//			ei.motionZ = (0.075F * side.getZOffset());
 	//			this.world.spawnEntity(ei);
 	//		}
 	//	}

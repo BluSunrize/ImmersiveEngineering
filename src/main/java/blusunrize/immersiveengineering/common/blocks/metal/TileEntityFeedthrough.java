@@ -99,9 +99,9 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 
 	private boolean isPositive(Vec3i offset)
 	{
-		return offset.getX()*facing.getFrontOffsetX()+
-				offset.getY()*facing.getFrontOffsetY()+
-				offset.getZ()*facing.getFrontOffsetZ() > 0;
+		return offset.getX()*facing.getXOffset()+
+				offset.getY()*facing.getYOffset()+
+				offset.getZ()*facing.getZOffset() > 0;
 	}
 
 	@Override
@@ -114,8 +114,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		double l = INFOS.get(reference).connOffset;
 		int factor = positive?1: -1;
-		return new Vec3d(.5+(.5+l)*facing.getFrontOffsetX()*factor, .5+(.5+l)*facing.getFrontOffsetY()*factor,
-				.5+(.5+l)*facing.getFrontOffsetZ()*factor);
+		return new Vec3d(.5+(.5+l)*facing.getXOffset()*factor, .5+(.5+l)*facing.getYOffset()*factor,
+				.5+(.5+l)*facing.getZOffset()*factor);
 	}
 
 	@Override

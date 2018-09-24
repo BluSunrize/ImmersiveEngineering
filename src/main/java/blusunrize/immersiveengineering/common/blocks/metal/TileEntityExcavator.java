@@ -187,7 +187,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								this.markContainingBlockForUpdate(null);
 								packet.setInteger("empty", target);
 							}
-							if(!packet.hasNoTags())
+							if(!packet.isEmpty())
 								ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(wheel, packet));
 						}
 					}
@@ -270,7 +270,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 			block.onBlockHarvested(world, pos, blockstate, fakePlayer);
 			if(block.removedByPlayer(blockstate, world, pos, fakePlayer, true))
 			{
-				block.onBlockDestroyedByPlayer(world, pos, blockstate);
+				block.onPlayerDestroy(world, pos, blockstate);
 				if(block.canSilkHarvest(world, pos, blockstate, fakePlayer))
 				{
 					ArrayList<ItemStack> items = new ArrayList<ItemStack>();

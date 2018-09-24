@@ -40,7 +40,7 @@ public class FeedthroughLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
-		return modelLocation.getResourcePath().equals(RESOURCE_LOCATION);
+		return modelLocation.getPath().equals(RESOURCE_LOCATION);
 	}
 
 	@Nonnull

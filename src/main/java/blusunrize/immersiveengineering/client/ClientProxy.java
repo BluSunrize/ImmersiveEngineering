@@ -778,7 +778,7 @@ public class ClientProxy extends CommonProxy
 		//		for(int i=0; i<table.length; i++)
 		//		{
 		//			Fluid f = FluidRegistry.getFluid(dieselFuels[i].getKey());
-		//			String sf = f!=null?new FluidStack(f,1000).getUnlocalizedName():"";
+		//			String sf = f!=null?new FluidStack(f,1000).getTranslationKey():"";
 		//			int bt = dieselFuels[i].getValue();
 		//			String am = Utils.formatDouble(bt/20f, "0.###")+" ("+bt+")";
 		//			table[i] = new String[]{sf,am};
@@ -1554,13 +1554,13 @@ public class ClientProxy extends CommonProxy
 	{
 		if(!stack.isEmpty()&&stack.getItem() instanceof ItemArmor)
 		{
-			Boolean b = hasArmorModel.get(stack.getUnlocalizedName());
+			Boolean b = hasArmorModel.get(stack.getTranslationKey());
 			if(b==null)
 				try
 				{
 					ModelBiped model = stack.getItem().getArmorModel(ClientUtils.mc().player, stack, ((ItemArmor)stack.getItem()).getEquipmentSlot(), null);
 					b = model!=null&&model.getClass()!=ModelBiped.class; //Model isn't a base Biped
-					hasArmorModel.put(stack.getUnlocalizedName(), b);
+					hasArmorModel.put(stack.getTranslationKey(), b);
 				} catch(Exception e)
 				{
 				}

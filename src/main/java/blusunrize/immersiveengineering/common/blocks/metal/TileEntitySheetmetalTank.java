@@ -83,11 +83,11 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(pos==4&&!world.isRemote&&world.isBlockIndirectlyGettingPowered(getPos()) > 0)
+		if(pos==4&&!world.isRemote&&world.getRedstonePowerFromNeighbors(getPos()) > 0)
 			for(int i = 0; i < 6; i++)
 				if(i!=1&&tank.getFluidAmount() > 0)
 				{
-					EnumFacing f = EnumFacing.getFront(i);
+					EnumFacing f = EnumFacing.byIndex(i);
 					int outSize = Math.min(144, tank.getFluidAmount());
 					FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
 					BlockPos outputPos = getPos().offset(f);

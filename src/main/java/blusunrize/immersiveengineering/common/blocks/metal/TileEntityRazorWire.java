@@ -43,7 +43,7 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 	}
 
 	@Override
@@ -248,19 +248,19 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		if(!isOnGround()||!(wallL||wallR))
 		{
 			if(yDif > 0)
-				return new Vec3d(facing.getFrontOffsetX()!=0?.5: xDif < 0?.40625: .59375, .9375, facing.getFrontOffsetZ()!=0?.5: zDif < 0?.40625: .59375);
+				return new Vec3d(facing.getXOffset()!=0?.5: xDif < 0?.40625: .59375, .9375, facing.getZOffset()!=0?.5: zDif < 0?.40625: .59375);
 			else
 			{
-				boolean right = facing.rotateY().getAxisDirection().getOffset()==Math.copySign(1, facing.getFrontOffsetX()!=0?zDif: xDif);
-				int faceX = facing.getFrontOffsetX();
-				int faceZ = facing.getFrontOffsetZ();
+				boolean right = facing.rotateY().getAxisDirection().getOffset()==Math.copySign(1, facing.getXOffset()!=0?zDif: xDif);
+				int faceX = facing.getXOffset();
+				int faceZ = facing.getZOffset();
 				return new Vec3d(faceX!=0?.5+(right?0: faceX*.1875): (xDif < 0?0: 1), .046875, faceZ!=0?.5+(right?0: faceZ*.1875): (zDif < 0?0: 1));
 			}
 		}
 		else
 		{
 			boolean wallN = facing==EnumFacing.NORTH||facing==EnumFacing.EAST?wallL: wallR;
-			return new Vec3d(facing.getFrontOffsetX()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, facing.getFrontOffsetZ()!=0?.5: zDif < 0&&wallN?.125: .875);
+			return new Vec3d(facing.getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, facing.getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
 		}
 	}
 

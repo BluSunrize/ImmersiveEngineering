@@ -263,7 +263,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			T tile = this.getTileForPos(rsPos);
 			if(tile!=null)
 			{
-				boolean b = world.isBlockIndirectlyGettingPowered(tile.getPos()) > 0;
+				boolean b = world.getRedstonePowerFromNeighbors(tile.getPos()) > 0;
 				return redstoneControlInverted!=b;
 			}
 		}

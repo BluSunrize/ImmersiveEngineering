@@ -106,14 +106,14 @@ public class ConnLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
-		return modelLocation.getResourcePath().contains(RESOURCE_LOCATION);
+		return modelLocation.getPath().contains(RESOURCE_LOCATION);
 	}
 
 	@Nonnull
 	@Override
 	public IModel loadModel(@Nonnull ResourceLocation modelLocation)
 	{
-		String resourcePath = modelLocation.getResourcePath();
+		String resourcePath = modelLocation.getPath();
 		int pos = resourcePath.indexOf("conn_");
 		if(pos >= 0)
 		{

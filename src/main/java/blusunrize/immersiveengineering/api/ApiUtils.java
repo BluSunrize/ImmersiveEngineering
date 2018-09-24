@@ -176,7 +176,7 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
-		return createComparableItemStack(stack, copy, stack.hasTagCompound()&&!stack.getTagCompound().hasNoTags());
+		return createComparableItemStack(stack, copy, stack.hasTagCompound()&&!stack.getTagCompound().isEmpty());
 	}
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
@@ -367,7 +367,7 @@ public class ApiUtils
 		if(iicPos!=null)
 			offset = iicPos.getConnectionOffset(conn);
 		if(pos.equals(conn.end))
-			offset = offset.addVector(conn.end.getX()-conn.start.getX(),
+			offset = offset.add(conn.end.getX()-conn.start.getX(),
 					conn.end.getY()-conn.start.getY(),
 					conn.end.getZ()-conn.start.getZ());
 		return offset;
@@ -375,7 +375,7 @@ public class ApiUtils
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
-		return vec0.addVector(vec1.x, vec1.y, vec1.z);
+		return vec0.add(vec1.x, vec1.y, vec1.z);
 	}
 
 	public static double acosh(double x)
@@ -459,7 +459,7 @@ public class ApiUtils
 
 	public static Vec3d offsetDim(Vec3d p, int dim, double amount)
 	{
-		return p.addVector(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
+		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
 	public static boolean raytraceAlongCatenary(Connection conn, World w, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
@@ -490,7 +490,7 @@ public class ApiUtils
 		HashSet<Triple<BlockPos, Vec3d, Vec3d>> near = new HashSet<>();
 		Vec3d across = vEnd.subtract(vStart);
 		across = new Vec3d(across.x, 0, across.z);
-		double lengthHor = across.lengthVector();
+		double lengthHor = across.length();
 		halfScanned.put(conn.start, vStart);
 		halfScanned.put(conn.end, vEnd);
 		//Raytrace X&Z
@@ -703,7 +703,7 @@ public class ApiUtils
 								Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
 										(int)Math.sqrt(distanceSq));
 								Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos));
-								Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(linkPos.getX()-masterPos.getX(),
+								Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).add(linkPos.getX()-masterPos.getX(),
 										linkPos.getY()-masterPos.getY(),
 										linkPos.getZ()-masterPos.getZ());
 								BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
@@ -952,8 +952,8 @@ public class ApiUtils
 				if(aabb.contains(a)||aabb.contains(b))
 					return true;
 			}
-			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.addVector(pos.getX(), pos.getY(), pos.getZ()),
-					b.addVector(pos.getX(), pos.getY(), pos.getZ()));
+			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.add(pos.getX(), pos.getY(), pos.getZ()),
+					b.add(pos.getX(), pos.getY(), pos.getZ()));
 			return rayResult!=null&&rayResult.typeOfHit==RayTraceResult.Type.BLOCK;
 		}
 		return false;
@@ -1003,11 +1003,11 @@ public class ApiUtils
 						Connection c = conn.getLeft();
 						if(ignored==null||!c.hasSameConnectors(ignored))
 						{
-							Vec3d startRelative = start.addVector(-pos.getX(), -pos.getY(), -pos.getZ());
+							Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
 							Vec3d across = conn.getRight().subtract(conn.getMiddle());
 							double t = Utils.getCoeffForMinDistance(startRelative, conn.getMiddle(), across);
 							t = MathHelper.clamp(0, t, 1);
-							Vec3d closest = conn.getMiddle().addVector(t*across.x, t*across.y, t*across.z);
+							Vec3d closest = conn.getMiddle().add(t*across.x, t*across.y, t*across.z);
 							double distSq = closest.squareDistanceTo(startRelative);
 							if(distSq < minDistSq.get())
 							{

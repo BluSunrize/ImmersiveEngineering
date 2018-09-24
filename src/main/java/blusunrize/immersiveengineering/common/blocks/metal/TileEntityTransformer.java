@@ -98,7 +98,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		if(nbt.hasKey("secondCable"))
 			secondCable = ApiUtils.getWireTypeFromNBT(nbt, "secondCable");
 		else

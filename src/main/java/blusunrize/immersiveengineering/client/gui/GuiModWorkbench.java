@@ -111,7 +111,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 					if(isPointInRegion(s.xPos, s.yPos, 16, 16, mx, my))
 					{
 						ArrayList<String> tooltip = new ArrayList<String>();
-						tooltip.add(recipe.output.getRarity().rarityColor+recipe.output.getDisplayName());
+						tooltip.add(recipe.output.getRarity().color+recipe.output.getDisplayName());
 						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();
 						for(IngredientStack stack : recipe.inputs)
 						{

@@ -40,7 +40,7 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 			increaseOffset(itemStackIn);
 		else
 		{
-			Vec3d pos = playerIn.getPositionVector().addVector(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
+			Vec3d pos = playerIn.getPositionVector().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
 			BlockPos bPos = new BlockPos(pos);
 			NBTTagCompound nbt = itemStackIn.getTagCompound();
 			int offset = nbt==null?0: nbt.getByte("offset");

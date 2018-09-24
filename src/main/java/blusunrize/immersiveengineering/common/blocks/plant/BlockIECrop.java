@@ -55,7 +55,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.property = mainProperty;
 		this.enumValues = mainProperty.getValueClass().getEnumConstants();
 		this.setDefaultState(getInitDefaultState());
-		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
+		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
 		this.setTickRandomly(true);
 		this.setCreativeTab(null);
 		this.setHardness(0.0F);

@@ -338,14 +338,14 @@ public class IEContent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
 		for(Block block : registeredIEBlocks)
-			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getUnlocalizedName())));
+			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getTranslationKey())));
 	}
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
 		for(Item item : registeredIEItems)
-			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getUnlocalizedName())));
+			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getTranslationKey())));
 
 		registerOres();
 	}
@@ -361,7 +361,7 @@ public class IEContent
 				"fluidcreosote"
 		);
 		for(Mapping<Item> missing : event.getMappings())
-			if(knownMissing.contains(missing.key.getResourcePath()))
+			if(knownMissing.contains(missing.key.getPath()))
 				missing.ignore();
 	}
 

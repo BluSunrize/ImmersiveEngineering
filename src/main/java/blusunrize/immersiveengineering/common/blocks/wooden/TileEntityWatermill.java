@@ -61,7 +61,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 			return;
 		}
 		else
-			canTurn = multiblock||getRotationVec().lengthVector()!=0;
+			canTurn = multiblock||getRotationVec().length()!=0;
 
 		if(world.getTotalWorldTime()%64==((getPos().getX()^getPos().getZ())&63))
 		{
@@ -210,9 +210,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?3: 0), -1, (facing.getAxis()==Axis.Z?0: 3))));
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?2: 0), -2, (facing.getAxis()==Axis.Z?0: 2))));
 		if(facing.getAxis()==Axis.Z)
-			dir = dir.addVector(dirNeg.y-dirPos.y, 0, 0);
+			dir = dir.add(dirNeg.y-dirPos.y, 0, 0);
 		else
-			dir = dir.addVector(0, 0, dirNeg.y-dirPos.y);
+			dir = dir.add(0, 0, dirNeg.y-dirPos.y);
 		return dir;
 	}
 
@@ -231,7 +231,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		prevRotation = nbt.getFloat("prevRotation");
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");

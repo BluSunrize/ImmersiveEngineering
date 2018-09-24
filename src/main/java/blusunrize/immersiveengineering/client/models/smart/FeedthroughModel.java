@@ -329,8 +329,8 @@ public class FeedthroughModel implements IBakedModel
 			else
 			{
 				EnumFacing rotateAround = facing.rotateAround(Y);
-				mat.rotate(Math.PI/2, rotateAround.getFrontOffsetX(), rotateAround.getFrontOffsetY(),
-						rotateAround.getFrontOffsetZ());
+				mat.rotate(Math.PI/2, rotateAround.getXOffset(), rotateAround.getYOffset(),
+						rotateAround.getZOffset());
 			}
 			mat.translate(-.5, -.5, -.5);
 			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, 0));

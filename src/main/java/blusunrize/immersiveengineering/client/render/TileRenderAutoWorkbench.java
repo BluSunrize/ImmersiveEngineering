@@ -70,7 +70,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
 		if(te.mirrored)
-			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1: 1, 1, te.facing.getFrontOffsetZ()==0?-1: 1);
+			GlStateManager.scale(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.processQueue.size()][];
@@ -191,9 +191,9 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		tx = f==EnumFacing.WEST?-.59375f: f==EnumFacing.EAST?.59375f: 0;
 		tz = f==EnumFacing.NORTH?-.59375f: f==EnumFacing.SOUTH?.59375f: 0;
 		GlStateManager.translate(tx, -.21875, tz);
-		GlStateManager.rotate(press*90, -f.getFrontOffsetZ(), 0, f.getFrontOffsetX());
+		GlStateManager.rotate(press*90, -f.getZOffset(), 0, f.getXOffset());
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "press");
-		GlStateManager.rotate(-press*90, -f.getFrontOffsetZ(), 0, f.getFrontOffsetX());
+		GlStateManager.rotate(-press*90, -f.getZOffset(), 0, f.getXOffset());
 		GlStateManager.translate(-tx, .21875, -tz);
 
 		GlStateManager.translate(0, liftPress, 0);
@@ -363,7 +363,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);
-				rl = new ResourceLocation(rl.getResourceDomain(), String.format("%s/%s%s", "textures", rl.getResourcePath(), ".png"));
+				rl = new ResourceLocation(rl.getNamespace(), String.format("%s/%s%s", "textures", rl.getPath(), ".png"));
 				IResource resource = ClientUtils.mc().getResourceManager().getResource(rl);
 				BufferedImage bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
 				if(bufferedImage!=null)

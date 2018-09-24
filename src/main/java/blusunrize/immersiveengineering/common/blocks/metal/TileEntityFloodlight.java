@@ -89,7 +89,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			shouldUpdate = false;
 		}
 
-		enabled = (controllingComputers > 0&&computerOn)||(world.isBlockIndirectlyGettingPowered(getPos()) > 0^redstoneControlInverted);
+		enabled = (controllingComputers > 0&&computerOn)||(world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted);
 		if(energyStorage >= (!active?energyDraw*10: energyDraw)&&enabled&&switchCooldown <= 0)
 		{
 			energyStorage -= energyDraw;
@@ -233,12 +233,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 
 	public void placeLightAlongVector(Vec3d vec, int offset, ArrayList<BlockPos> checklist)
 	{
-		Vec3d light = new Vec3d(getPos()).addVector(.5, .75, .5);
+		Vec3d light = new Vec3d(getPos()).add(.5, .75, .5);
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
-		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec, light), light.addVector(vec.x*range, vec.y*range, vec.z*range), world, ignore);
-		double maxDistance = hit!=null?new Vec3d(hit).addVector(.5, .75, .5).squareDistanceTo(light): range*range;
+		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec, light), light.add(vec.x*range, vec.y*range, vec.z*range), world, ignore);
+		double maxDistance = hit!=null?new Vec3d(hit).add(.5, .75, .5).squareDistanceTo(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{
 			BlockPos target = getPos().add(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));
@@ -293,8 +293,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInteger("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
-		side = EnumFacing.getFront(nbt.getInteger("side"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		side = EnumFacing.byIndex(nbt.getInteger("side"));
 		rotY = nbt.getFloat("rotY");
 		rotX = nbt.getFloat("rotX");
 		int lightAmount = nbt.getInteger("lightAmount");
@@ -575,7 +575,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				roll += -90*facing.getAxisDirection().getOffset()*side.getAxisDirection().getOffset();
 		}
 
-		transl.add(new Vector3f(side.getFrontOffsetX()*.125f, side.getFrontOffsetY()*.125f, side.getFrontOffsetZ()*.125f));
+		transl.add(new Vector3f(side.getXOffset()*.125f, side.getYOffset()*.125f, side.getZOffset()*.125f));
 		if("axis".equals(group)||"light".equals(group)||"off".equals(group)||"glass".equals(group))
 		{
 			if(side.getAxis()==Axis.Y)

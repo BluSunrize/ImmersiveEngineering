@@ -185,7 +185,7 @@ public class EventHandler
 					movVec = movVec.normalize();
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(wrapper);
 					if(shader!=null)
-						shader.getMiddle().getEffectFunction().execute(event.getMinecart().world, shader.getLeft(), null, shader.getRight().getShaderType(), prevPosVec.addVector(0,.25,0).add(movVec), movVec.scale(1.5f), .25f);
+						shader.getMiddle().getEffectFunction().execute(event.getMinecart().world, shader.getLeft(), null, shader.getRight().getShaderType(), prevPosVec.add(0, .25, 0).add(movVec), movVec.scale(1.5f), .25f);
 				}
 			}
 		}
@@ -198,9 +198,9 @@ public class EventHandler
 	@SubscribeEvent
 	public void lootLoad(LootTableLoadEvent event)
 	{
-		if(event.getName().getResourceDomain().equals("minecraft"))
+		if(event.getName().getNamespace().equals("minecraft"))
 			for(ResourceLocation inject : lootInjections)
-				if(event.getName().getResourcePath().equals(inject.getResourcePath()))
+				if(event.getName().getPath().equals(inject.getPath()))
 				{
 					LootPool injectPool = Utils.loadBuiltinLootTable(inject, event.getLootTableManager()).getPool("immersiveengineering_loot_inject");
 					LootPool mainPool = event.getTable().getPool("main");

@@ -146,7 +146,7 @@ public class ManualPageMultiblock extends ManualPages
 					s += TextFormatting.GRAY+sIndent+req.inputSize+"x "+TextFormatting.RESET;
 					ItemStack example = req.getExampleStack();
 					if(!example.isEmpty())
-						s += example.getRarity().rarityColor+example.getDisplayName();
+						s += example.getRarity().color+example.getDisplayName();
 					else
 						s += "???";
 					componentTooltip.add(s);

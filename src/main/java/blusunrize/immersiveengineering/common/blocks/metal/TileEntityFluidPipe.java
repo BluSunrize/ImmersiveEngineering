@@ -136,7 +136,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				for(int i = 0; i < 6; i++)
 				{
 					//						boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
-					EnumFacing fd = EnumFacing.getFront(i);
+					EnumFacing fd = EnumFacing.byIndex(i);
 					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.offset(fd);
@@ -494,7 +494,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		for(int i = 5; i >= 0; i--)
 		{
 			//			TileEntity con = world.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
-			EnumFacing dir = EnumFacing.getFront(i);
+			EnumFacing dir = EnumFacing.byIndex(i);
 			TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(dir));
 			connections <<= 1;
 			if(con!=null&&con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
@@ -521,7 +521,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(connections!=3&&connections!=12&&connections!=48)
 			return 1;
 		//		TileEntity con = world.getTileEntity(xCoord+(connection==4?-1: connection==5?1: 0),yCoord+(connection==0?-1: connection==1?1: 0),zCoord+(connection==2?-1: connection==3?1: 0));
-		TileEntity con = world.getTileEntity(getPos().offset(EnumFacing.getFront(connection)));
+		TileEntity con = world.getTileEntity(getPos().offset(EnumFacing.byIndex(connection)));
 		if(con instanceof TileEntityFluidPipe)
 		{
 			byte tileConnections = ((TileEntityFluidPipe)con).connections;
@@ -538,7 +538,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			sideConfig[side] = -1;
 		markDirty();
 
-		EnumFacing fd = EnumFacing.getFront(side);
+		EnumFacing fd = EnumFacing.byIndex(side);
 		TileEntity connected = world.getTileEntity(getPos().offset(fd));
 		if(connected instanceof TileEntityFluidPipe)
 		{
@@ -624,7 +624,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			//			if(pipeCover!=null)
 			//				size = 0;
 			if((availableConnections&0x1)==1)
-				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size).offset(getPos()), EnumFacing.getFront(i)));
+				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size).offset(getPos()), EnumFacing.byIndex(i)));
 			if((connections&(1<<i))!=0)
 				baseAABB[i] += i%2==1?.125: -.125;
 			baseAABB[i] = Math.min(Math.max(baseAABB[i], 0), 1);
@@ -641,7 +641,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			if(box.grow(.002).contains(mop.hitVec))
 			{
-				AxisAlignedBB changedBox = ((AdvancedAABB)box).fd!=null?box.grow(((AdvancedAABB)box).fd.getFrontOffsetX()!=0?0: .03125, ((AdvancedAABB)box).fd.getFrontOffsetY()!=0?0: .03125, ((AdvancedAABB)box).fd.getFrontOffsetZ()!=0?0: .03125): box;
+				AxisAlignedBB changedBox = ((AdvancedAABB)box).fd!=null?box.grow(((AdvancedAABB)box).fd.getXOffset()!=0?0: .03125, ((AdvancedAABB)box).fd.getYOffset()!=0?0: .03125, ((AdvancedAABB)box).fd.getZOffset()!=0?0: .03125): box;
 				list.add(changedBox);
 				return true;
 			}

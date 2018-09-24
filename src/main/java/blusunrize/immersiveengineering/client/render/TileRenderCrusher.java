@@ -58,24 +58,24 @@ public class TileRenderCrusher extends TileEntitySpecialRenderer<TileEntityCrush
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		GlStateManager.translate(te.facing.getFrontOffsetX()*.5, 0, te.facing.getFrontOffsetZ()*.5);
-		GlStateManager.rotate(angle, -te.facing.getFrontOffsetZ(), 0, te.facing.getFrontOffsetX());
+		GlStateManager.translate(te.facing.getXOffset()*.5, 0, te.facing.getZOffset()*.5);
+		GlStateManager.rotate(angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
-		GlStateManager.rotate(-angle, -te.facing.getFrontOffsetZ(), 0, te.facing.getFrontOffsetX());
-		GlStateManager.translate(te.facing.getFrontOffsetX()*-1, 0, te.facing.getFrontOffsetZ()*-1);
-		GlStateManager.rotate(-angle, -te.facing.getFrontOffsetZ(), 0, te.facing.getFrontOffsetX());
+		GlStateManager.rotate(-angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
+		GlStateManager.translate(te.facing.getXOffset()*-1, 0, te.facing.getZOffset()*-1);
+		GlStateManager.rotate(-angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
-		GlStateManager.rotate(angle, -te.facing.getFrontOffsetZ(), 0, te.facing.getFrontOffsetX());
+		GlStateManager.rotate(angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
 
 		RenderHelper.enableStandardItemLighting();
 

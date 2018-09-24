@@ -244,7 +244,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 					this.inGround = true;
 					if(this.inBlock.getMaterial(state)!=Material.AIR)
-						this.inBlock.onEntityCollidedWithBlock(this.world, mop.getBlockPos(), state, this);
+						this.inBlock.onEntityCollision(this.world, mop.getBlockPos(), state, this);
 					//						return;
 				}
 			}

@@ -145,8 +145,8 @@ public class Utils
 	{
 		if((stack1.isEmpty())!=(stack2.isEmpty()))
 			return false;
-		boolean empty1 = (stack1.getTagCompound()==null||stack1.getTagCompound().hasNoTags());
-		boolean empty2 = (stack2.getTagCompound()==null||stack2.getTagCompound().hasNoTags());
+		boolean empty1 = (stack1.getTagCompound()==null||stack1.getTagCompound().isEmpty());
+		boolean empty2 = (stack2.getTagCompound()==null||stack2.getTagCompound().isEmpty());
 		if(empty1!=empty2)
 			return false;
 		if(!empty1&&!stack1.getTagCompound().equals(stack2.getTagCompound()))
@@ -226,7 +226,7 @@ public class Utils
 		if(stripPressure&&fs.tag!=null&&fs.tag.hasKey("pressurized"))
 		{
 			fs.tag.removeTag("pressurized");
-			if(fs.tag.hasNoTags())
+			if(fs.tag.isEmpty())
 				fs.tag = null;
 		}
 		return fs;
@@ -275,7 +275,7 @@ public class Utils
 		return compareToOreName(stack, oreName);
 	}
 
-	public static boolean canFenceConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing, Material blockMaterial)
+	public static boolean canFenceConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing, Material material)
 	{
 		BlockPos other = pos.offset(facing);
 		IBlockState state = world.getBlockState(other);
@@ -283,7 +283,7 @@ public class Utils
 		if(block.canBeConnectedTo(world, other, facing.getOpposite()))
 			return true;
 		BlockFaceShape blockfaceshape = state.getBlockFaceShape(world, other, facing.getOpposite());
-		boolean flag = blockfaceshape==BlockFaceShape.MIDDLE_POLE&&(state.getMaterial()==blockMaterial||block instanceof BlockFenceGate);
+		boolean flag = blockfaceshape==BlockFaceShape.MIDDLE_POLE&&(state.getMaterial()==material||block instanceof BlockFenceGate);
 		return !isExceptBlockForAttachWithFence(block)&&blockfaceshape==BlockFaceShape.SOLID||flag;
 	}
 
@@ -430,7 +430,7 @@ public class Utils
 		if(living instanceof EntityPlayerMP)
 			d3 = ((EntityPlayerMP)living).interactionManager.getBlockReachDistance();
 
-		Vec3d vec31 = vec3.addVector((double)f7*d3, (double)f6*d3, (double)f8*d3);
+		Vec3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
 		return world.rayTraceBlocks(vec3, vec31, bool, !bool, false);
 	}
 
@@ -466,12 +466,12 @@ public class Utils
 
 	public static List<EntityLivingBase> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)
 	{
-		double length = dir.lengthVector();
+		double length = dir.length();
 		Vec3d dirNorm = dir.normalize();
 		double radius = Math.tan(spreadAngle/2)*length;
 
 		Vec3d endLow = start.add(dir).subtract(radius, radius, radius);
-		Vec3d endHigh = start.add(dir).addVector(radius, radius, radius);
+		Vec3d endHigh = start.add(dir).add(radius, radius, radius);
 
 		AxisAlignedBB box = new AxisAlignedBB(minInArray(start.x, endLow.x, endHigh.x), minInArray(start.y, endLow.y, endHigh.y), minInArray(start.z, endLow.z, endHigh.z),
 				maxInArray(start.x, endLow.x, endHigh.x), maxInArray(start.y, endLow.y, endHigh.y), maxInArray(start.z, endLow.z, endHigh.z));
@@ -633,14 +633,14 @@ public class Utils
 					if(j >= 0)
 					{
 						int k = j-(i-8);
-						vec3 = vec3.addVector((double)((blockpos.getX()-pos.getX())*k), (double)((blockpos.getY()-pos.getY())*k), (double)((blockpos.getZ()-pos.getZ())*k));
+						vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*k), (double)((blockpos.getY()-pos.getY())*k), (double)((blockpos.getZ()-pos.getZ())*k));
 					}
 				}
 			}
 			else if(j >= 0)
 			{
 				int l = j-i;
-				vec3 = vec3.addVector((double)((blockpos.getX()-pos.getX())*l), (double)((blockpos.getY()-pos.getY())*l), (double)((blockpos.getZ()-pos.getZ())*l));
+				vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*l), (double)((blockpos.getY()-pos.getY())*l), (double)((blockpos.getZ()-pos.getZ())*l));
 			}
 		}
 
@@ -651,7 +651,7 @@ public class Utils
 				BlockPos blockpos1 = pos.offset(enumfacing1);
 				if(block.causesDownwardCurrent(world, blockpos1, enumfacing1)||block.causesDownwardCurrent(world, blockpos1.up(), enumfacing1))
 				{
-					vec3 = vec3.normalize().addVector(0.0D, -6.0D, 0.0D);
+					vec3 = vec3.normalize().add(0.0D, -6.0D, 0.0D);
 					break;
 				}
 			}
@@ -672,7 +672,7 @@ public class Utils
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
-		return vec0.addVector(vec1.x, vec1.y, vec1.z);
+		return vec0.add(vec1.x, vec1.y, vec1.z);
 	}
 
 	public static double minInArray(double... f)
@@ -889,8 +889,8 @@ public class Utils
 			ei.motionY = 0.025000000372529D;
 			if(facing!=null)
 			{
-				ei.motionX = (0.075F*facing.getFrontOffsetX());
-				ei.motionZ = (0.075F*facing.getFrontOffsetZ());
+				ei.motionX = (0.075F*facing.getXOffset());
+				ei.motionZ = (0.075F*facing.getZOffset());
 			}
 			world.spawnEntity(ei);
 		}
@@ -1016,7 +1016,7 @@ public class Utils
 	{
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
-		if(containerIn.hasTagCompound()&&containerIn.getTagCompound().hasNoTags())
+		if(containerIn.hasTagCompound()&&containerIn.getTagCompound().isEmpty())
 			containerIn.setTagCompound(null);
 
 		FluidActionResult result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
@@ -1042,7 +1042,7 @@ public class Utils
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
 
-		if(containerIn.hasTagCompound()&&containerIn.getTagCompound().hasNoTags())
+		if(containerIn.hasTagCompound()&&containerIn.getTagCompound().isEmpty())
 			containerIn.setTagCompound(null);
 
 		FluidActionResult result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
@@ -1128,17 +1128,17 @@ public class Utils
 			for(int j = 0; j < 3; j++)
 			{
 				if(j==0)
-					ret[i+j] = in[i+0]*facing.getFrontOffsetZ()+
-							in[i+1]*facing.getFrontOffsetX()+
-							in[i+2]*facing.getFrontOffsetY();
+					ret[i+j] = in[i+0]*facing.getZOffset()+
+							in[i+1]*facing.getXOffset()+
+							in[i+2]*facing.getYOffset();
 				else if(j==1)
-					ret[i+j] = in[i+0]*facing.getFrontOffsetX()+
-							in[i+1]*facing.getFrontOffsetY()+
-							in[i+2]*facing.getFrontOffsetZ();
+					ret[i+j] = in[i+0]*facing.getXOffset()+
+							in[i+1]*facing.getYOffset()+
+							in[i+2]*facing.getZOffset();
 				else
-					ret[i+j] = in[i+0]*facing.getFrontOffsetY()+
-							in[i+1]*facing.getFrontOffsetZ()+
-							in[i+2]*facing.getFrontOffsetX();
+					ret[i+j] = in[i+0]*facing.getYOffset()+
+							in[i+1]*facing.getZOffset()+
+							in[i+2]*facing.getXOffset();
 			}
 		for(int i = 0; i < in.length; i++)
 			ret[i] += .5;
@@ -1595,7 +1595,7 @@ public class Utils
 
 	public static LootTable loadBuiltinLootTable(ResourceLocation resource, LootTableManager lootTableManager)
 	{
-		URL url = Utils.class.getResource("/assets/"+resource.getResourceDomain()+"/loot_tables/"+resource.getResourcePath()+".json");
+		URL url = Utils.class.getResource("/assets/"+resource.getNamespace()+"/loot_tables/"+resource.getPath()+".json");
 		if(url==null)
 			return LootTable.EMPTY_LOOT_TABLE;
 		else
@@ -1654,7 +1654,7 @@ public class Utils
 		{
 			ret.put("size", stack.getCount());
 			ret.put("name", Item.REGISTRY.getNameForObject(stack.getItem()));
-			ret.put("nameUnlocalized", stack.getUnlocalizedName());
+			ret.put("nameUnlocalized", stack.getTranslationKey());
 			ret.put("label", stack.getDisplayName());
 			ret.put("damage", stack.getItemDamage());
 			ret.put("maxDamage", stack.getMaxDamage());
