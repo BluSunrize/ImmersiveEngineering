@@ -687,6 +687,8 @@ public class ImmersiveNetHandler
 		public double catOffsetX;
 		public double catOffsetY;
 		public double catA;
+		public double horizontalLength;
+		public Vec3d across = null;
 
 		public Connection(BlockPos start, BlockPos end, WireType cableType, int length)
 		{
@@ -719,15 +721,32 @@ public class ImmersiveNetHandler
 					getVecForIICAt(world, end, this));
 		}
 
+		@Deprecated
 		public Vec3d getVecAt(double pos, Vec3d vStart, Vec3d across, double lengthHor)
 		{
 			getSubVertices(vStart, vStart.add(across));
+			return getVecAt(pos);
+		}
+
+		public Vec3d getVecAt(double pos)
+		{
 			pos = MathHelper.clamp(pos, 0, 1);
 			if(vertical)
-				return vStart.add(across.scale(pos/across.length()));
+				return catenaryVertices[0].add(across.scale(pos/across.length()));
 			else
-				return vStart.add(pos*across.x, catA*Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
+				return catenaryVertices[0].add(pos*across.x,
+						catA*Math.cosh((pos*horizontalLength-catOffsetX)/catA)+catOffsetY,
 						pos*across.z);
+		}
+
+		//Slope per block
+		public double getSlopeAt(double pos)
+		{
+			pos = MathHelper.clamp(pos, 0, 1);
+			if(vertical)
+				return 0;//TODO
+			else
+				return Math.sinh((pos*horizontalLength-catOffsetX)/catA);//TODO is this correct?
 		}
 
 		public NBTTagCompound writeToNBT()

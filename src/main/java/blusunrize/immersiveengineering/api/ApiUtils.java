@@ -429,6 +429,8 @@ public class ApiUtils
 			c.catOffsetX = offsetX;
 			c.catOffsetY = offsetY;
 			c.catA = a;
+			c.horizontalLength = dw;
+			c.across = end.subtract(start);
 		}
 
 		Vec3d[] vex = new Vec3d[vertices+1];
@@ -501,7 +503,7 @@ public class ApiUtils
 			for(int i = start; i < end; i++)
 			{
 				double factor = (i-getDim(vStart, dim))/getDim(across, dim);
-				Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
+				Vec3d pos = conn.getVecAt(factor);
 
 				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 					return false;

@@ -18,12 +18,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
-import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
 
 public class SkylineHelper
 {
@@ -45,18 +41,17 @@ public class SkylineHelper
 		Vec3d across = new Vec3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
 		double t = Utils.getCoeffForMinDistance(pos, vStart, across);
 		connection.getSubVertices(player.world);
-		pos = connection.getVecAt(t, vStart, across, Math.sqrt(across.x*across.x+across.z*across.z));
-		Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
-		int tInt = MathHelper.clamp((int)(t*vertices), 0, vertices-1);
+		//Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
+		//int tInt = MathHelper.clamp((int)(t*vertices), 0, vertices-1);
 
-		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x, pos.y, pos.z, connection, cc0, steps, tInt+1);
-		float speed = 1;
-		if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
-			speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
-		Vec3d moveVec = getSubMovementVector(steps[tInt], steps[tInt+1], speed);
-		hook.motionX = moveVec.x;//*speed;
-		hook.motionY = moveVec.y;//*speed;
-		hook.motionZ = moveVec.z;//*speed;
+		EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, t);
+		//float speed = 1;
+		//if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
+		//	speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
+		//TODO Vec3d moveVec = getSubMovementVector(steps[tInt], steps[tInt+1], speed);
+		//TODO hook.motionX = moveVec.x;//*speed;
+		//TODO hook.motionY = moveVec.y;//*speed;
+		//TODO hook.motionZ = moveVec.z;//*speed;
 		//		hook.motionX = (steps[0].x-cc1.posX)*.5f;
 		//		hook.motionY = (steps[0].y-cc1.posY)*.5f;
 		//		hook.motionZ = (steps[0].z-cc1.posZ)*.5f;
@@ -65,9 +60,11 @@ public class SkylineHelper
 		//			living.world.spawnParticle("smoke", v.x,v.y,v.z, 0,0,0 );
 
 		if(!player.world.isRemote)
+		{
 			player.world.spawnEntity(hook);
-		ItemSkyhook.existingHooks.put(player.getName(), hook);
-		player.startRiding(hook);
+			ItemSkyhook.existingHooks.put(player.getName(), hook);
+			player.startRiding(hook);
+		}
 		return hook;
 	}
 

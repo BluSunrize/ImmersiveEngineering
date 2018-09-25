@@ -108,7 +108,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int ticks)
 	{
-		if(existingHooks.containsKey(player.getName()))
+		if(!world.isRemote&&existingHooks.containsKey(player.getName()))
 		{
 			EntitySkylineHook hook = existingHooks.get(player.getName());
 			//			player.motionX = hook.motionX;

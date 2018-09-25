@@ -9,14 +9,11 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +23,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -41,10 +37,11 @@ import java.util.Set;
 
 public class EntitySkylineHook extends Entity
 {
-	public Connection connection;
-	public BlockPos target;
-	public Vec3d[] subPoints;
-	public int targetPoint;
+	public static final double GRAVITY = 10;
+	private Connection connection;
+	public double linePos;//Start is 0, end is 1
+	public double horizontalSpeed;//Blocks per tick
+	private double angle;
 
 	public EntitySkylineHook(World world)
 	{
@@ -53,31 +50,33 @@ public class EntitySkylineHook extends Entity
 		//		this.noClip=true;
 	}
 
-	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, BlockPos target,
-							 Vec3d[] subPoints, int next)
+	//TODO vertical connections?
+	public EntitySkylineHook(World world, Connection connection, double linePos)
 	{
-		super(world);
-		targetPoint = next;
-		//		this.noClip=true;
-		this.setSize(0.125F, 0.125F);
-		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
-		this.setPosition(x, y, z);
-		this.connection = connection;
-		this.target = target;
-		this.subPoints = subPoints;
+		this(world);
+		setConnectionAndPos(connection, linePos);
 
 		float f1 = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
 		this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX)*180.0D/Math.PI)+90.0F;
-
-		for(this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY)*180.0D/Math.PI)-90.0F; this.rotationPitch-this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
-			;
-
+		this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY)*180.0D/Math.PI)-90.0F;
+		while(this.rotationPitch-this.prevRotationPitch < -180.0F)
+			this.prevRotationPitch -= 360.0F;
 		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
 			this.prevRotationPitch += 360.0F;
 		while(this.rotationYaw-this.prevRotationYaw < -180.0F)
 			this.prevRotationYaw -= 360.0F;
 		while(this.rotationYaw-this.prevRotationYaw >= 180.0F)
 			this.prevRotationYaw += 360.0F;
+	}
+
+	public void setConnectionAndPos(Connection c, double linePos)
+	{
+		this.linePos = linePos;
+		this.connection = c;
+		Vec3d pos = connection.getVecAt(this.linePos).add(new Vec3d(connection.start));//TODO maybe keep previous player motion?
+		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
+		this.setPosition(pos.x, pos.y, pos.z);
+		this.angle = Math.atan2(connection.across.z, connection.across.x);
 	}
 
 	@Override
@@ -100,82 +99,70 @@ public class EntitySkylineHook extends Entity
 	public void onUpdate()
 	{
 		EntityPlayer player = null;
-//		if(this.getControllingPassenger() instanceof EntityPlayer)
-//			player = ((EntityPlayer)this.getControllingPassenger());
 		List<Entity> list = this.getPassengers();
 		if(!list.isEmpty()&&list.get(0) instanceof EntityPlayer)
 			player = (EntityPlayer)list.get(0);
-
-		if(this.ticksExisted==1&&!world.isRemote)
+		if(connection==null)
+			return;//TODO
+		if(this.ticksExisted >= 1&&!world.isRemote)
 		{
-			IELogger.debug("init tick at "+System.currentTimeMillis());
+			IELogger.debug("init tick at "+System.currentTimeMillis());//TODO do we need this
 			if(player instanceof EntityPlayerMP)
 				ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
 		}
+		boolean moved = false;
+		if(player!=null)
+		{
+			float forward = player.moveForward;
+			double strafing = player.moveStrafing;
+			double playerAngle = Math.toRadians(player.rotationYaw)+Math.PI/2;
+			double angleToLine = playerAngle-angle;
+			double inLineDirection = Math.cos(angleToLine)*forward+Math.sin(angleToLine)*strafing;
+			if(inLineDirection!=0)
+			{
+				double slope = connection.getSlopeAt(linePos);
+				double slopeInDirection = Math.signum(inLineDirection)*slope;
+				if(slopeInDirection > -.1)
+				{
+					double slopeAngle = Math.atan(slopeInDirection);
+					horizontalSpeed = (3*horizontalSpeed+inLineDirection*.5/(2+Math.sin(slopeAngle))/(1+Math.abs(slope)))/4;
+					moved = true;
+				}
+			}
+		}
+		if(!moved)//Gravity based motion
+		{
+			double deltaVHor;
+			{
+				double param = (linePos*connection.horizontalLength-connection.catOffsetX)/connection.catA;
+				double ePlus = Math.exp(param);
+				double eMinus = Math.exp(-param);
+				deltaVHor = -GRAVITY*2*(ePlus-eMinus)/((ePlus+eMinus)*(ePlus+eMinus));//-GRAV*sinh/cosh^2
+				deltaVHor *= .75;//Friction
+			}
+			horizontalSpeed += deltaVHor/20;
+		}
+		if(horizontalSpeed > 0)
+			horizontalSpeed = Math.min(connection.horizontalLength*(1-linePos), horizontalSpeed);
+		else
+			horizontalSpeed = Math.max(-connection.horizontalLength*linePos, horizontalSpeed);
+		horizontalSpeed *= .95;
+		linePos += horizontalSpeed/connection.horizontalLength;
+		motionX = horizontalSpeed*connection.across.x/connection.horizontalLength;
+		motionZ = horizontalSpeed*connection.across.z/connection.horizontalLength;
+		motionY = connection.getSlopeAt(linePos)*horizontalSpeed;
+		Vec3d pos = connection.getVecAt(linePos);
+		this.posX = pos.x+connection.start.getX();
+		this.posY = pos.y+connection.start.getY();
+		this.posZ = pos.z+connection.start.getZ();
+
 		super.onUpdate();
-		//		if(this.ticksExisted>40)
-		//			this.setDead();
-		//		if(world.isRemote)
-		//			return;
-		if(subPoints!=null&&targetPoint < subPoints.length-1)
-		{
-			double dist = subPoints[targetPoint].distanceTo(new Vec3d(posX, posY, posZ));
-			IELogger.debug("dist: "+dist);
-			if(dist <= 0)
-			{
-				this.posX = subPoints[targetPoint].x;
-				this.posY = subPoints[targetPoint].y;
-				this.posZ = subPoints[targetPoint].z;
-				targetPoint++;
-				if(player instanceof EntityPlayerMP)
-					ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
-				IELogger.debug("next vertex: "+targetPoint);
-				return;
-			}
-			float speed = 2f;
-			if(player!=null&&!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
-				speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
-			Vec3d moveVec = SkylineHelper.getSubMovementVector(new Vec3d(posX, posY, posZ), subPoints[targetPoint], speed);
-			motionX = moveVec.x;//*speed;
-			motionY = moveVec.y;//*speed;
-			motionZ = moveVec.z;//*speed;
-		}
-
-		if(target!=null&&targetPoint==subPoints.length-1)
-		{
-			TileEntity end = this.world.getTileEntity(target);
-			IImmersiveConnectable iicEnd = ApiUtils.toIIC(end, world);
-			if(iicEnd==null)
-			{
-				this.setDead();
-				return;
-			}
-			Vec3d vEnd = new Vec3d(target.getX(), target.getY(), target.getZ());
-			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
-
-
-			double gDist = vEnd.distanceTo(new Vec3d(posX, posY, posZ));
-			IELogger.debug("distance to goal: "+gDist);
-			if(gDist <= .3)
-			{
-				reachedTarget(end);
-				return;
-			}
-			else if(gDist > 5)
-			{
-				setDead();
-				return;
-			}
-		}
-		this.posX += this.motionX;
-		this.posY += this.motionY;
-		this.posZ += this.motionZ;
 		float f1 = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
 		this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX)*180.0D/Math.PI)+90.0F;
+		this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY)*180.0D/Math.PI)-90.0F;
 
-		for(this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY)*180.0D/Math.PI)-90.0F; this.rotationPitch-this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
-			;
-
+		while(this.rotationPitch-this.prevRotationPitch < -180.0F)
+			this.prevRotationPitch -= 360.0F;
 		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
 			this.prevRotationPitch += 360.0F;
 		while(this.rotationYaw-this.prevRotationYaw < -180.0F)
@@ -305,9 +292,8 @@ public class EntitySkylineHook extends Entity
 	@Nullable
 	public Entity getControllingPassenger()
 	{
-		return null;
-//		List<Entity> list = this.getPassengers();
-//		return list.isEmpty() ? null : (Entity)list.get(0);
+		List<Entity> list = this.getPassengers();
+		return list.isEmpty()?null: list.get(0);
 	}
 
 	@Override
@@ -380,6 +366,31 @@ public class EntitySkylineHook extends Entity
 	{
 		this.setDead();
 		return true;
-		//		return false;
+	}
+
+	@Override
+	public boolean canPassengerSteer()
+	{
+		return true;
+	}
+
+	@Override
+	protected void removePassenger(Entity passenger)
+	{
+		super.removePassenger(passenger);
+		IELogger.logger.info("Dismounting at {}, velocity {}", getPositionVector(), new Vec3d(motionX, motionY, motionZ));
+		passenger.setPositionAndUpdate(posX, posY+getMountedYOffset(), posZ);
+		passenger.setVelocity(motionX, motionY, motionZ);
+	}
+
+	@Override
+	public void setPositionAndRotation(double x, double y, double z, float yaw, float pitch)
+	{
+		//NOP
+	}
+
+	public Connection getConnection()
+	{
+		return connection;
 	}
 }
