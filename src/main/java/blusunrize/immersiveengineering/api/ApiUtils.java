@@ -1119,9 +1119,14 @@ public class ApiUtils
 		return sprite;
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, VertexFormat f,
-															   Function<Integer, Integer> colorMultiplier)
+	//TODO test on dedi server
+	private static ThreadLocal<Matrix4> quadTransformMatrix = new ThreadLocal<>();
+	private static ThreadLocal<Matrix4> normalTransformMatrix = new ThreadLocal<>();
+	private static final ThreadLocal<UnpackedBakedQuad.Builder> currentQuadBuilder = new ThreadLocal<>();
+	private static Map<VertexFormat, IVertexConsumer> quadTransformers;
+	private static ThreadLocal<Function<Integer, Integer>> colorTransform = new ThreadLocal<>();
+
+	private static IVertexConsumer createTransformer(VertexFormat f)
 	{
 		int posPos = -1;
 		int normPos = -1;
@@ -1138,11 +1143,7 @@ public class ApiUtils
 		final int posPosFinal = posPos;
 		final int normPosFinal = normPos;
 		final int colorPosFinal = colorPos;
-		AtomicReference<UnpackedBakedQuad.Builder> ref = new AtomicReference<>();
-		Matrix4 inverse = mat.copy();
-		inverse.invert();
-		inverse.transpose();
-		IVertexConsumer transformer = new IVertexConsumer()
+		return new IVertexConsumer()
 		{
 			int tintIndex = -1;
 
@@ -1156,42 +1157,42 @@ public class ApiUtils
 			@Override
 			public void setQuadTint(int tint)
 			{
-				ref.get().setQuadTint(tint);
+				currentQuadBuilder.get().setQuadTint(tint);
 				tintIndex = tint;
 			}
 
 			@Override
 			public void setQuadOrientation(@Nonnull EnumFacing orientation)
 			{
-				ref.get().setQuadOrientation(orientation);
+				currentQuadBuilder.get().setQuadOrientation(orientation);
 			}
 
 			@Override
 			public void setApplyDiffuseLighting(boolean diffuse)
 			{
-				ref.get().setApplyDiffuseLighting(diffuse);
+				currentQuadBuilder.get().setApplyDiffuseLighting(diffuse);
 			}
 
 			@Override
 			public void setTexture(@Nonnull TextureAtlasSprite texture)
 			{
-				ref.get().setTexture(texture);
+				currentQuadBuilder.get().setTexture(texture);
 			}
 
 			@Override
 			public void put(int element, @Nonnull float... data)
 			{
-				if(element==posPosFinal)
+				if(element==posPosFinal&&quadTransformMatrix.get()!=null)
 				{
-					Vector3f newPos = mat.apply(new Vector3f(data[0], data[1], data[2]));
+					Vector3f newPos = quadTransformMatrix.get().apply(new Vector3f(data[0], data[1], data[2]));
 					data = new float[3];
 					data[0] = newPos.x;
 					data[1] = newPos.y;
 					data[2] = newPos.z;
 				}
-				else if(element==normPosFinal)
+				else if(element==normPosFinal&&normalTransformMatrix.get()!=null)
 				{
-					Vector3f newNormal = inverse.apply(new Vector3f(data[0], data[1], data[2]));
+					Vector3f newNormal = normalTransformMatrix.get().apply(new Vector3f(data[0], data[1], data[2]));
 					data = new float[3];
 					data[0] = newNormal.x;
 					data[1] = newNormal.y;
@@ -1199,9 +1200,9 @@ public class ApiUtils
 				}
 				else if(element==colorPosFinal)
 				{
-					if(tintIndex!=-1&&colorMultiplier!=null)
+					if(tintIndex!=-1&&colorTransform.get()!=null)
 					{
-						int multiplier = colorMultiplier.apply(tintIndex);
+						int multiplier = colorTransform.get().apply(tintIndex);
 						if(multiplier!=0)
 						{
 							float r = (float)(multiplier >> 16&255)/255.0F;
@@ -1216,13 +1217,28 @@ public class ApiUtils
 						}
 					}
 				}
-				ref.get().put(element, data);
+				currentQuadBuilder.get().put(element, data);
 			}
 		};
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
+															   Function<Integer, Integer> colorMultiplier)
+	{
+		quadTransformMatrix.set(mat);
+		normalTransformMatrix.set(mat.copy());
+		normalTransformMatrix.get().invert();
+		normalTransformMatrix.get().transpose();
+		colorTransform.set(colorMultiplier);
 		return (q) -> {
-			ref.set(new UnpackedBakedQuad.Builder(f));
+			if(quadTransformers==null)
+				quadTransformers = new HashMap<>();
+			IVertexConsumer transformer = quadTransformers.computeIfAbsent(q.getFormat(), ApiUtils::createTransformer);
+			assert transformer!=null;
+			currentQuadBuilder.set(new UnpackedBakedQuad.Builder(q.getFormat()));
 			q.pipe(transformer);
-			return ref.get().build();
+			return currentQuadBuilder.get().build();
 		};
 	}
 }
