@@ -1119,7 +1119,6 @@ public class ApiUtils
 		return sprite;
 	}
 
-	//TODO test on dedi server
 	private static ThreadLocal<Matrix4> quadTransformMatrix = new ThreadLocal<>();
 	private static ThreadLocal<Matrix4> normalTransformMatrix = new ThreadLocal<>();
 	private static final ThreadLocal<UnpackedBakedQuad.Builder> currentQuadBuilder = new ThreadLocal<>();
