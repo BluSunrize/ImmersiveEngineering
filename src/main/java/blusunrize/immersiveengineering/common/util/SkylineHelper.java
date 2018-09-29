@@ -61,6 +61,8 @@ public class SkylineHelper
 
 		if(!player.world.isRemote)
 		{
+			player.fall(player.fallDistance, 1.2F);
+
 			player.world.spawnEntity(hook);
 			ItemSkyhook.existingHooks.put(player.getName(), hook);
 			player.startRiding(hook);

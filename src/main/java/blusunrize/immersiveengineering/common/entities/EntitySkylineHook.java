@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -42,6 +45,8 @@ public class EntitySkylineHook extends Entity
 	public double linePos;//Start is 0, end is 1
 	public double horizontalSpeed;//Blocks per tick
 	private double angle;
+	public double friction = .75;
+	public double upwardSpeed = .5;
 
 	public EntitySkylineHook(World world)
 	{
@@ -77,6 +82,8 @@ public class EntitySkylineHook extends Entity
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(pos.x, pos.y, pos.z);
 		this.angle = Math.atan2(connection.across.z, connection.across.x);
+		if (!world.isRemote)
+			IELogger.logger.info("New conn: a={}, Ox={}, lengthHor={}", c.catA, c.catOffsetX, c.horizontalLength);
 	}
 
 	@Override
@@ -107,8 +114,7 @@ public class EntitySkylineHook extends Entity
 		if(this.ticksExisted >= 1&&!world.isRemote)
 		{
 			IELogger.debug("init tick at "+System.currentTimeMillis());//TODO do we need this
-			if(player instanceof EntityPlayerMP)
-				ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
+			sendUpdatePacketTo(player);
 		}
 		boolean moved = false;
 		if(player!=null)
@@ -125,29 +131,51 @@ public class EntitySkylineHook extends Entity
 				if(slopeInDirection > -.1)
 				{
 					double slopeAngle = Math.atan(slopeInDirection);
-					horizontalSpeed = (3*horizontalSpeed+inLineDirection*.5/(2+Math.sin(slopeAngle))/(1+Math.abs(slope)))/4;
+					horizontalSpeed = (3*horizontalSpeed+inLineDirection*upwardSpeed/(2+Math.sin(slopeAngle))/(1+Math.abs(slope)))/4;
 					moved = true;
 				}
 			}
 		}
+		BlockPos switchingAtPos = null;
+		double horSpeedToUse = horizontalSpeed;
 		if(!moved)//Gravity based motion
 		{
 			double deltaVHor;
 			{
 				double param = (linePos*connection.horizontalLength-connection.catOffsetX)/connection.catA;
-				double ePlus = Math.exp(param);
-				double eMinus = Math.exp(-param);
-				deltaVHor = -GRAVITY*2*(ePlus-eMinus)/((ePlus+eMinus)*(ePlus+eMinus));//-GRAV*sinh/cosh^2
-				deltaVHor *= .75;//Friction
+				double pos = Math.exp(param);
+				double neg = Math.exp(-param);
+				double cosh = (pos+neg)/2;
+				double sinh = (pos-neg)/2;
+				double vSquared = horizontalSpeed*horizontalSpeed*cosh*cosh*20*20;//cosh^2=1+sinh^2 and horSpeed*sinh=vertSpeed. 20 to convert from blocks/tick to block/s
+				deltaVHor = -sinh/(cosh*cosh)*(GRAVITY+vSquared/(connection.catA*cosh));
+				if (!world.isRemote) {
+					IELogger.logger.info("Energy in sim: {} (Kinetic) + {} (Potential)={}", .5*vSquared, GRAVITY*posY, .5*vSquared+GRAVITY*posY);
+				}
+				//deltaVHor *= friction;
 			}
-			horizontalSpeed += deltaVHor/20;
+			horizontalSpeed += deltaVHor/(20*20);// First 20 is because this happens in one tick rather than one second, second 20 is to convert units
 		}
+		//horizontalSpeed *= .95;
 		if(horizontalSpeed > 0)
-			horizontalSpeed = Math.min(connection.horizontalLength*(1-linePos), horizontalSpeed);
+		{
+			double distToEnd = connection.horizontalLength*(1-linePos);
+			if (horizontalSpeed>distToEnd)
+			{
+				switchingAtPos = connection.end;
+				horSpeedToUse = distToEnd;
+			}
+		}
 		else
-			horizontalSpeed = Math.max(-connection.horizontalLength*linePos, horizontalSpeed);
-		horizontalSpeed *= .95;
-		linePos += horizontalSpeed/connection.horizontalLength;
+		{
+			double distToStart = -connection.horizontalLength*linePos;
+			if (horizontalSpeed<distToStart)
+			{
+				switchingAtPos = connection.start;
+				horSpeedToUse = distToStart;
+			}
+		}
+		linePos += horSpeedToUse/connection.horizontalLength;
 		motionX = horizontalSpeed*connection.across.x/connection.horizontalLength;
 		motionZ = horizontalSpeed*connection.across.z/connection.horizontalLength;
 		motionY = connection.getSlopeAt(linePos)*horizontalSpeed;
@@ -203,89 +231,50 @@ public class EntitySkylineHook extends Entity
 		}
 
 		this.setPosition(this.posX, this.posY, this.posZ);
+		if (switchingAtPos!=null && player!=null)
+			switchConnection(switchingAtPos, player, horSpeedToUse);
 	}
 
-	public void reachedTarget(TileEntity end)
+	private void sendUpdatePacketTo(EntityPlayer player)
 	{
-		this.setDead();
-		IELogger.debug("last tick at "+System.currentTimeMillis());
-		List<Entity> list = this.getPassengers();
-		if(list.isEmpty()||!(list.get(0) instanceof EntityPlayer))
-			return;
-//		if(!(this.getControllingPassenger() instanceof EntityPlayer))
-//			return;
-//		EntityPlayer player = (EntityPlayer)this.getControllingPassenger();
-		EntityPlayer player = (EntityPlayer)list.get(0);
-		ItemStack hook = player.getActiveItemStack();
-		if(hook.isEmpty()||!(hook.getItem() instanceof ItemSkyhook))
-			return;
+		if(player instanceof EntityPlayerMP)
+			ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
+	}
+
+	public void switchConnection(BlockPos posForSwitch, EntityPlayer player, double lastHorSpeed)
+	{
 		Optional<Connection> line = Optional.empty();
-		Set<Connection> possible = ImmersiveNetHandler.INSTANCE.getConnections(world, connection.end);
+		Set<Connection> possible = ImmersiveNetHandler.INSTANCE.getConnections(world, posForSwitch);
 		if(possible!=null)
 		{
 			Vec3d look = player.getLookVec();
 			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
+					.filter(c->
+							c.getSubVertices(world)[0].distanceTo(
+									getPositionVector().subtract(c.start.getX(), c.start.getY(), c.start.getZ()))<.1)//TODO is this a good threshold
 					.max(Comparator.comparingDouble(c -> {
-						Vec3d[] vertices = c.getSubVertices(world);
-						Vec3d across = vertices[vertices.length-1].subtract(vertices[0]).normalize();
-						return across.dotProduct(look);
+						c.getSubVertices(world);
+						return c.across.normalize().dotProduct(look);
 					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
 		}
-		if(line.isPresent())
+		IELogger.logger.info("Switching conn at {}, possible: {}, chosen: {}", posForSwitch, possible, line);
+		if (line.isPresent())
 		{
-			player.setActiveHand(player.getActiveHand());
-//					setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
-			SkylineHelper.spawnHook(player, end, line.get());
-			//					ChunkCoordinates cc0 = line.end==target?line.start:line.end;
-			//					ChunkCoordinates cc1 = line.end==target?line.end:line.start;
-			//					double dx = cc0.posX-cc1.posX;
-			//					double dy = cc0.posY-cc1.posY;
-			//					double dz = cc0.posZ-cc1.posZ;
-			//
-			//					EntityZiplineHook zip = new EntityZiplineHook(world, target.posX+.5,target.posY+.5,target.posZ+.5, line, cc0);
-			//					zip.motionX = dx*.05f;
-			//					zip.motionY = dy*.05f;
-			//					zip.motionZ = dz*.05f;
-			//					if(!world.isRemote)
-			//						world.spawnEntity(zip);
-			//					ItemSkyHook.existingHooks.put(this.riddenByEntity.getCommandSenderName(), zip);
-			//					this.riddenByEntity.mountEntity(zip);
+			Connection newCon = line.get();
+			newCon.getSubVertices(world);
+			double slopeOld = connection.getSlopeAt(linePos);
+			double slopeNew = newCon.getSlopeAt(0);
+			double horConversionFactor = Math.sqrt((1+slopeOld*slopeOld)/(1+slopeNew*slopeNew));
+			double oldHorSpeed = horizontalSpeed;
+			horizontalSpeed = Math.abs(horizontalSpeed)*horConversionFactor;
+			//TODO is this broken?
+			IELogger.logger.info("Changed connection. Old slope {}, new slope {}, conv factor {}, hor speed changed from {} to {}",
+					slopeOld, slopeNew, horConversionFactor, oldHorSpeed, horizontalSpeed);
+			setConnectionAndPos(newCon, (Math.abs(oldHorSpeed-lastHorSpeed))*horConversionFactor);
+			sendUpdatePacketTo(player);
 		}
 		else
-		{
-			player.motionX = motionX;
-			player.motionY = motionY;
-			player.motionZ = motionZ;
-			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
-		}
-	}
-
-	@Override
-	public Vec3d getLookVec()
-	{
-		float f1;
-		float f2;
-		float f3;
-		float f4;
-
-		//		if (1 == 1.0F)
-		//		{
-		f1 = MathHelper.cos(-this.rotationYaw*0.017453292F-(float)Math.PI);
-		f2 = MathHelper.sin(-this.rotationYaw*0.017453292F-(float)Math.PI);
-		f3 = -MathHelper.cos(-this.rotationPitch*0.017453292F);
-		f4 = MathHelper.sin(-this.rotationPitch*0.017453292F);
-		return new Vec3d((double)(f2*f3), (double)f4, (double)(f1*f3));
-		//		}
-		//		else
-		//		{
-		//			f1 = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 1;
-		//			f2 = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 1;
-		//			f3 = MathHelper.cos(-f2 * 0.017453292F - (float)Math.PI);
-		//			f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
-		//			float f5 = -MathHelper.cos(-f1 * 0.017453292F);
-		//			float f6 = MathHelper.sin(-f1 * 0.017453292F);
-		//			return Vec3.createVectorHelper((double)(f4 * f5), (double)f6, (double)(f3 * f5));
-		//		}
+			setDead();
 	}
 
 	@Override
@@ -374,13 +363,32 @@ public class EntitySkylineHook extends Entity
 		return true;
 	}
 
+	private void handleDismount(Entity passenger)
+	{
+		IELogger.logger.info("Dismounting at {}, velocity {}", getPositionVector(),
+				new Vec3d(motionX, motionY, motionZ));
+		passenger.setPositionAndUpdate(posX, posY+getMountedYOffset(), posZ);
+		passenger.motionX = motionX;
+		passenger.motionY = motionY;
+		passenger.motionZ = motionZ;
+		if(motionY < 0)
+		{
+			double fallTime = -20*motionY/GRAVITY;
+			//The fall distance is reset when the player stops riding the skyhook
+			passenger.fallDistance = (float)(.5*GRAVITY*fallTime*fallTime);
+			passenger.onGround = false;
+			IELogger.logger.info("Fall speed {}, time {}, distance {}", motionY, fallTime, passenger.fallDistance);
+		}
+	}
+
 	@Override
 	protected void removePassenger(Entity passenger)
 	{
 		super.removePassenger(passenger);
-		IELogger.logger.info("Dismounting at {}, velocity {}", getPositionVector(), new Vec3d(motionX, motionY, motionZ));
-		passenger.setPositionAndUpdate(posX, posY+getMountedYOffset(), posZ);
-		passenger.setVelocity(motionX, motionY, motionZ);
+		if (!world.isRemote)
+			ApiUtils.addFutureServerTask(world, () -> handleDismount(passenger));
+		else
+			ApiUtils.callFromOtherThread(Minecraft.getMinecraft()::addScheduledTask, ()->handleDismount(passenger));
 	}
 
 	@Override

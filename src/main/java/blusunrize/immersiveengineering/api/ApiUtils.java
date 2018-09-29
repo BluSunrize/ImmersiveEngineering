@@ -1041,6 +1041,11 @@ public class ApiUtils
 			}
 	}
 
+	public static void callFromOtherThread(Consumer<Runnable> cons, Runnable r)
+	{
+		new Thread(()->cons.accept(r)).start();
+	}
+
 	public static void moveConnectionEnd(Connection conn, BlockPos newEnd, World world)
 	{
 		IImmersiveConnectable otherSide = ApiUtils.toIIC(conn.start, world);
