@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -31,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
@@ -182,9 +184,17 @@ public class EntitySkylineHook extends Entity
 		motionZ = horizontalSpeed*connection.across.z/connection.horizontalLength;
 		motionY = connection.getSlopeAt(linePos)*horizontalSpeed;
 		Vec3d pos = connection.getVecAt(linePos);
-		this.posX = pos.x+connection.start.getX();
-		this.posY = pos.y+connection.start.getY();
-		this.posZ = pos.z+connection.start.getZ();
+		double posXTemp = pos.x+connection.start.getX();
+		double posYTemp = pos.y+connection.start.getY();
+		double posZTemp = pos.z+connection.start.getZ();
+		if(!isValidPosition(posXTemp, posYTemp, posZTemp, player))
+		{
+			setDead();
+			return;
+		}
+		posX = posXTemp;
+		posY = posYTemp;
+		posZ = posZTemp;
 
 		super.onUpdate();
 		float f1 = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
@@ -269,6 +279,16 @@ public class EntitySkylineHook extends Entity
 		}
 		else
 			setDead();
+	}
+
+	private boolean isValidPosition(double x, double y, double z, @Nonnull EntityPlayer player)
+	{
+		double radius = player.width/2;
+		double height = player.height;
+		double yOffset = getMountedYOffset()+player.getYOffset();
+		AxisAlignedBB playerBB = new AxisAlignedBB(x-radius, y+yOffset, z-radius, x+radius, y+yOffset+height, z+radius);
+		List<AxisAlignedBB> boxes = world.getCollisionBoxes(player, playerBB);
+		return boxes.isEmpty();
 	}
 
 	@Override
