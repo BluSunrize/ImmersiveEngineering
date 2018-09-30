@@ -983,6 +983,7 @@ public class ApiUtils
 		}
 	}
 
+	//TODO second method to find connections the player "fell through" (for the skyhook)
 	public static Connection getTargetConnection(World world, EntityPlayer player, Connection ignored, double maxDistance)
 	{
 		Vec3d look = player.getLookVec();

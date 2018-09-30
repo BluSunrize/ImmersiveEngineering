@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -23,7 +24,7 @@ import net.minecraft.world.World;
 
 public class SkylineHelper
 {
-	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection)
+	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection, EnumHand hand)
 	{
 		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start: connection.end;
 		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end: connection.start;
@@ -39,26 +40,18 @@ public class SkylineHelper
 
 		Vec3d pos = player.getPositionEyes(0);
 		Vec3d across = new Vec3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
-		double t = Utils.getCoeffForMinDistance(pos, vStart, across);
+		double linePos = Utils.getCoeffForMinDistance(pos, vStart, across);
 		connection.getSubVertices(player.world);
-		//Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
-		//int tInt = MathHelper.clamp((int)(t*vertices), 0, vertices-1);
 
-		EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, t);
-		//float speed = 1;
-		//if(!player.getActiveItemStack().isEmpty()&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
-		//	speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
-		//TODO Vec3d moveVec = getSubMovementVector(steps[tInt], steps[tInt+1], speed);
-		//TODO hook.motionX = moveVec.x;//*speed;
-		//TODO hook.motionY = moveVec.y;//*speed;
-		//TODO hook.motionZ = moveVec.z;//*speed;
-		//		hook.motionX = (steps[0].x-cc1.posX)*.5f;
-		//		hook.motionY = (steps[0].y-cc1.posY)*.5f;
-		//		hook.motionZ = (steps[0].z-cc1.posZ)*.5f;
+		Vec3d playerMovement = new Vec3d(player.motionX, player.motionY,
+				player.motionZ);//TODO why doesn't this work?
+		double slopeAtPos = connection.getSlopeAt(linePos);
+		Vec3d extendedWire = new Vec3d(connection.across.x, slopeAtPos*connection.horizontalLength, connection.across.z);
+		extendedWire = extendedWire.normalize();
+		IELogger.logger.info("Speed keeping: Player {}, wire {}", playerMovement, extendedWire);
 
-		//		for(Vec3 v : steps)
-		//			living.world.spawnParticle("smoke", v.x,v.y,v.z, 0,0,0 );
-
+		EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, player.getName(),
+				hand, playerMovement.dotProduct(extendedWire));
 		if(!player.world.isRemote)
 		{
 			player.fall(player.fallDistance, 1.2F);

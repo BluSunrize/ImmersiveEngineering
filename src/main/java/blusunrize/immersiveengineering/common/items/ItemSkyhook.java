@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
@@ -73,8 +74,9 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 
 	public static HashMap<String, EntitySkylineHook> existingHooks = new HashMap<String, EntitySkylineHook>();
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		TileEntity connector = null;
 		Connection line = null;
@@ -85,13 +87,30 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 			line = con;
 		}
 		ItemStack stack = player.getHeldItem(hand);
-		if(line!=null&&connector!=null)
+		boolean connecting = ItemNBTHelper.getBoolean(stack, "connecting");
+		if(existingHooks.containsKey(player.getName())&&!connecting)
 		{
-			SkylineHelper.spawnHook(player, connector, line);
-			player.setActiveHand(hand);
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
+			existingHooks.get(player.getName()).setDead();
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult(EnumActionResult.PASS, stack);
+		else if(!existingHooks.containsKey(player.getName()))
+		{
+			ItemNBTHelper.setBoolean(stack, "connecting", true);
+			player.setActiveHand(hand);
+			if(line!=null&&connector!=null)
+			{
+				SkylineHelper.spawnHook(player, connector, line, hand);
+				return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+			}
+		}
+		return new ActionResult<>(EnumActionResult.PASS, stack);
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
+	{
+		super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
+		ItemNBTHelper.remove(stack, "connecting");
 	}
 
 	public float getSkylineSpeed(ItemStack stack)
@@ -103,21 +122,6 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	public int getMaxItemUseDuration(ItemStack stack)
 	{
 		return 72000;
-	}
-
-	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int ticks)
-	{
-		if(!world.isRemote&&existingHooks.containsKey(player.getName()))
-		{
-			EntitySkylineHook hook = existingHooks.get(player.getName());
-			//			player.motionX = hook.motionX;
-			//			player.motionY = hook.motionY;
-			//			player.motionZ = hook.motionZ;
-			//			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
-			hook.setDead();
-			existingHooks.remove(player.getName());
-		}
 	}
 
 	@Override

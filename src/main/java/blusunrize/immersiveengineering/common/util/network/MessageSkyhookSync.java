@@ -23,15 +23,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageSkyhookSync implements IMessage
 {
-	int entityID;
-	Connection connection;
-	double linePos;
+	private int entityID;
+	private Connection connection;
+	private double linePos;
+	private double speed;
 
 	public MessageSkyhookSync(EntitySkylineHook entity)
 	{
 		entityID = entity.getEntityId();
 		connection = entity.getConnection();
 		linePos = entity.linePos;
+		speed = entity.horizontalSpeed;
 	}
 
 	public MessageSkyhookSync()
@@ -45,6 +47,7 @@ public class MessageSkyhookSync implements IMessage
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
 		connection = Connection.readFromNBT(tag);
 		linePos = buf.readDouble();
+		speed = buf.readDouble();
 	}
 
 	@Override
@@ -53,6 +56,7 @@ public class MessageSkyhookSync implements IMessage
 		buf.writeInt(entityID);
 		ByteBufUtils.writeTag(buf, connection.writeToNBT());
 		buf.writeDouble(linePos);
+		buf.writeDouble(speed);
 	}
 
 	public static class Handler implements IMessageHandler<MessageSkyhookSync, IMessage>
@@ -68,7 +72,7 @@ public class MessageSkyhookSync implements IMessage
 					if(ent instanceof EntitySkylineHook)
 					{
 						message.connection.getSubVertices(world);
-						((EntitySkylineHook)ent).setConnectionAndPos(message.connection, message.linePos);
+						((EntitySkylineHook)ent).setConnectionAndPos(message.connection, message.linePos, message.speed);
 					}
 				}
 			});
