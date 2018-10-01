@@ -1119,125 +1119,138 @@ public class ApiUtils
 		return sprite;
 	}
 
-	private static ThreadLocal<Matrix4> quadTransformMatrix = new ThreadLocal<>();
-	private static ThreadLocal<Matrix4> normalTransformMatrix = new ThreadLocal<>();
-	private static final ThreadLocal<UnpackedBakedQuad.Builder> currentQuadBuilder = new ThreadLocal<>();
-	private static Map<VertexFormat, IVertexConsumer> quadTransformers;
-	private static ThreadLocal<Function<Integer, Integer>> colorTransform = new ThreadLocal<>();
-
-	private static IVertexConsumer createTransformer(VertexFormat f)
-	{
-		int posPos = -1;
-		int normPos = -1;
-		int colorPos = -1;
-		for(int i = 0; i < f.getElements().size(); i++)
-			if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.POSITION)
-				posPos = i;
-			else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.NORMAL)
-				normPos = i;
-			else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.COLOR)
-				colorPos = i;
-		if(posPos==-1)
-			return null;
-		final int posPosFinal = posPos;
-		final int normPosFinal = normPos;
-		final int colorPosFinal = colorPos;
-		return new IVertexConsumer()
-		{
-			int tintIndex = -1;
-
-			@Nonnull
-			@Override
-			public VertexFormat getVertexFormat()
-			{
-				return f;
-			}
-
-			@Override
-			public void setQuadTint(int tint)
-			{
-				currentQuadBuilder.get().setQuadTint(tint);
-				tintIndex = tint;
-			}
-
-			@Override
-			public void setQuadOrientation(@Nonnull EnumFacing orientation)
-			{
-				currentQuadBuilder.get().setQuadOrientation(orientation);
-			}
-
-			@Override
-			public void setApplyDiffuseLighting(boolean diffuse)
-			{
-				currentQuadBuilder.get().setApplyDiffuseLighting(diffuse);
-			}
-
-			@Override
-			public void setTexture(@Nonnull TextureAtlasSprite texture)
-			{
-				currentQuadBuilder.get().setTexture(texture);
-			}
-
-			@Override
-			public void put(int element, @Nonnull float... data)
-			{
-				if(element==posPosFinal&&quadTransformMatrix.get()!=null)
-				{
-					Vector3f newPos = quadTransformMatrix.get().apply(new Vector3f(data[0], data[1], data[2]));
-					data = new float[3];
-					data[0] = newPos.x;
-					data[1] = newPos.y;
-					data[2] = newPos.z;
-				}
-				else if(element==normPosFinal&&normalTransformMatrix.get()!=null)
-				{
-					Vector3f newNormal = normalTransformMatrix.get().apply(new Vector3f(data[0], data[1], data[2]));
-					data = new float[3];
-					data[0] = newNormal.x;
-					data[1] = newNormal.y;
-					data[2] = newNormal.z;
-				}
-				else if(element==colorPosFinal)
-				{
-					if(tintIndex!=-1&&colorTransform.get()!=null)
-					{
-						int multiplier = colorTransform.get().apply(tintIndex);
-						if(multiplier!=0)
-						{
-							float r = (float)(multiplier >> 16&255)/255.0F;
-							float g = (float)(multiplier >> 8&255)/255.0F;
-							float b = (float)(multiplier&255)/255.0F;
-							float[] oldData = data;
-							data = new float[4];
-							data[0] = oldData[0]*r;
-							data[1] = oldData[1]*g;
-							data[2] = oldData[2]*b;
-							data[3] = oldData[3];
-						}
-					}
-				}
-				currentQuadBuilder.get().put(element, data);
-			}
-		};
-	}
-
 	@SideOnly(Side.CLIENT)
 	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
 															   Function<Integer, Integer> colorMultiplier)
 	{
-		quadTransformMatrix.set(mat);
-		normalTransformMatrix.set(mat.copy());
-		normalTransformMatrix.get().invert();
-		normalTransformMatrix.get().transpose();
-		colorTransform.set(colorMultiplier);
-		return (q) -> {
-			if(quadTransformers==null)
-				quadTransformers = new HashMap<>();
-			IVertexConsumer transformer = quadTransformers.computeIfAbsent(q.getFormat(), ApiUtils::createTransformer);
+		return new QuadTransfromer(mat, colorMultiplier);
+	}
+
+	@SideOnly(Side.CLIENT)
+	private static class QuadTransfromer implements Function<BakedQuad, BakedQuad>
+	{
+		private final Matrix4 transform;
+		private final Matrix4 normalTransform;
+		@Nullable
+		private final Function<Integer, Integer> colorTransform;
+		private UnpackedBakedQuad.Builder currentQuadBuilder;
+		private final Map<VertexFormat, IVertexConsumer> consumers = new HashMap<>();
+
+		private QuadTransfromer(Matrix4 transform, @Nullable Function<Integer, Integer> colorTransform)
+		{
+			this.transform = transform;
+			this.colorTransform = colorTransform;
+			this.normalTransform = transform.copy();
+			normalTransform.transpose().invert();
+		}
+
+		@Override
+		public BakedQuad apply(BakedQuad q)
+		{
+			IVertexConsumer transformer = consumers.computeIfAbsent(q.getFormat(), this::createConsumer);
 			assert transformer!=null;
-			currentQuadBuilder.set(new UnpackedBakedQuad.Builder(q.getFormat()));
+			currentQuadBuilder = new UnpackedBakedQuad.Builder(q.getFormat());
 			q.pipe(transformer);
-			return currentQuadBuilder.get().build();
-		};
+			return currentQuadBuilder.build();
+		}
+
+		private IVertexConsumer createConsumer(VertexFormat f)
+		{
+			int posPos = -1;
+			int normPos = -1;
+			int colorPos = -1;
+			for(int i = 0; i < f.getElements().size(); i++)
+				if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.POSITION)
+					posPos = i;
+				else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.NORMAL)
+					normPos = i;
+				else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.COLOR)
+					colorPos = i;
+			if(posPos==-1)
+				return null;
+			final int posPosFinal = posPos;
+			final int normPosFinal = normPos;
+			final int colorPosFinal = colorPos;
+			return new IVertexConsumer()
+			{
+				int tintIndex = -1;
+
+				@Nonnull
+				@Override
+				public VertexFormat getVertexFormat()
+				{
+					return f;
+				}
+
+				@Override
+				public void setQuadTint(int tint)
+				{
+					currentQuadBuilder.setQuadTint(tint);
+					tintIndex = tint;
+				}
+
+				@Override
+				public void setQuadOrientation(@Nonnull EnumFacing orientation)
+				{
+					Vec3d newFront = normalTransform.apply(new Vec3d(orientation.getDirectionVec()));
+					EnumFacing newOrientation = EnumFacing.getFacingFromVector((float)newFront.x, (float)newFront.y,
+							(float)newFront.z);
+					currentQuadBuilder.setQuadOrientation(newOrientation);
+				}
+
+				@Override
+				public void setApplyDiffuseLighting(boolean diffuse)
+				{
+					currentQuadBuilder.setApplyDiffuseLighting(diffuse);
+				}
+
+				@Override
+				public void setTexture(@Nonnull TextureAtlasSprite texture)
+				{
+					currentQuadBuilder.setTexture(texture);
+				}
+
+				@Override
+				public void put(int element, @Nonnull float... data)
+				{
+					if(element==posPosFinal&&transform!=null)
+					{
+						Vector3f newPos = transform.apply(new Vector3f(data[0], data[1], data[2]));
+						data = new float[3];
+						data[0] = newPos.x;
+						data[1] = newPos.y;
+						data[2] = newPos.z;
+					}
+					else if(element==normPosFinal&&normalTransform!=null)
+					{
+						Vector3f newNormal = normalTransform.apply(new Vector3f(data[0], data[1], data[2]));
+						data = new float[3];
+						data[0] = newNormal.x;
+						data[1] = newNormal.y;
+						data[2] = newNormal.z;
+					}
+					else if(element==colorPosFinal)
+					{
+						if(tintIndex!=-1&&colorTransform!=null)
+						{
+							int multiplier = colorTransform.apply(tintIndex);
+							if(multiplier!=0)
+							{
+								float r = (float)(multiplier >> 16&255)/255.0F;
+								float g = (float)(multiplier >> 8&255)/255.0F;
+								float b = (float)(multiplier&255)/255.0F;
+								float[] oldData = data;
+								data = new float[4];
+								data[0] = oldData[0]*r;
+								data[1] = oldData[1]*g;
+								data[2] = oldData[2]*b;
+								data[3] = oldData[3];
+							}
+						}
+					}
+					currentQuadBuilder.put(element, data);
+				}
+			};
+		}
 	}
 }

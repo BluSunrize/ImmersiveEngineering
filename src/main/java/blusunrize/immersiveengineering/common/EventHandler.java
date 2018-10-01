@@ -509,7 +509,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntitySpawnCheck(LivingSpawnEvent.CheckSpawn event)
 	{
-		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY)
+		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
+				||event.isSpawner())
 			return;
 		if(event.getEntityLiving().isCreatureType(EnumCreatureType.MONSTER, false))
 		{
