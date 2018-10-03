@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
-import blusunrize.immersiveengineering.common.items.ItemSkyhook;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
@@ -22,9 +22,26 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import static blusunrize.immersiveengineering.common.util.SkylineHelper.SkyhookStatus.HOLDING_CONNECTING;
+import static blusunrize.immersiveengineering.common.util.SkylineHelper.SkyhookStatus.NONE;
+
 public class SkylineHelper
 {
-	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection, EnumHand hand)
+	//TODO turn this into an entity capability?
+	private static Map<UUID, PlayerSkyhookData> playerStatus = new HashMap<>();
+	private static final double LN_0_98 = Math.log(.98);
+
+	public static PlayerSkyhookData getDataForPlayer(UUID uuid)
+	{
+		return playerStatus.computeIfAbsent(uuid, u -> new PlayerSkyhookData());
+	}
+
+	public static void spawnHook(EntityLivingBase player, TileEntity start, Connection connection, EnumHand hand)
 	{
 		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start: connection.end;
 		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end: connection.start;
@@ -44,23 +61,42 @@ public class SkylineHelper
 		connection.getSubVertices(player.world);
 
 		Vec3d playerMovement = new Vec3d(player.motionX, player.motionY,
-				player.motionZ);//TODO why doesn't this work?
+				player.motionZ);
 		double slopeAtPos = connection.getSlopeAt(linePos);
 		Vec3d extendedWire = new Vec3d(connection.across.x, slopeAtPos*connection.horizontalLength, connection.across.z);
 		extendedWire = extendedWire.normalize();
-		IELogger.logger.info("Speed keeping: Player {}, wire {}", playerMovement, extendedWire);
 
-		EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, player.getName(),
-				hand, playerMovement.dotProduct(extendedWire));
 		if(!player.world.isRemote)
 		{
-			player.fall(player.fallDistance, 1.2F);
+			double totalSpeed = playerMovement.dotProduct(extendedWire);
+			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
+			EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, player.getName(),
+					hand, horSpeed);
+			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
+					hook.getPositionVector());
+			if(hook.isValidPosition(hook.posX, hook.posY, hook.posZ, player))
+			{
+				double vertSpeed = Math.sqrt(totalSpeed*totalSpeed-horSpeed*horSpeed);
+				double speedDiff = player.motionY-vertSpeed;
+				if(speedDiff < 0)
+				{
+					player.fall(fallDistanceFromSpeed(speedDiff), 1.2F);
+					player.fallDistance = 0;
+				}
 
-			player.world.spawnEntity(hook);
-			ItemSkyhook.existingHooks.put(player.getName(), hook);
-			player.startRiding(hook);
+				player.world.spawnEntity(hook);
+				PlayerSkyhookData data = getDataForPlayer(player.getUniqueID());
+				data.status = SkyhookStatus.HOLDING_RIDING;
+				data.hook = hook;
+				player.startRiding(hook);
+			}
 		}
-		return hook;
+	}
+
+	public static float fallDistanceFromSpeed(double v)
+	{
+		double fallTime = Math.log(v/3.92+1)/LN_0_98;//In ticks
+		return -(float)(196-3.92*fallTime-194.04*Math.pow(.98, fallTime-.5));
 	}
 
 	public static Vec3d getSubMovementVector(Vec3d start, Vec3d target, float speed)
@@ -85,5 +121,60 @@ public class SkylineHelper
 						return true;
 				}
 		return false;
+	}
+
+	public enum SkyhookStatus
+	{
+		NONE(null, null),
+		RIDING(NONE, null),
+		HOLDING_CONNECTING(null, NONE),
+		HOLDING_FAILED(null, NONE),
+		HOLDING_RIDING(HOLDING_FAILED, RIDING);
+		@Nullable
+		//The state after leaving the skyhook entity
+		public final SkyhookStatus dismount;
+		@Nullable
+		//The state after stopping to use the skyhook item
+		public final SkyhookStatus release;
+
+		SkyhookStatus(@Nullable SkyhookStatus dismount, @Nullable SkyhookStatus release)
+		{
+			this.dismount = dismount;
+			this.release = release;
+		}
+	}
+
+	public static class PlayerSkyhookData
+	{
+		private SkyhookStatus status = NONE;
+		@Nullable
+		public EntitySkylineHook hook = null;
+
+		public void release()
+		{
+			if(status.release!=null)
+				status = status.release;
+		}
+
+		public void dismount()
+		{
+			if(hook!=null)
+			{
+				hook.setDead();
+				hook = null;
+			}
+			if(status.dismount!=null)
+				status = status.dismount;
+		}
+
+		public SkyhookStatus getStatus()
+		{
+			return status;
+		}
+
+		public void startHolding()
+		{
+			status = HOLDING_CONNECTING;
+		}
 	}
 }

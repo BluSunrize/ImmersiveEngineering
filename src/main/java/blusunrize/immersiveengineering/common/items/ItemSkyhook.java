@@ -12,10 +12,12 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import blusunrize.immersiveengineering.common.util.SkylineHelper.PlayerSkyhookData;
+import blusunrize.immersiveengineering.common.util.SkylineHelper.SkyhookStatus;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -34,7 +36,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
 
 public class ItemSkyhook extends ItemUpgradeableTool implements ITool
@@ -72,45 +73,56 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		return multimap;
 	}*/
 
-	public static HashMap<String, EntitySkylineHook> existingHooks = new HashMap<String, EntitySkylineHook>();
 
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		if(player.getCooldownTracker().hasCooldown(this))
+			return new ActionResult<>(EnumActionResult.PASS, stack);
+		PlayerSkyhookData data = SkylineHelper.getDataForPlayer(player.getUniqueID());
+		if(data.hook!=null&&!world.isRemote)
+		{
+			data.dismount();
+			IELogger.logger.info("Player left voluntarily");
+		}
+		else
+		{
+			data.startHolding();
+			player.setActiveHand(hand);
+		}
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+	}
+
+	@Override
+	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+	{
+		super.onUsingTick(stack, player, count);
+		PlayerSkyhookData data = SkylineHelper.getDataForPlayer(player.getUniqueID());
+		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
+			return;
+		World world = player.world;
 		TileEntity connector = null;
 		Connection line = null;
-		Connection con = ApiUtils.getTargetConnection(world, player, null, 0);
+		Connection con = ApiUtils.getConnectionMovedThrough(world, player);
 		if(con!=null)
 		{
 			connector = world.getTileEntity(con.start);
 			line = con;
 		}
-		ItemStack stack = player.getHeldItem(hand);
-		boolean connecting = ItemNBTHelper.getBoolean(stack, "connecting");
-		if(existingHooks.containsKey(player.getName())&&!connecting)
-		{
-			existingHooks.get(player.getName()).setDead();
-			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-		}
-		else if(!existingHooks.containsKey(player.getName()))
-		{
-			ItemNBTHelper.setBoolean(stack, "connecting", true);
-			player.setActiveHand(hand);
-			if(line!=null&&connector!=null)
-			{
-				SkylineHelper.spawnHook(player, connector, line, hand);
-				return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-			}
-		}
-		return new ActionResult<>(EnumActionResult.PASS, stack);
+		if(line!=null&&connector!=null)
+			SkylineHelper.spawnHook(player, connector, line, player.getActiveHand());
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase player, int timeLeft)
 	{
-		super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
-		ItemNBTHelper.remove(stack, "connecting");
+		super.onPlayerStoppedUsing(stack, worldIn, player, timeLeft);
+		if(!worldIn.isRemote)
+		{
+			SkylineHelper.getDataForPlayer(player.getUniqueID()).release();
+		}
 	}
 
 	public float getSkylineSpeed(ItemStack stack)

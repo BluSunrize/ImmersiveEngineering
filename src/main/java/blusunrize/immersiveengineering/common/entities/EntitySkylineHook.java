@@ -13,13 +13,15 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
@@ -89,7 +91,10 @@ public class EntitySkylineHook extends Entity
 		this.setPosition(pos.x, pos.y, pos.z);
 		this.angle = Math.atan2(connection.across.z, connection.across.x);
 		if (!world.isRemote)
+		{
 			IELogger.logger.info("New conn: a={}, Ox={}, lengthHor={}", c.catA, c.catOffsetX, c.horizontalLength);
+			IELogger.logger.info("Speed: {}, Pos: {}", speed, linePos);
+		}
 	}
 
 	@Override
@@ -118,7 +123,10 @@ public class EntitySkylineHook extends Entity
 		if(connection==null||owner==null||player==null||player.getHeldItem(hand).getItem()!=IEContent.itemSkyhook)
 		{
 			if(!world.isRemote)
+			{
+				IELogger.logger.info("Invalid data!");
 				setDead();
+			}
 			return;
 		}
 		if(this.ticksExisted >= 1&&!world.isRemote)
@@ -160,7 +168,6 @@ public class EntitySkylineHook extends Entity
 			}
 			horizontalSpeed += deltaVHor/(20*20);// First 20 is because this happens in one tick rather than one second, second 20 is to convert units
 		}
-		//horizontalSpeed *= .95;
 		if(horizontalSpeed > 0)
 		{
 			double distToEnd = connection.horizontalLength*(1-linePos);
@@ -189,6 +196,8 @@ public class EntitySkylineHook extends Entity
 		double posZTemp = pos.z+connection.start.getZ();
 		if(!isValidPosition(posXTemp, posYTemp, posZTemp, player))
 		{
+			IELogger.logger.info("Collided with something at {}! Linepos {}, speed {}",
+					new Vec3d(posXTemp, posYTemp, posZTemp), linePos, horizontalSpeed);
 			setDead();
 			return;
 		}
@@ -281,14 +290,34 @@ public class EntitySkylineHook extends Entity
 			setDead();
 	}
 
-	private boolean isValidPosition(double x, double y, double z, @Nonnull EntityPlayer player)
+	public boolean isValidPosition(double x, double y, double z, @Nonnull EntityLivingBase player)
 	{
 		double radius = player.width/2;
 		double height = player.height;
-		double yOffset = getMountedYOffset()+player.getYOffset();
+		double yOffset = getMountedYOffset()+player.getYOffset()+.3;
 		AxisAlignedBB playerBB = new AxisAlignedBB(x-radius, y+yOffset, z-radius, x+radius, y+yOffset+height, z+radius);
 		List<AxisAlignedBB> boxes = world.getCollisionBoxes(player, playerBB);
-		return boxes.isEmpty();
+		// Heuristic to prevent dragging players through blocks too much, but also keep most setups working
+		// Allow positions where the intersection is less than 10% of the player BB volume
+		double totalCollisionVolume = 0;
+		double playerVolume = getVolume(playerBB);
+		for(AxisAlignedBB box : boxes)
+		{
+			AxisAlignedBB intersection = box.intersect(playerBB);
+			totalCollisionVolume += getVolume(intersection);
+			if(totalCollisionVolume*10 > playerVolume)
+			{
+				IELogger.logger.info("Collision: player volume {}, intersect volume {}, player box {}, boxes {}",
+						playerVolume, totalCollisionVolume, playerBB, boxes);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private double getVolume(AxisAlignedBB box)
+	{
+		return (box.maxX-box.minX)*(box.maxY-box.minY)*(box.maxZ-box.minZ);
 	}
 
 	@Override
@@ -374,27 +403,29 @@ public class EntitySkylineHook extends Entity
 	@Override
 	public boolean canPassengerSteer()
 	{
-		return true;
+		return false;
 	}
 
 	private void handleDismount(Entity passenger)
 	{
-		IELogger.logger.info("Dismounting at {}, velocity {}", getPositionVector(),
-				new Vec3d(motionX, motionY, motionZ));
 		passenger.setPositionAndUpdate(posX, posY+getMountedYOffset(), posZ);
 		passenger.motionX = motionX;
 		passenger.motionY = motionY;
 		passenger.motionZ = motionZ;
 		if(motionY < 0)
 		{
-			double fallTime = -20*motionY/GRAVITY;
-			//The fall distance is reset when the player stops riding the skyhook
-			passenger.fallDistance = (float)(.5*GRAVITY*fallTime*fallTime);
+			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(motionY);
 			passenger.onGround = false;
-			IELogger.logger.info("Fall speed {}, time {}, distance {}", motionY, fallTime, passenger.fallDistance);
+			IELogger.logger.info("Fall speed {}, distance {}", motionY, passenger.fallDistance);
 		}
-		if(owner!=null)
-			ItemSkyhook.existingHooks.remove(owner);//TODO will this cause race conditions?
+		SkylineHelper.getDataForPlayer(passenger.getUniqueID()).dismount();
+		if(hand!=null&&passenger instanceof EntityPlayer)
+		{
+			ItemStack held = ((EntityPlayer)passenger).getHeldItem(hand);
+			if(held.getItem()==IEContent.itemSkyhook)
+				((EntityPlayer)passenger).getCooldownTracker().setCooldown(IEContent.itemSkyhook,
+						10);
+		}
 	}
 
 	@Override
