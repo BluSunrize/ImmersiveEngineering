@@ -8,6 +8,8 @@
  - Fixed arc recycling calculations failing in rare cases (Malte)
  - Fixed lag with certain setups of routers (Malte)
  - Fixed conveyors sometimes showing the wrong model (Malte)
+ - Fixed crashes with recent Forge versions (Malte)
+ - Fixed the arc furnace not recycling damaged tools (BluSunrize)
 
 #####Version 0.12-85 - BUILT
 - Re-Added Thaumcraft compat (BluSunrize)

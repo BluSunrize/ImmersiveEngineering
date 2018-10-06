@@ -1123,11 +1123,13 @@ public class ApiUtils
 	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
 															   Function<Integer, Integer> colorMultiplier)
 	{
-		return new QuadTransfromer(mat, colorMultiplier);
+		return new QuadTransformer(mat, colorMultiplier);
 	}
 
-	@SideOnly(Side.CLIENT)
-	private static class QuadTransfromer implements Function<BakedQuad, BakedQuad>
+	// Full class names to work around some sort of compiler bug (Only happens when building with gradle)
+	@net.minecraftforge.fml.relauncher.SideOnly(Side.CLIENT)
+	private static class QuadTransformer implements java.util.function.Function<net.minecraft.client.renderer.block.model.BakedQuad,
+			net.minecraft.client.renderer.block.model.BakedQuad>
 	{
 		private final Matrix4 transform;
 		private final Matrix4 normalTransform;
@@ -1136,7 +1138,7 @@ public class ApiUtils
 		private UnpackedBakedQuad.Builder currentQuadBuilder;
 		private final Map<VertexFormat, IVertexConsumer> consumers = new HashMap<>();
 
-		private QuadTransfromer(Matrix4 transform, @Nullable Function<Integer, Integer> colorTransform)
+		private QuadTransformer(Matrix4 transform, @Nullable Function<Integer, Integer> colorTransform)
 		{
 			this.transform = transform;
 			this.colorTransform = colorTransform;

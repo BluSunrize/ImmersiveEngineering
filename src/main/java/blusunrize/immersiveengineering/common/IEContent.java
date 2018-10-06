@@ -74,7 +74,6 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.*;
-import net.minecraft.potion.PotionHelper.MixPredicate;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -98,16 +97,20 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Mod.EventBusSubscriber
@@ -1029,10 +1032,30 @@ public class IEContent
 	public static void postInit()
 	{
 		/*POTIONS*/
-		HashSet<PotionType> bottlingRegistered = new HashSet<>();
-
-		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-			MixerRecipePotion.registerPotionRecipe(mixPredicate.output, mixPredicate.input, ApiUtils.createIngredientStack(mixPredicate.reagent));
+		try
+		{
+			//Blame Forge for this mess. They stopped ATs from working on MixPredicate and its fields by modifying them with patches
+			//without providing a usable way to look up the vanilla potion recipes
+			String mixPredicateName = "net.minecraft.potion.PotionHelper$MixPredicate";
+			Class<?> mixPredicateClass = Class.forName(mixPredicateName);
+			Field output = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185200_c"));
+			Field reagent = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185199_b"));
+			Field input = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185198_a"));
+			output.setAccessible(true);
+			reagent.setAccessible(true);
+			input.setAccessible(true);
+			for(Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
+				//noinspection unchecked
+				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
+						((IRegistryDelegate<PotionType>)input.get(mixPredicate)).get(),
+						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
+		} catch(Exception x)
+		{
+			x.printStackTrace();
+		}
 		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
 			if(recipe instanceof AbstractBrewingRecipe)
 			{
