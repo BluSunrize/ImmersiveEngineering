@@ -256,8 +256,11 @@ public class IEVillagerHandler
 			if(chunkCoords!=null)
 			{
 				MineralWorldInfo mineralWorldInfo = ExcavatorHandler.getMineralWorldInfo(merchant.getWorld(), chunkCoords, true);
-				if(mineralWorldInfo.mineral==null)
-					throw new RuntimeException("THE MINERAL SHOULD NEVER BE NULL");
+				if(mineralWorldInfo==null || mineralWorldInfo.mineral==null)
+				{
+					IELogger.error("Null "+(mineralWorldInfo==null?"WorldInfo":"Mineral")+" on building Cartographer trade.");
+					return;
+				}
 				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);
 				ItemStack itemstack = ItemMap.setupNewMap(world, (double)blockPos.getX(), (double)blockPos.getZ(), (byte)1, true, true);
 				ItemMap.renderBiomePreviewMap(world, itemstack);

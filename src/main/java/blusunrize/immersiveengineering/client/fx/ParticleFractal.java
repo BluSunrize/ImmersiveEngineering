@@ -51,7 +51,7 @@ public class ParticleFractal extends Particle
 		Vec3d dist = end.subtract(startPos);
 		for(int i = 0; i < points; i++)
 		{
-			Vec3d sub = startPos.addVector(dist.x/points*i, dist.y/points*i, dist.z/points*i);
+			Vec3d sub = startPos.add(dist.x/points*i, dist.y/points*i, dist.z/points*i);
 			//distance to the middle point and by that, distance from the start and end. -1 is start, 1 is end
 			double fixPointDist = (i-points/2)/(points/2);
 			//Randomization modifier, closer to start/end means smaller divergence
@@ -59,7 +59,7 @@ public class ParticleFractal extends Particle
 			double offX = (rand.nextDouble()-.5)*mod;
 			double offY = (rand.nextDouble()-.5)*mod;
 			double offZ = (rand.nextDouble()-.5)*mod;
-			this.pointsList[i] = sub.addVector(offX, offY, offZ);
+			this.pointsList[i] = sub.add(offX, offY, offZ);
 		}
 	}
 

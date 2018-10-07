@@ -83,7 +83,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 //		if(descPacket && world!=null)
 //			world.markBlockForUpdate(getPos());
 	}

@@ -176,7 +176,7 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
-		return createComparableItemStack(stack, copy, stack.hasTagCompound()&&!stack.getTagCompound().hasNoTags());
+		return createComparableItemStack(stack, copy, stack.hasTagCompound()&&!stack.getTagCompound().isEmpty());
 	}
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
@@ -367,7 +367,7 @@ public class ApiUtils
 		if(iicPos!=null)
 			offset = iicPos.getConnectionOffset(conn);
 		if(pos.equals(conn.end))
-			offset = offset.addVector(conn.end.getX()-conn.start.getX(),
+			offset = offset.add(conn.end.getX()-conn.start.getX(),
 					conn.end.getY()-conn.start.getY(),
 					conn.end.getZ()-conn.start.getZ());
 		return offset;
@@ -375,7 +375,7 @@ public class ApiUtils
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
-		return vec0.addVector(vec1.x, vec1.y, vec1.z);
+		return vec0.add(vec1.x, vec1.y, vec1.z);
 	}
 
 	public static double acosh(double x)
@@ -459,7 +459,7 @@ public class ApiUtils
 
 	public static Vec3d offsetDim(Vec3d p, int dim, double amount)
 	{
-		return p.addVector(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
+		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
 	public static boolean raytraceAlongCatenary(Connection conn, World w, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
@@ -490,7 +490,7 @@ public class ApiUtils
 		HashSet<Triple<BlockPos, Vec3d, Vec3d>> near = new HashSet<>();
 		Vec3d across = vEnd.subtract(vStart);
 		across = new Vec3d(across.x, 0, across.z);
-		double lengthHor = across.lengthVector();
+		double lengthHor = across.length();
 		halfScanned.put(conn.start, vStart);
 		halfScanned.put(conn.end, vEnd);
 		//Raytrace X&Z
@@ -703,7 +703,7 @@ public class ApiUtils
 								Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
 										(int)Math.sqrt(distanceSq));
 								Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos));
-								Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).addVector(linkPos.getX()-masterPos.getX(),
+								Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).add(linkPos.getX()-masterPos.getX(),
 										linkPos.getY()-masterPos.getY(),
 										linkPos.getZ()-masterPos.getZ());
 								BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
@@ -952,8 +952,8 @@ public class ApiUtils
 				if(aabb.contains(a)||aabb.contains(b))
 					return true;
 			}
-			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.addVector(pos.getX(), pos.getY(), pos.getZ()),
-					b.addVector(pos.getX(), pos.getY(), pos.getZ()));
+			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.add(pos.getX(), pos.getY(), pos.getZ()),
+					b.add(pos.getX(), pos.getY(), pos.getZ()));
 			return rayResult!=null&&rayResult.typeOfHit==RayTraceResult.Type.BLOCK;
 		}
 		return false;
@@ -1003,11 +1003,11 @@ public class ApiUtils
 						Connection c = conn.getLeft();
 						if(ignored==null||!c.hasSameConnectors(ignored))
 						{
-							Vec3d startRelative = start.addVector(-pos.getX(), -pos.getY(), -pos.getZ());
+							Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
 							Vec3d across = conn.getRight().subtract(conn.getMiddle());
 							double t = Utils.getCoeffForMinDistance(startRelative, conn.getMiddle(), across);
 							t = MathHelper.clamp(0, t, 1);
-							Vec3d closest = conn.getMiddle().addVector(t*across.x, t*across.y, t*across.z);
+							Vec3d closest = conn.getMiddle().add(t*across.x, t*across.y, t*across.z);
 							double distSq = closest.squareDistanceTo(startRelative);
 							if(distSq < minDistSq.get())
 							{
@@ -1037,6 +1037,22 @@ public class ApiUtils
 				world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
 						task, null));
 			}
+	}
+
+	public static void moveConnectionEnd(Connection conn, BlockPos newEnd, World world)
+	{
+		IImmersiveConnectable otherSide = ApiUtils.toIIC(conn.start, world);
+		Vec3d start = ApiUtils.getVecForIICAt(world, conn.start, conn);
+		Vec3d end = ApiUtils.getVecForIICAt(world, conn.end, conn);
+		if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
+		{
+			ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);
+			Connection newConn = new Connection(conn.start, newEnd, conn.cableType, conn.length);
+			ImmersiveNetHandler.INSTANCE.addConnection(world, conn.start, newConn);
+			ImmersiveNetHandler.INSTANCE.addConnection(world, newEnd,
+					new Connection(newEnd, conn.start, conn.cableType, conn.length));
+			ImmersiveNetHandler.INSTANCE.addBlockData(world, newConn);
+		}
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>
@@ -1104,109 +1120,139 @@ public class ApiUtils
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, VertexFormat f,
+	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
 															   Function<Integer, Integer> colorMultiplier)
 	{
-		int posPos = -1;
-		int normPos = -1;
-		int colorPos = -1;
-		for(int i = 0; i < f.getElements().size(); i++)
-			if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.POSITION)
-				posPos = i;
-			else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.NORMAL)
-				normPos = i;
-			else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.COLOR)
-				colorPos = i;
-		if(posPos==-1)
-			return null;
-		final int posPosFinal = posPos;
-		final int normPosFinal = normPos;
-		final int colorPosFinal = colorPos;
-		AtomicReference<UnpackedBakedQuad.Builder> ref = new AtomicReference<>();
-		Matrix4 inverse = mat.copy();
-		inverse.invert();
-		inverse.transpose();
-		IVertexConsumer transformer = new IVertexConsumer()
+		return new QuadTransformer(mat, colorMultiplier);
+	}
+
+	// Full class names to work around some sort of compiler bug (Only happens when building with gradle)
+	@net.minecraftforge.fml.relauncher.SideOnly(Side.CLIENT)
+	private static class QuadTransformer implements java.util.function.Function<net.minecraft.client.renderer.block.model.BakedQuad,
+			net.minecraft.client.renderer.block.model.BakedQuad>
+	{
+		private final Matrix4 transform;
+		private final Matrix4 normalTransform;
+		@Nullable
+		private final Function<Integer, Integer> colorTransform;
+		private UnpackedBakedQuad.Builder currentQuadBuilder;
+		private final Map<VertexFormat, IVertexConsumer> consumers = new HashMap<>();
+
+		private QuadTransformer(Matrix4 transform, @Nullable Function<Integer, Integer> colorTransform)
 		{
-			int tintIndex = -1;
+			this.transform = transform;
+			this.colorTransform = colorTransform;
+			this.normalTransform = transform.copy();
+			normalTransform.transpose().invert();
+		}
 
-			@Nonnull
-			@Override
-			public VertexFormat getVertexFormat()
-			{
-				return f;
-			}
+		@Override
+		public BakedQuad apply(BakedQuad q)
+		{
+			IVertexConsumer transformer = consumers.computeIfAbsent(q.getFormat(), this::createConsumer);
+			assert transformer!=null;
+			currentQuadBuilder = new UnpackedBakedQuad.Builder(q.getFormat());
+			q.pipe(transformer);
+			return currentQuadBuilder.build();
+		}
 
-			@Override
-			public void setQuadTint(int tint)
+		private IVertexConsumer createConsumer(VertexFormat f)
+		{
+			int posPos = -1;
+			int normPos = -1;
+			int colorPos = -1;
+			for(int i = 0; i < f.getElements().size(); i++)
+				if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.POSITION)
+					posPos = i;
+				else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.NORMAL)
+					normPos = i;
+				else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.COLOR)
+					colorPos = i;
+			if(posPos==-1)
+				return null;
+			final int posPosFinal = posPos;
+			final int normPosFinal = normPos;
+			final int colorPosFinal = colorPos;
+			return new IVertexConsumer()
 			{
-				ref.get().setQuadTint(tint);
-				tintIndex = tint;
-			}
+				int tintIndex = -1;
 
-			@Override
-			public void setQuadOrientation(@Nonnull EnumFacing orientation)
-			{
-				ref.get().setQuadOrientation(orientation);
-			}
-
-			@Override
-			public void setApplyDiffuseLighting(boolean diffuse)
-			{
-				ref.get().setApplyDiffuseLighting(diffuse);
-			}
-
-			@Override
-			public void setTexture(@Nonnull TextureAtlasSprite texture)
-			{
-				ref.get().setTexture(texture);
-			}
-
-			@Override
-			public void put(int element, @Nonnull float... data)
-			{
-				if(element==posPosFinal)
+				@Nonnull
+				@Override
+				public VertexFormat getVertexFormat()
 				{
-					Vector3f newPos = mat.apply(new Vector3f(data[0], data[1], data[2]));
-					data = new float[3];
-					data[0] = newPos.x;
-					data[1] = newPos.y;
-					data[2] = newPos.z;
+					return f;
 				}
-				else if(element==normPosFinal)
+
+				@Override
+				public void setQuadTint(int tint)
 				{
-					Vector3f newNormal = inverse.apply(new Vector3f(data[0], data[1], data[2]));
-					data = new float[3];
-					data[0] = newNormal.x;
-					data[1] = newNormal.y;
-					data[2] = newNormal.z;
+					currentQuadBuilder.setQuadTint(tint);
+					tintIndex = tint;
 				}
-				else if(element==colorPosFinal)
+
+				@Override
+				public void setQuadOrientation(@Nonnull EnumFacing orientation)
 				{
-					if(tintIndex!=-1&&colorMultiplier!=null)
+					Vec3d newFront = normalTransform.apply(new Vec3d(orientation.getDirectionVec()));
+					EnumFacing newOrientation = EnumFacing.getFacingFromVector((float)newFront.x, (float)newFront.y,
+							(float)newFront.z);
+					currentQuadBuilder.setQuadOrientation(newOrientation);
+				}
+
+				@Override
+				public void setApplyDiffuseLighting(boolean diffuse)
+				{
+					currentQuadBuilder.setApplyDiffuseLighting(diffuse);
+				}
+
+				@Override
+				public void setTexture(@Nonnull TextureAtlasSprite texture)
+				{
+					currentQuadBuilder.setTexture(texture);
+				}
+
+				@Override
+				public void put(int element, @Nonnull float... data)
+				{
+					if(element==posPosFinal&&transform!=null)
 					{
-						int multiplier = colorMultiplier.apply(tintIndex);
-						if(multiplier!=0)
+						Vector3f newPos = transform.apply(new Vector3f(data[0], data[1], data[2]));
+						data = new float[3];
+						data[0] = newPos.x;
+						data[1] = newPos.y;
+						data[2] = newPos.z;
+					}
+					else if(element==normPosFinal&&normalTransform!=null)
+					{
+						Vector3f newNormal = normalTransform.apply(new Vector3f(data[0], data[1], data[2]));
+						data = new float[3];
+						data[0] = newNormal.x;
+						data[1] = newNormal.y;
+						data[2] = newNormal.z;
+					}
+					else if(element==colorPosFinal)
+					{
+						if(tintIndex!=-1&&colorTransform!=null)
 						{
-							float r = (float)(multiplier >> 16&255)/255.0F;
-							float g = (float)(multiplier >> 8&255)/255.0F;
-							float b = (float)(multiplier&255)/255.0F;
-							float[] oldData = data;
-							data = new float[4];
-							data[0] = oldData[0]*r;
-							data[1] = oldData[1]*g;
-							data[2] = oldData[2]*b;
-							data[3] = oldData[3];
+							int multiplier = colorTransform.apply(tintIndex);
+							if(multiplier!=0)
+							{
+								float r = (float)(multiplier >> 16&255)/255.0F;
+								float g = (float)(multiplier >> 8&255)/255.0F;
+								float b = (float)(multiplier&255)/255.0F;
+								float[] oldData = data;
+								data = new float[4];
+								data[0] = oldData[0]*r;
+								data[1] = oldData[1]*g;
+								data[2] = oldData[2]*b;
+								data[3] = oldData[3];
+							}
 						}
 					}
+					currentQuadBuilder.put(element, data);
 				}
-				ref.get().put(element, data);
-			}
-		};
-		return (q) -> {
-			ref.set(new UnpackedBakedQuad.Builder(f));
-			q.pipe(transformer);
-			return ref.get().build();
-		};
+			};
+		}
 	}
 }

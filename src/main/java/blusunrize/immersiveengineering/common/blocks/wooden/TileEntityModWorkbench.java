@@ -39,7 +39,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		dummy = nbt.getBoolean("dummy");
 		dummyOffset = nbt.getInteger("dummyOffset");
 		//		if(!descPacket)

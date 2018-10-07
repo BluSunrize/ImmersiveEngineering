@@ -140,7 +140,7 @@ public class ConveyorSplit extends ConveyorBasic
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(conveyorTile.getPos().hashCode());
 		if(!entity.getEntityData().hasKey(nbtKey))
 			return vec;
-		EnumFacing redirect = EnumFacing.getFront(entity.getEntityData().getInteger(nbtKey));
+		EnumFacing redirect = EnumFacing.byIndex(entity.getEntityData().getInteger(nbtKey));
 		BlockPos wallPos = conveyorTile.getPos().offset(facing);
 		double distNext = Math.abs((facing.getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(facing.getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distNext < 1.33)
@@ -148,7 +148,7 @@ public class ConveyorSplit extends ConveyorBasic
 			double sideMove = Math.pow(1+distNext, 0.1)*.2;
 			if(distNext < .8)
 				vec = new Vec3d(facing.getAxis()==Axis.X?0: vec.x, vec.y, facing.getAxis()==Axis.Z?0: vec.z);
-			vec = vec.addVector(redirect.getFrontOffsetX()*sideMove, 0, redirect.getFrontOffsetZ()*sideMove);
+			vec = vec.add(redirect.getXOffset()*sideMove, 0, redirect.getZOffset()*sideMove);
 		}
 		return vec;
 	}

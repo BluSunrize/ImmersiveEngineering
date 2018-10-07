@@ -28,7 +28,7 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 	{
 		if(entity!=null&&!entity.isDead)
 		{
-			if(world.isBlockIndirectlyGettingPowered(pos) > 0)
+			if(world.getRedstonePowerFromNeighbors(pos) > 0)
 				return;
 
 			double vBase = entity instanceof EntityLivingBase?1.5: 1.15;
@@ -44,8 +44,8 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 
 			if(!(entity instanceof EntityPlayer))
 			{
-				vX = 0.05*this.facing.getFrontOffsetX();
-				vZ = 0.05*this.facing.getFrontOffsetZ();
+				vX = 0.05*this.facing.getXOffset();
+				vZ = 0.05*this.facing.getZOffset();
 				if(facing==EnumFacing.WEST||facing==EnumFacing.EAST)
 				{
 					if(entity.posZ > getPos().getZ()+0.65D)

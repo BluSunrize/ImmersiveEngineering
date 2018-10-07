@@ -140,47 +140,61 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	{
 		if(this.input!=null&&this.input.matches(input))
 		{
-			ArrayList<ItemStack> qAdd = new ArrayList<ItemStack>(additives.size());
-			for(ItemStack s : additives)
-				qAdd.add(s);
-
-			for(IngredientStack add : this.additives)
-				if(add!=null)
-				{
-					int addAmount = add.inputSize;
-					Iterator<ItemStack> it = qAdd.iterator();
-					while(it.hasNext())
-					{
-						ItemStack query = it.next();
-						if(!query.isEmpty())
-						{
-							if(add.matches(query))
-							{
-								if(query.getCount() > addAmount)
-								{
-									query.shrink(addAmount);
-									addAmount = 0;
-								}
-								else
-								{
-									addAmount -= query.getCount();
-									query.setCount(0);
-								}
-							}
-							if(query.getCount() <= 0)
-								it.remove();
-							if(addAmount <= 0)
-								break;
-						}
-					}
-
-					if(addAmount > 0)
-						return false;
-				}
-			return true;
+			int[] consumed = getConsumedAdditives(additives, false);
+			return consumed!=null;
 		}
+
 		return false;
 	}
+
+	public int[] getConsumedAdditives(NonNullList<ItemStack> additives, boolean consume)
+	{
+		int[] consumed = new int[additives.size()];
+		for(IngredientStack add : this.additives)
+			if(add!=null)
+			{
+				int addAmount = add.inputSize;
+				Iterator<ItemStack> it = additives.iterator();
+				int i = 0;
+				while(it.hasNext())
+				{
+					ItemStack query = it.next();
+					if(!query.isEmpty())
+					{
+						if(add.matches(query))
+						{
+							if(query.getCount() > addAmount)
+							{
+								query.shrink(addAmount);
+								consumed[i] = addAmount;
+								addAmount = 0;
+							}
+							else
+							{
+								addAmount -= query.getCount();
+								consumed[i] = query.getCount();
+								query.setCount(0);
+							}
+						}
+						if(addAmount <= 0)
+							break;
+					}
+					i++;
+				}
+
+				if(addAmount > 0)
+				{
+					for(int j = 0; j < consumed.length; j++)
+						additives.get(j).grow(consumed[j]);
+					return null;
+				}
+			}
+		if(!consume)
+			for(int j = 0; j < consumed.length; j++)
+				additives.get(j).grow(consumed[j]);
+		return consumed;
+	}
+
 
 	public boolean isValidInput(ItemStack stack)
 	{

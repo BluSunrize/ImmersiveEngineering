@@ -69,7 +69,7 @@ public class NameRemapper
 	{
 		for(MissingMappings.Mapping miss : ev.getMappings())
 		{
-			String newName = nameMap.get(miss.key.getResourcePath());
+			String newName = nameMap.get(miss.key.getPath());
 			if(newName!=null)
 			{
 				ResourceLocation newLoc = new ResourceLocation(ImmersiveEngineering.MODID, newName);

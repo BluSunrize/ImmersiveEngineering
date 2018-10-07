@@ -40,7 +40,7 @@ public class ItemNBTHelper
 		if(hasKey(stack, key))
 		{
 			getTag(stack).removeTag(key);
-			if(getTag(stack).hasNoTags())
+			if(getTag(stack).isEmpty())
 				stack.setTagCompound(null);
 		}
 	}
@@ -235,7 +235,7 @@ public class ItemNBTHelper
 
 	public static NBTTagCompound combineTags(NBTTagCompound target, NBTTagCompound add, Pattern pattern)
 	{
-		if(target==null||target.hasNoTags())
+		if(target==null||target.isEmpty())
 			return add.copy();
 		for(String key : add.getKeySet())
 			if(pattern==null||pattern.matcher(key).matches())

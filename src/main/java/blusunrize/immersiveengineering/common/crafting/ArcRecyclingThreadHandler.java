@@ -183,11 +183,14 @@ public class ArcRecyclingThreadHandler extends Thread
 			List<ItemStack> missingSub = new ArrayList<>();
 			Map<ItemStack, Double> outputs = new IdentityHashMap<>();
 			for(Ingredient in : inputs)
-				if(in!=null)
+				if(in!=null&&in!=Ingredient.EMPTY)
 				{
 					ItemStack inputStack = IEApi.getPreferredStackbyMod(in.getMatchingStacks());
 					if(inputStack.isEmpty())
-						continue;
+					{
+						IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getRegistryName()+")");
+						return null;
+					}
 
 					Object[] brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
 					if(brokenDown==null)
@@ -222,8 +225,11 @@ public class ArcRecyclingThreadHandler extends Thread
 				outputScaled.put(e.getKey(), e.getValue()/inputSize);
 			if(!outputs.isEmpty()||!missingSub.isEmpty())
 			{
-				RecyclingCalculation calc = new RecyclingCalculation(recipe,
-						Utils.copyStackWithAmount(stack, 1), outputScaled);
+				ItemStack in = Utils.copyStackWithAmount(stack, 1);
+				if(in.getItem().isDamageable())
+					in.setItemDamage(OreDictionary.WILDCARD_VALUE);
+				RecyclingCalculation calc = new RecyclingCalculation(recipe,in
+						, outputScaled);
 				calc.queriedSubcomponents.addAll(missingSub);
 				return calc;
 			}

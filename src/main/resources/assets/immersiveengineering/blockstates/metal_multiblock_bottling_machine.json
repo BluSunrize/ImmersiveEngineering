@@ -78,7 +78,7 @@
 				"model": "immersiveengineering:metal_multiblock/bottling_machine_animated.obj.ie"
 			}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{
 				"model": "forge:multi-layer",

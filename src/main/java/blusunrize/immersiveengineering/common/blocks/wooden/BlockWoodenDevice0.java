@@ -188,9 +188,9 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
+	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
 	{
-		super.onEntityCollidedWithBlock(world, pos, state, entity);
+		super.onEntityCollision(world, pos, state, entity);
 		int explosivesType = this.getExplosivesType(state);
 		if(!world.isRemote&&entity instanceof EntityArrow&&entity.isBurning()&&explosivesType >= 0)
 			this.doExplosion(world, pos, state, ((EntityArrow)entity).shootingEntity instanceof EntityLivingBase?(EntityLivingBase)((EntityArrow)entity).shootingEntity: null, explosivesType);
@@ -205,7 +205,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
 	//			NBTTagCompound tag = new NBTTagCompound();
 	//			((TileEntityWoodenBarrel) te).writeTank(tag, true);
-	//			if(!tag.hasNoTags())
+	//			if(!tag.isEmpty())
 	//				stack.setTagCompound(tag);
 	//			return stack;
 	//		}
@@ -223,7 +223,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, meta);
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
@@ -233,7 +233,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, meta);
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
@@ -251,7 +251,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
@@ -261,7 +261,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}

@@ -77,7 +77,6 @@ public class RedstoneWireNetwork
 	public static void updateConnectors(BlockPos start, World world, RedstoneWireNetwork network)
 	{
 		int dimension = world.provider.getDimension();
-		Map<BlockPos, Set<Connection>> connsForDim = INSTANCE.directConnections.get(dimension);
 		Set<BlockPos> open = new HashSet<>();
 		open.add(start);
 		Set<BlockPos> closed = new HashSet<>();
@@ -89,7 +88,7 @@ public class RedstoneWireNetwork
 			it.remove();
 			IImmersiveConnectable iic = ApiUtils.toIIC(next, world);
 			closed.add(next);
-			Set<Connection> connsAtBlock = connsForDim.get(next);
+			Set<Connection> connsAtBlock = INSTANCE.getConnections(dimension, next);
 			if(iic instanceof IRedstoneConnector)
 			{
 				((IRedstoneConnector)iic).setNetwork(network);

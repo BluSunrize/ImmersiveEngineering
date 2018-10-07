@@ -263,7 +263,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			T tile = this.getTileForPos(rsPos);
 			if(tile!=null)
 			{
-				boolean b = world.isBlockIndirectlyGettingPowered(tile.getPos()) > 0;
+				boolean b = world.getRedstonePowerFromNeighbors(tile.getPos()) > 0;
 				return redstoneControlInverted!=b;
 			}
 		}
@@ -637,6 +637,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public static class MultiblockProcessInMachine<R extends IMultiblockRecipe> extends MultiblockProcess<R>
 	{
 		protected int[] inputSlots = new int[0];
+		protected int[] inputAmounts = null;
 		protected int[] inputTanks = new int[0];
 
 		public MultiblockProcessInMachine(R recipe, int... inputSlots)
@@ -651,9 +652,21 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			return this;
 		}
 
+		public MultiblockProcessInMachine setInputAmounts(int... inputAmounts)
+		{
+			this.inputAmounts = inputAmounts;
+			return this;
+		}
+
 		public int[] getInputSlots()
 		{
 			return this.inputSlots;
+		}
+
+		@Nullable
+		public int[] getInputAmounts()
+		{
+			return this.inputAmounts;
 		}
 
 		public int[] getInputTanks()
@@ -711,21 +724,31 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			List<IngredientStack> itemInputList = this.getRecipeItemInputs(multiblock);
 			if(inv!=null&&this.inputSlots!=null&&itemInputList!=null)
 			{
-				Iterator<IngredientStack> iterator = new ArrayList(itemInputList).iterator();
-				while(iterator.hasNext())
+				if(this.inputAmounts!=null&&this.inputSlots.length==this.inputAmounts.length)
 				{
-					IngredientStack ingr = iterator.next();
-					int ingrSize = ingr.inputSize;
-					for(int slot : this.inputSlots)
-						if(!inv.get(slot).isEmpty()&&ingr.matchesItemStackIgnoringSize(inv.get(slot)))
-						{
-							int taken = Math.min(inv.get(slot).getCount(), ingrSize);
-							inv.get(slot).shrink(taken);
-							if(inv.get(slot).getCount() <= 0)
-								inv.set(slot, ItemStack.EMPTY);
-							if((ingrSize -= taken) <= 0)
-								break;
-						}
+					for(int i = 0; i < this.inputSlots.length; i++)
+						if(this.inputAmounts[i] > 0)
+							inv.get(this.inputSlots[i]).shrink(this.inputAmounts[i]);
+
+				}
+				else
+				{
+					Iterator<IngredientStack> iterator = new ArrayList(itemInputList).iterator();
+					while(iterator.hasNext())
+					{
+						IngredientStack ingr = iterator.next();
+						int ingrSize = ingr.inputSize;
+						for(int slot : this.inputSlots)
+							if(!inv.get(slot).isEmpty()&&ingr.matchesItemStackIgnoringSize(inv.get(slot)))
+							{
+								int taken = Math.min(inv.get(slot).getCount(), ingrSize);
+								inv.get(slot).shrink(taken);
+								if(inv.get(slot).getCount() <= 0)
+									inv.set(slot, ItemStack.EMPTY);
+								if((ingrSize -= taken) <= 0)
+									break;
+							}
+					}
 				}
 			}
 			IFluidTank[] tanks = multiblock.getInternalTanks();
@@ -763,6 +786,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			if(inputSlots!=null)
 				nbt.setIntArray("process_inputSlots", inputSlots);
+			if(inputAmounts!=null)
+				nbt.setIntArray("process_inputAmounts", inputAmounts);
 			if(inputTanks!=null)
 				nbt.setIntArray("process_inputTanks", inputTanks);
 		}

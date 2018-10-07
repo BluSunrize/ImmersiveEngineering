@@ -307,7 +307,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
-		list.add(I18n.format("Level: "+this.getRarity(stack).rarityColor+this.getRarity(stack).rarityName));
+		list.add(I18n.format("Level: "+this.getRarity(stack).color+this.getRarity(stack).rarityName));
 		if(!GuiScreen.isShiftKeyDown())
 			list.add(I18n.format(Lib.DESC_INFO+"shader.applyTo")+" "+I18n.format(Lib.DESC_INFO+"holdShift"));
 		else

@@ -270,6 +270,15 @@
             {
               "function": "set_nbt",
               "tag": "{blueprint:\"bullet\"}"
+            },
+            {
+              "function": "immersiveengineering:secret_bluprintz",
+              "conditions": [
+                {
+                  "condition": "random_chance",
+                  "chance": 0.125
+                }
+              ]
             }
           ]
         },
@@ -282,6 +291,15 @@
             {
               "function": "set_nbt",
               "tag": "{blueprint:\"specialBullet\"}"
+            },
+            {
+              "function": "immersiveengineering:secret_bluprintz",
+              "conditions": [
+                {
+                  "condition": "random_chance",
+                  "chance": 0.125
+                }
+              ]
             }
           ]
         },
@@ -294,6 +312,15 @@
             {
               "function": "set_nbt",
               "tag": "{blueprint:\"electrode\"}"
+            },
+            {
+              "function": "immersiveengineering:secret_bluprintz",
+              "conditions": [
+                {
+                  "condition": "random_chance",
+                  "chance": 0.125
+                }
+              ]
             }
           ]
         }

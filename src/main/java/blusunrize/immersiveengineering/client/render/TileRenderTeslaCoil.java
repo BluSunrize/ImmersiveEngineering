@@ -82,7 +82,7 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 		for(int i = 0; i < subs.size(); i++)
 			worldrenderer.pos(subs.get(i).x-tileX, subs.get(i).y-tileY, subs.get(i).z-tileZ).endVertex();
 
-		Vec3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector(): animation.targetPos).addVector(-tileX, -tileY, -tileZ);
+		Vec3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector(): animation.targetPos).add(-tileX, -tileY, -tileZ);
 		worldrenderer.pos(end.x, end.y, end.z).endVertex();
 
 		tes.draw();

@@ -537,7 +537,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 				{
 					block.onBlockHarvested(world, pos, state, player);
 					if(block.removedByPlayer(state, world, pos, player, false))
-						block.onBlockDestroyedByPlayer(world, pos, state);
+						block.onPlayerDestroy(world, pos, state);
 				}
 				else
 				{
@@ -547,7 +547,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 					stack.onBlockDestroyed(world, state, pos, player);
 					if(block.removedByPlayer(state, world, pos, player, true))
 					{
-						block.onBlockDestroyedByPlayer(world, pos, state);
+						block.onPlayerDestroy(world, pos, state);
 						block.harvestBlock(world, player, pos, state, te, stack);
 						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
 					}

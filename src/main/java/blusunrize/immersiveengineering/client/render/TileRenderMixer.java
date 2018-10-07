@@ -48,7 +48,7 @@ public class TileRenderMixer extends TileEntitySpecialRenderer<TileEntityMixer>
 		GlStateManager.translate(x+.5, y+.5, z+.5);
 
 		if(te.mirrored)
-			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1: 1, 1, te.facing.getFrontOffsetZ()==0?-1: 1);
+			GlStateManager.scale(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(te.facing==EnumFacing.SOUTH||te.facing==EnumFacing.WEST?-.5: .5, 0, te.facing==EnumFacing.SOUTH||te.facing==EnumFacing.EAST?.5: -.5);

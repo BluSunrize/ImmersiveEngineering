@@ -94,7 +94,7 @@ public class ExcavatorHandler
 		if(worldInfo==null)
 		{
 			MineralMix mix = null;
-			Random r = world.getChunkFromChunkCoords(chunkCoords.x, chunkCoords.z).getRandomWithSeed(940610);
+			Random r = world.getChunk(chunkCoords.x, chunkCoords.z).getRandomWithSeed(940610);
 			double dd = r.nextDouble();
 
 			boolean empty = !guaranteed&&dd > mineralChance;

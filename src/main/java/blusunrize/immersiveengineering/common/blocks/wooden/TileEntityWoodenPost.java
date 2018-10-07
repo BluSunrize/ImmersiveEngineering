@@ -224,7 +224,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		}
 		else if(this.dummy > 3)
 		{
-			EnumFacing f = EnumFacing.getFront(dummy-3).getOpposite();
+			EnumFacing f = EnumFacing.byIndex(dummy-3).getOpposite();
 			this.world.setBlockToAir(getPos());
 			this.markBlockForUpdate(getPos().offset(f).add(0, -3, 0), null);
 		}

@@ -91,7 +91,7 @@ public class IEApi
 				ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
 				if(rl!=null)
 				{
-					String modId = rl.getResourceDomain();
+					String modId = rl.getNamespace();
 					int idx = modId==null||modId.isEmpty()?-1: modPreference.indexOf(modId);
 					if(preferredStack.isEmpty()||(idx >= 0&&(lastPref < 0||idx < lastPref)))
 					{

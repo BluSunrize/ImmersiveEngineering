@@ -14,6 +14,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 {
 	public ContainerAssembler(InventoryPlayer inventoryPlayer, TileEntityAssembler tile)
@@ -42,6 +44,7 @@ public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 			addSlotToContainer(new Slot(inventoryPlayer, i, 13+i*18, 195));
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{

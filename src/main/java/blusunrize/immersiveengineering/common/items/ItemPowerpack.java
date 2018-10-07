@@ -54,7 +54,7 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 		super(ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.CHEST);
 		setMaxDamage(0);
 		String name = "powerpack";
-		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
+		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 //		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);

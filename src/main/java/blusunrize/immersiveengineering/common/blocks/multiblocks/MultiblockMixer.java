@@ -135,7 +135,7 @@ public class MultiblockMixer implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==IEContent.blockSheetmetal&&(state.getBlock().getMetaFromState(state)==BlockTypes_MetalsAll.IRON.getMeta());
+		return Utils.compareToOreName(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "blockSheetmetalIron");
 	}
 
 	@Override

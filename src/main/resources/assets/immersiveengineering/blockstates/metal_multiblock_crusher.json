@@ -55,7 +55,7 @@
 			"false":{},
 			"true":{"model": "immersiveengineering:metal_multiblock/crusher_drum.obj"}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{"model": "immersiveengineering:metal_multiblock/crusher.obj"},
 			"true":{"model": "immersiveengineering:metal_multiblock/crusher_mirrored.obj"}

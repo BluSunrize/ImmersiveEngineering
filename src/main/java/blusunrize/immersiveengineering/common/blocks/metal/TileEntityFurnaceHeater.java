@@ -43,7 +43,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 		if(!world.isRemote)
 		{
 			boolean a = active;
-			boolean redstonePower = world.isBlockIndirectlyGettingPowered(getPos()) > 0;
+			boolean redstonePower = world.getRedstonePowerFromNeighbors(getPos()) > 0;
 			if(active&&!redstonePower)
 				active = false;
 			if(energyStorage.getEnergyStored() > 3200||a)
@@ -102,7 +102,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	@Override
 	public boolean getIsActive()
 	{
-		return active||world.isBlockIndirectlyGettingPowered(getPos()) > 0;
+		return active||world.getRedstonePowerFromNeighbors(getPos()) > 0;
 	}
 
 	//	@Override
@@ -131,7 +131,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		//		sockets = nbt.getIntArray("sockets");
 		//		if(sockets.length<6)
 		//			sockets = new int[0];

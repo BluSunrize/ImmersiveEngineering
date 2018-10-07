@@ -105,16 +105,16 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
 	{
-		String flavourKey = getUnlocalizedName(stack)+".flavour";
+		String flavourKey = getTranslationKey(stack)+".flavour";
 		if(I18n.canTranslate(flavourKey))
 			tooltip.add(I18n.translateToLocal(flavourKey));
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		String subName = ItemNBTHelper.getString(stack, "conveyorType");
-		return super.getUnlocalizedName()+"."+subName;
+		return super.getTranslationKey()+"."+subName;
 	}
 
 	@Override
