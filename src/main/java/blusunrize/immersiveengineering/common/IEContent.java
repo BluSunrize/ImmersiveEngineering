@@ -27,10 +27,7 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFur
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevice;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
+import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
@@ -568,6 +565,7 @@ public class IEContent
 	}
 
 	private static ArcRecyclingThreadHandler arcRecycleThread;
+
 	public static void init()
 	{
 
@@ -608,6 +606,7 @@ public class IEContent
 
 		registerTile(TileEntityBalloon.class);
 		registerTile(TileEntityStripCurtain.class);
+		registerTile(TileEntityShaderBanner.class);
 
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);

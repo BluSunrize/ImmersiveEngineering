@@ -4,6 +4,7 @@
 - Re-Added coloured pipes (Malte)
 - Re-Added structural arms (Malte)
 - Added clickable areas for JEI to the IE machine GUIs (TeamSpen210)
+- Added the ability to apply Shaders to banners! (BluSunrize)
 - Removed the additional http request for the changelog in the manual (Malte)
 - Changed Mixer to allow the use of other mods' sheetmetal in its construction (tgstyle)
 - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
