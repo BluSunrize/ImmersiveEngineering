@@ -158,8 +158,6 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
-		if(MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.SOLID)
-			return false;
 		if("glass".equals(group))
 			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
 		return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.CUTOUT;

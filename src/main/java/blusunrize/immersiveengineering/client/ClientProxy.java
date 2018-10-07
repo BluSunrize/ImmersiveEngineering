@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ManualPageShader;
 import blusunrize.immersiveengineering.client.models.*;
+import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
@@ -324,6 +325,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
+		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
 	}
 
 

@@ -3,8 +3,14 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"custom": { "flip-v": true },
-		"model": "immersiveengineering:smartmodel/conn_redstone_breaker"
+      "model": "immersiveengineering:smartmodel/connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
+        "layers": [
+          "SOLID"
+        ]
+      }
 	},
 	"variants":
 	{

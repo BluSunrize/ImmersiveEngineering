@@ -3,8 +3,14 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"custom": { "flip-v": true },
-		"model": "immersiveengineering:smartmodel/conn_breaker_off"
+      "model": "immersiveengineering:smartmodel/connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/breaker_switch_off.obj.ie",
+        "layers": [
+          "SOLID"
+        ]
+      }
 	},
 	"variants":
 	{
@@ -28,7 +34,9 @@
 		{
 			"false": {},
 			"true": {
-				"model": "immersiveengineering:smartmodel/conn_breaker_on"
+              "custom": {
+                "base": "immersiveengineering:block/connector/breaker_switch_on.obj.ie"
+              }
 			}
 		},
 		"boolean1":

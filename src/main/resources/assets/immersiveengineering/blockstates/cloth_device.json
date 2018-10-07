@@ -1,41 +1,30 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "transform": "forge:default-block",
-    "textures": {
-      "all": "immersiveengineering:blocks/cloth_device_cushion"
-    },
-    "model": "cube_all",
-    "custom": {
-      "flip-v": true
-    }
-  },
-  "variants": {
-    "inventory,type=cushion": [
-      {
-        "textures": {
-          "all": "immersiveengineering:blocks/cloth_device_cushion"
-        }
-      }
-    ],
-    "inventory,type=balloon": [
-      {
-        "model": "immersiveengineering:balloon.obj.ie"
-      }
-    ],
-    "inventory,type=shader_banner": [
-      {
-        "model": "immersiveengineering:ie_empty"
-      }
-    ],
-    "type": {
-      "cushion": {
-        "textures": {
-          "all": "immersiveengineering:blocks/cloth_device_cushion"
-        }
-      },
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion" },
+		"model": "cube_all",
+		"custom": {
+			"flip-v": true
+		}
+	},
+	"variants":
+	{
+		"inventory,type=cushion": [{"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}}],
+		"inventory,type=balloon":	[{"model": "immersiveengineering:balloon.obj.ie"}],
+    "inventory,type=shader_banner": [{"model": "immersiveengineering:ie_empty"}],
+		"type":
+		{
+			"cushion": {"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}},
       "balloon": {
-        "model": "immersiveengineering:smartmodel/conn_balloon"
+        "model": "immersiveengineering:smartmodel/connector",
+        "custom": {
+          "base": "immersiveengineering:block/balloon.obj.ie",
+          "layers": [
+            "SOLID"
+          ]
+        }
       },
       "shader_banner": {
         "model": "immersiveengineering:ie_empty",
@@ -43,18 +32,20 @@
           "particle": "immersiveengineering:blocks/cloth_device_cushion"
         }
       }
-    },
-    "facing": {
-      "down": {},
-      "up": {},
-      "north": {},
-      "south": {},
-      "west": {},
-      "east": {}
-    },
-    "boolean0": {
-      "true": {},
-      "false": {}
-    }
-  }
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": {},
+			"south": {},
+			"west": {},
+			"east": {}
+		},
+		"boolean0":
+		{
+			"true":{},
+			"false":{}
+		}
+	}
 }

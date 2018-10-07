@@ -1,10 +1,15 @@
 {
 	"forge_marker": 1,
-	"defaults":
-	{
+	"defaults": {
 		"transform": "forge:default-block",
-		"custom": { "flip-v": true },
-		"model": "immersiveengineering:smartmodel/conn_transformer_mv_left"
+		"model": "immersiveengineering:smartmodel/connector",
+		"custom": {
+			"flip-v": true,
+			"base": "immersiveengineering:block/connector/transformer_mv_left.obj",
+          "layers": [
+            "SOLID"
+          ]
+		}
 	},
 	"variants":
 	{
@@ -28,14 +33,18 @@
 		{
 			"false": {},
 			"true": {
-				"model": "immersiveengineering:smartmodel/conn_transformer_mv_right"
+				"custom": {
+					"base": "immersiveengineering:block/connector/transformer_mv_right.obj"
+				}
 			}
 		},
 		"boolean1":
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:smartmodel/conn_transformer_mv_post"
+				"custom": {
+					"base": "immersiveengineering:block/connector/transformer_post.obj"
+				}
 			}
 		},
 		"facing":
