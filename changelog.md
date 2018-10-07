@@ -7,6 +7,7 @@
 - Added the ability to apply Shaders to banners! (BluSunrize)
 - Removed the additional http request for the changelog in the manual (Malte)
 - Changed Mixer to allow the use of other mods' sheetmetal in its construction (tgstyle)
+- Changed the way wire & connector models work internally (Malte)
 - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
 - Fixed arc recycling calculations failing in rare cases (Malte)
 - Fixed lag with certain setups of routers (Malte)
