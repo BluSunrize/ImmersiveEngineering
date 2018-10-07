@@ -5,6 +5,7 @@
 - Re-Added structural arms (Malte)
 - Added clickable areas for JEI to the IE machine GUIs (TeamSpen210)
 - Added the ability to apply Shaders to banners! (BluSunrize)
+- Added a Silt vein for the Excavator, contains clay, sand and gravel (BluSunrize)
 - Removed the additional http request for the changelog in the manual (Malte)
 - Changed Mixer to allow the use of other mods' sheetmetal in its construction (tgstyle)
 - Changed the way wire & connector models work internally (Malte)

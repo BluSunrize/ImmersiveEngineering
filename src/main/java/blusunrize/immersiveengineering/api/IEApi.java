@@ -74,6 +74,8 @@ public class IEApi
 		{
 			ItemStack preferredStack = ApiUtils.isExistingOreName(oreName)?
 					getPreferredStackbyMod(OreDictionary.getOres(oreName)): ItemStack.EMPTY;
+			if(preferredStack.getMetadata()==OreDictionary.WILDCARD_VALUE)
+				preferredStack.setItemDamage(0);
 			oreOutputPreference.put(oreName, preferredStack);
 			return preferredStack;
 		}

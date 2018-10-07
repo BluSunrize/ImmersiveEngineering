@@ -500,6 +500,7 @@ public class IEContent
 		else
 			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", "dustSulfur", "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
+		ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
 	}
 
 	public static void preInitEnd()
@@ -556,6 +557,7 @@ public class IEContent
 		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()));
 		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
 		//Vanilla OreDict
+		OreDictionary.registerOre("blockClay", new ItemStack(Blocks.CLAY));
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.STONEBRICK));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ICE));
 		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.PACKED_ICE));
