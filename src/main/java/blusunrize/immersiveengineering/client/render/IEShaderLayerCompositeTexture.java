@@ -74,13 +74,13 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 
 					try
 					{
-						String texPath = this.layers[layer].getTexture().getResourcePath();
+						String texPath = this.layers[layer].getTexture().getPath();
 
 						if(!texPath.startsWith("textures/"))
 							texPath = "textures/"+texPath;
 						if(!texPath.endsWith(".png"))
 							texPath += ".png";
-						String texture = this.layers[layer].getTexture().getResourceDomain()+":"+texPath;
+						String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
 						int colour = this.layers[layer].getColour();
 
 //						System.out.println(" do layer "+texture);

@@ -287,9 +287,9 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				ItemStack current = ((TileEntityShaderBanner)tile).shader.getShaderItem();
 				if(!current.isEmpty() && !world.isRemote && !player.capabilities.isCreativeMode)
 				{
-					double dx = pos.getX()+.5+side.getFrontOffsetX();
-					double dy = pos.getY()+.5+side.getFrontOffsetY();
-					double dz = pos.getZ()+.5+side.getFrontOffsetZ();
+					double dx = pos.getX()+.5+side.getXOffset();
+					double dy = pos.getY()+.5+side.getYOffset();
+					double dz = pos.getZ()+.5+side.getZOffset();
 					EntityItem entityitem = new EntityItem(world, dx, dy, dz, current.copy());
 					entityitem.setDefaultPickupDelay();
 					world.spawnEntity(entityitem);
