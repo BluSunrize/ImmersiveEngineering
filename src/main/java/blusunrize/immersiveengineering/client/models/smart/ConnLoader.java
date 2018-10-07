@@ -163,6 +163,8 @@ public class ConnLoader implements ICustomModelLoader
 		@Override
 		public IModel process(ImmutableMap<String, String> customData)
 		{
+			if(customData==null||customData.isEmpty()||!customData.containsKey("base"))
+				return this;
 			JsonObject obj = ModelData.asJsonObject(customData);
 			ModelData newData = ModelData.fromJson(obj, ownKeys, "base", externalTextures);
 			Collection<BlockRenderLayer> layers = ALL_LAYERS;
@@ -196,7 +198,7 @@ public class ConnLoader implements ICustomModelLoader
 		{
 			if(baseData!=null)
 			{
-				if(!textures.equals(baseData.textures))
+				if(!textures.equals(baseData.textures)&&!(textures.isEmpty()&&!baseData.textures.isEmpty()))
 					return new ConnModelBase(new ModelData(baseData.location, baseData.data, textures), layers, textures);
 			}
 			else if(!externalTextures.equals(textures))
