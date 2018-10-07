@@ -96,7 +96,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 					else
 						for(int i = 0; i < count; i++)
 						{
-							Vec3d vecDir = vec.addVector(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
+							Vec3d vecDir = vec.add(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
 							Entity entBullet = getBulletEntity(world, vecDir, bullet);
 							world.spawnEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
 						}

@@ -80,7 +80,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = .03125;
-		return new Vec3d(.5+side.getFrontOffsetX()*(-.125-conRadius), .5+side.getFrontOffsetY()*(-.125-conRadius), .5+side.getFrontOffsetZ()*(-.125-conRadius));
+		return new Vec3d(.5+side.getXOffset()*(-.125-conRadius), .5+side.getYOffset()*(-.125-conRadius), .5+side.getZOffset()*(-.125-conRadius));
 	}
 
 	@Override

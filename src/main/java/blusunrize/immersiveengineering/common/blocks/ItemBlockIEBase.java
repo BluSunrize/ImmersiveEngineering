@@ -62,9 +62,9 @@ public class ItemBlockIEBase extends ItemBlock
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
-		return ((BlockIEBase)this.block).getUnlocalizedName(stack);
+		return ((BlockIEBase)this.block).getTranslationKey(stack);
 	}
 
 	@Override

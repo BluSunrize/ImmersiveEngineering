@@ -59,7 +59,7 @@
 				"model": "immersiveengineering:metal_multiblock/auto_workbench_animated.obj.ie"
 			}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{
 				"model": "immersiveengineering:metal_multiblock/auto_workbench.obj"

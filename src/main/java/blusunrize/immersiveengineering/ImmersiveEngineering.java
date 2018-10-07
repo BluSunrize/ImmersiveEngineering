@@ -45,7 +45,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 @Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION,
-		dependencies = "required-after:forge@[14.23.3.2655,);after:jei@[4.7,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
+		dependencies = "required-after:forge@[14.23.5.2768,);after:jei@[4.8,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
 		certificateFingerprint = "4cb49fcde3b43048c9889e0a3d083225da926334", acceptedMinecraftVersions = "[1.12,1.12.2]",
 		updateJSON = "https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.json")
 public class ImmersiveEngineering
@@ -134,6 +134,7 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageMagnetEquip.Handler.class, MessageMagnetEquip.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageChemthrowerSwitch.Handler.class, MessageChemthrowerSwitch.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageObstructedConnection.Handler.class, MessageObstructedConnection.class, messageId++, Side.CLIENT);
+		packetHandler.registerMessage(MessageSetGhostSlots.Handler.class, MessageSetGhostSlots.class, messageId++, Side.SERVER);
 
 		IEIMCHandler.init();
 		IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(instance));
@@ -252,13 +253,14 @@ public class ImmersiveEngineering
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)
 	{
 		@Override
-		public ItemStack getTabIconItem()
+		public ItemStack createIcon()
 		{
 			return ItemStack.EMPTY;
 		}
 
+
 		@Override
-		public ItemStack getIconItemStack()
+		public ItemStack getIcon()
 		{
 			return new ItemStack(IEContent.blockMetalDecoration0, 1, 0);
 		}

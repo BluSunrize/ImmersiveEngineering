@@ -47,10 +47,12 @@ import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBulle
 import blusunrize.immersiveengineering.common.items.tools.*;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
+import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -72,7 +74,6 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.*;
-import net.minecraft.potion.PotionHelper.MixPredicate;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -91,20 +92,25 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Mod.EventBusSubscriber
@@ -335,17 +341,34 @@ public class IEContent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
 		for(Block block : registeredIEBlocks)
-			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getUnlocalizedName())));
+			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getTranslationKey())));
 	}
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
 		for(Item item : registeredIEItems)
-			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getUnlocalizedName())));
+			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getTranslationKey())));
 
 		registerOres();
 	}
+
+	@SubscribeEvent
+	public static void missingItems(RegistryEvent.MissingMappings<Item> event)
+	{
+		Set<String> knownMissing = ImmutableSet.of(
+				"fluidethanol",
+				"fluidconcrete",
+				"fluidbiodiesel",
+				"fluidplantoil",
+				"fluidcreosote"
+		);
+		for(Mapping<Item> missing : event.getMappings())
+			if(knownMissing.contains(missing.key.getPath()))
+				missing.ignore();
+	}
+
+
 
 	@SubscribeEvent
 	public static void registerPotions(RegistryEvent.Register<Potion> event)
@@ -450,6 +473,8 @@ public class IEContent
 		ItemBullet.initBullets();
 
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+
+		IELootFunctions.preInit();
 
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
 		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
@@ -605,6 +630,7 @@ public class IEContent
 		registerTile(TileEntityLantern.class);
 		registerTile(TileEntityRazorWire.class);
 		registerTile(TileEntityToolbox.class);
+		registerTile(TileEntityStructuralArm.class);
 
 		registerTile(TileEntityConnectorLV.class);
 		registerTile(TileEntityRelayLV.class);
@@ -1006,10 +1032,30 @@ public class IEContent
 	public static void postInit()
 	{
 		/*POTIONS*/
-		HashSet<PotionType> bottlingRegistered = new HashSet<>();
-
-		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-			MixerRecipePotion.registerPotionRecipe(mixPredicate.output, mixPredicate.input, ApiUtils.createIngredientStack(mixPredicate.reagent));
+		try
+		{
+			//Blame Forge for this mess. They stopped ATs from working on MixPredicate and its fields by modifying them with patches
+			//without providing a usable way to look up the vanilla potion recipes
+			String mixPredicateName = "net.minecraft.potion.PotionHelper$MixPredicate";
+			Class<?> mixPredicateClass = Class.forName(mixPredicateName);
+			Field output = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185200_c"));
+			Field reagent = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185199_b"));
+			Field input = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185198_a"));
+			output.setAccessible(true);
+			reagent.setAccessible(true);
+			input.setAccessible(true);
+			for(Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
+				//noinspection unchecked
+				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
+						((IRegistryDelegate<PotionType>)input.get(mixPredicate)).get(),
+						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
+		} catch(Exception x)
+		{
+			x.printStackTrace();
+		}
 		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
 			if(recipe instanceof AbstractBrewingRecipe)
 			{

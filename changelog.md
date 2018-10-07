@@ -1,3 +1,39 @@
+#####Version 0.12-86
+ - Added support for JEI ghost ingredients to the assembler and routers (Malte)
+ - Re-Added razor wires hurting players trying to break them without wirecutters (Malte)
+ - Re-Added coloured pipes (Malte)
+ - Re-Added structural arms (Malte)
+ - Removed the additional http request for the changelog in the manual (Malte)
+ - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
+ - Fixed arc recycling calculations failing in rare cases (Malte)
+ - Fixed lag with certain setups of routers (Malte)
+ - Fixed conveyors sometimes showing the wrong model (Malte)
+ - Fixed crashes with recent Forge versions (Malte)
+ - Fixed the arc furnace not recycling damaged tools (BluSunrize)
+
+#####Version 0.12-85 - BUILT
+- Re-Added Thaumcraft compat (BluSunrize)
+    - Added hammering of plates for Brass, Thaumium and Void Metal 
+    - Golems can farm hemp
+    - Purifying Fluid and Liquid Death work in the Chemthrower
+    - Made the External Heater work with the Essentia Smelter
+- Added a tooltip-display to Speedloaders and Revolvers to display their currently loaded ammo (BluSunrize)
+- Re-Added the "Super Secret BluPrintz" easteregg (BluSunrize)
+- Added the ability to use the Capacitor Backpack as a Bauble (BluSunrize) 
+- Fixed up the skyhook, including one crash (Malte)
+- Fixed some rare crashes when closing a world (Malte)
+- Fixed redstone connectors not closing doors using weak signals (Malte)
+- Fixed the mixer crashing if the recipe is trying to process too much fluid (Malte)
+- Fixed Machinist selling iron and steel drills in the wrong order (BluSunrize)
+- Fixed balloon colouring on dedicated servers (Malte)
+- Fixed a dupe bug (Malte)
+- Fixed a crash involving metal ladders (Malte)
+- Fixed Crafttweaker Integration to allow removing Potion mixing recipes  (BluSunrize)
+- Fixed an edgecase crash with Cartographer Maps (BluSunrize)
+- Fixed ArcFurnace requiring additional inputs to start a recipe (BluSunrize)
+- Fixed upgrades vanishing in the Workbench (Malte)
+- Fixed Lightningrod not playing nice with other mods' energy transport (BluSunrize)
+
 #####Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
     - Now supports MixPredicates as well as custom brewing recipes

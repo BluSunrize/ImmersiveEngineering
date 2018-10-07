@@ -24,7 +24,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	@Override
 	public void update()
 	{
-		if(!world.isRemote&&(world.isBlockIndirectlyGettingPowered(getPos()) > 0)==active)
+		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==active)
 		{
 			active = !active;
 			ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world, pos);

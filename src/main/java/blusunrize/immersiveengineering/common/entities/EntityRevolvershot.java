@@ -313,7 +313,7 @@ public class EntityRevolvershot extends Entity
 		{
 			IBlockState state = this.world.getBlockState(mop.getBlockPos());
 			if(state.getBlock().getMaterial(state)!=Material.AIR)
-				state.getBlock().onEntityCollidedWithBlock(this.world, mop.getBlockPos(), state, this);
+				state.getBlock().onEntityCollision(this.world, mop.getBlockPos(), state, this);
 		}
 		this.setDead();
 	}

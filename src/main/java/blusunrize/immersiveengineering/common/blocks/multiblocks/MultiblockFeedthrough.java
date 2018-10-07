@@ -8,16 +8,19 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -32,6 +35,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Set;
 
 public class MultiblockFeedthrough implements IMultiblock
@@ -115,44 +120,89 @@ public class MultiblockFeedthrough implements IMultiblock
 	@Override
 	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
 	{
-		IBlockState here = world.getBlockState(pos).getActualState(world, pos);
-		side = here.getValue(IEProperties.FACING_ALL);
-		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-		if(conns!=null&&!conns.isEmpty())
+		//Check
+		IBlockState stateHere = world.getBlockState(pos).getActualState(world, pos);
+		if(stateHere.getPropertyKeys().contains(IEProperties.FACING_ALL))
+			side = stateHere.getValue(IEProperties.FACING_ALL);
+		Set<ImmersiveNetHandler.Connection> connHere = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+		if(connHere==null)
+			connHere = ImmutableSet.of();
+		if(connHere.size() > 1)
 			return false;
-		WireType wire = WireApi.getWireType(here);
+		WireType wire = WireApi.getWireType(stateHere);
 		if(wire==null)//This shouldn't ever happen
 			return false;
-		BlockPos tmp = pos.offset(side);
-		IBlockState middle = world.getBlockState(tmp).getActualState(world, tmp);
+		BlockPos middlePos = pos.offset(side);
+		IBlockState middle = world.getBlockState(middlePos).getActualState(world, middlePos);
 		if(!middle.isFullCube()||middle.getBlock().hasTileEntity(middle)||middle.getRenderType()!=EnumBlockRenderType.MODEL)
 			return false;
-		tmp = pos.offset(side, 2);
-		IBlockState otherConn = world.getBlockState(tmp).getActualState(world, tmp);
+		BlockPos otherPos = pos.offset(side, 2);
+		IBlockState otherConn = world.getBlockState(otherPos).getActualState(world, otherPos);
 		if(WireApi.getWireType(otherConn)!=wire)
 			return false;
 		if(otherConn.getValue(IEProperties.FACING_ALL)!=side.getOpposite())
 			return false;
-		conns = ImmersiveNetHandler.INSTANCE.getConnections(world, tmp);
-		if(conns!=null&&!conns.isEmpty())
+		Set<ImmersiveNetHandler.Connection> connOther = ImmersiveNetHandler.INSTANCE.getConnections(world, otherPos);
+		if(connOther==null)
+			connOther = ImmutableSet.of();
+		if(connOther.size() > 1)
 			return false;
-		IBlockState state = IEContent.blockConnectors.getDefaultState().withProperty(IEContent.blockConnectors.property,
-				BlockTypes_Connector.FEEDTHROUGH).withProperty(IEProperties.FACING_ALL, side);
-		for(int i = 0; i <= 2; i++)
+		if(connOther.stream().anyMatch(c -> c.end.equals(pos)))
+			return false;
+		for(Connection c : connOther)
+			if(connHere.stream().anyMatch(c2 -> c2.end.equals(c.end)))
+				return false;
+		//Form
+		if(!world.isRemote)
 		{
-			tmp = pos.offset(side, i);
-			world.setBlockState(tmp, state);
-			TileEntity te = world.getTileEntity(tmp);
-			if(te instanceof TileEntityFeedthrough)
+			IBlockState state = IEContent.blockConnectors.getDefaultState().withProperty(IEContent.blockConnectors.property,
+					BlockTypes_Connector.FEEDTHROUGH).withProperty(IEProperties.FACING_ALL, side);
+			BlockPos masterPos = pos.offset(side);
+			TileEntityFeedthrough master = setBlock(world, masterPos, state, wire, middle, 0);
+			if(master!=null)
 			{
-				((TileEntityFeedthrough)te).reference = wire;
-				((TileEntityFeedthrough)te).stateForMiddle = middle;
-				((TileEntityFeedthrough)te).offset = i-1;
-				world.checkLight(tmp);
+				moveConnectionsToMaster(connOther, world, true, master);
+				moveConnectionsToMaster(connHere, world, false, master);
+				master.markContainingBlockForUpdate(null);
 			}
-
+			setBlock(world, pos, state, wire, middle, -1);
+			setBlock(world, pos.offset(side, 2), state, wire, middle, 1);
 		}
 		return true;
+	}
+
+	private void moveConnectionsToMaster(Collection<Connection> conns, World world, boolean positive,
+										 TileEntityFeedthrough master)
+	{
+		BlockPos masterPos = master.getPos();
+		for(Connection c : ImmutableSet.copyOf(conns))
+		{
+			Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
+			if(positive)
+				master.connPositive = c.end;
+			else
+				master.hasNegative = true;
+			ApiUtils.moveConnectionEnd(reverse, masterPos, world);
+		}
+	}
+
+	@Nullable
+	private TileEntityFeedthrough setBlock(World world, BlockPos here, IBlockState newState, WireType wire, IBlockState middle,
+										   int offset)
+	{
+		world.setBlockState(here, newState);
+		TileEntity te = world.getTileEntity(here);
+		if(te instanceof TileEntityFeedthrough)
+		{
+			TileEntityFeedthrough feedthrough = (TileEntityFeedthrough)te;
+			feedthrough.reference = wire;
+			feedthrough.stateForMiddle = middle;
+			feedthrough.offset = offset;
+			world.checkLight(here);
+			world.addBlockEvent(here, feedthrough.getBlockType(), 253, 0);
+			return feedthrough;
+		}
+		return null;
 	}
 
 	@Override

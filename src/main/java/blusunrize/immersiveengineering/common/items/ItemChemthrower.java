@@ -73,7 +73,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	{
 		if(fs!=null)
 		{
-			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().rarityColor;
+			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().color;
 			return rarity+fs.getLocalizedName()+TextFormatting.GRAY+": "+fs.amount+"/"+capacity+"mB";
 		}
 		else
@@ -140,7 +140,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&ItemNBTHelper.getBoolean(stack, "ignite");
 				for(int i = 0; i < split; i++)
 				{
-					Vec3d vecDir = v.addVector(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
+					Vec3d vecDir = v.add(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
 					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.world, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
 
 					// Apply momentum from the player.

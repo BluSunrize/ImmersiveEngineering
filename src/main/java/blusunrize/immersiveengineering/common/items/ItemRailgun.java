@@ -158,15 +158,15 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		//		if(stack.getItemDamage()!=1)
 		//		{
 		//			String tag = getRevolverDisplayTag(stack);
 		//			if(!tag.isEmpty())
-		//				return this.getUnlocalizedName()+"."+tag;
+		//				return this.getTranslationKey()+"."+tag;
 		//		}
-		return super.getUnlocalizedName(stack);
+		return super.getTranslationKey(stack);
 	}
 
 	@Override

@@ -140,10 +140,11 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
-		TileEntityLadder tile = (TileEntityLadder)world.getTileEntity(pos);
-		if(tile!=null)
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof TileEntityLadder)
 		{
-			EnumFacing enumfacing = tile.getFacing();
+			TileEntityLadder ladder = (TileEntityLadder)te;
+			EnumFacing enumfacing = ladder.getFacing();
 			if(getMetaFromState(state)==0&&!this.canAttachTo(world, pos.offset(enumfacing.getOpposite()), enumfacing))
 			{
 				this.dropBlockAsItem(world, pos, state, 0);

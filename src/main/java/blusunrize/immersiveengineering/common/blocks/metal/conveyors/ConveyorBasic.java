@@ -45,7 +45,7 @@ public class ConveyorBasic implements IConveyorBelt
 	@Override
 	public boolean isActive(TileEntity tile)
 	{
-		return tile.getWorld().isBlockIndirectlyGettingPowered(tile.getPos()) <= 0;
+		return tile.getWorld().getRedstonePowerFromNeighbors(tile.getPos()) <= 0;
 	}
 
 	@Override

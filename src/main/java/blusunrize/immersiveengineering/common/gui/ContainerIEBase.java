@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -18,24 +19,30 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class ContainerIEBase<T extends TileEntity> extends Container
 {
 	public T tile;
+	@Nullable
 	public IInventory inv;
 	public int slotCount;
 
 	public ContainerIEBase(InventoryPlayer inventoryPlayer, T tile)
 	{
 		this.tile = tile;
-		this.inv = new InventoryTile(tile);
+		if(tile instanceof IIEInventory)
+			this.inv = new InventoryTile(tile);
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
-		return inv.isUsableByPlayer(player);
+		return inv!=null&&inv.isUsableByPlayer(player);//Override for TE's that don't implement IIEInventory
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
 	{
@@ -82,6 +89,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 		return stack;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
@@ -234,15 +242,11 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 //		return flag;
 	}
 
-	private static boolean areItemStacksEqual(ItemStack stackA, ItemStack stackB)
-	{
-		return stackB.getItem()==stackA.getItem()&&(!stackA.getHasSubtypes()||stackA.getMetadata()==stackB.getMetadata())&&ItemStack.areItemStackTagsEqual(stackA, stackB);
-	}
-
 	@Override
 	public void onContainerClosed(EntityPlayer playerIn)
 	{
 		super.onContainerClosed(playerIn);
-		this.inv.closeInventory(playerIn);
+		if(inv!=null)
+			this.inv.closeInventory(playerIn);
 	}
 }

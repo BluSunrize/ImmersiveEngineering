@@ -178,7 +178,7 @@ public class IETileSound implements ITickableSound
 			for(int dx = (int)Math.floor(tileX-8) >> 4; dx <= (int)Math.floor(tileX+8) >> 4; dx++)
 				for(int dz = (int)Math.floor(tileZ-8) >> 4; dz <= (int)Math.floor(tileZ+8) >> 4; dz++)
 				{
-					Iterator it = ClientUtils.mc().player.world.getChunkFromChunkCoords(dx, dz).getTileEntityMap().values().iterator();
+					Iterator it = ClientUtils.mc().player.world.getChunk(dx, dz).getTileEntityMap().values().iterator();
 					while(it.hasNext())
 					{
 						TileEntity tile = (TileEntity)it.next();

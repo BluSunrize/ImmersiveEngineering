@@ -34,6 +34,7 @@ import java.util.Set;
 public class MixerRecipePotion extends MixerRecipe
 {
 	public static final HashMap<PotionType, MixerRecipePotion> REGISTERED = new HashMap<>();
+	public static final Set<String> BLACKLIST = new HashSet<>();
 	private final Set<Pair<FluidStack, IngredientStack[]>> alternateInputs = new HashSet<>();
 
 	public MixerRecipePotion(PotionType outputType, PotionType inputType, IngredientStack reagent)
@@ -58,7 +59,7 @@ public class MixerRecipePotion extends MixerRecipe
 			MixerRecipePotion recipe = REGISTERED.get(output);
 			recipe.addAlternateInput(input, reagent);
 		}
-		else
+		else if(!BLACKLIST.contains(PotionType.REGISTRY.getNameForObject(output).toString()))
 		{
 			MixerRecipePotion recipe = new MixerRecipePotion(output, input, reagent);
 			MixerRecipe.recipeList.add(recipe);
@@ -108,6 +109,4 @@ public class MixerRecipePotion extends MixerRecipe
 				return new int[]{i};
 		return new int[0];
 	}
-
-
 }

@@ -107,7 +107,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 				if(!s.isEmpty()&&s.hasTagCompound())
 					tag = ItemNBTHelper.combineTags(tag, s.getTagCompound(), nbtCopyPredicate);
 			}
-			if(!tag.hasNoTags())
+			if(!tag.isEmpty())
 				out.setTagCompound(tag);
 			return out;
 		}

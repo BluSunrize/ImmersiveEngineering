@@ -58,12 +58,15 @@ public class MessageSpeedloaderSync implements IMessage
 		{
 			Minecraft.getMinecraft().addScheduledTask(() -> {
 				EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
-				if(player.getHeldItem(message.hand).getItem() instanceof ItemRevolver)
+				if (player!=null)
 				{
-					player.playSound(IESounds.revolverReload, 1f, 1f);
-					ItemNBTHelper.setInt(player.getHeldItem(message.hand), "reload", 60);
+					if(player.getHeldItem(message.hand).getItem() instanceof ItemRevolver)
+					{
+						player.playSound(IESounds.revolverReload, 1f, 1f);
+						ItemNBTHelper.setInt(player.getHeldItem(message.hand), "reload", 60);
+					}
+					player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemSpeedloader));
 				}
-				player.inventory.setInventorySlotContents(message.slot, new ItemStack(IEContent.itemSpeedloader));
 			});
 			return null;
 		}

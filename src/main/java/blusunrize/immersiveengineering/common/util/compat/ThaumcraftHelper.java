@@ -8,11 +8,16 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Damage;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -30,20 +35,28 @@ public class ThaumcraftHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		//		ChemthrowerHandler.registerEffect("fluiddeath", new ChemthrowerEffect_Damage(DamageSourceThaumcraft.dissolve,4));
-		//		for(Potion potion : Potion.potionTypes)
-		//			if(potion!=null && potion.getName().equals("potion.warpward"))
-		//				ChemthrowerHandler.registerEffect("fluidpure", new ChemthrowerEffect_Potion(null,0, potion,100,0));
-		//			else if(potion!=null && potion.getName().equals("potion.visexhaust"))
-		//				ChemthrowerHandler.registerEffect("fluxgoo", new ChemthrowerEffect_Potion(null,0, potion,100,0));
-
 		FMLInterModComms.sendMessage("thaumcraft", "harvestStackedCrop", new ItemStack(IEContent.blockCrop, 5));
+
+		Potion potion_ward = Potion.getPotionFromResourceLocation("thaumcraft:warpward");
+		if(potion_ward!=null)
+			ChemthrowerHandler.registerEffect("purifying_fluid", new ChemthrowerEffect_Potion(null, 0, potion_ward, 100, 0));
+		try
+		{
+			Class c_DamageSourceThaumcraft = Class.forName("thaumcraft.api.damagesource.DamageSourceThaumcraft");
+			if(c_DamageSourceThaumcraft!=null)
+			{
+				DamageSource dmg_dissolve = (DamageSource)c_DamageSourceThaumcraft.getField("dissolve").get(null);
+				ChemthrowerHandler.registerEffect("liquid_death", new ChemthrowerEffect_Damage(dmg_dissolve, 4));
+			}
+		} catch(Exception e)
+		{
+		}
 
 		try
 		{
-			Class c_TileSmelter = Class.forName("thaumcraft.common.tiles.crafting.TileSmelter");
+			Class c_TileSmelter = Class.forName("thaumcraft.common.tiles.essentia.TileSmelter");
 			if(c_TileSmelter!=null)
-				ExternalHeaterHandler.registerHeatableAdapter(c_TileSmelter, new AlchemyFurnaceAdapter());
+				ExternalHeaterHandler.registerHeatableAdapter(c_TileSmelter, new AlchemyFurnaceAdapter(c_TileSmelter));
 		} catch(Exception e)
 		{
 		}
@@ -62,17 +75,17 @@ public class ThaumcraftHelper extends IECompatModule
 		Method m_isEnabled;
 		Method m_setFurnaceState;
 
-		public AlchemyFurnaceAdapter()
+		public AlchemyFurnaceAdapter(Class _class)
 		{
 			try
 			{
-				c_TileSmelter = Class.forName("thaumcraft.common.tiles.crafting.TileSmelter");
+				c_TileSmelter = _class;
 				m_canSmelt = c_TileSmelter.getDeclaredMethod("canSmelt");
 				m_canSmelt.setAccessible(true);
 				f_furnaceBurnTime = c_TileSmelter.getDeclaredField("furnaceBurnTime");
 				Class c_BlockStateUtils = Class.forName("thaumcraft.common.lib.utils.BlockStateUtils");
 				m_isEnabled = c_BlockStateUtils.getMethod("isEnabled", IBlockState.class);
-				Class c_BlockSmelter = Class.forName("thaumcraft.common.blocks.devices.BlockSmelter");
+				Class c_BlockSmelter = Class.forName("thaumcraft.common.blocks.essentia.BlockSmelter");
 				m_setFurnaceState = c_BlockSmelter.getMethod("setFurnaceState", World.class, BlockPos.class, boolean.class);
 			} catch(Exception e)
 			{
@@ -115,6 +128,7 @@ public class ThaumcraftHelper extends IECompatModule
 				}
 			} catch(Exception e)
 			{
+				e.printStackTrace();
 			}
 			return energyConsumed;
 		}

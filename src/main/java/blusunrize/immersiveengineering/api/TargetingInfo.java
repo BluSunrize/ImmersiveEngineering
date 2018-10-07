@@ -41,6 +41,6 @@ public class TargetingInfo
 
 	public static TargetingInfo readFromNBT(NBTTagCompound tag)
 	{
-		return new TargetingInfo(EnumFacing.getFront(tag.getInteger("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
+		return new TargetingInfo(EnumFacing.byIndex(tag.getInteger("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
 	}
 }

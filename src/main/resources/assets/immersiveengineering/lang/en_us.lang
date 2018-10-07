@@ -135,6 +135,8 @@ tile.immersiveengineering.metal_decoration2.aluminum_wallmount.name=Aluminium Wa
 tile.immersiveengineering.metal_decoration2.lantern.name=Lantern
 tile.immersiveengineering.metal_decoration2.razor_wire.name=Razor Wire
 tile.immersiveengineering.metal_decoration2.toolbox.name=Engineer's Toolbox
+tile.immersiveengineering.metal_decoration2.steel_slope.name=Steel Structural Arm
+tile.immersiveengineering.metal_decoration2.alu_slope.name=Aluminium Structural Arm
 
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=Steel Scaffolding Slab
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=Steel Scaffolding Slab
@@ -1023,9 +1025,12 @@ immersiveengineering.potion.concreteFeet=Concrete Feet
 immersiveengineering.potion.flashed=Flashed
 
 #MANUAL
-#ie.manual.entry..name=
-#ie.manual.entry..subtext=
+ie.manual.currentVersion= - CURRENT
+ie.manual.newerVersion= - NEW
+#ie.manual.entry.name=
+#ie.manual.entry.subtext=
 #ie.manual.entry.=
+
 
 ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews_0.name=What's new in v0.6.0
@@ -1175,7 +1180,7 @@ ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition be
 ie.manual.entry.wiringTransformer1=You can attach <link;wiring;§o§ntransformers §o§nto §o§nwooden §o§npoles§r;3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
 ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the wires connected to a block by simply rightclicking it.
 ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Aiming it at any energy storage or rightclicking it will read its current storage. Sneak+rightclick two connectors to calculate the average loss between them.
-ie.manual.entry.wiringFeedthrough=Feedthrough Insulators allow connecting wiring from one side of a wall to wiring on the other side without a hole. They can be created with any "normal" solid block in the middle. All common types of connectors (power and redstone) can be used to create feedthrough insulators for the corresponding wire type.
+ie.manual.entry.wiringFeedthrough=Feedthrough Insulators allow connecting wiring from one side of a wall to wiring on the other side without a hole. They can be created with any "normal" solid block in the middle. All common types of connectors (power and redstone) can be used to create feedthrough insulators for the corresponding wire type. Right-click one of the connectors with a hammer to form the multiblock.
 
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=

@@ -73,7 +73,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	{
 		if(this.sideConfig[side]!=SideConfig.OUTPUT)
 			return;
-		EnumFacing fd = EnumFacing.getFront(side);
+		EnumFacing fd = EnumFacing.byIndex(side);
 		BlockPos outPos = getPos().offset(fd);
 		TileEntity tileEntity = Utils.getExistingTileEntity(world, outPos);
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());

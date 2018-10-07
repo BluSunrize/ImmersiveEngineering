@@ -109,7 +109,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		state = super.getActualState(state, world, pos);
 		if(this.getMetaFromState(state)==STEEL_FENCE.getMeta()||this.getMetaFromState(state)==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
-				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH: f==EnumFacing.SOUTH?BlockFence.SOUTH: f==EnumFacing.WEST?BlockFence.WEST: BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, blockMaterial));
+				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH: f==EnumFacing.SOUTH?BlockFence.SOUTH: f==EnumFacing.WEST?BlockFence.WEST: BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, material));
 		return state;
 	}
 
@@ -139,7 +139,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==STEEL_FENCE.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
-			return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, EnumFacing.WEST, blockMaterial)?0: .375f, 0, Utils.canFenceConnectTo(world, pos, EnumFacing.NORTH, blockMaterial)?0: .375f, Utils.canFenceConnectTo(world, pos, EnumFacing.EAST, blockMaterial)?1: .625f, 1f, Utils.canFenceConnectTo(world, pos, EnumFacing.SOUTH, blockMaterial)?1: .625f);
+			return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, EnumFacing.WEST, material)?0: .375f, 0, Utils.canFenceConnectTo(world, pos, EnumFacing.NORTH, material)?0: .375f, Utils.canFenceConnectTo(world, pos, EnumFacing.EAST, material)?1: .625f, 1f, Utils.canFenceConnectTo(world, pos, EnumFacing.SOUTH, material)?1: .625f);
 		return super.getBoundingBox(state, world, pos);
 	}
 

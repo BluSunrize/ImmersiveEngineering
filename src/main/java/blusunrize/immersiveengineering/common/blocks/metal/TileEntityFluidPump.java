@@ -76,7 +76,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			tank.drain(i, true);
 		}
 
-		if(world.isBlockIndirectlyGettingPowered(getPos()) > 0||world.isBlockIndirectlyGettingPowered(getPos().add(0, 1, 0)) > 0)
+		if(world.getRedstonePowerFromNeighbors(getPos()) > 0||world.getRedstonePowerFromNeighbors(getPos().add(0, 1, 0)) > 0)
 		{
 			for(EnumFacing f : EnumFacing.values())
 				if(sideConfig[f.ordinal()]==0)

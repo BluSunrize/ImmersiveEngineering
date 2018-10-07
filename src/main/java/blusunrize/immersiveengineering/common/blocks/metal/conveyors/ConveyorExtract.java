@@ -203,7 +203,7 @@ public class ConveyorExtract extends ConveyorBasic
 
 	private boolean isPowered(TileEntity tile)
 	{
-		return tile.getWorld().isBlockIndirectlyGettingPowered(tile.getPos()) > 0;
+		return tile.getWorld().getRedstonePowerFromNeighbors(tile.getPos()) > 0;
 	}
 
 	@Override

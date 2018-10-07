@@ -58,7 +58,7 @@
 				"model": "immersiveengineering:metal_multiblock/squeezer_piston.obj"
 			}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{
 				"model": "immersiveengineering:metal_multiblock/squeezer.obj"},

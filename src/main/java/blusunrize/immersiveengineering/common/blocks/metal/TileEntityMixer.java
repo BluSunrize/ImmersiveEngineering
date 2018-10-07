@@ -101,10 +101,10 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 					if(fs!=null)
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getFrontOffsetX()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getFrontOffsetX()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getFrontOffsetZ()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getFrontOffsetZ()*.5f);
+						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getXOffset()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getZOffset()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getZOffset()*.5f);
 						float r = Utils.RAND.nextFloat()*.8125f;
 						float angleRad = (float)Math.toRadians(animation_agitator);
-						partPos = partPos.addVector(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
+						partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
 						if(Utils.RAND.nextBoolean())
 							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
 						else
@@ -578,17 +578,30 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 		@Override
 		public void doProcessTick(TileEntityMultiblockMetal multiblock)
 		{
-			int timerStep = this.maxTicks/this.recipe.fluidAmount;
-			if(this.processTick%timerStep==0)
+			int timerStep = Math.max(this.maxTicks/this.recipe.fluidAmount, 1);
+			if(timerStep!=0&&this.processTick%timerStep==0)
 			{
-				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), true);
-				NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
-				for(int i = 0; i < components.size(); i++)
-					components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
-				FluidStack output = this.recipe.getFluidOutput(drained, components);
+				int amount = this.recipe.fluidAmount/maxTicks;
+				int leftover = this.recipe.fluidAmount%maxTicks;
+				if(leftover > 0)
+				{
+					double distBetweenExtra = maxTicks/(double)leftover;
+					if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
+					{
+						amount++;
+					}
+				}
+				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, amount, false), true);
+				if(drained!=null)
+				{
+					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
+					for(int i = 0; i < components.size(); i++)
+						components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
+					FluidStack output = this.recipe.getFluidOutput(drained, components);
 
-				FluidStack fs = Utils.copyFluidStackWithAmount(output, 1, false);
-				((TileEntityMixer)multiblock).tank.fill(fs, true);
+					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.amount, false);
+					((TileEntityMixer)multiblock).tank.fill(fs, true);
+				}
 			}
 			super.doProcessTick(multiblock);
 		}

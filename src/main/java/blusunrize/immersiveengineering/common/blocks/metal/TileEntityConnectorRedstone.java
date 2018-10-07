@@ -106,8 +106,9 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		if(!isInvalid()&&isRSOutput())
 		{
 			markDirty();
-			markContainingBlockForUpdate(null);
-			markBlockForUpdate(pos.offset(facing), null);
+			IBlockState stateHere = world.getBlockState(pos);
+			markContainingBlockForUpdate(stateHere);
+			markBlockForUpdate(pos.offset(facing), stateHere);
 		}
 	}
 
@@ -132,7 +133,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 
 	protected int getLocalRS()
 	{
-		int val = world.isBlockIndirectlyGettingPowered(pos);
+		int val = world.getRedstonePowerFromNeighbors(pos);
 		if(val==0)
 		{
 			for(EnumFacing f : EnumFacing.HORIZONTALS)
@@ -239,7 +240,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		ioMode = nbt.getInteger("ioMode");
 		redstoneChannel = nbt.getInteger("redstoneChannel");
 		outputClient = nbt.getInteger("output");
@@ -250,7 +251,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = con.cableType.getRenderDiameter()/2;
-		return new Vec3d(.5-conRadius*side.getFrontOffsetX(), .5-conRadius*side.getFrontOffsetY(), .5-conRadius*side.getFrontOffsetZ());
+		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
 
 	@Override
@@ -331,7 +332,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannel).getUnlocalizedName())),
+				I18n.format(Lib.DESC_INFO+"redstoneChannel", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannel).getTranslationKey())),
 				I18n.format(Lib.DESC_INFO+"blockSide.io."+this.ioMode)
 		};
 	}
@@ -340,5 +341,11 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{
 		return false;
+	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
 	}
 }

@@ -109,7 +109,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		ceilingAttached = nbt.getBoolean("ceilingAttached");
 		colour = nbt.getInteger("colour");
 	}

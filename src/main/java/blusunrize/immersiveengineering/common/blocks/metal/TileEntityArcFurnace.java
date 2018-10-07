@@ -82,8 +82,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				for(int i = 0; i < 4; i++)
 				{
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*facing.getFrontOffsetX(),
-								getPos().getY()+2.9, getPos().getZ()+.5-.25*facing.getFrontOffsetZ(),
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*facing.getXOffset(),
+								getPos().getY()+2.9, getPos().getZ()+.5-.25*facing.getZOffset(),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 					if(Utils.RAND.nextInt(6)==0)
 						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(facing==EnumFacing.EAST?-.25: .25),
@@ -108,43 +108,45 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 
 			if(this.processQueue.size() < this.getProcessQueueMaxLength())
 			{
-				Set<Integer> usedInvSlots = new HashSet<Integer>();
-				//			final int[] usedInvSlots = new int[8];
+				Map<Integer, Integer> usedInvSlots = new HashMap<Integer, Integer>();
 				for(MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
 					if(process instanceof MultiblockProcessInMachine)
-						for(int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).inputSlots)
-							usedInvSlots.add(i);
+					{
+						int[] inputSlots = ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).getInputSlots();
+						int[] inputAmounts = ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).getInputAmounts();
+						if(inputAmounts!=null)
+							for(int i = 0; i < inputSlots.length; i++)
+								if(usedInvSlots.containsKey(inputSlots[i]))
+									usedInvSlots.put(inputSlots[i], usedInvSlots.get(inputSlots[i])+inputAmounts[i]);
+								else
+									usedInvSlots.put(inputSlots[i], inputAmounts[i]);
+					}
 
-				//			Integer[] preferredSlots = new Integer[]{0,1,2,3,4,5,6,7};
-				//			Arrays.sort(preferredSlots, 0,8, new Comparator<Integer>(){
-				//				@Override
-				//				public int compare(Integer arg0, Integer arg1)
-				//				{
-				//					return Integer.compare(usedInvSlots[arg0],usedInvSlots[arg1]);
-				//				}});
 				NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
 				for(int i = 0; i < 4; i++)
-					additives.set(i, !inventory.get(12+i).isEmpty()?inventory.get(12+i).copy(): ItemStack.EMPTY);
+					if(!inventory.get(12+i).isEmpty())
+					{
+						additives.set(i, inventory.get(12+i).copy());
+						if(usedInvSlots.containsKey(12+i))
+							additives.get(i).shrink(usedInvSlots.get(12+i));
+					}
+
 				for(int slot = 0; slot < 12; slot++)
-					if(!usedInvSlots.contains(slot))
+					if(!usedInvSlots.containsKey(slot))
 					{
 						ItemStack stack = this.getInventory().get(slot);
-						//				if(stack!=null)
-						//				{
-						//					stack = stack.copy();
-						////					stack.stackSize-=usedInvSlots[slot];
-						//				}
 						if(!stack.isEmpty()&&stack.getCount() > 0)
 						{
 							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
-
 							if(recipe!=null)
 							{
 								MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, slot, 12, 13, 14, 15);
 								if(this.addProcessToQueue(process, true))
 								{
 									this.addProcessToQueue(process, false);
-									usedInvSlots.add(slot);
+									int[] consumedAdditives = recipe.getConsumedAdditives(additives, true);
+									if(consumedAdditives!=null)
+										process.setInputAmounts(1, consumedAdditives[0], consumedAdditives[1], consumedAdditives[2], consumedAdditives[3]);
 									//							update = true;
 								}
 							}
@@ -323,7 +325,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: .375f;
@@ -331,7 +333,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?2.375f: -1.625f;
@@ -339,7 +341,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 			}
 			else if(pos < 50)
@@ -349,7 +351,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: .375f;
@@ -357,7 +359,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				if(pos%5==0)
 					aabb = aabb.offset(0, .6875, 0);
 				list.add(aabb);
@@ -368,7 +370,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: .375f;
 					maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: .625f;
 					aabb = new AxisAlignedBB(minX, .375, minZ, maxX, 1.0625, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-					aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+					aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 					list.add(aabb);
 				}
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?2.375f: -1.625f;
@@ -376,7 +378,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 			}
 			else if(pos==60||pos==64)
@@ -662,7 +664,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		IMultiblockRecipe recipe = readRecipeFromNBT(tag);
 		if(recipe!=null&&recipe instanceof ArcFurnaceRecipe)
-			return new MultiblockProcessArcFurnace((ArcFurnaceRecipe)recipe, tag.getIntArray("process_inputSlots"));
+		{
+			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace((ArcFurnaceRecipe)recipe, tag.getIntArray("process_inputSlots"));
+			if(tag.hasKey("process_inputAmounts"))
+				process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
+			return process;
+		}
 		return null;
 	}
 

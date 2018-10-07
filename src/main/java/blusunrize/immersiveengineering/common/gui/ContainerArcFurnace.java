@@ -14,6 +14,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
 {
 	public ContainerArcFurnace(InventoryPlayer inventoryPlayer, TileEntityArcFurnace tile)
@@ -41,6 +43,7 @@ public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
 			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 184));
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{

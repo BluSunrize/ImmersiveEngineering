@@ -51,11 +51,14 @@ public class MessageBirthdayParty implements IMessage
 		{
 			Minecraft.getMinecraft().addScheduledTask(() -> {
 				World world = ImmersiveEngineering.proxy.getClientWorld();
-				Entity entity = world.getEntityByID(message.entityId);
-				if(entity!=null&&entity instanceof EntityLivingBase)
+				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
-					world.makeFireworks(entity.posX, entity.posY, entity.posZ, 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
-					entity.getEntityData().setBoolean("headshot", true);
+					Entity entity = world.getEntityByID(message.entityId);
+					if(entity!=null&&entity instanceof EntityLivingBase)
+					{
+						world.makeFireworks(entity.posX, entity.posY, entity.posZ, 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
+						entity.getEntityData().setBoolean("headshot", true);
+					}
 				}
 			});
 			return null;

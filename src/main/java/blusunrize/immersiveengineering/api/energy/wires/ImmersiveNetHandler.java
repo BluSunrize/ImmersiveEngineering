@@ -724,9 +724,9 @@ public class ImmersiveNetHandler
 			getSubVertices(vStart, vStart.add(across));
 			pos = MathHelper.clamp(pos, 0, 1);
 			if(vertical)
-				return vStart.add(across.scale(pos/across.lengthVector()));
+				return vStart.add(across.scale(pos/across.length()));
 			else
-				return vStart.addVector(pos*across.x, catA*Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
+				return vStart.add(pos*across.x, catA*Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
 						pos*across.z);
 		}
 

@@ -16,7 +16,7 @@ public class TileEntityMetalBarrel extends TileEntityWoodenBarrel
 	@Override
 	public void update()
 	{
-		if(world.isRemote||world.isBlockIndirectlyGettingPowered(getPos()) > 0) return;
+		if(world.isRemote||world.getRedstonePowerFromNeighbors(getPos()) > 0) return;
 		else super.update();
 	}
 

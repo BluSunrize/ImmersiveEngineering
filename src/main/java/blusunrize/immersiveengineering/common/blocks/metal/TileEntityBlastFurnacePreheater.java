@@ -84,7 +84,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		dummy = nbt.getInteger("dummy");
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		energyStorage.readFromNBT(nbt);
 		active = nbt.getBoolean("active");
 		if(descPacket)

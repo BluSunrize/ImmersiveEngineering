@@ -13,6 +13,15 @@
             {
               "function": "set_nbt",
               "tag": "{blueprint:\"electrode\"}"
+            },
+            {
+              "function": "immersiveengineering:secret_bluprintz",
+              "conditions": [
+                {
+                  "condition": "random_chance",
+                  "chance": 0.125
+                }
+              ]
             }
           ]
         }

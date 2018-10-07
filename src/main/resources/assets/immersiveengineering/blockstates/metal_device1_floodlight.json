@@ -28,47 +28,18 @@
 		},
 		"facing":
 		{
-			"down": { "transform": {
-//				"rotation": {"z": 180 }
-			}},
+          "down": {},
 			"up": {},
-			"north": { "transform": {
-//				"rotation": [{"x": 90 }, {"z": 180}]
-			}},
-			"south": { "transform": {
-//				"rotation": {"x": 90 }
-			}},
-			"west": { "transform": {
-//				"rotation": [{"x": 90 }, {"z": 90}]
-			}},
-			"east": { "transform": {
-//				"rotation": [{"x": 90 }, {"z": -90}]
-			}}
-//			"down": { "transform": {
-//				"rotation": {"x": -90 }
-//			}},
-//			"up": { "transform": {
-//				"rotation": {"x": 90 }
-//			}},
-//			"north": { "transform": {
-//				"rotation": {"y": 0 }
-//			}},
-//			"south": { "transform": {
-//				"rotation": {"y": 180 }
-//			}},
-//			"west": { "transform": {
-//				"rotation": {"y": 90 }
-//			}},
-//			"east": { "transform": {
-//				"rotation": {"y": -90 }
-//			}}
+          "north": {},
+          "south": {},
+          "west": {},
+          "east": {}
 		},
 		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{}
 		},
-		//active texture
 		"boolean0":
 		{
 			"false":{},

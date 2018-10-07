@@ -186,4 +186,14 @@ public interface IImmersiveConnectable
 		if(INSTANCE.indirectConnectionsIgnoreOut.containsKey(dimension))
 			INSTANCE.indirectConnectionsIgnoreOut.get(dimension).remove(pos);
 	}
+
+	/**
+	 * Change any internal data about this connection to indicate that the connection ends at newEnd
+	 * Returns true if successful.
+	 */
+	//TODO for 1.13: return true by default
+	default boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return false;
+	}
 }

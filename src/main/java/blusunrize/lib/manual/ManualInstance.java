@@ -187,7 +187,7 @@ public abstract class ManualInstance
 		if(stack.hasTagCompound())
 		{
 			NBTTagCompound nbt = stack.getTagCompound();
-			if(!nbt.hasNoTags())
+			if(!nbt.isEmpty())
 				ret = ret*31+nbt.hashCode();
 		}
 		return ret;

@@ -1,0 +1,1643 @@
+ï»¿ Byte Order Mark, because fuck you IntelliJ
+# BLOCKS
+tile.immersiveengineering.ore.copper.name=구리 광석
+tile.immersiveengineering.ore.aluminum.name=보크사이트 광석
+tile.immersiveengineering.ore.lead.name=납 광석
+tile.immersiveengineering.ore.silver.name=은 광석
+tile.immersiveengineering.ore.nickel.name=니켈 광석
+tile.immersiveengineering.ore.uranium.name=우라늄 광석
+
+tile.immersiveengineering.storage.copper.name=구리 블록
+tile.immersiveengineering.storage.aluminum.name=알루미늄 블록
+tile.immersiveengineering.storage.lead.name=납 블록
+tile.immersiveengineering.storage.silver.name=은 블록
+tile.immersiveengineering.storage.nickel.name=니켈 블록
+tile.immersiveengineering.storage.uranium.name=우라늄 블록
+tile.immersiveengineering.storage.constantan.name=콘스탄탄 블록
+tile.immersiveengineering.storage.electrum.name=일렉트륨 블록
+tile.immersiveengineering.storage.steel.name=강철 블록
+
+tile.immersiveengineering.storage_slab.copper.name=구리 반 블록
+tile.immersiveengineering.storage_slab.aluminum.name=알루미늄 반 블록
+tile.immersiveengineering.storage_slab.lead.name=납 반 블록
+tile.immersiveengineering.storage_slab.silver.name=은 반 블록
+tile.immersiveengineering.storage_slab.nickel.name=니켈 반 블록
+tile.immersiveengineering.storage_slab.uranium.name=우라늄 반 블록
+tile.immersiveengineering.storage_slab.constantan.name=콘스탄탄 반 블록
+tile.immersiveengineering.storage_slab.electrum.name=일렉트륨 반 블록
+tile.immersiveengineering.storage_slab.steel.name=강철 반 블록
+
+tile.immersiveengineering.stone_decoration.cokebrick.name=코크스 벽돌
+tile.immersiveengineering.stone_decoration.blastbrick.name=용광로 벽돌
+tile.immersiveengineering.stone_decoration.blastbrick_reinforced.name=강화 용광로 벽돌
+tile.immersiveengineering.stone_decoration.coke.name=코크스 블록
+tile.immersiveengineering.stone_decoration.hempcrete.name=햄프레트
+tile.immersiveengineering.stone_decoration.concrete.name=콘크리트
+tile.immersiveengineering.stone_decoration.concrete_tile.name=콘크리트 타일
+tile.immersiveengineering.stone_decoration.concrete_leaded.name=납 콘크리트
+tile.immersiveengineering.stone_decoration.insulating_glass.name=절연 유리
+tile.immersiveengineering.stone_decoration.concrete_sprayed.name=강력 콘크리트
+tile.immersiveengineering.stone_decoration.alloybrick.name=가마 벽돌
+tile.immersiveengineering.stone_decoration_slab.cokebrick.name=코크스 벽돌 반 블록
+tile.immersiveengineering.stone_decoration_slab.blastbrick.name=용광로 벽돌 반 블록
+tile.immersiveengineering.stone_decoration_slab.blastbrick_reinforced.name=강화 용광로 벽돌 반 블록
+tile.immersiveengineering.stone_decoration_slab.coke.name=코크스 반 블록
+tile.immersiveengineering.stone_decoration_slab.hempcrete.name=햄프레트 반 블록
+tile.immersiveengineering.stone_decoration_slab.concrete.name=콘크리트 반 블록
+tile.immersiveengineering.stone_decoration_slab.concrete_tile.name=콘크리트 타일 반 블록
+tile.immersiveengineering.stone_decoration_slab.concrete_leaded.name=납 콘크리트 반 블록
+tile.immersiveengineering.stone_decoration_slab.insulating_glass.name=절연 유리 반 블록
+tile.immersiveengineering.stone_decoration_slab.alloybrick.name=가마 벽돌 반 블록
+tile.immersiveengineering.stone_decoration_stairs_hempcrete.name=햄프레트 계단
+tile.immersiveengineering.stone_decoration_stairs_concrete.name=콘크리트 계단
+tile.immersiveengineering.stone_decoration_stairs_concrete_tile.name=콘크리트 타일 계단
+tile.immersiveengineering.stone_decoration_stairs_concrete_leaded.name=납 콘크리트 계단
+
+tile.immersiveengineering.stone_device.coke_oven.name=코크스 오븐
+tile.immersiveengineering.stone_device.blast_furnace.name=원유 용광로
+tile.immersiveengineering.stone_device.blast_furnace_advanced.name=강화 용광로
+tile.immersiveengineering.stone_device.concrete_sheet.name=콘크리트 시트
+tile.immersiveengineering.stone_device.concrete_quarter.name=콘크리트 패널
+tile.immersiveengineering.stone_device.concrete_threequarter.name=콘크리트 덩어리
+tile.immersiveengineering.stone_device.coresample.name=코어 견본
+tile.immersiveengineering.stone_device.alloy_smelter.name=합금 가마
+
+tile.immersiveengineering.treated_wood.horizontal.name=방부목
+tile.immersiveengineering.treated_wood.vertical.name=방부목
+tile.immersiveengineering.treated_wood.packaged.name=방부목
+tile.immersiveengineering.treated_wood_slab.horizontal.name=방부목 반 블록
+tile.immersiveengineering.treated_wood_slab.vertical.name=방부목 반 블록
+tile.immersiveengineering.treated_wood_slab.packaged.name=방부목 반 블록
+tile.immersiveengineering.treated_wood_stairs0.name=방부목 계단
+tile.immersiveengineering.treated_wood_stairs1.name=방부목 계단
+tile.immersiveengineering.treated_wood_stairs2.name=방부목 계단
+
+tile.immersiveengineering.wooden_decoration.fence.name=처리된 나무 울타리
+tile.immersiveengineering.wooden_decoration.scaffolding.name=처리된 나무 비계
+
+tile.immersiveengineering.wooden_device0.barrel.name=나무 통
+tile.immersiveengineering.wooden_device0.crate.name=나무 저장 상자
+tile.immersiveengineering.wooden_device0.workbench.name=엔지니어의 워크벤치
+tile.immersiveengineering.wooden_device0.sorter.name=아이템 라우터
+tile.immersiveengineering.wooden_device0.gunpowder_barrel.name=화약 통
+tile.immersiveengineering.wooden_device0.reinforced_crate.name=강화 저장 상자
+tile.immersiveengineering.wooden_device0.turntable.name=회전 테이블
+tile.immersiveengineering.wooden_device0.fluid_sorter.name=유체 라우터
+tile.immersiveengineering.wooden_device1.watermill.name=물레방아
+tile.immersiveengineering.wooden_device1.windmill.name=풍차
+tile.immersiveengineering.wooden_device1.windmill_advanced.name=강화 풍차
+tile.immersiveengineering.wooden_device1.post.name=나무 송전탑
+tile.immersiveengineering.wooden_device1.wallmount.name=나무 벽걸이
+
+tile.immersiveengineering.sheetmetal.copper.name=구리 판금
+tile.immersiveengineering.sheetmetal.aluminum.name=알루미늄 판금
+tile.immersiveengineering.sheetmetal.lead.name=납 판금
+tile.immersiveengineering.sheetmetal.silver.name=은 판금
+tile.immersiveengineering.sheetmetal.nickel.name=니켈 판금
+tile.immersiveengineering.sheetmetal.uranium.name=우라늄 판금
+tile.immersiveengineering.sheetmetal.constantan.name=콘스탄탄 판금
+tile.immersiveengineering.sheetmetal.electrum.name=일렉트륨 판금
+tile.immersiveengineering.sheetmetal.steel.name=강철 판금
+tile.immersiveengineering.sheetmetal.iron.name=철 판금
+tile.immersiveengineering.sheetmetal.gold.name=금 판금
+tile.immersiveengineering.sheetmetal_slab.copper.name=구리 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.aluminum.name=알루미늄 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.lead.name=납 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.silver.name=은 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.nickel.name=니켈 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.uranium.name=우라늄 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.constantan.name=콘스탄탄 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.electrum.name=일렉트륨 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.steel.name=강철 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.iron.name=철 판금 반 블록
+tile.immersiveengineering.sheetmetal_slab.gold.name=금 판금 반 블록
+
+tile.immersiveengineering.metal_decoration0.coil_lv.name=구리 코일 블록
+tile.immersiveengineering.metal_decoration0.coil_mv.name=일렉트륨 코일 블록
+tile.immersiveengineering.metal_decoration0.coil_hv.name=고압 코일 블록
+tile.immersiveengineering.metal_decoration0.rs_engineering.name=레드스톤 엔지니어링 블록
+tile.immersiveengineering.metal_decoration0.light_engineering.name=경형 엔지니어링 블록
+tile.immersiveengineering.metal_decoration0.heavy_engineering.name=형 엔지니어링 블록
+tile.immersiveengineering.metal_decoration0.generator.name=발전 블록
+tile.immersiveengineering.metal_decoration0.radiator.name=방열 블록
+tile.immersiveengineering.metal_decoration1.steel_fence.name=강철 울타리
+tile.immersiveengineering.metal_decoration1.steel_scaffolding_0.name=강철 비계
+tile.immersiveengineering.metal_decoration1.steel_scaffolding_1.name=강철 비계
+tile.immersiveengineering.metal_decoration1.steel_scaffolding_2.name=강철 비계
+tile.immersiveengineering.metal_decoration1.aluminum_fence.name=알루미늄 울타리
+tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_0.name=알루미늄 비계
+tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_1.name=알루미늄 비계
+tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_2.name=알루미늄 비계
+tile.immersiveengineering.metal_decoration2.steel_post.name=강철 송전탑
+tile.immersiveengineering.metal_decoration2.steel_wallmount.name=강철 벽걸이
+tile.immersiveengineering.metal_decoration2.aluminum_post.name=알루미늄 송전탑
+tile.immersiveengineering.metal_decoration2.aluminum_wallmount.name=알루미늄 벽걸이
+tile.immersiveengineering.metal_decoration2.lantern.name=랜턴
+tile.immersiveengineering.metal_decoration2.razor_wire.name=레이저 전선
+tile.immersiveengineering.metal_decoration2.toolbox.name=엔지니어의 도구 상자
+
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=강철 비계 반 블록
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=강철 비계 반 블록
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_2.name=강철 비계 반 블록
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_0.name=알루미늄 비계 반 블록
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_1.name=알루미늄 비계 반 블록
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_2.name=알루미늄 비계 반 블록
+tile.immersiveengineering.steel_scaffolding_stairs0.name=강철 비계 계단
+tile.immersiveengineering.steel_scaffolding_stairs1.name=강철 비계 계단
+tile.immersiveengineering.steel_scaffolding_stairs2.name=강철 비계 계단
+tile.immersiveengineering.aluminum_scaffolding_stairs0.name=알루미늄 비계 계단
+tile.immersiveengineering.aluminum_scaffolding_stairs1.name=알루미늄 비계 계단
+tile.immersiveengineering.aluminum_scaffolding_stairs2.name=알루미늄 비계 계단
+
+tile.immersiveengineering.metal_ladder.normal.name=금속 사다리
+tile.immersiveengineering.metal_ladder.covered_steel.name=비계로 도금된 사다리
+tile.immersiveengineering.metal_ladder.covered_aluminum.name=비계로 도금된 사다리
+
+tile.immersiveengineering.connector.connector_lv.name=저압 전선 연결기
+tile.immersiveengineering.connector.relay_lv.name=저압 전선 중계기
+tile.immersiveengineering.connector.connector_mv.name=중압 전선 연결기
+tile.immersiveengineering.connector.relay_mv.name=중압 전선 중계기
+tile.immersiveengineering.connector.connector_hv.name=고압 전선 연결기
+tile.immersiveengineering.connector.relay_hv.name=고압 전선 중계기
+tile.immersiveengineering.connector.connector_structural.name=전선 조직 연결기
+tile.immersiveengineering.connector.transformer.name=변압기
+tile.immersiveengineering.connector.transformer_hv.name=고압 변압기
+tile.immersiveengineering.connector.breakerswitch.name=차단 스위치
+tile.immersiveengineering.connector.redstone_breaker.name=레드스톤 차단기
+tile.immersiveengineering.connector.energy_meter.name=전류 변압기
+tile.immersiveengineering.connector.connector_redstone.name=레드스톤 전선 연결기
+tile.immersiveengineering.connector.connector_probe.name=레드스톤 프로브 연결기
+tile.immersiveengineering.connector.feedthrough.name=피드스루 절연체
+
+tile.immersiveengineering.metal_device0.capacitor_lv.name=저압 축전기
+tile.immersiveengineering.metal_device0.capacitor_mv.name=중압 축전기
+tile.immersiveengineering.metal_device0.capacitor_hv.name=고압 축전기
+tile.immersiveengineering.metal_device0.capacitor_creative.name=크리에이티브 축전기
+tile.immersiveengineering.metal_device0.barrel.name=금속 통
+tile.immersiveengineering.metal_device0.fluid_pump.name=유체 펌프
+tile.immersiveengineering.metal_device0.fluid_placer.name=유체 출력기
+tile.immersiveengineering.metal_device1.blast_furnace_preheater.name=용광로 예열기
+tile.immersiveengineering.metal_device1.furnace_heater.name=외부 가열기
+tile.immersiveengineering.metal_device1.dynamo.name=운동 발전기
+tile.immersiveengineering.metal_device1.thermoelectric_gen.name=열전기 발전기
+tile.immersiveengineering.metal_device1.electric_lantern.name=파워 랜턴
+tile.immersiveengineering.metal_device1.charging_station.name=충전소
+tile.immersiveengineering.metal_device1.fluid_pipe.name=유체 파이프
+tile.immersiveengineering.metal_device1.sample_drill.name=간단한 코어 드릴
+tile.immersiveengineering.metal_device1.tesla_coil.name=테슬라 코일
+tile.immersiveengineering.metal_device1.floodlight.name=투광 조명등
+tile.immersiveengineering.metal_device1.turret_chem.name=체임트로버 포탑
+tile.immersiveengineering.metal_device1.turret_gun.name=총 포탑
+tile.immersiveengineering.metal_device1.belljar.name=정원 덮개
+
+tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.name=컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=레드스톤 통제 무시 블록
+tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=하강 컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=수직 컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=분할 컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:covered.name=덮은 컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=덮은 수직 컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:extract.name=추출 컨베이어 벨트
+tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=덮은 추출 컨베이어 벨트
+
+tile.immersiveengineering.metal_multiblock.metal_press.name=금속 압축기
+tile.immersiveengineering.metal_multiblock.crusher.name=분해기
+tile.immersiveengineering.metal_multiblock.tank.name=유체 탱크
+tile.immersiveengineering.metal_multiblock.silo.name=아이템 사일로
+tile.immersiveengineering.metal_multiblock.assembler.name=조립기
+tile.immersiveengineering.metal_multiblock.auto_workbench.name=자동화된 엔지니어의 워크벤치
+tile.immersiveengineering.metal_multiblock.bottling_machine.name=병조림기
+tile.immersiveengineering.metal_multiblock.squeezer.name=산업용 압착기
+tile.immersiveengineering.metal_multiblock.fermenter.name=산업용 발효기
+tile.immersiveengineering.metal_multiblock.refinery.name=정제기
+tile.immersiveengineering.metal_multiblock.diesel_generator.name=정유 발전기
+tile.immersiveengineering.metal_multiblock.excavator.name=굴착기
+tile.immersiveengineering.metal_multiblock.bucket_wheel.name=양동이 바퀴
+tile.immersiveengineering.metal_multiblock.arc_furnace.name=아크 화로
+tile.immersiveengineering.metal_multiblock.lightningrod.name=빛나는 막대기
+tile.immersiveengineering.metal_multiblock.mixer.name=혼합기
+
+tile.immersiveengineering.metal_decoration.structural_arm.name=구조 팔
+
+tile.immersiveengineering.hemp.name=산업용 대마
+
+tile.immersiveengineering.cloth_device.cushion.name=점프 베개
+tile.immersiveengineering.cloth_device.balloon.name=풍선
+tile.immersiveengineering.cloth_device.stripcurtain.name=줄무늬 커튼
+
+tile.immersiveengineering.molten_uranium.name=녹은 우라늄
+tile.immersiveengineering.molten_constantan.name=녹은 콘스탄탄
+
+tile.immersiveengineering.arb_solid.name=임의의 고체 블록
+
+#Hydraulicraft Compat
+tile.harvesterTrolley.ieCrop.name=산업용 대마 수확기 
+
+tile.immersiveengineering.fluidCreosote.name=크레오소트유
+tile.immersiveengineering.fluidPlantoil.name=식물유
+tile.immersiveengineering.fluidEthanol.name=에탄올
+tile.immersiveengineering.fluidBiodiesel.name=바이오디젤
+tile.immersiveengineering.fluidConcrete.name=액체 콘크리트
+
+fluid.creosote=크레오소트유
+fluid.plantoil=식물유
+fluid.ethanol=에탄올
+fluid.biodiesel=바이오디젤
+fluid.concrete=액체 콘크리트
+fluid.potion=포션
+
+# ITEMS
+item.immersiveengineering.metal.ingot_copper.name=구리괴
+item.immersiveengineering.metal.ingot_aluminum.name=알루미늄괴
+item.immersiveengineering.metal.ingot_lead.name=연괴
+item.immersiveengineering.metal.ingot_silver.name=은괴
+item.immersiveengineering.metal.ingot_nickel.name=니켈괴
+item.immersiveengineering.metal.ingot_uranium.name=우라늄괴
+item.immersiveengineering.metal.ingot_constantan.name=콘스탄탄괴
+item.immersiveengineering.metal.ingot_electrum.name=일렉트륨괴
+item.immersiveengineering.metal.ingot_steel.name=강철괴
+item.immersiveengineering.metal.dust_copper.name=구리 가루
+item.immersiveengineering.metal.dust_aluminum.name=알루미늄 가루
+item.immersiveengineering.metal.dust_lead.name=납 가루
+item.immersiveengineering.metal.dust_silver.name=은 가루
+item.immersiveengineering.metal.dust_nickel.name=니켈 가루
+item.immersiveengineering.metal.dust_uranium.name=우라늄 가루
+item.immersiveengineering.metal.dust_constantan.name=콘스탄탄 가루
+item.immersiveengineering.metal.dust_electrum.name=일렉트륨 가루
+item.immersiveengineering.metal.dust_steel.name=강철 가루
+item.immersiveengineering.metal.dust_iron.name=철 가루
+item.immersiveengineering.metal.dust_gold.name=금 가루
+item.immersiveengineering.metal.nugget_copper.name=구리 조각
+item.immersiveengineering.metal.nugget_aluminum.name=알루미늄 조각
+item.immersiveengineering.metal.nugget_lead.name=납 조각
+item.immersiveengineering.metal.nugget_silver.name=은 조각
+item.immersiveengineering.metal.nugget_nickel.name=니켈 조각
+item.immersiveengineering.metal.nugget_uranium.name=우라늄 조각
+item.immersiveengineering.metal.nugget_constantan.name=콘스탄탄 조각
+item.immersiveengineering.metal.nugget_electrum.name=일렉트륨 조각
+item.immersiveengineering.metal.nugget_steel.name=강철 조각
+item.immersiveengineering.metal.nugget_iron.name=철 조각
+item.immersiveengineering.metal.plate_copper.name=구리 판
+item.immersiveengineering.metal.plate_aluminum.name=알루미늄 판
+item.immersiveengineering.metal.plate_lead.name=납 판
+item.immersiveengineering.metal.plate_silver.name=은 판
+item.immersiveengineering.metal.plate_nickel.name=니켈 판
+item.immersiveengineering.metal.plate_uranium.name=우라늄 판
+item.immersiveengineering.metal.plate_constantan.name=콘스탄탄 판
+item.immersiveengineering.metal.plate_electrum.name=일렉트륨 판
+item.immersiveengineering.metal.plate_steel.name=강철 판
+item.immersiveengineering.metal.plate_iron.name=철 판
+item.immersiveengineering.metal.plate_gold.name=금 판
+
+
+item.immersiveengineering.material.stick_treated.name=방부 막대기
+item.immersiveengineering.material.stick_iron.name=철 막대기
+item.immersiveengineering.material.stick_steel.name=강철 막대기
+item.immersiveengineering.material.stick_aluminum.name=알루미늄 막대기
+item.immersiveengineering.material.hemp_fiber.name=산업용 대마 섬유
+item.immersiveengineering.material.hemp_fabric.name=강력천
+item.immersiveengineering.material.coal_coke.name=코크스
+item.immersiveengineering.material.slag.name=슬래그
+item.immersiveengineering.material.component_iron.name=철 기계 부품
+item.immersiveengineering.material.component_steel.name=강철 기계 부품
+item.immersiveengineering.material.waterwheel_segment.name=물레방아 분할 부품
+item.immersiveengineering.material.windmill_blade.name=풍차 날
+item.immersiveengineering.material.windmill_sail.name=풍차 돛
+item.immersiveengineering.material.wooden_grip.name=나무 그립
+item.immersiveengineering.material.gunpart_barrel.name=리볼버 통
+item.immersiveengineering.material.gunpart_drum.name=리볼버 드럼통
+item.immersiveengineering.material.gunpart_hammer.name=리볼버 망치
+item.immersiveengineering.material.dust_coke.name=코크스 가루
+item.immersiveengineering.material.dust_hop_graphite.name=HOP 흑연 가루
+item.immersiveengineering.material.ingot_hop_graphite.name=HOP 흑연괴
+item.immersiveengineering.material.wire_copper.name=구리 전선
+item.immersiveengineering.material.wire_electrum.name=일렉트륨 전선
+item.immersiveengineering.material.wire_aluminum.name=알루미늄 전선
+item.immersiveengineering.material.wire_steel.name=강철 전선
+item.immersiveengineering.material.dust_saltpeter.name=질산염 가루
+item.immersiveengineering.material.dust_sulfur.name=황 가루
+item.immersiveengineering.material.electron_tube.name=진공 튜브
+item.immersiveengineering.material.circuit_board.name=회로 기판
+
+item.immersiveengineering.seed.hemp.name=산업용 대마 씨앗
+
+item.immersiveengineering.fluidContainers.bottleCreosote.name=크레오소트유 병
+item.immersiveengineering.fluidContainers.bucketCreosote.name=크레오소트유 양동이
+item.immersiveengineering.fluidContainers.bottlePlantoil.name=식물유 병
+item.immersiveengineering.fluidContainers.bucketPlantoil.name=식물유 양동이
+item.immersiveengineering.fluidContainers.bottleEthanol.name=에탄올 병
+item.immersiveengineering.fluidContainers.bucketEthanol.name=에탄올 양동이
+item.immersiveengineering.fluidContainers.bottleBiodiesel.name=바이오디젤 병
+item.immersiveengineering.fluidContainers.bucketBiodiesel.name=바이오디젤 양동이
+
+item.immersiveengineering.wirecoil.copper.name=저압 전선 코일
+item.immersiveengineering.wirecoil.insulated_copper.name=절연 저압 전선 코일
+item.immersiveengineering.wirecoil.electrum.name=중압 전선 코일
+item.immersiveengineering.wirecoil.insulated_electrum.name=절연 중압 전선 코일
+item.immersiveengineering.wirecoil.hv.name=고압 전선 코일
+item.immersiveengineering.wirecoil.rope.name=대마 밧줄 코일
+item.immersiveengineering.wirecoil.structural.name=강철 전선 코일
+item.immersiveengineering.wirecoil.redstone.name=레드스톤 전선 코일
+item.immersiveengineering.tool.hammer.name=엔지니어의 망치
+item.immersiveengineering.tool.wirecutter.name=엔지니어의 전선 절단기
+item.immersiveengineering.tool.voltmeter.name=엔지니어의 전압계
+item.immersiveengineering.tool.manual.name=엔지니어의 설명서
+item.immersiveengineering.toolbox.name=엔지니어의 도구 상자
+
+item.immersiveengineering.pickaxe_steel.name=강철 곡괭이
+item.immersiveengineering.shovel_steel.name=강철 삽
+item.immersiveengineering.axe_steel.name=강철 도끼
+item.immersiveengineering.sword_steel.name=강철 검
+
+item.immersiveengineering.revolver.name=리볼버
+item.immersiveengineering.revolver.dev.name=정복자
+item.immersiveengineering.revolver.infinity.name=촉매
+item.immersiveengineering.revolver.tesla.name=코일건
+item.immersiveengineering.revolver.sns.name=증기 롤러
+item.immersiveengineering.revolver.nerf.name=너프 리볼버
+item.immersiveengineering.revolver.oblivion.name=오블리비언
+item.immersiveengineering.revolver.oathkeeper.name=오스키퍼
+item.immersiveengineering.revolver.bee.name=비볼버
+item.immersiveengineering.revolver.fenrir.name=펜리르
+item.immersiveengineering.revolver.earthshaker.name=§b고급총§r
+item.immersiveengineering.revolver.warlord.name=리풀서
+item.immersiveengineering.revolver.superchief.name=슈퍼 촌장
+item.immersiveengineering.revolver.rose.name=나눈 장미
+item.immersiveengineering.revolver.noName.name=무명
+item.immersiveengineering.revolver.patreonBlu.name=§6마지막 단어§r
+item.immersiveengineering.revolver.patreonHazard.name=§4춤추는 팬텀§r
+item.immersiveengineering.speedloader.name=리볼버 스피드로더
+
+item.immersiveengineering.bullet.empty_casing.name=빈 케이스
+item.immersiveengineering.bullet.empty_shell.name=빈 껍데기
+item.immersiveengineering.bullet.casull.name=카설 카트리지
+item.immersiveengineering.bullet.armor_piercing.name=갑옷 천공 카트리지
+item.immersiveengineering.bullet.buckshot.name=산탄 카트리지
+item.immersiveengineering.bullet.he.name=고폭발 카트리지
+item.immersiveengineering.bullet.dragonsbreath.name=드래곤의 숨결 카트리지
+item.immersiveengineering.bullet.wolfpack.name=울프팩 카트리지
+item.immersiveengineering.bullet.silver.name=은 카트리지
+item.immersiveengineering.bullet.potion.name=작은 유리병 카트리지
+item.immersiveengineering.bullet.potion.splash.name=투척용 작은 유리병 카트리지
+item.immersiveengineering.bullet.potion.linger.name=잔류형 작은 유리병 카트리지
+item.immersiveengineering.bullet.flare.name=폭발 카트리지
+
+item.immersiveengineering.drill.diesel.name=채굴 드릴
+item.immersiveengineering.drillhead.iron.name=철 드릴 헤드
+item.immersiveengineering.drillhead.steel.name=강철 드릴 헤드
+
+item.immersiveengineering.skyhook.name=엔지니어의 열기구
+
+item.immersiveengineering.toolupgrade.drill_waterproof.name=가압 공기 탱크
+item.immersiveengineering.toolupgrade.drill_lube.name=고급 윤활 시스템
+item.immersiveengineering.toolupgrade.drill_damage.name=추가 나사송곳
+item.immersiveengineering.toolupgrade.drill_capacity.name=큰 탱크
+item.immersiveengineering.toolupgrade.revolver_bayonet.name=총검
+item.immersiveengineering.toolupgrade.revolver_magazine.name=확장 매거진
+item.immersiveengineering.toolupgrade.revolver_electro.name=진폭 전자 튜브
+item.immersiveengineering.toolupgrade.chemthrower_focus.name=집중 노즐
+item.immersiveengineering.toolupgrade.railgun_scope.name=정밀 스코프
+item.immersiveengineering.toolupgrade.railgun_capacitors.name=추가 축전기
+item.immersiveengineering.toolupgrade.shield_flash.name=플래시 전구
+item.immersiveengineering.toolupgrade.shield_shock.name=충격 증폭기
+item.immersiveengineering.toolupgrade.shield_magnet.name=전자 장갑
+item.immersiveengineering.toolupgrade.chemthrower_multitank.name=멀티탱크
+
+item.immersiveengineering.blueprint.name=엔지니어의 청사진
+item.immersiveengineering.mold.plate.name=금속 압축틀: 판
+item.immersiveengineering.mold.gear.name=금속 압축틀: 톱니바퀴
+item.immersiveengineering.mold.rod.name=금속 압축틀: 막대기
+item.immersiveengineering.mold.bullet_casing.name=금속 압축틀: 탄환 케이스
+item.immersiveengineering.mold.wire.name=금속 압축틀: 전선
+item.immersiveengineering.mold.packing4.name=금속 압축틀: 2x2 포장
+item.immersiveengineering.mold.packing9.name=금속 압축틀: 3x3 포장
+item.immersiveengineering.mold.unpacking.name=금속 압축틀: 포장해제
+
+item.immersiveengineering.graphite_electrode.name=흑연 전극
+item.immersiveengineering.shader.name=셰이더
+item.immersiveengineering.shader_bag.name=셰이더 그래백
+item.immersiveengineering.jerrycan.name=젤리캔
+item.immersiveengineering.chemthrower.name=화학 투척기
+item.immersiveengineering.railgun.name=레일건
+item.immersiveengineering.earmuffs.name=귀마개
+item.immersiveengineering.coresample.name=코어 견본
+item.immersiveengineering.faraday_suit_head.name=패러데이 투구
+item.immersiveengineering.faraday_suit_chest.name=패러데이 흉갑
+item.immersiveengineering.faraday_suit_legs.name=패러데이 각반
+item.immersiveengineering.faraday_suit_feet.name=패러데이 부츠
+item.immersiveengineering.fluorescent_tube.name=형광등
+item.immersiveengineering.powerpack.name=축전기 가방
+item.immersiveengineering.shield.name=중형 방패
+
+item.immersiveengineering.map_orevein.name=광물 저장소 지도
+
+#CREATIVE
+itemGroup.immersiveengineering=이머시브 엔지니어링
+
+#ENTITIES
+entity.immersiveengineering.skylineHook.name=열기구
+entity.immersiveengineering.explosive.name=폭발
+entity.immersiveengineering.fluorescentTube.name=형광등
+
+#BANNERS
+#Whoever at Mojang came up with this formatting system needs to be slapped.
+#Colours and Types seperately would make this so much nicer >=c
+item.banner.immersiveengineering_hammer.black=검은색 망치
+item.banner.immersiveengineering_hammer.red=빨간색 망치
+item.banner.immersiveengineering_hammer.green=초록색 망치
+item.banner.immersiveengineering_hammer.brown=갈색 망치
+item.banner.immersiveengineering_hammer.blue=파란색 망치
+item.banner.immersiveengineering_hammer.purple=보라색 망치
+item.banner.immersiveengineering_hammer.cyan=청록색 망치
+item.banner.immersiveengineering_hammer.silver=밝은 회색 망치
+item.banner.immersiveengineering_hammer.gray=회색 망치
+item.banner.immersiveengineering_hammer.pink=분홍색 망치
+item.banner.immersiveengineering_hammer.lime=연두색 망치
+item.banner.immersiveengineering_hammer.yellow=노란색 망치
+item.banner.immersiveengineering_hammer.lightBlue=하늘색 망치
+item.banner.immersiveengineering_hammer.magenta=자홍색 망치
+item.banner.immersiveengineering_hammer.orange=주황색 망치
+item.banner.immersiveengineering_hammer.white=흰색 망치
+item.banner.immersiveengineering_bevels.black=검은색 판
+item.banner.immersiveengineering_bevels.red=빨간색 판
+item.banner.immersiveengineering_bevels.green=초록색 판
+item.banner.immersiveengineering_bevels.brown=갈색 판
+item.banner.immersiveengineering_bevels.blue=파란색 판
+item.banner.immersiveengineering_bevels.purple=보라색 판
+item.banner.immersiveengineering_bevels.cyan=청록색 판
+item.banner.immersiveengineering_bevels.silver=밝은 회색 판
+item.banner.immersiveengineering_bevels.gray=회색 판
+item.banner.immersiveengineering_bevels.pink=분홍색 판
+item.banner.immersiveengineering_bevels.lime=연두색 판
+item.banner.immersiveengineering_bevels.yellow=노란색 판
+item.banner.immersiveengineering_bevels.lightBlue=하늘색 판
+item.banner.immersiveengineering_bevels.magenta=자홍색 판
+item.banner.immersiveengineering_bevels.orange=주황색 판
+item.banner.immersiveengineering_bevels.white=흰색 판
+item.banner.immersiveengineering_ornate.black=검은색 둥근 틀
+item.banner.immersiveengineering_ornate.red=빨간색 둥근 틀
+item.banner.immersiveengineering_ornate.green=초록색 둥근 틀
+item.banner.immersiveengineering_ornate.brown=갈색 둥근 틀
+item.banner.immersiveengineering_ornate.blue=파란색 둥근 틀
+item.banner.immersiveengineering_ornate.purple=보라색 둥근 틀
+item.banner.immersiveengineering_ornate.cyan=청록색 둥근 틀
+item.banner.immersiveengineering_ornate.silver=밝은 회색 둥근 틀
+item.banner.immersiveengineering_ornate.gray=회색 둥근 틀
+item.banner.immersiveengineering_ornate.pink=분홍색 둥근 틀
+item.banner.immersiveengineering_ornate.lime=연두색 둥근 틀
+item.banner.immersiveengineering_ornate.yellow=노란색 둥근 틀
+item.banner.immersiveengineering_ornate.lightBlue=하늘색 둥근 틀
+item.banner.immersiveengineering_ornate.magenta=자홍색 둥근 틀
+item.banner.immersiveengineering_ornate.orange=주황색 둥근 틀
+item.banner.immersiveengineering_ornate.white=흰색 둥근 틀
+item.banner.immersiveengineering_treated_wood.black=검은색 나무 패널
+item.banner.immersiveengineering_treated_wood.red=빨간색 나무 패널
+item.banner.immersiveengineering_treated_wood.green=초록색 나무 패널
+item.banner.immersiveengineering_treated_wood.brown=갈색 나무 패널
+item.banner.immersiveengineering_treated_wood.blue=파란색 나무 패널
+item.banner.immersiveengineering_treated_wood.purple=보라색 나무 패널
+item.banner.immersiveengineering_treated_wood.cyan=청록색 나무 패널
+item.banner.immersiveengineering_treated_wood.silver=밝은 회색 나무 패널
+item.banner.immersiveengineering_treated_wood.gray=회색 나무 패널
+item.banner.immersiveengineering_treated_wood.pink=분홍색 나무 패널
+item.banner.immersiveengineering_treated_wood.lime=연두색 나무 패널
+item.banner.immersiveengineering_treated_wood.yellow=노란색 나무 패널
+item.banner.immersiveengineering_treated_wood.lightBlue=하늘색 나무 패널
+item.banner.immersiveengineering_treated_wood.magenta=자홍색 나무 패널
+item.banner.immersiveengineering_treated_wood.orange=주황색 나무 패널
+item.banner.immersiveengineering_treated_wood.white=흰색 나무 패널
+item.banner.immersiveengineering_windmill.black=검은색 풍차
+item.banner.immersiveengineering_windmill.red=빨간색 풍차
+item.banner.immersiveengineering_windmill.green=초록색 풍차
+item.banner.immersiveengineering_windmill.brown=갈색 풍차
+item.banner.immersiveengineering_windmill.blue=파란색 풍차
+item.banner.immersiveengineering_windmill.purple=보라색 풍차
+item.banner.immersiveengineering_windmill.cyan=청록색 풍차
+item.banner.immersiveengineering_windmill.silver=밝은 회색 풍차
+item.banner.immersiveengineering_windmill.gray=회색 풍차
+item.banner.immersiveengineering_windmill.pink=분홍색 풍차
+item.banner.immersiveengineering_windmill.lime=연두색 풍차
+item.banner.immersiveengineering_windmill.yellow=노란색 풍차
+item.banner.immersiveengineering_windmill.lightBlue=하늘색 풍차
+item.banner.immersiveengineering_windmill.magenta=자홍색 풍차
+item.banner.immersiveengineering_windmill.orange=주황색 풍차
+item.banner.immersiveengineering_windmill.white=흰색 풍차
+item.banner.immersiveengineering_wolf_r.black=검은색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.red=빨간색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.green=초록색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.brown=갈색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.blue=파란색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.purple=보라색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.cyan=청록색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.silver=밝은 회색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.gray=회색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.pink=분홍색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.lime=연두색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.yellow=노란색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.lightBlue=하늘색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.magenta=자홍색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.orange=주황색 늑대 (우)
+item.banner.immersiveengineering_wolf_r.white=흰색 늑대 (우)
+item.banner.immersiveengineering_wolf_l.black=검은색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.red=빨간색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.green=초록색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.brown=갈색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.blue=파란색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.purple=보라색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.cyan=청록색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.silver=밝은 회색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.gray=회색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.pink=분홍색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.lime=연두색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.yellow=노란색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.lightBlue=하늘색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.magenta=자홍색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.orange=주황색 늑대 (좌)
+item.banner.immersiveengineering_wolf_l.white=흰색 늑대 (좌)
+item.banner.immersiveengineering_wolf.black=검은색 늑대
+item.banner.immersiveengineering_wolf.red=빨간색 늑대
+item.banner.immersiveengineering_wolf.green=초록색 늑대
+item.banner.immersiveengineering_wolf.brown=갈색 늑대
+item.banner.immersiveengineering_wolf.blue=파란색 늑대
+item.banner.immersiveengineering_wolf.purple=보라색 늑대
+item.banner.immersiveengineering_wolf.cyan=청록색 늑대
+item.banner.immersiveengineering_wolf.silver=밝은 회색 늑대
+item.banner.immersiveengineering_wolf.gray=회색 늑대
+item.banner.immersiveengineering_wolf.pink=분홍색 늑대
+item.banner.immersiveengineering_wolf.lime=연두색 늑대
+item.banner.immersiveengineering_wolf.yellow=노란색 늑대
+item.banner.immersiveengineering_wolf.lightBlue=하늘색 늑대
+item.banner.immersiveengineering_wolf.magenta=자홍색 늑대
+item.banner.immersiveengineering_wolf.orange=주황색 늑대
+item.banner.immersiveengineering_wolf.white=흰색 늑대
+
+#COMPAT THINGS
+#TINKERS CONSTRUCT COMPAT
+fluid.uranium=녹은 우라늄
+fluid.constantan=녹은 콘스탄탄
+material.treatedwood.name=방부목
+material.constantan.name=콘스탄탄
+material.hemp.name=대마 섬유
+modifier.thermalinversion.name=열 반전
+modifier.thermalinversion.desc=§o온 & 냉!§r\n덥거나 추운 환경에서 적을 때리는 것은 그들을 얼게 하거나 태워 버릴 것입니다.
+#BOTANIA COMPAT
+item.immersiveengineering.bullet.terrasteel.name=자동유도 카트리지
+ie.manual.entry.bullets_terrasteel=§l자동유도 §l카트리지§r는 "특별 발사체" 청사진으로 만들어지고, 그것은 "테라스틸"로 만들어지고, 가장 가까운 목표를 찾고 쫓을 수 있는 내재적인 능력을 줍니다.
+#BLOODMAGIC COMPAT
+item.immersiveengineering.bullet.crystalwill.name=결정된 의지 카트리지
+ie.manual.entry.bullets_crystalwill=§l결정된 §l의지 §l카트리지§r는 "특별 발사체" 청사진으로 만들어지고, 악령의 의지 수정을 이용합니다. 적은 양의 악령의 의지는 근처의 목표물을 찾아 끈질기게 쫓으려는 발사체들을 억지로 포함하고 있습니다.
+
+#DESCRIPTIONS
+entity.Villager.immersiveengineering.engineer=구조 엔지니어
+entity.Villager.immersiveengineering.machinist=기계공학자
+entity.Villager.immersiveengineering.electrician=전기공학자
+entity.Villager.immersiveengineering.outfitter=외야수
+
+key.immersiveengineering.magnetEquip=자석 방패 장갑 (더블탭)
+key.immersiveengineering.chemthrowerSwitch=체임트로버 탱크로 전환
+
+desc.immersiveengineering.info.attachedTo=%1$s, %2$s, %3$s 로 접속 중
+desc.immersiveengineering.info.attachedToDim=%4$s 차원에 있는 %1$s, %2$s, %3$s로 접속 중
+desc.immersiveengineering.info.energyStored=에너지 저장: %1$s Flux
+desc.immersiveengineering.info.energyStoredEU=에너지 저장: %1$s EU
+desc.immersiveengineering.info.blastFuelTime=폭발 연료: %1$s Tick
+desc.immersiveengineering.info.gasStored=가스 저장: %1$s
+desc.immersiveengineering.info.colour=색: %1$s
+desc.immersiveengineering.info.day=%1$s일
+desc.immersiveengineering.info.hour=%1$s시간
+desc.immersiveengineering.info.minute=%1$s분
+desc.immersiveengineering.info.second=%1$s초
+desc.immersiveengineering.info.potionMod=%1$s가 추가한 포션
+
+desc.immersiveengineering.info.multiblocksAllowed=허용된 멀티블록:
+desc.immersiveengineering.info.multiblockForbidden=금지된 멀티블록:
+
+desc.immersiveengineering.info.colour.red=적색: %1s
+desc.immersiveengineering.info.colour.green=녹색: %1s
+desc.immersiveengineering.info.colour.blue=청색: %1s
+
+desc.immersiveengineering.info.blockSide.facing=얼굴쪽
+desc.immersiveengineering.info.blockSide.opposite=반대쪽
+desc.immersiveengineering.info.blockSide.down=아래쪽
+desc.immersiveengineering.info.blockSide.up=위쪽
+desc.immersiveengineering.info.blockSide.north=북쪽
+desc.immersiveengineering.info.blockSide.south=남쪽
+desc.immersiveengineering.info.blockSide.west=서쪽
+desc.immersiveengineering.info.blockSide.east=동쪽
+desc.immersiveengineering.info.blockSide.io.-1=연결 없음
+desc.immersiveengineering.info.blockSide.io.0=입력
+desc.immersiveengineering.info.blockSide.io.1=출력
+desc.immersiveengineering.info.blockSide.connectEnergy.NONE=연결 없음
+desc.immersiveengineering.info.blockSide.connectEnergy.INPUT=에너지 입력
+desc.immersiveengineering.info.blockSide.connectEnergy.OUTPUT=에너지 출력
+desc.immersiveengineering.info.blockSide.connectFluid.-1=연결 없음
+desc.immersiveengineering.info.blockSide.connectFluid.0=유체 입력
+desc.immersiveengineering.info.blockSide.connectFluid.1=유체 출력
+
+desc.immersiveengineering.info.filter.oreDict=필터: 오어딕셔네리<br>오어딕셔네리 이름 기반으로 <br>아이템을 분류합니다.
+desc.immersiveengineering.info.filter.nbt=필터: NBT 데이퍼<br>NBT 데이터에 요청하여<br>아이템을 분류합니다.
+desc.immersiveengineering.info.filter.fuzzy=필터: 푸지<br>위험 정도를 무시하는 동안<br>아이템을 분류합니다.
+
+desc.immersiveengineering.info.oreDict.off=오어딕셔네리: 사용 안 함
+desc.immersiveengineering.info.oreDict.on=오어딕셔네리: 사용함
+
+desc.immersiveengineering.info.mininglvl.-1=없음
+desc.immersiveengineering.info.mininglvl.0=§7돌
+desc.immersiveengineering.info.mininglvl.1=§4철
+desc.immersiveengineering.info.mininglvl.2=§c레드스톤
+desc.immersiveengineering.info.mininglvl.3=§d흑요석
+desc.immersiveengineering.info.mininglvl.4=§9코발트
+desc.immersiveengineering.info.mininglvl.5=§5마뉼린
+desc.immersiveengineering.info.mininglvl.6=§5마뉼린§d+
+
+desc.immersiveengineering.info.durability=내구성: %1$s
+
+desc.immersiveengineering.info.holdShift=§6Shift를 누르세요§r
+desc.immersiveengineering.info.holdShiftForInfo=§8자세한 내용을 알고 싶으면 Shift를 누르세요§r
+
+desc.immersiveengineering.info.mineral.Iron=철
+desc.immersiveengineering.info.mineral.Magnetite=자철석
+desc.immersiveengineering.info.mineral.Pyrite=황철석
+desc.immersiveengineering.info.mineral.Bauxite=보크사이트
+desc.immersiveengineering.info.mineral.Copper=구리
+desc.immersiveengineering.info.mineral.Cassiterite=석석
+desc.immersiveengineering.info.mineral.Gold=금
+desc.immersiveengineering.info.mineral.Nickel=니켈
+desc.immersiveengineering.info.mineral.Platinum=백금
+desc.immersiveengineering.info.mineral.Uranium=우라늄
+desc.immersiveengineering.info.mineral.Quartzite=규안
+desc.immersiveengineering.info.mineral.Galena=갈레나
+desc.immersiveengineering.info.mineral.Lead=납
+desc.immersiveengineering.info.mineral.Silver=은
+desc.immersiveengineering.info.mineral.Lapis=청금석
+desc.immersiveengineering.info.mineral.Coal=석탄
+desc.immersiveengineering.info.mineral.Wolframite=철망간 중석
+
+chat.immersiveengineering.info.old_java=[이머시브 엔지니어링] §4주의: §r당신의 Java 버전은 %1$s입니다. 이 버전은 엔지니어의 설명서에 충돌을 야기합니다. 이 충돌은 우리가 고칠 수 없습니다. 충돌 예방을 위해 Java의 최신 버전(Java 8을 권장)을 다운로드하거나 런처로 돌아가야 합니다.
+
+chat.immersiveengineering.info.coresample.pos=%1$s에서 %2$s로
+chat.immersiveengineering.info.coresample.mineral=%1$s-광먁
+chat.immersiveengineering.info.coresample.noMineral=광물이 없습니다.
+chat.immersiveengineering.info.coresample.yield=기대 수익: 광석 %1$s개
+chat.immersiveengineering.info.coresample.infinite=한계 없는 수익
+chat.immersiveengineering.info.coresample.timestamp=%1$s 전에 견본 채취를 했습니다.
+chat.immersiveengineering.info.coresample.noTimestamp=불시에 견본 채취를 했습니다.
+chat.immersiveengineering.info.coresample.timezone=이 견본은 다른 시간대와 차원에서 작용합니다.
+chat.immersiveengineering.info.coresample.mapFail=이 견본은 이 지도의 경계에 함께있지 않습니다.
+
+desc.immersiveengineering.info.reqMaterial=요구된 광물:
+desc.immersiveengineering.info.chance=기회:
+
+desc.immersiveengineering.info.blueprint.creates0=만들어진 아이템: §6Shift를 누르세요§r
+desc.immersiveengineering.info.blueprint.creates1=만들어진 아이템:
+desc.immersiveengineering.info.blueprint.components=요소 제작
+desc.immersiveengineering.info.blueprint.molds=금속 압축틀
+desc.immersiveengineering.info.blueprint.bullet=공통 발사체
+desc.immersiveengineering.info.blueprint.specialBullet=특별 발사체
+desc.immersiveengineering.info.blueprint.electrode=아크 화로 전극
+
+desc.immersiveengineering.info.electrodeIntegrity=진실성
+
+desc.immersiveengineering.info.bullet.flareColour=폭발색: %1$s
+
+desc.immersiveengineering.info.shader.applyTo=적용 가능:
+desc.immersiveengineering.info.shader.immersiveengineering:revolver=리볼버
+desc.immersiveengineering.info.shader.immersiveengineering:chemthrower=화학 투척기
+desc.immersiveengineering.info.shader.immersiveengineering:drill=채굴 드릴
+desc.immersiveengineering.info.shader.immersiveengineering:railgun=레일건
+desc.immersiveengineering.info.shader.immersiveengineering:shield=판 방패
+desc.immersiveengineering.info.shader.immersiveengineering:minecart=마인카트
+desc.immersiveengineering.info.shader.immersiveengineering:balloon=풍선
+desc.immersiveengineering.info.shader.set=§l셰이더 설정§r:
+desc.immersiveengineering.info.shader.reference=§l대중문화 참조§r:
+desc.immersiveengineering.info.shader.details=§l추가 정보§r:
+
+desc.immersiveengineering.info.toolbox.food=음식
+desc.immersiveengineering.info.toolbox.tool=도구
+desc.immersiveengineering.info.toolbox.wire=전선
+desc.immersiveengineering.info.toolbox.any=기타
+
+desc.immersiveengineering.info.fertFill=비료 량: %1$s
+desc.immersiveengineering.info.fertMod=성장 지표: %1$s
+
+desc.immersiveengineering.info.redstoneChannel=채널: %1$s
+desc.immersiveengineering.info.redstoneChannel.send=채널 송신: %1$s
+desc.immersiveengineering.info.redstoneChannel.rec=채널 수신: %1$s
+
+desc.immersiveengineering.info.multiblock.IE:AlloySmelter=합금 가마
+desc.immersiveengineering.info.multiblock.IE:ArcFurnace=아크 화로
+desc.immersiveengineering.info.multiblock.IE:Assembler=조립기
+desc.immersiveengineering.info.multiblock.IE:AutoWorkbench=자동화된 엔지니어의 워크벤치
+desc.immersiveengineering.info.multiblock.IE:BlastFurnace=원유 용광로
+desc.immersiveengineering.info.multiblock.IE:BlastFurnaceAdvanced=강화 용광로
+desc.immersiveengineering.info.multiblock.IE:BottlingMachine=병조림기
+desc.immersiveengineering.info.multiblock.IE:BucketWheel=양동이 바퀴
+desc.immersiveengineering.info.multiblock.IE:CokeOven=코크스 오븐
+desc.immersiveengineering.info.multiblock.IE:Crusher=분해기
+desc.immersiveengineering.info.multiblock.IE:DieselGenerator=정유 발전기
+desc.immersiveengineering.info.multiblock.IE:Excavator=굴착기
+desc.immersiveengineering.info.multiblock.IE:Fermenter=발효기
+desc.immersiveengineering.info.multiblock.IE:Lightningrod=빛나는 막대기
+desc.immersiveengineering.info.multiblock.IE:MetalPress=금속 압축기
+desc.immersiveengineering.info.multiblock.IE:Mixer=혼합기
+desc.immersiveengineering.info.multiblock.IE:Refinery=정제기
+desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=탱크
+desc.immersiveengineering.info.multiblock.IE:Silo=사일로
+desc.immersiveengineering.info.multiblock.IE:Squeezer=압착기
+
+desc.immersiveengineering.flavour.treated_wood.horizontal=수평 목재
+desc.immersiveengineering.flavour.treated_wood.vertical=수직 목재
+desc.immersiveengineering.flavour.treated_wood.packaged=포장된 목재
+desc.immersiveengineering.flavour.treated_wood_slab.horizontal=수평 목재 반 블록
+desc.immersiveengineering.flavour.treated_wood_slab.vertical=수직 목재 반 블록
+desc.immersiveengineering.flavour.treated_wood_slab.packaged=포장된 목재 반 블록
+desc.immersiveengineering.flavour.treated_wood_stairs0=수평 목재 계단
+desc.immersiveengineering.flavour.treated_wood_stairs1=수직 목재 계단
+desc.immersiveengineering.flavour.treated_wood_stairs2=포장된 목재 계단
+desc.immersiveengineering.flavour.crate=고장 나면 인벤토리를 유지할 것입니다!
+desc.immersiveengineering.flavour.barrel=고장 나면 유체를 유지할 것입니다!
+desc.immersiveengineering.flavour.barrelTemp=뜨거운 유체 혹은 가스를 저장할 수 없습니다.
+desc.immersiveengineering.flavour.coil.construction0=장식 목적으로만 사용할 수 있습니다.
+desc.immersiveengineering.flavour.coil.construction1=힘을 전달하지 못할 것입니다.
+desc.immersiveengineering.flavour.coil.redstone=레드스톤 신호를 전달합니다.
+desc.immersiveengineering.flavour.revolver=어서 덤벼라, 너 오늘 죽었다!
+desc.immersiveengineering.flavour.revolver.dev=지역 경찰!
+desc.immersiveengineering.flavour.revolver.infinity=당신이 모두 필요한 것은 무한의 작은 꼬집기야.
+desc.immersiveengineering.flavour.revolver.tesla=충격적인 발명!
+desc.immersiveengineering.flavour.revolver.sns=피, 땀, 증기 그리고 강철
+desc.immersiveengineering.flavour.revolver.nerf=어린이 안전
+desc.immersiveengineering.flavour.revolver.oblivion=기억을 잊음
+desc.immersiveengineering.flavour.revolver.oathkeeper=길 발견자
+desc.immersiveengineering.flavour.revolver.bee=고통
+desc.immersiveengineering.flavour.revolver.fenrir=내가 아끼지 않는 건 아무것도 없어!
+desc.immersiveengineering.flavour.revolver.earthshaker=잔류하는 의지
+desc.immersiveengineering.flavour.revolver.warlord=내 장난감 챙기지마!
+desc.immersiveengineering.flavour.revolver.superchief=추 추!
+desc.immersiveengineering.flavour.revolver.rommie=인공지능 로미가 포함된 것을 노립니다!
+desc.immersiveengineering.flavour.revolver.rose=특징은 받지 않고 있을 수 있습니다.
+desc.immersiveengineering.flavour.revolver.noName=어둠 속으로 들여다 보기
+desc.immersiveengineering.flavour.revolver.patreonBlu=사냥꾼의 선택
+desc.immersiveengineering.flavour.revolver.patreonHazard=폭발적인 DLC 회로
+
+desc.immersiveengineering.flavour.drill.noHead=드릴 헤드가 준비되지 않았습니다.
+desc.immersiveengineering.flavour.drill.headDamage=드릴 헤드 상태:
+desc.immersiveengineering.flavour.drill.fuel=연료:
+desc.immersiveengineering.flavour.drill.empty=부족
+
+desc.immersiveengineering.flavour.drillhead.size=채굴 구역: %1$sx%1$sx%2$s
+desc.immersiveengineering.flavour.drillhead.level=체굴 정도: %1$s
+desc.immersiveengineering.flavour.drillhead.speed=체굴 속도: %1$s
+desc.immersiveengineering.flavour.drillhead.damage=공격 데미지: %1$s
+
+desc.immersiveengineering.flavour.skyhook=새로운 형태의 여행
+
+desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=채굴 드릴이 물 속에서 작동할 수 있도록 허용합니다.
+desc.immersiveengineering.flavour.toolupgrade.drill_lube=채굴 드릴의 지탱하는 헤드가 손상을 줄여 줍니다.
+desc.immersiveengineering.flavour.toolupgrade.drill_damage=채굴 드릴의 공격 피해와 굴착 속도가 빨라지고, 최대 3개의 스택이 형성됩니다.
+desc.immersiveengineering.flavour.toolupgrade.drill_capacity=채굴 드릴과 화학 투척기의 내부 탱크의 크기를 증가시킵니다.
+desc.immersiveengineering.flavour.toolupgrade.revolver_bayonet=리볼버에 근거리 손상을 추가합니다.
+desc.immersiveengineering.flavour.toolupgrade.revolver_magazine=리볼버의 매거진 크기를 늘립니다.
+desc.immersiveengineering.flavour.toolupgrade.revolver_electro=리볼버 샷이 충격 손상을 유발합니다.
+desc.immersiveengineering.flavour.toolupgrade.chemthrower_focus=산화물이 확산되고 화학 투척기의 범위가 증가합니다.
+desc.immersiveengineering.flavour.toolupgrade.railgun_scope=레일건을 확대할 수 있습니다.
+desc.immersiveengineering.flavour.toolupgrade.railgun_capacitors=레일건의 충전 시간을 단축합니다.
+desc.immersiveengineering.flavour.toolupgrade.shield_flash=눈부신 섬광을 생성합니다.
+desc.immersiveengineering.flavour.toolupgrade.shield_shock=공격자에게 충격을 주고 발사체를 발사시킵니다.
+desc.immersiveengineering.flavour.toolupgrade.shield_magnet=버튼을 누를 때 방패를 분리합니다.
+desc.immersiveengineering.flavour.toolupgrade.chemthrower_multitank=화학 투척기에서 여러 유체를 허용합니다.
+
+gui.immersiveengineering.empty=비어있습니다.
+gui.immersiveengineering.blastFurnace=용광로
+gui.immersiveengineering.blastFurnace.fuel=용광로 연료
+gui.immersiveengineering.assembler.nospace=모든 패턴 슬롯이 채워집니다!
+
+gui.immersiveengineering.config.earmuffs.soundcategory.music=음악
+gui.immersiveengineering.config.earmuffs.soundcategory.record=레코드
+gui.immersiveengineering.config.earmuffs.soundcategory.weather=날씨
+gui.immersiveengineering.config.earmuffs.soundcategory.block=블록
+gui.immersiveengineering.config.earmuffs.soundcategory.hostile=괴물
+gui.immersiveengineering.config.earmuffs.soundcategory.neutral=친근감
+gui.immersiveengineering.config.earmuffs.soundcategory.player=플레이어
+gui.immersiveengineering.config.earmuffs.soundcategory.ambient=주변
+gui.immersiveengineering.config.earmuffs.noisegate=노이즈 게이트
+
+gui.immersiveengineering.config.turret.add=추가
+gui.immersiveengineering.config.turret.blacklist=블랙리스트
+gui.immersiveengineering.config.turret.animals=동물
+gui.immersiveengineering.config.turret.players=플레이어
+gui.immersiveengineering.config.turret.neutrals=자연
+gui.immersiveengineering.config.turret.ignite_fluid=가연성 유체
+gui.immersiveengineering.config.turret.expel_casings_on=케이스 배출
+gui.immersiveengineering.config.turret.expel_casings_off=케이스 유지
+
+gui.immersiveengineering.config.mixer.outputSingle=아래쪽 유체만 출력합니다.
+gui.immersiveengineering.config.mixer.outputAll=모든 유체를 출력합니다.
+
+gui.immersiveengineering.config.assembler.clearRecipe=깨끗한 조합법
+gui.immersiveengineering.config.assembler.recursiveIngredients=재료의 재귀적 사용
+gui.immersiveengineering.config.assembler.nonRecursiveIngredients=재료의 비재귀적 사용
+
+#CHAT
+chat.immersiveengineering.warning.wrongCable=이 전선을 여기에 부착할 수 없습니다
+chat.immersiveengineering.warning.wrongDimension=잘못된 차원에 있습니다
+chat.immersiveengineering.warning.sameConnection=전선을 같은 지점에 부착할 수 없습니다
+chat.immersiveengineering.warning.tooFar=이전 연결 지점으로 부터 너무 먼 곳에 있습니다
+chat.immersiveengineering.warning.cantSee=이 연결은 막혔습니다
+chat.immersiveengineering.warning.connectionExists=이 연결은 이미 지속 중입니다
+chat.immersiveengineering.warning.invalidPoint=연결 지점 중 하나가 유효하지 않습니다
+chat.immersiveengineering.info.averageLoss=지점 사이에 평균을 잃었습니다: %1$s%%
+chat.immersiveengineering.info.energyStorage=에너지 저장: %1$s/%2$s Flux
+chat.immersiveengineering.info.tooHot=이 유체는 용기에 담기에 너무 뜨겁습니다!
+chat.immersiveengineering.info.noGasAllowed=이 용기는 가스를 저장할 수 없습니다!
+chat.immersiveengineering.info.rsSignal.invertedOn=레드스톤 신호: 역행
+chat.immersiveengineering.info.rsSignal.invertedOff=레드스톤 신호: 순행
+chat.immersiveengineering.info.rsControl.invertedOn=레드스톤 통제: 역행
+chat.immersiveengineering.info.rsControl.invertedOff=레드스톤 통제: 순행
+chat.immersiveengineering.info.rsControl.strongSignal.true=강력한 레드스톤 신호: 사용함
+chat.immersiveengineering.info.rsControl.strongSignal.false=강력한 레드스톤 신호: 사용 안 함
+chat.immersiveengineering.info.tesla.highPower=파워 모드: 높음
+chat.immersiveengineering.info.tesla.lowPower=파워 모드: 낮음
+chat.immersiveengineering.info.notOwner='%1$s'의 소유자만 오직 이 블록에 엑세스할 수 있습니다
+chat.immersiveengineering.info.tickrate=이 블록은 매 %1$s tick마다 활성화 될 것입니다.
+
+chat.immersiveengineering.info.coreDrill.progress=코어 견본 진행 중: %1$s
+chat.immersiveengineering.info.coreDrill.result.mineral=§7코어 견본이 가동되었습니다, %1$s§7 광맥을 찾았습니다
+chat.immersiveengineering.info.coreDrill.result.depl=§7광석 광맥은 %1$s§7에서 온건하게 있습니다
+chat.immersiveengineering.info.coreDrill.result.none=코어 견본이 가동되었습니다, 광석이 없습니다
+chat.immersiveengineering.info.coreDrill.infinite=무한
+
+chat.immersiveengineering.info.pump.placeCobble.true=이 펌프는 이제 유체를 조약돌로 대체할 것입니다.
+chat.immersiveengineering.info.pump.placeCobble.false=이 펌프는 더 이상 유체 블록을 조약돌로 교체하지 않습니다. §6주의:§f 이는 지연을 유발할 수 있으며 많은 양의 유체를 취급할 때는 권장되지 않습니다!
+chat.immersiveengineering.info.energyTransfered=지난%s$1 tick 동안 전송된 평균 에너지: %2$s Flux/t
+
+chat.immersiveengineering.command.available=§6사용 가능한 명령어:§r %1$s
+chat.immersiveengineering.command.help.help=§6사용법: /ie help <command> [sub-commands ...]§r<br> 지정된 명령어에 대한 자세한 정보를 얻으려면 또는 선택적으로 하위 명령어에 대한 정보를 가져옵니다.
+chat.immersiveengineering.command.mineral.help=§6사용법: /ie mineral <list|get|set|setDepletion>§r
+chat.immersiveengineering.command.mineral.list.help=§6사용법: /ie mineral list§r<br> 등록된 모든 광석들을 나열합니다.
+chat.immersiveengineering.command.mineral.get.help=§6사용법: /ie mineral get§r<br> 청크에 대한 광석을 표시합니다.
+chat.immersiveengineering.command.mineral.set.help=§6사용법: /ie mineral set [mineral]§r<br> 청크에 대한 기각 광석을 설정합니다. 재지정을 지울 광석을 지정하지 않습니다.
+chat.immersiveengineering.command.mineral.setDepletion.help=§6사용법: /ie mineral setDepletion <number>§r<br> 청크 안에 있는 광석의 고갈을 설정합니다. 광맥을 무한대로 만들려면 이 값을 -1로 설정합니다.
+chat.immersiveengineering.command.mineral.get=청크 포함: %1$s, 기각: %2$s, 고갈: %3$s
+chat.immersiveengineering.command.mineral.set.invalidMineral=§c유효하지 않은 광석인 '%1$s'은 유효한 식별자가 아닙니다. 모든 식별자의 목록을 위해 '/ie mineral list'을 사용하세요.§r
+chat.immersiveengineering.command.mineral.set.sucess='%1$s'에서 기각 광석이 발생했습니다.
+chat.immersiveengineering.command.mineral.set.clear=기각 광석 (%1$s)을 제거했습니다.
+chat.immersiveengineering.command.mineral.setDepletion.NFE=오류가 발생했습니다, '%1$s'은 유효한 숫자가 아닙니다
+chat.immersiveengineering.command.mineral.setDepletion.sucess='%1$s'에서 광석 고갈이 발생했습니다.
+chat.immersiveengineering.command.shaders.help=§6사용법: /ie shaders <clear>§r
+chat.immersiveengineering.command.shaders.clear.help=§6사용법: /ie shaders clear [player]§r<br> 지정된 플레이어에 대해 수신된 셰이더를 지웁니다. 플레이어가 지정되어 있지 않으면 선택하지 마세요.
+chat.immersiveengineering.command.shaders.clear.sucess='%1$s'에 수신된 셰이더가 제거되었습니다
+
+#SUBTITLES
+subtitle.immersiveengineering.dieselGenerator=정유 발전기가 시끄럽고 불쾌해하고 있습니다
+subtitle.immersiveengineering.crusher=분해기는 광석을 분해시킵니다
+subtitle.immersiveengineering.metalPressPiston=금속 압축기 피스톤
+subtitle.immersiveengineering.metalPressSmash=금속 압축기 폭발
+subtitle.immersiveengineering.birthdayParty=생일 축하합니다!
+subtitle.immersiveengineering.revolverFire=총격
+subtitle.immersiveengineering.revolverReload=재생
+subtitle.immersiveengineering.spray=유체 분무기
+subtitle.immersiveengineering.sprayFire=인화성 유체 분무기
+subtitle.immersiveengineering.chargeFast=축전기 충전 중
+subtitle.immersiveengineering.chargeSlow=축전기 충전 중
+subtitle.immersiveengineering.spark=전기 스파크 발생
+subtitle.immersiveengineering.railgunFire=레일건 화재 발생
+subtitle.immersiveengineering.tesla=테슬라 코일 제압
+subtitle.immersiveengineering.direSwitch=나이프스위치를 모방한 Direwolfe20
+
+#RECIPES
+recipe.immersiveengineering.hammerCrushing=분헤
+
+#DEATH
+death.attack.ieRevolver_casull=%1$s이 %2$s에게 총격을 맞아 사망했습니다
+death.attack.ieRevolver_casull.item=%1$s이 %2$s이 사용한 %3$s에 총격을 맞아 사망했습니다
+death.attack.ieRevolver_casull.turret=%1$s이 포탑에 맞아 사망했습니다
+death.attack.ieRevolver_armorPiercing=%1$s이 %2$s에게 찔려 살해당했습니다
+death.attack.ieRevolver_armorPiercing.item=%1$s%2$s이 사용한 %3$s에 찔려 살해당했습니다
+death.attack.ieRevolver_armorPiercing.turret=%1$s이 포탑에 찔려 사망했습니다
+death.attack.ieRevolver_buckshot=%1$s이 %2$s에게 치명타를 맞아 사망했습니다
+death.attack.ieRevolver_buckshot.item=%1$s이 %2$s이 사용한 %3$s에 치명타를 맞아 사망했습니다
+death.attack.ieRevolver_buckshot.turret=%1$s이 포탑에 맞아 사망했습니다
+death.attack.ieRevolver_dragonsbreath=%1$s이 %2$s에게 불타 사망했습니다
+death.attack.ieRevolver_dragonsbreath.item=%1$s이 %2$s이 사용한 %3$s에 불타 사망했습니다
+death.attack.ieRevolver_dragonsbreath.turret=%1$s이 포탑에 불타 사망했습니다
+death.attack.ieRevolver_homing=%1$s이 %2$s의 자동유도 탄환에 맞아 사망했습니다
+death.attack.ieRevolver_homing.item=%1$s이 %2$s의 %3$s로부터 발사된 자동유도 탄환에 맞아 사망했습니다
+death.attack.ieRevolver_homing.turret=%1$s이 총 포탑의 자동유도 탄환에 맞아 사망했습니다
+death.attack.ieRevolver_wolfpack=%1&s는 %2&s의 울프팩 회전에 의해 잘게 조각났습니다
+death.attack.ieRevolver_wolfpack.item=%1$s는 %3$s로부터 발사된 %2$s의 울프팩 회전에 의해 잘게 조각났습니다
+death.attack.ieRevolver_wolfpack.turret=%1$s는 총 포탑의 울프팩 회전에 의해 잘게 조각났습니다
+death.attack.ieRevolver_silver=%1$s는 %2$s의 은 탄환에 맞아 정제되었습니다
+death.attack.ieRevolver_silver.item=%1$s는 %3$s에서 발사된 %2$s의 은 탄환에 맞아 정제되었습니다
+death.attack.ieRevolver_silver.turret=%1$s은 총 포탑의 은 탄환에 맞아 정제되었습니다
+death.attack.ieRevolver_potion=%1$s는 %2$s의 작은 유리병 투척으로 살해당했습니다
+death.attack.ieRevolver_potion.item=%1$s는 %3$s에서 발사된 %2$s의 작은 유리병 투척으로 살해당했습니다
+death.attack.ieRevolver_potion.turret=%1$s은 총 포탑의 작은 유리병 투척으로 살해당했습니다
+
+death.attack.ieCrushed=%1$s가 충돌사당했습니다
+death.attack.ieAcid=%1$s가 산에 녹았습니다
+death.attack.ieRazorWire=%1$s가 레이저 전선에 의해 잘렸습니다
+death.attack.ieRazorShock=%1$s가 레이저 전선에 의해 충격사당했습니다
+death.attack.ieTesla=%1$s가 테슬라 코일에 데었습니다.
+death.attack.ieTeslaPrimary=%1$s가 테슬라 코일이 작동하는 주요 회로에 데었습니다.
+death.attack.ieRailgun=%1$s거 %2$s의 레일건에 의해 산산조각났습니다.
+death.attack.ieWireShock=%1$s가 실시간 전선 주변을 충분히 주의하지 않았습니다.
+
+#ACHIEVEMENTS
+advancement.immersiveengineering:root=이머시브 엔지니어링
+advancement.immersiveengineering:root.desc=설명서를 참고하세요!
+advancement.immersiveengineering:openManual=설명서를 참고하세요
+advancement.immersiveengineering:openManual.desc=엔지니어의 설명서 획득
+advancement.immersiveengineering:craftHammer=망치!
+advancement.immersiveengineering:craftHammer.desc=엔지니어의 망치 제작
+advancement.immersiveengineering:connectWire=전선위의 새들
+advancement.immersiveengineering:connectWire.desc=전선 획득
+advancement.immersiveengineering:blastfurnace=최신 토픽
+advancement.immersiveengineering:blastfurnace.desc=용광료 제작
+advancement.immersiveengineering:makeSteel=업그레이드
+advancement.immersiveengineering:makeSteel.desc=강철괴 제작
+
+advancement.immersiveengineering:placeConveyor=실종
+advancement.immersiveengineering:placeConveyor.desc=컨베이어 벨트 설치
+advancement.immersiveengineering:placeWindmill=땅을 위한 풍차
+advancement.immersiveengineering:placeWindmill.desc=풍차 설치
+advancement.immersiveengineering:craftHeater=따뜻한 세상
+advancement.immersiveengineering:craftHeater.desc=외부 히터 제작
+advancement.immersiveengineering:craftPump=하부 압력
+advancement.immersiveengineering:craftPump.desc=유체 펌프 제작
+advancement.immersiveengineering:placeFloodlight=아지즈! 빛!
+advancement.immersiveengineering:placeFloodlight.desc=투광 조명등 설치
+advancement.immersiveengineering:craftWorkbench=땜장이에게 시간을
+advancement.immersiveengineering:craftWorkbench.desc=엔지니어의 워크벤치 제작
+advancement.immersiveengineering:craftRevolver=좋은 하루 되세요
+advancement.immersiveengineering:craftRevolver.desc=리볼버 제작
+advancement.immersiveengineering:upgradeRevolver=샤라샤스카
+advancement.immersiveengineering:upgradeRevolver.desc=리볼버에 최대 업그레이드 적용
+advancement.immersiveengineering:craftWolfPack=파괴의 미
+advancement.immersiveengineering:craftWolfPack.desc=울프팩 카트리지 제작
+advancement.immersiveengineering:craftDrill=파워 선택
+advancement.immersiveengineering:craftDrill.desc=채굴 드릴 제작
+advancement.immersiveengineering:upgradeDrill=대부
+advancement.immersiveengineering:upgradeDrill.desc=채굴 드릴에 최대 업그레이드 적용
+advancement.immersiveengineering:craftSkyhook=부커, 잡아!
+advancement.immersiveengineering:craftSkyhook.desc=엔지니어의 열기구 제작
+advancement.immersiveengineering:skyhookPro=스카이 라인 마스터
+advancement.immersiveengineering:skyhookPro.desc=열기구로 총 1km 주행
+advancement.immersiveengineering:craftChemthrower=뿌리고 기도하다.
+advancement.immersiveengineering:craftChemthrower.desc=화학 투척기 제작
+advancement.immersiveengineering:craftRailgun=행운의 유산
+advancement.immersiveengineering:craftRailgun.desc=레일건 제작
+
+advancement.immersiveengineering:mbImprovedBlastFurnace=차세대 용광로
+advancement.immersiveengineering:mbImprovedBlastFurnace.desc=강화 용광로 제작
+advancement.immersiveengineering:mbMetalPress=물질 압축
+advancement.immersiveengineering:mbMetalPress.desc=금속 압축기 제작
+advancement.immersiveengineering:mbSilo=안전한 판금 만들기
+advancement.immersiveengineering:mbSilo.desc=사일로 멀티블록 제작
+advancement.immersiveengineering:mbCrusher=유해 기계
+advancement.immersiveengineering:mbCrusher.desc=분해기 멀티블록 제작
+advancement.immersiveengineering:mbDieselGen=환경오염
+advancement.immersiveengineering:mbDieselGen.desc=정유 발전기 멀티블록 제작
+advancement.immersiveengineering:mbExcavator=구멍을 파자
+advancement.immersiveengineering:mbExcavator.desc=굴착기 멀티블록 제작
+advancement.immersiveengineering:mbArcFurnace=핫 이슈
+advancement.immersiveengineering:mbArcFurnace.desc=아크 화로 멀티블록 제작
+
+advancement.immersiveengineering:secret_birthdayParty=노동자 생일날
+advancement.immersiveengineering:secret_birthdayParty.desc=축하를 간소하게...
+advancement.immersiveengineering:secret_luckOfTheDraw=추첨의 행운
+advancement.immersiveengineering:secret_luckOfTheDraw.desc=있음 혹은 없음
+advancement.immersiveengineering:secret_drillbreak=기가...드릴...차단기!!!
+advancement.immersiveengineering:secret_drillbreak.desc=내가 지옥에 왔어?!
+
+
+
+stat.skyhookOneCm=열기구 거리
+
+immersiveengineering.potion.flammable=인화성
+immersiveengineering.potion.slippery=낙상성
+immersiveengineering.potion.conductive=유도성
+immersiveengineering.potion.sticky=접착성
+immersiveengineering.potion.stunned=중단성
+immersiveengineering.potion.concreteFeet=고정성
+immersiveengineering.potion.flashed=역류성
+
+#MANUAL
+#ie.manual.entry..name=
+#ie.manual.entry..subtext=
+#ie.manual.entry.=
+
+ie.manual.category.update.name=업데이트 소식!
+ie.manual.entry.updateNews_0.name=v0.6.0에서 추가된 것
+ie.manual.entry.updateNews_0.subtext=과거, 현재; 미래
+ie.manual.entry.updateNews_00=엔지니어에게!<br><br>당신이 마지막으로 이머시브 엔지니어링에서 일한 이후로, 많은 것들이 바뀌었습니다! 새로나온 것들: 주민 집, <link;lighting;§o§n새로운 §o§n빛§r>, <link;barrel;§o§n나무 §o§n통§r>, <link;tanksilo;§o§n탱크§r>, <link;tanksilo;§o§n사일로§r;1>, <link;fluidPipes;§o§n유체 §o§n파이프§r>, 업적, <link;shader;§o§n셰이더§r>, <link;assembler;§o§n조립기§r>, <link;bottlingMachine;§o§n병§o§n조림기§r>!
+ie.manual.entry.updateNews_01=하지만 가장 중요한 것은 에너지 전달 방식이 많이 바뀌었다는 점입니다. 실수를 피하려면 <link;wiring;§o§n전선§r>, 특히 5 페이지, 전선의 전송 속도와 연결기의 입력 및 출력 간의 새로운 차이점을 자세히 설명하는 부분을 읽어야 합니다.
+
+ie.manual.entry.updateNews_1.name=v0.6.1에서 추가된 것
+ie.manual.entry.updateNews_1.subtext=과거, 현재; 미래
+ie.manual.entry.updateNews_10=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br><link;metalbarrel;§o§n금속 §o§n통§r>이 더 안정적으로 공급하며, 휴대용 유체 저장고로서 사용됩니다, 아크 화로가 오래 된 도구와 갑옷을 재활용할 뿐만 아니라 특정 금속을 합금할 수 있도록 개선되었습니다, 그리고 비계는 <link;fluidPipes;§o§n유체 §o§n파이프§r>가 지금 상승할 수 있도록 사용됩니다.
+
+ie.manual.entry.updateNews_2.name=v0.6.2에서 추가된 것
+ie.manual.entry.updateNews_2.subtext=과거, 현재; 미래
+ie.manual.entry.updateNews_20=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>비계의 새로운 변형이 발명되었는데, 이것은 위에 있는 안전하지 않은 개방형 강철 스트럿을 나무 목재로 대체합니다. 알루미늄은 장식용으로 매우 유용한 것으로 판명되었으며, 이제 울타리와 비계가 현지 엔지니어의 작업장에서 사용될 수 있게 되었습니다.
+ie.manual.entry.updateNews_21=새로운 종류의 <link;breaker;§o§n부하 스위치§r;2>가 레드스톤 신호로 제어하고 고압선을 수용하도록 개발되었습니다. 이후에는 전압 유도로 인해 고압선을 일반 차단기에 연결하는 것이 금지됩니다. 우리는 노조와의 분쟁을 원치 않습니다.
+
+ie.manual.entry.updateNews_3.name=v0.6.3에서 추가된 것
+ie.manual.entry.updateNews_3.subtext=과거, 현재; 미래
+ie.manual.entry.updateNews_30=엔지니어에게!<br><br>지난 업데이트를 통해 이머시브 엔지니어링에 몇 가지 새로운 기능과 변경 사항이 적용되었습니다:<br><br>심한 뇌진탕을 겪은 후, 수석 엔지니어 애덤스가 어디에나 유체를 뿌릴 수 있는 장치인, <link;chemthrower;§o§n화학 §o§n투척기§r>의 계획 초안을 작성했습니다. 또한 파일럿 램프가 내장되어 유체 분사를 점화합니다. 우리는 아담스가 미쳤다고 생각합니다.
+ie.manual.entry.updateNews_31=연구 부서의 또 다른 새로운 발명품은 <link;chargingStation;§o§n충전§o§n소§r>이고, 아이템에 에너지를 삽입하고 충전할 수 있습니다.<br>엔지니어"코브라"는 그의 최신 발명품을 제공했습니다, 그것은 <link;conveyor;§o§n하강 §o§n컨베이어§r;2>이고, 그것은 그것을 통과하는 아이템을 아래의 인벤토리로 떨어뜨립니다.<br><link;sorter;§o§n아이템 §o§n라우터§r>는 아이템에 대한 오어딕셔네리, NBT기반 및 푸지 필터링을 허용하도록 설계된 인터페이스를 가지고 있습니다!
+ie.manual.entry.updateNews_32=운송 및 장식의 모든 주제에 대한 기타 주목할 만한 추가 사항은 다음과 같습니다:<br>- <link;shader;§o§n셰이더§r>는 마인카트에 적용될 수 있습니다<br>- <link;skyhook;§o§n엔지니어의 §o§n열기구§r>는 당신이 당신의 파워 라인을 따라 지퍼를 채우고 그 마인카트를 추월할 수 있게 해 주는 도구입니다<br>- <link;balloon;§o§n풍선§r>은 공중에 연결기를 매달고 앞서 언급된 열기구를 위한 스카이 라인을 형성하는 편리한 방법입니다<br>- <link;concrete;§o§n콘크리트§r>는 당신이 스카이 라인에서 떨어질 때, 그것은 착륙을 어렵게 만들 것입니다.
+ie.manual.entry.updateNews_33=마침내, 재정부는 우리의 전력 사용량을 추적하지 못한 것에 대해 우리를 재촉했습니다. 열띤 논쟁 끝에, 우리에게 흐르는 에너지를 측정할 수 있는 장치인 <link;eMeter;§o§n전류 §o§n변압기§r>의 청사진을 보여주었습니다. 말할 필요도 없이, 그들은 이제 한 대의 아크 화로가 실제로 얼마나 많은 에너지를 소비하는지를 알게 되었기 때문에 훨씬 덜 행복합니다.
+
+ie.manual.entry.updateNews_4.name=v0.6.4에서 추가된 것
+ie.manual.entry.updateNews_4.subtext=과거, 현재; 미래
+ie.manual.entry.updateNews_40=엔지니어에게!<br><br>과거의 업데이트는 약간의 변화만 가져왔습니다.<br>에너지 전송은 다시 고정되고, 그것을 고장 낸 기술자는 벌로 차가운 물에 빠졌습니다.<br><link;furnaceHeater;§o§n화로 §o§n가열기§r>는 사움크래프트의 화학 화로또는 커팅 엣지의 증발기를 가열할 수 있는 몇 가지 개선 사항을 확인했습니다.<br><br>그것이 지금의 전부입니다. 그것이 충분히 안정적이기를 바랍니다.
+
+ie.manual.category.general.name=개요 및 리소스
+ie.manual.category.construction.name=건설
+ie.manual.category.energy.name=전력, 배선, 발전기
+ie.manual.category.tools.name=도구
+ie.manual.category.machines.name=경형 기계
+ie.manual.category.heavymachines.name=중형 기계
+
+ie.manual.entry.introduction.name=소개
+ie.manual.entry.introduction.subtext=엔지니어링 입문
+ie.manual.entry.introduction0=동료 엔지니어 여러분 안녕하십니까? 이머시브 엔지니어링에 오신 것을 환영합니다. 이 저널은 이 모드가 제공해야 하는 모든 새로운 기계 및 기능을 설정하기 위한 가이드 역할을 합니다.<br>먼저 기초부터 시작합시다: 이머시브 엔지니어링은 재생 에너지의 생성과 전달이라는 개념을 기반으로 합니다. 이 모드에 사용되는 에너지는 RF이고, 현재 이용 가능한 많은 다른 모드들과 공유된 특성입니다.
+ie.manual.entry.introduction1=에너지는 §l전선§r의 사용으로 인해 §l연결기§r사이로 전송됩니다. 전선은 블록의 제한된 거리만 연결할 수 있습니다, 그래서 전선 간의 §l중계기§r 와 같은 더 많은 연결기를 사용하는 것이 필요합니다.<br>세가지 다른 유형의 전선 중에서 선택할 수 있습니다, 전선 유형이 서로 다릅니다, <config;iA;전선 전송도;l3> Flux/tick. 다른 유형의 전선 간의 전환을 하고싶다면, §l변환기§r가 필요합니다.
+ie.manual.entry.introductionHammer=엔지니어의 망치는 사용자의 판단에 가장 중요한 도구입니다. 코크스 오븐 및 용광로와 같은 멀티블록을 형성하는 데 사용되거나<config;b;광석 분쇄 조합법;, 광석 분쇄 ; > 나무 송전탑과 같은 블록을 구성합니다.
+
+ie.manual.entry.ores.name=광석
+ie.manual.entry.ores.subtext=구멍을 팝니다.
+ie.manual.entry.oresCopper=§l구리 광석§r은 <config;iA;ore_copper;1>과 <config;iA;ore_copper;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 돌 곡괭이가 필요합니다.<br><br>광석은 구리 전선, 코일, 그리고 IE구조의 다른 필수적인 부분을 만드는 데 사용되는 구리괴로 제련될 것입니다.
+ie.manual.entry.oresBauxite=§l보크사이트 광석§r은 <config;iA;ore_bauxite;1>과 <config;iA;ore_bauxite;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 돌 곡괭이가 필요합니다.<br><br>광석은 알루미늄괴로 제련되는데, 강철과 함께 고압 전선을 만드는 데 사용됩니다.
+ie.manual.entry.oresLead=§l납 광석§r은 <config;iA;ore_lead;1>과 <config;iA;ore_lead;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 축전기를 만드는 데 사용되는 연괴로 제련됩니다.
+ie.manual.entry.oresSilver=§l은 광석§r은 <config;iA;ore_silver;1>과 <config;iA;ore_silver;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 은괴로 제련되는데, 은은 금과 함께 일렉트륨으로 합금되어 훨씬 더 효과적인 전도체가 됩니다.
+ie.manual.entry.oresNickel=§l니켈 광석§r은 <config;iA;ore_nickel;1>과 <config;iA;ore_nickel;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 니켈괴로 제련될 것이며 구리를 합금하여 콘스탄탄을 생성하고, 열저항 전도체로 <link;generator;§o§n열전기 §o§n발전기§r;1>의 발전에 사용됩니다.
+ie.manual.entry.oresUranium=§l우라늄 광석§r은 <config;iA;ore_uranium;1>과 <config;iA;ore_uranium;2>층 사이에 있는 세계에서 발견되고, 채굴하는데 철 곡괭이가 필요합니다.<br><br>광석은 우라늄괴로 제련되나, 현재 그 금속은 많이 쓰이지 않습니다. 우라늄 블록은 <link;generator;§o§n열전기 §o§n발전기§r;1>으로 열원 역할을 할 수 있고 장래의 노력에 사용될 것입니다.
+
+ie.manual.entry.oreProcessing.name=금속 가공
+ie.manual.entry.oreProcessing.subtext=부숩니다.
+ie.manual.entry.oreProcessing0=엔지니어의 망치로 광석을 부수면 가루가 됩니다. 이 가루는 주괴가 될 수 있지만, 더 중요한 것은, <link;alloys;§o§n금속 §o§n합금 §o§n제조§r>에 사용됩니다.
+
+ie.manual.entry.alloys.name=합금
+ie.manual.entry.alloys.subtext=금속을 혼합합니다.
+ie.manual.entry.alloys0=가루를 혼합하면 합금 혼합이 생성되며, 합금 혼합을 합금으로 만들 수 있습니다. 콘스탄탄에는 열전 속성이 있고 <link;generator;§o§n열전기 §o§n발전기§r;1>를 만드는데 사용되고 일렉트륨은 뛰어난 전기 전도체로 <link;wiring;§o§n중압 §o§n구조체§r>에 사용됩니다.
+
+ie.manual.entry.plates.name=금속판
+ie.manual.entry.plates.subtext=평평합니다.
+ie.manual.entry.plates0=금속판은 일부 기계 또는 블록을 만드는 데 필요한 제작 재료입니다. 그들은 엔지니어의 망치를 이용하여 주괴를 두드려 만들거나 <link;metalPress;§o§n금속 §o§n압축기§r>로 만듭니다.
+
+ie.manual.entry.components.name=부품 제작
+ie.manual.entry.components.subtext=조각 통합
+ie.manual.entry.components0=많은 기계와 공구는 다양한 준부품로 구성되어 있습니다. 이 중 일부는 정기적으로 사용해야 하며, 따라서 이 설명서에 직접 입력해야 합니다. §6철§r과 §6강철 기술 요소§r는 멀티블록과 기계의 장점으로 통합합니다.
+ie.manual.entry.components1=이러한 구성 부품을 보다 자주 생성할 수 있기 때문에, 그들을 위한 <link;blueprints;§o§n청사진§r>을 작성하는 것이 바람직할 것입니다. <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 이 청사진을 사용하면 저렴한 비용으로 구성 부품을 구성할 수 있습니다.<br>워크벤치의 조합법은 다음 페이지에서 확인할 수 있습니다.
+ie.manual.entry.components2=또 다른 구성 부품은 사용 빈도가 낮지만 §6진공 튜브§r가 사용됩니다. 유리 관은 전자 기계에서 부품으로 사용되고 <link;lighting;§o§n발광 소자§r>에서 사용됩니다.
+ie.manual.entry.components3=정밀한 계산이 필요한 첨단 기계의 중요한 부품은 §6회로 기판§r입니다. 그들은 실제적으로 크고 투박하지만 1초 안에 기초적인 수학적인 운용을 할 수 있습니다!
+
+ie.manual.entry.hemp.name=산업용 대마
+ie.manual.entry.hemp.subtext=530은 그것을 짭니다
+ie.manual.entry.hemp0=산업용 대마는 놀라운 식물입니다! 씨앗들은 <link;refinery;§o§n바이오디젤§r>의 생성에 유용할 뿐만 아니라, 대마는 강력천의 생성에도 유용합니다. 그 씨앗은 장초를 부수고 모을 수 있습니다.
+ie.manual.entry.hemp1=강력천은 대마 섬유로 만든 탄력성 있는 천입니다. <link;generator;§o§n강화 §o§n풍차§r;3>와 <link;balloon;§o§n풍선§r>, §o§n점프 §o§n베개§r를 만드는 데 사용됩니다(다음 페이지에 자세히 설명되어 있습니다).
+ie.manual.entry.hemp2=점프 블록은 강력천으로 만들어지고 공기가 주입되는 간단한 블록입니다. 그들은 착륙할 때 충격을 흡수하고, 손상을 방지할 수 있지만, 슬라임 블록과는 달리, 여러분을 다시 일으키지는 않을 것입니다.
+ie.manual.entry.hemp3=줄무늬 커튼은 뷰를 차단하는 데 사용되는 도어 프레임에 장착되는 천 조각입니다.<br>어떤 엔티티가 그것들을 통과할 때, 그들은 레드스톤 신호를 내보낼 것입니다. 강한 신호를 보낼 수 있도록 망치로 신호를 우클릭합니다.<br>가죽 갑옷과 같은 방법으로 염색될 수 있습니다.
+
+ie.manual.entry.cokeoven.name=코크스 오븐
+ie.manual.entry.cokeoven.subtext=핫 이슈!
+ie.manual.entry.cokeoven0=코크스 오븐은 이머시브 엔지니어링을 진행하기 위해 만들 처음으로 중요한 기계입니다. 기능도 간단하고, 산소 공급 없이 석탄이나 석탄 블록을 가열해 탄소가 풍부한 연료인 코크스를 만듭니다. 더 중요한 것은, 이 과정이 <link;treated_wood;§o§n나무를 §o§n위한 §o§n방부제§r>로 사용되는 §l크레오소트유§r를 만들어 낸다는 것입니다. 마찬가지로 나무를 이 오븐으로 구워 숯으로 만들 수도 있습니다.
+ie.manual.entry.cokeovenBlock=코크스 오븐을 구성하려면 이 블록 중 27개를 3x3x3 정육면체에 정렬하고 엔지니어의 망치로 측면 중앙 블록 중 하나를 우클릭합니다.<br>다이어그램은 다음 페이지를 참조하세요.
+
+ie.manual.entry.alloysmelter.name=합금 가마
+ie.manual.entry.alloysmelter.subtext=금속 혼합!
+ie.manual.entry.alloysmelter0=합금 가마는 내열 사암과 벽돌로 만들어진 단순한 용광로입니다. 그 안의 온도는 금속을 액체 상태로 녹여 <link;alloys;§o§n합금§r>을 만들 수 있을 정도로 높습니다.<br>이를 통해 지루한 가루 혼합 없이 일렉트륨 및 콘스탄탄과 같은 중요한 합금을 제작할 수 있습니다.
+ie.manual.entry.alloysmelter1=가마를 형성하려면 위에 표시된 것처럼 가마 벽돌 8개를 2x2x2큐브로 배열하고 측면 블록 중 하나를 엔지니어의 망치로 우클릭합니다.
+
+ie.manual.entry.treatedwood.name=방부목
+ie.manual.entry.treatedwood.subtext=강력한 안정성
+ie.manual.entry.treatedwood0=방부목은 아주 간단하게 크레오소트유로 덮인 나무 목재입니다. 하지만 이것은 여러분이 이머시브 엔지니어링에서 사용하게 될 가장 중요한 자료 중 하나이므로 여러분은 그것을 많이 만들 준비를 하는 것이 좋습니다.
+ie.manual.entry.treatedwoodPost0=방부목으로 만든 송전탑은 전선 연결기에 대한 뛰어난 부착 지점을 제공합니다. 높이가 4블록이므로 적당한 간격을 두지 않고는 배치할 수 없습니다.<br>맨 위 블록의 측면에 망치를 사용하여 기둥에 팔을 부착합니다.
+ie.manual.entry.treatedwoodPost1=막대기에 <link;wiring;§o§n변압기§r;8>를 설치할 수도 있고, 이로 인해 방해를 덜 받습니다.<br>나무 기둥 아래에 블록을 놓으면 팔이 거꾸로 뒤집어 집니다.
+
+ie.manual.entry.concrete.name=콘크리트
+ie.manual.entry.concrete.subtext=요새 재료
+ie.manual.entry.concrete0=콘크리트는 매우 단단하고 내성이 강한 복합 재료입니다. 이 제품은 제작 비용이 저렴하고 <link;blastfurnace;§n§o용광로§r>에서 생산된 과잉 슬래그에 대한 우수한 사용 비용을 제공합니다.
+
+ie.manual.entry.balloon.name=풍선
+ie.manual.entry.balloon.subtext=99개로 만들어
+ie.manual.entry.balloon0=풍선은 물 위에 떠 있게 하기 위해 아래에 열기구가 있는 천을 이은 것입니다. 그것들은 또한 빛을 내지만, 횃불에도 불구하고, 화재의 위험이 되지 않습니다.<br>풍선은 일반 블록처럼 배치할 수도 있고, 블록이 표적이 되지 않으면 여러분 앞에 놓이게 됩니다.
+ie.manual.entry.balloon1=<link;metalconstruction;§o§n구조 §o§n연결기§r;5>와 마찬가지로 풍선에 대마 밧줄과 강철 전선을 부착할 수 있습니다.<br>클릭하면 풍선의 높이 오프셋을 설정할 수 있으므로 목표 위로 5블록까지 배치할 수 있습니다.<br>또한 배치된 풍선에 염료를 사용할 수 있습니다. 염색하는 부분은 목표물이 어디인지에 따라 달라집니다.<br>엔지니어의 망치로 우클릭하면 풍선 설계가 수평 또는 수직 줄무늬로 전환됩니다.
+
+ie.manual.entry.crate.name=나무 저장 상자
+ie.manual.entry.crate.subtext=기어를 올려!
+ie.manual.entry.crate0=나무 보관 상자는 상자와 꽤 비슷한 블록입니다. 처리된 목재로 제작된 이 제품은 27개의 저장 슬롯을 제공하지만, 고장 나면 스토리지를 유지하여 내용물과 함께 이동할 수 있습니다.<br>상자와 마찬가지로, 저장된 아이템의 양을 기준으로 비교기 신호를 출력합니다.
+ie.manual.entry.crate1=강화 저장 상자는 일반적인 상자와 동일한 용량을 제공하지만, 이와 달리 이러한 상자는 폭발에 영향을 받지 않습니다. 더 이상 성가신 크리퍼나 잘못 배치된 채굴 비용은 당신의 가치관을 파괴하지 않을 것입니다!<br>업그레이드 방법은 상자의 내용물을 보관합니다.
+
+ie.manual.entry.barrel.name=나무 통
+ie.manual.entry.barrel.subtext=구르지 마
+ie.manual.entry.barrel0=나무 통은 유체를 저장할 수 있는 간단한 용기입니다. 그들은 12양동이까지 저장할 수 있지만 나무로 만들어졌기 때문에 가스나 뜨거운 유체를 저장할 수 없습니다.<br>망치를 사용하여 통의 상단 또는 하단을 우클릭하면 입력, 출력또는 무연결사이에서 전환됩니다.
+
+ie.manual.entry.jerrycan.name=젤리캔
+ie.manual.entry.jerrycan.subtext=양동이보다 좋습니다.
+ie.manual.entry.jerrycan0=젤리캔은 유체를 저장하는데 사용되는 간단한 금속 용기입니다. 최대 10양동이를 저장할 수 있고 그 유체를 기계뿐만 아니라 세계로 부을 수 있습니다. 유체를 추출할 수 없습니다. 또한, 함께 만들어서 <link;drill;§o§n채굴 §o§n드릴§r>과 같은 다른 연료 아이템들을 다시 채우는데 사용할 수 있습니다.
+
+ie.manual.entry.earmuffs.name=귀마개
+ie.manual.entry.earmuffs.subtext=소음 차단!
+ie.manual.entry.earmuffs0=귀마개는 청력을 보호하는 장치입니다. <link;dieselgen;§o§n정유 §o§n발전기§r;>나 다른 시끄러운 기계 근처에서 일하는 엔지니어들에게는 매우 중요합니다.<br>귀마개를 착용하는 동안 모든 소음이 90%%로 감소합니다.
+ie.manual.entry.earmuffs1=귀마개를 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r;>에 놓으면 취소할 소음의 유형과 그 양을 줄여야 하는 소음의 양을 지정할 수 있습니다.<br>가죽 갑옷처럼 염색할 수 있습니다.<br>다른 투구로 문지르면 그 장비에 수비수들이 부착될 것이고, 투구만 만들면 또 다시 수비수들을 제거할 수 있어, 더 많은 맞춤이 가능할 것입니다.
+
+ie.manual.entry.shield.name=중형 방패
+ie.manual.entry.shield.subtext=원맨 파알란스
+ie.manual.entry.shield0=중형 방패는 여러분이 잘 알고 있을지도 모르는 일반적인 나무 방패의 직접 업그레이드입니다. 비슷한 방식으로 전면에서 들어오는 피해를 대부분 차단하지만 내구성이 크게 향상돼 업그레이드 가능성을 과시합니다.
+ie.manual.entry.shield1=§6플래시전구§r 업그레이드는 방패에 밝은 전구와 반사경 화면을 추가합니다. 이 장치는 공격을 받는 즉시 밝고 눈을 멀게 하는 섬광을 만들어 사용자 앞에 있는 모든 사람들을 혼란스럽게 합니다.
+ie.manual.entry.shield2=§6충격 발생기§r를 방패에 추가하면 적을 공격하는 것에 대해 보복할 수 있습니다. 방패가 맞으면, 공격자에게 경미한 피해를 주면서 충격을 줄 것입니다. 또한, 단순히 발사체를 멈추는 것이 아니라 발사체를 증발시킬 것입니다.
+ie.manual.entry.shield3=§6자석 장갑§r은 위협을 받을 때 실드에 쉽게 접근할 수 있는 방법입니다. 이 업그레이드가 장착되면, §l<keybind;key.immersiveengineering.magnetEquip>§r 키를 두번 누르고 인벤토리에서 방패를 검색하여 즉시 슬롯에 넣을 수 있습니다.
+
+ie.manual.entry.toolbox.name=엔지니어의 도구 상자
+ie.manual.entry.toolbox.subtext=엔지니어의 핸드백
+ie.manual.entry.toolbox0=도구 상자는 엔지니어의 모든 필수품을 보관하는 간단하고 운반된 용기입니다! 그들이 수용할 것이 무엇인지를 알려 주는 것과 관련된 슬롯들이 여러분에게 알려줍니다.<br>'음식'과 '모든 것'은 자명하고, '전선'슬롯은 코일, 연결기 및 유사한 아이템을 위한 것이며 '도구'는 모든 IE도구와 곡괭이, 삽, 도끼를 저장합니다!
+ie.manual.entry.toolbox1=우클릭을 하면 도구 상자를 블록으로 배치할 수 있습니다. 배치된 동안에도 우클릭으로 인벤토리에 액세스 할 수 있습니다. 우클릭을 다시 하면 도구 상자가 선택됩니다.
+
+ie.manual.entry.graphite.name=흑연
+ie.manual.entry.graphite.subtext=석탄 덩어리
+ie.manual.entry.graphite0=HOP는 특수한 엔지니어링 구조에 사용되는 복합적인 고압축 탄소 물질입니다.<br>HOP 흑연 가루는 <link;squeezer;§o§n산업용 §o§n압착기§r>에 있는 코크스 가루 8개를 압축하여 생성됩니다. 가루는 주괴로 변환될 수 있습니다.
+ie.manual.entry.graphite1=HOP 흑연의 가장 일반적인 용도는 <link;arcfurnace;§o§n아크 §o§n화로§r>로부터 사용할 전극을 만드는 것입니다. 이 전극들은 어떤 상자에서 <config;b;arcfurnace_electrodeCrafting; craft,>찾을 수 있거나 마을 사람과 교역할 수 있는 <link;blueprints;§o§n엔지니어의 §o§n청사진§r>으로 만들어졌습니다. 금속 압축기에서 4개의 주괴에 로드 금형을 사용하여 전극을 만들 수도 있지만 이렇게 조작된 전극은 내구성이 떨어집니다.
+
+ie.manual.entry.wiring.name=기본 전선
+ie.manual.entry.wiring.subtext=지지직!
+ie.manual.entry.wiring0=이머시브 엔지니어링의 에너지 망은 중요한 4가지 블록을 가지고 있습니다: 에너지를 저장하는 §l축전기§r, 망의 입출력을 담당하는 §l연결기§r, 전선을 함께 연결하는 §l중계기§r, 다른 종류의 전선을 전환하는 §l변압기§r
+ie.manual.entry.wiring1=두 블록을 연결하려면 첫번째 블록을 전선 코일로 클릭한 다음 두번째 블록에서 동일한 코일을 사용합니다. 두 지점 사이의 총 전송 속도는 가장 약한 유형의 전선에 따라 달라집니다.
+ie.manual.entry.wiring2=제한 사항은 블록을 기준으로 적용됩니다: 연결기와 중계기는 이미 연결된 유형의 전선만 사용하고 변압기는 다른 유형의 전선만 사용합니다,<br>[cont]
+ie.manual.entry.wiring3=전선은 전압에 맞는 블록에만 연결할 수 있습니다.
+ie.manual.entry.wiring4=배선에 대해 두가지 중요한 값을 기록해야 합니다:<br>각 연결기에는 입력 값이 있고(§o<config;iA;wireConnectorInput>§r) 각 전선은 최대 전송 속도를 가집니다(§o<config;iA;wireTransferRate;l3>§r).<br>연결기는 출력 및 입력 전력의 양을 제한하지만, 여러 연결기가 단일 전선으로 §o통합§r되어 더 긴 범위의 전송을 결합할 수 있습니다. 그러나 전선의 §o최대 전송 속도§r를 초과하면 안 됩니다. 그렇지 않으면 전선이 §o타버립니다§r.
+ie.manual.entry.wiring5=전선은 입력 및 출력 청크가 로드되는 한 §o언로드된 청크§r를 통해서도 에너지를 전송합니다.<br>전선을 에너지원에 연결하지 않으면 플레이어들과 몹들에게 피해를 줄 수 있습니다. 저압 및 중압에 절연 전선을 사용할 수 있습니다.<br>연결기에서 "블록 선택" 기능을 사용할 때 스누핑이 인벤토리에서 연결된 전선을 선택합니다.<br>전선을 방해하는 블록이 있으면 전선 연결이 끊어집니다.
+ie.manual.entry.wiringConnector=§l연결기§r는 IE 에너지 망으로 입출력됩니다. 축전기 또는 기타 플럭스 처리기에 이러한 물질을 배치할 수 있으며, 이들 물질은 연결된 전선을 통해 전력을 전달합니다. §l중계기§r는 여전히 전선을 수용하지만 입출력할 수 없으며 전선 간의 연결 지점 역할을 합니다.
+ie.manual.entry.wiringCapacitor=§l축전기§r는 에너지 저장 단위로 사용됩니다. 망치를 사용하여 각 측면의 구성을 조정할 수 있습니다. 파란색은 입력을 나타내고 주황색은 출력을 나타내며 무색은 전혀 연결을 방해하지 않습니다. 망치를 사용하는 동안 살짝 얼굴을 돌려 클릭한 쪽과 반대쪽을 구성합니다.
+ie.manual.entry.wiringTransformer0=§l변압기§r는 당신이 다른 종류의 전선 사이에서 전환할 수 있게 해 줍니다. 가장 약한 전선은 전송 속도를 제한합니다. 고압 변압기는 저압또는 중압으로 이동할 수 있으므로 두 변압기를 연결할 필요가 없습니다.
+ie.manual.entry.wiringTransformer1=4페이지의 두번째 이미지에서 볼 수 있는 것처럼 <link;wiring;§o§n변압기를 §o§n나무 §o§n기둥에;3> 부착할 수 있지만, 이와 같이 비 고압 변압기만 배치할 수 있습니다.
+ie.manual.entry.wiringCutters=The §l전선 절단기§r는 블록에 연결된 모든 전선을 우클릭하여 제거하는 데 사용됩니다.
+ie.manual.entry.wiringVoltmeter=§l볼트미터§r는 연결을 측정하는데 사용됩니다. 임의의 에너지 저장고에서 목표를 설정하거나 올바르게 선택하면 현재 저장고를 읽게 됩니다. 축전기 2개를 우클릭하여 평균 손실을 계산합니다.
+ie.manual.entry.wiringFeedthrough=피드스루 절연체를 사용하면 벽 한쪽에서 다른 쪽으로 전선을 구멍 없이 연결할 수 있습니다. 중간에 "일반" 솔리드 블록을 사용하여 작성할 수 있습니다. 모든 일반적인 유형의 연결기(전력 및 레드스톤)를 사용하여 해당 전선 유형에 대한 피드스루 절연체를 만들 수 있습니다.
+
+ie.manual.entry.generator.name=전력 발전
+ie.manual.entry.generator.subtext=
+ie.manual.entry.generator0=전력 전송은 도움이 될만합니다. 실제로 플럭스를 생산하기 위해서는 풍차와 물레방아 에너지를 사용할 수 있습니다. 이를 발전기에 연결하면 회전 속도에 따라 전력이 발생합니다.
+ie.manual.entry.generator1=물레방아는 발전기에 동력을 공급하는 꽤 쉬운 방법입니다. 회전 속도는 주위를 흐르는 물을 기반으로 하기 때문에 최적의 결과를 위해서는 위쪽에서 아래쪽으로 가는 반원형으로 물을 돌리는 것이 좋습니다. 최대 3개의 물레방아를 서로 맞대어 놓을 수 있습니다.
+ie.manual.entry.generator2=풍차는 매우 강력한 것은 아니지만, 자유롭고 쉬운 발전 방법입니다. 그 속도는 공기 흐름이 방해를 받으면 운동 출력이 크게 감소하면서 전방의 공간에 따라 달라집니다. 게다가, 비나 뇌우 같은 날씨 조건은 더 강한 바람과 더 높은 회전 속도를 초래합니다.
+ie.manual.entry.generator3=풍력 발전은 풍차 날개를 천으로 덮어 발전시킬 수 있습니다. 이렇게 하면 표면적이 증가하고 회전 속도와 에너지 출력이 증가합니다.<br>필요한 돛은 <link;hemp;§o§n강력 §o§n대마 §o§n천§r;1>으로 만들어져 있고, 세계에서 그것을 우클릭해서 풍차에 적용됩니다.
+
+ie.manual.entry.breaker.name=부하 스위치
+ie.manual.entry.breaker.subtext=켜기 - 끄기
+ie.manual.entry.breaker0=부하 스위치는 전선을 통한 전력 흐름을 차단할 수 있는 스위치입니다. 이들은 동일한 유형의 두개의 전선을 연결할 수 있으며, 전원이 작동될 때만 통과할 수 있습니다. 이는 전력 소모가 많은 기계를 네트워크에서 분리하거나 필요할 때 추가 발전기 세트를 연결하는 데 사용할 수 있습니다!
+ie.manual.entry.breaker1=위험이 높으므로 이러한 스위치는 고압 전선을 허용하지 않습니다.<br>또한 스위치를 켜면 레드 스톤 신호를 내보냅니다. 이 동작은 엔지니어의 망치로 스위치를 클릭하여 반전할 수 있습니다.<br>또한 이러한 기능은 <link;lighting;전원 표시등;1>을 제어할 수 있는 탁월한 방법입니다!
+ie.manual.entry.breaker2=레드스톤 차단기는 일반 부하 스위치와 비슷하지만 수동으로 작동할 수는 없습니다. 대신 연결을 끊으려면 레드스톤 신호가 필요합니다. 따라서 이 장치는 고압 전선도 충분히 연결할 수 있을 만큼 절연이 잘 되어 있습니다!
+
+ie.manual.entry.eMeter.name=전류 변압기
+ie.manual.entry.eMeter.subtext=시간당 88 Flux!
+ie.manual.entry.eMeter0=전류 변압기는 전력 측정 장치입니다. 그것은 어떤 전원선에서도 연결될 수 있고 그것을 통해 전달되는 에너지를 계속 추적할 수 있으며, 우클릭 시 평균 Flux/t가 반환됩니다.
+
+ie.manual.entry.redstoneWires.name=레드스톤 전선
+ie.manual.entry.redstoneWires.subtext=통합 테이크오버
+ie.manual.entry.redstoneWires0=§6레드스톤 전선§r은 레드스톤 가루로 코팅된 알루미늄입니다. 그 결과로 생긴 전선은 어떤 신호 강도도 잃지 않고 원격으로 레드스톤 신호를 쉽게 전송할 수 있는 방법을 제공합니다.
+ie.manual.entry.redstoneWires1=§6연결기§r는 다른 전선 연결기와 마찬가지로 연결되지만, 레드스톤 전선에는 중계기가 필요하지 않으며 연결기와 중계기는 동일한 블록입니다.<br>엔지니어의 망치를 사용하여 연결기를 입출력 모드(우클릭)로 전환하고 16개의 색상 주파수(우클릭)로 구성할 수 있습니다.
+ie.manual.entry.redstoneWires2=§6레드스톤 프로브 연결기§r에는 레드스톤 비교기와 부분적으로 유사한 기능이 있습니다. 그들은 신호를 적극적으로 비교할 수는 없지만, 그들은 그들이 얼마나 가득 찼는지를 알기 위해 목록을 읽을 수 있습니다.
+ie.manual.entry.redstoneWires3=또한 이러한 프로브는 두채널에서 작동하여 하나의 채널에서 판독 신호를 전송하고 다른 채널에서도 신호를 수신할 수 있습니다. 이러한 채널은 엔지니어의 망치를 사용하여 변경할 수 있습니다.<br><br>다음 페이지에 설명된 것처럼 많은 IE의 다중 잠금 장치가 비교 기능을 제공합니다. 가능한 경우, 멀티 블록의 레드스톤 제어 표면이 비교기를 연결하는 지정된 지점입니다.
+ie.manual.entry.redstoneWires4=§l탱크: §r<link;tank;§o§n설명서 §o§n초장§r;1>에 자세히 설명되어 있습니다.<br>§l사일로: §r<link;silo;§o§n설명서 §o§n초장§r;2>에 자세히 설명되어 있습니다.<br>§l조립기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>§l자동 워크벤치: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>§l압착기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>§l발효기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.
+ie.manual.entry.redstoneWires5=§l굴착기: §r덩굴의 나머지 광석을 기준으로 신호를 출력합니다.<br>§l아크 화로: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>또한 비교기 상단의 전극에 연결하면 그 무결성에 기초한 신호를 전송할 것입니다.<br>§l혼합기: §r인벤토리 채우기를 기준으로 신호를 출력합니다.<br>
+
+ie.manual.entry.thermoElectric.name=열전기 발전기
+ie.manual.entry.thermoElectric.subtext=온과 냉
+ie.manual.entry.thermoElectric0=열전가 발전기는 발전의 또 다른 설정이며 기계적 부품을 사용하지 않고도 작동합니다. 대신 두 요소 사이의 온도 비교를 사용합니다.
+ie.manual.entry.thermoElectric1=한쪽에 뜨거운 유체를 넣고 반대쪽에는 차가운 유체를 넣으면 두 온도의 차이에 따라 에너지가 발생합니다.<br>다음 페이지의 목록은 다른 비유체 블록을 포함하고 있으며, 이를 온도 요소로 사용할 수 있습니다.
+
+ie.manual.entry.blastfurnace.name=원유 용광로
+ie.manual.entry.blastfurnace.subtext=강철을 간단하게
+ie.manual.entry.blastfurnace0=원유 용광로는 철의 탄소 함량을 증가시켜 강철로 변환하는 데 사용됩니다. 이를 달성하기 위해 순수한 고탄소 연료(특히 코크스 및 활성탄)만 사용할 수 있습니다.<br><br>또한 철과 함께 슬래그도 생성되므로 이를 제거해야 합니다. 그렇지 않으면 용광로의 기능이 중단됩니다. 기술적으로 폐기물은 슬래그를 사용하여 콘크리트를 만들 수 있습니다.
+ie.manual.entry.blastfurnaceBlock=용광로를 형성하려면 블록 중 27개를 3x3x3 정육면체에 정렬하고 엔지니어의 망치로 측면 중앙 블록 중 하나를 우클릭합니다.<br>다이어그램은 다음 페이지를 참조하세요.
+ie.manual.entry.blastfurnace1=원유 용광로는 자동으로 가동되지 않습니다. 모든 입출력은 GUI를 통해 수동으로 정렬해야 합니다. 강철 생성을 자동화하려면 <link;improvedBlastfurnace;§o§n강화 §o§n용광로§r;> 생성을 고려해야 합니다.
+
+ie.manual.entry.improvedBlastfurnace.name=강화 용광로
+ie.manual.entry.improvedBlastfurnace.subtext=산업용 정제
+ie.manual.entry.improvedBlastfurnace0=강화 용광로는 <link;blastfurnace;§o§n강철을 §o§n만드는§r;> 훨씬 전문적인 방법입니다. 입력 및 출력을 자동화할 수 있을 뿐만 아니라, 뜨거운 공기를 추가하여 정제 과정을 가속화할 수 있는 예비 기기도 갖출 수 있습니다.<br>용광로는 강화 벽돌로 만들어졌기 때문에 이번 업그레이드에는 처음으로 강철을 사용하는 것이 좋습니다.
+ie.manual.entry.improvedBlastfurnace1=용광로의 구조는 거친 기존 것과 유사하지만 벽돌은 보강되었고 입력 물 속의 깔때기 모양으로 상단에 호퍼가 추가되었습니다.
+ie.manual.entry.improvedBlastfurnace2=강철은 용광로 전면에서, 슬래그는 후면에서, 용광로는 연결된 인벤토리 또는 컨베이어 벨트로 자동으로 출력됩니다. 철과 코크스는 위를 통해 공급됩니다.
+ie.manual.entry.improvedBlastfurnace3=용광로 예열기는 철의 정제 과정을 가속화하기 위해 공기를 가열한 다음 이를 용광로에 불어넣는 데 사용됩니다. 각 용해로는 양 측의 포트에 최대 두 개의 예열기를 연결할 수 있으며, 각 예열기는 작동을 위해 <config;i;preheater_consumption> Flux/t이 필요합니다.
+
+ie.manual.entry.metalconstruction.name=금속 시공
+ie.manual.entry.metalconstruction.subtext=집중
+ie.manual.entry.metalconstruction0=방부목을 제외하고, 가공된 금속은 일반적인 건설 블록을 만듭니다. 당신은 거의 모든 금속을 블록과 반 블록으로 만들 수 있고, 철괴를 망치로 두드려 판금을 만들 수 있습니다.
+ie.manual.entry.metalconstruction1=강철은 고압 구조의 필수적인 부분일 뿐만 아니라 건축에도 매우 유용합니다. 강철 비계를 사용하여 신속하게 청소 가능한 구조를 만들 수 있으며, 강철 울타리는 악을 막아 주고 구조 팔은 고압 중계기의 훌륭한 연결 지점을 제공합니다.
+ie.manual.entry.metalconstruction2=구조 연결기는 일반 연결기와 유사하게 작동하지만 에너지를 전달하는 대신 순전히 장식적입니다.<br>일반적인 전선은 허용하지 않지만, 대마 밧줄과 강철 전선은 허용합니다(다음 페이지 참조).<br>엔지니어의 망치를 사용하여 이 망치를 우클릭하여 회전할 수도 있습니다.
+ie.manual.entry.metalconstruction3=금속 사다리는...음, 금속으로 만든 사다리이죠. 여러분은 그것을 오를 수 있고, 그것은 멋져 보입니다.<br>또한 비계와 결합하여 도금된 사다리로 만들 수도 있습니다.
+
+ie.manual.entry.lighting.name=공학 조명
+ie.manual.entry.lighting.subtext=더러운 세상을 밝힙니다.
+ie.manual.entry.lighting0=공장의 복도 깊숙한 곳에서는, 꽤 어두울 수 있습니다. 그래도 기계 주변에서 길을 찾으려면, 아마도 그 곳에 랜턴을 켜야 할 것입니다. 이 랜터은 발광석보다 많은 빛을 제공합니다.
+ie.manual.entry.lighting1=파워 랜턴은 전력을 위해 발명된 최초의 아이템 중 하나입니다. 실행하려면 전선을 사용하여 전원 그리드에 직접 연결해야 합니다. 전원 공급 장치를 통해 전원이 전송되므로 한 줄로 연결할 수 있습니다.<br>엔지니어의 망치를 사용하여 거꾸로 뒤집습니다.
+ie.manual.entry.lighting2=조금만 전력을 공급 받는다면 주변 지역을 정상적인 랜턴처럼 밝힐 뿐만 아니라 32블럭 반경 내에 적대적인 몹이 발생하는 것을 막을 수 있습니다.
+ie.manual.entry.lighting3=투광 조명등은 강한 조명등입니다. 단순한 파워 랜턴보다 더 많은 전력을 필요로 하지만, 그들은 최대 32블록 길이의 원뿔 모양의 빛을 만들어 낼 것입니다. 블록의 상단 또는 하단 면에 있는 엔지니어의 망치를 사용하여 조명을 회전하거나 측면을 클릭하여 정도를 변경합니다.
+ie.manual.entry.lighting4=일반적으로 투광 조명등은 레드스톤 신호를 실행해야 하지만 제어 장치는 엔지니어의 망치로 베이스를 몰래 열고 우클릭하여 반전될 수 있습니다.
+
+ie.manual.entry.metalPress.name=금속 압축기
+ie.manual.entry.metalPress.subtext=압력 속으로!
+ie.manual.entry.metalPress0=금속 압축기는 금속을 형성하는 자동화된 방법입니다. 고압 피스톤을 사용하여 주괴을 틀로 눌러 판, 막대기 또는 기타 금속 구성 요소를 형성합니다.<br>이 구조는 위와 같이 생성되어 멀티블록을 형성합니다. 엔지니어의 망치로 피스톤을 클릭합니다.
+ie.manual.entry.metalPress1=상단을 통해 전력이 입력되고 컨베이어를 통해 아이템이 이동하는 방향으로 입력됩니다. 아래쪽 중간 블록은 레드스톤 통제 포트로, 엔지니어의 망치를 사용하여 우클릭하면 레드스톤 통제기를 역행할 수 있습니다.
+ie.manual.entry.metalPress2=실제로 작동하기 위해서는 틀을 피스톤에 부착해야 합니다. 이러한 틀은 위에 표시된 청사진을 사용하여 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 작성됩니다.
+ie.manual.entry.metalPress3=틀은 위와 같이 제작되며, 전선 절단기가 제작할 때마다 약간의 손상을 입힙니다. 그런 다음 틀을 손에 들고 멀티블록을 우클릭하여 금속 압축기에 삽입합니다.
+ie.manual.entry.metalPress4=압축 및 압축 풀기 틀을 사용하여 동일한 아이템의 4~9개를 압축하고 다시 압축을 풀 수 있습니다. 이 기능을 사용하여 주괴를 블록으로 저장하거나 사암과 같은 간단한 블록을 자동으로 작성할 수 있습니다.
+
+ie.manual.entry.tank.name=탱크
+ie.manual.entry.tank.subtext=가득 채워!
+ie.manual.entry.tank0=탱크는 다량의 유체를 담을 수 있는 공간을 제공하는 멀티블록입니다. 이 장치는 최대 유체 512양동이를 저장하며, 유체는 상단 또는 하단 블록을 통해 유입될 수 있습니다. 유체는 중앙 하단 블록에서만 추출할 수 있습니다.
+ie.manual.entry.tank1=하단 중앙 블록에 레드스톤 신호를 적용하면 탱크가 자동으로 출력되고, 여기에 배치된 비교기가 탱크가 가득 찬 정도에 비례하여 레드스톤 신호를 출력합니다. 상단 4개의 층 중 하나에 비교기를 부착하면 비교기의 높이에 비례하는 신호가 발생합니다. 예를 들어 탱크의 2층에 부착된 비교기는 탱크가 1/4가득 찰 때까지 어떤 신호를 방출하지 않으며 탱크가 절반 이상일 경우 신호 강도가 15입니다.
+
+ie.manual.entry.silo.name=사일로
+ie.manual.entry.silo.subtext=가득 채워!
+ie.manual.entry.silo0=사일로는 동일한 유형의 많은 아이템에 공간을 제공하므로 씨앗, 슬래그 또는 조약돌의 대량 저장에도 적합합니다. 그들은 41472개의 아이템을 담을 수 있는 공간을 가지고 있는데, 이것은 24상자의 용량과 같습니다.
+ie.manual.entry.silo1=아이템은 상단을 통해 입력되고 하단에서 추출되어야 합니다. 하단 블록에 레드스톤 신호를 적용하면 자동으로 출력됩니다.
+ie.manual.entry.silo2=하단 중앙 블록에 부착된 비교기는 사일로의 가득 찬 정도에 비례하는 레드스톤 신호를 방출합니다. 상위 6개 층 중 하나에 비교기를 부착하면 비교기의 높이에 비례하는 신호가 발생합니다. 예를 들어, 사일로의 3층에 부착된 비교기는 탱크가 2/6으로 찰 때까지 어떤 신호를 방출하지 않으며 사일로가 절반 이상 찰 경우 15의 신호 강도를 갖습니다.
+
+ie.manual.entry.metalbarrel.name=금속 통
+ie.manual.entry.metalbarrel.subtext=구르지 마!
+ie.manual.entry.metalbarrel0=금속 통은 <link;barrel;§o§n나무 §o§n통§r;>과 똑같이 작동합니다. 동일한 양의 유체를 저장하고 입출력은 동일한 방식으로 구성되지만, 나무 버전과 달리 가스와 뜨거운 유체를 저장할 수 있으며, 레드스톤 신호를 받는다면 자동으로 출력을 할 수 없습니다.
+
+ie.manual.entry.assembler.name=조립기
+ie.manual.entry.assembler.subtext=조립이 필요해요
+ie.manual.entry.assembler0=조립기는 플레이어가 만드는 것과 비슷한 아이템을 만들 수 있는 복잡한 기계입니다.<br>구조물을 형성하려면 위에서 설명한 대로 제작하고 컨베이어 중 하나에서 망치를 사용하세요.
+ie.manual.entry.assembler1=클릭한 컨베이어는 입력 측이며, 그 위에 파란색 표시와 기계 측면에 있는 화살표로 표시됩니다.<br>조립기는 순서대로 수행할 수 있는 최대 3가지의 조합법을 그 안에 저장할 수 있습니다. 이전 조합법의 결과물은 다음에 대한 입력으로 사용될 수 있습니다.<br>3개의 조합대는 조리법을 저장하며, 그 아래에 있는 18개의 슬롯은 재료의 인벤토리입니다.
+ie.manual.entry.assembler2=입력 면은 아이템 입력 이외에도 기계의 내부 탱크 3개를 채우기 위한 유체 입력 기능도 갖추고 있습니다. 이 탱크의 유체은 조합법에서 물 양동이와 같은 유체 용기를 대체하는 데 사용될 수 있습니다.<br>기계의 전원은 상단 중앙 블록을 통해 입력됩니다.
+
+ie.manual.entry.autoworkbench.name=자동 워크벤치
+ie.manual.entry.autoworkbench.subtext=운전을 못하는 사람들을 위해
+ie.manual.entry.autoworkbench0=자동 워크벤치는 소규모 엔지니어링의 첫번째 주요 성공 사례 중 하나입니다.<br>기계는 <link;blueprints;§o§n청사진§r>에 의해 설명된 일련의 지침을 따라 상세한 아이템을 조립할 수 있습니다.
+ie.manual.entry.autoworkbench1=멀티블록을 조립하는 즉시 도면 테이블에 청사진을 배치할 수 있습니다. 생성해야 할 아이템을 선택하면 조합 과정이 시작됩니다. 기계가 작동하기 위해서는 재료와 전력을 공급받아야 합니다.<br>아이템 입력은 파란색 점으로 표시된 두 해치이며, 전원 입력은 그 위에 있습니다. 완성품은 컨베이어 벨트 끝에 떨어집니다.<br>도면 테이블 아래의 레드스톤 신호를 사용하여 제어할 수 있습니다.
+
+ie.manual.entry.bottlingMachine.name=병조림기
+ie.manual.entry.bottlingMachine.subtext=채워라!
+ie.manual.entry.bottlingMachine0=병조림기는 액체를 용기로 채웁니다.<br>구조는 위에 표시된 대로 생성되지만 대칭될 수 있습니다. 이를 구성하려면 엔지니어의 망치로 중앙 커버를 오른쪽 클릭합니다. 컨베이어의 방향이 중요합니다.
+ie.manual.entry.bottlingMachine1=유체는 금속 탱크의 하부 블록에 있는 포트를 통해 입력됩니다. 에너지는 반대쪽 상단에 있는 포트를 통해 입력됩니다.<br>일반적으로 병조림기은 사용 가능한 채워진 버전(양동이, 유리병)이 있는 모든 용기를 채울 수 있습니다. <link;drill;§o§n채굴 §o§n드릴§r>나 <link;jerrycan;§o§n젤리캔§r>와 같이 유체를 저장할 수 있는 다른 아이템들도 받을 것입니다.<br>또한, 특별한 조합법이 제공될 수도 있습니다.
+
+ie.manual.entry.chargingStation.name=충전소
+ie.manual.entry.chargingStation.subtext=유리 충전!
+ie.manual.entry.chargingStation0=충전소는 도구 및 기타 아이템을 충전할 수 있는 장치입니다. 에너지는 하단이나 후면을 통해 입력할 수 있으며 아이템은 수동으로 배치하거나 자동으로 삽입할 수 있습니다.
+ie.manual.entry.chargingStation1=앞에 있는 전자 튜브는 항목의 현재 전하에 대한 피드백을 제공하지만, 블록은 동일한 목적으로 비교기 신호를 출력합니다.
+
+ie.manual.entry.belljar.name=정원 덮개
+ie.manual.entry.belljar.subtext=현지화된 열대 우림
+ie.manual.entry.belljar0=정원 덮개는 식물의 성장을 촉진하기 위해 고안된 장치입니다. 그것은 심지어 농업에 어려움을 겪는 기술자도 식물을 재배하고 수확할 수 있게 해 줍니다.
+ie.manual.entry.belljar1=이 장치는 각 포트를 통해 전원, 유체 및 아이템을 수신합니다. 물과 전력은 항상 필요하며, 다양한 비료는 선택 사항입니다. GUI에는 토양과 씨의 슬롯, 왼쪽의 비료 및 오른쪽의 출력이 있습니다.<br>글라스 돔 전면에 있는 해치만이 유일한 자동 출력입니다. 모든 씨앗은 자랄 수 있는 올바른 토양과 쌍을 이루어야 하며, 먼지는 자동적으로 농지로 인식되어야 합니다.
+
+ie.manual.entry.highvoltage.name=고압
+ie.manual.entry.highvoltage.subtext=충격을 줄 순 없어
+ie.manual.entry.highvoltage0=고압 전선은 전송 속도가 가장 높고(<config;iA;wireTransferRate;2> Flux/t) 특수 연결기가 필요합니다. 고압 연결부인, §o연결기 및 중계기§r는 서로 다른 블록이며 중계기는 에너지 넷에 입출력할 수 없습니다. 자세히 말하자면, §o중계기는 블록 하부에만 배치할 수 있습니다.§r<br>고압에서 저압또는 중압연결로 전환하려면 고압 변압기가 필요하며, 가장 낮은 티어의 전선은 전체 연결의 전송 속도를 제한합니다.
+
+ie.manual.entry.multiblocks.name=멀티블록 시공
+ie.manual.entry.multiblocks.subtext=내 앨런 렌치 어디 있어?
+ie.manual.entry.multiblocks0=복잡한 기계를 1x1x1 정육면체에 장착하는 것은 마법이나 수축 가능성이 없이는 감당할 수 없는 작업으로 보입니다. 따라서 더 복잡한 기계를 만들기 위해서는 구성 요소 블록이 필요합니다. 가장 일반적인 것들이 다음 페이지에 나열되어 있습니다.
+
+ie.manual.entry.workbench.name=엔지니어의 워크벤치
+ie.manual.entry.workbench.subtext=오버클로킹
+ie.manual.entry.workbench0=엔지니어링 경력을 쌓는 동안 최적화되고 수정될 수 있는 몇가지 도구를 사용하게 될 수도 있습니다. 이러한 수정 사항을 적용하려면 적절한 장비를 갖춘 엔지니어의 워크벤치를 사용해야 합니다.<br>워크벤치를 우클릭하고 아이템을 슬롯에 삽입한 다음 해당 업그레이드를 나타나는 새 슬롯에 삽입합니다.
+
+ie.manual.entry.blueprints.name=엔지니어의 청사진
+ie.manual.entry.blueprints.subtext=설명서를 참고하세요.
+ie.manual.entry.blueprints0=건축에 매우 복잡하고 그리드가 달린 단순한 나무 블록 이상의 것이 필요한 특정한 아이템들이 있습니다. 이러한 아이템은 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에 있는 정확한 청사진의 지침에 따라 생성해야 합니다.<br><br>엔지니어의 청사진(또는 직접 생성)을 발견한 경우 엔지니어의 워크벤치 슬롯에 배치할 수 있습니다.
+ie.manual.entry.blueprints1=청사진에 자세히 설명된 아이템을 생성하려면 필요한 재료를 중간에 있는 6개의 슬롯에 삽입하고 출력 슬롯에서 오른쪽으로 결과를 가져옵니다. 이러한 출력 슬롯 위에 마우스를 올려 놓으면 각 아이템에 어떤 재료가 필요한지 정확히 알 수 있습니다.
+
+ie.manual.entry.mixer.name=혼합기
+ie.manual.entry.mixer.subtext=쿠키 반죽에 따라 다릅니다!
+ie.manual.entry.mixer0=혼합기는 유체 속의 고체들을 녹여 함께 섞는 멀티블록 구조입니다. 구조물은 위 그림과 같이 건설되며, 중앙 판금 블록의 엔지니어의 망치를 사용하여 형성됩니다.
+ie.manual.entry.mixer1=이 기계의 가장 일반적인 용도는 물에서 액체 콘크리트를 혼합하거나, 모래 2개, 자갈 1개 및 점토 1개를 혼합하거나, 물과 다양한 재료를 사용하여 포션을 만드는 것입니다.
+ie.manual.entry.mixer2=유체는 전원 공급 장치의 하단에 있는 포트를 통해 혼합기에 입력됩니다. 아이템은 뒷면의 해치 두개를 통해 입력할 수 있습니다. 전면 유체 포트는 유체 출력으로 사용됩니다.<br>전면의 조작 패널에 레드스톤 신호를 부착하면 기계의 작동이 정지되며, 엔지니어의 망치를 사용하면 이러한 동작이 반전될 수 있습니다.
+
+ie.manual.entry.squeezer.name=압착기
+ie.manual.entry.squeezer.subtext=재료를 압착합니다
+ie.manual.entry.squeezer0=압착기는 큰 피스톤을 사용하여 유기물로부터 주스나 기름을 밀어내는 멀티블록 구조입니다. 구조물은 위 그림과 같이 건설되며, 엔지니어링 블록이 있는 측면에서 중앙 나무 통의 엔지니어의 망치를 사용하여 제작됩니다.
+ie.manual.entry.squeezer1=아이템은 파란색 점으로 표시된 뒤쪽의 해치 두개를 통해 압착기에 입력할 수 있습니다. 주황색 점이 있는 해치는 아이템 출력으로 사용되고 그 아래에 있는 블록은 유체 출력으로 사용됩니다.<br>전면의 조작 패널에 레드스톤 신호를 부착하면 기계의 작동이 정지되며, 엔지니어의 망치를 사용하면 이러한 동작이 반전될 수 있습니다.
+ie.manual.entry.squeezer2T=다음 목록은 식물유로 짜낼 수 있는 다양한 아이템과 그 생산량을 보여 줍니다.
+
+ie.manual.entry.fermenter.name=발효기
+ie.manual.entry.fermenter.subtext=쉘!
+ie.manual.entry.fermenter0=발효기는 특정 과일, 곡물, 야채에서 에탄올을 추출하는 멀티블록 구조입니다. 이 구조물은 위와 같이 건설되며, 엔지니어링 블록이 있는 측면에서 중앙 솥에 있는 엔지니어의 망치를 사용하여 제작되었습니다.
+ie.manual.entry.fermenter1=아이템은 파란색 점으로 표시된 뒷면의 두 해치를 통해 발효기에 입력할 수 있습니다. 주황색 점이 있는 해치는 아이템 출력으로 사용되고 그 아래에 있는 블록은 유체 출력으로 사용됩니다.<br>전면의 조작 패널에 레드스톤 신호를 부착하면 기계의 작동이 정지되며, 엔지니어의 망치를 사용하면 이러한 동작이 반전될 수 있습니다.
+ie.manual.entry.fermenter2T=다음 목록은 에탄올로 발효될 수 있는 다양한 아이템과 그들이 생산하는 양을 보여줍니다.
+
+ie.manual.entry.refinery.name=정제기
+ie.manual.entry.refinery.subtext=유체 혼합!
+ie.manual.entry.refinery0=정제기는 한두개의 유체를 다른 것으로 정제할 수 있는 복잡한 멀티블록입니다. 이것의 가장 일반적인 적용은 <link;squeezer;식물유>와 <link;fermenter;에탄올>을 바이오디젤로 정제하는 것입니다.
+ie.manual.entry.refinery1=구조물을 형성하려면, 중간층의 중형 엔지니어링 블록을 우클릭합니다.<br>유체는 블록 양쪽에 있는 두개의 포트를 통해 입력되며, 전면에 주황색으로 표시된 포트를 통해 출력됩니다.<br>전면의 조작 패널에 레드스톤 신호를 부착하면 기계의 작동이 정지되며, 엔지니어의 망치를 사용하면 이러한 동작이 반전될 수 있습니다.
+
+ie.manual.entry.dieselgen.name=정유 발전기
+ie.manual.entry.dieselgen.subtext=더 강합니다.
+ie.manual.entry.dieselgen0=고압 구조물는 매우 매력적일 수 있지만, 실제로 필요한 출력을 생성할 수 있는 발전기가 없다면 그다지 유용하지 않습니다.<br>정유 발전기는 이러한 종류의 에너지를 생성하는 몇가지 방법 중 하나입니다. 이 연료는 복잡한 멀티블록 구조로 생성되며 <link;refinery;§o§n바이오디젤§r> 또는 기타 유형의 가연성 연료가 고갈됩니다. 출력이 높기 때문에 연료를 빨리 통과할 수 있으므로 연료 생산량이 충분한지 확인하세요.
+ie.manual.entry.dieselgen1=이 구조물은 엔지니어링, 발전기, 방열기 블록과 유체 파이프 및 비계로 제작됩니다. 위에 표시된 모양으로 정렬하고 엔지니어의 망치를 사용하여 중앙 발전기를 우클릭합니다.
+ie.manual.entry.dieselgen2=연료는 발전기의 하단 모서리에 입력되어야 하며, 에너지는 상단의 최대 3개 연결부로 출력됩니다. <config;i;dieselGen_output>Flux/t 발전기 출력이 연결된 모든 지점 사이에서 분할됩니다.<br>측면의 작은 단자는 레드스톤 신호를 제공할 경우 발전기를 끕니다. 엔지니어의 망치를 사용하면 이러한 동작이 역전될 수 있습니다.
+ie.manual.entry.dieselgen3=다음 표에는 정유 발전기의 모든 유효 연료와 연소 시간(tick)이 나와 있습니다.
+
+ie.manual.entry.biodiesel.name=바이오디젤
+ie.manual.entry.biodiesel.subtext=녹색 파워!
+ie.manual.entry.biodiesel0=가연성 연료는 사용하기 쉽고 효율적인 연료 공급원입니다. 하지만 석유가 고갈될 수 있는 자원이기 때문에, 재생 가능한 무언가가 훨씬 더 선호될 것입니다. 바이오디젤이 해결책입니다! 식물유와 에탄올을 결합하여 <link;dieselgen;§o§n정유 §o§n발전기§r>에서 연소될 가연성 유체를 생성할 수 있습니다.
+ie.manual.entry.biodiesel1=식물유는 산업용 압착기에서 다양한 씨앗를 처리하여 생성됩니다. 위의 그림과 같은 구조를 만들고 엔지니어의 망치로 측면 중 하나를 클릭하여 구조를 형성합니다. 전력이 상단 또는 하단에 입력됩니다.
+ie.manual.entry.biodiesel1T=유체는 각 측면 하단의 포트를 통해 방출됩니다.<br>다음 목록은 식물유에 압축할 수 있는 다양한 아이템과 생성되는 양을 보여 줍니다.
+ie.manual.entry.biodiesel2=에탄올은 사탕수수나 다른 과일을 발효시킴으로써 얻어집니다. 발효기의 구조는 압착기의 구조와 유사한 방식으로 생성됩니다. 이러한 전력 입력과 유체 출력이 동일합니다.
+ie.manual.entry.biodiesel2T=다음 목록은 에탄올로 발효될 수 있는 다양한 제품과 그들이 생산하는 양을 보여 줍니다.
+ie.manual.entry.biodiesel3=마지막으로, 식물유와 에탄올을 바이오디젤로 정제하기 위해서는 정제기에 두 액체를 모두 넣고 전력을 공급해야 합니다. 구조물은 위 그림과 같이 생성되며 엔지니어의 망치로 전면의 중앙을 클릭하여 형성됩니다.
+ie.manual.entry.biodiesel4=<br>정제기의 전면은 유체 출력 역할을 하는 반면, 입력은 작은 쪽에서 찾을 수 있습니다. 에너지는 뒤쪽의 연결기를 통해 공급됩니다. 오른쪽에 있는 조작 패널에 레드스톤 신호를 부착하면 정제 과정이 정지됩니다.
+
+ie.manual.entry.conveyor.name=컨베이어 벨트
+ie.manual.entry.conveyor.subtext=도대체 누가 철도를 필요로 하는 거야?
+ie.manual.entry.conveyor0=컨베이어 벨트는 여러분의 기지를 둘러싼 모든 종류의 물건들을 운반하는 쉬운 방법입니다. 그들이 소나 양과 같은 살아 있는 생물들을 움직일 수 있을 만큼 충분히 강한 반면, 그들의 진정한 힘은 아이템을 운송하는 데 있습니다.<br>그 위에 아이템을 던지면 아이템이 벨트를 따라 움직이게 됩니다. 벨트가 인벤토리로 연결되면 아이템이 삽입됩니다.
+ie.manual.entry.conveyor1=후퍼와 같은 블록들은 벨트 위에 아이템들을 떨어뜨릴 수 있을 것입니다. 엔지니어의 망치를 사용하여 벨트를 회전시키거나(우클릭)위 또는 아래로(우클릭)조정합니다.<br>컨베이어에서 레드스톤 신호를 사용하면 이 신호를 끌 수 있으며, 이 동작은 레드스톤 신호 버전으로 만들어 비활성화할 수 있습니다.<br>컨베이어에 우클릭을 하여 염료를 입히면 컨베이어의 벽에 색을 입혀 어디로 가는지 쉽게 식별할 수 있습니다.
+ie.manual.entry.conveyor2=하강 컨베이어 벨트는 해치가 중앙에 있는 컨베이어로, 그 위를 지나가는 아이템들을 떨어뜨릴 수 있습니다.<br>아이템은 아래의 인벤토리에 삽입되거나 컨베이어 아래 공간이 비어 있으면 간단히 삭제됩니다.
+ie.manual.entry.conveyor3=추출 컨베이어 벨트는 호퍼와 유사한 방식으로 인벤토리에서 아이템을 추출할 수 있는 능력을 가지고 있습니다. 그러나 후자와 달리 내부 인벤토리가 없어 추출한 아이템을 벨트에 넣습니다.<br>엔지니어의 망치와 우클릭으로 입력 부분을 변경합니다. 전선 절단기를 사용하여 틱레이트를 조정합니다.
+ie.manual.entry.conveyor4=수직 컨베이어 벨트는 벽에 장착되도록 되어있는 벨트입니다. 연결된 양동이를 사용하면 엔티티가 바로 위로 상승합니다. "양동이"이라는 용어의 사용에도 불구하고, 그것은 유체를 배출하지 않습니다.<br>이 벨트는 위의 인벤토리에 삽입하거나 상단의 가장자리를 지나 더 많은 컨베이어로 아이템을 내보낼 수 있습니다.
+ie.manual.entry.conveyor5=분할 컨베이어 벨트는 좌우로 리디렉션되는 아이템과 도면 요소를 좌우로, 단순하고 단순하게 번갈아 배치합니다. 이 기능을 사용하여 공장에서 보다 균등한 분배를 달성할 수 있습니다.
+ie.manual.entry.conveyor6=덮은 컨베이어 벨트는 일반 컨베이어처럼 작동하지만, 발판 조각으로 덮여 있어 플레이어가 아이템을 집어 들지 못하게 합니다.<br>다른 종류의 비계나 유리로 우클릭을 하여 덮개의 모양을 바꿀 수 있습니다.
+ie.manual.entry.conveyor7=마찬가지로 추출 및 수직 컨베이어도 비계로 덮어 정상적으로 작동하면서 "픽업 방지"와 동일한 이점을 얻을 수 있습니다.
+
+ie.manual.entry.furnaceHeater.name=외부 가열기
+ie.manual.entry.furnaceHeater.subtext=이제 당신은 플럭스로 요리하고 있군요!
+ie.manual.entry.furnaceHeater0=외부 가열기는 이름에서 암시하는 바와 같이 플럭스로부터 열 에너지를 생성합니다. 보통 용광로 옆에 배치될 때 이 열 에너지는 용광로에 동력을 공급하여 그 안에 연료가 없어도 제련할 수 있도록 합니다.
+ie.manual.entry.furnaceHeater1=망치로 히터의 측면을 클릭하여 에너지 수신기로 만든 후, 살짝 밀어 반대쪽을 겨냥하세요.<br>가열기는 추가되는 각 열 단위에 대해 §o<config;i;heater_consumption> Flux/t§r를 추가합니다. 용광로의 초기 단계에서는 가열기가 tick당 최대 §o4§r 단위의 열을 생성하지만, 용광로가 최대 온도에 도달하는 즉시 유지를 위해 §o1§r 단위의 열만 유지하면 됩니다.
+ie.manual.entry.furnaceHeater2=더 나아가 용광로가 최대 온도에 있는 동안에도 가열기는 용광로의 처리 속도를 높이기 위해 §o<config;i;heater_speedupConsumption> Flux/t§r를 추가로 소비합니다.<br>가열기는 에너지를 절약하기 위해 출력 슬롯에 유효한 입력 및 공간이 있는 용광로에만 영향을 미칩니다. 하지만 가열기에 레드스톤 신호를 적용하여 해당 기능을 비활성화하고 용광로를 최대 열로 유지할 수 있습니다.
+
+ie.manual.entry.teslaCoil.name=테슬라 코일
+ie.manual.entry.teslaCoil.subtext=이것은 11까지 올라갑니다.
+ie.manual.entry.teslaCoil0=테슬라 코일은 무선 에너지 전달 개념으로 출발했습니다. 하지만, 잠재적으로 높은 손실률과 반경 6m안에 있는 모든 생물을 튀기는 것이 오히려 흥미로운 특성 때문에, 그것은 재빨리 기술자의 집안 수비의 꿈으로 전환되었습니다.
+ie.manual.entry.teslaCoil1=이 기계의 유지 보수 비용은 수동적 소비에서 일반적인 <config;i;teslacoil_consumption_active> 손상을 가할 때마다 추가 <config;i;teslacoil_consumption> Flux를 더한 값으로 높습니다.<br>코일은 레드스톤톤 신호와 함께 제공되지 않는 한 비활성화됩니다. 엔지니어의 망치를 사용하여 우클릭하면 이러한 동작이 반전됩니다.<br>충격은 손상에 더하여 잔류하는 디버프, 즉 "중단"을 적용하여 물체가 순간 이동을 방지합니다.
+ie.manual.entry.teslaCoil2=몰래 접근하는 동안 엔지니어의 망치로 코일을 우클릭하면 코일이 고출력 모드와 저출력 모드로 전환됩니다. 그렇게 안전하게 하려면 코일을 꺼야 합니다. 기본적으로 고출력 모드입니다. 코일이 저전력 모드일 때는 일반적인 에너지의 절반을 사용하고 범위의 절반을 사용합니다.
+ie.manual.entry.teslaCoil3=여러분이 패러데이 정장을 입고 있다면, 저전력 모드의 코일은 여러분에게 해를 입히지 않고 여전히 번개를 쏠 것입니다. 고전력 모드에서 코일을 사용하면 정장이 녹아 손상되고, 그에 따른 손상이 증가하며, 그에 따라 정장이 손상됩니다.<br>형광등은 강력한 고주파 전기장 안에 배치되면 빛납니다. 이러한 자기장은 모든 테슬라 코일에 의해 발생하므로 활성 테슬라 코일 근처에 튜브를 놓으면 그것이 빛나게 됩니다.
+ie.manual.entry.teslaCoil4=범위는 번개에 맞을 거리의 약 1.5배입니다. 엔지니어의 워크벤치에서 색상을 지정하고 엔지니어의 망치로 우클릭을 하여 (변속)회전할 수 있습니다.
+
+ie.manual.entry.fluidPipes.name=유체 수송
+ie.manual.entry.fluidPipes.subtext=전문 배관공
+ie.manual.entry.fluidPipes0=유체를 운반하는 것은 공학 사업에서 매우 중요해 졌습니다. 유체 파이프와 유체 펌프는 정확히 그렇게 합니다. 그 자체로는 유체 파이프가 유체를 운반하는 속도가 상당히 느리지만, 유체를 삽입하는 데 펌프가 사용된다면 훨씬 더 빨리 움직일 것입니다.
+ie.manual.entry.fluidPipes1=파이프의 연결 부분을 엔지니어의 망치로 우클릭하여 파이프가 해당 측면에 연결되지 않도록 할 수 있습니다.<br>유체 파이프는 나무 또는 강철 비계로 덮을 수 있습니다. 발판 하나를 파이프 위에 올려 놓기만 하면 됩니다. 비계를 찾기 위해 파이프를 부수세요.
+ie.manual.entry.fluidPipes2=유체 펌프는 세가지 기능을 가지고 있습니다. 그들은 고압 파이프에 삽입하거나, 유체를 훨씬 더 빨리 전달할 수 있습니다. 또는 그들은 세계에서 유체를 얻을 수 있습니다. 펌프 베이스에 망치를 사용하여 측면을 입출력으로 전환합니다.
+ie.manual.entry.fluidPipes3=펌프가 유체 블록을 집어 들기 위해서는 상단의 전원 입력과 레드스톤 신호가 필요합니다. 펌프는 자동 출력이 없는 탱크 및 기타 유체 용기에서 추출하는 데도 사용될 수 있습니다. 이것은 또한 레드스톤 신호가 필요하지만 전력을 소비하지는 않습니다.
+ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;물 블록은 3개 이상의 블록이 연결되어 있는 한 펌프용으로 무한한 유체 공급원 역할을 합니다.<br><br>;><config;b;pump_placeCobble;수거된 유체 블록은 유체의 지연을 줄이기 위해 조약돌로 교체됩니다. 펌프의 엔지니어의 망치를 사용하여 이러한 동작을 전환할 수 있습니다.;>
+ie.manual.entry.fluidPipes5=유체 배출구는 파이프 시스템의 엔드 포인트 역할을 하며, 유체는 전 세계에 배치될 수 있습니다. 입력, 출력(게이트 열기)또는 닫힘 사이에 측면을 구성할 수 있으며, 레드스톤 신호를 사용하여 출구를 끌 수 있습니다.<br>이 블록은 자체 중량 레벨까지 유체를 출력합니다.
+
+ie.manual.entry.sorter.name=아이템 라우터
+ie.manual.entry.sorter.subtext=왼발은 노란색, 오른손은 초록색
+ie.manual.entry.sorter0=아이템 라우터는 필터링된 경로 아래의 아이템을 수락하고 재배포하는 블록입니다. 아래로 놓고 오른쪽 버튼으로 클릭하여 인터페이스를 엽니다. 여기에는 6개의 다른 색상 및 방향 조정 필터가 표시됩니다.
+ie.manual.entry.sorter1=아이템이 라우터에 들어가면 필터가 아이템과 일치하는 출력으로 라우팅 되거나, 일치하는 필터가 없으면 필터링되지 않은 출력으로 라우팅됩니다. 라우터가 먼저 아이템을 라우트할 수 없는 경우, 아이템이 라우터에 들어갈 수 없습니다. 또한 아이템을 삽입된 측면으로 출력할 수 없습니다.<br>각 필터 위의 버튼은 라우터가 오어딕셔너리, NBT, 메타데이터를 존중하거나 무시하는 데 사용할 수 있습니다.
+
+ie.manual.entry.fluidSorter.name=유체 라우터
+ie.manual.entry.fluidSorter.subtext=우유는 왼쪽, 산은 오른쪽
+ie.manual.entry.fluidSorter0=유체 라우터는 <link;sorter;§o§n아이템 §o§n라우터§r>와 유사하게 작동합니다. 어느 쪽이든 통과하는 유체 입력은 6개의 측면 필터가 설정되는 방법에 따라 재배포됩니다. 양동이 또는 다른 유형의 유체 용기를 GUI의 슬롯에 클릭하면 해당 유체에 맞게 필터가 구성됩니다.
+ie.manual.entry.fluidSorter1=라우터에 유체가 유입되면 필터가 유체와 일치하는 출력으로 전달되거나, 일치하는 필터가 발견되지 않으면 유체가 여과되지 않은 출력으로 이동합니다. 사용가능한 경로나 유효한 경로가 없을 경우 유체가 유입되지 않습니다.<br>각 필터 위의 버튼은 라우터가 유체의 NBT 데이터를 존중하도록 하거나 무시하는 데 사용할 수 있습니다.
+
+ie.manual.entry.turntable.name=회전 테이블
+ie.manual.entry.turntable.subtext=따라갈 수가 없어요.
+ie.manual.entry.turntable0=회전 테이블이 그것에 기대어 놓은 블록을 회전시킬 것입니다.<br>기계를 보는 동안 엔지니어의 망치를 잡고 있으면 엔지니어의 활성 측면과 방향이 표시됩니다. 망치를 사용하여 우클릭하면 방향이 바뀌고, 그렇게 하는 동안 클릭하면 회전 테이블의 회전 방향이 반전됩니다.
+
+ie.manual.entry.drill.name=채굴 드릴
+ie.manual.entry.drill.subtext=내 드릴이 기반암을 뚫을 거야!
+ie.manual.entry.drill0=정유 드릴은 광산 분야에서 큰 발전을 이룬 것입니다. 교체 가능한 드릴 헤드와 업그레이드를 통해 그 특성은 거의 완전히 수정할 수 있습니다. 수정하려면 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에 배치합니다.<br>드릴은 <link;refinery;§o§n바이오디젤§r>에서 떨어져 나와 정제기에서 직접 충전할 수 있습니다.
+ie.manual.entry.drill1=§6드릴 헤드§r는 기본 §6채굴 레벨§r, §6속도§r 및 §6규모§r와 §6공격 데미지§r를 결정합니다. 블록을 파내면 드릴 헤드가 손상되지만 모루에서 수리할 수 있습니다.
+ie.manual.entry.drill2=드릴은 연소 엔진에 의해 구동되기 때문에 가압 공기 탱크 업그레이드를 통해 제공되지 않는 한 물 속에서 작동하지 않습니다. 하지만 이러한 업그레이드 장치를 갖추면 물 속에서 잠수하는 동안만 작동하는 것이 아니라 물 속에서 파낼 때 일반적으로 나타나는 감속을 무시할 수 있습니다.
+ie.manual.entry.drill3=§6고급 윤활 시스템§r은 드릴에 정기적으로 윤활유를 추가로 공급하여 드릴 헤드에 가해지는 손상을 줄입니다.
+ie.manual.entry.drill4=드릴에 §6추가 나사송곳§r을 투입함으로써, 그것의 파괴적인 잠재력은 증가하여, 살아 있는 생명체에 대한 그것의 피해를 증가시키고 더 빨리 달리고 땅을 팝니다.<br>업그레이드는 최대 세번까지 가능합니다.
+ie.manual.entry.drill5=§6대형 연료 탱크§r는 드릴이 내부에 더 많은 연료를 저장할 수 있게 해주므로 연료를 주입하기 전에 드릴을 사용할 수 있는 시간이 늘어납니다.
+
+ie.manual.entry.revolver.name=리볼버
+ie.manual.entry.revolver.subtext=죽을래 살래
+ie.manual.entry.revolver0=더 문명화된 시대의 더 우아한 무기인 리볼버는 작은 기계들의 업적입니다. 상대적으로 작은 존재입니다. 왜냐하면 이 무기는 12구경에 사용되기 때문입니다.<br>채굴 드릴과 마찬가지로, 리볼버는 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 마지막 페이지에 자세히 설명된 대로 수정을 허용합니다.
+ie.manual.entry.revolver1=리볼버가 받아들일 <link;bullets;§o§n탄약의 §o§n종류§r;>에는 여러가지가 있습니다. 로드하려면 무기를 우클릭한 다음 카트리지를 슬롯에 넣습니다.<br>당신의 인벤토리에 장착된 속도계는 당신이 마지막 발사를 한 후에 리볼버를 다시 충전하는데 사용될 것입니다.
+ie.manual.entry.revolver2=리볼버에 §6총검§r을 꽂으면 4분의 1결합 능력을 갖추게 되어 철 검만큼 강력한 근거리 공격이 가능합니다.
+ie.manual.entry.revolver3=§6확장 매거진§r은 권총에 카트리지를 6개 더 장착할 수 있도록 합니다. 이 매거진는 스피드 로더가 리필해 주지 않습니다.
+ie.manual.entry.revolver4=§6증폭 전자 튜브§r는 발사된 발사체에 전기 충격을 가합니다. 이 충격은 목표물에 도달해서 어떻게 작동하는지 묻지 말고 전달될 때까지 지속됩니다. 목표물은 아주 짧은 시간 동안 기절할 것이고 그들이 사용하고 있는 모든 동력 장비는 약간의 방전을 겪을 것입니다.
+
+ie.manual.entry.bullets.name=리볼버 카트리지
+ie.manual.entry.bullets.subtext=
+ie.manual.entry.bullets0=카트리지는 특정 <link;blueprints;§o§n엔지니어의 §o§n청사진§r>을 사용하여 엔지니어의 워크벤치에 생성됩니다. 당신이 직접 만들 수 있는 일반 탄약에 대한 청사진을 보여 주지만, 더 발달된 탄약의 일부는 당신이 다른 누군가로부터 적절한 청사진을 구입해야 할 것입니다.
+ie.manual.entry.bullets1=§l빈 §l케이스§r와 §l껍데기§r은 모든 발사체의 기초가 됩니다. 또한 적절한 틀을 사용하여 <link;metalPress;§o§n금속 §o§n압축기§r>에서 빈 케이스를 크게 줄일 수 있습니다.
+ie.manual.entry.bullets_casull=§l카설 §l카트리지§r는 "공통 발사체" 청사진으로 생성됩니다. 그것들은 중간 정도의 피해를 주는 단순한 유도로입니다.
+ie.manual.entry.bullets_armorPiercing=§l갑옷 천공 §l카트리지§r는 동일한 청사진으로 생성됩니다. 그들은 같은 양의 피해를 입히지만 순전히 운동력으로 갑옷을 관통합니다.
+ie.manual.entry.bullets_buckshot=가상화된 청사진을 사용하여 만들어진 §l산탄 §l카트리지§r는 원뿔 모양으로 발사되는 여러개의 작은 발사체로 채워집니다. 이 카트리지는 단거리에서 매우 효과적입니다.
+ie.manual.entry.bullets_HE=§l고폭발 §l카트리지§r는 "공통 발사체" 청사진을 사용하여 생성됩니다. 그들은 충돌 시 폭발하는 발사체를 발사하여 생물체와 지형에 피해를 입힙니다.
+ie.manual.entry.bullets_silver=§l은 §l카트리지§r는 은 코어로 포장된 납 코어로 구성되어 있어 언데드에 대해 매우 효과적입니다.
+ie.manual.entry.bullets_dragonsbreath=§l드래곤의 §l숨결 카트리지§r는 "전문화된 발사체" 청사진으로 만들어졌습니다. 산탄과 마찬가지로 짧은 거리에서도 효과적이지만 작은 금속 샷 대신 가연성의 금속 먼지로 채워지며 화염을 일으킵니다.
+ie.manual.entry.bullets_potion=§l작은 유리병 §l카트리지§r는 "특별" 청사진으로 만들어졌습니다. 그것들은 그것들을 만들어 내는 격자 안에 함께 만듦으로써 어떤 포션으로 채워질 수 있고, 이 포션은 충격에 적용될 것입니다. 일반적인 포션은 직접 맞아야 하고, 투척용 포션은 효과적인 영역이 있어야 하며, 잔류형 포션 구름을 만들 것입니다.
+ie.manual.entry.bullets_flare=§l폭발 §l카트리지§r는 "특별" 청사진으로 만들어졌습니다. 발사될 때, 그 불꽃은 일정 거리 후에 폭발하고 나서 천천히 땅으로 가라앉습니다. 카트리지를 조합대에서 염료와 결합하여 색상을 변경할 수 있습니다.
+ie.manual.entry.bullets_wolfpack=§l울프팩 §l카트리지§r는 한 껍데기에서 여러개의 귀소 발사를 하는 것을 모아 놓은 것입니다. 최초의 발사체는 유도되지 않았지만 충돌에 따라 적을 분쇄하는 6개의 표적 발사물로 나뉩니다.
+
+ie.manual.entry.chemthrower.name=화학 투척기
+ie.manual.entry.chemthrower.subtext=모두 태웁니다!
+ie.manual.entry.chemthrower0=화학 투척기은 내부 탱크로부터 액체를 유도하는 장치입니다. 장치에 유체, 가스, 액체를 넣을 수 있으며 우클릭하면 장치가 밖으로 배출됩니다.<br>인화성이 높은 경우에는 유체를 점화하는 기능도 있습니다. 파일럿 라이트를 전환하려면, 우클릭합니다.
+ie.manual.entry.chemthrower1=다른 도구들과 마찬가지로, <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서도 화학 투척기를 개조할 수 있습니다. 이러한 업그레이드는 탱크 크기, 범위 및 확산에 영향을 미칩니다.<br><br>§6대형 탱크§r는 화학 투척기의 유체 용량을 2000mb까지 증가시킵니다.
+ie.manual.entry.chemthrower2=§6집중 노즐§r은 분무된 유체의 확산을 줄이고 범위를 약간 늘려 더 정확하게 추가적인 대상을 맞출 수 있습니다.
+ie.manual.entry.chemthrower3=§6멀티 탱크§r를 통해 화학 투척기는 최대 세개의 다른 유체를 저장할 수 있습니다. <config;b;chemthrower_scroll;스크롤 바퀴를 몰래 사용하거나;using> 설정된 경우 키빈드§l<keybind;key.immersiveengineering.chemthrowerSwitch>§r를 사용하여 활성 탱크를 선택할 수 있습니다.<br>이 업그레이드는 §6대형 탱크§r와 상호 배타적입니다.
+
+ie.manual.entry.skyhook.name=엔지니어의 열기구
+ie.manual.entry.skyhook.subtext=부커, 잡아!
+ie.manual.entry.skyhook0=엔지니어의 열기구는 전선, 대마 밧줄 또는 강철 전선에 연결하도록 설계된 동력식 손잡이 시스템입니다.<br>이 기능을 사용하면 엔지니어가 전원 라인을 빠르게 통과하여 교체 또는 다른 설치 간에 이동할 수 있습니다.
+ie.manual.entry.skyhook1=연결기에 가까이 있는 동안 우클릭을 하면 전선에 연결됩니다.<br>언제든지 버튼을 놓거나 몰래 들어가면 내릴 수 있습니다.<br>전선 중간에서 시작할 수 없으므로 연결기에 연결해야 합니다.
+
+ie.manual.entry.shader.name=셰이더
+ie.manual.entry.shader.subtext=노란색이 아니라 파란색입니다!
+ie.manual.entry.shader0=셰이더는 마을 주민과 교역을 함으로써 당신이 세계에서 또는 어디에서나 볼 수 있는 아이템입니다. 그들은 그들 스스로 목적을 가지고 있지는 않지만, 그들은 <link;revolver;§o§n리볼버§r>, <link;drill;§o§n드릴§r>, <link;chemthrower;§o§n화학 §o§n투척기§r>, <link;shield;§o§n판 §o§n방패§r>, <link;railgun;§o§n레일건§r>에 장착되어 아이템의 디자인을 바꿀 수 있습니다. <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에 아이템을 넣고 적절한 슬롯에 셰이더를 장착하기만 하면 됩니다.<br>유클릭으로 마인카트 또는 <link;balloon;§o§n풍선§r>에도 적용할 수 있습니다!
+ie.manual.entry.shader1=사용 가능한 모든 셰이더, 생김새, 추천서, 자세한 내용은 <link;shaderList;§o§n여기를 §o§n참고하세요§r>
+ie.manual.entry.shader2=셰이더 그래백은 무작위 셰이더가 포함된 아이템입니다. 그들은 마을 주민으로부터 거래되거나 보스에 의해 버려진 상자에서 발견될 수 있습니다. 포함된 셰이더의 희귀성은 가방의 희귀성과 동일하거나 더 좋습니다. 가방을 사용할 때, 여러분은 여러분이 이미 가지고 있는 것보다 아직 갖고 있지 않은 셰이더를 얻을 가능성이 더 높습니다.
+ie.manual.entry.shader3=셰이더 가방은 더 낮은 레벨의 두개의 가방으로 제작할 수 있습니다. 이것은 당신이 드물게 셰이더를 얻을 가능성을 낮출 것이지만 당신에게 더 많은 시도를 제공할 것입니다.
+//또한 셰이더 자체를 하위 레벨의 단일 가방에 제작할 수 있습니다.
+
+ie.manual.entry.shaderList.name=셰이더 목록
+ie.manual.entry.shaderList.noInfo=아직 이 셰이더의 잠금을 해제하지 않았습니다!
+ie.manual.entry.shaderList.unlock=셰이더 잠금 해제
+ie.manual.entry.shaderList.order=획득:
+
+ie.manual.entry.powerpack.name=축전기 가방
+ie.manual.entry.powerpack.subtext=도...레이...에곤!
+ie.manual.entry.powerpack0=에너지 저장은 공간과 무거운 부품을 필요로 합니다. 따라서 각 도구에 많은 양의 에너지를 개별적으로 저장하는 것은 비효율적이며 이를 휘두르게 만듭니다.<br>축전기 가방은 절충의 역할을 하며, 모든 전동 공구가 사용할 수 있는 에너지를 중앙 집중식으로 저장합니다.
+ie.manual.entry.powerpack1=가방은 당신이 착용하고 있는 갑옷과 더불어 메인 또는 즉석에서 소지하고 있는 모든 도구를 충전합니다.<br>축전기는 흉갑처럼 등에 착용하거나 대부분의 일반적인 갑옷에 부착하여 전력 공급과 보호의 이점을 누릴 수 있습니다.
+
+ie.manual.entry.railgun.name=레일건
+ie.manual.entry.railgun.subtext=벨로시타스 에라디코
+ie.manual.entry.railgun0=레일건(또는 더 정확히 말하면 휴대용 유도 전기 도금)은 공학적으로 놀라운 것입니다. 전기가 흐르면서 썰매를 가속시키는 두개의 레일로 구성되어 있습니다.<br>이 과정은 에너지 집약적이지만 다양한 발사체를 빠른 속도로 가속합니다.
+ie.manual.entry.railgun1=인벤토리에서 발사체를 발사하려면 충전 레벨이 99에 도달할 때까지 사용 버튼을 클릭한 후 놓습니다.<br><br>유효한 발사체에는 §6흑연 전극§r뿐만 아니라 §6철§r 및 §6강철 막대기§r, <config;b;literalRailGun;, §6철근§r 및 레일크래프트의 §6모든 레일§r이 포함됩니다;>.<br><br>내부 에너지 저장소가 낮기 때문에, 레일건을 <link;powerpack;§o§n축전기 §o§n가방§r>과 함께 사용하는 것이 좋습니다.
+ie.manual.entry.railgun2=다른 IE도구와 마찬가지로 레일건은 <link;workbench;§o§n엔지니어의 §o§n워크벤치§r>에서 수정할 수 있으며 <link;shader;§o§n셰이더§r>로 사용자 지정할 수 있습니다.<br><br>§6추가 축전지§r는 레일 건의 충전 시간을 크게 줄입니다.
+ie.manual.entry.railgun3=§6정밀 스코프§r를 사용하면 레일건으로 확대할 수 있습니다. 스코프를 살짝 사용하고 마우스 휠을 사용하여 확대 레벨 간을 전환합니다.
+
+ie.manual.entry.razorwire.name=레이저 전선
+ie.manual.entry.razorwire.subtext=특대형 달걀 껍질
+ie.manual.entry.razorwire0=레이저 전선은 날카로운 금속 조각들이 부착된 전선입니다. 그것은 그것을 통해 움직이려고 하는 어떠한 티어도 느리게 하고 자를 것입니다.<br>레이저 전선은 전선 절단기만 제거할 수 있으며, 다른 시도는 플레이어를 손상시킵니다.<br>또한 저압 전선을 연결하여 추가 손상을 확인할 수 있습니다.
+
+ie.manual.entry.turret.name=회전 포탑
+ie.manual.entry.turret.subtext=듣고 계세요?
+ie.manual.entry.turret0=회전 포탑은 공장을 자동으로 방어하기 위한 다음 단계입니다. 그들은 목표물을 효과적으로 구별하고 획득하고 그들을 중화시키기 위해 내장된 무기를 사용하기 위해 기계적인 "두뇌"와 결합된 복잡한 광학 시스템이 특징입니다.<br>모든 회전 포탑은 베이스에 에너지 포트가 있으며, 이 동작을 엔지니어의 망치로 우클릭하면 역방향으로 전환할 수 있지만 레드스톤 신호가 활성화되어야 합니다.
+ie.manual.entry.turret1=회전 포탑은 배치되는 즉시 자신의 소유자를 기억하고 다른 사용자들이 이를 어기거나 수정하는 것을 허용하지 않을 것입니다. 회전 포탑을 우클릭하면 입력 필드가 포함된 이름 목록과 다수의 표적 지정 옵션이 포함된 GUI가 나타납니다.<br>기본적으로 목록은 공격받지 않을 수 있는 대상의 블랙리스트입니다. 이 목록은 생물의 이름을 사용하기 때문에 동물을 희게 하는 것이 가능합니다.
+ie.manual.entry.turret2=화학 투척기 포탑은 <link;chemthrower;§o§n이름이 붙은 §o§n도구§r>의 유체 추진 능력을 활용하여 물에서부터 불꽃, 정유 등 모든 대상을 커버합니다.
+ie.manual.entry.turret3=포탑은 베이스 하부와 후면에 유체 포트가 부착되어 있어 파이프가 베이스에 연결될 수 있습니다. 또한 GUI 왼쪽에 버튼이 있어 인화성이 높을 경우 분사된 유체에 불이 붙어 파일럿 불꽃이 일어날 수 있습니다.<br><br>§o이 청사진의 제공자들은 발생할 수 있는 사용자, 이웃 또는 다양한 농장 동물들에 대한 어떠한 피해도 책임지지 않습니다.§r
+ie.manual.entry.turret4=총 포탑은 <link;revolver;§o§n리볼버의§r>의 내부 부품을 크고 화려한 케이스로 개조했습니다. 이 공사는 또한 탄약의 내부 보관을 증가시키기 위해 연장 매거진을 포함합니다.
+ie.manual.entry.turret5=탄약 자동 삽입과 사용 후 덮개의 추출을 위한 포트는 기초의 후면과 바닥에 위치합니다. 포탑은 최대 카트리지 스택을 저장할 수 있으며 GUI에는 사용 후 케이스 자동 배출 버튼이 있습니다.<br><br>§o특정 탄약이 유저나 유저의 재산에 부수적인 손상을 입힐 수 있음에 유의합니다.§r
+
+ie.manual.entry.maneuverGear.name=3D 기동 장비
+ie.manual.entry.maneuverGear.subtext=확대된 좀비 공격
+ie.manual.entry.maneuverGear0=3D 기동 장비는 놀라운 공학 기술입니다. 그것은 가죽 벨트, 두개의 갈고리와 가압 공기 추진 시스템으로 구성됩니다.<br>기어는 <config;b;baubles;방울 벨트 슬롯 또는 ;> 각반 슬롯에 장착되며 플럭스 충전 기능을 갖추고 있습니다.
+ie.manual.entry.maneuverGear1=§l§n조절:§r<br><keybind;key.immersiveengineering.3dgear>키를 누르고 있으면 기동 기어 조절로 전환됩니다. 이 제어 장치에서 마우스 단추는 약간의 플럭스 비용으로 갈고리에 불을 붙입니다. 갈고리가 개체에 포함되어 있는 동안 버튼을 누르면 해당 개체로 이동할 수 있습니다. 더블 클릭을 하면 갈고리가 제거되어 사용자에게 반환됩니다.<br><keybind;key.immersiveengineering.3dgear>키를 두번 누르면 양쪽 갈고리가 모두 돌아갑니다.
+ie.manual.entry.maneuverGear2=§l§n추진:§r<br><keybind;key.immersiveengineering.3dgear>키를 잡고 있는 동안 점프 키를 누르면 일부 가압 공기가 소비되어 보고 있는 방향으로 빠르게 속도를 높일 수 있습니다. 몇초 동안 추진 시스템을 사용하지 않은 후에, 내부 압축기는 빠르게 플럭스 전하의 비용으로 탱크를 충전합니다.<br>손상을 입기 쉬운 높이에서 착륙할 경우 시스템이 자동으로 가압된 공기를 사용하여 추락을 완화합니다.
+
+ie.manual.entry.crusher.name=분해기
+ie.manual.entry.crusher.subtext=손 치워!
+ie.manual.entry.crusher0=광석을 분쇄하는 것은 그 산출량을 증가시키는 효과적인 방법입니다. 각 광석은 당신이 냄새 맡을 수 있는 두개의 분진을 생성합니다. 이 산업용 분해기는 그렇게 하는 빠른 방법입니다. 기계의 처리 속도는 기계에 공급되는 전원에 따라 달라집니다.
+ie.manual.entry.crusher1=전면의 제어판에 레드스톤 신호를 적용하면 분해 과정이 정지되며, 엔지니어의 망치를 사용하면 이러한 동작이 역전될 수 있습니다.<br>구조물은 전면의 중앙 블록을 마우스 오른쪽 버튼으로 클릭하여 형성됩니다. 전면은 구조물의 넓은 측면으로 아래쪽에 가벼운 엔지니어링 블록이 있습니다.
+//그러나 그것은 광석을 부수는 데만 사용되는 것은 아닙니다. 이 기계에 떨어지는 모든 생명체는 심각한 피해를 입을 것이고 분해기는 관련된 물방울을 방출할 것입니다. 마찬가지로 처리할 수 없는 모든 아이템은 삭제됩니다.<br>
+
+ie.manual.entry.lightningrod.name=빛나는 막대기
+ie.manual.entry.lightningrod.subtext=벼락 맞았다!
+ie.manual.entry.lightningrod0=번개는 자연 현상입니다. 그것은 엄청난 양의 원시 전력을 포함하고 있고, 이 빛나는 막대기는 그 전력을 이용할 수 있습니다.<br>멀티블록에 강철 울타리를 많이 쌓으면 비가 오거나 뇌우가 내릴 때 번개가 칠 확률이 높아집니다.
+ie.manual.entry.lightningrod1=강철 기둥에 부딪히면, 생성된 엄청난 양의 에너지가 빛나는 막대기의 바닥에 저장되고 그리고나서 측면의 에너지 연결에 천천히 분산됩니다.<br><br>맨 위 울타리에 연결된 강철 울타리의 "그물"을 만들어 빛나는 막대기가 맞을 확률을 높일 수 있습니다.
+
+ie.manual.entry.minerals.name=광상
+ie.manual.entry.minerals.subtext=광석들이 있어요
+ie.manual.entry.minerals0=당신의 세계에서 발견되는 광석 매장량은 당신에게 새로운 것이 아닙니다. 하지만 지금까지 여러분이 고려하지 않은 것은 다른 광석들의 혼합을 포함하고 있는 광석 덩굴들입니다. 그들의 넓고 얇은 확산 때문에, 일반적인 광부들은 그들을 찾을 수 없지만, <link;excavator;§o§n특별한 §o§n기계§r>가 그것을 도울 수 있을지도 모릅니다.
+ie.manual.entry.minerals1=세계에서 광물을 찾고 결정하기 위해서는 코어 표본 드릴을 만드는 것이 좋습니다. 기계에 전원을 공급하고 우클릭하거나 레드스톤을 사용하여 기계를 작동합니다. 그것은 청크를 드릴로 뚫고 어떤 광물이 발견되었는지 그리고 그것의 산출량을 보여 주는 코어 표본을 추출합니다.
+ie.manual.entry.minerals2=Drill은 <config;i;coredrill_consumption>Flux/t를 소비하고 <config;i;coredrill_time>tick을 사용하여 샘플을 완전히 검색하고 분석합니다.<br><br>또한 표본을 몰래 하거나 우클릭하여 블록으로 배치할 수 있습니다. 표본 블록의 맵을 사용하면 청크에 대한 지점을 설정합니다.<br><br>다음 페이지는 그들로부터 회수될 수 있는 모든 종류의 덩굴과 광석을 나열하고 있습니다.
+ie.manual.entry.minerals3=%1$s<br>%2$s으로 구성되어 있습니다.
+ie.manual.entry.mineralsDimValid=§l%1$s§r은 %2$s에서 찾을 수 있는 광맥입니다.
+ie.manual.entry.mineralsDimInvalid=§l%1$s§r은 어디서나 찾을 수 있지만 특히 %2$s에서 찾을 수 있는 광맥입니다.
+ie.manual.entry.mineralsDimAny=§l%1$s§r은 극소수의 차원에서 찾을 수 있는 광맥입니다.
+
+ie.manual.entry.arcfurnace.name=아크 화로
+ie.manual.entry.arcfurnace.subtext=반응기가 아닙니다.
+ie.manual.entry.arcfurnace0=아크 화로는 금속의 제련을 빨리 하는 데 사용되는 거대한 구조물입니다. 그것은 금속을 가열하는 전극에 의해 위에 올려진 강철 볼트로 구성되어 있습니다.
+ie.manual.entry.arcfurnace1=화로는 빠른 속도와 동시에 여러 품목을 처리할 수 있는 능력으로 광석을 제련하고 강철을 만드는 데 탁월하지만, 작업이 복잡하고 지속적인 유지가 필요합니다.<br>슬래그를 기계에서 제거해야 합니다. 그렇지 않으면 더 이상 기능을 발휘하지 못하게 되고 시간이 지나면서 전극의 열화를 교체해야 합니다.
+ie.manual.entry.arcfurnace2=구조물을 형성하려면 첫번째 페이지와 같이 조립한 다음 기술자의 망치가 달린 솥을 클릭합니다.<br><br>후면에 있는 3개의 연결기를 통해 에너지가 입력되며, 전면에 있는 조작 패널에 레드스톤 신호가 공급되면 기계가 꺼집니다. 패널을 우클릭하면 '양동이' 또는 통이 인터페이스를 엽니다.
+ie.manual.entry.arcfurnace3=§l인터페이스:§r<br>인터페이스를 처음 봤을 때 인터페이스가 혼란스러워 보일 수도 있지만, 상당히 직설적입니다.<br><br>상단에 있는 3개의 슬롯은 <link;graphite;§o§n흑연 §o§n전극§r;1>을 위한 것입니다.<br>왼쪽에 있는 12개의 슬롯은 금속과 광석의 투입 구멍입니다. 각 슬롯 옆에는 용해 진행 상황을 나타내는 온도계가 있습니다.
+ie.manual.entry.arcfurnace4=오른쪽에 있는 4개의 슬롯은 제작 과정에서 용해된 금속에 다른 재료가 추가되는 "첨가제"입니다. 강철을 만들기 위해 철을 녹이는 과정에 코크스 가루를 추가하는 것이 이러한 예입니다.<br>입력물 및 첨가제는 구조물의 상단에 있는 두개의 해치를 통해 삽입되며, 입력물은 왼쪽에, 첨가제는 전극의 오른쪽에 삽입합니다.
+ie.manual.entry.arcfurnace5=하단의 슬롯 7개는 출력 슬롯 6개와 슬래그 슬롯 1개입니다. 출력은 구조물 전면의 '양도이'에서 기계 후면의 포트를 통해 슬래그를 찾습니다. 아크 화로는 자동으로 출력물과 슬래그를 연결된 인벤토리로 밀어넣습니다(컨베이어 벨트 포함).
+
+ie.manual.entry.excavator.name=굴착기
+ie.manual.entry.excavator.subtext=더 쉽게 파집니다.
+ie.manual.entry.excavator0=굴착기는 현대 공학의 선구자 중 하나입니다. 그것은 정상적인 광산이 접근할 수 없는 <link;minerals;§o§n광맥§r;0>으로부터 광물을 파낼 수 있습니다. 그러나 그 대신 굴착기는 작동하기 위해 <config;i;excavator_consumption>Flux/t가 필요한 복잡한 구조입니다.
+ie.manual.entry.excavator1=구조물은 두 조각으로 구성됩니다: 첫번째 페이지에 표시된 엔진과 두번째 페이지에 표시된 양동이 바퀴는 이전 페이지에 표시된 대로 엔진의 '브레이스'에 맞습니다. 엔진의 에너지 입력은 그 쪽에 있고, 뒷면에는 레드스톤 조작 패널과 아이템 출력이 있습니다.<br>굴착기가 광석을 파냄에 따라, 광맥의 수율은 천천히 감소하지만, 광맥은 <config;i;excavator_depletion_days>일 동안 연속적으로 채굴될 수 있습니다.
+
+ie.manual.category.computers.name=컴퓨터 지원
+
+ie.manual.entry.computer.general.name=종합 안내 ☎
+ie.manual.entry.computer.general.subtext=미래 기술
+ie.manual.entry.computer.general0=이 설명서에 설명된 많은 기계들은 오픈컴퓨터즈의 컴퓨터를 사용하여 제어할 수 있습니다. 시스템을 네트워크에 연결하려면 어댑터를 사용해야 합니다. 컴퓨터가 여러개의 후면 포트가 있는 멀티블록인 경우, 여기서 컴퓨터를 연결할 수 있습니다. 그렇지 않으면 이 장에서 기계별 항목을 확인하세요. 다음 페이지에서는 일반적으로 사용되는 반환 유형 및 방법에 대해 설명합니다.
+ie.manual.entry.computer.general1=레드스톤 포트가 있는 멀티블록은 레드스톤뿐만 아니라 컴퓨터를 사용하여 활성화하거나 비활성화할 수 있습니다:<br>§lenableComputerControl( enabled:bool)§r: 그러면 기계에 대한 컴퓨터 제어가 활성화되거나 비활성화됩니다. 이 기능이 활성화되어 있는 동안 기기는 레드스톤 신호를 무시합니다. 컴퓨터를 제거해도 자동으로 재설정되지 않습니다.<br>§lsetEnabled(enable:bool)§r: 레드스톤 신호처럼 기계를 활성화하거나 비활성화합니다. 이는 컴퓨터 제어가 활성화된 경우에만 작동합니다.
+ie.manual.entry.computer.general2=§lItem stacks§r는 가장 잘 쓰이는 되돌리기 유형입니다. 이러한 아이템이 포함된 표로 구성됩니다:<br>§lname§r: 아이템의 내부 이름입니다, 예시: "minecraft:cobblestone"은 조약돌을 의미합니다.<br>§lsize§r: 아이템 스택의 규모를 의미합니다.<br>§llabel§r: 스택의 이름입니다. 모루에서 스택의 이름이 변경되는 시점이 변경됩니다.
+ie.manual.entry.computer.general3=§ldamage§r: 아이템 스택의 손상이나 더 많은 개수, 메타데이터를 의미합니다.<br>§lmaxDamage§r: 부서지기 직전의 아이템의 최대 손상도를 의미합니다.<br>§lmaxSize§r: 아이템의 최대 규모입니다. 최대가 64개입니다.<br>§lhasTag§r: NBT 태그가 있는 스택입니다.
+ie.manual.entry.computer.general4=§lFluid stacks§r: 유체 스택은 탱크에 반드시 있을 필요 없는 특정 양의 유체를 나타냅니다. 이 아이템은 반환된 표서 사용할 수 있습니다.:<br>§lname§r: 유체의 지역화되지 않은 이름입니다.<br>§lamount§r: 마이크로양동이에서의 유체의 양입니다.<br>§lhasTag§r: NBT 태그가 있는 스택입니다.
+ie.manual.entry.computer.general5=§lFluid tanks§r는 유체 스택과 유사하나, 유채 탱크에는 유체가 탱크에 있는 것을 의미합니다. 반환된 표에는 유체 더미 테이블과 동일한 아이템이 있습니다. 또한 유체가 들어 있는 탱크의 용량은 입구 §lcapacity§r(용량)에 저장됩니다.
+
+ie.manual.entry.computer.arcfurnace.name=아크 화로 ☎
+ie.manual.entry.computer.arcfurnace.subtext=반응기가 아닙니다.
+ie.manual.entry.computer.arcFurnace0=§lisActive()§r: 아크 화로로 현재 무언가를 처리 중인 경우 참인 불을 반환하고 그렇지 않으면 거짓을 반환합니다.<br>§lgetInputStack(int slot)§r:지정된 입력 슬롯(1-12)에 있는 스택을 반환합니다. 표에는 현재 진행 상황과 지정된 슬롯(둘 다 tick의 값)에서 완료될 진행 상황을 저장하기 위한 §lprogress§r키와 §lmaxProgress§r키가 추가로 있습니다.
+ie.manual.entry.computer.arcFurnace1=<br>§lgetOutputStack(int slot)§r:지정된 출력 슬롯(1-6)의 스택을 반환합니다.<br>§lgetAdditiveStack(int slot)§r: 지정된 추가 슬롯(1-4)의 스택을 반환합니다.<br>§lgetSlagStack()§r: 슬래그 슬롯의 스택을 반환합니다.<br>§lhasElectrodes()§r:아크 화로 내의 3개 전극이 모두 유효한지 여부를 나타내는 불 값을 반환합니다.<br>§lgetElectrode(int slot)§r: 지정된 전극(1-4)의 아이템 스택을 반환합니다.
+ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r: 아크 화로에 저장할 수 있는 최대 에너지 양을 반환합니다.<br>§lgetEnergyStored()§r: 아크 화로에 현재 저장되어 있는 에너지의 양을 반환합니다.
+
+ie.manual.entry.computer.bottlingmachine.name=병조림기 ☎
+ie.manual.entry.computer.bottlingmachine.subtext=채워라!
+ie.manual.entry.computer.bottlingmachine0=§lisActive()§r: 병조림기가 현재 처리 중인 경우 true인 부울을 반환하고 그렇지 않으면 false를 반환합니다.<br>§lgetMaxEnergyStored()§r: 이 기계에 저장할 수 있는 최대 에너지 양을 반환합니다.<br>§lgetEnergyStored()§r: 이 기계에 현재 저장되어 있는 에너지 양을 반환합니다.
+ie.manual.entry.computer.bottlingmachine1=§lgetTank()§r: 유체 탱크의 내용물을 반환합니다.
+
+
+
+ie.manual.entry.computer.sampleDrill.name=코어 표본 드릴 ☎
+ie.manual.entry.computer.sampleDrill.subtext=보장 대상 샘플
+ie.manual.entry.computer.sampleDrill0=표본 드릴은 하단 블록의 컴퓨터에 연결할 수 있습니다.<br>§lgetSampleProgress()§r: 현재 샘플링 진행 상황을 반환합니다. 1은 샘플링이 완료되었음을 의미하고 0은 샘플링이 아직 시작되지 않았음을 의미합니다.<br>§lisSamplingFinished()§r: 드릴이 샘플 추출을 완료한 경우 true를 반환합니다. 그렇지 않으면 false를 반환합니다.<br>§lgetVeinUnlocalizedName()§r: 지정되지 않은 덩굴의 이름을 반환합니다.
+ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r: 발견된 덩굴의 지역화된 이름을 반환합니다.<br>§lgetVeinIntegrity()§r: 덩굴의 완전성을 반환하고, 1은 덩굴을, 0은 빈 덩굴을,-1은 무한 덩굴을 나타냅니다.<br>§lgetEnergyStored()§r: 드릴에 저장된 에너지의 양을 반환합니다.<br>§lgetMaxEnergyStored()§r: 이 드릴에 저장된 최대 에너지 양을 반환합니다.
+
+ie.manual.entry.computer.crusher.name=분해기 ☎
+ie.manual.entry.computer.crusher.subtext=손 치워!
+ie.manual.entry.computer.crusher0=§lisActive()§r: 분해기가 현재 파손된 아이템인지 여부를 반환합니다.<br>§lgetInputQueue()§r: 분해기의 입력 대기 열을 표로 반환합니다. 표에는 입력 대기 열에 있는 위치가 키로 포함되어 있습니다(1에서 시작). 대기 열의 각 위치는 다음 키를 가진 표로 저장됩니다.:<br>"progress": 현재 과정
+ie.manual.entry.computer.crusher1="maxProgress": 조합법을 완성하기 위해 분해기가 도달해야 하는 과정입니다.<br>"input": 아이템 스택을 입력합니다.<br>"output": 스택을 출력합니다.<br>§lgetMaxEnergyStored()§r: 이 분해기에 저장된 최대 에너지 양을 반환합니다.<br>§lgetEnergyStored()§r: 이 분해기에 저장된 에너지의 양을 반환합니다.
+
+ie.manual.entry.computer.dieselgen.name=정유 발전기 ☎
+ie.manual.entry.computer.dieselgen.subtext=더 강합니다.
+ie.manual.entry.computer.dieselgen0=§lgetTankInfo()§r: 내부 정유 탱크를 반환합니다.
+
+ie.manual.entry.computer.energymeter.name=전류 변압기 ☎
+ie.manual.entry.computer.energymeter.subtext=ADC만
+ie.manual.entry.computer.energymeter0=전류 변압기의 하단 블록을 컴퓨터에 연결할 수 있습니다. 그것은 하나의 방법을 제공할 것입니다, §lgetAvgEnergy()§r: 지난 20 tick 동안 변압기를 통해 전달된 tick당 평균 에너지 양을 반환합니다.
+
+ie.manual.entry.computer.excavator.name=굴착기 ☎
+ie.manual.entry.computer.excavator.subtext=더 쉽게 파집니다.
+ie.manual.entry.computer.excavator0=§lisActive()§r: 굴착기가 실행 중인지 여부를 반환합니다. 광맥의 존재에 대해서는 아무 말도 하지 않습니다.<br>§lgetEnergyStored()§r: 굴삭기에 현재 저장되어 있는 에너지의 양을 반환합니다.<br>§lgetMaxEnergyStored()§r: 굴삭기에 저장할 수 있는 최대 에너지 양을 반환합니다.
+
+ie.manual.entry.computer.squeezerAndFermenter.name=발효기와 압착기 ☎
+ie.manual.entry.computer.squeezerAndFermenter.subtext=더블 포스트
+ie.manual.entry.computer.squeezerAndFermenter0=발효기와 압착기의 컴퓨터 지원이 매우 유사합니다.<br>§lgetRecipe(int slot)§r: 지정된 입력 슬롯(1-9)에 입력이 있는 아이템을 설명하는 방법을 설명하는 표 3개와 정수 1개를 반환합니다. 첫번째 표는 스택 입력이고, 두번째 표는 아이템 출력이며, 세번째 표는 이 방법을 처리하는 데 걸리는 시간입니다. 레시피를 찾을 수 없으면 "No recipe found"문자열만 반환됩니다.
+ie.manual.entry.computer.squeezerAndFermenter1=<br>§lgetInputStack(int slot)§r: 지정된 입력 슬롯(1-9)의 스택을 반환합니다.<br>§lgetOutputStack()§r: 아이템 출력 슬롯에 스택을 반환합니다.<br>§lgetFluid()§r: 출력 유체 탱크를 반환합니다.<br>§lgetEmptyCannisters§r: 오른쪽 상단 슬롯에 있는 빈 카니스터 스택을 반환합니다.<br>§lgetFilledCannisters()§r: 오른쪽 아래에 채워진 카니스터 스택을 반환합니다.<br>§lgetEnergyStored§r: 이 기계에 저장된 에너지의 양을 반환합니다.
+ie.manual.entry.computer.squeezerAndFermenter2=§lgetMaxEnergyStored()§r: 기계에 저장할 수 있는 최대 에너지 양을 반환합니다.
+
+ie.manual.entry.computer.floodlight.name=투광 조명등 ☎
+ie.manual.entry.computer.floodlight.subtext=LED같지만 구형입니다.
+ie.manual.entry.computer.floodlight0=다음은 투광 조명등이 지면에 배치되었다고 가정합니다. 바닥 면에 있는 컴퓨터에 투광 조명등을 연결할 수 있습니다. 시스템을 사용하여 투광 조명등을 켠 후에는 1초간 기다려야 다시 회전할 수 있습니다.<br>§lturnAroundXZ(boolean dir)§r: 투광 조명등의 정도를 변경합니다.<br>§lturnAroundY(boolean dir)§r: 투광 조명등을 마치 그것의 상단이나 하단에 우클린한 것처럼 돌립니다.<br>§lcanTurn()§r: 투광 조명등이 다시 회전할 수 있는지 여부를 반환합니다.
+ie.manual.entry.computer.floodlight1=§lgetEnergyStored()§r: 투광 조명등에 저장된 에너지의 양을 반환합니다.<br>§lgetMaxEnergyStored()§r: 투광 조명등에 저장할 수 있는 최대 에너지 양을 반환합니다.<br>§lwaitForCooldown()§r: 투광 조명등이 다시 켜질 때까지 기다립니다.
+
+ie.manual.entry.computer.refinery.name=정제기 ☎
+ie.manual.entry.computer.refinery.subtext=디지털 정유
+ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r: 입력 탱크를 "input1" 및 "input2"키에 저장하는 표를 반환합니다.<br>§lgetOutputTank()§r: 출력 탱크를 반환합니다.<br>§lgetRecipe()§r: "input1" 및 "input2" 키의 유체 입력과 "output"키의 유체 출력이 들어 있는 표를 반환합니다.<br>§lisValidRecipe()§r: 현재 유체 입력이 담긴 조합법이 존재하는지 여부를 반환합니다.
+ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r: 빈 캐니스터 스택, 입력 탱크에 대한 "input1" 및 "input2", 출력 탱크에 대한 "output"이 들어 있는 표를 반환합니다.<br>§lgetMaxEnergyStored()§r: 이 정제기에 저장할 수 있는 최대 에너지를 반환합니다.<br>§lgetEnergyStored()§r: 정제기에 저장된 에너지를 회수합니다.
+
+ie.manual.entry.computer.assembler.name=조립기 ☎
+ie.manual.entry.computer.assembler.subtext=조립이 최고!
+ie.manual.entry.computer.assembler0=조립기의 맨 아래 줄은 컴퓨터에 연결될 수 있습니다.<br>§lhasIngredients(int recipe)§r: 지정된 조합법(1-3)의 재료가 사용 가능한지 여부를 반환합니다.<br>§lsetEnabled(int slot, boolean on)§r: 지정된 조합법을 활성화하거나 비활성화합니다(1-3). 사용할 수 있는 재료가 있더라도 조합법은 조작되지 않습니다.<br>§lgetRecipe(int recipe)l§r: 지정된 조합법(0-2)이 들어 있는 테이블을 반환합니다. 키 "in1", "in2",...,"in9"는 조합법 입력을 저장하고 키 "out"은 출력을 저장합니다.
+ie.manual.entry.computer.assembler1=<br>§lgetTank(int tank)§r: 지정된 탱크(1-3)를 반환합니다.<br>§lgetMaxEnergyStored()§r: 조립기에게 저장할 수 있는 최대 에너지 양을 반환합니다.<br>§lgetEnergyStored()§r: 조립기에게 저장된 에너지의 양을 반환합니다.<br>§lgetStackInSlot(int slot)§r: 지정된 입력 슬롯(1-18)의 스택을 반환합니다.<br>§lgetBufferStack(recipe:int)§r: 지정된 조합법의 출력 버퍼 슬롯을 반환합니다(1-3).
+
+ie.manual.entry.computer.capacitor.name=축전기 ☎
+ie.manual.entry.computer.capacitor.subtext=많은 패럿이 전압이 높습니다.
+ie.manual.entry.computer.capacitor0=모든 축전기는 어느 쪽이든 컴퓨터에 연결할 수 있습니다.<br>§lgetEnergyStored()§r: 저장된 에너지의 양을 반환합니다.<br>§lgetMaxEnergyStored()§r: 저장 가능한 에너지의 양을 반환합니다.
+
+ie.manual.entry.computer.teslaCoil.name=테슬라 코일 ☎
+ie.manual.entry.computer.teslaCoil.subtext=아뇨, SSTC가 아니에요.
+ie.manual.entry.computer.teslaCoil0=§lisActive()§r: 코일이 현재 활성 상태인지 여부를 반환합니다.<br>§lsetRSMode(boolean)§r: 코일이 높거나 낮은 레드스톤 신호에 의해 켜지는지 여부를 변경합니다.<br>§lsetPowerMode(boolean)§r: 코일이 고(true)또는 저(false)전원 모드에서 작동하는지 여부를 변경합니다(<link;teslaCoil;§o§nexplanation§r;2>). 이 명령어은 코일이 활성화되지 않은 경우에만 사용할 수 있습니다.
+
+ie.manual.entry.computer.mixer.name=혼합기 ☎
+ie.manual.entry.computer.mixer.subtext=쿠키 반죽에 따라 다릅니다!
+ie.manual.entry.computer.mixer0=§lisActive()§r: 혼합기가 현재 작동 중인지 여부를 반환합니다.<br>§lisValidRecipe()§r: 입력 아이템 및 유체 조합에 유효한 레시피가 존재하는지 반환합니다.<br>§lgetEnergyStored()§r: 이 기계에 저장된 에너지의 양을 반환합니다.<br>§lgetMaxEnergyStored()§r: 이 기계에 저장할 수 있는 최대 에너지 양을 반환합니다.<br>§lgetInputStack(int slot)§r: 지정된 입력 슬롯(1-12)에 있는 스택을 반환합니다. The table additionally has the keys
+ie.manual.entry.computer.mixer1=표에는 현재 진행 상황과 완료될 진행 상황(둘 다 눈금 단위)을 저장하는 키 §lprogress§r와 §lmaxProgress§r가 추가로 있습니다.<br>§lgetTank()§r: 탱크의 하단 유체를 반환합니다.
+
+#SHADER INFO
+desc.immersiveengineering.info.shader.details.rosequartz=최초의 셰이더!<br>직접적인 언급은 없지만, 그 이름 자체는 "Inkheart"시리즈의 등장 인물에 의해 영감을 받았습니다.
+desc.immersiveengineering.info.shader.details.argo=직접적인 언급은 없지만, 스타일+색상은 비디오 게임 '데스티니'에서 영감을 얻었습니다.
+desc.immersiveengineering.info.shader.details.sunstrike=직접적인 언급은 없지만, 이름+색상은 비디오 게임 '데스티니'의 선브레이커 티탄에 의해 영감을 받았습니다.
+desc.immersiveengineering.info.shader.details.locus=RvB 시즌 11-13의 용병적인 '루카스'의 이름을 따서 명명되고 채색되었습니다.
+desc.immersiveengineering.info.shader.details.felix=RvB 시즌 11-13의 용병적인 '펠릭스'의 이름을 따서 명명되고 채색되었습니다.
+desc.immersiveengineering.info.shader.details.sharkface=RvB 시즌 9, 13의 용병적인 '샤크파체'의 이름을 따서 명명되고 채색되었습니다.
+desc.immersiveengineering.info.shader.details.dragonsbreath=이국적인 로켓 발사대의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.hawk=이국적인 핸드 캐넌인 '호크문'의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.eyas=이국적인 핸드 캐넌인 '에야스루나'의 이름을 따서 디자인되었습니다. 호크문의 작은 형입니다.
+desc.immersiveengineering.info.shader.details.magnum=대회 우승자가 디자인을 했습니다!
+desc.immersiveengineering.info.shader.details.fox=아주 푹신하네요. 특정 IRC채널과 그 거주자를 참조하여 명명됩니다.
+desc.immersiveengineering.info.shader.details.vaulttec=색깔이 있고 이름이 분명히 언급되어 있습니다.
+desc.immersiveengineering.info.shader.details.sponsor=폴아웃 시리즈에 대한 명확한 디자인 참조이지만, 이름이 간접적으로 지정되었습니다.
+desc.immersiveengineering.info.shader.details.massfusion=그 디자인은 폴아웃 시리즈의 에너지 무기들을 언급합니다.
+desc.immersiveengineering.info.shader.details.stormflower=리 렌이 휘두른 블레이드 모양 SMG의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.milo=피하 니코스가 휘두른 창/소총의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.trident=넵튠 바실리아스가 휘두른 광선총/창의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.chloris=리즈 클로리스가 휘두른 호버보드/리볼버의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.crescentrose=루비 로즈가 휘두른 하이 칼리버/스나이퍼 낫의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.qrow=크로우 브란웬의 이름을 따왔고, 그의 검/낫을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.lususnaturae=불륨 4의 사운드 트랙에 있는 노래 제목에서 따왔습니다.
+desc.immersiveengineering.info.shader.details.vanguard=뱅가드 파벌의 이름을 따서 명명되고 채색되었습니다.
+desc.immersiveengineering.info.shader.details.regal='왕의 몰락'에서의 무기를 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.harrowed='왕의 몰락'에서의 무기를 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.taken='테이큰'의 적을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.angelsthesis=테마송에서 이름을 따왔고, 에반게리온 유닛 EVA-01을 기반으로 하여 색상 조합을 하였습니다.
+desc.immersiveengineering.info.shader.details.sutherland=신성 브리튼 제국이 사용하는 나이트메어 프레임의 이름을 따서 지어진 것입니다.
+desc.immersiveengineering.info.shader.details.exia=건담 모바일 슈트에서 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.gurrenlagann=건맨의 이름을 참조하여 설계하였습니다.
+desc.immersiveengineering.info.shader.details.dominator=만화 시리즈의 거대한 손 놀림과 관련하여 이름이 붙여졌고 디자인되었습니다. 변하지 않는 것 같아요.
+desc.immersiveengineering.info.shader.details.warbird=이전의 큰 전쟁에서 비행기에 영감을 받은 디자인입니다.
+desc.immersiveengineering.info.shader.details.matrix=파이프 오버레이에 대해 다른 용도로 사용할 수 있는 영감은 없습니다.
+desc.immersiveengineering.info.shader.details.twili=동일한 이름의 레이스와 관련하여 명명되고 설계되었습니다.
+desc.immersiveengineering.info.shader.details.usurper=왕위 계승자인 잔트를 언급하기 위해 지어진 이름입니다.
+desc.immersiveengineering.info.shader.details.ancient=고대 세이카 기술의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.glacis=특별한 영감은 없고 투명성을 가지고 실험하기로 결정했습니다.
+desc.immersiveengineering.info.shader.details.phoenix=특별한 영감이 없으며, 셰이더의 경사도 유형에 따라 다른 용도로 사용할 수 있습니다.
+desc.immersiveengineering.info.shader.details.radiant='복사 정원' 세계의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.hollow='중공 바스티온' 세계의 이름을 따서 디자인되었습니다.
+desc.immersiveengineering.info.shader.details.microshark=미니샤크 및 메가샤크 머신건을 참조하여 명명되고 설계되었습니다.
+desc.immersiveengineering.info.shader.details.n7=연합군 특수 부대의 최고 지명을 따서 명명되고 설계되었습니다.
+desc.immersiveengineering.info.shader.details.normandy=연합군 색채 배합에서 노르망디 SR2의 이름을 따서 설계되었습니다.
+desc.immersiveengineering.info.shader.details.omnitool=홀로그래픽 멀티도구의 이름을 따서 지어진 것입니다.
+desc.immersiveengineering.info.shader.details.kindled=명확한 참조로 명명됩니다. 바닐라 텍스처와 애니메이션을 셰이더에 통합하기 위해 설계되었습니다.
+desc.immersiveengineering.info.shader.details.darkfire=리쿠와 테라가 고용한 다크 파이어 마법사의 이름을 따서 설계되었습니다.
+desc.immersiveengineering.info.shader.details.erruption=특별한 언급이 없고, 단지 바닐라 질감을 다른 용도로 사용한 것으로 특히 블록 브레이크 오버레이를 사용합니다.
+desc.immersiveengineering.info.shader.details.terra=리빙우드와 테라스틸 재료를 통해 많은 영감을 얻고 보타니아의 질감을 일부 전달합니다.
+desc.immersiveengineering.info.shader.details.waaagh=노란 마크스 다 큰 부우스!<br>40k우주의 오크들과 관련하여 명백하게 설계되었습니다.

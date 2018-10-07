@@ -56,7 +56,7 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	{
 		if(sideConfig[side]!=SideConfig.OUTPUT)
 			return;
-		EnumFacing to = EnumFacing.getFront(side);
+		EnumFacing to = EnumFacing.byIndex(side);
 		TileEntity te = Utils.getExistingTileEntity(world, pos.offset(to));
 		EnergyHelper.insertFlux(te, to.getOpposite(), Integer.MAX_VALUE, false);
 	}

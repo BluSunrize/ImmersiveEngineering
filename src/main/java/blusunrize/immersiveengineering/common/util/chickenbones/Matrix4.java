@@ -431,7 +431,7 @@ public class Matrix4
 
 	public Vec3d apply(Vec3d vec)
 	{
-		return mult3x3(vec).addVector(m03, m13, m23);
+		return mult3x3(vec).add(m03, m13, m23);
 	}
 
 	private org.lwjgl.util.vector.Vector3f mult3x3(org.lwjgl.util.vector.Vector3f vec)
