@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.IOUtils;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.function.IntFunction;
@@ -42,7 +41,6 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 	@Override
 	public void loadTexture(IResourceManager resourceManager)
 	{
-//		System.out.println("loading composite texture");
 		this.deleteGlTexture();
 		IResource iresource = null;
 		BufferedImage bufferedimage;
@@ -58,11 +56,8 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 					imageType = 6;
 				int canvasWidth = canvasImage.getWidth();
 				int canvasHeight = canvasImage.getHeight();
-//				System.out.println(" canvas size: "+canvasImage.getWidth()+", "+canvasImage.getHeight());
 
 				bufferedimage = new BufferedImage(canvasWidth, canvasHeight, imageType);
-				Graphics graphics = bufferedimage.getGraphics();
-//				graphics.drawImage(canvasImage, 0, 0, null);
 				int layer = 0;
 
 				while(true)
@@ -82,8 +77,6 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 							texPath += ".png";
 						String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
 						int colour = this.layers[layer].getColour();
-
-//						System.out.println(" do layer "+texture);
 
 						iresource1 = resourceManager.getResource(new ResourceLocation(texture));
 						BufferedImage texureImage = TextureUtil.readBufferedImage(iresource1.getInputStream());
@@ -109,7 +102,6 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 							final double vOffset = texBounds[1]*canvasHeight;
 							final double uScale = bufImg2Size/((texBounds[2]-texBounds[0])*canvasWidth);
 							final double vScale = bufImg2Size/((texBounds[3]-texBounds[1])*canvasHeight);
-//							System.out.println(" tex bounds offset: "+uOffset+", "+vOffset+", scale "+uScale+", "+vScale);
 							uInterpolate = uIn -> (int)Math.round((uIn-uOffset)*uScale);
 							vInterpolate = vIn -> (int)Math.round((vIn-vOffset)*vScale);
 							uMin = (int)uOffset;
@@ -127,7 +119,6 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 									int interV = vInterpolate.apply(v)%bufImg2Size;
 
 									int iRGB = texureImage.getRGB(interU, interV);
-//									System.out.println("  set ["+u+","+v+"] from ["+interU+","+interV+"]");
 
 									float[] rgb = {(iRGB >> 16&255)/255f, (iRGB >> 8&255)/255f, (iRGB&255)/255f, (iRGB >> 24&255)/255f};
 									if((iRGB&-16777216)!=0)
