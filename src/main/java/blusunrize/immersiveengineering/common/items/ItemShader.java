@@ -9,26 +9,38 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.*;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.DynamicShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualUtils;
+import net.minecraft.block.BlockBanner;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBanner;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -36,6 +48,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,9 +122,9 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				});
 		addLayer(entry, "1_4", 0xff5f646a);
 		entry.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
-			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(0, 1, 0), scale, 2, null);
-			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(0, 0, 1), scale, 2, null);
-			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir:new Vec3d(1, 0, 0), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3d(0, 1, 0), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3d(0, 0, 1), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3d(1, 0, 0), scale, 2, null);
 		});
 
 		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e, 0xff754697, 0xff77b93d, 0xff505050, null, false, 0xffffffff).setInfo("Mecha", "Neon Genesis Evangelion", "angelsthesis");
@@ -185,6 +198,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(55/64d, 48/64d, 1, 58/64d).setCutoutBounds(.25, .125, .75, .6875));
 		entry.getCase("immersiveengineering:shield").addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/32f, 9/32f, 14/32f, 26/32f).setCutoutBounds(.0625, 0, .9375, 1));
 		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .375, .75, .875).setCutoutBounds(.125, 0, .875, .5));
+		entry.getCase("immersiveengineering:banner").addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(1/64d, 21/64d, 21/64d, 41/64d));
 	}
 
 	private static void addLayer(ShaderRegistryEntry entry, String texture, int colour)
@@ -196,6 +210,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:shield").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_"+texture), colour));
 		entry.getCase("immersiveengineering:minecart").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour));
 		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour));
+		entry.getCase("immersiveengineering:banner").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+texture), colour));
 	}
 
 	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Integer, Integer> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
@@ -207,6 +222,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:shield").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase("immersiveengineering:minecart").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender));
 		entry.getCase("immersiveengineering:balloon").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:banner").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+texture), colour, func_getColour, func_modifyRender));
 	}
 
 	public void setDefaultTextureBounds(ResourceLocation rl, double... bounds)
@@ -236,6 +252,55 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 			}
 		}
 		return "";
+	}
+
+	@Nonnull
+	@Override
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	{
+		String name = getShaderName(player.getHeldItem(hand));
+		if(ShaderRegistry.shaderRegistry.containsKey(name))
+		{
+			IBlockState blockState = world.getBlockState(pos);
+			TileEntity tile = world.getTileEntity(pos);
+			if(tile instanceof TileEntityBanner)
+			{
+				ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase("immersiveengineering:banner");
+				if(sCase!=null)
+				{
+					boolean wall = blockState.getBlock()==Blocks.WALL_BANNER;
+					int orientation = wall?blockState.getValue(BlockBanner.FACING).getIndex(): blockState.getValue(BlockBanner.ROTATION);
+					world.setBlockState(pos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.SHADER_BANNER.getMeta()).withProperty(IEProperties.FACING_ALL, EnumFacing.SOUTH));
+					tile = world.getTileEntity(pos);
+					if(tile instanceof TileEntityShaderBanner)
+					{
+						((TileEntityShaderBanner)tile).wall = wall;
+						((TileEntityShaderBanner)tile).orientation = (byte)orientation;
+						((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(player.getHeldItem(hand), 1));
+						tile.markDirty();
+						return EnumActionResult.SUCCESS;
+					}
+				}
+			}
+			else if(tile instanceof TileEntityShaderBanner)
+			{
+				ItemStack current = ((TileEntityShaderBanner)tile).shader.getShaderItem();
+				if(!current.isEmpty() && !world.isRemote && !player.capabilities.isCreativeMode)
+				{
+					double dx = pos.getX()+.5+side.getXOffset();
+					double dy = pos.getY()+.5+side.getYOffset();
+					double dz = pos.getZ()+.5+side.getZOffset();
+					EntityItem entityitem = new EntityItem(world, dx, dy, dz, current.copy());
+					entityitem.setDefaultPickupDelay();
+					world.spawnEntity(entityitem);
+				}
+				((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(player.getHeldItem(hand), 1));
+				tile.markDirty();
+				return EnumActionResult.SUCCESS;
+			}
+
+		}
+		return EnumActionResult.FAIL;
 	}
 
 	@Override

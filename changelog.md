@@ -4,6 +4,7 @@
 - Re-Added coloured pipes (Malte)
 - Re-Added structural arms (Malte)
 - Added clickable areas for JEI to the IE machine GUIs (TeamSpen210)
+- Added the ability to apply Shaders to banners! (BluSunrize)
 - Removed the additional http request for the changelog in the manual (Malte)
 - Changed Mixer to allow the use of other mods' sheetmetal in its construction (tgstyle)
 - Feedthrough insulators can now be formed while wires are attached to the connectors (Malte)
@@ -13,6 +14,7 @@
 - Fixed crashes with recent Forge versions (Malte)
 - Fixed the arc furnace not recycling damaged tools (BluSunrize)
 - Fixed a crash with recent Forge versions (Malte)
+- Fixed Wooden Posts connecting to Vines (BluSunrize)
 - Translations Added/Updated: ru_ru (gri3229), ko_kr (mindy15963)
 
 #####Version 0.12-85 - BUILT

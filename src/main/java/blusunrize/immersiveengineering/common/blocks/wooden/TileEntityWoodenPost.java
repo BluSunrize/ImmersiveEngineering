@@ -133,6 +133,8 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 			if(world.isAirBlock(pos))
 				return false;
 			IBlockState state = world.getBlockState(pos);
+			if(state.getMaterial().isReplaceable())
+				return false;
 			AxisAlignedBB boundingBox = state.getBoundingBox(world, pos);
 			return dir==EnumFacing.UP?boundingBox.minY==0: dir==EnumFacing.DOWN&&boundingBox.maxY==1;
 		}
