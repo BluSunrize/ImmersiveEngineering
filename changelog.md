@@ -14,6 +14,7 @@
 - Fixed crashes with recent Forge versions (Malte)
 - Fixed the arc furnace not recycling damaged tools (BluSunrize)
 - Fixed a crash with recent Forge versions (Malte)
+- Fixed Wooden Posts connecting to Vines (BluSunrize)
 - Translations Added/Updated: ru_ru (gri3229), ko_kr (mindy15963)
 
 #####Version 0.12-85 - BUILT
