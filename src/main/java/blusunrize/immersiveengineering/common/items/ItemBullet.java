@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotFlare;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
@@ -38,7 +37,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -47,7 +49,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
@@ -205,7 +206,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			s += key;
 			IBullet bullet = BulletHandler.getBullet(key);
 			if(bullet!=null)
-				s = bullet.getUnlocalizedName(stack, s);
+				s = bullet.getTranslationKey(stack, s);
 			return I18n.translateToLocal(s+".name").trim();
 		}
 		return super.getItemStackDisplayName(stack);
@@ -274,7 +275,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 //			case 2://buckshot
 //				for(int i=0; i<10; i++)
 //				{
-//					Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
+//					Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
 //					doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
 //				}
 //				break;
@@ -284,7 +285,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 //			case 4://dragonsbreath
 //				for(int i=0; i<30; i++)
 //				{
-//					Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
+//					Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
 //					EntityRevolvershot shot = doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
 //					shot.setTickLimit(10);
 //					shot.setFire(3);
@@ -333,7 +334,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public String getUnlocalizedName(ItemStack cartridge, String baseName)
+		public String getTranslationKey(ItemStack cartridge, String baseName)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(cartridge, "potion");
 			if(!pot.isEmpty())

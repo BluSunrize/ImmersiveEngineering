@@ -62,7 +62,7 @@
 			"true":{
 				"model": "immersiveengineering:metal_multiblock/arc_furnace_electrodes.obj.ie"}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{
 				"model": "immersiveengineering:metal_multiblock/arc_furnace.obj"},

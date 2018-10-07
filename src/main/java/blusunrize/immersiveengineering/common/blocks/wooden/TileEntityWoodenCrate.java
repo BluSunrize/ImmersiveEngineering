@@ -189,7 +189,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
 		NBTTagCompound tag = new NBTTagCompound();
 		writeInv(tag, true);
-		if(!tag.hasNoTags())
+		if(!tag.isEmpty())
 			stack.setTagCompound(tag);
 		if(this.name!=null)
 			stack.setStackDisplayName(this.name);

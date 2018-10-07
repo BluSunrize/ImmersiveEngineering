@@ -205,15 +205,15 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		if(stack.getItemDamage()!=1)
 		{
 			String tag = getRevolverDisplayTag(stack);
 			if(!tag.isEmpty())
-				return this.getUnlocalizedName()+"."+tag;
+				return this.getTranslationKey()+"."+tag;
 		}
-		return super.getUnlocalizedName(stack);
+		return super.getTranslationKey(stack);
 	}
 
 	@Override
@@ -334,7 +334,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 								else
 									for(int i = 0; i < count; i++)
 									{
-										Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
+										Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
 										Entity entBullet = getBullet(player, vec, vecDir, key, bullets.get(0), electro);
 										player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 									}

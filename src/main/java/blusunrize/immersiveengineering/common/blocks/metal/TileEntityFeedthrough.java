@@ -99,9 +99,9 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 
 	private boolean isPositive(Vec3i offset)
 	{
-		return offset.getX()*facing.getFrontOffsetX()+
-				offset.getY()*facing.getFrontOffsetY()+
-				offset.getZ()*facing.getFrontOffsetZ() > 0;
+		return offset.getX()*facing.getXOffset()+
+				offset.getY()*facing.getYOffset()+
+				offset.getZ()*facing.getZOffset() > 0;
 	}
 
 	@Override
@@ -114,8 +114,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		double l = INFOS.get(reference).connOffset;
 		int factor = positive?1: -1;
-		return new Vec3d(.5+(.5+l)*facing.getFrontOffsetX()*factor, .5+(.5+l)*facing.getFrontOffsetY()*factor,
-				.5+(.5+l)*facing.getFrontOffsetZ()*factor);
+		return new Vec3d(.5+(.5+l)*facing.getXOffset()*factor, .5+(.5+l)*facing.getYOffset()*factor,
+				.5+(.5+l)*facing.getZOffset()*factor);
 	}
 
 	@Override
@@ -290,19 +290,54 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		if(!formed)
 			return;
 		TileEntityFeedthrough master;
+		BlockPos masterPos = pos.offset(facing, -offset);
 		{
-			TileEntity tmp = world.getTileEntity(pos.offset(facing, -offset));
+			TileEntity tmp = world.getTileEntity(masterPos);
 			if(tmp instanceof TileEntityFeedthrough)
 				master = (TileEntityFeedthrough)tmp;
 			else
 				master = null;
 		}
-		disassembleBlock(-1, master);
-		disassembleBlock(1, master);
-		disassembleBlock(0, master);
+		disassembleBlock(-1);
+		disassembleBlock(1);
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, masterPos);
+		if(conns!=null)
+		{
+			if(master!=null)
+				for(Connection c : conns)
+				{
+					BlockPos newPos = null;
+					if(c.end.equals(master.connPositive))
+					{
+						if(offset!=1)
+							newPos = masterPos.offset(facing);
+					}
+					else if(offset!=-1)
+						newPos = masterPos.offset(facing, -1);
+					if(newPos!=null)
+					{
+						Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
+						ApiUtils.moveConnectionEnd(reverse, newPos, world);
+						IImmersiveConnectable connector = ApiUtils.toIIC(newPos, world);
+						IImmersiveConnectable otherEnd = ApiUtils.toIIC(reverse.start, world);
+						if(connector!=null)
+						{
+							try
+							{
+								//TODO clean this up in 1.13
+								connector.connectCable(reverse.cableType, null, otherEnd);
+							} catch(Exception x)
+							{
+								IELogger.logger.info("Failed to fully move connection", x);
+							}
+						}
+					}
+				}
+		}
+		disassembleBlock(0);
 	}
 
-	private void disassembleBlock(int toBreak, @Nullable TileEntityFeedthrough master)
+	private void disassembleBlock(int toBreak)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		int offsetLocal = toBreak-offset;
@@ -322,28 +357,6 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 					break;
 				case 0:
 					newState = stateForMiddle;
-					Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, replacePos);
-					if(conns!=null)
-					{
-						if(master!=null)
-							for(Connection c : conns)
-							{
-								BlockPos newPos = null;
-								if(c.end.equals(master.connPositive))
-								{
-									if(offset!=1)
-										newPos = replacePos.offset(facing);
-								}
-								else if(offset!=-1)
-									newPos = replacePos.offset(facing, -1);
-								if(newPos!=null)
-								{
-									Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
-									ApiUtils.moveConnectionEnd(reverse, newPos, world);
-									IELogger.info("Moving "+reverse.start+"->"+reverse.end+" to "+newPos);
-								}
-							}
-					}
 					break;
 				case 1:
 					newState = info.conn.withProperty(IEProperties.FACING_ALL, facing.getOpposite());

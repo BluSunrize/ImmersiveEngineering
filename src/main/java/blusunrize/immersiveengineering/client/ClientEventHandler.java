@@ -710,7 +710,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					else if(equipped.getItem() instanceof ItemIEShield)
 					{
 						NBTTagCompound upgrades = ((ItemIEShield)equipped.getItem()).getUpgrades(equipped);
-						if(!upgrades.hasNoTags())
+						if(!upgrades.isEmpty())
 						{
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 							GlStateManager.color(1, 1, 1, 1);
@@ -1038,9 +1038,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				double tz = pos.getZ()+.5;
 				if(!event.getPlayer().world.isAirBlock(pos.offset(f)))
 				{
-					tx += f.getFrontOffsetX();
-					ty += f.getFrontOffsetY();
-					tz += f.getFrontOffsetZ();
+					tx += f.getXOffset();
+					ty += f.getYOffset();
+					tz += f.getZOffset();
 				}
 				BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
 
@@ -1145,9 +1145,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
 			BufferBuilder.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1156,9 +1156,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): -w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): -w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
 			BufferBuilder.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1168,9 +1168,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
 			BufferBuilder.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1179,9 +1179,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): -w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): -w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
 			BufferBuilder.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1207,7 +1207,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		}
 		for(int i = 0; i < translatedPositions.length; i++)
 		{
-			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).addVector(.5, .5, .5);
+			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
 			if(side!=null&&targetedBB!=null)
 				vec = new Vec3d(side==EnumFacing.WEST?targetedBB.minX-.002: side==EnumFacing.EAST?targetedBB.maxX+.002: vec.x, side==EnumFacing.DOWN?targetedBB.minY-.002: side==EnumFacing.UP?targetedBB.maxY+.002: vec.y, side==EnumFacing.NORTH?targetedBB.minZ-.002: side==EnumFacing.SOUTH?targetedBB.maxZ+.002: vec.z);
 			translatedPositions[i] = vec;
@@ -1285,7 +1285,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double pz = TileEntityRendererDispatcher.staticPlayerZ;
 			int chunkX = (int)player.posX >> 4<<4;
 			int chunkZ = (int)player.posZ >> 4<<4;
-			int y = Math.min((int)player.posY-2, player.getEntityWorld().getChunkFromBlockCoords(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
+			int y = Math.min((int)player.posY-2, player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
 			float h = (float)Math.max(32, player.posY-y+4);
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder BufferBuilder = tessellator.getBuffer();

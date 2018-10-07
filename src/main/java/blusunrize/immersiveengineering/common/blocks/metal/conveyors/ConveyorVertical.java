@@ -151,8 +151,8 @@ public class ConveyorVertical extends ConveyorBasic
 
 		if(!(entity instanceof EntityPlayer))
 		{
-			vX = 0.05*facing.getFrontOffsetX();
-			vZ = 0.05*facing.getFrontOffsetZ();
+			vX = 0.05*facing.getXOffset();
+			vZ = 0.05*facing.getZOffset();
 			if(facing==EnumFacing.WEST||facing==EnumFacing.EAST)
 			{
 				if(entity.posZ > conveyorTile.getPos().getZ()+0.65D)

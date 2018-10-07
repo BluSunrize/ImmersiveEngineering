@@ -57,7 +57,7 @@ public class IEPotions
 		public IEPotion(ResourceLocation resource, boolean isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
 		{
 			super(isBad, colour);
-			this.setPotionName("potion."+resource.getResourcePath());
+			this.setPotionName("potion."+resource.getPath());
 			this.showInInventory = showInInventory;
 			this.showInHud = showInHud;
 			this.tickrate = tick;

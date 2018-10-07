@@ -82,8 +82,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				for(int i = 0; i < 4; i++)
 				{
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*facing.getFrontOffsetX(),
-								getPos().getY()+2.9, getPos().getZ()+.5-.25*facing.getFrontOffsetZ(),
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*facing.getXOffset(),
+								getPos().getY()+2.9, getPos().getZ()+.5-.25*facing.getZOffset(),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 					if(Utils.RAND.nextInt(6)==0)
 						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(facing==EnumFacing.EAST?-.25: .25),
@@ -325,7 +325,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: .375f;
@@ -333,7 +333,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?2.375f: -1.625f;
@@ -341,7 +341,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 			}
 			else if(pos < 50)
@@ -351,7 +351,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: .375f;
@@ -359,7 +359,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				if(pos%5==0)
 					aabb = aabb.offset(0, .6875, 0);
 				list.add(aabb);
@@ -370,7 +370,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: .375f;
 					maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: .625f;
 					aabb = new AxisAlignedBB(minX, .375, minZ, maxX, 1.0625, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-					aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+					aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 					list.add(aabb);
 				}
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?2.375f: -1.625f;
@@ -378,7 +378,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5, 0, -fl.getFrontOffsetZ()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
 				list.add(aabb);
 			}
 			else if(pos==60||pos==64)

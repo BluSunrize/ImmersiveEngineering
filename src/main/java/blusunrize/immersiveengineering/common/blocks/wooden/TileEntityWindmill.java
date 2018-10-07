@@ -142,7 +142,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		sails = nbt.getInteger("sails");
 		//prevRotation = nbt.getFloat("prevRotation");
 		rotation = nbt.getFloat("rotation");

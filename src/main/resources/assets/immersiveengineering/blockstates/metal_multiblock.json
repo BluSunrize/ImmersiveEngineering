@@ -126,11 +126,10 @@
 			"false":{},
 			"true":{}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{},
-			"true":{
-			}
+          "true": {}
 		}
 	}
 }

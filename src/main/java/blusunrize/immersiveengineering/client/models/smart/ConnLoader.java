@@ -38,7 +38,6 @@ public class ConnLoader implements ICustomModelLoader
 	public static final String RESOURCE_LOCATION = "models/block/smartmodel/conn_";
 	public static final ResourceLocation DATA_BASED_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "models/block/smartmodel/connector");
 	public static final ImmutableSet<BlockRenderLayer> ALL_LAYERS = ImmutableSet.copyOf(BlockRenderLayer.values());
-	//Do not manually write to these in IE 0.12-77+. Use blusunrize.immersiveengineering.api.energy.wires.WireApi.registerConnectorForRender()
 	public static Map<String, ImmutableMap<String, String>> textureReplacements = new HashMap<>();
 	public static Map<String, ResourceLocation> baseModels = new HashMap<>();
 
@@ -51,7 +50,7 @@ public class ConnLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
-		return modelLocation.equals(DATA_BASED_LOC)||modelLocation.getResourcePath().contains(RESOURCE_LOCATION);
+		return modelLocation.equals(DATA_BASED_LOC)||modelLocation.getPath().contains(RESOURCE_LOCATION);
 	}
 
 	@Nonnull
@@ -60,7 +59,7 @@ public class ConnLoader implements ICustomModelLoader
 	{
 		if(modelLocation.equals(DATA_BASED_LOC))
 			return new ConnModelBase();
-		String resourcePath = modelLocation.getResourcePath();
+		String resourcePath = modelLocation.getPath();
 		int pos = resourcePath.indexOf("conn_");
 		if(pos >= 0)
 		{

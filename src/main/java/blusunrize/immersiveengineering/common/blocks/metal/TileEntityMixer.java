@@ -101,10 +101,10 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 					if(fs!=null)
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getFrontOffsetX()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getFrontOffsetX()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getFrontOffsetZ()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getFrontOffsetZ()*.5f);
+						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getXOffset()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getZOffset()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getZOffset()*.5f);
 						float r = Utils.RAND.nextFloat()*.8125f;
 						float angleRad = (float)Math.toRadians(animation_agitator);
-						partPos = partPos.addVector(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
+						partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
 						if(Utils.RAND.nextBoolean())
 							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
 						else

@@ -60,7 +60,7 @@
 				"model": "immersiveengineering:metal_multiblock/metal_press_piston.obj"
 			}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{},
 			"true":{}

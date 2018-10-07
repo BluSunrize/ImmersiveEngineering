@@ -38,11 +38,15 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 {
 	public BlockMetalDecoration2()
 	{
-		super("metal_decoration2", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.CONNECTIONS);
+		super("metal_decoration2", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class),
+				ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4,
+				Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.CONNECTIONS);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setAllNotNormalBlock();
 		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.CUTOUT, BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.STEEL_SLOPE.getMeta(), BlockRenderLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.ALU_SLOPE.getMeta(), BlockRenderLayer.CUTOUT);
 		lightOpacity = 0;
 		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.STEEL_POST.getMeta(), EnumPushReaction.BLOCK);
 		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta(), EnumPushReaction.BLOCK);
@@ -169,6 +173,9 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 				return new TileEntityRazorWire();
 			case TOOLBOX:
 				return new TileEntityToolbox();
+			case STEEL_SLOPE:
+			case ALU_SLOPE:
+				return new TileEntityStructuralArm();
 		}
 		return null;
 	}

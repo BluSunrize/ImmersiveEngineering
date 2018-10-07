@@ -224,13 +224,13 @@ public class ModelConfigurableSides implements IBakedModel
 		@Override
 		public boolean accepts(ResourceLocation modelLocation)
 		{
-			return modelLocation.getResourcePath().contains(RESOURCE_LOCATION);
+			return modelLocation.getPath().contains(RESOURCE_LOCATION);
 		}
 
 		@Override
 		public IModel loadModel(ResourceLocation modelLocation)
 		{
-			String resourcePath = modelLocation.getResourcePath();
+			String resourcePath = modelLocation.getPath();
 			int pos = resourcePath.indexOf(MODEL_PREFIX);
 			if(pos >= 0)
 			{

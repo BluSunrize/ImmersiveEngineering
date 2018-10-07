@@ -284,12 +284,12 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//	}
 
 	//	@Override
-	//	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity par5Entity)
+	//	public void onEntityCollision(World world, int x, int y, int z, Entity par5Entity)
 	//	{
 	//		TileEntity te = world.getTileEntity(x, y, z);
 	//		if(par5Entity!=null && te instanceof TileEntityConveyorBelt && !par5Entity.isDead && !(par5Entity instanceof EntityPlayer && ((EntityPlayer)par5Entity).isSneaking()))
 	//		{
-	//			if(world.isBlockIndirectlyGettingPowered(x, y, z))
+	//			if(world.getRedstonePowerFromNeighbors(x, y, z))
 	//				return;
 	//			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) te;
 	//			int f = tile.facing;

@@ -33,7 +33,7 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 	{
 		super(mat, 0, type);
 		String name = "faraday_suit_"+type.getName().toLowerCase(Locale.ENGLISH);
-		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
+		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.setMaxStackSize(1);
 //		ImmersiveEngineering.registerItem(this, name);

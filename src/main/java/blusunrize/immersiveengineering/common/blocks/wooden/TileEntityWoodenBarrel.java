@@ -55,7 +55,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		for(int i = 0; i < 2; i++)
 			if(tank.getFluidAmount() > 0&&sideConfig[i]==1)
 			{
-				EnumFacing f = EnumFacing.getFront(i);
+				EnumFacing f = EnumFacing.byIndex(i);
 				int out = Math.min(40, tank.getFluidAmount());
 				TileEntity te = world.getTileEntity(getPos().offset(f));
 				if(te!=null&&te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
@@ -282,7 +282,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
 		NBTTagCompound tag = new NBTTagCompound();
 		writeTank(tag, true);
-		if(!tag.hasNoTags())
+		if(!tag.isEmpty())
 			stack.setTagCompound(tag);
 		return stack;
 	}

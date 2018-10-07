@@ -67,7 +67,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		if(nbt.hasKey("conveyorBeltSubtype"))
 		{
 			conveyorBeltSubtype = ConveyorHandler.getConveyor(new ResourceLocation(nbt.getString("conveyorBeltSubtype")), this);

@@ -58,7 +58,7 @@
 				"model": "immersiveengineering:metal_multiblock/mixer_agitator.obj"
 			}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{
 				"model": "immersiveengineering:metal_multiblock/mixer.obj"},

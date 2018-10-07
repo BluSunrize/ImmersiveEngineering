@@ -123,7 +123,7 @@ public class GuiTurret extends GuiIEContainerBase
 			((TileEntityTurretGun)tile).expelCasings = ((GuiButtonState)button).state;
 			tag.setBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
 		}
-		if(!tag.hasNoTags())
+		if(!tag.isEmpty())
 		{
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 			this.initGui();

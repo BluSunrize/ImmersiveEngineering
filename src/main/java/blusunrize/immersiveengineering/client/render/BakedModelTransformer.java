@@ -45,7 +45,7 @@ public class BakedModelTransformer
 		for(int i = 0; i < quads.length; i++)
 		{
 			quads[i] = new ArrayList<BakedQuad>();
-			for(BakedQuad quad : model.getQuads(state, (i==6?null: EnumFacing.getFront(i)), rand))
+			for(BakedQuad quad : model.getQuads(state, (i==6?null: EnumFacing.byIndex(i)), rand))
 				quads[i].add(transform(quad, transformer, formatRemapper));
 		}
 		return new TransformedModel(model, quads);

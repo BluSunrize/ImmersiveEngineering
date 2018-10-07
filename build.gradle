@@ -33,7 +33,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.12.2-14.23.4.2747"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
 
     replace '${version}', project.version
@@ -42,7 +42,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20171003"
+    mappings = "stable_39"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
@@ -293,12 +293,14 @@ class GenerateUpdateJSON extends DefaultTask {
         mcFromIEVersion.put("0.12", "1.12.2")
     }
     static def VERSION_PREFIX = "#####Version "
+    static def CURRENT_MC_VERSION = "1.12.2"
+    static def CHANGELOG_FOR_MANUAL = "src/main/resources/assets/immersiveengineering/changelog.json"
     static def BUILT_SUFFIX = " - BUILT"
     static def RECOMMENDED = "-recommended"
     static def LATEST = "-latest"
     static def CF_URL = "https://minecraft.curseforge.com/projects/immersive-engineering"
 
-    int compareVersions(String vA, String vB) {
+    static int compareVersions(String vA, String vB) {
         String[] vPartsA = vA.split("[\\D]")
         String[] vPartsB = vB.split("[\\D]")
         if (vPartsA.length == 0 && vPartsB.length == 0)
@@ -335,7 +337,7 @@ class GenerateUpdateJSON extends DefaultTask {
             })
             String currentVersion = null
             String currentChangelog = ""
-            changelog.eachLine { line ->
+            changelog.eachLine('ISO-8859-1', { line ->
                 if (line.startsWith(VERSION_PREFIX)) {
                     if (currentVersion != null) {
                         String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
@@ -361,22 +363,30 @@ class GenerateUpdateJSON extends DefaultTask {
                     else
                         currentChangelog += "\n" + line
                 }
-            }
+                return null
+            })
             Map<String, Object> mainMap = new TreeMap<>({ String s1, String s2 ->
                 compareVersions(s1, s2)
             })
             mainMap.putAll(changelogForVersions)
             mainMap["homepage"] = CF_URL
             mainMap["promos"] = promos
-            def outJson = JsonOutput.toJson(mainMap)
-            outJson = JsonOutput.prettyPrint(outJson)
+            //JSON for the Forge update checker
+            def updateJson = JsonOutput.toJson(mainMap)
+            updateJson = JsonOutput.prettyPrint(updateJson)
             File outF = new File("changelog.json")
             outF.delete()
-            outF << outJson
+            outF << updateJson
+            //JSON for the manual
+            def manualJson = JsonOutput.toJson(changelogForVersions[CURRENT_MC_VERSION])
+            manualJson = JsonOutput.prettyPrint(manualJson)
+            outF = new File(CHANGELOG_FOR_MANUAL)
+            outF.delete()
+            outF << manualJson
         }
     }
 }
 
 task updateJson(type: GenerateUpdateJSON)
 
-build.finalizedBy updateJson
+processResources.dependsOn updateJson

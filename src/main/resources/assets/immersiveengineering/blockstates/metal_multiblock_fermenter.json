@@ -56,7 +56,7 @@
 			"false":{},
 			"true":{}
 		},
-		"boolean0": //Mirror
+      "boolean0":
 		{
 			"false":{
 				"model": "immersiveengineering:metal_multiblock/fermenter.obj"},

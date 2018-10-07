@@ -91,7 +91,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(dummy!=0||world.isBlockIndirectlyGettingPowered(getPos()) > 0)
+		if(dummy!=0||world.getRedstonePowerFromNeighbors(getPos()) > 0)
 			return;
 		ItemStack soil = inventory.get(SLOT_SOIL);
 		ItemStack seed = inventory.get(SLOT_SEED);
@@ -288,7 +288,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		dummy = nbt.getInteger("dummy");
 		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 7);
 		energyStorage.readFromNBT(nbt);

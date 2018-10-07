@@ -78,8 +78,8 @@ public class IERecipes
 				registryName += ((ItemIEBase)output.getItem()).itemName+"_"+((ItemIEBase)output.getItem()).getSubNames()[output.getMetadata()]+"*"+output.getCount();
 			else
 			{
-				int idx = output.getUnlocalizedName().lastIndexOf(":");
-				registryName += output.getUnlocalizedName().substring(idx < 0?0: idx)+"_"+output.getMetadata()+"*"+output.getCount();
+				int idx = output.getTranslationKey().lastIndexOf(":");
+				registryName += output.getTranslationKey().substring(idx < 0?0: idx)+"_"+output.getMetadata()+"*"+output.getCount();
 			}
 		}
 		else if(!registryName.startsWith(ImmersiveEngineering.MODID))
