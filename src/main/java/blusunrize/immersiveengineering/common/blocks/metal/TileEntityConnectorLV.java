@@ -49,8 +49,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 {
 	boolean inICNet = false;
 	public EnumFacing facing = EnumFacing.DOWN;
-	private long lastTransfer = -1;
-	public int currentTickAccepted = 0;
+	public int currentTickToMachine = 0;
+	public int currentTickToNet = 0;
 	public static int[] connectorInputValues = Config.IEConfig.Machines.wireConnectorInput;
 	private FluxStorage energyStorage = new FluxStorage(getMaxInput(), getMaxInput(), 0);
 
@@ -77,7 +77,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				addAvailableEnergy(-1F, null);
 				notifyAvailableEnergy(energyStorage.getEnergyStored(), null);
 			}
-			currentTickAccepted = 0;
+			currentTickToMachine = 0;
+			currentTickToNet = 0;
 		}
 		else if(firstTick)
 		{
@@ -167,7 +168,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(isRelay())
 			return 0;
-		int acceptanceLeft = getMaxOutput()-currentTickAccepted;
+		int acceptanceLeft = getMaxOutput()-currentTickToMachine;
 		if(acceptanceLeft <= 0)
 			return 0;
 		int toAccept = Math.min(acceptanceLeft, amount);
@@ -195,7 +196,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		//			ret = reConv;
 		//		}
 		if(!simulate)
-			currentTickAccepted += ret;
+			currentTickToMachine += ret;
 		return ret;
 	}
 
@@ -204,7 +205,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing.ordinal());
-		nbt.setLong("lastTransfer", lastTransfer);
 		energyStorage.writeToNBT(nbt);
 	}
 
@@ -213,7 +213,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
-		lastTransfer = nbt.getLong("lastTransfer");
 		energyStorage.readFromNBT(nbt);
 	}
 
@@ -288,7 +287,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(world.isRemote||isRelay())
 			return 0;
-		if(world.getTotalWorldTime()==lastTransfer)
+		energy = Math.min(getMaxInput()-currentTickToNet, energy);
+		if(energy <= 0)
 			return 0;
 
 		int accepted = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
@@ -300,7 +300,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		{
 			energyStorage.modifyEnergyStored(accepted);
 			notifyAvailableEnergy(accepted, null);
-			lastTransfer = world.getTotalWorldTime();
+			currentTickToNet += accepted;
 			markDirty();
 		}
 

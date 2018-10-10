@@ -335,8 +335,8 @@ public class FeedthroughModel implements IBakedModel
 			mat.translate(-.5, -.5, -.5);
 			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, 0));
 			if(side==facing)
-				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, facing, info.tex, info.uvs, WHITE, false));
-			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, DefaultVertexFormats.ITEM,
+				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, info.tex, info.uvs, WHITE, false));
+			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, null,
 					null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());

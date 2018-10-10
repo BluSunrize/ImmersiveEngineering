@@ -6,9 +6,9 @@
     "count": 4
   },
   "pattern": [
-    "S  ",
+    "SSS",
     "SS ",
-    "SSS"
+    "S  "
   ],
   "key": {
     "S": {

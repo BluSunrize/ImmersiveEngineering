@@ -10,8 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.client.gui.GuiFluidSorter;
-import blusunrize.immersiveengineering.client.gui.GuiIEContainerBase;
+import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
@@ -140,8 +139,27 @@ public class JEIHelper implements IModPlugin
 		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> {
 			return !(input instanceof ArcRecyclingRecipe)&&input.listInJEI();
 		})), "ie.arcFurnace");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(BottlingMachineRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.bottlingMachine");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(MixerRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.mixer");
+    modRegistry.addRecipes(new ArrayList(Collections2.filter(BottlingMachineRecipe.recipeList, input -> input.listInJEI())), "ie.bottlingMachine");
+		modRegistry.addRecipes(new ArrayList(Collections2.filter(MixerRecipe.recipeList, input -> input.listInJEI())), "ie.mixer");
+
+		// Allow jumping to recipies from the block GUIs.
+		modRegistry.addRecipeClickArea(GuiCokeOven.class, 58, 36, 11, 13, "ie.cokeoven");
+		modRegistry.addRecipeClickArea(GuiAlloySmelter.class, 84, 35, 22, 16, "ie.alloysmelter");
+		modRegistry.addRecipeClickArea(GuiBlastFurnace.class, 76, 35, 22, 15, "ie.blastfurnace", "ie.blastfurnace.fuel");
+
+		modRegistry.addRecipeClickArea(GuiSqueezer.class, 110, 19, 20, 51, "ie.squeezer");
+		modRegistry.addRecipeClickArea(GuiFermenter.class, 110, 19, 20, 51, "ie.fermenter");
+		modRegistry.addRecipeClickArea(GuiRefinery.class, 83, 36, 20, 13, "ie.refinery");
+		modRegistry.addRecipeClickArea(GuiArcFurnace.class, 81, 38, 23, 35, "ie.arcFurnace", "ie.arcFurnace.recycling");
+		modRegistry.addRecipeClickArea(GuiMixer.class, 76, 11, 58, 47, "ie.mixer");
+
+		// The assembler has three crafting slots (they don't allow clicking).
+		modRegistry.addRecipeClickArea(GuiAssembler.class, 26, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
+		modRegistry.addRecipeClickArea(GuiAssembler.class, 84, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
+		modRegistry.addRecipeClickArea(GuiAssembler.class, 142, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
+
+		modRegistry.addRecipeClickArea(GuiModWorkbench.class, 4, 41, 53, 18, "ie.workbench");
+		modRegistry.addRecipeClickArea(GuiAutoWorkbench.class, 90, 12, 39, 37, "ie.workbench");
 	}
 
 	@Override

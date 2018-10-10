@@ -151,7 +151,13 @@
 				"model": "immersiveengineering:lantern.obj.ie"
 			},
 			"razor_wire": {
-				"model": "immersiveengineering:smartmodel/conn_razor_wire"
+              "model": "immersiveengineering:smartmodel/connector",
+              "custom": {
+				  "base": "immersiveengineering:block/razor_wire.obj.ie",
+				  "layers": [
+					  "SOLID"
+				  ]
+              }
 			},
 			"toolbox": {
               "model": "immersiveengineering:toolbox.obj",

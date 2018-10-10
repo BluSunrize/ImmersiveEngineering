@@ -31,7 +31,7 @@ public class BlastFurnaceFuelWrapper implements IRecipeWrapper
 	public BlastFurnaceFuelWrapper(IGuiHelper guiHelper, List<ItemStack> fuel, int burnTime)
 	{
 		this.fuel = fuel;
-		this.burnTime = I18n.format("gui.jei.category.fuel.burnTime", burnTime);
+		this.burnTime = I18n.format("desc.immersiveengineering.info.blastFuelTime", burnTime);
 
 		ResourceLocation furnaceBackgroundLocation = new ResourceLocation("minecraft", "textures/gui/container/furnace.png");
 		IDrawableStatic flameDrawable = guiHelper.createDrawable(furnaceBackgroundLocation, 176, 0, 14, 14);

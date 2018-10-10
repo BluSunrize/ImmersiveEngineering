@@ -27,10 +27,7 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFur
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevice;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
+import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
@@ -74,7 +71,6 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.*;
-import net.minecraft.potion.PotionHelper.MixPredicate;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -98,16 +94,20 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Mod.EventBusSubscriber
@@ -500,6 +500,7 @@ public class IEContent
 		else
 			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", "dustSulfur", "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
+		ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
 	}
 
 	public static void preInitEnd()
@@ -556,6 +557,7 @@ public class IEContent
 		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()));
 		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
 		//Vanilla OreDict
+		OreDictionary.registerOre("blockClay", new ItemStack(Blocks.CLAY));
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.STONEBRICK));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ICE));
 		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.PACKED_ICE));
@@ -565,6 +567,7 @@ public class IEContent
 	}
 
 	private static ArcRecyclingThreadHandler arcRecycleThread;
+
 	public static void init()
 	{
 
@@ -605,6 +608,7 @@ public class IEContent
 
 		registerTile(TileEntityBalloon.class);
 		registerTile(TileEntityStripCurtain.class);
+		registerTile(TileEntityShaderBanner.class);
 
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
@@ -1029,10 +1033,30 @@ public class IEContent
 	public static void postInit()
 	{
 		/*POTIONS*/
-		HashSet<PotionType> bottlingRegistered = new HashSet<>();
-
-		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-			MixerRecipePotion.registerPotionRecipe(mixPredicate.output, mixPredicate.input, ApiUtils.createIngredientStack(mixPredicate.reagent));
+		try
+		{
+			//Blame Forge for this mess. They stopped ATs from working on MixPredicate and its fields by modifying them with patches
+			//without providing a usable way to look up the vanilla potion recipes
+			String mixPredicateName = "net.minecraft.potion.PotionHelper$MixPredicate";
+			Class<?> mixPredicateClass = Class.forName(mixPredicateName);
+			Field output = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185200_c"));
+			Field reagent = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185199_b"));
+			Field input = ReflectionHelper.findField(mixPredicateClass,
+					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185198_a"));
+			output.setAccessible(true);
+			reagent.setAccessible(true);
+			input.setAccessible(true);
+			for(Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
+				//noinspection unchecked
+				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
+						((IRegistryDelegate<PotionType>)input.get(mixPredicate)).get(),
+						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
+		} catch(Exception x)
+		{
+			x.printStackTrace();
+		}
 		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
 			if(recipe instanceof AbstractBrewingRecipe)
 			{

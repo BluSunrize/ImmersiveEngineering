@@ -65,7 +65,7 @@ public class CommandHandler extends CommandTreeBase
 
 	@Nonnull
 	@Override
-	public List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args, @Nullable BlockPos pos)
+	public List<String> getTabCompletions(@Nullable MinecraftServer server, @Nonnull ICommandSender sender, String[] args, @Nullable BlockPos pos)
 	{
 		List<String> ret = super.getTabCompletions(server, sender, args, pos);
 		for(int i = 0; i < ret.size(); i++)

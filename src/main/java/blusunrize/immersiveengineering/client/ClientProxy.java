@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ManualPageShader;
 import blusunrize.immersiveengineering.client.models.*;
+import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
@@ -49,6 +50,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColoured
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
@@ -243,7 +245,7 @@ public class ClientProxy extends CommonProxy
 		IEContent.itemFluorescentTube.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemChemthrower, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/chemthrower.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, 	new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(-.375, .375, .375).translate(-.25, 1, .5).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, .5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
 				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, -.5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.625, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
@@ -323,6 +325,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
+		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
 	}
 
 
@@ -517,6 +520,8 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityModWorkbench.class, new TileRenderWorkbench());
 		//STONE
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCoresample.class, new TileRenderCoresample());
+		//CLOTH
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityShaderBanner.class, new TileRenderShaderBanner());
 
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallmount.class, new TileRenderWallmount());
 		//
@@ -1576,7 +1581,8 @@ public class ClientProxy extends CommonProxy
 		if(con!=null)
 		{
 			GlStateManager.pushMatrix();
-			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
+			List<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL,
+					ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
 //			GlStateManager.translate(0, 0, 1);
 			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
 			GlStateManager.popMatrix();

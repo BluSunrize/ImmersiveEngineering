@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockConveyor;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -40,7 +41,10 @@ import org.lwjgl.util.vector.Vector3f;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class ModelConveyor implements IBakedModel
@@ -49,12 +53,12 @@ public class ModelConveyor implements IBakedModel
 	public static HashMap<String, List<BakedQuad>> modelCache = new HashMap<>();
 	public static ResourceLocation[] rl_casing = {new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_top"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_side"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_walls")};
 
-	Set<BakedQuad> quads;
-	IConveyorBelt conveyor;
+	@Nullable
+	final IConveyorBelt defaultBelt;
 
-	public ModelConveyor(IConveyorBelt conveyor)
+	public ModelConveyor(IConveyorBelt defaultBelt)
 	{
-		this.conveyor = conveyor;
+		this.defaultBelt = defaultBelt;
 	}
 
 	public ModelConveyor()
@@ -68,6 +72,7 @@ public class ModelConveyor implements IBakedModel
 		TileEntity tile = null;
 		String key = "default";
 		EnumFacing facing = EnumFacing.NORTH;
+		IConveyorBelt conveyor = defaultBelt;
 		if(blockState==null)
 			key = conveyor!=null?ConveyorHandler.reverseClassRegistry.get(conveyor.getClass()).toString(): "immersiveengineering:conveyor";
 		else
@@ -86,7 +91,7 @@ public class ModelConveyor implements IBakedModel
 		}
 		List<BakedQuad> cachedQuads = modelCache.get(key);
 		if(cachedQuads!=null)
-			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
+			return ImmutableList.copyOf(cachedQuads);
 		else
 		{
 			if(conveyor==null)
@@ -110,14 +115,16 @@ public class ModelConveyor implements IBakedModel
 			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
 			if(conveyor!=null)
 				cachedQuads = conveyor.modifyQuads(cachedQuads, tile, facing);
-			modelCache.put(key, cachedQuads);
-			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
+			modelCache.put(key, ImmutableList.copyOf(cachedQuads));
+			return ImmutableList.copyOf(cachedQuads);
 		}
 	}
 
-	public static Set<BakedQuad> getBaseConveyor(EnumFacing facing, float length, Matrix4 matrix, ConveyorDirection conDir, TextureAtlasSprite tex_conveyor, boolean[] walls, boolean[] corners, TextureAtlasSprite tex_conveyor_colour, int stripeColour)
+	public static List<BakedQuad> getBaseConveyor(EnumFacing facing, float length, Matrix4 matrix, ConveyorDirection conDir,
+												  TextureAtlasSprite tex_conveyor, boolean[] walls, boolean[] corners,
+												  TextureAtlasSprite tex_conveyor_colour, int stripeColour)
 	{
-		Set<BakedQuad> quads = new LinkedHashSet<BakedQuad>();
+		List<BakedQuad> quads = new ArrayList<BakedQuad>();
 
 		Vector3f[] vertices = {new Vector3f(.0625f, 0, 1-length), new Vector3f(.0625f, 0, 1), new Vector3f(.9375f, 0, 1), new Vector3f(.9375f, 0, 1-length)};
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(rl_casing[0]);
@@ -342,7 +349,7 @@ public class ModelConveyor implements IBakedModel
 	public TextureAtlasSprite getParticleTexture()
 	{
 		if(tex_particle==null)
-			tex_particle = ClientUtils.getSprite(conveyor!=null?conveyor.getInactiveTexture(): new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_off"));
+			tex_particle = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_off"));
 		return tex_particle;
 	}
 

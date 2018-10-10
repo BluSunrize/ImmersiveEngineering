@@ -304,8 +304,13 @@ public class EventHandler
 				if(e.getValue() > e.getKey().cableType.getTransferRate())
 				{
 					if(event.world instanceof WorldServer)
+					{
+						BlockPos start = e.getKey().start;
 						for(Vec3d vec : e.getKey().getSubVertices(event.world))
-							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME, false, vec.x, vec.y, vec.z, 0, 0, .02, 0, 1, new int[0]);
+							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME,
+									vec.x+start.getX(), vec.y+start.getY(), vec.z+start.getZ(),
+									0, 0, .02, 0, 1, new int[0]);
+					}
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).clear();
@@ -509,7 +514,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntitySpawnCheck(LivingSpawnEvent.CheckSpawn event)
 	{
-		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY)
+		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
+				||event.isSpawner())
 			return;
 		if(event.getEntityLiving().isCreatureType(EnumCreatureType.MONSTER, false))
 		{
