@@ -10,36 +10,27 @@ package blusunrize.immersiveengineering.common.util;
 
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Objects;
 
-import static blusunrize.immersiveengineering.common.util.SkylineHelper.SkyhookStatus.HOLDING_CONNECTING;
-import static blusunrize.immersiveengineering.common.util.SkylineHelper.SkyhookStatus.NONE;
+import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class SkylineHelper
 {
-	//TODO turn this into an entity capability?
-	private static Map<UUID, PlayerSkyhookData> playerStatus = new HashMap<>();
 	private static final double LN_0_98 = Math.log(.98);
-
-	public static PlayerSkyhookData getDataForPlayer(UUID uuid)
-	{
-		return playerStatus.computeIfAbsent(uuid, u -> new PlayerSkyhookData());
-	}
 
 	public static void spawnHook(EntityLivingBase player, TileEntity start, Connection connection, EnumHand hand)
 	{
@@ -70,8 +61,7 @@ public class SkylineHelper
 		{
 			double totalSpeed = playerMovement.dotProduct(extendedWire);
 			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
-			EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, player.getName(),
-					hand, horSpeed);
+			EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, hand, horSpeed);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
 					hook.getPositionVector());
 			if(hook.isValidPosition(hook.posX, hook.posY, hook.posZ, player))
@@ -85,8 +75,8 @@ public class SkylineHelper
 				}
 
 				player.world.spawnEntity(hook);
-				PlayerSkyhookData data = getDataForPlayer(player.getUniqueID());
-				data.status = SkyhookStatus.HOLDING_RIDING;
+				SkyhookUserData data = Objects.requireNonNull(player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP));
+				data.startRiding();
 				data.hook = hook;
 				player.startRiding(hook);
 			}
@@ -121,60 +111,5 @@ public class SkylineHelper
 						return true;
 				}
 		return false;
-	}
-
-	public enum SkyhookStatus
-	{
-		NONE(null, null),
-		RIDING(NONE, null),
-		HOLDING_CONNECTING(null, NONE),
-		HOLDING_FAILED(null, NONE),
-		HOLDING_RIDING(HOLDING_FAILED, RIDING);
-		@Nullable
-		//The state after leaving the skyhook entity
-		public final SkyhookStatus dismount;
-		@Nullable
-		//The state after stopping to use the skyhook item
-		public final SkyhookStatus release;
-
-		SkyhookStatus(@Nullable SkyhookStatus dismount, @Nullable SkyhookStatus release)
-		{
-			this.dismount = dismount;
-			this.release = release;
-		}
-	}
-
-	public static class PlayerSkyhookData
-	{
-		private SkyhookStatus status = NONE;
-		@Nullable
-		public EntitySkylineHook hook = null;
-
-		public void release()
-		{
-			if(status.release!=null)
-				status = status.release;
-		}
-
-		public void dismount()
-		{
-			if(hook!=null)
-			{
-				hook.setDead();
-				hook = null;
-			}
-			if(status.dismount!=null)
-				status = status.dismount;
-		}
-
-		public SkyhookStatus getStatus()
-		{
-			return status;
-		}
-
-		public void startHolding()
-		{
-			status = HOLDING_CONNECTING;
-		}
 	}
 }

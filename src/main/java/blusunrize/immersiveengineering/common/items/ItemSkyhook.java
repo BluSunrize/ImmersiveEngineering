@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookStatus;
+import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
@@ -16,8 +18,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import blusunrize.immersiveengineering.common.util.SkylineHelper.PlayerSkyhookData;
-import blusunrize.immersiveengineering.common.util.SkylineHelper.SkyhookStatus;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -29,14 +30,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
+
+import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 {
@@ -46,9 +54,20 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook"));
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		if(player!=null&&player.hasCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
+		{
+			SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP);
+			assert data!=null;
+			if(data.shouldLimitSpeed())
+				list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
+			else
+				list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.noLimit"));//TODO sync this!
+		}
 	}
 
 	@Override
@@ -78,19 +97,32 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
+
 		ItemStack stack = player.getHeldItem(hand);
 		if(player.getCooldownTracker().hasCooldown(this))
 			return new ActionResult<>(EnumActionResult.PASS, stack);
-		PlayerSkyhookData data = SkylineHelper.getDataForPlayer(player.getUniqueID());
-		if(data.hook!=null&&!world.isRemote)
+		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP);
+		assert data!=null;
+		if(player.isSneaking())
 		{
-			data.dismount();
-			IELogger.logger.info("Player left voluntarily");
+			boolean limitSpeed = data.toggleSpeedLimit();
+			if(limitSpeed)
+				player.sendStatusMessage(new TextComponentTranslation("chat.immersiveengineering.info.skyhookLimited"), true);
+			else
+				player.sendStatusMessage(new TextComponentTranslation("chat.immersiveengineering.info.skyhookUnlimited"), true);
 		}
 		else
 		{
-			data.startHolding();
-			player.setActiveHand(hand);
+			if(data.hook!=null&&!world.isRemote)
+			{
+				data.dismount();
+				IELogger.logger.info("Player left voluntarily");
+			}
+			else
+			{
+				data.startHolding();
+				player.setActiveHand(hand);
+			}
 		}
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
@@ -99,7 +131,8 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
 	{
 		super.onUsingTick(stack, player, count);
-		PlayerSkyhookData data = SkylineHelper.getDataForPlayer(player.getUniqueID());
+		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP);
+		assert data!=null;
 		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
 			return;
 		World world = player.world;
@@ -121,7 +154,8 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		super.onPlayerStoppedUsing(stack, worldIn, player, timeLeft);
 		if(!worldIn.isRemote)
 		{
-			SkylineHelper.getDataForPlayer(player.getUniqueID()).release();
+			Objects.requireNonNull(player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
+					.release();
 		}
 	}
 

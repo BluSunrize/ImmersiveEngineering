@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -36,10 +37,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
+import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class EntitySkylineHook extends Entity
 {
@@ -50,7 +50,6 @@ public class EntitySkylineHook extends Entity
 	private double angle;
 	public double friction = .75;
 	public double upwardSpeed = .5;
-	public String owner;
 	public EnumHand hand;
 
 	public EntitySkylineHook(World world)
@@ -61,11 +60,10 @@ public class EntitySkylineHook extends Entity
 	}
 
 	//TODO vertical connections?
-	public EntitySkylineHook(World world, Connection connection, double linePos, String owner, EnumHand hand, double horSpeed)
+	public EntitySkylineHook(World world, Connection connection, double linePos, EnumHand hand, double horSpeed)
 	{
 		this(world);
 		this.hand = hand;
-		this.owner = owner;
 		setConnectionAndPos(connection, linePos, horSpeed);
 
 		float f1 = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
@@ -120,7 +118,8 @@ public class EntitySkylineHook extends Entity
 		List<Entity> list = this.getPassengers();
 		if(!list.isEmpty()&&list.get(0) instanceof EntityPlayer)
 			player = (EntityPlayer)list.get(0);
-		if(connection==null||owner==null||player==null||player.getHeldItem(hand).getItem()!=IEContent.itemSkyhook)
+		if(connection==null||player==null||hand==null||player.getHeldItem(hand).getItem()!=IEContent.itemSkyhook
+				||!player.hasCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
 		{
 			if(!world.isRemote)
 			{
@@ -152,7 +151,6 @@ public class EntitySkylineHook extends Entity
 			}
 		}
 		BlockPos switchingAtPos = null;
-		double horSpeedToUse = horizontalSpeed;
 		if(!moved)//Gravity based motion
 		{
 			double deltaVHor;
@@ -168,6 +166,16 @@ public class EntitySkylineHook extends Entity
 			}
 			horizontalSpeed += deltaVHor/(20*20);// First 20 is because this happens in one tick rather than one second, second 20 is to convert units
 		}
+
+		if(Objects.requireNonNull(player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
+				.shouldLimitSpeed())
+		{
+			double totSpeed = getSpeed();
+			final double MAX_SPEED = .5;//TODO is this a good threshold?
+			if(totSpeed > MAX_SPEED)
+				horizontalSpeed *= MAX_SPEED/totSpeed;
+		}
+		double horSpeedToUse = horizontalSpeed;
 		if(horizontalSpeed > 0)
 		{
 			double distToEnd = connection.horizontalLength*(1-linePos);
@@ -418,7 +426,9 @@ public class EntitySkylineHook extends Entity
 			passenger.onGround = false;
 			IELogger.logger.info("Fall speed {}, distance {}", motionY, passenger.fallDistance);
 		}
-		SkylineHelper.getDataForPlayer(passenger.getUniqueID()).dismount();
+		if(passenger.hasCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
+			Objects.requireNonNull(passenger.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
+					.release();
 		if(hand!=null&&passenger instanceof EntityPlayer)
 		{
 			ItemStack held = ((EntityPlayer)passenger).getHeldItem(hand);
@@ -447,5 +457,18 @@ public class EntitySkylineHook extends Entity
 	public Connection getConnection()
 	{
 		return connection;
+	}
+
+	private double getSpeed()
+	{
+		if(connection.vertical)
+		{
+			return horizontalSpeed;//In this case vertical speed
+		}
+		else
+		{
+			double slope = connection.getSlopeAt(linePos);
+			return horizontalSpeed*Math.sqrt(1+slope*slope);
+		}
 	}
 }

@@ -794,6 +794,8 @@ desc.immersiveengineering.flavour.drillhead.speed=Mining Speed: %1$s
 desc.immersiveengineering.flavour.drillhead.damage=Attack Damage: %1$s
 
 desc.immersiveengineering.flavour.skyhook=A new form of travel
+desc.immersiveengineering.flavour.skyhook.speedLimit=Limited speed
+desc.immersiveengineering.flavour.skyhook.noLimit=Unlimited speed
 
 desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=Allows the Mining Drill to operate under water
 desc.immersiveengineering.flavour.toolupgrade.drill_lube=Reduces the damage the Mining Drill's head sustains
@@ -849,6 +851,8 @@ chat.immersiveengineering.warning.tooFar=You are too far away from the previous 
 chat.immersiveengineering.warning.cantSee=The connection is obstructed
 chat.immersiveengineering.warning.connectionExists=The connection exists already
 chat.immersiveengineering.warning.invalidPoint=One of the connection points is invalid
+chat.immersiveengineering.info.skyhookLimited=The skyhook will automatically limit its speed
+chat.immersiveengineering.info.skyhookUnlimited=The speed of the skyhook is unlimited
 chat.immersiveengineering.info.averageLoss=Average loss between points: %1$s%%
 chat.immersiveengineering.info.energyStorage=Energy Stored: %1$s/%2$s Flux
 chat.immersiveengineering.info.tooHot=This fluid is too hot for the container!
