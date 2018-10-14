@@ -95,7 +95,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly "team.chisel.ctm:CTM:MC1.12-0.2.1.5"
+    compileOnly "team.chisel.ctm:CTM:MC1.12.2-0.3.2.18"
     compileOnly "mezz.jei:jei_1.12.2:4.10.+"
     compileOnly "cofh:RedstoneFlux:1.12-2.+:deobf"
     compileOnly "slimeknights.mantle:Mantle:1.12-1.3.+"
