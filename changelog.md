@@ -1,3 +1,9 @@
+#####Version 0.12-87
+- Changed connectors to accept multiple "bursts" of energy if they (in total) don't exceed the max IO rate (Malte)
+- Fixed wires not showing particles when burning (Malte)
+- Fixed recipes for structural arms conflicting with stairs (Malte)
+- Fixed structural arms being invisible due to a conflict with CTM (Malte)
+
 #####Version 0.12-86 - BUILT
 - Added support for JEI ghost ingredients to the assembler and routers (Malte)
 - Re-Added razor wires hurting players trying to break them without wirecutters (Malte)
