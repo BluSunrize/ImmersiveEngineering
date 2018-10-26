@@ -387,11 +387,13 @@ public class ApiUtils
 	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
 	{
 		boolean vertical = end.x==start.x&&end.z==start.z;
+		connection.across = end.subtract(start);
 
 		if(vertical)
 		{
 			Vec3d[] ret = new Vec3d[vertices+1];
 			double height = end.y-start.y;
+			connection.horizontalLength = Math.abs(height);
 			for(int i = 0; i < vertices+1; i++)
 				ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
 			return ret;
@@ -430,7 +432,6 @@ public class ApiUtils
 			c.catOffsetY = offsetY;
 			c.catA = a;
 			c.horizontalLength = dw;
-			c.across = end.subtract(start);
 		}
 
 		Vec3d[] vex = new Vec3d[vertices+1];

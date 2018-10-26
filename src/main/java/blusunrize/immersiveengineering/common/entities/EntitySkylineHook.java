@@ -43,14 +43,17 @@ import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_
 
 public class EntitySkylineHook extends Entity
 {
+
+
 	public static final double GRAVITY = 10;
 	private Connection connection;
 	public double linePos;//Start is 0, end is 1
-	public double horizontalSpeed;//Blocks per tick
+	public double horizontalSpeed;//Blocks per tick, vertical iff the connection is vertical
 	private double angle;
 	public double friction = .75;
-	public double upwardSpeed = .5;
+	public static final double UPWARD_SPEED = .1;
 	public EnumHand hand;
+	private boolean limitSpeed;
 
 	public EntitySkylineHook(World world)
 	{
@@ -60,10 +63,12 @@ public class EntitySkylineHook extends Entity
 	}
 
 	//TODO vertical connections?
-	public EntitySkylineHook(World world, Connection connection, double linePos, EnumHand hand, double horSpeed)
+	public EntitySkylineHook(World world, Connection connection, double linePos, EnumHand hand, double horSpeed,
+							 boolean limitSpeed)
 	{
 		this(world);
 		this.hand = hand;
+		this.limitSpeed = limitSpeed;
 		setConnectionAndPos(connection, linePos, horSpeed);
 
 		float f1 = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
@@ -87,7 +92,8 @@ public class EntitySkylineHook extends Entity
 		Vec3d pos = connection.getVecAt(this.linePos).add(new Vec3d(connection.start));
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(pos.x, pos.y, pos.z);
-		this.angle = Math.atan2(connection.across.z, connection.across.x);
+		if(!connection.vertical)
+			this.angle = Math.atan2(connection.across.z, connection.across.x);
 		if (!world.isRemote)
 		{
 			IELogger.logger.info("New conn: a={}, Ox={}, lengthHor={}", c.catA, c.catOffsetX, c.horizontalLength);
@@ -118,8 +124,7 @@ public class EntitySkylineHook extends Entity
 		List<Entity> list = this.getPassengers();
 		if(!list.isEmpty()&&list.get(0) instanceof EntityPlayer)
 			player = (EntityPlayer)list.get(0);
-		if(connection==null||player==null||hand==null||player.getHeldItem(hand).getItem()!=IEContent.itemSkyhook
-				||!player.hasCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
+		if(connection==null||player==null||(hand!=null&&player.getHeldItem(hand).getItem()!=IEContent.itemSkyhook))
 		{
 			if(!world.isRemote)
 			{
@@ -128,25 +133,37 @@ public class EntitySkylineHook extends Entity
 			}
 			return;
 		}
+		//TODO figure out how to get the speed keeping on dismount working with less sync packets
 		if(this.ticksExisted >= 1&&!world.isRemote)
 		{
 			IELogger.debug("init tick at "+System.currentTimeMillis());//TODO do we need this
 			sendUpdatePacketTo(player);
 		}
 		boolean moved = false;
-		float forward = player.moveForward;
-		double strafing = player.moveStrafing;
-		double playerAngle = Math.toRadians(player.rotationYaw)+Math.PI/2;
-		double angleToLine = playerAngle-angle;
-		double inLineDirection = Math.cos(angleToLine)*forward+Math.sin(angleToLine)*strafing;
+		double inLineDirection;
+		if(connection.vertical)
+			inLineDirection = -player.moveForward*Math.sin(Math.toRadians(player.rotationPitch))
+					*Math.signum(connection.across.y);
+		else
+		{
+			float forward = player.moveForward;
+			double strafing = player.moveStrafing;
+			double playerAngle = Math.toRadians(player.rotationYaw)+Math.PI/2;
+			double angleToLine = playerAngle-angle;
+			inLineDirection = Math.cos(angleToLine)*forward+Math.sin(angleToLine)*strafing;
+		}
 		if(inLineDirection!=0)
 		{
 			double slope = connection.getSlopeAt(linePos);
 			double slopeInDirection = Math.signum(inLineDirection)*slope;
+			double slopeFactor = 1;
+			if(!connection.vertical)
+			{
+				slopeFactor = 1/Math.sqrt(1+slope*slope);
+			}
 			if(slopeInDirection > -.1)
 			{
-				double slopeAngle = Math.atan(slopeInDirection);
-				horizontalSpeed = (3*horizontalSpeed+inLineDirection*upwardSpeed/(2+Math.sin(slopeAngle))/(1+Math.abs(slope)))/4;
+				horizontalSpeed = (3*horizontalSpeed+inLineDirection*UPWARD_SPEED*slopeFactor)/4;
 				moved = true;
 			}
 		}
@@ -154,6 +171,9 @@ public class EntitySkylineHook extends Entity
 		if(!moved)//Gravity based motion
 		{
 			double deltaVHor;
+			if(connection.vertical)
+				deltaVHor = -GRAVITY*Math.signum(connection.across.y);
+			else
 			{
 				double param = (linePos*connection.horizontalLength-connection.catOffsetX)/connection.catA;
 				double pos = Math.exp(param);
@@ -167,11 +187,10 @@ public class EntitySkylineHook extends Entity
 			horizontalSpeed += deltaVHor/(20*20);// First 20 is because this happens in one tick rather than one second, second 20 is to convert units
 		}
 
-		if(Objects.requireNonNull(player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
-				.shouldLimitSpeed())
+		if(limitSpeed)
 		{
 			double totSpeed = getSpeed();
-			final double MAX_SPEED = .5;//TODO is this a good threshold?
+			final double MAX_SPEED = .25;//TODO is this a good threshold?
 			if(totSpeed > MAX_SPEED)
 				horizontalSpeed *= MAX_SPEED/totSpeed;
 		}
@@ -195,13 +214,13 @@ public class EntitySkylineHook extends Entity
 			}
 		}
 		linePos += horSpeedToUse/connection.horizontalLength;
-		motionX = horizontalSpeed*connection.across.x/connection.horizontalLength;
-		motionZ = horizontalSpeed*connection.across.z/connection.horizontalLength;
-		motionY = connection.getSlopeAt(linePos)*horizontalSpeed;
 		Vec3d pos = connection.getVecAt(linePos);
 		double posXTemp = pos.x+connection.start.getX();
 		double posYTemp = pos.y+connection.start.getY();
 		double posZTemp = pos.z+connection.start.getZ();
+		motionX = posXTemp-posX;
+		motionZ = posZTemp-posZ;
+		motionY = posYTemp-posY;
 		if(!isValidPosition(posXTemp, posYTemp, posZTemp, player))
 		{
 			IELogger.logger.info("Collided with something at {}! Linepos {}, speed {}",
@@ -278,28 +297,46 @@ public class EntitySkylineHook extends Entity
 						return c.across.normalize().dotProduct(look);
 					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
 		}
-		IELogger.logger.info("Switching conn at {}, possible: {}, chosen: {}", posForSwitch, possible, line);
+		IELogger.logger.info("Switching conn at {}, possible: {}, chosen: {}, line pos {}, horSpeed {}",
+				posForSwitch, possible, line, linePos, horizontalSpeed);
+		double speed = getSpeed();
+		IELogger.logger.info("Energy: {}, Speed {}", 10*posY+.5*speed*speed, speed);
 		if (line.isPresent())
 		{
 			Connection newCon = line.get();
 			newCon.getSubVertices(world);
-			double slopeOld = connection.getSlopeAt(linePos);
-			double slopeNew = newCon.getSlopeAt(0);
-			double horConversionFactor = Math.sqrt((1+slopeOld*slopeOld)/(1+slopeNew*slopeNew));
+
+			double oldSpeedPerHor = getSpeedPerHor(connection, 1);
+			double newSpeedPerHor = getSpeedPerHor(newCon, 0);
+			double horConversionFactor = newSpeedPerHor/oldSpeedPerHor;
 			double oldHorSpeed = horizontalSpeed;
 			//TODO is this broken?
 			setConnectionAndPos(newCon, (Math.abs(oldHorSpeed-lastHorSpeed))*horConversionFactor,
 					Math.abs(horizontalSpeed)*horConversionFactor);
-			IELogger.logger.info("Changed connection. Old slope {}, new slope {}, conv factor {}, hor speed changed from {} to {}",
-					slopeOld, slopeNew, horConversionFactor, oldHorSpeed, horizontalSpeed);
 			sendUpdatePacketTo(player);
+			IELogger.logger.info("Speed: {}", getSpeed());
 		}
 		else
+		{
+			IELogger.logger.info("No line!");
 			setDead();
+		}
+	}
+
+	private static double getSpeedPerHor(Connection connection, double pos)
+	{
+		if(connection.vertical)
+			return 1;//connection.horizontalLength;
+		else
+		{
+			double slope = connection.getSlopeAt(pos);
+			return Math.sqrt(slope*slope+1);
+		}
 	}
 
 	public boolean isValidPosition(double x, double y, double z, @Nonnull EntityLivingBase player)
 	{
+		final double tolerance = connection.vertical?5: 10;//TODO are these values good?
 		double radius = player.width/2;
 		double height = player.height;
 		double yOffset = getMountedYOffset()+player.getYOffset()+.3;
@@ -313,7 +350,7 @@ public class EntitySkylineHook extends Entity
 		{
 			AxisAlignedBB intersection = box.intersect(playerBB);
 			totalCollisionVolume += getVolume(intersection);
-			if(totalCollisionVolume*10 > playerVolume)
+			if(totalCollisionVolume*tolerance > playerVolume)
 			{
 				IELogger.logger.info("Collision: player volume {}, intersect volume {}, player box {}, boxes {}",
 						playerVolume, totalCollisionVolume, playerBB, boxes);
@@ -420,6 +457,7 @@ public class EntitySkylineHook extends Entity
 		passenger.motionX = motionX;
 		passenger.motionY = motionY;
 		passenger.motionZ = motionZ;
+		IELogger.logger.info("Dismount! Time {}, Speed {}, limited: {}", world.getTotalWorldTime(), new Vec3d(motionX, motionY, motionZ), limitSpeed);
 		if(motionY < 0)
 		{
 			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(motionY);

@@ -32,7 +32,8 @@ public class SkylineHelper
 {
 	private static final double LN_0_98 = Math.log(.98);
 
-	public static void spawnHook(EntityLivingBase player, TileEntity start, Connection connection, EnumHand hand)
+	public static void spawnHook(EntityLivingBase player, TileEntity start, Connection connection, EnumHand hand,
+								 boolean limitSpeed)
 	{
 		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start: connection.end;
 		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end: connection.start;
@@ -61,7 +62,7 @@ public class SkylineHelper
 		{
 			double totalSpeed = playerMovement.dotProduct(extendedWire);
 			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
-			EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, hand, horSpeed);
+			EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, hand, horSpeed, limitSpeed);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
 					hook.getPositionVector());
 			if(hook.isValidPosition(hook.posX, hook.posY, hook.posZ, player))

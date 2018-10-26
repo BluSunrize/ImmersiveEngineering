@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -59,16 +60,32 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	{
 		list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook"));
 		EntityPlayer player = Minecraft.getMinecraft().player;
-		if(player!=null&&player.hasCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
-		{
-			SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP);
-			assert data!=null;
-			if(data.shouldLimitSpeed())
-				list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
-			else
-				list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.noLimit"));//TODO sync this!
-		}
+		if(shouldLimitSpeed(stack))
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
+		else
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
 	}
+
+	private static final String LIMIT_SPEED = "limitSpeed";
+
+	public static boolean shouldLimitSpeed(ItemStack stack)
+	{
+		return ItemNBTHelper.getBoolean(stack, LIMIT_SPEED);
+	}
+
+	public static void setLimitSpeed(ItemStack stack, boolean doLimit)
+	{
+		ItemNBTHelper.setBoolean(stack, LIMIT_SPEED, doLimit);
+	}
+
+	public static boolean toggleSpeedLimit(ItemStack stack)
+	{
+		NBTTagCompound nbt = ItemNBTHelper.getTag(stack);
+		boolean wasActive = nbt.getBoolean(LIMIT_SPEED);
+		nbt.setBoolean(LIMIT_SPEED, !wasActive);
+		return !wasActive;
+	}
+
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
@@ -101,11 +118,9 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		ItemStack stack = player.getHeldItem(hand);
 		if(player.getCooldownTracker().hasCooldown(this))
 			return new ActionResult<>(EnumActionResult.PASS, stack);
-		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP);
-		assert data!=null;
 		if(player.isSneaking())
 		{
-			boolean limitSpeed = data.toggleSpeedLimit();
+			boolean limitSpeed = toggleSpeedLimit(stack);
 			if(limitSpeed)
 				player.sendStatusMessage(new TextComponentTranslation("chat.immersiveengineering.info.skyhookLimited"), true);
 			else
@@ -113,6 +128,8 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		}
 		else
 		{
+			SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP);
+			assert data!=null;
 			if(data.hook!=null&&!world.isRemote)
 			{
 				data.dismount();
@@ -145,7 +162,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 			line = con;
 		}
 		if(line!=null&&connector!=null)
-			SkylineHelper.spawnHook(player, connector, line, player.getActiveHand());
+			SkylineHelper.spawnHook(player, connector, line, player.getActiveHand(), shouldLimitSpeed(stack));
 	}
 
 	@Override

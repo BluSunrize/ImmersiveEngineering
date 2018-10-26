@@ -687,6 +687,10 @@ public class ImmersiveNetHandler
 		public double catOffsetX;
 		public double catOffsetY;
 		public double catA;
+		/*
+		Stores the horizontal length for non-vertical connections and the vertical length for vertical connections.
+		TODO rename
+		 */
 		public double horizontalLength;
 		public Vec3d across = null;
 
@@ -732,7 +736,7 @@ public class ImmersiveNetHandler
 		{
 			pos = MathHelper.clamp(pos, 0, 1);
 			if(vertical)
-				return catenaryVertices[0].add(across.scale(pos/across.length()));
+				return catenaryVertices[0].add(across.scale(pos));
 			else
 				return catenaryVertices[0].add(pos*across.x,
 						catA*Math.cosh((pos*horizontalLength-catOffsetX)/catA)+catOffsetY,
@@ -744,9 +748,9 @@ public class ImmersiveNetHandler
 		{
 			pos = MathHelper.clamp(pos, 0, 1);
 			if(vertical)
-				return 0;//TODO
+				return Double.POSITIVE_INFINITY;
 			else
-				return Math.sinh((pos*horizontalLength-catOffsetX)/catA);//TODO is this correct?
+				return Math.sinh((pos*horizontalLength-catOffsetX)/catA);
 		}
 
 		public NBTTagCompound writeToNBT()

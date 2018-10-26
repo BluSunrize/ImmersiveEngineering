@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -33,7 +33,6 @@ public class CapabilitySkyhookData
 		private SkyhookStatus status = NONE;
 		@Nullable
 		public EntitySkylineHook hook = null;
-		private boolean limitSpeed = true;
 
 		public void release()
 		{
@@ -60,22 +59,6 @@ public class CapabilitySkyhookData
 		public void startHolding()
 		{
 			status = HOLDING_CONNECTING;
-		}
-
-		public void setLimitSpeed(boolean limitSpeed)
-		{
-			this.limitSpeed = limitSpeed;
-		}
-
-		public boolean shouldLimitSpeed()
-		{
-			return limitSpeed;
-		}
-
-		public boolean toggleSpeedLimit()
-		{
-			limitSpeed = !limitSpeed;
-			return limitSpeed;
 		}
 
 		public void startRiding()
@@ -139,25 +122,16 @@ public class CapabilitySkyhookData
 	{
 		CapabilityManager.INSTANCE.register(SkyhookUserData.class, new Capability.IStorage<SkyhookUserData>()
 		{
-			private static final String STATUS = "status";
-			private static final String LIMIT_SPEED = "limitV";
-
 			@Override
 			public NBTBase writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, EnumFacing side)
 			{
-				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setBoolean(LIMIT_SPEED, instance.limitSpeed);
-				nbt.setInteger(STATUS, instance.status.ordinal());
-				return nbt;
+				return new NBTTagInt(instance.status.ordinal());
 			}
 
 			@Override
 			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, EnumFacing side, NBTBase nbt)
 			{
-				NBTTagCompound tags = (NBTTagCompound)nbt;
-				instance.hook = null;
-				instance.limitSpeed = tags.getBoolean(LIMIT_SPEED);
-				instance.status = SkyhookStatus.values()[tags.getInteger(STATUS)];
+				instance.status = SkyhookStatus.values()[((NBTTagInt)nbt).getInt()];
 			}
 		}, SkyhookUserData::new);
 	}
