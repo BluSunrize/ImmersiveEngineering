@@ -136,11 +136,12 @@ public class EntitySkylineHook extends Entity
 		//TODO figure out how to get the speed keeping on dismount working with less sync packets
 		if(this.ticksExisted >= 1&&!world.isRemote)
 		{
-			IELogger.debug("init tick at "+System.currentTimeMillis());//TODO do we need this
+			IELogger.debug("init tick at "+System.currentTimeMillis());
 			sendUpdatePacketTo(player);
 		}
 		boolean moved = false;
 		double inLineDirection;
+		double horSpeedToUse = horizontalSpeed;
 		if(connection.vertical)
 			inLineDirection = -player.moveForward*Math.sin(Math.toRadians(player.rotationPitch))
 					*Math.signum(connection.across.y);
@@ -194,7 +195,11 @@ public class EntitySkylineHook extends Entity
 			if(totSpeed > MAX_SPEED)
 				horizontalSpeed *= MAX_SPEED/totSpeed;
 		}
-		double horSpeedToUse = horizontalSpeed;
+		if(!world.isRemote)
+		{
+			double speed = getSpeed();
+			IELogger.logger.info("Energy: {}, Speed {}", GRAVITY*posY+.5*speed*speed, speed);
+		}
 		if(horizontalSpeed > 0)
 		{
 			double distToEnd = connection.horizontalLength*(1-linePos);
@@ -300,21 +305,21 @@ public class EntitySkylineHook extends Entity
 		IELogger.logger.info("Switching conn at {}, possible: {}, chosen: {}, line pos {}, horSpeed {}",
 				posForSwitch, possible, line, linePos, horizontalSpeed);
 		double speed = getSpeed();
-		IELogger.logger.info("Energy: {}, Speed {}", 10*posY+.5*speed*speed, speed);
 		if (line.isPresent())
 		{
 			Connection newCon = line.get();
 			newCon.getSubVertices(world);
 
-			double oldSpeedPerHor = getSpeedPerHor(connection, 1);
+			double oldSpeedPerHor = getSpeedPerHor(connection, posForSwitch.equals(connection.start)?0: 1);
 			double newSpeedPerHor = getSpeedPerHor(newCon, 0);
 			double horConversionFactor = newSpeedPerHor/oldSpeedPerHor;
 			double oldHorSpeed = horizontalSpeed;
 			//TODO is this broken?
-			setConnectionAndPos(newCon, (Math.abs(oldHorSpeed-lastHorSpeed))*horConversionFactor,
+			IELogger.logger.info("Pre: Energy: {}, Speed {}", GRAVITY*posY+.5*speed*speed, speed);
+			setConnectionAndPos(newCon, 0,//(Math.abs(oldHorSpeed-lastHorSpeed))*horConversionFactor,
 					Math.abs(horizontalSpeed)*horConversionFactor);
+			IELogger.logger.info("Post: Energy: {}, Speed {}", GRAVITY*posY+.5*speed*speed, speed);
 			sendUpdatePacketTo(player);
-			IELogger.logger.info("Speed: {}", getSpeed());
 		}
 		else
 		{
@@ -326,7 +331,7 @@ public class EntitySkylineHook extends Entity
 	private static double getSpeedPerHor(Connection connection, double pos)
 	{
 		if(connection.vertical)
-			return 1;//connection.horizontalLength;
+			return 1;
 		else
 		{
 			double slope = connection.getSlopeAt(pos);
@@ -501,12 +506,12 @@ public class EntitySkylineHook extends Entity
 	{
 		if(connection.vertical)
 		{
-			return horizontalSpeed;//In this case vertical speed
+			return Math.abs(horizontalSpeed);//In this case vertical speed
 		}
 		else
 		{
 			double slope = connection.getSlopeAt(linePos);
-			return horizontalSpeed*Math.sqrt(1+slope*slope);
+			return Math.abs(horizontalSpeed)*Math.sqrt(1+slope*slope);
 		}
 	}
 }
