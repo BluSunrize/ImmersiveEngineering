@@ -135,19 +135,21 @@ tile.immersiveengineering.metal_decoration2.aluminum_wallmount.name=アルミの
 tile.immersiveengineering.metal_decoration2.lantern.name=ランタン
 tile.immersiveengineering.metal_decoration2.razor_wire.name=有刺鉄線
 tile.immersiveengineering.metal_decoration2.toolbox.name=エンジニア・ツールボックス
+tile.immersiveengineering.metal_decoration2.steel_slope.name=鋼鉄製の腕金
+tile.immersiveengineering.metal_decoration2.alu_slope.name=アルミ製の腕金
 
-tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=鋼鉄の足場ハーフブロック
-tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=鋼鉄の足場ハーフブロック
-tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_2.name=鋼鉄の足場ハーフブロック
-tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_0.name=アルミの足場ハーフブロック
-tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_1.name=アルミの足場ハーフブロック
-tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_2.name=アルミの足場ハーフブロック
-tile.immersiveengineering.steel_scaffolding_stairs0.name=鋼鉄の足場階段
-tile.immersiveengineering.steel_scaffolding_stairs1.name=鋼鉄の足場階段
-tile.immersiveengineering.steel_scaffolding_stairs2.name=鋼鉄の足場階段
-tile.immersiveengineering.aluminum_scaffolding_stairs0.name=アルミの足場階段
-tile.immersiveengineering.aluminum_scaffolding_stairs1.name=アルミの足場階段
-tile.immersiveengineering.aluminum_scaffolding_stairs2.name=アルミの足場階段
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=鋼鉄製の足場ハーフブロック
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=鋼鉄製の足場ハーフブロック
+tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_2.name=鋼鉄製の足場ハーフブロック
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_0.name=アルミ製の足場ハーフブロック
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_1.name=アルミ製の足場ハーフブロック
+tile.immersiveengineering.metal_decoration1_slab.aluminum_scaffolding_2.name=アルミ製の足場ハーフブロック
+tile.immersiveengineering.steel_scaffolding_stairs0.name=鋼鉄製の足場の階段
+tile.immersiveengineering.steel_scaffolding_stairs1.name=鋼鉄製の足場の階段
+tile.immersiveengineering.steel_scaffolding_stairs2.name=鋼鉄製の足場の階段
+tile.immersiveengineering.aluminum_scaffolding_stairs0.name=アルミ製の足場の階段
+tile.immersiveengineering.aluminum_scaffolding_stairs1.name=アルミ製の足場の階段
+tile.immersiveengineering.aluminum_scaffolding_stairs2.name=アルミ製の足場の階段
 
 tile.immersiveengineering.metal_ladder.normal.name=金属の梯子
 tile.immersiveengineering.metal_ladder.covered_steel.name=フレーム付きの梯子
@@ -167,7 +169,7 @@ tile.immersiveengineering.connector.redstone_breaker.name=レッドストーン�
 tile.immersiveengineering.connector.energy_meter.name=モニタリング変圧器
 tile.immersiveengineering.connector.connector_redstone.name=レッドストーンワイヤ端子
 tile.immersiveengineering.connector.connector_probe.name=レッドストーンプローブ端子
-tile.immersiveengineering.connector.feedthrough.name=絶縁フィードスルー
+tile.immersiveengineering.connector.feedthrough.name=貫通碍子
 
 tile.immersiveengineering.metal_device0.capacitor_lv.name=低電圧キャパシタ
 tile.immersiveengineering.metal_device0.capacitor_mv.name=中電圧キャパシタ
@@ -188,7 +190,7 @@ tile.immersiveengineering.metal_device1.tesla_coil.name=テスラコイル
 tile.immersiveengineering.metal_device1.floodlight.name=投光機
 tile.immersiveengineering.metal_device1.turret_chem.name=ケミカル放射タレット
 tile.immersiveengineering.metal_device1.turret_gun.name=ガンタレット
-tile.immersiveengineering.metal_device1.belljar.name=促成栽培器
+tile.immersiveengineering.metal_device1.belljar.name=園芸クローシュ
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=ベルトコンベア
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.name=ベルトコンベア - 赤石無効
@@ -198,6 +200,8 @@ tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=垂直コ�
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=分岐コンベア
 tile.immersiveengineering.conveyor.immersiveengineering:covered.name=フレームつきコンベア
 tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=フレームつき垂直コンベア
+tile.immersiveengineering.conveyor.immersiveengineering:extract.name=搬出ベルトコンベア
+tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=フレーム付き搬出ベルトコンベア
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=金属プレス機
 tile.immersiveengineering.metal_multiblock.crusher.name=工業用粉砕機
@@ -208,7 +212,7 @@ tile.immersiveengineering.metal_multiblock.auto_workbench.name=自動工具台
 tile.immersiveengineering.metal_multiblock.bottling_machine.name=瓶詰機
 tile.immersiveengineering.metal_multiblock.squeezer.name=工業用圧搾機
 tile.immersiveengineering.metal_multiblock.fermenter.name=工業用発酵槽
-tile.immersiveengineering.metal_multiblock.refinery.name=工業用製油機
+tile.immersiveengineering.metal_multiblock.refinery.name=工業用精製機
 tile.immersiveengineering.metal_multiblock.diesel_generator.name=ディーゼル発電機
 tile.immersiveengineering.metal_multiblock.excavator.name=大型掘削機
 tile.immersiveengineering.metal_multiblock.bucket_wheel.name=バケットホイール
@@ -216,7 +220,7 @@ tile.immersiveengineering.metal_multiblock.arc_furnace.name=アーク炉
 tile.immersiveengineering.metal_multiblock.lightningrod.name=避雷針
 tile.immersiveengineering.metal_multiblock.mixer.name=工業用撹拌機
 
-tile.immersiveengineering.metal_decoration.structural_arm.name=支柱のアーム
+tile.immersiveengineering.metal_decoration.structural_arm.name=腕金
 
 tile.immersiveengineering.hemp.name=工業用大麻
 
@@ -340,8 +344,13 @@ item.immersiveengineering.wirecoil.redstone.name=レッドストーンワイヤ�
 item.immersiveengineering.tool.hammer.name=エンジニア・ハンマー
 item.immersiveengineering.tool.wirecutter.name=ワイヤカッター
 item.immersiveengineering.tool.voltmeter.name=電圧計
-item.immersiveengineering.tool.manual.name=[技師の手引書]
+item.immersiveengineering.tool.manual.name=技師の手引書
 item.immersiveengineering.toolbox.name=エンジニア・ツールボックス
+
+item.immersiveengineering.pickaxe_steel.name=鋼鉄のツルハシ
+item.immersiveengineering.shovel_steel.name=鋼鉄のシャベル
+item.immersiveengineering.axe_steel.name=鋼鉄の斧
+item.immersiveengineering.sword_steel.name=鋼鉄の剣
 
 item.immersiveengineering.revolver.name=リボルバー
 item.immersiveengineering.revolver.dev.name=♛気高き征服王♚
@@ -409,7 +418,7 @@ item.immersiveengineering.mold.unpacking.name=工業金型:分解
 
 item.immersiveengineering.graphite_electrode.name=炭素電極
 item.immersiveengineering.shader.name=ガジェットスキン
-item.immersiveengineering.shader_bag.name=ガジェットスキンパック
+item.immersiveengineering.shader_bag.name=ガジェットスキンの福袋
 item.immersiveengineering.jerrycan.name=ジェリー缶
 item.immersiveengineering.chemthrower.name=ケミカル放射器
 item.immersiveengineering.railgun.name=レールガン
@@ -422,6 +431,8 @@ item.immersiveengineering.faraday_suit_feet.name=ファラデーケージのブ�
 item.immersiveengineering.fluorescent_tube.name=蛍光管
 item.immersiveengineering.powerpack.name=キャパシターバックパック
 item.immersiveengineering.shield.name=ヘビィプレートシールド
+
+item.immersiveengineering.map_orevein.name=鉱脈の地図
 
 #CREATIVE
 itemGroup.immersiveengineering=Immersive Engineering
@@ -580,10 +591,10 @@ item.immersiveengineering.bullet.crystalwill.name=結晶化された弾
 ie.manual.entry.bullets_crystalwill=§lCrystalized §lWill §lCartridges§r are created with the "Specialized Projectiles" blueprint and using pieces of Demon Will Crystal. The small quantities of demonic will contained within force the projectiles to seek out nearby targets and chase them relentlessly.
 
 #DESCRIPTIONS
-entity.Villager.immersiveengineering.engineer=ストラクチャーエンジニア
-entity.Villager.immersiveengineering.machinist=マシニスト
-entity.Villager.immersiveengineering.electrician=エレクトリアン
-entity.Villager.immersiveengineering.outfitter=アウトフィッター
+entity.Villager.immersiveengineering.engineer=構造技術者
+entity.Villager.immersiveengineering.machinist=機械工
+entity.Villager.immersiveengineering.electrician=電気技師
+entity.Villager.immersiveengineering.outfitter=服屋
 
 key.immersiveengineering.magnetEquip=磁気グローブ盾-切り替え(ダブルタップ)
 key.immersiveengineering.chemthrowerSwitch=ケミカル放射器-タンク切り替え
@@ -599,6 +610,7 @@ desc.immersiveengineering.info.day=%1$s日
 desc.immersiveengineering.info.hour=%1$s時
 desc.immersiveengineering.info.minute=%1$s分
 desc.immersiveengineering.info.second=%1$s秒
+desc.immersiveengineering.info.potionMod=%1$sによって追加されたポーション
 
 desc.immersiveengineering.info.multiblocksAllowed=許可されているマルチブロック:
 desc.immersiveengineering.info.multiblockForbidden=禁止されているマルチブロック:
@@ -622,8 +634,8 @@ desc.immersiveengineering.info.blockSide.connectEnergy.NONE=接続面無し
 desc.immersiveengineering.info.blockSide.connectEnergy.INPUT=動力:入力面
 desc.immersiveengineering.info.blockSide.connectEnergy.OUTPUT=動力:出力面
 desc.immersiveengineering.info.blockSide.connectFluid.-1=接続面無し
-desc.immersiveengineering.info.blockSide.connectFluid.0=液体:入力面
-desc.immersiveengineering.info.blockSide.connectFluid.1=液体:出力面
+desc.immersiveengineering.info.blockSide.connectFluid.0=液体:搬入面
+desc.immersiveengineering.info.blockSide.connectFluid.1=液体:搬出面
 
 desc.immersiveengineering.info.filter.oreDict=フィルター: 鉱石辞書<br>アイテムをフィルタリングします<br>鉱石辞書の名前から
 desc.immersiveengineering.info.filter.nbt=フィルター: NBT<br>アイテムをフィルタリングします<br>NBTデータに関して
@@ -681,11 +693,11 @@ desc.immersiveengineering.info.chance=確率:
 
 desc.immersiveengineering.info.blueprint.creates0=作成アイテム: §6Shiftキーを押すと表示§r
 desc.immersiveengineering.info.blueprint.creates1=作成アイテム:
-desc.immersiveengineering.info.blueprint.components="機械部品"
-desc.immersiveengineering.info.blueprint.molds="プレス機の金型"
-desc.immersiveengineering.info.blueprint.bullet="弾丸_コモン"
-desc.immersiveengineering.info.blueprint.specialBullet="弾丸_スペシャル"
-desc.immersiveengineering.info.blueprint.electrode="アーク炉の電極"
+desc.immersiveengineering.info.blueprint.components=機械部品
+desc.immersiveengineering.info.blueprint.molds=プレス機の金型
+desc.immersiveengineering.info.blueprint.bullet=弾丸_コモン
+desc.immersiveengineering.info.blueprint.specialBullet=弾丸_スペシャル
+desc.immersiveengineering.info.blueprint.electrode=アーク炉の電極
 
 desc.immersiveengineering.info.electrodeIntegrity=基準
 
@@ -699,6 +711,7 @@ desc.immersiveengineering.info.shader.immersiveengineering:railgun=レールガ�
 desc.immersiveengineering.info.shader.immersiveengineering:shield=プレートシールド
 desc.immersiveengineering.info.shader.immersiveengineering:minecart=マインカート
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=支持気球
+desc.immersiveengineering.info.shader.immersiveengineering:banner=旗
 desc.immersiveengineering.info.shader.set=§lガジェットスキンセット§r:
 desc.immersiveengineering.info.shader.reference=§l原典の参照§r:
 desc.immersiveengineering.info.shader.details=§l追加情報§r:
@@ -731,7 +744,7 @@ desc.immersiveengineering.info.multiblock.IE:Fermenter=工業用発酵槽
 desc.immersiveengineering.info.multiblock.IE:Lightningrod=避雷針
 desc.immersiveengineering.info.multiblock.IE:MetalPress=金属プレス機
 desc.immersiveengineering.info.multiblock.IE:Mixer=工業用撹拌機
-desc.immersiveengineering.info.multiblock.IE:Refinery=工業用製油機
+desc.immersiveengineering.info.multiblock.IE:Refinery=工業用精製機
 desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=液体タンク
 desc.immersiveengineering.info.multiblock.IE:Silo=アイテムサイロ
 desc.immersiveengineering.info.multiblock.IE:Squeezer=工業用圧搾機
@@ -849,6 +862,7 @@ chat.immersiveengineering.info.rsControl.strongSignal.false=信号強度: 無効
 chat.immersiveengineering.info.tesla.highPower=パワーモード: 高
 chat.immersiveengineering.info.tesla.lowPower=パワーモード: 低
 chat.immersiveengineering.info.notOwner=所有者 '%1$s' だけがこのブロックにアクセスできます
+chat.immersiveengineering.info.tickrate=このブロックは%1$stickごとに動きます
 
 chat.immersiveengineering.info.coreDrill.progress=地質調査の進捗: %1$s
 chat.immersiveengineering.info.coreDrill.result.mineral=§7地質調査の結果、%1$s§7鉱脈を発見しました
@@ -860,81 +874,81 @@ chat.immersiveengineering.info.pump.placeCobble.true=吸い取った後を丸石
 chat.immersiveengineering.info.pump.placeCobble.false=吸い取った後を丸石で置換しません。§6注意！§fラグを引き起こす可能性があるため、大量の液体を吸い取るような場合は推奨できません。
 chat.immersiveengineering.info.energyTransfered=最後の%1$sticksにおける平均転送量: %2$s RF/t
 
-chat.immersiveengineering.command.available=§6Available commands:§r %1$s
-chat.immersiveengineering.command.help.help=§6Usage: /ie help <command> [sub-commands ...]§r<br> To get more info on the specified command or, optionally, its sub commands
-chat.immersiveengineering.command.mineral.help=§6Usage: /ie mineral <list|get|set|setDepletion>§r
-chat.immersiveengineering.command.mineral.list.help=§6Usage: /ie mineral list§r<br> Lists all registered Minerals
-chat.immersiveengineering.command.mineral.get.help=§6Usage: /ie mineral get§r<br> Displays the mineral for the chunk
-chat.immersiveengineering.command.mineral.set.help=§6Usage: /ie mineral set [mineral]§r<br> Sets a mineral override for the chunk. Specify no mineral to clear the override.
-chat.immersiveengineering.command.mineral.setDepletion.help=§6Usage: /ie mineral setDepletion <number>§r<br> Set the depletion of the minerals inside the chunk. Set this to -1 to make the vein infinite.
-chat.immersiveengineering.command.mineral.get=Chunk contains: %1$s, Override: %2$s, Depletion: %3$s
-chat.immersiveengineering.command.mineral.set.invalidMineral=§cInvalid Mineral, '%1$s' is not a valid identifier. Use '/ie mineral list' for a list of all identifiers.§r
-chat.immersiveengineering.command.mineral.set.sucess=Mineral override set to '%1$s'
-chat.immersiveengineering.command.mineral.set.clear=Mineral override (%1$s) cleared.
-chat.immersiveengineering.command.mineral.setDepletion.NFE=Error, '%1$s' is not a valid number
-chat.immersiveengineering.command.mineral.setDepletion.sucess=Mineral depletion set to '%1$s'
-chat.immersiveengineering.command.shaders.help=§6Usage: /ie shaders <clear>§r
-chat.immersiveengineering.command.shaders.clear.help=§6Usage: /ie shaders clear [player]§r<br> Clear the received shaders for the given player. Clear for yourself if no player is specified.
-chat.immersiveengineering.command.shaders.clear.sucess=Received Shaders for '%1$s' where cleared
+chat.immersiveengineering.command.available=§6使用可能なコマンド:§r %1$s
+chat.immersiveengineering.command.help.help=§6使用方法: /ie help <command> [sub-commands ...]§r<br> コマンドの情報と、あればサブコマンドを表示します。
+chat.immersiveengineering.command.mineral.help=§6使用方法: /ie mineral <list|get|set|setDepletion>§r
+chat.immersiveengineering.command.mineral.list.help=§6使用方法: /ie mineral list§r<br> 鉱脈に登録された鉱質をリストアップします。
+chat.immersiveengineering.command.mineral.get.help=§6使用方法: /ie mineral get§r<br> 現在地のチャンクで産出する鉱石を表示します。
+chat.immersiveengineering.command.mineral.set.help=§6使用方法: /ie mineral set [mineral]§r<br> 現在地のチャンクで産出する鉱石を指定された鉱石に置き換えます。何も指定しなかった場合は消去します。
+chat.immersiveengineering.command.mineral.setDepletion.help=§6使用方法: /ie mineral setDepletion <number>§r<br> 現在地のチャンクでの産出量を設定します。無限に得られるようにするには-1を設定します。
+chat.immersiveengineering.command.mineral.get=このチャンクの鉱質: %1$s, 置き換え: %2$s, 枯渇量: %3$s
+chat.immersiveengineering.command.mineral.set.invalidMineral=§c不正な鉱質です, '%1$s' は適切な識別子ではありません。 '/ie mineral list'を使用するとすべての適切な識別子を見ることができます。§r
+chat.immersiveengineering.command.mineral.set.sucess=鉱脈の鉱質を'%1$s'に置き換えました。
+chat.immersiveengineering.command.mineral.set.clear=鉱質の置き換え (%1$s) を消去しました。
+chat.immersiveengineering.command.mineral.setDepletion.NFE=エラー: '%1$s'は適切な数値ではありません。
+chat.immersiveengineering.command.mineral.setDepletion.sucess=鉱脈の枯渇料を'%1$s'に設定しました。
+chat.immersiveengineering.command.shaders.help=§6使用方法: /ie shaders <clear>§r
+chat.immersiveengineering.command.shaders.clear.help=§6使用方法: /ie shaders clear [player]§r<br>指定のプレイヤーの受信したガジェットスキンを消去します。指定がない場合自分自身に作用します。
+chat.immersiveengineering.command.shaders.clear.sucess=受信した'%1$s'のガジェットスキンを消去しました。
 
 #SUBTITLES
-subtitle.immersiveengineering.dieselGenerator=Diesel Generator is being loud and obnoxious
-subtitle.immersiveengineering.crusher=Crusher is decimating ore
-subtitle.immersiveengineering.metalPressPiston=Metal Press Piston
-subtitle.immersiveengineering.metalPressSmash=Metal Press Clunk
-subtitle.immersiveengineering.birthdayParty=Yaaay, party!
-subtitle.immersiveengineering.revolverFire=Gunshot
-subtitle.immersiveengineering.revolverReload=Reload
-subtitle.immersiveengineering.spray=Fluid spray
-subtitle.immersiveengineering.sprayFire=Flaming fluid spray
-subtitle.immersiveengineering.chargeFast=Charging capacitors
-subtitle.immersiveengineering.chargeSlow=Charging capacitors
-subtitle.immersiveengineering.spark=Electrical sparks
-subtitle.immersiveengineering.railgunFire=Railgun fire
-subtitle.immersiveengineering.tesla=Tesla Coil zapping
-subtitle.immersiveengineering.direSwitch=Direwolf20 imitating a knifeswitch
+subtitle.immersiveengineering.dieselGenerator=ディーゼル発電機は騒々しい
+subtitle.immersiveengineering.crusher=工業用粉砕機は鉱石を粉々にする
+subtitle.immersiveengineering.metalPressPiston=金属プレス機のピストン
+subtitle.immersiveengineering.metalPressSmash=金属プレス機の一撃
+subtitle.immersiveengineering.birthdayParty=ｲｪｪｪｲ! ﾊﾟｰﾘｨ!
+subtitle.immersiveengineering.revolverFire=銃声
+subtitle.immersiveengineering.revolverReload=装填
+subtitle.immersiveengineering.spray=液体スプレー
+subtitle.immersiveengineering.sprayFire=燃え盛る液体スプレー
+subtitle.immersiveengineering.chargeFast=充電
+subtitle.immersiveengineering.chargeSlow=充電
+subtitle.immersiveengineering.spark=電気の火花
+subtitle.immersiveengineering.railgunFire=レールガンの発射
+subtitle.immersiveengineering.tesla=テスラコイルの急襲
+subtitle.immersiveengineering.direSwitch=Direwolf20の見習ったナイフスイッチ
 
 #RECIPES
-recipe.immersiveengineering.hammerCrushing=Crushing
+recipe.immersiveengineering.hammerCrushing=工業用粉砕機
 
 #DEATH
-death.attack.ieRevolver_casull=%1$sは%2$sに撃ち殺されました
-death.attack.ieRevolver_casull.item=%2$sの%3$sに撃ち抜かれて、%1$sは死にました
-death.attack.ieRevolver_casull.turret=%1$sはタレットに銃撃されました
-death.attack.ieRevolver_armorPiercing=%1$sは%2$sで撃たれました
-death.attack.ieRevolver_armorPiercing.item=%2$sの%3$sに撃ち抜かれて、%1$sが死にました
-death.attack.ieRevolver_armorPiercing.turret=%1$sはタレットに銃撃されました
-death.attack.ieRevolver_buckshot=%1$sは%2$sで撃たれました
-death.attack.ieRevolver_buckshot.item=%2$sの%3$sに吹き飛ばされて、%1$sが死にました
-death.attack.ieRevolver_buckshot.turret=%1$sはタレットに銃撃されました
-death.attack.ieRevolver_dragonsbreath=%1$sは%2$sで焼き尽くされました
-death.attack.ieRevolver_dragonsbreath.item=%2$sの%3$sで、%1$sは焼却されました
-death.attack.ieRevolver_dragonsbreath.turret=%1$sはタレットによって焼却されました
-death.attack.ieRevolver_homing=%1$sは%2$sのホーミング弾で死にました
-death.attack.ieRevolver_homing.item=%2$sはホーミング弾を%3$sで撃ち、%1$sに命中させました
-death.attack.ieRevolver_homing.turret=%1$sはタレットのホーミング弾で殺害されました
-death.attack.ieRevolver_wolfpack=%1$sは%2$sのウルフパック弾で蹂躙されました
-death.attack.ieRevolver_wolfpack.item=%2$sはウルフパック弾を%3$sで撃ち、%1$sを細断しました
-death.attack.ieRevolver_wolfpack.turret=%1$sはタレットからのウルフパック弾で細切れにされました
-death.attack.ieRevolver_silver=%1$sは%2$sが撃った銀の弾丸で浄化されました
-death.attack.ieRevolver_silver.item==%2$sは銀の弾丸を%3$sで撃ち、%1$sを浄化しました
-death.attack.ieRevolver_silver.turret=%1$sはタレットの銀の弾丸で浄化されました
-death.attack.ieRevolver_potion=%1$sは%2$sが撃ったポーション弾で殺害されました
-death.attack.ieRevolver_potion.item=%2$sはポーション弾を%3$sで撃ち、%1$sを殺害しました
-death.attack.ieRevolver_potion.turret=%1$sはタレットのポーション弾で殺害されました
+death.attack.ieRevolver_casull=%1$sは%2$sに撃ち殺された
+death.attack.ieRevolver_casull.item=%1$sは%2$sの%3$sに撃ち殺された
+death.attack.ieRevolver_casull.turret=%1$sはタレットに銃撃された
+death.attack.ieRevolver_armorPiercing=%1$sは%2$sで撃たれた
+death.attack.ieRevolver_armorPiercing.item=%1$sは%2$sの%3$sに撃ち抜かれて殺された。
+death.attack.ieRevolver_armorPiercing.turret=%1$sはタレットに銃撃された
+death.attack.ieRevolver_buckshot=%1$sは%2$sで撃ち殺された
+death.attack.ieRevolver_buckshot.item=%1$sは%2$sの%3$sに吹き飛ばされて死んだ
+death.attack.ieRevolver_buckshot.turret=%1$sはタレットに銃撃された
+death.attack.ieRevolver_dragonsbreath=%1$sは%2$sで焼き尽くされた
+death.attack.ieRevolver_dragonsbreath.item=%2$sの%3$sで、%1$sは焼却された
+death.attack.ieRevolver_dragonsbreath.turret=%1$sはタレットによって焼却された
+death.attack.ieRevolver_homing=%1$sは%2$sのホーミング弾に撃ち殺された
+death.attack.ieRevolver_homing.item=%2$sはホーミング弾を%3$sで撃ち、%1$sに命中させた
+death.attack.ieRevolver_homing.turret=%1$sはタレットのホーミング弾で銃撃された
+death.attack.ieRevolver_wolfpack=%1$sは%2$sのウルフパック弾に蹂躙された
+death.attack.ieRevolver_wolfpack.item=%2$sはウルフパック弾を%3$sで撃ち、%1$sを細切れにした
+death.attack.ieRevolver_wolfpack.turret=%1$sはタレットからのウルフパック弾に細切れにされた
+death.attack.ieRevolver_silver=%1$sは%2$sが撃った銀の弾丸で浄化された
+death.attack.ieRevolver_silver.item==%2$sは銀の弾丸を%3$sで撃ち、%1$sを浄化した
+death.attack.ieRevolver_silver.turret=%1$sはタレットの銀の弾丸で浄化された
+death.attack.ieRevolver_potion=%1$sは%2$sが撃ったポーション弾で殺害された
+death.attack.ieRevolver_potion.item=%2$sはポーション弾を%3$sで撃ち、%1$sを殺害した
+death.attack.ieRevolver_potion.turret=%1$sはタレットのポーション弾で殺害された
 
-death.attack.ieCrushed=%1$sは粉砕機に巻き込まれました
-death.attack.ieAcid=%1$sは酸によって融解しました
-death.attack.ieRazorWire=%1$sは鉄線に絡み取られました
-death.attack.ieRazorShock=%1$sは鉄線で感電させられました
-death.attack.ieTesla=%1$sはテスラコイルでフライにされました
-death.attack.ieTeslaPrimary=%1$sは動作しているテスラコイルの主電源に触ってしまいました
-death.attack.ieRailgun=%1$sは、%2$sのレールガンに貫かれました
-death.attack.ieWireShock=%1$sは、通電している配線への注意を怠っていました
+death.attack.ieCrushed=%1$sは粉砕機に巻き込まれた
+death.attack.ieAcid=%1$sは酸によって融解した
+death.attack.ieRazorWire=%1$sは鉄線に絡み取られた
+death.attack.ieRazorShock=%1$sは鉄線で感電した
+death.attack.ieTesla=%1$sはテスラコイルによってこんがりと焼けてしまった
+death.attack.ieTeslaPrimary=%1$sは動作しているテスラコイルの主電源に触ってしまった
+death.attack.ieRailgun=%1$sは、%2$sのレールガンに貫かれた
+death.attack.ieWireShock=%1$sは、通電中の配線への注意を怠っていた
 
 #ACHIEVEMENTS
 advancement.immersiveengineering:root=Immersive Engineering
-advancement.immersiveengineering:root.desc=RTFM!
+advancement.immersiveengineering:root.desc=この素晴らしきマニュアルを読め!
 advancement.immersiveengineering:openManual=RTFM
 advancement.immersiveengineering:openManual.desc=技師の手引書を入手する
 advancement.immersiveengineering:craftHammer=ハンマー!
@@ -992,10 +1006,12 @@ advancement.immersiveengineering:mbExcavator.desc=掘削機を組み立てる
 advancement.immersiveengineering:mbArcFurnace=一番ホットな話題
 advancement.immersiveengineering:mbArcFurnace.desc=アーク炉を組み立てる
 
-advancement.immersiveengineering:secret_birthdayParty=満足できないバースディパーティー
+advancement.immersiveengineering:secret_birthdayParty=グラントのバースデーパーティー
 advancement.immersiveengineering:secret_birthdayParty.desc=マッチを灯すと…
 advancement.immersiveengineering:secret_luckOfTheDraw=運を手に
 advancement.immersiveengineering:secret_luckOfTheDraw.desc=全てかゼロか
+advancement.immersiveengineering:secret_drillbreak=ギガぁあ ドリルうぅ ブレイクぅぅぅぅッ!!!
+advancement.immersiveengineering:secret_drillbreak.desc=俺を誰だと思ってやがる!
 
 
 
@@ -1010,9 +1026,12 @@ immersiveengineering.potion.concreteFeet=コンクリート漬け
 immersiveengineering.potion.flashed=閃光
 
 #MANUAL
+#ie.manual.currentVersion= - CURRENT
+#ie.manual.newerVersion= - NEW
 #ie.manual.entry..name=
 #ie.manual.entry..subtext=
 #ie.manual.entry.=
+
 
 ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews_0.name=What's new in v0.6.0
@@ -1109,7 +1128,7 @@ ie.manual.entry.concrete.subtext=フォートレス・マテリアル
 ie.manual.entry.concrete0=コンクリートはとても硬い耐久性のある複合建材です。<br><link;blastfurnace;§n§o高炉§r>から出る廃棄物の鉱滓(スラグ)を使用して、安価に製造することができます。
 
 ie.manual.entry.balloon.name=支持気球
-ie.manual.entry.balloon.subtext=... 99個を作ろう
+ie.manual.entry.balloon.subtext=... 99個作ろう
 ie.manual.entry.balloon0=気球は下からの熱い空気によって浮かぶ袋状の布地です。 松明のような光源にもかかわらず、火災の危険性はありません。支持気球は通常のブロックのように配置することができます。ブロックをターゲットしていないとき、それはあなたの目の前の空中に配置されます。
 ie.manual.entry.balloon1=<link;metalconstruction;§o§n装飾用コネクタ§r;5>と同様に、麻のロープや鋼鉄ケーブルを取り付けることができます。<br>スニーク-右クリックするごとに、空中に配置する際の高さが1つずつ上がり、最大5ブロック上の地点にまで置くことができます。<br>配置されている気球に、染料を持って右クリックすると染色することができ、クリックをする場所によって色が付く場所が変わります。<br>ハンマーで右クリックをすると、気球の外観を水平柄と縦のストライプ柄で切り替えられます。
 
@@ -1149,7 +1168,7 @@ ie.manual.entry.graphite0=高配向(HOP)パイログラファイトの粉は特�
 ie.manual.entry.graphite1=HOPの最も一般的な用途は、アーク炉に使用する電極を作ることです。作成には技師のﾌﾞﾙｰﾌﾟﾘﾝﾄを用意しなければなりません。これは<config;b;arcfurnace_electrodeCrafting; craft,>特定のチェストの中や村人との取引で入手することができます。または棒材の金型をセットした金属プレス機で、4つのHOPｲﾝｺﾞｯﾄを加工することでも電極を作成できますが、その場合耐久性の低い電極が出来上がります。
 
 ie.manual.entry.wiring.name=基本的な配線
-ie.manual.entry.wiring.subtext=Bzzzt!
+ie.manual.entry.wiring.subtext=バチッと!
 ie.manual.entry.wiring0=Immersive_Engineeringのエネルギー・ネットワークには4つの重要なブロックがあります：§lキャパシタ§rはエネルギーを蓄え、§l接続端子§r(コネクタ)はネットワークの入力と出力、§l継電器§r(リレー)は電線同士を接続し、§l変圧器§rは異なる電圧間を切り替えます。
 ie.manual.entry.wiring1=2つのブロックを接続するには、ワイヤーで最初のブロックをクリックしてから、2番目のブロックに同じワイヤーコイルを使用します。<br>2つのポイント間の合計転送レートは、それらの間の最も弱いタイプのワイヤーに依存します。
 ie.manual.entry.wiring2=ブロックに基づいて制限が適用されることに注意してください：接続端子と継電器はすでに接続されているものと同じタイプのワイヤーのみを取り、変圧器は異なるタイプの2本のワイヤーだけを接続させることができます。<br>[cont]
@@ -1285,7 +1304,7 @@ ie.manual.entry.workbench.subtext=最高潮だ
 ie.manual.entry.workbench0=エンジニアリングの仕事の中で、最適化や改造が可能なツールを扱うことがあります。<br>これらの変更を適用するには、適切に配置された技師の工具台を使用します。<br>右クリックで工具台のGUIを開き、アイテムをスロットに挿入したら該当するアップグレードを新しいスロットに挿入します。
 
 ie.manual.entry.blueprints.name=技師のブループリント
-ie.manual.entry.blueprints.subtext=RTFM
+ie.manual.entry.blueprints.subtext=この素晴らしきマニュアルを読め
 ie.manual.entry.blueprints0=非常に複雑なクラフトには、グリッドが付いた単なる木材ブロック以上のものが必要です。そうしたアイテムは<link;workbench;§o§n技師§r><br><link;workbench;§o§nの工具台§r>で、ブループリントの正しい指示に従って作成する必要があります。<br><br>技師のブループリントを見つけた(または自身で作成した)場合、技師の工具台のスロットに配置することができます。
 ie.manual.entry.blueprints1=ブループリントに記載されているアイテムを作成するには、必要な素材を中央の6つのスロットに挿入し、右側の出力スロットから完成品を取得します。<br>これらの出力スロットにマウスを移動させると、各アイテムに必要な材料が正確にわかります。
 
@@ -1302,12 +1321,12 @@ ie.manual.entry.squeezer1=角部分の青い印がつけられた2つのハッ�
 ie.manual.entry.squeezer2T=以下のリストは、プラントオイルとして搾り出すことができるアイテムと、その生産量を示しています。
 
 ie.manual.entry.fermenter.name=工業用発酵槽
-ie.manual.entry.fermenter.subtext=Skál!
+ie.manual.entry.fermenter.subtext=スコール!
 ie.manual.entry.fermenter0=発酵槽は特定の果実,穀物,野菜を発酵させることで、エタノールを抽出するマルチブロックの機械です。<br>上記のように構築し、3つの機構ブロックが見える側から中央の大釜にハンマーを使用することで完成させます。
 ie.manual.entry.fermenter1=角部分の青い印がつけられた2つのハッチを介して発酵槽へアイテムを搬入することができます。<br>オレンジ色の印が付いたハッチは、上がアイテム、下が液体を搬出する部分として機能します。<br>前面のコントロールパネルにレッドストーン信号を送るとマシンの動作が停止します。この機能はハンマーを使用して反転させることができます。
 ie.manual.entry.fermenter2T=以下のリストは、発酵させてエタノールすることができるアイテムと、それらから産出できる量を示しています。
 
-ie.manual.entry.refinery.name=工業用製油機
+ie.manual.entry.refinery.name=工業用精製機
 ie.manual.entry.refinery.subtext=液体を混ぜ合わせる!
 ie.manual.entry.refinery0=製油機は、1つまたは2つの液体を別の液体へ精製することができる複雑なマルチブロックです。<br>これの最も一般的な用途は、<br><link;squeezer;§o§nプラントオイル§r>と<link;fermenter;§o§nエタノール§r>をバイオディーゼルへ精製することです。
 ie.manual.entry.refinery1=構築し終えたら、ハンマーで中段にある重機構ブロックを右クリックして完成します。<br>流体はブロック両側の2つのポートから搬入され、正面のオレンジ色の印が付いたポートから搬出が行われます。<br><br>正面のコントロールパネルにレッドストーン信号を送ることで機械のプロセスを停止させられます。この機能はハンマーを使用することで反転できます。
@@ -1333,11 +1352,12 @@ ie.manual.entry.conveyor.name=ベルトコンベア
 ie.manual.entry.conveyor.subtext=レールが必要かい？
 ie.manual.entry.conveyor0=ベルトコンベアを使えば、あなたの拠点周りの物資を簡単に輸送できます。牛や羊などの生き物を移動させるのに十分なパワーを持っていますが、本当の魅力はアイテムを運ぶことにあります。これらの上にアイテムを乗せるとコンベアに沿って流れてゆきます。終端がインベントリに接続されている場合、その中にアイテムが搬入されます。
 ie.manual.entry.conveyor1=ホッパーのようなブロックはアイテムをコンベア上に降ろすことができます。<br>ハンマーを使ってコンベアを回転(右クリック)させたり、上下に傾ける(スニーク-右クリック)調整が行えます。<br>コンベアにレッドストーン信号を送ると動作を停止しますが、コンベアはレッドストーンを無視するバージョンにすることができます。<br>染料でコンベアを右クリックすると両端に色を付けることができ、どこへ運ばれるかを確認しやすくなります。
-ie.manual.entry.conveyor2=ドロップコンベアは非常に単純なコンベアで、通過するアイテムを中央のハッチから下に落とすことができます。<br>アイテムは下にあるインベントリに搬入されるか、コンベアの下にスペースであればそのまま落下します。
-ie.manual.entry.conveyor3=垂直ベルトコンベアは壁に取り付けられるコンベアです。付属しているバケツ(バケット)を使って対象をまっすぐ持ち上げます。(「バケツ」という単語を使用していますが液体を持ち上げることはできません)このコンベアは真上にあるブロックのインベントリへアイテムを搬入できます。
-ie.manual.entry.conveyor4=分岐コンベアは、アイテムと物体(動物など)を左右に振り分けます。この機能を利用して、工場においてより均等な配送を実現できます。
-ie.manual.entry.conveyor5=フレーム付きコンベアの機能は通常のコンベアと同じですが、足場で覆われていることで、プレイヤーがアイテムを拾ってしまわないようになります。<br>他の種類の足場やガラスブロックを持って右クリックすることで、フレームの外観を変更できます。
-ie.manual.entry.conveyor6=フレーム付き垂直コンベアは、同じように鋼鉄の足場で覆われており、縦方向への輸送と'取り出しの防止'の両方を達成することができます。
+ie.manual.entry.conveyor2=ドロップコンベアは非常に単純なコンベアで、通過するアイテムを中央のハッチから下に落とすことができます。<br>アイテムは下にあるインベントリに搬入されるか、コンベアの下にスペースがあればそのまま落下します。
+ie.manual.entry.conveyor3=搬出ベルトコンベアはアイテムをブロック内インベントリから、ホッパーと同様に搬出します。しかし、ホッパーと違い、内部にインベントリを持たず、搬出したアイテムをそのままベルトコンベアに乗せます。<br>スニーク時に技師のハンマーで右クリックすることで、搬入元を変更することができます。ワイヤーカッターを使うことで、チックレートを調整できます。
+ie.manual.entry.conveyor4=垂直ベルトコンベアは壁に取り付けられるコンベアです。付属しているバケツ(バケット)を使って対象をまっすぐ持ち上げます。(「バケツ」という単語を使用していますが液体を持ち上げることはできません)このコンベアは真上にあるブロックのインベントリへアイテムを搬入できます。
+ie.manual.entry.conveyor5=分岐コンベアは、アイテムと物体(動物など)を左右に振り分けます。この機能を利用して、工場においてより均等な配送を実現できます。
+ie.manual.entry.conveyor6=フレーム付きコンベアの機能は通常のコンベアと同じですが、足場で覆われていることで、プレイヤーがアイテムを拾ってしまわないようになります。<br>他の種類の足場やガラスブロックを持って右クリックすることで、フレームの外観を変更できます。
+ie.manual.entry.conveyor7=同様に、フレーム付き搬出ベルトコンベアと垂直ベルトコンベアも足場で覆うことで、プレイヤーがアイテムを拾ってしまうのを防止することができます。
 
 ie.manual.entry.furnaceHeater.name=外部発熱器
 ie.manual.entry.furnaceHeater.subtext=ただいま、RFで調理しています！
@@ -1427,7 +1447,7 @@ ie.manual.entry.shader2=ガジェットスキンパックはランダムなス�
 ie.manual.entry.shader3=スキンパックはクラフトすることで、低いレアリティの袋2つに変えることができます。<br>これによってレアなスキンを得るチャンスは減りますが、より多く種類のスキンをアンロックすることができます。
 //Shaders themselves can also be crafted into a single bag of the lower level.
 
-ie.manual.entry.shaderList.name=ガジェットスキン・リスト
+ie.manual.entry.shaderList.name=ガジェットスキンの一覧
 ie.manual.entry.shaderList.noInfo=あなたはまだこのスキンをアンロックしていません!
 ie.manual.entry.shaderList.unlock=このスキンをアンロックする
 ie.manual.entry.shaderList.order=取得:
@@ -1579,54 +1599,60 @@ ie.manual.entry.computer.mixer0=§lisActive()§r: returns whether the mixer is c
 ie.manual.entry.computer.mixer1=§lprogress§r and §lmaxProgress§r to store the current progress and the progress at which it will be finished on the specified slot (both values in ticks).<br>§lgetTank()§r: returns the bottom fluid in the tank.
 
 #SHADER INFO
-desc.immersiveengineering.info.shader.details.rosequartz=First shader ever made!<br>No direct reference, though the name itself was inspired by a character in the „Inkheart“ series of novels
-desc.immersiveengineering.info.shader.details.argo=No direct reference, but style+colour were inspired by the videogame 'Destiny'.
-desc.immersiveengineering.info.shader.details.sunstrike=No direct reference but name+colour were inspired by Sunbreaker Titans from the videogame 'Destiny'.
-desc.immersiveengineering.info.shader.details.locus=Named and coloured after the mercenary 'Locus' in RvB Seasons 11-13.
-desc.immersiveengineering.info.shader.details.felix=Named and coloured after the mercenary 'Felix' in RvB Seasons 11-13.
-desc.immersiveengineering.info.shader.details.sharkface=Named and coloured after the mercenary 'Sharkface' in RvB Seasons 9 and 13.
-desc.immersiveengineering.info.shader.details.dragonsbreath=Named and designed after the exotic rocket launcher of the same name.
-desc.immersiveengineering.info.shader.details.hawk=Named and designed after the exotic handcannon 'Hawkmoon'.
-desc.immersiveengineering.info.shader.details.eyas=Named and designed after the handcannon 'Eyasluna'. Hawkmoon's little brother.
-desc.immersiveengineering.info.shader.details.magnum=Designed by a contest winner!
-desc.immersiveengineering.info.shader.details.fox=Very fluffy. Named in reference to a specific IRC channel and its inhabitants.
-desc.immersiveengineering.info.shader.details.vaulttec=Coloured and named in obvious reference.
-desc.immersiveengineering.info.shader.details.sponsor=Obvious design reference to the Fallout series, but named indistinctly.
-desc.immersiveengineering.info.shader.details.massfusion=The design references the energy weapons of Fallout series.
-desc.immersiveengineering.info.shader.details.stormflower=Named and designed after the bladed SMGs wielded by Lie Ren.
-desc.immersiveengineering.info.shader.details.milo=Named and designed after the spear/rifle wielded by Pyrrha Nikos.
-desc.immersiveengineering.info.shader.details.trident=Named and designed after the lasergun/spear wielded by Neptune Vasilias.
-desc.immersiveengineering.info.shader.details.chloris=Named and designed after the hoverboard/revolvers wielded by Reese Chloris.
-desc.immersiveengineering.info.shader.details.crescentrose=Named and designed after the "high-caliber sniper-scythe" wielded by Ruby Rose.
-desc.immersiveengineering.info.shader.details.qrow=Named after Qrow Branwen and designed after his sword/scythe.
-desc.immersiveengineering.info.shader.details.lususnaturae=Named after a song on the Volume 4 soundtrack. Also, the name sounds badass.
-desc.immersiveengineering.info.shader.details.vanguard=Named and coloured after the Vanguard faction.
-desc.immersiveengineering.info.shader.details.regal=Designed after weaponry in the 'King's Fall' raid.
-desc.immersiveengineering.info.shader.details.harrowed=Designed after weaponry in the heroic 'King's Fall'.
-desc.immersiveengineering.info.shader.details.taken=Designed after the 'Taken' enemies.
-desc.immersiveengineering.info.shader.details.angelsthesis=Named after the themesong, colourscheme based on Evangelion Unit EVA-01.
-desc.immersiveengineering.info.shader.details.sutherland=Named and designed after the Knightmare Frame used by the Holy Britannian Empire.
-desc.immersiveengineering.info.shader.details.exia=Named and designed after the close combat Gundam Mobile Suit.
-desc.immersiveengineering.info.shader.details.gurrenlagann=Named in reference to and designed after the main and titular Gunman.
-desc.immersiveengineering.info.shader.details.dominator=Named and designed in reference to the massive handcannon of the anime series. Doesn't transform, I'm afraid.
-desc.immersiveengineering.info.shader.details.warbird=Design inspired by planes of the previous great wars.
-desc.immersiveengineering.info.shader.details.matrix=No particular inspiration, just another use for the pipe overlay.
-desc.immersiveengineering.info.shader.details.twili=Named and designed in reference to the race of the same name.
-desc.immersiveengineering.info.shader.details.usurper=Named and designed in reference to Zant, the usurper to the throne.
-desc.immersiveengineering.info.shader.details.ancient=Named and designed after the ancient Sheikah technology
-desc.immersiveengineering.info.shader.details.glacis=No particular inspiration, decided to experiment with transparency.
-desc.immersiveengineering.info.shader.details.phoenix=No particular inspiration, just another use for the gradient type of shaders.
-desc.immersiveengineering.info.shader.details.radiant=Named and designed after world 'Radiant Garden'.
-desc.immersiveengineering.info.shader.details.hollow=Named and designed after world 'Hollow Bastion'.
-desc.immersiveengineering.info.shader.details.microshark=Named in reference to and designed after the Minishark and Megashark machineguns.
-desc.immersiveengineering.info.shader.details.n7=Named and designed after the highest designation of the Alliance special forces.
-desc.immersiveengineering.info.shader.details.normandy=Named and designed after Normandy SR2 in its Alliance colour scheme.
-desc.immersiveengineering.info.shader.details.omnitool=Named and designed after the holographic multitools.
-desc.immersiveengineering.info.shader.details.kindled=Named in obvious reference. Designed in an attempt to incorporate vanilla textures and animations into shaders.
-desc.immersiveengineering.info.shader.details.darkfire=Named and designed after the Dark Fire magic employed by Riku and Terra.
-desc.immersiveengineering.info.shader.details.erruption=No particular reference, just another use of vanilla textures, specificially the block breaking overlay.
-desc.immersiveengineering.info.shader.details.terra=Heavily inspired by Livingwood and Terrasteel materials, and incoporating some of Botania's textures.
-desc.immersiveengineering.info.shader.details.waaagh=Yellow makez da biggest BOOOMS!<br>Designed in obvious reference to the Orks in the 40k universe.
+desc.immersiveengineering.info.shader.details.rosequartz=最初につくられたガジェットスキンです。「魔法の声」シリーズの小説に登場するキャラクターを意識したネーミングですが、元ネタというものではないです。
+desc.immersiveengineering.info.shader.details.argo=元ネタは無いですが、 色の組み合わせはビデオゲーム「Destiny」に触発されたものです。
+desc.immersiveengineering.info.shader.details.sunstrike=元ネタはありませんが、名前や色合いはビデオゲーム「Destiny」に登場するタイタン、サンブレーカーを意識したものです。
+desc.immersiveengineering.info.shader.details.locus=Red vs Blue のシーズン11から13に登場する傭兵「Locus」に因んだカラーリングと名前です。
+desc.immersiveengineering.info.shader.details.felix=Red vs Blue のシーズン11から13に登場する傭兵「Felix」に因んだカラーリングと名前です。
+desc.immersiveengineering.info.shader.details.sharkface=Red vs Blue のシーズン9から13に登場する傭兵「Sharkface」に因んだカラーリングと名前です。
+desc.immersiveengineering.info.shader.details.dragonsbreath=名前とデザインは同名の奇妙なロケットランチャーに因みます。
+desc.immersiveengineering.info.shader.details.hawk=名前とデザインは奇妙なハンドキャノン「Hawkmoon」に因みます。
+desc.immersiveengineering.info.shader.details.eyas=名前とデザインは奇妙なハンドキャノン「Eyasluna」に因みます。 これは「Hawkmoon」の弟分です。
+desc.immersiveengineering.info.shader.details.magnum=コンテストの優勝者によってデザインされました。
+desc.immersiveengineering.info.shader.details.fox=とてももこもこしてます。 あるIRCとそこの住人に因んだ名前です。
+desc.immersiveengineering.info.shader.details.vaulttec=見ればわかるでしょ。
+desc.immersiveengineering.info.shader.details.sponsor=「Fallout」シリーズを露骨に意識したデザインですが、名前だけは曖昧です。
+desc.immersiveengineering.info.shader.details.massfusion=「Fallout」シリーズに登場するエネルギー兵器を意識したデザインです。
+desc.immersiveengineering.info.shader.details.stormflower=ライ・レンの振るう武器、刃付きサブマシンガンに因みます。
+desc.immersiveengineering.info.shader.details.milo=ピュラ・ニコスの 振るう武器、ライフルに変形する槍に因みます。
+desc.immersiveengineering.info.shader.details.trident=ネプチューン・ヴァシリアスの振るう武器、 槍に変形する銃に因みます。
+desc.immersiveengineering.info.shader.details.chloris=リース・クロリスの 振るう武器、リボルバーに変形するホバーボードに因みます。
+desc.immersiveengineering.info.shader.details.crescentrose=ルビー・ローズの 振るう武器、「大口径-狙撃-鎌」に因みます。
+desc.immersiveengineering.info.shader.details.qrow=クロウ・ブランウェンに名前を、デザインを彼の携える鎌に変形する剣に因みます。
+desc.immersiveengineering.info.shader.details.lususnaturae=RWBYサウンドトラックの ボリューム4に因んだ名前ですが、響きが悪いです。
+desc.immersiveengineering.info.shader.details.vanguard=バンガード・ファクションに因んだ名前とデザインです。
+desc.immersiveengineering.info.shader.details.regal=レイド「King's Fall」 に出てくる武器に因んでデザインされています。
+desc.immersiveengineering.info.shader.details.harrowed=レイド「King's Fall」 に出てくる伝説的な武器に因んでデザインされています。
+desc.immersiveengineering.info.shader.details.taken=「Taken」という敵に因んでデザインされています。
+desc.immersiveengineering.info.shader.details.angelsthesis=名前はテーマソング、 配色はエヴァンゲリオン初号機に倣っています。
+desc.immersiveengineering.info.shader.details.sutherland=神聖ブリタニア帝国の差し向ける人型自在戦闘装甲騎、ナイトメアフレームに因んだ名前とデザインです。
+desc.immersiveengineering.info.shader.details.exia=近接格闘用モビルスーツに因んだ名前とデザインです。
+desc.immersiveengineering.info.shader.details.gurrenlagann=題名にもなっている、 主役たるガンメンに因んだデザインと、そのままの名前です。
+desc.immersiveengineering.info.shader.details.dominator=アニメシリーズに登場する大型拳銃に因んだデザインと名前です。残念ですが変形はしません。
+desc.immersiveengineering.info.shader.details.warbird=先の大戦の数多くの航空機にインスパイアされてデザインされました。
+desc.immersiveengineering.info.shader.details.matrix=元ネタはありません。パイプがデザインされています。
+desc.immersiveengineering.info.shader.details.twili=同じ名前の種族を元にデザインされています。
+desc.immersiveengineering.info.shader.details.usurper=王位を簒奪した、ザントに因んだ名前とデザインです。
+desc.immersiveengineering.info.shader.details.ancient=古のシーカー族の技術に因んだ名前とデザインです。
+desc.immersiveengineering.info.shader.details.glacis=特に元ネタはなく、透過するテクスチャのテストで作られたものです。
+desc.immersiveengineering.info.shader.details.phoenix=元ネタはありません。もう一つのグラデーション型ガジェットスキンです。
+desc.immersiveengineering.info.shader.details.radiant=デザインと名前はレイディアントガーデンに因みます。
+desc.immersiveengineering.info.shader.details.hollow=デザインと名前はホロウバスティオンに因みます。
+desc.immersiveengineering.info.shader.details.microshark=名前とデザインはミニシャーク、及びメガシャークというマシンガンから取られています。
+desc.immersiveengineering.info.shader.details.n7=アライアンスの特殊部隊における最上級役職から取られた名前とデザインです。
+desc.immersiveengineering.info.shader.details.normandy=アライアンスのNormandy SR-2から取られた名前とデザインです。
+desc.immersiveengineering.info.shader.details.omnitool=ホログラフィーのマルチツールから取られた名前とデザインです。
+desc.immersiveengineering.info.shader.details.kindled=見ればわかる元ネタです。バニラテクスチャとそのアニメーションを組み込むためにデザインされました。
+desc.immersiveengineering.info.shader.details.darkfire=デザインと名前はリクとテラの習得するダークファイア系魔法に因みます。
+desc.immersiveengineering.info.shader.details.erruption=特に元ネタはありません。ブロック破壊時のテクスチャをオーバレイするものです。
+desc.immersiveengineering.info.shader.details.terra=リビングウッドやテラスチールの素材、Botaniaの要素をたくさん取り入れたガジェットスキンです。
+desc.immersiveengineering.info.shader.details.waaagh=Yellow makez da biggest BOOOMS!<br>Warhammer 40Kのオークを<br>露骨に取り入れたデザインです。
 
-#ImmersiveEngineering-0.12-79_ja_JP
-#Ice_ink
+desc.immersiveengineering.info.shader.reference.Neon Genesis Evangelion=新世紀エヴァンゲリオン
+desc.immersiveengineering.info.shader.reference.Code Geass=コードギアス
+desc.immersiveengineering.info.shader.reference.Gundam 00=機動戦士ガンダム00
+desc.immersiveengineering.info.shader.reference.Gurren Lagann=天元突破グレンラガン
+desc.immersiveengineering.info.shader.reference.The Legend of Zelda: Twilight Princess=ゼルダの伝説 トワイライトプリンセス
+desc.immersiveengineering.info.shader.reference.The Legend of Zelda: Breath of the Wild=ゼルダの伝説<br>ブレス オブ ザ ワイルド
+desc.immersiveengineering.info.shader.reference.Kingdom Hearts=キングダムハーツ
+desc.immersiveengineering.info.shader.reference.Terraria=テラリア
