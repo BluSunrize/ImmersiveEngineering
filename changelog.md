@@ -4,6 +4,9 @@
 - Fixed wires not showing particles when burning (Malte)
 - Fixed recipes for structural arms conflicting with stairs (Malte)
 - Fixed structural arms being invisible due to a conflict with CTM (Malte)
+- Fixed minor issues where certain enemy network setups made powered lanterns flicker (Malte)
+- Fixed Dragon's Breath shader using hte wrong description in the manual (BluSunrize)
+- Fixed connectors not rendering as part of manual multiblock previews (Malte)
 
 #####Version 0.12-86 - BUILT
 - Added support for JEI ghost ingredients to the assembler and routers (Malte)
