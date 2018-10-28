@@ -48,7 +48,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	@Override
 	public void update()
 	{
-		if(getWorld().isRemote||getWorld().isBlockIndirectlyGettingPowered(getPos())!=0)
+		if(getWorld().isRemote||getWorld().getRedstonePowerFromNeighbors(getPos())!=0)
 			return;
 
 		if(tickCount%16==0)

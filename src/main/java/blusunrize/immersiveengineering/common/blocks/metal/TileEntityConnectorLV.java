@@ -39,9 +39,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
@@ -49,8 +50,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 {
 	boolean inICNet = false;
 	public EnumFacing facing = EnumFacing.DOWN;
-	private long lastTransfer = -1;
-	public int currentTickAccepted = 0;
+	public int currentTickToMachine = 0;
+	public int currentTickToNet = 0;
 	public static int[] connectorInputValues = Config.IEConfig.Machines.wireConnectorInput;
 	private FluxStorage energyStorage = new FluxStorage(getMaxInput(), getMaxInput(), 0);
 
@@ -77,7 +78,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				addAvailableEnergy(-1F, null);
 				notifyAvailableEnergy(energyStorage.getEnergyStored(), null);
 			}
-			currentTickAccepted = 0;
+			currentTickToMachine = 0;
+			currentTickToNet = 0;
 		}
 		else if(firstTick)
 		{
@@ -167,7 +169,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(isRelay())
 			return 0;
-		int acceptanceLeft = getMaxOutput()-currentTickAccepted;
+		int acceptanceLeft = getMaxOutput()-currentTickToMachine;
 		if(acceptanceLeft <= 0)
 			return 0;
 		int toAccept = Math.min(acceptanceLeft, amount);
@@ -195,7 +197,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		//			ret = reConv;
 		//		}
 		if(!simulate)
-			currentTickAccepted += ret;
+			currentTickToMachine += ret;
 		return ret;
 	}
 
@@ -204,7 +206,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing.ordinal());
-		nbt.setLong("lastTransfer", lastTransfer);
 		energyStorage.writeToNBT(nbt);
 	}
 
@@ -212,8 +213,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
-		lastTransfer = nbt.getLong("lastTransfer");
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		energyStorage.readFromNBT(nbt);
 	}
 
@@ -222,7 +222,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = con.cableType.getRenderDiameter()/2;
-		return new Vec3d(.5-conRadius*side.getFrontOffsetX(), .5-conRadius*side.getFrontOffsetY(), .5-conRadius*side.getFrontOffsetZ());
+		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -288,7 +288,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(world.isRemote||isRelay())
 			return 0;
-		if(world.getTotalWorldTime()==lastTransfer)
+		energy = Math.min(getMaxInput()-currentTickToNet, energy);
+		if(energy <= 0)
 			return 0;
 
 		int accepted = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
@@ -300,7 +301,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		{
 			energyStorage.modifyEnergyStored(accepted);
 			notifyAvailableEnergy(accepted, null);
-			lastTransfer = world.getTotalWorldTime();
+			currentTickToNet += accepted;
 			markDirty();
 		}
 
@@ -339,11 +340,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			int powerLeft = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
 			final int powerForSort = powerLeft;
 
-			if(outputs.size() < 1)
+			if(outputs.isEmpty())
 				return 0;
 
 			int sum = 0;
-			HashMap<AbstractConnection, Integer> powerSorting = new HashMap<>();
+			//TreeMap to prioritize outputs close to this connector if more energy is requested than available
+			//(energy will be provided to the nearby outputs rather than some random ones)
+			Map<AbstractConnection, Integer> powerSorting = new TreeMap<>();
 			for(AbstractConnection con : outputs)
 				if(con.isEnergyOutput)
 				{
@@ -367,7 +370,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					if(con.cableType!=null&&end!=null)
 					{
 						float prio = powerSorting.get(con)/(float)sum;
-						int output = (int)(powerForSort*prio);
+						int output = MathHelper.ceil(powerForSort*prio);
 
 						int tempR = end.outputEnergy(Math.min(output, con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
@@ -376,6 +379,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						end.outputEnergy(tempR, simulate, energyType);
 						HashSet<IImmersiveConnectable> passedConnectors = new HashSet<IImmersiveConnectable>();
 						float intermediaryLoss = 0;
+						//<editor-fold desc="Transfer rate and passed energy">
 						for(Connection sub : con.subConnections)
 						{
 							float length = sub.length/(float)sub.cableType.getMaxLength();
@@ -396,6 +400,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 									subEnd.onEnergyPassthrough(r-r*intermediaryLoss);
 							}
 						}
+						//</editor-fold>
 						received += r;
 						powerLeft -= r;
 						if(powerLeft <= 0)
@@ -473,36 +478,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
-	//	@Optional.Method(modid = "IC2")
-	//	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	//	{
-	//		return Lib.IC2 && canConnectEnergy(direction);
-	//	}
-	//	@Optional.Method(modid = "IC2")
-	//	public double getDemandedEnergy()
-	//	{
-	//		return ModCompatability.convertRFtoEU(getMaxInput(), getIC2Tier());
-	//	}
-	//	@Optional.Method(modid = "IC2")
-	//	public int getSinkTier()
-	//	{
-	//		return getIC2Tier();
-	//	}
-	//	int getIC2Tier()
-	//	{
-	//		return this.canTakeHV()?3: this.canTakeMV()?2: 1;
-	//	}
-	//	@Optional.Method(modid = "IC2")
-	//	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
-	//	{
-	//		int rf = ModCompatability.convertEUtoRF(amount);
-	//		if(rf>this.getMaxInput())//More Input than allowed results in blocking
-	//			return amount;
-	//		int rSimul = transferEnergy(rf, true, 1);
-	//		if(rSimul==0)//This will prevent full power void but allow partial transfer
-	//			return amount;
-	//		int r = transferEnergy(rf, false, 1);
-	//		double eu = ModCompatability.convertRFtoEU(r, getIC2Tier());
-	//		return amount-eu;
-	//	}
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
 }

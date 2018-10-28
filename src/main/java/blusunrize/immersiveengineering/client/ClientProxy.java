@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.client.fx.ParticleSparks;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.models.*;
+import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
@@ -41,6 +42,8 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
+import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
@@ -63,10 +66,14 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
+import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -111,6 +118,9 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.common.ForgeVersion.CheckResult;
+import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
@@ -119,15 +129,22 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -226,7 +243,7 @@ public class ClientProxy extends CommonProxy
 		IEContent.itemFluorescentTube.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemChemthrower, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/chemthrower.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, 	new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(-.375, .375, .375).translate(-.25, 1, .5).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, .5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
 				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, -.5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.625, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
@@ -306,6 +323,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
+		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
 	}
 
 
@@ -500,6 +518,8 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityModWorkbench.class, new TileRenderWorkbench());
 		//STONE
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCoresample.class, new TileRenderCoresample());
+		//CLOTH
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityShaderBanner.class, new TileRenderShaderBanner());
 
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallmount.class, new TileRenderWallmount());
 		//
@@ -743,6 +763,7 @@ public class ClientProxy extends CommonProxy
 				ManualHelper.CAT_ENERGY)).getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
 				"test"));
 		ManualHelper.getManual().addEntry(energyCat, wiring.create());
+		addChangelogToManual();
 
 		/*
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
@@ -775,7 +796,7 @@ public class ClientProxy extends CommonProxy
 		//		for(int i=0; i<table.length; i++)
 		//		{
 		//			Fluid f = FluidRegistry.getFluid(dieselFuels[i].getKey());
-		//			String sf = f!=null?new FluidStack(f,1000).getUnlocalizedName():"";
+		//			String sf = f!=null?new FluidStack(f,1000).getTranslationKey():"";
 		//			int bt = dieselFuels[i].getValue();
 		//			String am = Utils.formatDouble(bt/20f, "0.###")+" ("+bt+")";
 		//			table[i] = new String[]{sf,am};
@@ -1113,107 +1134,62 @@ public class ClientProxy extends CommonProxy
 
 	public void addChangelogToManual()
 	{
-		/*FontRenderer fr = ManualHelper.getManual().fontRenderer;
+		FontRenderer fr = ManualHelper.getManual().fontRenderer;
 		boolean isUnicode = fr.getUnicodeFlag();
 		fr.setUnicodeFlag(true);
-		try
+		SortedMap<ComparableVersion, ManualEntry> allChanges = new TreeMap<>(Comparator.reverseOrder());
+		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
+		//Included changelog
+		try(InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
+				"changelog.json")).getInputStream())
 		{
-			URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.md");
-			Scanner s = new Scanner(url.openStream());
-			//sorted map to keep the chronological order
-			Map<String, String> entries = new LinkedHashMap<>();
-			String readVersion = null;
-			String readLog = "";
-			String currVersion = ImmersiveEngineering.VERSION;
-			boolean readVersionBuilt = false;
-			while(s.hasNextLine())
+			JsonElement ele = new JsonParser().parse(new InputStreamReader(in));
+			JsonObject upToCurrent = ele.getAsJsonObject();
+			for(Entry<String, JsonElement> entry : upToCurrent.entrySet())
 			{
-				String line = s.nextLine();
-				if(line.startsWith("#####"))
-				{
-					//add read log to map
-					addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
-					//parse new version
-					readVersion = "";
-					readLog = "";
-					for(int i = line.indexOf(' ')+1; i < line.length()&&line.charAt(i)!=' '; i++)
-						readVersion += line.charAt(i);
-					readVersionBuilt = line.endsWith("BUILT");
-				}
-				else
-				{
-					readLog += line+"\n";
-				}
+				ComparableVersion version = new ComparableVersion(entry.getKey());
+				ManualEntry manualEntry = addVersionToManual(currIEVer, version,
+						entry.getValue().getAsString(), false);
+				if(manualEntry!=null)
+					allChanges.put(version, manualEntry);
 			}
-			s.close();
-			addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
-			//add to manual
-			for(Entry<String, String> e : entries.entrySet())
-			{
-				List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(e.getValue().replace("\t", "  "), 120);
-				final int LINES_PER_PAGE = 16;
-				int pageCount = l.size()/LINES_PER_PAGE+(l.size()%LINES_PER_PAGE==0?0: 1);
-				ManualPages.Text[] pages = new ManualPages.Text[pageCount];
-				for(int i = 0; i < pageCount; i++)
-				{
-					String nextPage = "";
-					for(int j = LINES_PER_PAGE*i; j < l.size()&&j < (i+1)*LINES_PER_PAGE; j++)
-						nextPage += l.get(j)+"\n";
-					pages[i] = new ManualPages.Text(ManualHelper.getManual(), nextPage);
-				}
-				ManualHelper.addEntry(e.getKey(), ManualHelper.CAT_UPDATE, pages);
-			}
-		} catch(IOException e)
+		} catch(IOException x)
 		{
-			e.printStackTrace();
+			x.printStackTrace();
 		}
-		fr.setUnicodeFlag(isUnicode);*/
+		//Changelog from update JSON
+		CheckResult result = ForgeVersion.getResult(Loader.instance().activeModContainer());
+		if(result.status!=Status.PENDING&&result.status!=Status.FAILED)
+			for(Entry<ComparableVersion, String> e : result.changes.entrySet())
+				allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
+
+		ManualInstance ieMan = ManualHelper.getManual();
+		Tree.Node<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				ManualHelper.CAT_UPDATE));
+		for(ManualEntry entry : allChanges.values())
+			ManualHelper.getManual().addEntry(updateCat, entry);
+		fr.setUnicodeFlag(isUnicode);
 	}
 
-	private int compareVersions(String vA, String vB)
+	private ManualEntry addVersionToManual(ComparableVersion currVer, ComparableVersion version, String changes, boolean ahead)
 	{
-		String[] vPartsA = vA.split("[\\D]");
-		String[] vPartsB = vB.split("[\\D]");
-		if(vPartsA.length==0&&vPartsB.length==0)
-			return vA.compareTo(vB);
-		else if(vPartsA.length==0)
-			return -1;
-		else if(vPartsB.length==0)
-			return 1;
-
-		int length = Math.min(vPartsA.length, vPartsB.length);
-		for(int i = 0; i < length; i++)
+		String title = version.toString();
+		if(ahead)
+			title += I18n.format("ie.manual.newerVersion");
+		else
 		{
-			int pA = Integer.parseInt(vPartsA[i]);
-			int pB = Integer.parseInt(vPartsB[i]);
-			if(pA!=pB)
-			{
-				return Integer.compare(pA, pB);
-			}
+			int cmp = currVer.compareTo(version);
+			if(cmp==0)
+				title += I18n.format("ie.manual.currentVersion");
+			else if(cmp < 0)
+				return null;
 		}
-		if(vPartsA.length!=vPartsB.length)
-			return Integer.compare(vPartsA.length, vPartsB.length);
-		return vA.compareTo(vB);
-	}
 
-	private void addToMap(String readVersion, String currVersion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
-	{
-		if(readVersion!=null)
-		{
-			int compare = compareVersions(readVersion, currVersion);
-			if(readVersionBuilt||compare >= 0)
-			{
-				if(!readVersionBuilt)
-					readVersion += " - UNRELEASED";
-				else if(compare > 0)
-					readVersion += " - NEW";
-				else if(compare==0)
-					readVersion += " - CURRENT";
-				entries.put(readVersion, readLog);
-			}
-		}
+		String text = changes.replace("\t", "  ");
+		ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ManualHelper.getManual());
+		builder.setContent(title, "", text);
+		return builder.create();
 	}
-
 
 	@Override
 	public void serverStarting()
@@ -1591,13 +1567,13 @@ public class ClientProxy extends CommonProxy
 	{
 		if(!stack.isEmpty()&&stack.getItem() instanceof ItemArmor)
 		{
-			Boolean b = hasArmorModel.get(stack.getUnlocalizedName());
+			Boolean b = hasArmorModel.get(stack.getTranslationKey());
 			if(b==null)
 				try
 				{
 					ModelBiped model = stack.getItem().getArmorModel(ClientUtils.mc().player, stack, ((ItemArmor)stack.getItem()).getEquipmentSlot(), null);
 					b = model!=null&&model.getClass()!=ModelBiped.class; //Model isn't a base Biped
-					hasArmorModel.put(stack.getUnlocalizedName(), b);
+					hasArmorModel.put(stack.getTranslationKey(), b);
 				} catch(Exception e)
 				{
 				}
@@ -1613,7 +1589,8 @@ public class ClientProxy extends CommonProxy
 		if(con!=null)
 		{
 			GlStateManager.pushMatrix();
-			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
+			List<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL,
+					ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
 //			GlStateManager.translate(0, 0, 1);
 			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
 			GlStateManager.popMatrix();

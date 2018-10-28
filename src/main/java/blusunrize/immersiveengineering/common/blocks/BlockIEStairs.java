@@ -32,7 +32,7 @@ public class BlockIEStairs extends BlockStairs
 	{
 		super(state);
 		this.name = name;
-		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
+		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.useNeighborBrightness = true;
 		this.explosionResistance = this.blockResistance/5f;
@@ -81,7 +81,7 @@ public class BlockIEStairs extends BlockStairs
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public BlockRenderLayer getBlockLayer()
+	public BlockRenderLayer getRenderLayer()
 	{
 		return renderLayer;
 	}

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -90,6 +91,8 @@ public class Mixer
 					it.remove();
 				}
 			}
+			if(this.output.tag!=null&&this.output.tag.hasKey("Potion"))
+				MixerRecipePotion.BLACKLIST.add(this.output.tag.getString("Potion"));
 		}
 
 		@Override

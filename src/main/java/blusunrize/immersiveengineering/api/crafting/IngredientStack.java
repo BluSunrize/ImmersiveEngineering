@@ -268,21 +268,22 @@ public class IngredientStack
 	{
 		if(!(object instanceof IngredientStack))
 			return false;
-		if(this.fluid!=null&&((IngredientStack)object).fluid!=null)
-			return this.fluid.equals(((IngredientStack)object).fluid);
-		if(this.oreName!=null&&((IngredientStack)object).oreName!=null)
-			return this.oreName.equals(((IngredientStack)object).oreName);
-		if(this.stackList!=null&&((IngredientStack)object).stackList!=null)
+		IngredientStack otherIngredient = (IngredientStack)object;
+		if(this.fluid!=null&&otherIngredient.fluid!=null)
+			return this.fluid.equals(otherIngredient.fluid);
+		if(this.oreName!=null&&otherIngredient.oreName!=null)
+			return this.oreName.equals(otherIngredient.oreName);
+		if(this.stackList!=null&&otherIngredient.stackList!=null)
 		{
 			for(ItemStack iStack : this.stackList)
-				for(ItemStack iStack2 : ((IngredientStack)object).stackList)
+				for(ItemStack iStack2 : otherIngredient.stackList)
 					if(OreDictionary.itemMatches(iStack, iStack2, false))
 						return true;
 			return false;
 		}
-		if(!this.stack.isEmpty()&&!((IngredientStack)object).stack.isEmpty())
+		if(!this.stack.isEmpty()&&!otherIngredient.stack.isEmpty())
 		{
-			ItemStack otherStack = ((IngredientStack)object).stack;
+			ItemStack otherStack = otherIngredient.stack;
 			if(!OreDictionary.itemMatches(stack, otherStack, false))
 				return false;
 			if(this.useNBT)

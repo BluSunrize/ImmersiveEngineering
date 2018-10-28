@@ -89,7 +89,7 @@ public class BulletHandler
 			return true;
 		}
 
-		default String getUnlocalizedName(ItemStack cartridge, String baseName)
+		default String getTranslationKey(ItemStack cartridge, String baseName)
 		{
 			return baseName;
 		}

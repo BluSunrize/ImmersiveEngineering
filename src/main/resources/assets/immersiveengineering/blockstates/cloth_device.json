@@ -13,10 +13,25 @@
 	{
 		"inventory,type=cushion": [{"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}}],
 		"inventory,type=balloon":	[{"model": "immersiveengineering:balloon.obj.ie"}],
+    "inventory,type=shader_banner": [{"model": "immersiveengineering:ie_empty"}],
 		"type":
 		{
 			"cushion": {"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}},
-			"balloon":	{"model": "immersiveengineering:smartmodel/conn_balloon"}
+      "balloon": {
+        "model": "immersiveengineering:smartmodel/connector",
+        "custom": {
+          "base": "immersiveengineering:block/balloon.obj.ie",
+          "layers": [
+            "SOLID"
+          ]
+        }
+      },
+      "shader_banner": {
+        "model": "immersiveengineering:ie_empty",
+        "textures": {
+          "particle": "immersiveengineering:blocks/cloth_device_cushion"
+        }
+      }
 		},
 		"facing":
 		{

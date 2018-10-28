@@ -27,6 +27,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbench>
 {
 	public InventoryShader shaderInv;
@@ -93,6 +95,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		ImmersiveEngineering.proxy.reInitGui();
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
@@ -153,6 +156,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		return stack;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
 	{

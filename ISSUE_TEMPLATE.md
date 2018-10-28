@@ -16,7 +16,7 @@ If your game crashed (see above) you may omit the modlist, but IE and Forge vers
 Also, please try testing an issue in a minimal instance, with just IE, Forge and maybe JEI. That makes elminating compat issues easier.
 
 ### Lastly (you may delete this from the report itself)
-Please, for the love of all that is voxelbased, read the contribution guidelines. They are linked above in the yellow box.
+Please, for the love of all that is voxelbased, **read the contribution guidelines. They are linked to the right in the message box.**
 When reporting issues, these are crucial, and the team withholds the right to close an issue for the plain stupidity of not reading and adhering to them.
 
 Thank you for reporting issues, without people reporting them, they wouldn't get fixed. You're helping contribute to this mod and that is much appreciated <3

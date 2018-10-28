@@ -130,7 +130,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		rotation = nbt.getInteger("rotation");
 		wires = nbt.getInteger("wires");
 		active = nbt.getBoolean("active");
@@ -368,5 +368,13 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		}
 		if(world!=null)
 			markContainingBlockForUpdate(null);
+	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		if(c.end.equals(endOfLeftConnection))
+			endOfLeftConnection = newEnd;
+		return true;
 	}
 }

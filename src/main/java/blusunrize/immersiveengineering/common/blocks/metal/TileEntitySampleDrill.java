@@ -70,7 +70,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 			return;
 		}
 
-		boolean powered = world.isBlockIndirectlyGettingPowered(getPos()) > 0;
+		boolean powered = world.getRedstonePowerFromNeighbors(getPos()) > 0;
 		final boolean prevActive = active;
 		if(!active&&powered)
 			active = true;

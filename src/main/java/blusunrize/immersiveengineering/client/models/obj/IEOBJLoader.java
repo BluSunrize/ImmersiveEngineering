@@ -37,7 +37,7 @@ public class IEOBJLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
-		return enabledDomains.contains(modelLocation.getResourceDomain())&&modelLocation.getResourcePath().endsWith(".obj.ie");
+		return enabledDomains.contains(modelLocation.getNamespace())&&modelLocation.getPath().endsWith(".obj.ie");
 	}
 
 	@Nonnull

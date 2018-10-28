@@ -40,9 +40,9 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
-		return this.getUnlocalizedName();
+		return this.getTranslationKey();
 	}
 
 	@Override

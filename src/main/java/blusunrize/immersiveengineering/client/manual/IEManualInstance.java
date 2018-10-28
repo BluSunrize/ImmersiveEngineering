@@ -243,8 +243,8 @@ public class IEManualInstance extends ManualInstance
 	public boolean showNodeInList(Tree.AbstractNode<ResourceLocation, ManualEntry> node)
 	{
 		ResourceLocation nodeLoc = node.isLeaf()?node.getLeafData().getLocation(): node.getNodeData();
-		if(ImmersiveEngineering.MODID.equals(nodeLoc.getResourceDomain())&&
-				nodeLoc.getResourcePath().startsWith(ManualHelper.CAT_UPDATE))
+		if(ImmersiveEngineering.MODID.equals(nodeLoc.getNamespace())&&
+				nodeLoc.getPath().startsWith(ManualHelper.CAT_UPDATE))
 			return IEConfig.showUpdateNews;
 		return !nodeLoc.equals(SHADER_ENTRY);
 	}

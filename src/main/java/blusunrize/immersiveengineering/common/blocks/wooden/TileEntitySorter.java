@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -20,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -39,8 +39,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	public SorterInventory filter;
 	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
 	public static final int filterSlotsPerSide = 8;
-	private boolean isRouting = false;
-
+	/**
+	 * The positions of the routers that have been used in the current "outermost" `routeItem` call.
+	 * Necessary to stop "blocks" of routers (and similar setups) from causing massive lag (using just a boolean
+	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
+	 */
+	private static Set<BlockPos> routed = null;
 
 	public TileEntitySorter()
 	{
@@ -50,76 +54,41 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 	public ItemStack routeItem(EnumFacing inputSide, ItemStack stack, boolean simulate)
 	{
-		if(!world.isRemote&&!isRouting)
+		if(!world.isRemote&&canRoute())
 		{
-			this.isRouting = true;
-			Integer[][] validOutputs = getValidOutputs(inputSide, stack, true, false);
+			boolean first = startRouting();
+			EnumFacing[][] validOutputs = getValidOutputs(inputSide, stack);
+			stack = doInsert(stack, validOutputs[0], simulate);
+			stack = doInsert(stack, validOutputs[1], simulate);
+			if(first)
+				routed = null;
+		}
+		return stack;
+	}
 
-			if(validOutputs[0].length > 0)
-			{
-				int rand = Utils.RAND.nextInt(validOutputs[0].length);
-				stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[0][rand]), simulate);
-				if(!stack.isEmpty())
-					for(int i = 0; i < validOutputs[0].length; i++)
-						if(i!=rand)
-						{
-							stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[0][i]), simulate);
-							if(stack.isEmpty())
-							{
-								isRouting = false;
-								return ItemStack.EMPTY;
-							}
-						}
+	private boolean canRoute()
+	{
+		return routed==null||!routed.contains(pos);
+	}
 
-			}
-			if(!stack.isEmpty()&&validOutputs[1].length > 0)
-			{
-				if(!simulate)
-				{
-					int rand = Utils.RAND.nextInt(validOutputs[1].length);
-					EnumFacing fd = EnumFacing.getFront(validOutputs[1][rand]);
-					EntityItem ei = new EntityItem(world, getPos().getX()+.5+fd.getFrontOffsetX(), getPos().getY()+.5+fd.getFrontOffsetY(), getPos().getZ()+.5+fd.getFrontOffsetZ(), stack.copy());
-					ei.motionX = (0.075F*fd.getFrontOffsetX());
-					ei.motionY = 0.025000000372529D;
-					ei.motionZ = (0.075F*fd.getFrontOffsetZ());
-					this.world.spawnEntity(ei);
-				}
-				isRouting = false;
-				return ItemStack.EMPTY;
-			}
-			if(validOutputs[2].length > 0)
-			{
-				int rand = Utils.RAND.nextInt(validOutputs[2].length);
-				stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[2][rand]), simulate);
-				if(!stack.isEmpty())
-					for(int i = 0; i < validOutputs[2].length; i++)
-						if(i!=rand)
-						{
-							stack = this.outputItemToInv(stack, EnumFacing.getFront(validOutputs[2][i]), simulate);
-							if(stack.isEmpty())
-							{
-								isRouting = false;
-								return ItemStack.EMPTY;
-							}
-						}
+	private boolean startRouting()
+	{
+		boolean first = routed==null;
+		if(first)
+			routed = new HashSet<>();
+		routed.add(pos);
+		return first;
+	}
 
-			}
-			if(!stack.isEmpty()&&validOutputs[3].length > 0)
-			{
-				if(!simulate)
-				{
-					int rand = Utils.RAND.nextInt(validOutputs[3].length);
-					EnumFacing fd = EnumFacing.getFront(validOutputs[1][rand]);
-					EntityItem ei = new EntityItem(world, getPos().getX()+.5+fd.getFrontOffsetX(), getPos().getY()+.5+fd.getFrontOffsetY(), getPos().getZ()+.5+fd.getFrontOffsetZ(), stack.copy());
-					ei.motionX = (0.075F*fd.getFrontOffsetX());
-					ei.motionY = 0.025000000372529D;
-					ei.motionZ = (0.075F*fd.getFrontOffsetZ());
-					this.world.spawnEntity(ei);
-				}
-				isRouting = false;
-				return ItemStack.EMPTY;
-			}
-			isRouting = false;
+	private ItemStack doInsert(ItemStack stack, EnumFacing[] sides, boolean simulate)
+	{
+		int lengthFiltered = sides.length;
+		while(lengthFiltered > 0 && !stack.isEmpty())
+		{
+			int rand = Utils.RAND.nextInt(lengthFiltered);
+			stack = this.outputItemToInv(stack, sides[rand], simulate);
+			sides[rand] = sides[lengthFiltered-1];
+			lengthFiltered--;
 		}
 		return stack;
 	}
@@ -170,49 +139,33 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			this.sideFilter = message.getIntArray("sideConfig");
 	}
 
-	public Integer[][] getValidOutputs(EnumFacing inputSide, ItemStack stack, boolean allowUnmapped, boolean allowThrowing)
+	public EnumFacing[][] getValidOutputs(EnumFacing inputSide, ItemStack stack)
 	{
 		if(stack.isEmpty())
-			return new Integer[][]{{}, {}, {}, {}};
-		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>(6);
-		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>(6);
-		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>(6);
-		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>(6);
+			return new EnumFacing[][]{{}, {}, {}, {}};
+		List<EnumFacing> validFiltered = new ArrayList<>(6);
+		List<EnumFacing> validUnfiltered = new ArrayList<>(6);
 		for(EnumFacing side : EnumFacing.values())
 			if(side!=inputSide)
 			{
-				EnumFilterResult result = checkStackAgainstFilter(stack, side, allowUnmapped);
+				EnumFilterResult result = checkStackAgainstFilter(stack, side);
 				if(result==EnumFilterResult.VALID_FILTERED)
-				{
-					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
-					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
-						validFilteredInvOuts.add(side.ordinal());
-					else if(allowThrowing)
-						validFilteredEntityOuts.add(side.ordinal());
-				}
+						validFiltered.add(side);
 				else if(result==EnumFilterResult.VALID_UNFILTERED)
-				{
-					TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
-					if(Utils.canInsertStackIntoInventory(inventory, stack, side.getOpposite()))
-						validUnfilteredInvOuts.add(side.ordinal());
-					else if(allowThrowing)
-						validUnfilteredEntityOuts.add(side.ordinal());
-				}
+						validUnfiltered.add(side);
 			}
 
-		return new Integer[][]{
-				validFilteredInvOuts.toArray(new Integer[validFilteredInvOuts.size()]),
-				validFilteredEntityOuts.toArray(new Integer[validFilteredEntityOuts.size()]),
-				validUnfilteredInvOuts.toArray(new Integer[validUnfilteredInvOuts.size()]),
-				validUnfilteredEntityOuts.toArray(new Integer[validUnfilteredEntityOuts.size()])
+		return new EnumFacing[][]{
+				validFiltered.toArray(new EnumFacing[0]),
+				validUnfiltered.toArray(new EnumFacing[0])
 		};
 	}
 
 	public ItemStack pullItem(EnumFacing outputSide, int amount, boolean simulate)
 	{
-		if(!world.isRemote&&!isRouting)
+		if(!world.isRemote&&canRoute())
 		{
-			isRouting = true;
+			boolean first = startRouting();
 			for(EnumFacing side : EnumFacing.values())
 				if(side!=outputSide)
 				{
@@ -230,14 +183,16 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 									concatFilter = this.concatFilters(outputSide, side);
 								if(concatFilter.test(extractItem))
 								{
-									isRouting = false;
+									if(first)
+										routed = null;
 									return extractItem;
 								}
 							}
 						}
 					}
 				}
-			isRouting = false;
+			if(first)
+				routed = null;
 		}
 		return ItemStack.EMPTY;
 	}
@@ -262,10 +217,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	/**
 	 * @param stack         the stack to check
 	 * @param side          the side the filter is on
-	 * @param allowUnmapped whether unmapped results are allowed
 	 * @return If the stack is permitted by the given filter
 	 */
-	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, EnumFacing side, boolean allowUnmapped)
+	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, EnumFacing side)
 	{
 		boolean unmapped = true;
 		for(ItemStack filterStack : filter.filters[side.ordinal()])
@@ -275,7 +229,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 				if(compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doOredict(side.ordinal()), doNBT(side.ordinal())))
 					return EnumFilterResult.VALID_FILTERED;
 			}
-		if(allowUnmapped&&unmapped)
+		if(unmapped)
 			return EnumFilterResult.VALID_UNFILTERED;
 		return EnumFilterResult.INVALID;
 	}
@@ -327,10 +281,10 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	//		stack = Utils.insertStackIntoInventory(inventory, stack, side.getOpposite());
 	//		if(stack != null)
 	//		{
-	//			EntityItem ei = new EntityItem(world, getPos().getX()+.5+side.getFrontOffsetX(), getPos().getY()+.5+side.getFrontOffsetY(), getPos().getZ()+.5+side.getFrontOffsetZ(), stack.copy());
-	//			ei.motionX = (0.075F * side.getFrontOffsetX());
+	//			EntityItem ei = new EntityItem(world, getPos().getX()+.5+side.getXOffset(), getPos().getY()+.5+side.getYOffset(), getPos().getZ()+.5+side.getZOffset(), stack.copy());
+	//			ei.motionX = (0.075F * side.getXOffset());
 	//			ei.motionY = 0.025000000372529D;
-	//			ei.motionZ = (0.075F * side.getFrontOffsetZ());
+	//			ei.motionZ = (0.075F * side.getZOffset());
 	//			this.world.spawnEntity(ei);
 	//		}
 	//	}

@@ -68,21 +68,30 @@ public class GuiMixer extends GuiIEContainerBase
 		if(mx >= guiLeft+76&&mx <= guiLeft+134&&my >= guiTop+11&&my <= guiTop+58)
 		{
 			float capacity = tile.tank.getCapacity();
-			int yy = guiTop+58;
 			if(tile.tank.getFluidTypes()==0)
 				tooltip.add(I18n.format("gui.immersiveengineering.empty"));
 			else
+			{
+
+				int fluidUpToNow = 0;
+				int lastY = 0;
+				int myRelative = guiTop+58-my;
 				for(int i = tile.tank.getFluidTypes()-1; i >= 0; i--)
 				{
 					FluidStack fs = tile.tank.fluids.get(i);
 					if(fs!=null&&fs.getFluid()!=null)
 					{
-						int fluidHeight = (int)(47*(fs.amount/capacity));
-						yy -= fluidHeight;
-						if(my >= yy&&my < yy+fluidHeight)
+						fluidUpToNow += fs.amount;
+						int newY = (int)(47*(fluidUpToNow/capacity));
+						if(myRelative >= lastY&&myRelative < newY)
+						{
 							ClientUtils.addFluidTooltip(fs, tooltip, (int)capacity);
+							break;
+						}
+						lastY = newY;
 					}
 				}
+			}
 		}
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
@@ -117,15 +126,17 @@ public class GuiMixer extends GuiIEContainerBase
 		ClientUtils.drawGradientRect(guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
 
 		float capacity = tile.tank.getCapacity();
-		int yy = guiTop+58;
+		int fluidUpToNow = 0;
+		int lastY = 0;
 		for(int i = tile.tank.getFluidTypes()-1; i >= 0; i--)
 		{
 			FluidStack fs = tile.tank.fluids.get(i);
 			if(fs!=null&&fs.getFluid()!=null)
 			{
-				int fluidHeight = (int)(47*(fs.amount/capacity));
-				yy -= fluidHeight;
-				ClientUtils.drawRepeatedFluidSprite(fs, guiLeft+76, yy, 58, fluidHeight);
+				fluidUpToNow += fs.amount;
+				int newY = (int)(47*(fluidUpToNow/capacity));
+				ClientUtils.drawRepeatedFluidSprite(fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
+				lastY = newY;
 			}
 		}
 	}

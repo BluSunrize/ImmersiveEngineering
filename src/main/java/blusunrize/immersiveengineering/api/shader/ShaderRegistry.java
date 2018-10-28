@@ -95,6 +95,7 @@ public class ShaderRegistry
 		registerShader_Shield(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
+		registerShader_Banner(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		for(IShaderRegistryMethod method : shaderRegistrationMethods)
 			method.apply(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags).setReplicationCost(defaultReplicationCost.copyWithMultipliedSize(10-rarityWeightMap.get(rarity)));
@@ -345,6 +346,34 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_uncoloured"), 0xffffffff));
 
 		ShaderCaseBalloon shader = new ShaderCaseBalloon(list);
+		return registerShaderCase(name, shader, rarity);
+	}
+
+	/**
+	 * Method to register a default implementation of Banner Shaders
+	 *
+	 * @param name              name of the shader
+	 * @param overlayType       uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity            Rarity of the shader item
+	 * @param colour0           base colour
+	 * @param colour1           design colour
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional   colour for the additional texture, if present
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseBanner registerShader_Banner(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_1_"+overlayType), colour1));
+		if(additionalTexture!=null)
+		{
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+additionalTexture);
+			list.add(new ShaderLayer(rl, colourAddtional));
+		}
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_uncoloured"), 0xffffffff));
+
+		ShaderCaseBanner shader = new ShaderCaseBanner(list);
 		return registerShaderCase(name, shader, rarity);
 	}
 

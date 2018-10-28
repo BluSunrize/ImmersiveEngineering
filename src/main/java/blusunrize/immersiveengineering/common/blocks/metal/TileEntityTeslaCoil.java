@@ -262,17 +262,17 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 						f = dz < 0?EnumFacing.NORTH: EnumFacing.SOUTH;
 				}
 				double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-				Vec3d coilPos = new Vec3d(getPos()).addVector(.5, .5, .5);
+				Vec3d coilPos = new Vec3d(getPos()).add(.5, .5, .5);
 				//Vertical offset
-				coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
+				coilPos = coilPos.add(facing.getXOffset()*verticalOffset, facing.getYOffset()*verticalOffset, facing.getZOffset()*verticalOffset);
 				//offset to direction
 				if(f!=null)
 				{
-					coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
+					coilPos = coilPos.add(f.getXOffset()*.375, f.getYOffset()*.375, f.getZOffset()*.375);
 					//random side offset
 					f = f.rotateAround(facing.getAxis());
 					double dShift = (Utils.RAND.nextDouble()-.5)*.75;
-					coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
+					coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
 				}
 
 				addAnimation(new LightningAnimation(coilPos, (EntityLivingBase)target));
@@ -316,16 +316,16 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		}
 
 		double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-		Vec3d coilPos = new Vec3d(getPos()).addVector(.5, .5, .5);
+		Vec3d coilPos = new Vec3d(getPos()).add(.5, .5, .5);
 		//Vertical offset
-		coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
+		coilPos = coilPos.add(facing.getXOffset()*verticalOffset, facing.getYOffset()*verticalOffset, facing.getZOffset()*verticalOffset);
 		//offset to direction
-		coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
+		coilPos = coilPos.add(f.getXOffset()*.375, f.getYOffset()*.375, f.getZOffset()*.375);
 		//random side offset
 		f = f.rotateAround(facing.getAxis());
 		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
-		coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
-		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).addVector(tx, ty, tz)));
+		coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
+		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).add(tx, ty, tz)));
 //		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
 		world.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), IESounds.tesla, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 	}
@@ -341,7 +341,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		energyStorage.readFromNBT(nbt);
 	}
 
@@ -514,7 +514,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 
 	public boolean canRun(int energyDrain)
 	{
-		return (world.isBlockIndirectlyGettingPowered(getPos()) > 0^redstoneControlInverted)&&energyStorage.getEnergyStored() >= energyDrain;
+		return (world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted)&&energyStorage.getEnergyStored() >= energyDrain;
 	}
 
 	public static class LightningAnimation
@@ -561,7 +561,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			double points = 12;
 			for(int i = 0; i < points; i++)
 			{
-				Vec3d sub = startPos.addVector(dist.x/points*i, dist.y/points*i, dist.z/points*i);
+				Vec3d sub = startPos.add(dist.x/points*i, dist.y/points*i, dist.z/points*i);
 				//distance to the middle point and by that, distance from the start and end. -1 is start, 1 is end
 				double fixPointDist = (i-points/2)/(points/2);
 				//Randomization modifier, closer to start/end means smaller divergence
@@ -581,7 +581,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					offX = Math.abs(offX)*(end.x-sub.x);
 					offZ = Math.abs(offZ)*(end.z-sub.z);
 				}
-				subPoints.add(sub.addVector(offX, offY, offZ));
+				subPoints.add(sub.add(offX, offY, offZ));
 			}
 			animationTimer = ANIMATION_MAX+Utils.RAND.nextInt(5)-2;
 		}

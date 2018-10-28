@@ -88,7 +88,7 @@ public class GuiAssembler extends GuiIEContainerBase
 					tooltip.add(tile.patterns[i].inv.get(9).getDisplayName());
 					tile.patterns[i].inv.get(9).getItem().addInformation(tile.patterns[i].inv.get(9), ClientUtils.mc().world, tooltip, TooltipFlags.NORMAL);
 					for(int j = 0; j < tooltip.size(); j++)
-						tooltip.set(j, (j==0?tile.patterns[i].inv.get(9).getRarity().rarityColor: TextFormatting.GRAY)+tooltip.get(j));
+						tooltip.set(j, (j==0?tile.patterns[i].inv.get(9).getRarity().color: TextFormatting.GRAY)+tooltip.get(j));
 				}
 
 		if(((mx >= guiLeft+11&&mx < guiLeft+21)||(mx >= guiLeft+69&&mx < guiLeft+79)||(mx >= guiLeft+127&&mx < guiLeft+137))&&my > guiTop+67&&my < guiTop+77)

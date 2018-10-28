@@ -87,9 +87,12 @@ public class MessageMinecartShaderSync implements IMessage
 		{
 			Minecraft.getMinecraft().addScheduledTask(() -> {
 				World world = ImmersiveEngineering.proxy.getClientWorld();
-				Entity entity = world.getEntityByID(message.entityID);
-				if(entity instanceof EntityMinecart)
-					ModelShaderMinecart.shadedCarts.put(message.entityID, message.shader);
+				if (world!=null) // This can happen if the task is scheduled right before leaving the world
+				{
+					Entity entity = world.getEntityByID(message.entityID);
+					if(entity instanceof EntityMinecart)
+						ModelShaderMinecart.shadedCarts.put(message.entityID, message.shader);
+				}
 			});
 			return null;
 		}

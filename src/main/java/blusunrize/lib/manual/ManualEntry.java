@@ -237,11 +237,11 @@ public class ManualEntry
 		{
 			location = name;
 			getContent = (splitter) -> {
-				ResourceLocation langLoc = new ResourceLocation(name.getResourceDomain(),
+				ResourceLocation langLoc = new ResourceLocation(name.getNamespace(),
 						"manual/"+Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
-								+"/"+name.getResourcePath()+".txt");
-				ResourceLocation dataLoc = new ResourceLocation(name.getResourceDomain(),
-						"manual/"+name.getResourcePath()+".json");
+								+"/"+name.getPath()+".txt");
+				ResourceLocation dataLoc = new ResourceLocation(name.getNamespace(),
+						"manual/"+name.getPath()+".json");
 				IResource resLang = getResourceNullable(langLoc);
 				IResource resData;
 				try
@@ -249,11 +249,11 @@ public class ManualEntry
 					resData = Minecraft.getMinecraft().getResourceManager().getResource(dataLoc);
 				} catch(IOException e)
 				{
-					throw new RuntimeException(e);//50d9ee7d986cd28e7ea0b2493e0d902b1d676e75
+					throw new RuntimeException(e);
 				}
 				if(resLang==null)
-					resLang = getResourceNullable(new ResourceLocation(name.getResourceDomain(),
-							"manual/en_us/"+name.getResourcePath()+".txt"));
+					resLang = getResourceNullable(new ResourceLocation(name.getNamespace(),
+							"manual/en_us/"+name.getPath()+".txt"));
 				if(resLang==null)
 					return new String[]{"ERROR", "This is not a good thing", "Could not find the file for "+name};
 				try

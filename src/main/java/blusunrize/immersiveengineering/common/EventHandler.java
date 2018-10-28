@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInt
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRazorWire;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
@@ -146,13 +147,11 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttach(AttachCapabilitiesEvent event)
+	public void onCapabilitiesAttach(AttachCapabilitiesEvent<Entity> event)
 	{
 		if(event.getObject() instanceof EntityMinecart)
-		{
-			EntityMinecart entityMinecart = (EntityMinecart)event.getObject();
-			event.addCapability(new ResourceLocation("immersiveengineering:shader"), new ShaderWrapper_Direct("immersiveengineering:minecart"));
-		}
+			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
+					new ShaderWrapper_Direct("immersiveengineering:minecart"));
 	}
 
 	@SubscribeEvent
@@ -186,7 +185,7 @@ public class EventHandler
 					movVec = movVec.normalize();
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(wrapper);
 					if(shader!=null)
-						shader.getMiddle().getEffectFunction().execute(event.getMinecart().world, shader.getLeft(), null, shader.getRight().getShaderType(), prevPosVec.addVector(0,.25,0).add(movVec), movVec.scale(1.5f), .25f);
+						shader.getMiddle().getEffectFunction().execute(event.getMinecart().world, shader.getLeft(), null, shader.getRight().getShaderType(), prevPosVec.add(0, .25, 0).add(movVec), movVec.scale(1.5f), .25f);
 				}
 			}
 		}
@@ -199,9 +198,9 @@ public class EventHandler
 	@SubscribeEvent
 	public void lootLoad(LootTableLoadEvent event)
 	{
-		if(event.getName().getResourceDomain().equals("minecraft"))
+		if(event.getName().getNamespace().equals("minecraft"))
 			for(ResourceLocation inject : lootInjections)
-				if(event.getName().getResourcePath().equals(inject.getResourcePath()))
+				if(event.getName().getPath().equals(inject.getPath()))
 				{
 					LootPool injectPool = Utils.loadBuiltinLootTable(inject, event.getLootTableManager()).getPool("immersiveengineering_loot_inject");
 					LootPool mainPool = event.getTable().getPool("main");
@@ -305,8 +304,13 @@ public class EventHandler
 				if(e.getValue() > e.getKey().cableType.getTransferRate())
 				{
 					if(event.world instanceof WorldServer)
+					{
+						BlockPos start = e.getKey().start;
 						for(Vec3d vec : e.getKey().getSubVertices(event.world))
-							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME, false, vec.x, vec.y, vec.z, 0, 0, .02, 0, 1, new int[0]);
+							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME,
+									vec.x+start.getX(), vec.y+start.getY(), vec.z+start.getZ(),
+									0, 0, .02, 0, 1, new int[0]);
+					}
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).clear();
@@ -510,7 +514,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntitySpawnCheck(LivingSpawnEvent.CheckSpawn event)
 	{
-		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY)
+		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
+				||event.isSpawner())
 			return;
 		if(event.getEntityLiving().isCreatureType(EnumCreatureType.MONSTER, false))
 		{
@@ -551,7 +556,10 @@ public class EventHandler
 				event.setCanceled(true);
 		if(event.getState().getBlock()==IEContent.blockMetalDecoration2&&IEContent.blockMetalDecoration2.getMetaFromState(event.getState())==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())
 			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 1), current, false))
+			{
 				event.setCanceled(true);
+				TileEntityRazorWire.applyDamage(event.getEntityLiving());
+			}
 		TileEntity te = event.getEntityPlayer().getEntityWorld().getTileEntity(event.getPos());
 		if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getEntityPlayer()))
 			event.setCanceled(true);

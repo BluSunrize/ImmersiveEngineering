@@ -3,8 +3,14 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"custom": { "flip-v": true },
-		"model": "immersiveengineering:smartmodel/conn_e_meter"
+      "model": "immersiveengineering:smartmodel/connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/e_meter.obj",
+        "layers": [
+          "SOLID"
+        ]
+      }
 	},
 	"variants":
 	{

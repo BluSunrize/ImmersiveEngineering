@@ -1,0 +1,18 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:metal_decoration2",
+    "data": 8,
+    "count": 4
+  },
+  "pattern": [
+    "SSS",
+    "SS ",
+    "S  "
+  ],
+  "key": {
+    "S": {
+      "item": "#scaffoldingAluminum"
+    }
+  }
+}

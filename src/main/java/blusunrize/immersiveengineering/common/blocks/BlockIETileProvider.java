@@ -596,8 +596,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	}
 //	public RayTraceResult doRaytrace(World world, BlockPos pos, Vec3d start, Vec3d end)
 //	{
-//		start = start.addVector((double)(-pos.getX()), (double)(-pos.getY()), (double)(-pos.getZ()));
-//		end = end.addVector((double)(-pos.getX()), (double)(-pos.getY()), (double)(-pos.getZ()));
+//		start = start.add((double)(-pos.getX()), (double)(-pos.getY()), (double)(-pos.getZ()));
+//		end = end.add((double)(-pos.getX()), (double)(-pos.getY()), (double)(-pos.getZ()));
 //		Vec3d vec3 = start.getIntermediateWithXValue(end, this.minX);
 //		Vec3d vec31 = start.getIntermediateWithXValue(end, this.maxX);
 //		Vec3d vec32 = start.getIntermediateWithYValue(end, this.minY);
@@ -650,7 +650,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 //				enumfacing = EnumFacing.NORTH;
 //			if(vec36 == vec35)
 //				enumfacing = EnumFacing.SOUTH;
-//			return new RayTraceResult(vec36.addVector((double)pos.getX(), (double)pos.getY(), (double)pos.getZ()), enumfacing, pos);
+//			return new RayTraceResult(vec36.add((double)pos.getX(), (double)pos.getY(), (double)pos.getZ()), enumfacing, pos);
 //		}
 //	}
 //	protected boolean isVecInsideYZBounds(Vec3d point)
@@ -717,7 +717,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
+	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIEBase)

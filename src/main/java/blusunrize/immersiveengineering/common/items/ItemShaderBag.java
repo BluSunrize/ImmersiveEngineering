@@ -37,7 +37,7 @@ public class ItemShaderBag extends ItemIEBase
 //	public int getColorFromItemStack(ItemStack stack, int pass)
 //	{
 //		EnumRarity rarity = this.getRarity(stack);
-//		return ClientUtils.getFormattingColour(rarity.rarityColor);
+//		return ClientUtils.getFormattingColour(rarity.color);
 //	}
 	@Override
 	public boolean hasCustomItemColours()
@@ -48,7 +48,7 @@ public class ItemShaderBag extends ItemIEBase
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
-		return ClientUtils.getFormattingColour(this.getRarity(stack).rarityColor);
+		return ClientUtils.getFormattingColour(this.getRarity(stack).color);
 	}
 
 	@Override

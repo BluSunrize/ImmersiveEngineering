@@ -102,7 +102,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		pos = nbt.getInteger("pos");
 		offset = nbt.getIntArray("offset");
 		mirrored = nbt.getBoolean("mirrored");
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 	}
 
 	@Override

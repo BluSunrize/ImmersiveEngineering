@@ -173,7 +173,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
 	//			NBTTagCompound tag = new NBTTagCompound();
 	//			((TileEntityWoodenBarrel) te).writeTank(tag, true);
-	//			if(!tag.hasNoTags())
+	//			if(!tag.isEmpty())
 	//				stack.setTagCompound(tag);
 	//			return stack;
 	//		}
@@ -191,7 +191,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, meta);
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
@@ -201,7 +201,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, meta);
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
@@ -219,7 +219,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenCrate) te).writeInv(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
@@ -229,7 +229,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//				ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 	//				NBTTagCompound tag = new NBTTagCompound();
 	//				((TileEntityWoodenBarrel) te).writeTank(tag, true);
-	//				if(!tag.hasNoTags())
+	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
 	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}

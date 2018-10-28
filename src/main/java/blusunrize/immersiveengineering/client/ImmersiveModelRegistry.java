@@ -138,10 +138,10 @@ public class ImmersiveModelRegistry
 				builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
 				TextureAtlasSprite missing = textureGetter.apply(new ResourceLocation("missingno"));
 				for(String s : objModel.getMatLib().getMaterialNames())
-					if(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath().startsWith("#"))
+					if(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getPath().startsWith("#"))
 					{
 						IELogger.error("OBJLoader: Unresolved texture '{}' for obj model '{}'",
-								objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(), modelLocation);
+								objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getPath(), modelLocation);
 						builder.put(s, missing);
 					}
 					else

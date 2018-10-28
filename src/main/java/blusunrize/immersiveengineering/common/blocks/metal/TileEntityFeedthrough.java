@@ -4,7 +4,9 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -50,8 +52,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	EnumFacing facing = EnumFacing.NORTH;
 	public int offset = 0;
 	@Nullable
-	private BlockPos connPositive = null;
-	private boolean hasNegative = false;
+	public BlockPos connPositive = null;
+	public boolean hasNegative = false;
 	private boolean formed = true;
 
 	@Override
@@ -97,9 +99,9 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 
 	private boolean isPositive(Vec3i offset)
 	{
-		return offset.getX()*facing.getFrontOffsetX()+
-				offset.getY()*facing.getFrontOffsetY()+
-				offset.getZ()*facing.getFrontOffsetZ() > 0;
+		return offset.getX()*facing.getXOffset()+
+				offset.getY()*facing.getYOffset()+
+				offset.getZ()*facing.getZOffset() > 0;
 	}
 
 	@Override
@@ -112,8 +114,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		double l = INFOS.get(reference).connOffset;
 		int factor = positive?1: -1;
-		return new Vec3d(.5+(.5+l)*facing.getFrontOffsetX()*factor, .5+(.5+l)*facing.getFrontOffsetY()*factor,
-				.5+(.5+l)*facing.getFrontOffsetZ()*factor);
+		return new Vec3d(.5+(.5+l)*facing.getXOffset()*factor, .5+(.5+l)*facing.getYOffset()*factor,
+				.5+(.5+l)*facing.getZOffset()*factor);
 	}
 
 	@Override
@@ -287,33 +289,81 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		if(!formed)
 			return;
-		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
-		for(int i = -1; i <= 1; i++)
+		TileEntityFeedthrough master;
+		BlockPos masterPos = pos.offset(facing, -offset);
 		{
-			int offsetLocal = i-offset;
-			BlockPos replacePos = pos.offset(facing, offsetLocal);
-			if(!info.canReplace())
-				world.setBlockToAir(replacePos);
-			else if(i!=offset)
-			{
-				TileEntity te = world.getTileEntity(replacePos);
-				if(te instanceof TileEntityFeedthrough)
-					((TileEntityFeedthrough)te).formed = false;
-				IBlockState newState = Blocks.AIR.getDefaultState();
-				switch(i)
+			TileEntity tmp = world.getTileEntity(masterPos);
+			if(tmp instanceof TileEntityFeedthrough)
+				master = (TileEntityFeedthrough)tmp;
+			else
+				master = null;
+		}
+		disassembleBlock(-1);
+		disassembleBlock(1);
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, masterPos);
+		if(conns!=null)
+		{
+			if(master!=null)
+				for(Connection c : conns)
 				{
-					case -1:
-						newState = info.conn.withProperty(IEProperties.FACING_ALL, facing);
-						break;
-					case 0:
-						newState = stateForMiddle;
-						break;
-					case 1:
-						newState = info.conn.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
-						break;
+					BlockPos newPos = null;
+					if(c.end.equals(master.connPositive))
+					{
+						if(offset!=1)
+							newPos = masterPos.offset(facing);
+					}
+					else if(offset!=-1)
+						newPos = masterPos.offset(facing, -1);
+					if(newPos!=null)
+					{
+						Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
+						ApiUtils.moveConnectionEnd(reverse, newPos, world);
+						IImmersiveConnectable connector = ApiUtils.toIIC(newPos, world);
+						IImmersiveConnectable otherEnd = ApiUtils.toIIC(reverse.start, world);
+						if(connector!=null)
+						{
+							try
+							{
+								//TODO clean this up in 1.13
+								connector.connectCable(reverse.cableType, null, otherEnd);
+							} catch(Exception x)
+							{
+								IELogger.logger.info("Failed to fully move connection", x);
+							}
+						}
+					}
 				}
-				world.setBlockState(replacePos, newState);
+		}
+		disassembleBlock(0);
+	}
+
+	private void disassembleBlock(int toBreak)
+	{
+		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
+		int offsetLocal = toBreak-offset;
+		BlockPos replacePos = pos.offset(facing, offsetLocal);
+		if(!info.canReplace())
+			world.setBlockToAir(replacePos);
+		else if(toBreak!=offset)
+		{
+			TileEntity te = world.getTileEntity(replacePos);
+			if(te instanceof TileEntityFeedthrough)
+				((TileEntityFeedthrough)te).formed = false;
+			IBlockState newState = Blocks.AIR.getDefaultState();
+			switch(toBreak)
+			{
+				case -1:
+					newState = info.conn.withProperty(IEProperties.FACING_ALL, facing);
+					break;
+				case 0:
+					newState = stateForMiddle;
+					break;
+				case 1:
+					newState = info.conn.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
+					break;
 			}
+			world.setBlockState(replacePos, newState);//TODO move wires properly
+
 		}
 	}
 
@@ -366,5 +416,24 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	protected float getMaxDamage(ImmersiveNetHandler.Connection c)
 	{
 		return INFOS.get(reference).maxDmg;
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		if(id==253)
+		{
+			world.checkLight(pos);
+			return true;
+		}
+		return super.receiveClientEvent(id, arg);
+	}
+
+	@Override
+	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		if(c.end.equals(connPositive))
+			connPositive = newEnd;
+		return true;
 	}
 }

@@ -127,7 +127,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.Machines.turret_consumption;
-		if(world.isBlockIndirectlyGettingPowered(getPos()) > 0^redstoneControlInverted)
+		if(world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
@@ -291,7 +291,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		energyStorage.readFromNBT(nbt);
 
 		if(nbt.hasKey("owner"))
@@ -546,7 +546,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		if(turret.redstoneControlInverted)
 			tag.setBoolean("redstoneControlInverted", turret.redstoneControlInverted);
 
-		if(!tag.hasNoTags())
+		if(!tag.isEmpty())
 			stack.setTagCompound(tag);
 		return stack;
 	}

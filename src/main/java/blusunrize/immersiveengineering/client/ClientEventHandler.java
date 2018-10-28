@@ -24,6 +24,8 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.fx.ParticleFractal;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
+
+import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
@@ -35,7 +37,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
-import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -119,6 +120,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 {
 	private boolean shieldToggleButton = false;
 	private int shieldToggleTimer = 0;
+	private static final String[] BULLET_TOOLTIP = {"\u00A0\u00A0IE\u00A0", "\u00A0\u00A0AMMO\u00A0", "\u00A0\u00A0HERE\u00A0", "\u00A0\u00A0--\u00A0"};
 
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
@@ -252,6 +254,39 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 //			FluidStack fs = FluidUtil.getFluidContained(event.getItemStack());
 //			if(fs!=null && fs.getFluid()!=null)
 //				event.getToolTip().add("Fluid: "+ FluidRegistry.getFluidName(fs));
+		}
+
+		if(event.getItemStack().getItem() instanceof IBulletContainer)
+			for(String s : BULLET_TOOLTIP)
+				event.getToolTip().add(s);
+	}
+
+	@SubscribeEvent()
+	public void onRenderTooltip(RenderTooltipEvent.PostText event)
+	{
+		ItemStack stack = event.getStack();
+		if(stack.getItem() instanceof IBulletContainer)
+		{
+			NonNullList<ItemStack> bullets = ((IBulletContainer)stack.getItem()).getBullets(stack, true);
+			if(bullets!=null)
+			{
+				int bulletAmount = ((IBulletContainer)stack.getItem()).getBulletCount(stack);
+				int line = event.getLines().size()-Utils.findSequenceInList(event.getLines(), BULLET_TOOLTIP, (s, s2) -> s.equals(s2.substring(2)));
+
+				int currentX = event.getX();
+				int currentY = line > 0?event.getY()+(event.getHeight()+1-line*10): event.getY()-42;
+
+				GlStateManager.pushMatrix();
+				GlStateManager.enableBlend();
+				GlStateManager.enableRescaleNormal();
+				GlStateManager.translate(currentX, currentY, 700);
+				GlStateManager.scale(.5f, .5f, 1);
+
+				GuiRevolver.drawExternalGUI(bullets, bulletAmount);
+
+				GlStateManager.disableRescaleNormal();
+				GlStateManager.popMatrix();
+			}
 		}
 	}
 
@@ -530,7 +565,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					}
 					else if(equipped.getItem() instanceof ItemRevolver||equipped.getItem() instanceof ItemSpeedloader)
 					{
-						ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 						NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped, true);
 						if(bullets!=null)
 						{
@@ -540,46 +574,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							float dx = right?event.getResolution().getScaledWidth()-32-48: 48;
 							float dy = event.getResolution().getScaledHeight()-64;
 							GlStateManager.pushMatrix();
+							GlStateManager.enableRescaleNormal();
 							GlStateManager.enableBlend();
 							GlStateManager.translate(dx, dy, 0);
 							GlStateManager.scale(.5f, .5f, 1);
-							GlStateManager.color(1, 1, 1, 1);
 
-							ClientUtils.drawTexturedRect(0, 1, 74, 74, 0/256f, 74/256f, 51/256f, 125/256f);
-							if(bulletAmount >= 18)
-								ClientUtils.drawTexturedRect(47, 1, 103, 74, 74/256f, 177/256f, 51/256f, 125/256f);
-							else if(bulletAmount > 8)
-								ClientUtils.drawTexturedRect(57, 1, 79, 39, 57/256f, 136/256f, 12/256f, 51/256f);
-
-							RenderItem ir = ClientUtils.mc().getRenderItem();
-							int[][] slots = ContainerRevolver.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
-							for(int i = 0; i < bulletAmount; i++)
-							{
-								ItemStack b = bullets.get(i);
-								if(!b.isEmpty())
-								{
-									int x = 0;
-									int y = 0;
-									if(i==0)
-									{
-										x = 29;
-										y = 3;
-									}
-									else if(i-1 < slots.length)
-									{
-										x = slots[i-1][0];
-										y = slots[i-1][1];
-									}
-									else
-									{
-										int ii = i-(slots.length+1);
-										x = ii==0?48: ii==1?29: ii==3?2: 10;
-										y = ii==1?57: ii==3?30: ii==4?11: 49;
-									}
-
-									ir.renderItemIntoGUI(b, x, y);
-								}
-							}
+							GuiRevolver.drawExternalGUI(bullets, bulletAmount);
 
 							if(equipped.getItem() instanceof ItemRevolver)
 							{
@@ -711,7 +711,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					else if(equipped.getItem() instanceof ItemIEShield)
 					{
 						NBTTagCompound upgrades = ((ItemIEShield)equipped.getItem()).getUpgrades(equipped);
-						if(!upgrades.hasNoTags())
+						if(!upgrades.isEmpty())
 						{
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 							GlStateManager.color(1, 1, 1, 1);
@@ -1039,9 +1039,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				double tz = pos.getZ()+.5;
 				if(!event.getPlayer().world.isAirBlock(pos.offset(f)))
 				{
-					tx += f.getFrontOffsetX();
-					ty += f.getFrontOffsetY();
-					tz += f.getFrontOffsetZ();
+					tx += f.getXOffset();
+					ty += f.getYOffset();
+					tz += f.getZOffset();
 				}
 				BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
 
@@ -1146,9 +1146,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
 			BufferBuilder.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1157,9 +1157,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): -w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): -w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
 			BufferBuilder.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1169,9 +1169,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1: 1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?1: -1)*facing.getAxisDirection().getOffset()*h: w;
 			BufferBuilder.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1180,9 +1180,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			double w = (cos*p[0]+sin*p[1]);
 			double h = (-sin*p[0]+cos*p[1]);
-			double xx = facing.getFrontOffsetX() < 0?-(.5+.002): facing.getFrontOffsetX() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
-			double yy = facing.getFrontOffsetY() < 0?-(.5+.002): facing.getFrontOffsetY() > 0?(.5+.002): -w;
-			double zz = facing.getFrontOffsetZ() < 0?-(.5+.002): facing.getFrontOffsetZ() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
+			double xx = facing.getXOffset() < 0?-(.5+.002): facing.getXOffset() > 0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1: -1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getYOffset() < 0?-(.5+.002): facing.getYOffset() > 0?(.5+.002): -w;
+			double zz = facing.getZOffset() < 0?-(.5+.002): facing.getZOffset() > 0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1: 1)*facing.getAxisDirection().getOffset()*h: -w;
 			BufferBuilder.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
 		}
 		tessellator.draw();
@@ -1208,7 +1208,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		}
 		for(int i = 0; i < translatedPositions.length; i++)
 		{
-			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).addVector(.5, .5, .5);
+			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
 			if(side!=null&&targetedBB!=null)
 				vec = new Vec3d(side==EnumFacing.WEST?targetedBB.minX-.002: side==EnumFacing.EAST?targetedBB.maxX+.002: vec.x, side==EnumFacing.DOWN?targetedBB.minY-.002: side==EnumFacing.UP?targetedBB.maxY+.002: vec.y, side==EnumFacing.NORTH?targetedBB.minZ-.002: side==EnumFacing.SOUTH?targetedBB.maxZ+.002: vec.z);
 			translatedPositions[i] = vec;
@@ -1234,13 +1234,16 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
 	}
 
+	private static ItemStack sampleDrill = ItemStack.EMPTY;
 	@SubscribeEvent
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
 		//Overlay renderer for the sample drill
 		boolean chunkBorders = false;
+		if(sampleDrill.isEmpty())
+			sampleDrill = new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta());
 		for(EnumHand hand : EnumHand.values())
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), ClientUtils.mc().player.getHeldItem(hand), true))
+			if(OreDictionary.itemMatches(sampleDrill, ClientUtils.mc().player.getHeldItem(hand), true))
 			{
 				chunkBorders = true;
 				break;
@@ -1283,7 +1286,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double pz = TileEntityRendererDispatcher.staticPlayerZ;
 			int chunkX = (int)player.posX >> 4<<4;
 			int chunkZ = (int)player.posZ >> 4<<4;
-			int y = Math.min((int)player.posY-2, player.getEntityWorld().getChunkFromBlockCoords(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
+			int y = Math.min((int)player.posY-2, player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
 			float h = (float)Math.max(32, player.posY-y+4);
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder BufferBuilder = tessellator.getBuffer();

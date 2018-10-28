@@ -112,7 +112,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 				EnumFacing fw = facing.rotateY();
 				if(mirrored)
 					fw = fw.getOpposite();
-				world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, exhaust.getX()+.5+(fl.getFrontOffsetX()*.3125f)+(-fw.getFrontOffsetX()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getFrontOffsetZ()*.3125f)+(-fw.getFrontOffsetZ()*.3125f), 0, 0, 0);
+				world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0, 0, 0);
 			}
 		}
 		else

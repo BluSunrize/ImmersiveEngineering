@@ -42,9 +42,9 @@ public class ItemBlockIEStairs extends ItemBlock
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getTranslationKey(ItemStack itemstack)
 	{
-		return super.getUnlocalizedName(itemstack);
+		return super.getTranslationKey(itemstack);
 	}
 
 	@Override

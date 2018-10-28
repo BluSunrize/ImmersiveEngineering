@@ -135,6 +135,8 @@ tile.immersiveengineering.metal_decoration2.aluminum_wallmount.name=Aluminium Wa
 tile.immersiveengineering.metal_decoration2.lantern.name=Lantern
 tile.immersiveengineering.metal_decoration2.razor_wire.name=Razor Wire
 tile.immersiveengineering.metal_decoration2.toolbox.name=Engineer's Toolbox
+tile.immersiveengineering.metal_decoration2.steel_slope.name=Steel Structural Arm
+tile.immersiveengineering.metal_decoration2.alu_slope.name=Aluminium Structural Arm
 
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=Steel Scaffolding Slab
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=Steel Scaffolding Slab
@@ -709,6 +711,7 @@ desc.immersiveengineering.info.shader.immersiveengineering:railgun=Railgun
 desc.immersiveengineering.info.shader.immersiveengineering:shield=Plated Shield
 desc.immersiveengineering.info.shader.immersiveengineering:minecart=Minecart
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=Balloon
+desc.immersiveengineering.info.shader.immersiveengineering:banner=Banner
 desc.immersiveengineering.info.shader.set=§lShader Set§r:
 desc.immersiveengineering.info.shader.reference=§lReference to Popculture§r:
 desc.immersiveengineering.info.shader.details=§lAdditional Info§r:
@@ -1023,9 +1026,12 @@ immersiveengineering.potion.concreteFeet=Concrete Feet
 immersiveengineering.potion.flashed=Flashed
 
 #MANUAL
-#ie.manual.entry..name=
-#ie.manual.entry..subtext=
+ie.manual.currentVersion= - CURRENT
+ie.manual.newerVersion= - NEW
+#ie.manual.entry.name=
+#ie.manual.entry.subtext=
 #ie.manual.entry.=
+
 
 ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews_0.name=What's new in v0.6.0
@@ -1163,6 +1169,22 @@ ie.manual.entry.graphite.name=Graphite
 ie.manual.entry.graphite.subtext=Coal stuff
 ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;squeezer;§o§nIndustrial §o§nSqueezer§r>. That dust can then be smelted into an ingot.
 ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager. You can also create electrodes in the metal press, using the rod mold on 4 ingots, but the electrodes crafted this way have less durability.
+
+ie.manual.entry.wiring.name=Basic Wiring
+ie.manual.entry.wiring.subtext=Bzzzt!
+ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.
+ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transfer rate between two points depends on the weakest type of wire between them.
+ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
+ie.manual.entry.wiring3=and wires can only connect to blocks that match the voltage.
+ie.manual.entry.wiring4=There are two important values to note about wiring:<br>Each connector has an input value (§o<config;iA;wireConnectorInput>§r) and each wire has a maximum transfer rate (§o<config;iA;wireTransferRate;l3>§r).<br>The connector limits how much power can be in- and output, but multiple connectors can §ounify§r into a single wire, allowing you to combine the transfer over longer ranges. Note however that the §omaximum transfer rate of the wire must not be exceeded, or else the wire will §oburn up§r.
+ie.manual.entry.wiring5=Wires will transfer energy even through §ounloaded chunks§r as long as the input and output chunks are loaded.<br>Uninsulated wires connected to an energy source will cause damage to players and mobs too close to them. Insulated wires are available for low and medium voltage.<br>Sneaking when using the "Pick Block" function on a connector will pick the connected wire from your inventory.<br>Wire connections will break if a block obstructing the wire is placed.
+ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other Flux handlers and they will transfer power through connected wires. §lRelays§r will still accept wires but can't in- or output, they serve as connection points between wires.
+ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
+ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
+ie.manual.entry.wiringTransformer1=You can attach <link;wiring;§o§ntransformers §o§nto §o§nwooden §o§npoles§r;3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
+ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the wires connected to a block by simply rightclicking it.
+ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Aiming it at any energy storage or rightclicking it will read its current storage. Sneak+rightclick two connectors to calculate the average loss between them.
+ie.manual.entry.wiringFeedthrough=Feedthrough Insulators allow connecting wiring from one side of a wall to wiring on the other side without a hole. They can be created with any "normal" solid block in the middle. All common types of connectors (power and redstone) can be used to create feedthrough insulators for the corresponding wire type. Right-click one of the connectors with a hammer to form the multiblock.
 
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=
@@ -1422,7 +1444,7 @@ ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a conn
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!
-ie.manual.entry.shader0=Shaders are items you can find in the world or aquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r>, <link;drill;§o§nDrills§r>, <link;chemthrower;§o§nChemical §o§nThrowers§r>, <link;shield;§o§nPlated §o§nShield§r> or <link;railgun;§o§nRailguns§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the appropriate slot.<br>You can also apply them to a Minecart or a <link;balloon;§o§nBalloon§r> by rightclicking!
+ie.manual.entry.shader0=Shaders are items you can find in the world or aquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r>, <link;drill;§o§nDrills§r>, <link;chemthrower;§o§nChemical §o§nThrowers§r>, <link;shield;§o§nPlated §o§nShield§r> or <link;railgun;§o§nRailguns§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the appropriate slot.<br>You can also apply them to a Minecart, Banner or a <link;balloon;§o§nBalloon§r> by rightclicking!
 ie.manual.entry.shader1=For a full list of all available shaders, their looks, references and more details, <link;shaderList;§o§ncheck §o§nhere§r>
 ie.manual.entry.shader2=Shader Grabbags are items containing a random shader. They can be found in crates, traded from villagers or dropped by bosses. The rarity of the contained shader is equal to, or better than the rarity of the bag. When using a bag, you are more likely to get a shader you do not yet own, than one you already posess.
 ie.manual.entry.shader3=Shaders bags can be crafted into two bags of a lower level. This will lower your chances of getting rarer shaders but provide you with more attempts.

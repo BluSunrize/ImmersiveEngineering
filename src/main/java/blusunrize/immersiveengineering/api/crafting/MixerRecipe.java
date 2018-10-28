@@ -198,4 +198,10 @@ public class MixerRecipe extends MultiblockRecipe
 			}
 		return null;
 	}
+
+	@Override
+	public boolean shouldCheckItemAvailability()
+	{
+		return false;
+	}
 }

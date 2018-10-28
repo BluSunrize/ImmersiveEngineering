@@ -3,8 +3,14 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"custom": { "flip-v": true },
-		"model": "immersiveengineering:smartmodel/conn_e_lantern"
+		"model": "immersiveengineering:smartmodel/connector",
+		"custom": {
+			"flip-v": true,
+          "base": "immersiveengineering:block/metal_device/e_lantern.obj",
+          "layers": [
+            "SOLID"
+          ]
+		}
 	},
 	"variants":
 	{
@@ -42,12 +48,15 @@
 			"false":{},
 			"true":{}
 		},
-		//active texture
 		"boolean0":
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:smartmodel/conn_e_lantern_on"
+				"custom": {
+					"textures": {
+						"#immersiveengineering:blocks/metal_device1_electric_lantern": "immersiveengineering:blocks/metal_device1_electric_lantern_on"
+					}
+				}
 			}
 		}
 	}

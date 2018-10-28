@@ -18,13 +18,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.tileentity.TileEntity;
@@ -37,6 +37,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -51,13 +52,16 @@ public class ConnModelReal implements IBakedModel
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
-	IBakedModel base;
+	private final IBakedModel base;
+	private final ImmutableSet<BlockRenderLayer> layers;
 
-	public ConnModelReal(IBakedModel basic)
+	public ConnModelReal(IBakedModel basic, ImmutableSet<BlockRenderLayer> layers)
 	{
 		base = basic;
+		this.layers = layers;
 	}
 
+	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 	{
@@ -86,14 +90,14 @@ public class ConnModelReal implements IBakedModel
 			Pair<Byte, ExtBlockstateAdapter> key = new ImmutablePair<>((byte)((x<<4)|z), ad);
 			try
 			{
-				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(ext, textureAtlasSprite, base, rand));
+				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(ext, textureAtlasSprite, base, layers));
 				return ret.getQuads(state, null, rand);
 			} catch(ExecutionException e)
 			{
 				e.printStackTrace();
 			}
 		}
-		return base.getQuads(state, side, rand);
+		return getBaseQuads(MinecraftForgeClient.getRenderLayer(), state, side, rand);
 	}
 
 	@Override
@@ -114,22 +118,25 @@ public class ConnModelReal implements IBakedModel
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
 		return base.getParticleTexture();
 	}
 
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return ItemCameraTransforms.DEFAULT;
-	}
-
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return ItemOverrideList.NONE;
+	}
+
+	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, IBlockState state, EnumFacing side, long rand)
+	{
+		if(layers.contains(currentLayer))
+			return base.getQuads(state, side, rand);
+		return ImmutableList.of();
 	}
 
 	public class AssembledBakedModel implements IBakedModel
@@ -138,24 +145,28 @@ public class ConnModelReal implements IBakedModel
 		IExtendedBlockState extendedState;
 		List<BakedQuad>[] lists;
 		TextureAtlasSprite texture;
+		private final ImmutableSet<BlockRenderLayer> layers;//TODO remove
 
-		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b, long posRand)
+		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b,
+								   ImmutableSet<BlockRenderLayer> layers)
 		{
 			basic = b;
 			extendedState = iExtendedBlockState;
 			texture = tex;
+			this.layers = layers;
 		}
 
+		@Nonnull
 		@Override
 		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 		{
 			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 			if(layer!=BlockRenderLayer.SOLID&&layer!=BlockRenderLayer.TRANSLUCENT)
-				return basic.getQuads(state, side, rand);
+				return getBaseQuads(layer, state, side, rand);
 			if(lists==null)
 				lists = ClientUtils.convertConnectionFromBlockstate(extendedState, texture);
 			List<BakedQuad> l = new ArrayList<>(lists[layer==BlockRenderLayer.SOLID?0: 1]);
-			l.addAll(basic.getQuads(state, side, rand));
+			l.addAll(getBaseQuads(layer, state, side, rand));
 			return Collections.synchronizedList(l);
 		}
 
@@ -177,18 +188,14 @@ public class ConnModelReal implements IBakedModel
 			return false;
 		}
 
+		@Nonnull
 		@Override
 		public TextureAtlasSprite getParticleTexture()
 		{
 			return base.getParticleTexture();
 		}
 
-		@Override
-		public ItemCameraTransforms getItemCameraTransforms()
-		{
-			return ItemCameraTransforms.DEFAULT;
-		}
-
+		@Nonnull
 		@Override
 		public ItemOverrideList getOverrides()
 		{

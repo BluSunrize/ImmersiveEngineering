@@ -3,6 +3,7 @@
   "defaults":
   {
     "transform": "forge:default-block",
+    "model": "immersiveengineering:smartmodel/connector",
     "textures": {
     },
     "custom": { "flip-v": true }
@@ -131,34 +132,88 @@
     "type":
     {
       "connector_lv": {
-        "model": "immersiveengineering:smartmodel/conn_conn_lv"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_lv.obj",
+          "layers": [
+            "SOLID"
+          ]
+        }
       },
       "relay_lv": {
-        "model": "immersiveengineering:smartmodel/conn_rel_lv"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_lv.obj",
+          "layers": [
+            "SOLID"
+          ]
+        },
+        "textures": {
+          "#immersiveengineering:blocks/connector_connector_lv": "immersiveengineering:blocks/connector_relay_lv"
+        }
       },
       "connector_mv":	{
-        "model": "immersiveengineering:smartmodel/conn_conn_mv"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_mv.obj",
+          "layers": [
+            "SOLID"
+          ]
+        }
       },
       "relay_mv":	{
-        "model": "immersiveengineering:smartmodel/conn_rel_mv"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_mv.obj",
+          "layers": [
+            "SOLID"
+          ]
+        },
+        "textures": {
+          "#immersiveengineering:blocks/connector_connector_mv": "immersiveengineering:blocks/connector_relay_mv"
+        }
       },
       "connector_hv": {
-        "model": "immersiveengineering:smartmodel/conn_conn_hv"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_hv.obj",
+          "layers": [
+            "SOLID"
+          ]
+        }
       },
       "relay_hv": {
-        "model": "immersiveengineering:smartmodel/conn_rel_hv"
+        "custom": {
+          "base": "immersiveengineering:block/connector/relay_hv.obj",
+          "layers": [
+            "TRANSLUCENT"
+          ]
+        }
       },
       "connector_structural": {
-        "model": "immersiveengineering:smartmodel/conn_conn_struct"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+          "layers": [
+            "SOLID"
+          ]
+        }
       },
       "connector_redstone": {
-        "model": "immersiveengineering:smartmodel/conn_conn_redstone"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_redstone.obj.ie",
+          "layers": [
+            "SOLID"
+          ]
+        }
       },
       "connector_probe": {
-        "model": "immersiveengineering:smartmodel/conn_conn_probe"
+        "custom": {
+          "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
+          "layers": [
+            "CUTOUT",
+            "TRANSLUCENT"
+          ]
+        }
       },
       "feedthrough": {
-        "model": "immersiveengineering:smartmodel/conn_feedthrough"
+        "custom": {
+          "base": "immersiveengineering:block/smartmodel/feedthrough"
+        }
       }
     },
     "facing":

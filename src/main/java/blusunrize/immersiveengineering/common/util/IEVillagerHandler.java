@@ -111,11 +111,11 @@ public class IEVillagerHandler
 				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
 		);
 		career_machinist.addTrade(4,
-				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 0), new EntityVillager.PriceInfo(28, 40)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 1), new EntityVillager.PriceInfo(28, 40)),
 				new ItemstackForEmerald(IEContent.itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
 		);
 		career_machinist.addTrade(5,
-				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 1), new EntityVillager.PriceInfo(32, 48)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 0), new EntityVillager.PriceInfo(32, 48)),
 				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
 		);
 
@@ -256,8 +256,11 @@ public class IEVillagerHandler
 			if(chunkCoords!=null)
 			{
 				MineralWorldInfo mineralWorldInfo = ExcavatorHandler.getMineralWorldInfo(merchant.getWorld(), chunkCoords, true);
-				if(mineralWorldInfo.mineral==null)
-					throw new RuntimeException("THE MINERAL SHOULD NEVER BE NULL");
+				if(mineralWorldInfo==null || mineralWorldInfo.mineral==null)
+				{
+					IELogger.error("Null "+(mineralWorldInfo==null?"WorldInfo":"Mineral")+" on building Cartographer trade.");
+					return;
+				}
 				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);
 				ItemStack itemstack = ItemMap.setupNewMap(world, (double)blockPos.getX(), (double)blockPos.getZ(), (byte)1, true, true);
 				ItemMap.renderBiomePreviewMap(world, itemstack);

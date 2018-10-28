@@ -83,7 +83,7 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 	}
 
 	@Override
-	public EnumPushReaction getMobilityFlag(IBlockState state)
+	public EnumPushReaction getPushReaction(IBlockState state)
 	{
 		return EnumPushReaction.DESTROY;
 	}

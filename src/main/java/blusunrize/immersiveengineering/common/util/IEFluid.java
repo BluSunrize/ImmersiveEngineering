@@ -85,7 +85,7 @@ public class IEFluid extends Fluid
 				PotionType potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.tag);
 				if(potionType!=PotionTypes.EMPTY)
 				{
-					String modID = potionType.getRegistryName().getResourceDomain();
+					String modID = potionType.getRegistryName().getNamespace();
 					tooltip.add(TextFormatting.DARK_GRAY+I18n.translateToLocalFormatted(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)));
 				}
 			}

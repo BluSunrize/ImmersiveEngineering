@@ -16,6 +16,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbench>
 {
 	public InventoryPlayer inventoryPlayer;
@@ -49,6 +51,7 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 //		ImmersiveEngineering.proxy.reInitGui();
 //	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{

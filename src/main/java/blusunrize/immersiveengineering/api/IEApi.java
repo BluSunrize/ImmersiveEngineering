@@ -74,6 +74,8 @@ public class IEApi
 		{
 			ItemStack preferredStack = ApiUtils.isExistingOreName(oreName)?
 					getPreferredStackbyMod(OreDictionary.getOres(oreName)): ItemStack.EMPTY;
+			if(preferredStack.getMetadata()==OreDictionary.WILDCARD_VALUE)
+				preferredStack.setItemDamage(0);
 			oreOutputPreference.put(oreName, preferredStack);
 			return preferredStack;
 		}
@@ -91,7 +93,7 @@ public class IEApi
 				ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
 				if(rl!=null)
 				{
-					String modId = rl.getResourceDomain();
+					String modId = rl.getNamespace();
 					int idx = modId==null||modId.isEmpty()?-1: modPreference.indexOf(modId);
 					if(preferredStack.isEmpty()||(idx >= 0&&(lastPref < 0||idx < lastPref)))
 					{

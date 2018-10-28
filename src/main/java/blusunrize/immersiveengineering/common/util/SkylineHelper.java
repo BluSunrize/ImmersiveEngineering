@@ -74,7 +74,7 @@ public class SkylineHelper
 	public static Vec3d getSubMovementVector(Vec3d start, Vec3d target, float speed)
 	{
 		Vec3d movementVec = new Vec3d(target.x-start.x, target.y-start.y, target.z-start.z);
-		int lPixel = (int)Math.max(1, (movementVec.lengthVector()/(.125*speed)));
+		int lPixel = (int)Math.max(1, (movementVec.length()/(.125*speed)));
 		return new Vec3d(movementVec.x/lPixel, movementVec.y/lPixel, movementVec.z/lPixel);
 	}
 
