@@ -1,5 +1,6 @@
 #####Version 0.12-87
 - Changed connectors to accept multiple "bursts" of energy if they (in total) don't exceed the max IO rate (Malte)
+- Removed clickable JEI areas from the Assembler because they were blocking the output slots and were unnecessary anyway (BluSunrize)
 - Fixed wires not showing particles when burning (Malte)
 - Fixed recipes for structural arms conflicting with stairs (Malte)
 - Fixed structural arms being invisible due to a conflict with CTM (Malte)

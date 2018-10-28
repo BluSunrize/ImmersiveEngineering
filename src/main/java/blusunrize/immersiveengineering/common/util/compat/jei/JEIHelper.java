@@ -153,11 +153,6 @@ public class JEIHelper implements IModPlugin
 		modRegistry.addRecipeClickArea(GuiArcFurnace.class, 81, 38, 23, 35, "ie.arcFurnace", "ie.arcFurnace.recycling");
 		modRegistry.addRecipeClickArea(GuiMixer.class, 76, 11, 58, 47, "ie.mixer");
 
-		// The assembler has three crafting slots (they don't allow clicking).
-		modRegistry.addRecipeClickArea(GuiAssembler.class, 26, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
-		modRegistry.addRecipeClickArea(GuiAssembler.class, 84, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
-		modRegistry.addRecipeClickArea(GuiAssembler.class, 142, 63, 18, 18, VanillaRecipeCategoryUid.CRAFTING);
-
 		modRegistry.addRecipeClickArea(GuiModWorkbench.class, 4, 41, 53, 18, "ie.workbench");
 		modRegistry.addRecipeClickArea(GuiAutoWorkbench.class, 90, 12, 39, 37, "ie.workbench");
 	}
