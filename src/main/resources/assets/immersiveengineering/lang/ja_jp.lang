@@ -810,7 +810,7 @@ desc.immersiveengineering.flavour.toolupgrade.shield_shock=攻撃してきた相
 desc.immersiveengineering.flavour.toolupgrade.shield_magnet=ボタンを素早く二回押すことで、盾を構えます
 desc.immersiveengineering.flavour.toolupgrade.chemthrower_multitank=ケミカル放射器に複数の液体を搭載させます
 
-gui.immersiveengineering.empty=RTFM!
+gui.immersiveengineering.empty=空
 gui.immersiveengineering.blastFurnace=高炉
 gui.immersiveengineering.blastFurnace.fuel=高炉の燃料
 gui.immersiveengineering.assembler.nospace=すべてのパターンスロットがいっぱいです!
@@ -1360,13 +1360,13 @@ ie.manual.entry.conveyor6=フレーム付きコンベアの機能は通常のコ
 ie.manual.entry.conveyor7=同様に、フレーム付き搬出ベルトコンベアと垂直ベルトコンベアも足場で覆うことで、プレイヤーがアイテムを拾ってしまうのを防止することができます。
 
 ie.manual.entry.furnaceHeater.name=外部発熱器
-ie.manual.entry.furnaceHeater.subtext=ただいま、RFで調理しています！
+ie.manual.entry.furnaceHeater.subtext=Fluxでよくやってるね?
 ie.manual.entry.furnaceHeater0=外部発熱器はその名前が示すとおり、RFから熱エネルギーを作り出します。<br>通常のかまどの隣に置かれると生成された熱エネルギーがかまどに伝えられ、内部に燃料を入れること無く精錬を行うことができます。
 ie.manual.entry.furnaceHeater1=外部発熱器をハンマーで回転させることができ、エネルギーの入力口を変更することができます。逆回転をさせたい場合は、スニーク-右クリックをします。<br>外部発熱器は熱を生成するために、§o<config;i;heater_consumption>RF/t§rを消費します。<br>かまどが稼働し始めの頃、発熱器は1tickあたり§l4§runitの熱を生成しますが、最高温度に達したかまどは、その状態を維持するために1unitの熱だけを消費してゆきます。
 ie.manual.entry.furnaceHeater2=最高温度になっている間、外部発熱器はかまどの処理速度を上げるために§o<config;i;heater_speedupConsumption>RF/t§rを追加で消費します。<br>エネルギーの節約として、かまど内に材料があり、完成品スロットに空きを持つ場合にだけ発熱器が作動します。<br>ただし、発熱器にレッドストーン信号を送ることでその機能を停止させ、かまどの熱を常に保つようになります。
 
 ie.manual.entry.teslaCoil.name=テスラコイル
-ie.manual.entry.teslaCoil.subtext=これは11にまで上がります
+ie.manual.entry.teslaCoil.subtext=限界を越えた11へ
 ie.manual.entry.teslaCoil0=テスラコイルは無線送電の概念として生み出されました。<br>しかしその高い潜在的な損失率と、6ブロックの半径のすべての生き物をフライにするという突飛な特性のため、それはすぐ、自宅の防衛を望んでいたエンジニアのロマンに組み込まれてしまいました。
 ie.manual.entry.teslaCoil1=維持電力の高いマシンであり、定期的な<config;i;teslacoil_consumption>RFの消費に加えて、ダメージを与える際には<br><config;i;teslacoil_consumption_active>RFを使用します。<br>コイルはレッドストーン信号が送られると動作を開始しますが、ハンマーで右クリックするとこの作用が反転します。<br>感電の損傷に加え、一定時間動きを止めるデバフ「Stunned」の効果で対象のテレポートを阻止しています。
 ie.manual.entry.teslaCoil2=装置下部をハンマーでスニーク-右クリックすることで、高/低電力のモードを切り替えます。コイルを停止させて、安全に作業を行いましょう。初期状態では高電力モードになっています。コイルが低電力モードのときは、消費エネルギーと放電範囲が半分になります。
@@ -1383,12 +1383,12 @@ ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;水源ブロックが3�
 ie.manual.entry.fluidPipes5=液体排出口はパイプシステムの終着点として、ワールド内に液体を自身の高さにまで配置する機能を持っています。側面は液体の挿入、排出(水門開放)または封鎖の間で切り替えることがで、レッドストーン信号によって排出を停止させることもできます。
 
 ie.manual.entry.sorter.name=アイテム分別器
-ie.manual.entry.sorter.subtext=左足は黄色に、右手は緑に
+ie.manual.entry.sorter.subtext=左足に黄色を、右手に緑を
 ie.manual.entry.sorter0=アイテム分別器は搬入されたアイテムをフィルタにかけ、それぞれの面から再び搬出するブロックです。<br>設置して右クリックするとインターフェイスが開きます。<br>インターフェイスには、6種類の色と方向で区切られたフィルタが表示されています。
 ie.manual.entry.sorter1=アイテムが分別器に搬入されると、そのアイテムと一致する出力面から搬出されます。<br>一致する面が見つからない場合、フィルタを設定されていない出力面から搬出されます。搬出を行えないアイテムの場合、そのアイテムは分別器に搬入されません。<br>また、アイテムは搬入されてきた面と同じ面から搬出されることはありません。<br>各フィルタの上にあるボタンを使い、選別のルールにおいて鉱石辞書,NBT,メタデータの無視/尊重を変更できます。
 
 ie.manual.entry.fluidSorter.name=液体分別器
-ie.manual.entry.fluidSorter.subtext=ミルクは左に、酸は右に
+ie.manual.entry.fluidSorter.subtext=左にミルクを、右に酸を
 ie.manual.entry.fluidSorter0=液体分別器は、<link;sorter;§o§nアイテム分別§r><br><link;sorter;§o§n器§r>と非常によく似ています。 いずれかの面から搬入された流体も、6つのサイドフィルターがどのように設定されているかに基づいて再配分されます。 液体の入ったバケツまたは他のタイプの流体容器をGUIのスロットに挿入すると、フィルタが構成されます。
 ie.manual.entry.fluidSorter1=液体が分別器に送られると、流体がフィルタに合った側に排出されます。一致するフィルタが見つからない場合、液体はフィルタリングされていない方向に排出されます。<br>利用可能なルートまたは有効なルートがない場合、液体は受け入れられません。<br>各フィルタの上のボタンから、分別器が液体のNBTデータを尊重したり無視したりを切り替えることができます。
 
@@ -1397,7 +1397,7 @@ ie.manual.entry.turntable.subtext=私は追いつくことができない
 ie.manual.entry.turntable0=ターンテーブルはレッドストーン信号が送られると、そのブロックに設置されたブロックを回転させます。<br>ハンマーを持った状態で機械を見ると、回転させる面と回転方向が表示されます。ハンマーで右クリックすると、ターンテーブル自体を回転させられます。スニーク状態だと、回転させる方向を変更します。(かまど、ピストン、ベルトコンベアが分かりやすい)
 
 ie.manual.entry.drill.name=採掘ドリル
-ie.manual.entry.drill.subtext=俺のドリルは岩盤を突く！
+ie.manual.entry.drill.subtext=俺のドリルは岩盤を衝くドリルだ！
 ie.manual.entry.drill0=携行式のディーゼル動力ドリルは採掘の大きな進歩です。<br>交換可能なドリルヘッド、アップグレードなど、その性能のほぼ全てがカスタマイズ可能です。それを行うには<link;workbench;§o§n技師§r><br><link;workbench;§o§nの工具台§r>を使用します。<br>ドリルは<link;biodiesel;§o§nバイオディーゼル§r>で動き、工業用製油機から直接充填することができます。
 ie.manual.entry.drill1=§6ドリルヘッド§rは、§6マイニングレベル§r,§6採掘速度§r,§6採掘範囲§r,および§6攻撃力§rを決定します。<br>あなたがブロックを掘るときドリルヘッドはダメージを受けますが、金床で修復することができます。
 ie.manual.entry.drill2=ドリルは燃焼エンジンによって駆動されるため、§6圧縮空気タンク§rのアップグレードを装備しない限り水中では作動しません。<br>アップグレードが装備されていると、水中での動作だけでなく、水中起こる採掘速度の減速も無視できます。
@@ -1440,7 +1440,7 @@ ie.manual.entry.skyhook0=技師のスカイフックは電線、麻ロープま�
 ie.manual.entry.skyhook1=端子やコネクタの近くでマウスの右ボタンを押すだけで、ワイヤー、ケーブルに接続できます。<br>ボタンを離すと取り外すことができます。ワイヤーの途中から乗ることはできません。<br>コネクタ部分から接続する必要があります。
 
 ie.manual.entry.shader.name=ガジェットスキン
-ie.manual.entry.shader.subtext=青！…いや黄色にするか！？
+ie.manual.entry.shader.subtext=青！…じゃなくて黄色！
 ie.manual.entry.shader0=ガジェットスキンはワールド内で発見したり、村人と取引することで手に入れられるアイテムです。<br>それだけではなんの機能も無く、<link;revolver;§o§nリボルバー§r>,<link;drill;§o§nドリル§r>,<br><link;chemthrower;§o§nケミカル放射器§r>,<link;shield;§o§nﾌﾟﾚｰﾄｼｰﾙﾄﾞ§r><br><link;railgun;§o§nﾚｰﾙｶﾞﾝ§r>(そしてあなたがこれから見つける他のもの)の外観のデザインを変更します。<br>ツールを<link;workbench;§o§n技師の工具台§r>に配置し、専用のスロットにスキンを入れてください。<br>右クリックで、マインカートや<link;balloon;§o§n気球§r>にも使うことができます。
 ie.manual.entry.shader1=利用可能な全てのスキンの一覧、外観、参考文献などの詳細については、<link;shaderList;§o§nここ§r>をクリックしてください。
 ie.manual.entry.shader2=ガジェットスキンパックはランダムなスキンが含まれたアイテムです。<br>それらは村の収納木箱の中や取引で入手することができ、ボスからドロップすることもあります。<br>入っているスキンのレアリティは、パックと同じかそれよりいいものが入っています。<br>パックを使用する際、あなたが既に持っているもの以外のスキンを得る可能性が高くなっています。
