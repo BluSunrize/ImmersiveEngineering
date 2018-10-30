@@ -713,7 +713,7 @@ desc.immersiveengineering.info.shader.immersiveengineering:minecart=マインカ
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=支持気球
 desc.immersiveengineering.info.shader.immersiveengineering:banner=旗
 desc.immersiveengineering.info.shader.set=§lガジェットスキンセット§r:
-desc.immersiveengineering.info.shader.reference=§l原典の参照§r:
+desc.immersiveengineering.info.shader.reference=§l元ネタ§r:
 desc.immersiveengineering.info.shader.details=§l追加情報§r:
 
 desc.immersiveengineering.info.toolbox.food=食品
