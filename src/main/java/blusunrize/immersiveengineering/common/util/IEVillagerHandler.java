@@ -256,9 +256,10 @@ public class IEVillagerHandler
 			if(chunkCoords!=null)
 			{
 				MineralWorldInfo mineralWorldInfo = ExcavatorHandler.getMineralWorldInfo(merchant.getWorld(), chunkCoords, true);
-				if(mineralWorldInfo==null || mineralWorldInfo.mineral==null)
+				if(mineralWorldInfo==null||mineralWorldInfo.mineral==null)
 				{
-					IELogger.error("Null "+(mineralWorldInfo==null?"WorldInfo":"Mineral")+" on building Cartographer trade.");
+					if(!world.isRemote)
+						IELogger.error("Null "+(mineralWorldInfo==null?"WorldInfo": "Mineral")+" on building Cartographer trade.");
 					return;
 				}
 				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);

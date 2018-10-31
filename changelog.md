@@ -9,6 +9,7 @@
 - Fixed connectors not rendering as part of manual multiblock previews (Malte)
 - Fixed Ingredient Recipe not transposing the index correctly, causing loss of items (BluSunrize)
 - Fixed Item Router voiding items when used to extract (BluSunrize)
+- Fixed an annoying consolespam with the Cartographer trades (BluSunrize)
 
 #####Version 0.12-86 - BUILT
 - Added support for JEI ghost ingredients to the assembler and routers (Malte)
