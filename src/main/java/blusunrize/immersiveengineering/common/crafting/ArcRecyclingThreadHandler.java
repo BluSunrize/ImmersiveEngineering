@@ -169,7 +169,7 @@ public class ArcRecyclingThreadHandler extends Thread
 		if(item instanceof ItemTool||item instanceof ItemSword||item instanceof ItemHoe||item instanceof ItemArmor)
 			return true;
 		for(Object recycle : ArcFurnaceRecipe.recyclingAllowed)
-			if(Utils.stackMatchesObject(stack, recycle))
+			if(ApiUtils.stackMatchesObject(stack, recycle))
 				return true;
 		return false;
 	}
@@ -204,7 +204,7 @@ public class ArcRecyclingThreadHandler extends Thread
 					{
 						boolean invalidOutput = false;
 						for(Object invalid : ArcFurnaceRecipe.invalidRecyclingOutput)
-							if(Utils.stackMatchesObject((ItemStack)brokenDown[0], invalid))
+							if(ApiUtils.stackMatchesObject((ItemStack)brokenDown[0], invalid))
 								invalidOutput = true;
 						if(!invalidOutput)
 						{

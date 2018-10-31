@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
@@ -18,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import com.google.common.base.Optional;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -42,6 +42,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -164,44 +165,36 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			if(!pattern.inv.get(9).isEmpty()&&canOutput(pattern.inv.get(9), p))
 			{
 				ItemStack output = pattern.inv.get(9).copy();
-				ArrayList<ItemStack> queryList = new ArrayList<>();//List of all available inputs in the inventory
+				ArrayList<ItemStack> availableStacks = new ArrayList<>();//List of all available inputs in the inventory
 				for(NonNullList<ItemStack> bufferedStacks : outputBuffer)
 					if(bufferedStacks!=null)
 						for(ItemStack stack : bufferedStacks)
 							if(!stack.isEmpty())
-								queryList.add(stack.copy());
+								availableStacks.add(stack);
 				for(ItemStack stack : this.inventory)
 					if(!stack.isEmpty())
-						queryList.add(stack.copy());
+						availableStacks.add(stack);
 				int consumed = IEConfig.Machines.assembler_consumption;
-				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.hasIngredients(pattern, queryList))
+
+				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
+				if(adapter==null)
+					continue;
+				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
+
+				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.consumeIngredients(queries, availableStacks, false, null))
 				{
 					this.energyStorage.extractEnergy(consumed, false);
 					NonNullList<ItemStack> outputList = NonNullList.create();//List of all outputs for the current recipe. This includes discarded containers
 					outputList.add(output);
-					AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-					AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
+
 					NonNullList<ItemStack> gridItems = NonNullList.withSize(9, ItemStack.EMPTY);
-					for(int i = 0; i < queries.length; i++)
-						if(queries[i]!=null)
-						{
-							AssemblerHandler.RecipeQuery recipeQuery = queries[i];
-							Optional<ItemStack> taken = Optional.absent();
-							for(int j = 0; j < outputBuffer.length; j++)
-								if(outputBuffer[j]!=null)
-								{
-									taken = consumeItem(recipeQuery.query, recipeQuery.querySize, outputBuffer[j], outputList);
-									if(taken.isPresent())
-										break;
-								}
-							if(!taken.isPresent())
-								taken = this.consumeItem(recipeQuery.query, recipeQuery.querySize, inventory, outputList);
-							gridItems.set(i, taken.or(ItemStack.EMPTY));
-						}
+					this.consumeIngredients(queries, availableStacks, true, gridItems);
+
 					NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
 					for(ItemStack rem : remainingItems)
 						if(!rem.isEmpty())
 							outputList.add(rem);
+
 					outputBuffer[p] = outputList;
 					update = true;
 				}
@@ -261,52 +254,22 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 	}
 
-	public Optional<ItemStack> consumeItem(Object query, int querySize, NonNullList<ItemStack> inventory, NonNullList<ItemStack> containerItems)
+	public boolean consumeIngredients(AssemblerHandler.RecipeQuery[] queries, ArrayList<ItemStack> itemStacks, boolean doConsume, @Nullable NonNullList<ItemStack> gridItems)
 	{
-		FluidStack fs = query instanceof FluidStack?(FluidStack)query: (query instanceof IngredientStack&&((IngredientStack)query).fluid!=null)?((IngredientStack)query).fluid: null;
-		if(fs!=null)
-			for(FluidTank tank : tanks)
-				if(tank.getFluid()!=null&&tank.getFluid().containsFluid(fs))
-				{
-					tank.drain(fs.amount, true);
-					markDirty();
-					this.markContainingBlockForUpdate(null);
-					return Optional.of(ItemStack.EMPTY);
-				}
-		Optional<ItemStack> ret = Optional.absent();
-		for(int i = 0; i < inventory.size(); i++)
-			if(!inventory.get(i).isEmpty()&&Utils.stackMatchesObject(inventory.get(i), query, true))
-			{
-				int taken = Math.min(querySize, inventory.get(i).getCount());
-				boolean doTake = true;
-				if(doTake)
-				{
-					ret = Optional.of(inventory.get(i).splitStack(taken));
-					if(inventory.get(i).getCount() <= 0)
-						inventory.set(i, ItemStack.EMPTY);
-				}
-				querySize -= taken;
-				if(querySize <= 0)
-					break;
-			}
-		if(querySize <= 0)
-			return ret;
-		return Optional.absent();
-	}
-
-	public boolean hasIngredients(CrafterPatternInventory pattern, ArrayList<ItemStack> queryList)
-	{
-		boolean match = true;
-
-		AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-		if(adapter==null)
-			//We don't know how to handle the recipe
-			return false;
-		AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
-		for(AssemblerHandler.RecipeQuery recipeQuery : queries)
+		if(!doConsume)
+		{
+			ArrayList<ItemStack> dupeList = new ArrayList<>(itemStacks.size());
+			for(ItemStack stack : itemStacks)
+				dupeList.add(stack.copy());
+			itemStacks = dupeList;
+		}
+		for(int i = 0; i < queries.length; i++)
+		{
+			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
 			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
 				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query: (recipeQuery.query instanceof IngredientStack&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
+				int querySize = recipeQuery.querySize;
 				if(fs!=null)
 				{
 					boolean hasFluid = false;
@@ -314,20 +277,25 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 						if(tank.getFluid()!=null&&tank.getFluid().containsFluid(fs))
 						{
 							hasFluid = true;
+							if(doConsume)
+								tank.drain(fs.amount, true);
 							break;
 						}
 					if(hasFluid)
 						continue;
+					else
+						querySize = 1;
 				}
-				int querySize = recipeQuery.querySize;
-				Iterator<ItemStack> it = queryList.iterator();
+				Iterator<ItemStack> it = itemStacks.iterator();
 				while(it.hasNext())
 				{
 					ItemStack next = it.next();
-					if(!next.isEmpty()&&Utils.stackMatchesObject(next, recipeQuery.query, true))
+					if(!next.isEmpty()&&ApiUtils.stackMatchesObject(next, recipeQuery.query, true))
 					{
 						int taken = Math.min(querySize, next.getCount());
-						next.shrink(taken);
+						ItemStack forGrid = next.splitStack(taken);
+						if(gridItems!=null)
+							gridItems.set(i, forGrid);
 						if(next.getCount() <= 0)
 							it.remove();
 						querySize -= taken;
@@ -336,12 +304,10 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					}
 				}
 				if(querySize > 0)
-				{
-					match = false;
-					break;
-				}
+					return false;
 			}
-		return match;
+		}
+		return true;
 	}
 
 	public boolean canOutput(ItemStack output, int iPattern)
