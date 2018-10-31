@@ -7,6 +7,8 @@
 - Fixed minor issues where certain enemy network setups made powered lanterns flicker (Malte)
 - Fixed Dragon's Breath shader using hte wrong description in the manual (BluSunrize)
 - Fixed connectors not rendering as part of manual multiblock previews (Malte)
+- Fixed Ingredient Recipe not transposing the index correctly, causing loss of items (BluSunrize)
+- Fixed Item Router voiding items when used to extract (BluSunrize)
 
 #####Version 0.12-86 - BUILT
 - Added support for JEI ghost ingredients to the assembler and routers (Malte)
