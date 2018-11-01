@@ -8,6 +8,7 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -173,7 +174,10 @@ public class ManualEntry
 	//TODO range checks everywhere
 	public void buttonPressed(GuiManual gui, GuiButton button)
 	{
-		pages.get(gui.page).special.buttonPressed(gui, button);
+		if(button instanceof GuiButtonManualLink)
+			((GuiButtonManualLink)button).link.changePage(gui, true);
+		else
+			pages.get(gui.page).special.buttonPressed(gui, button);
 	}
 
 	public void mouseDragged(GuiManual gui, int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY,

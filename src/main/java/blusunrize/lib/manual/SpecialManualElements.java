@@ -8,7 +8,6 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
@@ -39,8 +38,6 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	@Override
 	public void buttonPressed(GuiManual gui, GuiButton button)
 	{
-		if(button instanceof GuiButtonManualLink)
-			((GuiButtonManualLink)button).link.changePage(gui, true);
 	}
 
 	@Override

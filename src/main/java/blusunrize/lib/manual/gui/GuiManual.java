@@ -381,8 +381,10 @@ public class GuiManual extends GuiScreen
 			else if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
 				previousSelectedEntry.pop().changePage(this, false);
 			else if(currentNode.getSuperNode()!=null)
+			{
 				setCurrentNode(currentNode.getSuperNode());
-			page = 0;
+				page = 0;
+			}
 			this.initGui();
 		}
 		lastClick = new int[]{mx, my};

@@ -8,8 +8,11 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.TIntObjectMap;
@@ -19,10 +22,14 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.JsonUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.resource.IResourceType;
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.client.resource.VanillaResourceType;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -45,6 +52,89 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		this.texture = texture;
 		contentTree = new Tree<>(name);
 		((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
+		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
+			Object[] stacksAndRecipes;
+			if(JsonUtils.isJsonArray(s, "recipes"))
+			{
+				JsonArray data = JsonUtils.getJsonArray(s, "recipes");
+				stacksAndRecipes = new Object[data.size()];
+				for(int i = 0; i < data.size(); i++)
+				{
+					JsonElement el = data.get(i);
+					if(el.isJsonArray())
+					{
+						JsonArray inner = el.getAsJsonArray();
+						Object[] innerSaR = new Object[inner.size()];
+						for(int j = 0; j < inner.size(); ++j)
+						{
+							innerSaR[j] = ManualUtils.getRecipeObjFromJson(this, inner.get(j).getAsJsonObject());
+						}
+						stacksAndRecipes[i] = innerSaR;
+					}
+					else if(el.isJsonObject())
+						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(this, el.getAsJsonObject());
+				}
+			}
+			else
+			{
+				stacksAndRecipes = new Object[1];
+				stacksAndRecipes[0] = ManualUtils.getRecipeObjFromJson(this, s);
+			}
+			return new ManualElementCrafting(this, stacksAndRecipes);
+		});
+		registerSpecialElement(new ResourceLocation(name.getNamespace(), "image"),
+				s -> {
+					JsonArray data = JsonUtils.getJsonArray(s, "images");
+					ManualImage[] images = new ManualImage[data.size()];
+					for(int i = 0; i < data.size(); i++)
+					{
+						JsonObject img = data.get(i).getAsJsonObject();
+						ResourceLocation loc = ManualUtils.getLocationForManual(
+								JsonUtils.getString(img, "location"), this);
+						int uMin = JsonUtils.getInt(img, "uMin");
+						int vMin = JsonUtils.getInt(img, "vMin");
+						int uSize = JsonUtils.getInt(img, "uSize");
+						int vSize = JsonUtils.getInt(img, "vSize");
+						images[i] = new ManualImage(loc, uMin, uSize, vMin, vSize);
+					}
+					return new ManualElementImage(this, images);
+				}
+		);
+		//TODO test these
+		registerSpecialElement(new ResourceLocation(name.getNamespace(), "item_display"),
+				s -> {
+					JsonElement items = s.get("items");
+					NonNullList<ItemStack> stacks;
+					JsonContext ctx = new JsonContext(name.getNamespace());
+					if(items.isJsonObject())
+					{
+						stacks = NonNullList.withSize(1, CraftingHelper.getItemStack(items.getAsJsonObject(), ctx));
+					}
+					else
+					{
+						JsonArray arr = items.getAsJsonArray();
+						stacks = NonNullList.withSize(arr.size(), ItemStack.EMPTY);
+						for(int i = 0; i < arr.size(); i++)
+							stacks.set(i, CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), ctx));
+					}
+					return new ManualElementItem(this, stacks);
+				}
+		);
+		registerSpecialElement(new ResourceLocation(name.getNamespace(), "table"),
+				s -> {
+					JsonArray arr = JsonUtils.getJsonArray(s, "table");
+					String[][] table = new String[arr.size()][];
+					for(int i = 0; i < table.length; i++)
+					{
+						JsonArray row = arr.get(i).getAsJsonArray();
+						table[i] = new String[row.size()];
+						for(int j = 0; j < row.size(); j++)
+							table[i][j] = row.get(j).getAsString();
+					}
+					return new ManualElementTable(this, table, JsonUtils.getBoolean(s,
+							"horizontal_bars", false));
+				}
+		);
 	}
 
 	public void registerSpecialElement(ResourceLocation resLoc, Function<JsonObject, SpecialManualElement> factory)
@@ -240,8 +330,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 		public void changePage(GuiManual guiManual, boolean addCurrentToStack)
 		{
-			if(addCurrentToStack)
-				guiManual.previousSelectedEntry.push(new ManualLink(key, -1, guiManual.page));
+			if(addCurrentToStack)// && guiManual.getCurrentPage()!=key)
+				guiManual.previousSelectedEntry.push(new ManualLink(guiManual.getCurrentPage(), -1, guiManual.page));
 			guiManual.setCurrentNode(this.key.getTreeNode());
 			guiManual.page = getPage();
 			guiManual.initGui();

@@ -35,8 +35,8 @@
       ]
     ]
   },
-  //TODO support for multiple elements for the same key
-  "images": {
+  "images": [
+    {
     "type": "image",
     "images": [
       {
@@ -55,6 +55,27 @@
       }
     ]
   },
+    {
+      "type": "image",
+      "offset": 1,
+      "images": [
+        {
+          "location": "textures/misc/wiring.png",
+          "uMin": 0,
+          "vMin": 70,
+          "uSize": 110,
+          "vSize": 60
+        },
+        {
+          "location": "textures/misc/wiring.png",
+          "uMin": 0,
+          "vMin": 130,
+          "uSize": 110,
+          "vSize": 60
+        }
+      ]
+    }
+  ],
   "connector_recipes": {
     "type": "crafting",
     "recipes": [

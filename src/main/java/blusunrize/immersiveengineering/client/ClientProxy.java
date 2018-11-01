@@ -63,12 +63,12 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import blusunrize.lib.manual.*;
-import blusunrize.lib.manual.ManualElementImage.ManualImage;
+import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
+import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.Tree;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -580,20 +580,6 @@ public class ClientProxy extends CommonProxy
 	public void postInit()
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
-		//		int subVersion = 0;
-		//		while(!(ManualHelper.ieManualInstance.formatEntryName("updateNews_"+subVersion).equals("ie.manual.entry.updateNews_"+subVersion+".name")))
-		//		{
-		//			ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
-		//			int i=0;
-		//			String key;
-		//			while(!ManualHelper.ieManualInstance.formatText(key = "updateNews_"+subVersion+""+i).equals(key) && i<5)
-		//			{
-		//				pages.add(new ManualPages.Text(ManualHelper.getManual(), key));
-		//				i++;
-		//			}
-		//			ManualHelper.addEntry("updateNews_"+subVersion, ManualHelper.CAT_UPDATE, pages.toArray(new IManualPage[pages.size()]));
-		//			subVersion++;
-		//		}
 		/*
 		NonNullList<ItemStack> tempItemList;
 		List<PositionedItemStack[]> tempRecipeList;
@@ -721,54 +707,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "silo2"));
 
 		*/
-		//Register special elements
 		ManualInstance ieMan = ManualHelper.getManual();
-		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting"), s -> {
-			Object[] stacksAndRecipes;
-			if(JsonUtils.isJsonArray(s, "recipes"))
-			{
-				JsonArray data = JsonUtils.getJsonArray(s, "recipes");
-				stacksAndRecipes = new Object[data.size()];
-				for(int i = 0; i < data.size(); i++)
-				{
-					JsonElement el = data.get(i);
-					if(el.isJsonArray())
-					{
-						JsonArray inner = el.getAsJsonArray();
-						Object[] innerSaR = new Object[inner.size()];
-						for(int j = 0; j < inner.size(); ++j)
-						{
-							innerSaR[j] = ManualUtils.getRecipeObjFromJson(ieMan, inner.get(j).getAsJsonObject());
-						}
-						stacksAndRecipes[i] = innerSaR;
-					}
-					else if(el.isJsonObject())
-						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(ieMan, el.getAsJsonObject());
-				}
-			}
-			else
-			{
-				stacksAndRecipes = new Object[1];
-				stacksAndRecipes[0] = ManualUtils.getRecipeObjFromJson(ieMan, s);
-			}
-			return new ManualElementCrafting(ieMan, stacksAndRecipes);
-		});
-		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "image"),
-				s -> {
-					JsonArray data = JsonUtils.getJsonArray(s, "images");
-					ManualImage[] images = new ManualImage[data.size()];
-					for (int i = 0;i<data.size();i++) {
-						JsonObject img = data.get(i).getAsJsonObject();
-						ResourceLocation loc = ManualUtils.getLocationForManual(
-								JsonUtils.getString(img, "location"), ieMan);
-						int uMin = JsonUtils.getInt(img, "uMin");
-						int vMin = JsonUtils.getInt(img, "vMin");
-						int uSize = JsonUtils.getInt(img, "uSize");
-						int vSize = JsonUtils.getInt(img, "vSize");
-						images[i] = new ManualImage(loc, uMin, uSize, vMin, vSize);
-					}
-					return new ManualElementImage(ieMan, images);
-				});
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
 				s -> new ManualElementMultiblock(ieMan,
 						MultiblockHandler.getByUniqueName(JsonUtils.getString(s, "name"))));

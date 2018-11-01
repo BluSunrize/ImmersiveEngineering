@@ -22,10 +22,11 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -384,16 +385,25 @@ public class ManualUtils
 		throw new UnsupportedOperationException();
 	}
 
+	private static void parseSpecial(JsonObject obj, String anchor, TextSplitter splitter, ManualInstance instance)
+	{
+		String type = JsonUtils.getString(obj, "type");
+		int offset = JsonUtils.getInt(obj, "offset", 0);
+		ResourceLocation resLoc = getLocationForManual(type, instance);
+		Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
+		splitter.addSpecialPage(anchor, offset, createElement.apply(obj));
+	}
+
 	public static void parseSpecials(JsonObject data, TextSplitter splitter, ManualInstance instance)
 	{
-		for(Entry<String, JsonElement> elementData : data.entrySet())
+		for(Entry<String, JsonElement> entry : data.entrySet())
 		{
-			JsonObject elementJson = (JsonObject) elementData.getValue();
-			String type = JsonUtils.getString(elementJson, "type");
-			int offset = JsonUtils.getInt(elementJson, "offset", 0);
-			ResourceLocation resLoc = getLocationForManual(type, instance);
-			Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
-			splitter.addSpecialPage(elementData.getKey(), offset, createElement.apply(elementJson));
+			JsonElement currData = entry.getValue();
+			if(currData.isJsonObject())
+				parseSpecial(currData.getAsJsonObject(), entry.getKey(), splitter, instance);
+			else
+				for(JsonElement inner : currData.getAsJsonArray())
+					parseSpecial(inner.getAsJsonObject(), entry.getKey(), splitter, instance);
 		}
 	}
 
@@ -407,7 +417,12 @@ public class ManualUtils
 
 	public static Object getRecipeObjFromJson(ManualInstance m, JsonObject json)
 	{
-		//TODO full support
-		return ManualUtils.getLocationForManual(JsonUtils.getString(json, "recipe"), m);
+		if(JsonUtils.isString(json, "recipe"))
+			return ManualUtils.getLocationForManual(JsonUtils.getString(json, "recipe"), m);
+		else if(JsonUtils.isString(json, "orename"))
+			return json.get("orename").getAsString();
+		else if(JsonUtils.isString(json, "item"))
+			return CraftingHelper.getItemStack(json, new JsonContext(m.getDefaultResourceDomain()));
+		throw new RuntimeException("Could not find recipe for "+json);
 	}
 }

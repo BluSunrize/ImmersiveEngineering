@@ -9,19 +9,24 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.List;
 import java.util.Locale;
 
 public class ManualElementItem extends SpecialManualElements
 {
-	NonNullList<ItemStack> stacks;
+	private final NonNullList<ItemStack> stacks;
+	private final int yOffset;
+	private final int lines;
+	private final float scale;
+	private final int longLineLen;
+	private final int shortLineLen;
+	private final int combinedLen;
+	private final int itemsLastLine;
 
 	static NonNullList<ItemStack> parseArray(ItemStack... stacks)
 	{
@@ -40,27 +45,25 @@ public class ManualElementItem extends SpecialManualElements
 	{
 		super(manual);
 		this.stacks = stacks;
-	}
+		int totalLength = stacks.size();
+		scale = totalLength > 7?1f: totalLength > 4?1.5f: 2f;
+		//Alternating long and short lines of items
+		int longLineLen = (int)(8/scale);
+		int shortLineLen = longLineLen-1;
+		int combinedLen = longLineLen+shortLineLen;
+		lines = (totalLength/combinedLen*2)+
+				(totalLength%combinedLen/longLineLen)+
+				(totalLength%combinedLen%longLineLen > 0?1: 0);
+		float avgPerLine = totalLength/(float)lines;
+		this.longLineLen = MathHelper.ceil(avgPerLine);
+		this.shortLineLen = MathHelper.floor(avgPerLine);
+		this.combinedLen = longLineLen+shortLineLen;
+		int itemsLastLines = totalLength%this.combinedLen;
+		if(itemsLastLines==this.longLineLen) itemsLastLine = this.longLineLen;
+		else if(itemsLastLines==0) itemsLastLine = this.shortLineLen;
+		else itemsLastLine = itemsLastLines%this.longLineLen;
+		yOffset = lines*(int)(18*scale);
 
-	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
-	{
-		int length = stacks.size();
-		int yOffset = 0;
-		if(length > 0)
-		{
-			float scale = length > 7?1f: length > 4?1.5f: 2f;
-			int line0 = (int)(8/scale);
-			int line1 = line0-1;
-			int lineSum = line0+line1;
-			int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0 > 0?1: 0);
-			float equalPerLine = length/(float)lines;
-			line1 = (int)Math.floor(equalPerLine);
-			line0 = MathHelper.ceil(equalPerLine);
-			lineSum = line0+line1;
-			yOffset = lines*(int)(18*scale);
-		}
-		super.onOpened(gui, x, y+yOffset, pageButtons);
 	}
 
 	@Override
@@ -69,35 +72,19 @@ public class ManualElementItem extends SpecialManualElements
 		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableGUIStandardItemLighting();
 		highlighted = ItemStack.EMPTY;
-		int yOffset = 0;
 		int length = stacks.size();
 		if(length > 0)
 		{
-			float scale = length > 8?1f: length > 3?1.5f: 2f;
-			int line0 = (int)(7.5/scale);
-			int line1 = line0-1;
-			int lineSum = line0+line1;
-			int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0 > 0?1: 0);
-			float equalPerLine = length/(float)lines;
-			line1 = (int)Math.floor(equalPerLine);
-			line0 = MathHelper.ceil(equalPerLine);
-			lineSum = line0+line1;
-			int lastLines = length%lineSum;
-			int lastLine = lastLines==line0?line0: lastLines==0?line1: lastLines%line0;
 			GlStateManager.scale(scale, scale, scale);
-			/*
-			 RenderItem.getInstance().renderWithColor=true;
-			 */
-			yOffset = lines*(int)(18*scale);
 			for(int line = 0; line < lines; line++)
 			{
-				int perLine = line==lines-1?lastLine: line%2==0?line0: line1;
+				int perLine = line==lines-1?itemsLastLine: line%2==0?longLineLen: shortLineLen;
 				if(line==0&&perLine > length)
 					perLine = length;
 				int w2 = perLine*(int)(18*scale)/2;
 				for(int i = 0; i < perLine; i++)
 				{
-					int item = line/2*lineSum+line%2*line0+i;
+					int item = line/2*combinedLen+line%2*longLineLen+i;
 					if(item >= length)
 						break;
 					int xx = x+60-w2+(int)(i*18*scale);
@@ -131,6 +118,6 @@ public class ManualElementItem extends SpecialManualElements
 	@Override
 	public int getPixelsTaken()
 	{
-		return 0;//TODO
+		return yOffset;
 	}
 }
