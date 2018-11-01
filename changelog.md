@@ -11,7 +11,7 @@
 - Fixed Ingredient Recipe not transposing the index correctly, causing loss of items (BluSunrize)
 - Fixed Item Router voiding items when used to extract (BluSunrize)
 - Fixed an annoying consolespam with the Cartographer trades (BluSunrize)
-- Translations Added/Updated: ja_jp (karakufire)
+- Translations Added/Updated: ja_jp (karakufire), es_es(Dorzar & rogama25)
 
 #####Version 0.12-86 - BUILT
 - Added support for JEI ghost ingredients to the assembler and routers (Malte)
