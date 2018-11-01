@@ -841,6 +841,8 @@ gui.immersiveengineering.config.assembler.clearRecipe=Clear Recipe
 gui.immersiveengineering.config.assembler.recursiveIngredients=Recursive use of ingredients
 gui.immersiveengineering.config.assembler.nonRecursiveIngredients=Non-Recursive use of ingredients
 
+gui.immersiveengineering.config.arcfurnace.distribute=Distribute Inputs
+
 #CHAT
 chat.immersiveengineering.warning.wrongCable=You cannot attach this wire here
 chat.immersiveengineering.warning.wrongDimension=You are in the wrong dimension
