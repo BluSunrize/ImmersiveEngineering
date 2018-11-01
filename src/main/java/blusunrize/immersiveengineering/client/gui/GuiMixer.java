@@ -94,7 +94,7 @@ public class GuiMixer extends GuiIEContainerBase
 			}
 		}
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
+			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
 		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
 			tooltip.add(I18n.format(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())

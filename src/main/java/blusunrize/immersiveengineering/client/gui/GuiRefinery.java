@@ -36,7 +36,7 @@ public class GuiRefinery extends GuiIEContainerBase
 		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+61, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+109, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		if(mx > guiLeft+157&&mx < guiLeft+164&&my > guiTop+21&&my < guiTop+67)
-			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
+			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
 
 		if(!tooltip.isEmpty())
 		{

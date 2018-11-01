@@ -140,7 +140,7 @@ public class GuiTurret extends GuiIEContainerBase
 
 		ArrayList<String> tooltip = new ArrayList<String>();
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my >= guiTop+16&&my < guiTop+62)
-			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
+			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
 
 		if(tile instanceof TileEntityTurretChem)
 		{

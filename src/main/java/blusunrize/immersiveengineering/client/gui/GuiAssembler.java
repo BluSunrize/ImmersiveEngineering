@@ -75,7 +75,7 @@ public class GuiAssembler extends GuiIEContainerBase
 		super.drawScreen(mx, my, partial);
 		ArrayList<String> tooltip = new ArrayList<String>();
 		if(mx >= guiLeft+187&&mx < guiLeft+194&&my >= guiTop+12&&my < guiTop+59)
-			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
+			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
 
 		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
 		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
