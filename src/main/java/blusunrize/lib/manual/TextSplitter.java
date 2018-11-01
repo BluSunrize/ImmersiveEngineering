@@ -149,7 +149,10 @@ public class TextSplitter
 				if(page.size() > linesMax)
 				{
 					overflow.addAll(page.subList(linesMax, page.size()));
-					page = page.subList(0, linesMax-1);
+					if(linesMax > 0)
+						page = page.subList(0, linesMax-1);
+					else
+						page = new ArrayList<>();
 				}
 				entry.add(page);
 			}
@@ -180,7 +183,7 @@ public class TextSplitter
 		{
 			pixels = pixelsPerPage-specialByPage.get(id).getPixelsTaken();
 		}
-		return MathHelper.floor(pixels/(double)pixelsPerLine);
+		return Math.max(0, MathHelper.floor(pixels/(double)pixelsPerLine));
 	}
 
 	private boolean updateSpecials(String ref, int page)

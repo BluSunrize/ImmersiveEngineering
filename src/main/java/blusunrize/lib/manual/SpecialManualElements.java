@@ -9,28 +9,19 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
-import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class SpecialManualElements extends SpecialManualElement
 {
 	protected ManualInstance manual;
-	protected List<ItemStack> providedItems;
+	@Nonnull
+	protected final List<ItemStack> providedItems = new ArrayList<>();
 
 	protected ItemStack highlighted = ItemStack.EMPTY;
 
@@ -74,15 +65,13 @@ public abstract class SpecialManualElements extends SpecialManualElement
 
 	public void addProvidedItem(ItemStack s)
 	{
-		if(providedItems==null)
-			providedItems = new ArrayList<>(1);
 		providedItems.add(s);
 	}
 
 	@Override
 	public ItemStack[] getProvidedRecipes()
 	{
-		return providedItems!=null?providedItems.toArray(new ItemStack[providedItems.size()]): new ItemStack[0];
+		return providedItems.toArray(new ItemStack[0]);
 	}
 
 	@Override

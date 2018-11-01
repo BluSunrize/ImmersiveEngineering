@@ -1,7 +1,8 @@
 {
   "wire_recipes": {
-    "type": "crafting_multi",
+    "type": "crafting",
     "recipes": [
+      [
       {
         "recipe": "material/wire_copper"
       },
@@ -31,6 +32,7 @@
       {
         "recipe": "wirecoils/wirecoil_hv"
       }
+      ]
     ]
   },
   //TODO support for multiple elements for the same key
@@ -54,8 +56,9 @@
     ]
   },
   "connector_recipes": {
-    "type": "crafting_multi",
+    "type": "crafting",
     "recipes": [
+      [
       {
         "recipe": "connectors/connector_lv"
       },
@@ -74,31 +77,36 @@
       {
         "recipe": "connectors/relay_hv"
       }
+      ]
     ]
   },
   "capacitor_recipes": {
-    "type": "crafting_multi",
+    "type": "crafting",
     "recipes": [
+      [
       {
-        "recipe": "matal_devices/capacitor_lv"
+        "recipe": "metal_devices/capacitor_lv"
       },
       {
-        "recipe": "matal_devices/capacitor_mv"
+        "recipe": "metal_devices/capacitor_mv"
       },
       {
-        "recipe": "matal_devices/capacitor_hv"
+        "recipe": "metal_devices/capacitor_hv"
       }
+      ]
     ]
   },
   "transformer_recipes": {
-    "type": "crafting_multi",
+    "type": "crafting",
     "recipes": [
+      [
       {
         "recipe": "connectors/transformer"
       },
       {
         "recipe": "connectors/transformer_hv"
       }
+      ]
     ]
   },
   "wirecutter_recipe": {

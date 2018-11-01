@@ -8,7 +8,6 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -17,6 +16,7 @@ import com.google.gson.JsonObject;
 import gnu.trove.map.TIntObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -33,7 +33,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 @SuppressWarnings("WeakerAccess")
 public class ManualEntry
@@ -46,6 +45,7 @@ public class ManualEntry
 	private String subtext;
 	private final ResourceLocation location;
 	private List<String[]> linkData;
+	private TIntObjectMap<SpecialManualElement> specials;
 
 	private ManualEntry(ManualInstance m, TextSplitter splitter, Function<TextSplitter, String[]> getContent,
 						ResourceLocation location)
@@ -71,7 +71,7 @@ public class ManualEntry
 			String[] tmp = {parts[2]};//I want pointers... They would make this easier
 			linkData = ManualUtils.prepareEntryForLinks(tmp);
 			splitter.split(manual.formatText(tmp[0]));
-			TIntObjectMap<SpecialManualElement> specials = splitter.getSpecials();
+			specials = splitter.getSpecials();
 			List<List<String>> text = splitter.getEntryText();
 			pages = new ArrayList<>(text.size());
 			for(int i = 0; i < text.size(); i++)
@@ -107,7 +107,10 @@ public class ManualEntry
 		}
 		ManualUtils.drawSplitString(manual.fontRenderer, toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
-		toRender.special.render(gui, x, y+offsetSpecial, mouseX, mouseY);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x, y+offsetSpecial, 0);
+		toRender.special.render(gui, 0, 0, mouseX, mouseY);
+		GlStateManager.popMatrix();
 	}
 
 	public String getTitle()
@@ -115,9 +118,9 @@ public class ManualEntry
 		return title;
 	}
 
-	public Stream<SpecialManualElement> getSpecials()
+	public TIntObjectMap<SpecialManualElement> getSpecials()
 	{
-		return pages.stream().map((p) -> p.special);
+		return specials;
 	}
 
 	public void addButtons(GuiManual gui, int x, int y, int page, List<GuiButton> pageButtons)
@@ -129,7 +132,14 @@ public class ManualEntry
 		ManualUtils.addLinks(this, manual, gui, p.renderText, x,
 				y+p.special.getPixelsTaken(), pageButtons, linkData);
 		manual.fontRenderer.setUnicodeFlag(uni);
-		pages.get(gui.page).special.onOpened(gui, x, y, pageButtons);
+		List<GuiButton> tempButtons = new ArrayList<>();
+		pages.get(gui.page).special.onOpened(gui, 0, 0, tempButtons);
+		for(GuiButton btn : tempButtons)
+		{
+			btn.x += x;
+			btn.y += y;
+			pageButtons.add(btn);
+		}
 	}
 
 	public String getSubtext()

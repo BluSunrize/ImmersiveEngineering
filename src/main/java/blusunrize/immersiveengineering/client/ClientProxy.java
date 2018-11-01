@@ -42,7 +42,6 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
@@ -70,7 +69,6 @@ import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -137,8 +135,6 @@ import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
@@ -727,13 +723,35 @@ public class ClientProxy extends CommonProxy
 		*/
 		//Register special elements
 		ManualInstance ieMan = ManualHelper.getManual();
-		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting_multi"), s -> {
-			JsonArray data = JsonUtils.getJsonArray(s, "recipes");
-			Object[] stacksAndRecipes = new Object[data.size()];
-			for (int i = 0;i<data.size();i++) {
-				stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(ieMan, data.get(i).getAsJsonObject());
+		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting"), s -> {
+			Object[] stacksAndRecipes;
+			if(JsonUtils.isJsonArray(s, "recipes"))
+			{
+				JsonArray data = JsonUtils.getJsonArray(s, "recipes");
+				stacksAndRecipes = new Object[data.size()];
+				for(int i = 0; i < data.size(); i++)
+				{
+					JsonElement el = data.get(i);
+					if(el.isJsonArray())
+					{
+						JsonArray inner = el.getAsJsonArray();
+						Object[] innerSaR = new Object[inner.size()];
+						for(int j = 0; j < inner.size(); ++j)
+						{
+							innerSaR[j] = ManualUtils.getRecipeObjFromJson(ieMan, inner.get(j).getAsJsonObject());
+						}
+						stacksAndRecipes[i] = innerSaR;
+					}
+					else if(el.isJsonObject())
+						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(ieMan, el.getAsJsonObject());
+				}
 			}
-			return new ManualElementCraftingMulti(ieMan, stacksAndRecipes);
+			else
+			{
+				stacksAndRecipes = new Object[1];
+				stacksAndRecipes[0] = ManualUtils.getRecipeObjFromJson(ieMan, s);
+			}
+			return new ManualElementCrafting(ieMan, stacksAndRecipes);
 		});
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "image"),
 				s -> {
@@ -751,10 +769,8 @@ public class ClientProxy extends CommonProxy
 					}
 					return new ManualElementImage(ieMan, images);
 				});
-		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "crafting"),
-				s -> new ManualElementCrafting(ieMan, ManualUtils.getRecipeObjFromJson(ieMan, s)));
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
-				s -> new ManualPageMultiblock(ieMan,
+				s -> new ManualElementMultiblock(ieMan,
 						MultiblockHandler.getByUniqueName(JsonUtils.getString(s, "name"))));
 
 		ManualEntry.ManualEntryBuilder wiring = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
@@ -1188,6 +1204,7 @@ public class ClientProxy extends CommonProxy
 		String text = changes.replace("\t", "  ");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ManualHelper.getManual());
 		builder.setContent(title, "", text);
+		builder.setLocation(new ResourceLocation(ImmersiveEngineering.MODID, "changelog_"+version.toString()));
 		return builder.create();
 	}
 

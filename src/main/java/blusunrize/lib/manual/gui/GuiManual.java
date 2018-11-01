@@ -204,7 +204,7 @@ public class GuiManual extends GuiScreen
 			manual.titleRenderPost();
 
 			GL11.glColor3f(1, 1, 1);
-			selectedEntry.renderPage(this, guiLeft+32, guiTop+28, mouseX, mouseY);
+			selectedEntry.renderPage(this, guiLeft+32, guiTop+28, mouseX-32, mouseY-28);
 
 			mouseX += guiLeft;
 			mouseY += guiTop;
@@ -280,23 +280,24 @@ public class GuiManual extends GuiScreen
 		int xx = (int)Math.floor(x/scale-(fr.getStringWidth(s)/2));
 		int yy = (int)Math.floor(y/scale-(fr.FONT_HEIGHT/2));
 		if(scale!=1)
-			GL11.glScalef(scale, scale, scale);
+			GlStateManager.scale(scale, scale, scale);
 		fr.drawString(s, xx, yy, colour, shadow);
 		if(scale!=1)
-			GL11.glScalef(1/scale, 1/scale, 1/scale);
-	}
-
-	@Override
-	public void drawGradientRect(int x1, int y1, int x2, int y2, int colour1, int colour2)
-	{
-		super.drawGradientRect(x1, y1, x2, y2, colour1, colour2);
-		GL11.glEnable(GL11.GL_BLEND);
+			GlStateManager.scale(1/scale, 1/scale, 1/scale);
 	}
 
 	@Override
 	public void renderToolTip(ItemStack stack, int x, int y)
 	{
 		super.renderToolTip(stack, x, y);
+	}
+
+	//Change access from protected to public
+	@Override
+	public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
+	{
+		super.drawGradientRect(left, top, right, bottom, startColor, endColor);
+		GlStateManager.enableBlend();
 	}
 
 	@Override

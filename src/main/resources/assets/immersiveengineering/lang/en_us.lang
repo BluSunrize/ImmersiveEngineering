@@ -1033,7 +1033,6 @@ ie.manual.newerVersion= - NEW
 #ie.manual.entry.=
 
 
-ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews_0.name=What's new in v0.6.0
 ie.manual.entry.updateNews_0.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_00=Dear Engineer!<br><br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§o§nnew §o§nlights§r>, <link;barrel;§o§nwooden §o§nbarrels§r>, <link;tanksilo;§o§ntanks§r>, <link;tanksilo;§o§nsilos§r;1> and <link;fluidPipes;§o§nfluid §o§npipes§r>, achievements, <link;shader;§o§nshaders§r> and the <link;assembler;§o§nAssembler§r> and <link;bottlingMachine;§o§nBottling §o§nMachine§r>!
@@ -1061,6 +1060,7 @@ ie.manual.entry.updateNews_40=Dear Engineer!<br><br>The past update has brought 
 
 manual.immersiveengineering.manual=Engineer's manual
 
+manual.immersiveengineering.update=UPDATE NEWS!
 manual.immersiveengineering.general=Overview and Resources
 manual.immersiveengineering.construction=Construction
 manual.immersiveengineering.energy=Power, wires, generators

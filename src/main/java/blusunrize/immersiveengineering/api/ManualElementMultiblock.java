@@ -41,7 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ManualPageMultiblock extends SpecialManualElements
+public class ManualElementMultiblock extends SpecialManualElements
 {
 	private IMultiblock multiblock;
 
@@ -59,26 +59,21 @@ public class ManualPageMultiblock extends SpecialManualElements
 	private MultiblockBlockAccess blockAccess;
 	private int yOffTotal;
 
-	public ManualPageMultiblock(ManualInstance manual, IMultiblock multiblock)
+	public ManualElementMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
 		super(manual);
 		this.multiblock = multiblock;
 		renderInfo = new MultiblockRenderInfo(multiblock);
+		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+
+				renderInfo.structureWidth*renderInfo.structureWidth+
+				renderInfo.structureLength*renderInfo.structureLength);
 		blockAccess = new MultiblockBlockAccess(renderInfo);
-		yOffTotal = (int)(transY+scale*Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+renderInfo.structureWidth*renderInfo.structureWidth+renderInfo.structureLength*renderInfo.structureLength)/2);
-//		if(multiblock.getStructureManual()!=null)
-//		{
-//			scale = size[0] > size[1] ? width / size[0] - 10F : height / size[1] - 10F;
-//			if(scale * size[0] > width) {
-//				scale = width / size[0] - 10F;
-//			}
-//
-//			xTranslate = x + width / 2;// - (size[0] * scale) / 2;
-//			yTranslate = y + height / 2;// - (size[1] * scale) / 2;
-//
-//			w = size[0] * scale;
-//			h = size[1] * scale;
-//		}
+		transX = 60+renderInfo.structureWidth/2F;
+		transY = 35+diagLength/2;
+		rotX = 25;
+		rotY = -45;
+		scale = multiblock.getManualScale();
+		yOffTotal = (int)(transY+scale*diagLength/2);
 	}
 
 	@Override
@@ -87,11 +82,6 @@ public class ManualPageMultiblock extends SpecialManualElements
 		int yOff = 0;
 		if(multiblock.getStructureManual()!=null)
 		{
-			transX = x+60+renderInfo.structureWidth/2;
-			transY = y+35+(float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+renderInfo.structureWidth*renderInfo.structureWidth+renderInfo.structureLength*renderInfo.structureLength)/2;
-			rotX = 25;
-			rotY = -45;
-			scale = multiblock.getManualScale();
 			boolean canRenderFormed = multiblock.canRenderFormedStructure();
 
 			yOff = (int)(transY+scale*Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+renderInfo.structureWidth*renderInfo.structureWidth+renderInfo.structureLength*renderInfo.structureLength)/2);
@@ -108,7 +98,7 @@ public class ManualPageMultiblock extends SpecialManualElements
 		IngredientStack[] totalMaterials = this.multiblock.getTotalMaterials();
 		if(totalMaterials!=null)
 		{
-			componentTooltip = new ArrayList();
+			componentTooltip = new ArrayList<>();
 			componentTooltip.add(I18n.format("desc.immersiveengineering.info.reqMaterial"));
 			int maxOff = 1;
 			boolean hasAnyItems = false;
@@ -241,13 +231,11 @@ public class ManualPageMultiblock extends SpecialManualElements
 				GlStateManager.enableBlend();
 				RenderHelper.disableStandardItemLighting();
 
-				manual.fontRenderer.setUnicodeFlag(true);
-
-				manual.fontRenderer.setUnicodeFlag(false);
 				if(componentTooltip!=null)
 				{
-					manual.fontRenderer.drawString("?", x+116, y+yOffTotal/2-4, manual.getTextColour(), false);
-					if(mouseX >= x+116&&mouseX < x+122&&mouseY >= y+yOffTotal/2-4&&mouseY < y+yOffTotal/2+4)
+					manual.fontRenderer.setUnicodeFlag(false);
+					manual.fontRenderer.drawString("?", 116, yOffTotal/2-4, manual.getTextColour(), false);
+					if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
 						gui.drawHoveringText(componentTooltip, mouseX, mouseY, manual.fontRenderer);
 				}
 			}

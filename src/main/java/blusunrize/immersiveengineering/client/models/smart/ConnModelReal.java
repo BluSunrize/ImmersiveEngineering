@@ -134,7 +134,7 @@ public class ConnModelReal implements IBakedModel
 
 	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, IBlockState state, EnumFacing side, long rand)
 	{
-		if(layers.contains(currentLayer))
+		if(layers.contains(currentLayer)||currentLayer==null)
 			return base.getQuads(state, side, rand);
 		return ImmutableList.of();
 	}

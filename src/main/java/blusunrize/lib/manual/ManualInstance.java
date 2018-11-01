@@ -11,10 +11,18 @@ package blusunrize.lib.manual;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.map.TIntObjectMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -22,9 +30,10 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public abstract class ManualInstance
+public abstract class ManualInstance implements ISelectiveResourceReloadListener
 {
 	public FontRenderer fontRenderer;
 	public String texture;
@@ -35,6 +44,7 @@ public abstract class ManualInstance
 		this.fontRenderer = fontRenderer;
 		this.texture = texture;
 		contentTree = new Tree<>(name);
+		((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
 	}
 
 	public void registerSpecialElement(ResourceLocation resLoc, Function<JsonObject, SpecialManualElement> factory)
@@ -149,14 +159,16 @@ public abstract class ManualInstance
 		itemLinks.clear();
 		getAllEntries().forEach((entry) ->
 		{
-			final int[] iP = {0};
-			entry.getSpecials().forEach((p) ->
+			TIntObjectMap<SpecialManualElement> specials = entry.getSpecials();
+			TIntIterator it = specials.keySet().iterator();
+			while(it.hasNext())
 			{
+				int page = it.next();
+				SpecialManualElement p = specials.get(page);
 				p.recalculateCraftingRecipes();
 				for(ItemStack s : p.getProvidedRecipes())
-					itemLinks.put(getItemHash(s), new ManualLink(entry, iP[0], 0));
-				iP[0]++;
-			});
+					itemLinks.put(getItemHash(s), new ManualLink(entry, -1, page));
+			}
 		});
 	}
 
@@ -187,6 +199,14 @@ public abstract class ManualInstance
 		return contentTree.leafStream();
 	}
 
+	@Override
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
+	{
+		if(resourcePredicate.test(VanillaResourceType.LANGUAGES))
+		{
+			getAllEntries().forEach(ManualEntry::refreshPages);
+		}
+	}
 
 	public static class ManualLink
 	{
