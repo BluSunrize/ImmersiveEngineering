@@ -13,6 +13,7 @@
 - Fixed Item Router voiding items when used to extract (BluSunrize)
 - Fixed an annoying consolespam with the Cartographer trades (BluSunrize)
 - Fixed various GUIs still using "RF" instead of "IF" (BluSunrize)
+- Fixed Lightningrod resulting in a crash on very specific setups (BluSunrize)
 - Translations Added/Updated: ja_jp (karakufire), es_es(Dorzar & rogama25)
 
 #####Version 0.12-86 - BUILT

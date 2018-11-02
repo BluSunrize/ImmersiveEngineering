@@ -71,7 +71,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				fenceNet = null;
 			if(fenceNet==null)
 				fenceNet = this.getFenceNet();
-			if(fenceNet!=null&&world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127)&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
+			if(fenceNet.size()>0&&world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127)&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
 			{
 				int i = this.height+this.fenceNet.size();
 				if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
