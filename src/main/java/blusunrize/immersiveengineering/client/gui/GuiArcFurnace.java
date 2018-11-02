@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.ContainerArcFurnace;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -28,6 +29,7 @@ public class GuiArcFurnace extends GuiIEContainerBase
 {
 	static final String texture = "immersiveengineering:textures/gui/arc_furnace.png";
 	TileEntityArcFurnace tile;
+	private GuiButtonIE distributeButton;
 
 	public GuiArcFurnace(InventoryPlayer inventoryPlayer, TileEntityArcFurnace tile)
 	{
@@ -43,7 +45,7 @@ public class GuiArcFurnace extends GuiIEContainerBase
 		ArrayList<String> tooltip = new ArrayList<String>();
 		if(mx > guiLeft+157&&mx < guiLeft+164&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
-		if(mx > guiLeft+10&&mx < guiLeft+26&&my > guiTop+10&&my < guiTop+26)
+		if(distributeButton.canClick(this.mc, mx, my))
 			tooltip.add(I18n.format(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 
 		if(!tooltip.isEmpty())
@@ -69,13 +71,6 @@ public class GuiArcFurnace extends GuiIEContainerBase
 				int h = (int)Math.max(1, mod*16);
 				this.drawTexturedModalRect(guiLeft+27+slot%3*21, guiTop+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 			}
-//		for(int i=0; i<12; i++)
-//			if(tile.process[i]>0 && tile.processMax[i]>0)
-//			{
-//				float mod = tile.process[i]/(float)tile.processMax[i];
-//				int h = (int)Math.max(1, mod*16);
-//				this.drawTexturedModalRect(guiLeft+27+i%3*21,guiTop+34+i/3*18+(16-h), 176,16-h, 2,h);
-//			}
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+157, guiTop+22+(46-stored), guiLeft+164, guiTop+68, 0xffb51500, 0xff600b00);
@@ -85,13 +80,21 @@ public class GuiArcFurnace extends GuiIEContainerBase
 	public void initGui()
 	{
 		super.initGui();
-		this.buttonList.add(new GuiButtonIE(0, guiLeft+10, guiTop+10, 16, 16, null, texture, 179, 0).setHoverOffset(0,16));
+		distributeButton = new GuiButtonIE(0, guiLeft+10, guiTop+10, 16, 16, null, texture, 179, 0)
+		{
+			@Override
+			public boolean canClick(Minecraft mc, int mouseX, int mouseY)
+			{
+				return super.canClick(mc, mouseX, mouseY)&&mc.player!=null&&mc.player.inventory.getItemStack().isEmpty();
+			}
+		}.setHoverOffset(0, 16);
+		this.buttonList.add(distributeButton);
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button)
 	{
-		if(button.id==0)
+		if(button.id==0&&this.mc.player!=null&&this.mc.player.inventory.getItemStack().isEmpty())
 			autoSplitStacks();
 	}
 
@@ -100,7 +103,7 @@ public class GuiArcFurnace extends GuiIEContainerBase
 		int emptySlot;
 		int largestSlot;
 		int largestCount;
-		do
+		for(int j = 0; j < 12; j++)
 		{
 			emptySlot = -1;
 			largestSlot = -1;
@@ -117,12 +120,13 @@ public class GuiArcFurnace extends GuiIEContainerBase
 				}
 				else if(emptySlot < 0)
 					emptySlot = i;
-			if(emptySlot>=0 && largestSlot>=0)
+			if(emptySlot >= 0&&largestSlot >= 0)
 			{
 				this.handleMouseClick(this.inventorySlots.getSlot(largestSlot), largestSlot, 1, ClickType.PICKUP);
 				this.handleMouseClick(this.inventorySlots.getSlot(emptySlot), emptySlot, 0, ClickType.PICKUP);
 			}
-
-		} while(emptySlot >= 0 && largestSlot>=0);
+			else
+				break;
+		}
 	}
 }
