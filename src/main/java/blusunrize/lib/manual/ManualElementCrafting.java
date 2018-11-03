@@ -10,7 +10,6 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -26,13 +25,14 @@ import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class ManualElementCrafting extends SpecialManualElements
 {
 	private Object[] recipeRows;
-	private ArrayListMultimap<Object, PositionedItemStack[]> recipeLayout = ArrayListMultimap.create();
+	private List<PositionedItemStack[]>[] recipeLayout;
 	private int recipePage[];
 	private int heightPixels[];
 
@@ -42,28 +42,38 @@ public class ManualElementCrafting extends SpecialManualElements
 		this.recipeRows = stacks;
 		this.recipePage = new int[stacks.length];
 		this.heightPixels = new int[stacks.length];
+		this.recipeLayout = (List<PositionedItemStack[]>[])new List[stacks.length];
+		for(int i = 0; i < stacks.length; ++i)
+			recipeLayout[i] = new ArrayList<>();
 		recalculateCraftingRecipes();
 	}
 
 	@Override
 	public void recalculateCraftingRecipes()
 	{
-		this.recipeLayout.clear();
 		this.providedItems.clear();
 		for(int iStack = 0; iStack < recipeRows.length; iStack++)
 		{
+			this.recipeLayout[iStack].clear();
 			Object stack = recipeRows[iStack];
-			if(stack instanceof Object[])
+			if(stack instanceof PositionedItemStack[])
+				addFixedRecipe(iStack, (PositionedItemStack[])stack);
+			else if(stack instanceof Object[])
 				for(Object subStack : (Object[])stack)
-					for(IRecipe recipe : CraftingManager.REGISTRY)
-						checkRecipe(recipe, stack, subStack, iStack);
+				{
+					if(subStack instanceof PositionedItemStack[])
+						addFixedRecipe(iStack, (PositionedItemStack[])subStack);
+					else
+						for(IRecipe recipe : CraftingManager.REGISTRY)
+							checkRecipe(recipe, subStack, iStack);
+				}
 			else
 				for(IRecipe recipe : CraftingManager.REGISTRY)
-					checkRecipe(recipe, stack, stack, iStack);
+					checkRecipe(recipe, stack, iStack);
 		}
 	}
 
-	private void checkRecipe(IRecipe rec, Object key, Object stack, int recipeIndex)
+	private void checkRecipe(IRecipe rec, Object stack, int recipeIndex)
 	{
 		boolean matches = !rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack);
 		if(!matches&&stack instanceof ResourceLocation&&stack.equals(rec.getRegistryName()))
@@ -105,30 +115,53 @@ public class ManualElementCrafting extends SpecialManualElements
 			{
 				this.heightPixels[recipeIndex] = recipeHeight*18;
 				for(int prevId = 0; prevId <= recipeIndex; ++prevId)
-					for(PositionedItemStack[] oldStacks : recipeLayout.get(recipeRows[prevId]))
+					for(PositionedItemStack[] oldStacks : recipeLayout[prevId])
 						for(PositionedItemStack oldStack : oldStacks)
 							oldStack.y += yOffset;
 			}
-			this.recipeLayout.put(key, pIngredients);
+			this.recipeLayout[recipeIndex].add(pIngredients);
 			addProvidedItem(rec.getRecipeOutput());
 		}
+	}
+
+	private void addFixedRecipe(int index, PositionedItemStack[] recipe)
+	{
+		int height = 0;
+		for(PositionedItemStack stack : recipe)
+			if(stack.y > height)
+				height = stack.y;
+		height += 18;
+		if(this.heightPixels[index] < height)
+		{
+			int offset = (height-heightPixels[index])/2;
+			this.heightPixels[index] = height;
+			for(int prevId = 0; prevId <= index; ++prevId)
+				for(PositionedItemStack[] oldStacks : recipeLayout[prevId])
+					for(PositionedItemStack oldStack : oldStacks)
+						oldStack.y += offset;
+		}
+		else
+		{
+			int offset = (heightPixels[index]-height)/2;
+			for(PositionedItemStack stack : recipe)
+				stack.y += offset;
+		}
+		recipeLayout[index].add(recipe);
 	}
 
 	@Override
 	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
-		int i = 1;
 		int recipeYOffset = 0;
-		for(Object stack : this.recipeRows)
+		for(int i = 0; i < this.recipeRows.length; i++)
 		{
-			if(this.recipeLayout.get(stack).size() > 1)
+			if(this.recipeLayout[i].size() > 1)
 			{
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+0, x-2, y+recipeYOffset+heightPixels[i-1]/2-5, 8, 10, 0));
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+1, x+122-16, y+recipeYOffset+heightPixels[i-1]/2-5, 8, 10, 1));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+100, x-2, y+recipeYOffset+heightPixels[i]/2-5, 8, 10, 0));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+101, x+122-16, y+recipeYOffset+heightPixels[i]/2-5, 8, 10, 1));
 			}
-			if(this.recipeLayout.get(stack).size() > 0)
-				recipeYOffset += heightPixels[i-1]+8;
-			i++;
+			if(this.recipeLayout[i].size() > 0)
+				recipeYOffset += heightPixels[i]+8;
 		}
 		super.onOpened(gui, x, y+recipeYOffset-2, pageButtons);
 	}
@@ -143,9 +176,8 @@ public class ManualElementCrafting extends SpecialManualElements
 		highlighted = ItemStack.EMPTY;
 		for(int i = 0; i < recipeRows.length; i++)
 		{
-			Object stack = recipeRows[i];
-			List<PositionedItemStack[]> rList = this.recipeLayout.get(stack);
-			if(!rList.isEmpty()&&recipePage[i] >= 0&&recipePage[i] < this.recipeLayout.size())
+			List<PositionedItemStack[]> rList = this.recipeLayout[i];
+			if(!rList.isEmpty()&&recipePage[i] >= 0&&recipePage[i] < rList.size())
 			{
 				int maxX = 0;
 				for(PositionedItemStack pstack : rList.get(recipePage[i]))
@@ -171,9 +203,8 @@ public class ManualElementCrafting extends SpecialManualElements
 		 RenderItem.getInstance().renderWithColor=true;*/
 		for(int i = 0; i < recipeRows.length; i++)
 		{
-			Object stack = recipeRows[i];
-			List<PositionedItemStack[]> rList = this.recipeLayout.get(stack);
-			if(!rList.isEmpty()&&recipePage[i] >= 0&&recipePage[i] < this.recipeLayout.size())
+			List<PositionedItemStack[]> rList = this.recipeLayout[i];
+			if(!rList.isEmpty()&&recipePage[i] >= 0&&recipePage[i] < rList.size())
 			{
 				for(PositionedItemStack pstack : rList.get(recipePage[i]))
 					if(pstack!=null)
@@ -215,10 +246,10 @@ public class ManualElementCrafting extends SpecialManualElements
 			else
 				recipePage[r]++;
 
-			if(recipePage[r] >= this.recipeLayout.get(recipeRows[r]).size())
+			if(recipePage[r] >= this.recipeLayout[r].size())
 				recipePage[r] = 0;
 			if(recipePage[r] < 0)
-				recipePage[r] = this.recipeLayout.get(recipeRows[r]).size()-1;
+				recipePage[r] = this.recipeLayout[r].size()-1;
 		}
 	}
 
@@ -254,10 +285,8 @@ public class ManualElementCrafting extends SpecialManualElements
 	public int getPixelsTaken()
 	{
 		int yOff = 0;
-		for(int i = 0; i < this.heightPixels.length; i++)
-		{
-			yOff += this.heightPixels[i]+8;
-		}
+		for(int heightPixel : this.heightPixels)
+			yOff += heightPixel+8;
 		return yOff;
 	}
 }

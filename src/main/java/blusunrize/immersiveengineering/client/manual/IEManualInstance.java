@@ -38,7 +38,7 @@ public class IEManualInstance extends ManualInstance
 	public IEManualInstance()
 	{
 		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png",
-				new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
+				120, 179-28, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;
 		this.fontRenderer.colorCode[16+6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
 		((IEItemFontRender)this.fontRenderer).createColourBackup();

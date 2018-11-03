@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -63,6 +64,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.lib.manual.ManualElementTable;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualInstance;
@@ -581,23 +583,10 @@ public class ClientProxy extends CommonProxy
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
 		/*
-		NonNullList<ItemStack> tempItemList;
-		List<PositionedItemStack[]> tempRecipeList;
-		List<IManualPage> pages;
-
-		addChangelogToManual();
-
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "introduction0"),
 				new ManualPages.Text(ManualHelper.getManual(), "introduction1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "introductionHammer", new ItemStack(IEContent.itemTool, 1, 0)));
-		ManualHelper.addEntry("ores", ManualHelper.CAT_GENERAL,
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresCopper", new ItemStack(IEContent.blockOre, 1, 0), new ItemStack(IEContent.itemMetal, 1, 0)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresBauxite", new ItemStack(IEContent.blockOre, 1, 1), new ItemStack(IEContent.itemMetal, 1, 1)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresLead", new ItemStack(IEContent.blockOre, 1, 2), new ItemStack(IEContent.itemMetal, 1, 2)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresSilver", new ItemStack(IEContent.blockOre, 1, 3), new ItemStack(IEContent.itemMetal, 1, 3)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresNickel", new ItemStack(IEContent.blockOre, 1, 4), new ItemStack(IEContent.itemMetal, 1, 4)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresUranium", new ItemStack(IEContent.blockOre, 1, 5), new ItemStack(IEContent.itemMetal, 1, 5)));
 		tempRecipeList = new ArrayList<>();
 		if(!IERecipes.hammerCrushingList.isEmpty())
 		{
@@ -711,13 +700,20 @@ public class ClientProxy extends CommonProxy
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
 				s -> new ManualElementMultiblock(ieMan,
 						MultiblockHandler.getByUniqueName(JsonUtils.getString(s, "name"))));
-
-		ManualEntry.ManualEntryBuilder wiring = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-		wiring.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
 		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
-				ManualHelper.CAT_ENERGY)).getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
-				"test"));
-		ManualHelper.getManual().addEntry(energyCat, wiring.create());
+				ManualHelper.CAT_ENERGY), 1).getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				"test"), 1);
+		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				ManualHelper.CAT_GENERAL), 0);
+
+		ieMan.addEntry(energyCat, new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
+		ieMan.addEntry(generalCat, new ResourceLocation(ImmersiveEngineering.MODID, "ores"));
+		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
+		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+		builder.addSpecialElement("values", 0, new ManualElementTable(ieMan, table, false));
+		builder.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "thermoelectric"));
+		ieMan.addEntry(energyCat, builder.create());
+
 		addChangelogToManual();
 
 		/*
@@ -735,12 +731,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires3"),
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires4"),
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires5"));
-		Map<String, Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
-		String[][] table = formatToTable_ItemIntHashmap(sortedMap, "K");
-		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
-				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
-				new ManualPages.Text(ManualHelper.getManual(), "thermoElectric1"),
-				new ManualPages.Table(ManualHelper.getManual(), "", table, false));
 		//		ManualHelper.addEntry("highvoltage", ManualHelper.CAT_ENERGY,
 		//				new ManualPages.Text(ManualHelper.getManual(), "highvoltage0"),
 		//				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDevice,1,8),new ItemStack(IEContent.blockMetalDevice,1,4)),
@@ -1120,7 +1110,7 @@ public class ClientProxy extends CommonProxy
 
 		ManualInstance ieMan = ManualHelper.getManual();
 		Tree.Node<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
-				ManualHelper.CAT_UPDATE));
+				ManualHelper.CAT_UPDATE), -1);
 		for(ManualEntry entry : allChanges.values())
 			ManualHelper.getManual().addEntry(updateCat, entry);
 		fr.setUnicodeFlag(isUnicode);

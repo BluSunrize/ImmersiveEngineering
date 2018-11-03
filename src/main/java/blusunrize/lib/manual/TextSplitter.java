@@ -40,12 +40,12 @@ public class TextSplitter
 
 	public TextSplitter(ManualInstance m)
 	{
-		this(m.fontRenderer::getStringWidth, 120, 179-28, m.fontRenderer.FONT_HEIGHT, (s) -> s);
+		this(m.fontRenderer::getStringWidth, m.pageWidth, m.pageHeight, m.fontRenderer.FONT_HEIGHT, (s) -> s);
 	}
 
 	public TextSplitter(ManualInstance m, Function<String, String> tokenTransform)
 	{
-		this(m.fontRenderer::getStringWidth, 120, 179-28, m.fontRenderer.FONT_HEIGHT, tokenTransform);
+		this(m.fontRenderer::getStringWidth, m.pageWidth, m.pageHeight, m.fontRenderer.FONT_HEIGHT, tokenTransform);
 	}
 
 	public void clearSpecialByPage()

@@ -8,20 +8,20 @@
 
 package blusunrize.lib.manual;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
-public class Tree<NT, LT>
+public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 {
 	private Node<NT, LT> root;
 
 	public Tree(NT root)
 	{
-		this.root = new Node<>(root, null);
+		this.root = new Node<>(root, null, 0);
 	}
 
 	public Stream<LT> leafStream()
@@ -43,14 +43,16 @@ public class Tree<NT, LT>
 		return b.build();
 	}
 
-	public static abstract class AbstractNode<NT, LT>
+	public static abstract class AbstractNode<NT extends Comparable<NT>, LT extends Comparable<LT>>
 	{
 		@Nullable
 		private Node<NT, LT> superNode;
+		final int weight;
 
-		AbstractNode(@Nullable Node<NT, LT> superNode)
+		AbstractNode(@Nullable Node<NT, LT> superNode, int weight)
 		{
 			this.superNode = superNode;
+			this.weight = weight;
 		}
 
 		public abstract boolean isLeaf();
@@ -65,9 +67,9 @@ public class Tree<NT, LT>
 			return null;
 		}
 
-		public List<AbstractNode<NT, LT>> getChildren()
+		public SortedSet<AbstractNode<NT, LT>> getChildren()
 		{
-			return ImmutableList.of();
+			return ImmutableSortedSet.of();
 		}
 
 		@Nullable
@@ -79,19 +81,30 @@ public class Tree<NT, LT>
 		protected abstract void stream(Stream.Builder<AbstractNode<NT, LT>> builder, boolean leafStream);
 	}
 
-	public static class Node<NT, LT> extends AbstractNode<NT, LT>
+	public static class Node<NT extends Comparable<NT>, LT extends Comparable<LT>> extends AbstractNode<NT, LT>
 	{
-		private final List<AbstractNode<NT, LT>> children = new ArrayList<>();
+		private final SortedSet<AbstractNode<NT, LT>> children = new TreeSet<>((n1, n2) -> {
+			if(n1.weight!=n2.weight)
+				return Integer.compare(n1.weight, n2.weight);
+			else if(n1.isLeaf()&&!n2.isLeaf())
+				return -1;
+			else if(!n1.isLeaf()&&n2.isLeaf())
+				return 1;
+			else if(n1.isLeaf())
+				return n1.getLeafData().compareTo(n2.getLeafData());
+			else
+				return n1.getNodeData().compareTo(n2.getNodeData());
+		});
 		private NT data;
 
-		public Node(NT data, @Nullable Node<NT, LT> superNode)
+		public Node(NT data, @Nullable Node<NT, LT> superNode, int weight)
 		{
-			super(superNode);
+			super(superNode, weight);
 			this.data = data;
 		}
 
 		@Override
-		public List<AbstractNode<NT, LT>> getChildren()
+		public SortedSet<AbstractNode<NT, LT>> getChildren()
 		{
 			return children;
 		}
@@ -108,14 +121,19 @@ public class Tree<NT, LT>
 			return data;
 		}
 
-		public Node<NT, LT> addNewSubnode(NT data)
+		public Node<NT, LT> addNewSubnode(NT data, int weight)
 		{
-			Node<NT, LT> newNode = new Node<>(data, this);
+			Node<NT, LT> newNode = new Node<>(data, this, weight);
 			children.add(newNode);
 			return newNode;
 		}
 
 		public Node<NT, LT> getOrCreateSubnode(NT data)
+		{
+			return getOrCreateSubnode(data, 0);
+		}
+
+		public Node<NT, LT> getOrCreateSubnode(NT data, int weight)
 		{
 			for(AbstractNode<NT, LT> child : children)
 			{
@@ -124,12 +142,17 @@ public class Tree<NT, LT>
 					return (Node<NT, LT>)child;
 				}
 			}
-			return addNewSubnode(data);
+			return addNewSubnode(data, weight);
 		}
 
 		public void addNewLeaf(LT data)
 		{
-			Leaf<NT, LT> newLeaf = new Leaf<>(data, this);
+			addNewLeaf(data, 0);
+		}
+
+		public void addNewLeaf(LT data, int weight)
+		{
+			Leaf<NT, LT> newLeaf = new Leaf<>(data, this, weight);
 			children.add(newLeaf);
 		}
 
@@ -146,13 +169,13 @@ public class Tree<NT, LT>
 		}
 	}
 
-	public static class Leaf<NT, LT> extends AbstractNode<NT, LT>
+	public static class Leaf<NT extends Comparable<NT>, LT extends Comparable<LT>> extends AbstractNode<NT, LT>
 	{
 		LT data;
 
-		Leaf(LT data, @Nullable Node<NT, LT> superNode)
+		Leaf(LT data, @Nullable Node<NT, LT> superNode, int weight)
 		{
-			super(superNode);
+			super(superNode, weight);
 			this.data = data;
 		}
 

@@ -8,6 +8,7 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.Maps;
@@ -45,11 +46,15 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	public FontRenderer fontRenderer;
 	public String texture;
 	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
+	public final int pageWidth;
+	public final int pageHeight;
 
-	public ManualInstance(FontRenderer fontRenderer, String texture, ResourceLocation name)
+	public ManualInstance(FontRenderer fontRenderer, String texture, int pageWidth, int pageHeight, ResourceLocation name)
 	{
 		this.fontRenderer = fontRenderer;
 		this.texture = texture;
+		this.pageHeight = pageHeight;
+		this.pageWidth = pageWidth;
 		contentTree = new Tree<>(name);
 		((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
@@ -67,7 +72,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 						Object[] innerSaR = new Object[inner.size()];
 						for(int j = 0; j < inner.size(); ++j)
 						{
-							innerSaR[j] = ManualUtils.getRecipeObjFromJson(this, inner.get(j).getAsJsonObject());
+							innerSaR[j] = ManualUtils.getRecipeObjFromJson(this, inner.get(j));
 						}
 						stacksAndRecipes[i] = innerSaR;
 					}
@@ -234,6 +239,13 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	{
 		node.addNewLeaf(entry);
 		contentsByName.put(entry.getLocation(), entry);
+	}
+
+	public void addEntry(Tree.Node<ResourceLocation, ManualEntry> node, ResourceLocation source)
+	{
+		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+		builder.readFromFile(source);
+		addEntry(node, builder.create());
 	}
 
 	@Nullable

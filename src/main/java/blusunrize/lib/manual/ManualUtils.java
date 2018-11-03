@@ -11,6 +11,7 @@ package blusunrize.lib.manual;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
@@ -379,10 +380,42 @@ public class ManualUtils
 		return mc().getRenderItem();
 	}
 
-
-	public static void drawSplitString(FontRenderer fontRenderer, String localizedText, int x, int i, int i1, int textColour)
+	/**
+	 * Custom implementation of drawing a split string because Mojang's doesn't reset text colour between lines >___>
+	 */
+	public static int drawSplitString(FontRenderer fontRenderer, String string, int x, int y, int width, int colour)
 	{
-		throw new UnsupportedOperationException();
+		fontRenderer.resetStyles();
+		fontRenderer.textColor = colour;
+		List<String> list = fontRenderer.listFormattedStringToWidth(string, width);
+		FloatBuffer currentGLColor = BufferUtils.createFloatBuffer(16);
+		int line = 0;
+		for(Iterator<String> iterator = list.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
+		{
+			String next = iterator.next();
+			if(line > 0)
+			{
+				int currentColour = fontRenderer.textColor;
+				GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentGLColor);
+				//Resetting colour if GL colour differs from textColor
+				//that case happens because the formatting reset does not reset textColor
+				int glColourRGBA = ((int)(currentGLColor.get(0)*255)<<16)+((int)(currentGLColor.get(1)*255)<<8)+((int)(currentGLColor.get(2)*255));
+				if(glColourRGBA!=currentColour)
+				{
+					int j = 0;
+					for(; j < fontRenderer.colorCode.length; j++)
+						if(fontRenderer.colorCode[j]==glColourRGBA)
+						{
+							String code = Integer.toHexString(j%16);
+							next = '\u00a7'+code+next;
+							break;
+						}
+				}
+			}
+			fontRenderer.drawString(next, x, y, colour, false);
+			++line;
+		}
+		return list.size();
 	}
 
 	private static void parseSpecial(JsonObject obj, String anchor, TextSplitter splitter, ManualInstance instance)
@@ -415,14 +448,46 @@ public class ManualUtils
 			return new ResourceLocation(instance.getDefaultResourceDomain(), s);
 	}
 
-	public static Object getRecipeObjFromJson(ManualInstance m, JsonObject json)
+	public static PositionedItemStack parsePosItemStack(JsonElement ele, JsonContext ctx)
 	{
-		if(JsonUtils.isString(json, "recipe"))
-			return ManualUtils.getLocationForManual(JsonUtils.getString(json, "recipe"), m);
-		else if(JsonUtils.isString(json, "orename"))
-			return json.get("orename").getAsString();
-		else if(JsonUtils.isString(json, "item"))
-			return CraftingHelper.getItemStack(json, new JsonContext(m.getDefaultResourceDomain()));
-		throw new RuntimeException("Could not find recipe for "+json);
+		JsonObject json = ele.getAsJsonObject();
+		int x = JsonUtils.getInt(json, "x");
+		int y = JsonUtils.getInt(json, "y");
+		if(JsonUtils.isString(json, "item"))
+			return new PositionedItemStack(CraftingHelper.getItemStack(json, ctx), x, y);
+		else if(JsonUtils.isJsonArray(json, "stacks"))
+		{
+			JsonArray arr = json.getAsJsonArray("stacks");
+			List<ItemStack> stacks = new ArrayList<>(arr.size());
+			for(JsonElement stack : arr)
+				stacks.add(CraftingHelper.getItemStack(stack.getAsJsonObject(), ctx));
+			return new PositionedItemStack(stacks, x, y);
+		}
+		else
+			return new PositionedItemStack(CraftingHelper.getIngredient(json, ctx), x, y);
+	}
+
+	public static Object getRecipeObjFromJson(ManualInstance m, JsonElement jsonEle)
+	{
+		JsonContext ctx = new JsonContext(m.getDefaultResourceDomain());
+		if(jsonEle.isJsonObject())
+		{
+			JsonObject json = jsonEle.getAsJsonObject();
+			if(JsonUtils.isString(json, "recipe"))
+				return ManualUtils.getLocationForManual(JsonUtils.getString(json, "recipe"), m);
+			else if(JsonUtils.isString(json, "orename"))
+				return json.get("orename").getAsString();
+			else if(JsonUtils.isString(json, "item"))
+				return CraftingHelper.getItemStack(json, ctx);
+		}
+		else if(jsonEle.isJsonArray())
+		{
+			JsonArray json = jsonEle.getAsJsonArray();
+			PositionedItemStack[] stacks = new PositionedItemStack[json.size()];
+			for(int i = 0; i < json.size(); i++)
+				stacks[i] = parsePosItemStack(json.get(i), ctx);
+			return stacks;
+		}
+		throw new RuntimeException("Could not find recipe for "+jsonEle);
 	}
 }

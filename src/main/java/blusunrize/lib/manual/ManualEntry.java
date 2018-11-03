@@ -26,6 +26,7 @@ import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -36,7 +37,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @SuppressWarnings("WeakerAccess")
-public class ManualEntry
+public class ManualEntry implements Comparable<ManualEntry>
 {
 	private final ManualInstance manual;
 	private List<ManualPage> pages;
@@ -99,7 +100,8 @@ public class ManualEntry
 		int page = gui.page;
 		ManualPage toRender = pages.get(page);
 		int offsetText = 0;
-		int offsetSpecial = toRender.renderText.size()*manual.fontRenderer.FONT_HEIGHT;
+		int offsetSpecial = ((toRender.renderText.size()*manual.fontRenderer.FONT_HEIGHT+1)+
+				manual.pageHeight-toRender.special.getPixelsTaken())/2;
 		ManualInstance manual = gui.getManual();
 		if(toRender.special.isAbove())
 		{
@@ -196,6 +198,12 @@ public class ManualEntry
 		return manual.contentTree.fullStream().filter((e) -> e.getLeafData()==this).findAny().orElse(null);
 	}
 
+	@Override
+	public int compareTo(ManualEntry o)
+	{
+		return title.compareTo(o.title);
+	}
+
 	private class ManualPage
 	{
 		public List<String> renderText;
@@ -232,7 +240,7 @@ public class ManualEntry
 
 		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
 		{
-			splitter.addSpecialPage(anchor, offset, element);
+			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, element));
 		}
 
 		public void setContent(String title, String subText, String mainText)

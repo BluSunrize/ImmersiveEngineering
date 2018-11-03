@@ -27,7 +27,7 @@
         "recipe": "material/wire_steel"
       },
       {
-        "recipe": "wirecoils/wire_aluminum"
+        "recipe": "material/wire_aluminum"
       },
       {
         "recipe": "wirecoils/wirecoil_hv"

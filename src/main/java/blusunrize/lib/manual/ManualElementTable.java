@@ -12,7 +12,6 @@ import blusunrize.lib.manual.gui.GuiManual;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class ManualElementTable extends SpecialManualElements
 	private int[] bars;
 	//		int[] barsH;
 	private boolean horizontalBars = false;
-	private int tableLines;
+	private int height;
 	private int[] textOff;
 
 	public ManualElementTable(ManualInstance manual, String[][] table, boolean horizontalBars)
@@ -87,7 +86,7 @@ public class ManualElementTable extends SpecialManualElements
 								if(j!=0)
 									yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
 							}
-				tableLines = MathHelper.ceil(yOff/(double)manual.fontRenderer.FONT_HEIGHT);
+				height = yOff;
 			}
 		} catch(Exception e)
 		{
@@ -114,11 +113,9 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							ManualUtils.drawSplitString(manual.fontRenderer, line[j], xx, y+yOff, w, manual.getTextColour());
-							//							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
-							int l = manual.fontRenderer.listFormattedStringToWidth(line[j], w).size();
-							if(l > height)
-								height = l;
+							int lines = ManualUtils.drawSplitString(manual.fontRenderer, line[j], xx, y+yOff, w, manual.getTextColour());
+							if(lines > height)
+								height = lines;
 						}
 
 					if(horizontalBars)
@@ -149,6 +146,12 @@ public class ManualElementTable extends SpecialManualElements
 	@Override
 	public int getPixelsTaken()
 	{
-		return tableLines*manual.fontRenderer.FONT_HEIGHT;
+		return height;
+	}
+
+	@Override
+	public boolean isAbove()
+	{
+		return false;
 	}
 }
