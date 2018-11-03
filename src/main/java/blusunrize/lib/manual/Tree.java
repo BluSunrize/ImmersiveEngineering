@@ -84,12 +84,12 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 	public static class Node<NT extends Comparable<NT>, LT extends Comparable<LT>> extends AbstractNode<NT, LT>
 	{
 		private final SortedSet<AbstractNode<NT, LT>> children = new TreeSet<>((n1, n2) -> {
-			if(n1.weight!=n2.weight)
-				return Integer.compare(n1.weight, n2.weight);
-			else if(n1.isLeaf()&&!n2.isLeaf())
-				return -1;
-			else if(!n1.isLeaf()&&n2.isLeaf())
+			if(n1.isLeaf()&&!n2.isLeaf())
 				return 1;
+			else if(!n1.isLeaf()&&n2.isLeaf())
+				return -1;
+			else if(n1.weight!=n2.weight)
+				return Integer.compare(n1.weight, n2.weight);
 			else if(n1.isLeaf())
 				return n1.getLeafData().compareTo(n2.getLeafData());
 			else

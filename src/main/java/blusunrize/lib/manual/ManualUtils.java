@@ -74,12 +74,12 @@ public class ManualUtils
 			return !OreDictionary.getOres(name).isEmpty();
 	}
 
-	public static String getTitleForNode(AbstractNode<ResourceLocation, ManualEntry> node)
+	public static String getTitleForNode(AbstractNode<ResourceLocation, ManualEntry> node, ManualInstance inst)
 	{
 		if(node.isLeaf())
-			return node.getLeafData().getTitle();
+			return inst.formatEntryName(node.getLeafData().getTitle());
 		else
-			return I18n.format("manual."+node.getNodeData().toString().replace(':', '.'));
+			return inst.formatCategoryName(node.getNodeData());
 	}
 
 	public static void drawTexturedRect(int x, int y, int w, int h, double... uv)

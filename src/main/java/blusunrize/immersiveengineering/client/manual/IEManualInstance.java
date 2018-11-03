@@ -219,9 +219,10 @@ public class IEManualInstance extends ManualInstance
 	}
 
 	@Override
-	public String formatCategoryName(String s)
+	public String formatCategoryName(ResourceLocation s)
 	{
-		return (improveReadability()?TextFormatting.BOLD: "")+I18n.format("ie.manual.category."+s+".name");
+		return (improveReadability()?TextFormatting.BOLD: "")+I18n.format("manual."
+				+s.toString().replace(':', '.'));
 	}
 
 	@Override

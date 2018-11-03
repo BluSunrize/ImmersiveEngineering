@@ -161,7 +161,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public abstract String getManualName();
 
-	public abstract String formatCategoryName(String s);
+	public abstract String formatCategoryName(ResourceLocation s);
 
 	public abstract String formatEntryName(String s);
 

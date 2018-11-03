@@ -114,7 +114,7 @@ public class GuiManual extends GuiScreen
 		}
 		else
 		{
-			ArrayList<AbstractNode<ResourceLocation, ManualEntry>> children = new ArrayList<>();
+			List<AbstractNode<ResourceLocation, ManualEntry>> children = new ArrayList<>();
 			for(AbstractNode<ResourceLocation, ManualEntry> node : currentNode.getChildren())
 				if(manual.showNodeInList(node))
 					children.add(node);
@@ -198,7 +198,8 @@ public class GuiManual extends GuiScreen
 			manual.titleRenderPre();
 			//Title
 			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
-			this.drawCenteredStringScaled(manual.fontRenderer, selectedEntry.getSubtext(), guiLeft+xSize/2, guiTop+22, manual.getSubTitleColour(), 1, true);
+			this.drawCenteredStringScaled(manual.fontRenderer, manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
+					guiTop+22, manual.getSubTitleColour(), 1, true);
 			//Page Number
 			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
 			manual.titleRenderPost();
@@ -211,7 +212,7 @@ public class GuiManual extends GuiScreen
 		}
 		else
 		{
-			String title = ManualUtils.getTitleForNode(currentNode);
+			String title = ManualUtils.getTitleForNode(currentNode, manual);
 			manual.titleRenderPre();
 			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
 			manual.titleRenderPost();
@@ -436,7 +437,7 @@ public class GuiManual extends GuiScreen
 				{
 					if(manual.showNodeInList(node))
 					{
-						String title = ManualUtils.getTitleForNode(node).toLowerCase(Locale.ENGLISH);
+						String title = ManualUtils.getTitleForNode(node, manual).toLowerCase(Locale.ENGLISH);
 						if(title.contains(searchFinal))
 							lHeaders.add(node);
 						else
@@ -445,7 +446,7 @@ public class GuiManual extends GuiScreen
 				});
 				List<AbstractNode<ResourceLocation, ManualEntry>> lCorrections =
 						ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck, 4,
-								ManualUtils::getTitleForNode);
+								(e) -> ManualUtils.getTitleForNode(e, manual));
 				for(AbstractNode<ResourceLocation, ManualEntry> node : lSpellcheck)
 					if(!lCorrections.contains(node))
 					{

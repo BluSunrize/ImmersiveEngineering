@@ -701,12 +701,12 @@ public class ClientProxy extends CommonProxy
 				s -> new ManualElementMultiblock(ieMan,
 						MultiblockHandler.getByUniqueName(JsonUtils.getString(s, "name"))));
 		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
-				ManualHelper.CAT_ENERGY), 1).getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
-				"test"), 1);
+				ManualHelper.CAT_ENERGY), 1);
 		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
 				ManualHelper.CAT_GENERAL), 0);
 
-		ieMan.addEntry(energyCat, new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
+		ieMan.addEntry(energyCat.getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				"test"), 1), new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
 		ieMan.addEntry(generalCat, new ResourceLocation(ImmersiveEngineering.MODID, "ores"));
 		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());

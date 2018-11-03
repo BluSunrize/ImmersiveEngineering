@@ -24,6 +24,7 @@ import java.util.List;
 public class GuiClickableList extends GuiButton
 {
 	String[] headers;
+	boolean[] isCategory;
 	@Nonnull
 	List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes;
 	private float textScale;
@@ -41,8 +42,13 @@ public class GuiClickableList extends GuiButton
 		this.gui = gui;
 		this.textScale = textScale;
 		this.nodes = nodes;
-		this.headers = this.nodes.stream()
-				.map(ManualUtils::getTitleForNode).toArray(String[]::new);
+		headers = new String[nodes.size()];
+		isCategory = new boolean[nodes.size()];
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			headers[i] = ManualUtils.getTitleForNode(nodes.get(i), gui.manual);
+			isCategory[i] = !nodes.get(i).isLeaf();
+		}
 
 		perPage = (h-8)/getFontHeight();
 		if(perPage < headers.length)
@@ -65,20 +71,27 @@ public class GuiClickableList extends GuiButton
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(textScale, textScale, textScale);
 		GlStateManager.translate(x/textScale, y/textScale, 0);
-		GlStateManager.color(1, 1, 1);
 		this.hovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		for(int i = 0; i < Math.min(perPage, headers.length); i++)
 		{
+			GlStateManager.color(1, 1, 1);
 			int col = gui.manual.getTextColour();
-			if(hovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
+			boolean currEntryHovered = hovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight();
+			if(currEntryHovered)
 				col = gui.manual.getHighlightColour();
 			if(i!=0)
 				GlStateManager.translate(0, getFontHeight(), 0);
 			int j = offset+i;
 			if(j > headers.length-1)
 				j = headers.length-1;
-			String s = nodes==null?gui.manual.formatCategoryName(headers[j]): headers[j];
-			fr.drawString(s, 0, 0, col, false);
+			String s = headers[j];
+			if(isCategory[j])
+			{
+				ManualUtils.bindTexture(gui.texture);
+				GlStateManager.enableBlend();
+				this.drawTexturedModalRect(0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
+			}
+			fr.drawString(s, isCategory[j]?7: 0, 0, col, false);
 		}
 		GlStateManager.scale(1/textScale, 1/textScale, 1/textScale);
 		GlStateManager.popMatrix();
