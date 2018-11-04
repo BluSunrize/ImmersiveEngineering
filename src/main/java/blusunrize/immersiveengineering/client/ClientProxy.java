@@ -1294,7 +1294,7 @@ public class ClientProxy extends CommonProxy
 				if(ID==Lib.GUIID_WoodenCrate&&te instanceof TileEntityWoodenCrate)
 					gui = new GuiCrate(player.inventory, (TileEntityWoodenCrate)te);
 				if(ID==Lib.GUIID_Workbench&&te instanceof TileEntityModWorkbench)
-					gui = new GuiModWorkbench(player.inventory, (TileEntityModWorkbench)te);
+					gui = new GuiModWorkbench(player.inventory, world, (TileEntityModWorkbench)te);
 				if(ID==Lib.GUIID_Sorter&&te instanceof TileEntitySorter)
 					gui = new GuiSorter(player.inventory, (TileEntitySorter)te);
 				if(ID==Lib.GUIID_Squeezer&&te instanceof TileEntitySqueezer)

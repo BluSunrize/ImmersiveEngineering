@@ -31,7 +31,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -39,9 +41,9 @@ public class GuiModWorkbench extends GuiIEContainerBase
 {
 	TileEntityModWorkbench workbench;
 
-	public GuiModWorkbench(InventoryPlayer inventoryPlayer, TileEntityModWorkbench tile)
+	public GuiModWorkbench(InventoryPlayer inventoryPlayer, World world, TileEntityModWorkbench tile)
 	{
-		super(new ContainerModWorkbench(inventoryPlayer, tile));
+		super(new ContainerModWorkbench(inventoryPlayer, world, tile));
 		workbench = tile;
 		this.ySize = 168;
 	}
@@ -151,13 +153,11 @@ public class GuiModWorkbench extends GuiIEContainerBase
 		for(int i = 0; i < ((ContainerModWorkbench)inventorySlots).slotCount; i++)
 		{
 			Slot s = inventorySlots.getSlot(i);
-
 			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos-1, 17, 1, 0x77222222);
 			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos+0, 1, 16, 0x77222222);
 			ClientUtils.drawColouredRect(guiLeft+s.xPos+16, guiTop+s.yPos+0, 1, 17, 0x77999999);
 			ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+16, 16, 1, 0x77999999);
-			if(!(s instanceof IESlot.BlueprintOutput)||s.getHasStack()||((IESlot.BlueprintOutput)s).recipe.output.isEmpty())
-				ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0x77444444);
+			ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0x77444444);
 		}
 
 		for(int i = 0; i < ((ContainerModWorkbench)inventorySlots).slotCount; i++)
@@ -176,12 +176,9 @@ public class GuiModWorkbench extends GuiIEContainerBase
 					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
 					this.zLevel = 0.0F;
 					itemRender.zLevel = 0.0F;
-
-					GlStateManager.disableLighting();
-					GlStateManager.disableDepth();
-					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0x77444444);
-					GlStateManager.enableLighting();
-					GlStateManager.enableDepth();
+					GlStateManager.depthFunc(GL11.GL_GREATER);
+					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0xbb333333);
+					GlStateManager.depthFunc(GL11.GL_LEQUAL);
 				}
 			}
 		}
