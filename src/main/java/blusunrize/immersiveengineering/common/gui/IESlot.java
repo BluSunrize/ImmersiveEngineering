@@ -363,12 +363,31 @@ public abstract class IESlot extends Slot
 		}
 	}
 
+	public static class BlueprintInput extends IESlot
+	{
+		private final InventoryBlueprint.Output outputInventory;
+
+		public BlueprintInput(Container container, IInventory inv, InventoryBlueprint.Output outputInventory, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+			this.outputInventory = outputInventory;
+		}
+
+		@Override
+		public void onSlotChanged()
+		{
+			outputInventory.updateOutputs(this.inventory);
+			super.onSlotChanged();
+		}
+	}
+
 	public static class BlueprintOutput extends IESlot
 	{
-		private final InventoryBlueprint.Input inputInventory;
+		//		private final InventoryBlueprint.Input inputInventory;
+		private final IInventory inputInventory;
 		public final BlueprintCraftingRecipe recipe;
 
-		public BlueprintOutput(Container container, InventoryBlueprint.Output inv, InventoryBlueprint.Input inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
+		public BlueprintOutput(Container container, InventoryBlueprint.Output inv, /*InventoryBlueprint.Input*/IInventory inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
 		{
 			super(container, inv, id, x, y);
 			this.inputInventory = inputInventory;

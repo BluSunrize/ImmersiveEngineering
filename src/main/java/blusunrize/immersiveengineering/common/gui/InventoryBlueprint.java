@@ -63,9 +63,9 @@ public class InventoryBlueprint extends InventoryBasic
 		public void updateOutputs(IInventory inputInventory)
 		{
 			//Get input items
-			NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory(), ItemStack.EMPTY);
+			NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory()-1, ItemStack.EMPTY);
 			for(int i = 0; i < inputs.size(); i++)
-				inputs.set(i, inputInventory.getStackInSlot(i));
+				inputs.set(i, inputInventory.getStackInSlot(i+1));
 			//Iterate Recipes and set output slots
 			for(int i = 0; i < this.recipes.length; i++)
 			{
@@ -84,14 +84,14 @@ public class InventoryBlueprint extends InventoryBasic
 		public void reduceIputs(IInventory inputInventory, BlueprintCraftingRecipe recipe, ItemStack taken)
 		{
 			//Get input items
-			NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory(), ItemStack.EMPTY);
+			NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory()-1, ItemStack.EMPTY);
 			for(int i = 0; i < inputs.size(); i++)
-				inputs.set(i, inputInventory.getStackInSlot(i));
+				inputs.set(i, inputInventory.getStackInSlot(i+1));
 			//Consume
 			recipe.consumeInputs(inputs, taken.getCount()/recipe.output.getCount());
 			//Update remains
 			for(int i = 0; i < inputs.size(); i++)
-				inputInventory.setInventorySlotContents(i, inputs.get(i));
+				inputInventory.setInventorySlotContents(i+1, inputs.get(i));
 		}
 	}
 }

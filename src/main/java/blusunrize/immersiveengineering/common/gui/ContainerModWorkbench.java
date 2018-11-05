@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -35,7 +34,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 {
 	private final World world;
 	public InventoryPlayer inventoryPlayer;
-	private InventoryBlueprint.Input inventoryBPinput = new InventoryBlueprint.Input(this);
+	//	private InventoryBlueprint.Input inventoryBPinput = new InventoryBlueprint.Input(this);
 	private InventoryBlueprint.Output inventoryBPoutput;
 	public InventoryShader shaderInv;
 
@@ -70,28 +69,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		slotCount = 1;
 
 		ItemStack tool = this.getSlot(0).getStack();
-		if(tool.getItem() instanceof ItemEngineersBlueprint)
-		{
-			//Add input slots
-			for(int i = 0; i < 6; i++)
-			{
-				this.addSlotToContainer(new Slot(inventoryBPinput, i, i%2==0?74: 92, 21+(i/2)*18));
-				slotCount++;
-			}
-
-			//Init the output inventory
-			BlueprintCraftingRecipe[] recipes = ((ItemEngineersBlueprint)tool.getItem()).getRecipes(tool);
-			inventoryBPoutput = new InventoryBlueprint.Output(this, recipes);
-
-			//Add output slots
-			for(int i = 0; i < recipes.length; i++)
-			{
-				int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
-				this.addSlotToContainer(new IESlot.BlueprintOutput(this, inventoryBPoutput, inventoryBPinput, i, 118+(i%3*18), y, recipes[i]));
-				slotCount++;
-			}
-		}
-		else if(tool.getItem() instanceof IUpgradeableTool)
+		if(tool.getItem() instanceof IUpgradeableTool)
 		{
 //			if(tool.getItem() instanceof ItemEngineersBlueprint)
 //				((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
@@ -118,6 +96,35 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 				}
 			}
 		}
+		else
+		{
+			boolean blueprint = false;
+			if(tool.getItem() instanceof ItemEngineersBlueprint)
+			{
+				//Init the output inventory
+				blueprint = true;
+				BlueprintCraftingRecipe[] recipes = ((ItemEngineersBlueprint)tool.getItem()).getRecipes(tool);
+				inventoryBPoutput = new InventoryBlueprint.Output(this, recipes);
+
+				//Add output slots
+				for(int i = 0; i < recipes.length; i++)
+				{
+					int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
+					this.addSlotToContainer(new IESlot.BlueprintOutput(this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes[i]));
+//					this.addSlotToContainer(new IESlot.BlueprintOutput(this, inventoryBPoutput, inventoryBPinput, i, 118+(i%3*18), y, recipes[i]));
+					slotCount++;
+				}
+			}
+			//Add input slots, these are always here if no tool is in
+			for(int i = 0; i < 6; i++)
+			{
+				if(blueprint)
+					this.addSlotToContainer(new IESlot.BlueprintInput(this, this.inv, this.inventoryBPoutput, i+1, i%2==0?74: 92, 21+(i/2)*18));
+				else
+					this.addSlotToContainer(new Slot(this.inv, i+1, i%2==0?74: 92, 21+(i/2)*18));
+				slotCount++;
+			}
+		}
 		bindPlayerInv(inventoryPlayer);
 		ImmersiveEngineering.proxy.reInitGui();
 	}
@@ -141,7 +148,12 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 			}
 			else if(!stackInSlot.isEmpty())
 			{
-				if(stackInSlot.getItem() instanceof IUpgradeableTool&&((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
+				if(stackInSlot.getItem() instanceof ItemEngineersBlueprint)
+				{
+					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+						return ItemStack.EMPTY;
+				}
+				else if(stackInSlot.getItem() instanceof IUpgradeableTool&&((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
@@ -194,20 +206,20 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		return ret;
 	}
 
-	@Override
-	public void onCraftMatrixChanged(IInventory inventory)
-	{
-		if(inventory==this.inventoryBPinput)
-			this.inventoryBPoutput.updateOutputs(inventory);
-		super.onCraftMatrixChanged(inventory);
-		tile.markContainingBlockForUpdate(null);
-	}
+//	@Override
+//	public void onCraftMatrixChanged(IInventory inventory)
+//	{
+//		if(inventory==this.inventoryBPinput)
+//			this.inventoryBPoutput.updateOutputs(inventory);
+//		super.onCraftMatrixChanged(inventory);
+//		tile.markContainingBlockForUpdate(null);
+//	}
 
 	@Override
 	public void onContainerClosed(EntityPlayer playerIn)
 	{
 		super.onContainerClosed(playerIn);
-		if(!this.world.isRemote)
-			this.clearContainer(playerIn, this.world, this.inventoryBPinput);
+//		if(!this.world.isRemote)
+//			this.clearContainer(playerIn, this.world, this.inventoryBPinput);
 	}
 }

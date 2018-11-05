@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInventory, IDirectionalTile, IHasDummyBlocks, IGuiTile
 {
-	NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+	NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 	EnumFacing facing = EnumFacing.NORTH;
 	public boolean dummy = false;
 	public int dummyOffset = 0;
@@ -45,7 +45,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 		//		if(!descPacket)
 		//		{
 		//read inv
-		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 1);
+		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 7);
 		//		}
 	}
 
@@ -88,7 +88,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	@Override
 	public int getSlotLimit(int slot)
 	{
-		return 1;
+		return slot==0?1:64;
 	}
 
 	@Override
