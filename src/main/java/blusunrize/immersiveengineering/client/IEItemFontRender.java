@@ -230,6 +230,7 @@ public class IEItemFontRender extends FontRenderer
 		return k!=i&&l!=-1&&l < k?l: k;
 	}
 
+
 	static class CharReplacement
 	{
 		private final String textureSheet;

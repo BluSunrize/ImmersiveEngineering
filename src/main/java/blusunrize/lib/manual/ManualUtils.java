@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -32,7 +31,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.util.*;
@@ -179,13 +178,15 @@ public class ManualUtils
 						}
 				}
 			}
-			//drawJustifiedLine(next, fontRenderer, x, y, colour, 120);
-			fontRenderer.drawString(next, x, y, colour, false);
+			drawJustifiedString(fontRenderer, 120, next, x, y);
+			//fontRenderer.drawString(next, x, y, colour, false);
 			line++;
 		}
 	}
 
 	private static Method renderChar;
+	private static Method doDraw;
+	private static Field posX, posY;
 
 	//TODO make this an AT
 	static
@@ -194,58 +195,100 @@ public class ManualUtils
 		{
 			renderChar = FontRenderer.class.getDeclaredMethod("renderChar", char.class, boolean.class);
 			renderChar.setAccessible(true);
-		} catch(NoSuchMethodException e)
+			doDraw = FontRenderer.class.getDeclaredMethod("doDraw", float.class);
+			doDraw.setAccessible(true);
+			posX = FontRenderer.class.getDeclaredField("posX");
+			posX.setAccessible(true);
+			posY = FontRenderer.class.getDeclaredField("posY");
+			posY.setAccessible(true);
+		} catch(NoSuchMethodException|NoSuchFieldException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
-	//TODO this will break with control chars and is broken in general as well
-	public static void drawJustifiedLine(String line, FontRenderer renderer, int x, int y, int colour, int lineLength)
+	public static void drawJustifiedString(FontRenderer render, int renderWidth, String text, float xPos, float yPos)
 	{
-		String[] tokens = TextSplitter.splitWhitespace(line);
-
-		int spaceLength = 0;
-		int wordLength = 0;
-		for(String token : tokens)
+		render.resetStyles();//TODO do I wnt this here?
+		text = text.trim();
+		float whitespaceLen = 0;
+		for(char c : text.toCharArray())
 		{
-			if(Character.isWhitespace(token.charAt(0)))
-			{
-				spaceLength += renderer.getStringWidth(token);
-			}
+			if(Character.isWhitespace(c))
+				whitespaceLen += render.getCharWidth(c);
 			else
-			{
-				//spaceLength += token.length()-1;
-				wordLength += renderer.getStringWidth(token);
-			}
+				++whitespaceLen;
 		}
-		double spaceMultiplier = (lineLength-wordLength)/(double)spaceLength;
-
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, 0);
-		for(String token : tokens)
+		int textWidth = render.getStringWidth(text);
+		float factor;
+		if(whitespaceLen==0)
+			factor = 1;
+		else
 		{
-			if(Character.isWhitespace(token.charAt(0)))
+			factor = (renderWidth-textWidth)/whitespaceLen;
+			if(factor > 1)
+				factor = 0;
+		}
+		for(int i = 0; i < text.length(); ++i)
+		{
+			char currChar = text.charAt(i);
+
+			if(currChar=='§'&&i+1 < text.length())
 			{
-				GlStateManager.translate(renderer.getStringWidth(token)*spaceMultiplier, 0, 0);
+				render.renderStringAtPos(String.valueOf(currChar)+String.valueOf(text.charAt(i+1)), false);
+				++i;
 			}
 			else
 			{
-				for(int i = 0; i < token.length(); i++)
-				{
-					try
-					{
-						float width = (float)renderChar.invoke(renderer, token.charAt(i), false);
-						GlStateManager.translate(width, 0, 0);
-					} catch(IllegalAccessException|InvocationTargetException e)
-					{
-						e.printStackTrace();
-					}
+				final String indexString = "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5\u00da\u00df\u00e3\u00f5\u011f\u0130\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u0207\u0000\u0000\u0000\u0000\u0000\u0000\u0000 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u0000\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00f8\u00a3\u00d8\u00d7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u00ae\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u03b2\u0393\u03c0\u03a3\u03c3\u03bc\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u2205\u2208\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0\u0000";
+				int j = indexString.indexOf(currChar);
 
+				/*if (render.randomStyle && j != -1)
+				{
+					int k = render.getCharWidth(currChar);
+					char c1;
+
+					do
+					{
+						j = render.fontRandom.nextInt(indexString.length());
+						c1 = indexString.charAt(j);
+
+					} while(k!=render.getCharWidth(c1));
+
+					currChar = c1;
+				}*/
+
+				float boldOffset = j==-1||render.getUnicodeFlag()?0.5f: 1f;
+				try
+				{
+					posX.set(render, (int)xPos);
+					posY.set(render, yPos);
+					float charWidth = (float)renderChar.invoke(render, currChar, false);
+//TODO move to static
+					Field bold = FontRenderer.class.getDeclaredField("boldStyle");
+					bold.setAccessible(true);
+					if((boolean)bold.get(render))
+					{
+						float tmpX = (int)xPos;
+						tmpX += boldOffset;
+
+						posX.set(render, tmpX);
+						renderChar.invoke(render, currChar, false);
+						posX.set(render, (int)xPos);
+
+						++charWidth;
+					}
+					//doDraw.invoke(render, f);
+					if(Character.isWhitespace(currChar))
+						xPos += charWidth*(1+factor);
+					else
+						xPos += charWidth+factor;
+				} catch(Exception x)
+				{
+					x.printStackTrace();
 				}
 			}
 		}
-		GlStateManager.popMatrix();
 	}
 
 	private static final String THIS = "this";
