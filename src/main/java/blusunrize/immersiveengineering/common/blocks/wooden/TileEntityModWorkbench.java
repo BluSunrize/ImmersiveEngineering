@@ -13,9 +13,12 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -29,7 +32,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInventory, IDirectionalTile, IHasDummyBlocks, IGuiTile
+import java.util.ArrayList;
+
+public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInventory, IDirectionalTile, IHasDummyBlocks, IGuiTile, IHasObjProperty
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 	EnumFacing facing = EnumFacing.NORTH;
@@ -88,7 +93,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	@Override
 	public int getSlotLimit(int slot)
 	{
-		return slot==0?1:64;
+		return slot==0?1: 64;
 	}
 
 	@Override
@@ -202,5 +207,16 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 		if(tileEntityModWorkbench instanceof TileEntityModWorkbench)
 			return tileEntityModWorkbench;
 		return null;
+	}
+
+	static ArrayList<String> normalDisplayList = Lists.newArrayList("cube0");
+	static ArrayList<String> blueprintDisplayList = Lists.newArrayList("cube0", "blueprint");
+
+	@Override
+	public ArrayList<String> compileDisplayList()
+	{
+		if(this.inventory.get(0).getItem() instanceof ItemEngineersBlueprint)
+			return blueprintDisplayList;
+		return normalDisplayList;
 	}
 }

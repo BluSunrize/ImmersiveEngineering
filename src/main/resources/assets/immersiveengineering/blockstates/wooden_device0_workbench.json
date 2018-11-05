@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:wooden_device/workbench.obj",
+		"model": "immersiveengineering:wooden_device/workbench.obj.ie",
 		"custom": {"flip-v": true}
 	},
 	"variants":
