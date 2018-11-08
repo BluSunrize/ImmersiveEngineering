@@ -2,6 +2,9 @@
 - Added a "Distribute Inputs" button to the ArcFurnace GUI. It keeps splitting the biggest stacks in the input if there is space available (BluSunrize)
 - Changed connectors to accept multiple "bursts" of energy if they (in total) don't exceed the max IO rate (Malte)
 - Changed internal logic of the Assembler to be a lot more straightforward, allowing bucket-like items for fluid ingredients (BluSunrize)
+- Changed the Engineer's Workbench around (BluSunrize)
+    - Lots of internal fixes to improve reliability and performance, as well as code style
+    - Fancy new render features, showing the blueprints on the table and the ingredients being used
 - Removed clickable JEI areas from the Assembler because they were blocking the output slots and were unnecessary anyway (BluSunrize)
 - Fixed wires not showing particles when burning (Malte)
 - Fixed recipes for structural arms conflicting with stairs (Malte)

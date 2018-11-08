@@ -365,9 +365,9 @@ public abstract class IESlot extends Slot
 
 	public static class BlueprintInput extends IESlot
 	{
-		private final InventoryBlueprint.Output outputInventory;
+		private final InventoryBlueprint outputInventory;
 
-		public BlueprintInput(Container container, IInventory inv, InventoryBlueprint.Output outputInventory, int id, int x, int y)
+		public BlueprintInput(Container container, IInventory inv, InventoryBlueprint outputInventory, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 			this.outputInventory = outputInventory;
@@ -383,11 +383,10 @@ public abstract class IESlot extends Slot
 
 	public static class BlueprintOutput extends IESlot
 	{
-		//		private final InventoryBlueprint.Input inputInventory;
 		private final IInventory inputInventory;
 		public final BlueprintCraftingRecipe recipe;
 
-		public BlueprintOutput(Container container, InventoryBlueprint.Output inv, /*InventoryBlueprint.Input*/IInventory inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
+		public BlueprintOutput(Container container, InventoryBlueprint inv, IInventory inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
 		{
 			super(container, inv, id, x, y);
 			this.inputInventory = inputInventory;
@@ -411,7 +410,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
-			((InventoryBlueprint.Output)this.inventory).reduceIputs(this.inputInventory, recipe, stack);
+			((InventoryBlueprint)this.inventory).reduceIputs(this.inputInventory, recipe, stack);
 			return super.onTake(player, stack);
 		}
 	}

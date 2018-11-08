@@ -34,8 +34,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 {
 	private final World world;
 	public InventoryPlayer inventoryPlayer;
-	//	private InventoryBlueprint.Input inventoryBPinput = new InventoryBlueprint.Input(this);
-	private InventoryBlueprint.Output inventoryBPoutput;
+	private InventoryBlueprint inventoryBPoutput;
 	public InventoryShader shaderInv;
 
 	public ContainerModWorkbench(InventoryPlayer inventoryPlayer, World world, TileEntityModWorkbench tile)
@@ -71,8 +70,6 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		ItemStack tool = this.getSlot(0).getStack();
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
-//			if(tool.getItem() instanceof ItemEngineersBlueprint)
-//				((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
 			IItemHandler handler = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 			if(handler instanceof IEItemStackHandler)
 				((IEItemStackHandler)handler).setTile(tile);
@@ -104,14 +101,13 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 				//Init the output inventory
 				blueprint = true;
 				BlueprintCraftingRecipe[] recipes = ((ItemEngineersBlueprint)tool.getItem()).getRecipes(tool);
-				inventoryBPoutput = new InventoryBlueprint.Output(this, recipes);
+				inventoryBPoutput = new InventoryBlueprint(this, recipes);
 
 				//Add output slots
 				for(int i = 0; i < recipes.length; i++)
 				{
 					int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
 					this.addSlotToContainer(new IESlot.BlueprintOutput(this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes[i]));
-//					this.addSlotToContainer(new IESlot.BlueprintOutput(this, inventoryBPoutput, inventoryBPinput, i, 118+(i%3*18), y, recipes[i]));
 					slotCount++;
 				}
 			}
@@ -204,22 +200,5 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 			detectAndSendChanges();
 		return ret;
-	}
-
-//	@Override
-//	public void onCraftMatrixChanged(IInventory inventory)
-//	{
-//		if(inventory==this.inventoryBPinput)
-//			this.inventoryBPoutput.updateOutputs(inventory);
-//		super.onCraftMatrixChanged(inventory);
-//		tile.markContainingBlockForUpdate(null);
-//	}
-
-	@Override
-	public void onContainerClosed(EntityPlayer playerIn)
-	{
-		super.onContainerClosed(playerIn);
-//		if(!this.world.isRemote)
-//			this.clearContainer(playerIn, this.world, this.inventoryBPinput);
 	}
 }

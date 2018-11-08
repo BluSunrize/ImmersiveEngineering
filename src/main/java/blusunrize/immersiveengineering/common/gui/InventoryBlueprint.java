@@ -18,80 +18,47 @@ import net.minecraft.util.NonNullList;
 
 public class InventoryBlueprint extends InventoryBasic
 {
-	Container container;
+	private final Container container;
+	private final BlueprintCraftingRecipe[] recipes;
 
-	private InventoryBlueprint(Container container, String name, int slots)
+	public InventoryBlueprint(Container container, BlueprintCraftingRecipe[] recipes)
 	{
-		super("Blueprint_"+name, true, slots);
+		super("BlueprintOutput", true, recipes.length);
 		this.container = container;
+		this.recipes = recipes;
 	}
 
-	public static class Input extends InventoryBlueprint
+	public void updateOutputs(IInventory inputInventory)
 	{
-		public Input(Container container)
+		//Get input items
+		NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory()-1, ItemStack.EMPTY);
+		for(int i = 0; i < inputs.size(); i++)
+			inputs.set(i, inputInventory.getStackInSlot(i+1));
+		//Iterate Recipes and set output slots
+		for(int i = 0; i < this.recipes.length; i++)
 		{
-			super(container, "Output", 6);
-		}
-
-		@Override
-		public ItemStack decrStackSize(int index, int count)
-		{
-			ItemStack itemstack = super.decrStackSize(index, count);
-			if(!itemstack.isEmpty())
-				this.container.onCraftMatrixChanged(this);
-			return itemstack;
-		}
-
-		@Override
-		public void setInventorySlotContents(int index, ItemStack stack)
-		{
-			super.setInventorySlotContents(index, stack);
-			this.container.onCraftMatrixChanged(this);
-		}
-	}
-
-	public static class Output extends InventoryBlueprint
-	{
-		private final BlueprintCraftingRecipe[] recipes;
-
-		public Output(Container container, BlueprintCraftingRecipe[] recipes)
-		{
-			super(container, "Output", recipes.length);
-			this.recipes = recipes;
-		}
-
-		public void updateOutputs(IInventory inputInventory)
-		{
-			//Get input items
-			NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory()-1, ItemStack.EMPTY);
-			for(int i = 0; i < inputs.size(); i++)
-				inputs.set(i, inputInventory.getStackInSlot(i+1));
-			//Iterate Recipes and set output slots
-			for(int i = 0; i < this.recipes.length; i++)
+			int craftable = recipes[i].getMaxCrafted(inputs);
+			if(craftable > 0)
 			{
-				int craftable = recipes[i].getMaxCrafted(inputs);
-				if(craftable > 0)
-				{
-					ItemStack out = recipes[i].output;
-					craftable = Math.min(out.getCount()*craftable, 64-(64%out.getCount()));
-					this.setInventorySlotContents(i, Utils.copyStackWithAmount(out, craftable));
-				}
-				else
-					this.setInventorySlotContents(i, ItemStack.EMPTY);
+				ItemStack out = recipes[i].output;
+				craftable = Math.min(out.getCount()*craftable, 64-(64%out.getCount()));
+				this.setInventorySlotContents(i, Utils.copyStackWithAmount(out, craftable));
 			}
+			else
+				this.setInventorySlotContents(i, ItemStack.EMPTY);
 		}
+	}
 
-		public void reduceIputs(IInventory inputInventory, BlueprintCraftingRecipe recipe, ItemStack taken)
-		{
-			//Get input items
-			NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory()-1, ItemStack.EMPTY);
-			for(int i = 0; i < inputs.size(); i++)
-				inputs.set(i, inputInventory.getStackInSlot(i+1));
-			//Consume
-			recipe.consumeInputs(inputs, taken.getCount()/recipe.output.getCount());
-			//Update remains
-			for(int i = 0; i < inputs.size(); i++)
-				inputInventory.setInventorySlotContents(i+1, inputs.get(i));
-		}
+	public void reduceIputs(IInventory inputInventory, BlueprintCraftingRecipe recipe, ItemStack taken)
+	{
+		//Get input items
+		NonNullList<ItemStack> inputs = NonNullList.withSize(inputInventory.getSizeInventory()-1, ItemStack.EMPTY);
+		for(int i = 0; i < inputs.size(); i++)
+			inputs.set(i, inputInventory.getStackInSlot(i+1));
+		//Consume
+		recipe.consumeInputs(inputs, taken.getCount()/recipe.output.getCount());
+		//Update remains
+		for(int i = 0; i < inputs.size(); i++)
+			inputInventory.setInventorySlotContents(i+1, inputs.get(i));
 	}
 }

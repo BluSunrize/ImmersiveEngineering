@@ -21,16 +21,6 @@ import net.minecraft.item.ItemStack;
 
 public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityModWorkbench>
 {
-	//	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/workbench.obj")
-	//	{
-	//		@Override
-	//		public IIcon getBlockIcon(String groupName)
-	//		{
-	//			return IEContent.blockWoodenDevices.getIcon(0, 5);
-	//		}
-	//	};
-
-	//	public void renderDynamic(TileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	@Override
 	public void render(TileEntityModWorkbench te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
@@ -165,36 +155,4 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 		GlStateManager.popMatrix();
 
 	}
-	//	@Override
-	//	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
-	//	{
-	//		int f = ((TileEntityModWorkbench)tile).facing;
-	//		int off = ((TileEntityModWorkbench)tile).dummyOffset;
-	//		float angle = f==2?180: f==4?-90: f==5?90: 0;
-	//		boolean mirror = f==2?off>0: f==3?off<0: f==4?off<0: f==5?off>0 : false;
-	//
-	//		switch(f)
-	//		{
-	//		case 2:
-	//			angle = 180;
-	//			translationMatrix.translate(mirror?1:0,0,.5);
-	//			break;
-	//		case 3:
-	//			translationMatrix.translate(!mirror?1:0,0,.5);
-	//			break;
-	//		case 4:
-	//			angle = -90;
-	//			translationMatrix.translate(.5,0,!mirror?1:0);
-	//			break;
-	//		case 5:
-	//			angle = 90;
-	//			translationMatrix.translate(.5,0,mirror?1:0);
-	//			break;
-	//		}
-	//
-	//		if(mirror)
-	//			translationMatrix.scale(new Vertex(f<4?-1:1,1,f>3?-1:1));
-	//		rotationMatrix.rotate(Math.toRadians(angle), 0.0, 1.0, 0.0);
-	//		model.render(tile, tes, translationMatrix, rotationMatrix, 0, mirror);
-	//	}
 }
