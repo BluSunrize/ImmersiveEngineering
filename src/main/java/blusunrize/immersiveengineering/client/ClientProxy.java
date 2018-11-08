@@ -650,6 +650,12 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "blastfurnace0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
+		ManualHelper.addEntry("workbench", ManualHelper.CAT_GENERAL,
+				new ManualPages.Crafting(ManualHelper.getManual(), "workbench0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.WORKBENCH.getMeta())),
+				new ManualPages.Text(ManualHelper.getManual(), "workbench1"),
+				new ManualPages.Text(ManualHelper.getManual(), "workbench2"));
+		ManualHelper.addEntry("blueprints", ManualHelper.CAT_GENERAL, new ManualPages.Crafting(ManualHelper.getManual(), "blueprints0", new ItemStack(IEContent.itemBlueprint)));
+		((IEManualInstance)ManualHelper.getManual()).hideEntry("blueprints");
 		handleMineralManual();
 		ManualHelper.addEntry("components", ManualHelper.CAT_GENERAL,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "components0", new ItemStack(IEContent.itemMaterial, 1, 8), new ItemStack(IEContent.itemMaterial, 1, 9)),
@@ -709,8 +715,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()), new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.GENERATOR.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RADIATOR.getMeta())));
 		ManualHelper.addEntry("metalbarrel", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "metalbarrel0", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.BARREL.getMeta())));
-		ManualHelper.addEntry("workbench", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "workbench0", new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.WORKBENCH.getMeta())));
-		ManualHelper.addEntry("blueprints", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Text(ManualHelper.getManual(), "blueprints0"), new ManualPages.Text(ManualHelper.getManual(), "blueprints1"));
 		ManualHelper.addEntry("lighting", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting0", new ItemStack(IEContent.blockMetalDecoration2, 1, BlockTypes_MetalDecoration2.LANTERN.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting1", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta())),
