@@ -93,7 +93,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 				}
 			}
 		}
-		else
+		else if(!(tool.getItem() instanceof IConfigurableTool))
 		{
 			boolean blueprint = false;
 			if(tool.getItem() instanceof ItemEngineersBlueprint)
