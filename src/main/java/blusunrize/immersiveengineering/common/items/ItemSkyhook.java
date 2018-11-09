@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -58,12 +57,11 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
-		list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook"));
-		EntityPlayer player = Minecraft.getMinecraft().player;
 		if(shouldLimitSpeed(stack))
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
 		else
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
+		list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook"));
 	}
 
 	private static final String LIMIT_SPEED = "limitSpeed";
