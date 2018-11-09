@@ -1,0 +1,22 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:maintenance_kit"
+  },
+  "pattern": [
+    "RW ",
+    "HHH"
+  ],
+  "key": {
+    "R": {
+      "item": "#stickIron"
+    },
+    "W": {
+      "item": "immersiveengineering:tool",
+      "data": 1
+    },
+    "H": {
+      "item": "#fabricHemp"
+    }
+  }
+}
