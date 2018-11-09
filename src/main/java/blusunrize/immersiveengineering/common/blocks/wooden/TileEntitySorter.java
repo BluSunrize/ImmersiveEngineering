@@ -176,7 +176,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 						IItemHandler itemHandler = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
 						for(int i = 0; i < itemHandler.getSlots(); i++)
 						{
-							ItemStack extractItem = itemHandler.extractItem(i, amount, simulate);
+							ItemStack extractItem = itemHandler.extractItem(i, amount, true);
 							if(!extractItem.isEmpty())
 							{
 								if(concatFilter==null)//Init the filter here, to save on resources
@@ -185,6 +185,8 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 								{
 									if(first)
 										routed = null;
+									if(!simulate)
+										itemHandler.extractItem(i, amount, false);
 									return extractItem;
 								}
 							}

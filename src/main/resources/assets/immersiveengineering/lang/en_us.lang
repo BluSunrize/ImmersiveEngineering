@@ -843,6 +843,8 @@ gui.immersiveengineering.config.assembler.clearRecipe=Clear Recipe
 gui.immersiveengineering.config.assembler.recursiveIngredients=Recursive use of ingredients
 gui.immersiveengineering.config.assembler.nonRecursiveIngredients=Non-Recursive use of ingredients
 
+gui.immersiveengineering.config.arcfurnace.distribute=Distribute Inputs
+
 #CHAT
 chat.immersiveengineering.warning.wrongCable=You cannot attach this wire here
 chat.immersiveengineering.warning.wrongDimension=You are in the wrong dimension
@@ -1185,7 +1187,8 @@ ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition be
 ie.manual.entry.wiringTransformer1=You can attach <link;wiring;§o§ntransformers §o§nto §o§nwooden §o§npoles§r;3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
 ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the wires connected to a block by simply rightclicking it.
 ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Aiming it at any energy storage or rightclicking it will read its current storage. Sneak+rightclick two connectors to calculate the average loss between them.
-ie.manual.entry.wiringFeedthrough=Feedthrough Insulators allow connecting wiring from one side of a wall to wiring on the other side without a hole. They can be created with any "normal" solid block in the middle. All common types of connectors (power and redstone) can be used to create feedthrough insulators for the corresponding wire type. Right-click one of the connectors with a hammer to form the multiblock.
+ie.manual.entry.wiringFeedthrough0=Feedthrough Insulators allow connecting wiring from one side of a wall to wiring on the other side without a hole. They can be created with any "normal" solid block in the middle. All common types of connectors (power and redstone) can be used to create feedthrough insulators for the
+ie.manual.entry.wiringFeedthrough1=corresponding wire type. Right-click one of the connectors with a hammer to form the multiblock.
 
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=

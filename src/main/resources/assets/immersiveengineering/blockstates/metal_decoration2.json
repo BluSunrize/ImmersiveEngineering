@@ -111,7 +111,7 @@
         {
           "model": "immersiveengineering:slope.obj.ie",
 			"textures": {
-				"#immersiveengineering:blocks/metal_decoration1_steel_scaffolding": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding"
+              "#immersiveengineering:blocks/metal_decoration1_steel_scaffolding_noctm": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_noctm"
 			},
 			"custom": {"flip-v": true},
 			"transform": {
@@ -171,7 +171,7 @@
 			"alu_slope": {
 				"model": "immersiveengineering:slope.obj.ie",
 				"textures": {
-					"#immersiveengineering:blocks/metal_decoration1_steel_scaffolding": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding"
+                  "#immersiveengineering:blocks/metal_decoration1_steel_scaffolding_noctm": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_noctm"
 				}
 			}
 		},

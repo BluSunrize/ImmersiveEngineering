@@ -308,6 +308,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		double lowerV = 16*lowerHeight;
 		double upperV = 16*upperHeight;
 		TextureAtlasSprite tas = quads.get(0).getSprite();
+		VertexFormat format = quads.get(0).getFormat();
 		quads = new ArrayList<>();
 		Matrix4 mat = new Matrix4(facing);
 
@@ -331,19 +332,18 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = mat.apply(vertices[i]);
 		//TOP
-		addCulledQuad(quads, DefaultVertexFormats.ITEM, Arrays.copyOf(vertices, 4),
+		addCulledQuad(quads, format, Arrays.copyOf(vertices, 4),
 				UP, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
 		//BOTTOM
-		addCulledQuad(quads, DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 7, 6, 5, 4),
+		addCulledQuad(quads, format, getArrayByIndices(vertices, 7, 6, 5, 4),
 				DOWN, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
 		//SIDES
 		addSides(quads, vertices, tas, lowerV, upperV, false);
 		addSides(quads, vertices, tas, lowerV, upperV, true);
 		if(isAtEnd(true))
 			//HIGHER END
-			addCulledQuad(quads, DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 0, 3, 7, 4),
+			addCulledQuad(quads, format, getArrayByIndices(vertices, 0, 3, 7, 4),
 					NORTH, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
-
 		return quads;
 	}
 

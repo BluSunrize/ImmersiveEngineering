@@ -39,9 +39,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
@@ -339,11 +340,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			int powerLeft = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
 			final int powerForSort = powerLeft;
 
-			if(outputs.size() < 1)
+			if(outputs.isEmpty())
 				return 0;
 
 			int sum = 0;
-			HashMap<AbstractConnection, Integer> powerSorting = new HashMap<>();
+			//TreeMap to prioritize outputs close to this connector if more energy is requested than available
+			//(energy will be provided to the nearby outputs rather than some random ones)
+			Map<AbstractConnection, Integer> powerSorting = new TreeMap<>();
 			for(AbstractConnection con : outputs)
 				if(con.isEnergyOutput)
 				{
@@ -367,7 +370,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					if(con.cableType!=null&&end!=null)
 					{
 						float prio = powerSorting.get(con)/(float)sum;
-						int output = (int)(powerForSort*prio);
+						int output = MathHelper.ceil(powerForSort*prio);
 
 						int tempR = end.outputEnergy(Math.min(output, con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
@@ -376,6 +379,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						end.outputEnergy(tempR, simulate, energyType);
 						HashSet<IImmersiveConnectable> passedConnectors = new HashSet<IImmersiveConnectable>();
 						float intermediaryLoss = 0;
+						//<editor-fold desc="Transfer rate and passed energy">
 						for(Connection sub : con.subConnections)
 						{
 							float length = sub.length/(float)sub.cableType.getMaxLength();
@@ -396,6 +400,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 									subEnd.onEnergyPassthrough(r-r*intermediaryLoss);
 							}
 						}
+						//</editor-fold>
 						received += r;
 						powerLeft -= r;
 						if(powerLeft <= 0)

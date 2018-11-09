@@ -33,6 +33,8 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	int[] nbtCopyTargetSlot = null;
 	Pattern nbtCopyPredicate = null;
 	int lastMatch = 0;
+	int lastStartX = 0;
+	int lastStartY = 0;
 
 	public RecipeShapedIngredient(ResourceLocation group, ItemStack result, Object... recipe)
 	{
@@ -118,24 +120,27 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
 	{
-		NonNullList<ItemStack> remains = ForgeHooks.defaultRecipeGetRemainingItems(inv);
-		for(int i = 0; i < height*width; i++)
-		{
-			ItemStack s = inv.getStackInSlot(i);
-			NonNullList<Ingredient> matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: this.input;
-			if(matchedIngr.get(i) instanceof IngredientFluidStack)
+		NonNullList<ItemStack> remains = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+		for(int yy = 0; yy < this.height; yy++)
+			for(int xx = 0; xx < this.width; xx++)
 			{
-				if(!s.isEmpty())
-					remains.set(i, Utils.copyStackWithAmount(s, 1));
-				IFluidHandlerItem handler = FluidUtil.getFluidHandler(remains.get(i));
-				if(handler!=null)
+				int i = this.width*yy+xx;
+				int transposedI = inv.getWidth()*(yy+lastStartY)+(xx+lastStartX);
+				ItemStack s = inv.getStackInSlot(transposedI);
+				NonNullList<Ingredient> matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: this.input;
+				if(matchedIngr.get(i) instanceof IngredientFluidStack)
 				{
-					FluidStack fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluid();
-					handler.drain(fluid.amount, true);
-					remains.set(i, handler.getContainer());
+					IFluidHandlerItem handler = FluidUtil.getFluidHandler(s.getCount() > 1?Utils.copyStackWithAmount(s, 1): s);
+					if(handler!=null)
+					{
+						FluidStack fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluid();
+						handler.drain(fluid.amount, true);
+						remains.set(transposedI, handler.getContainer().copy());
+					}
+					else
+						remains.set(transposedI, ForgeHooks.getContainerItem(s));
 				}
 			}
-		}
 		return remains;
 	}
 
@@ -145,16 +150,22 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		if(checkMatchDo(inv, getIngredients(), startX, startY, mirror, false))
 		{
 			lastMatch = 0;
+			lastStartX = startX;
+			lastStartY = startY;
 			return true;
 		}
 		else if(ingredientsQuarterTurn!=null&&checkMatchDo(inv, ingredientsQuarterTurn, startX, startY, mirror, true))
 		{
 			lastMatch = 1;
+			lastStartX = startX;
+			lastStartY = startY;
 			return true;
 		}
 		else if(ingredientsEighthTurn!=null&&checkMatchDo(inv, ingredientsEighthTurn, startX, startY, mirror, false))
 		{
 			lastMatch = 2;
+			lastStartX = startX;
+			lastStartY = startY;
 			return true;
 		}
 		return false;

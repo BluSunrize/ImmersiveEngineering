@@ -838,6 +838,7 @@ public class ImmersiveNetHandler
 	{
 		public Connection[] subConnections;
 		public boolean isEnergyOutput;
+		private float avgLoss = -1;
 
 		public AbstractConnection(BlockPos start, BlockPos end, WireType cableType, int length, Connection... subConnections)
 		{
@@ -864,12 +865,16 @@ public class ImmersiveNetHandler
 
 		public float getAverageLossRate()
 		{
-			float f = 0;
-			for(Connection c : subConnections)
+			if(avgLoss < 0)
 			{
-				f += c.getBaseLoss();
+				float f = 0;
+				for(Connection c : subConnections)
+				{
+					f += c.getBaseLoss();
+				}
+				avgLoss = Math.min(f, 1);
 			}
-			return Math.min(f, 1);
+			return avgLoss;
 		}
 
 		@Override
@@ -888,6 +893,17 @@ public class ImmersiveNetHandler
 			int result = super.hashCode();
 			result = 31*result+Arrays.hashCode(subConnections);
 			return result;
+		}
+
+		@Override
+		public int compareTo(@Nonnull Connection other)
+		{
+			if(!(other instanceof AbstractConnection))
+				return -other.compareTo(this);
+			AbstractConnection otherAbstract = (AbstractConnection)other;
+			if(getAverageLossRate()!=otherAbstract.getAverageLossRate())
+				return Double.compare(getAverageLossRate(), otherAbstract.getAverageLossRate());
+			return super.compareTo(other);
 		}
 	}
 

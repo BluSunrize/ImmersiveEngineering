@@ -39,7 +39,7 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 	@Override
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-		String s = energy+" RF/t";
+		String s = energy+" IF/t";
 		minecraft.fontRenderer.drawString(s, 54, 38, 0x777777);
 		s = time+" ticks";
 		minecraft.fontRenderer.drawString(s, 54, 48, 0x777777);

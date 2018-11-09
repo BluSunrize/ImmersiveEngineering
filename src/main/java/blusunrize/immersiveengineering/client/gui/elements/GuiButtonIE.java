@@ -37,6 +37,17 @@ public class GuiButtonIE extends GuiButton
 		return this;
 	}
 
+	public boolean canClick(Minecraft mc, int mouseX, int mouseY)
+	{
+		return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+	}
+
+	@Override
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+	{
+		return canClick(mc, mouseX, mouseY);
+	}
+
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
 	{
@@ -45,7 +56,7 @@ public class GuiButtonIE extends GuiButton
 			ClientUtils.bindTexture(texture);
 			FontRenderer fontrenderer = mc.fontRenderer;
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
+			this.hovered = canClick(mc, mouseX, mouseY);
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);

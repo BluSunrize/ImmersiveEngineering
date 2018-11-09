@@ -108,39 +108,6 @@ public class Utils
 		return false;
 	}
 
-	public static boolean stackMatchesObject(ItemStack stack, Object o)
-	{
-		return stackMatchesObject(stack, o, false);
-	}
-
-	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
-	{
-		if(o instanceof ItemStack)
-			return OreDictionary.itemMatches((ItemStack)o, stack, false)&&(!checkNBT||((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)o, stack));
-		else if(o instanceof Collection)
-		{
-			for(Object io : (Collection)o)
-				if(io instanceof ItemStack&&OreDictionary.itemMatches((ItemStack)io, stack, false)&&(!checkNBT||((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)io, stack)))
-					return true;
-		}
-		else if(o instanceof IngredientStack)
-			return ((IngredientStack)o).matchesItemStack(stack);
-		else if(o instanceof ItemStack[])
-		{
-			for(ItemStack io : (ItemStack[])o)
-				if(OreDictionary.itemMatches(io, stack, false)&&(!checkNBT||io.getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT(io, stack)))
-					return true;
-		}
-		else if(o instanceof FluidStack)
-		{
-			FluidStack fs = FluidUtil.getFluidContained(stack);
-			return fs!=null&&fs.containsFluid((FluidStack)o);
-		}
-		else if(o instanceof String)
-			return compareToOreName(stack, (String)o);
-		return false;
-	}
-
 	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
 	{
 		if((stack1.isEmpty())!=(stack2.isEmpty()))

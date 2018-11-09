@@ -752,7 +752,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool, 1, 1)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool, 1, 2)),
-				new ManualPageMultiblock(ManualHelper.getManual(), "wiringFeedthrough", MultiblockFeedthrough.instance));
+				new ManualPageMultiblock(ManualHelper.getManual(), "wiringFeedthrough0", MultiblockFeedthrough.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "wiringFeedthrough1"));
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.DYNAMO.getMeta())),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator1", new ItemStack(IEContent.blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.WATERMILL.getMeta()), new ItemStack(IEContent.itemMaterial, 1, 10)),

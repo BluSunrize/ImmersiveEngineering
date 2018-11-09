@@ -123,7 +123,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 
 		ArrayList<String> tooltip = new ArrayList<String>();
 		if(mx > guiLeft+80&&mx < guiLeft+87&&my > guiTop+36&&my < guiTop+82)
-			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
+			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
 
 		if(!tooltip.isEmpty())
 		{

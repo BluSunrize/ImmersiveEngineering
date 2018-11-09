@@ -1,3 +1,21 @@
+#####Version 0.12-87
+- Added a "Distribute Inputs" button to the ArcFurnace GUI. It keeps splitting the biggest stacks in the input if there is space available (BluSunrize)
+- Changed connectors to accept multiple "bursts" of energy if they (in total) don't exceed the max IO rate (Malte)
+- Changed internal logic of the Assembler to be a lot more straightforward, allowing bucket-like items for fluid ingredients (BluSunrize)
+- Removed clickable JEI areas from the Assembler because they were blocking the output slots and were unnecessary anyway (BluSunrize)
+- Fixed wires not showing particles when burning (Malte)
+- Fixed recipes for structural arms conflicting with stairs (Malte)
+- Fixed structural arms being invisible due to a conflict with CTM (Malte)
+- Fixed minor issues where certain enemy network setups made powered lanterns flicker (Malte)
+- Fixed Dragon's Breath shader using hte wrong description in the manual (BluSunrize)
+- Fixed connectors not rendering as part of manual multiblock previews (Malte)
+- Fixed Ingredient Recipe not transposing the index correctly, causing loss of items (BluSunrize)
+- Fixed Item Router voiding items when used to extract (BluSunrize)
+- Fixed an annoying consolespam with the Cartographer trades (BluSunrize)
+- Fixed various GUIs still using "RF" instead of "IF" (BluSunrize)
+- Fixed Lightningrod resulting in a crash on very specific setups (BluSunrize)
+- Translations Added/Updated: ja_jp (karakufire), es_es(Dorzar & rogama25)
+
 #####Version 0.12-86 - BUILT
 - Added support for JEI ghost ingredients to the assembler and routers (Malte)
 - Re-Added razor wires hurting players trying to break them without wirecutters (Malte)
