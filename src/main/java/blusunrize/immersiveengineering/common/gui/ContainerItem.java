@@ -47,6 +47,11 @@ public abstract class ContainerItem extends Container
 
 	abstract int addSlots();
 
+	public EntityEquipmentSlot getEquipmentSlot()
+	{
+		return equipmentSlot;
+	}
+
 	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot)

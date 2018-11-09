@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
@@ -15,6 +16,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import blusunrize.immersiveengineering.common.gui.ContainerMaintenanceKit;
+import blusunrize.immersiveengineering.common.util.network.MessageMaintenanceKit;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -73,12 +75,18 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 			for(GuiButton button : this.buttonList)
 			{
 				if(button instanceof GuiButtonCheckbox&&boolArray!=null)
-					message.setBoolean("b_"+boolArray[iBool++].name, ((GuiButtonCheckbox)button).state);
+				{
+					message.setBoolean("b_"+boolArray[iBool].name, ((GuiButtonCheckbox)button).state);
+					tool.applyConfigOption(stack, boolArray[iBool++].name, ((GuiButtonCheckbox)button).state);
+				}
 				if(button instanceof GuiSliderIE&&floatArray!=null)
-					message.setFloat("f_"+floatArray[iFloat++].name, (float)((GuiSliderIE)button).sliderValue);
+				{
+					message.setFloat("f_"+floatArray[iFloat].name, (float)((GuiSliderIE)button).sliderValue);
+					tool.applyConfigOption(stack, floatArray[iFloat++].name, (float)((GuiSliderIE)button).sliderValue);
+				}
 			}
-//			if(!message.equals(lastMessage))//Only send packets when values have changed
-//				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.workbench, message));
+			if(!message.equals(lastMessage))//Only send packets when values have changed
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(((ContainerMaintenanceKit)this.inventorySlots).getEquipmentSlot(), message));
 			lastMessage = message;
 		}
 	}
@@ -93,7 +101,7 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 		for(int i = 0; i < ((ContainerMaintenanceKit)inventorySlots).internalSlots; i++)
 		{
 			Slot s = inventorySlots.getSlot(i);
-			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16,16, 0x44);
+			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44);
 		}
 	}
 }
