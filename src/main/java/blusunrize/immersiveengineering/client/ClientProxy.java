@@ -669,6 +669,7 @@ public class ClientProxy extends CommonProxy
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			pages.add(new ManualPageShader(ManualHelper.getManual(), entry));
 		ManualHelper.addEntry("shaderList", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
+		((IEManualInstance)ManualHelper.getManual()).hideEntry("shaderList");
 
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwood0", new ItemStack(IEContent.blockTreatedWood, 1, 0)),

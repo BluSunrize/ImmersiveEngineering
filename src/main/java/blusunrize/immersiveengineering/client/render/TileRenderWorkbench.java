@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityModWorkbench>
 {
@@ -30,10 +31,9 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
 
-		int facing = te.getFacing().ordinal();
-		int off = te.dummyOffset;
+		EnumFacing facing = te.getFacing();
 
-		float angle = facing==2?0: facing==4?90: facing==5?-90: 180;
+		float angle = facing==EnumFacing.NORTH?0: facing==EnumFacing.WEST?90: facing==EnumFacing.EAST?-90: 180;
 
 		GlStateManager.rotate(angle, 0, 1, 0);
 
@@ -52,7 +52,6 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 					float lineWidth = playerDistanceSq < 25?1: playerDistanceSq < 40?.5f: .1f;
 					int l = recipes.length;
 					int perRow = l > 6?l-3: l > 4?l-2: l==1?2: l==2?3: l;
-					angle = facing==2?0: facing==4?90: facing==5?-90: 180;
 					GlStateManager.translate(0, .501, 0);
 					GlStateManager.rotate(-90, 1, 0, 0);
 					GlStateManager.rotate(-22.5f, 0, 0, 1);
