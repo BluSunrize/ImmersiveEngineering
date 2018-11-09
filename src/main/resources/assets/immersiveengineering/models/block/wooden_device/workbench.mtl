@@ -1,2 +1,5 @@
+newmtl blueprint
+map_Ka immersiveengineering:blocks/metal_multiblock_autoworkbench_blueprint
+
 newmtl workbench
 map_Ka immersiveengineering:blocks/wooden_device_workbench
