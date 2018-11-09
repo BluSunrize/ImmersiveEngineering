@@ -235,7 +235,7 @@ public abstract class IESlot extends Slot
 	{
 		int size;
 
-		public ModWorkbench(Container container, IInventory inv, int id, int x, int y, int size)
+		public ModWorkbench(ContainerModWorkbench container, IInventory inv, int id, int x, int y, int size)
 		{
 			super(container, inv, id, x, y);
 			this.size = size;
@@ -267,6 +267,52 @@ public abstract class IESlot extends Slot
 			super.onSlotChanged();
 			if(container instanceof ContainerModWorkbench)
 				((ContainerModWorkbench)container).rebindSlots();
+		}
+
+		@Override
+		public boolean canTakeStack(EntityPlayer player)
+		{
+			return !(!this.getStack().isEmpty()&&getStack().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()));
+		}
+
+		@Override
+		public ItemStack onTake(EntityPlayer player, ItemStack stack)
+		{
+			ItemStack result = super.onTake(player, stack);
+			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
+				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
+			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			if(handler instanceof IEItemStackHandler)
+				((IEItemStackHandler)handler).setTile(null);
+			return result;
+		}
+	}
+
+	public static class Maintenance extends IESlot
+	{
+		public Maintenance(ContainerMaintenanceKit container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			if(itemStack.isEmpty())
+				return false;
+			if(itemStack.getItem() instanceof IUpgradeableTool)
+				return ((IUpgradeableTool)itemStack.getItem()).canModify(itemStack);
+			if(itemStack.getItem() instanceof IConfigurableTool)
+				return ((IConfigurableTool)itemStack.getItem()).canConfigure(itemStack);
+			return false;
+		}
+
+		@Override
+		public void onSlotChanged()
+		{
+			super.onSlotChanged();
+			if(container instanceof ContainerMaintenanceKit)
+				((ContainerMaintenanceKit)container).updateSlots();
 		}
 
 		@Override

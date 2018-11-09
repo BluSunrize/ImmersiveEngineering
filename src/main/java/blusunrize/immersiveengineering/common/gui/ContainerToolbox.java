@@ -19,13 +19,13 @@ import net.minecraft.world.World;
 
 public class ContainerToolbox extends ContainerInternalStorageItem implements ICallbackContainer
 {
-	public ContainerToolbox(InventoryPlayer iinventory, World world, EntityEquipmentSlot slot, ItemStack toolbox)
+	public ContainerToolbox(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack toolbox)
 	{
-		super(iinventory, world, slot, toolbox);
+		super(inventoryPlayer, world, slot, toolbox);
 	}
 
 	@Override
-	int addSlots(InventoryPlayer iinventory)
+	int addSlots()
 	{
 		int i = 0;
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 48, 24));
@@ -45,7 +45,7 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 		for(int j = 0; j < 7; j++)
 			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.inv, i++, 26+j*18, 112));
 
-		bindPlayerInventory(iinventory);
+		bindPlayerInventory(inventoryPlayer);
 		return i;
 	}
 

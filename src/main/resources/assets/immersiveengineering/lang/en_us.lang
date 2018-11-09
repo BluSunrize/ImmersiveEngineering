@@ -431,6 +431,7 @@ item.immersiveengineering.faraday_suit_feet.name=Faraday Boots
 item.immersiveengineering.fluorescent_tube.name=Fluorescent Tube
 item.immersiveengineering.powerpack.name=Capacitor Backpack
 item.immersiveengineering.shield.name=Heavy Plated Shield
+item.immersiveengineering.maintenance_kit.name=Maintenance Kit
 
 item.immersiveengineering.map_orevein.name=Mineral Deposit Map
 

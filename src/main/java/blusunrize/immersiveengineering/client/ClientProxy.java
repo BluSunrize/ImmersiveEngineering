@@ -1267,6 +1267,8 @@ public class ClientProxy extends CommonProxy
 					return new GuiRevolver(player.inventory, world, slot, item);
 				if(ID==Lib.GUIID_Toolbox&&item.getItem() instanceof ItemToolbox)
 					return new GuiToolbox(player.inventory, world, slot, item);
+				if(ID==Lib.GUIID_MaintenanceKit&&item.getItem() instanceof ItemMaintenanceKit)
+					return new GuiMaintenanceKit(player.inventory, world, slot, item);
 			}
 		}
 
