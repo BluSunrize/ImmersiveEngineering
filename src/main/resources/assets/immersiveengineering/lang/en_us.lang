@@ -1306,14 +1306,15 @@ ie.manual.entry.multiblocks.name=Multiblock Constructions
 ie.manual.entry.multiblocks.subtext=Where's my Allen Wrench?
 ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube seems to be a task unmanageable without the use of magic or possibly shrink rays. So in order to create more complex machines, you will need component blocks. The most common ones have been listed on the following pages.
 
-ie.manual.entry.workbench.name=Engineer's Workbench
-ie.manual.entry.workbench.subtext=Overclocking
-ie.manual.entry.workbench0=Over the course of your Engineering career you may come to deal with some tools that can be optimized and modified. To apply these modifications, you should use a properly equipped Engineer's Workbench.<br>Rightclick the Workbench, insert the item into the slot and insert applicable upgrades into the new slots that appear.
+ie.manual.entry.workbench.name=Workbench & Blueprints
+ie.manual.entry.workbench.subtext=Always cluttered
+ie.manual.entry.workbench0=The Engineer's Workbench is a professional worktable for the educated engineer. It is widely used to construct the items described in <link;blueprints;§o§nEngineer's §o§nBlueprints§r>.<br>A wide variety of blueprints can be crafted, as detailed in the respective manual entry, whereas a few select ones can only be discovered in the world or purchased from villagers.
+ie.manual.entry.workbench1=To use a blueprint in the Workbench, it in the slot on the left of the GUI and the necessary ingredients in the six slots in the middle. The resulting items can then be retrieved from the right side. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item.
+ie.manual.entry.workbench2=A secondary function of the Workbench is the modification and configuration of more complex tools and gadgets. Examples like the <link;drill;§o§nMining §o§nDrill§r>, <link;shield;§o§nHeavy §o§nPlated §o§nShield§r> or <link;revolver;§o§nRevolver§r> are examples of such items. When placed in the main slot of the workbench, it's use becomes that of modifying these tools by inserting applicable upgrades into the new slots that appear.
 
 ie.manual.entry.blueprints.name=Engineer's Blueprints
-ie.manual.entry.blueprints.subtext=RTFM
-ie.manual.entry.blueprints0=There are certain items which are very complex in their construction and require more than just a simple block of wood with a grid on it. These items will need to be created under the instructions of precise Blueprints on an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br><br>Should you come across an Engineer's Blueprint (or maybe even create one yourself), you can place it in the slot of the Engineer's Workbench.
-ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you insert the required materials into the 6 slots in the middle, and retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item.
+ie.manual.entry.blueprints.subtext=Back to the drawing board
+ie.manual.entry.blueprints0=This page features all Engineer's Blueprints that can be crafted by normal means. Other Blueprints may need to be acquired from villagers or found in the world. All of these can be used in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> to craft the items they describe.
 
 ie.manual.entry.mixer.name=Mixer
 ie.manual.entry.mixer.subtext=Vats of Cookie Dough!

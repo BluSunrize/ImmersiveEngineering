@@ -128,7 +128,7 @@ public class CommonProxy implements IGuiHandler
 				if(ID==Lib.GUIID_WoodenCrate&&te instanceof TileEntityWoodenCrate)
 					gui = new ContainerCrate(player.inventory, (TileEntityWoodenCrate)te);
 				if(ID==Lib.GUIID_Workbench&&te instanceof TileEntityModWorkbench)
-					gui = new ContainerModWorkbench(player.inventory, (TileEntityModWorkbench)te);
+					gui = new ContainerModWorkbench(player.inventory, world, (TileEntityModWorkbench)te);
 				if(ID==Lib.GUIID_Sorter&&te instanceof TileEntitySorter)
 					gui = new ContainerSorter(player.inventory, (TileEntitySorter)te);
 				if(ID==Lib.GUIID_Squeezer&&te instanceof TileEntitySqueezer)

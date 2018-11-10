@@ -30,11 +30,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import org.lwjgl.input.Keyboard;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class IEManualInstance extends ManualInstance
 {
+	private final Set<String> hiddenEntries = new HashSet<>();
+
 	public IEManualInstance()
 	{
 		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png");
@@ -304,12 +308,17 @@ public class IEManualInstance extends ManualInstance
 		return unformatted.equals(formatted)?"": formatted;
 	}
 
+	public void hideEntry(String name)
+	{
+		this.hiddenEntries.add(name.toLowerCase());
+	}
+
 	@Override
 	public boolean showEntryInList(ManualEntry entry)
 	{
 		if(entry!=null&&ManualHelper.CAT_UPDATE.equalsIgnoreCase(entry.getCategory()))
 			return IEConfig.showUpdateNews;
-		return !(entry!=null&&"shaderList".equalsIgnoreCase(entry.getName()));
+		return !(entry!=null&&hiddenEntries.contains(entry.getName().toLowerCase()));
 	}
 
 	@Override

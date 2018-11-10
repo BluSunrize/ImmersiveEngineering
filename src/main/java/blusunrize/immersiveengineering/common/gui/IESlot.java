@@ -231,11 +231,11 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class UpgradeableItem extends IESlot
+	public static class ModWorkbench extends IESlot
 	{
 		int size;
 
-		public UpgradeableItem(Container container, IInventory inv, int id, int x, int y, int size)
+		public ModWorkbench(Container container, IInventory inv, int id, int x, int y, int size)
 		{
 			super(container, inv, id, x, y);
 			this.size = size;
@@ -246,6 +246,8 @@ public abstract class IESlot extends Slot
 		{
 			if(itemStack.isEmpty())
 				return false;
+			if(itemStack.getItem() instanceof ItemEngineersBlueprint)
+				return true;
 			if(itemStack.getItem() instanceof IUpgradeableTool)
 				return ((IUpgradeableTool)itemStack.getItem()).canModify(itemStack);
 			if(itemStack.getItem() instanceof IConfigurableTool)
@@ -361,45 +363,33 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class BlueprintInput extends SlotItemHandler
+	public static class BlueprintInput extends IESlot
 	{
-		ItemStack upgradeableTool;
-		Container container;
+		private final InventoryBlueprint outputInventory;
 
-		public BlueprintInput(Container container, IItemHandler inv, int id, int x, int y, ItemStack upgradeableTool)
+		public BlueprintInput(Container container, IInventory inv, InventoryBlueprint outputInventory, int id, int x, int y)
 		{
-			super(inv, id, x, y);
-			this.upgradeableTool = upgradeableTool;
+			super(container, inv, id, x, y);
+			this.outputInventory = outputInventory;
 		}
 
 		@Override
 		public void onSlotChanged()
 		{
-			if(!upgradeableTool.isEmpty()&&upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
-				((ItemEngineersBlueprint)upgradeableTool.getItem()).updateOutputs(upgradeableTool);
-			if(container instanceof ContainerModWorkbench)
-				((ContainerModWorkbench)container).rebindSlots();
+			outputInventory.updateOutputs(this.inventory);
 			super.onSlotChanged();
-		}
-
-		@Override
-		public int getSlotStackLimit()
-		{
-			return 64;
 		}
 	}
 
-	public static class BlueprintOutput extends SlotItemHandler
+	public static class BlueprintOutput extends IESlot
 	{
-		public BlueprintCraftingRecipe recipe;
-		ItemStack upgradeableTool;
-		Container container;
+		private final IInventory inputInventory;
+		public final BlueprintCraftingRecipe recipe;
 
-		public BlueprintOutput(Container container, IItemHandler inv, int id, int x, int y, ItemStack upgradeableTool, BlueprintCraftingRecipe recipe)
+		public BlueprintOutput(Container container, InventoryBlueprint inv, IInventory inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
 		{
-			super(inv, id, x, y);
-			this.container = container;
-			this.upgradeableTool = upgradeableTool;
+			super(container, inv, id, x, y);
+			this.inputInventory = inputInventory;
 			this.recipe = recipe;
 		}
 
@@ -420,12 +410,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public ItemStack onTake(EntityPlayer player, ItemStack stack)
 		{
-			if(!upgradeableTool.isEmpty()&&upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
-			{
-				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
-				((ItemEngineersBlueprint)upgradeableTool.getItem()).updateOutputs(upgradeableTool);
-			}
-			this.inventory.markDirty();
+			((InventoryBlueprint)this.inventory).reduceIputs(this.inputInventory, recipe, stack);
 			return super.onTake(player, stack);
 		}
 	}
