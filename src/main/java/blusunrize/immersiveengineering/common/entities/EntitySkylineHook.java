@@ -43,12 +43,11 @@ import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_
 
 public class EntitySkylineHook extends Entity
 {
-
-
 	public static final double GRAVITY = 10;
 	private static final double MAX_SPEED = 2.5;
 	private static final double LIMIT_SPEED = .25;
-	public static final double UPWARD_SPEED = .1;
+	public static final double MOVE_SPEED_HOR = .25;
+	public static final double MOVE_SPEED_VERT = .1;
 	private Connection connection;
 	public double linePos;//Start is 0, end is 1
 	public double horizontalSpeed;//Blocks per tick, vertical iff the connection is vertical
@@ -157,14 +156,19 @@ public class EntitySkylineHook extends Entity
 		{
 			double slope = connection.getSlopeAt(linePos);
 			double slopeInDirection = Math.signum(inLineDirection)*slope;
+			double speed = MOVE_SPEED_VERT;
 			double slopeFactor = 1;
 			if(!connection.vertical)
 			{
+				//Linear interpolation w.r.t. the angle of the line
+				double lambda = Math.atan(slopeInDirection)/(Math.PI/2);
+				speed = lambda*MOVE_SPEED_VERT+(1-lambda)*MOVE_SPEED_HOR;
 				slopeFactor = 1/Math.sqrt(1+slope*slope);
 			}
 			if(slopeInDirection > -.1)
 			{
-				horizontalSpeed = (3*horizontalSpeed+inLineDirection*UPWARD_SPEED*slopeFactor)/4;
+
+				horizontalSpeed = (3*horizontalSpeed+inLineDirection*speed*slopeFactor)/4;
 				moved = true;
 			}
 		}
@@ -291,7 +295,7 @@ public class EntitySkylineHook extends Entity
 			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
 					.filter(c->
 							c.getSubVertices(world)[0].distanceTo(
-									getPositionVector().subtract(c.start.getX(), c.start.getY(), c.start.getZ())) <= .5)
+									getPositionVector().subtract(c.start.getX(), c.start.getY(), c.start.getZ())) < .6)
 					.max(Comparator.comparingDouble(c -> {
 						c.getSubVertices(world);
 						return c.across.normalize().dotProduct(look);
