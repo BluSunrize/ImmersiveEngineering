@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import net.minecraft.client.Minecraft;
@@ -124,18 +123,12 @@ public class EntitySkylineHook extends Entity
 		if(connection==null||player==null||(hand!=null&&player.getHeldItem(hand).getItem()!=IEContent.itemSkyhook))
 		{
 			if(!world.isRemote)
-			{
-				IELogger.logger.info("Invalid data!");
 				setDead();
-			}
 			return;
 		}
 		//TODO figure out how to get the speed keeping on dismount working with less sync packets
 		if(this.ticksExisted%5==0&&!world.isRemote)
-		{
-			IELogger.debug("init tick at "+System.currentTimeMillis());
 			sendUpdatePacketTo(player);
-		}
 		boolean moved = false;
 		double inLineDirection;
 		double horSpeedToUse = horizontalSpeed;
@@ -222,8 +215,6 @@ public class EntitySkylineHook extends Entity
 		motionY = posYTemp-posY;
 		if(!isValidPosition(posXTemp, posYTemp, posZTemp, player))
 		{
-			IELogger.logger.info("Collided with something at {}! Linepos {}, speed {}",
-					new Vec3d(posXTemp, posYTemp, posZTemp), linePos, horizontalSpeed);
 			setDead();
 			return;
 		}
@@ -290,7 +281,7 @@ public class EntitySkylineHook extends Entity
 			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
 					.filter(c->
 							c.getSubVertices(world)[0].distanceTo(
-									getPositionVector().subtract(c.start.getX(), c.start.getY(), c.start.getZ()))<.1)//TODO is this a good threshold
+									getPositionVector().subtract(c.start.getX(), c.start.getY(), c.start.getZ())) < .1)
 					.max(Comparator.comparingDouble(c -> {
 						c.getSubVertices(world);
 						return c.across.normalize().dotProduct(look);
@@ -309,10 +300,7 @@ public class EntitySkylineHook extends Entity
 			sendUpdatePacketTo(player);
 		}
 		else
-		{
-			IELogger.logger.info("No line!");
 			setDead();
-		}
 	}
 
 	private static double getSpeedPerHor(Connection connection, double pos)
@@ -331,22 +319,30 @@ public class EntitySkylineHook extends Entity
 		final double tolerance = connection.vertical?5: 10;//TODO are these values good?
 		double radius = player.width/2;
 		double height = player.height;
-		double yOffset = getMountedYOffset()+player.getYOffset()+.3;
+		double yOffset = getMountedYOffset()+player.getYOffset();
 		AxisAlignedBB playerBB = new AxisAlignedBB(x-radius, y+yOffset, z-radius, x+radius, y+yOffset+height, z+radius);
+		double playerHeight = playerBB.maxY-playerBB.minY;
+		AxisAlignedBB feet = new AxisAlignedBB(playerBB.minX, playerBB.minY, playerBB.minZ,
+				playerBB.maxX, playerBB.minY+.05*playerHeight, playerBB.maxZ);
 		List<AxisAlignedBB> boxes = world.getCollisionBoxes(player, playerBB);
 		// Heuristic to prevent dragging players through blocks too much, but also keep most setups working
 		// Allow positions where the intersection is less than 10% of the player BB volume
 		double totalCollisionVolume = 0;
+		double totalCollisionArea = 0;
 		double playerVolume = getVolume(playerBB);
+		double playerArea = playerVolume/playerHeight;
 		for(AxisAlignedBB box : boxes)
 		{
 			AxisAlignedBB intersection = box.intersect(playerBB);
 			totalCollisionVolume += getVolume(intersection);
 			if(totalCollisionVolume*tolerance > playerVolume)
-			{
-				IELogger.logger.info("Collision: player volume {}, intersect volume {}, player box {}, boxes {}",
-						playerVolume, totalCollisionVolume, playerBB, boxes);
 				return false;
+			if(!connection.vertical&&box.intersects(feet))
+			{
+				AxisAlignedBB feetIntersect = box.intersect(feet);
+				totalCollisionArea += (feetIntersect.maxX-feetIntersect.minX)*(feetIntersect.maxZ-feetIntersect.minZ);
+				if(totalCollisionArea > .5*playerArea)
+					return false;
 			}
 		}
 		return true;
@@ -445,16 +441,14 @@ public class EntitySkylineHook extends Entity
 
 	private void handleDismount(Entity passenger)
 	{
-		passenger.setPositionAndUpdate(posX, posY+getMountedYOffset(), posZ);
+		passenger.setPositionAndUpdate(posX, posY+getMountedYOffset()+passenger.getYOffset(), posZ);
 		passenger.motionX = motionX;
 		passenger.motionY = motionY;
 		passenger.motionZ = motionZ;
-		IELogger.logger.info("Dismount! Time {}, Speed {}, limited: {}", world.getTotalWorldTime(), new Vec3d(motionX, motionY, motionZ), limitSpeed);
 		if(motionY < 0)
 		{
 			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(motionY);
 			passenger.onGround = false;
-			IELogger.logger.info("Fall speed {}, distance {}", motionY, passenger.fallDistance);
 		}
 		if(passenger.hasCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
 			Objects.requireNonNull(passenger.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
