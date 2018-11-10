@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 public class ContainerMaintenanceKit extends ContainerItem
 {
 	private final IInventory inv = new InventoryBasic("MaintenanceKit", true, 1);
+	private boolean wasUsed = false;
 
 	public ContainerMaintenanceKit(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack item)
 	{
@@ -62,6 +63,7 @@ public class ContainerMaintenanceKit extends ContainerItem
 		ItemStack tool = this.getSlot(0).getStack();
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
+			wasUsed = true;
 			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool);
 			if(slots!=null)
 				for(Slot s : slots)
@@ -139,6 +141,11 @@ public class ContainerMaintenanceKit extends ContainerItem
 	@Override
 	public void onContainerClosed(EntityPlayer par1EntityPlayer)
 	{
+		if(wasUsed)
+		{
+			this.heldItem.damageItem(1, this.player);
+			player.setItemStackToSlot(this.equipmentSlot, this.heldItem);
+		}
 		super.onContainerClosed(par1EntityPlayer);
 		this.clearContainer(par1EntityPlayer, this.world, this.inv);
 	}

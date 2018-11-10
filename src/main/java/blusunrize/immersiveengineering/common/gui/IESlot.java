@@ -327,9 +327,6 @@ public abstract class IESlot extends Slot
 			ItemStack result = super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
 				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
-			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if(handler instanceof IEItemStackHandler)
-				((IEItemStackHandler)handler).setTile(null);
 			return result;
 		}
 	}

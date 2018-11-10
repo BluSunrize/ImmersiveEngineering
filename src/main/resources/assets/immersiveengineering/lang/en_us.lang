@@ -1412,8 +1412,8 @@ ie.manual.entry.drill5=The §6Large Fuel Tank§r allows the drill to store more 
 
 ie.manual.entry.maintenanceKit.name=Maintenance Kit
 ie.manual.entry.maintenanceKit.subtext=On the go repairs
-ie.manual.entry.maintenanceKit0=Among those Engineers that travel the world or spend much of their time in mines, one problem crystalizes itself. Their tools require constant maintenance, and carrying around an entire workbench just isn't viable. Fortunately, the majority of minor reapirs and re-configurations can be performed with a maintenance kit.
-ie.manual.entry.maintenanceKit1=A set of tools, wrapped in sturdy hemp cloth, the maintenance kit allows you to customize your tools much in the way the <link;workbench;§o§nEngineer's §o§nWorkbench§r> does. No longer will you have to deal with resurfacing to change the head on your Minind Drill or head back to your workshop to configure your Ear Defenders. All of this can now be performed on the go with the Maintenance Kit!
+ie.manual.entry.maintenanceKit0=Among those Engineers that travel the world or spend much of their time in mines, one problem crystalizes itself. Their tools require constant maintenance, and carrying around an entire workbench just isn't viable. Fortunately, the majority of minor repairs and re-configurations can be performed with a maintenance kit.
+ie.manual.entry.maintenanceKit1=A set of tools, wrapped in sturdy hemp cloth, the maintenance kit allows you to customize your tools much in the way the <link;workbench;§o§nEngineer's §o§nWorkbench§r> does. No longer will you have to deal with resurfacing to change the head on your Mining Drill or head back to your workshop to configure your Ear Defenders. All of this can now be performed on the go with the Maintenance Kit!
 
 ie.manual.entry.revolver.name=Revolver
 ie.manual.entry.revolver.subtext=Wanted: Dead or Alive

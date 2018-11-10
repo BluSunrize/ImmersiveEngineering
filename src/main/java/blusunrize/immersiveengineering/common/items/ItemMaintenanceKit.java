@@ -24,6 +24,7 @@ public class ItemMaintenanceKit extends ItemIEBase implements IGuiItem
 	public ItemMaintenanceKit()
 	{
 		super("maintenance_kit", 1);
+		this.setMaxDamage(50);
 	}
 
 	@Override
