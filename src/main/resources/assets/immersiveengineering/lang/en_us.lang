@@ -1445,7 +1445,7 @@ ie.manual.entry.chemthrower3=The §6Multitank§r allows the Chemthrower to store
 ie.manual.entry.skyhook.name=Engineer's Skyhook
 ie.manual.entry.skyhook.subtext=Booker, catch!
 ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables.<br>With it, engineers can quickly traverse the length of a powerline to move between substations or other installations.
-ie.manual.entry.skyhook1=Simply hold the right mouse button while close to a wire and you will be attached to it.<br>The button can be released while riding the wire, but letting go of the skyhook or sneaking will cause you to dismount.<br>Gravity will be sufficient to move along decending wires at a decent speed, the standard movement keys can be used to move along ascending wires.<br>When the skyhook reaches an intersection it will continue in as close to a straight line as possible.
+ie.manual.entry.skyhook1=Simply hold the right mouse button while close to a wire and you will be attached to it.<br>The button can be released while riding the wire, but letting go of the skyhook or sneaking will cause you to dismount.<br>Gravity will be sufficient to move along decending wires at a decent speed, the standard movement keys can be used to move along ascending wires.<br>When the skyhook reaches an intersection it will continue in as close to the direction the player is looking as possible.
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!

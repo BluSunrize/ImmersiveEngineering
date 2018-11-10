@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -55,6 +56,7 @@ public class EntitySkylineHook extends Entity
 	public double friction = .99;
 	public EnumHand hand;
 	private boolean limitSpeed;
+	private final Set<BlockPos> ignoreCollisions = new HashSet<>();
 
 
 	public EntitySkylineHook(World world)
@@ -95,6 +97,14 @@ public class EntitySkylineHook extends Entity
 		this.setPosition(pos.x, pos.y, pos.z);
 		if(!connection.vertical)
 			this.angle = Math.atan2(connection.across.z, connection.across.x);
+		ignoreCollisions.clear();
+		IImmersiveConnectable iicStart = ApiUtils.toIIC(c.start, world, false);
+		IImmersiveConnectable iicEnd = ApiUtils.toIIC(c.end, world, false);
+		if(iicStart!=null&&iicEnd!=null)
+		{
+			ignoreCollisions.addAll(iicStart.getIgnored(iicEnd));
+			ignoreCollisions.addAll(iicEnd.getIgnored(iicStart));
+		}
 	}
 
 	@Override
@@ -281,7 +291,7 @@ public class EntitySkylineHook extends Entity
 			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
 					.filter(c->
 							c.getSubVertices(world)[0].distanceTo(
-									getPositionVector().subtract(c.start.getX(), c.start.getY(), c.start.getZ())) < .1)
+									getPositionVector().subtract(c.start.getX(), c.start.getY(), c.start.getZ())) <= .5)
 					.max(Comparator.comparingDouble(c -> {
 						c.getSubVertices(world);
 						return c.across.normalize().dotProduct(look);
@@ -324,7 +334,7 @@ public class EntitySkylineHook extends Entity
 		double playerHeight = playerBB.maxY-playerBB.minY;
 		AxisAlignedBB feet = new AxisAlignedBB(playerBB.minX, playerBB.minY, playerBB.minZ,
 				playerBB.maxX, playerBB.minY+.05*playerHeight, playerBB.maxZ);
-		List<AxisAlignedBB> boxes = world.getCollisionBoxes(player, playerBB);
+		List<AxisAlignedBB> boxes = SkylineHelper.getCollisionBoxes(player, playerBB, world, ignoreCollisions);
 		// Heuristic to prevent dragging players through blocks too much, but also keep most setups working
 		// Allow positions where the intersection is less than 10% of the player BB volume
 		double totalCollisionVolume = 0;

@@ -14,16 +14,25 @@ import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import com.google.common.collect.Lists;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
@@ -95,27 +104,96 @@ public class SkylineHelper
 		return -(float)(196-3.92*fallTime-194.04*Math.pow(.98, fallTime-.5));
 	}
 
-	public static Vec3d getSubMovementVector(Vec3d start, Vec3d target, float speed)
+	//Mostly taken from World
+	public static List<AxisAlignedBB> getCollisionBoxes(@Nullable Entity entityIn, AxisAlignedBB aabb, World w,
+														Collection<BlockPos> ignored)
 	{
-		Vec3d movementVec = new Vec3d(target.x-start.x, target.y-start.y, target.z-start.z);
-		int lPixel = (int)Math.max(1, (movementVec.length()/(.125*speed)));
-		return new Vec3d(movementVec.x/lPixel, movementVec.y/lPixel, movementVec.z/lPixel);
+		List<AxisAlignedBB> list = Lists.<AxisAlignedBB>newArrayList();
+		getBlockCollisionBoxes(entityIn, aabb, list, w, ignored);
+
+		if(entityIn!=null)
+		{
+			List<Entity> entities = w.getEntitiesWithinAABBExcludingEntity(entityIn, aabb.grow(0.25D));
+
+			for(Entity entity : entities)
+			{
+				if(!entityIn.isRidingSameEntity(entity))
+				{
+					AxisAlignedBB entityBB = entity.getCollisionBoundingBox();
+
+					if(entityBB!=null&&entityBB.intersects(aabb))
+					{
+						list.add(entityBB);
+					}
+
+					entityBB = entityIn.getCollisionBox(entity);
+
+					if(entityBB!=null&&entityBB.intersects(aabb))
+					{
+						list.add(entityBB);
+					}
+				}
+			}
+		}
+		net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.GetCollisionBoxesEvent(w, entityIn, aabb, list));
+		return list;
 	}
 
-	public static boolean isInBlock(EntityPlayer player, World w)
+	public static void getBlockCollisionBoxes(@Nullable Entity entityIn, AxisAlignedBB aabb, @Nonnull List<AxisAlignedBB> outList,
+											  World w, Collection<BlockPos> ignored)
 	{
-		BlockPos init = player.getPosition();
-		AxisAlignedBB hitbox = player.getEntityBoundingBox();
-		hitbox = new AxisAlignedBB(hitbox.minX-1, hitbox.minY-1, hitbox.minZ-1, hitbox.maxX, hitbox.maxY, hitbox.maxZ);
+		int minX = MathHelper.floor(aabb.minX)-1;
+		int maxX = MathHelper.ceil(aabb.maxX)+1;
+		int minY = MathHelper.floor(aabb.minY)-1;
+		int maxY = MathHelper.ceil(aabb.maxY)+1;
+		int minZ = MathHelper.floor(aabb.minZ)-1;
+		int maxZ = MathHelper.ceil(aabb.maxZ)+1;
+		WorldBorder worldborder = w.getWorldBorder();
+		boolean outsideWorld = entityIn!=null&&entityIn.isOutsideBorder();
+		boolean insideWorld = entityIn!=null&&w.isInsideWorldBorder(entityIn);
+		IBlockState outsideState = Blocks.STONE.getDefaultState();
+		BlockPos.PooledMutableBlockPos mutPos = BlockPos.PooledMutableBlockPos.retain();
 
-		for(int xOff = 0; xOff < 2; xOff++)
-			for(int yOff = 0; yOff < 3; yOff++)
-				for(int zOff = 0; zOff < 2; zOff++)
+		try
+		{
+			for(int x = minX; x < maxX; ++x)
+			{
+				for(int z = minZ; z < maxZ; ++z)
 				{
-					Vec3d v = new Vec3d(init.getX()+xOff, init.getY()+yOff, init.getZ()+zOff);
-					if(hitbox.contains(v)&&!w.isAirBlock(new BlockPos(v)))
-						return true;
+					boolean xBorder = x==minX||x==maxX-1;
+					boolean zBorder = z==minZ||z==maxZ-1;
+
+					if((!xBorder||!zBorder)&&w.isBlockLoaded(mutPos.setPos(x, 64, z)))
+					{
+						for(int y = minY; y < maxY; ++y)
+						{
+							if(!xBorder&&!zBorder||y!=maxY-1)
+							{
+								if(entityIn!=null&&outsideWorld==insideWorld)
+								{
+									entityIn.setOutsideBorder(!insideWorld);
+								}
+
+								mutPos.setPos(x, y, z);
+								if(!ignored.contains(mutPos))
+								{
+									IBlockState currState;
+
+									if(!worldborder.contains(mutPos)&&insideWorld)
+										currState = outsideState;
+									else
+										currState = w.getBlockState(mutPos);
+
+									currState.addCollisionBoxToList(w, mutPos, aabb, outList, entityIn, false);
+								}
+							}
+						}
+					}
 				}
-		return false;
+			}
+		} finally
+		{
+			mutPos.release();
+		}
 	}
 }
