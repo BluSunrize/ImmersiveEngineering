@@ -20,6 +20,8 @@
 - Fixed Lightningrod resulting in a crash on very specific setups (BluSunrize)
 - Fixed dupebug with ArcFurnace recycling (BluSunrize)
 - Fixed the Garden Cloche accepting Fluids it can't work with (BluSunrize)
+- Fixed connectors duping small amounts of energy (Malte)
+- Fixed lighting on capacitors (Malte)
 - Translations Added/Updated: ja_jp (karakufire), es_es(Dorzar & rogama25)
 
 #####Version 0.12-86 - BUILT
