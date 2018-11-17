@@ -1007,7 +1007,7 @@ public class ApiUtils
 							Vec3d across = conn.getRight().subtract(conn.getMiddle());
 							double t = Utils.getCoeffForMinDistance(startRelative, conn.getMiddle(), across);
 							t = MathHelper.clamp(t, 0, 1);
-							Vec3d closest = conn.getLeft().catenaryVertices[0].add(t*across.x, t*across.y, t*across.z);
+							Vec3d closest = conn.getMiddle().add(t*across.x, t*across.y, t*across.z);
 							double distSq = closest.squareDistanceTo(startRelative);
 							if(distSq < minDistSq.get())
 							{
