@@ -370,7 +370,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					if(con.cableType!=null&&end!=null)
 					{
 						float prio = powerSorting.get(con)/(float)sum;
-						int output = MathHelper.ceil(powerForSort*prio);
+						int output = Math.min(MathHelper.ceil(powerForSort*prio), powerLeft);
 
 						int tempR = end.outputEnergy(Math.min(output, con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
