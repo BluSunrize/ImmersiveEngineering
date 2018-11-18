@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
-import blusunrize.immersiveengineering.common.util.Utils;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -78,7 +77,7 @@ public class FermenterDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- returns the output fluid tank")
 		public Object[] getFluid(Context context, Arguments args)
 		{
-			return new Object[]{Utils.saveFluidTank(getTileEntity().tanks[0])};
+			return new Object[]{getTileEntity().tanks[0].getInfo()};
 		}
 
 		@Callback(doc = "function():table -- returns the stack in the empty cannisters slot")
