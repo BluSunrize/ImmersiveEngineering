@@ -11,17 +11,18 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
-
-import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.INSTANCE;
 
 /**
  * @author BluSunrize - 08.03.2015
@@ -179,21 +180,17 @@ public interface IImmersiveConnectable
 	{
 	}
 
-	default void onConnectivityUpdate(BlockPos pos, int dimension)
-	{
-		if(INSTANCE.indirectConnections.containsKey(dimension))
-			INSTANCE.indirectConnections.get(dimension).remove(pos);
-		if(INSTANCE.indirectConnectionsIgnoreOut.containsKey(dimension))
-			INSTANCE.indirectConnectionsIgnoreOut.get(dimension).remove(pos);
-	}
-
 	/**
 	 * Change any internal data about this connection to indicate that the connection ends at newEnd
 	 * Returns true if successful.
 	 */
-	//TODO for 1.13: return true by default
 	default boolean moveConnectionTo(Connection c, BlockPos newEnd)
 	{
-		return false;
+		return true;
+	}
+
+	default Collection<ResourceLocation> getRequestedHandlers()
+	{
+		return ImmutableList.of();
 	}
 }

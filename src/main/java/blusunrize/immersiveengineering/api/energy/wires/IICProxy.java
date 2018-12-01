@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -122,16 +123,15 @@ public class IICProxy implements IImmersiveConnectable
 
 	public static IICProxy readFromNBT(NBTTagCompound nbt)
 	{
-		return new IICProxy(nbt.getBoolean("pass"), nbt.getInteger("dim"), new BlockPos(nbt.getInteger("x"), nbt.getInteger("y"), nbt.getInteger("z")));
+		return new IICProxy(nbt.getBoolean("pass"), nbt.getInteger("dim"),
+				NBTUtil.getPosFromTag(nbt.getCompoundTag("pos")));
 	}
 
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound ret = new NBTTagCompound();
 		ret.setInteger("dim", dim);
-		ret.setInteger("x", pos.getX());
-		ret.setInteger("y", pos.getY());
-		ret.setInteger("z", pos.getZ());
+		ret.setTag("pos", NBTUtil.createPosTag(pos));
 		ret.setBoolean("pass", canEnergyPass);
 		return ret;
 	}
