@@ -99,6 +99,13 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.railgunFire"
 	},
+  "skyhook": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:skyhook"
+    ],
+    "subtitle": "subtitle.immersiveengineering.skyhook"
+  },
 	"tesla": {
 		"category": "block",
 		"sounds": [

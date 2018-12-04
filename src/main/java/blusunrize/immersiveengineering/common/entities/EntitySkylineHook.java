@@ -121,10 +121,11 @@ public class EntitySkylineHook extends Entity
 		return p_70112_1_ < d1*d1;
 	}
 
-
 	@Override
 	public void onUpdate()
 	{
+		if(ticksExisted==1)
+			ImmersiveEngineering.proxy.startSkyhookSound(this);
 		EntityPlayer player = null;
 		List<Entity> list = this.getPassengers();
 		if(!list.isEmpty()&&list.get(0) instanceof EntityPlayer)
@@ -497,8 +498,10 @@ public class EntitySkylineHook extends Entity
 		return connection;
 	}
 
-	private double getSpeed()
+	public double getSpeed()
 	{
+		if(connection==null)
+			return 0;
 		if(connection.vertical)
 		{
 			return Math.abs(horizontalSpeed);//In this case vertical speed
