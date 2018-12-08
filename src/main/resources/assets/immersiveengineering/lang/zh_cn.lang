@@ -686,7 +686,7 @@ chat.immersiveengineering.info.coresample.infinite=无限产量
 chat.immersiveengineering.info.coresample.timestamp=样本提取于：%1$s
 chat.immersiveengineering.info.coresample.noTimestamp=样本提取于：%1$s之前
 chat.immersiveengineering.info.coresample.timezone=该样本在不同的时区/维度提取
-chat.immersiveengineering.info.coresample.mapFail=样本位置不在地图范围类
+chat.immersiveengineering.info.coresample.mapFail=样本位置不在地图范围内
 
 desc.immersiveengineering.info.reqMaterial=所需材料：
 desc.immersiveengineering.info.chance=概率：
@@ -708,11 +708,11 @@ desc.immersiveengineering.info.shader.immersiveengineering:revolver=左轮手枪
 desc.immersiveengineering.info.shader.immersiveengineering:chemthrower=化学喷射器
 desc.immersiveengineering.info.shader.immersiveengineering:drill=岩心钻井
 desc.immersiveengineering.info.shader.immersiveengineering:railgun=磁轨炮
-desc.immersiveengineering.info.shader.immersiveengineering:shield=金属盾
+desc.immersiveengineering.info.shader.immersiveengineering:shield=重型盾牌
 desc.immersiveengineering.info.shader.immersiveengineering:minecart=矿车
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=气球
 
-desc.immersiveengineering.info.shader.set=§l着色器§r：
+desc.immersiveengineering.info.shader.set=§l皮肤r：
 desc.immersiveengineering.info.shader.reference=§l参考潮流文化§r：
 desc.immersiveengineering.info.shader.details=§l附加信息§r：
 
