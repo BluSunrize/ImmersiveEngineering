@@ -1448,7 +1448,7 @@ ie.manual.entry.shader.subtext=蓝色！不，黄色！
 ie.manual.entry.shader0=皮肤是一些你能够在世界中找到或与村民交易获得的物品。它们本身没有什么功能，但它们可以装配到<link;revolver;§o§n左§o§n轮§o§n手§o§n枪§r>、<link;drill;§o§n机§o§n械§o§n钻§r>、<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>或<link;railgun;§o§n磁§o§n轨§o§n炮§r>上，以此改变这些物品的外观设计。当然，也可以用在其它等待你发现的东西上。简单的将它们放入<link;workbench;§o§n工程师§o§n装配台§r>并将皮肤放入合适的装配栏中即可。<br>你也可以将其右键应用在矿车上！
 ie.manual.entry.shader1=皮肤奖励袋内含一种随机皮肤。可以在地牢箱子中找到，或者和村民交易以及怪物掉落.所开出的皮肤稀有度和袋子本身相同或者更稀有。当使用一个袋子时，你得到未拥有的皮肤的概率要比已获取的更高一些。
 ie.manual.entry.shader2=皮肤奖励袋能合成为两个低一级的奖励袋，让你能有机会重新尝试.皮肤本身也能够合成为一个低级的奖励袋。
-ie.manual.entry.shader3=着色器袋可以制作成两个较低级别的袋子。这将降低您获得更稀有的着色器的机会，但能为您提供更多的尝试。
+ie.manual.entry.shader3=皮肤奖励袋可以制作成两个较低级别的袋子。这将降低您获得更稀有的皮肤的机会，但能为您提供更多的尝试。
 //Shaders themselves can also be crafted into a single bag of the lower level.
 
 ie.manual.entry.shaderList.name=皮肤列表
