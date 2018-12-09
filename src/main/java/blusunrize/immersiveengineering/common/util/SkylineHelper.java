@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +23,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
-import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
+import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection.vertices;
 
 public class SkylineHelper
 {

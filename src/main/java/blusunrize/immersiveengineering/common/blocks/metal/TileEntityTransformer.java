@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;

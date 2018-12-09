@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
 import com.google.common.collect.ImmutableMap;

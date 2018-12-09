@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;

@@ -6,12 +6,15 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.wires;
+package blusunrize.immersiveengineering.api.energy.wires.old;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
@@ -295,14 +298,14 @@ public class ImmersiveNetHandler
 			return;
 		if(start==null)
 		{
-			for(BlockPos pos : directConnections.get(dimension).keySet())
+			/*for(BlockPos pos : directConnections.get(dimension).keySet())
 			{
 				IImmersiveConnectable iic = toIIC(pos, w);
 				if(iic!=null)
 				{
 					iic.onConnectivityUpdate(pos, dimension);
 				}
-			}
+			}*/
 			return;
 		}
 		Map<BlockPos, Set<Connection>> connsForDim = directConnections.get(dimension);
@@ -316,8 +319,8 @@ public class ImmersiveNetHandler
 			it.remove();
 			closed.add(next);
 			IImmersiveConnectable iic = toIIC(next, w);
-			if(iic!=null)
-				iic.onConnectivityUpdate(next, dimension);
+			/*if(iic!=null)
+				iic.onConnectivityUpdate(next, dimension);*/
 			Set<Connection> connsAtBlock = connsForDim.get(next);
 			if(connsAtBlock!=null)
 				for(Connection c : connsAtBlock)

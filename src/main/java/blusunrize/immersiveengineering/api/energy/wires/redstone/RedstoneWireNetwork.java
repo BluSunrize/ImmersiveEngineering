@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.energy.wires.redstone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.INSTANCE;
+import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.INSTANCE;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
 public class RedstoneWireNetwork

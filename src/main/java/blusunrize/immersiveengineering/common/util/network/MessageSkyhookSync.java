@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

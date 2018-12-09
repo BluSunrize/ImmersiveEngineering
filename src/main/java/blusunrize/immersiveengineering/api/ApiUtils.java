@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
@@ -63,7 +63,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
+import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection.vertices;
 
 public class ApiUtils
 {

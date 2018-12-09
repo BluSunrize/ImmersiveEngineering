@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;

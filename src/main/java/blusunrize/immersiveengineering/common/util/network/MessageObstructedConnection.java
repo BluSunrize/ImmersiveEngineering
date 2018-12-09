@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.network;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
 import io.netty.buffer.ByteBuf;

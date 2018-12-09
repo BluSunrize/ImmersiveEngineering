@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;

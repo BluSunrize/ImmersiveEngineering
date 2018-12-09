@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
