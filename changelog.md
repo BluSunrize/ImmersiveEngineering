@@ -31,6 +31,7 @@
 - Fixed lighting on capacitors (Malte)
 - Fixed excessive render latency in JEI (Malte)
 - Fixed OpenComputers integration (sargunv)
+- Fixed Covered Extracting Conveyor not applying magnet protection (BluSunrize)
 - Translations Added/Updated: ja_jp (karakufire), es_es(Dorzar & rogama25), zh_cn (mcBegins2Snow)
 
 #####Version 0.12-86 - BUILT

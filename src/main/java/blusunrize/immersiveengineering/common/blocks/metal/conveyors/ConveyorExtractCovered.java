@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -51,6 +53,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	public void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing)
 	{
 		entity.setPickupDelay(10);
+		ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
 	}
 
 	@Override
