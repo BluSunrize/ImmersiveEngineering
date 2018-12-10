@@ -1,4 +1,4 @@
-#####Version 0.12-87
+#####Version 0.12-87 - BUILT
 - Added a "Distribute Inputs" button to the ArcFurnace GUI. It keeps splitting the biggest stacks in the input if there is space available (BluSunrize)
 - Added the Maintenance Kit, an on-the-go option to modify tools, like changing drillheads or configuring the Ear Defenders (BluSunrize)
 - Changed the skyhook in multiple ways (Malte)
