@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
+import blusunrize.immersiveengineering.common.items.ItemMaintenanceKit;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -111,6 +112,8 @@ public class CommonProxy implements IGuiHandler
 					return new ContainerRevolver(player.inventory, world, slot, item);
 				if(ID==Lib.GUIID_Toolbox&&item.getItem() instanceof ItemToolbox)
 					return new ContainerToolbox(player.inventory, world, slot, item);
+				if(ID==Lib.GUIID_MaintenanceKit&&item.getItem() instanceof ItemMaintenanceKit)
+					return new ContainerMaintenanceKit(player.inventory, world, slot, item);
 			}
 		}
 		else
