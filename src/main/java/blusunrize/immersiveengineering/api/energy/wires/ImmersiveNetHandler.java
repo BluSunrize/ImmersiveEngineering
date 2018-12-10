@@ -687,6 +687,12 @@ public class ImmersiveNetHandler
 		public double catOffsetX;
 		public double catOffsetY;
 		public double catA;
+		/*
+		Stores the horizontal length for non-vertical connections and the vertical length for vertical connections.
+		TODO rename
+		 */
+		public double horizontalLength;
+		public Vec3d across = null;
 
 		public Connection(BlockPos start, BlockPos end, WireType cableType, int length)
 		{
@@ -719,15 +725,32 @@ public class ImmersiveNetHandler
 					getVecForIICAt(world, end, this));
 		}
 
+		@Deprecated
 		public Vec3d getVecAt(double pos, Vec3d vStart, Vec3d across, double lengthHor)
 		{
 			getSubVertices(vStart, vStart.add(across));
+			return getVecAt(pos);
+		}
+
+		public Vec3d getVecAt(double pos)
+		{
 			pos = MathHelper.clamp(pos, 0, 1);
 			if(vertical)
-				return vStart.add(across.scale(pos/across.length()));
+				return catenaryVertices[0].add(across.scale(pos));
 			else
-				return vStart.add(pos*across.x, catA*Math.cosh((pos*lengthHor-catOffsetX)/catA)+catOffsetY,
+				return catenaryVertices[0].add(pos*across.x,
+						catA*Math.cosh((pos*horizontalLength-catOffsetX)/catA)+catOffsetY,
 						pos*across.z);
+		}
+
+		//Slope per block
+		public double getSlopeAt(double pos)
+		{
+			pos = MathHelper.clamp(pos, 0, 1);
+			if(vertical)
+				return Double.POSITIVE_INFINITY;
+			else
+				return Math.sinh((pos*horizontalLength-catOffsetX)/catA);
 		}
 
 		public NBTTagCompound writeToNBT()

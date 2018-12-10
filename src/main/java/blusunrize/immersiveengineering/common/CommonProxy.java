@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorte
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
@@ -261,6 +262,10 @@ public class CommonProxy implements IGuiHandler
 	}
 
 	public void clearRenderCaches()
+	{
+	}
+
+	public void startSkyhookSound(EntitySkylineHook hook)
 	{
 	}
 }

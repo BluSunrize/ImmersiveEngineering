@@ -387,11 +387,13 @@ public class ApiUtils
 	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
 	{
 		boolean vertical = end.x==start.x&&end.z==start.z;
+		connection.across = end.subtract(start);
 
 		if(vertical)
 		{
 			Vec3d[] ret = new Vec3d[vertices+1];
 			double height = end.y-start.y;
+			connection.horizontalLength = Math.abs(height);
 			for(int i = 0; i < vertices+1; i++)
 				ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
 			return ret;
@@ -429,6 +431,7 @@ public class ApiUtils
 			c.catOffsetX = offsetX;
 			c.catOffsetY = offsetY;
 			c.catA = a;
+			c.horizontalLength = dw;
 		}
 
 		Vec3d[] vex = new Vec3d[vertices+1];
@@ -501,7 +504,7 @@ public class ApiUtils
 			for(int i = start; i < end; i++)
 			{
 				double factor = (i-getDim(vStart, dim))/getDim(across, dim);
-				Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
+				Vec3d pos = conn.getVecAt(factor);
 
 				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
 					return false;
@@ -981,52 +984,68 @@ public class ApiUtils
 		}
 	}
 
+	public static Connection raytraceWires(World world, Vec3d start, Vec3d end, @Nullable Connection ignored)
+	{
+		Map<BlockPos, ImmersiveNetHandler.BlockWireInfo> inDim = ImmersiveNetHandler.INSTANCE.blockWireMap
+				.lookup(world.provider.getDimension());
+		AtomicReference<Connection> ret = new AtomicReference<>();
+		AtomicDouble minDistSq = new AtomicDouble(Double.POSITIVE_INFINITY);
+		if(inDim!=null)
+		{
+			Utils.rayTrace(start, end, world, (pos) ->
+			{
+				if(inDim.containsKey(pos))
+				{
+					ImmersiveNetHandler.BlockWireInfo info = inDim.get(pos);
+					for(int i = 0; i < 2; i++)
+					{
+						Set<Triple<Connection, Vec3d, Vec3d>> conns = i==0?info.in: info.near;
+						for(Triple<Connection, Vec3d, Vec3d> conn : conns)
+						{
+							Connection c = conn.getLeft();
+							if(ignored==null||!c.hasSameConnectors(ignored))
+							{
+								Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
+								Vec3d across = conn.getRight().subtract(conn.getMiddle());
+								double t = Utils.getCoeffForMinDistance(startRelative, conn.getMiddle(), across);
+								t = MathHelper.clamp(0, t, 1);
+								Vec3d closest = conn.getMiddle().add(t*across.x, t*across.y, t*across.z);
+								double distSq = closest.squareDistanceTo(startRelative);
+								if(distSq < minDistSq.get())
+								{
+									ret.set(c);
+									minDistSq.set(distSq);
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+
+		return ret.get();
+	}
+
+	public static Connection getConnectionMovedThrough(World world, EntityLivingBase e)
+	{
+		Vec3d start = e.getPositionEyes(0);
+		Vec3d end = e.getPositionEyes(1);
+		return raytraceWires(world, start, end, null);
+	}
+
 	public static Connection getTargetConnection(World world, EntityPlayer player, Connection ignored, double maxDistance)
 	{
 		Vec3d look = player.getLookVec();
 		Vec3d start = player.getPositionEyes(1);
 		Vec3d end = start.add(look.scale(maxDistance));
-		Map<BlockPos, ImmersiveNetHandler.BlockWireInfo> inDim = ImmersiveNetHandler.INSTANCE.blockWireMap
-				.lookup(player.dimension);
-		AtomicReference<Connection> ret = new AtomicReference<>();
-		AtomicDouble minDistSq = new AtomicDouble(Double.POSITIVE_INFINITY);
-		Utils.rayTrace(start, end, world, (pos) ->
+		Connection ret = raytraceWires(world, start, end, ignored);
+		if(ret!=null)
 		{
-			if(inDim!=null&&inDim.containsKey(pos))
-			{
-				ImmersiveNetHandler.BlockWireInfo info = inDim.get(pos);
-				for(int i = 0; i < 2; i++)
-				{
-					Set<Triple<Connection, Vec3d, Vec3d>> conns = i==0?info.in: info.near;
-					for(Triple<Connection, Vec3d, Vec3d> conn : conns)
-					{
-						Connection c = conn.getLeft();
-						if(ignored==null||!c.hasSameConnectors(ignored))
-						{
-							Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
-							Vec3d across = conn.getRight().subtract(conn.getMiddle());
-							double t = Utils.getCoeffForMinDistance(startRelative, conn.getMiddle(), across);
-							t = MathHelper.clamp(t, 0, 1);
-							Vec3d closest = conn.getMiddle().add(t*across.x, t*across.y, t*across.z);
-							double distSq = closest.squareDistanceTo(startRelative);
-							if(distSq < minDistSq.get())
-							{
-								ret.set(c);
-								minDistSq.set(distSq);
-							}
-						}
-					}
-				}
-			}
-		});
-		Connection retConn = ret.get();
-		if(retConn!=null)
-		{
-			Vec3d across = new Vec3d(retConn.end).subtract(new Vec3d(retConn.start));
+			Vec3d across = new Vec3d(ret.end).subtract(new Vec3d(ret.start));
 			if(across.dotProduct(player.getLookVec()) < 0)
-				retConn = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), retConn);
+				ret = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), ret);
 		}
-		return retConn;
+		return ret;
 	}
 
 	public static void addFutureServerTask(World world, Runnable task)
@@ -1037,6 +1056,11 @@ public class ApiUtils
 				world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
 						task, null));
 			}
+	}
+
+	public static void callFromOtherThread(Consumer<Runnable> cons, Runnable r)
+	{
+		new Thread(()->cons.accept(r)).start();
 	}
 
 	public static void moveConnectionEnd(Connection conn, BlockPos newEnd, World world)

@@ -71,6 +71,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
@@ -1742,6 +1743,13 @@ public class ClientProxy extends CommonProxy
 			ModelLoader.setCustomMeshDefinition(item, mapper);
 		}
 		ModelLoader.setCustomStateMapper(block, mapper);
+	}
+
+	@Override
+	public void startSkyhookSound(EntitySkylineHook hook)
+	{
+		Minecraft.getMinecraft().getSoundHandler().playSound(new SkyhookSound(hook,
+				new ResourceLocation(ImmersiveEngineering.MODID, "skyhook")));
 	}
 
 	static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition

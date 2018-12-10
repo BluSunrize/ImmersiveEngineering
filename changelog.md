@@ -1,5 +1,9 @@
 #####Version 0.12-87
 - Added a "Distribute Inputs" button to the ArcFurnace GUI. It keeps splitting the biggest stacks in the input if there is space available (BluSunrize)
+- Changed the skyhook in multiple ways (Malte)
+  - The speed now depends on gravity
+  - The skyhook will not drag players into blocks any more
+  - Many other smaller changes
 - Added the Maintenance Kit, an on-the-go option to modify tools, like changing drillheads or configuring the Ear Defenders (BluSunrize)
 - Changed connectors to accept multiple "bursts" of energy if they (in total) don't exceed the max IO rate (Malte)
 - Changed internal logic of the Assembler to be a lot more straightforward, allowing bucket-like items for fluid ingredients (BluSunrize)

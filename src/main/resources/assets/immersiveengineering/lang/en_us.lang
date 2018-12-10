@@ -795,6 +795,8 @@ desc.immersiveengineering.flavour.drillhead.speed=Mining Speed: %1$s
 desc.immersiveengineering.flavour.drillhead.damage=Attack Damage: %1$s
 
 desc.immersiveengineering.flavour.skyhook=A new form of travel
+desc.immersiveengineering.flavour.skyhook.speedLimit=Limited speed
+desc.immersiveengineering.flavour.skyhook.noLimit=Unlimited speed
 
 desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=Allows the Mining Drill to operate under water
 desc.immersiveengineering.flavour.toolupgrade.drill_lube=Reduces the damage the Mining Drill's head sustains
@@ -852,6 +854,8 @@ chat.immersiveengineering.warning.tooFar=You are too far away from the previous 
 chat.immersiveengineering.warning.cantSee=The connection is obstructed
 chat.immersiveengineering.warning.connectionExists=The connection exists already
 chat.immersiveengineering.warning.invalidPoint=One of the connection points is invalid
+chat.immersiveengineering.info.skyhookLimited=The skyhook will automatically limit its speed
+chat.immersiveengineering.info.skyhookUnlimited=The speed of the skyhook is unlimited
 chat.immersiveengineering.info.averageLoss=Average loss between points: %1$s%%
 chat.immersiveengineering.info.energyStorage=Energy Stored: %1$s/%2$s Flux
 chat.immersiveengineering.info.tooHot=This fluid is too hot for the container!
@@ -910,6 +914,7 @@ subtitle.immersiveengineering.spark=Electrical sparks
 subtitle.immersiveengineering.railgunFire=Railgun fire
 subtitle.immersiveengineering.tesla=Tesla Coil zapping
 subtitle.immersiveengineering.direSwitch=Direwolf20 imitating a knifeswitch
+subtitle.immersiveengineering.skyhook=Skyhook slides along a wire
 
 #RECIPES
 recipe.immersiveengineering.hammerCrushing=Crushing
@@ -1447,7 +1452,7 @@ ie.manual.entry.chemthrower3=The §6Multitank§r allows the Chemthrower to store
 ie.manual.entry.skyhook.name=Engineer's Skyhook
 ie.manual.entry.skyhook.subtext=Booker, catch!
 ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables.<br>With it, engineers can quickly traverse the length of a powerline to move between substations or other installations.
-ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a connector and you will be attached to the wire.<br>Releasing the button at any time or sneaking will cause you to dismount.<br>You cannot start in the middle of a wire, you must attach at a connector.
+ie.manual.entry.skyhook1=Simply hold the right mouse button while close to a wire and you will be attached to it.<br>The button can be released while riding the wire, but letting go of the skyhook or sneaking will cause you to dismount.<br>Gravity will be sufficient to move along decending wires at a decent speed, the standard movement keys can be used to move along ascending wires.<br>When the skyhook reaches an intersection it will continue in as close to the direction the player is looking as possible.
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!
