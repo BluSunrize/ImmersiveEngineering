@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
-import blusunrize.immersiveengineering.common.util.Utils;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -110,7 +109,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			int tank = args.checkInteger(0);
 			if(tank > 3||tank < 1)
 				throw new IllegalArgumentException("Only tanks 1-3 are available");
-			return new Object[]{Utils.saveFluidTank(getTileEntity().tanks[tank-1])};
+			return new Object[]{getTileEntity().tanks[tank-1].getInfo()};
 		}
 
 		@Callback(doc = "function():int -- returns the maximum amount of energy that can be stored")

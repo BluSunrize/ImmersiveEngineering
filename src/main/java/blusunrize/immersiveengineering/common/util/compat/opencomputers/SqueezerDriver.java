@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
-import blusunrize.immersiveengineering.common.util.Utils;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -22,10 +21,10 @@ public class SqueezerDriver extends DriverSidedTileEntity
 		TileEntity te = w.getTileEntity(bp);
 		if(te instanceof TileEntitySqueezer)
 		{
-			TileEntitySqueezer ferment = (TileEntitySqueezer)te;
-			TileEntitySqueezer master = ferment.master();
-			if(master!=null&&ferment.isRedstonePos())
-				return new FermenterEnvironment(w, master.getPos());
+			TileEntitySqueezer squeezer = (TileEntitySqueezer)te;
+			TileEntitySqueezer master = squeezer.master();
+			if(master!=null&&squeezer.isRedstonePos())
+				return new SqueezerEnvironment(w, master.getPos());
 		}
 		return null;
 	}
@@ -37,10 +36,10 @@ public class SqueezerDriver extends DriverSidedTileEntity
 	}
 
 
-	public class FermenterEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntitySqueezer>
+	public class SqueezerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntitySqueezer>
 	{
 
-		public FermenterEnvironment(World w, BlockPos bp)
+		public SqueezerEnvironment(World w, BlockPos bp)
 		{
 			super(w, bp, TileEntitySqueezer.class);
 		}
@@ -78,7 +77,7 @@ public class SqueezerDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- returns the output fluid tank")
 		public Object[] getFluid(Context context, Arguments args)
 		{
-			return new Object[]{Utils.saveFluidTank(getTileEntity().tanks[0])};
+			return new Object[]{getTileEntity().tanks[0].getInfo()};
 		}
 
 		@Callback(doc = "function():table -- returns the stack in the empty cannisters slot")
@@ -105,7 +104,7 @@ public class SqueezerDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().energyStorage.getEnergyStored()};
 		}
 
-		@Callback(doc = "function():boolean -- returns whether the fermenter is running")
+		@Callback(doc = "function():boolean -- returns whether the squeezer is running")
 		public Object[] isActive(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().shouldRenderAsActive()};
@@ -128,7 +127,7 @@ public class SqueezerDriver extends DriverSidedTileEntity
 		@Override
 		public String preferredName()
 		{
-			return "ie_fermenter";
+			return "ie_squeezer";
 		}
 
 		@Override

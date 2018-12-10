@@ -364,7 +364,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		quads.add(ClientUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, false));
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = SHRINK.apply(vertices[i]);
-		quads.add(ClientUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, true));
+		quads.add(ClientUtils.createBakedQuad(format, vertices, side.getOpposite(), tas, uvs, alpha, true));
 	}
 
 	private void addSides(List<BakedQuad> quads, Vector3f[] vertices, TextureAtlasSprite tas, double lowerV,
