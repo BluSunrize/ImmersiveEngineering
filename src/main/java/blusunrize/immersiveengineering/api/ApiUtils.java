@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IESaveData;
@@ -359,11 +360,11 @@ public class ApiUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(World world, BlockPos pos, Connection conn)
+	public static Vec3d getVecForIICAt(LocalWireNetwork net, BlockPos pos, GlobalWireNetwork.Connection conn)
 	{
 		Vec3d offset = Vec3d.ZERO;
 		//Force loading
-		IImmersiveConnectable iicPos = toIIC(pos, world, false);
+		IImmersiveConnectable iicPos = net.getConnector(pos);
 		if(iicPos!=null)
 			offset = iicPos.getConnectionOffset(conn);
 		if(pos.equals(conn.end))
@@ -462,11 +463,11 @@ public class ApiUtils
 		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
-	public static boolean raytraceAlongCatenary(Connection conn, World w, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
+	public static boolean raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
-		Vec3d vStart = getVecForIICAt(w, conn.start, conn);
-		Vec3d vEnd = getVecForIICAt(w, conn.end, conn);
+		Vec3d vStart = getVecForIICAt(net, conn.start, conn);
+		Vec3d vEnd = getVecForIICAt(net, conn.end, conn);
 		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
 	}
 
@@ -683,16 +684,20 @@ public class ApiUtils
 							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
 						else
 						{
+							GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
 							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 							IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
 							boolean connectionExists = false;
-							Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
-							if(outputs!=null)
-								for(Connection con : outputs)
-								{
-									if(con.end.equals(Utils.toCC(nodeLink)))
-										connectionExists = true;
-								}
+							LocalWireNetwork localA = net.getLocalNet(pos);
+							LocalWireNetwork localB = net.getLocalNet(linkPos);
+							if (localA==localB)
+							{
+								Collection<GlobalWireNetwork.Connection> outputs = localA.getConnections(pos);
+								if(outputs!=null)
+									for(GlobalWireNetwork.Connection con : outputs)
+										if(con.getOtherEnd(pos).equals(Utils.toCC(nodeLink)))
+											connectionExists = true;
+							}
 							if(connectionExists)
 								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
 							else
@@ -721,13 +726,12 @@ public class ApiUtils
 								}, start, end);
 								if(canSee)
 								{
-									Connection conn = ImmersiveNetHandler.INSTANCE.addAndGetConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
-											(int)Math.sqrt(distanceSq), wire);
+									GlobalWireNetwork.Connection conn = net.addConnection(nodeHere, nodeLink, wire);
 
 
 									nodeHere.connectCable(wire, target, nodeLink, offset);
 									nodeLink.connectCable(wire, targetLink, nodeHere, offsetLink);
-									ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
+									//ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
 									IESaveData.setDirty(world.provider.getDimension());
 									Utils.unlockIEAdvancement(player, "main/connect_wire");
 
@@ -1041,9 +1045,11 @@ public class ApiUtils
 
 	public static void moveConnectionEnd(Connection conn, BlockPos newEnd, World world)
 	{
-		IImmersiveConnectable otherSide = ApiUtils.toIIC(conn.start, world);
-		Vec3d start = ApiUtils.getVecForIICAt(world, conn.start, conn);
-		Vec3d end = ApiUtils.getVecForIICAt(world, conn.end, conn);
+		//TODO move to parameters
+		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(newEnd);
+		IImmersiveConnectable otherSide = net.getConnector(conn.start);
+		Vec3d start = ApiUtils.getVecForIICAt(net, conn.start, conn);
+		Vec3d end = ApiUtils.getVecForIICAt(net, conn.end, conn);
 		if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
 		{
 			ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);

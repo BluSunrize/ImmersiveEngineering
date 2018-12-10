@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -709,6 +710,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "explosive"), EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "fluorescentTube"), EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 		CapabilityShader.register();
+		NetHandlerCapability.register();
 		ShaderRegistry.itemShader = IEContent.itemShader;
 		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
 		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRevolver));

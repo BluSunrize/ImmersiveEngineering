@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires.localhandlers;
 
-import blusunrize.immersiveengineering.api.energy.wires.AbstractWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.LocalWireNetwork;
 import net.minecraft.util.ResourceLocation;

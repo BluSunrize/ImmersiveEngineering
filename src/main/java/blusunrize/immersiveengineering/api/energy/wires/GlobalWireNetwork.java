@@ -14,18 +14,39 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
-public abstract class AbstractWireNetwork
+public class GlobalWireNetwork
 {
 	private Map<BlockPos, LocalWireNetwork> localNets = new HashMap<>();
 
-	public void addConnection(IImmersiveConnectable iicA, IImmersiveConnectable iicB, WireType type)
+	@Nonnull
+	public static GlobalWireNetwork getNetwork(World w) {
+		if (!w.hasCapability(NetHandlerCapability.NET_CAPABILITY, null))
+			throw new RuntimeException("No net handler found for dimension "+w.provider.getDimension()+", remote: "+w.isRemote);
+		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY, null));
+	}
+
+	public Connection addConnection(BlockPos posA, BlockPos posB, WireType type)
+	{
+		IImmersiveConnectable iicA = getLocalNet(posA).getConnector(posA);
+		IImmersiveConnectable iicB = getLocalNet(posB).getConnector(posB);
+		return addConnection(iicA, iicB, posA, posB, type);
+	}
+
+	public Connection addConnection(IImmersiveConnectable iicA, IImmersiveConnectable iicB, WireType type)
 	{
 		BlockPos posA = ApiUtils.toBlockPos(iicA);
 		BlockPos posB = ApiUtils.toBlockPos(iicB);
+		return addConnection(iicA, iicB, posA, posB, type);
+	}
+	private Connection addConnection(IImmersiveConnectable iicA, IImmersiveConnectable iicB, BlockPos posA, BlockPos posB,
+									 WireType type)
+	{
 		LocalWireNetwork netA = localNets.get(posA);
 		LocalWireNetwork netB = localNets.get(posB);
 		Connection conn = new Connection(type, posA, posB);
@@ -64,6 +85,7 @@ public abstract class AbstractWireNetwork
 		joined.addConnection(conn);
 		for(BlockPos p : toSet)
 			localNets.put(p, joined);
+		return conn;
 	}
 
 	public void removeConnection(Connection c)
@@ -100,6 +122,14 @@ public abstract class AbstractWireNetwork
 				locals.appendTag(local.writeToNBT());
 		ret.setTag("locals", locals);
 		return ret;
+	}
+
+	public LocalWireNetwork getLocalNet(BlockPos pos) {
+		return localNets.computeIfAbsent(pos, p->new LocalWireNetwork(this));
+	}
+
+	public LocalWireNetwork getNullableLocalNet(BlockPos pos) {
+		return localNets.get(pos);
 	}
 
 	public static class Connection
@@ -155,5 +185,9 @@ public abstract class AbstractWireNetwork
 		}
 
 
+		public void generateSubvertices(World world)
+		{
+
+		}
 	}
 }

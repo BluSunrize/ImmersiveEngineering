@@ -12,7 +12,8 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -26,6 +27,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,10 +35,7 @@ import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.canMix;
@@ -45,6 +44,7 @@ import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
 	protected WireType limitType = null;
+	protected GlobalWireNetwork globalNet;
 
 	protected boolean canTakeLV()
 	{
@@ -128,8 +128,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection!=null?connection.cableType: null;
-		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(this));
+		WireType type = connection!=null?connection.type: null;
+		Collection<Connection> outputs = globalNet.getLocalNet(pos).getConnections(pos);
 		if(outputs==null||outputs.size()==0)
 		{
 			if(type==limitType||type==null)
@@ -169,6 +169,13 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
+	public void setWorld(@Nonnull World worldIn)
+	{
+		super.setWorld(worldIn);
+		globalNet = GlobalWireNetwork.getNetwork(worldIn);
+	}
+
+	@Override
 	public float getDamageAmount(Entity e, Connection c)
 	{
 		float baseDmg = getBaseDamage(c);
@@ -204,18 +211,18 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 
 	protected float getBaseDamage(Connection c)
 	{
-		if(c.cableType==COPPER)
-			return 8*2F/c.cableType.getTransferRate();
-		else if(c.cableType==ELECTRUM)
-			return 8*5F/c.cableType.getTransferRate();
-		else if(c.cableType==STEEL)
-			return 8*15F/c.cableType.getTransferRate();
+		if(c.type==COPPER)
+			return 8*2F/c.type.getTransferRate();
+		else if(c.type==ELECTRUM)
+			return 8*5F/c.type.getTransferRate();
+		else if(c.type==STEEL)
+			return 8*15F/c.type.getTransferRate();
 		return 0;
 	}
 
 	protected float getMaxDamage(Connection c)
 	{
-		return c.cableType.getTransferRate()/8*getBaseDamage(c);
+		return c.type.getTransferRate()/8F*getBaseDamage(c);
 	}
 
 	@Override
@@ -304,17 +311,13 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(world!=null&&world.isRemote&&!Minecraft.getMinecraft().isSingleplayer()&&nbt!=null)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), world);
+			for (Connection c:globalNet.getLocalNet(pos).getConnections(pos))
+				globalNet.removeConnection(c);
 			for(int i = 0; i < connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
-				Connection con = Connection.readFromNBT(conTag);
-				if(con!=null)
-				{
-					ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(this), con);
-				}
-				else
-					IELogger.error("CLIENT read connection as null from {}", nbt);
+				Connection con = new Connection(conTag);
+				globalNet.addConnection(pos, con.getOtherEnd(pos), con.type);
 			}
 		}
 	}
@@ -324,17 +327,19 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(world!=null&&!world.isRemote&&nbt!=null)
 		{
 			NBTTagList connectionList = new NBTTagList();
-			Set<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(this));
+			LocalWireNetwork local = globalNet.getLocalNet(pos);
+			Collection<Connection> conL = local.getConnections(pos);
 			if(conL!=null)
 				for(Connection con : conL)
-					connectionList.appendTag(con.writeToNBT());
+					connectionList.appendTag(con.toNBT());
 			nbt.setTag("connectionList", connectionList);
 		}
 	}
 
 	public Set<Connection> genConnBlockstate()
 	{
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+		LocalWireNetwork local = globalNet.getLocalNet(pos);
+		Collection<Connection> conns = local.getConnections(pos);
 		if(conns==null)
 			return ImmutableSet.of();
 		Set<Connection> ret = new HashSet<Connection>()
@@ -358,11 +363,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		//TODO thread safety!
 		for(Connection c : conns)
 		{
-			IImmersiveConnectable end = ApiUtils.toIIC(c.end, world, false);
+			IImmersiveConnectable end = local.getConnector(c.getOtherEnd(pos));
 			if(end==null)
 				continue;
 			// generate subvertices
-			c.getSubVertices(world);
+			c.generateSubvertices(world);
 			ret.add(c);
 		}
 

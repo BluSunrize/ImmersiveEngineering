@@ -14,28 +14,50 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class NetHandlerCapability
 {
-	@CapabilityInject(AbstractWireNetwork.class)
-	public static Capability<AbstractWireNetwork> SHADER_CAPABILITY = null;
+	@CapabilityInject(GlobalWireNetwork.class)
+	public static Capability<GlobalWireNetwork> NET_CAPABILITY = null;
 
 	public static void register()
 	{
-		CapabilityManager.INSTANCE.register(AbstractWireNetwork.class, new Capability.IStorage<AbstractWireNetwork>()
+		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class, new Capability.IStorage<GlobalWireNetwork>()
 		{
 			@Override
-			public NBTBase writeNBT(Capability<AbstractWireNetwork> capability, AbstractWireNetwork instance, EnumFacing side)
+			public NBTBase writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, EnumFacing side)
 			{
 				return instance.writeToNBT();
 			}
 
 			@Override
-			public void readNBT(Capability<AbstractWireNetwork> capability, AbstractWireNetwork instance, EnumFacing side, NBTBase nbt)
+			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, EnumFacing side, NBTBase nbt)
 			{
 				instance.readFromNBT((NBTTagCompound)nbt);
 			}
-			//TODO does this work? It doesn't seem to be used anywhere
-		}, ServerWireNetwork::new);
+		}, GlobalWireNetwork::new);
+	}
+
+	public static class Provider implements ICapabilityProvider
+	{
+		private final GlobalWireNetwork net = new GlobalWireNetwork();
+		@Override
+		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+		{
+			return capability==NET_CAPABILITY;
+		}
+
+		@Nullable
+		@Override
+		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+		{
+			if (capability==NET_CAPABILITY)
+				return NET_CAPABILITY.cast(net);
+			return null;
+		}
 	}
 }

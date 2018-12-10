@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import blusunrize.immersiveengineering.api.energy.wires.AbstractWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -30,12 +30,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LocalWireNetwork
 {
 	//TODO do we need this?
-	private final AbstractWireNetwork globalNet;
+	private final GlobalWireNetwork globalNet;
 	private final Multimap<BlockPos, Connection> connections = new HashMultimap<>();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	private final Map<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> handlers = new HashMap<>();
 
-	public LocalWireNetwork(NBTTagCompound subnet, AbstractWireNetwork globalNet)
+	public LocalWireNetwork(NBTTagCompound subnet, GlobalWireNetwork globalNet)
 	{
 		this.globalNet = globalNet;
 		NBTTagList proxies = subnet.getTagList("proxies", NBT.TAG_COMPOUND);
@@ -52,7 +52,7 @@ public class LocalWireNetwork
 		}
 	}
 
-	public LocalWireNetwork(AbstractWireNetwork globalNet)
+	public LocalWireNetwork(GlobalWireNetwork globalNet)
 	{
 		this.globalNet = globalNet;
 	}
@@ -170,7 +170,6 @@ public class LocalWireNetwork
 
 	void addConnector(BlockPos p, IImmersiveConnectable iic)
 	{
-		connectors.put(p, iic);
 		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
 			h.getValue().onConnectorLoaded(p, iic);
 	}

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -147,11 +148,18 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttach(AttachCapabilitiesEvent<Entity> event)
+	public void onCapabilitiesAttachEntity(AttachCapabilitiesEvent<Entity> event)
 	{
 		if(event.getObject() instanceof EntityMinecart)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
 					new ShaderWrapper_Direct("immersiveengineering:minecart"));
+	}
+
+	@SubscribeEvent
+	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<World> event)
+	{
+		event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "wire_network"),
+				new NetHandlerCapability.Provider());
 	}
 
 	@SubscribeEvent
