@@ -384,6 +384,10 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		{
 			((IHasDummyBlocks)tile).placeDummies(pos, state, side, hitX, hitY, hitZ);
 		}
+		if(tile instanceof IPlacementInteraction)
+		{
+			((IPlacementInteraction)tile).onTilePlaced(world, pos, state, side, hitX, hitY, hitZ, placer, stack);
+		}
 	}
 
 	@Override

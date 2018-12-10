@@ -62,8 +62,8 @@ import java.util.function.Function;
 import static java.util.Collections.newSetFromMap;
 
 public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty,
-		IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IAdvancedSelectionBounds,
-		IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
+		IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
+		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
 {
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
 	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList<>();
@@ -1056,6 +1056,16 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void onTilePlaced(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
+	{
+		TileEntity te;
+		for(EnumFacing dir : EnumFacing.values())
+			if((te = world.getTileEntity(pos.offset(dir))) instanceof TileEntityFluidPipe)
+				if(((TileEntityFluidPipe)te).color!=this.color)
+					this.toggleSide(dir.ordinal());
 	}
 
 	@Override

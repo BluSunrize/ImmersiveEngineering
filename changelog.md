@@ -4,11 +4,13 @@
   - The speed now depends on gravity
   - The skyhook will not drag players into blocks any more
   - Many other smaller changes
+- Added the Maintenance Kit, an on-the-go option to modify tools, like changing drillheads or configuring the Ear Defenders (BluSunrize)
 - Changed connectors to accept multiple "bursts" of energy if they (in total) don't exceed the max IO rate (Malte)
 - Changed internal logic of the Assembler to be a lot more straightforward, allowing bucket-like items for fluid ingredients (BluSunrize)
 - Changed the Engineer's Workbench around (BluSunrize)
     - Lots of internal fixes to improve reliability and performance, as well as code style
     - Fancy new render features, showing the blueprints on the table and the ingredients being used
+- Changed Fluid Pipes to no longer automatically connect to pipes that have been dyed a different colour (BluSunrize)
 - Removed clickable JEI areas from the Assembler because they were blocking the output slots and were unnecessary anyway (BluSunrize)
 - Fixed wires not showing particles when burning (Malte)
 - Fixed recipes for structural arms conflicting with stairs (Malte)
@@ -21,6 +23,10 @@
 - Fixed an annoying consolespam with the Cartographer trades (BluSunrize)
 - Fixed various GUIs still using "RF" instead of "IF" (BluSunrize)
 - Fixed Lightningrod resulting in a crash on very specific setups (BluSunrize)
+- Fixed dupebug with ArcFurnace recycling (BluSunrize)
+- Fixed the Garden Cloche accepting Fluids it can't work with (BluSunrize)
+- Fixed connectors duping small amounts of energy (Malte)
+- Fixed lighting on capacitors (Malte)
 - Translations Added/Updated: ja_jp (karakufire), es_es(Dorzar & rogama25)
 
 #####Version 0.12-86 - BUILT

@@ -195,6 +195,7 @@ public class IEContent
 	public static ItemIEBase itemFluorescentTube;
 	public static Item itemPowerpack;
 	public static ItemIEBase itemShield;
+	public static ItemIEBase itemMaintenanceKit;
 
 	public static ItemIEBase itemFakeIcons;
 
@@ -324,6 +325,7 @@ public class IEContent
 		itemFluorescentTube = new ItemFluorescentTube();
 		itemPowerpack = new ItemPowerpack();
 		itemShield = new ItemIEShield();
+		itemMaintenanceKit = new ItemMaintenanceKit();
 
 		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky", "drillbreak")
 		{

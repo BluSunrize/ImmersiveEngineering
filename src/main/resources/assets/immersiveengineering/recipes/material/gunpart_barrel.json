@@ -5,11 +5,11 @@
     "data": 14
   },
   "pattern": [
-    "III"
+    "II"
   ],
   "key": {
     "I": {
-      "item": "#ingotSteel"
+      "item": "#stickSteel"
     }
   }
 }
