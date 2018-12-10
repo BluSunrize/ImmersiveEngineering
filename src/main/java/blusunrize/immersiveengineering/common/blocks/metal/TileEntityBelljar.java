@@ -77,6 +77,12 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		{
 			TileEntityBelljar.this.sendSyncPacket(2);
 		}
+
+		@Override
+		public boolean canFillFluidType(FluidStack fluid)
+		{
+			return BelljarHandler.getFluidFertilizerHandler(fluid)!=null;
+		}
 	};
 	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEConfig.Machines.belljar_consumption));
 

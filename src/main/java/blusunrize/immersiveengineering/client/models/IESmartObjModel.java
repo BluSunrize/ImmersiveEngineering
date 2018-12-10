@@ -201,6 +201,8 @@ public class IESmartObjModel extends OBJBakedModel
 	@Override
 	public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand)
 	{
+		if (side!=null)
+			return ImmutableList.of();
 		OBJState objState = null;
 		Map<String, String> tex = null;
 		if(blockState instanceof IExtendedBlockState)
