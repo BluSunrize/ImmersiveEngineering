@@ -205,7 +205,7 @@ tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=绝�
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=金属冲压机
 tile.immersiveengineering.metal_multiblock.crusher.name=粉碎机
-tile.immersiveengineering.metal_multiblock.tank.name=液体储罐
+tile.immersiveengineering.metal_multiblock.tank.name=流体储罐
 tile.immersiveengineering.metal_multiblock.silo.name=储物筒仓
 tile.immersiveengineering.metal_multiblock.assembler.name=装配机
 tile.immersiveengineering.metal_multiblock.auto_workbench.name=自动化工程师装配台
@@ -746,7 +746,7 @@ desc.immersiveengineering.info.multiblock.IE:Lightningrod=避雷针
 desc.immersiveengineering.info.multiblock.IE:MetalPress=金属冲压机
 desc.immersiveengineering.info.multiblock.IE:Mixer=混合器
 desc.immersiveengineering.info.multiblock.IE:Refinery=炼油厂
-desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=液体储罐
+desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=流体储罐
 desc.immersiveengineering.info.multiblock.IE:Silo=储物筒仓
 desc.immersiveengineering.info.multiblock.IE:Squeezer=工业挤压机
 
@@ -1044,21 +1044,21 @@ ie.manual.newerVersion=- 最新
 ie.manual.category.update.name=最新动态！
 ie.manual.entry.updateNews_0.name=版本0.6.0更新内容
 ie.manual.entry.updateNews_0.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_00=亲爱的工程师们！<br><br>自从你们上次与ImmersiveEngineering合作，许多东西都发生了改变！新的内容包括：村民房屋、<link;lighting;§o§n全§o§n新§o§n的§o§n照§o§n明§r>、<link;barrel;§o§n木§o§n桶§r>、<link;tanksilo;§o§n储§o§n罐§r>、<link;tanksilo;§o§n筒§o§n仓§r;1>和<link;fluidPipes;§o§n液§o§n体§o§n管§o§n道§r>、新的成就、<link;shader;§o§n左§o§n轮§o§n皮§o§n肤§r>、<link;assembler;§o§n装§o§n配§o§n机§r>和<link;bottlingMachine;§o§n灌§o§n装§o§n机§r>！
+ie.manual.entry.updateNews_00=亲爱的工程师们！<br><br>自从你们上次与沉浸工程合作，许多东西都发生了改变！新的内容包括：村民房屋、<link;lighting;§o§n全§o§n新§o§n的§o§n照§o§n明§r>、<link;barrel;§o§n木§o§n桶§r>、<link;tanksilo;§o§n储§o§n罐§r>、<link;tanksilo;§o§n筒§o§n仓§r;1>和<link;fluidPipes;§o§n液§o§n体§o§n管§o§n道§r>、新的成就、<link;shader;§o§n左§o§n轮§o§n皮§o§n肤§r>、<link;assembler;§o§n装§o§n配§o§n机§r>和<link;bottlingMachine;§o§n灌§o§n装§o§n机§r>！
 ie.manual.entry.updateNews_01=然而最重要的是，能量传输的处理方式进行了较大的变更。为了避免错误的发生，请认真阅读<link;wiring;§o§n基§o§n础§o§n布§o§n线§r>，尤其是第5页，详细的讲解了线缆传输速率和接线器输入输出的区别。
 
 ie.manual.entry.updateNews_1.name=版本0.6.1更新内容
 ie.manual.entry.updateNews_1.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_10=亲爱的工程师们！<br><br>这次的更新为ImmersiveEngineering带来了一些改动并添加了些许新的特性：<br><br><link;metalbarrel;§o§n金§o§n属§o§n桶§r>提供了一个更稳定的便携式液体存储方案；电弧炉得到了进一步的改善，它现在能够冶炼金属同时还能够回收旧工具和盔甲；用于遮盖<link;fluidPipes;§o§n流§o§n体§o§n管§o§n道§r>的脚手架现在可以攀爬了。
+ie.manual.entry.updateNews_10=亲爱的工程师们！<br><br>这次的更新为沉浸工程带来了一些改动并添加了些许新的特性：<br><br><link;metalbarrel;§o§n金§o§n属§o§n桶§r>提供了一个更稳定的便携式液体存储方案；电弧炉得到了进一步的改善，它现在能够冶炼金属同时还能够回收旧工具和盔甲；用于遮盖<link;fluidPipes;§o§n流§o§n体§o§n管§o§n道§r>的脚手架现在可以攀爬了。
 
 ie.manual.entry.updateNews_2.name=版本0.6.2更新内容
 ie.manual.entry.updateNews_2.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_20=亲爱的工程师们！<br><br>这次的更新为ImmersiveEngineering带来了一些改动并添加了些许新的特性：<br><br>一种新型脚手架被发明了出来。原本使用开放式钢架结构进行支撑，然后在上面随意搭几块木板的安全系数较低的结构正在逐渐被取代。铝在装饰方面竟出乎意料的实用，因此现在你本地的工程师商店里已经有铝制栅栏和脚手架出售了。
+ie.manual.entry.updateNews_20=亲爱的工程师们！<br><br>这次的更新为沉浸工程带来了一些改动并添加了些许新的特性：<br><br>一种新型脚手架被发明了出来。原本使用开放式钢架结构进行支撑，然后在上面随意搭几块木板的安全系数较低的结构正在逐渐被取代。铝在装饰方面竟出乎意料的实用，因此现在你本地的工程师商店里已经有铝制栅栏和脚手架出售了。
 ie.manual.entry.updateNews_21=一种全新的<link;breaker;§o§n断§o§n路§o§n开§o§n关§r;2>被发明了出来。它能够通过红石信号进行控制并且可以连接高压线缆。说到高压线缆，因为它能够危及生命的高压，现在已经禁止连接到普通的断路开关了，我们并不想找相关部门的麻烦。
 
 ie.manual.entry.updateNews_3.name=版本0.6.3更新内容
 ie.manual.entry.updateNews_3.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_30=亲爱的工程师们！<br><br>这次的更新为ImmersiveEngineering带来了一些改动并添加了些许新的特性：<br><br>在遭受剧烈脑震荡之后，首席工程师亚当准备着手设计<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>，一种能够把任何液体喷射到任何地方的设备。它还内置了一个点火装置来引燃喷射的液体。我们觉得亚当可能是疯掉了。
+ie.manual.entry.updateNews_30=亲爱的工程师们！<br><br>这次的更新为沉浸工程带来了一些改动并添加了些许新的特性：<br><br>在遭受剧烈脑震荡之后，首席工程师亚当准备着手设计<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>，一种能够把任何液体喷射到任何地方的设备。它还内置了一个点火装置来引燃喷射的液体。我们觉得亚当可能是疯掉了。
 ie.manual.entry.updateNews_31=科研部门的另一项新发明是<link;chargingStation;§o§n充§o§n电§o§n站§r>，它能够让你将能量导入到你的物品当中为其充电。<br>助理工程师“眼镜蛇”也展示了他的最新发明：<link;conveyor;§o§n卸§o§n货§o§n传§o§n送§o§n带§r;2>，它能够将通过它的物品放置到它下方的存储容器中。<br>比<link;sorter;§o§n物§o§n品§o§n路§o§n由§o§n器§r>更棒的是，它能够通过设置矿物辞典，NBT数据或模糊筛选来对物品进行过滤！
 ie.manual.entry.updateNews_32=其它一些值得一提的变动均和传输与装饰相关：<br>- <link;shader;§o§n皮§o§n肤§r> 现在能够被使用在矿车上<br>- <link;skyhook;§o§n工§o§n程§o§n师§o§n天§o§n钩§r> 一个能让你在电网上高速滑行并赶超矿车的工具<br> - <link;balloon;§o§n气球§r>能够让你更方便的高空悬挂接线器并为之前提到的天钩搭建架空索<br>- <link;concrete;§o§n混§o§n凝§o§n土§r> 当你从空索上掉落时为你提供一个硬着陆~
 ie.manual.entry.updateNews_33=最后，财政部门因为无法准确追踪我们的用电量而时常找我们麻烦。在经过激烈的争论之后，他们给了我们一份有关<link;eMeter;§o§n电§o§n流§o§n互§o§n感§o§n器§r>的蓝图，一种能够测量流通能量的仪器。不用说，当他们知道电弧炉的真正能耗之后他们变得更加不开心了。
@@ -1076,7 +1076,7 @@ ie.manual.category.heavymachines.name=重型机械
 
 ie.manual.entry.introduction.name=介绍
 ie.manual.entry.introduction.subtext=开始你的工程！
-ie.manual.entry.introduction0=诸位年轻的工程师，你们好！欢迎使用ImmersiveEngineering模组，这本手册将会作为你的向导，介绍本模组应提供的新型机器的建造流程和使用方法。<br>那就让我们从基础的事情开始吧：ImmersiveEngineering是围绕复古未来主义风格产生与能源运输两个要素而构建起来的。本模组使用通量(Flux)作为能源,它能与现有的大部分模组的能源通用。
+ie.manual.entry.introduction0=诸位年轻的工程师，你们好！欢迎使用沉浸工程模组，这本手册将会作为你的向导，介绍本模组应提供的新型机器的建造流程和使用方法。<br>那就让我们从基础的事情开始吧：沉浸工程是围绕复古未来主义风格产生与能源运输两个要素而构建起来的。本模组使用通量（Flux）作为能源,它能与现有的大部分模组的能源通用。
 ie.manual.entry.introduction1=能源是通过§l线缆§r在§l接线器§r间来传输的.线缆的长度是有限制的，因此在这些线缆之间你需要更多的接线器来作为§l中继§r。<br>你能在三种不同导线之间进行选择，它们的差异在于不同的传输速率，分别为：<config;iA;wireTransferRate;l3> Flux/tick。你需要§l变压器§r 来在不同类型线缆间切换。
 ie.manual.entry.introductionHammer=工程师锤是你当前最重要的工具。它可以用于搭建诸如焦炉和高炉这样的多方块结构、<config;b;crushingOreRecipe;将矿石打碎成粉末、>或者是用来修改方块的设置，比如木杆。
 
@@ -1113,11 +1113,11 @@ ie.manual.entry.hemp.subtext=530纺织物
 ie.manual.entry.hemp0=工业大麻是一种备受瞩目的作物！不仅其种子可以用于加工 <link;biodiesel;§o§n生§o§n物§o§n柴§o§n油§r>，工业大麻纤维对于制作坚韧布料也至关重要。种子可以通过清理草丛获得。
 ie.manual.entry.hemp1=坚韧布料是一种使用大麻纤维制作的极富弹性的材料。它被广泛用于<link;generator;§o§n改§o§n良§o§n风§o§n车§r;3>、<link;balloon;§o§n气§o§n球§r>以及§o§n气垫§r的制作。关于气垫的详细介绍可以在本条目的下一页找到。
 ie.manual.entry.hemp2=气垫是一种用坚韧布料制成，并填充以空气的简易方块。当有人掉落在上面时，它可以吸收冲击力，籍此阻止摔伤事故发生，但它并不会像史莱姆方块一样把人再弹起来。
-ie.manual.entry.hemp3=带状帘布是安装在门框或其他方块间隙上的纺织物，用于适当的阻挡视野。<br>当实体穿过时，它将发出红石信号。 用锤子右键点击它们调试红石信号频率。<br>另外，它们与皮革套一样同样可以进行染色。
+ie.manual.entry.hemp3=带状帘布是安装在门框或其他方块间隙上的纺织物，用于适当的阻挡视野。<br>当实体穿过时，它将发出红石信号。用锤子右键点击它们调试红石信号频率。<br>另外，它们与皮革套一样同样可以进行染色。
 
 ie.manual.entry.cokeoven.name=焦炉
 ie.manual.entry.cokeoven.subtext=热门话题！
-ie.manual.entry.cokeoven0=焦炉是你在发展ImmersiveEngineering时所搭建的第一台设备。它的功能十分简单：让煤以及煤块在无氧环境下进行燃烧以产出焦煤，这是一种能构在长时间进行燃烧的燃料。更重要的是，这一加工过程能生产出§l杂酚油§r，它被用于<link;treated_wood;§o§n防腐木§r>的制作。同样，你还可以使用原木在里面烧制得到木炭，同时得到少量的杂酚油。
+ie.manual.entry.cokeoven0=焦炉是你在发展沉浸工程时所搭建的第一台设备。它的功能十分简单：让煤以及煤块在无氧环境下进行燃烧以产出焦煤，这是一种能构在长时间进行燃烧的燃料。更重要的是，这一加工过程能生产出§l杂酚油§r，它被用于<link;treatedwood;§o§n防腐木§r>的制作。同样，你还可以使用原木在里面烧制得到木炭，同时得到少量的杂酚油。
 ie.manual.entry.cokeovenBlock=搭建一个焦炉，首先需要准备27个焦炉砖搭建出一个3x3x3的正方体结构，然后用工程师锤右击侧面的中心来完成建造。<br>看接下来的图页
 
 ie.manual.entry.alloysmelter.name=合金窑
@@ -1127,7 +1127,7 @@ ie.manual.entry.alloysmelter1=窑炉的搭建如上图所示，将8个窑砖搭�
 
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
-ie.manual.entry.treatedwood0=防腐木实际上就是被杂酚油浸泡过的木板。然而，它却是ImmersiveEngineering发展中不可或缺的材料之一，为此你需要尽可能的量产它。
+ie.manual.entry.treatedwood0=防腐木实际上就是被杂酚油浸泡过的木板。然而，它却是沉浸工程发展中不可或缺的材料之一，为此你需要尽可能的量产它。
 ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点，这时用防腐木做成的木杆将会是最好选择。它有四格高，所以你不能把将它放在空间不够的地方。
 ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link;wiring;§o§n变§o§n压§o§n器§r;3>，这使得它不怎么显眼。<br>在木杆侧面支架下方放置方块会使支架改变朝向。
 
@@ -1137,7 +1137,7 @@ ie.manual.entry.concrete0=混凝土是一种极为坚硬，防御力极强的复
 
 ie.manual.entry.balloon.name=气球
 ie.manual.entry.balloon.subtext=...制作99个就对了
-ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮。它们同样会释放光亮，但不同于火把的是，他们并没有火灾隐患。<br>气球能够像其它方块一样放置，或者，当没有目标方块时,它们会被放置在你前方的空气方块中。
+ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮。它们同样会释放光亮，但不同于火把的是，它们并没有火灾隐患。<br>气球能够像其它方块一样放置，或者，当没有目标方块时,它们会被放置在你前方的空气方块中。
 ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢§o§n制§o§n接§o§n线§o§n器§r;5>类似，你可以将麻绳或钢线连接到上面。<br>潜行右击可以设置气球的放置高度差，允许你将其放置在目标方块上方最多5格高的地方。
 
 ie.manual.entry.crate.name=木制储物箱
@@ -1213,8 +1213,8 @@ ie.manual.entry.redstoneWires.name=红石线圈
 ie.manual.entry.redstoneWires.subtext=集成电路
 ie.manual.entry.redstoneWires0=§6红石线圈§r是通过在铝线圈上镀上红石粉制成。它提供了一种简单的，可以长时间传输红石信号的方式，而不会衰减信号强度。
 ie.manual.entry.redstoneWires1=§6接线器§r在连红石线圈时和其他接线器的连接方式相同，但红石线不需要继电器; 接线器即是继电器。<br>使用工程师锤，连接器可以在输入和输出模式（右键）之间切换，并配置在16种颜色频率之间（潜行-右键）。
-ie.manual.entry.redstoneWires2=§6红石接线器§r具有比较器的比较功能。 虽然他们无法积极地比较信号，但他们能够读取容器的存货量是多少。
-ie.manual.entry.redstoneWires3=另外，这些探头可以在两个频道上工作，将它们的读取信号发送到另一个频道，并且仍然在另一个频道上接收信号。 这些频道可以通过使用工程师锤进行更改。<br> <br>请注意，许多IE的多方块结构具有比较器功能，如下页所述。如果可用，多方块的红石控制面是连接比较器的指定位置点。
+ie.manual.entry.redstoneWires2=§6红石探测接线器§r具有比较器的比较功能。虽然它们无法积极地比较信号，但它们能够读取容器的存货量是多少。
+ie.manual.entry.redstoneWires3=另外，这些探头可以在两个频道上工作，将它们的读取信号发送到另一个频道，并且仍然在另一个频道上接收信号。这些频道可以通过使用工程师锤进行更改。<br> <br>请注意，许多IE的多方块结构具有比较器功能，如下页所述。如果可用，多方块的红石控制面是连接比较器的指定位置点。
 ie.manual.entry.redstoneWires4=§l储罐：<link;tank;§o§n详§o§n细§o§n内§o§n容§r;1><br>§l筒仓：<link;silo;§o§n详§o§n细§o§n内§o§n容§r;2><br>§l装配机：§r基于容器填充状态发出信号。<br>§l自动合成台：§r基于容器填充状态发出信号<br>§l挤压机：§r基于容器填充状态发出信号<br>§l发酵机：§r基于容器填充状态发出信号。
 ie.manual.entry.redstoneWires5=§l挖掘机：§r根据矿脉中剩余的矿石量发出信号<br>§l电弧炉：§r基于容器填充状态发出信号。<br>另外，将比较器连接到顶部的电极将根据其完整性发送信号。<br>§l混合机：§r基于容器填充状态发出信号。<br>
 
@@ -1249,7 +1249,7 @@ ie.manual.entry.lighting0=工厂长廊的深处可能会十分昏暗。为了能
 ie.manual.entry.lighting1=电灯是最早使用电能的发明之一。你需要用线缆将它们直接连至你的电网当中来使其工作.电能可以通过它们，因此你可以将它们连成一排。
 ie.manual.entry.lighting2=只需为它们提供一点点能量，它们就可以像正常灯一样照亮周围区域，不仅如此，它们还能防止敌对生物在半径32格范围内生成！
 ie.manual.entry.lighting3=泛光灯是一种强光源。尽管它们对电能的需求比普通电灯高一些，它们能够产生一个32格远的光锥。对其顶部或底部使用工程师锤来旋转灯光或对其侧面使用来改变倾角。
-ie.manual.entry.lighting4=通常，泛光灯需要红石信号才能运行，但是他们的控制行为可以通过工程师锤子潜行右击他们的基座来反转。
+ie.manual.entry.lighting4=通常，泛光灯需要红石信号才能运行，但是它们的控制行为可以通过工程师锤潜行右击它们的基座来反转。
 
 ie.manual.entry.metalPress.name=金属冲压机
 ie.manual.entry.metalPress.subtext=压力山大！
@@ -1298,7 +1298,7 @@ ie.manual.entry.chargingStation1=在前面的电子管得到物品的电流充�
 ie.manual.entry.belljar.name=园艺玻璃罩
 ie.manual.entry.belljar.subtext=本地的雨林
 ie.manual.entry.belljar0=园艺玻璃罩是为加速植物生长而设计的设备。它能让有农业需求的工程师轻松的种植作物并收获。
-ie.manual.entry.belljar1=通过设备的各个端口提供能源，流体和物品。水和电力不可或缺，各种肥料可供选择。GUI中间有土壤和种子的插槽，左侧放入肥料右侧输出产物。<br>玻璃罩顶前面的舱口是唯一的自动输出。 每个种子需要与正确的土壤配对，才能生长，泥土会被自动识别为农田。
+ie.manual.entry.belljar1=通过设备的各个端口提供能源，流体和物品。水和电力不可或缺，各种肥料可供选择。GUI中间有土壤和种子的插槽，左侧放入肥料右侧输出产物。<br>玻璃罩顶前面的舱口是唯一的自动输出。每个种子需要与正确的土壤配对，才能生长，泥土会被自动识别为农田。
 
 ie.manual.entry.highvoltage.name=高压
 ie.manual.entry.highvoltage.subtext=你无法撼动的冲击
@@ -1320,7 +1320,7 @@ ie.manual.entry.blueprints0=这一页的特点是所有的工程师蓝图都可�
 
 ie.manual.entry.mixer.name=混合器
 ie.manual.entry.mixer.subtext=大桶的饼干面团！
-ie.manual.entry.mixer0=混合器是一种多方块结构，可以将固体溶解在流体中，将它们混合在一起。 该结构如上图所示搭建，并使用工程锤右击中心方块上成型。
+ie.manual.entry.mixer0=混合器是一种多方块结构，可以将固体溶解在流体中，将它们混合在一起。该结构如上图所示搭建，并使用工程锤右击中心方块上成型。
 ie.manual.entry.mixer1=这种机器最常见的用途是搅拌液态混凝土，2份沙子1份砂砾和1份粘土，也可用水配合各种成分制成药水。
 ie.manual.entry.mixer2=液体通过其电源底部的端口输入挤压机。物品可以通过后面的两个舱口输入。前面的流体端口用作流体输出。<br>在前面的控制面板上应用红石信号将停止机器，这种行为可以通过使用工程师锤来反转。
 
@@ -1447,7 +1447,7 @@ ie.manual.entry.chemthrower.subtext=烧！掉！一！切！
 ie.manual.entry.chemthrower0=化学喷射器是一种能够将内部储液罐中液体喷射出去的装置。该装置能够装在任何液体或气体，而且右键就会将其喷洒出去。<br>若喷射出的液体是可燃液体，它还有点燃液体的功能。潜行右键来使用点火装置。
 ie.manual.entry.chemthrower1=同其它工具一样，化学喷射器可以在<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r>中进行改装。这些升级将会影响储罐的大小，喷射的范围以及喷射速度。<br><br>大型燃料缸能够增加化学喷射器的储量至2000mb。
 ie.manual.entry.chemthrower2=聚焦喷嘴会降低喷射速度但会略微增加喷射范围，让你能够更精准的击中远处目标。
-ie.manual.entry.chemthrower3=这个液体罐允许 §6化学喷射器§r 储存多达三种不同的液体。 你可以按住潜行加鼠标滚轮 <config;b;chemthrower_scroll;切换不同的液体类型， 或使用;using> 快捷键 §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r (如果你有在选项中设置)。<br>这个升级和 §6大型燃料缸§r 相互排斥。
+ie.manual.entry.chemthrower3=这个液体罐允许 §6化学喷射器§r 储存多达三种不同的液体。你可以按住潜行加鼠标滚轮 <config;b;chemthrower_scroll;切换不同的液体类型，或使用;using> 快捷键 §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r（如果你有在选项中设置）。<br>这个升级和 §6大型燃料缸§r 相互排斥。
 
 ie.manual.entry.skyhook.name=工程师天钩
 ie.manual.entry.skyhook.subtext=Booker, catch!
@@ -1486,7 +1486,7 @@ ie.manual.entry.razorwire0=刀片刺网是连接有金属碎片的电线。它�
 ie.manual.entry.turret.name=炮塔
 ie.manual.entry.turret.subtext=你还站在那干嘛？
 ie.manual.entry.turret0=炮塔是您工厂自动防御的下一步。它们具有结合机械“大脑”的复杂光学系统，以有效地区分和获取目标，并使用内置武器来调教实体。<br>所有炮塔的基座都有能量口，通入红石信号才能激活，也可以通过用工程师锤潜行右击反转。
-ie.manual.entry.turret1=被放置后，炮塔将记住其所有者，不允许其他用户破坏或修改它们。右击炮塔打开GUI，该GUI具有带有输入字段的名称列表以及多个定位选项。<br>默认情况下，该列表是可能未被攻击的目标的黑名单。 这个列表使用生物名称，所以白名单生物是可行的。
+ie.manual.entry.turret1=被放置后，炮塔将记住其所有者，不允许其他用户破坏或修改它们。右击炮塔打开GUI，该GUI具有带有输入字段的名称列表以及多个定位选项。<br>默认情况下，该列表是可能未被攻击的目标的黑名单。这个列表使用生物名称，所以白名单生物是可行的。
 ie.manual.entry.turret2=化学喷射炮塔利用了<link;chemthrower;§o§neponymous §o§n工§o§n具§r>的液体推进能力向目标喷射任何东西，可以是水，可以是火，也可以是柴油。
 ie.manual.entry.turret3=炮塔的底部和后部具有流体端口，以允许管道与其连接。此外，GUI有一个左侧的按钮，可以禁止或启用导向火焰，点燃分配的流体，只要它是易燃的。<br> <br>本蓝图的提供者对用户的任何损失概不负责，邻居养的各种牲畜可能会遭殃。
 ie.manual.entry.turret4=机枪炮塔可以算是<link;revolver;§o§n左§o§n轮§r>的强化版本，它能容下更大更多的子弹。
@@ -1622,7 +1622,7 @@ desc.immersiveengineering.info.shader.details.felix=在RvB季节11-13之后，�
 desc.immersiveengineering.info.shader.details.sharkface=在RvB季节9和13中的雇佣军“鲨鱼面”之后命名和着色。
 desc.immersiveengineering.info.shader.details.dragonsbreath=命名和设计和某个火箭发射器的同名。
 desc.immersiveengineering.info.shader.details.hawk=命名和设计和某个手提箱“Hawkmoon”有关。
-desc.immersiveengineering.info.shader.details.eyas=在手提包“Eyasluna”之后命名和设计的。 Hawkmoon的小弟弟。
+desc.immersiveengineering.info.shader.details.eyas=在手提包“Eyasluna”之后命名和设计的。Hawkmoon的小弟弟。
 desc.immersiveengineering.info.shader.details.magnum=由比赛获胜者设计！
 desc.immersiveengineering.info.shader.details.fox=很蓬松 以具体的IRC频道及其居民的名义命名。
 desc.immersiveengineering.info.shader.details.vaulttec=颜色和命名在已经很明显了
@@ -1634,7 +1634,7 @@ desc.immersiveengineering.info.shader.details.trident=在海王星Vasilias挥舞
 desc.immersiveengineering.info.shader.details.chloris=由Reese Chloris挥舞着/左轮手枪命名和设计。
 desc.immersiveengineering.info.shader.details.crescentrose=由Ruby Rose执导的“高素质狙击手”命名和设计。
 desc.immersiveengineering.info.shader.details.qrow=以Qrow Branwen命名，并在他的剑/镰刀之后设计。
-desc.immersiveengineering.info.shader.details.lususnaturae=在第4卷音乐之后命名。 此外，这个名字听起来很糟糕。
+desc.immersiveengineering.info.shader.details.lususnaturae=在第4卷音乐之后命名。此外，这个名字听起来很糟糕。
 desc.immersiveengineering.info.shader.details.vanguard=在先锋阵营之后命名和着色。
 desc.immersiveengineering.info.shader.details.regal=在“国王的秋季”袭击后的武器设计。
 desc.immersiveengineering.info.shader.details.harrowed=在英雄“国王的秋天”的武器之后设计。
