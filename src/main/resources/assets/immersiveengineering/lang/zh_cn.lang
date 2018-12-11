@@ -36,7 +36,7 @@ tile.immersiveengineering.stone_decoration.concrete.name=混凝土
 tile.immersiveengineering.stone_decoration.concrete_tile.name=混凝土砖
 tile.immersiveengineering.stone_decoration.concrete_leaded.name=镀铅混凝土
 tile.immersiveengineering.stone_decoration.insulating_glass.name=绝缘玻璃
-tile.immersiveengineering.stone_decoration_slab.cokebrick.name=焦炉砖台阶
+tile.immersiveengineering.stone_decoration.concrete_sprayed.name=速干混凝土
 tile.immersiveengineering.stone_decoration.alloybrick.name=窑砖
 tile.immersiveengineering.stone_decoration_slab.cokebrick.name=焦炉砖台阶
 tile.immersiveengineering.stone_decoration_slab.blastbrick.name=高炉砖台阶
@@ -59,7 +59,7 @@ tile.immersiveengineering.stone_device.blast_furnace_advanced.name=强化高炉
 tile.immersiveengineering.stone_device.concrete_sheet.name=混凝土薄板
 tile.immersiveengineering.stone_device.concrete_quarter.name=混凝土板
 tile.immersiveengineering.stone_device.concrete_threequarter.name=混凝土块
-tile.immersiveengineering.stone_device.coresample.name=核心样本
+tile.immersiveengineering.stone_device.coresample.name=岩心样本
 tile.immersiveengineering.stone_device.alloy_smelter.name=合金窑
 
 tile.immersiveengineering.treated_wood.horizontal.name=防腐木板
@@ -294,9 +294,9 @@ item.immersiveengineering.metal.plate_gold.name=金板
 
 
 item.immersiveengineering.material.stick_treated.name=防腐木棍
-item.immersiveengineering.material.stick_iron.name=铁杆
-item.immersiveengineering.material.stick_steel.name=钢杆
-item.immersiveengineering.material.stick_aluminum.name=铝杆
+item.immersiveengineering.material.stick_iron.name=铁棒
+item.immersiveengineering.material.stick_steel.name=钢棒
+item.immersiveengineering.material.stick_aluminum.name=铝棒
 item.immersiveengineering.material.hemp_fiber.name=工业大麻纤维
 item.immersiveengineering.material.hemp_fabric.name=坚韧布料
 item.immersiveengineering.material.coal_coke.name=焦煤
@@ -409,7 +409,7 @@ item.immersiveengineering.toolupgrade.chemthrower_multitank.name=化学液体罐
 item.immersiveengineering.blueprint.name=工程师蓝图
 item.immersiveengineering.mold.plate.name=金属冲压模具：板材
 item.immersiveengineering.mold.gear.name=金属冲压模具：齿轮
-item.immersiveengineering.mold.rod.name=金属冲压模具：金属杆
+item.immersiveengineering.mold.rod.name=金属冲压模具：金属棒
 item.immersiveengineering.mold.bullet_casing.name=金属冲压模具：弹壳
 item.immersiveengineering.mold.wire.name=金属冲压模具：线缆
 item.immersiveengineering.mold.packing4.name=金属压缩模具：2x2压缩包
@@ -431,6 +431,7 @@ item.immersiveengineering.faraday_suit_feet.name=法拉第靴子
 item.immersiveengineering.fluorescent_tube.name=荧光管
 item.immersiveengineering.powerpack.name=电容背包
 item.immersiveengineering.shield.name=重型盾牌
+item.immersiveengineering.maintenance_kit.name=维护工具包
 
 item.immersiveengineering.map_orevein.name=矿脉地图
 
@@ -578,7 +579,7 @@ item.banner.immersiveengineering_wolf.white=白色狼
 #TINKERS CONSTRUCT COMPAT
 fluid.uranium=熔融铀
 fluid.constantan=熔融康铜
-material.treated_wood.name=防腐木
+material.treatedwood.name=防腐木
 material.constantan.name=康铜
 material.hemp.name=大麻纤维
 modifier.thermalinversion.name=热力反转
@@ -587,8 +588,8 @@ modifier.thermalinversion.desc=§o冰与火！§r\n在热的环境中攻击会�
 item.immersiveengineering.bullet.terrasteel.name=叶绿弹
 ie.manual.entry.bullets_terrasteel=§l叶绿§l弹§r使用“特种子弹”蓝图和魔力金属“泰拉钢”制作，这让它们能够自动寻找并跟踪目标。
 #BLOODMAGIC COMPAT
-#item.immersiveengineering.bullet.crystalwill.name=晶化意志弹
-#ie.manual.entry.bullets_crystalwill=§l晶化§l意志§l弹§r使用“特种子弹”和恶魔意志晶体制作，其中的少量恶魔意志将会迫使子弹寻找附近的目标并给予无情的打击。
+item.immersiveengineering.bullet.crystalwill.name=结晶意志弹
+ie.manual.entry.bullets_crystalwill=§l结晶意志弹§r使用“特种子弹”和恶魔意志晶体制作，其中的少量恶魔意志将会迫使子弹寻找附近的目标并给予无情的打击。
 
 #DESCRIPTIONS
 entity.Villager.immersiveengineering.engineer=结构工程师
@@ -610,7 +611,7 @@ desc.immersiveengineering.info.day=%1$s天
 desc.immersiveengineering.info.hour=%1$s小时
 desc.immersiveengineering.info.minute=%1$s分
 desc.immersiveengineering.info.second=%1$s秒
-
+desc.immersiveengineering.info.potionMod=药剂被%1$s添加
 
 desc.immersiveengineering.info.multiblocksAllowed=可用多方块结构：
 desc.immersiveengineering.info.multiblockForbidden=禁用多方块结构：
@@ -630,9 +631,9 @@ desc.immersiveengineering.info.blockSide.east=东面
 desc.immersiveengineering.info.blockSide.io.-1=无连接
 desc.immersiveengineering.info.blockSide.io.0=输入
 desc.immersiveengineering.info.blockSide.io.1=输出
-desc.immersiveengineering.info.blockSide.connectEnergy.-1=无连接
-desc.immersiveengineering.info.blockSide.connectEnergy.0=能量输入
-desc.immersiveengineering.info.blockSide.connectEnergy.1=能量输出
+desc.immersiveengineering.info.blockSide.connectEnergy.NONE=无连接
+desc.immersiveengineering.info.blockSide.connectEnergy.INPUT=能量输入
+desc.immersiveengineering.info.blockSide.connectEnergy.OUTPUT=能量输出
 desc.immersiveengineering.info.blockSide.connectFluid.-1=无连接
 desc.immersiveengineering.info.blockSide.connectFluid.0=流体输入
 desc.immersiveengineering.info.blockSide.connectFluid.1=流体输出
@@ -711,7 +712,7 @@ desc.immersiveengineering.info.shader.immersiveengineering:railgun=磁轨炮
 desc.immersiveengineering.info.shader.immersiveengineering:shield=重型盾牌
 desc.immersiveengineering.info.shader.immersiveengineering:minecart=矿车
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=气球
-
+desc.immersiveengineering.info.shader.immersiveengineering:banner=旗帜
 desc.immersiveengineering.info.shader.set=§l皮肤r：
 desc.immersiveengineering.info.shader.reference=§l参考潮流文化§r：
 desc.immersiveengineering.info.shader.details=§l附加信息§r：
@@ -794,6 +795,8 @@ desc.immersiveengineering.flavour.drillhead.speed=采矿速度：%1$s
 desc.immersiveengineering.flavour.drillhead.damage=攻击伤害：%1$s
 
 desc.immersiveengineering.flavour.skyhook=旅行的全新方式
+desc.immersiveengineering.flavour.skyhook.speedLimit=限速
+desc.immersiveengineering.flavour.skyhook.noLimit=不限速
 
 desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=允许采矿机械钻在水下工作
 desc.immersiveengineering.flavour.toolupgrade.drill_lube=减少采矿机械钻受到的损耗
@@ -841,7 +844,7 @@ gui.immersiveengineering.config.assembler.clearRecipe=清除配方
 gui.immersiveengineering.config.assembler.recursiveIngredients=循环使用材料
 gui.immersiveengineering.config.assembler.nonRecursiveIngredients=不循环使用材料
 
-
+gui.immersiveengineering.config.arcfurnace.distribute=分配输入
 
 #CHAT
 chat.immersiveengineering.warning.wrongCable=你无法在此处连接线缆
@@ -851,6 +854,8 @@ chat.immersiveengineering.warning.tooFar=你离上一个连接点太远了
 chat.immersiveengineering.warning.cantSee=连接被阻断
 chat.immersiveengineering.warning.connectionExists=连接已存在
 chat.immersiveengineering.warning.invalidPoint=存在无效连接点
+chat.immersiveengineering.info.skyhookLimited=天钩将自动限制它的速度
+chat.immersiveengineering.info.skyhookUnlimited=天钩的速度已不受限制
 chat.immersiveengineering.info.averageLoss=两点间平均能量损耗：%1$s%%
 chat.immersiveengineering.info.energyStorage=存储能量：%1$s/%2$s Flux
 chat.immersiveengineering.info.tooHot=此容器无法承受该液体的温度！
@@ -909,9 +914,10 @@ subtitle.immersiveengineering.spark=电火花
 subtitle.immersiveengineering.railgunFire=磁轨炮发射
 subtitle.immersiveengineering.tesla=线圈有电流流过
 subtitle.immersiveengineering.direSwitch=Direwolf20正在模仿刀闸
+subtitle.immersiveengineering.skyhook=天钩沿线缆滑行
 
 #RECIPES
-recipe.ImmersiveEngineering.hammerCrushing=粉碎
+recipe.immersiveengineering.hammerCrushing=粉碎
 
 #DEATH
 death.attack.ieRevolver_casull=%1$s被%2$s射杀
@@ -994,7 +1000,7 @@ advancement.immersiveengineering:craftRailgun=财富的赠送
 advancement.immersiveengineering:craftRailgun.desc=制作一个磁轨炮
 
 advancement.immersiveengineering:mbImprovedBlastFurnace=精炼的艺术
-advancement.immersiveengineering:mbImprovedBlastFurnace.desc=搭建精制高炉多方块结构
+advancement.immersiveengineering:mbImprovedBlastFurnace.desc=搭建强化高炉多方块结构
 advancement.immersiveengineering:mbMetalPress=挤压物质
 advancement.immersiveengineering:mbMetalPress.desc=搭建金属冲压机多方块结构
 advancement.immersiveengineering:mbSilo=金属板掩盖的秘密仓库
@@ -1167,7 +1173,7 @@ ie.manual.entry.toolbox1=潜行右键单击可将工具箱放置在地上。在�
 ie.manual.entry.graphite.name=石墨
 ie.manual.entry.graphite.subtext=煤炭工业产品
 ie.manual.entry.graphite0=高定向热解石墨（HOP）是一类结构复杂，且高度压缩的碳材料，常用于特种工程结构。<br>HOP石墨粉可由八份焦煤粉在<link;biodiesel;§o§n工§o§n业§o§n挤§o§n压§o§n机§r;1>中加工制得。这种粉末进一步烧制可得到HOP石墨锭。
-ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电§o§n弧§o§n炉§r>中的电极。制造这些电极需要用到<link;blueprints;§o§n工§o§n程§o§n师§o§n蓝§o§n图§r>，这种蓝图可在战利品箱子中找到<config;b;arcfurnace_electrodeCrafting;也可合成获得，>，亦可与村民交易得到。你还可以用金属冲压机制作石墨电极，但这需要用到金属杆模具，单根电极消耗四块HOP石墨锭，但此法制作的电极耐久较低。
+ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电§o§n弧§o§n炉§r>中的电极。制造这些电极需要用到<link;blueprints;§o§n工§o§n程§o§n师§o§n蓝§o§n图§r>，这种蓝图可在战利品箱子中找到<config;b;arcfurnace_electrodeCrafting;也可合成获得，>，亦可与村民交易得到。你还可以用金属冲压机制作石墨电极，但这需要用到金属棒模具，单根电极消耗四块HOP石墨锭，但此法制作的电极耐久较低。
 
 ie.manual.entry.wiring.name=基础布线
 ie.manual.entry.wiring.subtext=滋滋滋！
@@ -1183,8 +1189,8 @@ ie.manual.entry.wiringTransformer0=§l变压器§r允许你在两种不同类型
 ie.manual.entry.wiringTransformer1=你可以将<link;wiring;§o§n变§o§n压§o§n器§o§n与§o§n木§o§n杆§r;3>像第四页的第二张图那样搭建，然而只有非高压变压器才能这样搭建。
 ie.manual.entry.wiringCutters=§l剪线钳§r用于移除已经被安装好的线缆，只需右击便可移除线缆。
 ie.manual.entry.wiringVoltmeter=§l电压表§r用于测量连接情况。右键右击一个电容器能读取当前的能量储存，按住Shift右击2个接线器还能计算它们之间的平均损耗。
-ie.manual.entry.wiringFeedthrough=通透绝缘体能够从墙体的一侧接线至墙体另一侧（中间需要完整的实体方块才可创建其），且它支持所有接线器（Flux与红石）。
-
+ie.manual.entry.wiringFeedthrough0=通透绝缘体能够在不打洞的情况下从墙体的一侧接线至墙体另一侧，它们可以在中间创建任何“正常”的实体方块。所有常见类型的接线器（Flux与红石）都可用于创建相应线缆类型的通透绝缘体。
+ie.manual.entry.wiringFeedthrough1=用锤子右击其中一个接线器形成多方块结构。
 
 ie.manual.entry.generator.name=发电
 ie.manual.entry.generator.subtext=
@@ -1223,10 +1229,10 @@ ie.manual.entry.blastfurnace0=粗制高炉用于提高铁的含碳量，使之�
 ie.manual.entry.blastfurnaceBlock=搭建一个高炉，你需要用这27个方块搭建出3x3x3的结构，然后用工程师锤右击其中一面的中央方块<br>见下一页的图。
 ie.manual.entry.blastfurnace1=粗制高炉无法自动化生产。所有输入输出必须通过手动打开GUI完成。如果你想要自动化冶炼钢铁，你可能需要查看<link;improvedBlastfurnace;§o§n精§o§n制§o§n高§o§n炉§r;>的相关搭建信息。
 
-ie.manual.entry.improvedBlastfurnace.name=精制高炉
+ie.manual.entry.improvedBlastfurnace.name=强化高炉
 ie.manual.entry.improvedBlastfurnace.subtext=工业精炼
-ie.manual.entry.improvedBlastfurnace0=精制高炉是一种更专业的<link;blastfurnace;§o§n冶§o§n炼§o§n钢§o§n铁§r;>的方法。它不仅能够自动化输入输出，它同样可以通过配备鼓风机来添加灼热空气从而加快精炼的过程。<br>这种高炉是由强化高炉砖搭建，因此建议你将第一批钢材用于升级高炉。
-ie.manual.entry.improvedBlastfurnace1=<br>精制高炉的结构同它的粗制版本相似，但是砖块被替换为了强化高炉砖并且上方需要一个漏斗作为输入端。
+ie.manual.entry.improvedBlastfurnace0=强化高炉是一种更专业的<link;blastfurnace;§o§n冶§o§n炼§o§n钢§o§n铁§r;>的方法。它不仅能够自动化输入输出，它同样可以通过配备鼓风机来添加灼热空气从而加快精炼的过程。<br>这种高炉是由强化高炉砖搭建，因此建议你将第一批钢材用于升级高炉。
+ie.manual.entry.improvedBlastfurnace1=<br>强化高炉的结构同它的粗制版本相似，但是砖块被替换为了强化高炉砖并且上方需要一个漏斗作为输入端。
 ie.manual.entry.improvedBlastfurnace2=钢材会从高炉前面输出，矿渣会从后面输出，并且高炉会向连接的容器或传送带自动输出产物。铁和焦煤需要从上方输入。
 ie.manual.entry.improvedBlastfurnace3=高炉鼓风机被用于加热空气并将其鼓入高炉以加快铁的精炼过程。每个高炉可以最多在两侧各加装一个鼓风机，每个鼓风机需要<config;i;preheater_consumption>Flux/t来运作。
 
@@ -1247,7 +1253,7 @@ ie.manual.entry.lighting4=通常，泛光灯需要红石信号才能运行，但
 
 ie.manual.entry.metalPress.name=金属冲压机
 ie.manual.entry.metalPress.subtext=压力山大！
-ie.manual.entry.metalPress0=金属冲压机可用于自动将金属挤压成型。它的原理是用高压活塞将模具压到金属锭上，以将金属锭挤压为板材，杆或其他金属零件。<br>冲压机结构如上图所示，用工程师锤敲击活塞来完成搭建。
+ie.manual.entry.metalPress0=金属冲压机可用于自动将金属挤压成型。它的原理是用高压活塞将模具压到金属锭上，以将金属锭挤压为板材，棒或其他金属零件。<br>冲压机结构如上图所示，用工程师锤敲击活塞来完成搭建。
 ie.manual.entry.metalPress1=能量从上方输入，物品通过传送带，沿着其显示方向输入输出。底层中间的方块便是红石控制接口，手持工程师锤右击可对其进行反相。
 ie.manual.entry.metalPress2=若想正常工作，需要在活塞上加装一个模具.模具的制作如上图所示，手持模具右键金属冲压机可将其放入。
 ie.manual.entry.metalPress3=模具的制作如上图所示，线切割机对于每一个合成操作都会造成一些损坏。然后通过用手中的模具右键单击多方块结构将它们插入金属冲压机中
@@ -1409,6 +1415,11 @@ ie.manual.entry.drill3=高级润滑系统在正常基础上为机械钻提供了
 ie.manual.entry.drill4=通过为机械钻添加附加螺旋钻，它对于生物的破坏性得到了提升。该项升级最高可叠加3次每次升级会提供一点额外伤害。
 ie.manual.entry.drill5=大型燃料缸允许机械钻在内部存储更多燃料，延长再次填充之前你的使用时间。
 
+ie.manual.entry.maintenanceKit.name=维护工具包
+ie.manual.entry.maintenanceKit.subtext=忙于维修
+ie.manual.entry.maintenanceKit0=在那些环游世界或花大量时间挖矿的工程师中，有一个问题显而易见。他们的工具需要不断的维护，并且携带整个装配台是不可行的。幸运的是，大多数小维修和重新配置都可以用维护工具包来完成。
+ie.manual.entry.maintenanceKit1=维护工具包，一套用结实麻布包装的工具，允许你像<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r>那样自定义工具。你再也不用重新回到地面来更换你的采矿机械钻钻头或者回到你的车间来配置你的隔音耳罩了。所有的这一切现在都可以与维护工具包一起进行！
+
 ie.manual.entry.revolver.name=左轮手枪
 ie.manual.entry.revolver.subtext=通缉：死或生
 ie.manual.entry.revolver0=左轮手枪，一把来自文明时代的优雅武器，可谓是小型机械的智慧结晶。这里，小型仅仅是相对而言，毕竟这把武器填装的是12号弹药。<br>和采矿机械钻类似，左轮手枪同样能够在<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r>进行改造。关于改造的详细信息在本条目的最后一页中有详细叙述。
@@ -1441,7 +1452,7 @@ ie.manual.entry.chemthrower3=这个液体罐允许 §6化学喷射器§r 储存�
 ie.manual.entry.skyhook.name=工程师天钩
 ie.manual.entry.skyhook.subtext=Booker, catch!
 ie.manual.entry.skyhook0=工程师天钩是一个机动化的锁扣系统用于钩挂线缆，麻绳或钢线。<br>有了它，工程师们就可以通过电网快速穿梭于各种分站或设备中心。
-ie.manual.entry.skyhook1=只需在接近接线器时按住右键，你就会勾住线缆。<br>在任何时候松开按键或潜行都会松开索扣并掉落。<br>你无法在线缆中间进行钩挂，你必须要在接线器处使用。
+ie.manual.entry.skyhook1=只需在接近线缆时按住鼠标右键，你就会勾住线缆。<br>这个按钮可以在骑着线缆时松开，但是放开天钩或者潜行都会掉落。<br>重力足以以适当的速度沿着下降的线缆移动，标准移动键可以用于沿着上升的线缆移动。<br>当天钩到达一个交叉点时，它将继续尽可能接近玩家所看到的方向。
 
 ie.manual.entry.shader.name=皮肤
 ie.manual.entry.shader.subtext=蓝色！不，黄色！
@@ -1464,7 +1475,7 @@ ie.manual.entry.powerpack1=背包对任何装在主体或手上的工具以及�
 ie.manual.entry.railgun.name=磁轨炮
 ie.manual.entry.railgun.subtext=突破速度的束缚
 ie.manual.entry.railgun0=磁轨炮（确切地说，是“便携式电磁感应发射器”）可谓是工程学上的奇迹。它内含两个导轨，电流可在导轨中流动，从而加速投掷物。<br>这个过程能量消耗巨大，可对各种物体进行加速。
-ie.manual.entry.railgun1=按住鼠标右键，一直充电到99%，然后发射物品栏的子弹。<br><br>可用的“炮弹”包括§6铁杆§r、§6钢杆§r<config;b;literalRailGun;、§6钢筋§r、铁路MOD的§6绝大多数导轨§r;>以及§6石墨棒§r。
+ie.manual.entry.railgun1=按住鼠标右键，一直充能到99%，然后发射物品栏的子弹。<br><br>可用的“炮弹”包括§6铁棒§r、§6钢棒§r<config;b;literalRailGun;、§6钢筋§r、铁路MOD的§6绝大多数导轨§r;>以及§6石墨电极§r。<br><br>由于内部储能低，建议与<link;powerpack;§o§n电§o§n容§o§n背§o§n包§r>一起使用。
 ie.manual.entry.railgun2=和其它IE工具一样，磁轨炮可以在<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r>修改和定制<link;shader;§o§n皮§o§n肤§r>。<br><br>§6附加电容§r可以增加磁轨炮的能量储存和减少充电时间。
 ie.manual.entry.railgun3=§6瞄准镜§r可以增加视野距离。潜行时可使用瞄准镜，鼠标滚轮调节视角。
 
