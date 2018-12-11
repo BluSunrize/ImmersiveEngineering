@@ -71,6 +71,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
@@ -826,6 +827,9 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_LUBE.ordinal())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill4", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_DAMAGE.ordinal())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill5", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_CAPACITY.ordinal())));
+		ManualHelper.addEntry("maintenanceKit", ManualHelper.CAT_TOOLS,
+				new ManualPages.Crafting(ManualHelper.getManual(), "maintenanceKit0", new ItemStack(IEContent.itemMaintenanceKit, 1, 0)),
+				new ManualPages.Text(ManualHelper.getManual(), "maintenanceKit1"));
 		ManualHelper.addEntry("revolver", ManualHelper.CAT_TOOLS,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13), new ItemStack(IEContent.itemMaterial, 1, 14), new ItemStack(IEContent.itemMaterial, 1, 15), new ItemStack(IEContent.itemMaterial, 1, 16)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver, 1, 1)),
@@ -1267,6 +1271,8 @@ public class ClientProxy extends CommonProxy
 					return new GuiRevolver(player.inventory, world, slot, item);
 				if(ID==Lib.GUIID_Toolbox&&item.getItem() instanceof ItemToolbox)
 					return new GuiToolbox(player.inventory, world, slot, item);
+				if(ID==Lib.GUIID_MaintenanceKit&&item.getItem() instanceof ItemMaintenanceKit)
+					return new GuiMaintenanceKit(player.inventory, world, slot, item);
 			}
 		}
 
@@ -1737,6 +1743,13 @@ public class ClientProxy extends CommonProxy
 			ModelLoader.setCustomMeshDefinition(item, mapper);
 		}
 		ModelLoader.setCustomStateMapper(block, mapper);
+	}
+
+	@Override
+	public void startSkyhookSound(EntitySkylineHook hook)
+	{
+		Minecraft.getMinecraft().getSoundHandler().playSound(new SkyhookSound(hook,
+				new ResourceLocation(ImmersiveEngineering.MODID, "skyhook")));
 	}
 
 	static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition

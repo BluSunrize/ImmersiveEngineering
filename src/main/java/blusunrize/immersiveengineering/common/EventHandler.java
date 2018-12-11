@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SimpleSkyhookProvider;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
@@ -152,6 +153,9 @@ public class EventHandler
 		if(event.getObject() instanceof EntityMinecart)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
 					new ShaderWrapper_Direct("immersiveengineering:minecart"));
+		if(event.getObject() instanceof EntityPlayer)
+			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
+					new SimpleSkyhookProvider());
 	}
 
 	@SubscribeEvent

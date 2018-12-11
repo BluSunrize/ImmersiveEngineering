@@ -29,7 +29,7 @@ public class ItemEngineersBlueprint extends ItemIEBase
 {
 	public ItemEngineersBlueprint()
 	{
-		super("blueprint", 1, null);
+		super("blueprint", 1);
 	}
 
 	@Override

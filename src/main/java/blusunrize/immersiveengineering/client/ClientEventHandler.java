@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -139,18 +138,18 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	{
 		if(event.side.isClient()&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
 		{
-			if(event.phase==Phase.START)
-			{
-				skyhookGrabableConnections.clear();
-				EntityPlayer player = event.player;
-				ItemStack stack = player.getActiveItemStack();
-				if(!stack.isEmpty()&&stack.getItem() instanceof ItemSkyhook)
-				{
-					Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
-					if(line!=null)
-						skyhookGrabableConnections.add(line);
-				}
-			}
+			//if(event.phase==Phase.START)
+			//{
+			//	skyhookGrabableConnections.clear();
+			//	EntityPlayer player = event.player;
+			//	ItemStack stack = player.getActiveItemStack();
+			//	if(!stack.isEmpty()&&stack.getItem() instanceof ItemSkyhook)
+			//	{
+			//		Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
+			//		if(line!=null)
+			//			skyhookGrabableConnections.add(line);
+			//	}
+			//}
 
 			if(event.phase==Phase.END)
 			{

@@ -153,11 +153,12 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 									this.markContainingBlockForUpdate(null);
 								}
 								else if(mineral!=null
-										&&!world.isAirBlock(lowGroundPos.offset(facing, -2))
+										/*&&!world.isAirBlock(lowGroundPos.offset(facing, -2))
 										&&!world.isAirBlock(lowGroundPos.offset(facing, 2))
 										&&!world.isAirBlock(lowGroundPos.offset(facing, -1))
 										&&!world.isAirBlock(lowGroundPos.offset(facing, 1))
-										&&!world.isAirBlock(lowGroundPos))
+										&&!world.isAirBlock(lowGroundPos)*/
+								)
 								{
 									ItemStack ore = mineral.getRandomOre(Utils.RAND);
 									float configChance = Utils.RAND.nextFloat();
