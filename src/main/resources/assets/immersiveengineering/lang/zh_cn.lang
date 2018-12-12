@@ -220,7 +220,7 @@ tile.immersiveengineering.metal_multiblock.arc_furnace.name=电弧炉
 tile.immersiveengineering.metal_multiblock.lightningrod.name=避雷针
 tile.immersiveengineering.metal_multiblock.mixer.name=混合器
 
-tile.immersiveengineering.metal_decoration.structural_arm.name=钢制臂架构
+tile.immersiveengineering.metal_decoration.structural_arm.name=钢结构臂
 
 tile.immersiveengineering.hemp.name=工业大麻
 
@@ -386,8 +386,8 @@ item.immersiveengineering.bullet.potion.linger.name=滞留型药剂弹头
 item.immersiveengineering.bullet.flare.name=信号弹
 
 item.immersiveengineering.drill.diesel.name=采矿机械钻
-item.immersiveengineering.drillhead.iron.name=铁制钻头
-item.immersiveengineering.drillhead.steel.name=钢制钻头
+item.immersiveengineering.drillhead.iron.name=铁质钻头
+item.immersiveengineering.drillhead.steel.name=钢质钻头
 
 item.immersiveengineering.skyhook.name=工程师天钩
 
@@ -878,7 +878,7 @@ chat.immersiveengineering.info.coreDrill.result.none=岩芯分析完毕，未检
 chat.immersiveengineering.info.coreDrill.infinite=无限
 
 chat.immersiveengineering.info.pump.placeCobble.true=这个泵可以将液体替换为圆石。
-chat.immersiveengineering.info.pump.placeCobble.false=这个泵可以将不再把液体替换为圆石.§6警告：§f在处理大量液体时可能会产生延迟不建议使用！
+chat.immersiveengineering.info.pump.placeCobble.false=这个泵可以将不再把液体替换为圆石。§6警告：§f在处理大量液体时可能会产生延迟不建议使用！
 chat.immersiveengineering.info.energyTransfered=%1$sticks内平均能量流动：%2$s Flux/t
 
 chat.immersiveengineering.command.available=§6可用命令：§r %1$s
@@ -889,13 +889,13 @@ chat.immersiveengineering.command.mineral.get.help=§6用法：/ie mineral get§
 chat.immersiveengineering.command.mineral.set.help=§6用法：/ie mineral set [矿物名]§r<br> 为当前区块设定矿物重载，不指定新矿藏则将清除矿物重载。
 chat.immersiveengineering.command.mineral.setDepletion.help=§6用法：/ie mineral setDepletion <数值>§r<br> 设定该区块的矿物的开采量，设定为-1表示该矿脉可无限开采。
 chat.immersiveengineering.command.mineral.get=该区块含有：%1$s
-chat.immersiveengineering.command.mineral.set.invalidMineral=§c'%1$s'不是一个有效矿物名.请使用'/ie mineral list'获取有效矿物名列表。§r
+chat.immersiveengineering.command.mineral.set.invalidMineral=§c'%1$s'不是一个有效矿物名。请使用'/ie mineral list'获取有效矿物名列表。§r
 chat.immersiveengineering.command.mineral.set.sucess=矿物重载已设定为'%1$s'。
 chat.immersiveengineering.command.mineral.set.clear=矿物重载（%1$s）已清除。
 chat.immersiveengineering.command.mineral.setDepletion.NFE=错误：'%1$s'不是一个有效数字
 chat.immersiveengineering.command.mineral.setDepletion.sucess=矿物开采量已设定为'%1$s'
-chat.immersiveengineering.command.shaders.help=§6用法: /ie shaders <clear>§r
-chat.immersiveengineering.command.shaders.clear.help=§6用法: /ie shaders clear [player]§r<br> 给指定的玩家清除皮肤，如果没有指定玩家则清除自己的。
+chat.immersiveengineering.command.shaders.help=§6用法：/ie shaders <clear>§r
+chat.immersiveengineering.command.shaders.clear.help=§6用法：/ie shaders clear [player]§r<br> 给指定的玩家清除皮肤，如果没有指定玩家则清除自己的。
 chat.immersiveengineering.command.shaders.clear.sucess=皮肤'%1$s'已被清除
 
 #SUBTITLES
@@ -960,7 +960,7 @@ advancement.immersiveengineering:root.desc=请阅读下面的说明书
 advancement.immersiveengineering:openManual=RTFM
 advancement.immersiveengineering:openManual.desc=打开工程师手册
 advancement.immersiveengineering:craftHammer=HAMMAH!
-advancement.immersiveengineering:craftHammer.desc=制作出一把工程师锤子
+advancement.immersiveengineering:craftHammer.desc=制作出一把工程师锤
 advancement.immersiveengineering:connectWire=电杆上的鸟儿
 advancement.immersiveengineering:connectWire.desc=连接导线
 advancement.immersiveengineering:blastfurnace=真正的热门话题
@@ -1034,8 +1034,8 @@ immersiveengineering.potion.concreteFeet=缓慢
 immersiveengineering.potion.flashed=闪现
 
 #MANUAL
-ie.manual.currentVersion=- 当前
-ie.manual.newerVersion=- 最新
+ie.manual.currentVersion=——当前
+ie.manual.newerVersion=——最新
 #ie.manual.entry..name=
 #ie.manual.entry..subtext=
 #ie.manual.entry.=
@@ -1076,8 +1076,8 @@ ie.manual.category.heavymachines.name=重型机械
 
 ie.manual.entry.introduction.name=介绍
 ie.manual.entry.introduction.subtext=开始你的工程！
-ie.manual.entry.introduction0=诸位年轻的工程师，你们好！欢迎使用沉浸工程模组，这本手册将会作为你的向导，介绍本模组应提供的新型机器的建造流程和使用方法。<br>那就让我们从基础的事情开始吧：沉浸工程是围绕复古未来主义风格产生与能源运输两个要素而构建起来的。本模组使用通量（Flux）作为能源,它能与现有的大部分模组的能源通用。
-ie.manual.entry.introduction1=能源是通过§l线缆§r在§l接线器§r间来传输的.线缆的长度是有限制的，因此在这些线缆之间你需要更多的接线器来作为§l中继§r。<br>你能在三种不同导线之间进行选择，它们的差异在于不同的传输速率，分别为：<config;iA;wireTransferRate;l3> Flux/tick。你需要§l变压器§r 来在不同类型线缆间切换。
+ie.manual.entry.introduction0=诸位年轻的工程师，你们好！欢迎使用沉浸工程模组，这本手册将会作为你的向导，介绍本模组应提供的新型机器的建造流程和使用方法。<br>那就让我们从基础的事情开始吧：沉浸工程是围绕复古未来主义风格产生与能源运输两个要素而构建起来的。本模组使用通量（Flux）作为能源，它能与现有的大部分模组的能源通用。
+ie.manual.entry.introduction1=能源是通过§l线缆§r在§l接线器§r间来传输的。线缆的长度是有限制的，因此在这些线缆之间你需要更多的接线器来作为§l中继§r。<br>你能在三种不同导线之间进行选择，它们的差异在于不同的传输速率，分别为：<config;iA;wireTransferRate;l3> Flux/t。你需要§l变压器§r 来在不同类型线缆间切换。
 ie.manual.entry.introductionHammer=工程师锤是你当前最重要的工具。它可以用于搭建诸如焦炉和高炉这样的多方块结构、<config;b;crushingOreRecipe;将矿石打碎成粉末、>或者是用来修改方块的设置，比如木杆。
 
 ie.manual.entry.ores.name=矿石
@@ -1113,7 +1113,7 @@ ie.manual.entry.hemp.subtext=530纺织物
 ie.manual.entry.hemp0=工业大麻是一种备受瞩目的作物！不仅其种子可以用于加工 <link;biodiesel;§o§n生§o§n物§o§n柴§o§n油§r>，工业大麻纤维对于制作坚韧布料也至关重要。种子可以通过清理草丛获得。
 ie.manual.entry.hemp1=坚韧布料是一种使用大麻纤维制作的极富弹性的材料。它被广泛用于<link;generator;§o§n改§o§n良§o§n风§o§n车§r;3>、<link;balloon;§o§n气§o§n球§r>以及§o§n气垫§r的制作。关于气垫的详细介绍可以在本条目的下一页找到。
 ie.manual.entry.hemp2=气垫是一种用坚韧布料制成，并填充以空气的简易方块。当有人掉落在上面时，它可以吸收冲击力，籍此阻止摔伤事故发生，但它并不会像史莱姆方块一样把人再弹起来。
-ie.manual.entry.hemp3=带状帘布是安装在门框或其他方块间隙上的纺织物，用于适当的阻挡视野。<br>当实体穿过时，它将发出红石信号。用锤子右键点击它们调试红石信号频率。<br>另外，它们与皮革套一样同样可以进行染色。
+ie.manual.entry.hemp3=带状帘是安装在门框或其他方块间隙上的纺织物，用于适当的阻挡视野。<br>当实体穿过时，它将发出红石信号。用锤子右键点击它们调试红石信号频率。<br>另外，它们与皮革套一样同样可以进行染色。
 
 ie.manual.entry.cokeoven.name=焦炉
 ie.manual.entry.cokeoven.subtext=热门话题！
@@ -1123,13 +1123,13 @@ ie.manual.entry.cokeovenBlock=搭建一个焦炉，首先需要准备27个焦炉
 ie.manual.entry.alloysmelter.name=合金窑
 ie.manual.entry.alloysmelter.subtext=混合金属
 ie.manual.entry.alloysmelter0=合金窑是由砂岩和石砖制成的简易冶炼炉。其内部的温度高到足以使金属熔化成流体状态并混合，形成<link;alloys;§o§n合§o§n金§r>。<br>用于生产一些重要的合金，如琥珀金和康铜，可以帮助你省去那些繁琐的粉末合成。
-ie.manual.entry.alloysmelter1=窑炉的搭建如上图所示，将8个窑砖搭建成2x2x2多结构方块，然后用工程师锤子右键单击其中一块窑砖即可。
+ie.manual.entry.alloysmelter1=窑炉的搭建如上图所示，将8个窑砖搭建成2x2x2多结构方块，然后用工程师锤右键单击其中一块窑砖即可。
 
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
 ie.manual.entry.treatedwood0=防腐木实际上就是被杂酚油浸泡过的木板。然而，它却是沉浸工程发展中不可或缺的材料之一，为此你需要尽可能的量产它。
 ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点，这时用防腐木做成的木杆将会是最好选择。它有四格高，所以你不能把将它放在空间不够的地方。
-ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link;wiring;§o§n变§o§n压§o§n器§r;3>，这使得它不怎么显眼。<br>在木杆侧面支架下方放置方块会使支架改变朝向。
+ie.manual.entry.treatedwoodPost1=你也可以在木杆顶端的侧面位置加装另一个<link;wiring;§o§n变§o§n压§o§n器§r;3>，这使得它不怎么显眼。<br>在木杆侧面支架下方放置方块会使支架改变朝向。
 
 ie.manual.entry.concrete.name=混凝土
 ie.manual.entry.concrete.subtext=要塞建材
@@ -1137,13 +1137,13 @@ ie.manual.entry.concrete0=混凝土是一种极为坚硬，防御力极强的复
 
 ie.manual.entry.balloon.name=气球
 ie.manual.entry.balloon.subtext=...制作99个就对了
-ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮。它们同样会释放光亮，但不同于火把的是，它们并没有火灾隐患。<br>气球能够像其它方块一样放置，或者，当没有目标方块时,它们会被放置在你前方的空气方块中。
-ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢§o§n制§o§n接§o§n线§o§n器§r;5>类似，你可以将麻绳或钢线连接到上面。<br>潜行右击可以设置气球的放置高度差，允许你将其放置在目标方块上方最多5格高的地方。
+ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮。它们同样会释放光亮，但不同于火把的是，它们并没有火灾隐患。<br>气球能够像其它方块一样放置，或者，当没有目标方块时，它们会被放置在你前方的空气方块中。
+ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢§o§n质§o§n接§o§n线§o§n器§r;5>类似，你可以将麻绳或钢线连接到上面。<br>潜行右击可以设置气球的放置高度差，允许你将其放置在目标方块上方最多5格高的地方。
 
-ie.manual.entry.crate.name=木制储物箱
+ie.manual.entry.crate.name=木质储物箱
 ie.manual.entry.crate.subtext=移动装备了！
 ie.manual.entry.crate0=木质储存箱和普通箱子十分相近。它由处理过的木材精致而成，内有27个物品格，但被打破时物品不会掉出来，玩家籍此可以携带大量物品。<br>和箱子一样，它也可以根据物品的量输出比较器信号。
-ie.manual.entry.crate1=强化储物箱拥有和普通木质储物箱一样的容积，但强化版本提供了更好的抗爆性能。从此你再也不用担心那些惹人厌的爬行者或者误放的采矿炸药把你价值连城的箱子炸掉了！<br>同时,在储物箱升级时，其内容物也会得到保留。
+ie.manual.entry.crate1=强化储物箱拥有和普通木质储物箱一样的容积，但强化版本提供了更好的抗爆性能。从此你再也不用担心那些惹人厌的爬行者或者误放的采矿炸药把你价值连城的箱子炸掉了！<br>同时，在储物箱升级时，其内容物也会得到保留。
 
 ie.manual.entry.barrel.name=木桶
 ie.manual.entry.barrel.subtext=拒绝滚动
@@ -1156,7 +1156,7 @@ ie.manual.entry.jerrycan0=油罐是一种用于盛放液体的简易金属容器
 ie.manual.entry.earmuffs.name=隔音耳罩
 ie.manual.entry.earmuffs.subtext=好大的噪音啊！！！
 ie.manual.entry.earmuffs0=隔音耳罩是用来保护你的听力的设备。这个小东西对于那些时刻工作在<link;dieselgen;§o§n柴§o§n油§o§n发§o§n电§o§n机§r;>或其他噪音巨大的机械旁的工程师来说至关重要。<br>当佩戴此耳罩时，你听到的噪音都已被减弱九成。
-ie.manual.entry.earmuffs1=在<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r;>中可对隔音耳罩进行详细设定，比如选择性过滤一些噪音，以及降噪的幅度.<br>你还可以像皮革护甲一样为其染色。<br>将其与其它任何形式的头盔合成在一起后，就可为目标头盔附加上隔音的效果，再次将其合成可将耳罩移除并返还，方便进一步修改自定义设置。
+ie.manual.entry.earmuffs1=在<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r;>中可对隔音耳罩进行详细设定，比如选择性过滤一些噪音，以及降噪的幅度。<br>你还可以像皮革护甲一样为其染色。<br>将其与其它任何形式的头盔合成在一起后，就可为目标头盔附加上隔音的效果，再次将其合成可将耳罩移除并返还，方便进一步修改自定义设置。
 
 ie.manual.entry.shield.name=重型盾牌
 ie.manual.entry.shield.subtext=一夫当关
@@ -1177,7 +1177,7 @@ ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电�
 
 ie.manual.entry.wiring.name=基础布线
 ie.manual.entry.wiring.subtext=滋滋滋！
-ie.manual.entry.wiring0=IE的能源网络主要有四个重要设备：§l电容器§r用于储存能量,§l接线器§r用于网络内能源的输入输出，§l继电器§r用于将线缆连接在一起，§l变压器§r用于不同线缆间的切换。
+ie.manual.entry.wiring0=IE的能源网络主要有四个重要设备：§l电容器§r用于储存能量，§l接线器§r用于网络内能源的输入输出，§l继电器§r用于将线缆连接在一起，§l变压器§r用于不同线缆间的切换。
 ie.manual.entry.wiring1=要连接两个方块，只需手持线圈右击一个方块，然后使用相同的线圈右击另一个。两点间总传输速率由最差的线缆决定。
 ie.manual.entry.wiring2=注意到这些方块还有一定的限制：接线器跟继电器只能与已经与其连接的同种导线相连接，而变压器只能连接两根不同种类的导线。
 ie.manual.entry.wiring3=并且线缆只能与之电压相匹配的方块相连。
@@ -1185,7 +1185,7 @@ ie.manual.entry.wiring4=布线中有两个重要的数值需要注意：<br>每�
 ie.manual.entry.wiring5=只要电线的输入端和输出端所在的区块加载，即使电线穿过没有加载的区块也能够传递能量。
 ie.manual.entry.wiringConnector=§l接线器§r是IE能源网络的输入输出端。你可以把它加装在电容器或者是其他支持ImmersiveFlux的设备上，它们将通过连接的线缆传输能量。$l继电器§r可以连接线缆但不支持输入输出，它仅仅只是作为导线间的连接点。
 ie.manual.entry.wiringCapacitor=§l电容器§r作为能量储存单元而存在。你可以用锤子调整每一面的配置，蓝色为输入，橙色为输出，若为无色则任何线缆都不会与其相连接。潜行时使用锤子将会调整相对于你所面向的一面的配置。
-ie.manual.entry.wiringTransformer0=§l变压器§r允许你在两种不同类型的线缆间运输能源。最弱的线缆会限制传输的速率.另外高压变压器可以直接变压为低压或中压，所以你并不需要接两个变压器。
+ie.manual.entry.wiringTransformer0=§l变压器§r允许你在两种不同类型的线缆间运输能源。最弱的线缆会限制传输的速率。另外高压变压器可以直接变压为低压或中压，所以你并不需要接两个变压器。
 ie.manual.entry.wiringTransformer1=你可以将<link;wiring;§o§n变§o§n压§o§n器§o§n与§o§n木§o§n杆§r;3>像第四页的第二张图那样搭建，然而只有非高压变压器才能这样搭建。
 ie.manual.entry.wiringCutters=§l剪线钳§r用于移除已经被安装好的线缆，只需右击便可移除线缆。
 ie.manual.entry.wiringVoltmeter=§l电压表§r用于测量连接情况。右键右击一个电容器能读取当前的能量储存，按住Shift右击2个接线器还能计算它们之间的平均损耗。
@@ -1196,13 +1196,13 @@ ie.manual.entry.generator.name=发电
 ie.manual.entry.generator.subtext=
 ie.manual.entry.generator0=只有当你产出能源时，能源的运输才是有意义的。为了能够真正产出Flux，你可以使用风车或者是水轮机所产生的动能。将其与发电机相连接便可产生能源，产出速度则取决于风车或水轮机的转速。
 ie.manual.entry.generator1=风车是一种免费而简单的发电方式，虽然功率并不高。它的速度很大程度上取决于它所处的高度以及前方运作空间，当下雨或者风暴降临时，它能运作的更快。
-ie.manual.entry.generator2=水车是相当简单的发电方式.它的转动速度是基于驱动它的流水，所以为了能达到最佳的效果，你将需要引导流水从半轮的上方流到下方直到流经底部。你最多可以将三个水车叠加在同一侧。
+ie.manual.entry.generator2=水车是相当简单的发电方式。它的转动速度是基于驱动它的流水，所以为了能达到最佳的效果，你将需要引导流水从半轮的上方流到下方直到流经底部。你最多可以将三个水车叠加在同一侧。
 ie.manual.entry.generator3=改良风车是风车的升级版。虽然它有2倍的输出量，但造价更昂贵，需要由工业大麻做成的坚硬布料。大麻种子可以通过打草获得。
 
 ie.manual.entry.breaker.name=断路刀闸
 ie.manual.entry.breaker.subtext=扳开-扣合
 ie.manual.entry.breaker0=断路刀闸是能够让线缆中的能量流动停止的一种简单闸门。它们能够连接两种相同的线缆并仅有在激活时让能量通过。它能够被用于将高能耗机器从电网中分离或者在需要时连接附加发电机组！
-ie.manual.entry.breaker1=断路刀闸在开启状态下会发射红石信号；你可以使用工程师锤子来反转它的输出.<br>同时它们还是用来控制<link;lighting;§o§n电§o§n灯§r;1>的好方法！
+ie.manual.entry.breaker1=断路刀闸在开启状态下会发射红石信号；你可以使用工程师锤来反转它的输出。<br>同时它们还是用来控制<link;lighting;§o§n电§o§n灯§r;1>的好方法！
 ie.manual.entry.breaker2=红石断路器功能同断路刀闸类似，但是无法手动操控。取而代之，它需要一个红石信号来断开连接。而作为回报，它良好的绝缘性使其能够连接高压线缆！
 
 ie.manual.entry.eMeter.name=电流互感器
@@ -1227,7 +1227,7 @@ ie.manual.entry.blastfurnace.name=粗制高炉
 ie.manual.entry.blastfurnace.subtext=简易炼钢！
 ie.manual.entry.blastfurnace0=粗制高炉用于提高铁的含碳量，使之成为钢。为了达成目的，只有含碳量高的燃料才被高炉所接受，特别是焦煤和木炭。<br><br>伴随着钢的冶炼，高炉冶炼还会产生矿渣，你必须定期清除否则高炉便会停止工作。理论上来说矿渣属于废弃物，但你还是可以用它来合成混凝土。
 ie.manual.entry.blastfurnaceBlock=搭建一个高炉，你需要用这27个方块搭建出3x3x3的结构，然后用工程师锤右击其中一面的中央方块<br>见下一页的图。
-ie.manual.entry.blastfurnace1=粗制高炉无法自动化生产。所有输入输出必须通过手动打开GUI完成。如果你想要自动化冶炼钢铁，你可能需要查看<link;improvedBlastfurnace;§o§n精§o§n制§o§n高§o§n炉§r;>的相关搭建信息。
+ie.manual.entry.blastfurnace1=粗制高炉无法自动化生产。所有输入输出必须通过手动打开GUI完成。如果你想要自动化冶炼钢铁，你可能需要查看<link;improvedBlastfurnace;§o§n强§o§n化§o§n高§o§n炉§r;>的相关搭建信息。
 
 ie.manual.entry.improvedBlastfurnace.name=强化高炉
 ie.manual.entry.improvedBlastfurnace.subtext=工业精炼
@@ -1238,15 +1238,15 @@ ie.manual.entry.improvedBlastfurnace3=高炉鼓风机被用于加热空气并将
 
 ie.manual.entry.metalconstruction.name=金属结构
 ie.manual.entry.metalconstruction.subtext=铆接
-ie.manual.entry.metalconstruction0=除了防腐木，加工过的金属也可用于建筑.你可以将绝大多数金属制成块或台阶，你还可以用锤子把铁锭敲成金属板方块。
-ie.manual.entry.metalconstruction1=钢不仅是高压设备不可或缺的一部分，还是非常有用的上好建筑材料，钢制脚手架可用于快速搭建建筑结构，钢围栏能让你建立防线抵御敌人，钢制臂架构是你搭建高压继电器的接点。
+ie.manual.entry.metalconstruction0=除了防腐木，加工过的金属也可用于建筑。你可以将绝大多数金属制成块或台阶，你还可以用锤子把铁锭敲成金属板方块。
+ie.manual.entry.metalconstruction1=钢不仅是高压设备不可或缺的一部分，还是非常有用的上好建筑材料，钢质脚手架可用于快速搭建建筑结构，钢围栏能让你建立防线抵御敌人，钢结构臂是你搭建高压继电器的接点。
 ie.manual.entry.metalconstruction2=结构性接线器的作用与普通接线器类似，但它们是纯装饰性物品，不能用于传输能量。<br>它们无法与普通线缆相连接，但能够与麻线圈或钢线圈连接（见下页）。<br>你可以手持工程师锤右击来旋转它们。
 ie.manual.entry.metalconstruction3=金属梯子...好吧，你可以用金属材料制成它。它们攀爬起来更酷。<br>你也可以将它们与脚手架进行嵌套从而制作安全梯。
 
 ie.manual.entry.lighting.name=工程照明
 ie.manual.entry.lighting.subtext=照亮荒芜之地
 ie.manual.entry.lighting0=工厂长廊的深处可能会十分昏暗。为了能够找到通往机器的路，你可能需要用一些灯来照亮这些区域。这些灯能够提供等同于萤石块的亮度。
-ie.manual.entry.lighting1=电灯是最早使用电能的发明之一。你需要用线缆将它们直接连至你的电网当中来使其工作.电能可以通过它们，因此你可以将它们连成一排。
+ie.manual.entry.lighting1=电灯是最早使用电能的发明之一。你需要用线缆将它们直接连至你的电网当中来使其工作。电能可以通过它们，因此你可以将它们连成一排。
 ie.manual.entry.lighting2=只需为它们提供一点点能量，它们就可以像正常灯一样照亮周围区域，不仅如此，它们还能防止敌对生物在半径32格范围内生成！
 ie.manual.entry.lighting3=泛光灯是一种强光源。尽管它们对电能的需求比普通电灯高一些，它们能够产生一个32格远的光锥。对其顶部或底部使用工程师锤来旋转灯光或对其侧面使用来改变倾角。
 ie.manual.entry.lighting4=通常，泛光灯需要红石信号才能运行，但是它们的控制行为可以通过工程师锤潜行右击它们的基座来反转。
@@ -1255,7 +1255,7 @@ ie.manual.entry.metalPress.name=金属冲压机
 ie.manual.entry.metalPress.subtext=压力山大！
 ie.manual.entry.metalPress0=金属冲压机可用于自动将金属挤压成型。它的原理是用高压活塞将模具压到金属锭上，以将金属锭挤压为板材，棒或其他金属零件。<br>冲压机结构如上图所示，用工程师锤敲击活塞来完成搭建。
 ie.manual.entry.metalPress1=能量从上方输入，物品通过传送带，沿着其显示方向输入输出。底层中间的方块便是红石控制接口，手持工程师锤右击可对其进行反相。
-ie.manual.entry.metalPress2=若想正常工作，需要在活塞上加装一个模具.模具的制作如上图所示，手持模具右键金属冲压机可将其放入。
+ie.manual.entry.metalPress2=若想正常工作，需要在活塞上加装一个模具。模具的制作如上图所示，手持模具右键金属冲压机可将其放入。
 ie.manual.entry.metalPress3=模具的制作如上图所示，线切割机对于每一个合成操作都会造成一些损坏。然后通过用手中的模具右键单击多方块结构将它们插入金属冲压机中
 ie.manual.entry.metalPress4=压缩和解压包的模具可用于将相同物品进行2x2或者3x3合成，并重新打包。这可以用于将矿锭存储为块，或者自动合成像沙石这样的简单方块。
 
@@ -1277,7 +1277,7 @@ ie.manual.entry.metalbarrel0=金属桶功能同<link;barrel;§o§n木§o§n桶§
 ie.manual.entry.assembler.name=装配机
 ie.manual.entry.assembler.subtext=需要一些装配
 ie.manual.entry.assembler0=装配机是一个能够合成物品的复杂机器，和玩家合成类似。<br>为了建造这台机器，请按上图展示搭建并用工程师锤右击传送带。
-ie.manual.entry.assembler1=你敲击的传送带将成为输入端，上方会有蓝色标记并且机器侧面也会有箭头指示。<br>装配机内部最多可存储三个合成表并且会按顺序执行。前一个合成表的输出产物可以作为后一个的输入材料。<br>三个合成狂用于存储合成表，而下方18格子用于存放材料。
+ie.manual.entry.assembler1=你敲击的传送带将成为输入端，上方会有蓝色标记并且机器侧面也会有箭头指示。<br>装配机内部最多可存储三个合成表并且会按顺序执行。前一个合成表的输出产物可以作为后一个的输入材料。<br>三组合成九宫格用于存储合成表，而下方18个格子用于存放材料。
 ie.manual.entry.assembler2=输入侧不光可以输入物品，还能够输入液体用于装填机器内部的三个储罐。这些储罐中的液体可以被用于取代合成表中的液体容器例如水桶。<br>机器的能量输入在顶部中央的方块。
 
 ie.manual.entry.autoworkbench.name=自动装配台
@@ -1326,13 +1326,13 @@ ie.manual.entry.mixer2=液体通过其电源底部的端口输入挤压机。物
 
 ie.manual.entry.squeezer.name=挤压机
 ie.manual.entry.squeezer.subtext=挤压物质
-ie.manual.entry.squeezer0=挤压机是一台利用巨型活塞将有机物质压榨为汁液或油的多方块设备。其结构如上图所示，并需要工程师锤子敲击带工程块一面中间的木桶以完成组装。
-ie.manual.entry.squeezer1=物品可从带有蓝色点的两个舱室输入；带有橙色点的舱室可用于输出物品，而其下方的方块则可用于流体输出.
+ie.manual.entry.squeezer0=挤压机是一台利用巨型活塞将有机物质压榨为汁液或油的多方块设备。其结构如上图所示，并需要工程师锤敲击带工程块一面中间的木桶以完成组装。
+ie.manual.entry.squeezer1=物品可从带有蓝色点的两个舱室输入；带有橙色点的舱室可用于输出物品，而其下方的方块则可用于流体输出。
 ie.manual.entry.squeezer2T=下表显示可以挤压成植物油中的各种物品及其产量。
 
 ie.manual.entry.fermenter.name=发酵机
 ie.manual.entry.fermenter.subtext=Skál!
-ie.manual.entry.fermenter0=发酵机是一台能将特定水果、谷物以及蔬菜发酵为乙醇的多方块设备。其结构如上图所示，并需要工程师锤子敲击带工程块一面中间的大锅以完成组装。
+ie.manual.entry.fermenter0=发酵机是一台能将特定水果、谷物以及蔬菜发酵为乙醇的多方块设备。其结构如上图所示，并需要工程师锤敲击带工程块一面中间的炼药锅以完成组装。
 ie.manual.entry.fermenter1=物品可从带有蓝色点的两个舱室输入。带有橙色点的舱室可用于输出物品，而其下方的方块则可用于流体输出。
 ie.manual.entry.fermenter2T=下表显示可以发酵成乙醇的各种物品及其产量。
 
@@ -1344,7 +1344,7 @@ ie.manual.entry.refinery1=用工程师锤右击其前面的中心位置以完成
 ie.manual.entry.dieselgen.name=柴油发电机
 ie.manual.entry.dieselgen.subtext=提高产量最重要的是：量产。
 ie.manual.entry.dieselgen0=高电压结构是令人着迷的，但要让它变得有用，你得有一个发电机来输出能源。<br>柴油发电机是其中一种产生这类能量的方式。它由复杂的多方块方式组成并且将要用到<link;biodiesel;§o§n生§o§n物§o§n柴§o§n油§r>或者是其他燃料。由于其产出高，它将会快速消耗燃料来运作，所以请确保你有足够的燃料来支撑它的运转。
-ie.manual.entry.dieselgen1=该机械由工程块、发电机、散热器块组成，同时还用到了流体管道以及脚手架。将这些零件如上方所示形状放置好，接着用工程师锤子敲一下位于中央的任意发电机模块或散热器模块即可。
+ie.manual.entry.dieselgen1=该机械由工程块、发电机、散热器块组成，同时还用到了流体管道以及脚手架。将这些零件如上方所示形状放置好，接着用工程师锤敲一下位于中央的任意发电机模块或散热器模块即可。
 ie.manual.entry.dieselgen2=燃料需要从发电机的底部位置输入，而能量的输出口允许增加至三个。它所拥有的<config;i;dieselGen_output>Flux/t的输出量将会平均分散在各个连接点上。<br>用红石信号激活右侧的控制面板可以关闭发电机。
 ie.manual.entry.dieselgen3=下表列出了柴油发电机的所有有效燃料以及它们的燃烧时间，以刻计算。
 
@@ -1356,14 +1356,14 @@ ie.manual.entry.biodiesel1T=下方表格列出了多种能够被压榨为植物�
 ie.manual.entry.biodiesel2=乙醇可以从发酵机那获得。发酵机的搭建方式类似工业挤压机，对功率的需求，能源接受以及流体输出的方式也与工业挤压机相同。
 ie.manual.entry.biodiesel2T=下方表格列出了多种能够被压榨为乙醇的物品以及它们的产量。
 ie.manual.entry.biodiesel3=为了最终把植物油加工成生物柴油，你需要把流体灌入炼油厂并提供充足的能源。根据图片搭建相应的结构并用工程师锤右击其前面的中心位置。
-ie.manual.entry.biodiesel4=炼油厂的正前方位置是作为流体输出的，侧面的小孔为输入端，能源是通过组装在其后方的接线器导入,通过对右侧的控制面板输入红石信号可以停止其炼油过程。
+ie.manual.entry.biodiesel4=炼油厂的正前方位置是作为流体输出的，侧面的小孔为输入端，能源是通过组装在其后方的接线器导入，通过对右侧的控制面板输入红石信号可以停止其炼油过程。
 
 ie.manual.entry.conveyor.name=传送带
 ie.manual.entry.conveyor.subtext=谁还需要铁路？
 ie.manual.entry.conveyor0=传送带运输是把附近物品搬回家的便捷途径，当它有足够的动力时可以搬运像是牛、羊之类的生物，它们真正的优势在于物品的运输。<br>把物品丢到传送带上即可实现搬运。如果末端是能够接收物品的容器，那物品将会被放入到容器里。
 ie.manual.entry.conveyor1=对着传送带的漏斗可以把物品输出为可掉落形态，使用工程师锤右击可以转动传送器的方向，潜行时右击则可调整为上行或下行。<br>
 ie.manual.entry.conveyor2=卸货传送带仅仅是普通传送带中间多了一个舱口，允许货物从中间传输到下面。<br>物品会自动输送进下放的存储容器或者，如果下方是空的物品会被扔在地上。
-ie.manual.entry.conveyor3=垂直传送带可以贴在墙上，使垂直运输物品称为可能.用桶还可以让它运输实体。虽然用桶可以运输实体，但传送带还是不能运输液体。<br>这种传送带可以自动将物品输入容器中，也可以接收顶上的传送带掉下来的物品。
+ie.manual.entry.conveyor3=垂直传送带可以贴在墙上，使垂直运输物品称为可能。用桶还可以让它运输实体。虽然用桶可以运输实体，但传送带还是不能运输液体。<br>这种传送带可以自动将物品输入容器中，也可以接收顶上的传送带掉下来的物品。
 ie.manual.entry.conveyor4=分流传送带的功能很简单，将运送来的物品和实体不断交替地分流到左右两侧，籍此可以让你的物品均匀地分配到多个工厂里。
 ie.manual.entry.conveyor5=绝缘传送带的工作方式与普通输送带一样，但是由一块脚手架覆盖，可防止玩家从其中拾取物品。<br>您可以用其他类型的脚手架或玻璃板右键单击以更换盖子的外观。
 ie.manual.entry.conveyor6=类似地，垂直传送带也可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍允许垂直运输。
@@ -1378,15 +1378,15 @@ ie.manual.entry.furnaceHeater2=还有更好的，当熔炉达到最高温时，�
 ie.manual.entry.teslaCoil.name=特斯拉线圈
 ie.manual.entry.teslaCoil.subtext=This one goes up to 11
 ie.manual.entry.teslaCoil0=特斯拉线圈一开始的设计是能量传输设备。然而，据估计，用它传输能量时损耗巨大。只有它能将半径6米范围内的生物烤成焦炭的特性吸引了工程师们的眼球，它也因此很快成为了理想的基地防御设备。
-ie.manual.entry.teslaCoil1=自然地，它是个能耗大户，平时会有<config;i;teslacoil_consumption>Flux的消耗，每次攻击时还会消耗<config;i;teslacoil_consumption_active>Flux.<br>线圈只有在有红石信号时才会工作。用工程师锤右击可反转此特性的效果。<br>它攻击时不仅会造成伤害，还会附加滞留效果"眩晕"，这个效果会阻止实体传送。
+ie.manual.entry.teslaCoil1=自然地，它是个能耗大户，平时会有<config;i;teslacoil_consumption>Flux的消耗，每次攻击时还会消耗<config;i;teslacoil_consumption_active>Flux。<br>线圈只有在有红石信号时才会工作。用工程师锤右击可反转此特性的效果。<br>它攻击时不仅会造成伤害，还会附加滞留效果“眩晕”，这个效果会阻止实体传送。
 ie.manual.entry.teslaCoil2=潜行时用工程师锤右击可令线圈在高能和低能模式间切换。切换前需切断电源。默认特斯拉线圈以高能模式工作。低能模式会令耗能减半，但同时也会令攻击范围减半。
-ie.manual.entry.teslaCoil3=若你身着全套法拉第套装，低能模式的特斯拉线圈不会对你造成任何伤害，但仍然会造成雷击.高能模式的线圈会直接熔毁法拉第套装，从而会造成比不穿套装时更高的伤害。<br>荧光管会在高频高强度电场中发光，而特斯拉线圈则可以产生这种电场，因此工作中的特斯拉线圈会导致附近的荧光管发光。
-ie.manual.entry.teslaCoil4=荧光管受线圈影响的范围大约是线圈攻击范围的1.5倍。荧光管可在工程师装配台中染色，还可用工程师锤子旋转。
+ie.manual.entry.teslaCoil3=若你身着全套法拉第套装，低能模式的特斯拉线圈不会对你造成任何伤害，但仍然会造成雷击。高能模式的线圈会直接熔毁法拉第套装，从而会造成比不穿套装时更高的伤害。<br>荧光管会在高频高强度电场中发光，而特斯拉线圈则可以产生这种电场，因此工作中的特斯拉线圈会导致附近的荧光管发光。
+ie.manual.entry.teslaCoil4=荧光管受线圈影响的范围大约是线圈攻击范围的1.5倍。荧光管可在工程师装配台中染色，还可用工程师锤旋转。
 
 ie.manual.entry.fluidPipes.name=液体传输
 ie.manual.entry.fluidPipes.subtext=专业水管工
 ie.manual.entry.fluidPipes0=液体传输在工程业变得越发重要。输液管和液泵就是干这个的。单独使用，输液管的液体传输速率较低，但如果用液泵输入液体，速度便会增快不少。
-ie.manual.entry.fluidPipes1=你可以通过用工程师锤右击一个管道来防止它连接那一侧。<br>输液管可以嵌入木制或钢制脚手架中。只需手持脚手架右击管道即可。破坏管道会返还脚手架。
+ie.manual.entry.fluidPipes1=你可以通过用工程师锤右击一个管道来防止它连接那一侧。<br>输液管可以嵌入木质或钢质脚手架中。只需手持脚手架右击管道即可。破坏管道会返还脚手架。
 ie.manual.entry.fluidPipes2=液泵有两个重要功能。它们能够用于将液体高压泵入管道中，让传输速率变快，或者它们还能够从世界当中抽取液体。用工程师锤右击液泵底部会转换输入输出端。
 ie.manual.entry.fluidPipes3=为了使液泵能够抽取液体方块，它需要从顶部接受能量以及一个红石信号。液泵同样能够用于从一些无法自动输出的储罐或液体容器中抽取液体。这同样需要红石信号，不过并不需要能量。
 ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;泵抽取的水方块超过3x3，将当做无限水源。<br><br>;><config;b;pump_placeCobble;被抽取的水将以圆石取代，以减少流动水。这种模式可以用工程师剪线钳关闭。;>
@@ -1404,12 +1404,12 @@ ie.manual.entry.fluidSorter1=当任何流体被输送到路由器中时，它们
 
 ie.manual.entry.turntable.name=旋转台
 ie.manual.entry.turntable.subtext=我跟不上了啦！
-ie.manual.entry.turntable0=转盘可以旋转放置在其上方的方块。<br>握住工程师锤看向机器时显示其活动侧和转向。用锤子右击将重新调整它的方向，潜行右击会反转转盘的旋转方向。
+ie.manual.entry.turntable0=旋转台可以旋转放置在其上方的方块。<br>握住工程师锤看向机器时显示其活动侧和转向。用锤子右击将重新调整它的方向，潜行右击会反转转盘的旋转方向。
 
 ie.manual.entry.drill.name=采矿机械钻
 ie.manual.entry.drill.subtext=我的钻头将打穿基岩！
 ie.manual.entry.drill0=这把手持的柴油动力机械钻是采矿领域的一次卓越进步。通过可更换的钻头和升级，它的性能几乎可以自由调整。想要改造它，只需将其放入<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r>。<br>如若机械钻的<link;biodiesel;§o§n生§o§n物§o§n柴§o§n油§r>耗尽，可以直接在炼油厂中填满。
-ie.manual.entry.drill1=钻头将决定基础采矿等级，速度,范围以及攻击伤害。当你在挖掘方块时，钻头会受到磨损，但它能够在铁砧中被修复。
+ie.manual.entry.drill1=钻头将决定基础采矿等级，速度，范围以及攻击伤害。当你在挖掘方块时，钻头会受到磨损，但它能够在铁砧中被修复。
 ie.manual.entry.drill2=因为机械钻由内燃机驱动，它无法在水下工作，除非你为它安装了压缩空气罐。然而，在安装这项升级后，它不仅能在水下工作，水下挖掘所造成的迟缓也会消失不见。
 ie.manual.entry.drill3=高级润滑系统在正常基础上为机械钻提供了额外的润滑效果，使其运行与挖掘更加快速。
 ie.manual.entry.drill4=通过为机械钻添加附加螺旋钻，它对于生物的破坏性得到了提升。该项升级最高可叠加3次每次升级会提供一点额外伤害。
@@ -1434,11 +1434,11 @@ ie.manual.entry.bullets0=左轮手枪弹药需要工程师装配台以及特定�
 ie.manual.entry.bullets1=§l空§l弹头§r和§l弹壳§r是所有弹头的基础。空弹壳可在<link;metalPress;§o§n金§o§n属§o§n冲§o§n压§o§n机§r>中用合适的模具合成，这样制作可以节约材料。
 ie.manual.entry.bullets_casull=<br>§l卡苏尔弹§r可以通过使用“普通子弹”蓝图制作。它们是简易的铅弹，能够造成中等的伤害。
 ie.manual.entry.bullets_armorPiercing=<br>§l穿甲弹§r可以通过使用同种蓝图制作。它们能够造成同等伤害但却能通过高动能穿透装甲。
-ie.manual.entry.bullets_buckshot=<br>§l鹿弹§r可以通过使用同种蓝图制作。内含大量小型弹丸，弹道呈圆锥状.短距离效果拔群。
+ie.manual.entry.bullets_buckshot=<br>§l鹿弹§r可以通过使用同种蓝图制作。内含大量小型弹丸，弹道呈圆锥状。短距离效果拔群。
 ie.manual.entry.bullets_HE=<br>§l高爆弹§r可以通过使用“普通子弹”蓝图制作。它们在击中后会造成小型爆炸，对生物和地形造成伤害。
 ie.manual.entry.bullets_silver=<br>§l银弹§r是由铅芯被银所包裹而制成，会对...狼人十分有效？！
-ie.manual.entry.bullets_dragonsbreath=<br>§l龙息弹§r可以通过使用"特种子弹"蓝图制作。类似鹿弹，短距离十分有效，不过内部充满的是易燃金属粉末，产生一束短距离火舌。
-ie.manual.entry.bullets_potion=<br>§l药剂弹头§r同样需要使用“特种子弹”蓝图制作。它们能够通过和对应药剂一起合成来装填任何药剂并且在弹药击中时生效。普通药剂需要精准命中，而溅射药剂会有范围效果<config;b;etfuturumBullets;而延长版药剂则可以产生一片药水云，并持续一段时间.;.>
+ie.manual.entry.bullets_dragonsbreath=<br>§l龙息弹§r可以通过使用“特种子弹”蓝图制作。类似鹿弹，短距离十分有效，不过内部充满的是易燃金属粉末，产生一束短距离火舌。
+ie.manual.entry.bullets_potion=<br>§l药剂弹头§r同样需要使用“特种子弹”蓝图制作。它们能够通过和对应药剂一起合成来装填任何药剂并且在弹药击中时生效。普通药剂需要精准命中，喷溅药剂会有范围效果，而滞留药剂则可以产生一片药水云，并持续一段时间。
 ie.manual.entry.bullets_flare=<br>§l叶绿弹§r通过使用“特种子弹”蓝图和魔力金属“泰拉钢”制作，这让它们能够自动寻找并跟踪目标。
 ie.manual.entry.bullets_wolfpack=<br>§l狼群弹§r是一种集束子弹，发射时本身不会制导，击中目标时会分裂出六枚自动制导的弹头。
 
@@ -1457,8 +1457,8 @@ ie.manual.entry.skyhook1=只需在接近线缆时按住鼠标右键，你就会�
 ie.manual.entry.shader.name=皮肤
 ie.manual.entry.shader.subtext=蓝色！不，黄色！
 ie.manual.entry.shader0=皮肤是一些你能够在世界中找到或与村民交易获得的物品。它们本身没有什么功能，但它们可以装配到<link;revolver;§o§n左§o§n轮§o§n手§o§n枪§r>、<link;drill;§o§n机§o§n械§o§n钻§r>、<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>或<link;railgun;§o§n磁§o§n轨§o§n炮§r>上，以此改变这些物品的外观设计。当然，也可以用在其它等待你发现的东西上。简单的将它们放入<link;workbench;§o§n工程师§o§n装配台§r>并将皮肤放入合适的装配栏中即可。<br>你也可以将其右键应用在矿车上！
-ie.manual.entry.shader1=皮肤奖励袋内含一种随机皮肤。可以在地牢箱子中找到，或者和村民交易以及怪物掉落.所开出的皮肤稀有度和袋子本身相同或者更稀有。当使用一个袋子时，你得到未拥有的皮肤的概率要比已获取的更高一些。
-ie.manual.entry.shader2=皮肤奖励袋能合成为两个低一级的奖励袋，让你能有机会重新尝试.皮肤本身也能够合成为一个低级的奖励袋。
+ie.manual.entry.shader1=皮肤奖励袋内含一种随机皮肤。可以在地牢箱子中找到，或者和村民交易以及怪物掉落。所开出的皮肤稀有度和袋子本身相同或者更稀有。当使用一个袋子时，你得到未拥有的皮肤的概率要比已获取的更高一些。
+ie.manual.entry.shader2=皮肤奖励袋能合成为两个低一级的奖励袋，让你能有机会重新尝试。皮肤本身也能够合成为一个低级的奖励袋。
 ie.manual.entry.shader3=皮肤奖励袋可以制作成两个较低级别的袋子。这将降低您获得更稀有的皮肤的机会，但能为您提供更多的尝试。
 //Shaders themselves can also be crafted into a single bag of the lower level.
 
@@ -1507,7 +1507,7 @@ ie.manual.entry.crusher1=通过给前端的控制面板输入红石信号将暂�
 ie.manual.entry.lightningrod.name=避雷针
 ie.manual.entry.lightningrod.subtext=雷击！
 ie.manual.entry.lightningrod0=闪电是一种自然现象。它包含了大量的原始力量，而避雷针能够驾驭这种力量。<br>通过在多方块结构上堆叠大量钢栅栏，你增加了在雨天或雷暴天气闪电击中它的概率。
-ie.manual.entry.lightningrod1=当钢柱被击中时，产生的大量能量会被储存在避雷针中然后缓慢的传输到侧面的能量连接点。<br><br>你可以通过在最顶端的钢栅栏搭建一个相互连接的钢栅栏"网"来增加避雷针被击中的概率。
+ie.manual.entry.lightningrod1=当钢柱被击中时，产生的大量能量会被储存在避雷针中然后缓慢的传输到侧面的能量连接点。<br><br>你可以通过在最顶端的钢栅栏搭建一个相互连接的钢栅栏“网”来增加避雷针被击中的概率。
 
 ie.manual.entry.minerals.name=矿床
 ie.manual.entry.minerals.subtext=矿石相关
@@ -1523,10 +1523,10 @@ ie.manual.entry.arcfurnace.name=电弧炉
 ie.manual.entry.arcfurnace.subtext=不是反应堆
 ie.manual.entry.arcfurnace0=电弧炉是一种用于快速熔炼金属的重型结构。它外表被钢质外壳覆盖，顶部装有用于加热的电极。
 ie.manual.entry.arcfurnace1=因为它的高速和同时加工多个物品的能力，电弧炉相当擅长冶炼金属和炼钢，但它的工作流程也比较复杂，需要时常维护才能保持功能正常运转。<br>为保持工作，矿渣必须时常清理，损坏电极也应及时更换。
-ie.manual.entry.arcfurnace2=要搭建一台电弧炉，需要按照第一页的方式进行建造，然后用工程师锤右击炼药锅.<br><br>能量需要从后方的三个插孔中输入，并且给前端的控制面板输入红石信号将会关闭机器。右击控制面板，“桶”或外壳将会打开交互界面。
-ie.manual.entry.arcfurnace3=§l交互界面：§r<br>第一眼看过去可能会有些迷惑，但是它实际上表达很直白.<br><br>顶部的三个格子是<link;graphite;§o§n石§o§n墨§o§n电§o§n极§r;1>插槽。<br>左侧的十二个格子用于输入金属和矿石。每一个格子都有一个用于显示烧炼进度的温度条。
+ie.manual.entry.arcfurnace2=要搭建一台电弧炉，需要按照第一页的方式进行建造，然后用工程师锤右击炼药锅。<br><br>能量需要从后方的三个插孔中输入，并且给前端的控制面板输入红石信号将会关闭机器。右击控制面板，“桶”或外壳将会打开交互界面。
+ie.manual.entry.arcfurnace3=§l交互界面：§r<br>第一眼看过去可能会有些迷惑，但是它实际上表达很直白。<br><br>顶部的三个格子是<link;graphite;§o§n石§o§n墨§o§n电§o§n极§r;1>插槽。<br>左侧的十二个格子用于输入金属和矿石。每一个格子都有一个用于显示烧炼进度的温度条。
 ie.manual.entry.arcfurnace4=右侧的四个格子用于输入“辅料”，这是指那些加工过程中加入的不同的原料。举个例子，在熔炼铁时加焦煤粉来制得钢。<br>主料和辅料的输入可分别通过电弧炉顶部电极左右两侧的输入仓完成。
-ie.manual.entry.arcfurnace5=底部的七个格子有六个用于输出成品，还有一个输出矿渣。成品可以从电弧炉正面的"桶"中提取，矿渣则会通过电弧炉背后的通道导出。电弧炉会自动输出成品和矿渣到邻近的容器中（这包括传送带）。
+ie.manual.entry.arcfurnace5=底部的七个格子有六个用于输出成品，还有一个输出矿渣。成品可以从电弧炉正面的“桶”中提取，矿渣则会通过电弧炉背后的通道导出。电弧炉会自动输出成品和矿渣到邻近的容器中（这包括传送带）。
 
 ie.manual.entry.excavator.name=斗轮式挖掘机
 ie.manual.entry.excavator.subtext=比矮人更为高效
