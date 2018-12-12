@@ -586,7 +586,7 @@ modifier.thermalinversion.name=热力反转
 modifier.thermalinversion.desc=§o冰与火！§r\n在热的环境中攻击会冻伤敌人；在冷的环境中攻击会灼伤敌人。
 #BOTANIA COMPAT
 item.immersiveengineering.bullet.terrasteel.name=叶绿弹
-ie.manual.entry.bullets_terrasteel=§l叶绿§l弹§r使用“特种子弹”蓝图和魔力金属“泰拉钢”制作，这让它们能够自动寻找并跟踪目标。
+ie.manual.entry.bullets_terrasteel=§l叶绿弹§r使用“特种子弹”蓝图和魔力金属“泰拉钢”制作，这让它们能够自动寻找并跟踪目标。
 #BLOODMAGIC COMPAT
 item.immersiveengineering.bullet.crystalwill.name=结晶意志弹
 ie.manual.entry.bullets_crystalwill=§l结晶意志弹§r使用“特种子弹”和恶魔意志晶体制作，其中的少量恶魔意志将会迫使子弹寻找附近的目标并给予无情的打击。
@@ -957,7 +957,7 @@ death.attack.ieWireShock=%1$s不小心触碰到未绝缘导线
 #ACHIEVEMENTS
 advancement.immersiveengineering:root=沉浸工程
 advancement.immersiveengineering:root.desc=请阅读下面的说明书
-advancement.immersiveengineering:openManual=RTFM
+advancement.immersiveengineering:openManual=去读手册
 advancement.immersiveengineering:openManual.desc=打开工程师手册
 advancement.immersiveengineering:craftHammer=HAMMAH!
 advancement.immersiveengineering:craftHammer.desc=制作出一把工程师锤
@@ -1487,7 +1487,7 @@ ie.manual.entry.turret.name=炮塔
 ie.manual.entry.turret.subtext=你还站在那干嘛？
 ie.manual.entry.turret0=炮塔是您工厂自动防御的下一步。它们具有结合机械“大脑”的复杂光学系统，以有效地区分和获取目标，并使用内置武器来调教实体。<br>所有炮塔的基座都有能量口，通入红石信号才能激活，也可以通过用工程师锤潜行右击反转。
 ie.manual.entry.turret1=被放置后，炮塔将记住其所有者，不允许其他用户破坏或修改它们。右击炮塔打开GUI，该GUI具有带有输入字段的名称列表以及多个定位选项。<br>默认情况下，该列表是可能未被攻击的目标的黑名单。这个列表使用生物名称，所以白名单生物是可行的。
-ie.manual.entry.turret2=化学喷射炮塔利用了<link;chemthrower;§o§neponymous §o§n工§o§n具§r>的液体推进能力向目标喷射任何东西，可以是水，可以是火，也可以是柴油。
+ie.manual.entry.turret2=化学喷射炮塔利用了<link;chemthrower;§o§n同§o§n名§o§n工§o§n具§r>的液体推进能力向目标喷射任何东西，可以是水，可以是火，也可以是柴油。
 ie.manual.entry.turret3=炮塔的底部和后部具有流体端口，以允许管道与其连接。此外，GUI有一个左侧的按钮，可以禁止或启用导向火焰，点燃分配的流体，只要它是易燃的。<br> <br>本蓝图的提供者对用户的任何损失概不负责，邻居养的各种牲畜可能会遭殃。
 ie.manual.entry.turret4=机枪炮塔可以算是<link;revolver;§o§n左§o§n轮§r>的强化版本，它能容下更大更多的子弹。
 ie.manual.entry.turret5=用于自动插入弹药和提取用过的外壳的端口位于基座的后部和底部。炮塔可以存放一整组子弹，GUI里有一个按钮来切换自动排出废弃的外壳。<br> <br>注意某些弹药可能会对用户或其财产造成附带损害。
