@@ -348,7 +348,7 @@ item.immersiveengineering.tool.manual.name=工程师手册
 item.immersiveengineering.toolbox.name=工程师工具箱
 
 item.immersiveengineering.pickaxe_steel.name=钢镐
-item.immersiveengineering.shovel_steel.name=钢铲
+item.immersiveengineering.shovel_steel.name=钢锹
 item.immersiveengineering.axe_steel.name=钢斧
 item.immersiveengineering.sword_steel.name=钢剑
 
@@ -638,12 +638,12 @@ desc.immersiveengineering.info.blockSide.connectFluid.-1=无连接
 desc.immersiveengineering.info.blockSide.connectFluid.0=流体输入
 desc.immersiveengineering.info.blockSide.connectFluid.1=流体输出
 
-desc.immersiveengineering.info.filter.oreDict=过滤器：矿物辞典<br>基于矿物辞典<br>名称过滤物品。
+desc.immersiveengineering.info.filter.oreDict=过滤器：矿物词典<br>基于矿物词典<br>名称过滤物品。
 desc.immersiveengineering.info.filter.nbt=过滤器：NBT数据<br>基于NBT数据对<br>物品进行过滤。
 desc.immersiveengineering.info.filter.fuzzy=过滤器：模糊<br>在过滤物品时<br>无视物品损害值。
 
-desc.immersiveengineering.info.oreDict.off=矿物辞典：禁用
-desc.immersiveengineering.info.oreDict.on=矿物辞典：启用
+desc.immersiveengineering.info.oreDict.off=矿物词典：禁用
+desc.immersiveengineering.info.oreDict.on=矿物词典：启用
 
 desc.immersiveengineering.info.mininglvl.-1=无
 desc.immersiveengineering.info.mininglvl.0=§7石头
@@ -713,7 +713,7 @@ desc.immersiveengineering.info.shader.immersiveengineering:shield=重型盾牌
 desc.immersiveengineering.info.shader.immersiveengineering:minecart=矿车
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=气球
 desc.immersiveengineering.info.shader.immersiveengineering:banner=旗帜
-desc.immersiveengineering.info.shader.set=§l皮肤r：
+desc.immersiveengineering.info.shader.set=§l皮肤§r：
 desc.immersiveengineering.info.shader.reference=§l参考潮流文化§r：
 desc.immersiveengineering.info.shader.details=§l附加信息§r：
 
@@ -888,7 +888,7 @@ chat.immersiveengineering.command.mineral.list.help=§6用法：/ie mineral list
 chat.immersiveengineering.command.mineral.get.help=§6用法：/ie mineral get§r<br> 显示当前区块所含矿物
 chat.immersiveengineering.command.mineral.set.help=§6用法：/ie mineral set [矿物名]§r<br> 为当前区块设定矿物重载，不指定新矿藏则将清除矿物重载。
 chat.immersiveengineering.command.mineral.setDepletion.help=§6用法：/ie mineral setDepletion <数值>§r<br> 设定该区块的矿物的开采量，设定为-1表示该矿脉可无限开采。
-chat.immersiveengineering.command.mineral.get=该区块含有：%1$s
+chat.immersiveengineering.command.mineral.get=该区块含有：%1$s，覆盖：%2$s，耗尽：%3$s
 chat.immersiveengineering.command.mineral.set.invalidMineral=§c'%1$s'不是一个有效矿物名。请使用'/ie mineral list'获取有效矿物名列表。§r
 chat.immersiveengineering.command.mineral.set.sucess=矿物重载已设定为'%1$s'。
 chat.immersiveengineering.command.mineral.set.clear=矿物重载（%1$s）已清除。
@@ -1059,7 +1059,7 @@ ie.manual.entry.updateNews_21=一种全新的<link;breaker;§o§n断§o§n路§o
 ie.manual.entry.updateNews_3.name=版本0.6.3更新内容
 ie.manual.entry.updateNews_3.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_30=亲爱的工程师们！<br><br>这次的更新为沉浸工程带来了一些改动并添加了些许新的特性：<br><br>在遭受剧烈脑震荡之后，首席工程师亚当准备着手设计<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>，一种能够把任何液体喷射到任何地方的设备。它还内置了一个点火装置来引燃喷射的液体。我们觉得亚当可能是疯掉了。
-ie.manual.entry.updateNews_31=科研部门的另一项新发明是<link;chargingStation;§o§n充§o§n电§o§n站§r>，它能够让你将能量导入到你的物品当中为其充电。<br>助理工程师“眼镜蛇”也展示了他的最新发明：<link;conveyor;§o§n卸§o§n货§o§n传§o§n送§o§n带§r;2>，它能够将通过它的物品放置到它下方的存储容器中。<br>比<link;sorter;§o§n物§o§n品§o§n路§o§n由§o§n器§r>更棒的是，它能够通过设置矿物辞典，NBT数据或模糊筛选来对物品进行过滤！
+ie.manual.entry.updateNews_31=科研部门的另一项新发明是<link;chargingStation;§o§n充§o§n电§o§n站§r>，它能够让你将能量导入到你的物品当中为其充电。<br>助理工程师“眼镜蛇”也展示了他的最新发明：<link;conveyor;§o§n卸§o§n货§o§n传§o§n送§o§n带§r;2>，它能够将通过它的物品放置到它下方的存储容器中。<br>比<link;sorter;§o§n物§o§n品§o§n路§o§n由§o§n器§r>更棒的是，它能够通过设置矿物词典，NBT数据或模糊筛选来对物品进行过滤！
 ie.manual.entry.updateNews_32=其它一些值得一提的变动均和传输与装饰相关：<br>- <link;shader;§o§n皮§o§n肤§r> 现在能够被使用在矿车上<br>- <link;skyhook;§o§n工§o§n程§o§n师§o§n天§o§n钩§r> 一个能让你在电网上高速滑行并赶超矿车的工具<br> - <link;balloon;§o§n气球§r>能够让你更方便的高空悬挂接线器并为之前提到的天钩搭建架空索<br>- <link;concrete;§o§n混§o§n凝§o§n土§r> 当你从空索上掉落时为你提供一个硬着陆~
 ie.manual.entry.updateNews_33=最后，财政部门因为无法准确追踪我们的用电量而时常找我们麻烦。在经过激烈的争论之后，他们给了我们一份有关<link;eMeter;§o§n电§o§n流§o§n互§o§n感§o§n器§r>的蓝图，一种能够测量流通能量的仪器。不用说，当他们知道电弧炉的真正能耗之后他们变得更加不开心了。
 
@@ -1163,7 +1163,7 @@ ie.manual.entry.shield.subtext=一夫当关
 ie.manual.entry.shield0=重型盾牌是直接由你熟悉的普通盾牌升级得到的。使用方式和普通盾牌一样，可阻挡前方的大部分进攻伤害，但其耐用性已经大大增加。
 ie.manual.entry.shield1=§6闪关灯§r是由灯泡和镁反光板结合而成的产物。受到攻击时，闪光灯会产生一束明亮的闪光，使敌人混乱并迷失方向。
 ie.manual.entry.shield2=将震击发生器装配到盾牌中可以反击攻击你敌人。当盾牌被击中时，会发出震动，对敌人造成轻微的伤害。此外，它会反弹发射物。
-ie.manual.entry.shield3=§6磁力手套§r能用一种简单的方式触发护盾。使用该升级配件，只需双击§l<keybind;key.immersiveengineering.magnetEquip>§r键，便能检索您的物品栏并将盾牌吸入你的右手。
+ie.manual.entry.shield3=§6磁力手套§r能用一种简单的方式触发护盾。使用该升级配件，只需双击§l<keybind;key.immersiveengineering.magnetEquip>§r键，便能检索你的物品栏并将盾牌吸入你的副手栏。
 
 ie.manual.entry.toolbox.name=工程师工具箱
 ie.manual.entry.toolbox.subtext=工程师的手袋
@@ -1216,7 +1216,7 @@ ie.manual.entry.redstoneWires1=§6接线器§r在连红石线圈时和其他接�
 ie.manual.entry.redstoneWires2=§6红石探测接线器§r具有比较器的比较功能。虽然它们无法积极地比较信号，但它们能够读取容器的存货量是多少。
 ie.manual.entry.redstoneWires3=另外，这些探头可以在两个频道上工作，将它们的读取信号发送到另一个频道，并且仍然在另一个频道上接收信号。这些频道可以通过使用工程师锤进行更改。<br> <br>请注意，许多IE的多方块结构具有比较器功能，如下页所述。如果可用，多方块的红石控制面是连接比较器的指定位置点。
 ie.manual.entry.redstoneWires4=§l储罐：<link;tank;§o§n详§o§n细§o§n内§o§n容§r;1><br>§l筒仓：<link;silo;§o§n详§o§n细§o§n内§o§n容§r;2><br>§l装配机：§r基于容器填充状态发出信号。<br>§l自动合成台：§r基于容器填充状态发出信号<br>§l挤压机：§r基于容器填充状态发出信号<br>§l发酵机：§r基于容器填充状态发出信号。
-ie.manual.entry.redstoneWires5=§l挖掘机：§r根据矿脉中剩余的矿石量发出信号<br>§l电弧炉：§r基于容器填充状态发出信号。<br>另外，将比较器连接到顶部的电极将根据其完整性发送信号。<br>§l混合机：§r基于容器填充状态发出信号。<br>
+ie.manual.entry.redstoneWires5=§l挖掘机：§r根据矿脉中剩余的矿石量发出信号<br>§l电弧炉：§r基于容器填充状态发出信号。<br>另外，将比较器连接到顶部的电极将根据其完整性发送信号。<br>§l混合器：§r基于容器填充状态发出信号。<br>
 
 ie.manual.entry.thermoElectric.name=热传导发电机
 ie.manual.entry.thermoElectric.subtext=冷和热
@@ -1245,7 +1245,7 @@ ie.manual.entry.metalconstruction3=金属梯子...好吧，你可以用金属材
 
 ie.manual.entry.lighting.name=工程照明
 ie.manual.entry.lighting.subtext=照亮荒芜之地
-ie.manual.entry.lighting0=工厂长廊的深处可能会十分昏暗。为了能够找到通往机器的路，你可能需要用一些灯来照亮这些区域。这些灯能够提供等同于萤石块的亮度。
+ie.manual.entry.lighting0=工厂长廊的深处可能会十分昏暗。为了能够找到通往机器的路，你可能需要用一些灯来照亮这些区域。这些灯能够提供等同于荧石块的亮度。
 ie.manual.entry.lighting1=电灯是最早使用电能的发明之一。你需要用线缆将它们直接连至你的电网当中来使其工作。电能可以通过它们，因此你可以将它们连成一排。
 ie.manual.entry.lighting2=只需为它们提供一点点能量，它们就可以像正常灯一样照亮周围区域，不仅如此，它们还能防止敌对生物在半径32格范围内生成！
 ie.manual.entry.lighting3=泛光灯是一种强光源。尽管它们对电能的需求比普通电灯高一些，它们能够产生一个32格远的光锥。对其顶部或底部使用工程师锤来旋转灯光或对其侧面使用来改变倾角。
@@ -1321,7 +1321,7 @@ ie.manual.entry.blueprints0=这一页的特点是所有的工程师蓝图都可�
 ie.manual.entry.mixer.name=混合器
 ie.manual.entry.mixer.subtext=大桶的饼干面团！
 ie.manual.entry.mixer0=混合器是一种多方块结构，可以将固体溶解在流体中，将它们混合在一起。该结构如上图所示搭建，并使用工程锤右击中心方块上成型。
-ie.manual.entry.mixer1=这种机器最常见的用途是搅拌液态混凝土，2份沙子1份砂砾和1份粘土，也可用水配合各种成分制成药水。
+ie.manual.entry.mixer1=这种机器最常见的用途是搅拌液态混凝土，2份沙子1份沙砾和1份粘土，也可用水配合各种成分制成药水。
 ie.manual.entry.mixer2=液体通过其电源底部的端口输入挤压机。物品可以通过后面的两个舱口输入。前面的流体端口用作流体输出。<br>在前面的控制面板上应用红石信号将停止机器，这种行为可以通过使用工程师锤来反转。
 
 ie.manual.entry.squeezer.name=挤压机
@@ -1363,11 +1363,11 @@ ie.manual.entry.conveyor.subtext=谁还需要铁路？
 ie.manual.entry.conveyor0=传送带运输是把附近物品搬回家的便捷途径，当它有足够的动力时可以搬运像是牛、羊之类的生物，它们真正的优势在于物品的运输。<br>把物品丢到传送带上即可实现搬运。如果末端是能够接收物品的容器，那物品将会被放入到容器里。
 ie.manual.entry.conveyor1=对着传送带的漏斗可以把物品输出为可掉落形态，使用工程师锤右击可以转动传送器的方向，潜行时右击则可调整为上行或下行。<br>
 ie.manual.entry.conveyor2=卸货传送带仅仅是普通传送带中间多了一个舱口，允许货物从中间传输到下面。<br>物品会自动输送进下放的存储容器或者，如果下方是空的物品会被扔在地上。
-ie.manual.entry.conveyor3=垂直传送带可以贴在墙上，使垂直运输物品称为可能。用桶还可以让它运输实体。虽然用桶可以运输实体，但传送带还是不能运输液体。<br>这种传送带可以自动将物品输入容器中，也可以接收顶上的传送带掉下来的物品。
-ie.manual.entry.conveyor4=分流传送带的功能很简单，将运送来的物品和实体不断交替地分流到左右两侧，籍此可以让你的物品均匀地分配到多个工厂里。
-ie.manual.entry.conveyor5=绝缘传送带的工作方式与普通输送带一样，但是由一块脚手架覆盖，可防止玩家从其中拾取物品。<br>您可以用其他类型的脚手架或玻璃板右键单击以更换盖子的外观。
-ie.manual.entry.conveyor6=类似地，垂直传送带也可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍允许垂直运输。
-ie.manual.entry.conveyor7=同样，抽取传送带也可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍允许垂直运输。
+ie.manual.entry.conveyor3=抽取传送带具有以类似于漏斗的方式从物品栏中提取物品的能力。然而，与后者不同，它没有内部物品栏，并把抽取出来的物品放在传送带上。<br>用工程师锤潜行右击改变其输入侧，使用剪线钳来调整它的抽取速率。
+ie.manual.entry.conveyor4=垂直传送带可以贴在墙上，使垂直运输物品成为可能。用桶还可以让它运输实体。虽然用桶可以运输实体，但传送带还是不能运输液体。<br>这种传送带可以自动将物品输入容器中，也可以接收顶上的传送带掉下来的物品。
+ie.manual.entry.conveyor5=分流传送带的功能很简单，将运送来的物品和实体不断交替地分流到左右两侧，藉此可以让你的物品均匀地分配到多个工厂里。
+ie.manual.entry.conveyor6=绝缘传送带的工作方式与普通输送带一样，但是由一块脚手架覆盖，可防止玩家从其中拾取物品。<br>你可以用其他类型的脚手架或玻璃板右键单击以更换盖子的外观。
+ie.manual.entry.conveyor7=同样，抽取传送带和垂直传送带都可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍能正常工作。
 
 ie.manual.entry.furnaceHeater.name=外置加热器
 ie.manual.entry.furnaceHeater.subtext=你现在可以用能量烹饪食物啦！
@@ -1395,7 +1395,7 @@ ie.manual.entry.fluidPipes5=液阀充当管道系统的终点，允许流体放�
 ie.manual.entry.sorter.name=物品路由器
 ie.manual.entry.sorter.subtext=左脚放黄色上，右手放绿色上
 ie.manual.entry.sorter0=物品路由器能够接受物品并经过通道过滤后重新分配它们。将其放置并右键可打开交互界面，会显示出六种根据颜色和方向划分的过滤器。
-ie.manual.entry.sorter1=当物品进入到路由器后，它会被转至与其相匹配的输出口。或者，如果没有相匹配的输出口，它会被转入未设置过滤的输出口。如果物品无法被分配，它将无法进入路由器。物品同样无法被输出到它进入路由器的方向。<br>潜行右键一侧使其路由规则遵从矿物辞典。需要注意该路由规则对游戏有着较高的负荷。
+ie.manual.entry.sorter1=当物品进入到路由器后，它会被转至与其相匹配的输出口。或者，如果没有相匹配的输出口，它会被转入未设置过滤的输出口。如果物品无法被分配，它将无法进入路由器。物品同样无法被输出到它进入路由器的方向。<br>每个过滤器上方的按钮可让路由器匹配或忽略矿物词典，NBT和元数据。
 
 ie.manual.entry.fluidSorter.name=流体路由器
 ie.manual.entry.fluidSorter.subtext=牛奶向左，酸液向右
@@ -1456,10 +1456,10 @@ ie.manual.entry.skyhook1=只需在接近线缆时按住鼠标右键，你就会�
 
 ie.manual.entry.shader.name=皮肤
 ie.manual.entry.shader.subtext=蓝色！不，黄色！
-ie.manual.entry.shader0=皮肤是一些你能够在世界中找到或与村民交易获得的物品。它们本身没有什么功能，但它们可以装配到<link;revolver;§o§n左§o§n轮§o§n手§o§n枪§r>、<link;drill;§o§n机§o§n械§o§n钻§r>、<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>或<link;railgun;§o§n磁§o§n轨§o§n炮§r>上，以此改变这些物品的外观设计。当然，也可以用在其它等待你发现的东西上。简单的将它们放入<link;workbench;§o§n工程师§o§n装配台§r>并将皮肤放入合适的装配栏中即可。<br>你也可以将其右键应用在矿车上！
+ie.manual.entry.shader0=皮肤是一些你能够在世界中找到或与村民交易获得的物品。它们本身没有什么功能，但它们可以装配到<link;revolver;§o§n左§o§n轮§o§n手§o§n枪§r>、<link;drill;§o§n机§o§n械§o§n钻§r>、<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>或<link;railgun;§o§n磁§o§n轨§o§n炮§r>上，以此改变这些物品的外观设计。当然，也可以用在其它等待你发现的东西上。简单的将它们放入<link;workbench;§o§n工程师§o§n装配台§r>并将皮肤放入合适的装配栏中即可。<br>你也可以将其右键应用在矿车，旗帜或者<link;balloon;§o§n气球§r>上！
 ie.manual.entry.shader1=皮肤奖励袋内含一种随机皮肤。可以在地牢箱子中找到，或者和村民交易以及怪物掉落。所开出的皮肤稀有度和袋子本身相同或者更稀有。当使用一个袋子时，你得到未拥有的皮肤的概率要比已获取的更高一些。
 ie.manual.entry.shader2=皮肤奖励袋能合成为两个低一级的奖励袋，让你能有机会重新尝试。皮肤本身也能够合成为一个低级的奖励袋。
-ie.manual.entry.shader3=皮肤奖励袋可以制作成两个较低级别的袋子。这将降低您获得更稀有的皮肤的机会，但能为您提供更多的尝试。
+ie.manual.entry.shader3=皮肤奖励袋可以制作成两个较低级别的袋子。这将降低你获得更稀有的皮肤的机会，但能为你提供更多的尝试。
 //Shaders themselves can also be crafted into a single bag of the lower level.
 
 ie.manual.entry.shaderList.name=皮肤列表
@@ -1470,7 +1470,7 @@ ie.manual.entry.shaderList.order=获得：
 ie.manual.entry.powerpack.name=电容背包
 ie.manual.entry.powerpack.subtext=难道是....雷....埃贡！
 ie.manual.entry.powerpack0=能量储存需要空间和一些重量级的组件。因此，在每个工具中分别存储大量的能量是不切实际的。<br>电容器背包可是算是一种妥协办法，为任何电力工具提供存储的能量。
-ie.manual.entry.powerpack1=背包对任何装在主体或手上的工具以及您佩戴的任何护甲进行充电。<br>电容器可以像一块胸甲一样穿在你的身上，或者你可以把它附在最常用的装甲上以同时获得供电和保护的好处。
+ie.manual.entry.powerpack1=背包对任何装在主体或手上的工具以及你佩戴的任何护甲进行充电。<br>电容器可以像一块胸甲一样穿在你的身上，或者你可以把它附在最常用的装甲上以同时获得供电和保护的好处。
 
 ie.manual.entry.railgun.name=磁轨炮
 ie.manual.entry.railgun.subtext=突破速度的束缚
@@ -1485,7 +1485,7 @@ ie.manual.entry.razorwire0=刀片刺网是连接有金属碎片的电线。它�
 
 ie.manual.entry.turret.name=炮塔
 ie.manual.entry.turret.subtext=你还站在那干嘛？
-ie.manual.entry.turret0=炮塔是您工厂自动防御的下一步。它们具有结合机械“大脑”的复杂光学系统，以有效地区分和获取目标，并使用内置武器来调教实体。<br>所有炮塔的基座都有能量口，通入红石信号才能激活，也可以通过用工程师锤潜行右击反转。
+ie.manual.entry.turret0=炮塔是你工厂自动防御的下一步。它们具有结合机械“大脑”的复杂光学系统，以有效地区分和获取目标，并使用内置武器来调教实体。<br>所有炮塔的基座都有能量口，通入红石信号才能激活，也可以通过用工程师锤潜行右击反转。
 ie.manual.entry.turret1=被放置后，炮塔将记住其所有者，不允许其他用户破坏或修改它们。右击炮塔打开GUI，该GUI具有带有输入字段的名称列表以及多个定位选项。<br>默认情况下，该列表是可能未被攻击的目标的黑名单。这个列表使用生物名称，所以白名单生物是可行的。
 ie.manual.entry.turret2=化学喷射炮塔利用了<link;chemthrower;§o§n同§o§n名§o§n工§o§n具§r>的液体推进能力向目标喷射任何东西，可以是水，可以是火，也可以是柴油。
 ie.manual.entry.turret3=炮塔的底部和后部具有流体端口，以允许管道与其连接。此外，GUI有一个左侧的按钮，可以禁止或启用导向火焰，点燃分配的流体，只要它是易燃的。<br> <br>本蓝图的提供者对用户的任何损失概不负责，邻居养的各种牲畜可能会遭殃。
@@ -1608,7 +1608,7 @@ ie.manual.entry.computer.teslaCoil.name=特斯拉线圈 ☎
 ie.manual.entry.computer.teslaCoil.subtext=不，这不是固态特斯拉线圈
 ie.manual.entry.computer.teslaCoil0=§lisActive()§r：若线圈已激活则返回true，否则返回false<br>§lsetRSMode(boolean)§r：设定线圈的红石控制模式<br>§lsetPowerMode(boolean)§r：设定线圈的工作模式，可设定为高能模式为true则低能模式为false(<link;teslaCoil;§o§nexplanation§r;2>)。仅当线圈未激活时有效。
 
-ie.manual.entry.computer.mixer.name=混合机 ☎
+ie.manual.entry.computer.mixer.name=混合器 ☎
 ie.manual.entry.computer.mixer.subtext=曲奇面团的大缸！
 ie.manual.entry.computer.mixer0=§lisActive（）§r：返回搅拌机当前是否在工作。<br>§lisValidRecipe（）§r：返回输入的任意物品和液体的组合是否存在一个有效的合成配方。<br>§lgetEnergyStored（）§r ：返回存储在本机中的能量数量。<br>§lgetMaxEnergyStored（）§r：返回此机器中可以存储的最大能量数量<br>§lgetInputStack（int slot）§r：返回 指定的输入槽（1-12）。
 ie.manual.entry.computer.mixer1=§lprogress§r和§lmaxProgress§r用于存储当前进度和在指定槽位上完成的进度（两个值在tick中）。<br>§lgetTank（）§r：返回底部流体储罐。
