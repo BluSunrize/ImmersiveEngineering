@@ -1030,8 +1030,8 @@ immersiveengineering.potion.slippery=易滑
 immersiveengineering.potion.conductive=导电
 immersiveengineering.potion.sticky=粘性
 immersiveengineering.potion.stunned=眩晕
-immersiveengineering.potion.concreteFeet=缓慢
-immersiveengineering.potion.flashed=闪现
+immersiveengineering.potion.concreteFeet=凝滞
+immersiveengineering.potion.flashed=闪光
 
 #MANUAL
 ie.manual.currentVersion=——当前
