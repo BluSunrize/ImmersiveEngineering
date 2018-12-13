@@ -878,7 +878,7 @@ chat.immersiveengineering.info.coreDrill.result.none=岩芯分析完毕，未检
 chat.immersiveengineering.info.coreDrill.infinite=无限
 
 chat.immersiveengineering.info.pump.placeCobble.true=这个泵可以将液体替换为圆石。
-chat.immersiveengineering.info.pump.placeCobble.false=这个泵可以将不再把液体替换为圆石。§6警告：§f在处理大量液体时可能会产生延迟不建议使用！
+chat.immersiveengineering.info.pump.placeCobble.false=这个泵将不再把液体替换为圆石。§6警告：§f在处理大量液体时可能会产生延迟不建议使用！
 chat.immersiveengineering.info.energyTransfered=%1$sticks内平均能量流动：%2$s Flux/t
 
 chat.immersiveengineering.command.available=§6可用命令：§r %1$s
@@ -1113,7 +1113,7 @@ ie.manual.entry.hemp.subtext=530纺织物
 ie.manual.entry.hemp0=工业大麻是一种备受瞩目的作物！不仅其种子可以用于加工 <link;biodiesel;§o§n生§o§n物§o§n柴§o§n油§r>，工业大麻纤维对于制作坚韧布料也至关重要。种子可以通过清理草丛获得。
 ie.manual.entry.hemp1=坚韧布料是一种使用大麻纤维制作的极富弹性的材料。它被广泛用于<link;generator;§o§n改§o§n良§o§n风§o§n车§r;3>、<link;balloon;§o§n气§o§n球§r>以及§o§n气垫§r的制作。关于气垫的详细介绍可以在本条目的下一页找到。
 ie.manual.entry.hemp2=气垫是一种用坚韧布料制成，并填充以空气的简易方块。当有人掉落在上面时，它可以吸收冲击力，籍此阻止摔伤事故发生，但它并不会像史莱姆方块一样把人再弹起来。
-ie.manual.entry.hemp3=带状帘是安装在门框或其他方块间隙上的纺织物，用于适当的阻挡视野。<br>当实体穿过时，它将发出红石信号。用锤子右键点击它们调试红石信号频率。<br>另外，它们与皮革套一样同样可以进行染色。
+ie.manual.entry.hemp3=带状帘是安装在门框或其他方块间隙上的纺织物，用于适当的阻挡视野。<br>当实体穿过时，它将发出红石信号。用锤子右击它们调试红石信号频率。<br>另外，它们与皮革套一样同样可以进行染色。
 
 ie.manual.entry.cokeoven.name=焦炉
 ie.manual.entry.cokeoven.subtext=热门话题！
@@ -1123,7 +1123,7 @@ ie.manual.entry.cokeovenBlock=搭建一个焦炉，首先需要准备27个焦炉
 ie.manual.entry.alloysmelter.name=合金窑
 ie.manual.entry.alloysmelter.subtext=混合金属
 ie.manual.entry.alloysmelter0=合金窑是由砂岩和石砖制成的简易冶炼炉。其内部的温度高到足以使金属熔化成流体状态并混合，形成<link;alloys;§o§n合§o§n金§r>。<br>用于生产一些重要的合金，如琥珀金和康铜，可以帮助你省去那些繁琐的粉末合成。
-ie.manual.entry.alloysmelter1=窑炉的搭建如上图所示，将8个窑砖搭建成2x2x2多结构方块，然后用工程师锤右键单击其中一块窑砖即可。
+ie.manual.entry.alloysmelter1=窑炉的搭建如上图所示，将8个窑砖搭建成2x2x2多结构方块，然后用工程师锤右击其中一块窑砖即可。
 
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
@@ -1168,7 +1168,7 @@ ie.manual.entry.shield3=§6磁力手套§r能用一种简单的方式触发护�
 ie.manual.entry.toolbox.name=工程师工具箱
 ie.manual.entry.toolbox.subtext=工程师的手袋
 ie.manual.entry.toolbox0=工具箱是一种简单便捷的存储容器，用于存放工程师的一些必要物品！鼠标悬停在对应格子上时会显示其可存放的物品类型。<br>'食物'和'任意物品'意义一目了然，'线材'栏对应线圈，接线器以及一些类似物品，而'工具'栏会存放任何IE工具或镐、锄、斧类工具！
-ie.manual.entry.toolbox1=潜行右键单击可将工具箱放置在地上。在放置时，它的物品栏仍然可以通过右键访问。再次潜行并右键点击工具箱将它拿起。
+ie.manual.entry.toolbox1=潜行右击可将工具箱放置在地上。在放置时，它的物品栏仍然可以通过右击访问。再次潜行并右击工具箱将它拿起。
 
 ie.manual.entry.graphite.name=石墨
 ie.manual.entry.graphite.subtext=煤炭工业产品
@@ -1188,7 +1188,7 @@ ie.manual.entry.wiringCapacitor=§l电容器§r作为能量储存单元而存在
 ie.manual.entry.wiringTransformer0=§l变压器§r允许你在两种不同类型的线缆间运输能源。最弱的线缆会限制传输的速率。另外高压变压器可以直接变压为低压或中压，所以你并不需要接两个变压器。
 ie.manual.entry.wiringTransformer1=你可以将<link;wiring;§o§n变§o§n压§o§n器§o§n与§o§n木§o§n杆§r;3>像第四页的第二张图那样搭建，然而只有非高压变压器才能这样搭建。
 ie.manual.entry.wiringCutters=§l剪线钳§r用于移除已经被安装好的线缆，只需右击便可移除线缆。
-ie.manual.entry.wiringVoltmeter=§l电压表§r用于测量连接情况。右键右击一个电容器能读取当前的能量储存，按住Shift右击2个接线器还能计算它们之间的平均损耗。
+ie.manual.entry.wiringVoltmeter=§l电压表§r用于测量连接情况。右击一个电容器能读取当前的能量储存，按住Shift右击2个接线器还能计算它们之间的平均损耗。
 ie.manual.entry.wiringFeedthrough0=通透绝缘体能够在不打洞的情况下从墙体的一侧接线至墙体另一侧，它们可以在中间创建任何“正常”的实体方块。所有常见类型的接线器（Flux与红石）都可用于创建相应线缆类型的通透绝缘体。
 ie.manual.entry.wiringFeedthrough1=用锤子右击其中一个接线器形成多方块结构。
 
@@ -1207,7 +1207,7 @@ ie.manual.entry.breaker2=红石断路器功能同断路刀闸类似，但是无�
 
 ie.manual.entry.eMeter.name=电流互感器
 ie.manual.entry.eMeter.subtext=每小时88Flux！
-ie.manual.entry.eMeter0=电流互感器是测量能量流动的一种仪器。它可接入电网的中的任何地方并检测通过的能量，右键它会反馈当前的平均能量，以Flux/t为单位。
+ie.manual.entry.eMeter0=电流互感器是测量能量流动的一种仪器。它可接入电网的中的任何地方并检测通过的能量，右击它会反馈当前的平均能量，以Flux/t为单位。
 
 ie.manual.entry.redstoneWires.name=红石线圈
 ie.manual.entry.redstoneWires.subtext=集成电路
@@ -1255,8 +1255,8 @@ ie.manual.entry.metalPress.name=金属冲压机
 ie.manual.entry.metalPress.subtext=压力山大！
 ie.manual.entry.metalPress0=金属冲压机可用于自动将金属挤压成型。它的原理是用高压活塞将模具压到金属锭上，以将金属锭挤压为板材，棒或其他金属零件。<br>冲压机结构如上图所示，用工程师锤敲击活塞来完成搭建。
 ie.manual.entry.metalPress1=能量从上方输入，物品通过传送带，沿着其显示方向输入输出。底层中间的方块便是红石控制接口，手持工程师锤右击可对其进行反相。
-ie.manual.entry.metalPress2=若想正常工作，需要在活塞上加装一个模具。模具的制作如上图所示，手持模具右键金属冲压机可将其放入。
-ie.manual.entry.metalPress3=模具的制作如上图所示，线切割机对于每一个合成操作都会造成一些损坏。然后通过用手中的模具右键单击多方块结构将它们插入金属冲压机中
+ie.manual.entry.metalPress2=若想正常工作，需要在活塞上加装一个模具。模具的制作如上图所示，手持模具右击金属冲压机可将其放入。
+ie.manual.entry.metalPress3=模具的制作如上图所示，剪线钳对于每一个合成操作都会造成一些损坏。然后用手中的模具右击多方块结构将它们插入金属冲压机中。
 ie.manual.entry.metalPress4=压缩和解压包的模具可用于将相同物品进行2x2或者3x3合成，并重新打包。这可以用于将矿锭存储为块，或者自动合成像沙石这样的简单方块。
 
 ie.manual.entry.tank.name=储罐
@@ -1366,7 +1366,7 @@ ie.manual.entry.conveyor2=卸货传送带仅仅是普通传送带中间多了一
 ie.manual.entry.conveyor3=抽取传送带具有以类似于漏斗的方式从物品栏中提取物品的能力。然而，与后者不同，它没有内部物品栏，并把抽取出来的物品放在传送带上。<br>用工程师锤潜行右击改变其输入侧，使用剪线钳来调整它的抽取速率。
 ie.manual.entry.conveyor4=垂直传送带可以贴在墙上，使垂直运输物品成为可能。用桶还可以让它运输实体。虽然用桶可以运输实体，但传送带还是不能运输液体。<br>这种传送带可以自动将物品输入容器中，也可以接收顶上的传送带掉下来的物品。
 ie.manual.entry.conveyor5=分流传送带的功能很简单，将运送来的物品和实体不断交替地分流到左右两侧，藉此可以让你的物品均匀地分配到多个工厂里。
-ie.manual.entry.conveyor6=绝缘传送带的工作方式与普通输送带一样，但是由一块脚手架覆盖，可防止玩家从其中拾取物品。<br>你可以用其他类型的脚手架或玻璃板右键单击以更换盖子的外观。
+ie.manual.entry.conveyor6=绝缘传送带的工作方式与普通输送带一样，但是由一块脚手架覆盖，可防止玩家从其中拾取物品。<br>你可以用其他类型的脚手架或玻璃板右击以更换盖子的外观。
 ie.manual.entry.conveyor7=同样，抽取传送带和垂直传送带都可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍能正常工作。
 
 ie.manual.entry.furnaceHeater.name=外置加热器
@@ -1394,7 +1394,7 @@ ie.manual.entry.fluidPipes5=液阀充当管道系统的终点，允许流体放�
 
 ie.manual.entry.sorter.name=物品路由器
 ie.manual.entry.sorter.subtext=左脚放黄色上，右手放绿色上
-ie.manual.entry.sorter0=物品路由器能够接受物品并经过通道过滤后重新分配它们。将其放置并右键可打开交互界面，会显示出六种根据颜色和方向划分的过滤器。
+ie.manual.entry.sorter0=物品路由器能够接受物品并经过通道过滤后重新分配它们。将其放置并右击可打开交互界面，会显示出六种根据颜色和方向划分的过滤器。
 ie.manual.entry.sorter1=当物品进入到路由器后，它会被转至与其相匹配的输出口。或者，如果没有相匹配的输出口，它会被转入未设置过滤的输出口。如果物品无法被分配，它将无法进入路由器。物品同样无法被输出到它进入路由器的方向。<br>每个过滤器上方的按钮可让路由器匹配或忽略矿物词典，NBT和元数据。
 
 ie.manual.entry.fluidSorter.name=流体路由器
@@ -1423,7 +1423,7 @@ ie.manual.entry.maintenanceKit1=维护工具包，一套用结实麻布包装的
 ie.manual.entry.revolver.name=左轮手枪
 ie.manual.entry.revolver.subtext=通缉：死或生
 ie.manual.entry.revolver0=左轮手枪，一把来自文明时代的优雅武器，可谓是小型机械的智慧结晶。这里，小型仅仅是相对而言，毕竟这把武器填装的是12号弹药。<br>和采矿机械钻类似，左轮手枪同样能够在<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r>进行改造。关于改造的详细信息在本条目的最后一页中有详细叙述。
-ie.manual.entry.revolver1=左轮手枪可装载不同类型的弹药。若想装填弹药，潜行右键武器，之后将弹药放入物品栏中。<br>若物品栏中有快速装弹器，装弹器将会在你发射出最后一颗子弹后对左轮进行装填。
+ie.manual.entry.revolver1=左轮手枪可装载不同类型的弹药。若想装填弹药，潜行右击武器，之后将弹药放入物品栏中。<br>若物品栏中有快速装弹器，装弹器将会在你发射出最后一颗子弹后对左轮进行装填。
 ie.manual.entry.revolver2=通过在左轮上安插刺刀，你将得到一把近身格斗武器，让你能够在近距离造成和铁剑一样的伤害。
 ie.manual.entry.revolver3=扩充弹夹让你能够在左轮手枪中额外装填六发弹药。该弹夹无法被快速装弹器装填。
 ie.manual.entry.revolver4=加强电子管能够在弹药上附加电流。电击会在击中目标前一直保持（不要问它的工作原理）然后传递出去。目标会被眩晕不到一秒的时间同时他们装备的所有能量武器会受到轻微的能量流失。
@@ -1444,7 +1444,7 @@ ie.manual.entry.bullets_wolfpack=<br>§l狼群弹§r是一种集束子弹，发�
 
 ie.manual.entry.chemthrower.name=化学喷射器
 ie.manual.entry.chemthrower.subtext=烧！掉！一！切！
-ie.manual.entry.chemthrower0=化学喷射器是一种能够将内部储液罐中液体喷射出去的装置。该装置能够装在任何液体或气体，而且右键就会将其喷洒出去。<br>若喷射出的液体是可燃液体，它还有点燃液体的功能。潜行右键来使用点火装置。
+ie.manual.entry.chemthrower0=化学喷射器是一种能够将内部储液罐中液体喷射出去的装置。该装置能够装在任何液体或气体，而且右击就会将其喷洒出去。<br>若喷射出的液体是可燃液体，它还有点燃液体的功能。潜行右击来使用点火装置。
 ie.manual.entry.chemthrower1=同其它工具一样，化学喷射器可以在<link;workbench;§o§n工§o§n程§o§n师§o§n装§o§n配§o§n台§r>中进行改装。这些升级将会影响储罐的大小，喷射的范围以及喷射速度。<br><br>大型燃料缸能够增加化学喷射器的储量至2000mb。
 ie.manual.entry.chemthrower2=聚焦喷嘴会降低喷射速度但会略微增加喷射范围，让你能够更精准的击中远处目标。
 ie.manual.entry.chemthrower3=这个液体罐允许 §6化学喷射器§r 储存多达三种不同的液体。你可以按住潜行加鼠标滚轮 <config;b;chemthrower_scroll;切换不同的液体类型，或使用;using> 快捷键 §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r（如果你有在选项中设置）。<br>这个升级和 §6大型燃料缸§r 相互排斥。
@@ -1456,7 +1456,7 @@ ie.manual.entry.skyhook1=只需在接近线缆时按住鼠标右键，你就会�
 
 ie.manual.entry.shader.name=皮肤
 ie.manual.entry.shader.subtext=蓝色！不，黄色！
-ie.manual.entry.shader0=皮肤是一些你能够在世界中找到或与村民交易获得的物品。它们本身没有什么功能，但它们可以装配到<link;revolver;§o§n左§o§n轮§o§n手§o§n枪§r>、<link;drill;§o§n机§o§n械§o§n钻§r>、<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>或<link;railgun;§o§n磁§o§n轨§o§n炮§r>上，以此改变这些物品的外观设计。当然，也可以用在其它等待你发现的东西上。简单的将它们放入<link;workbench;§o§n工程师§o§n装配台§r>并将皮肤放入合适的装配栏中即可。<br>你也可以将其右键应用在矿车，旗帜或者<link;balloon;§o§n气球§r>上！
+ie.manual.entry.shader0=皮肤是一些你能够在世界中找到或与村民交易获得的物品。它们本身没有什么功能，但它们可以装配到<link;revolver;§o§n左§o§n轮§o§n手§o§n枪§r>、<link;drill;§o§n机§o§n械§o§n钻§r>、<link;chemthrower;§o§n化§o§n学§o§n喷§o§n射§o§n器§r>或<link;railgun;§o§n磁§o§n轨§o§n炮§r>上，以此改变这些物品的外观设计。当然，也可以用在其它等待你发现的东西上。简单的将它们放入<link;workbench;§o§n工程师§o§n装配台§r>并将皮肤放入合适的装配栏中即可。<br>你也可以将其右击应用在矿车，旗帜或者<link;balloon;§o§n气球§r>上！
 ie.manual.entry.shader1=皮肤奖励袋内含一种随机皮肤。可以在地牢箱子中找到，或者和村民交易以及怪物掉落。所开出的皮肤稀有度和袋子本身相同或者更稀有。当使用一个袋子时，你得到未拥有的皮肤的概率要比已获取的更高一些。
 ie.manual.entry.shader2=皮肤奖励袋能合成为两个低一级的奖励袋，让你能有机会重新尝试。皮肤本身也能够合成为一个低级的奖励袋。
 ie.manual.entry.shader3=皮肤奖励袋可以制作成两个较低级别的袋子。这将降低你获得更稀有的皮肤的机会，但能为你提供更多的尝试。
@@ -1470,7 +1470,7 @@ ie.manual.entry.shaderList.order=获得：
 ie.manual.entry.powerpack.name=电容背包
 ie.manual.entry.powerpack.subtext=难道是....雷....埃贡！
 ie.manual.entry.powerpack0=能量储存需要空间和一些重量级的组件。因此，在每个工具中分别存储大量的能量是不切实际的。<br>电容器背包可是算是一种妥协办法，为任何电力工具提供存储的能量。
-ie.manual.entry.powerpack1=背包对任何装在主体或手上的工具以及你佩戴的任何护甲进行充电。<br>电容器可以像一块胸甲一样穿在你的身上，或者你可以把它附在最常用的装甲上以同时获得供电和保护的好处。
+ie.manual.entry.powerpack1=背包对任何拿在主手或副手上的工具以及你佩戴的任何护甲进行充电。<br>电容器可以像一块胸甲一样穿在你的身上，或者你可以把它附在最常用的装甲上以同时获得供电和保护的好处。
 
 ie.manual.entry.railgun.name=磁轨炮
 ie.manual.entry.railgun.subtext=突破速度的束缚
@@ -1481,7 +1481,7 @@ ie.manual.entry.railgun3=§6瞄准镜§r可以增加视野距离。潜行时可�
 
 ie.manual.entry.razorwire.name=刀片刺网
 ie.manual.entry.razorwire.subtext=超大的切片机
-ie.manual.entry.razorwire0=刀片刺网是连接有金属碎片的电线。它会减慢和削减任何试图通过它的实体。<br>刀片刺网只能使用钳子移除，任何其他尝试都会伤害玩家。<br>另外，可以连接一根LV电线，为刀片刺网附加额外伤害。
+ie.manual.entry.razorwire0=刀片刺网是连接有金属碎片的电线。它会减慢和削减任何试图通过它的实体。<br>刀片刺网只能使用剪线钳移除，任何其他尝试都会伤害玩家。<br>另外，你还可以连接一根低压线缆，为刀片刺网附加额外伤害。
 
 ie.manual.entry.turret.name=炮塔
 ie.manual.entry.turret.subtext=你还站在那干嘛？
