@@ -27,6 +27,15 @@ public abstract class ContainerInternalStorageItem extends ContainerItem
 		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setInventoryForUpdate(iinventory);
+		updateSlots();
+	}
+
+	@Override
+	protected void updateSlots()
+	{
+		if(inv==null)
+			return;
+		super.updateSlots();
 	}
 
 	@Override
