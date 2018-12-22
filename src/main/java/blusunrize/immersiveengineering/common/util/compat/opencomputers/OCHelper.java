@@ -30,6 +30,7 @@ public class OCHelper extends IECompatModule
 		API.driver.add(new EnergyMeterDriver());
 		API.driver.add(new TeslaCoilDriver());
 		API.driver.add(new MixerDriver());
+		API.driver.add(new BellJarDriver());
 	}
 
 	@Override

@@ -255,6 +255,14 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		return curPlantHandler;
 	}
 
+	public boolean shouldGrow()
+	{
+		ItemStack soil = inventory.get(SLOT_SOIL);
+		ItemStack seed = inventory.get(SLOT_SEED);
+		IPlantHandler handler = getCurrentPlantHandler();
+		return (energyStorage.getEnergyStored() > IEConfig.Machines.belljar_consumption&&fertilizerAmount > 0&&handler!=null&&handler.isCorrectSoil(seed, soil)&&fertilizerAmount > 0);
+	}
+
 	protected void sendSyncPacket(int type)
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
