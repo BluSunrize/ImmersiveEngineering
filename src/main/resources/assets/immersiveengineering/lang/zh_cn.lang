@@ -412,9 +412,9 @@ item.immersiveengineering.mold.gear.name=金属冲压模具：齿轮
 item.immersiveengineering.mold.rod.name=金属冲压模具：金属棒
 item.immersiveengineering.mold.bullet_casing.name=金属冲压模具：弹壳
 item.immersiveengineering.mold.wire.name=金属冲压模具：线缆
-item.immersiveengineering.mold.packing4.name=金属压缩模具：2x2压缩包
-item.immersiveengineering.mold.packing9.name=金属压缩模具：3x3压缩包
-item.immersiveengineering.mold.unpacking.name=金属压缩模具：解压包
+item.immersiveengineering.mold.packing4.name=金属冲压模具：2x2压缩包
+item.immersiveengineering.mold.packing9.name=金属冲压模具：3x3压缩包
+item.immersiveengineering.mold.unpacking.name=金属冲压模具：解压包
 
 item.immersiveengineering.graphite_electrode.name=石墨电极
 item.immersiveengineering.shader.name=皮肤
@@ -1367,7 +1367,7 @@ ie.manual.entry.conveyor3=抽取传送带具有以类似于漏斗的方式从物
 ie.manual.entry.conveyor4=垂直传送带可以贴在墙上，使垂直运输物品成为可能。用桶还可以让它运输实体。虽然用桶可以运输实体，但传送带还是不能运输液体。<br>这种传送带可以自动将物品输入容器中，也可以接收顶上的传送带掉下来的物品。
 ie.manual.entry.conveyor5=分流传送带的功能很简单，将运送来的物品和实体不断交替地分流到左右两侧，藉此可以让你的物品均匀地分配到多个工厂里。
 ie.manual.entry.conveyor6=绝缘传送带的工作方式与普通输送带一样，但是由一块脚手架覆盖，可防止玩家从其中拾取物品。<br>你可以用其他类型的脚手架或玻璃板右击以更换盖子的外观。
-ie.manual.entry.conveyor7=同样，抽取传送带和垂直传送带都可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍能正常工作。
+ie.manual.entry.conveyor7=类似地，抽取传送带和垂直传送带都可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍能正常工作。
 
 ie.manual.entry.furnaceHeater.name=外置加热器
 ie.manual.entry.furnaceHeater.subtext=你现在可以用能量烹饪食物啦！
