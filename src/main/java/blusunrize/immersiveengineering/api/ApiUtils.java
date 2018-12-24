@@ -85,21 +85,34 @@ public class ApiUtils
 
 	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
 	{
-		if(o instanceof ItemStack)
-			return OreDictionary.itemMatches((ItemStack)o, stack, false)&&(!checkNBT||((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)o, stack));
+		if(o instanceof ItemStack) {
+			ItemStack recipeStack = ((ItemStack) o).copy(); //To fix NBT issues (ex. Astral Sorcery)
+			return OreDictionary.itemMatches(recipeStack, stack, false) && (!checkNBT || recipeStack.getItemDamage() == OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT(recipeStack, stack));
+		}
 		else if(o instanceof Collection)
 		{
-			for(Object io : (Collection)o)
-				if(io instanceof ItemStack&&OreDictionary.itemMatches((ItemStack)io, stack, false)&&(!checkNBT||((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)io, stack)))
-					return true;
+			for(Object io : (Collection)o) {
+				if (io instanceof ItemStack) {
+					ItemStack recipeStack = ((ItemStack) io).copy(); //To fix NBT issues (ex. Astral Sorcery)
+					if (OreDictionary.itemMatches(recipeStack, stack, false) && (!checkNBT || recipeStack.getItemDamage() == OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT(recipeStack, stack)))
+						return true;
+				}
+			}
 		}
-		else if(o instanceof IngredientStack)
-			return ((IngredientStack)o).matchesItemStack(stack);
+		else if(o instanceof IngredientStack) {
+			IngredientStack ingredientStack = (IngredientStack) o;
+			for(int i = 0; i < ingredientStack.stackList.size(); i++) {
+				ingredientStack.stackList.set(i, ingredientStack.stackList.get(i).copy()); //To fix NBT issues (ex. Astral Sorcery)
+			}
+			return ingredientStack.matchesItemStack(stack);
+		}
 		else if(o instanceof ItemStack[])
 		{
-			for(ItemStack io : (ItemStack[])o)
-				if(OreDictionary.itemMatches(io, stack, false)&&(!checkNBT||io.getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT(io, stack)))
+			for(ItemStack io : (ItemStack[])o) {
+				ItemStack recipeStack = io.copy(); //To fix NBT issues (ex. Astral Sorcery)
+				if (OreDictionary.itemMatches(recipeStack, stack, false) && (!checkNBT || recipeStack.getItemDamage() == OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT(recipeStack, stack)))
 					return true;
+			}
 		}
 		else if(o instanceof FluidStack)
 		{
