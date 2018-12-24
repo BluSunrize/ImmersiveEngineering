@@ -844,7 +844,7 @@ gui.immersiveengineering.config.assembler.clearRecipe=清除配方
 gui.immersiveengineering.config.assembler.recursiveIngredients=循环使用材料
 gui.immersiveengineering.config.assembler.nonRecursiveIngredients=不循环使用材料
 
-gui.immersiveengineering.config.arcfurnace.distribute=分配输入
+gui.immersiveengineering.config.arcfurnace.distribute=均分输入
 
 #CHAT
 chat.immersiveengineering.warning.wrongCable=你无法在此处连接线缆
