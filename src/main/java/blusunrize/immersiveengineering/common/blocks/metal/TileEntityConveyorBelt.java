@@ -10,13 +10,19 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorCovered;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorExtractCovered;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVerticalCovered;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,6 +32,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -37,15 +44,17 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop, ITickable, IGeneralMultiblock
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop, ITickable, IGeneralMultiblock, IFaceShape
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	private IConveyorBelt conveyorBeltSubtype;
 
 	@Override
+	@Nullable
 	public IConveyorBelt getConveyorSubtype()
 	{
 		return conveyorBeltSubtype;
@@ -271,6 +280,27 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		String key = ItemNBTHelper.getString(stack, "conveyorType");
 		IConveyorBelt subType = ConveyorHandler.getConveyor(new ResourceLocation(key), this);
 		setConveyorSubtype(subType);
+	}
+
+	@Override
+	public BlockFaceShape getFaceShape(EnumFacing side)
+	{
+		IConveyorBelt subtype = this.getConveyorSubtype();
+		if(subtype==null)
+			return BlockFaceShape.UNDEFINED;
+		if(side==EnumFacing.DOWN&&subtype.getConveyorDirection()==ConveyorDirection.HORIZONTAL)
+			return BlockFaceShape.SOLID;
+		if(subtype instanceof ConveyorVertical)
+		{
+			if(side==this.facing)
+				return BlockFaceShape.SOLID;
+			else if(side.getAxis()==Axis.Y)
+				return BlockFaceShape.UNDEFINED;
+		}
+		if(subtype instanceof ConveyorCovered||subtype instanceof ConveyorVerticalCovered||subtype instanceof ConveyorExtractCovered)
+			if(side.getAxis()!=facing.getAxis())
+				return BlockFaceShape.SOLID;
+		return BlockFaceShape.UNDEFINED;
 	}
 
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable
