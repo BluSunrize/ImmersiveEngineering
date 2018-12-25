@@ -1,5 +1,6 @@
 #####Version 0.12-88
-- Fix crashes when opening a toolbox or a revolver GUI (Malte)
+- Changed Multiblocks to accept redstone-ignoring conveyors as well as default ones. They will revert to normal ones when the multiblock is broken. (BluSunrize)
+- Fixed crashes when opening a toolbox or a revolver GUI (Malte)
 - Fixed side solidity on conveyors, prevents snow on places it shouldn't be (BluSunrize)
 
 #####Version 0.12-87 - BUILT

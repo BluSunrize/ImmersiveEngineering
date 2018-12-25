@@ -30,6 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.*;
@@ -44,6 +45,7 @@ import java.util.function.Function;
 public class ConveyorHandler
 {
 	public static HashMap<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<ResourceLocation, Class<? extends IConveyorBelt>>();
+	public static HashMap<ResourceLocation, Set<ResourceLocation>> substituteRegistry = new HashMap<>();
 	public static HashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>>();
 	public static HashMap<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<Class<? extends IConveyorBelt>, ResourceLocation>();
 	public static Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<BiConsumer<Entity, IConveyorTile>>();
@@ -65,6 +67,17 @@ public class ConveyorHandler
 		reverseClassRegistry.put(conveyorClass, key);
 		functionRegistry.put(key, function);
 		return true;
+	}
+
+	/**
+	 * Registers a valid substitute for the given key conveyor. This substitute is allowed in the construction of multiblocks in place of the key
+	 * @param key			A unique ResourceLocation to identify the conveyor by
+	 * @param substitute	A unique ResourceLocation to identify the substitute
+	 */
+	public static void registerSubstitute(ResourceLocation key, ResourceLocation substitute)
+	{
+		Set<ResourceLocation> registeredSubstitutes = substituteRegistry.computeIfAbsent(key, k -> new HashSet<>());
+		registeredSubstitutes.add(substitute);
 	}
 
 	/**
@@ -92,7 +105,7 @@ public class ConveyorHandler
 	/**
 	 * @return whether the given subtype key can be found at the location. Useful for multiblocks
 	 */
-	public static boolean isConveyor(World world, BlockPos pos, String key, @Nullable EnumFacing facing)
+	public static boolean isConveyor(World world, BlockPos pos, @Nonnull String key, @Nullable EnumFacing facing)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(!(tile instanceof IConveyorTile))
@@ -103,7 +116,14 @@ public class ConveyorHandler
 		if(conveyor==null)
 			return false;
 		ResourceLocation rl = reverseClassRegistry.get(conveyor.getClass());
-		return !(rl==null||!key.equalsIgnoreCase(rl.toString()));
+		if(rl==null)
+			return false;
+		ResourceLocation rlKey = new ResourceLocation(key);
+		if(key.equalsIgnoreCase(rl.toString()))
+			return true;
+		else if(substituteRegistry.containsKey(rlKey))
+			return substituteRegistry.get(rlKey).contains(rl);
+		return false;
 	}
 
 	/**

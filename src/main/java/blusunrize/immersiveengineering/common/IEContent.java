@@ -467,6 +467,7 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
+		ConveyorHandler.registerSubstitute(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"));
 
 		/*BULLETS*/
 		ItemBullet.initBullets();
