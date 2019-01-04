@@ -8,14 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
@@ -36,7 +34,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.Set;
 
 public class MultiblockFeedthrough implements IMultiblock
@@ -149,7 +146,7 @@ public class MultiblockFeedthrough implements IMultiblock
 			return false;
 		if(connOther.stream().anyMatch(c -> c.end.equals(pos)))
 			return false;
-		for(Connection c : connOther)
+		for(ImmersiveNetHandler.Connection c : connOther)
 			if(connHere.stream().anyMatch(c2 -> c2.end.equals(c.end)))
 				return false;
 		//Form
@@ -161,8 +158,9 @@ public class MultiblockFeedthrough implements IMultiblock
 			TileEntityFeedthrough master = setBlock(world, masterPos, state, wire, middle, 0);
 			if(master!=null)
 			{
-				moveConnectionsToMaster(connOther, world, true, master);
-				moveConnectionsToMaster(connHere, world, false, master);
+				//TODO
+				//moveConnectionsToMaster(connOther, world, true, master);
+				//moveConnectionsToMaster(connHere, world, false, master);
 				master.markContainingBlockForUpdate(null);
 			}
 			setBlock(world, pos, state, wire, middle, -1);
@@ -171,20 +169,20 @@ public class MultiblockFeedthrough implements IMultiblock
 		return true;
 	}
 
-	private void moveConnectionsToMaster(Collection<Connection> conns, World world, boolean positive,
-										 TileEntityFeedthrough master)
-	{
-		BlockPos masterPos = master.getPos();
-		for(Connection c : ImmutableSet.copyOf(conns))
-		{
-			Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
-			if(positive)
-				master.connPositive = c.end;
-			else
-				master.hasNegative = true;
-			ApiUtils.moveConnectionEnd(reverse, masterPos, world);
-		}
-	}
+	//private void moveConnectionsToMaster(Collection<Connection> conns, World world, boolean positive,
+	//									 TileEntityFeedthrough master)
+	//{
+	//	BlockPos masterPos = master.getPos();
+	//	for(Connection c : ImmutableSet.copyOf(conns))
+	//	{
+	//		Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
+	//		if(positive)
+	//			master.connPositive = c.end;
+	//		else
+	//			master.hasNegative = true;
+	//		ApiUtils.moveConnectionEnd(reverse, masterPos, world);
+	//	}
+	//}
 
 	@Nullable
 	private TileEntityFeedthrough setBlock(World world, BlockPos here, IBlockState newState, WireType wire, IBlockState middle,

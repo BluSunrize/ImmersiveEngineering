@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -130,7 +130,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	public Vec3d getConnectionOffset(Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
-		double conRadius = con.cableType.getRenderDiameter()/2;
+		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
 	}
 

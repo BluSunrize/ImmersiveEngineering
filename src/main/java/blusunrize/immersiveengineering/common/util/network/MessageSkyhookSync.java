@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class MessageSkyhookSync implements IMessage
 {
 	int entityID;
-	Connection connection;
+	ImmersiveNetHandler.Connection connection;
 	BlockPos target;
 	Vec3d[] subPoints;
 	int targetPoint;
@@ -49,7 +49,7 @@ public class MessageSkyhookSync implements IMessage
 	{
 		entityID = buf.readInt();
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
-		connection = Connection.readFromNBT(tag);
+		connection = ImmersiveNetHandler.Connection.readFromNBT(tag);
 		target = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
 		int l = buf.readInt();
 		subPoints = new Vec3d[l];

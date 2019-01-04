@@ -24,7 +24,6 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -32,13 +31,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -125,6 +125,7 @@ public class ImmersiveNetHandler
 
 	public void addBlockData(World world, Connection con)
 	{
+		/*TODO port to new system
 		int dimId = world.provider.getDimension();
 		if(!blockWireMap.containsItem(dimId))
 			blockWireMap.addKey(dimId, new ConcurrentHashMap<>());
@@ -145,12 +146,13 @@ public class ImmersiveNetHandler
 			if(mapForDim.get(p.getLeft()).near.stream().noneMatch((c) -> c.getLeft().hasSameConnectors(con)))
 				mapForDim.get(p.getLeft()).near.add(new ImmutableTriple<>(con, p.getMiddle(), p.getRight()));
 		});
+		*/
 	}
 
 
 	public void removeConnection(World world, Connection con)
 	{
-		removeConnection(world, con, getVecForIICAt(world, con.start, con), getVecForIICAt(world, con.end, con));
+		//removeConnection(world, con, getVecForIICAt(world, con.start, con), getVecForIICAt(world, con.end, con));
 	}
 
 	public void removeConnection(World world, Connection con, Vec3d vecStart, Vec3d vecEnd)
@@ -184,22 +186,22 @@ public class ImmersiveNetHandler
 				}
 			}
 		};
-		raytraceAlongCatenaryRelative(con, (p) -> {
-			handle.accept(p.getLeft(), mapForDim);
-			return false;
-		}, (p) -> handle.accept(p.getLeft(), mapForDim), vecStart, vecEnd);
+		//raytraceAlongCatenaryRelative(con, (p) -> {
+		//	handle.accept(p.getLeft(), mapForDim);
+		//	return false;
+		//}, (p) -> handle.accept(p.getLeft(), mapForDim), vecStart, vecEnd);
 
 		IImmersiveConnectable iic = toIIC(con.end, world);
 		if(iic!=null)
 		{
-			iic.removeCable(con);
-			back.ifPresent(iic::removeCable);
+			//iic.removeCable(con);
+			//back.ifPresent(iic::removeCable);
 		}
 		iic = toIIC(con.start, world);
 		if(iic!=null)
 		{
-			iic.removeCable(con);
-			back.ifPresent(iic::removeCable);
+			//iic.removeCable(con);
+			//back.ifPresent(iic::removeCable);
 		}
 
 		if(world.isBlockLoaded(con.start))
@@ -337,8 +339,8 @@ public class ImmersiveNetHandler
 			double dx = dropPos.getX()+.5;
 			double dy = dropPos.getY()+.5;
 			double dz = dropPos.getZ()+.5;
-			if(world.getGameRules().getBoolean("doTileDrops"))
-				world.spawnEntity(new EntityItem(world, dx, dy, dz, conn.cableType.getWireCoil(conn)));
+			//if(world.getGameRules().getBoolean("doTileDrops"))
+			//	world.spawnEntity(new EntityItem(world, dx, dy, dz, conn.cableType.getWireCoil(conn)));
 		}
 	}
 
@@ -361,13 +363,13 @@ public class ImmersiveNetHandler
 		{
 			for(Connection con : getMultimap(world.provider.getDimension()).get(node))
 			{
-				removeConnection(world, con, iic!=null?iic.getConnectionOffset(con): Vec3d.ZERO,
-						getVecForIICAt(world, con.end, con));
+				//removeConnection(world, con, iic!=null?iic.getConnectionOffset(con): Vec3d.ZERO,
+				//		getVecForIICAt(world, con.end, con));
 				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
 				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
 				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
-				if(doDrops&&world.getGameRules().getBoolean("doTileDrops"))
-					world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
+				//if(doDrops&&world.getGameRules().getBoolean("doTileDrops"))
+				//	world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 			}
 		}
 		IESaveData.setDirty(world.provider.getDimension());
@@ -409,8 +411,8 @@ public class ImmersiveNetHandler
 				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
 				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
 				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
-				if(world.getGameRules().getBoolean("doTileDrops"))
-					world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
+				//if(world.getGameRules().getBoolean("doTileDrops"))
+				//	world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 				ret = true;
 			}
 		}
@@ -563,7 +565,7 @@ public class ImmersiveNetHandler
 				Set<Connection> conLN = getConnections(world, toBlockPos(next));
 				if(conLN!=null)
 					for(Connection con : conLN)
-						if(next.allowEnergyToPass(con))
+						if(true)//next.allowEnergyToPass(con))
 						{
 							IImmersiveConnectable end = toIIC(con.end, world);
 
@@ -627,6 +629,7 @@ public class ImmersiveNetHandler
 
 	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, EntityLivingBase e, BlockPos here)
 	{
+		/*TODO move to new handler/own class
 		final double KNOCKBACK_PER_DAMAGE = 10;
 		if(!in.isEmpty())
 		{
@@ -664,7 +667,7 @@ public class ImmersiveNetHandler
 						}
 					}
 				}
-		}
+		}*/
 	}
 
 	public Connection getReverseConnection(int world, Connection ret)
@@ -718,8 +721,8 @@ public class ImmersiveNetHandler
 
 		public Vec3d[] getSubVertices(World world)
 		{
-			return getSubVertices(getVecForIICAt(world, start, this),
-					getVecForIICAt(world, end, this));
+			return new Vec3d[]{Vec3d.ZERO, Vec3d.ZERO};/*getSubVertices(getVecForIICAt(world, start, this),
+					getVecForIICAt(world, end, this));*/
 		}
 
 		public Vec3d getVecAt(double pos, Vec3d vStart, Vec3d across, double lengthHor)

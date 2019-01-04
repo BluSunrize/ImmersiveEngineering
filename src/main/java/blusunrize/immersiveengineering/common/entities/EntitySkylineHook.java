@@ -12,11 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +39,7 @@ import java.util.Set;
 
 public class EntitySkylineHook extends Entity
 {
-	public Connection connection;
+	public ImmersiveNetHandler.Connection connection;
 	public BlockPos target;
 	public Vec3d[] subPoints;
 	public int targetPoint;
@@ -53,7 +51,7 @@ public class EntitySkylineHook extends Entity
 		//		this.noClip=true;
 	}
 
-	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, BlockPos target,
+	public EntitySkylineHook(World world, double x, double y, double z, ImmersiveNetHandler.Connection connection, BlockPos target,
 							 Vec3d[] subPoints, int next)
 	{
 		super(world);
@@ -151,7 +149,7 @@ public class EntitySkylineHook extends Entity
 				return;
 			}
 			Vec3d vEnd = new Vec3d(target.getX(), target.getY(), target.getZ());
-			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
+			//TODO vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
 
 
 			double gDist = vEnd.distanceTo(new Vec3d(posX, posY, posZ));
@@ -232,8 +230,8 @@ public class EntitySkylineHook extends Entity
 		ItemStack hook = player.getActiveItemStack();
 		if(hook.isEmpty()||!(hook.getItem() instanceof ItemSkyhook))
 			return;
-		Optional<Connection> line = Optional.empty();
-		Set<Connection> possible = ImmersiveNetHandler.INSTANCE.getConnections(world, connection.end);
+		Optional<ImmersiveNetHandler.Connection> line = Optional.empty();
+		Set<ImmersiveNetHandler.Connection> possible = ImmersiveNetHandler.INSTANCE.getConnections(world, connection.end);
 		if(possible!=null)
 		{
 			Vec3d look = player.getLookVec();

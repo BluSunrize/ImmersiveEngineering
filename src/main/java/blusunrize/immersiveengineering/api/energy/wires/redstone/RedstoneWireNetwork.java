@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.energy.wires.redstone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -19,7 +19,6 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 
 import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.INSTANCE;
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
 public class RedstoneWireNetwork
 {
@@ -88,19 +87,21 @@ public class RedstoneWireNetwork
 			it.remove();
 			IImmersiveConnectable iic = ApiUtils.toIIC(next, world);
 			closed.add(next);
-			Set<Connection> connsAtBlock = INSTANCE.getConnections(dimension, next);
+			Set<ImmersiveNetHandler.Connection> connsAtBlock = INSTANCE.getConnections(dimension, next);
 			if(iic instanceof IRedstoneConnector)
 			{
 				((IRedstoneConnector)iic).setNetwork(network);
 				network.connectors.add(new WeakReference<>((IRedstoneConnector)iic));
 			}
 			if(connsAtBlock!=null&&iic!=null)
-				for(Connection c : connsAtBlock)
+				for(ImmersiveNetHandler.Connection c : connsAtBlock)
 				{
+					/*TODO port all of this file as a local net handler
 					if(iic.allowEnergyToPass(c)&&
 							REDSTONE_CATEGORY.equals(c.cableType.getCategory())&&
 							!closed.contains(c.end))
 						open.add(c.end);
+						*/
 				}
 		}
 		network.channelValues = null;

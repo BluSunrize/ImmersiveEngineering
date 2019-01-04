@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.IEProperties.Connections;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config;
@@ -30,7 +30,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -78,12 +77,11 @@ public class ConnModelReal implements IBakedModel
 			int x = 0, z = 0;
 			if(ext.getUnlistedProperties().containsKey(IEProperties.CONNECTIONS))
 			{
-				Set<Connection> conns = ext.getValue(IEProperties.CONNECTIONS);
-				if(conns!=null&&conns.size() > 0)
+				Connections conns = ext.getValue(IEProperties.CONNECTIONS);
+				if(conns!=null)
 				{
-					BlockPos tmp = conns.iterator().next().start;
-					x = (tmp.getX()%16+16)%16;
-					z = (tmp.getZ()%16+16)%16;
+					x = (conns.here.getX()%16+16)%16;
+					z = (conns.here.getZ()%16+16)%16;
 				}
 			}
 			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(ext, null, ExtBlockstateAdapter.ONLY_OBJ_CALLBACK, additional);

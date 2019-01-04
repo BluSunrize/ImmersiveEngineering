@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,7 +63,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		if(endOfLeftConnection==null)
 			calculateLeftConn(mat);
-		boolean isLeft = con.end.equals(endOfLeftConnection)||con.start.equals(endOfLeftConnection);
+		boolean isLeft = con.isEnd(endOfLeftConnection);
 		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1): new Vec3d(.875, .5, 1));
 		return ret;
 	}

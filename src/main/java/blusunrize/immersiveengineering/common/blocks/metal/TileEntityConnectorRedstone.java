@@ -10,9 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.redstone.IRedstoneConnector;
@@ -183,7 +182,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	}
 
 	@Override
-	public void removeCable(@Nullable ImmersiveNetHandler.Connection connection)
+	public void removeCable(@Nullable Connection connection)
 	{
 		super.removeCable(connection);
 		wireNetwork.removeFromNetwork(this);
@@ -250,14 +249,8 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public Vec3d getConnectionOffset(Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
-		double conRadius = con.cableType.getRenderDiameter()/2;
+		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
-	}
-
-	@Override
-	public void onConnectivityUpdate(BlockPos pos, int dimension)
-	{
-		refreshWireNetwork = false;
 	}
 
 	@SideOnly(Side.CLIENT)

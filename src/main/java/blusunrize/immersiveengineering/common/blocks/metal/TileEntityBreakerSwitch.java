@@ -13,9 +13,12 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireApi;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -106,7 +109,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection!=null?connection.cableType: null;
+		WireType type = connection!=null?connection.type: null;
 		if(type==null)
 			wires = 0;
 		else
@@ -146,9 +149,8 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		if(endOfLeftConnection==null)
 			calculateLeftConn(mat);
-		boolean isLeft = con.end.equals(endOfLeftConnection)||con.start.equals(endOfLeftConnection);
-		Vec3d ret = mat.apply(new Vec3d(isLeft?.25: .75, .5, .125));
-		return ret;
+		boolean isLeft = con.isEnd(endOfLeftConnection);
+		return mat.apply(new Vec3d(isLeft?.25: .75, .5, .125));
 	}
 
 	protected void calculateLeftConn(Matrix4 transform)
@@ -156,9 +158,9 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		Vec3d leftVec = transform.apply(new Vec3d(-1, .5, .5)).subtract(0, .5, .5);
 		EnumFacing dir = EnumFacing.getFacingFromVector((float)leftVec.x, (float)leftVec.y, (float)leftVec.z);
 		int maxDiff = Integer.MIN_VALUE;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if(conns!=null)
-			for(Connection c : conns)
+			for(ImmersiveNetHandler.Connection c : conns)
 			{
 				Vec3i diff = pos.equals(c.start)?c.end.subtract(pos): c.start.subtract(pos);
 				int val = 0;
@@ -354,15 +356,15 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			endOfLeftConnection = null;
 			ImmersiveEngineering.proxy.clearConnectionModelCache();
 			// reset cached connection vertices
-			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+			Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 			if(conns!=null)
-				for(Connection c : conns)
+				for(ImmersiveNetHandler.Connection c : conns)
 				{
 					c.catenaryVertices = null;
 					world.markBlockRangeForRenderUpdate(c.end, c.end);
-					Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(world, c.end);
+					Set<ImmersiveNetHandler.Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(world, c.end);
 					if(connsThere!=null)
-						for(Connection c2 : connsThere)
+						for(ImmersiveNetHandler.Connection c2 : connsThere)
 							if(c2.end.equals(pos))
 								c2.catenaryVertices = null;
 				}
@@ -374,7 +376,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
 	{
-		if(c.end.equals(endOfLeftConnection))
+		if(c.isEnd(endOfLeftConnection))
 			endOfLeftConnection = newEnd;
 		return true;
 	}

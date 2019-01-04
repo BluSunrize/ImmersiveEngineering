@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +27,7 @@ import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetH
 
 public class SkylineHelper
 {
-	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection)
+	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, ImmersiveNetHandler.Connection connection)
 	{
 		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start: connection.end;
 		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end: connection.start;
@@ -36,10 +36,11 @@ public class SkylineHelper
 		Vec3d vStart = new Vec3d(cc1);
 		Vec3d vEnd = new Vec3d(cc0);
 
+		/*TODO
 		if(iicStart!=null)
 			vStart = Utils.addVectors(vStart, iicStart.getConnectionOffset(connection));
 		if(iicEnd!=null)
-			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
+			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));*/
 
 		Vec3d pos = player.getPositionEyes(0);
 		Vec3d across = new Vec3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);

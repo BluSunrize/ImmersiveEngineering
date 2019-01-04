@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -266,7 +265,7 @@ public class EventHandler
 					ImmersiveNetHandler.INSTANCE.directConnections.remove(dim);
 					continue;
 				}
-				for(Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(world))
+				for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(world))
 				{
 					if(!(world.getTileEntity(con.start) instanceof IImmersiveConnectable
 							&&world.getTileEntity(con.end) instanceof IImmersiveConnectable))
@@ -308,7 +307,7 @@ public class EventHandler
 		if(event.phase==TickEvent.Phase.END&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			int dim = event.world.provider.getDimension();
-			for(Entry<Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).entrySet())
+			for(Entry<ImmersiveNetHandler.Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).entrySet())
 				if(e.getValue() > e.getKey().cableType.getTransferRate())
 				{
 					if(event.world instanceof WorldServer)

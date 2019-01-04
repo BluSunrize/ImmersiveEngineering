@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.Entity;
@@ -156,6 +157,12 @@ public interface IImmersiveConnectable
 		return getConnectionOffset(con);
 	}
 
+	//TODO remove
+	default Vec3d getConnectionOffset(ImmersiveNetHandler.Connection con, TargetingInfo target, Vec3i offsetLink)
+	{
+		return new Vec3d(0, 0, 0);
+	}
+
 	/**
 	 * returns a set of Blocks to be ignored when raytracing
 	 */
@@ -185,6 +192,12 @@ public interface IImmersiveConnectable
 	 * Returns true if successful.
 	 */
 	default boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	{
+		return true;
+	}
+
+	//TODO remove
+	default boolean moveConnectionTo(ImmersiveNetHandler.Connection c, BlockPos newEnd)
 	{
 		return true;
 	}

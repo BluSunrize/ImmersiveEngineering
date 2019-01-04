@@ -11,12 +11,13 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.AbstractConnection;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -83,9 +84,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		}
 		else if(firstTick)
 		{
-			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+			Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 			if(conns!=null)
-				for(Connection conn : conns)
+				for(ImmersiveNetHandler.Connection conn : conns)
 					if(pos.compareTo(conn.end) < 0&&world.isBlockLoaded(conn.end))
 						this.markContainingBlockForUpdate(null);
 			firstTick = false;
@@ -218,10 +219,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(GlobalWireNetwork.Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
-		double conRadius = con.cableType.getRenderDiameter()/2;
+		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
 
@@ -380,7 +381,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						HashSet<IImmersiveConnectable> passedConnectors = new HashSet<IImmersiveConnectable>();
 						float intermediaryLoss = 0;
 						//<editor-fold desc="Transfer rate and passed energy">
-						for(Connection sub : con.subConnections)
+						for(ImmersiveNetHandler.Connection sub : con.subConnections)
 						{
 							float length = sub.length/(float)sub.cableType.getMaxLength();
 							float baseLoss = (float)sub.cableType.getLossRatio();

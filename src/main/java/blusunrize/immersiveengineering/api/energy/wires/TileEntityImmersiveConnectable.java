@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties.Connections;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -336,12 +336,12 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}
 	}
 
-	public Set<Connection> genConnBlockstate()
+	public Connections genConnBlockstate()
 	{
 		LocalWireNetwork local = globalNet.getLocalNet(pos);
 		Collection<Connection> conns = local.getConnections(pos);
 		if(conns==null)
-			return ImmutableSet.of();
+			return new Connections(ImmutableSet.of(), pos);
 		Set<Connection> ret = new HashSet<Connection>()
 		{
 			@Override
@@ -361,6 +361,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			}
 		};
 		//TODO thread safety!
+		//TODO does this ever run? The vertices *should* be generated when block data is calculated...
 		for(Connection c : conns)
 		{
 			IImmersiveConnectable end = local.getConnector(c.getOtherEnd(pos));
@@ -371,7 +372,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			ret.add(c);
 		}
 
-		return ret;
+		return new Connections(ret, pos);
 	}
 
 	@Override

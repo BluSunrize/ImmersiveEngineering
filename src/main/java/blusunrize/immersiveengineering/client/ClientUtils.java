@@ -9,9 +9,10 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.Connections;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
@@ -47,8 +48,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
 import net.minecraft.util.Timer;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -97,18 +98,17 @@ public class ClientUtils
 	{
 		if(connection==null||start==null||end==null)
 			return;
-		int col = connection.cableType.getColour(connection);
-		double r = connection.cableType.getRenderDiameter()/2;
+		int col = connection.type.getColour(connection);
+		double r = connection.type.getRenderDiameter()/2;
 		int[] rgba = new int[]{col >> 16&255, col >> 8&255, col&255, 255};
 		tessellateConnection(connection, start, end, rgba, r, sprite);
 	}
 
 	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite)
 	{
-		if(connection==null||start==null||end==null||connection.end==null||connection.start==null)
-			return;
-		Vec3d startOffset = start.getConnectionOffset(connection);
-		Vec3d endOffset = end.getConnectionOffset(connection);
+		/*TODO
+		Vec3d startOffset = Vec3d.ZERO;//TODO start.getConnectionOffset(connection);
+		Vec3d endOffset = Vec3d.ZERO;//TODO end.getConnectionOffset(connection);
 		if(startOffset==null)
 			startOffset = new Vec3d(.5, .5, .5);
 		if(endOffset==null)
@@ -227,6 +227,7 @@ public class ClientUtils
 			}
 		}
 		//		tes.setColorRGBA_I(0xffffff, 0xff);
+		*/
 	}
 	//
 	//	public static int calcBrightness(IBlockAccess world, double x, double y, double z)
@@ -1402,32 +1403,31 @@ public class ClientUtils
 		List<BakedQuad>[] ret = new List[2];
 		ret[0] = new ArrayList<>();
 		ret[1] = new ArrayList<>();
-		Set<Connection> conns = s.getValue(IEProperties.CONNECTIONS);
+		Connections conns = s.getValue(IEProperties.CONNECTIONS);
 		if(conns==null)
 			return ret;
 		Vector3f dir = new Vector3f();
 		Vector3f cross = new Vector3f();
 
 		Vector3f up = new Vector3f(0, 1, 0);
-		BlockPos pos = null;
-		for(Connection conn : conns)
+		final BlockPos pos = conns.here;
+		for(Connection conn : conns.connections)
 		{
-			if(pos==null)
-				pos = conn.start;
-			Vec3d[] f = conn.catenaryVertices;
+			final BlockPos end = conn.getOtherEnd(pos);
+			Vec3d[] f = conn.getCatenaryVertices();
 			if(f==null||f.length < 1)
 				continue;
-			int color = conn.cableType.getColour(conn);
+			int color = conn.type.getColour(conn);
 			float[] rgb = {(color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f};
 			if(rgb[3]==0)
 				rgb[3] = 1;
-			float radius = (float)(conn.cableType.getRenderDiameter()/2);
+			float radius = (float)(conn.type.getRenderDiameter()/2);
 			List<Integer> crossings = new ArrayList<>();
 			for(int i = 1; i < f.length; i++)
-				if(crossesChunkBoundary(f[i], f[i-1], conn.start))
+				if(crossesChunkBoundary(f[i], f[i-1], pos))
 					crossings.add(i);
 			int index = crossings.size()/2;
-			boolean greater = conn.start.compareTo(conn.end) > 0;
+			boolean greater = pos.compareTo(end) > 0;
 			if(crossings.size()%2==0&&greater)
 				index--;
 			int max = (crossings.size() > 0?

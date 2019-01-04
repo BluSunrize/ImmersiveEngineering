@@ -3,10 +3,13 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireApi;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -92,9 +95,9 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(ImmersiveNetHandler.Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
-		return getOffset(con.start.equals(connPositive)||con.end.equals(connPositive));
+		return getOffset(con.isEnd(connPositive));
 	}
 
 	private boolean isPositive(Vec3i offset)
@@ -105,7 +108,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(ImmersiveNetHandler.Connection con, TargetingInfo target, Vec3i offsetLink)
+	public Vec3d getConnectionOffset(Connection con, TargetingInfo target, Vec3i offsetLink)
 	{
 		return getOffset(isPositive(offsetLink));
 	}
@@ -143,7 +146,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void removeCable(ImmersiveNetHandler.Connection connection)
+	public void removeCable(Connection connection)
 	{
 		if(connection==null)
 		{
@@ -152,7 +155,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		}
 		else
 		{
-			if(connection.end.equals(connPositive)||connection.start.equals(connPositive))
+			if(connection.isEnd(connPositive))
 				connPositive = null;
 			else
 				hasNegative = false;
@@ -300,11 +303,11 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		}
 		disassembleBlock(-1);
 		disassembleBlock(1);
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, masterPos);
+		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, masterPos);
 		if(conns!=null)
 		{
 			if(master!=null)
-				for(Connection c : conns)
+				for(ImmersiveNetHandler.Connection c : conns)
 				{
 					BlockPos newPos = null;
 					if(c.end.equals(master.connPositive))
@@ -316,7 +319,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 						newPos = masterPos.offset(facing, -1);
 					if(newPos!=null)
 					{
-						Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
+						/*TODO
+						ImmersiveNetHandler.Connection reverse = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), c);
 						ApiUtils.moveConnectionEnd(reverse, newPos, world);
 						IImmersiveConnectable connector = ApiUtils.toIIC(newPos, world);
 						IImmersiveConnectable otherEnd = ApiUtils.toIIC(reverse.start, world);
@@ -330,7 +334,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 							{
 								IELogger.logger.info("Failed to fully move connection", x);
 							}
-						}
+						}*/
 					}
 				}
 		}
@@ -401,19 +405,19 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public float getDamageAmount(Entity e, ImmersiveNetHandler.Connection c)
+	public float getDamageAmount(Entity e, Connection c)
 	{
 		return INFOS.get(reference).postProcessDmg.apply(super.getDamageAmount(e, c));
 	}
 
 	@Override
-	protected float getBaseDamage(ImmersiveNetHandler.Connection c)
+	protected float getBaseDamage(Connection c)
 	{
 		return INFOS.get(reference).dmgPerEnergy;
 	}
 
 	@Override
-	protected float getMaxDamage(ImmersiveNetHandler.Connection c)
+	protected float getMaxDamage(Connection c)
 	{
 		return INFOS.get(reference).maxDmg;
 	}
@@ -432,7 +436,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
 	{
-		if(c.end.equals(connPositive))
+		if(c.isEnd(connPositive))
 			connPositive = newEnd;
 		return true;
 	}

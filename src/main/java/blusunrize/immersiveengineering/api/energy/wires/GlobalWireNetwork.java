@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -137,6 +138,10 @@ public class GlobalWireNetwork
 		public final WireType type;
 		private final BlockPos endA;
 		private final BlockPos endB;
+		public double catOffsetX;
+		public double catOffsetY;
+		//TODO better name? move all of these somewhere else?
+		public double catA;
 
 		public Connection(WireType type, BlockPos endA, BlockPos endB)
 		{
@@ -187,7 +192,33 @@ public class GlobalWireNetwork
 
 		public void generateSubvertices(World world)
 		{
+			//TODO
+		}
 
+		//TODO
+		public boolean hasCatenaryVertices()
+		{
+			return true;
+		}
+
+		public boolean isEnd(BlockPos p)
+		{
+			return p.equals(endA)||p.equals(endB);
+		}
+
+		//TODO proper impl
+		public Vec3d[] getCatenaryVertices()
+		{
+			Vec3d[] ret = new Vec3d[17];
+			for(int i = 0; i <= 16; ++i)
+			{
+				double lambda = i/16D;
+				//TODO symmetry?
+				ret[i] = new Vec3d(lambda*(endA.getX()-endB.getX()),
+						lambda*(endA.getY()-endB.getY()),
+						lambda*(endA.getZ()-endB.getZ()));
+			}
+			return ret;
 		}
 	}
 }

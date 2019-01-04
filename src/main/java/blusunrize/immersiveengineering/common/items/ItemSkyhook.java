@@ -8,14 +8,11 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -24,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -76,21 +72,22 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
-		TileEntity connector = null;
-		Connection line = null;
-		Connection con = ApiUtils.getTargetConnection(world, player, null, 0);
-		if(con!=null)
-		{
-			connector = world.getTileEntity(con.start);
-			line = con;
-		}
 		ItemStack stack = player.getHeldItem(hand);
-		if(line!=null&&connector!=null)
-		{
-			SkylineHelper.spawnHook(player, connector, line);
-			player.setActiveHand(hand);
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
-		}
+		//TODO
+		//TileEntity connector = null;
+		//Connection line = null;
+		//Connection con = ApiUtils.getTargetConnection(world, player, null, 0);
+		//if(con!=null)
+		//{
+		//	connector = world.getTileEntity(con.start);
+		//	line = con;
+		//}
+		//if(line!=null&&connector!=null)
+		//{
+		//	SkylineHelper.spawnHook(player, connector, line);
+		//	player.setActiveHand(hand);
+		//	return new ActionResult(EnumActionResult.SUCCESS, stack);
+		//}
 		return new ActionResult(EnumActionResult.PASS, stack);
 	}
 

@@ -8,13 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -240,9 +239,10 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int yDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getY()-getPos().getY(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getY()-getPos().getY(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
+		BlockPos other = con==null?pos: con.getOtherEnd(pos);
+		int xDif = other.getX()-pos.getX();
+		int yDif = other.getY()-pos.getY();
+		int zDif = other.getZ()-pos.getZ();
 		boolean wallL = renderWall(true);
 		boolean wallR = renderWall(false);
 		if(!isOnGround()||!(wallL||wallR))

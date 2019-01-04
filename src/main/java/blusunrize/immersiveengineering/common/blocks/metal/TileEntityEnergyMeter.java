@@ -11,8 +11,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
+import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -167,8 +171,9 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
+		BlockPos other = con==null?pos: con.getOtherEnd(pos);
+		int xDif = other.getX()-pos.getX();
+		int zDif = other.getZ()-pos.getZ();
 		if(facing.getAxis()==Axis.X)
 			return new Vec3d(.5, .4375, zDif > 0?.8125: .1875);
 		else
@@ -295,12 +300,12 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		int oldVal = compVal;
 		int maxTrans = 0;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if(conns==null)
 			compVal = 0;
 		else
 		{
-			for(Connection c : conns)
+			for(ImmersiveNetHandler.Connection c : conns)
 				maxTrans += c.cableType.getTransferRate();
 			maxTrans /= 2;
 			double val = getAveragePower()/(double)maxTrans;

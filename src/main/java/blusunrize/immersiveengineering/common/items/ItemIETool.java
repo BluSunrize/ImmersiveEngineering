@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -17,7 +16,6 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.AbstractConnection;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IESaveData;
@@ -413,10 +411,11 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 		{
 			if(!world.isRemote)
 			{
-				double reachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
-				Connection target = ApiUtils.getTargetConnection(world, player, null, reachDistance);
-				if(target!=null)
-					ImmersiveNetHandler.INSTANCE.removeConnectionAndDrop(target, world, player.getPosition());
+				//TODO
+				//double reachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+				//Connection target = ApiUtils.getTargetConnection(world, player, null, reachDistance);
+				//if(target!=null)
+				//	ImmersiveNetHandler.INSTANCE.removeConnectionAndDrop(target, world, player.getPosition());
 			}
 			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}

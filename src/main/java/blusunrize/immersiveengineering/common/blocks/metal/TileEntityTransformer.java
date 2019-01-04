@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -192,7 +192,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection!=null?connection.cableType: null;
+		WireType type = connection!=null?connection.type: null;
 		if(type==null)
 		{
 			limitType = null;
@@ -208,7 +208,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
-		boolean right = con.cableType==limitType;
+		boolean right = con.type==limitType;
 		return getConnectionOffset(con, right);
 	}
 
@@ -229,8 +229,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		}
 		else
 		{
-			double conRadius = con.cableType.getRenderDiameter()/2;
-			double offset = getHigherWiretype().equals(con.cableType.getCategory())?getHigherOffset(): getLowerOffset();
+			double conRadius = con.type.getRenderDiameter()/2;
+			double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
 			if(facing==EnumFacing.NORTH)
 				return new Vec3d(right?.8125: .1875, 2+offset-conRadius, .5);
 			if(facing==EnumFacing.SOUTH)

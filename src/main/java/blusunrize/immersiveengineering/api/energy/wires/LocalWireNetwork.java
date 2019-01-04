@@ -31,7 +31,7 @@ public class LocalWireNetwork
 {
 	//TODO do we need this?
 	private final GlobalWireNetwork globalNet;
-	private final Multimap<BlockPos, Connection> connections = new HashMultimap<>();
+	private final Multimap<BlockPos, Connection> connections = HashMultimap.create();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	private final Map<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> handlers = new HashMap<>();
 

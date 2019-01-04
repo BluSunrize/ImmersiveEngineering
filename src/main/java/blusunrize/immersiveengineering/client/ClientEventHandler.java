@@ -14,9 +14,10 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
@@ -132,7 +133,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet<>();
-	public static final Map<Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
+	public static final Map<ImmersiveNetHandler.Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
 
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -324,7 +325,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	private void renderObstructingBlocks(BufferBuilder bb, Tessellator tes, double dx, double dy, double dz)
 	{
 		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-		for(Map.Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+		for(Map.Entry<ImmersiveNetHandler.Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{
 			BlockPos obstruction = entry.getValue().getKey();
 			bb.setTranslation(obstruction.getX()-dx,
@@ -1341,9 +1342,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
 			bb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			for(Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+			for(Entry<ImmersiveNetHandler.Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 			{
-				Connection conn = entry.getKey();
+				ImmersiveNetHandler.Connection conn = entry.getKey();
 				bb.setTranslation(conn.start.getX()-dx,
 						conn.start.getY()-dy,
 						conn.start.getZ()-dz);
