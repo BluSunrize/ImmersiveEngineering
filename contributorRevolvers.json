@@ -87,7 +87,8 @@
     "3c9b9448-d532-4745-9aac-509f38ff81d5",
     "7dd988d3-8cb6-4d38-b6dd-4b425fa271d4",
     "24e274b6-e4bd-4633-b1be-50fb50cb72cd",
-    "4efe7941-acc3-4ffd-ae6a-056c5200f4db"
+    "4efe7941-acc3-4ffd-ae6a-056c5200f4db",
+    "422c8e07-b3d8-4f39-8396-a6ad9034613a"
   ],
   "tag":"patreonBlu_0","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":["bayonet_attachment"]
 }
@@ -99,8 +100,7 @@
     "434bf509-ce83-4787-8176-32d202f8c6f6",
     "ec0fa42d-252e-495f-823c-cf4c50df80b3",
     "c2320ea5-f43f-4cc6-9aa9-d8336b177550",
-    "e2453db9-9328-43c6-bc88-e9db4f3a9059",
-    "150834ab-c707-4fa5-a428-e4843c3345e8"
+    "e2453db9-9328-43c6-bc88-e9db4f3a9059"
   ],
   "tag":"patreonBlu_1","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":["bayonet_attachment","dev_scope"]
 }
