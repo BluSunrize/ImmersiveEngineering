@@ -35,12 +35,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityLightningrod> implements IIEInternalFluxHandler
 {
 	FluxStorage energyStorage = new FluxStorage(IEConfig.Machines.lightning_output);
 
-	ArrayList<BlockPos> fenceNet = null;
+	@Nullable
+	List<BlockPos> fenceNet = null;
 	int height;
 	private static final int[] size = {3, 3, 3};
 
@@ -71,7 +73,9 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				fenceNet = null;
 			if(fenceNet==null)
 				fenceNet = this.getFenceNet();
-			if(fenceNet.size()>0&&world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127)&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
+			if(fenceNet!=null&&fenceNet.size() > 0
+					&&world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127)
+					&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
 			{
 				int i = this.height+this.fenceNet.size();
 				if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
@@ -86,7 +90,8 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 		}
 	}
 
-	ArrayList<BlockPos> getFenceNet()
+	@Nullable
+	private List<BlockPos> getFenceNet()
 	{
 		this.height = 0;
 		boolean broken = false;
