@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;

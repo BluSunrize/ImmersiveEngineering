@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;

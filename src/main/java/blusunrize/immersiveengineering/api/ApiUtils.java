@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IESaveData;
@@ -358,7 +357,7 @@ public class ApiUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(LocalWireNetwork net, BlockPos pos, GlobalWireNetwork.Connection conn)
+	public static Vec3d getVecForIICAt(LocalWireNetwork net, BlockPos pos, Connection conn)
 	{
 		Vec3d offset = Vec3d.ZERO;
 		//Force loading
@@ -396,22 +395,6 @@ public class ApiUtils
 		return Math.log(x+Math.sqrt(x+1)*Math.sqrt(x-1));
 	}
 
-	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
-	{
-		boolean vertical = end.x==start.x&&end.z==start.z;
-
-		if(vertical)
-		{
-			Vec3d[] ret = new Vec3d[vertices+1];
-			double height = end.y-start.y;
-			for(int i = 0; i < vertices+1; i++)
-				ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
-			return ret;
-		}
-
-		return getConnectionCatenary(start, end, connection.type.getSlack(), connection);
-	}
-
 	//TODO remove
 	public static Vec3d[] getConnectionCatenary(ImmersiveNetHandler.Connection connection, Vec3d start, Vec3d end)
 	{
@@ -424,11 +407,6 @@ public class ApiUtils
 	}
 
 	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
-	{
-		return getConnectionCatenary(start, end, slack, null);
-	}
-
-	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack, @Nullable Connection c)
 	{
 		double dx = (end.x)-(start.x);
 		double dy = (end.y)-(start.y);
@@ -447,13 +425,6 @@ public class ApiUtils
 		double a = dw/2/l;
 		double offsetX = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double offsetY = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-		if(c!=null)
-		{
-			c.catOffsetX = offsetX;
-			c.catOffsetY = offsetY;
-			c.catA = a;
-		}
-
 		Vec3d[] vex = new Vec3d[vertices+1];
 
 		vex[0] = new Vec3d(start.x, start.y, start.z);
@@ -469,6 +440,7 @@ public class ApiUtils
 
 		return vex;
 	}
+
 
 	public static double getDim(Vec3d vec, int dim)
 	{
@@ -716,9 +688,9 @@ public class ApiUtils
 							LocalWireNetwork localB = net.getLocalNet(linkPos);
 							if (localA==localB)
 							{
-								Collection<GlobalWireNetwork.Connection> outputs = localA.getConnections(pos);
+								Collection<Connection> outputs = localA.getConnections(pos);
 								if(outputs!=null)
-									for(GlobalWireNetwork.Connection con : outputs)
+									for(Connection con : outputs)
 										if(con.getOtherEnd(pos).equals(Utils.toCC(nodeLink)))
 											connectionExists = true;
 							}
@@ -750,7 +722,7 @@ public class ApiUtils
 								}, start, end);*/
 								if(canSee)
 								{
-									GlobalWireNetwork.Connection conn = net.addConnection(nodeHere, nodeLink, wire);
+									Connection conn = net.addConnection(nodeHere, nodeLink, wire);
 
 
 									nodeHere.connectCable(wire, target, nodeLink, offset);

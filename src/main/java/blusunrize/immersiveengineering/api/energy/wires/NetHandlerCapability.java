@@ -15,6 +15,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,7 +43,7 @@ public class NetHandlerCapability
 		}, GlobalWireNetwork::new);
 	}
 
-	public static class Provider implements ICapabilityProvider
+	public static class Provider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
 	{
 		private final GlobalWireNetwork net = new GlobalWireNetwork();
 		@Override
@@ -58,6 +59,18 @@ public class NetHandlerCapability
 			if (capability==NET_CAPABILITY)
 				return NET_CAPABILITY.cast(net);
 			return null;
+		}
+
+		@Override
+		public NBTTagCompound serializeNBT()
+		{
+			return net.writeToNBT();
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound nbt)
+		{
+			net.readFromNBT(nbt);
 		}
 	}
 }

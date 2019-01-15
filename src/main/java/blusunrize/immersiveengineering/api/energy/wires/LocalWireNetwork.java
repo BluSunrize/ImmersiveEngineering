@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.nbt.NBTBase;
@@ -48,7 +48,14 @@ public class LocalWireNetwork
 		for(NBTBase b : wires)
 		{
 			Connection wire = new Connection((NBTTagCompound)b);
-			addConnection(wire);
+			if(connectors.containsKey(wire.getEndA())&&connectors.containsKey(wire.getEndB()))
+			{
+				addConnection(wire);
+			}
+			else
+			{
+				IELogger.logger.info("Wire from {} to {}, but connector points are {}", wire.getEndA(), wire.getEndB(), connectors);
+			}
 		}
 	}
 
@@ -79,6 +86,7 @@ public class LocalWireNetwork
 				proxies.appendTag(proxy.writeToNBT());
 		}
 		ret.setTag("proxies", proxies);
+		IELogger.info("Writing net with connectors {} to NTB: {}", connections.keySet(), ret);
 		return ret;
 	}
 
@@ -88,7 +96,7 @@ public class LocalWireNetwork
 	 */
 	public Collection<BlockPos> getConnectors()
 	{
-		return Collections.unmodifiableCollection(connections.keySet());
+		return Collections.unmodifiableCollection(connectors.keySet());
 	}
 
 	public IImmersiveConnectable getConnector(BlockPos pos)
@@ -134,10 +142,10 @@ public class LocalWireNetwork
 	LocalWireNetwork merge(LocalWireNetwork other)
 	{
 		LocalWireNetwork result = new LocalWireNetwork(globalNet);
-		result.connections.putAll(connections);
-		result.connections.putAll(other.connections);
 		result.connectors.putAll(connectors);
 		result.connectors.putAll(other.connectors);
+		result.connections.putAll(connections);
+		result.connections.putAll(other.connections);
 		for(Entry<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> loc : handlers.entrySet())
 			result.handlers.merge(loc.getKey(), loc.getValue(), (p1, p2) -> new MutablePair<>(
 					new AtomicInteger(p1.getKey().intValue()+p2.getKey().get()), p1.getValue().merge(p2.getValue())
@@ -203,7 +211,11 @@ public class LocalWireNetwork
 		{
 			Deque<BlockPos> open = new ArrayDeque<>();
 			List<BlockPos> inComponent = new ArrayList<>();
-			open.add(toVisit.iterator().next());
+			{
+				Iterator<BlockPos> tmpIt = toVisit.iterator();
+				open.add(tmpIt.next());
+				tmpIt.remove();
+			}
 			while(!open.isEmpty())
 			{
 				BlockPos curr = open.pop();
@@ -235,5 +247,11 @@ public class LocalWireNetwork
 			ret.add(newNet);
 		}
 		return ret;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Connectors: "+connectors+", connections: "+connections;
 	}
 }

@@ -22,7 +22,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
 import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection.vertices;
 
 public class SkylineHelper
@@ -47,7 +46,7 @@ public class SkylineHelper
 		double t = Utils.getCoeffForMinDistance(pos, vStart, across);
 		connection.getSubVertices(player.world);
 		pos = connection.getVecAt(t, vStart, across, Math.sqrt(across.x*across.x+across.z*across.z));
-		Vec3d[] steps = getConnectionCatenary(connection, vStart, vEnd);
+		Vec3d[] steps = new Vec3d[0];//TODO getConnectionCatenary(connection, vStart, vEnd);
 		int tInt = MathHelper.clamp((int)(t*vertices), 0, vertices-1);
 
 		EntitySkylineHook hook = new EntitySkylineHook(player.world, pos.x, pos.y, pos.z, connection, cc0, steps, tInt+1);

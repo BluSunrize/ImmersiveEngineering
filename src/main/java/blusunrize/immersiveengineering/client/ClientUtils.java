@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.Connections;
+import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.Config;
@@ -1403,7 +1403,7 @@ public class ClientUtils
 		List<BakedQuad>[] ret = new List[2];
 		ret[0] = new ArrayList<>();
 		ret[1] = new ArrayList<>();
-		Connections conns = s.getValue(IEProperties.CONNECTIONS);
+		ConnectionModelData conns = s.getValue(IEProperties.CONNECTIONS);
 		if(conns==null)
 			return ret;
 		Vector3f dir = new Vector3f();
@@ -1414,7 +1414,7 @@ public class ClientUtils
 		for(Connection conn : conns.connections)
 		{
 			final BlockPos end = conn.getOtherEnd(pos);
-			Vec3d[] f = conn.getCatenaryVertices();
+			Vec3d[] f = conn.getCatenaryVertices(pos);
 			if(f==null||f.length < 1)
 				continue;
 			int color = conn.type.getColour(conn);

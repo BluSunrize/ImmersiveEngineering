@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.properties.PropertyDirection;
@@ -161,12 +161,12 @@ public class IEProperties
 		}
 	}
 
-	public static class Connections
+	public static class ConnectionModelData
 	{
 		public final Set<Connection> connections;
 		public final BlockPos here;
 
-		public Connections(Set<Connection> connections, BlockPos here)
+		public ConnectionModelData(Set<Connection> connections, BlockPos here)
 		{
 			this.connections = connections;
 			this.here = here;
@@ -179,7 +179,7 @@ public class IEProperties
 		}
 	}
 
-	public static class PropertyConnections implements IUnlistedProperty<Connections>
+	public static class PropertyConnections implements IUnlistedProperty<ConnectionModelData>
 	{
 		String name;
 
@@ -195,19 +195,19 @@ public class IEProperties
 		}
 
 		@Override
-		public boolean isValid(Connections value)
+		public boolean isValid(ConnectionModelData value)
 		{
 			return value!=null;
 		}
 
 		@Override
-		public Class<Connections> getType()
+		public Class<ConnectionModelData> getType()
 		{
-			return Connections.class;
+			return ConnectionModelData.class;
 		}
 
 		@Override
-		public String valueToString(Connections value)
+		public String valueToString(ConnectionModelData value)
 		{
 			return value.toString();
 		}

@@ -138,6 +138,7 @@ public class IESaveData extends WorldSavedData
 			receivedShaderList.appendTag(tag);
 		}
 		nbt.setTag("receivedShaderList", receivedShaderList);
+
 		return nbt;
 	}
 

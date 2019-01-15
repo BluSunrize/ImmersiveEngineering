@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.Connections;
+import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config;
@@ -77,7 +77,7 @@ public class ConnModelReal implements IBakedModel
 			int x = 0, z = 0;
 			if(ext.getUnlistedProperties().containsKey(IEProperties.CONNECTIONS))
 			{
-				Connections conns = ext.getValue(IEProperties.CONNECTIONS);
+				ConnectionModelData conns = ext.getValue(IEProperties.CONNECTIONS);
 				if(conns!=null)
 				{
 					x = (conns.here.getX()%16+16)%16;
@@ -88,7 +88,7 @@ public class ConnModelReal implements IBakedModel
 			Pair<Byte, ExtBlockstateAdapter> key = new ImmutablePair<>((byte)((x<<4)|z), ad);
 			try
 			{
-				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(ext, textureAtlasSprite, base, layers));
+				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(ext, textureAtlasSprite, base));
 				return ret.getQuads(state, null, rand);
 			} catch(ExecutionException e)
 			{
@@ -143,15 +143,12 @@ public class ConnModelReal implements IBakedModel
 		IExtendedBlockState extendedState;
 		List<BakedQuad>[] lists;
 		TextureAtlasSprite texture;
-		private final ImmutableSet<BlockRenderLayer> layers;//TODO remove
 
-		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b,
-								   ImmutableSet<BlockRenderLayer> layers)
+		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b)
 		{
 			basic = b;
 			extendedState = iExtendedBlockState;
 			texture = tex;
-			this.layers = layers;
 		}
 
 		@Nonnull

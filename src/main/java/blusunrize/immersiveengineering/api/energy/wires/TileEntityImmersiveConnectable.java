@@ -11,15 +11,12 @@ package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEProperties.Connections;
+import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -308,15 +305,16 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 
 	private void loadConnsFromNBT(NBTTagCompound nbt)
 	{
-		if(world!=null&&world.isRemote&&!Minecraft.getMinecraft().isSingleplayer()&&nbt!=null)
+		if(world!=null&&world.isRemote&&nbt!=null)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			for (Connection c:globalNet.getLocalNet(pos).getConnections(pos))
+			for(Connection c : new ArrayList<>(globalNet.getLocalNet(pos).getConnections(pos)))
 				globalNet.removeConnection(c);
 			for(int i = 0; i < connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				Connection con = new Connection(conTag);
+				con.generateCatenaryData(world);
 				globalNet.addConnection(pos, con.getOtherEnd(pos), con.type);
 			}
 		}
@@ -336,12 +334,12 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}
 	}
 
-	public Connections genConnBlockstate()
+	public ConnectionModelData genConnBlockstate()
 	{
 		LocalWireNetwork local = globalNet.getLocalNet(pos);
 		Collection<Connection> conns = local.getConnections(pos);
 		if(conns==null)
-			return new Connections(ImmutableSet.of(), pos);
+			return new ConnectionModelData(ImmutableSet.of(), pos);
 		Set<Connection> ret = new HashSet<Connection>()
 		{
 			@Override
@@ -360,42 +358,35 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 				return true;
 			}
 		};
-		//TODO thread safety!
-		//TODO does this ever run? The vertices *should* be generated when block data is calculated...
+		//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
 		for(Connection c : conns)
 		{
-			IImmersiveConnectable end = local.getConnector(c.getOtherEnd(pos));
-			if(end==null)
-				continue;
 			// generate subvertices
-			c.generateSubvertices(world);
+			c.generateCatenaryData(world);
 			ret.add(c);
 		}
 
-		return new Connections(ret, pos);
+		return new ConnectionModelData(ret, pos);
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		if(!world.isRemote)
-			ImmersiveNetHandler.INSTANCE.addProxy(new IICProxy(this));
+		globalNet.getLocalNet(pos).onConnectorUnload(pos, this);
 	}
 
 	@Override
-	public void validate()
+	public void onLoad()
 	{
-		super.validate();
-		if(!world.isRemote)
-			ApiUtils.addFutureServerTask(world, () -> ImmersiveNetHandler.INSTANCE.onTEValidated(this));
+		super.onLoad();
+		globalNet.getLocalNet(pos).onConnectorLoad(pos, this);
 	}
 
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		if(world.isRemote&&!Minecraft.getMinecraft().isSingleplayer())
-			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(pos, world, this, false);
+		globalNet.removeConnector(pos, this);
 	}
 }
