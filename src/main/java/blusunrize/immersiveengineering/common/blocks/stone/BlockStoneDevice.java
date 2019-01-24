@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -77,6 +78,15 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 				return ((TileEntityCoresample)te).facing.getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
 		}
 		return super.getBoundingBox(state, world, pos);
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	{
+		BlockTypes_StoneDevices meta = state.getValue(getMetaProperty());
+		if(meta==BlockTypes_StoneDevices.CONCRETE_SHEET||meta==BlockTypes_StoneDevices.CONCRETE_QUARTER||meta==BlockTypes_StoneDevices.CONCRETE_THREEQUARTER)
+			return BlockFaceShape.UNDEFINED;
+		return super.getBlockFaceShape(world, state, pos, side);
 	}
 
 	@Override
