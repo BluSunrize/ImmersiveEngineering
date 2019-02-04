@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.api.energy.wires;
 
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -35,12 +35,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.canMix;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
-	protected WireType limitType = null;
 	protected GlobalWireNetwork globalNet;
 
 	protected boolean canTakeLV()
@@ -99,39 +97,23 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		String category = cableType.getCategory();
-		boolean foundAccepting = (HV_CATEGORY.equals(category)&&canTakeHV())
+		//TODO handle connectors vs relays, but not in here
+		return (HV_CATEGORY.equals(category)&&canTakeHV())
 				||(MV_CATEGORY.equals(category)&&canTakeMV())
 				||(LV_CATEGORY.equals(category)&&canTakeLV());
-		if(!foundAccepting)
-			return false;
-		return limitType==null||(this.isRelay()&&canMix(limitType, cableType));
 	}
 
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
-		this.limitType = cableType;
-	}
-
-	@Override
-	public WireType getCableLimiter(TargetingInfo target)
-	{
-		return this.limitType;
 	}
 
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection!=null?connection.type: null;
-		Collection<Connection> outputs = globalNet.getLocalNet(pos).getConnections(pos);
-		if(outputs==null||outputs.size()==0)
-		{
-			if(type==limitType||type==null)
-				this.limitType = null;
-		}
 		this.markDirty();
 		if(world!=null)
 		{
@@ -264,15 +246,18 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		return super.receiveClientEvent(id, arg);
 	}
 
+	@Nullable
+	@Override
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	{
+		return new ConnectionPoint(pos, 0);
+	}
+
 	@Override
 	public void readCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
 		try
 		{
-			if(nbt.hasKey("limitType"))
-				limitType = ApiUtils.getWireTypeFromNBT(nbt, "limitType");
-			else
-				limitType = null;
 			if(nbt.hasKey("connectionList"))
 				loadConnsFromNBT(nbt);
 		} catch(Exception e)
@@ -287,8 +272,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		try
 		{
-			if(limitType!=null)
-				nbt.setString("limitType", limitType.getUniqueName());
 			if(descPacket)
 				writeConnsToNBT(nbt);
 
@@ -307,15 +290,20 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		if(world!=null&&world.isRemote&&nbt!=null)
 		{
+			IELogger.info("Loading conns at {}", pos);
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			for(Connection c : new ArrayList<>(globalNet.getLocalNet(pos).getConnections(pos)))
-				globalNet.removeConnection(c);
+			for(ConnectionPoint cp : getConnectionPoints())
+				for(Connection c : new ArrayList<>(globalNet.getLocalNet(cp).getConnections(cp)))
+					globalNet.removeConnection(c);
 			for(int i = 0; i < connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				Connection con = new Connection(conTag);
-				con.generateCatenaryData(world);
-				globalNet.addConnection(pos, con.getOtherEnd(pos), con.type);
+				if(globalNet.getNullableLocalNet(con.getOtherEnd(con.getEndFor(pos)))!=null)
+				{
+					con.generateCatenaryData(world);
+					globalNet.addConnection(con);
+				}
 			}
 		}
 	}
@@ -325,47 +313,37 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(world!=null&&!world.isRemote&&nbt!=null)
 		{
 			NBTTagList connectionList = new NBTTagList();
-			LocalWireNetwork local = globalNet.getLocalNet(pos);
-			Collection<Connection> conL = local.getConnections(pos);
-			if(conL!=null)
-				for(Connection con : conL)
-					connectionList.appendTag(con.toNBT());
+			for(ConnectionPoint cp : getConnectionPoints())
+			{
+				LocalWireNetwork local = globalNet.getLocalNet(cp);
+				Collection<Connection> conL = local.getConnections(cp);
+				if(conL!=null)
+					for(Connection con : conL)
+						if(!con.isInternal())
+							connectionList.appendTag(con.toNBT());
+			}
 			nbt.setTag("connectionList", connectionList);
 		}
 	}
 
 	public ConnectionModelData genConnBlockstate()
 	{
-		LocalWireNetwork local = globalNet.getLocalNet(pos);
-		Collection<Connection> conns = local.getConnections(pos);
-		if(conns==null)
-			return new ConnectionModelData(ImmutableSet.of(), pos);
-		Set<Connection> ret = new HashSet<Connection>()
+		Set<Connection> ret = new HashSet<>();
+		for(ConnectionPoint cp : getConnectionPoints())
 		{
-			@Override
-			public boolean equals(Object o)
-			{
-				if(o==this)
-					return true;
-				if(!(o instanceof HashSet))
-					return false;
-				HashSet<Connection> other = (HashSet<Connection>)o;
-				if(other.size()!=this.size())
-					return false;
-				for(Connection c : this)
-					if(!other.contains(c))
-						return false;
-				return true;
-			}
-		};
-		//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
-		for(Connection c : conns)
-		{
-			// generate subvertices
-			c.generateCatenaryData(world);
-			ret.add(c);
+			LocalWireNetwork local = globalNet.getLocalNet(cp);
+			Collection<Connection> conns = local.getConnections(cp);
+			if(conns==null)
+				return new ConnectionModelData(ImmutableSet.of(), pos);
+			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
+			for(Connection c : conns)
+				if(!c.isInternal())
+				{
+					// generate subvertices
+					c.generateCatenaryData(world);
+					ret.add(c);
+				}
 		}
-
 		return new ConnectionModelData(ret, pos);
 	}
 
@@ -373,20 +351,28 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		globalNet.getLocalNet(pos).onConnectorUnload(pos, this);
+		globalNet.onConnectorUnload(pos, this);
 	}
 
 	@Override
 	public void onLoad()
 	{
 		super.onLoad();
-		globalNet.getLocalNet(pos).onConnectorLoad(pos, this);
+		IELogger.info("Loading connector at {}", pos);
+		globalNet.onConnectorLoad(pos, this);
 	}
 
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		globalNet.removeConnector(pos, this);
+		globalNet.removeConnector(this);
+	}
+
+	@Override
+	public Collection<ConnectionPoint> getConnectionPoints()
+	{
+		//TODO override in the relevant conn classes
+		return ImmutableList.of(new ConnectionPoint(pos, 0));
 	}
 }

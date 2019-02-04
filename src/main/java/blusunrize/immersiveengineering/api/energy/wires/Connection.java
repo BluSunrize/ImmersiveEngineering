@@ -10,33 +10,48 @@ package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class Connection
 {
+	@Nonnull
 	public final WireType type;
-	private final BlockPos endA;
-	private final BlockPos endB;
-	private CatenaryData catData = new CatenaryData();
+	@Nonnull
+	private final ConnectionPoint endA;
+	@Nonnull
+	private final ConnectionPoint endB;
+	private final boolean internal;
+	private final CatenaryData catData = new CatenaryData();
 
-	public Connection(WireType type, BlockPos endA, BlockPos endB)
+	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
 	{
 		this.type = type;
 		this.endA = endA;
 		this.endB = endB;
+		this.internal = false;
+	}
+
+	public Connection(BlockPos pos, int idA, int idB)
+	{
+		this.type = WireType.STEEL;//TODO
+		this.endA = new ConnectionPoint(pos, idA);
+		this.endB = new ConnectionPoint(pos, idB);
+		this.internal = true;
 	}
 
 	public Connection(NBTTagCompound nbt)
 	{
 		type = WireType.getValue(nbt.getString("type"));
-		endA = NBTUtil.getPosFromTag(nbt.getCompoundTag("endA"));
-		endB = NBTUtil.getPosFromTag(nbt.getCompoundTag("endB"));
+		endA = new ConnectionPoint(nbt.getCompoundTag("endA"));
+		endB = new ConnectionPoint(nbt.getCompoundTag("endB"));
+		internal = nbt.getBoolean("internal");
 	}
 
-	public BlockPos getOtherEnd(BlockPos known)
+	public ConnectionPoint getOtherEnd(ConnectionPoint known)
 	{
 		if(known.equals(endA))
 			return endB;
@@ -44,17 +59,19 @@ public class Connection
 			return endA;
 	}
 
-	public BlockPos getEndA()
+	@Nonnull
+	public ConnectionPoint getEndA()
 	{
 		return endA;
 	}
 
-	public BlockPos getEndB()
+	@Nonnull
+	public ConnectionPoint getEndB()
 	{
 		return endB;
 	}
 
-	public boolean isPositiveEnd(BlockPos p)
+	public boolean isPositiveEnd(ConnectionPoint p)
 	{
 		return p.equals(endA);
 	}
@@ -62,10 +79,16 @@ public class Connection
 	public NBTTagCompound toNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setTag("endA", NBTUtil.createPosTag(endA));
-		nbt.setTag("endB", NBTUtil.createPosTag(endB));
+		nbt.setTag("endA", endA.createTag());
+		nbt.setTag("endB", endB.createTag());
 		nbt.setString("type", type.getUniqueName());
+		nbt.setBoolean("internal", internal);
 		return nbt;
+	}
+
+	public boolean isInternal()
+	{
+		return internal;
 	}
 
 	public void generateCatenaryData(World world)
@@ -106,13 +129,13 @@ public class Connection
 		return !Double.isNaN(catData.offsetY);
 	}
 
-	public boolean isEnd(BlockPos p)
+	public boolean isEnd(ConnectionPoint p)
 	{
 		return p.equals(endA)||p.equals(endB);
 	}
 
 	//TODO proper impl, do we ever need all vertices? Or always just those on one side of the chunk border?
-	public Vec3d[] getCatenaryVertices(BlockPos pos)
+	public Vec3d[] getCatenaryVertices(ConnectionPoint pos)
 	{
 		//IELogger.logger.info("{} to {}, asking from {} (b: {})", endA, endB, pos, endB.equals(pos));
 		Vec3d[] ret = new Vec3d[17];
@@ -125,7 +148,7 @@ public class Connection
 	}
 
 	//pos is relative to 1. 0 is the end corresponding to from, 1 is the other end.
-	public Vec3d getPoint(double pos, BlockPos from)
+	public Vec3d getPoint(double pos, ConnectionPoint from)
 	{
 		if(endB.equals(from))
 		{
@@ -141,6 +164,11 @@ public class Connection
 			z += catData.dz;
 		}
 		return new Vec3d(catData.vecA.x+x, catData.vecA.y+y, catData.vecA.z+z);
+	}
+
+	public ConnectionPoint getEndFor(BlockPos pos)
+	{
+		return endA.getPosition().equals(pos)?endA: endB;
 	}
 
 	private class CatenaryData

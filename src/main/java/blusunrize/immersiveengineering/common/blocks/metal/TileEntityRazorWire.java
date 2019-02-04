@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
@@ -30,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -237,9 +239,9 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		BlockPos other = con==null?pos: con.getOtherEnd(pos);
+		BlockPos other = con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
 		int yDif = other.getY()-pos.getY();
 		int zDif = other.getZ()-pos.getZ();
@@ -262,11 +264,5 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 			boolean wallN = facing==EnumFacing.NORTH||facing==EnumFacing.EAST?wallL: wallR;
 			return new Vec3d(facing.getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, facing.getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
 		}
-	}
-
-	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
-		return true;
 	}
 }

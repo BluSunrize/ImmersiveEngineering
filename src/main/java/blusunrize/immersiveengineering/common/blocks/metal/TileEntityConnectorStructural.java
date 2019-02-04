@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -24,6 +24,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.STRUCTURE_CATEGORY;
@@ -76,17 +77,11 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = .03125;
 		return new Vec3d(.5+side.getXOffset()*(-.125-conRadius), .5+side.getYOffset()*(-.125-conRadius), .5+side.getZOffset()*(-.125-conRadius));
-	}
-
-	@Override
-	int getRenderRadiusIncrease()
-	{
-		return WireType.STRUCTURE_STEEL.getMaxLength();
 	}
 
 	@Override
@@ -102,11 +97,10 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		if(!STRUCTURE_CATEGORY.equals(cableType.getCategory()))
-			return false;
-		return limitType==null||limitType==cableType;
+		//TODO are ropes and cables meant to be mixed?
+		return STRUCTURE_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
@@ -118,7 +112,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
-		Matrix4 mat = transform.isPresent()?new Matrix4(transform.get().getMatrix()): new Matrix4();
+		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrix())).orElseGet(Matrix4::new);
 		mat = mat.translate(.5, 0, .5).rotate(Math.toRadians(rotation), 0, 1, 0).translate(-.5, 0, -.5);
 		transform = Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 		return transform;

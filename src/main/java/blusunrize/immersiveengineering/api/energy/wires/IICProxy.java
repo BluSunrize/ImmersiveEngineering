@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
@@ -19,6 +20,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 public class IICProxy implements IImmersiveConnectable
 {
@@ -93,18 +98,19 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return false;
 	}
 
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
 	}
 
+	@Nullable
 	@Override
-	public WireType getCableLimiter(TargetingInfo target)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
 		return null;
 	}
@@ -115,9 +121,15 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return null;
+	}
+
+	@Override
+	public Collection<ConnectionPoint> getConnectionPoints()
+	{
+		return ImmutableList.of();//TODO do we need this to work properly? Test breakers in unloaded chunks!
 	}
 
 	public static IICProxy readFromNBT(NBTTagCompound nbt)

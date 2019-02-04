@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -23,6 +24,8 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IDirectionalTile, IHammerInteraction, IBlockBounds, IActiveState, ILightValue
 {
@@ -156,9 +159,9 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		BlockPos other = con==null?pos: con.getOtherEnd(pos);
+		BlockPos other = con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
 		int zDif = other.getZ()-pos.getZ();
 		if(Math.abs(xDif) >= Math.abs(zDif))
@@ -232,12 +235,6 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), getBlockType(), active?1: 0, 0);
-		return true;
-	}
-
-	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
 		return true;
 	}
 }

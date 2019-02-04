@@ -397,7 +397,7 @@ public class ImmersiveNetHandler
 	public boolean clearAllConnectionsFor(BlockPos node, World world, @Nonnull TargetingInfo target)
 	{
 		IImmersiveConnectable iic = toIIC(node, world);
-		WireType type = iic.getCableLimiter(target);
+		WireType type = null;//iic.getCableLimiter(target);
 		if(type==null)
 			return false;
 		int dim = world.provider.getDimension();

@@ -357,17 +357,19 @@ public class ApiUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(LocalWireNetwork net, BlockPos pos, Connection conn)
+	public static Vec3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn)
 	{
 		Vec3d offset = Vec3d.ZERO;
 		//Force loading
-		IImmersiveConnectable iicPos = net.getConnector(pos);
+		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
 		if(iicPos!=null)
-			offset = iicPos.getConnectionOffset(conn);
+			offset = iicPos.getConnectionOffset(conn, pos);
 		if(pos.equals(conn.getEndA()))
-			offset = offset.add(conn.getEndA().getX()-conn.getEndB().getX(),
-					conn.getEndA().getY()-conn.getEndB().getY(),
-					conn.getEndA().getZ()-conn.getEndB().getZ());
+		{
+			BlockPos posA = conn.getEndA().getPosition();
+			BlockPos posB = conn.getEndB().getPosition();
+			offset = offset.add(posA.getX()-posB.getX(), posA.getY()-posB.getY(), posA.getZ()-posB.getZ());
+		}
 		return offset;
 	}
 
@@ -472,9 +474,10 @@ public class ApiUtils
 	public static boolean raytraceAlongCatenary(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
 	{
+		BlockPos posA = conn.getEndA().getPosition();
 		return raytraceAlongCatenaryRelative(conn, shouldStop, close,
-				vStart.subtract(conn.getEndA().getX(), conn.getEndA().getY(), conn.getEndA().getZ()),
-				vEnd.subtract(conn.getEndA().getX(), conn.getEndA().getY(), conn.getEndA().getZ()));
+				vStart.subtract(posA.getX(), posA.getY(), posA.getZ()),
+				vEnd.subtract(posA.getX(), posA.getY(), posA.getZ()));
 	}
 
 	public static boolean raytraceAlongCatenaryRelative(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
@@ -629,15 +632,17 @@ public class ApiUtils
 		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
 		{
 			ItemStack stack = player.getHeldItem(hand);
-			TargetingInfo target = new TargetingInfo(side, hitX, hitY, hitZ);
+			TargetingInfo targetHere = new TargetingInfo(side, hitX, hitY, hitZ);
 			WireType wire = coil.getWireType(stack);
-			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, target);
-			Vec3i offset = pos.subtract(masterPos);
+			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, targetHere);
+			Vec3i offsetHere = pos.subtract(masterPos);
 			tileEntity = world.getTileEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntity).canConnect())
 				return EnumActionResult.PASS;
+			IImmersiveConnectable iicHere = (IImmersiveConnectable)tileEntity;
+			ConnectionPoint cpHere = iicHere.getTargetedPoint(targetHere, offsetHere);
 
-			if(!((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset)||!coil.canConnectCable(stack, tileEntity))
+			if(!((IImmersiveConnectable)tileEntity).canConnectCable(wire, cpHere, offsetHere)||!coil.canConnectCable(stack, tileEntity))
 			{
 				if(!world.isRemote)
 					player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"), true);
@@ -648,9 +653,9 @@ public class ApiUtils
 				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 				{
 					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), masterPos.getX(), masterPos.getY(), masterPos.getZ(),
-							offset.getX(), offset.getY(), offset.getZ()});
+							offsetHere.getX(), offsetHere.getY(), offsetHere.getZ()});
 					NBTTagCompound targetNbt = new NBTTagCompound();
-					target.writeToNBT(targetNbt);
+					targetHere.writeToNBT(targetNbt);
 					ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
 				}
 				else
@@ -673,42 +678,50 @@ public class ApiUtils
 					else
 					{
 						TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
-						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||
-								!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, targetLink, offsetLink)||
-								!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
-								!coil.canConnectCable(stack, tileEntityLinkingPos))
+						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
+						{
 							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
+						}
 						else
 						{
-							GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
-							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-							IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
-							boolean connectionExists = false;
-							LocalWireNetwork localA = net.getLocalNet(pos);
-							LocalWireNetwork localB = net.getLocalNet(linkPos);
-							if (localA==localB)
+							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
+							ConnectionPoint cpLink = iicLink.getTargetedPoint(targetLink, offsetLink);
+							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, cpLink, offsetLink)||
+									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
+									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
-								Collection<Connection> outputs = localA.getConnections(pos);
-								if(outputs!=null)
-									for(Connection con : outputs)
-										if(con.getOtherEnd(pos).equals(Utils.toCC(nodeLink)))
-											connectionExists = true;
+								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
 							}
-							if(connectionExists)
-								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
 							else
 							{
-								Set<BlockPos> ignore = new HashSet<>();
-								ignore.addAll(nodeHere.getIgnored(nodeLink));
-								ignore.addAll(nodeLink.getIgnored(nodeHere));
-								ImmersiveNetHandler.Connection tmpConn = new ImmersiveNetHandler.Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
-										(int)Math.sqrt(distanceSq));
-								Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos));
-								Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).add(linkPos.getX()-masterPos.getX(),
-										linkPos.getY()-masterPos.getY(),
-										linkPos.getZ()-masterPos.getZ());
-								BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
-								boolean canSee = true;/*ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p) -> {
+								GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
+								assert cpHere!=null&&cpLink!=null;//TODO display error as usual, this is just for testing
+								boolean connectionExists = false;
+								LocalWireNetwork localA = net.getLocalNet(cpHere);
+								LocalWireNetwork localB = net.getLocalNet(cpLink);
+								if(localA==localB)
+								{
+									Collection<Connection> outputs = localA.getConnections(cpHere);
+									if(outputs!=null)
+										for(Connection con : outputs)
+											if(!con.isInternal()&&con.getOtherEnd(cpHere).equals(cpLink))
+												connectionExists = true;
+								}
+								if(connectionExists)
+									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
+								else
+								{
+									Set<BlockPos> ignore = new HashSet<>();
+									ignore.addAll(iicHere.getIgnored(iicLink));
+									ignore.addAll(iicLink.getIgnored(iicHere));
+									ImmersiveNetHandler.Connection tmpConn = new ImmersiveNetHandler.Connection(Utils.toCC(iicHere), Utils.toCC(iicLink), wire,
+											(int)Math.sqrt(distanceSq));
+									Vec3d start = iicHere.getConnectionOffset(tmpConn, targetHere, pos.subtract(masterPos));
+									Vec3d end = iicLink.getConnectionOffset(tmpConn, targetLink, offsetLink).add(linkPos.getX()-masterPos.getX(),
+											linkPos.getY()-masterPos.getY(),
+											linkPos.getZ()-masterPos.getZ());
+									BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
+									boolean canSee = true;/*TODO ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p) -> {
 									if(ignore.contains(p.getLeft()))
 										return false;
 									IBlockState state = world.getBlockState(p.getLeft());
@@ -720,34 +733,35 @@ public class ApiUtils
 									return false;
 								}, (p) -> {
 								}, start, end);*/
-								if(canSee)
-								{
-									Connection conn = net.addConnection(nodeHere, nodeLink, wire);
+									if(canSee)
+									{
+										Connection conn = new Connection(wire, cpHere, cpLink);
+										net.addConnection(conn);
 
+										iicHere.connectCable(wire, cpHere, iicLink, cpLink);
+										iicLink.connectCable(wire, cpLink, iicHere, cpHere);
+										//ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
+										IESaveData.setDirty(world.provider.getDimension());
+										Utils.unlockIEAdvancement(player, "main/connect_wire");
 
-									nodeHere.connectCable(wire, target, nodeLink, offset);
-									nodeLink.connectCable(wire, targetLink, nodeHere, offsetLink);
-									//ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
-									IESaveData.setDirty(world.provider.getDimension());
-									Utils.unlockIEAdvancement(player, "main/connect_wire");
-
-									if(!player.capabilities.isCreativeMode)
-										coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
-									((TileEntity)nodeHere).markDirty();
-									world.addBlockEvent(masterPos, ((TileEntity)nodeHere).getBlockType(), -1, 0);
-									IBlockState state = world.getBlockState(masterPos);
-									world.notifyBlockUpdate(masterPos, state, state, 3);
-									((TileEntity)nodeLink).markDirty();
-									world.addBlockEvent(linkPos, ((TileEntity)nodeLink).getBlockType(), -1, 0);
-									state = world.getBlockState(linkPos);
-									world.notifyBlockUpdate(linkPos, state, state, 3);
-								}
-								else
-								{
-									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
-									ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tmpConn, failedReason, player.world),
-											new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
-													64));
+										if(!player.capabilities.isCreativeMode)
+											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
+										((TileEntity)iicHere).markDirty();
+										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockType(), -1, 0);
+										IBlockState state = world.getBlockState(masterPos);
+										world.notifyBlockUpdate(masterPos, state, state, 3);
+										((TileEntity)iicLink).markDirty();
+										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockType(), -1, 0);
+										state = world.getBlockState(linkPos);
+										world.notifyBlockUpdate(linkPos, state, state, 3);
+									}
+									else
+									{
+										player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
+										ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tmpConn, failedReason, player.world),
+												new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
+														64));
+									}
 								}
 							}
 						}
@@ -1042,15 +1056,15 @@ public class ApiUtils
 			}
 	}
 
-	public static void moveConnectionEnd(Connection conn, BlockPos currEnd, BlockPos newEnd, World world)
+	public static void moveConnectionEnd(Connection conn, ConnectionPoint currEnd, ConnectionPoint newEnd, World world)
 	{
-		//TODO move to parameters
-		BlockPos fixedPos = conn.getOtherEnd(currEnd);
-		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(newEnd);
-		IImmersiveConnectable otherSide = net.getConnector(fixedPos);
-		Vec3d start = ApiUtils.getVecForIICAt(net, fixedPos, conn);
-		Vec3d end = ApiUtils.getVecForIICAt(net, currEnd, conn);
-		if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
+		//TODO too lazy to move this to ConnPoints right now :)
+		//ConnectionPoint fixedPos = conn.getOtherEnd(currEnd);
+		//LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(newEnd);
+		//IImmersiveConnectable otherSide = net.getConnector(fixedPos);
+		//Vec3d start = ApiUtils.getVecForIICAt(net, fixedPos, conn);
+		//Vec3d end = ApiUtils.getVecForIICAt(net, currEnd, conn);
+		//if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
 		{
 			//TODO
 			//ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);

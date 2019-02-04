@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -30,18 +29,19 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.model.TRSRTransformation;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
+//TODO ConnectionPoints for opening/closing
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<IBlockState>
 {
 	public int rotation = 0;
@@ -49,7 +49,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public int wires = 0;
 	public boolean active = false;
 	public boolean inverted = false;
-	public BlockPos endOfLeftConnection = null;
+	public ConnectionPoint endOfLeftConnection = null;
 
 	@Override
 	protected boolean canTakeLV()
@@ -76,30 +76,21 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(!cableType.isEnergyWire()&&!REDSTONE_CATEGORY.equals(cableType.getCategory()))
 			return false;
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
-		if(wires >= 2)
-			return false;
-		return limitType==null||WireApi.canMix(cableType, limitType);
+		//TODO no mixing!
+		return wires < 2;
 	}
 
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
-		if(this.limitType==null)
-			this.limitType = cableType;
 		wires++;
 		onConnectionChange();
-	}
-
-	@Override
-	public WireType getCableLimiter(TargetingInfo target)
-	{
-		return limitType;
 	}
 
 	@Override
@@ -110,8 +101,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			wires = 0;
 		else
 			wires--;
-		if(wires <= 0)
-			limitType = null;
 		onConnectionChange();
 	}
 
@@ -139,7 +128,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Matrix4 mat = new Matrix4(facing);
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
@@ -175,7 +164,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 				if(val > maxDiff)
 				{
 					maxDiff = val;
-					endOfLeftConnection = pos==c.end?c.start: c.end;
+					//TODO move to new net handler endOfLeftConnection = pos==c.end?c.start: c.end;
 				}
 			}
 	}
@@ -367,13 +356,5 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		}
 		if(world!=null)
 			markContainingBlockForUpdate(null);
-	}
-
-	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
-		if(c.isEnd(endOfLeftConnection))
-			endOfLeftConnection = newEnd;
-		return true;
 	}
 }

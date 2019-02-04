@@ -31,7 +31,7 @@ public class LocalWireNetwork
 {
 	//TODO do we need this?
 	private final GlobalWireNetwork globalNet;
-	private final Multimap<BlockPos, Connection> connections = HashMultimap.create();
+	private final Multimap<ConnectionPoint, Connection> connections = HashMultimap.create();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	private final Map<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> handlers = new HashMap<>();
 
@@ -48,14 +48,10 @@ public class LocalWireNetwork
 		for(NBTBase b : wires)
 		{
 			Connection wire = new Connection((NBTTagCompound)b);
-			if(connectors.containsKey(wire.getEndA())&&connectors.containsKey(wire.getEndB()))
-			{
+			if(connectors.containsKey(wire.getEndA().getPosition())&&connectors.containsKey(wire.getEndB().getPosition()))
 				addConnection(wire);
-			}
 			else
-			{
-				IELogger.logger.info("Wire from {} to {}, but connector points are {}", wire.getEndA(), wire.getEndB(), connectors);
-			}
+				IELogger.logger.error("Wire from {} to {}, but connector points are {}", wire.getEndA(), wire.getEndB(), connectors);
 		}
 	}
 
@@ -67,7 +63,7 @@ public class LocalWireNetwork
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagList wires = new NBTTagList();
-		for(BlockPos p : connections.keySet())
+		for(ConnectionPoint p : connections.keySet())
 			for(Connection conn : connections.get(p))
 				if(conn.isPositiveEnd(p))
 					wires.appendTag(conn.toNBT());
@@ -86,7 +82,6 @@ public class LocalWireNetwork
 				proxies.appendTag(proxy.writeToNBT());
 		}
 		ret.setTag("proxies", proxies);
-		IELogger.info("Writing net with connectors {} to NTB: {}", connections.keySet(), ret);
 		return ret;
 	}
 
@@ -108,13 +103,13 @@ public class LocalWireNetwork
 	/*
 	 * Returns all connections at the given connector. Do not modify the result!
 	 */
-	public Collection<Connection> getConnections(BlockPos at)
+	public Collection<Connection> getConnections(ConnectionPoint at)
 	{
 		return Collections.unmodifiableCollection(connections.get(at));
 	}
 
 	//LOADING/UNLOADING
-	public void onConnectorLoad(BlockPos p, IImmersiveConnectable iic)
+	void loadConnector(BlockPos p, IImmersiveConnectable iic)
 	{
 		connectors.put(p, iic);
 		for(ResourceLocation loc : iic.getRequestedHandlers())
@@ -129,7 +124,7 @@ public class LocalWireNetwork
 			h.getRight().onConnectorLoaded(p, iic);
 	}
 
-	public void onConnectorUnload(BlockPos p, IImmersiveConnectable iic)
+	void unloadConnector(BlockPos p, IImmersiveConnectable iic)
 	{
 		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
 			h.getRight().onConnectorUnloaded(p, iic);
@@ -138,7 +133,6 @@ public class LocalWireNetwork
 	}
 
 	//INTERNAL USE ONLY!
-
 	LocalWireNetwork merge(LocalWireNetwork other)
 	{
 		LocalWireNetwork result = new LocalWireNetwork(globalNet);
@@ -163,29 +157,28 @@ public class LocalWireNetwork
 
 	void removeConnector(BlockPos p)
 	{
-		for(Connection c : getConnections(p))
-		{
-			BlockPos other = c.getOtherEnd(p);
-			connections.remove(other, c);
-		}
-		connections.removeAll(p);
 		IImmersiveConnectable iic = connectors.get(p);
+		for(ConnectionPoint point : iic.getConnectionPoints())
+		{
+			for(Connection c : getConnections(point))
+			{
+				ConnectionPoint other = c.getOtherEnd(point);
+				connections.remove(other, c);
+			}
+			connections.removeAll(point);
+		}
 		connectors.remove(p);
 		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
 			h.getValue().onConnectorRemoved(p, iic);
 		removeConnectorHandlers(iic);
 	}
 
-	void addConnector(BlockPos p, IImmersiveConnectable iic)
-	{
-		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
-			h.getValue().onConnectorLoaded(p, iic);
-	}
-
 	void addConnection(Connection conn)
 	{
-		assert connectors.containsKey(conn.getEndA());
-		assert connectors.containsKey(conn.getEndB());
+		if(!connectors.containsKey(conn.getEndA().getPosition()))
+			throw new AssertionError(conn.getEndA().getPosition());
+		if(!connectors.containsKey(conn.getEndB().getPosition()))
+			throw new AssertionError(conn.getEndB().getPosition());
 		connections.put(conn.getEndA(), conn);
 		connections.put(conn.getEndB(), conn);
 		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
@@ -203,26 +196,31 @@ public class LocalWireNetwork
 		}
 	}
 
+	public Collection<ConnectionPoint> getConnectionPoints()
+	{
+		return connections.keySet();
+	}
+
 	public Collection<LocalWireNetwork> split()
 	{
-		Collection<BlockPos> toVisit = new HashSet<>(getConnectors());
+		Collection<ConnectionPoint> toVisit = new HashSet<>(getConnectionPoints());
 		Collection<LocalWireNetwork> ret = new ArrayList<>();
 		while(!toVisit.isEmpty())
 		{
-			Deque<BlockPos> open = new ArrayDeque<>();
-			List<BlockPos> inComponent = new ArrayList<>();
+			Deque<ConnectionPoint> open = new ArrayDeque<>();
+			List<ConnectionPoint> inComponent = new ArrayList<>();
 			{
-				Iterator<BlockPos> tmpIt = toVisit.iterator();
+				Iterator<ConnectionPoint> tmpIt = toVisit.iterator();
 				open.add(tmpIt.next());
 				tmpIt.remove();
 			}
 			while(!open.isEmpty())
 			{
-				BlockPos curr = open.pop();
+				ConnectionPoint curr = open.pop();
 				inComponent.add(curr);
 				for(Connection c : getConnections(curr))
 				{
-					BlockPos otherEnd = c.getOtherEnd(curr);
+					ConnectionPoint otherEnd = c.getOtherEnd(curr);
 					if(toVisit.contains(otherEnd))
 					{
 						toVisit.remove(otherEnd);
@@ -237,9 +235,10 @@ public class LocalWireNetwork
 				break;
 			}
 			LocalWireNetwork newNet = new LocalWireNetwork(globalNet);
-			for(BlockPos p : inComponent)
+			for(ConnectionPoint p : inComponent)
+				newNet.loadConnector(p.getPosition(), connectors.get(p.getPosition()));
+			for(ConnectionPoint p : inComponent)
 			{
-				newNet.addConnector(p, connectors.get(p));
 				for(Connection c : getConnections(p))
 					if(c.isPositiveEnd(p))
 						newNet.addConnection(c);

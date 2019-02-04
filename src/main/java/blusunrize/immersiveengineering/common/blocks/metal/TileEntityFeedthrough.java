@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
@@ -24,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,11 +35,9 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		IHasDummyBlocks, IPropertyPassthrough, IBlockBounds, ICacheData
 {
 	public static final String WIRE = "wire";
-	private static final String POSITIVE_CON_X = "posConnX";
-	private static final String POSITIVE_CON_Y = "posConnY";
-	private static final String POSITIVE_CON_Z = "posConnZ";
 	private static final String HAS_NEGATIVE = "hasNeg";
 	private static final String FACING = "facing";
+	private static final String POSITIVE = "positive";
 	private static final String OFFSET = "offset";
 	public static final String MIDDLE_STATE = "middle";
 
@@ -51,7 +49,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	EnumFacing facing = EnumFacing.NORTH;
 	public int offset = 0;
 	@Nullable
-	public BlockPos connPositive = null;
+	public ConnectionPoint connPositive = null;
 	public boolean hasNegative = false;
 	private boolean formed = true;
 
@@ -61,11 +59,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setString(WIRE, reference.getUniqueName());
 		if(connPositive!=null)
-		{
-			nbt.setInteger(POSITIVE_CON_X, connPositive.getX());
-			nbt.setInteger(POSITIVE_CON_Y, connPositive.getY());
-			nbt.setInteger(POSITIVE_CON_Z, connPositive.getZ());
-		}
+			nbt.setTag(POSITIVE, connPositive.createTag());
 		nbt.setBoolean(HAS_NEGATIVE, hasNegative);
 		nbt.setInteger(FACING, facing.getIndex());
 		nbt.setInteger(OFFSET, offset);
@@ -79,11 +73,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		reference = WireType.getValue(nbt.getString(WIRE));
-		if(nbt.hasKey(POSITIVE_CON_X))
-			connPositive = new BlockPos(
-					nbt.getInteger(POSITIVE_CON_X),
-					nbt.getInteger(POSITIVE_CON_Y),
-					nbt.getInteger(POSITIVE_CON_Z));
+		if(nbt.hasKey(POSITIVE, NBT.TAG_COMPOUND))
+			connPositive = new ConnectionPoint(nbt.getCompoundTag(POSITIVE));
 		hasNegative = nbt.getBoolean(HAS_NEGATIVE);
 		facing = EnumFacing.VALUES[nbt.getInteger(FACING)];
 		offset = nbt.getInteger(OFFSET);
@@ -91,7 +82,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return getOffset(con.isEnd(connPositive));
 	}
@@ -104,7 +95,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con, TargetingInfo target, Vec3i offsetLink)
+	public Vec3d getConnectionOffset(ImmersiveNetHandler.Connection con, TargetingInfo target, Vec3i offsetLink)
 	{
 		return getOffset(isPositive(offsetLink));
 	}
@@ -118,7 +109,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(!WireApi.canMix(reference, cableType))
 			return false;
@@ -130,15 +121,12 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other, @Nullable Vec3i offset)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
-		if(offset!=null)
-		{
-			if(isPositive(offset))
-				connPositive = ApiUtils.toBlockPos(other);
-			else
-				hasNegative = true;
-		}
+		if(target.getIndex() > 0)
+			connPositive = otherTarget;
+		else
+			hasNegative = true;
 	}
 
 	@Override
@@ -156,12 +144,6 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			else
 				hasNegative = false;
 		}
-	}
-
-	@Override
-	public WireType getCableLimiter(TargetingInfo target)
-	{
-		return reference;
 	}
 
 	@Override
@@ -427,13 +409,5 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
-	}
-
-	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
-		if(c.isEnd(connPositive))
-			connPositive = newEnd;
-		return true;
 	}
 }

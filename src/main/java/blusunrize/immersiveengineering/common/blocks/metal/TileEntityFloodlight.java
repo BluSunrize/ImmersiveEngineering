@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -42,6 +43,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import java.util.*;
@@ -388,9 +390,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		BlockPos other = con==null?pos: con.getOtherEnd(pos);
+		BlockPos other = con==null?pos: con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
 		int yDif = other.getY()-pos.getY();
 		int zDif = other.getZ()-pos.getZ();
@@ -633,11 +635,5 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
-	}
-
-	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
-		return true;
 	}
 }

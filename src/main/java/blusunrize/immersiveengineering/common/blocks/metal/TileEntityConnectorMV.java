@@ -9,9 +9,11 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityConnectorMV extends TileEntityConnectorLV
 {
@@ -28,17 +30,11 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5+side.getXOffset()*(.0625-conRadius), .5+side.getYOffset()*(.0625-conRadius), .5+side.getZOffset()*(.0625-conRadius));
-	}
-
-	@Override
-	int getRenderRadiusIncrease()
-	{
-		return WireType.ELECTRUM.getMaxLength();
 	}
 
 	@Override

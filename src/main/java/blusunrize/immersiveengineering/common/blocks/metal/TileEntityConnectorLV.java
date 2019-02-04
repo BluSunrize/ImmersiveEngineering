@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.common.Config;
@@ -29,15 +29,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Map;
@@ -218,37 +216,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
-	}
-
-	@SideOnly(Side.CLIENT)
-	private AxisAlignedBB renderAABB;
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		//		if(renderAABB==null)
-		//		{
-		//			if(Config.getBoolean("increasedRenderboxes"))
-		//			{
-		int inc = getRenderRadiusIncrease();
-		return new AxisAlignedBB(this.pos.getX()-inc, this.pos.getY()-inc, this.pos.getZ()-inc, this.pos.getX()+inc+1, this.pos.getY()+inc+1, this.pos.getZ()+inc+1);
-		//				renderAABB = new AxisAlignedBB(this.pos.getX()-inc,this.pos.getY()-inc,this.pos.getZ()-inc, this.pos.getX()+inc+1,this.pos.getY()+inc+1,this.pos.getZ()+inc+1);
-		//			}
-		//			else
-		//				renderAABB = super.getRenderBoundingBox();
-		//		}
-		//		return renderAABB;
-	}
-
-	int getRenderRadiusIncrease()
-	{
-		return WireType.COPPER.getMaxLength();
 	}
 
 	IEForgeEnergyWrapper energyWrapper;
@@ -476,11 +448,5 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				return new float[]{1-length, wMin, wMin, 1, wMax, wMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
-	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
-		return true;
 	}
 }

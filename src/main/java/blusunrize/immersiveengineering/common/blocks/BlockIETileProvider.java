@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -202,7 +203,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		Consumer<Connection> dropHandler;
 		if(world.getGameRules().getBoolean("doTileDrops"))
 			dropHandler = (c) -> {
-				BlockPos end = c.getOtherEnd(pos);
+				BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
 				double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
 				double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
 				double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
@@ -212,7 +213,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			dropHandler = c -> {
 			};
 		if(tile instanceof IImmersiveConnectable&&!world.isRemote)
-			getNetwork(world).removeAllConnectionsAt(pos, dropHandler);
+			for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
+				getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		tempTile.put(new DimensionBlockPos(pos, world.provider.getDimension()), tile);
 		super.breakBlock(world, pos, state);
 		world.removeTileEntity(pos);

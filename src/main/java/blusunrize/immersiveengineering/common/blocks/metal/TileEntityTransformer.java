@@ -12,11 +12,9 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -28,8 +26,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.*;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +37,10 @@ import static blusunrize.immersiveengineering.api.energy.wires.WireType.MV_CATEG
 
 public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
-	WireType secondCable;
+	private static final int RIGHT_INDEX = 0;
+	private static final int LEFT_INDEX = 1;
+	private WireType leftType;
+	private WireType rightType;
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int dummy = 0;
 	public boolean onPost = false;
@@ -88,8 +91,10 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing.ordinal());
-		if(secondCable!=null)
-			nbt.setString("secondCable", secondCable.getUniqueName());
+		if(leftType!=null)
+			nbt.setString("leftType", leftType.getUniqueName());
+		if(rightType!=null)
+			nbt.setString("rightType", rightType.getUniqueName());
 		nbt.setInteger("dummy", dummy);
 		nbt.setBoolean("postAttached", onPost);
 	}
@@ -99,10 +104,14 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
-		if(nbt.hasKey("secondCable"))
-			secondCable = ApiUtils.getWireTypeFromNBT(nbt, "secondCable");
+		if(nbt.hasKey("leftType"))
+			leftType = ApiUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
-			secondCable = null;
+			leftType = null;
+		if(nbt.hasKey("rightType"))
+			rightType = ApiUtils.getWireTypeFromNBT(nbt, "rightType");
+		else
+			rightType = null;
 		dummy = nbt.getInteger("dummy");
 		onPost = nbt.getBoolean("postAttached");
 	}
@@ -114,20 +123,19 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(dummy!=0)
 		{
 			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
 			return master instanceof TileEntityTransformer&&((TileEntityTransformer)master).canConnectCable(cableType, target, offset);
 		}
-		int tc = getTargetedConnector(target);
-		switch(tc)
+		switch(target.getIndex())
 		{
-			case 0:
-				return canAttach(cableType, limitType, secondCable);
-			case 1:
-				return canAttach(cableType, secondCable, limitType);
+			case LEFT_INDEX:
+				return canAttach(cableType, leftType, rightType);
+			case RIGHT_INDEX:
+				return canAttach(cableType, rightType, leftType);
 		}
 		return false;
 	}
@@ -153,40 +161,30 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 			return false;
 	}
 
+	boolean isConnectedToRight(Connection c)
+	{
+		return c.getEndFor(pos).getIndex()==RIGHT_INDEX;
+	}
+
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
 		if(dummy!=0)
 		{
 			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
 			if(master instanceof TileEntityTransformer)
-				((TileEntityTransformer)master).connectCable(cableType, target, other);
+				((TileEntityTransformer)master).connectCable(cableType, target, other, otherTarget);
 			return;
 		}
-		switch(getTargetedConnector(target))
+		switch(target.getIndex())
 		{
-			case 0:
-				if(this.limitType==null)
-					this.limitType = cableType;
+			case LEFT_INDEX:
+				this.leftType = cableType;
 				break;
-			case 1:
-				if(secondCable==null)
-					this.secondCable = cableType;
+			case RIGHT_INDEX:
+				this.rightType = cableType;
 				break;
 		}
-	}
-
-	@Override
-	public WireType getCableLimiter(TargetingInfo target)
-	{
-		switch(getTargetedConnector(target))
-		{
-			case 0:
-				return limitType;
-			case 1:
-				return secondCable;
-		}
-		return null;
 	}
 
 	@Override
@@ -194,28 +192,26 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		WireType type = connection!=null?connection.type: null;
 		if(type==null)
+			leftType = rightType = null;
+		else
 		{
-			limitType = null;
-			secondCable = null;
+			switch(connection.getEndFor(pos).getIndex())
+			{
+				case LEFT_INDEX:
+					leftType = null;
+					break;
+				case RIGHT_INDEX:
+					rightType = null;
+					break;
+			}
 		}
-		if(type==limitType)
-			this.limitType = null;
-		if(type==secondCable)
-			this.secondCable = null;
 		this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		boolean right = con.type==limitType;
-		return getConnectionOffset(con, right);
-	}
-
-	@Override
-	public Vec3d getConnectionOffset(Connection con, TargetingInfo target, Vec3i offsetLink)
-	{
-		return getConnectionOffset(con, getTargetedConnector(target)==0);
+		return getConnectionOffset(con, con.getEndFor(pos).getIndex()==RIGHT_INDEX);
 	}
 
 	private Vec3d getConnectionOffset(Connection con, boolean right)
@@ -243,46 +239,41 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return new Vec3d(.5, .5, .5);
 	}
 
-	public int getTargetedConnector(TargetingInfo target)
+	@Nullable
+	@Override
+	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vec3i offset)
 	{
 		if(onPost)
 		{
 			if(target.hitY >= .5)
-				return 0;
+				return new ConnectionPoint(pos, RIGHT_INDEX);
 			else
-				return 1;
+				return new ConnectionPoint(pos, LEFT_INDEX);
 		}
 		else
 		{
 			if(facing==EnumFacing.NORTH)
 				if(target.hitX < .5)
-					return 1;
+					return new ConnectionPoint(pos, LEFT_INDEX);
 				else
-					return 0;
+					return new ConnectionPoint(pos, RIGHT_INDEX);
 			else if(facing==EnumFacing.SOUTH)
 				if(target.hitX < .5)
-					return 0;
+					return new ConnectionPoint(pos, RIGHT_INDEX);
 				else
-					return 1;
+					return new ConnectionPoint(pos, LEFT_INDEX);
 			else if(facing==EnumFacing.WEST)
 				if(target.hitZ < .5)
-					return 0;
+					return new ConnectionPoint(pos, RIGHT_INDEX);
 				else
-					return 1;
+					return new ConnectionPoint(pos, LEFT_INDEX);
 			else if(facing==EnumFacing.EAST)
 				if(target.hitZ < .5)
-					return 1;
+					return new ConnectionPoint(pos, LEFT_INDEX);
 				else
-					return 0;
+					return new ConnectionPoint(pos, RIGHT_INDEX);
 		}
-		return -1;
-	}
-
-	public WireType getLimiter(int side)
-	{
-		if(side==0)
-			return limitType;
-		return secondCable;
+		return null;
 	}
 
 	@Override
@@ -303,11 +294,11 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		}
 		else
 		{
-			if(limitType==null&&secondCable==null)
-				return true;
+			if(rightType==null&&leftType==null)
+				return false;
 			String higher = getHigherWiretype();
-			return (limitType!=null&&higher.equals(limitType.getCategory()))||
-					(secondCable!=null&&!higher.equals(secondCable.getCategory()));
+			return (rightType!=null&&higher.equals(rightType.getCategory()))||
+					(leftType!=null&&!higher.equals(leftType.getCategory()));
 		}
 	}
 
@@ -351,11 +342,6 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public boolean isDummy()
 	{
 		return dummy!=0;
-	}
-
-	public boolean isOnPost()
-	{
-		return onPost;
 	}
 
 	@Override
@@ -465,8 +451,14 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		return true;
+		return ImmutableList.of(new ConnectionPoint(pos, RIGHT_INDEX), new ConnectionPoint(pos, LEFT_INDEX));
+	}
+
+	@Override
+	public Iterable<? extends Connection> getInternalConnections()
+	{
+		return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
 	}
 }

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.Config;
@@ -1413,8 +1414,9 @@ public class ClientUtils
 		final BlockPos pos = conns.here;
 		for(Connection conn : conns.connections)
 		{
-			final BlockPos end = conn.getOtherEnd(pos);
-			Vec3d[] f = conn.getCatenaryVertices(pos);
+			ConnectionPoint pointHere = conn.getEndFor(pos);
+			final ConnectionPoint end = conn.getOtherEnd(pointHere);
+			Vec3d[] f = conn.getCatenaryVertices(pointHere);
 			if(f==null||f.length < 1)
 				continue;
 			int color = conn.type.getColour(conn);
@@ -1427,7 +1429,7 @@ public class ClientUtils
 				if(crossesChunkBoundary(f[i], f[i-1], pos))
 					crossings.add(i);
 			int index = crossings.size()/2;
-			boolean greater = pos.compareTo(end) > 0;
+			boolean greater = pointHere.compareTo(end) > 0;
 			if(crossings.size()%2==0&&greater)
 				index--;
 			int max = (crossings.size() > 0?

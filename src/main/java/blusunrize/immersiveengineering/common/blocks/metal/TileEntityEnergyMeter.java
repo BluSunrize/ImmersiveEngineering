@@ -30,6 +30,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -114,7 +115,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(lower)
 		{
@@ -127,16 +128,16 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
 		if(lower)
 		{
 			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
 			if(above instanceof TileEntityEnergyMeter)
-				((TileEntityEnergyMeter)above).connectCable(cableType, target, other);
+				((TileEntityEnergyMeter)above).connectCable(cableType, target, other, otherTarget);
 		}
 		else
-			super.connectCable(cableType, target, other);
+			super.connectCable(cableType, target, other, otherTarget);
 	}
 
 	@Override
@@ -165,9 +166,9 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		BlockPos other = con==null?pos: con.getOtherEnd(pos);
+		BlockPos other = con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
 		int zDif = other.getZ()-pos.getZ();
 		if(facing.getAxis()==Axis.X)
@@ -321,11 +322,5 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public int getComparatorInputOverride()
 	{
 		return compVal;
-	}
-
-	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
-		return true;
 	}
 }

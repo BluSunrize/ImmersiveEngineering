@@ -11,8 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
@@ -189,9 +191,11 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 					te = world.getTileEntity(masterPos);
 				if(te instanceof TileEntityImmersiveConnectable)
 				{
-					WireType connected = ((TileEntityImmersiveConnectable)te).getCableLimiter(subTarget);
-					if(connected!=null)
-						return connected.getWireCoil();
+					ConnectionPoint cp = ((TileEntityImmersiveConnectable)te).getTargetedPoint(subTarget, masterPos.subtract(pos));
+					if(cp!=null)
+						for(Connection c : GlobalWireNetwork.getNetwork(world).getLocalNet(cp).getConnections(cp))
+							if(!c.isInternal())
+								return c.type.getWireCoil();
 				}
 			}
 		}

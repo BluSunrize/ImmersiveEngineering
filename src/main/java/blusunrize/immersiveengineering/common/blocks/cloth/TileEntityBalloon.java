@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
@@ -41,6 +42,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityBalloon extends TileEntityConnectorStructural implements ILightValue, IPlayerInteraction, IHammerInteraction
@@ -150,10 +152,9 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		BlockPos end = con.getOtherEnd(pos);
-		assert pos!=null&&end!=null;
+		BlockPos end = con.getOtherEnd(here).getPosition();
 		int xDif = end.getX()-getPos().getX();
 		int zDif = end.getZ()-getPos().getZ();
 		int yDif = end.getY()-getPos().getY();

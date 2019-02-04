@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Set;
@@ -65,28 +66,15 @@ public interface IImmersiveConnectable
 	/**
 	 * @return whether you can connect the given CableType to the tile
 	 */
-	default boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
-	{
-		return canConnectCable(cableType, target);
-	}
+	boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset);
 
 	/**
 	 * fired when a cable is attached, use to limit the cables attached to one type
 	 */
-	default void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other, @Nullable Vec3i offset)
-	{
-		connectCable(cableType, target, other);
-	}
+	void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget);
 
-	default void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
-	{
-		connectCable(cableType, target, other, null);
-	}
-
-	/**
-	 * get the CableType limiter of the tile
-	 */
-	WireType getCableLimiter(TargetingInfo target);
+	@Nullable
+	ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset);
 
 	/**
 	 * return false to stop checking for available outputs from this point onward
@@ -143,18 +131,7 @@ public interface IImmersiveConnectable
 	/**
 	 * @return Where the cable should attach
 	 */
-	Vec3d getConnectionOffset(Connection con);
-
-	/**
-	 * A version of getConnectionOffset that works before the connection exists.
-	 * Should be identical to getConnectionOffset(Connection) once the connection is added
-	 *
-	 * @return Where the cable should attach
-	 */
-	default Vec3d getConnectionOffset(Connection con, TargetingInfo target, Vec3i offsetLink)
-	{
-		return getConnectionOffset(con);
-	}
+	Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here);
 
 	//TODO remove
 	default Vec3d getConnectionOffset(ImmersiveNetHandler.Connection con, TargetingInfo target, Vec3i offsetLink)
@@ -186,15 +163,6 @@ public interface IImmersiveConnectable
 	{
 	}
 
-	/**
-	 * Change any internal data about this connection to indicate that the connection ends at newEnd
-	 * Returns true if successful.
-	 */
-	default boolean moveConnectionTo(Connection c, BlockPos newEnd)
-	{
-		return true;
-	}
-
 	//TODO remove
 	default boolean moveConnectionTo(ImmersiveNetHandler.Connection c, BlockPos newEnd)
 	{
@@ -202,6 +170,13 @@ public interface IImmersiveConnectable
 	}
 
 	default Collection<ResourceLocation> getRequestedHandlers()
+	{
+		return ImmutableList.of();
+	}
+
+	Collection<ConnectionPoint> getConnectionPoints();
+
+	default Iterable<? extends Connection> getInternalConnections()
 	{
 		return ImmutableList.of();
 	}
