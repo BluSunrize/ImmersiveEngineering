@@ -252,6 +252,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		}
 		else
 		{
+			if(offset.getY()!=2)
+				return null;
 			if(facing==EnumFacing.NORTH)
 				if(target.hitX < .5)
 					return new ConnectionPoint(pos, LEFT_INDEX);
@@ -453,12 +455,18 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		return ImmutableList.of(new ConnectionPoint(pos, RIGHT_INDEX), new ConnectionPoint(pos, LEFT_INDEX));
+		if(isDummy())
+			return ImmutableList.of();
+		else
+			return ImmutableList.of(new ConnectionPoint(pos, RIGHT_INDEX), new ConnectionPoint(pos, LEFT_INDEX));
 	}
 
 	@Override
 	public Iterable<? extends Connection> getInternalConnections()
 	{
-		return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+		if(isDummy())
+			return ImmutableList.of();
+		else
+			return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
 	}
 }

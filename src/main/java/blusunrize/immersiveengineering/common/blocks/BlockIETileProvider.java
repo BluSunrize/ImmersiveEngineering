@@ -203,11 +203,14 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		Consumer<Connection> dropHandler;
 		if(world.getGameRules().getBoolean("doTileDrops"))
 			dropHandler = (c) -> {
-				BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
-				double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
-				double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
-				double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
-				world.spawnEntity(new EntityItem(world, dx, dy, dz, c.type.getWireCoil(c)));
+				if(!c.isInternal())
+				{
+					BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
+					double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
+					double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
+					double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
+					world.spawnEntity(new EntityItem(world, dx, dy, dz, c.type.getWireCoil(c)));
+				}
 			};
 		else
 			dropHandler = c -> {

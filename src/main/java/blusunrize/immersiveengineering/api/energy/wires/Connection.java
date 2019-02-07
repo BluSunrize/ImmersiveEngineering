@@ -137,7 +137,6 @@ public class Connection
 	//TODO proper impl, do we ever need all vertices? Or always just those on one side of the chunk border?
 	public Vec3d[] getCatenaryVertices(ConnectionPoint pos)
 	{
-		//IELogger.logger.info("{} to {}, asking from {} (b: {})", endA, endB, pos, endB.equals(pos));
 		Vec3d[] ret = new Vec3d[17];
 		for(int i = 0; i <= 16; ++i)
 		{
@@ -159,9 +158,9 @@ public class Connection
 		double z = catData.dz*pos;
 		if(endA.equals(from))
 		{
-			x += catData.dx;
-			y += catData.dy;
-			z += catData.dz;
+			x += endB.getX()-endA.getX();
+			y += endB.getY()-endA.getY();
+			z += endB.getZ()-endA.getZ();
 		}
 		return new Vec3d(catData.vecA.x+x, catData.vecA.y+y, catData.vecA.z+z);
 	}

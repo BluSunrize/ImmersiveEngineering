@@ -1429,7 +1429,7 @@ public class ClientUtils
 				if(crossesChunkBoundary(f[i], f[i-1], pos))
 					crossings.add(i);
 			int index = crossings.size()/2;
-			boolean greater = pointHere.compareTo(end) > 0;
+			boolean greater = conn.isPositiveEnd(pointHere);
 			if(crossings.size()%2==0&&greater)
 				index--;
 			int max = (crossings.size() > 0?

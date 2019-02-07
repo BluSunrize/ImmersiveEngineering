@@ -642,7 +642,8 @@ public class ApiUtils
 			IImmersiveConnectable iicHere = (IImmersiveConnectable)tileEntity;
 			ConnectionPoint cpHere = iicHere.getTargetedPoint(targetHere, offsetHere);
 
-			if(!((IImmersiveConnectable)tileEntity).canConnectCable(wire, cpHere, offsetHere)||!coil.canConnectCable(stack, tileEntity))
+			if(cpHere==null||!((IImmersiveConnectable)tileEntity).canConnectCable(wire, cpHere, offsetHere)||
+					!coil.canConnectCable(stack, tileEntity))
 			{
 				if(!world.isRemote)
 					player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"), true);

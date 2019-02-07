@@ -84,4 +84,19 @@ public final class ConnectionPoint implements Comparable<ConnectionPoint>
 	{
 		return "[x="+pos.getX()+", y="+pos.getY()+", z="+pos.getZ()+", index="+index+"]";
 	}
+
+	public int getX()
+	{
+		return pos.getX();
+	}
+
+	public int getY()
+	{
+		return pos.getY();
+	}
+
+	public int getZ()
+	{
+		return pos.getZ();
+	}
 }

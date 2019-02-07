@@ -158,6 +158,8 @@ public class LocalWireNetwork
 	void removeConnector(BlockPos p)
 	{
 		IImmersiveConnectable iic = connectors.get(p);
+		if(iic==null)
+			return;
 		for(ConnectionPoint point : iic.getConnectionPoints())
 		{
 			for(Connection c : getConnections(point))

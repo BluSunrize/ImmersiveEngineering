@@ -68,7 +68,7 @@ public class GlobalWireNetwork
 		}
 		else if(netA!=netB)
 		{
-			IELogger.info("non-non-different");
+			IELogger.logger.info("non-non-different: {} and {}", netA, netB);
 			joined = netA.merge(netB);
 			toSet = joined.getConnectionPoints();
 		}
@@ -169,18 +169,23 @@ public class GlobalWireNetwork
 
 	public void onConnectorLoad(BlockPos pos, IImmersiveConnectable iic)
 	{
-		//TODO this doesn't belong here... There will be parallel conns every time a chunk cycles...
-		for(Connection c : iic.getInternalConnections())
-		{
-			Preconditions.checkArgument(c.isInternal(), "Internal connection for "+iic+"was not marked as internal!");
-			addConnection(c);
-		}
 		Set<LocalWireNetwork> added = new HashSet<>();
-		for(ConnectionPoint connectionPoint : iic.getConnectionPoints())
+		boolean isNew = false;
+		for(ConnectionPoint cp : iic.getConnectionPoints())
 		{
-			LocalWireNetwork local = getLocalNet(connectionPoint);
+			if(getNullableLocalNet(cp)==null)
+				isNew = true;
+			LocalWireNetwork local = getLocalNet(cp);
 			if(added.add(local))
 				local.loadConnector(pos, iic);
+		}
+		if(isNew)
+		{
+			for(Connection c : iic.getInternalConnections())
+			{
+				Preconditions.checkArgument(c.isInternal(), "Internal connection for "+iic+"was not marked as internal!");
+				addConnection(c);
+			}
 		}
 	}
 
