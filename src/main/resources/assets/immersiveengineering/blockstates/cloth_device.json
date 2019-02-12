@@ -22,7 +22,7 @@
         "custom": {
           "base": "immersiveengineering:block/balloon.obj.ie",
           "layers": [
-            "SOLID"
+			  "TRANSLUCENT"
           ]
         }
       },

@@ -26,12 +26,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -73,7 +73,7 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 				Tessellator tes = Tessellator.getInstance();
 				BufferBuilder bb = tes.getBuffer();
 				ItemCameraTransforms.TransformType transformType = obj.lastCameraTransform;
-				Map<BakedQuad, ShaderLayer> quads = new LinkedHashMap<>();//new HashMap();// to reduce new alloc's
+				List<Pair<BakedQuad, ShaderLayer>> quads = new ArrayList<>();
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					GlStateManager.pushMatrix();
@@ -112,14 +112,15 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
-									  Map<BakedQuad, ShaderLayer> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
+									  List<Pair<BakedQuad, ShaderLayer>> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
 									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible, float partialTicks)
 	{
 		quadsForGroup.clear();
 		for(String g : groups)
 		{
 			if(visible.getOrDefault(g, Boolean.FALSE)&&callback.shouldRenderGroup(stack, g))
-				model.addQuadsForGroup(callback, stack, g, sCase, shader, quadsForGroup);
+				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, shader)
+						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}
 		if(!callback.areGroupsFullbright(stack, groups))
@@ -128,10 +129,12 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
 		ShaderLayer lastShaderLayer = null;
-		for(BakedQuad bq : quadsForGroup.keySet())
+		for(Pair<BakedQuad, ShaderLayer> pair : quadsForGroup)
 		{
+			BakedQuad bq = pair.getKey();
+			ShaderLayer layer = pair.getValue();
 			//Switch to or between dynamic layers
-			boolean switchDynamic = quadsForGroup.get(bq)!=lastShaderLayer;
+			boolean switchDynamic = layer!=lastShaderLayer;
 			if(switchDynamic)
 			{
 				//interrupt batch
@@ -141,7 +144,7 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 					lastShaderLayer.modifyRender(false, partialTicks);
 
 				//set new layer
-				lastShaderLayer = quadsForGroup.get(bq);
+				lastShaderLayer = layer;
 
 				if(lastShaderLayer!=null)//start dynamic call on layer
 					lastShaderLayer.modifyRender(true, partialTicks);

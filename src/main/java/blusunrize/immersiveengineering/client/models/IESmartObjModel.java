@@ -43,17 +43,19 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.*;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad.Builder;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public class IESmartObjModel extends OBJBakedModel
@@ -303,25 +305,45 @@ public class IESmartObjModel extends OBJBakedModel
 			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
-		Map<BakedQuad, ShaderLayer> shaderedQuadMap = new HashMap<>();
 		for(String groupName : getModel().getMatLib().getGroups().keySet())
 		{
-			addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, shaderedQuadMap);
+			List<Pair<BakedQuad, ShaderLayer>> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, shader);
+			quads.addAll(temp.stream().filter(Objects::nonNull).map(Pair::getKey).collect(Collectors.toList()));
 		}
-		quads.addAll(shaderedQuadMap.keySet());
 
 		if(callback!=null)
 			quads = callback.modifyQuads(callbackObject, quads);
 		return ImmutableList.copyOf(quads);
 	}
 
-	public <T> void addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName, ShaderCase sCase,
-									 ItemStack shader, Map<BakedQuad, ShaderLayer> quads)
+	public <T> List<Pair<BakedQuad, ShaderLayer>> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject,
+																   String groupName, ShaderCase sCase,
+																   ItemStack shader)
 	{
-
 		int maxPasses = 1;
 		if(sCase!=null)
 			maxPasses = sCase.getLayers().length;
+		Group g = getModel().getMatLib().getGroups().get(groupName);
+		List<Face> faces = new ArrayList<>();
+		Optional<TRSRTransformation> transform = Optional.empty();
+		if(this.getState() instanceof OBJState)
+		{
+			OBJState state = (OBJState)this.getState();
+			if(state.parent!=null)
+				transform = state.parent.apply(Optional.empty());
+			if(callback!=null)
+				transform = callback.applyTransformations(callbackObject, groupName, transform);
+			if(state.getGroupsWithVisibility(true).contains(groupName))
+				faces.addAll(g.applyTransform(transform));
+		}
+		else
+		{
+			transform = getState().apply(Optional.empty());
+			if(callback!=null)
+				transform = callback.applyTransformations(callbackObject, groupName, transform);
+			faces.addAll(g.applyTransform(transform));
+		}
+		List<Pair<BakedQuad, ShaderLayer>> quads = new ArrayList<>(faces.size());
 		for(int pass = 0; pass < maxPasses; pass++)
 		{
 			ShaderLayer shaderLayer = sCase!=null?sCase.getLayers()[pass]: null;
@@ -331,26 +353,6 @@ public class IESmartObjModel extends OBJBakedModel
 			if(sCase!=null)
 				if(!sCase.renderModelPartForPass(shader, tempStack, groupName, pass))
 					continue;
-			Group g = getModel().getMatLib().getGroups().get(groupName);
-			Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<>());
-			Optional<TRSRTransformation> transform = Optional.empty();
-			if(this.getState() instanceof OBJState)
-			{
-				OBJState state = (OBJState)this.getState();
-				if(state.parent!=null)
-					transform = state.parent.apply(Optional.empty());
-				if(callback!=null)
-					transform = callback.applyTransformations(callbackObject, groupName, transform);
-				if(state.getGroupsWithVisibility(true).contains(groupName))
-					faces.addAll(g.applyTransform(transform));
-			}
-			else
-			{
-				transform = getState().apply(Optional.empty());
-				if(callback!=null)
-					transform = callback.applyTransformations(callbackObject, groupName, transform);
-				faces.addAll(g.applyTransform(transform));
-			}
 
 			int argb = 0xffffffff;
 			if(sCase!=null)
@@ -362,8 +364,9 @@ public class IESmartObjModel extends OBJBakedModel
 
 			float[] colour = {(argb >> 16&255)/255f, (argb >> 8&255)/255f, (argb&255)/255f, (argb >> 24&255)/255f};
 
-			for(Face f : faces)
+			for(int faceId = 0; faceId < faces.size(); faceId++)
 			{
+				Face f = faces.get(faceId);
 				TextureAtlasSprite tempSprite = null;
 				if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite()&&!"null".equals(f.getMaterialName()))
 				{
@@ -395,7 +398,7 @@ public class IESmartObjModel extends OBJBakedModel
 					tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
 				if(tempSprite!=null)
 				{
-					IVertexConsumer builder = new UnpackedBakedQuad.Builder(getFormat());
+					Builder builder = new Builder(getFormat());
 					builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
 					builder.setTexture(tempSprite);
 					builder.setQuadTint(pass);
@@ -439,17 +442,13 @@ public class IESmartObjModel extends OBJBakedModel
 					{
 						for(int i = 0; i < 4; i++)
 							putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
-						if(builder instanceof UnpackedBakedQuad.Builder)
-						{
-							//It's ugly, but it should do the trick
-							quads.put(((UnpackedBakedQuad.Builder)builder).build(), shaderLayer!=null&&shaderLayer.isDynamicLayer()?shaderLayer: null);
-//							if(shaderLayer==null || !shaderLayer.isDynamicLayer())
-//							quads.put(((UnpackedBakedQuad.Builder) builder).build(), null);
-						}
+						quads.add(new ImmutablePair<>(builder.build(),
+								shaderLayer!=null&&shaderLayer.isDynamicLayer()?shaderLayer: null));
 					}
 				}
 			}
 		}
+		return quads;
 	}
 
 	protected final void putVertexData(IVertexConsumer builder, Vertex v, Normal faceNormal, TextureCoordinate texCoord, TextureAtlasSprite sprite, float[] colour)
