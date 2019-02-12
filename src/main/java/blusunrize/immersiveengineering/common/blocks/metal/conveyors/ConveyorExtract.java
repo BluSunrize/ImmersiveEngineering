@@ -217,13 +217,12 @@ public class ConveyorExtract extends ConveyorBasic
 	{
 		if(!tile.getWorld().isRemote)
 		{
-			if(isPowered(tile))
+			if(this.transferCooldown > 0)
 			{
-				this.transferCooldown = 1;
+				this.transferCooldown--;
 			}
-			else if(this.transferCooldown-- <= 0)
+			if(!isPowered(tile) && this.transferCooldown <= 0)
 			{
-				this.transferCooldown = 0;
 				World world = tile.getWorld();
 				BlockPos neighbour = tile.getPos().offset(this.extractDirection);
 				if(!world.isAirBlock(neighbour))
