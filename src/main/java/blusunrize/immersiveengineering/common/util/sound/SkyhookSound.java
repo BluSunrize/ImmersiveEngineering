@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.sound;
 
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;
@@ -88,7 +87,6 @@ public class SkyhookSound implements ITickableSound
 	@Override
 	public float getVolume()
 	{
-		IELogger.info("Speed: {}", speed);
 		return Math.min(speed, .75F);
 	}
 
