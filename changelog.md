@@ -1,5 +1,7 @@
 #####Version 0.12-89
+- Added a covered dropping conveyor (BluSunrize)
 - Changed Config to feature range values (Malte)
+- Changed Compat Modules to register recipes on the registry event (BluSunrize)
 - Fixed crash when placing blocks that shouldn't be used as a grid on lightning rods (Malte)
 - Fixed Balloon shaders (Malte)
 - Fixed Steel Axe having overly high damage (BluSunrize)
