@@ -47,6 +47,7 @@ import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import com.google.common.collect.ImmutableSet;
@@ -427,6 +428,7 @@ public class IEContent
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(FluidRegistry.WATER, 1000));
 
+		IECompatModule.doModulesRecipes();
 
 		/*ORE DICT CRAWLING*/
 		IERecipes.postInitOreDictRecipes();

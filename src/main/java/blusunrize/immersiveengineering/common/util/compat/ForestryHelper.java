@@ -30,6 +30,17 @@ public class ForestryHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+		Fluid fluidHoney = FluidRegistry.getFluid("for.honey");
+		if(fluidHoney!=null)
+		{
+			SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoney", 6400);
+			SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoneydew", 6400);
+		}
+	}
+
+	@Override
 	public void init()
 	{
 		FMLInterModComms.sendMessage("forestry", "add-backpack-items", "forestry.forester@"+ImmersiveEngineering.MODID+":seed:*");
@@ -38,12 +49,6 @@ public class ForestryHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
-		Fluid fluidHoney = FluidRegistry.getFluid("for.honey");
-		if(fluidHoney!=null)
-		{
-			SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoney", 6400);
-			SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoneydew", 6400);
-		}
 		ChemthrowerHandler.registerFlammable("bio.ethanol");
 		ChemthrowerHandler.registerEffect("for.honey", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 60, 1));
 		ChemthrowerHandler.registerEffect("juice", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 40, 0));

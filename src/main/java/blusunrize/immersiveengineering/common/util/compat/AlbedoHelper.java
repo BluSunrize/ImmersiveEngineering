@@ -27,6 +27,12 @@ public class AlbedoHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 		MinecraftForge.EVENT_BUS.register(this);

@@ -23,6 +23,11 @@ public class FoundryHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		ChemthrowerHandler.registerEffect("liquidenderpearl", new ChemthrowerEffect_RandomTeleport(null, 0, .25f));

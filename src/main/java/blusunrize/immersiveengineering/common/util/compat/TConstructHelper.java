@@ -95,6 +95,19 @@ public class TConstructHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+		if(ApiUtils.isExistingOreName("ingotAlubrass"))
+			IERecipes.addOreDictArcAlloyingRecipe("ingotAlubrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
+		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
+		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");
+
+		Fluid fluidClay = FluidRegistry.getFluid("clay");
+		if(fluidClay!=null)
+			MixerRecipe.addRecipe(new FluidStack(IEContent.fluidConcrete, 500), new FluidStack(fluidClay, 500), new Object[]{"sand", "sand", "gravel"}, 3200);
+	}
+
+	@Override
 	public void init()
 	{
 		treatedWood.setCraftable(true);
@@ -118,16 +131,6 @@ public class TConstructHelper extends IECompatModule
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("rodSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("ironRod"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("steelRod"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
-
-		if(ApiUtils.isExistingOreName("ingotAlubrass"))
-			IERecipes.addOreDictArcAlloyingRecipe("ingotAlubrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
-		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
-		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");
-
-		Fluid fluidClay = FluidRegistry.getFluid("clay");
-		if(fluidClay!=null)
-			MixerRecipe.addRecipe(new FluidStack(IEContent.fluidConcrete, 500), new FluidStack(fluidClay, 500), new Object[]{"sand", "sand", "gravel"}, 3200);
-
 	}
 
 	@Override

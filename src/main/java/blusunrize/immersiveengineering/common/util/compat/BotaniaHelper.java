@@ -47,6 +47,11 @@ public class BotaniaHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		BlueprintCraftingRecipe.addRecipe("specialBullet", BulletHandler.getBulletStack("terrasteel"), new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetTerrasteel", "nuggetTerrasteel");

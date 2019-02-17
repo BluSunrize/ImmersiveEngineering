@@ -29,12 +29,7 @@ public class InspirationsHelper extends IECompatModule
 	}
 
 	@Override
-	public void init()
-	{
-	}
-
-	@Override
-	public void postInit()
+	public void registerRecipes()
 	{
 		if(ITEM_MATERIAL!=null)
 		{
@@ -53,5 +48,15 @@ public class InspirationsHelper extends IECompatModule
 				}
 			}
 		}
+	}
+
+	@Override
+	public void init()
+	{
+	}
+
+	@Override
+	public void postInit()
+	{
 	}
 }

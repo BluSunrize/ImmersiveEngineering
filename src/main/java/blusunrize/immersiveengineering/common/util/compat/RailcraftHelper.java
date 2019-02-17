@@ -36,6 +36,11 @@ public class RailcraftHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		Item itemRail = Item.REGISTRY.getObject(new ResourceLocation("railcraft:rail"));

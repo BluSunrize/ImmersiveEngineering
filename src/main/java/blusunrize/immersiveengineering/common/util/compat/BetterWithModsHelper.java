@@ -23,6 +23,12 @@ public class BetterWithModsHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 		Item hempSeeds = Item.REGISTRY.getObject(new ResourceLocation("betterwithmods:hemp"));

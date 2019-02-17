@@ -37,6 +37,12 @@ public class ActuallyAdditionsHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 	}

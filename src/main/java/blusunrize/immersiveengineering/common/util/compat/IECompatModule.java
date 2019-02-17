@@ -98,6 +98,18 @@ public abstract class IECompatModule
 				}
 	}
 
+	public static void doModulesRecipes()
+	{
+		for(IECompatModule compat : IECompatModule.modules)
+			try
+			{
+				compat.registerRecipes();
+			} catch(Exception exception)
+			{
+				IELogger.logger.error("Compat module for "+compat+" could not register recipes. Report this and include the error message below!", exception);
+			}
+	}
+
 	public static void doModulesInit()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
@@ -142,6 +154,8 @@ public abstract class IECompatModule
 	}
 
 	public abstract void preInit();
+
+	public abstract void registerRecipes();
 
 	public abstract void init();
 

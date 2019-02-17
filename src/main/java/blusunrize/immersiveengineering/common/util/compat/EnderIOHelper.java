@@ -37,7 +37,7 @@ public class EnderIOHelper extends IECompatModule
 	}
 
 	@Override
-	public void init()
+	public void registerRecipes()
 	{
 		IERecipes.addOreDictArcAlloyingRecipe("ingotElectricalSteel", 1, "Iron", 400, 512, "dustCoal", "itemSilicon");
 		IERecipes.addOreDictArcAlloyingRecipe("ingotEnergeticAlloy", 1, "Gold", 200, 512, "dustRedstone", "dustGlowstone");
@@ -46,7 +46,11 @@ public class EnderIOHelper extends IECompatModule
 		IERecipes.addOreDictArcAlloyingRecipe("ingotConductiveIron", 1, "Iron", 100, 512, "dustRedstone");
 		IERecipes.addOreDictArcAlloyingRecipe("ingotDarkSteel", 1, "Iron", 400, 512, "dustCoal", "obsidian");
 		IERecipes.addOreDictArcAlloyingRecipe("ingotSoularium", 1, "Gold", 200, 512, Blocks.SOUL_SAND);
+	}
 
+	@Override
+	public void init()
+	{
 		ChemthrowerHandler.registerEffect("nutrient_distillation", new ChemthrowerEffect_Potion(null, 0, MobEffects.NAUSEA, 80, 1));
 		ChemthrowerHandler.registerEffect("liquid_sunshine", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(MobEffects.GLOWING, 200, 0), new PotionEffect(MobEffects.LEVITATION, 40, 0)));
 		ChemthrowerHandler.registerEffect("cloud_seed_concentrated", new ChemthrowerEffect_Potion(null, 0, MobEffects.BLINDNESS, 40, 0));

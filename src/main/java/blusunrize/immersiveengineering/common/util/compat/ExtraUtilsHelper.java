@@ -33,6 +33,11 @@ public class ExtraUtilsHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		Item lillySeeds = Item.REGISTRY.getObject(new ResourceLocation("extrautils2:enderlilly"));

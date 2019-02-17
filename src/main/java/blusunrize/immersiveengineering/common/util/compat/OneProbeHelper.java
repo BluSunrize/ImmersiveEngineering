@@ -45,6 +45,11 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 

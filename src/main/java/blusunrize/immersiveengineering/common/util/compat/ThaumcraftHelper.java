@@ -33,6 +33,11 @@ public class ThaumcraftHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		FMLInterModComms.sendMessage("thaumcraft", "harvestStackedCrop", new ItemStack(IEContent.blockCrop, 5));

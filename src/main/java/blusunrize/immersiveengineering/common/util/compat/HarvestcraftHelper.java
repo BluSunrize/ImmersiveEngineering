@@ -33,6 +33,11 @@ public class HarvestcraftHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		//Pams Harvest Craft uses fluids with OreDict entries, so this is my workaround >_>

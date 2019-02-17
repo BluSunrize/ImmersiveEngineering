@@ -44,6 +44,11 @@ public class ThermalFoundationHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		//TE Compat for smelter recipes. Not worth a separate module.

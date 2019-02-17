@@ -30,6 +30,11 @@ public class ChiselsAndBitsHelper extends IECompatModule implements Function<Lis
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 	}

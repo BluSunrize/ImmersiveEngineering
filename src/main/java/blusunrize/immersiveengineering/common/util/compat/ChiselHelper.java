@@ -21,6 +21,11 @@ public class ChiselHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		addVariation("treated_wood", IEContent.blockTreatedWood, 0);

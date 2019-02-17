@@ -26,6 +26,11 @@ public class IC2Helper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		AssemblerHandler.registerRecipeAdapter(AdvRecipe.class, new IRecipeAdapter<AdvRecipe>()

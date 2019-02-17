@@ -13,6 +13,11 @@ public class OCHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+	}
+
+	@Override
 	public void init()
 	{
 		API.driver.add(new DieselGenDriver());

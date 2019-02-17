@@ -54,6 +54,12 @@ public class AttainedDropsHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 		seed = ForgeRegistries.ITEMS.getValue(new ResourceLocation(AD_MODID, "seed"));

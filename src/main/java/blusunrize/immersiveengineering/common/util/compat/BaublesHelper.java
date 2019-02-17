@@ -58,6 +58,12 @@ public class BaublesHelper extends IECompatModule
 	}
 
 	@Override
+	public void registerRecipes()
+	{
+
+	}
+
+	@Override
 	public void init()
 	{
 	}
