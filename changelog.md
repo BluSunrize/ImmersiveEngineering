@@ -5,6 +5,7 @@
 - Fixed crash when placing blocks that shouldn't be used as a grid on lightning rods (Malte)
 - Fixed Balloon shaders (Malte)
 - Fixed Steel Axe having overly high damage (BluSunrize)
+- Fixed potential crashes related to the new blueprint renders (BluSunrize)
 
 #####Version 0.12-88 - BUILT
 - Changed Multiblocks to accept redstone-ignoring conveyors as well as default ones. They will revert to normal ones when the multiblock is broken. (BluSunrize)

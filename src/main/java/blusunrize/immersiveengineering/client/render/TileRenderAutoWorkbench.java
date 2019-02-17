@@ -42,8 +42,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntityAutoWorkbench>
 {
@@ -384,6 +384,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 
 			int w = bufferedImage.getWidth();
 			int h = bufferedImage.getHeight();
+
 			if(h > w)
 				h = w;
 			if(w > wMax)
@@ -406,9 +407,10 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 						{
 							for(Integer key : area.keySet())
 							{
-								for(Point p : area.get(key))
+								for(TexturePoint p : area.get(key))
 								{
-									int pColour = bufferedImage.getRGB(p.x, p.y);
+									float mod = w/(float)p.scale;
+									int pColour = bufferedImage.getRGB((int)(p.x*mod), (int)(p.y*mod));
 									float dR = (r-(pColour >> 16&255)/255f);
 									float dG = (g-(pColour >> 8&255)/255f);
 									float dB = (b-(pColour&255)/255f);
