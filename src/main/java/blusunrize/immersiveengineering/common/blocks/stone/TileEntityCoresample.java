@@ -24,6 +24,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
@@ -117,22 +118,39 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 				{
 					int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
 					String ident = "ie:coresample_"+coords[0]+";"+coords[1]+";"+coords[2];
-					if(mapData.mapDecorations.containsKey(ident))
+					NBTTagCompound mapTagCompound = ItemNBTHelper.getTag(heldItem);
+					NBTTagList nbttaglist = mapTagCompound.getTagList("Decorations", 10);
+
+					for(int i=0; i<nbttaglist.tagCount(); i++)
 					{
-						mapData.mapDecorations.remove(ident);
-						return true;
+						NBTTagCompound tagCompound = (NBTTagCompound)nbttaglist.get(i);
+						if(ident.equalsIgnoreCase(tagCompound.getString("id")))
+						{
+							nbttaglist.removeTag(i);
+							mapTagCompound.setTag("Decorations", nbttaglist);
+							mapData.mapDecorations.remove(ident);
+							return true;
+						}
 					}
+
 					double sampleX = coords[1]*16+8.5;
 					double sampleZ = coords[2]*16+8.5;
+
 					int mapScale = 1<<mapData.scale;
 					float distX = (float)(sampleX-mapData.xCenter)/(float)mapScale;
 					float distZ = (float)(sampleZ-mapData.zCenter)/(float)mapScale;
-					byte mapX = (byte)((int)((double)(distX*2.0F)+0.5D));
-					byte mapZ = (byte)((int)((double)(distZ*2.0F)+0.5D));
-					byte b2 = (byte)8;
-
 					if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
-						mapData.mapDecorations.put(ident, new MapDecoration(MapDecoration.Type.TARGET_POINT, mapX, mapZ, b2));
+					{
+						NBTTagCompound tagCompound = new NBTTagCompound();
+						tagCompound.setString("id", ident);
+						tagCompound.setByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
+						tagCompound.setDouble("x", sampleX);
+						tagCompound.setDouble("z", sampleZ);
+						tagCompound.setDouble("rot", 180.0);
+
+						nbttaglist.appendTag(tagCompound);
+						mapTagCompound.setTag("Decorations", nbttaglist);
+					}
 					else
 						player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"coresample.mapFail"));
 				}
