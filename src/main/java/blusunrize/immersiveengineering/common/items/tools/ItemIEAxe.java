@@ -11,7 +11,7 @@ public class ItemIEAxe extends ItemToolBase
 {
 	public ItemIEAxe(ToolMaterial materialIn, String name, String toolclass, String oreDict)
 	{
-		super(materialIn, name, toolclass, oreDict, AXE_EFFECTIVE, 8.0f, -3.1f);
+		super(materialIn, name, toolclass, oreDict, AXE_EFFECTIVE, 5.5f, -3.1f);
 	}
 
 	@Override
