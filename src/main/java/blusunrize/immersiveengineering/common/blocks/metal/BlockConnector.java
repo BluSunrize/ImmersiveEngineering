@@ -197,7 +197,6 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 					WireType wire = connectable.getCableLimiter(subTarget);
 					if(wire!=null)
 						return wire.getWireCoil();
-
 					ArrayList<ItemStack> applicableWires = new ArrayList<ItemStack>();
 					NonNullList<ItemStack> pInventory = player.inventory.mainInventory;
 					for(int i = 0; i < pInventory.size(); i++)
@@ -246,7 +245,6 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 						}
 						return applicableWires.get(0);
 					}
-						
 				}
 			}
 		}
