@@ -215,31 +215,37 @@ public class ConveyorExtract extends ConveyorBasic
 	@Override
 	public void onUpdate(TileEntity tile, EnumFacing facing)
 	{
-		if(!tile.getWorld().isRemote&&!isPowered(tile)&&this.transferCooldown-- <= 0)
+		if(!tile.getWorld().isRemote)
 		{
-			this.transferCooldown = 0;
-			World world = tile.getWorld();
-			BlockPos neighbour = tile.getPos().offset(this.extractDirection);
-			if(!world.isAirBlock(neighbour))
+			if(this.transferCooldown > 0)
 			{
-				TileEntity neighbourTile = world.getTileEntity(neighbour);
-				if(neighbourTile!=null&&neighbourTile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite()))
+				this.transferCooldown--;
+			}
+			if(!isPowered(tile) && this.transferCooldown <= 0)
+			{
+				World world = tile.getWorld();
+				BlockPos neighbour = tile.getPos().offset(this.extractDirection);
+				if(!world.isAirBlock(neighbour))
 				{
-					IItemHandler itemHandler = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite());
-					for(int i = 0; i < itemHandler.getSlots(); i++)
+					TileEntity neighbourTile = world.getTileEntity(neighbour);
+					if(neighbourTile!=null&&neighbourTile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite()))
 					{
-						ItemStack extractItem = itemHandler.extractItem(i, 1, true);
-						if(!extractItem.isEmpty())
+						IItemHandler itemHandler = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite());
+						for(int i = 0; i < itemHandler.getSlots(); i++)
 						{
-							extractItem = itemHandler.extractItem(i, 1, false);
-							EntityItem entity = new EntityItem(world, tile.getPos().getX()+.5, tile.getPos().getY()+.1875, tile.getPos().getZ()+.5, extractItem);
-							entity.motionX = 0;
-							entity.motionY = 0;
-							entity.motionZ = 0;
-							world.spawnEntity(entity);
-							this.onItemDeployed(tile, entity, facing);
-							this.transferCooldown = this.transferTickrate;
-							return;
+							ItemStack extractItem = itemHandler.extractItem(i, 1, true);
+							if(!extractItem.isEmpty())
+							{
+								extractItem = itemHandler.extractItem(i, 1, false);
+								EntityItem entity = new EntityItem(world, tile.getPos().getX()+.5, tile.getPos().getY()+.1875, tile.getPos().getZ()+.5, extractItem);
+								entity.motionX = 0;
+								entity.motionY = 0;
+								entity.motionZ = 0;
+								world.spawnEntity(entity);
+								this.onItemDeployed(tile, entity, facing);
+								this.transferCooldown = this.transferTickrate;
+								return;
+							}
 						}
 					}
 				}
