@@ -3,19 +3,21 @@
 # 11-02-2018
 # I.E: v0.12-76 (MC 1.12.2)
 
+#Updated by rogama25 12/11/2018
+
 # BLOCKS
 tile.immersiveengineering.ore.copper.name=Mineral de cobre
 tile.immersiveengineering.ore.aluminum.name=Mineral de bauxita
 tile.immersiveengineering.ore.lead.name=Mineral de plomo
 tile.immersiveengineering.ore.silver.name=Mineral de plata
-tile.immersiveengineering.ore.nickel.name=Mineral de niquel
+tile.immersiveengineering.ore.nickel.name=Mineral de níquel
 tile.immersiveengineering.ore.uranium.name=Mineral de uranio
 
 tile.immersiveengineering.storage.copper.name=Bloque de cobre
 tile.immersiveengineering.storage.aluminum.name=Bloque de aluminio
 tile.immersiveengineering.storage.lead.name=Bloque de plomo
 tile.immersiveengineering.storage.silver.name=Bloque de plata
-tile.immersiveengineering.storage.nickel.name=Bloque de niquel
+tile.immersiveengineering.storage.nickel.name=Bloque de níquel
 tile.immersiveengineering.storage.uranium.name=Bloque de uranio
 tile.immersiveengineering.storage.constantan.name=Bloque de constantán
 tile.immersiveengineering.storage.electrum.name=Bloque de electrio
@@ -25,44 +27,44 @@ tile.immersiveengineering.storage_slab.copper.name=Losa de cobre
 tile.immersiveengineering.storage_slab.aluminum.name=Losa de aluminio
 tile.immersiveengineering.storage_slab.lead.name=Losa de plomo
 tile.immersiveengineering.storage_slab.silver.name=Losa de plata
-tile.immersiveengineering.storage_slab.nickel.name=Losa de niquel
+tile.immersiveengineering.storage_slab.nickel.name=Losa de níquel
 tile.immersiveengineering.storage_slab.uranium.name=Losa de uranio
 tile.immersiveengineering.storage_slab.constantan.name=Losa de constantán
 tile.immersiveengineering.storage_slab.electrum.name=Losa de electrio
 tile.immersiveengineering.storage_slab.steel.name=Losa de acero
 
-tile.immersiveengineering.stone_decoration.cokebrick.name=Ladrillos de arcilla mezclada
+tile.immersiveengineering.stone_decoration.cokebrick.name=Ladrillos de coque
 tile.immersiveengineering.stone_decoration.blastbrick.name=Ladrillos infernales
 tile.immersiveengineering.stone_decoration.blastbrick_reinforced.name=Ladrillos infernales reforzados
-tile.immersiveengineering.stone_decoration.coke.name=Bloque de coque
-tile.immersiveengineering.stone_decoration.hempcrete.name=Concreto de cáñamo industrial
-tile.immersiveengineering.stone_decoration.concrete.name=Concreto
-tile.immersiveengineering.stone_decoration.concrete_tile.name=Concreto pulido
-tile.immersiveengineering.stone_decoration.concrete_leaded.name=Concreto reforzado con plomo
+tile.immersiveengineering.stone_decoration.coke.name=Bloque de carbón de coque
+tile.immersiveengineering.stone_decoration.hempcrete.name=Hormigón de cáñamo industrial
+tile.immersiveengineering.stone_decoration.concrete.name=Hormigón
+tile.immersiveengineering.stone_decoration.concrete_tile.name=Hormigón pulido
+tile.immersiveengineering.stone_decoration.concrete_leaded.name=Hormigón reforzado con plomo
 tile.immersiveengineering.stone_decoration.insulating_glass.name=Vidrio aislante
-tile.immersiveengineering.stone_decoration.concrete_sprayed.name=Concreto de secado rápido
+tile.immersiveengineering.stone_decoration.concrete_sprayed.name=Hormigón de secado rápido
 tile.immersiveengineering.stone_decoration.alloybrick.name=Ladrillos de horno
-tile.immersiveengineering.stone_decoration_slab.cokebrick.name=Losa de ladrillos de arcilla mezclada
+tile.immersiveengineering.stone_decoration_slab.cokebrick.name=Losa de ladrillos de coque
 tile.immersiveengineering.stone_decoration_slab.blastbrick.name=Losa de ladrillos infernales
 tile.immersiveengineering.stone_decoration_slab.blastbrick_reinforced.name=Losa de ladrillos infernales reforzados
 tile.immersiveengineering.stone_decoration_slab.coke.name=Losa de coque
-tile.immersiveengineering.stone_decoration_slab.hempcrete.name=Losa de concreto de cáñamo industrial
-tile.immersiveengineering.stone_decoration_slab.concrete.name=Losa de concreto
-tile.immersiveengineering.stone_decoration_slab.concrete_tile.name=Losa de concreto pulido
-tile.immersiveengineering.stone_decoration_slab.concrete_leaded.name=Losa de concreto reforzado con plomo
+tile.immersiveengineering.stone_decoration_slab.hempcrete.name=Losa de hormigón de cáñamo industrial
+tile.immersiveengineering.stone_decoration_slab.concrete.name=Losa de hormigón
+tile.immersiveengineering.stone_decoration_slab.concrete_tile.name=Losa de hormigón pulido
+tile.immersiveengineering.stone_decoration_slab.concrete_leaded.name=Losa de hormigón reforzado con plomo
 tile.immersiveengineering.stone_decoration_slab.insulating_glass.name=Losa de vidrio aislante
 tile.immersiveengineering.stone_decoration_slab.alloybrick.name=Losa de ladrillos de horno
-tile.immersiveengineering.stone_decoration_stairs_hempcrete.name=Escaleras de concreto de cáñamo industrial
-tile.immersiveengineering.stone_decoration_stairs_concrete.name=Escaleras de concreto
-tile.immersiveengineering.stone_decoration_stairs_concrete_tile.name=Escaleras de concreto pulido
-tile.immersiveengineering.stone_decoration_stairs_concrete_leaded.name=Escaleras de concreto reforzado con plomo
+tile.immersiveengineering.stone_decoration_stairs_hempcrete.name=Escaleras de hormigón de cáñamo industrial
+tile.immersiveengineering.stone_decoration_stairs_concrete.name=Escaleras de hormigón
+tile.immersiveengineering.stone_decoration_stairs_concrete_tile.name=Escaleras de hormigón pulido
+tile.immersiveengineering.stone_decoration_stairs_concrete_leaded.name=Escaleras de hormigón reforzado con plomo
 
 tile.immersiveengineering.stone_device.coke_oven.name=Horno de coque
 tile.immersiveengineering.stone_device.blast_furnace.name=Horno infernal
 tile.immersiveengineering.stone_device.blast_furnace_advanced.name=Horno infernal mejorado
-tile.immersiveengineering.stone_device.concrete_sheet.name=Capa ligera de concreto
-tile.immersiveengineering.stone_device.concrete_quarter.name=Capa mediana de concreto
-tile.immersiveengineering.stone_device.concrete_threequarter.name=Capa pesada de concreto
+tile.immersiveengineering.stone_device.concrete_sheet.name=Capa ligera de hormigón
+tile.immersiveengineering.stone_device.concrete_quarter.name=Capa mediana de hormigón
+tile.immersiveengineering.stone_device.concrete_threequarter.name=Capa pesada de hormigón
 tile.immersiveengineering.stone_device.coresample.name=Muestra de núcleo
 tile.immersiveengineering.stone_device.alloy_smelter.name=Horno de aleaciones
 
@@ -97,10 +99,10 @@ tile.immersiveengineering.sheetmetal.copper.name=Placas apiladas de cobre
 tile.immersiveengineering.sheetmetal.aluminum.name=Placas apiladas de aluminio
 tile.immersiveengineering.sheetmetal.lead.name=Placas apiladas de plomo
 tile.immersiveengineering.sheetmetal.silver.name=Placas apiladas de plata
-tile.immersiveengineering.sheetmetal.nickel.name=Placas apiladas de niquel
+tile.immersiveengineering.sheetmetal.nickel.name=Placas apiladas de níquel
 tile.immersiveengineering.sheetmetal.uranium.name=Placas apiladas de uranio
 tile.immersiveengineering.sheetmetal.constantan.name=Placas apiladas de constantán
-tile.immersiveengineering.sheetmetal.electrum.name=Placas apiladas de electric
+tile.immersiveengineering.sheetmetal.electrum.name=Placas apiladas de electrio
 tile.immersiveengineering.sheetmetal.steel.name=Placas apiladas de acero
 tile.immersiveengineering.sheetmetal.iron.name=Placas apiladas de hierro
 tile.immersiveengineering.sheetmetal.gold.name=Placas apiladas de oro
@@ -108,7 +110,7 @@ tile.immersiveengineering.sheetmetal_slab.copper.name=Losa de placas apiladas de
 tile.immersiveengineering.sheetmetal_slab.aluminum.name=Losa de placas apiladas de aluminio
 tile.immersiveengineering.sheetmetal_slab.lead.name=Losa de placas apiladas de plomo
 tile.immersiveengineering.sheetmetal_slab.silver.name=Losa de placas apiladas de plata
-tile.immersiveengineering.sheetmetal_slab.nickel.name=Losa de placas apiladas de niquel
+tile.immersiveengineering.sheetmetal_slab.nickel.name=Losa de placas apiladas de níquel
 tile.immersiveengineering.sheetmetal_slab.uranium.name=Losa de placas apiladas de uranio
 tile.immersiveengineering.sheetmetal_slab.constantan.name=Losa de placas apiladas de constantán
 tile.immersiveengineering.sheetmetal_slab.electrum.name=Losa de placas apiladas de electrio
@@ -116,14 +118,14 @@ tile.immersiveengineering.sheetmetal_slab.steel.name=Losa de placas apiladas de 
 tile.immersiveengineering.sheetmetal_slab.iron.name=Losa de placas apiladas de hierro
 tile.immersiveengineering.sheetmetal_slab.gold.name=Losa de placas apiladas de oro
 
-tile.immersiveengineering.metal_decoration0.coil_lv.name=Bobina de bajo voltaje
-tile.immersiveengineering.metal_decoration0.coil_mv.name=Bobina de medio voltaje
-tile.immersiveengineering.metal_decoration0.coil_hv.name=Bobina de alto voltaje
-tile.immersiveengineering.metal_decoration0.rs_engineering.name=Bloque de aleación de redstone
+tile.immersiveengineering.metal_decoration0.coil_lv.name=Bloque de bobina de cobre
+tile.immersiveengineering.metal_decoration0.coil_mv.name=Bloque de bobina de electrio
+tile.immersiveengineering.metal_decoration0.coil_hv.name=Bloque de bobina de alto voltaje
+tile.immersiveengineering.metal_decoration0.rs_engineering.name=Bloque de ingeniería de redstone
 tile.immersiveengineering.metal_decoration0.light_engineering.name=Bloque de ingeniería ligera
 tile.immersiveengineering.metal_decoration0.heavy_engineering.name=Bloque de ingeniería pesada
 tile.immersiveengineering.metal_decoration0.generator.name=Bloque generador
-tile.immersiveengineering.metal_decoration0.radiator.name=Bloque de refrigeración
+tile.immersiveengineering.metal_decoration0.radiator.name=Bloque de radiador
 tile.immersiveengineering.metal_decoration1.steel_fence.name=Valla de acero
 tile.immersiveengineering.metal_decoration1.steel_scaffolding_0.name=Andamio de acero
 tile.immersiveengineering.metal_decoration1.steel_scaffolding_1.name=Andamio de acero
@@ -137,8 +139,10 @@ tile.immersiveengineering.metal_decoration2.steel_wallmount.name=Montaje de pare
 tile.immersiveengineering.metal_decoration2.aluminum_post.name=Poste de aluminio
 tile.immersiveengineering.metal_decoration2.aluminum_wallmount.name=Montaje de pared de aluminio
 tile.immersiveengineering.metal_decoration2.lantern.name=Linterna
-tile.immersiveengineering.metal_decoration2.razor_wire.name=Alambre de púas
+tile.immersiveengineering.metal_decoration2.razor_wire.name=Alambre de espino
 tile.immersiveengineering.metal_decoration2.toolbox.name=Caja de herramientas del ingeniero
+tile.immersiveengineering.metal_decoration2.steel_slope.name=Brazo estructural de acero
+tile.immersiveengineering.metal_decoration2.alu_slope.name=Brazo estructural de aluminio
 
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=Losa de andamio de acero
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=Losa de andamio de acero
@@ -171,6 +175,7 @@ tile.immersiveengineering.connector.redstone_breaker.name=Interruptor de redston
 tile.immersiveengineering.connector.energy_meter.name=Transformador de corriente
 tile.immersiveengineering.connector.connector_redstone.name=Conector de cable de redstone
 tile.immersiveengineering.connector.connector_probe.name=Conector de sonda de redstone
+tile.immersiveengineering.connector.feedthrough.name=Macarrón aislante
 
 tile.immersiveengineering.metal_device0.capacitor_lv.name=Condensador BV
 tile.immersiveengineering.metal_device0.capacitor_mv.name=Condensador MV
@@ -191,33 +196,35 @@ tile.immersiveengineering.metal_device1.tesla_coil.name=Bobina de Tesla
 tile.immersiveengineering.metal_device1.floodlight.name=Luz de inundación
 tile.immersiveengineering.metal_device1.turret_chem.name=Torreta lanzadora de productos químicos
 tile.immersiveengineering.metal_device1.turret_gun.name=Torreta
-tile.immersiveengineering.metal_device1.belljar.name=Cloche de jardín
+tile.immersiveengineering.metal_device1.belljar.name=Invernadero de jardín
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Cinta transportadora
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.name=Cinta transportadora
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=Ignora el control de Redstone
-tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Cinta transportadora
+tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Cinta transportadora soltadora
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=Cinta transportadora vertical
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=Cinta transportadora divisora
-tile.immersiveengineering.conveyor.immersiveengineering:covered.name=Cinta transportadora cubierta con andamio de acero
-tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=Cinta transportadora vertical cubierta con andamio de acero
+tile.immersiveengineering.conveyor.immersiveengineering:covered.name=Cinta transportadora recubierta
+tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=Cinta transportadora vertical recubierta
+tile.immersiveengineering.conveyor.immersiveengineering:extract.name=Cinta transportadora extractora
+tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=Cinta transportadora extractora recubierta
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=Prensa de metal
-tile.immersiveengineering.metal_multiblock.crusher.name=Trituradora industrial
+tile.immersiveengineering.metal_multiblock.crusher.name=Trituradora
 tile.immersiveengineering.metal_multiblock.tank.name=Tanque de fluidos
 tile.immersiveengineering.metal_multiblock.silo.name=Silo
-tile.immersiveengineering.metal_multiblock.assembler.name=Ensamblador industrial
+tile.immersiveengineering.metal_multiblock.assembler.name=Ensamblador
 tile.immersiveengineering.metal_multiblock.auto_workbench.name=Mesa de trabajo del ingeniero automatizada
 tile.immersiveengineering.metal_multiblock.bottling_machine.name=Embotelladora industrial
 tile.immersiveengineering.metal_multiblock.squeezer.name=Exprimidor industrial
 tile.immersiveengineering.metal_multiblock.fermenter.name=Fermentador industrial
-tile.immersiveengineering.metal_multiblock.refinery.name=Refinería industrial
+tile.immersiveengineering.metal_multiblock.refinery.name=Refinería
 tile.immersiveengineering.metal_multiblock.diesel_generator.name=Generador de Diesel
-tile.immersiveengineering.metal_multiblock.excavator.name=Excavador industrial
-tile.immersiveengineering.metal_multiblock.bucket_wheel.name=Rueda de cubetas industrial
+tile.immersiveengineering.metal_multiblock.excavator.name=Excavador
+tile.immersiveengineering.metal_multiblock.bucket_wheel.name=Rueda de cubos
 tile.immersiveengineering.metal_multiblock.arc_furnace.name=Horno de arco eléctrico
 tile.immersiveengineering.metal_multiblock.lightningrod.name=Pararrayos
-tile.immersiveengineering.metal_multiblock.mixer.name=Mezclador industrial
+tile.immersiveengineering.metal_multiblock.mixer.name=Mezclador
 
 tile.immersiveengineering.metal_decoration.structural_arm.name=Brazo estructural
 
@@ -230,6 +237,8 @@ tile.immersiveengineering.cloth_device.stripcurtain.name=Cortina de bandas de te
 tile.immersiveengineering.molten_uranium.name=Uranio fundido
 tile.immersiveengineering.molten_constantan.name=Constantán fundido
 
+tile.immersiveengineering.arb_solid.name=Bloque sólido arbitrario
+
 #Hydraulicraft Compat
 tile.harvesterTrolley.ieCrop.name=Carretilla industrial cosechadora de cáñamo
 
@@ -237,13 +246,13 @@ tile.immersiveengineering.fluidCreosote.name=Aceite de creosota
 tile.immersiveengineering.fluidPlantoil.name=Aceite vegetal
 tile.immersiveengineering.fluidEthanol.name=Etanol
 tile.immersiveengineering.fluidBiodiesel.name=Biodiesel
-tile.immersiveengineering.fluidConcrete.name=Concreto liquido
+tile.immersiveengineering.fluidConcrete.name=Hormigón liquido
 
 fluid.creosote=Aceite de creosota
 fluid.plantoil=Aceite vegetal
 fluid.ethanol=Etanol
 fluid.biodiesel=Biodiesel
-fluid.concrete=Concreto liquido
+fluid.concrete=Hormigón liquido
 fluid.potion=Poción
 
 # ITEMS
@@ -251,7 +260,7 @@ item.immersiveengineering.metal.ingot_copper.name=Lingote de cobre
 item.immersiveengineering.metal.ingot_aluminum.name=Lingote de aluminio
 item.immersiveengineering.metal.ingot_lead.name=Lingote de plomo
 item.immersiveengineering.metal.ingot_silver.name=Lingote de plata
-item.immersiveengineering.metal.ingot_nickel.name=Lingote de niquel
+item.immersiveengineering.metal.ingot_nickel.name=Lingote de níquel
 item.immersiveengineering.metal.ingot_uranium.name=Lingote de uranio
 item.immersiveengineering.metal.ingot_constantan.name=Lingote de constantán
 item.immersiveengineering.metal.ingot_electrum.name=Lingote de electrio
@@ -260,7 +269,7 @@ item.immersiveengineering.metal.dust_copper.name=Polvo de cobre
 item.immersiveengineering.metal.dust_aluminum.name=Polvo de aluminio
 item.immersiveengineering.metal.dust_lead.name=Polvo de plomo
 item.immersiveengineering.metal.dust_silver.name=Polvo de plata
-item.immersiveengineering.metal.dust_nickel.name=Polvo de niquel
+item.immersiveengineering.metal.dust_nickel.name=Polvo de níquel
 item.immersiveengineering.metal.dust_uranium.name=Polvo de uranio
 item.immersiveengineering.metal.dust_constantan.name=Polvo de constantán
 item.immersiveengineering.metal.dust_electrum.name=Polvo de electrio
@@ -271,7 +280,7 @@ item.immersiveengineering.metal.nugget_copper.name=Pepita de cobre
 item.immersiveengineering.metal.nugget_aluminum.name=Pepita de aluminio
 item.immersiveengineering.metal.nugget_lead.name=Pepita de plomo
 item.immersiveengineering.metal.nugget_silver.name=Pepita de plata
-item.immersiveengineering.metal.nugget_nickel.name=Pepita de niquel
+item.immersiveengineering.metal.nugget_nickel.name=Pepita de níquel
 item.immersiveengineering.metal.nugget_uranium.name=Pepita de uranio
 item.immersiveengineering.metal.nugget_constantan.name=Pepita de constantán
 item.immersiveengineering.metal.nugget_electrum.name=Pepita de electrio
@@ -281,7 +290,7 @@ item.immersiveengineering.metal.plate_copper.name=Placa de cobre
 item.immersiveengineering.metal.plate_aluminum.name=Placa de aluminio
 item.immersiveengineering.metal.plate_lead.name=Placa de plomo
 item.immersiveengineering.metal.plate_silver.name=Placa de plata
-item.immersiveengineering.metal.plate_nickel.name=Placa de niquel
+item.immersiveengineering.metal.plate_nickel.name=Placa de níquel
 item.immersiveengineering.metal.plate_uranium.name=Placa de uranio
 item.immersiveengineering.metal.plate_constantan.name=Placa de constantán
 item.immersiveengineering.metal.plate_electrum.name=Placa de electrio
@@ -297,7 +306,7 @@ item.immersiveengineering.material.stick_aluminum.name=Barra de aluminio
 item.immersiveengineering.material.hemp_fiber.name=Fibra de cáñamo industrial
 item.immersiveengineering.material.hemp_fabric.name=Tela dura
 item.immersiveengineering.material.coal_coke.name=Coque de carbón
-item.immersiveengineering.material.slag.name=Desecho industrial
+item.immersiveengineering.material.slag.name=Desecho
 item.immersiveengineering.material.component_iron.name=Componente mecánico de hierro
 item.immersiveengineering.material.component_steel.name=Componente mecánico de acero
 item.immersiveengineering.material.waterwheel_segment.name=Segmento de la rueda de agua
@@ -316,8 +325,8 @@ item.immersiveengineering.material.wire_aluminum.name=Alambre de aluminio
 item.immersiveengineering.material.wire_steel.name=Alambre de acero
 item.immersiveengineering.material.dust_saltpeter.name=Polvo de nitrato
 item.immersiveengineering.material.dust_sulfur.name=Polvo de azufre
-item.immersiveengineering.material.electron_tube.name=Tubo vacío
-item.immersiveengineering.material.circuit_board.name=Placa de circuitos
+item.immersiveengineering.material.electron_tube.name=Tubo de vacío
+item.immersiveengineering.material.circuit_board.name=Circuito integrado
 
 item.immersiveengineering.seed.hemp.name=Semillas de cáñamo industrial
 
@@ -331,7 +340,9 @@ item.immersiveengineering.fluidContainers.bottleBiodiesel.name=Frasco de biodies
 item.immersiveengineering.fluidContainers.bucketBiodiesel.name=Cubeta de diesel
 
 item.immersiveengineering.wirecoil.copper.name=Bobina de cables BV
+item.immersiveengineering.wirecoil.insulated_copper.name=Bobina de cables BV aislada
 item.immersiveengineering.wirecoil.electrum.name=Bobina de cables MV
+item.immersiveengineering.wirecoil.insulated_electrum.name=Bobina de cables MV aislada
 item.immersiveengineering.wirecoil.hv.name=Bobina de cables AV
 item.immersiveengineering.wirecoil.rope.name=Bobina de cuerda de cáñamo
 item.immersiveengineering.wirecoil.structural.name=Bobina de cable de acero
@@ -341,6 +352,11 @@ item.immersiveengineering.tool.wirecutter.name=Alicate del ingeniero
 item.immersiveengineering.tool.voltmeter.name=Voltímetro del ingeniero
 item.immersiveengineering.tool.manual.name=Manual del ingeniero
 item.immersiveengineering.toolbox.name=Caja de herramientas del ingeniero
+
+item.immersiveengineering.pickaxe_steel.name=Pico de acero
+item.immersiveengineering.shovel_steel.name=Pala de acero
+item.immersiveengineering.axe_steel.name=Hacha de acero
+item.immersiveengineering.sword_steel.name=Espada de acero
 
 item.immersiveengineering.revolver.name=Revólver
 item.immersiveengineering.revolver.dev.name=♛Vencedor Real♚
@@ -356,23 +372,23 @@ item.immersiveengineering.revolver.earthshaker.name=§bSacudidor de tierra§r
 item.immersiveengineering.revolver.warlord.name=El Repulsor
 item.immersiveengineering.revolver.superchief.name=El Super Jefe
 item.immersiveengineering.revolver.rose.name=Rosa divina
-item.immersiveengineering.revolver.noName.name=XXXX
-item.immersiveengineering.revolver.patreonBlu.name=§6Últimas palabras§r
+item.immersiveengineering.revolver.noName.name=Sin nombre
+item.immersiveengineering.revolver.patreonBlu.name=§6Última palabra§r
 item.immersiveengineering.revolver.patreonHazard.name=§4Espectro retorcido§r
-item.immersiveengineering.speedloader.name=El velóz
+item.immersiveengineering.speedloader.name=El revólver veloz
 
-item.immersiveengineering.bullet.empty_casing.name=Vaina vacía
-item.immersiveengineering.bullet.empty_shell.name=Vaina vacía
+item.immersiveengineering.bullet.empty_casing.name=Cartucho vacío
+item.immersiveengineering.bullet.empty_shell.name=Proyectil vacío
 item.immersiveengineering.bullet.casull.name=Cartucho de plomo
 item.immersiveengineering.bullet.armor_piercing.name=Cartucho perforador de armadura
 item.immersiveengineering.bullet.buckshot.name=Cartucho de perdigones
 item.immersiveengineering.bullet.he.name=Cartucho explosivo
-item.immersiveengineering.bullet.dragonsbreath.name=Cartucho esparcivo
+item.immersiveengineering.bullet.dragonsbreath.name=Cartucho de aliento de dragón
 item.immersiveengineering.bullet.wolfpack.name=Cartucho paquete de lobo
 item.immersiveengineering.bullet.silver.name=Cartucho de plata
 item.immersiveengineering.bullet.potion.name=Cartucho de poción
-item.immersiveengineering.bullet.potion.splash.name=Cartucho de poción (llena)
-item.immersiveengineering.bullet.potion.linger.name=Cartucho de poción (lenna-persistente)
+item.immersiveengineering.bullet.potion.splash.name=Cartucho de poción (arrojadiza)
+item.immersiveengineering.bullet.potion.linger.name=Cartucho de poción (persistente)
 item.immersiveengineering.bullet.flare.name=Cartucho incendiario
 
 item.immersiveengineering.drill.diesel.name=Taladro
@@ -381,26 +397,26 @@ item.immersiveengineering.drillhead.steel.name=Punta del taladro de acero
 
 item.immersiveengineering.skyhook.name=Gancho del ingeniero
 
-item.immersiveengineering.toolupgrade.drill_waterproof.name=Mejora: Tanque de aire presurizado
-item.immersiveengineering.toolupgrade.drill_lube.name=Meiora: Lubricación
-item.immersiveengineering.toolupgrade.drill_damage.name=Mejora: Barrenas adicionales
-item.immersiveengineering.toolupgrade.drill_capacity.name=Mejora: Tanque grande
-item.immersiveengineering.toolupgrade.revolver_bayonet.name=Mejora: Bayoneta
-item.immersiveengineering.toolupgrade.revolver_magazine.name=Mejora: Cargador extendido
-item.immersiveengineering.toolupgrade.revolver_electro.name=Mejora: Cañón energético
-item.immersiveengineering.toolupgrade.chemthrower_focus.name=Mejora: Boquilla enfocada
-item.immersiveengineering.toolupgrade.railgun_scope.name=Mejora: Punto de mira
-item.immersiveengineering.toolupgrade.railgun_capacitors.name=Mejora: Condensadores adicionales
-item.immersiveengineering.toolupgrade.shield_flash.name=Mejora: Flash
-item.immersiveengineering.toolupgrade.shield_shock.name=Mejora: Emisores de choque
-item.immersiveengineering.toolupgrade.shield_magnet.name=Mejora: Guante magnético
+item.immersiveengineering.toolupgrade.drill_waterproof.name=Tanque de aire presurizado
+item.immersiveengineering.toolupgrade.drill_lube.name=Sistema de lubricación avanzado
+item.immersiveengineering.toolupgrade.drill_damage.name=Barrenas adicionales
+item.immersiveengineering.toolupgrade.drill_capacity.name=Tanque grande
+item.immersiveengineering.toolupgrade.revolver_bayonet.name=Bayoneta
+item.immersiveengineering.toolupgrade.revolver_magazine.name=Cargador extendido
+item.immersiveengineering.toolupgrade.revolver_electro.name=Cañón energético
+item.immersiveengineering.toolupgrade.chemthrower_focus.name=Boquilla enfocada
+item.immersiveengineering.toolupgrade.railgun_scope.name=Punto de mira
+item.immersiveengineering.toolupgrade.railgun_capacitors.name=Condensadores adicionales
+item.immersiveengineering.toolupgrade.shield_flash.name=Flash
+item.immersiveengineering.toolupgrade.shield_shock.name=Emisores de choque
+item.immersiveengineering.toolupgrade.shield_magnet.name=Guante magnético
 item.immersiveengineering.toolupgrade.chemthrower_multitank.name=Mejora: Multi-tanque
 
-item.immersiveengineering.blueprint.name=Planos del ingeniero
+item.immersiveengineering.blueprint.name=Plano del ingeniero
 item.immersiveengineering.mold.plate.name=Molde de la prensa de metal: placa
 item.immersiveengineering.mold.gear.name=Molde de la prensa de metal: engranaje
 item.immersiveengineering.mold.rod.name=Molde de la prensa de metal: barra
-item.immersiveengineering.mold.bullet_casing.name=Molde de la prensa de metal: vaina
+item.immersiveengineering.mold.bullet_casing.name=Molde de la prensa de metal: cartucho
 item.immersiveengineering.mold.wire.name=Molde de la prensa de metal: cable
 item.immersiveengineering.mold.packing4.name=Molde de prensa de metal: Embalaje 2x2
 item.immersiveengineering.mold.packing9.name=Molde de prensa de metal: Embalaje 3x3
@@ -421,6 +437,8 @@ item.immersiveengineering.faraday_suit_feet.name=Botas Faraday
 item.immersiveengineering.fluorescent_tube.name=Tubo fluorescente
 item.immersiveengineering.powerpack.name=Condensador portátil
 item.immersiveengineering.shield.name=Escudo reforzado con placas de acero
+
+item.immersiveengineering.map_orevein.name=Mapa de depósito de minerales
 
 #CREATIVE
 itemGroup.immersiveengineering=Immersive Engineering
@@ -573,10 +591,10 @@ modifier.thermalinversion.name=Inversión térmica
 modifier.thermalinversion.desc=§o¡Frio y caliente!§r\nGolpear a un enemigo en un ambiente cálido o frío los enfriará o los quemará.
 #BOTANIA COMPAT
 item.immersiveengineering.bullet.terrasteel.name=Cartucho de viaje
-ie.manual.entry.bullets_terrasteel=Las §lCartuchos de §lViaje§r se crean con un plano de "Cartuchos especializadas". Están formados por el metal mágico "Terrasteel", que les da la capacidad intrínseca de buscar y perseguir al objetivo más cercano.
+ie.manual.entry.bullets_terrasteel=Los §lCartuchos de §lViaje§r se crean con un plano de "Cartuchos especializadas". Están formados por el metal mágico "Terrasteel", que les da la capacidad intrínseca de buscar y perseguir al objetivo más cercano.
 #BLOODMAGIC COMPAT
-item.immersiveengineering.bullet.crystalwill.name=Cartucho endemoniada
-ie.manual.entry.bullets_crystalwill=Las §lCartuchos §lendemoniadas§r se crean con un plano de "Cartuchos especializadas" y usando piezas de Demon Will Crystal. Las pequeñas cantidades de voluntad demoníaca contenidas dentro de la fuerza de los proyectiles para buscar objetivos cercanos y perseguirlos implacablemente.
+item.immersiveengineering.bullet.crystalwill.name=Cartucho endemoniado
+ie.manual.entry.bullets_crystalwill=Los §lCartuchos §lendemoniados§r se crean con un plano de "Cartuchos especializadas" y usando piezas de Demon Will Crystal. Las pequeñas cantidades de voluntad demoníaca contenidas dentro de la fuerza de los proyectiles para buscar objetivos cercanos y perseguirlos implacablemente.
 
 #DESCRIPTIONS
 entity.Villager.immersiveengineering.engineer=Ingeniero estructural
@@ -584,7 +602,7 @@ entity.Villager.immersiveengineering.machinist=Maquinista
 entity.Villager.immersiveengineering.electrician=Electricista
 entity.Villager.immersiveengineering.outfitter=Camisero
 
-key.immersiveengineering.magnetEquip=Guante magnético (doble toque)
+key.immersiveengineering.magnetEquip=Guante de escudo magnético (doble toque)
 key.immersiveengineering.chemthrowerSwitch=Intercambiador de tanques químicos
 
 desc.immersiveengineering.info.attachedTo=Enlazando desde %1$s, %2$s, %3$s
@@ -598,6 +616,7 @@ desc.immersiveengineering.info.day=%1$sd
 desc.immersiveengineering.info.hour=%1$sh
 desc.immersiveengineering.info.minute=%1$sm
 desc.immersiveengineering.info.second=%1$ss
+desc.immersiveengineering.info.potionMod=Poción añadida por %1$s
 
 desc.immersiveengineering.info.multiblocksAllowed=Multiblocks permitidos:
 desc.immersiveengineering.info.multiblockForbidden=Multiblocks prohibidos:
@@ -606,10 +625,10 @@ desc.immersiveengineering.info.colour.red=Rojo: %1s
 desc.immersiveengineering.info.colour.green=Verde: %1s
 desc.immersiveengineering.info.colour.blue=Azul: %1s
 
-desc.immersiveengineering.info.blockSide.facing=Lado de vista
+desc.immersiveengineering.info.blockSide.facing=Lado visible
 desc.immersiveengineering.info.blockSide.opposite=Lado opuesto
-desc.immersiveengineering.info.blockSide.down=Lado inferior
-desc.immersiveengineering.info.blockSide.up=Lado superior
+desc.immersiveengineering.info.blockSide.down=Abajo
+desc.immersiveengineering.info.blockSide.up=Arriba
 desc.immersiveengineering.info.blockSide.north=Lado norte
 desc.immersiveengineering.info.blockSide.south=Lado sur
 desc.immersiveengineering.info.blockSide.west=Lado oeste
@@ -621,8 +640,8 @@ desc.immersiveengineering.info.blockSide.connectEnergy.NONE=Sin conexión
 desc.immersiveengineering.info.blockSide.connectEnergy.INPUT=Entrada de energía
 desc.immersiveengineering.info.blockSide.connectEnergy.OUTPUT=Salida de energía
 desc.immersiveengineering.info.blockSide.connectFluid.-1=Sin conexión
-desc.immersiveengineering.info.blockSide.connectFluid.0=Entrada de fluidos
-desc.immersiveengineering.info.blockSide.connectFluid.1=Salida de fluidos
+desc.immersiveengineering.info.blockSide.connectFluid.0=Entrada de líquidos
+desc.immersiveengineering.info.blockSide.connectFluid.1=Salida de líquidos
 
 desc.immersiveengineering.info.filter.oreDict=Filtro: OreDictionary<br>Filtra objetos basados en<br>sus nombres OreDictionary.
 desc.immersiveengineering.info.filter.nbt=Filtro: NBT Data<br>Filtra objetos con<br>respecto a sus datos NBT.
@@ -652,7 +671,7 @@ desc.immersiveengineering.info.mineral.Bauxite=Bauxita
 desc.immersiveengineering.info.mineral.Copper=Cobre
 desc.immersiveengineering.info.mineral.Cassiterite=Casiterita
 desc.immersiveengineering.info.mineral.Gold=Oro
-desc.immersiveengineering.info.mineral.Nickel=Niquel
+desc.immersiveengineering.info.mineral.Nickel=Níquel
 desc.immersiveengineering.info.mineral.Platinum=Platino
 desc.immersiveengineering.info.mineral.Uranium=Uranio
 desc.immersiveengineering.info.mineral.Quartzite=Cuarcita
@@ -662,6 +681,8 @@ desc.immersiveengineering.info.mineral.Silver=Plata
 desc.immersiveengineering.info.mineral.Lapis=Lapislázuli
 desc.immersiveengineering.info.mineral.Coal=Carbón
 desc.immersiveengineering.info.mineral.Wolframite=Wolframita
+
+chat.immersiveengineering.info.old_java=[Immersive Engineering] §4Aviso: §rTu versión de java es la %1$s. Esta versión hace que el juego crashee con el manual del ingeniero. Estos crashes son difícilísimos de arreglar para nosotros. Puedes prevenirlo instalando una versión actualizada de Java (asegúrate de usar Java 8 y no Java 9) y configúralo en el launcher.
 
 chat.immersiveengineering.info.coresample.pos=%1$s a %2$s
 chat.immersiveengineering.info.coresample.mineral=Mineral de %1$s
@@ -681,7 +702,7 @@ desc.immersiveengineering.info.blueprint.creates1=Plano para:
 desc.immersiveengineering.info.blueprint.components=Componentes de fabricación
 desc.immersiveengineering.info.blueprint.molds=Moldes de la prensa de metal
 desc.immersiveengineering.info.blueprint.bullet=Cartuchos comunes
-desc.immersiveengineering.info.blueprint.specialBullet=Cartuchos especializadas
+desc.immersiveengineering.info.blueprint.specialBullet=Cartuchos especializados
 desc.immersiveengineering.info.blueprint.electrode=Barra de electrodos
 
 desc.immersiveengineering.info.electrodeIntegrity=Integridad
@@ -696,6 +717,7 @@ desc.immersiveengineering.info.shader.immersiveengineering:railgun=Cañón de ri
 desc.immersiveengineering.info.shader.immersiveengineering:shield=Escudo reforzado con placas de acero
 desc.immersiveengineering.info.shader.immersiveengineering:minecart=Vagón
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=Globo
+desc.immersiveengineering.info.shader.immersiveengineering:banner=Bandera
 desc.immersiveengineering.info.shader.set=§lAspecto colocado§r:
 desc.immersiveengineering.info.shader.reference=§lReferencia a la cultura pop§r:
 desc.immersiveengineering.info.shader.details=§lInformación adicional§r:
@@ -714,24 +736,24 @@ desc.immersiveengineering.info.redstoneChannel.rec=Canal de recepción: %1$s
 
 desc.immersiveengineering.info.multiblock.IE:AlloySmelter=Horno de aleaciones
 desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Horno de arco eléctrico
-desc.immersiveengineering.info.multiblock.IE:Assembler=Ensamblador industrial
+desc.immersiveengineering.info.multiblock.IE:Assembler=Ensamblador
 desc.immersiveengineering.info.multiblock.IE:AutoWorkbench=Mesa de trabajo del ingeniero automatizada
-desc.immersiveengineering.info.multiblock.IE:BlastFurnace=Horno infernal mejorado
-desc.immersiveengineering.info.multiblock.IE:BlastFurnaceAdvanced=Improved Blast Furnace
-desc.immersiveengineering.info.multiblock.IE:BottlingMachine=Embotelladora industrial
-desc.immersiveengineering.info.multiblock.IE:BucketWheel=Rueda de cubetas industrial
+desc.immersiveengineering.info.multiblock.IE:BlastFurnace=Horno infernal
+desc.immersiveengineering.info.multiblock.IE:BlastFurnaceAdvanced=Horno infernal mejorado
+desc.immersiveengineering.info.multiblock.IE:BottlingMachine=Embotelladora
+desc.immersiveengineering.info.multiblock.IE:BucketWheel=Rueda de cubos
 desc.immersiveengineering.info.multiblock.IE:CokeOven=Horno de coque
-desc.immersiveengineering.info.multiblock.IE:Crusher=Trituradora industrial
+desc.immersiveengineering.info.multiblock.IE:Crusher=Trituradora
 desc.immersiveengineering.info.multiblock.IE:DieselGenerator=Generador de Diesel
-desc.immersiveengineering.info.multiblock.IE:Excavator=Excavador industrial
-desc.immersiveengineering.info.multiblock.IE:Fermenter=Fermentador industrial
+desc.immersiveengineering.info.multiblock.IE:Excavator=Excavador
+desc.immersiveengineering.info.multiblock.IE:Fermenter=Fermentador
 desc.immersiveengineering.info.multiblock.IE:Lightningrod=Pararrayos
 desc.immersiveengineering.info.multiblock.IE:MetalPress=Prensa de metal
-desc.immersiveengineering.info.multiblock.IE:Mixer=Mezclador industrial
-desc.immersiveengineering.info.multiblock.IE:Refinery=Refinería industrial
-desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=Tanque industrial
+desc.immersiveengineering.info.multiblock.IE:Mixer=Mezclador
+desc.immersiveengineering.info.multiblock.IE:Refinery=Refinería
+desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=Tanque
 desc.immersiveengineering.info.multiblock.IE:Silo=Silo
-desc.immersiveengineering.info.multiblock.IE:Squeezer=Exprimidor industrial
+desc.immersiveengineering.info.multiblock.IE:Squeezer=Exprimidor
 
 desc.immersiveengineering.flavour.treated_wood.horizontal=Tablones horizontales
 desc.immersiveengineering.flavour.treated_wood.vertical=Tablones verticales
@@ -783,7 +805,7 @@ desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=Permite que el Ta
 desc.immersiveengineering.flavour.toolupgrade.drill_lube=Reduce el daño que la Punta del Taladro recibe
 desc.immersiveengineering.flavour.toolupgrade.drill_damage=Aumenta el daño por golpe y la velocidad de minado del Taladro, se acumula hasta 3 veces
 desc.immersiveengineering.flavour.toolupgrade.drill_capacity=Aumenta el tamaño del tanque interno del Taladro y el Rifle Químico
-desc.immersiveengineering.flavour.toolupgrade.revolver_bayonet=Agrega daño cuerpo a cuerpo al revólver
+desc.immersiveengineering.flavour.toolupgrade.revolver_bayonet=Añade daño cuerpo a cuerpo al revólver
 desc.immersiveengineering.flavour.toolupgrade.revolver_magazine=Aumenta el tamaño del cargador del Revólver
 desc.immersiveengineering.flavour.toolupgrade.revolver_electro=Las balas del revólver infligen daño por choque
 desc.immersiveengineering.flavour.toolupgrade.chemthrower_focus=Disminuye la dispersión y aumenta el alcance del Lanzador de productos químicos
@@ -807,7 +829,7 @@ gui.immersiveengineering.config.earmuffs.soundcategory.hostile=Monstruos
 gui.immersiveengineering.config.earmuffs.soundcategory.neutral=Amistosos
 gui.immersiveengineering.config.earmuffs.soundcategory.player=Jugadores
 gui.immersiveengineering.config.earmuffs.soundcategory.ambient=Ambiente
-gui.immersiveengineering.config.earmuffs.noisegate=Puerta de ruidos
+gui.immersiveengineering.config.earmuffs.noisegate=Puerta de ruido
 
 gui.immersiveengineering.config.turret.add=Añadir
 gui.immersiveengineering.config.turret.blacklist=Lista negra
@@ -815,8 +837,8 @@ gui.immersiveengineering.config.turret.animals=Animales
 gui.immersiveengineering.config.turret.players=Jugadores
 gui.immersiveengineering.config.turret.neutrals=Neutrales
 gui.immersiveengineering.config.turret.ignite_fluid=Fluido ignífugo
-gui.immersiveengineering.config.turret.expel_casings_on=Desechar vainas
-gui.immersiveengineering.config.turret.expel_casings_off=Conservar vainas
+gui.immersiveengineering.config.turret.expel_casings_on=Desechar cartuchos
+gui.immersiveengineering.config.turret.expel_casings_off=Conservar cartuchos
 
 gui.immersiveengineering.config.mixer.outputSingle=Salida sólo fluido inferior
 gui.immersiveengineering.config.mixer.outputAll=Salida de todos los fluidos
@@ -824,3 +846,231 @@ gui.immersiveengineering.config.mixer.outputAll=Salida de todos los fluidos
 gui.immersiveengineering.config.assembler.clearRecipe=Limpiar receta
 gui.immersiveengineering.config.assembler.recursiveIngredients=Uso recursivo de los ingredientes
 gui.immersiveengineering.config.assembler.nonRecursiveIngredients=Uso no recursivo de los ingredientes
+
+gui.immersiveengineering.config.arcfurnace.distribute=Distribuir entradas
+
+#CHAT
+chat.immersiveengineering.warning.wrongCable=No puedes conectar ese cable ahí
+chat.immersiveengineering.warning.wrongDimension=Estás en la dimensión incorrecta
+chat.immersiveengineering.warning.sameConnection=No puedes conectar el cable al mismo punto
+chat.immersiveengineering.warning.tooFar=Estás muy lejos del punto de conexión anterior
+chat.immersiveengineering.warning.cantSee=La conexión está bloqueada
+chat.immersiveengineering.warning.connectionExists=La conexión ya existe
+chat.immersiveengineering.warning.invalidPoint=Uno de los puntos de conexión es inválido
+chat.immersiveengineering.info.averageLoss=Pérdida media entre los puntos: %1$s%%
+chat.immersiveengineering.info.energyStorage=Energía almacenada: %1$s/%2$s Flux
+chat.immersiveengineering.info.tooHot=¡Este líquido está demasiado caliente para este recipiente!
+chat.immersiveengineering.info.noGasAllowed=¡Este recipiente no puede almacenar gases!
+chat.immersiveengineering.info.rsSignal.invertedOn=Señal de redstone: invertida
+chat.immersiveengineering.info.rsSignal.invertedOff=Señal de redstone: no invertida
+chat.immersiveengineering.info.rsControl.invertedOn=Control de redstone: invertido
+chat.immersiveengineering.info.rsControl.invertedOff=Control de redstone: no invertido
+chat.immersiveengineering.info.rsControl.strongSignal.true=Señal fuerte de redstone: activada
+chat.immersiveengineering.info.rsControl.strongSignal.false=Señal fuerte de redstone: desactivada
+chat.immersiveengineering.info.tesla.highPower=Modo de energía: alto
+chat.immersiveengineering.info.tesla.lowPower=Modo de energía: bajo
+chat.immersiveengineering.info.notOwner=Sólo el propietario '%1$s' puede acceder a este bloque
+chat.immersiveengineering.info.tickrate=Este bloque se activará cada %1$s ticks
+
+chat.immersiveengineering.info.coreDrill.progress=Muestra de núcleo en progreso: %1$s
+chat.immersiveengineering.info.coreDrill.result.mineral=§7Muestra de núcleo analizada, veta de %1$s§7 encontrada
+chat.immersiveengineering.info.coreDrill.result.depl=§7La veta tiene una pureza del %1$s§7
+chat.immersiveengineering.info.coreDrill.result.none=Muestra de núcleo analizada, no se han encontrado minerales
+chat.immersiveengineering.info.coreDrill.infinite=Infinito
+
+chat.immersiveengineering.info.pump.placeCobble.true=Esta tubería ahora cambia los líquidos por roca.
+chat.immersiveengineering.info.pump.placeCobble.false=Esta tubería ya no cambia los líquidos por roca. §6AVISO:§f ¡Puede producir lag y no se recomienda usar con grandes cantidades de líquido!
+chat.immersiveengineering.info.energyTransfered=Media de energía transferida en los últimos %1$s ticks: %2$s Flux/t
+
+chat.immersiveengineering.command.available=§6Comandos disponibles:§r %1$s
+chat.immersiveengineering.command.help.help=§6Uso: /ie help <comando> [subcomando ...]§r<br> Para obtener más información sobre un comando o sus subcomandos
+chat.immersiveengineering.command.mineral.help=§6Uso: /ie mineral <list|get|set|setDepletion>§r
+chat.immersiveengineering.command.mineral.list.help=§6Uso: /ie mineral list§r<br> Muestra todos los minerales disponibles
+chat.immersiveengineering.command.mineral.get.help=§6Uso: /ie mineral get§r<br> Muestra el mineral del chunk
+chat.immersiveengineering.command.mineral.set.help=§6Uso: /ie mineral set [mineral]§r<br> Sobreescribe el mineral del chunk. No indiques un mineral para eliminarlo.
+chat.immersiveengineering.command.mineral.setDepletion.help=§6Uso: /ie mineral setDepletion <number>§r<br> Establece el agotamiento de los minerales dentro del chunk. Pon -1 para hacer la veta infinita.
+chat.immersiveengineering.command.mineral.get=El  chunk contiene: %1$s, sobreescritura: %2$s, agotamiento: %3$s
+chat.immersiveengineering.command.mineral.set.invalidMineral=§cMineral no válido, '%1$s' no es un identificador válido. Usa '/ie mineral list' para ver la lista.§r
+chat.immersiveengineering.command.mineral.set.sucess=Sobreescritura del mineral ajustada a '%1$s'
+chat.immersiveengineering.command.mineral.set.clear=Sobreescritura del mineral (%1$s) eliminada.
+chat.immersiveengineering.command.mineral.setDepletion.NFE=Error, '%1$s' no es un número válido
+chat.immersiveengineering.command.mineral.setDepletion.sucess=Agotamiento del mineral ajustado a '%1$s'
+chat.immersiveengineering.command.shaders.help=§6Uso: /ie shaders <clear>§r
+chat.immersiveengineering.command.shaders.clear.help=§6Uso: /ie shaders clear [player]§r<br> Limpia los aspectos del jugador indicado. Limpia tus aspectos si no indicas jugador.
+chat.immersiveengineering.command.shaders.clear.sucess=Se eliminaron todos los aspectos recibidos de '%1$s'
+
+#SUBTITLES
+subtitle.immersiveengineering.dieselGenerator=Generador de diesel ruidoso y molesto
+subtitle.immersiveengineering.crusher=Trituradora machacando materiales
+subtitle.immersiveengineering.metalPressPiston=Pistón de prensa de metal
+subtitle.immersiveengineering.metalPressSmash=Ruido sordo de prensa de metal
+subtitle.immersiveengineering.birthdayParty=¡YAY, fiesta!
+subtitle.immersiveengineering.revolverFire=Disparo
+subtitle.immersiveengineering.revolverReload=Recarga
+subtitle.immersiveengineering.spray=Spray de líquidos
+subtitle.immersiveengineering.sprayFire=Spray de líquidos inflamables
+subtitle.immersiveengineering.chargeFast=Cargando condensadores
+subtitle.immersiveengineering.chargeSlow=Cargando condensadores
+subtitle.immersiveengineering.spark=Chispas eléctricas
+subtitle.immersiveengineering.railgunFire=Cañón de riel disparando
+subtitle.immersiveengineering.tesla=Descarga de bobina de Tesla
+subtitle.immersiveengineering.direSwitch=Direwolf20 imitando una palanca
+
+#RECIPES
+recipe.immersiveengineering.hammerCrushing=Machacando
+
+#DEATH
+death.attack.ieRevolver_casull=%1$s murió por un disparo de %2$s
+death.attack.ieRevolver_casull.item=%1$s murió por un disparo de %2$s usando %3$s
+death.attack.ieRevolver_casull.turret=%1$s murió por un disparo de una torreta
+death.attack.ieRevolver_armorPiercing=%1$s murió por un disparo de %2$s
+death.attack.ieRevolver_armorPiercing.item=%1$s murió por un disparo de %2$s usando %3$s
+death.attack.ieRevolver_armorPiercing.turret=%1$s murió por un disparo de una torreta
+death.attack.ieRevolver_buckshot=%1$s murió por un escopetazo de %2$s
+death.attack.ieRevolver_buckshot.item=%1$s murió por un escopetazo de %2$s usando %3$s
+death.attack.ieRevolver_buckshot.turret=%1$s murió por un escopetazo de una torreta
+death.attack.ieRevolver_dragonsbreath=%1$s fue incinerado por %2$s
+death.attack.ieRevolver_dragonsbreath.item=%1$s fue incinerado por %2$s usando %3$s
+death.attack.ieRevolver_dragonsbreath.turret=%1$s fue incinerado por una torreta
+death.attack.ieRevolver_homing=%1$s murió por un disparo del cartucho de viaje de %2$s
+death.attack.ieRevolver_homing.item=%1$s murió por un disparo del cartucho de viaje de %2$s disparado desde %3$s
+death.attack.ieRevolver_homing.turret=%1$s murió por un disparo del cartucho de viaje de una torreta
+death.attack.ieRevolver_wolfpack=%1$s fue hecho pedazos por los disparos de lobo de %2$s
+death.attack.ieRevolver_wolfpack.item=%1$s fue hecho pedazos por los disparos de lobo de %2$s disparados desde %3$s
+death.attack.ieRevolver_wolfpack.turret=%1$s fue hecho pedazos por los disparos de lobo de una torreta
+death.attack.ieRevolver_silver=%1$s fue purificado por una bala de plata de %2$s
+death.attack.ieRevolver_silver.item=%1$s fue purificado por una bala de plata de %2$s disparada desde %3$s
+death.attack.ieRevolver_silver.turret=%1$s fue purificado por una bala de plata de una torreta
+death.attack.ieRevolver_potion=%1$s se envenenó con la poción de %2$s
+death.attack.ieRevolver_potion.item=%1$s se envenenó con la poción de %2$s disparada desde %3$s
+death.attack.ieRevolver_potion.turret=%1$s se envenenó con la poción disparada por una torreta
+
+death.attack.ieCrushed=%1$s fue aplastado
+death.attack.ieAcid=%1$s se disolvió en ácido
+death.attack.ieRazorWire=%1$s fue troceado por un alambre de espino
+death.attack.ieRazorShock=%1$s se electrocutó en un alambre de espino
+death.attack.ieTesla=Una bobina de Tesla dejó frito a %1$s
+death.attack.ieTeslaPrimary=%1$s tocó el circuito principal de una bobina de Tesla que estaba en funcionamiento
+death.attack.ieRailgun=%1$s fue atravesado por el cañón de riel de %2$s
+death.attack.ieWireShock=%1$s no tuvo cuidado al cablear circuitos conectados a la corriente
+
+#ACHIEVEMENTS
+advancement.immersiveengineering:root=Immersive Engineering
+advancement.immersiveengineering:root.desc=¡Lee los manuales!
+advancement.immersiveengineering:openManual=Lee los manuales
+advancement.immersiveengineering:openManual.desc=Consigue el manual del ingeniero
+advancement.immersiveengineering:craftHammer=¡MARTILLASO!
+advancement.immersiveengineering:craftHammer.desc=Fabrica el martillo del ingeniero
+advancement.immersiveengineering:connectWire=Pájaros en los cables
+advancement.immersiveengineering:connectWire.desc=Conecta un cable
+advancement.immersiveengineering:blastfurnace=Tema muy caliente
+advancement.immersiveengineering:blastfurnace.desc=Crea un horno infernal
+advancement.immersiveengineering:makeSteel=LA mejora.
+advancement.immersiveengineering:makeSteel.desc=Crea un lingote de acero
+
+advancement.immersiveengineering:placeConveyor=Camino a ninguna parte
+advancement.immersiveengineering:placeConveyor.desc=Coloca una cinta transportadora
+advancement.immersiveengineering:placeWindmill=Molinos de viento para la tierra
+advancement.immersiveengineering:placeWindmill.desc=Coloca un molino de viento
+advancement.immersiveengineering:craftHeater=Esparce el calor
+advancement.immersiveengineering:craftHeater.desc=Fabrica un calentador externo
+advancement.immersiveengineering:craftPump=Bajo presión
+advancement.immersiveengineering:craftPump.desc=Fabrica una bomba de fluidos
+advancement.immersiveengineering:placeFloodlight=¡Qué potencia! ¡Luces!
+advancement.immersiveengineering:placeFloodlight.desc=Coloca una luz de inundación
+advancement.immersiveengineering:craftWorkbench=Hora de juguetear
+advancement.immersiveengineering:craftWorkbench.desc=Fabrica una mesa de trabajo del ingeniero
+advancement.immersiveengineering:craftRevolver=Alégrame el día
+advancement.immersiveengineering:craftRevolver.desc=Fabrica el revólver
+advancement.immersiveengineering:upgradeRevolver=Shalashaska
+advancement.immersiveengineering:upgradeRevolver.desc=Instala las máximas mejoras posibles al revólver
+advancement.immersiveengineering:craftWolfPack=Qué bonito es destruir
+advancement.immersiveengineering:craftWolfPack.desc=Fabrica un cartucho de lobo
+advancement.immersiveengineering:craftDrill=Elección poderosa
+advancement.immersiveengineering:craftDrill.desc=Fabrica el taladro
+advancement.immersiveengineering:upgradeDrill=El Jefe
+advancement.immersiveengineering:upgradeDrill.desc=Instala las máximas mejoras posibles al taladro
+advancement.immersiveengineering:craftSkyhook=¡Atrápalo!
+advancement.immersiveengineering:craftSkyhook.desc=Fabrica el gancho
+advancement.immersiveengineering:skyhookPro=El amo del cielo
+advancement.immersiveengineering:skyhookPro.desc=Viaja 1km con el gancho
+advancement.immersiveengineering:craftChemthrower=Ametralla y ora
+advancement.immersiveengineering:craftChemthrower.desc=Fabrica el lanzador de productos químicos
+advancement.immersiveengineering:craftRailgun=El legado de la fortuna
+advancement.immersiveengineering:craftRailgun.desc=Fabrica el cañón de riel
+
+advancement.immersiveengineering:mbImprovedBlastFurnace=Fundido al siguiente nivel
+advancement.immersiveengineering:mbImprovedBlastFurnace.desc=Forma el horno infernal mejorado
+advancement.immersiveengineering:mbMetalPress=La presión importa
+advancement.immersiveengineering:mbMetalPress.desc=Forma la prensa de metales
+advancement.immersiveengineering:mbSilo=Acumula chapas
+advancement.immersiveengineering:mbSilo.desc=Forma el silo
+advancement.immersiveengineering:mbCrusher=Maquinaria peligrosa
+advancement.immersiveengineering:mbCrusher.desc=Forma la trituradora
+advancement.immersiveengineering:mbDieselGen=Perjudicial para el medio ambiente
+advancement.immersiveengineering:mbDieselGen.desc=Forma el generador de Diesel
+advancement.immersiveengineering:mbExcavator=Pica que te pica
+advancement.immersiveengineering:mbExcavator.desc=Forma el excavador
+advancement.immersiveengineering:mbArcFurnace=El tema está más caliente que nunca
+advancement.immersiveengineering:mbArcFurnace.desc=Forma el horno de arco eléctrico
+
+advancement.immersiveengineering:secret_birthdayParty=Fiestón de cumpleaños
+advancement.immersiveengineering:secret_birthdayParty.desc=Enciende una cerilla...
+advancement.immersiveengineering:secret_luckOfTheDraw=La suerte del azar
+advancement.immersiveengineering:secret_luckOfTheDraw.desc=Todo o nada
+advancement.immersiveengineering:secret_drillbreak=¡¡¡GIGA...DRILL...BREAKER!!!
+advancement.immersiveengineering:secret_drillbreak.desc=¡¿PERO QUIÉN TE PIENSAS QUE SOY?!
+
+
+
+stat.skyhookOneCm=DDistancia en gancho
+
+immersiveengineering.potion.flammable=Imflamable
+immersiveengineering.potion.slippery=Escurridizo
+immersiveengineering.potion.conductive=Conductor
+immersiveengineering.potion.sticky=Pegajoso
+immersiveengineering.potion.stunned=Aturdidora
+immersiveengineering.potion.concreteFeet=Pies de hormigón
+immersiveengineering.potion.flashed=Cegado
+
+#MANUAL
+ie.manual.currentVersion= - ACTUAL
+ie.manual.newerVersion= - NUEVO
+#ie.manual.entry.name=
+#ie.manual.entry.subtext=
+#ie.manual.entry.=
+
+
+ie.manual.category.update.name=¡NOTAS DE LA ACTUALIZACIÓN!
+ie.manual.entry.updateNews_0.name=¿Qué hay de nuevo en la v0.6.0?
+ie.manual.entry.updateNews_0.subtext=Viejo, nuevo; inspirado y Blu
+ie.manual.entry.updateNews_00=¡Querido ingeniero!<br><br>¡Desde la última vez que has trabajado con Immersive Engineering, han cambiado muchas cosas! ¡Algunas de las cosas nuevas son: Casas de aldeanos, <link;lighting;§o§nnuevas §o§nluces§r>, <link;barrel;§o§nbarriles §o§nde §o§nmadera§r>, <link;tanksilo;§o§ntanques§r>, <link;tanksilo;§o§nsilos§r;1> y <link;fluidPipes;§o§ntuberías §o§nde §o§nlíquidos§r>, logros, <link;shader;§o§naspectos§r> y el <link;assembler;§o§nEnsamblador§r> y <link;bottlingMachine;§o§nMáquina §o§nembotelladora§r>!
+ie.manual.entry.updateNews_01=Aunque aún más importante, la manera en la que se maneja la energía ha cambiado mucho. Para evitar errores, lee las entradas del manual: <link;wiring;§o§nCableado§r>, especialmente la página 5, donde se detallan las diferencias entra la capacidad de transferencia de un cable y la entrada y salida de un conector.
+
+ie.manual.entry.updateNews_1.name=¿Qué hay de nuevo en la v0.6.1?
+ie.manual.entry.updateNews_1.subtext=Viejo, nuevo; inspirado y Blu
+ie.manual.entry.updateNews_10=¡Querido ingeniero!<br><br>La última actualización trae nuevas funciones y cambios a Immersive Engineering:<br><br>El <link;metalbarrel;§o§nbarril §o§nde §o§nmetal§r> ofrece una solución más estable, a la vez que portátil para almacenar líquidos, El horno de arco eléctrico ha sido mejorado para poder fundir ciertos metales, y para reciclar herramientas y armaduras viejas, y el andamio, usado para cubrir <link;fluidPipes;§o§ntuberías §o§nde §o§nlíquidos§r> ahora se puede escalar.
+
+ie.manual.entry.updateNews_2.name=¿Qué hay de nuevo en la v0.6.2?
+ie.manual.entry.updateNews_2.subtext=Viejo, nuevo; inspirado y Blu
+ie.manual.entry.updateNews_20=¡Querido ingeniero!<br><br>La última actualización trae nuevas funciones y cambios a Immersive Engineering:<br><br>Hemos inventado una variante de los andamios, que sustituye las plataformas metálicas de la parte superior por tablones de madera. El aluminio ha resultado ser bastante útil para fines decorativos, como por ejemplo, las vallas y los andamios, que ahora están disponibles en tu tienda de Ingeniería más cercana.
+ie.manual.entry.updateNews_21=Un nuevo tipo de <link;breaker;§o§ninterruptor§r;2> ha sido inventado para ser controlado mediante señales de redstone y para aceptar líneas de alta tensión. Además, ya no se pueden conectar líneas de alta tensión a los interruptores normales, debido a voltajes demasiado altos. No queremos problemas con las uniones.
+
+ie.manual.entry.updateNews_3.name=¿Qué hay de nuevo en la v0.6.3?
+ie.manual.entry.updateNews_3.subtext=Viejo, nuevo; inspirado y Blu
+ie.manual.entry.updateNews_30=¡Querido ingeniero!<br><br>La última actualización trae nuevas funciones y cambios a Immersive Engineering:<br><br>After suffering a severe concussion, Chief Engineer Adams drafted plans for the <link;chemthrower;§o§nChemical §o§nThrower§r>, a device that allows you to spray any fluid anywhere. It also features a built-in pilot light to ignite the fluid spray. We think Adams might be insane.
+ie.manual.entry.updateNews_31=Un nuevo invento del departamento de investigación son las <link;chargingStation;§o§nEstaciones §o§nde §o§ncarga§r>, que te permiten introducir objetos y cargarlos<br>El Ingeniero Asistente "Cobra" nos presenta su último invento, las <link;conveyor;§o§nCintas §o§ntransportadoras §o§nsoltadoras§r;2>, que sueltan los objetos que pasan por ellas en los inventarios que tienen debajo<br>Además, el <link;sorter;§o§nEnrutador §o§nde §o§nobjetos§r> tiene una interfaz nueva, diseñada para permitir el uso de OreDictionary-, filtrado por NBT y filtrado parcial de objetos!
+ie.manual.entry.updateNews_32=Otros añadidos nuevosrelacionados con el transporte y la decoración incluyen:<br>- <link;shader;§o§nAspectos§r> se pueden aplicar a las vagonetas<br>- <link;skyhook;§o§nEl §o§ngancho §o§ndel §o§nIngeniero§r>, una herramienta que te permite saltar al lado de los cables de corriente y correr más que las vagonetas<br>- <link;balloon;§o§nGlobos§r>, como una manera útil de suspender conectores en el aire y preparar el cielo para usar el gancho<br>- <link;concrete;§o§nHormigón§r> que parará las caídas cuando bajes del cielo
+ie.manual.entry.updateNews_33=Finalmente, el departamento de finanzas nos ha estado llamando la atención por no medir el uso de corriente. Después de una discusión acalorada, nos han presentado las plantillas para el <link;eMeter;§o§nTransformador §o§nde §o§ncorriente§r>, un dispositivo que puede medir la corriente que lo atraviesa. No hay necesidad de decir que están aún menos contentos con nosotros sabiendo lo que gasta un Horno de arco eléctrico.
+
+ie.manual.entry.updateNews_4.name=¿Qué hay de nuevo en la v0.6.4?
+ie.manual.entry.updateNews_4.subtext=Viejo, nuevo; inspirado y Blu
+ie.manual.entry.updateNews_40=¡Querido ingeniero!<br><br>La última actualización sólo trae pequeños cambios.<br>Hemos arreglado de nuevo la transmisión de energía, y hemos obligado a darse una ducha de agua fría al ingeniero que lo estropeó.<br>El <link;furnaceHeater;§o§nPrecalentador §o§nde §o§nhornos§r> ha sido mejorado y ahora permite calentar Hornos alquémicos del Thaumcraft o Evaporadores del Cutting Edge.<br><br>Esto es todo por ahora, esperamos que siga siendo suficientemente estable.
+
+ie.manual.category.general.name=Vista general y recursos
+ie.manual.category.construction.name=Construcción
+ie.manual.category.energy.name=Energía, cables y generadores
+ie.manual.category.tools.name=Herramientas
+ie.manual.category.machines.name=Máquinas simples
+ie.manual.category.heavymachines.name=Maquinaria pesada
+
