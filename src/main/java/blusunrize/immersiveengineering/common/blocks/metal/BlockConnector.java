@@ -8,14 +8,19 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.items.ItemIEShield;
+import blusunrize.immersiveengineering.common.util.network.MessageMagnetEquip;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
@@ -29,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
@@ -37,6 +43,7 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
@@ -177,21 +184,72 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		if(player!=null&&player.isSneaking())
 		{
 			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof TileEntityImmersiveConnectable)
+			if(te instanceof IImmersiveConnectable)
 			{
 				TargetingInfo subTarget = null;
 				if(target.hitVec!=null)
 					subTarget = new TargetingInfo(target.sideHit, (float)target.hitVec.x-pos.getX(), (float)target.hitVec.y-pos.getY(), (float)target.hitVec.z-pos.getZ());
 				else
 					subTarget = new TargetingInfo(target.sideHit, 0, 0, 0);
-				BlockPos masterPos = ((TileEntityImmersiveConnectable)te).getConnectionMaster(null, subTarget);
+				BlockPos masterPos = ((IImmersiveConnectable)te).getConnectionMaster(null, subTarget);
 				if(masterPos!=pos)
 					te = world.getTileEntity(masterPos);
 				if(te instanceof TileEntityImmersiveConnectable)
 				{
-					WireType connected = ((TileEntityImmersiveConnectable)te).getCableLimiter(subTarget);
-					if(connected!=null)
-						return connected.getWireCoil();
+					IImmersiveConnectable connectable = (IImmersiveConnectable)te;
+					WireType wire = connectable.getCableLimiter(subTarget);
+					if(wire!=null)
+						return wire.getWireCoil();
+
+					ArrayList<ItemStack> applicableWires = new ArrayList<ItemStack>();
+					NonNullList<ItemStack> pInventory = player.inventory.mainInventory;
+					for(int i = 0; i < pInventory.size(); i++)
+					{
+						ItemStack s = pInventory.get(i);
+						if(s.getItem() instanceof IWireCoil)
+						{
+							IWireCoil coilItem = (IWireCoil)s.getItem();
+							wire = coilItem.getWireType(s);
+							if(connectable.canConnectCable(wire, subTarget, pos.subtract(masterPos)) && coilItem.canConnectCable(s, te))
+							{
+								ItemStack coil = wire.getWireCoil();
+								boolean unique = true;
+								int insertIndex = applicableWires.size();
+								for (int j = 0; j < applicableWires.size(); j++)
+								{
+									ItemStack priorWire = applicableWires.get(j);
+									if(coil.getItem() == priorWire.getItem())
+									{
+										if(coil.getItemDamage() == priorWire.getItemDamage())
+										{
+											unique = false;
+											break;
+										}
+										if(coil.getItemDamage() < priorWire.getItemDamage() && j < insertIndex)
+												insertIndex = j;
+										else if(j+1 > insertIndex)
+												insertIndex = j+1;
+									}
+								}
+								if(unique)
+									applicableWires.add(insertIndex, coil);
+							}
+						}
+					}
+					if(applicableWires.size() > 0)
+					{
+						ItemStack heldItem = pInventory.get(player.inventory.currentItem);
+						if(heldItem.getItem() instanceof IWireCoil)
+						{
+							//cycle through to the next applicable wire, if currently held wire is already applicable
+							for (int i = 0; i < applicableWires.size(); i++)
+								if(heldItem.isItemEqual(applicableWires.get(i)))
+									return applicableWires.get((i+1) % applicableWires.size()); //wrap around on i+1 >= applicableWires.size()
+							
+						}
+						return applicableWires.get(0);
+					}
+						
 				}
 			}
 		}
