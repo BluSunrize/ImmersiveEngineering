@@ -291,7 +291,7 @@ class GenerateUpdateJSON extends DefaultTask {
         mcFromIEVersion.put("0.11", "1.11.2")
         mcFromIEVersion.put("0.12", "1.12.2")
     }
-    static def VERSION_PREFIX = "#####Version "
+    static def VERSION_PREFIX = "##### Version "
     static def CURRENT_MC_VERSION = "1.12.2"
     static def CHANGELOG_FOR_MANUAL = "src/main/resources/assets/immersiveengineering/changelog.json"
     static def BUILT_SUFFIX = " - BUILT"
