@@ -9,6 +9,9 @@
 - Fixed Steel Axe having overly high damage (BluSunrize)
 - Fixed potential crashes related to the new blueprint renders (BluSunrize)
 - Fixed coresample markers disappearing off maps after restarting (BluSunrize)
+- Fixed snow collecting on partial concrete blocks (Voidi)
+- Fixed Extracting Conveyors not resetting their cooldowns when toggled by redstone (MalkContent)
+- Translations Added/Updated: pt_br (chico3434), es_es(rogama25), zh_cn (mcBegins2Snow)
 
 #####Version 0.12-88 - BUILT
 - Changed Multiblocks to accept redstone-ignoring conveyors as well as default ones. They will revert to normal ones when the multiblock is broken. (BluSunrize)
