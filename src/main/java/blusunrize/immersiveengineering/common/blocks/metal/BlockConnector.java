@@ -191,7 +191,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				BlockPos masterPos = ((IImmersiveConnectable)te).getConnectionMaster(null, subTarget);
 				if(masterPos!=pos)
 					te = world.getTileEntity(masterPos);
-				if(te instanceof TileEntityImmersiveConnectable)
+				if(te instanceof IImmersiveConnectable)
 				{
 					IImmersiveConnectable connectable = (IImmersiveConnectable)te;
 					WireType wire = connectable.getCableLimiter(subTarget);
