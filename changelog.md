@@ -1,4 +1,4 @@
-#####Version 0.12-89
+##### Version 0.12-89
 - Added a covered dropping conveyor (BluSunrize)
 - Added recipes to break down Clay blocks (crusher) and Melon blocks (unpacking mold) (BluSunrize)
 - Added Cinnabar vein, containing Redstone, Cinnabar, Ruby and Sulfur (BluSunrize)
@@ -13,12 +13,12 @@
 - Fixed Extracting Conveyors not resetting their cooldowns when toggled by redstone (MalkContent)
 - Translations Added/Updated: pt_br (chico3434), es_es(rogama25), zh_cn (mcBegins2Snow)
 
-#####Version 0.12-88 - BUILT
+##### Version 0.12-88 - BUILT
 - Changed Multiblocks to accept redstone-ignoring conveyors as well as default ones. They will revert to normal ones when the multiblock is broken. (BluSunrize)
 - Fixed crashes when opening a toolbox or a revolver GUI (Malte)
 - Fixed side solidity on conveyors, prevents snow on places it shouldn't be (BluSunrize)
 
-#####Version 0.12-87 - BUILT
+##### Version 0.12-87 - BUILT
 - Added a "Distribute Inputs" button to the ArcFurnace GUI. It keeps splitting the biggest stacks in the input if there is space available (BluSunrize)
 - Added the Maintenance Kit, an on-the-go option to modify tools, like changing drillheads or configuring the Ear Defenders (BluSunrize)
 - Changed the skyhook in multiple ways (Malte)
@@ -54,7 +54,7 @@
 - Fixed Covered Extracting Conveyor not applying magnet protection (BluSunrize)
 - Translations Added/Updated: ja_jp (karakufire), es_es(Dorzar & rogama25), zh_cn (mcBegins2Snow)
 
-#####Version 0.12-86 - BUILT
+##### Version 0.12-86 - BUILT
 - Added support for JEI ghost ingredients to the assembler and routers (Malte)
 - Re-Added razor wires hurting players trying to break them without wirecutters (Malte)
 - Re-Added coloured pipes (Malte)
@@ -75,7 +75,7 @@
 - Fixed Wooden Posts connecting to Vines (BluSunrize)
 - Translations Added/Updated: ru_ru (gri3229), ko_kr (mindy15963)
 
-#####Version 0.12-85 - BUILT
+##### Version 0.12-85 - BUILT
 - Re-Added Thaumcraft compat (BluSunrize)
     - Added hammering of plates for Brass, Thaumium and Void Metal 
     - Golems can farm hemp
@@ -98,7 +98,7 @@
 - Fixed upgrades vanishing in the Workbench (Malte)
 - Fixed Lightningrod not playing nice with other mods' energy transport (BluSunrize)
 
-#####Version 0.12-84 - BUILT
+##### Version 0.12-84 - BUILT
 - Changed handling of Potions in the mixer: (BluSunrize)
     - Now supports MixPredicates as well as custom brewing recipes
     - Shows properly in JEI, based on Potion output, rather than input
@@ -122,7 +122,7 @@
 - Fixed shiftclicking on IE's containers (BluSunrize)
 - Translations Added/Updated: zh_cn (DYColdWind)
 
-#####Version 0.12-83 - BUILT
+##### Version 0.12-83 - BUILT
 - Added the Extracting Conveyor. It pulls from inventories like a Hopper (BluSunrize)
 - Added even fancier Shaders with pulsing colours and dynamic rendering. Quite open for addon devs, too! (BluSunrize)
     - Added the IKELOS shader to make use of this
@@ -158,7 +158,7 @@
 - Improved log output when a compat module fails (Malte)
 - Translations Added/Updated: ja_jp (iceink001), ru_ru (kellixon ), zh_tw (vongola12324)
 
-#####Version 0.12-82 - BUILT
+##### Version 0.12-82 - BUILT
 - Added compat for farming Hemp to ActuallyAddition's farmer (BluSunrize)
 - Fixed Wirecutter getting consumed when cutting plates (BluSunrize)
 - Fixed Alloy Kiln consuming fuelsource container items (BluSunrize)
@@ -170,7 +170,7 @@
 - Reduced the amount of ItemStacks being copied in rendering and recipe checking (Malte)
 - Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 
-#####Version 0.12-81 - BUILT
+##### Version 0.12-81 - BUILT
 - Added the functionality for the Faraday Suit to protect against live wiring (Malte)
 - Added the ability to use Pick Block to take a connector's wire by sneaking (BluSunrize)
 - Added Magma blocks to the list of heatsources for the Thermoelectric generator (BluSunrize)
@@ -196,7 +196,7 @@
 - Fixed blocks somtimes taking longer to break with the hammer (Malte)
 - Fixed a divide-by-zero issue in the ExcavatorHandler for blacklisted dimensions (BluSunrize)
 
-#####Version 0.12-80 - BUILT
+##### Version 0.12-80 - BUILT
 - Fixed multiblock rendering in the manual with Optifine and texture packs (Malte)
 - Fixed pre-IE-79 multiblocks not working on IE 79 (Malte)
 - Fixed FluidContainer slots not accepting empty containers (BluSunrize)
@@ -205,7 +205,7 @@
 - Fixed ugly high-rez textures on Engineering blocks when CTM isn't loaded (BluSunrize)
 - Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 
-#####Version 0.12-79 - BUILT
+##### Version 0.12-79 - BUILT
 - Added the ability for Wirecutters to cut wires from anywhere (Malte)
 - Added Craftweaker support for the Thermolelectric Generator (BluSunrize)
 - Added documentation for metal ladders (BluSunrize)
@@ -231,7 +231,7 @@
 - Fixed Craftweaker removal function of MetalPress (BluSunrize)
 - Translations Added/Updated: ja_jp (iceink001), zh_CN (DYColdWind)
 
-#####Version 0.12-78 - BUILT
+##### Version 0.12-78 - BUILT
 - Added a preliminary connection render to debug obstructions (Malte)
 - Added Craftweaker function to remove Crusher recipes by input (BluSurize)
 - Fixed crash when breaking middle block of Feedthrough connector (Malte)
@@ -243,7 +243,7 @@
 - Fixed Feedthrough connectors connecting to themselves (Malte)
 - Fixed wires dropping in the wrong location (Malte)
 
-#####Version 0.12-77 - BUILT
+##### Version 0.12-77 - BUILT
 - Various changes to the wiring system (Malte):
   - Uninsulated energy wires cause damage now
   - Wires don't need clear line-of-sight but a clear path along the wire as it is rendered
@@ -270,7 +270,7 @@
 - Fixed Output slots not being blocked (BluSunrize)
 - Translations Added/Updated: en_ud (The-Fireplace), ja_jp (iceink001)
 
-#####Version 0.12-76 - BUILT
+##### Version 0.12-76 - BUILT
 - added various config options for the Belljar, to adjust growthspeeds and fertilizer effects
 - re-added partivles and animation for the Arc Furnace (thanks Malte)
 - added TOP compat for the Sheetmetal Tank (thanks SirWindfield)
@@ -293,7 +293,7 @@
 - fixed a minor texture warning in the console
 - Translations Added/Updated: zh_CN (DYColdWind)
 
-#####Version 0.12-75 - BUILT
+##### Version 0.12-75 - BUILT
 - Relicensed IE, because it was about time. It's not perfect but it's better than uncertainty
 - added a basic description to the mcmodinfo (thanks carstorm)
 - added a configurable, global, modifier for the Cloche's Fertilizer effectiveness
@@ -318,10 +318,10 @@
 - fixed Mixer recpies not showing tooltips in JEI
 - fixed Cloche voiding seeds
 
-#####Version 0.12-74 - BUILT
+##### Version 0.12-74 - BUILT
 - changed IE to ACTUALLY load on all 1.12 subversions
 
-#####Version 0.12-73 - BUILT
+##### Version 0.12-73 - BUILT
 - added whitelist configs for the toolbox
 - re-enabled WAILA compat
 - re-enabled OpenComputers compat (not sure if it works)
@@ -338,7 +338,7 @@
 - fixed cycle animations for the gunturret
 - fixed issues with Botania compat
 
-#####Version 0.12-72 - BUILT
+##### Version 0.12-72 - BUILT
 - added a recipe to fill the Speedloader in a crafting table
 - added Packing and Unpacking molds to the Metal Press
 - added Jar Signing to comply with Forge's coremod guidelines (thanks Malte)
@@ -367,7 +367,7 @@
 - fixed Fluid Pipes not showing their covers with CTM installed
 - fixed inventory models for Engineering blocks with CTM installed
 
-#####Version 0.12-71 - BUILT
+##### Version 0.12-71 - BUILT
 - added missing recipes for Scaffold Slabs & Stairs
 - added Albedo compat for Flare Cartridges
 - added a recipe to make torches out of wool and creosote
@@ -396,7 +396,7 @@
 - fixed deprecated uses of getDrops
 - fixed Splitting Conveyor being derpy after being rotated
 
-#####Version 0.12-70 - BUILT
+##### Version 0.12-70 - BUILT
 - added Shader-capabilities to the Heavy Plated Shield
 - added Scaffolding Slabs and Stairs
 - added a tiny bit of Albedo compat. Makes fancy lights happen on the Tesla Coils!
@@ -410,13 +410,13 @@
 - fixed duplication glitch within the Refinery
 - fixed particle issues with some Multiblocks
 
-#####Version 0.12-69 - BUILT
+##### Version 0.12-69 - BUILT
 - fixed TConstruct dependency
 - fixed Assembler not properly handling Fluid Ingredients from IE and CoFH
 - fixed Revolver GUI not properly syncing
 - fixed model loading error (thanks PaleoCrafter)
 
-#####Version 0.12-68 - BUILT
+##### Version 0.12-68 - BUILT
 - re-added TConstruct compat
 - added Fertilizer compat for ActuallyAdditions, BetterWithMods and IC2
 - changed player arms for certain IE items to also affect armor
@@ -438,7 +438,7 @@
 - fixed Fluid Router allowing for an infinite loop
 - fixed Assembler not handling some recipes properly
 
-#####Version 0.12-67 - BUILT
+##### Version 0.12-67 - BUILT
 - added the Probe Connector. It can read Comparator Overrides on Inventories and stuff!
 - added fancy animations for the reload with a speeloader and opening the revolver GUI
 - added the Circuit Board material, requires for Probe Connector and Turrets
@@ -456,15 +456,15 @@
 - fixed IE recipes using fluids not emptying containers properly & duplicating them
 - fixed recipes for Aluminium and Steel wires
 
-#####Version 0.12-66 - BUILT
+##### Version 0.12-66 - BUILT
 - fixed the missing dustCharcoal reference in recipes
 
-#####Version 0.12-65 - BUILT
+##### Version 0.12-65 - BUILT
 - changed crafting recipes to the new json based system!
 - fixed ClientProxy trying to subscribe on the Server side
 - fixed arm sleeves on players not matching arm position. Nothing I can do about armor, I'm afraid.
 
-#####Version 0.12-64 - BUILT
+##### Version 0.12-64 - BUILT
 - Updated to Minecraft 1.12, fixed a lot of the issues resulting from this update
     - NOTE: Currently, IE's vanilla crafting recipes are not yet JSONs. This will probably change in future releases.
     - NOTE ALSO: Update may be a bit unstable. Feel free to report issues on github.
@@ -479,7 +479,7 @@
 - changed OneProbe integration a tiny bit, showing SideConfigs on Barrels, Capacitors, etc.
 - fixed Minecart shaders crashing with layer counts over the default
 
-#####Version 0.11-63 - BUILT
+##### Version 0.11-63 - BUILT
 - added the Heavy Plated Shield!
     - it protects like a normal shield
     - it has awesome upgrades
@@ -508,10 +508,10 @@
 - fixed render issues with the charging station (thanks Malte)
 - fixed (possibly) Wooden Crates in villages losing their contents on pickup
 
-#####Version 0.11-62 - BUILT
+##### Version 0.11-62 - BUILT
 - official 1.11.2 release, same changelog as build 59
 
-#####Version 0.11-59 - UNRELEASED
+##### Version 0.11-59 - UNRELEASED
 - Updated to Minecraft 1.11.2 and all the bugfixes that came with it! (thanks AtomicBlom and Malte for all the help <3)
 - added a migration system to allow loading 1.10 worlds into MC 1.11.2! (thanks Malte)
 - added special chemthrower behaviour for fluid concrete. It's the GLOO cannon from Prey! :D
@@ -551,7 +551,7 @@
 - fixed Jerrycan/Sheetmetal Tank interaction (thanks Malte)
 - fixed Arc Furnace not recycling wire coils because wire was an unknown resource
 
-#####Version 0.10-58 - BUILT
+##### Version 0.10-58 - BUILT
 - added the Fluid Router. It does exactly what the Item Router does, but for fluids.
 - added Crafttweaker integration for the Mixer
 - added the Garden Cloche! It grows a variety of crops!
@@ -627,7 +627,7 @@
 - fixed the Crusher outputting to the wrong side
 - Translations Added/Updated: ru_RU (lex1975) (this time for real, since I forgot it last time), zh_TW (xaxa123)
 
-#####Version 0.10-57 - BUILT
+##### Version 0.10-57 - BUILT
 - added RazorWire! It pricks and slows, and you can electrify it.
 - added Fluid Concrete. Slows entities down and immobilizes them when it dries
 - added a Potion fluid. Effects vary on NBT data. Works in the Chemthrower, can be bottled in Bottling Machine.
@@ -646,13 +646,13 @@
 - fixed the density of Creosote Oil. A certain Lemming notified me that it's in fact, denser than water.
 - Translations Added/Updated: ru_RU (lex1975)
 
-#####Version 0.10-56 - BUILT
+##### Version 0.10-56 - BUILT
 - fixed duplication of stacks of items dropped onto the bottling machine
 - fixed EntityDataManager registration (thanks mconwa01)
 - fixed manual entry of the fluidpump citing the use of "wirecutters" instead of "hammer"
 - fixed manual typo in the fermenter entry
 
-#####Version 0.10-55 - BUILT
+##### Version 0.10-55 - BUILT
 - re-added the Bottling Machine! It bottles things up, like fluids and emotions!
 - added indicative scrollbars to the manual
 - added nullcheck to guard against malformed sound events
@@ -671,7 +671,7 @@
 - fixed Crusher not collecting drops from low-health entities
 - fixed Assembler and Metal Press not reorienting conveyors when broken
 
-#####Version 0.10-54 - BUILT
+##### Version 0.10-54 - BUILT
 - added the Automated Engineer's Workbench, allowing automated handling of Blueprint Recipes
 - added the Turntable, a block that allows rotating of other blocks
 - added the "Dominator" shader
@@ -693,7 +693,7 @@
 - fixed needless chunkupdates caused by Blastfurnace Preheaters
 - fixed Splitting Conveyors flipping directions too early
 
-#####Version 0.10-53 - BUILT
+##### Version 0.10-53 - BUILT
 - added new shaders
 - fixed Sample Drill crashing upon energy insertion
 - fixed Tesla Coil crashing upon energy insertion
@@ -710,12 +710,12 @@
 - fixed a dupebug with InventorySorter
 - fixed Fluids not updating to existing entries when failing to register
 
-#####Version 0.10-52 - BUILT
+##### Version 0.10-52 - BUILT
 - added the ability for Dropping Conveyors to drop through trapdoors
 - added a new shader
 - fixed Nullpointer for Connectors accepting FUs
 
-#####Version 0.10-51 - BUILT
+##### Version 0.10-51 - BUILT
 - re-added Festive Crates! Happy Holidays!
 - re-added Botania compat for shaders, Relic rarity lootbags + shaders
 - added the ability for Strip Curtains to emit redstone when an entity passes through
@@ -728,13 +728,13 @@
 - fixed Furnace Heater constantly updating the block when insufficiently powered
 - IE now has a Maven (thanks SkySom)
 
-#####Version 0.10-50 - BUILT
+##### Version 0.10-50 - BUILT
 - added versioncheck for TConstruct to prevent crashes with ranged weapons
 - added Icons for all IE machines to JEI and fixed recipe displays
 - fixed furnace heater constantly updating chunks
 - improved UV maps on the revolver, added a new shader
 
-#####Version 0.10-49 - BUILT
+##### Version 0.10-49 - BUILT
 - rewrote the shader system
     - improved texture performance
     - changed API integration
@@ -759,7 +759,7 @@
 - fixed a few missing sounds
 - fixed a concurrent modification in Tesla Coil sounds (thanks Malte)
 
-#####Version 0.10-48 - BUILT
+##### Version 0.10-48 - BUILT
 - added CTM support to Engineering Blocks and Scaffolds when Chisel is installed (in cooperation with Drullkus)
 - changed Breakers to be rotatable (thanks Malte)
 - changed Conveyor Belts showing walls when having their sides towards a metal press or assembler
@@ -774,14 +774,14 @@
 - fixed Railgun not shooting alu, iron and steel sticks from other mods
 - fixed Manual on Railguns crashing without Railcraft installed (thanks Malte)
 
-#####Version 0.10-47 - BUILT
+##### Version 0.10-47 - BUILT
 - moved all clientside references from the config
 
-#####Version 0.10-46 - BUILT
+##### Version 0.10-46 - BUILT
 - fixed serverside crash due to abstract proxy
 - fixed mcmod.info file
 
-#####Version 0.10-45 - BUILT
+##### Version 0.10-45 - BUILT
 - change over to Forge's new config system:
     - DELETE YOUR IE CONFIG
     - Or don't, but you'll get a load of duplicate and unnecessary options.
@@ -820,10 +820,10 @@
 - fixed Crusher overloading its process queue
 - fixed multiple minor issues
 
-#####Version 0.10-44 - BUILT
+##### Version 0.10-44 - BUILT
 - fixed clientside exception
 
-#####Version 0.10-43 - BUILT
+##### Version 0.10-43 - BUILT
 - added version dependency for TCon to prevent further reports of that
 - added Banners! They look awesome! Shoutouts to Tris for making all the textures!
 - added support for TConstructs resourcepack based materials
@@ -852,11 +852,11 @@
 - fixed LootEntry manipulation (3rd time's the charm?) (thanks Malte)
 - fixed crash with Railcraft (thanks Malte)
 
-#####Version 0.10-42 - BUILT
+##### Version 0.10-42 - BUILT
 - fixed NPE when throwign items into the crusher
 - attempted fix for render crashes with TESRs and their blockstates
 
-#####Version 0.10-41 - BUILT
+##### Version 0.10-41 - BUILT
 - added the function to dye conveyor belts!
 - added the splitting conveyor belt, it alternates left and right!
 - re-added the ability to pull recipes from JEI into the assembler
@@ -882,11 +882,11 @@
 - fixed wires sometimes not rendering on servers
 - fixed a manual derp (thanks Malte)
 
-#####Version 0.10-40 - BUILT
+##### Version 0.10-40 - BUILT
 - fixed machines crashing
 - fixed sheetmetal tank not outputting
 
-#####Version 0.10-39 - BUILT
+##### Version 0.10-39 - BUILT
 - added Bloodmagic compat:
     - demon will bullets. 'nuff said.
 - re-added Chisel Compat. Won't work till Chisel actually brigns IMC integration back in
@@ -925,7 +925,7 @@
 - fixed arcfurnace consuming too many additives
 - various other small fixes!
 
-#####Version 0.10-38 - BUILT
+##### Version 0.10-38 - BUILT
 - added the new IConveyorBelt system
     - fully dynamic conveyor system, with custom models and all
     - addon mods can easily add their own!
@@ -937,7 +937,7 @@
 - possible fix for the black rendering wires
 - fixed (finally, hopefully) the desync caused by forming Coke Oven and Blast Furnace
 
-#####Version 0.10-37 - BUILT
+##### Version 0.10-37 - BUILT
 - added the new IBullet system!
     - bullets are no longer based on metadata, but use NBT tags to differentiate types, their abilities are handled externally
     - updated manual accordingly
@@ -947,7 +947,7 @@
 - fixed slots not assignign properly in revolver gui
 - fixed a bunch of manual things
 
-#####Version 0.10-36 - BUILT
+##### Version 0.10-36 - BUILT
 - added Hemp Seeds to Forestry's bags
 - changed Windmill and Improved Windmill to have models with 90% less polys. PERFORMANCE!
 - removed unnecesary debug outprints
@@ -955,19 +955,19 @@
 - fixed issues on the manual's mineral pages
 - fixed models for coresamples
 
-#####Version 0.10-35 - BUILT
+##### Version 0.10-35 - BUILT
 - re-added Open Computers compat
 - cahnged waterwheel and windmills to use FastTESR
 - fixed NPE in ShapedIngredientRecipe
 - fixed Treated Wood display in the TCon Book
 
-#####Version 0.10-34 - BUILT
+##### Version 0.10-34 - BUILT
 - added TCon alloy recipes
 - fixed crash in earmuff recipe, using a client access method
 - fixed arc alloy recipes having too little output
 - prepping for FastTESR hopefully soon!
 
-#####Version 0.10-33 - BUILT
+##### Version 0.10-33 - BUILT
 - fixed crashes when break smart models, parsed texture into baked builder
 - fixed ItemRenders for multiblocks
 - fixed rendering of Wind- and Watermills
@@ -976,21 +976,21 @@
 - fixed treated wood recipe consuming buckets (Forge Bug, really...)
 - fixed machines crashign when fillign buckets internally
 
-#####Version 0.10-31 - BUILT
+##### Version 0.10-31 - BUILT
 - added Redstone Wire connector
 - cleaned up recipes and manual a little
 - fixed wire rendering
 - fixed crash with cart shaders
 
-#####Version 0.10-30 - BUILT
+##### Version 0.10-30 - BUILT
 - UPDATE TO 1.10.2
 
-#####Version 0.9-29 - BUILT
+##### Version 0.9-29 - BUILT
 - UPDATE TO 1.9.4
 - mostly port, movign stuff to new fluid systems, capabilities, etc
 - moved 3D Maneuver gear. It didn't fit the style of hte mod and was incredibly glitchy
 
-#####Version 0.8-28 - BUILT
+##### Version 0.8-28 - BUILT
 - re-added the Floodlight back in
 - re-added the transformers that can attach to posts (thanks Malte)
 - re-added the ability for the pump to not create cobblestone and improved the pump (thanks Malte)
@@ -1010,7 +1010,7 @@
 - fixed a bug where houses try to spawn the nonexistent villager
 - fixed most IE blocks letting through light when they shouldn't (thanks Malte)
 
-#####Version 0.8-27 - BUILT
+##### Version 0.8-27 - BUILT
 - re-added documentation on biodiesel (thanks Malte)
 - re-added the Assembler! For all your autocrafting needs!
 - changed the plantoil value for hemp seeds back to what it was in 1.7.10
@@ -1047,7 +1047,7 @@
 - fixed crusher crushing entities on collision
 
 
-#####Version 0.8-26 - BUILT
+##### Version 0.8-26 - BUILT
 - IE REQUIRES JAVA 8 NOW!
 - added a load of Tinkers Construct compat:
 	- Treated Wood tool material. Similar to normal wood, but no splinters
@@ -1064,7 +1064,7 @@
 - fixed connections on pipes looking weird and broken (thanks Malte)
  
 
-#####Version 0.8-25 - BUILT
+##### Version 0.8-25 - BUILT
 - wires can transfer across unloaded chunks now! :D (thanks Malte)
 - added reinforced (creeper-proof) storage crates
 - changed voltmeter to allow measuring between two non-output points (thanks Malte)
@@ -1082,7 +1082,7 @@
 - added zh_CN localization (thanks to 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii)
 
 
-#####Version 0.8-24 - BUILT
+##### Version 0.8-24 - BUILT
 - massive shoutout to Malte for figuring out some proper wire rendering! :D
 - added compat for DenseOres (crushing/smelting) 
 - fixed lanterns not emitting light
@@ -1099,6 +1099,6 @@
 - fixed textures on stone slabs (thanks Malte)
 
 
-#####Version 0.8-23 - BUILT
+##### Version 0.8-23 - BUILT
 I lost all my changelog before this point. Whoops.
 basically: Initial git push with a lot of the machines and tools implemented. But not done yet.
