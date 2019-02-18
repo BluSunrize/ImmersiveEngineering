@@ -203,12 +203,18 @@ public class IERecipes
 
 	public static void initMetalPressRecipes()
 	{
+		//Bullet casing
 		MetalPressRecipe.addRecipe(new ItemStack(IEContent.itemBullet, 2, 0), "ingotCopper", new ItemStack(IEContent.itemMold, 1, 3), 2400);
 
+		//Damaged Graphite Electrodes
 		ItemStack shoddyElectrode = new ItemStack(IEContent.itemGraphiteElectrode);
 		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
 		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold, 1, 2), 4800).setInputSize(4);
 
+		//Slicing Melons
+		MetalPressRecipe.addRecipe(new ItemStack(Items.MELON, 9), new ItemStack(Blocks.MELON_BLOCK), new ItemStack(IEContent.itemMold, 1, 7), 3200);
+
+		//Packing & Unpacking
 		ComparableItemStack mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold, 1, 5), false);
 		MetalPressRecipe.recipeList.put(mold, new MetalPressPackingRecipe(mold, 3200, 2));
 		mold = ApiUtils.createComparableItemStack(new ItemStack(IEContent.itemMold, 1, 6), false);
@@ -259,6 +265,7 @@ public class IERecipes
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "itemSlag", 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "blockGlass", 3200);
 		addCrusherRecipe(new ItemStack(Blocks.SAND, 2), "sandstone", 1600, new ItemStack(IEContent.itemMaterial, 1, 24), .5f);
+		addCrusherRecipe(new ItemStack(Items.CLAY_BALL, 4), "blockClay", 1600);
 		addCrusherRecipe(new ItemStack(Items.QUARTZ, 4), "blockQuartz", 3200);
 		addCrusherRecipe(new ItemStack(Items.GLOWSTONE_DUST, 4), "glowstone", 3200);
 		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER, 4), "rodBlaze", 3200, new ItemStack(IEContent.itemMaterial, 1, 25), .5f);
