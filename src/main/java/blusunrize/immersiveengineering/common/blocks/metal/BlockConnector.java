@@ -207,12 +207,10 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 						{
 							IWireCoil coilItem = (IWireCoil)s.getItem();
 							wire = coilItem.getWireType(s);
-							System.out.println(Item.REGISTRY.getIDForObject(s.getItem()) + " : " + s.getMetadata());
 							if(connectable.canConnectCable(wire, subTarget, pos.subtract(masterPos)) && coilItem.canConnectCable(s, te))
 							{
 								ItemStack coil = wire.getWireCoil();
 								boolean unique = true;
-								boolean foundFamily = false;
 								int insertIndex = applicableWires.size();
 								for (int j = 0; j < applicableWires.size(); j++)
 								{
@@ -224,22 +222,23 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 											unique = false;
 											break;
 										}
-										if(coil.getMetadata() < priorWire.getMetadata() && j < insertIndex)
-												insertIndex = j;
-										else if(j+1 > insertIndex)
-												insertIndex = j+1;
-										foundFamily = true;
+										if(coil.getMetadata() < priorWire.getMetadata())
+										{
+											insertIndex = j;
+											break;
+										}
 									}
 									/*sort different item by itemID (can't guarantee a static list otherwise. switching items by pickBlock changes the order in which things are looked at,
 									making for scenarios in which applicable wires are possibly skipped when 3 or more wire Items are present)*/
-									else if(!foundFamily)   
+									else  
 									{
 										int coilID = Item.REGISTRY.getIDForObject(coil.getItem());
 										int priorID = Item.REGISTRY.getIDForObject(priorWire.getItem());
-										if(coilID < priorID && j < insertIndex)
+										if(coilID < priorID)
+										{
 											insertIndex = j;
-										else if(j+1 > insertIndex)
-											insertIndex = j+1;
+											break;
+										}
 									}
 								}
 								if(unique)
