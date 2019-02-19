@@ -27,6 +27,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -206,25 +207,39 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 						{
 							IWireCoil coilItem = (IWireCoil)s.getItem();
 							wire = coilItem.getWireType(s);
+							System.out.println(Item.REGISTRY.getIDForObject(s.getItem()) + " : " + s.getMetadata());
 							if(connectable.canConnectCable(wire, subTarget, pos.subtract(masterPos)) && coilItem.canConnectCable(s, te))
 							{
 								ItemStack coil = wire.getWireCoil();
 								boolean unique = true;
+								boolean foundFamily = false;
 								int insertIndex = applicableWires.size();
 								for (int j = 0; j < applicableWires.size(); j++)
 								{
 									ItemStack priorWire = applicableWires.get(j);
-									if(coil.getItem() == priorWire.getItem())
+									if(coil.getItem() == priorWire.getItem()) //sort same item by metadata
 									{
-										if(coil.getItemDamage() == priorWire.getItemDamage())
+										if(coil.getMetadata() == priorWire.getMetadata())
 										{
 											unique = false;
 											break;
 										}
-										if(coil.getItemDamage() < priorWire.getItemDamage() && j < insertIndex)
+										if(coil.getMetadata() < priorWire.getMetadata() && j < insertIndex)
 												insertIndex = j;
 										else if(j+1 > insertIndex)
 												insertIndex = j+1;
+										foundFamily = true;
+									}
+									/*sort different item by itemID (can't guarantee a static list otherwise. switching items by pickBlock changes the order in which things are looked at,
+									making for scenarios in which applicable wires are possibly skipped when 3 or more wire Items are present)*/
+									else if(!foundFamily)   
+									{
+										int coilID = Item.REGISTRY.getIDForObject(coil.getItem());
+										int priorID = Item.REGISTRY.getIDForObject(priorWire.getItem());
+										if(coilID < priorID && j < insertIndex)
+											insertIndex = j;
+										else if(j+1 > insertIndex)
+											insertIndex = j+1;
 									}
 								}
 								if(unique)
@@ -236,13 +251,10 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 					{
 						ItemStack heldItem = pInventory.get(player.inventory.currentItem);
 						if(heldItem.getItem() instanceof IWireCoil)
-						{
 							//cycle through to the next applicable wire, if currently held wire is already applicable
 							for (int i = 0; i < applicableWires.size(); i++)
 								if(heldItem.isItemEqual(applicableWires.get(i)))
 									return applicableWires.get((i+1) % applicableWires.size()); //wrap around on i+1 >= applicableWires.size()
-							
-						}
 						return applicableWires.get(0);
 					}
 				}
