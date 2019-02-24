@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import net.minecraft.nbt.NBTBase;
@@ -21,7 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class GlobalWireNetwork
+public class GlobalWireNetwork implements IWorldTickable
 {
 	private Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 
@@ -70,7 +71,7 @@ public class GlobalWireNetwork
 		{
 			IELogger.logger.info("non-non-different: {} and {}", netA, netB);
 			joined = netA.merge(netB);
-			toSet = joined.getConnectionPoints();
+			toSet = joined.getActiveConnectionPoints();
 		}
 		else
 		{
@@ -113,7 +114,7 @@ public class GlobalWireNetwork
 		Collection<LocalWireNetwork> newNets = oldNet.split();
 		for(LocalWireNetwork net : newNets)
 			if(net!=oldNet)
-				for(ConnectionPoint p : net.getConnectionPoints())
+				for(ConnectionPoint p : net.getActiveConnectionPoints())
 					localNets.put(p, net);
 	}
 
@@ -126,7 +127,7 @@ public class GlobalWireNetwork
 			NBTTagCompound subnet = (NBTTagCompound)b;
 			LocalWireNetwork localNet = new LocalWireNetwork(subnet, this);
 			IELogger.logger.info("Loading net {}", localNet);
-			for(ConnectionPoint p : localNet.getConnectionPoints())
+			for(ConnectionPoint p : localNet.getActiveConnectionPoints())
 				localNets.put(p, localNet);
 		}
 	}
@@ -198,5 +199,14 @@ public class GlobalWireNetwork
 			if(added.add(local))
 				local.unloadConnector(pos, iic);
 		}
+	}
+
+	@Override
+	public void update(World w)
+	{
+		Set<LocalWireNetwork> ticked = new HashSet<>();
+		for(LocalWireNetwork net : localNets.values())
+			if(ticked.add(net))
+				net.update(w);
 	}
 }

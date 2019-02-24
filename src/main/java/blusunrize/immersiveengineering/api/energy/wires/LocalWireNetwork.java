@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -27,7 +29,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class LocalWireNetwork
+public class LocalWireNetwork implements IWorldTickable
 {
 	//TODO do we need this?
 	private final GlobalWireNetwork globalNet;
@@ -119,6 +121,7 @@ public class LocalWireNetwork
 			else
 				handlers.put(loc, new ImmutablePair<>(new AtomicInteger(1),
 						LocalNetworkHandler.createHandler(loc, this)));
+			IELogger.logger.info("Increasing {} to {}", loc, handlers.get(loc).getLeft());
 		}
 		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
 			h.getRight().onConnectorLoaded(p, iic);
@@ -140,10 +143,19 @@ public class LocalWireNetwork
 		result.connectors.putAll(other.connectors);
 		result.connections.putAll(connections);
 		result.connections.putAll(other.connections);
+		result.handlers.putAll(other.handlers);
 		for(Entry<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> loc : handlers.entrySet())
-			result.handlers.merge(loc.getKey(), loc.getValue(), (p1, p2) -> new MutablePair<>(
-					new AtomicInteger(p1.getKey().intValue()+p2.getKey().get()), p1.getValue().merge(p2.getValue())
-			));
+		{
+			//TODO call merge or soemthing when only one of the original nets had the handler!
+			result.handlers.merge(loc.getKey(), loc.getValue(), (p1, p2) -> {
+				LocalNetworkHandler mergedHandler = p1.getValue().merge(p2.getValue());
+				mergedHandler.setLocalNet(result);
+				return new MutablePair<>(
+						new AtomicInteger(p1.getKey().intValue()+p2.getKey().get()),
+						mergedHandler);
+			});
+			IELogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()).getLeft());
+		}
 		return result;
 	}
 
@@ -191,21 +203,37 @@ public class LocalWireNetwork
 	{
 		for(ResourceLocation loc : iic.getRequestedHandlers())
 		{
-			assert handlers.containsKey(loc);
+			if(!handlers.containsKey(loc)) throw new AssertionError();
 			int remaining = handlers.get(loc).getLeft().decrementAndGet();
+			IELogger.logger.info("Decreasing {} to {}", loc, remaining);
 			if(remaining <= 0)
+			{
+				IELogger.logger.info("Removing: {}", loc);
 				handlers.remove(loc);
+			}
 		}
 	}
 
-	public Collection<ConnectionPoint> getConnectionPoints()
+	public Collection<ConnectionPoint> getActiveConnectionPoints()
 	{
 		return connections.keySet();
 	}
 
+	public Collection<ConnectionPoint> getAllConnectionPoints()
+	{
+		Collection<ConnectionPoint> ret = new ArrayList<>();
+		for(BlockPos pos : getConnectors())
+		{
+			IImmersiveConnectable iic = getConnector(pos);
+			ret.addAll(iic.getConnectionPoints());
+		}
+		return ret;
+	}
+
 	public Collection<LocalWireNetwork> split()
 	{
-		Collection<ConnectionPoint> toVisit = new HashSet<>(getConnectionPoints());
+		//TODO handlers?
+		Set<ConnectionPoint> toVisit = new HashSet<>(getAllConnectionPoints());
 		Collection<LocalWireNetwork> ret = new ArrayList<>();
 		while(!toVisit.isEmpty())
 		{
@@ -247,6 +275,7 @@ public class LocalWireNetwork
 			}
 			ret.add(newNet);
 		}
+		IELogger.info("Split net! Now {} nets: {}", ret.size(), ret);
 		return ret;
 	}
 
@@ -254,5 +283,27 @@ public class LocalWireNetwork
 	public String toString()
 	{
 		return "Connectors: "+connectors+", connections: "+connections;
+	}
+
+	public IImmersiveConnectable getConnector(ConnectionPoint cp)
+	{
+		return getConnector(cp.getPosition());
+	}
+
+	public GlobalWireNetwork getGlobal()
+	{
+		return globalNet;
+	}
+
+	@Override
+	public void update(World w)
+	{
+		for(Pair<AtomicInteger, LocalNetworkHandler> handler : handlers.values())
+		{
+			if(handler.getRight() instanceof IWorldTickable)
+			{
+				((IWorldTickable)handler.getRight()).update(w);
+			}
+		}
 	}
 }

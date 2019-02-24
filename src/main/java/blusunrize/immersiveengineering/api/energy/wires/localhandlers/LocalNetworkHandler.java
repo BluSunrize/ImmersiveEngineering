@@ -45,9 +45,14 @@ public abstract class LocalNetworkHandler
 		}
 	}
 
-	protected final LocalWireNetwork net;
+	protected LocalWireNetwork net;
 
 	protected LocalNetworkHandler(LocalWireNetwork net)
+	{
+		this.net = net;
+	}
+
+	public void setLocalNet(LocalWireNetwork net)
 	{
 		this.net = net;
 	}

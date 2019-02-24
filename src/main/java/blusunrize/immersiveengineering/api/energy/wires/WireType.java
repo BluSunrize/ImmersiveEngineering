@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyWiretype;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
 import com.google.common.collect.ImmutableMap;
@@ -173,7 +174,8 @@ public abstract class WireType
 	 * This is a core implementation as a base for IE's default wires
 	 * DO NOT SUBCLASS THIS.
 	 */
-	private static class IEBASE extends WireType
+	//TODO split into energy and other
+	private static class IEBASE extends WireType implements EnergyWiretype
 	{
 		final int ordinal;
 		private final IElectricEquipment.ElectricSource eSource;
@@ -199,6 +201,18 @@ public abstract class WireType
 		public int getTransferRate()
 		{
 			return Math.abs(wireTransferRate[ordinal%6]);
+		}
+
+		@Override
+		public double getBasicLossRate(Connection c)
+		{
+			return 0;
+		}
+
+		@Override
+		public double getLossRate(Connection c, int transferred)
+		{
+			return 0;
 		}
 
 		@Override

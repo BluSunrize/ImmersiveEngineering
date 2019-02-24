@@ -170,6 +170,30 @@ public class Connection
 		return endA.getPosition().equals(pos)?endA: endB;
 	}
 
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this==o) return true;
+		if(o==null||getClass()!=o.getClass()) return false;
+
+		Connection that = (Connection)o;
+
+		if(internal!=that.internal) return false;
+		if(!type.equals(that.type)) return false;
+		if(!endA.equals(that.endA)) return false;
+		return endB.equals(that.endB);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = type.hashCode();
+		result = 31*result+endA.hashCode();
+		result = 31*result+endB.hashCode();
+		result = 31*result+(internal?1: 0);
+		return result;
+	}
+
 	private class CatenaryData
 	{
 		private boolean isVertical;

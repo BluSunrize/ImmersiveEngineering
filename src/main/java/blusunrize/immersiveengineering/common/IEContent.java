@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
@@ -1030,6 +1032,7 @@ public class IEContent
 
 		TileEntityFluidPipe.initCovers();
 		IEDataFixers.register();
+		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 	}
 
 	public static void postInit()

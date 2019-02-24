@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
@@ -54,12 +55,10 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.common.DimensionManager;
@@ -307,20 +306,7 @@ public class EventHandler
 		if(event.phase==TickEvent.Phase.END&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			int dim = event.world.provider.getDimension();
-			for(Entry<ImmersiveNetHandler.Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).entrySet())
-				if(e.getValue() > e.getKey().cableType.getTransferRate())
-				{
-					if(event.world instanceof WorldServer)
-					{
-						BlockPos start = e.getKey().start;
-						for(Vec3d vec : e.getKey().getSubVertices(event.world))
-							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME,
-									vec.x+start.getX(), vec.y+start.getY(), vec.z+start.getZ(),
-									0, 0, .02, 0, 1, new int[0]);
-					}
-					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
-				}
-			ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).clear();
+			GlobalWireNetwork.getNetwork(event.world).update(event.world);
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{
