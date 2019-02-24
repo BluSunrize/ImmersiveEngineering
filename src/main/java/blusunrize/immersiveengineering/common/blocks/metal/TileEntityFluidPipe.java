@@ -546,6 +546,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			connected.markDirty();
 			world.addBlockEvent(getPos().offset(fd), getBlockType(), 0, 0);
 		}
+		updateConnectionByte(EnumFacing.byIndex(side));
 		world.addBlockEvent(getPos(), getBlockType(), 0, 0);
 	}
 
@@ -992,7 +993,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		if(heldItem.isEmpty()&&player.isSneaking()&&!pipeCover.isEmpty())
 		{
-			if(!world.isRemote&&world.getGameRules().getBoolean("doTileDrops"))
+			if(!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!player.capabilities.isCreativeMode)
 			{
 				EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
 				if(entityitem!=null)
@@ -1017,7 +1018,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 								entityitem.setNoPickupDelay();
 						}
 						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
-						heldItem.shrink(1);
+						if(!player.capabilities.isCreativeMode)
+							heldItem.shrink(1);
 						this.markContainingBlockForUpdate(null);
 						world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 						return true;
