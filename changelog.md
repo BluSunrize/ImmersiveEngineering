@@ -1,3 +1,7 @@
+##### Version 0.12-90
+- Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
+- Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)
+
 ##### Version 0.12-89 - BUILT
 - Added a covered dropping conveyor (BluSunrize)
 - Added recipes to break down Clay blocks (crusher) and Melon blocks (unpacking mold) (BluSunrize)

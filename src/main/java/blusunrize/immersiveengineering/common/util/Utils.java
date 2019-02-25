@@ -11,8 +11,10 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
@@ -1166,7 +1168,12 @@ public class Utils
 						continue;
 					Object valThis = extState.getValue(i);
 					Object valOther = extOther.getValue(i);
-					if(valThis==null&&valOther==null)
+					if(i==IEProperties.CONNECTIONS)
+					{
+						if(!areRenderConnectionsEqual((Set<Connection>)valThis, (Set<Connection>)valOther))
+							return false;
+					}
+					else if(valThis==null&&valOther==null)
 						continue;
 					else if(valOther==null||!valOther.equals(valThis))
 						return false;
@@ -1174,6 +1181,33 @@ public class Utils
 			}
 		}
 		return true;
+	}
+
+	private static boolean areRenderConnectionsEqual(Set<Connection> setA, Set<Connection> setB)
+	{
+		if(setA==setB)
+			return true;
+		else if(setA==null||setB==null)
+			return false;
+		Map<Connection, Connection> aAsMap = new HashMap<>();
+		for(Connection c : setA)
+			aAsMap.put(c, c);
+		for(Connection inB : setB)
+		{
+			if(!aAsMap.containsKey(inB))
+				return false;
+			Connection inA = aAsMap.remove(inB);
+			if(!epsilonEquals(inA.catA, inB.catA)
+					||!epsilonEquals(inA.catOffsetX, inB.catOffsetX)
+					||!epsilonEquals(inA.catOffsetY, inB.catOffsetY))
+				return false;
+		}
+		return aAsMap.isEmpty();
+	}
+
+	private static boolean epsilonEquals(double a, double b)
+	{
+		return Math.abs(a-b) < 1e-5;
 	}
 
 	public static boolean areArraysEqualIncludingBlockstates(Object[] a, Object[] a2)

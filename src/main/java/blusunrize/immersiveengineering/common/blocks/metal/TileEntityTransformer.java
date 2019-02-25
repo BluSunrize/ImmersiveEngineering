@@ -116,18 +116,23 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
 	{
-		if(dummy!=0)
+		if(dummy==2)
 		{
 			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
-			return master instanceof TileEntityTransformer&&((TileEntityTransformer)master).canConnectCable(cableType, target, offset);
+			return master instanceof TileEntityTransformer&&((TileEntityTransformer)master).canConnectCable(cableType, target,
+					new Vec3i(0, 2, 0));
 		}
-		int tc = getTargetedConnector(target);
-		switch(tc)
+		else if(dummy==0&&offset.getY()==2)
 		{
-			case 0:
-				return canAttach(cableType, limitType, secondCable);
-			case 1:
-				return canAttach(cableType, secondCable, limitType);
+			int tc = getTargetedConnector(target);
+			switch(tc)
+			{
+				case 0:
+					return canAttach(cableType, limitType, secondCable);
+				case 1:
+					return canAttach(cableType, secondCable, limitType);
+			}
+			return false;
 		}
 		return false;
 	}
