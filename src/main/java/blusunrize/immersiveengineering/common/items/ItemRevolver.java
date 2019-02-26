@@ -97,6 +97,16 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			}
 	}
 
+	public void rotateCylinder(ItemStack revolver, EntityPlayer player, boolean forward)
+	{
+		NonNullList<ItemStack> bullets = getBullets(revolver);
+		NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
+		int offset = forward?-1:1;
+		for(int i = 0; i < cycled.size(); i++)
+			cycled.set((i+offset+cycled.size())%cycled.size(), bullets.get(i));
+		setBullets(revolver, cycled);
+	}
+
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
