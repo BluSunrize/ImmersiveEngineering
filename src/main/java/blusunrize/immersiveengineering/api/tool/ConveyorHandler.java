@@ -381,7 +381,7 @@ public class ConveyorHandler
 
 		default void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
 		{
-			BlockPos invPos = tile.getPos().offset(facing).add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
+			BlockPos invPos = tile.getPos().offset(facing).add(0, (conDir==ConveyorDirection.UP?1: 0), 0);
 			World world = tile.getWorld();
 			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
 			boolean contact = facing.getAxis()==Axis.Z?distZ < .7: distX < .7;
