@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
+import blusunrize.immersiveengineering.common.blocks.BlockConveyorProxy.TileEntityConveyorProxy;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -158,6 +159,7 @@ public class IEContent
 	public static BlockIEBase<BlockTypes_MetalDevice0> blockMetalDevice0;
 	public static BlockIEBase<BlockTypes_MetalDevice1> blockMetalDevice1;
 	public static BlockIEBase<BlockTypes_Conveyor> blockConveyor;
+	public static BlockIEBase<BlockTypes_ConveyorProxy> blockConveyorProxy;
 	public static BlockIEBase<BlockTypes_MetalMultiblock> blockMetalMultiblock;
 	public static BlockIEFluid blockFluidCreosote;
 	public static BlockIEFluid blockFluidPlantoil;
@@ -277,6 +279,7 @@ public class IEContent
 		blockMetalDevice0 = new BlockMetalDevice0();
 		blockMetalDevice1 = new BlockMetalDevice1();
 		blockConveyor = new BlockConveyor();
+		blockConveyorProxy = new BlockConveyorProxy();
 		blockMetalMultiblock = new BlockMetalMultiblocks();
 
 		blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
@@ -676,6 +679,7 @@ public class IEContent
 
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityConveyorVertical.class);
+		registerTile(TileEntityConveyorProxy.class);
 
 		registerTile(TileEntityMetalPress.class);
 		registerTile(TileEntityCrusher.class);
