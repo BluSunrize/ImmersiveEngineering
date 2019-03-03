@@ -29,7 +29,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nonnull;
@@ -57,7 +56,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				TileEntity target = Utils.getExistingTileEntity(world, pos.offset(facing));
 				if(target!=null)
 				{
-					int inserted = EnergyHelper.insertFlux(target, facing, maxOut, false);
+					int inserted = EnergyHelper.insertFlux(target, facing.getOpposite(), maxOut, false);
 					storageToMachine.extractEnergy(inserted, false);
 				}
 			}
@@ -106,33 +105,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	protected boolean canTakeLV()
 	{
 		return true;
-	}
-
-	@Override
-	public boolean isEnergyOutput()
-	{
-		BlockPos outPos = getPos().offset(facing);
-		if(isRelay())
-			return false;
-		TileEntity tile = Utils.getExistingTileEntity(world, outPos);
-		return EnergyHelper.isFluxReceiver(tile, facing.getOpposite());
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		if(isRelay())
-			return 0;
-		int acceptanceLeft = getMaxOutput()-currentTickToMachine;
-		if(acceptanceLeft <= 0)
-			return 0;
-		int toAccept = Math.min(acceptanceLeft, amount);
-
-		TileEntity capacitor = Utils.getExistingTileEntity(world, getPos().offset(facing));
-		int ret = EnergyHelper.insertFlux(capacitor, facing.getOpposite(), toAccept, simulate);
-		if(!simulate)
-			currentTickToMachine += ret;
-		return ret;
 	}
 
 	@Override

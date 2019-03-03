@@ -40,28 +40,9 @@ public interface IImmersiveConnectable
 	boolean canConnect();
 
 	/**
-	 * @return if the tile can in or output energy from/to the network
-	 */
-	boolean isEnergyOutput();
-
-	/**
-	 * @param amount     The amount of power input, in RF
-	 * @param simulate   whether to actually perform the action or just simulate energy consumption
-	 * @param energyType 0 for RF, 1 for EU
-	 * @return the amount of power that was output
-	 */
-	int outputEnergy(int amount, boolean simulate, int energyType);
-
-	/**
 	 * @return a blockPos to do the connection check for.<br>For multiblocks like transformers
 	 */
 	BlockPos getConnectionMaster(@Nullable WireType cableType, TargetingInfo target);
-
-	@Deprecated
-	default boolean canConnectCable(WireType cableType, TargetingInfo target)
-	{
-		return false;
-	}
 
 	/**
 	 * @return whether you can connect the given CableType to the tile
@@ -77,16 +58,9 @@ public interface IImmersiveConnectable
 	ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset);
 
 	/**
-	 * return false to stop checking for available outputs from this point onward
-	 *
-	 * @param con: the connection through which energy enters. May be null, in that
-	 *             case true should be returned if and only if all connections allow energy to pass
-	 */
-	boolean allowEnergyToPass(Connection con);
-
-	/**
 	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
 	 */
+	@Deprecated
 	default void onEnergyPassthrough(int amount)
 	{
 
@@ -95,6 +69,7 @@ public interface IImmersiveConnectable
 	/**
 	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
 	 */
+	@Deprecated
 	default void onEnergyPassthrough(double amount)
 	{
 		onEnergyPassthrough((int)amount);
@@ -108,6 +83,7 @@ public interface IImmersiveConnectable
 	 * @param amount  The amount available from this source
 	 * @param consume Call this to consume the amount of energy in the parameter
 	 */
+	@Deprecated
 	default void addAvailableEnergy(float amount, Consumer<Float> consume)
 	{
 	}
@@ -118,15 +94,6 @@ public interface IImmersiveConnectable
 	 */
 	void removeCable(@Nullable Connection connection);
 
-
-	/**
-	 * Raytracing was replaced by code following the catenary, using getConnectionOffset(Connection con, TargetingInfo target)
-	 */
-	@Deprecated
-	default Vec3d getRaytraceOffset(IImmersiveConnectable link)
-	{
-		return new Vec3d(.5, .5, .5);
-	}
 
 	/**
 	 * @return Where the cable should attach
@@ -150,6 +117,7 @@ public interface IImmersiveConnectable
 	/**
 	 * Returns the amount of damage to be applied to an entity touching a wire connected to this TE. Do not consume energy here.
 	 */
+	@Deprecated
 	default float getDamageAmount(Entity e, Connection c)
 	{
 		return 0;
@@ -159,6 +127,7 @@ public interface IImmersiveConnectable
 	 * Consume energy etc. required to hurt the entity by the specified amount. Called whenever an entity was successfully
 	 * damaged after calling getDamageAmount
 	 */
+	@Deprecated
 	default void processDamage(Entity e, float amount, Connection c)
 	{
 	}

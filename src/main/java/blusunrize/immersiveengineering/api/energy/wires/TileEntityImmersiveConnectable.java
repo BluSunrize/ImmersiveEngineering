@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -67,27 +69,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public boolean allowEnergyToPass(Connection con)
-	{
-		return true;
-	}
-
-	@Override
 	public boolean canConnect()
 	{
 		return true;
-	}
-
-	@Override
-	public boolean isEnergyOutput()
-	{
-		return false;
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		return 0;
 	}
 
 	@Override
@@ -292,19 +276,26 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		{
 			IELogger.info("Loading conns at {}", pos);
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			for(ConnectionPoint cp : getConnectionPoints())
-				for(Connection c : new ArrayList<>(globalNet.getLocalNet(cp).getConnections(cp)))
-					globalNet.removeConnection(c);
+			Multimap<ConnectionPoint, Connection> newConns = MultimapBuilder.hashKeys().hashSetValues().build();
 			for(int i = 0; i < connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				Connection con = new Connection(conTag);
-				if(globalNet.getNullableLocalNet(con.getOtherEnd(con.getEndFor(pos)))!=null)
-				{
-					con.generateCatenaryData(world);
-					globalNet.addConnection(con);
-				}
+				newConns.put(con.getEndFor(pos), con);
 			}
+			for(ConnectionPoint cp : getConnectionPoints())
+				for(Connection c : new ArrayList<>(globalNet.getLocalNet(cp).getConnections(cp)))
+					if(!newConns.remove(cp, c))
+						globalNet.removeConnection(c);
+			for(ConnectionPoint cp : newConns.keySet())
+				for(Connection c : newConns.get(cp))
+				{
+					if(globalNet.getNullableLocalNet(c.getOtherEnd(c.getEndFor(pos)))!=null)
+					{
+						c.generateCatenaryData(world);
+						globalNet.addConnection(c);
+					}
+				}
 		}
 	}
 
@@ -351,6 +342,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
+		IELogger.logger.info("Unloading connector at {}", pos);
 		globalNet.onConnectorUnload(pos, this);
 	}
 
@@ -366,6 +358,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void invalidate()
 	{
 		super.invalidate();
+		IELogger.logger.info("Removing connector at {}", pos);
 		globalNet.removeConnector(this);
 	}
 

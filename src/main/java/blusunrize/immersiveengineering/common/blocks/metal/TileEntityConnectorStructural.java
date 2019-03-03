@@ -104,12 +104,6 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	}
 
 	@Override
-	public boolean isEnergyOutput()
-	{
-		return false;
-	}
-
-	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrix())).orElseGet(Matrix4::new);

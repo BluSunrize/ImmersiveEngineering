@@ -149,20 +149,25 @@ public class LocalWireNetwork implements IWorldTickable
 			//TODO call merge or soemthing when only one of the original nets had the handler!
 			result.handlers.merge(loc.getKey(), loc.getValue(), (p1, p2) -> {
 				LocalNetworkHandler mergedHandler = p1.getValue().merge(p2.getValue());
-				mergedHandler.setLocalNet(result);
 				return new MutablePair<>(
 						new AtomicInteger(p1.getKey().intValue()+p2.getKey().get()),
 						mergedHandler);
 			});
 			IELogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()).getLeft());
 		}
+		for(Entry<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> loc : result.handlers.entrySet())
+			loc.getValue().getRight().setLocalNet(result);
 		return result;
 	}
 
 	void removeConnection(Connection c)
 	{
-		connections.remove(c.getEndA(), c);
-		connections.remove(c.getEndB(), c);
+		boolean successA = connections.remove(c.getEndA(), c);
+		boolean successB = connections.remove(c.getEndB(), c);
+		if(!successA)
+			IELogger.logger.info("Failed to remove {} from {} (A)", c, c.getEndA());
+		if(!successB)
+			IELogger.logger.info("Failed to remove {} from {} (B)", c, c.getEndB());
 		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
 			h.getValue().onConnectionRemoved(c);
 	}
@@ -171,7 +176,14 @@ public class LocalWireNetwork implements IWorldTickable
 	{
 		IImmersiveConnectable iic = connectors.get(p);
 		if(iic==null)
+		{
+			for(ConnectionPoint point : getActiveConnectionPoints())
+				if(point.getPosition().equals(p))
+					IELogger.logger.info("Cancelling, but connections {} at {} still exist!", connections.get(point),
+							point);
+			IELogger.logger.info("Cancelled");
 			return;
+		}
 		for(ConnectionPoint point : iic.getConnectionPoints())
 		{
 			for(Connection c : getConnections(point))

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +29,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==active)
 		{
 			active = !active;
-			ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world, pos);
+			updateConductivity();
 		}
 	}
 
@@ -40,8 +39,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 		return true;
 	}
 
-	@Override
-	public boolean allowEnergyToPass(Connection con)
+	protected boolean allowEnergyToPass()
 	{
 		return active^inverted;
 	}
@@ -64,9 +62,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	{
 		Matrix4 mat = new Matrix4(facing);
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
-		if(endOfLeftConnection==null)
-			calculateLeftConn(mat);
-		boolean isLeft = con.isEnd(endOfLeftConnection);
+		boolean isLeft = here.getIndex()==LEFT_INDEX;
 		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1): new Vec3d(.875, .5, 1));
 		return ret;
 	}

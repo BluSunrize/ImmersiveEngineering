@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -48,7 +49,9 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import java.util.*;
 
-public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile, IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>
+public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile,
+		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>,
+		EnergyConnector
 {
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.Machines.floodlight_energyDraw;
@@ -350,31 +353,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public boolean isEnergyOutput()
-	{
-		return true;
-	}
-
-	@Override
 	protected boolean isRelay()
 	{
 		return true;
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		if(amount > 0&&energyStorage < maximumStorage)
-		{
-			if(!simulate)
-			{
-				int rec = Math.min(maximumStorage-energyStorage, amount);
-				energyStorage += rec;
-				return rec;
-			}
-			return Math.min(maximumStorage-energyStorage, amount);
-		}
-		return 0;
 	}
 
 	@Override
@@ -635,5 +616,31 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
+	}
+
+	@Override
+	public boolean isSource(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSink(ConnectionPoint cp)
+	{
+		return true;
+	}
+
+	@Override
+	public int getRequestedEnergy()
+	{
+		if(energyStorage < maximumStorage)
+			return maximumStorage-energyStorage;
+		return 0;
+	}
+
+	@Override
+	public void insertEnergy(int amount)
+	{
+		energyStorage += amount;
 	}
 }

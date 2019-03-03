@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -36,7 +37,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TileEntityRazorWire extends TileEntityImmersiveConnectable implements IDirectionalTile, IAdvancedCollisionBounds, IOBJModelCallback<IBlockState>
+public class TileEntityRazorWire extends TileEntityImmersiveConnectable implements IDirectionalTile, IAdvancedCollisionBounds,
+		IOBJModelCallback<IBlockState>, EnergyConnector
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 
@@ -195,50 +197,6 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	}
 
 	@Override
-	public boolean isEnergyOutput()
-	{
-		return true;
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		if(amount > 0)
-		{
-			if(!simulate)
-			{
-				int maxReach = amount/8;
-				int widthP = 0;
-				boolean connectP = true;
-				int widthN = 0;
-				boolean connectN = true;
-				EnumFacing dir = facing.rotateY();
-				if(dir.getAxisDirection()==AxisDirection.NEGATIVE)
-					dir = dir.getOpposite();
-				for(int i = 1; i <= maxReach; i++)
-				{
-					BlockPos posP = getPos().offset(dir, i);
-					if(connectP&&world.isBlockLoaded(posP)&&world.getTileEntity(posP) instanceof TileEntityRazorWire)
-						widthP++;
-					else
-						connectP = false;
-					BlockPos posN = getPos().offset(dir, -i);
-					if(connectN&&world.isBlockLoaded(posN)&&world.getTileEntity(posN) instanceof TileEntityRazorWire)
-						widthN++;
-					else
-						connectN = false;
-				}
-				AxisAlignedBB aabb = new AxisAlignedBB(getPos().add(facing.getAxis()==Axis.Z?-widthN: 0, 0, facing.getAxis()==Axis.X?-widthN: 0), getPos().add(facing.getAxis()==Axis.Z?1+widthP: 1, 1, facing.getAxis()==Axis.X?1+widthP: 1));
-				List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
-				for(EntityLivingBase ent : entities)
-					ent.attackEntityFrom(IEDamageSources.razorShock, 2);
-			}
-			return 64;
-		}
-		return 0;
-	}
-
-	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos other = con.getOtherEnd(here).getPosition();
@@ -264,5 +222,53 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 			boolean wallN = facing==EnumFacing.NORTH||facing==EnumFacing.EAST?wallL: wallR;
 			return new Vec3d(facing.getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, facing.getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
 		}
+	}
+
+	@Override
+	public boolean isSource(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSink(ConnectionPoint cp)
+	{
+		return true;
+	}
+
+	@Override
+	public int getRequestedEnergy()
+	{
+		return 64;
+	}
+
+	@Override
+	public void insertEnergy(int amount)
+	{
+		int maxReach = amount/8;
+		int widthP = 0;
+		boolean connectP = true;
+		int widthN = 0;
+		boolean connectN = true;
+		EnumFacing dir = facing.rotateY();
+		if(dir.getAxisDirection()==AxisDirection.NEGATIVE)
+			dir = dir.getOpposite();
+		for(int i = 1; i <= maxReach; i++)
+		{
+			BlockPos posP = getPos().offset(dir, i);
+			if(connectP&&world.isBlockLoaded(posP)&&world.getTileEntity(posP) instanceof TileEntityRazorWire)
+				widthP++;
+			else
+				connectP = false;
+			BlockPos posN = getPos().offset(dir, -i);
+			if(connectN&&world.isBlockLoaded(posN)&&world.getTileEntity(posN) instanceof TileEntityRazorWire)
+				widthN++;
+			else
+				connectN = false;
+		}
+		AxisAlignedBB aabb = new AxisAlignedBB(getPos().add(facing.getAxis()==Axis.Z?-widthN: 0, 0, facing.getAxis()==Axis.X?-widthN: 0), getPos().add(facing.getAxis()==Axis.Z?1+widthP: 1, 1, facing.getAxis()==Axis.X?1+widthP: 1));
+		List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
+		for(EntityLivingBase ent : entities)
+			ent.attackEntityFrom(IEDamageSources.razorShock, 2);
 	}
 }

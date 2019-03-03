@@ -69,23 +69,6 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return true;
 	}
 
-	//	@Override
-	//	public boolean canUpdate()
-	//	{
-	//		return false;
-	//	}
-	@Override
-	public boolean isEnergyOutput()
-	{
-		return false;
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		return 0;
-	}
-
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{

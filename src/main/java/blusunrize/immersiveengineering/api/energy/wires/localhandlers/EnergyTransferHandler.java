@@ -107,6 +107,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void calcPaths()
 	{
 		uninitialised = false;
+		energyPaths.clear();
 		//TODO Dijkstra, using a proper binary heap since PriorityQueue does not have decreaseKey. This is just DFS
 		for(ConnectionPoint cp : net.getActiveConnectionPoints())
 		{
@@ -133,7 +134,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			double lossSum = 0;
 			while(!stack.isEmpty())
 			{
-				ConnectionPoint current = stack.peekLast();
+				ConnectionPoint current = stack.peek();
 				boolean foundNext = false;
 				for(Connection c : net.getConnections(current))
 				{
@@ -143,7 +144,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 						ConnectionPoint end = c.getOtherEnd(current);
 						if(!visited.contains(end))
 						{
-							stack.addLast(end);
+							stack.push(end);
 							visited.add(end);
 							lossSum += loss;
 							foundNext = true;
@@ -183,11 +184,11 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				int requested = end.getRequestedEnergy();
 				if(requested <= 0)
 					continue;
-				double requiredAtSource = Math.max(requested/(1-p.loss), available);
+				double requiredAtSource = Math.min(requested/(1-p.loss), available);
 				maxOut.put(p, requiredAtSource);
 				maxSum += requiredAtSource;
 			}
-			double allowedFactor = Math.max(1, available/maxSum);
+			double allowedFactor = Math.min(1, available/maxSum);
 			for(Path p : maxOut.keySet())
 			{
 				double atSource = allowedFactor*maxOut.getDouble(p);
@@ -237,7 +238,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	private double getBasicLoss(Connection c)
 	{
-		if(c.type instanceof EnergyWiretype)
+		if(c.isInternal())
+			return 0;
+		else if(c.type instanceof EnergyWiretype)
 			return ((EnergyWiretype)c.type).getBasicLossRate(c);
 		else
 			return Double.POSITIVE_INFINITY;
@@ -291,13 +294,23 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 		boolean isSink(ConnectionPoint cp);
 
-		int getAvailableEnergy();
+		default int getAvailableEnergy()
+		{
+			return 0;
+		}
 
-		int getRequestedEnergy();
+		default int getRequestedEnergy()
+		{
+			return 0;
+		}
 
-		void insertEnergy(int amount);
+		default void insertEnergy(int amount)
+		{
+		}
 
-		void extractEnergy(int amount);
+		default void extractEnergy(int amount)
+		{
+		}
 
 		default void onEnergyPassedThrough(double amount)
 		{

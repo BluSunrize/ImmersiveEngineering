@@ -27,13 +27,11 @@ import java.util.Collection;
 
 public class IICProxy implements IImmersiveConnectable
 {
-	private boolean canEnergyPass;
 	private int dim;
 	private BlockPos pos;
 
-	public IICProxy(boolean allowPass, int dimension, BlockPos _pos)
+	public IICProxy(int dimension, BlockPos _pos)
 	{
-		canEnergyPass = allowPass;
 		dim = dimension;
 		pos = _pos;
 	}
@@ -43,14 +41,8 @@ public class IICProxy implements IImmersiveConnectable
 		if(!(te instanceof IImmersiveConnectable))
 			throw new IllegalArgumentException("Can't create an IICProxy for a null/non-IIC TileEntity");
 		dim = te.getWorld().provider.getDimension();
-		canEnergyPass = ((IImmersiveConnectable)te).allowEnergyToPass(null);
 		pos = Utils.toCC(te);
-	}
-
-	@Override
-	public boolean allowEnergyToPass(Connection c)
-	{
-		return canEnergyPass;
+		//TODO save internal connections!
 	}
 
 	public BlockPos getPos()
@@ -83,18 +75,6 @@ public class IICProxy implements IImmersiveConnectable
 	public boolean canConnect()
 	{
 		return false;
-	}
-
-	@Override
-	public boolean isEnergyOutput()
-	{
-		return false;
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		return 0;
 	}
 
 	@Override
@@ -134,7 +114,7 @@ public class IICProxy implements IImmersiveConnectable
 
 	public static IICProxy readFromNBT(NBTTagCompound nbt)
 	{
-		return new IICProxy(nbt.getBoolean("pass"), nbt.getInteger("dim"),
+		return new IICProxy(nbt.getInteger("dim"),
 				NBTUtil.getPosFromTag(nbt.getCompoundTag("pos")));
 	}
 
@@ -143,7 +123,6 @@ public class IICProxy implements IImmersiveConnectable
 		NBTTagCompound ret = new NBTTagCompound();
 		ret.setInteger("dim", dim);
 		ret.setTag("pos", NBTUtil.createPosTag(pos));
-		ret.setBoolean("pass", canEnergyPass);
 		return ret;
 	}
 

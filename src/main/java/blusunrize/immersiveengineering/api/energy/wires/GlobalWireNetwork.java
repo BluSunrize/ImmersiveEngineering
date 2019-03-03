@@ -14,9 +14,12 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -82,6 +85,8 @@ public class GlobalWireNetwork implements IWorldTickable
 		joined.addConnection(conn);
 		for(ConnectionPoint p : toSet)
 			localNets.put(p, joined);
+		IELogger.logger.info("Validating after adding connection...");
+		validate();
 	}
 
 	public void removeAllConnectionsAt(IImmersiveConnectable iic, Consumer<Connection> handler)
@@ -100,6 +105,8 @@ public class GlobalWireNetwork implements IWorldTickable
 			handler.accept(conn);
 			removeConnection(conn);
 		}
+		IELogger.logger.info("Validating after removing all connections at {}...", pos);
+		validate();
 	}
 
 	public void removeConnection(Connection c)
@@ -156,16 +163,21 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeConnector(IImmersiveConnectable iic)
 	{
+		IELogger.logger.info("Removing {}", iic);
 		for(ConnectionPoint c : iic.getConnectionPoints())
 		{
+			IELogger.logger.info("Sub-point {}", c);
 			LocalWireNetwork local = getNullableLocalNet(c);
 			if(local!=null)
 			{
+				IELogger.logger.info("Removing");
 				local.removeConnector(c.getPosition());
 				localNets.remove(c);
 				splitNet(local);
 			}
 		}
+		IELogger.logger.info("Validating after removal...");
+		validate();
 	}
 
 	public void onConnectorLoad(BlockPos pos, IImmersiveConnectable iic)
@@ -188,6 +200,8 @@ public class GlobalWireNetwork implements IWorldTickable
 				addConnection(c);
 			}
 		}
+		IELogger.logger.info("Validating after load...");
+		validate();
 	}
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
@@ -199,6 +213,8 @@ public class GlobalWireNetwork implements IWorldTickable
 			if(added.add(local))
 				local.unloadConnector(pos, iic);
 		}
+		IELogger.logger.info("Validating after unload...");
+		validate();
 	}
 
 	@Override
@@ -208,5 +224,39 @@ public class GlobalWireNetwork implements IWorldTickable
 		for(LocalWireNetwork net : localNets.values())
 			if(ticked.add(net))
 				net.update(w);
+	}
+
+	private void validate()
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+		World w = DimensionManager.getWorld(0);
+		localNets.values().stream().distinct().forEach(
+				(local) -> {
+					for(ConnectionPoint cp : local.getActiveConnectionPoints())
+					{
+						if(localNets.get(cp)!=local)
+							IELogger.logger.warn("{} has net {}, but is in net {}", cp, localNets.get(cp), local);
+						else
+							for(Connection c : local.getConnections(cp))
+							{
+								if(localNets.get(c.getOtherEnd(cp))!=local)
+									IELogger.logger.warn("{} is connected to {}, but nets are {} and {}", cp,
+											c.getOtherEnd(cp), localNets.get(c.getOtherEnd(cp)), local);
+								else if(!local.getConnections(c.getOtherEnd(cp)).contains(c))
+									IELogger.logger.warn("Connection {} from {} to {} is a diode!", c, cp,
+											c.getOtherEnd(cp));
+							}
+					}
+					for(BlockPos p : local.getConnectors())
+						if(w.isBlockLoaded(p))
+						{
+							IImmersiveConnectable inNet = local.getConnector(p);
+							TileEntity inWorld = w.getTileEntity(p);
+							if(inNet!=inWorld)
+								IELogger.logger.warn("Connector at {}: {} in Net, {} in World (Net is {})", p, inNet, inWorld, local);
+						}
+				}
+		);
+		IELogger.logger.info("Validated!");
 	}
 }

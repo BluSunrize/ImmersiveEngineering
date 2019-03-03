@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.state.IBlockState;
@@ -48,7 +49,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
-import static blusunrize.immersiveengineering.api.ApiUtils.*;
+import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
+import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
 import static java.util.Collections.newSetFromMap;
 
 public class ImmersiveNetHandler
@@ -495,115 +497,7 @@ public class ImmersiveNetHandler
 
 	public Set<AbstractConnection> getIndirectEnergyConnections(BlockPos node, World world, boolean ignoreIsEnergyOutput)
 	{
-		int dimension = world.provider.getDimension();
-		if(!ignoreIsEnergyOutput&&indirectConnections.containsKey(dimension)&&
-				indirectConnections.get(dimension).containsKey(node))
-			return indirectConnections.get(dimension).get(node);
-		else if(ignoreIsEnergyOutput&&indirectConnectionsIgnoreOut.containsKey(dimension)&&
-				indirectConnectionsIgnoreOut.get(dimension).containsKey(node))
-			return indirectConnectionsIgnoreOut.get(dimension).get(node);
-
-		PriorityQueue<Pair<IImmersiveConnectable, Float>> queue = new PriorityQueue<>(Comparator.comparingDouble(Pair::getRight));
-		Set<AbstractConnection> closedList = newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>());
-		List<BlockPos> checked = new ArrayList<>();
-		HashMap<BlockPos, BlockPos> backtracker = new HashMap<>();
-
-		checked.add(node);
-		Set<Connection> conL = getConnections(world, node);
-		if(conL!=null)
-			for(Connection con : conL)
-			{
-				IImmersiveConnectable end = toIIC(con.end, world);
-				if(end!=null)
-				{
-					queue.add(new ImmutablePair<>(end, con.getBaseLoss()));
-					backtracker.put(con.end, node);
-				}
-			}
-
-		IImmersiveConnectable next;
-		final int closedListMax = 1200;
-
-		while(closedList.size() < closedListMax&&!queue.isEmpty())
-		{
-			Pair<IImmersiveConnectable, Float> pair = queue.poll();
-			next = pair.getLeft();
-			float loss = pair.getRight();
-			BlockPos nextPos = toBlockPos(next);
-			if(!checked.contains(nextPos)&&queue.stream().noneMatch((p) -> p.getLeft().equals(nextPos)))
-			{
-				boolean isOutput = next.isEnergyOutput();
-				if(ignoreIsEnergyOutput||isOutput)
-				{
-					BlockPos last = toBlockPos(next);
-					WireType minimumType = null;
-					int distance = 0;
-					List<Connection> connectionParts = new ArrayList<>();
-					while(last!=null)
-					{
-						BlockPos prev = last;
-						last = backtracker.get(last);
-						if(last!=null)
-						{
-
-							Set<Connection> conLB = getConnections(world, last);
-							if(conLB!=null)
-								for(Connection conB : conLB)
-									if(conB.end.equals(prev))
-									{
-										connectionParts.add(0, conB);
-										distance += conB.length;
-										if(minimumType==null||conB.cableType.getTransferRate() < minimumType.getTransferRate())
-											minimumType = conB.cableType;
-										break;
-									}
-						}
-					}
-					closedList.add(new AbstractConnection(toBlockPos(node), toBlockPos(next), minimumType, distance, isOutput, connectionParts.toArray(new Connection[connectionParts.size()])));
-				}
-
-				Set<Connection> conLN = getConnections(world, toBlockPos(next));
-				if(conLN!=null)
-					for(Connection con : conLN)
-						if(true)//next.allowEnergyToPass(con))
-						{
-							IImmersiveConnectable end = toIIC(con.end, world);
-
-							Optional<Pair<IImmersiveConnectable, Float>> existing =
-									queue.stream().filter((p) -> p.getLeft()==end).findAny();
-							float newLoss = con.getBaseLoss()+loss;
-							if(end!=null&&!checked.contains(con.end)&&existing.map(Pair::getRight).orElse(Float.MAX_VALUE) > newLoss)
-							{
-								existing.ifPresent(p1 -> queue.removeIf((p2) -> p1.getLeft()==p2.getLeft()));
-								queue.add(new ImmutablePair<>(end, newLoss));
-								backtracker.put(con.end, toBlockPos(next));
-							}
-						}
-				checked.add(toBlockPos(next));
-			}
-		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-		{
-			if(ignoreIsEnergyOutput)
-			{
-				if(!indirectConnectionsIgnoreOut.containsKey(dimension))
-					indirectConnectionsIgnoreOut.put(dimension, new ConcurrentHashMap<>());
-				Map<BlockPos, Set<AbstractConnection>> conns = indirectConnectionsIgnoreOut.get(dimension);
-				if(!conns.containsKey(node))
-					conns.put(node, newSetFromMap(new ConcurrentHashMap<>()));
-				conns.get(node).addAll(closedList);
-			}
-			else
-			{
-				if(!indirectConnections.containsKey(dimension))
-					indirectConnections.put(dimension, new ConcurrentHashMap<>());
-				Map<BlockPos, Set<AbstractConnection>> conns = indirectConnections.get(dimension);
-				if(!conns.containsKey(node))
-					conns.put(node, newSetFromMap(new ConcurrentHashMap<>()));
-				conns.get(node).addAll(closedList);
-			}
-		}
-		return closedList;
+		return ImmutableSet.of();
 	}
 
 	//Called through ASM/coremod
