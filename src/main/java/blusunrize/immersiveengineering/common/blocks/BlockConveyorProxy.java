@@ -31,6 +31,8 @@ public class BlockConveyorProxy extends BlockIETileProvider<BlockTypes_ConveyorP
 	{
 		super("conveyor_proxy", Material.AIR, PropertyEnum.create("type", BlockTypes_ConveyorProxy.class), ItemBlockIEBase.class);
 		setAllNotNormalBlock();
+		setOpaque(false);
+		setLightOpacity(0);
 	}
 
 	@Override
@@ -39,6 +41,11 @@ public class BlockConveyorProxy extends BlockIETileProvider<BlockTypes_ConveyorP
 		return true;
 	}
 
+	@Override
+	public boolean isFullBlock(IBlockState state)
+	{
+		return false;
+	}
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
