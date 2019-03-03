@@ -8,11 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.BlockConveyorProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorCovered;
@@ -31,12 +34,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -48,7 +53,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop, ITickable, IGeneralMultiblock, IFaceShape
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop, ITickable, IGeneralMultiblock, IFaceShape, INeighbourChangeTile
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	private IConveyorBelt conveyorBeltSubtype;
@@ -169,7 +174,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 //				transportDown = false;
 //			else
 //				transportUp = true;
-
+			updateProxyState();
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
 			world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
@@ -301,6 +306,30 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			if(side.getAxis()!=facing.getAxis())
 				return BlockFaceShape.SOLID;
 		return BlockFaceShape.UNDEFINED;
+	}
+
+	@Override
+	public void onNeighborBlockChange(BlockPos otherPos)
+	{
+		updateProxyState();
+	}
+
+	private void updateProxyState()
+	{
+		BlockPos upPos = pos.up();
+		IBlockState proxyState = world.getBlockState(upPos);
+
+		if (BlockConveyorProxy.needsProxy(this)) {
+			if (proxyState != IEContent.blockConveyorProxy.getDefaultState() &&
+					world.isAirBlock(upPos)) {
+				world.setBlockState(upPos, IEContent.blockConveyorProxy.getDefaultState());
+			}
+		} else {
+			// Converted a downward conveyor to some other kind.
+			if (proxyState == IEContent.blockConveyorProxy.getDefaultState()) {
+				world.setBlockToAir(upPos);
+			}
+		}
 	}
 
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable
