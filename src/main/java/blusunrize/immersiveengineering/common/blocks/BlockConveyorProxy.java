@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
-import net.minecraft.block.Block;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -105,16 +105,6 @@ public class BlockConveyorProxy extends BlockIETileProvider<BlockTypes_ConveyorP
 	{
 		return true;
 	}
-	/**
-	 * Get the conveyor that we are proxying, returning null if invalid.
-	 */
-	@Nullable
-	private static IConveyorTile getConveyor(World world, BlockPos pos) {
-		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof IConveyorTile && needsProxy((IConveyorTile) tile))
-			return ((IConveyorTile) tile);
-		return null;
-	}
 
 	/**
 	 * Check if a conveyor requires this proxy block.
@@ -125,21 +115,12 @@ public class BlockConveyorProxy extends BlockIETileProvider<BlockTypes_ConveyorP
 	}
 
 	@Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
-    {
-    	IConveyorTile conveyor = getConveyor(world, pos.down());
-		if (conveyor == null || !needsProxy(conveyor)) {
-			world.setBlockToAir(pos);
-		}
-	}
-
-	@Override
 	public TileEntity createBasicTE(World worldIn, BlockTypes_ConveyorProxy meta)
 	{
 		return new TileEntityConveyorProxy();
 	}
 
-	public static class TileEntityConveyorProxy extends TileEntityIEBase implements ICapabilityProvider
+	public static class TileEntityConveyorProxy extends TileEntityIEBase implements ICapabilityProvider, INeighbourChangeTile
 	{
 
 		public TileEntityConveyorProxy()
@@ -163,11 +144,14 @@ public class BlockConveyorProxy extends BlockIETileProvider<BlockTypes_ConveyorP
 		 */
 		@Nullable
 		public IConveyorTile getConveyor() {
-			return BlockConveyorProxy.getConveyor(this.world, getPos().down());
+			TileEntity tile = world.getTileEntity(pos.down());
+			if(tile instanceof IConveyorTile && needsProxy((IConveyorTile) tile))
+				return ((IConveyorTile) tile);
+			return null;
 		}
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+		public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 		{
 			if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				return true;
@@ -177,11 +161,20 @@ public class BlockConveyorProxy extends BlockIETileProvider<BlockTypes_ConveyorP
 		IItemHandler insertionHandler = new ConveyorProxyInventoryHandler(this);
 
 		@Override
-		public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+		public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 		{
 			if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				return (T)insertionHandler;
 			return super.getCapability(capability, facing);
+		}
+
+		@Override
+		public void onNeighborBlockChange(BlockPos otherPos)
+		{
+			IConveyorTile conveyor = getConveyor();
+			if (conveyor == null || !needsProxy(conveyor)) {
+				world.setBlockToAir(pos);
+			}
 		}
 
 		public static class ConveyorProxyInventoryHandler implements IItemHandlerModifiable
