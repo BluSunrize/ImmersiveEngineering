@@ -49,7 +49,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	}
 
 	@Override
-	public void onConnectorLoaded(BlockPos p, IImmersiveConnectable iic)
+	public void onConnectorLoaded(ConnectionPoint p, IImmersiveConnectable iic)
 	{
 		reset();//TODO slightly more intelligent behavior
 	}
@@ -58,12 +58,6 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	public void onConnectorUnloaded(BlockPos p, IImmersiveConnectable iic)
 	{
 		reset();//TODO slightly more intelligent behavior
-	}
-
-	@Override
-	public void onConnectorAdded(BlockPos p, IImmersiveConnectable iic)
-	{
-		reset();
 	}
 
 	@Override
@@ -87,10 +81,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	@Override
 	public void update(World w)
 	{
-		//if(uninitialised)
-		{
+		if(uninitialised)
 			calcPaths();
-		}
 		transferPower();
 		burnOverloaded(w);
 	}
@@ -109,7 +101,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		uninitialised = false;
 		energyPaths.clear();
 		//TODO Dijkstra, using a proper binary heap since PriorityQueue does not have decreaseKey. This is just DFS
-		for(ConnectionPoint cp : net.getActiveConnectionPoints())
+		for(ConnectionPoint cp : net.getConnectionPoints())
 		{
 			IImmersiveConnectable iic = net.getConnector(cp);
 			if(iic instanceof EnergyConnector)

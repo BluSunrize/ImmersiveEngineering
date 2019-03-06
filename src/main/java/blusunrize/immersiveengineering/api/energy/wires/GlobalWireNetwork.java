@@ -53,28 +53,28 @@ public class GlobalWireNetwork implements IWorldTickable
 			joined = new LocalWireNetwork(this);
 			toSet.add(posA);
 			toSet.add(posB);
-			joined.loadConnector(posA.getPosition(), iicA);
-			joined.loadConnector(posB.getPosition(), iicB);
+			joined.loadConnector(posA, iicA);
+			joined.loadConnector(posB, iicB);
 		}
 		else if(netA==null)
 		{
 			IELogger.info("null-non");
 			toSet.add(posA);
 			joined = netB;
-			joined.loadConnector(posA.getPosition(), iicA);
+			joined.loadConnector(posA, iicA);
 		}
 		else if(netB==null)
 		{
 			IELogger.info("non-null");
 			toSet.add(posB);
 			joined = netA;
-			joined.loadConnector(posB.getPosition(), iicB);
+			joined.loadConnector(posB, iicB);
 		}
 		else if(netA!=netB)
 		{
 			IELogger.logger.info("non-non-different: {} and {}", netA, netB);
 			joined = netA.merge(netB);
-			toSet = joined.getActiveConnectionPoints();
+			toSet = joined.getConnectionPoints();
 		}
 		else
 		{
@@ -121,7 +121,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		Collection<LocalWireNetwork> newNets = oldNet.split();
 		for(LocalWireNetwork net : newNets)
 			if(net!=oldNet)
-				for(ConnectionPoint p : net.getActiveConnectionPoints())
+				for(ConnectionPoint p : net.getConnectionPoints())
 					localNets.put(p, net);
 	}
 
@@ -134,7 +134,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			NBTTagCompound subnet = (NBTTagCompound)b;
 			LocalWireNetwork localNet = new LocalWireNetwork(subnet, this);
 			IELogger.logger.info("Loading net {}", localNet);
-			for(ConnectionPoint p : localNet.getActiveConnectionPoints())
+			for(ConnectionPoint p : localNet.getConnectionPoints())
 				localNets.put(p, localNet);
 		}
 	}
@@ -149,6 +149,11 @@ public class GlobalWireNetwork implements IWorldTickable
 				locals.appendTag(local.writeToNBT());
 		ret.setTag("locals", locals);
 		return ret;
+	}
+
+	public LocalWireNetwork getLocalNet(BlockPos pos)
+	{
+		return getLocalNet(new ConnectionPoint(pos, 0));
 	}
 
 	public LocalWireNetwork getLocalNet(ConnectionPoint pos)
@@ -190,7 +195,7 @@ public class GlobalWireNetwork implements IWorldTickable
 				isNew = true;
 			LocalWireNetwork local = getLocalNet(cp);
 			if(added.add(local))
-				local.loadConnector(pos, iic);
+				local.loadConnector(cp, iic);
 		}
 		if(isNew)
 		{
@@ -232,7 +237,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		World w = DimensionManager.getWorld(0);
 		localNets.values().stream().distinct().forEach(
 				(local) -> {
-					for(ConnectionPoint cp : local.getActiveConnectionPoints())
+					for(ConnectionPoint cp : local.getConnectionPoints())
 					{
 						if(localNets.get(cp)!=local)
 							IELogger.logger.warn("{} has net {}, but is in net {}", cp, localNets.get(cp), local);

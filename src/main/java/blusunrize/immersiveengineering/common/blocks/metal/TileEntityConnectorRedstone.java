@@ -9,11 +9,15 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.redstone.IRedstoneConnector;
-import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneWireNetwork;
+import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -24,41 +28,37 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Collection;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
-public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<IBlockState>, IRedstoneConnector
+public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile,
+		IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<IBlockState>,
+		IRedstoneConnector
 {
 	public EnumFacing facing = EnumFacing.DOWN;
 	public int ioMode = 0; // 0 - input, 1 -output
 	public int redstoneChannel = 0;
 	public boolean rsDirty = false;
-
-	protected RedstoneWireNetwork wireNetwork = new RedstoneWireNetwork().add(this);
-	private boolean refreshWireNetwork = false;
-	// ONLY EVER USE THIS ON THE CLIENT! I don't want to sync the entire network...
-	private int outputClient = -1;
+	//Only write to this in wire network updates!
+	private int output;
 
 	@Override
 	public void update()
 	{
-		if(hasWorld()&&!world.isRemote&&!refreshWireNetwork)
-		{
-			refreshWireNetwork = true;
-			wireNetwork.removeFromNetwork(null);
-		}
 		if(hasWorld()&&!world.isRemote&&rsDirty)
-			wireNetwork.updateValues();
+			globalNet.getLocalNet(pos)
+					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+					.updateValues();
 	}
 
 	@Override
@@ -66,9 +66,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		if(!isRSOutput()||side!=this.facing.getOpposite())
 			return 0;
-		if(world.isRemote)
-			return outputClient;
-		return wireNetwork!=null?wireNetwork.getPowerOutput(redstoneChannel): 0;
+		return output;
 	}
 
 	@Override
@@ -76,9 +74,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		if(!isRSOutput())
 			return 0;
-		if(world.isRemote)
-			return outputClient;
-		return wireNetwork!=null?wireNetwork.getPowerOutput(redstoneChannel): 0;
+		return output;
 	}
 
 	@Override
@@ -88,20 +84,9 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	}
 
 	@Override
-	public void setNetwork(RedstoneWireNetwork net)
+	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{
-		wireNetwork = net;
-	}
-
-	@Override
-	public RedstoneWireNetwork getNetwork()
-	{
-		return wireNetwork;
-	}
-
-	@Override
-	public void onChange()
-	{
+		output = handler.getValue(redstoneChannel);
 		if(!isInvalid()&&isRSOutput())
 		{
 			markDirty();
@@ -111,19 +96,13 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		}
 	}
 
-	@Override
-	public World getConnectorWorld()
-	{
-		return getWorld();
-	}
-
 	public boolean isRSInput()
 	{
 		return ioMode==0;
 	}
 
 	@Override
-	public void updateInput(byte[] signals)
+	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
 		if(isRSInput())
 			signals[redstoneChannel] = (byte)Math.max(getLocalRS(), signals[redstoneChannel]);
@@ -159,8 +138,9 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		else
 			ioMode = ioMode==0?1: 0;
 		markDirty();
-		wireNetwork.updateValues();
-		onChange();
+		globalNet.getLocalNet(pos)
+				.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+				.updateValues();
 		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 		return true;
@@ -170,20 +150,6 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return REDSTONE_CATEGORY.equals(cableType.getCategory());
-	}
-
-	@Override
-	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
-	{
-		super.connectCable(cableType, target, other, otherTarget);
-		RedstoneWireNetwork.updateConnectors(pos, world, wireNetwork);
-	}
-
-	@Override
-	public void removeCable(@Nullable Connection connection)
-	{
-		super.removeCable(connection);
-		wireNetwork.removeFromNetwork(this);
 	}
 
 	@Override
@@ -230,7 +196,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		nbt.setInteger("facing", facing.ordinal());
 		nbt.setInteger("ioMode", ioMode);
 		nbt.setInteger("redstoneChannel", redstoneChannel);
-		nbt.setInteger("output", wireNetwork!=null?wireNetwork.getPowerOutput(redstoneChannel): 0);
+		nbt.setInteger("output", output);
 	}
 
 	@Override
@@ -240,7 +206,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 		ioMode = nbt.getInteger("ioMode");
 		redstoneChannel = nbt.getInteger("redstoneChannel");
-		outputClient = nbt.getInteger("output");
+		output = nbt.getInteger("output");
 	}
 
 	@Override
@@ -332,5 +298,11 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{
 		return false;
+	}
+
+	@Override
+	public Collection<ResourceLocation> getRequestedHandlers()
+	{
+		return ImmutableList.of(RedstoneNetworkHandler.ID);
 	}
 }

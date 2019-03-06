@@ -92,12 +92,13 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		return list.size()==1?list.get(0): null;
 	}
 
-	@Override
-	public void updateInput(byte[] signals)
-	{
-		signals[redstoneChannelSending] = (byte)Math.max(lastOutput, signals[redstoneChannelSending]);
-		rsDirty = false;
-	}
+	//TODO
+	//@Override
+	//public void updateInput(byte[] signals)
+	//{
+	//	signals[redstoneChannelSending] = (byte)Math.max(lastOutput, signals[redstoneChannelSending]);
+	//	rsDirty = false;
+	//}
 
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
@@ -107,8 +108,8 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		else
 			redstoneChannelSending = (redstoneChannelSending+1)%16;
 		markDirty();
-		wireNetwork.updateValues();
-		onChange();
+		//TODO wireNetwork.updateValues();
+		//TODO onChange();
 		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 		return true;

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.energy.wires.localhandlers;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.LocalWireNetwork;
 import net.minecraft.util.ResourceLocation;
@@ -59,11 +60,9 @@ public abstract class LocalNetworkHandler
 
 	public abstract LocalNetworkHandler merge(LocalNetworkHandler other);
 
-	public abstract void onConnectorLoaded(BlockPos p, IImmersiveConnectable iic);
+	public abstract void onConnectorLoaded(ConnectionPoint p, IImmersiveConnectable iic);
 
 	public abstract void onConnectorUnloaded(BlockPos p, IImmersiveConnectable iic);
-
-	public abstract void onConnectorAdded(BlockPos p, IImmersiveConnectable iic);
 
 	public abstract void onConnectorRemoved(BlockPos p, IImmersiveConnectable iic);
 
