@@ -94,8 +94,8 @@ public class Connection
 	public void generateCatenaryData(World world)
 	{
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(endA);
-		Vec3d vecB = ApiUtils.getVecForIICAt(net, endB, this);
-		catData.vecA = ApiUtils.getVecForIICAt(net, endA, this);
+		Vec3d vecB = ApiUtils.getVecForIICAt(net, endB, this, true);
+		catData.vecA = ApiUtils.getVecForIICAt(net, endA, this, false);
 		catData.dx = vecB.x-catData.vecA.x;
 		catData.dy = vecB.y-catData.vecA.y;
 		catData.dz = vecB.z-catData.vecA.z;
@@ -150,19 +150,12 @@ public class Connection
 	public Vec3d getPoint(double pos, ConnectionPoint from)
 	{
 		if(endB.equals(from))
-		{
 			pos = 1-pos;
-		}
-		double x = catData.dx*pos;
-		double y = catData.a*Math.cosh((catData.horLength*pos-catData.offsetX)/catData.a)+catData.offsetY;
-		double z = catData.dz*pos;
-		if(endA.equals(from))
-		{
-			x += endB.getX()-endA.getX();
-			y += endB.getY()-endA.getY();
-			z += endB.getZ()-endA.getZ();
-		}
-		return new Vec3d(catData.vecA.x+x, catData.vecA.y+y, catData.vecA.z+z);
+		Vec3d basic = catData.getPoint(pos);
+		Vec3d add = Vec3d.ZERO;
+		if(endB.equals(from))
+			add = new Vec3d(endA.getPosition().subtract(endB.getPosition()));
+		return basic.add(add);
 	}
 
 	public ConnectionPoint getEndFor(BlockPos pos)
@@ -194,7 +187,60 @@ public class Connection
 		return result;
 	}
 
-	private class CatenaryData
+	public static class RenderData
+	{
+		public static final int POINTS_PER_WIRE = 16;
+		public final CatenaryData data;
+		public final WireType type;
+		public final int pointsToRender;
+		public final int color;
+
+		public RenderData(Connection conn, boolean startAtB, int count)
+		{
+			type = conn.type;
+			assert (conn.hasCatenaryData());
+			pointsToRender = count;
+			color = type.getColour(conn);
+			data = conn.catData.copy();
+			if(startAtB)
+			{
+				data.vecA = conn.getPoint(0, conn.getEndB());
+				data.dx *= -1;
+				data.dz *= -1;
+				data.offsetX = conn.catData.horLength-conn.catData.offsetX;//TODO is this correct?
+				data.offsetY = -data.a*Math.cosh(-data.offsetX/data.a);
+			}
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+
+			RenderData that = (RenderData)o;
+
+			if(pointsToRender!=that.pointsToRender) return false;
+			if(!data.equals(that.data)) return false;
+			return type.equals(that.type);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			int result = data.hashCode();
+			result = 31*result+type.hashCode();
+			result = 31*result+pointsToRender;
+			return result;
+		}
+
+		public Vec3d getPoint(int index)
+		{
+			return data.getPoint(index/(double)POINTS_PER_WIRE);
+		}
+	}
+
+	private static class CatenaryData
 	{
 		private boolean isVertical;
 		//Relative to endA
@@ -207,5 +253,71 @@ public class Connection
 		private double dz = Double.NaN;
 		private double horLength = Double.NaN;
 		private Vec3d vecA = Vec3d.ZERO;
+
+		public CatenaryData copy()
+		{
+			CatenaryData ret = new CatenaryData();
+			ret.isVertical = isVertical;
+			ret.offsetX = offsetX;
+			ret.offsetY = offsetY;
+			ret.a = a;
+			ret.dx = dx;
+			ret.dy = dy;
+			ret.dz = dz;
+			ret.horLength = horLength;
+			ret.vecA = vecA;
+			return ret;
+		}
+
+		public Vec3d getPoint(double pos)
+		{
+			double x = dx*pos;
+			double y = a*Math.cosh((horLength*pos-offsetX)/a)+offsetY;
+			double z = dz*pos;
+			return new Vec3d(x, y, z).add(vecA);
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+
+			CatenaryData that = (CatenaryData)o;
+
+			if(isVertical!=that.isVertical) return false;
+			if(Double.compare(that.offsetX, offsetX)!=0) return false;
+			if(Double.compare(that.offsetY, offsetY)!=0) return false;
+			if(Double.compare(that.a, a)!=0) return false;
+			if(Double.compare(that.dx, dx)!=0) return false;
+			if(Double.compare(that.dy, dy)!=0) return false;
+			if(Double.compare(that.dz, dz)!=0) return false;
+			if(Double.compare(that.horLength, horLength)!=0) return false;
+			return vecA.equals(that.vecA);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			int result;
+			long temp;
+			result = (isVertical?1: 0);
+			temp = Double.doubleToLongBits(offsetX);
+			result = 31*result+(int)(temp^(temp >>> 32));
+			temp = Double.doubleToLongBits(offsetY);
+			result = 31*result+(int)(temp^(temp >>> 32));
+			temp = Double.doubleToLongBits(a);
+			result = 31*result+(int)(temp^(temp >>> 32));
+			temp = Double.doubleToLongBits(dx);
+			result = 31*result+(int)(temp^(temp >>> 32));
+			temp = Double.doubleToLongBits(dy);
+			result = 31*result+(int)(temp^(temp >>> 32));
+			temp = Double.doubleToLongBits(dz);
+			result = 31*result+(int)(temp^(temp >>> 32));
+			temp = Double.doubleToLongBits(horLength);
+			result = 31*result+(int)(temp^(temp >>> 32));
+			result = 31*result+vecA.hashCode();
+			return result;
+		}
 	}
 }

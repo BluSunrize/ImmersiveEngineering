@@ -357,17 +357,17 @@ public class ApiUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn)
+	public static Vec3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
 	{
 		Vec3d offset = Vec3d.ZERO;
 		//Force loading
 		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
 		if(iicPos!=null)
 			offset = iicPos.getConnectionOffset(conn, pos);
-		if(pos.equals(conn.getEndA()))
+		if(fromOtherEnd)
 		{
-			BlockPos posA = conn.getEndA().getPosition();
-			BlockPos posB = conn.getEndB().getPosition();
+			BlockPos posA = pos.getPosition();
+			BlockPos posB = conn.getOtherEnd(pos).getPosition();
 			offset = offset.add(posA.getX()-posB.getX(), posA.getY()-posB.getY(), posA.getZ()-posB.getZ());
 		}
 		return offset;
@@ -462,8 +462,8 @@ public class ApiUtils
 	public static boolean raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
-		Vec3d vStart = getVecForIICAt(net, conn.getEndA(), conn);
-		Vec3d vEnd = getVecForIICAt(net, conn.getEndB(), conn);
+		Vec3d vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
+		Vec3d vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
 		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
 	}
 

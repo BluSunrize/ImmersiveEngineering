@@ -51,7 +51,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
-		setMetaBlockLayer(BlockTypes_Connector.RELAY_HV.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setMetaBlockLayer(BlockTypes_Connector.CONNECTOR_PROBE.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
 		setMetaBlockLayer(BlockTypes_Connector.FEEDTHROUGH.getMeta(), BlockRenderLayer.SOLID,
 				BlockRenderLayer.CUTOUT, BlockRenderLayer.CUTOUT_MIPPED, BlockRenderLayer.TRANSLUCENT);

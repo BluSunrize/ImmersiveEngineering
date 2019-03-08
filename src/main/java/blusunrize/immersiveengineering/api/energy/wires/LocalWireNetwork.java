@@ -188,7 +188,7 @@ public class LocalWireNetwork implements IWorldTickable
 		Collection<Connection> connsA = connections.get(c.getEndA());
 		if(connsA!=null)
 			successA = connsA.remove(c);
-		Collection<Connection> connsB = connections.get(c.getEndA());
+		Collection<Connection> connsB = connections.get(c.getEndB());
 		if(connsB!=null)
 			successB = connsB.remove(c);
 		if(!successA)
