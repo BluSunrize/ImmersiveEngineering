@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.AdvancedAABB;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -171,21 +170,20 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public void validate()
+	public void onLoad()
 	{
-		super.validate();
+		super.onLoad();
 		if(!world.isRemote)
-			ApiUtils.addFutureServerTask(world, () ->
+		{
+			boolean changed = false;
+			for(EnumFacing f : EnumFacing.VALUES)
+				changed |= updateConnectionByte(f);
+			if(changed)
 			{
-				boolean changed = false;
-				for(EnumFacing f : EnumFacing.VALUES)
-					changed |= updateConnectionByte(f);
-				if(changed)
-				{
-					world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
-					markContainingBlockForUpdate(null);
-				}
-			});
+				world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
+				markContainingBlockForUpdate(null);
+			}
+		}
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 ##### Version 0.12-90
+- Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)
+- Fixed some ghostloading issues (Malte, with help from Barteks2x)
 
 ##### Version 0.12-89 - BUILT
 - Added a covered dropping conveyor (BluSunrize)
