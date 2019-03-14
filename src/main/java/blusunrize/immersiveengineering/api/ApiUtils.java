@@ -11,10 +11,12 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -329,12 +331,13 @@ public class ApiUtils
 		return null;
 	}
 
+	@Deprecated
 	public static IImmersiveConnectable toIIC(Object object, World world)
 	{
 		return toIIC(object, world, true);
 	}
 
-
+	@Deprecated
 	public static IImmersiveConnectable toIIC(Object object, World world, boolean allowProxies)
 	{
 		if(object instanceof IImmersiveConnectable)
@@ -483,16 +486,18 @@ public class ApiUtils
 	public static boolean raytraceAlongCatenaryRelative(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 														Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
 	{
-		return true;//TODO
-		/*conn.getSubVertices(vStart, vEnd);
+		IELogger.logger.info("Start is {}, end {}", vStart, vEnd);
+		conn.generateCatenaryData(vStart, vEnd);
 		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
 		HashSet<BlockPos> done = new HashSet<>();
 		HashSet<Triple<BlockPos, Vec3d, Vec3d>> near = new HashSet<>();
 		Vec3d across = vEnd.subtract(vStart);
 		across = new Vec3d(across.x, 0, across.z);
 		double lengthHor = across.length();
-		halfScanned.put(conn.start, vStart);
-		halfScanned.put(conn.end, vEnd);
+		BlockPos startPos = conn.getEndA().getPosition();
+		BlockPos endPos = conn.getEndB().getPosition();
+		halfScanned.put(startPos, vStart);
+		halfScanned.put(endPos, vEnd);
 		//Raytrace X&Z
 		for(int dim = 0; dim <= 2; dim += 2)
 		{
@@ -501,9 +506,9 @@ public class ApiUtils
 			for(int i = start; i < end; i++)
 			{
 				double factor = (i-getDim(vStart, dim))/getDim(across, dim);
-				Vec3d pos = conn.getVecAt(factor, vStart, across, lengthHor);
+				Vec3d pos = conn.getPoint(factor, conn.getEndA());
 
-				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
 					return false;
 			}
 		}
@@ -514,13 +519,14 @@ public class ApiUtils
 			for(int y = (int)Math.ceil(Math.min(vStart.y, vEnd.y)); y <= Math.floor(Math.max(vStart.y, vEnd.y)); y++)
 			{
 				Vec3d pos = new Vec3d(vStart.x, y, vStart.z);
-				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
 					return false;
 			}
 		}
 		else
 		{
-			double min = conn.catA+conn.catOffsetY+vStart.y;
+			CatenaryData data = conn.catData;
+			double min = data.getA()+data.getOffsetY()+vStart.y;
 			for(int i = 0; i < 2; i++)
 			{
 				double factor = i==0?1: -1;
@@ -530,10 +536,10 @@ public class ApiUtils
 					double yReal = y-vStart.y;
 					double posRel;
 					Vec3d pos;
-					posRel = (factor*acosh((yReal-conn.catOffsetY)/conn.catA)*conn.catA+conn.catOffsetX)/lengthHor;
+					posRel = (factor*acosh((yReal-data.getOffsetY())/data.getA())*data.getA()+data.getOffsetX())/lengthHor;
 					pos = new Vec3d(vStart.x+across.x*posRel, y, vStart.z+across.z*posRel);
 
-					if(posRel >= 0&&posRel <= 1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+					if(posRel >= 0&&posRel <= 1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
 						return false;
 				}
 			}
@@ -543,7 +549,7 @@ public class ApiUtils
 		for(Map.Entry<BlockPos, Vec3d> p : halfScanned.entrySet())
 			if(shouldStop.test(new ImmutableTriple<>(p.getKey(), p.getValue(), p.getValue())))
 				return false;
-		return true;*/
+		return true;
 	}
 
 	private static boolean handleVec(Vec3d pos, Vec3d origPos, int start, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
@@ -715,25 +721,22 @@ public class ApiUtils
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(iicHere.getIgnored(iicLink));
 									ignore.addAll(iicLink.getIgnored(iicHere));
-									ImmersiveNetHandler.Connection tmpConn = new ImmersiveNetHandler.Connection(Utils.toCC(iicHere), Utils.toCC(iicLink), wire,
-											(int)Math.sqrt(distanceSq));
-									Vec3d start = iicHere.getConnectionOffset(tmpConn, targetHere, pos.subtract(masterPos));
-									Vec3d end = iicLink.getConnectionOffset(tmpConn, targetLink, offsetLink).add(linkPos.getX()-masterPos.getX(),
-											linkPos.getY()-masterPos.getY(),
-											linkPos.getZ()-masterPos.getZ());
 									BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
-									boolean canSee = true;/*TODO ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p) -> {
-									if(ignore.contains(p.getLeft()))
+									Connection tempConn = new Connection(wire, cpHere, cpLink);
+									Vec3d start = iicHere.getConnectionOffset(tempConn, cpHere);
+									Vec3d end = iicLink.getConnectionOffset(tempConn, cpLink);
+									boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tempConn, (p) -> {
+										if(ignore.contains(p.getLeft()))
+											return false;
+										IBlockState state = world.getBlockState(p.getLeft());
+										if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+										{
+											failedReason.setPos(p.getLeft());
+											return true;
+										}
 										return false;
-									IBlockState state = world.getBlockState(p.getLeft());
-									if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
-									{
-										failedReason.setPos(p.getLeft());
-										return true;
-									}
-									return false;
-								}, (p) -> {
-								}, start, end);*/
+									}, (p) -> {
+									}, start, end.add(new Vec3d(linkPos.subtract(masterPos))));
 									if(canSee)
 									{
 										Connection conn = new Connection(wire, cpHere, cpLink);
@@ -759,7 +762,7 @@ public class ApiUtils
 									else
 									{
 										player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
-										ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tmpConn, failedReason, player.world),
+										ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tempConn, failedReason, player.world),
 												new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
 														64));
 									}

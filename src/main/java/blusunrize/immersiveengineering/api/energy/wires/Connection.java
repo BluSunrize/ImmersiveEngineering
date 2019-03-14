@@ -25,7 +25,7 @@ public class Connection
 	@Nonnull
 	private final ConnectionPoint endB;
 	private final boolean internal;
-	private final CatenaryData catData = new CatenaryData();
+	public final CatenaryData catData = new CatenaryData();
 
 	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
 	{
@@ -94,21 +94,27 @@ public class Connection
 	public void generateCatenaryData(World world)
 	{
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(endA);
+		Vec3d vecA = ApiUtils.getVecForIICAt(net, endA, this, false);
 		Vec3d vecB = ApiUtils.getVecForIICAt(net, endB, this, true);
-		catData.vecA = ApiUtils.getVecForIICAt(net, endA, this, false);
-		catData.dx = vecB.x-catData.vecA.x;
-		catData.dy = vecB.y-catData.vecA.y;
-		catData.dz = vecB.z-catData.vecA.z;
-		catData.horLength = Math.sqrt(catData.dx*catData.dx+catData.dz*catData.dz);
-		if(Math.abs(catData.dx) < 0.05&&Math.abs(catData.dz) < 0.05)
+		generateCatenaryData(vecA, vecB);
+	}
+
+	public void generateCatenaryData(Vec3d vecA, Vec3d vecB)
+	{
+		catData.vecA = vecA;
+		catData.deltaX = vecB.x-vecA.x;
+		catData.deltaY = vecB.y-vecA.y;
+		catData.deltaZ = vecB.z-vecA.z;
+		catData.horLength = Math.sqrt(catData.deltaX*catData.deltaX+catData.deltaZ*catData.deltaZ);
+		if(Math.abs(catData.deltaX) < 0.05&&Math.abs(catData.deltaZ) < 0.05)
 		{
 			catData.isVertical = true;
 			catData.a = 1;
 			catData.offsetX = catData.offsetY = 0;
 			return;
 		}
-		double wireLength = Math.sqrt(catData.dx*catData.dx+catData.dy*catData.dy+catData.dz*catData.dz)*type.getSlack();
-		double x = Math.sqrt(wireLength*wireLength-catData.dy*catData.dy)/catData.horLength;
+		double wireLength = Math.sqrt(catData.deltaX*catData.deltaX+catData.deltaY*catData.deltaY+catData.deltaZ*catData.deltaZ)*type.getSlack();
+		double x = Math.sqrt(wireLength*wireLength-catData.deltaY*catData.deltaY)/catData.horLength;
 		double l = 0;
 		//TODO nicer numerical solver? Newton/Binary?
 		int limiter = 0;
@@ -120,8 +126,8 @@ public class Connection
 				break;
 		}
 		catData.a = catData.horLength/(2*l);
-		catData.offsetX = (0+catData.horLength-catData.a*Math.log((wireLength+catData.dy)/(wireLength-catData.dy)))*0.5;
-		catData.offsetY = (catData.dy+0-wireLength*Math.cosh(l)/Math.sinh(l))*0.5;
+		catData.offsetX = (0+catData.horLength-catData.a*Math.log((wireLength+catData.deltaY)/(wireLength-catData.deltaY)))*0.5;
+		catData.offsetY = (catData.deltaY+0-wireLength*Math.cosh(l)/Math.sinh(l))*0.5;
 	}
 
 	public boolean hasCatenaryData()
@@ -132,18 +138,6 @@ public class Connection
 	public boolean isEnd(ConnectionPoint p)
 	{
 		return p.equals(endA)||p.equals(endB);
-	}
-
-	//TODO proper impl, do we ever need all vertices? Or always just those on one side of the chunk border?
-	public Vec3d[] getCatenaryVertices(ConnectionPoint pos)
-	{
-		Vec3d[] ret = new Vec3d[17];
-		for(int i = 0; i <= 16; ++i)
-		{
-			double lambda = i/16D;
-			ret[i] = getPoint(lambda, pos);
-		}
-		return ret;
 	}
 
 	//pos is relative to 1. 0 is the end corresponding to from, 1 is the other end.
@@ -205,8 +199,8 @@ public class Connection
 			if(startAtB)
 			{
 				data.vecA = conn.getPoint(0, conn.getEndB());
-				data.dx *= -1;
-				data.dz *= -1;
+				data.deltaX *= -1;
+				data.deltaZ *= -1;
 				data.offsetX = conn.catData.horLength-conn.catData.offsetX;//TODO is this correct?
 				data.offsetY = -data.a*Math.cosh(-data.offsetX/data.a);
 			}
@@ -240,7 +234,7 @@ public class Connection
 		}
 	}
 
-	private static class CatenaryData
+	public static class CatenaryData
 	{
 		private boolean isVertical;
 		//Relative to endA
@@ -248,9 +242,9 @@ public class Connection
 		private double offsetY = Double.NaN;
 		//TODO better name?
 		private double a = Double.NaN;
-		private double dx = Double.NaN;
-		private double dy = Double.NaN;
-		private double dz = Double.NaN;
+		private double deltaX = Double.NaN;
+		private double deltaY = Double.NaN;
+		private double deltaZ = Double.NaN;
 		private double horLength = Double.NaN;
 		private Vec3d vecA = Vec3d.ZERO;
 
@@ -261,9 +255,9 @@ public class Connection
 			ret.offsetX = offsetX;
 			ret.offsetY = offsetY;
 			ret.a = a;
-			ret.dx = dx;
-			ret.dy = dy;
-			ret.dz = dz;
+			ret.deltaX = deltaX;
+			ret.deltaY = deltaY;
+			ret.deltaZ = deltaZ;
 			ret.horLength = horLength;
 			ret.vecA = vecA;
 			return ret;
@@ -271,10 +265,59 @@ public class Connection
 
 		public Vec3d getPoint(double pos)
 		{
-			double x = dx*pos;
-			double y = a*Math.cosh((horLength*pos-offsetX)/a)+offsetY;
-			double z = dz*pos;
+			double x = deltaX*pos;
+			double y;
+			if(isVertical)
+				y = deltaY*pos;
+			else
+				y = a*Math.cosh((horLength*pos-offsetX)/a)+offsetY;
+			double z = deltaZ*pos;
 			return new Vec3d(x, y, z).add(vecA);
+		}
+
+		public boolean isVertical()
+		{
+			return isVertical;
+		}
+
+		public double getOffsetX()
+		{
+			return offsetX;
+		}
+
+		public double getOffsetY()
+		{
+			return offsetY;
+		}
+
+		public double getA()
+		{
+			return a;
+		}
+
+		public double getDeltaX()
+		{
+			return deltaX;
+		}
+
+		public double getDeltaY()
+		{
+			return deltaY;
+		}
+
+		public double getDeltaZ()
+		{
+			return deltaZ;
+		}
+
+		public double getHorLength()
+		{
+			return horLength;
+		}
+
+		public Vec3d getVecA()
+		{
+			return vecA;
 		}
 
 		@Override
@@ -289,9 +332,9 @@ public class Connection
 			if(Double.compare(that.offsetX, offsetX)!=0) return false;
 			if(Double.compare(that.offsetY, offsetY)!=0) return false;
 			if(Double.compare(that.a, a)!=0) return false;
-			if(Double.compare(that.dx, dx)!=0) return false;
-			if(Double.compare(that.dy, dy)!=0) return false;
-			if(Double.compare(that.dz, dz)!=0) return false;
+			if(Double.compare(that.deltaX, deltaX)!=0) return false;
+			if(Double.compare(that.deltaY, deltaY)!=0) return false;
+			if(Double.compare(that.deltaZ, deltaZ)!=0) return false;
 			if(Double.compare(that.horLength, horLength)!=0) return false;
 			return vecA.equals(that.vecA);
 		}
@@ -308,11 +351,11 @@ public class Connection
 			result = 31*result+(int)(temp^(temp >>> 32));
 			temp = Double.doubleToLongBits(a);
 			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(dx);
+			temp = Double.doubleToLongBits(deltaX);
 			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(dy);
+			temp = Double.doubleToLongBits(deltaY);
 			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(dz);
+			temp = Double.doubleToLongBits(deltaZ);
 			result = 31*result+(int)(temp^(temp >>> 32));
 			temp = Double.doubleToLongBits(horLength);
 			result = 31*result+(int)(temp^(temp >>> 32));
