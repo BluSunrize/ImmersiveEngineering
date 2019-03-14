@@ -53,7 +53,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	public void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing)
 	{
 		entity.setPickupDelay(10);
-		ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
+		ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)tile);
 	}
 
 	@Override

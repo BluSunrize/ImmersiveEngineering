@@ -207,12 +207,12 @@ public class ConveyorVertical extends ConveyorBasic
 			entity.motionZ = vec.z;
 
 			if(!contact)
-				ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
+				ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)tile);
 			else
 			{
 				BlockPos posTop = tile.getPos().add(0, 1, 0);
 				if(!((tile.getWorld().getTileEntity(posTop) instanceof IConveyorTile)||(tile.getWorld().isAirBlock(posTop)&&(tile.getWorld().getTileEntity(posTop.offset(facing)) instanceof IConveyorTile))))
-					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
+					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)tile);
 			}
 
 			if(entity instanceof EntityItem)

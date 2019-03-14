@@ -56,7 +56,7 @@ public class ConveyorDrop extends ConveyorBasic
 			entity.motionZ = 0;
 			entity.setPosition(tile.getPos().getX()+.5, tile.getPos().getY()-.5, tile.getPos().getZ()+.5);
 			if(!(inventoryTile instanceof IConveyorTile))
-				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
+				ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)tile);
 		}
 		else
 			super.handleInsertion(tile, entity, facing, conDir, distX, distZ);

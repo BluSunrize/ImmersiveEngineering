@@ -131,7 +131,7 @@ public class ConveyorHandler
 	 * the reversal function is optional, to revert possible NBT changes
 	 * the tileentity parsed is an instanceof
 	 */
-	public static void registerMagnetSupression(BiConsumer<Entity, IConveyorTile> function, @Nullable BiConsumer<Entity, IConveyorTile> revert)
+	public static void registerMagnetSuppression(BiConsumer<Entity, IConveyorTile> function, @Nullable BiConsumer<Entity, IConveyorTile> revert)
 	{
 		magnetSupressionFunctions.add(function);
 		if(revert!=null)
@@ -139,9 +139,9 @@ public class ConveyorHandler
 	}
 
 	/**
-	 * applies all registered magnets supressors to the entity
+	 * applies all registered magnets suppressors to the entity
 	 */
-	public static void applyMagnetSupression(Entity entity, IConveyorTile tile)
+	public static void applyMagnetSuppression(Entity entity, IConveyorTile tile)
 	{
 		if(entity!=null)
 			for(BiConsumer<Entity, IConveyorTile> func : magnetSupressionFunctions)
@@ -149,9 +149,9 @@ public class ConveyorHandler
 	}
 
 	/**
-	 * applies all registered magnet supression removals
+	 * applies all registered magnet suppression removals
 	 */
-	public static void revertMagnetSupression(Entity entity, IConveyorTile tile)
+	public static void revertMagnetSuppression(Entity entity, IConveyorTile tile)
 	{
 		if(entity!=null)
 			for(BiConsumer<Entity, IConveyorTile> func : magnetSupressionReverse)
@@ -355,12 +355,12 @@ public class ConveyorHandler
 					entity.setPosition(entity.posX+move*facing.getXOffset(), entity.posY+1*move, entity.posZ+move*facing.getZOffset());
 				}
 				if(!contact)
-					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
+					ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)tile);
 				else
 				{
 					BlockPos nextPos = tile.getPos().offset(facing);
 					if(!(Utils.getExistingTileEntity(tile.getWorld(), nextPos) instanceof IConveyorTile))
-						ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
+						ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)tile);
 				}
 
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023

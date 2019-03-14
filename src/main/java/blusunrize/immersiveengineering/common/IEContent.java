@@ -478,7 +478,7 @@ public class IEContent
 	{
 		WireType.init();
 		/*CONVEYORS*/
-		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
+		ConveyorHandler.registerMagnetSuppression((entity, iConveyorTile) -> {
 			NBTTagCompound data = entity.getEntityData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
 				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);

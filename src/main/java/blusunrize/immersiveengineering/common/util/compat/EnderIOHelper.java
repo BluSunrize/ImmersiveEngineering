@@ -56,7 +56,7 @@ public class EnderIOHelper extends IECompatModule
 		ChemthrowerHandler.registerEffect("cloud_seed_concentrated", new ChemthrowerEffect_Potion(null, 0, MobEffects.BLINDNESS, 40, 0));
 		ChemthrowerHandler.registerEffect("vapor_of_levity", new ChemthrowerEffect_Potion(null, 0, MobEffects.LEVITATION, 80, 2));
 
-		ConveyorHandler.registerMagnetSupression(new BiConsumer<Entity, IConveyorTile>()
+		ConveyorHandler.registerMagnetSuppression(new BiConsumer<Entity, IConveyorTile>()
 		{
 			@Override
 			public void accept(Entity entity, IConveyorTile iConveyorTile)
