@@ -125,6 +125,14 @@ public class ConveyorHandler
 			return substituteRegistry.get(rlKey).contains(rl);
 		return false;
 	}
+	/**
+	 * This function is deprecated, use {@link #registerMagnetSuppression} instead.
+	 */
+	@Deprecated
+	public static void registerMagnetSupression(BiConsumer<Entity, IConveyorTile> function, @Nullable BiConsumer<Entity, IConveyorTile> revert)
+	{
+		registerMagnetSuppression(function, revert);
+	}
 
 	/**
 	 * registers a consumer/function to suppress magnets while they are on the conveyors
@@ -138,6 +146,15 @@ public class ConveyorHandler
 			magnetSupressionReverse.add(revert);
 	}
 
+    /**
+     * This function is deprecated, use {@link #applyMagnetSuppression} instead.
+     */
+    @Deprecated
+    public static void applyMagnetSupression(Entity entity, IConveyorTile tile)
+    {
+        applyMagnetSuppression(entity, tile);
+    }
+
 	/**
 	 * applies all registered magnets suppressors to the entity
 	 */
@@ -147,6 +164,15 @@ public class ConveyorHandler
 			for(BiConsumer<Entity, IConveyorTile> func : magnetSupressionFunctions)
 				func.accept(entity, tile);
 	}
+
+    /**
+     * This function is deprecated, use {@link #revertMagnetSuppression} instead.
+     */
+    @Deprecated
+    public static void revertMagnetSupression(Entity entity, IConveyorTile tile)
+    {
+        revertMagnetSuppression(entity, tile);
+    }
 
 	/**
 	 * applies all registered magnet suppression removals
