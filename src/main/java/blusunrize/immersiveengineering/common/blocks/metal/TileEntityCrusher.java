@@ -81,6 +81,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
+		nbt.setBoolean("active", shouldRenderAsActive());
 		if(!descPacket)
 		{
 			NBTTagList invList = new NBTTagList();
