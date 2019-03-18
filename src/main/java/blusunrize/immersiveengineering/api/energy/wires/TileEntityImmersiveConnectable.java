@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -136,40 +135,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		super.setWorld(worldIn);
 		globalNet = GlobalWireNetwork.getNetwork(worldIn);
-	}
-
-	@Override
-	public float getDamageAmount(Entity e, Connection c)
-	{
-		float baseDmg = getBaseDamage(c);
-		float max = getMaxDamage(c);
-		if(baseDmg==0||world.getTotalWorldTime()-lastSourceUpdate > 1)
-			return 0;
-		float damage = 0;
-		for(int i = 0; i < sources.size()&&damage < max; i++)
-		{
-			int consume = (int)Math.min(sources.get(i).getLeft(), (max-damage)/baseDmg);
-			damage += baseDmg*consume;
-		}
-		return damage;
-	}
-
-	@Override
-	public void processDamage(Entity e, float amount, Connection c)
-	{
-		float baseDmg = getBaseDamage(c);
-		float damage = 0;
-		for(int i = 0; i < sources.size()&&damage < amount; i++)
-		{
-			float consume = Math.min(sources.get(i).getLeft(), (amount-damage)/baseDmg);
-			sources.get(i).getRight().accept(consume);
-			damage += baseDmg*consume;
-			if(consume==sources.get(i).getLeft())
-			{
-				sources.remove(i);
-				i--;
-			}
-		}
 	}
 
 	protected float getBaseDamage(Connection c)
@@ -290,10 +255,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			for(ConnectionPoint cp : newConns.keySet())
 				for(Connection c : newConns.get(cp))
 				{
-					if(globalNet.getNullableLocalNet(c.getOtherEnd(c.getEndFor(pos)))!=null)
+					ConnectionPoint otherEnd = c.getOtherEnd(cp);
+					if(globalNet.getNullableLocalNet(otherEnd)!=null&&world.isBlockLoaded(otherEnd.getPosition()))
 					{
 						c.generateCatenaryData(world);
-						globalNet.addConnection(c);
+						globalNet.addConnection(c, null);
 					}
 				}
 		}
@@ -351,7 +317,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		super.onLoad();
 		IELogger.info("Loading connector at {}", pos);
-		globalNet.onConnectorLoad(pos, this);
+		globalNet.onConnectorLoad(this, world);
 	}
 
 	@Override

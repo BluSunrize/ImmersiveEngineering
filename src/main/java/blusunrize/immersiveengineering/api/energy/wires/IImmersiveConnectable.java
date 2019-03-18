@@ -10,11 +10,10 @@ package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -32,7 +31,7 @@ import java.util.function.Consumer;
  * <p>
  * "Vec3i offset" parameters give the offset between this block and the one that was clicked on, see getConnectionMaster
  */
-public interface IImmersiveConnectable
+public interface IImmersiveConnectable extends ILocalHandlerProvider
 {
 	/**
 	 * @return if wires can directly connect to this
@@ -114,33 +113,10 @@ public interface IImmersiveConnectable
 		return ImmutableSet.of(ApiUtils.toBlockPos(this));
 	}
 
-	/**
-	 * Returns the amount of damage to be applied to an entity touching a wire connected to this TE. Do not consume energy here.
-	 */
-	@Deprecated
-	default float getDamageAmount(Entity e, Connection c)
-	{
-		return 0;
-	}
-
-	/**
-	 * Consume energy etc. required to hurt the entity by the specified amount. Called whenever an entity was successfully
-	 * damaged after calling getDamageAmount
-	 */
-	@Deprecated
-	default void processDamage(Entity e, float amount, Connection c)
-	{
-	}
-
 	//TODO remove
 	default boolean moveConnectionTo(ImmersiveNetHandler.Connection c, BlockPos newEnd)
 	{
 		return true;
-	}
-
-	default Collection<ResourceLocation> getRequestedHandlers()
-	{
-		return ImmutableList.of();
 	}
 
 	Collection<ConnectionPoint> getConnectionPoints();

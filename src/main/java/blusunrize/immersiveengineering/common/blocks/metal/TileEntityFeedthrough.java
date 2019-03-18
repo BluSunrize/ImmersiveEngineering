@@ -9,7 +9,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -380,12 +379,6 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		return new Object[]{
 				stateForMiddle, reference, facing
 		};
-	}
-
-	@Override
-	public float getDamageAmount(Entity e, Connection c)
-	{
-		return INFOS.get(reference).postProcessDmg.apply(super.getDamageAmount(e, c));
 	}
 
 	@Override

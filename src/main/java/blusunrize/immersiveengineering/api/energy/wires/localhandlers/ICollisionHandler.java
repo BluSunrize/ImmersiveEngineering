@@ -8,10 +8,12 @@
 
 package blusunrize.immersiveengineering.api.energy.wires.localhandlers;
 
-import net.minecraft.entity.Entity;
+import blusunrize.immersiveengineering.api.energy.wires.WireCollisionData.CollisionInfo;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.math.BlockPos;
 
 public interface ICollisionHandler
 {
 	//TODO more params!
-	void onCollided(Entity e);
+	void onCollided(EntityLivingBase e, BlockPos pos, CollisionInfo info);
 }

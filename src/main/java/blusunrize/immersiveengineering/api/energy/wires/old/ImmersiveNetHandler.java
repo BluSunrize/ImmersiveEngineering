@@ -524,7 +524,6 @@ public class ImmersiveNetHandler
 	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, EntityLivingBase e, BlockPos here)
 	{
 		/*TODO move to new handler/own class
-		final double KNOCKBACK_PER_DAMAGE = 10;
 		if(!in.isEmpty())
 		{
 			AxisAlignedBB eAabb = e.getEntityBoundingBox();

@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
 //TODO ConnectionPoints for opening/closing
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<IBlockState>
@@ -89,8 +88,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		if(!cableType.isEnergyWire()&&!REDSTONE_CATEGORY.equals(cableType.getCategory()))
-			return false;
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
 		//TODO
@@ -176,7 +173,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	protected void updateConductivity()
 	{
 		if(allowEnergyToPass())
-			globalNet.addConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+			globalNet.addConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX), null);
 		else
 			globalNet.removeConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
 	}

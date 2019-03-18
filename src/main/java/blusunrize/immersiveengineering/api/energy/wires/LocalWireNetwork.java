@@ -8,12 +8,15 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,13 +25,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class LocalWireNetwork implements IWorldTickable
 {
@@ -36,11 +35,12 @@ public class LocalWireNetwork implements IWorldTickable
 	private final GlobalWireNetwork globalNet;
 	private final Map<ConnectionPoint, Collection<Connection>> connections = new HashMap<>();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
-	private final Map<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> handlers = new HashMap<>();
+	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new HashMap<>();
+	private final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
 
 	public LocalWireNetwork(NBTTagCompound subnet, GlobalWireNetwork globalNet)
 	{
-		this.globalNet = globalNet;
+		this(globalNet);
 		NBTTagList proxies = subnet.getTagList("proxies", NBT.TAG_COMPOUND);
 		for(NBTBase b : proxies)
 		{
@@ -65,6 +65,7 @@ public class LocalWireNetwork implements IWorldTickable
 	public LocalWireNetwork(GlobalWireNetwork globalNet)
 	{
 		this.globalNet = globalNet;
+		handlerUserCount.defaultReturnValue(0);
 	}
 
 	public NBTTagCompound writeToNBT()
@@ -134,26 +135,29 @@ public class LocalWireNetwork implements IWorldTickable
 	void loadConnector(ConnectionPoint p, IImmersiveConnectable iic)
 	{
 		connectors.put(p.getPosition(), iic);
-		for(ResourceLocation loc : iic.getRequestedHandlers())
-		{
-			if(handlers.containsKey(loc))
-				handlers.get(loc).getLeft().incrementAndGet();
-			else
-				handlers.put(loc, new ImmutablePair<>(new AtomicInteger(1),
-						LocalNetworkHandler.createHandler(loc, this)));
-			IELogger.logger.info("Increasing {} to {}", loc, handlers.get(loc).getLeft());
-		}
+		addRequestedHandlers(iic);
 		if(!connections.containsKey(p))
 			connections.put(p, new HashSet<>());
-		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
-			h.getRight().onConnectorLoaded(p, iic);
+		for(LocalNetworkHandler h : handlers.values())
+			h.onConnectorLoaded(p, iic);
+	}
+
+	private void addRequestedHandlers(ILocalHandlerProvider provider)
+	{
+		for(ResourceLocation loc : provider.getRequestedHandlers())
+		{
+			handlerUserCount.put(loc, handlerUserCount.getInt(loc)+1);
+			if(!handlers.containsKey(loc))
+				handlers.put(loc, LocalNetworkHandler.createHandler(loc, this));
+			IELogger.logger.info("Increasing {} to {}", loc, handlerUserCount.getInt(loc));
+		}
 	}
 
 	void unloadConnector(BlockPos p, IImmersiveConnectable iic)
 	{
-		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
-			h.getRight().onConnectorUnloaded(p, iic);
-		removeConnectorHandlers(iic);
+		for(LocalNetworkHandler h : handlers.values())
+			h.onConnectorUnloaded(p, iic);
+		removeHandlersFor(iic);
 		connectors.put(p, new IICProxy((TileEntity)iic));
 	}
 
@@ -166,19 +170,15 @@ public class LocalWireNetwork implements IWorldTickable
 		result.connections.putAll(connections);
 		result.connections.putAll(other.connections);
 		result.handlers.putAll(other.handlers);
-		for(Entry<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> loc : handlers.entrySet())
+		result.handlerUserCount.putAll(other.handlerUserCount);
+		for(Entry<ResourceLocation, LocalNetworkHandler> loc : handlers.entrySet())
 		{
-			//TODO call merge or soemthing when only one of the original nets had the handler!
-			result.handlers.merge(loc.getKey(), loc.getValue(), (p1, p2) -> {
-				LocalNetworkHandler mergedHandler = p1.getValue().merge(p2.getValue());
-				return new MutablePair<>(
-						new AtomicInteger(p1.getKey().intValue()+p2.getKey().get()),
-						mergedHandler);
-			});
-			IELogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()).getLeft());
+			result.handlers.merge(loc.getKey(), loc.getValue(), LocalNetworkHandler::merge);
+			result.handlerUserCount.merge(loc.getKey(), handlerUserCount.getInt(loc.getKey()), (a, b) -> a+b);
+			IELogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()));
 		}
-		for(Entry<ResourceLocation, Pair<AtomicInteger, LocalNetworkHandler>> loc : result.handlers.entrySet())
-			loc.getValue().getRight().setLocalNet(result);
+		for(Entry<ResourceLocation, LocalNetworkHandler> loc : result.handlers.entrySet())
+			loc.getValue().setLocalNet(result);
 		return result;
 	}
 
@@ -195,8 +195,9 @@ public class LocalWireNetwork implements IWorldTickable
 			IELogger.logger.info("Failed to remove {} from {} (A)", c, c.getEndA());
 		if(!successB)
 			IELogger.logger.info("Failed to remove {} from {} (B)", c, c.getEndB());
-		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
-			h.getValue().onConnectionRemoved(c);
+		for(LocalNetworkHandler h : handlers.values())
+			h.onConnectionRemoved(c);
+		removeHandlersFor(c.type);
 	}
 
 	void removeConnector(BlockPos p)
@@ -223,9 +224,9 @@ public class LocalWireNetwork implements IWorldTickable
 			connections.remove(point);
 		}
 		connectors.remove(p);
-		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
-			h.getValue().onConnectorRemoved(p, iic);
-		removeConnectorHandlers(iic);
+		for(LocalNetworkHandler h : handlers.values())
+			h.onConnectorRemoved(p, iic);
+		removeHandlersFor(iic);
 	}
 
 	void addConnection(Connection conn)
@@ -236,21 +237,25 @@ public class LocalWireNetwork implements IWorldTickable
 			throw new AssertionError(conn.getEndB().getPosition());
 		connections.get(conn.getEndA()).add(conn);
 		connections.get(conn.getEndB()).add(conn);
-		for(Pair<AtomicInteger, LocalNetworkHandler> h : handlers.values())
-			h.getValue().onConnectionAdded(conn);
+		for(LocalNetworkHandler h : handlers.values())
+			h.onConnectionAdded(conn);
+		addRequestedHandlers(conn.type);
+		globalNet.getCollisionData().addConnection(conn);
 	}
 
-	private void removeConnectorHandlers(IImmersiveConnectable iic)
+	private void removeHandlersFor(ILocalHandlerProvider iic)
 	{
 		for(ResourceLocation loc : iic.getRequestedHandlers())
 		{
 			if(!handlers.containsKey(loc)) throw new AssertionError();
-			int remaining = handlers.get(loc).getLeft().decrementAndGet();
+			int remaining = handlerUserCount.get(loc)-1;
+			handlerUserCount.put(loc, remaining);
 			IELogger.logger.info("Decreasing {} to {}", loc, remaining);
 			if(remaining <= 0)
 			{
 				IELogger.logger.info("Removing: {}", loc);
 				handlers.remove(loc);
+				handlerUserCount.remove(loc);
 			}
 		}
 	}
@@ -328,23 +333,27 @@ public class LocalWireNetwork implements IWorldTickable
 	@Override
 	public void update(World w)
 	{
-		for(Pair<AtomicInteger, LocalNetworkHandler> handler : handlers.values())
-			if(handler.getRight() instanceof IWorldTickable)
-				((IWorldTickable)handler.getRight()).update(w);
+		for(LocalNetworkHandler handler : handlers.values())
+			if(handler instanceof IWorldTickable)
+				((IWorldTickable)handler).update(w);
 	}
 
 	public <T extends LocalNetworkHandler> T getHandler(ResourceLocation name, Class<T> type)
 	{
-		Pair<AtomicInteger, LocalNetworkHandler> p = handlers.get(name);
+		LocalNetworkHandler p = handlers.get(name);
 		if(p==null)
 			return null;
 		else
 		{
-			LocalNetworkHandler ret = p.getRight();
-			if(type.isInstance(ret))
-				return (T)ret;
+			if(type.isInstance(p))
+				return (T)p;
 			else
 				return null;
 		}
+	}
+
+	public Collection<LocalNetworkHandler> getAllHandlers()
+	{
+		return handlers.values();
 	}
 }

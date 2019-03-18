@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -1035,6 +1036,7 @@ public class IEContent
 		IEDataFixers.register();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class);
+		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler.class);
 	}
 
 	public static void postInit()

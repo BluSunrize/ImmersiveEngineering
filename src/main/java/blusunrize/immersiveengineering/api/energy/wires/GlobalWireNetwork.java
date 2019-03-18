@@ -22,12 +22,14 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class GlobalWireNetwork implements IWorldTickable
 {
 	private Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
+	private WireCollisionData collisionData = new WireCollisionData(this);
 
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
@@ -37,7 +39,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY, null));
 	}
 
-	public void addConnection(Connection conn)
+	public void addConnection(Connection conn, @Nullable World w)
 	{
 		ConnectionPoint posA = conn.getEndA();
 		ConnectionPoint posB = conn.getEndB();
@@ -185,7 +187,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		validate();
 	}
 
-	public void onConnectorLoad(BlockPos pos, IImmersiveConnectable iic)
+	public void onConnectorLoad(IImmersiveConnectable iic, World w)
 	{
 		Set<LocalWireNetwork> added = new HashSet<>();
 		boolean isNew = false;
@@ -194,17 +196,32 @@ public class GlobalWireNetwork implements IWorldTickable
 			if(getNullableLocalNet(cp)==null)
 				isNew = true;
 			LocalWireNetwork local = getLocalNet(cp);
-			if(added.add(local))
-				local.loadConnector(cp, iic);
+			local.loadConnector(cp, iic);
 		}
 		if(isNew)
 		{
 			for(Connection c : iic.getInternalConnections())
 			{
 				Preconditions.checkArgument(c.isInternal(), "Internal connection for "+iic+"was not marked as internal!");
-				addConnection(c);
+				addConnection(c, null);
 			}
 		}
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+			for(Connection c : getLocalNet(cp).getConnections(cp))
+			{
+				ConnectionPoint otherEnd = c.getOtherEnd(cp);
+				LocalWireNetwork otherLocal = getNullableLocalNet(otherEnd);
+				if(otherLocal!=null)
+				{
+					IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
+					if(!(iicEnd instanceof IICProxy))
+					{
+						c.generateCatenaryData(w);
+						if(!w.isRemote)
+							collisionData.addConnection(c);
+					}
+				}
+			}
 		IELogger.logger.info("Validating after load...");
 		validate();
 	}
@@ -218,6 +235,9 @@ public class GlobalWireNetwork implements IWorldTickable
 			if(added.add(local))
 				local.unloadConnector(pos, iic);
 		}
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+			for(Connection c : getLocalNet(cp).getConnections(cp))
+				collisionData.removeConnection(c);
 		IELogger.logger.info("Validating after unload...");
 		validate();
 	}
@@ -263,5 +283,10 @@ public class GlobalWireNetwork implements IWorldTickable
 				}
 		);
 		IELogger.logger.info("Validated!");
+	}
+
+	public WireCollisionData getCollisionData()
+	{
+		return collisionData;
 	}
 }

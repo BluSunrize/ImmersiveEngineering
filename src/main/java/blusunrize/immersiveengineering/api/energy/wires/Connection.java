@@ -26,6 +26,7 @@ public class Connection
 	private final ConnectionPoint endB;
 	private final boolean internal;
 	public final CatenaryData catData = new CatenaryData();
+	boolean blockDataGenerated = false;
 
 	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
 	{

@@ -152,7 +152,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					if(!path.isEmpty())
 					{
 						Connection removed = path.remove(path.size()-1);
-						lossSum -= ((EnergyWiretype)removed.type).getBasicLossRate(removed);
+						lossSum -= ((IEnergyWire)removed.type).getBasicLossRate(removed);
 					}
 				}
 			}
@@ -190,7 +190,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				{
 					currentPoint = c.getOtherEnd(currentPoint);
 					//TODO use Blu's loss formula
-					currentLoss += ((EnergyWiretype)c.type).getBasicLossRate(c);
+					currentLoss += ((IEnergyWire)c.type).getBasicLossRate(c);
 					if(!currentPoint.equals(p.end))
 					{
 						IImmersiveConnectable iic = net.getConnector(currentPoint);
@@ -217,14 +217,14 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		for(Connection c : transferredInTick.keySet())
 		{
 			int transferred = transferredInTick.get(c);
-			if(c.type instanceof EnergyWiretype&&((EnergyWiretype)c.type).shouldBurn(c, transferred))
+			if(c.type instanceof IEnergyWire&&((IEnergyWire)c.type).shouldBurn(c, transferred))
 			{
 				toBurn.add(new ImmutablePair<>(c, transferred));
 			}
 		}
 		for(Pair<Connection, Integer> c : toBurn)
 		{
-			((EnergyWiretype)c.getLeft().type).burn(c.getLeft(), c.getRight(), net.getGlobal(), world);
+			((IEnergyWire)c.getLeft().type).burn(c.getLeft(), c.getRight(), net.getGlobal(), world);
 		}
 	}
 
@@ -232,8 +232,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	{
 		if(c.isInternal())
 			return 0;
-		else if(c.type instanceof EnergyWiretype)
-			return ((EnergyWiretype)c.type).getBasicLossRate(c);
+		else if(c.type instanceof IEnergyWire)
+			return ((IEnergyWire)c.type).getBasicLossRate(c);
 		else
 			return Double.POSITIVE_INFINITY;
 	}
@@ -260,7 +260,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		}
 	}
 
-	public interface EnergyWiretype
+	public interface IEnergyWire
 	{
 		int getTransferRate();
 

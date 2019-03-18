@@ -740,11 +740,10 @@ public class ApiUtils
 									if(canSee)
 									{
 										Connection conn = new Connection(wire, cpHere, cpLink);
-										net.addConnection(conn);
+										net.addConnection(conn, world);
 
 										iicHere.connectCable(wire, cpHere, iicLink, cpLink);
 										iicLink.connectCable(wire, cpLink, iicHere, cpHere);
-										//ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
 										IESaveData.setDirty(world.provider.getDimension());
 										Utils.unlockIEAdvancement(player, "main/connect_wire");
 

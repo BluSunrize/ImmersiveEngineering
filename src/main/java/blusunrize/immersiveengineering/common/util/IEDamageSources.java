@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import net.minecraft.entity.Entity;
@@ -150,7 +150,7 @@ public class IEDamageSources
 	public static DamageSource razorShock = new IEDamageSource(Lib.DMG_RazorShock);
 
 	// DO NOT USE EXCEPT FOR CHECKING WHETHER AN ENTITY IS VULNERABLE
-	public static DamageSource wireShock = new ElectricDamageSource(Lib.DMG_WireShock, WireType.COPPER.getElectricSource(), 1);
+	public static DamageSource wireShock = new ElectricDamageSource(Lib.DMG_WireShock, new ElectricSource(1), 1);
 
 	private static final IElectricEquipment.ElectricSource TC_LOW = new IElectricEquipment.ElectricSource(.25F);
 	private static final IElectricEquipment.ElectricSource TC_HIGH = new IElectricEquipment.ElectricSource(2);
