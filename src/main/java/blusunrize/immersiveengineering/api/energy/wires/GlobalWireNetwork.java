@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -84,9 +85,9 @@ public class GlobalWireNetwork implements IWorldTickable
 			joined = netA;
 		}
 		IELogger.logger.info("Result: {}, to set: {}", joined, toSet);
-		joined.addConnection(conn);
 		for(ConnectionPoint p : toSet)
 			localNets.put(p, joined);
+		joined.addConnection(conn);
 		IELogger.logger.info("Validating after adding connection...");
 		validate();
 	}
@@ -113,9 +114,21 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeConnection(Connection c)
 	{
+		collisionData.removeConnection(c);
 		LocalWireNetwork oldNet = localNets.get(c.getEndA());
 		oldNet.removeConnection(c);
 		splitNet(oldNet);
+	}
+
+	public void removeAndDropConnection(Connection c, BlockPos dropAt, World world)
+	{
+		removeConnection(c);
+		double dx = dropAt.getX()+.5;
+		double dy = dropAt.getY()+.5;
+		double dz = dropAt.getZ()+.5;
+		if(world.getGameRules().getBoolean("doTileDrops"))
+			world.spawnEntity(new EntityItem(world, dx, dy, dz, c.type.getWireCoil(c)));
+		//ImmersiveEngineering.packetHandler.sendToAllTracking();
 	}
 
 	private void splitNet(LocalWireNetwork oldNet)
@@ -218,7 +231,10 @@ public class GlobalWireNetwork implements IWorldTickable
 					{
 						c.generateCatenaryData(w);
 						if(!w.isRemote)
+						{
+							IELogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
 							collisionData.addConnection(c);
+						}
 					}
 				}
 			}

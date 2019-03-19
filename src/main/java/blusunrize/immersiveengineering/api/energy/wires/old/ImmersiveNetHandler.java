@@ -18,29 +18,21 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IntHashMap;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -56,7 +48,6 @@ import static java.util.Collections.newSetFromMap;
 public class ImmersiveNetHandler
 {
 	public static final ImmersiveNetHandler INSTANCE = new ImmersiveNetHandler();
-	public final BlockPlaceListener LISTENER = new BlockPlaceListener();
 	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<>();
 	public TIntObjectMap<Map<BlockPos, Set<AbstractConnection>>> indirectConnections
 			= new TIntObjectHashMap<>();
@@ -789,99 +780,5 @@ public class ImmersiveNetHandler
 		public final Set<Triple<Connection, Vec3d, Vec3d>> in = Collections.newSetFromMap(new ConcurrentHashMap<>());
 		@Nonnull
 		public final Set<Triple<Connection, Vec3d, Vec3d>> near = Collections.newSetFromMap(new ConcurrentHashMap<>());
-	}
-
-	public class BlockPlaceListener implements IWorldEventListener
-	{
-		@Override
-		public void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState, int flags)
-		{
-			Map<BlockPos, BlockWireInfo> worldMap = blockWireMap.lookup(worldIn.provider.getDimension());
-			if(worldMap!=null&&!worldIn.isRemote&&(flags&1)!=0&&newState.getBlock().canCollideCheck(newState, false))
-			{
-				BlockWireInfo info = worldMap.get(pos);
-				if(info!=null)
-				{
-					Set<Triple<Connection, Vec3d, Vec3d>> conns = info.in;
-					Set<Pair<Connection, BlockPos>> toBreak = new HashSet<>();
-					for(Triple<Connection, Vec3d, Vec3d> conn : conns)
-					{
-						Vec3d[] verts = conn.getLeft().getSubVertices(worldIn);
-						if(!Utils.isVecInBlock(verts[0], pos, conn.getLeft().start)&&
-								!Utils.isVecInBlock(verts[verts.length-1], pos, conn.getLeft().start))
-						{
-							BlockPos dropPos = pos;
-							if(ApiUtils.preventsConnection(worldIn, pos, newState, conn.getMiddle(), conn.getRight()))
-							{
-								for(EnumFacing f : EnumFacing.VALUES)
-									if(worldIn.isAirBlock(pos.offset(f)))
-									{
-										dropPos = dropPos.offset(f);
-										break;
-									}
-								toBreak.add(new ImmutablePair<>(conn.getLeft(), dropPos));
-							}
-						}
-					}
-					for(Pair<Connection, BlockPos> b : toBreak)
-						removeConnectionAndDrop(b.getLeft(), worldIn, b.getRight());
-				}
-			}
-		}
-
-		@Override
-		public void notifyLightSet(@Nonnull BlockPos pos)
-		{
-		}
-
-		@Override
-		public void markBlockRangeForRenderUpdate(int x1, int y1, int z1, int x2, int y2, int z2)
-		{
-		}
-
-		@Override
-		public void playSoundToAllNearExcept(EntityPlayer player, @Nonnull SoundEvent soundIn, @Nonnull SoundCategory category, double x, double y, double z, float volume, float pitch)
-		{
-		}
-
-		@Override
-		public void playRecord(@Nonnull SoundEvent soundIn, @Nonnull BlockPos pos)
-		{
-		}
-
-		@Override
-		public void spawnParticle(int particleID, boolean ignoreRange, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, @Nonnull int... parameters)
-		{
-		}
-
-		@Override
-		public void spawnParticle(int id, boolean ignoreRange, boolean p_190570_3_, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @Nonnull int... parameters)
-		{
-		}
-
-		@Override
-		public void onEntityAdded(@Nonnull Entity entityIn)
-		{
-		}
-
-		@Override
-		public void onEntityRemoved(@Nonnull Entity entityIn)
-		{
-		}
-
-		@Override
-		public void broadcastSound(int soundID, @Nonnull BlockPos pos, int data)
-		{
-		}
-
-		@Override
-		public void playEvent(EntityPlayer player, int type, @Nonnull BlockPos blockPosIn, int data)
-		{
-		}
-
-		@Override
-		public void sendBlockBreakProgress(int breakerId, @Nonnull BlockPos pos, int progress)
-		{
-		}
 	}
 }

@@ -467,6 +467,7 @@ public class ApiUtils
 	{
 		Vec3d vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
 		Vec3d vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
+		IELogger.logger.info("Start: {}, end: {}", vStart, vEnd);
 		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
 	}
 

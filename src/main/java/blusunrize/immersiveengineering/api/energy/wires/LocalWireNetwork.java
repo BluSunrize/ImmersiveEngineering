@@ -231,23 +231,29 @@ public class LocalWireNetwork implements IWorldTickable
 
 	void addConnection(Connection conn)
 	{
-		if(!connectors.containsKey(conn.getEndA().getPosition()))
+		IImmersiveConnectable connA = connectors.get(conn.getEndA().getPosition());
+		if(connA==null)
 			throw new AssertionError(conn.getEndA().getPosition());
-		if(!connectors.containsKey(conn.getEndB().getPosition()))
+		IImmersiveConnectable connB = connectors.get(conn.getEndB().getPosition());
+		if(connB==null)
 			throw new AssertionError(conn.getEndB().getPosition());
 		connections.get(conn.getEndA()).add(conn);
 		connections.get(conn.getEndB()).add(conn);
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectionAdded(conn);
 		addRequestedHandlers(conn.type);
-		globalNet.getCollisionData().addConnection(conn);
+		if(!(connA instanceof IICProxy)&&!(connB instanceof IICProxy))
+		{
+			IELogger.logger.info("Adding collision data, ends are {} and {}", connA, connB);
+			globalNet.getCollisionData().addConnection(conn);
+		}
 	}
 
 	private void removeHandlersFor(ILocalHandlerProvider iic)
 	{
 		for(ResourceLocation loc : iic.getRequestedHandlers())
 		{
-			if(!handlers.containsKey(loc)) throw new AssertionError();
+			if(!handlers.containsKey(loc)) throw new AssertionError("Expected to find handler for "+loc+" but didn't!");
 			int remaining = handlerUserCount.get(loc)-1;
 			handlerUserCount.put(loc, remaining);
 			IELogger.logger.info("Decreasing {} to {}", loc, remaining);

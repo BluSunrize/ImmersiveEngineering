@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
+import blusunrize.immersiveengineering.common.wires.WireCollisions;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -129,7 +130,7 @@ public class EventHandler
 		//		}
 		ImmersiveEngineering.proxy.onWorldLoad();
 		if(IEConfig.blocksBreakWires)
-			event.getWorld().addEventListener(ImmersiveNetHandler.INSTANCE.LISTENER);
+			event.getWorld().addEventListener(new WireCollisions());
 	}
 
 	//transferPerTick

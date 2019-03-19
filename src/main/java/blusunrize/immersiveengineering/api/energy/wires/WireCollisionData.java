@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.util.math.BlockPos;
@@ -29,8 +30,11 @@ public class WireCollisionData
 
 	public void addConnection(Connection conn)
 	{
+		IELogger.logger.info("Adding block data for {}", conn);
 		if(!conn.blockDataGenerated)
 		{
+			IELogger.logger.info("Raytracing for addition of {}", conn);
+			if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
 			ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
 			{
 				blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true));
@@ -43,14 +47,17 @@ public class WireCollisionData
 
 	public void removeConnection(Connection conn)
 	{
+		IELogger.logger.info("Removing block data for {}", conn);
 		if(conn.blockDataGenerated)
 		{
+			IELogger.info("Raytracing for removal of {}", conn);
 			ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
 			{
-				blockToWires.remove(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true));
+				blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn);
 				return false;
 			}, (p) ->
-					blockToWires.remove(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, false)));
+							blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn)
+			);
 			conn.blockDataGenerated = false;
 		}
 	}
