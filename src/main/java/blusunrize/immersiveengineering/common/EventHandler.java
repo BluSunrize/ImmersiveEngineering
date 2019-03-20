@@ -158,7 +158,7 @@ public class EventHandler
 	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<World> event)
 	{
 		event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "wire_network"),
-				new NetHandlerCapability.Provider());
+				new NetHandlerCapability.Provider(event.getObject()));
 	}
 
 	@SubscribeEvent
@@ -307,7 +307,7 @@ public class EventHandler
 		if(event.phase==TickEvent.Phase.END&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			int dim = event.world.provider.getDimension();
-			GlobalWireNetwork.getNetwork(event.world).update(event.world);
+			GlobalWireNetwork.getNetwork(event.world).update();
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{

@@ -16,20 +16,14 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -154,23 +148,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket()
-	{
-		NBTTagCompound nbttagcompound = new NBTTagCompound();
-		this.writeToNBT(nbttagcompound);
-		writeConnsToNBT(nbttagcompound);
-		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
-	}
-
-	@Override
-	public void onDataPacket(@Nonnull NetworkManager net, @Nonnull SPacketUpdateTileEntity pkt)
-	{
-		NBTTagCompound nbt = pkt.getNbtCompound();
-		this.readFromNBT(nbt);
-		loadConnsFromNBT(nbt);
-	}
-
-	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
 		if(id==-1||id==255)
@@ -205,82 +182,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public void readCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
-		try
-		{
-			if(nbt.hasKey("connectionList"))
-				loadConnsFromNBT(nbt);
-		} catch(Exception e)
-		{
-			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error reading NBT. You should probably report this.");
-			IELogger.logger.catching(Level.ERROR, e);
-		}
 	}
 
 	@Override
 	public void writeCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
-		try
-		{
-			if(descPacket)
-				writeConnsToNBT(nbt);
-
-			//			if(this.world!=null)
-			//			{
-			//				nbt.setIntArray("prevPos", new int[]{this.world.provider.dimensionId,xCoord,yCoord,zCoord});
-			//			}
-		} catch(Exception e)
-		{
-			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You should probably report this.");
-			IELogger.logger.catching(Level.ERROR, e);
-		}
-	}
-
-	private void loadConnsFromNBT(NBTTagCompound nbt)
-	{
-		if(world!=null&&world.isRemote&&nbt!=null)
-		{
-			IELogger.info("Loading conns at {}", pos);
-			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			Multimap<ConnectionPoint, Connection> newConns = MultimapBuilder.hashKeys().hashSetValues().build();
-			for(int i = 0; i < connectionList.tagCount(); i++)
-			{
-				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
-				Connection con = new Connection(conTag);
-				newConns.put(con.getEndFor(pos), con);
-			}
-			for(ConnectionPoint cp : getConnectionPoints())
-				for(Connection c : new ArrayList<>(globalNet.getLocalNet(cp).getConnections(cp)))
-					if(!newConns.remove(cp, c))
-						globalNet.removeConnection(c);
-			for(ConnectionPoint cp : newConns.keySet())
-				for(Connection c : newConns.get(cp))
-				{
-					ConnectionPoint otherEnd = c.getOtherEnd(cp);
-					if(globalNet.getNullableLocalNet(otherEnd)!=null&&world.isBlockLoaded(otherEnd.getPosition()))
-					{
-						c.generateCatenaryData(world);
-						globalNet.addConnection(c, null);
-					}
-				}
-		}
-	}
-
-	private void writeConnsToNBT(NBTTagCompound nbt)
-	{
-		if(world!=null&&!world.isRemote&&nbt!=null)
-		{
-			NBTTagList connectionList = new NBTTagList();
-			for(ConnectionPoint cp : getConnectionPoints())
-			{
-				LocalWireNetwork local = globalNet.getLocalNet(cp);
-				Collection<Connection> conL = local.getConnections(cp);
-				if(conL!=null)
-					for(Connection con : conL)
-						if(!con.isInternal())
-							connectionList.appendTag(con.toNBT());
-			}
-			nbt.setTag("connectionList", connectionList);
-		}
 	}
 
 	public ConnectionModelData genConnBlockstate()

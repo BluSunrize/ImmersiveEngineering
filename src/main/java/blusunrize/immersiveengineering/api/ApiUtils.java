@@ -741,7 +741,7 @@ public class ApiUtils
 									if(canSee)
 									{
 										Connection conn = new Connection(wire, cpHere, cpLink);
-										net.addConnection(conn, world);
+										net.addConnection(conn);
 
 										iicHere.connectCable(wire, cpHere, iicLink, cpLink);
 										iicLink.connectCable(wire, cpLink, iicHere, cpHere);

@@ -8,29 +8,30 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class GlobalWireNetwork implements IWorldTickable
+public class GlobalWireNetwork implements ITickable
 {
 	private Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 	private WireCollisionData collisionData = new WireCollisionData(this);
+	private World world;
 
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
@@ -40,7 +41,12 @@ public class GlobalWireNetwork implements IWorldTickable
 		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY, null));
 	}
 
-	public void addConnection(Connection conn, @Nullable World w)
+	public GlobalWireNetwork(World w)
+	{
+		world = w;
+	}
+
+	public void addConnection(Connection conn)
 	{
 		ConnectionPoint posA = conn.getEndA();
 		ConnectionPoint posB = conn.getEndB();
@@ -88,6 +94,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		for(ConnectionPoint p : toSet)
 			localNets.put(p, joined);
 		joined.addConnection(conn);
+		WireSyncManager.onConnectionAdded(conn, world);
 		IELogger.logger.info("Validating after adding connection...");
 		validate();
 	}
@@ -114,13 +121,17 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeConnection(Connection c)
 	{
-		collisionData.removeConnection(c);
+		if(!world.isRemote)
+			collisionData.removeConnection(c);
 		LocalWireNetwork oldNet = localNets.get(c.getEndA());
+		if(oldNet==null||oldNet.getConnector(c.getEndB())==null)
+			return;
 		oldNet.removeConnection(c);
 		splitNet(oldNet);
+		WireSyncManager.onConnectionRemoved(c, world);
 	}
 
-	public void removeAndDropConnection(Connection c, BlockPos dropAt, World world)
+	public void removeAndDropConnection(Connection c, BlockPos dropAt)
 	{
 		removeConnection(c);
 		double dx = dropAt.getX()+.5;
@@ -128,7 +139,6 @@ public class GlobalWireNetwork implements IWorldTickable
 		double dz = dropAt.getZ()+.5;
 		if(world.getGameRules().getBoolean("doTileDrops"))
 			world.spawnEntity(new EntityItem(world, dx, dy, dz, c.type.getWireCoil(c)));
-		//ImmersiveEngineering.packetHandler.sendToAllTracking();
 	}
 
 	private void splitNet(LocalWireNetwork oldNet)
@@ -202,7 +212,6 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorLoad(IImmersiveConnectable iic, World w)
 	{
-		Set<LocalWireNetwork> added = new HashSet<>();
 		boolean isNew = false;
 		for(ConnectionPoint cp : iic.getConnectionPoints())
 		{
@@ -216,7 +225,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			for(Connection c : iic.getInternalConnections())
 			{
 				Preconditions.checkArgument(c.isInternal(), "Internal connection for "+iic+"was not marked as internal!");
-				addConnection(c, null);
+				addConnection(c);
 			}
 		}
 		for(ConnectionPoint cp : iic.getConnectionPoints())
@@ -251,7 +260,8 @@ public class GlobalWireNetwork implements IWorldTickable
 			if(added.add(local))
 				local.unloadConnector(pos, iic);
 		}
-		for(ConnectionPoint cp : iic.getConnectionPoints())
+		if(!world.isRemote)
+			for(ConnectionPoint cp : iic.getConnectionPoints())
 			for(Connection c : getLocalNet(cp).getConnections(cp))
 				collisionData.removeConnection(c);
 		IELogger.logger.info("Validating after unload...");
@@ -259,18 +269,17 @@ public class GlobalWireNetwork implements IWorldTickable
 	}
 
 	@Override
-	public void update(World w)
+	public void update()
 	{
 		Set<LocalWireNetwork> ticked = new HashSet<>();
 		for(LocalWireNetwork net : localNets.values())
 			if(ticked.add(net))
-				net.update(w);
+				net.update(world);
 	}
 
 	private void validate()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
-		World w = DimensionManager.getWorld(0);
 		localNets.values().stream().distinct().forEach(
 				(local) -> {
 					for(ConnectionPoint cp : local.getConnectionPoints())
@@ -289,10 +298,10 @@ public class GlobalWireNetwork implements IWorldTickable
 							}
 					}
 					for(BlockPos p : local.getConnectors())
-						if(w.isBlockLoaded(p))
+						if(world.isBlockLoaded(p))
 						{
 							IImmersiveConnectable inNet = local.getConnector(p);
-							TileEntity inWorld = w.getTileEntity(p);
+							TileEntity inWorld = world.getTileEntity(p);
 							if(inNet!=inWorld)
 								IELogger.logger.warn("Connector at {}: {} in Net, {} in World (Net is {})", p, inNet, inWorld, local);
 						}
@@ -304,5 +313,15 @@ public class GlobalWireNetwork implements IWorldTickable
 	public WireCollisionData getCollisionData()
 	{
 		return collisionData;
+	}
+
+	public Collection<ConnectionPoint> getAllConnectorsIn(ChunkPos pos)
+	{
+		//TODO better way of finding all connectors in a chunk
+		Collection<ConnectionPoint> ret = new ArrayList<>();
+		for(ConnectionPoint cp : localNets.keySet())
+			if(pos.equals(new ChunkPos(cp.getPosition())))
+				ret.add(cp);
+		return ret;
 	}
 }

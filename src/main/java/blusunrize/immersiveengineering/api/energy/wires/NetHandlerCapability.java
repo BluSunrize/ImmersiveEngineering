@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -40,12 +41,19 @@ public class NetHandlerCapability
 			{
 				instance.readFromNBT((NBTTagCompound)nbt);
 			}
-		}, GlobalWireNetwork::new);
+			//TODO whatb is this used for? How will it work in 1.13?
+		}, () -> new GlobalWireNetwork(null));
 	}
 
 	public static class Provider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
 	{
-		private final GlobalWireNetwork net = new GlobalWireNetwork();
+		private final GlobalWireNetwork net;
+
+		public Provider(World w)
+		{
+			net = new GlobalWireNetwork(w);
+		}
+
 		@Override
 		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
 		{

@@ -142,7 +142,7 @@ public class LocalWireNetwork implements IWorldTickable
 		connectors.put(p.getPosition(), iic);
 		addRequestedHandlers(iic);
 		if(!connections.containsKey(p))
-			connections.put(p, new HashSet<>());
+			connections.put(p, new ArrayList<>());
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectorLoaded(p, iic);
 	}
@@ -192,10 +192,10 @@ public class LocalWireNetwork implements IWorldTickable
 		boolean successA = false, successB = false;
 		Collection<Connection> connsA = connections.get(c.getEndA());
 		if(connsA!=null)
-			successA = connsA.remove(c);
+			successA = connsA.removeIf(c::hasSameConnectors);
 		Collection<Connection> connsB = connections.get(c.getEndB());
 		if(connsB!=null)
-			successB = connsB.remove(c);
+			successB = connsB.removeIf(c::hasSameConnectors);
 		if(!successA)
 			IELogger.logger.info("Failed to remove {} from {} (A)", c, c.getEndA());
 		if(!successB)

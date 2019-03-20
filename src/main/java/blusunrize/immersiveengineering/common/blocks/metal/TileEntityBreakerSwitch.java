@@ -173,7 +173,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	protected void updateConductivity()
 	{
 		if(allowEnergyToPass())
-			globalNet.addConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX), null);
+			globalNet.addConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
 		else
 			globalNet.removeConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
 	}

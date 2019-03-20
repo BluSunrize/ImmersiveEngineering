@@ -91,7 +91,7 @@ public class WireCollisions implements IWorldEventListener
 						}
 					}
 				for(Pair<Connection, BlockPos> b : toBreak)
-					globalNet.removeAndDropConnection(b.getLeft(), b.getRight(), worldIn);
+					globalNet.removeAndDropConnection(b.getLeft(), b.getRight());
 			}
 		}
 	}

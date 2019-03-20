@@ -182,6 +182,12 @@ public class Connection
 		return result;
 	}
 
+	public boolean hasSameConnectors(Connection other)
+	{
+		return (endA.equals(other.endA)&&endB.equals(other.endB))
+				||endA.equals(other.endB)&&endB.equals(other.endA);
+	}
+
 	public static class RenderData
 	{
 		public static final int POINTS_PER_WIRE = 16;
