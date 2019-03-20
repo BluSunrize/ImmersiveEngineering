@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
@@ -35,7 +34,10 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
+import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
+import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
+import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
 import blusunrize.immersiveengineering.common.datafixers.IEDataFixers;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -67,8 +69,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.*;
@@ -103,8 +103,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
@@ -742,78 +740,10 @@ public class IEContent
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialQueryConverters((o) ->
-				o instanceof IngredientFluidStack?new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
-		//Shaped
-		AssemblerHandler.registerRecipeAdapter(ShapedRecipes.class, new IRecipeAdapter<ShapedRecipes>()
 		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(ShapedRecipes recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.recipeItems.get(i));
-				return query;
-			}
-		});
-		//Shapeless
-		AssemblerHandler.registerRecipeAdapter(ShapelessRecipes.class, new IRecipeAdapter<ShapelessRecipes>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(ShapelessRecipes recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.recipeItems.get(i));
-				return query;
-			}
-		});
-		//ShapedOre
-		AssemblerHandler.registerRecipeAdapter(ShapedOreRecipe.class, new IRecipeAdapter<ShapedOreRecipe>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(ShapedOreRecipe recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
-			}
-		});
-		//ShapelessOre
-		AssemblerHandler.registerRecipeAdapter(ShapelessOreRecipe.class, new IRecipeAdapter<ShapelessOreRecipe>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(ShapelessOreRecipe recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
-			}
-		});
-		//ShapedIngredient
-		AssemblerHandler.registerRecipeAdapter(RecipeShapedIngredient.class, new IRecipeAdapter<RecipeShapedIngredient>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(RecipeShapedIngredient recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
-			}
-		});
-		//ShapelessIngredient
-		AssemblerHandler.registerRecipeAdapter(RecipeShapelessIngredient.class, new IRecipeAdapter<RecipeShapelessIngredient>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(RecipeShapelessIngredient recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
-			}
+			if(o instanceof IngredientFluidStack)
+				return new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount);
+			else return null;
 		});
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);

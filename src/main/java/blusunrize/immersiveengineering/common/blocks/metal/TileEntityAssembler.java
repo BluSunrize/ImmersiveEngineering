@@ -177,10 +177,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				int consumed = IEConfig.Machines.assembler_consumption;
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-				if(adapter==null)
-					continue;
 				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
-
+				if(queries==null)
+					continue;
 				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.consumeIngredients(queries, availableStacks, false, null))
 				{
 					this.energyStorage.extractEnergy(consumed, false);

@@ -3,6 +3,7 @@
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)
 - Fixed some ghostloading issues (Malte, with help from Barteks2x)
+- Fixed the assembler not crafting recipes added using CraftTweaker (Malte)
 
 ##### Version 0.12-89 - BUILT
 - Added a covered dropping conveyor (BluSunrize)
