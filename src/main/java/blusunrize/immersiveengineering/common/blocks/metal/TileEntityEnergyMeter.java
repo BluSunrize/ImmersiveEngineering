@@ -12,7 +12,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -32,10 +33,12 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
+public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile,
+		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
+		EnergyConnector
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public double lastEnergyPassed = 0;
@@ -106,12 +109,6 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public boolean canConnect()
 	{
 		return true;
-	}
-
-	@Override
-	public void onEnergyPassthrough(double amount)
-	{
-		lastEnergyPassed += amount;
 	}
 
 	@Override
@@ -297,13 +294,14 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		int oldVal = compVal;
 		int maxTrans = 0;
-		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+		Collection<Connection> conns = globalNet.getLocalNet(pos).getConnections(pos);
 		if(conns==null)
 			compVal = 0;
 		else
 		{
-			for(ImmersiveNetHandler.Connection c : conns)
-				maxTrans += c.cableType.getTransferRate();
+			for(Connection c : conns)
+				if(c.type instanceof IEnergyWire)
+					maxTrans += ((IEnergyWire)c.type).getTransferRate();
 			maxTrans /= 2;
 			double val = getAveragePower()/(double)maxTrans;
 			compVal = (int)Math.ceil(15*val);
@@ -322,5 +320,23 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public int getComparatorInputOverride()
 	{
 		return compVal;
+	}
+
+	@Override
+	public boolean isSource(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSink(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public void onEnergyPassedThrough(double amount)
+	{
+		lastEnergyPassed += amount;
 	}
 }

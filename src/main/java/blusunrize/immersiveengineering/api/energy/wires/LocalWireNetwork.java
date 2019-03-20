@@ -119,6 +119,11 @@ public class LocalWireNetwork implements IWorldTickable
 		return connectors.get(pos);
 	}
 
+	public Collection<Connection> getConnections(BlockPos at)
+	{
+		return getConnections(new ConnectionPoint(at, 0));
+	}
+
 	/*
 	 * Returns all connections at the given connector. Do not modify the result!
 	 */

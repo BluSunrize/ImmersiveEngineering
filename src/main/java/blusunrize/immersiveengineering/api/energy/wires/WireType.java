@@ -65,8 +65,10 @@ public abstract class WireType implements ILocalHandlerProvider
 
 	public abstract String getUniqueName();
 
+	@Deprecated
 	public abstract double getLossRatio();
 
+	@Deprecated
 	public abstract int getTransferRate();
 
 	/**
