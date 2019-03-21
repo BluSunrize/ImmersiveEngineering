@@ -495,7 +495,9 @@ public class ApiUtils
 		across = new Vec3d(across.x, 0, across.z);
 		double lengthHor = across.length();
 		halfScanned.put(conn.start, vStart);
-		halfScanned.put(conn.end, vEnd);
+		halfScanned.put(conn.end, vEnd.subtract(conn.end.getX()-conn.start.getX(),
+				conn.end.getY()-conn.start.getY(),
+				conn.end.getZ()-conn.start.getZ()));
 		//Raytrace X&Z
 		for(int dim = 0; dim <= 2; dim += 2)
 		{
