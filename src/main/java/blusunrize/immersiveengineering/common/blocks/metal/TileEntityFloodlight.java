@@ -11,8 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -42,11 +44,14 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import java.util.*;
 
-public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile, IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>
+public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile,
+		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>,
+		EnergyConnector
 {
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.Machines.floodlight_energyDraw;
@@ -348,31 +353,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public boolean isEnergyOutput()
-	{
-		return true;
-	}
-
-	@Override
 	protected boolean isRelay()
 	{
 		return true;
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		if(amount > 0&&energyStorage < maximumStorage)
-		{
-			if(!simulate)
-			{
-				int rec = Math.min(maximumStorage-energyStorage, amount);
-				energyStorage += rec;
-				return rec;
-			}
-			return Math.min(maximumStorage-energyStorage, amount);
-		}
-		return 0;
 	}
 
 	@Override
@@ -388,11 +371,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int yDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getY()-getPos().getY(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getY()-getPos().getY(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
+		BlockPos other = con==null?pos: con.getOtherEnd(here).getPosition();
+		int xDif = other.getX()-pos.getX();
+		int yDif = other.getY()-pos.getY();
+		int zDif = other.getZ()-pos.getZ();
 		double x, y, z;
 		switch(side)
 		{
@@ -635,8 +619,28 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	public boolean isSource(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSink(ConnectionPoint cp)
 	{
 		return true;
+	}
+
+	@Override
+	public int getRequestedEnergy()
+	{
+		if(energyStorage < maximumStorage)
+			return maximumStorage-energyStorage;
+		return 0;
+	}
+
+	@Override
+	public void insertEnergy(int amount)
+	{
+		energyStorage += amount;
 	}
 }

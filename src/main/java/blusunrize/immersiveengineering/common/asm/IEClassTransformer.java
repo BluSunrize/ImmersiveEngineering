@@ -63,7 +63,8 @@ public class IEClassTransformer implements IClassTransformer
 								newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 4));
 								newInstructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
 								newInstructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-										"blusunrize/immersiveengineering/api/energy/wires/ImmersiveNetHandler", "handleEntityCollision",
+										"blusunrize/immersiveengineering/common/wires/WireCollisions",
+										"handleEntityCollision",
 										"(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V", false));
 								m.instructions.insert(n, newInstructions);
 							}

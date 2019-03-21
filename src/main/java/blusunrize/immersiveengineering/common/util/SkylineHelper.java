@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;

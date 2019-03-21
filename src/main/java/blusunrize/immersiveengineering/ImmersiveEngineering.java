@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
@@ -135,6 +134,7 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageChemthrowerSwitch.Handler.class, MessageChemthrowerSwitch.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageObstructedConnection.Handler.class, MessageObstructedConnection.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageSetGhostSlots.Handler.class, MessageSetGhostSlots.class, messageId++, Side.SERVER);
+		packetHandler.registerMessage(MessageWireSync.Handler.class, MessageWireSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageMaintenanceKit.Handler.class, MessageMaintenanceKit.class, messageId++, Side.SERVER);
 
 		IEIMCHandler.init();
@@ -197,11 +197,6 @@ public class ImmersiveEngineering
 			World world = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
 			if(!world.isRemote)
 			{
-				IELogger.info("WorldData loading");
-
-				//Clear out any info from previous worlds
-				for(int dim : ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
-					ImmersiveNetHandler.INSTANCE.clearAllConnections(dim);
 				IESaveData worldData = (IESaveData)world.loadData(IESaveData.class, IESaveData.dataName);
 
 				if(worldData==null)

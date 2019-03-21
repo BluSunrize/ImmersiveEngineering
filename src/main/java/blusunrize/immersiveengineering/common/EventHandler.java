@@ -12,10 +12,11 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SimpleSkyhookProvider;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -40,6 +41,7 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
+import blusunrize.immersiveengineering.common.wires.WireCollisions;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -55,12 +57,10 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.common.DimensionManager;
@@ -131,7 +131,7 @@ public class EventHandler
 		//		}
 		ImmersiveEngineering.proxy.onWorldLoad();
 		if(IEConfig.blocksBreakWires)
-			event.getWorld().addEventListener(ImmersiveNetHandler.INSTANCE.LISTENER);
+			event.getWorld().addEventListener(new WireCollisions());
 	}
 
 	//transferPerTick
@@ -148,7 +148,7 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttach(AttachCapabilitiesEvent<Entity> event)
+	public void onCapabilitiesAttachEntity(AttachCapabilitiesEvent<Entity> event)
 	{
 		if(event.getObject() instanceof EntityMinecart)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
@@ -156,6 +156,13 @@ public class EventHandler
 		if(event.getObject() instanceof EntityPlayer)
 			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
 					new SimpleSkyhookProvider());
+	}
+
+	@SubscribeEvent
+	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<World> event)
+	{
+		event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "wire_network"),
+				new NetHandlerCapability.Provider(event.getObject()));
 	}
 
 	@SubscribeEvent
@@ -262,7 +269,7 @@ public class EventHandler
 					ImmersiveNetHandler.INSTANCE.directConnections.remove(dim);
 					continue;
 				}
-				for(Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(world))
+				for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(world))
 				{
 					if(!(world.getTileEntity(con.start) instanceof IImmersiveConnectable
 							&&world.getTileEntity(con.end) instanceof IImmersiveConnectable))
@@ -304,20 +311,7 @@ public class EventHandler
 		if(event.phase==TickEvent.Phase.END&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			int dim = event.world.provider.getDimension();
-			for(Entry<Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).entrySet())
-				if(e.getValue() > e.getKey().cableType.getTransferRate())
-				{
-					if(event.world instanceof WorldServer)
-					{
-						BlockPos start = e.getKey().start;
-						for(Vec3d vec : e.getKey().getSubVertices(event.world))
-							((WorldServer)event.world).spawnParticle(EnumParticleTypes.FLAME,
-									vec.x+start.getX(), vec.y+start.getY(), vec.z+start.getZ(),
-									0, 0, .02, 0, 1, new int[0]);
-					}
-					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
-				}
-			ImmersiveNetHandler.INSTANCE.getTransferedRates(dim).clear();
+			GlobalWireNetwork.getNetwork(event.world).update();
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{

@@ -13,8 +13,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -1343,19 +1344,21 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			for(Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 			{
 				Connection conn = entry.getKey();
-				bb.setTranslation(conn.start.getX()-dx,
-						conn.start.getY()-dy,
-						conn.start.getZ()-dz);
-				Vec3d[] points = conn.getSubVertices(ClientUtils.mc().world);
+				bb.setTranslation(conn.getEndA().getX()-dx,
+						conn.getEndA().getY()-dy,
+						conn.getEndA().getZ()-dz);
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
-				for(int i = 0; i < points.length-1; i++)
+				Vec3d prev = conn.getPoint(0, conn.getEndA());
+				for(int i = 0; i < RenderData.POINTS_PER_WIRE; i++)
 				{
-					bb.pos(points[i].x, points[i].y, points[i].z)
+					bb.pos(prev.x, prev.y, prev.z)
 							.color(1, 0, 0, alpha).endVertex();
 					alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
-					bb.pos(points[i+1].x, points[i+1].y, points[i+1].z)
+					Vec3d next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
+					bb.pos(next.x, next.y, next.z)
 							.color(1, 0, 0, alpha).endVertex();
+					prev = next;
 				}
 			}
 			bb.setTranslation(0, 0, 0);

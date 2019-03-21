@@ -13,7 +13,12 @@ import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler;
+import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
@@ -709,6 +714,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "explosive"), EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "fluorescentTube"), EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 		CapabilityShader.register();
+		NetHandlerCapability.register();
 		CapabilitySkyhookData.register();
 		ShaderRegistry.itemShader = IEContent.itemShader;
 		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
@@ -961,6 +967,9 @@ public class IEContent
 
 		TileEntityFluidPipe.initCovers();
 		IEDataFixers.register();
+		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
+		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class);
+		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler.class);
 	}
 
 	public static void postInit()

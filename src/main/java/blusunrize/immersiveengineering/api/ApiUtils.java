@@ -11,15 +11,16 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection.CatenaryData;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageObstructedConnection;
-import com.google.common.util.concurrent.AtomicDouble;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -58,12 +59,11 @@ import org.lwjgl.util.vector.Vector3f;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
+import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection.vertices;
 
 public class ApiUtils
 {
@@ -331,12 +331,13 @@ public class ApiUtils
 		return null;
 	}
 
+	@Deprecated
 	public static IImmersiveConnectable toIIC(Object object, World world)
 	{
 		return toIIC(object, world, true);
 	}
 
-
+	@Deprecated
 	public static IImmersiveConnectable toIIC(Object object, World world, boolean allowProxies)
 	{
 		if(object instanceof IImmersiveConnectable)
@@ -359,13 +360,28 @@ public class ApiUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(World world, BlockPos pos, Connection conn)
+	public static Vec3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
 	{
 		Vec3d offset = Vec3d.ZERO;
 		//Force loading
-		IImmersiveConnectable iicPos = toIIC(pos, world, false);
+		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
 		if(iicPos!=null)
-			offset = iicPos.getConnectionOffset(conn);
+			offset = iicPos.getConnectionOffset(conn, pos);
+		if(fromOtherEnd)
+		{
+			BlockPos posA = pos.getPosition();
+			BlockPos posB = conn.getOtherEnd(pos).getPosition();
+			offset = offset.add(posA.getX()-posB.getX(), posA.getY()-posB.getY(), posA.getZ()-posB.getZ());
+		}
+		return offset;
+	}
+
+	//TODO remove
+	public static Vec3d getVecForIICAt(LocalWireNetwork net, BlockPos pos, ImmersiveNetHandler.Connection conn)
+	{
+		Vec3d offset = Vec3d.ZERO;
+		//Force loading
+		IImmersiveConnectable iicPos = net.getConnector(pos);
 		if(pos.equals(conn.end))
 			offset = offset.add(conn.end.getX()-conn.start.getX(),
 					conn.end.getY()-conn.start.getY(),
@@ -384,30 +400,18 @@ public class ApiUtils
 		return Math.log(x+Math.sqrt(x+1)*Math.sqrt(x-1));
 	}
 
-	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
+	//TODO remove
+	public static Vec3d[] getConnectionCatenary(ImmersiveNetHandler.Connection connection, Vec3d start, Vec3d end)
 	{
-		boolean vertical = end.x==start.x&&end.z==start.z;
-		connection.across = end.subtract(start);
-
-		if(vertical)
-		{
-			Vec3d[] ret = new Vec3d[vertices+1];
-			double height = end.y-start.y;
-			connection.horizontalLength = Math.abs(height);
-			for(int i = 0; i < vertices+1; i++)
-				ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
-			return ret;
-		}
-
-		return getConnectionCatenary(start, end, connection.cableType.getSlack(), connection);
+		connection.vertical = end.x==start.x&&end.z==start.z;
+		Vec3d[] ret = new Vec3d[vertices+1];
+		double height = end.y-start.y;
+		for(int i = 0; i < vertices+1; i++)
+			ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
+		return ret;
 	}
 
 	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
-	{
-		return getConnectionCatenary(start, end, slack, null);
-	}
-
-	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack, @Nullable Connection c)
 	{
 		double dx = (end.x)-(start.x);
 		double dy = (end.y)-(start.y);
@@ -426,14 +430,6 @@ public class ApiUtils
 		double a = dw/2/l;
 		double offsetX = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double offsetY = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-		if(c!=null)
-		{
-			c.catOffsetX = offsetX;
-			c.catOffsetY = offsetY;
-			c.catA = a;
-			c.horizontalLength = dw;
-		}
-
 		Vec3d[] vex = new Vec3d[vertices+1];
 
 		vex[0] = new Vec3d(start.x, start.y, start.z);
@@ -450,6 +446,7 @@ public class ApiUtils
 		return vex;
 	}
 
+
 	public static double getDim(Vec3d vec, int dim)
 	{
 		return dim==0?vec.x: (dim==1?vec.y: vec.z);
@@ -465,11 +462,12 @@ public class ApiUtils
 		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
-	public static boolean raytraceAlongCatenary(Connection conn, World w, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
+	public static boolean raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
-		Vec3d vStart = getVecForIICAt(w, conn.start, conn);
-		Vec3d vEnd = getVecForIICAt(w, conn.end, conn);
+		Vec3d vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
+		Vec3d vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
+		IELogger.logger.info("Start: {}, end: {}", vStart, vEnd);
 		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
 	}
 
@@ -480,24 +478,27 @@ public class ApiUtils
 	public static boolean raytraceAlongCatenary(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
 	{
-		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart.subtract(conn.start.getX(), conn.start.getY(), conn.start.getZ()),
-				vEnd.subtract(conn.start.getX(), conn.start.getY(), conn.start.getZ()));
+		BlockPos posA = conn.getEndA().getPosition();
+		return raytraceAlongCatenaryRelative(conn, shouldStop, close,
+				vStart.subtract(posA.getX(), posA.getY(), posA.getZ()),
+				vEnd.subtract(posA.getX(), posA.getY(), posA.getZ()));
 	}
 
 	public static boolean raytraceAlongCatenaryRelative(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 														Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
 	{
-		conn.getSubVertices(vStart, vEnd);
+		IELogger.logger.info("Start is {}, end {}", vStart, vEnd);
+		conn.generateCatenaryData(vStart, vEnd);
 		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
 		HashSet<BlockPos> done = new HashSet<>();
 		HashSet<Triple<BlockPos, Vec3d, Vec3d>> near = new HashSet<>();
 		Vec3d across = vEnd.subtract(vStart);
 		across = new Vec3d(across.x, 0, across.z);
 		double lengthHor = across.length();
-		halfScanned.put(conn.start, vStart);
-		halfScanned.put(conn.end, vEnd.subtract(conn.end.getX()-conn.start.getX(),
-				conn.end.getY()-conn.start.getY(),
-				conn.end.getZ()-conn.start.getZ()));
+		BlockPos startPos = conn.getEndA().getPosition();
+		BlockPos endPos = conn.getEndB().getPosition();
+		halfScanned.put(startPos, vStart);
+		halfScanned.put(endPos, vEnd);
 		//Raytrace X&Z
 		for(int dim = 0; dim <= 2; dim += 2)
 		{
@@ -506,9 +507,9 @@ public class ApiUtils
 			for(int i = start; i < end; i++)
 			{
 				double factor = (i-getDim(vStart, dim))/getDim(across, dim);
-				Vec3d pos = conn.getVecAt(factor);
+				Vec3d pos = conn.getPoint(factor, conn.getEndA());
 
-				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
 					return false;
 			}
 		}
@@ -519,13 +520,14 @@ public class ApiUtils
 			for(int y = (int)Math.ceil(Math.min(vStart.y, vEnd.y)); y <= Math.floor(Math.max(vStart.y, vEnd.y)); y++)
 			{
 				Vec3d pos = new Vec3d(vStart.x, y, vStart.z);
-				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
 					return false;
 			}
 		}
 		else
 		{
-			double min = conn.catA+conn.catOffsetY+vStart.y;
+			CatenaryData data = conn.catData;
+			double min = data.getA()+data.getOffsetY()+vStart.y;
 			for(int i = 0; i < 2; i++)
 			{
 				double factor = i==0?1: -1;
@@ -535,10 +537,10 @@ public class ApiUtils
 					double yReal = y-vStart.y;
 					double posRel;
 					Vec3d pos;
-					posRel = (factor*acosh((yReal-conn.catOffsetY)/conn.catA)*conn.catA+conn.catOffsetX)/lengthHor;
+					posRel = (factor*acosh((yReal-data.getOffsetY())/data.getA())*data.getA()+data.getOffsetX())/lengthHor;
 					pos = new Vec3d(vStart.x+across.x*posRel, y, vStart.z+across.z*posRel);
 
-					if(posRel >= 0&&posRel <= 1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, conn.start))
+					if(posRel >= 0&&posRel <= 1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
 						return false;
 				}
 			}
@@ -637,15 +639,18 @@ public class ApiUtils
 		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
 		{
 			ItemStack stack = player.getHeldItem(hand);
-			TargetingInfo target = new TargetingInfo(side, hitX, hitY, hitZ);
+			TargetingInfo targetHere = new TargetingInfo(side, hitX, hitY, hitZ);
 			WireType wire = coil.getWireType(stack);
-			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, target);
-			Vec3i offset = pos.subtract(masterPos);
+			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, targetHere);
+			Vec3i offsetHere = pos.subtract(masterPos);
 			tileEntity = world.getTileEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntity).canConnect())
 				return EnumActionResult.PASS;
+			IImmersiveConnectable iicHere = (IImmersiveConnectable)tileEntity;
+			ConnectionPoint cpHere = iicHere.getTargetedPoint(targetHere, offsetHere);
 
-			if(!((IImmersiveConnectable)tileEntity).canConnectCable(wire, target, offset)||!coil.canConnectCable(stack, tileEntity))
+			if(cpHere==null||!((IImmersiveConnectable)tileEntity).canConnectCable(wire, cpHere, offsetHere)||
+					!coil.canConnectCable(stack, tileEntity))
 			{
 				if(!world.isRemote)
 					player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"), true);
@@ -656,9 +661,9 @@ public class ApiUtils
 				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 				{
 					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), masterPos.getX(), masterPos.getY(), masterPos.getZ(),
-							offset.getX(), offset.getY(), offset.getZ()});
+							offsetHere.getX(), offsetHere.getY(), offsetHere.getZ()});
 					NBTTagCompound targetNbt = new NBTTagCompound();
-					target.writeToNBT(targetNbt);
+					targetHere.writeToNBT(targetNbt);
 					ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
 				}
 				else
@@ -681,78 +686,86 @@ public class ApiUtils
 					else
 					{
 						TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
-						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||
-								!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, targetLink, offsetLink)||
-								!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
-								!coil.canConnectCable(stack, tileEntityLinkingPos))
+						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
+						{
 							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
+						}
 						else
 						{
-							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-							IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
-							boolean connectionExists = false;
-							Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
-							if(outputs!=null)
-								for(Connection con : outputs)
-								{
-									if(con.end.equals(Utils.toCC(nodeLink)))
-										connectionExists = true;
-								}
-							if(connectionExists)
-								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
+							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
+							ConnectionPoint cpLink = iicLink.getTargetedPoint(targetLink, offsetLink);
+							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, cpLink, offsetLink)||
+									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
+									!coil.canConnectCable(stack, tileEntityLinkingPos))
+							{
+								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
+							}
 							else
 							{
-								Set<BlockPos> ignore = new HashSet<>();
-								ignore.addAll(nodeHere.getIgnored(nodeLink));
-								ignore.addAll(nodeLink.getIgnored(nodeHere));
-								Connection tmpConn = new Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), wire,
-										(int)Math.sqrt(distanceSq));
-								Vec3d start = nodeHere.getConnectionOffset(tmpConn, target, pos.subtract(masterPos));
-								Vec3d end = nodeLink.getConnectionOffset(tmpConn, targetLink, offsetLink).add(linkPos.getX()-masterPos.getX(),
-										linkPos.getY()-masterPos.getY(),
-										linkPos.getZ()-masterPos.getZ());
-								BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
-								boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tmpConn, (p) -> {
-									if(ignore.contains(p.getLeft()))
-										return false;
-									IBlockState state = world.getBlockState(p.getLeft());
-									if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
-									{
-										failedReason.setPos(p.getLeft());
-										return true;
-									}
-									return false;
-								}, (p) -> {
-								}, start, end);
-								if(canSee)
+								GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
+								assert cpHere!=null&&cpLink!=null;//TODO display error as usual, this is just for testing
+								boolean connectionExists = false;
+								LocalWireNetwork localA = net.getLocalNet(cpHere);
+								LocalWireNetwork localB = net.getLocalNet(cpLink);
+								if(localA==localB)
 								{
-									Connection conn = ImmersiveNetHandler.INSTANCE.addAndGetConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink),
-											(int)Math.sqrt(distanceSq), wire);
-
-
-									nodeHere.connectCable(wire, target, nodeLink, offset);
-									nodeLink.connectCable(wire, targetLink, nodeHere, offsetLink);
-									ImmersiveNetHandler.INSTANCE.addBlockData(world, conn);
-									IESaveData.setDirty(world.provider.getDimension());
-									Utils.unlockIEAdvancement(player, "main/connect_wire");
-
-									if(!player.capabilities.isCreativeMode)
-										coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
-									((TileEntity)nodeHere).markDirty();
-									world.addBlockEvent(masterPos, ((TileEntity)nodeHere).getBlockType(), -1, 0);
-									IBlockState state = world.getBlockState(masterPos);
-									world.notifyBlockUpdate(masterPos, state, state, 3);
-									((TileEntity)nodeLink).markDirty();
-									world.addBlockEvent(linkPos, ((TileEntity)nodeLink).getBlockType(), -1, 0);
-									state = world.getBlockState(linkPos);
-									world.notifyBlockUpdate(linkPos, state, state, 3);
+									Collection<Connection> outputs = localA.getConnections(cpHere);
+									if(outputs!=null)
+										for(Connection con : outputs)
+											if(!con.isInternal()&&con.getOtherEnd(cpHere).equals(cpLink))
+												connectionExists = true;
 								}
+								if(connectionExists)
+									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
 								else
 								{
-									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
-									ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tmpConn, failedReason, player.world),
-											new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
-													64));
+									Set<BlockPos> ignore = new HashSet<>();
+									ignore.addAll(iicHere.getIgnored(iicLink));
+									ignore.addAll(iicLink.getIgnored(iicHere));
+									BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
+									Connection tempConn = new Connection(wire, cpHere, cpLink);
+									Vec3d start = iicHere.getConnectionOffset(tempConn, cpHere);
+									Vec3d end = iicLink.getConnectionOffset(tempConn, cpLink);
+									boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tempConn, (p) -> {
+										if(ignore.contains(p.getLeft()))
+											return false;
+										IBlockState state = world.getBlockState(p.getLeft());
+										if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+										{
+											failedReason.setPos(p.getLeft());
+											return true;
+										}
+										return false;
+									}, (p) -> {
+									}, start, end.add(new Vec3d(linkPos.subtract(masterPos))));
+									if(canSee)
+									{
+										Connection conn = new Connection(wire, cpHere, cpLink);
+										net.addConnection(conn);
+
+										iicHere.connectCable(wire, cpHere, iicLink, cpLink);
+										iicLink.connectCable(wire, cpLink, iicHere, cpHere);
+										IESaveData.setDirty(world.provider.getDimension());
+										Utils.unlockIEAdvancement(player, "main/connect_wire");
+
+										if(!player.capabilities.isCreativeMode)
+											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
+										((TileEntity)iicHere).markDirty();
+										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockType(), -1, 0);
+										IBlockState state = world.getBlockState(masterPos);
+										world.notifyBlockUpdate(masterPos, state, state, 3);
+										((TileEntity)iicLink).markDirty();
+										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockType(), -1, 0);
+										state = world.getBlockState(linkPos);
+										world.notifyBlockUpdate(linkPos, state, state, 3);
+									}
+									else
+									{
+										player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
+										ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tempConn, failedReason, player.world),
+												new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
+														64));
+									}
 								}
 							}
 						}
@@ -988,6 +1001,11 @@ public class ApiUtils
 
 	public static Connection raytraceWires(World world, Vec3d start, Vec3d end, @Nullable Connection ignored)
 	{
+		return null;//TODO
+		/*
+		Vec3d look = player.getLookVec();
+		Vec3d start = player.getPositionEyes(1);
+		Vec3d end = start.add(look.scale(maxDistance));
 		Map<BlockPos, ImmersiveNetHandler.BlockWireInfo> inDim = ImmersiveNetHandler.INSTANCE.blockWireMap
 				.lookup(world.provider.getDimension());
 		AtomicReference<Connection> ret = new AtomicReference<>();
@@ -1047,7 +1065,8 @@ public class ApiUtils
 			if(across.dotProduct(player.getLookVec()) < 0)
 				ret = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), ret);
 		}
-		return ret;
+		return retConn;
+		*/
 	}
 
 	public static void addFutureServerTask(World world, Runnable task)
@@ -1060,24 +1079,23 @@ public class ApiUtils
 			}
 	}
 
-	public static void callFromOtherThread(Consumer<Runnable> cons, Runnable r)
+	public static void moveConnectionEnd(Connection conn, ConnectionPoint currEnd, ConnectionPoint newEnd, World world)
 	{
-		new Thread(()->cons.accept(r)).start();
-	}
-
-	public static void moveConnectionEnd(Connection conn, BlockPos newEnd, World world)
-	{
-		IImmersiveConnectable otherSide = ApiUtils.toIIC(conn.start, world);
-		Vec3d start = ApiUtils.getVecForIICAt(world, conn.start, conn);
-		Vec3d end = ApiUtils.getVecForIICAt(world, conn.end, conn);
-		if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
+		//TODO too lazy to move this to ConnPoints right now :)
+		//ConnectionPoint fixedPos = conn.getOtherEnd(currEnd);
+		//LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(newEnd);
+		//IImmersiveConnectable otherSide = net.getConnector(fixedPos);
+		//Vec3d start = ApiUtils.getVecForIICAt(net, fixedPos, conn);
+		//Vec3d end = ApiUtils.getVecForIICAt(net, currEnd, conn);
+		//if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
 		{
-			ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);
-			Connection newConn = new Connection(conn.start, newEnd, conn.cableType, conn.length);
-			ImmersiveNetHandler.INSTANCE.addConnection(world, conn.start, newConn);
-			ImmersiveNetHandler.INSTANCE.addConnection(world, newEnd,
-					new Connection(newEnd, conn.start, conn.cableType, conn.length));
-			ImmersiveNetHandler.INSTANCE.addBlockData(world, newConn);
+			//TODO
+			//ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);
+			//Connection newConn = new Connection(fixedPos, newEnd, conn.cableType, conn.length);
+			//ImmersiveNetHandler.INSTANCE.addConnection(world, fixedPos, newConn);
+			//ImmersiveNetHandler.INSTANCE.addConnection(world, newEnd,
+			//		new Connection(newEnd, fixedPos, conn.cableType, conn.length));
+			//ImmersiveNetHandler.INSTANCE.addBlockData(world, newConn);
 		}
 	}
 

@@ -8,7 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.network;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
 import io.netty.buffer.ByteBuf;
@@ -30,15 +31,14 @@ public class MessageObstructedConnection implements IMessage
 	private BlockPos startB, endB, blocking;
 	private WireType wireType;
 
-	public MessageObstructedConnection(ImmersiveNetHandler.Connection conn, BlockPos blocking, World w)
+	public MessageObstructedConnection(Connection conn, BlockPos blocking, World w)
 	{
 		this.blocking = blocking;
-		Vec3d[] vertices = conn.getSubVertices(w);
-		start = vertices[0];
-		end = vertices[vertices.length-1];
-		startB = conn.start;
-		endB = conn.end;
-		wireType = conn.cableType;
+		start = conn.getPoint(0, conn.getEndA());
+		end = conn.getPoint(1, conn.getEndA());
+		startB = conn.getEndA().getPosition();
+		endB = conn.getEndB().getPosition();
+		wireType = conn.type;
 	}
 
 	public MessageObstructedConnection()
@@ -73,9 +73,9 @@ public class MessageObstructedConnection implements IMessage
 		public IMessage onMessage(MessageObstructedConnection message, MessageContext ctx)
 		{
 			Minecraft.getMinecraft().addScheduledTask(() -> {
-				ImmersiveNetHandler.Connection conn = new ImmersiveNetHandler.Connection(message.startB, message.endB, message.wireType,
-						(int)Math.sqrt(message.startB.distanceSq(message.endB)));
-				conn.getSubVertices(message.start, message.end);
+				Connection conn = new Connection(message.wireType, new ConnectionPoint(message.startB, 0),
+						new ConnectionPoint(message.endB, 0));
+				conn.generateCatenaryData(message.start, message.end);
 				ClientEventHandler.FAILED_CONNECTIONS.put(conn,
 						new ImmutablePair<>(message.blocking, new AtomicInteger(200)));
 			});

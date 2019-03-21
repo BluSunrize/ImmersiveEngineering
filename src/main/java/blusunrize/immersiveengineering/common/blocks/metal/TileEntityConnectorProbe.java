@@ -9,7 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -28,6 +29,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
@@ -90,12 +92,13 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		return list.size()==1?list.get(0): null;
 	}
 
-	@Override
-	public void updateInput(byte[] signals)
-	{
-		signals[redstoneChannelSending] = (byte)Math.max(lastOutput, signals[redstoneChannelSending]);
-		rsDirty = false;
-	}
+	//TODO
+	//@Override
+	//public void updateInput(byte[] signals)
+	//{
+	//	signals[redstoneChannelSending] = (byte)Math.max(lastOutput, signals[redstoneChannelSending]);
+	//	rsDirty = false;
+	//}
 
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
@@ -105,8 +108,8 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		else
 			redstoneChannelSending = (redstoneChannelSending+1)%16;
 		markDirty();
-		wireNetwork.updateValues();
-		onChange();
+		//TODO wireNetwork.updateValues();
+		//TODO onChange();
 		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 		return true;
@@ -127,10 +130,10 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		EnumFacing side = facing.getOpposite();
-		double conRadius = con.cableType.getRenderDiameter()/2;
+		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
 	}
 

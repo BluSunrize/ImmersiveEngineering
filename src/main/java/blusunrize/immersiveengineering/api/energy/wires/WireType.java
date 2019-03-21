@@ -8,9 +8,12 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ILocalHandlerProvider;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler.IShockingWire;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
@@ -20,6 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -32,7 +36,7 @@ import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Con
  * <br>
  * The WireTypes of IE. Extend this to make your own
  */
-public abstract class WireType
+public abstract class WireType implements ILocalHandlerProvider
 {
 	public static final String LV_CATEGORY = "LV";
 	public static final String MV_CATEGORY = "MV";
@@ -61,8 +65,10 @@ public abstract class WireType
 
 	public abstract String getUniqueName();
 
+	@Deprecated
 	public abstract double getLossRatio();
 
+	@Deprecated
 	public abstract int getTransferRate();
 
 	/**
@@ -89,13 +95,6 @@ public abstract class WireType
 
 	public abstract double getRenderDiameter();
 
-	public abstract boolean isEnergyWire();
-
-	public boolean canCauseDamage()
-	{
-		return false;
-	}
-
 	/**
 	 * Used to determine which other wire types can be on the same connector as this wire (obviously does not apply to transformers)
 	 * Returning null will cause the wire to be incompatible with all other wires
@@ -104,15 +103,6 @@ public abstract class WireType
 	public String getCategory()
 	{
 		return null;
-	}
-
-	/**
-	 * @return The radius around this wire where entities should be damaged if it is enabled in the config. Must be
-	 * less that DELTA_NEAR in blusunrize.immersiveengineering.api.ApiUtils.handleVec (currently .3)
-	 */
-	public double getDamageRadius()
-	{
-		return 0;//Don't shock people unless it is explicitely enabled for this wire type
 	}
 
 	//THESE VALUES ARE FOR IE's OWN WIRES!
@@ -164,17 +154,13 @@ public abstract class WireType
 				0, 0, (f) -> f);
 	}
 
-	public IElectricEquipment.ElectricSource getElectricSource()
-	{
-		return COPPER.getElectricSource();
-	}
-
 	/**
 	 * DO NOT SUBCLASS THIS.
 	 * This is a core implementation as a base for IE's default wires
 	 * DO NOT SUBCLASS THIS.
 	 */
-	private static class IEBASE extends WireType
+	//TODO split into energy and other. Maybe move out of the API?
+	private static class IEBASE extends WireType implements IShockingWire
 	{
 		final int ordinal;
 		private final IElectricEquipment.ElectricSource eSource;
@@ -184,7 +170,7 @@ public abstract class WireType
 			super();
 			this.ordinal = ordinal;
 			WireApi.registerWireType(this);
-			if(canCauseDamage())
+			if(getDamageRadius() > 0)
 				eSource = new IElectricEquipment.ElectricSource(.5F*(1+ordinal));
 			else
 				eSource = new IElectricEquipment.ElectricSource(-1);
@@ -200,6 +186,18 @@ public abstract class WireType
 		public int getTransferRate()
 		{
 			return Math.abs(wireTransferRate[ordinal%6]);
+		}
+
+		@Override
+		public double getBasicLossRate(Connection c)
+		{
+			return 0;
+		}
+
+		@Override
+		public double getLossRate(Connection c, int transferred)
+		{
+			return 0;
 		}
 
 		@Override
@@ -246,12 +244,6 @@ public abstract class WireType
 		}
 
 		@Override
-		public boolean isEnergyWire()
-		{
-			return ordinal%6 < 3;
-		}
-
-		@Override
 		public double getDamageRadius()
 		{
 			switch(ordinal)
@@ -264,12 +256,6 @@ public abstract class WireType
 					return .3;
 			}
 			return 0;
-		}
-
-		@Override
-		public boolean canCauseDamage()
-		{
-			return ordinal < 3;
 		}
 
 		@Nullable
@@ -300,6 +286,15 @@ public abstract class WireType
 		public IElectricEquipment.ElectricSource getElectricSource()
 		{
 			return eSource;
+		}
+
+		@Override
+		public Collection<ResourceLocation> getRequestedHandlers()
+		{
+			if(ordinal < 3)
+				return ImmutableList.of(WireDamageHandler.ID);
+			else
+				return ImmutableList.of();
 		}
 	}
 }

@@ -12,7 +12,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -30,11 +31,14 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
+public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile,
+		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
+		EnergyConnector
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public double lastEnergyPassed = 0;
@@ -108,13 +112,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void onEnergyPassthrough(double amount)
-	{
-		lastEnergyPassed += amount;
-	}
-
-	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(lower)
 		{
@@ -127,16 +125,16 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
 		if(lower)
 		{
 			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
 			if(above instanceof TileEntityEnergyMeter)
-				((TileEntityEnergyMeter)above).connectCable(cableType, target, other);
+				((TileEntityEnergyMeter)above).connectCable(cableType, target, other, otherTarget);
 		}
 		else
-			super.connectCable(cableType, target, other);
+			super.connectCable(cableType, target, other, otherTarget);
 	}
 
 	@Override
@@ -165,10 +163,11 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(Utils.toCC(this))&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
+		BlockPos other = con.getOtherEnd(here).getPosition();
+		int xDif = other.getX()-pos.getX();
+		int zDif = other.getZ()-pos.getZ();
 		if(facing.getAxis()==Axis.X)
 			return new Vec3d(.5, .4375, zDif > 0?.8125: .1875);
 		else
@@ -295,13 +294,14 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		int oldVal = compVal;
 		int maxTrans = 0;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
+		Collection<Connection> conns = globalNet.getLocalNet(pos).getConnections(pos);
 		if(conns==null)
 			compVal = 0;
 		else
 		{
 			for(Connection c : conns)
-				maxTrans += c.cableType.getTransferRate();
+				if(c.type instanceof IEnergyWire)
+					maxTrans += ((IEnergyWire)c.type).getTransferRate();
 			maxTrans /= 2;
 			double val = getAveragePower()/(double)maxTrans;
 			compVal = (int)Math.ceil(15*val);
@@ -323,8 +323,20 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	public boolean isSource(ConnectionPoint cp)
 	{
-		return true;
+		return false;
+	}
+
+	@Override
+	public boolean isSink(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public void onEnergyPassedThrough(double amount)
+	{
+		lastEnergyPassed += amount;
 	}
 }

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class MessageSkyhookSync implements IMessage
 {
 	private int entityID;
-	private Connection connection;
+	private ImmersiveNetHandler.Connection connection;
 	private double linePos;
 	private double speed;
 

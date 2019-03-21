@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.client;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection.RenderData;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
@@ -47,14 +48,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
 import net.minecraft.util.Timer;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -97,18 +97,17 @@ public class ClientUtils
 	{
 		if(connection==null||start==null||end==null)
 			return;
-		int col = connection.cableType.getColour(connection);
-		double r = connection.cableType.getRenderDiameter()/2;
+		int col = connection.type.getColour(connection);
+		double r = connection.type.getRenderDiameter()/2;
 		int[] rgba = new int[]{col >> 16&255, col >> 8&255, col&255, 255};
 		tessellateConnection(connection, start, end, rgba, r, sprite);
 	}
 
 	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite)
 	{
-		if(connection==null||start==null||end==null||connection.end==null||connection.start==null)
-			return;
-		Vec3d startOffset = start.getConnectionOffset(connection);
-		Vec3d endOffset = end.getConnectionOffset(connection);
+		/*TODO
+		Vec3d startOffset = Vec3d.ZERO;//TODO start.getConnectionOffset(connection);
+		Vec3d endOffset = Vec3d.ZERO;//TODO end.getConnectionOffset(connection);
 		if(startOffset==null)
 			startOffset = new Vec3d(.5, .5, .5);
 		if(endOffset==null)
@@ -227,6 +226,7 @@ public class ClientUtils
 			}
 		}
 		//		tes.setColorRGBA_I(0xffffff, 0xff);
+		*/
 	}
 	//
 	//	public static int calcBrightness(IBlockAccess world, double x, double y, double z)
@@ -1397,69 +1397,53 @@ public class ClientUtils
 	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
 	private static float[] alphaNoFading = {1, 1, 1, 1};
 
-	public static List<BakedQuad>[] convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t)
+	public static List<BakedQuad>[] convertConnectionFromBlockstate(BlockPos here, Set<Connection.RenderData> data, TextureAtlasSprite t)
 	{
-		List<BakedQuad>[] ret = new List[2];
-		ret[0] = new ArrayList<>();
-		ret[1] = new ArrayList<>();
-		Set<Connection> conns = s.getValue(IEProperties.CONNECTIONS);
-		if(conns==null)
+		List<BakedQuad>[] ret = new List[]{
+				new ArrayList<>(),
+				new ArrayList<>()
+		};
+		if(data==null)
 			return ret;
 		Vector3f dir = new Vector3f();
 		Vector3f cross = new Vector3f();
 
 		Vector3f up = new Vector3f(0, 1, 0);
-		BlockPos pos = null;
-		for(Connection conn : conns)
+		for(Connection.RenderData connData : data)
 		{
-			if(pos==null)
-				pos = conn.start;
-			Vec3d[] f = conn.catenaryVertices;
-			if(f==null||f.length < 1)
-				continue;
-			int color = conn.cableType.getColour(conn);
+			int color = connData.color;
 			float[] rgb = {(color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f};
 			if(rgb[3]==0)
 				rgb[3] = 1;
-			float radius = (float)(conn.cableType.getRenderDiameter()/2);
-			List<Integer> crossings = new ArrayList<>();
-			for(int i = 1; i < f.length; i++)
-				if(crossesChunkBoundary(f[i], f[i-1], conn.start))
-					crossings.add(i);
-			int index = crossings.size()/2;
-			boolean greater = conn.start.compareTo(conn.end) > 0;
-			if(crossings.size()%2==0&&greater)
-				index--;
-			int max = (crossings.size() > 0?
-					(crossings.get(index)+(greater?1: 2)):
-					(greater?f.length+1: 0));
-			for(int i = 1; i < max&&i < f.length; i++)
+			float radius = (float)(connData.type.getRenderDiameter()/2);
+
+			for(int i = 1; i < connData.pointsToRender; i++)
 			{
-				boolean fading = i==max-1;
+				boolean fading = i==connData.pointsToRender-1&&connData.pointsToRender <= RenderData.POINTS_PER_WIRE;
 				List<BakedQuad> curr = ret[fading?1: 0];
 				int j = i-1;
-				Vector3f here = new Vector3f((float)f[i].x, (float)f[i].y, (float)f[i].z);
-				Vector3f there = new Vector3f((float)f[j].x, (float)f[j].y, (float)f[j].z);
+				Vector3f current = asVec3f(connData.getPoint(i));
+				Vector3f previous = asVec3f(connData.getPoint(j));
 				if(fading)
 				{
-					Vector3f.add(here, fadingOffset, here);
-					Vector3f.add(there, fadingOffset, there);
+					Vector3f.add(current, fadingOffset, current);
+					Vector3f.add(previous, fadingOffset, previous);
 				}
-				boolean vertical = here.x==there.x&&here.z==there.z;
+				boolean vertical = current.x==previous.x&&current.z==previous.z;
 				if(!vertical)
 				{
-					Vector3f.sub(here, there, dir);
+					Vector3f.sub(current, previous, dir);
 					Vector3f.cross(up, dir, cross);
 					cross.scale(radius/cross.length());
 				}
 				else
 					cross.set(radius, 0, 0);
-				Vector3f[] vertices = {Vector3f.add(here, cross, null),
-						Vector3f.sub(here, cross, null),
-						Vector3f.sub(there, cross, null),
-						Vector3f.add(there, cross, null)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, pos));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, pos));
+				Vector3f[] vertices = {Vector3f.add(current, cross, null),
+						Vector3f.sub(current, cross, null),
+						Vector3f.sub(previous, cross, null),
+						Vector3f.add(previous, cross, null)};
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 
 				if(!vertical)
 				{
@@ -1468,15 +1452,41 @@ public class ClientUtils
 				}
 				else
 					cross.set(0, 0, radius);
-				vertices = new Vector3f[]{Vector3f.add(here, cross, null),
-						Vector3f.sub(here, cross, null),
-						Vector3f.sub(there, cross, null),
-						Vector3f.add(there, cross, null)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, pos));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, pos));
+				vertices = new Vector3f[]{Vector3f.add(current, cross, null),
+						Vector3f.sub(current, cross, null),
+						Vector3f.sub(previous, cross, null),
+						Vector3f.add(previous, cross, null)};
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 			}
 		}
 		return ret;
+	}
+
+	private static Vector3f asVec3f(Vec3d point)
+	{
+		return new Vector3f((float)point.x, (float)point.y, (float)point.z);
+	}
+
+	public static int getVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
+	{
+		List<Integer> crossings = new ArrayList<>();
+		Vec3d lastPoint = conn.getPoint(0, start);
+		for(int i = 1; i <= totalPoints; i++)
+		{
+			Vec3d current = conn.getPoint(i/(double)totalPoints, start);
+			if(crossesChunkBoundary(current, lastPoint, start.getPosition()))
+				crossings.add(i);
+			lastPoint = current;
+		}
+		int index = crossings.size()/2;
+		boolean greater = conn.isPositiveEnd(start);
+		if(crossings.size()%2==0&&greater)
+			index--;
+		if(crossings.size() > 0)
+			return crossings.get(index)+(greater?1: 2);
+		else
+			return greater?totalPoints+1: 0;
 	}
 
 	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,

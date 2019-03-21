@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.properties.PropertyDirection;
@@ -16,6 +17,7 @@ import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
 import java.util.Collection;
@@ -29,7 +31,7 @@ public class IEProperties
 
 	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("_0multiblockslave");//Name starts with '_0' to ensure priority when overriding models
 	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("_1dynamicrender");//Name starts with '_1' to ensure priority over anything but the multiblockslave property
-	public static final PropertySet CONNECTIONS = new PropertySet("conns");
+	public static final PropertyConnections CONNECTIONS = new PropertyConnections("conns");
 
 	//	public static final PropertyEnum[] SIDECONFIG = {
 //			PropertyEnum.create("sideconfig_down", IEEnums.SideConfig.class),
@@ -159,12 +161,29 @@ public class IEProperties
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static class PropertySet implements IUnlistedProperty<Set>
+	public static class ConnectionModelData
+	{
+		public final Set<Connection> connections;
+		public final BlockPos here;
+
+		public ConnectionModelData(Set<Connection> connections, BlockPos here)
+		{
+			this.connections = connections;
+			this.here = here;
+		}
+
+		@Override
+		public String toString()
+		{
+			return connections+" at "+here;
+		}
+	}
+
+	public static class PropertyConnections implements IUnlistedProperty<ConnectionModelData>
 	{
 		String name;
 
-		public PropertySet(String n)
+		public PropertyConnections(String n)
 		{
 			name = n;
 		}
@@ -176,19 +195,19 @@ public class IEProperties
 		}
 
 		@Override
-		public boolean isValid(Set value)
+		public boolean isValid(ConnectionModelData value)
 		{
 			return value!=null;
 		}
 
 		@Override
-		public Class<Set> getType()
+		public Class<ConnectionModelData> getType()
 		{
-			return Set.class;
+			return ConnectionModelData.class;
 		}
 
 		@Override
-		public String valueToString(Set value)
+		public String valueToString(ConnectionModelData value)
 		{
 			return value.toString();
 		}

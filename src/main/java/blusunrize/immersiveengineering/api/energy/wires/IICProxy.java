@@ -9,10 +9,11 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -20,15 +21,17 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+
 public class IICProxy implements IImmersiveConnectable
 {
-	private boolean canEnergyPass;
 	private int dim;
 	private BlockPos pos;
 
-	public IICProxy(boolean allowPass, int dimension, BlockPos _pos)
+	public IICProxy(int dimension, BlockPos _pos)
 	{
-		canEnergyPass = allowPass;
 		dim = dimension;
 		pos = _pos;
 	}
@@ -38,14 +41,8 @@ public class IICProxy implements IImmersiveConnectable
 		if(!(te instanceof IImmersiveConnectable))
 			throw new IllegalArgumentException("Can't create an IICProxy for a null/non-IIC TileEntity");
 		dim = te.getWorld().provider.getDimension();
-		canEnergyPass = ((IImmersiveConnectable)te).allowEnergyToPass(null);
 		pos = Utils.toCC(te);
-	}
-
-	@Override
-	public boolean allowEnergyToPass(Connection c)
-	{
-		return canEnergyPass;
+		//TODO save internal connections!
 	}
 
 	public BlockPos getPos()
@@ -61,6 +58,7 @@ public class IICProxy implements IImmersiveConnectable
 	@Override
 	public void removeCable(Connection connection)
 	{
+		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
 		World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
 		if(w==null)
@@ -81,30 +79,19 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public boolean isEnergyOutput()
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return false;
 	}
 
 	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		return 0;
-	}
-
-	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
-	{
-		return false;
-	}
-
-	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
 	}
 
+	@Nullable
 	@Override
-	public WireType getCableLimiter(TargetingInfo target)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
 		return null;
 	}
@@ -115,24 +102,28 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return null;
 	}
 
+	@Override
+	public Collection<ConnectionPoint> getConnectionPoints()
+	{
+		return ImmutableList.of();//TODO do we need this to work properly? Test breakers in unloaded chunks!
+	}
+
 	public static IICProxy readFromNBT(NBTTagCompound nbt)
 	{
-		return new IICProxy(nbt.getBoolean("pass"), nbt.getInteger("dim"), new BlockPos(nbt.getInteger("x"), nbt.getInteger("y"), nbt.getInteger("z")));
+		return new IICProxy(nbt.getInteger("dim"),
+				NBTUtil.getPosFromTag(nbt.getCompoundTag("pos")));
 	}
 
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound ret = new NBTTagCompound();
 		ret.setInteger("dim", dim);
-		ret.setInteger("x", pos.getX());
-		ret.setInteger("y", pos.getY());
-		ret.setInteger("z", pos.getZ());
-		ret.setBoolean("pass", canEnergyPass);
+		ret.setTag("pos", NBTUtil.createPosTag(pos));
 		return ret;
 	}
 

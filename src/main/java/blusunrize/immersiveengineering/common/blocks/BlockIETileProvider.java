@@ -11,8 +11,9 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -31,6 +32,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -62,6 +64,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+
+import static blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.getNetwork;
 
 @Mod.EventBusSubscriber
 public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements IColouredBlock
@@ -196,8 +201,24 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
+		Consumer<Connection> dropHandler;
+		if(world.getGameRules().getBoolean("doTileDrops"))
+			dropHandler = (c) -> {
+				if(!c.isInternal())
+				{
+					BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
+					double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
+					double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
+					double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
+					world.spawnEntity(new EntityItem(world, dx, dy, dz, c.type.getWireCoil(c)));
+				}
+			};
+		else
+			dropHandler = c -> {
+			};
 		if(tile instanceof IImmersiveConnectable&&!world.isRemote)
-			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(tile), world, world.getGameRules().getBoolean("doTileDrops"));
+			for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
+				getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		tempTile.put(new DimensionBlockPos(pos, world.provider.getDimension()), tile);
 		super.breakBlock(world, pos, state);
 		world.removeTileEntity(pos);

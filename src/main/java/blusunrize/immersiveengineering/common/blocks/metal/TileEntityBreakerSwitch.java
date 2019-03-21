@@ -8,19 +8,19 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,26 +30,28 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.model.TRSRTransformation;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
+//TODO ConnectionPoints for opening/closing
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<IBlockState>
 {
+	public static final int LEFT_INDEX = 0;
+	public static final int RIGHT_INDEX = 1;
 	public int rotation = 0;
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int wires = 0;
 	public boolean active = false;
 	public boolean inverted = false;
-	public BlockPos endOfLeftConnection = null;
 
 	@Override
 	protected boolean canTakeLV()
@@ -69,50 +71,43 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		return false;
 	}
 
+	@Nullable
 	@Override
-	public boolean allowEnergyToPass(Connection con)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
-		return active;
+		Matrix4 mat = new Matrix4(facing);
+		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
+		//TODO what is Matrix(facing)^-1?
+		mat.invert();
+		Vec3d transformedHit = mat.apply(new Vec3d(info.hitX, info.hitY, info.hitZ));
+		IELogger.logger.info("Transformed hit: {}, original: {}", transformedHit,
+				new Vec3d(info.hitX, info.hitY, info.hitZ));
+		return new ConnectionPoint(pos, transformedHit.x > 0.5?RIGHT_INDEX: LEFT_INDEX);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		if(!cableType.isEnergyWire()&&!REDSTONE_CATEGORY.equals(cableType.getCategory()))
-			return false;
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
-		if(wires >= 2)
-			return false;
-		return limitType==null||WireApi.canMix(cableType, limitType);
+		//TODO
+		return true;
 	}
 
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
+	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
-		if(this.limitType==null)
-			this.limitType = cableType;
 		wires++;
-		onConnectionChange();
-	}
-
-	@Override
-	public WireType getCableLimiter(TargetingInfo target)
-	{
-		return limitType;
 	}
 
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection!=null?connection.cableType: null;
+		WireType type = connection!=null?connection.type: null;
 		if(type==null)
 			wires = 0;
 		else
 			wires--;
-		if(wires <= 0)
-			limitType = null;
-		onConnectionChange();
 	}
 
 	@Override
@@ -135,50 +130,15 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		wires = nbt.getInteger("wires");
 		active = nbt.getBoolean("active");
 		inverted = nbt.getBoolean("inverted");
-		onConnectionChange();
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Matrix4 mat = new Matrix4(facing);
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
-		if(endOfLeftConnection==null)
-			calculateLeftConn(mat);
-		boolean isLeft = con.end.equals(endOfLeftConnection)||con.start.equals(endOfLeftConnection);
-		Vec3d ret = mat.apply(new Vec3d(isLeft?.25: .75, .5, .125));
-		return ret;
-	}
-
-	protected void calculateLeftConn(Matrix4 transform)
-	{
-		Vec3d leftVec = transform.apply(new Vec3d(-1, .5, .5)).subtract(0, .5, .5);
-		EnumFacing dir = EnumFacing.getFacingFromVector((float)leftVec.x, (float)leftVec.y, (float)leftVec.z);
-		int maxDiff = Integer.MIN_VALUE;
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-		if(conns!=null)
-			for(Connection c : conns)
-			{
-				Vec3i diff = pos.equals(c.start)?c.end.subtract(pos): c.start.subtract(pos);
-				int val = 0;
-				switch(dir.getAxis())
-				{
-					case X:
-						val = diff.getX();
-						break;
-					case Y:
-						val = diff.getY();
-						break;
-					case Z:
-						val = diff.getZ();
-				}
-				val *= dir.getAxisDirection().getOffset();
-				if(val > maxDiff)
-				{
-					maxDiff = val;
-					endOfLeftConnection = pos==c.end?c.start: c.end;
-				}
-			}
+		boolean isLeft = here.getIndex()==LEFT_INDEX;
+		return mat.apply(new Vec3d(isLeft?.25: .75, .5, .125));
 	}
 
 	@Override
@@ -188,15 +148,11 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		{
 			inverted = !inverted;
 			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
-			if(wires > 1)
-				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world, pos);
 			notifyNeighbours();
+			updateConductivity();
 		}
 		else
-		{
 			rotation = (rotation+3)%4;
-			onConnectionChange();
-		}
 		return true;
 	}
 
@@ -207,12 +163,19 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		{
 			active = !active;
 			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F, 1);
-			if(wires > 1)
-				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections(world, pos);
 			world.addBlockEvent(getPos(), getBlockType(), active?1: 0, 0);
 			notifyNeighbours();
+			updateConductivity();
 		}
 		return true;
+	}
+
+	protected void updateConductivity()
+	{
+		if(allowEnergyToPass())
+			globalNet.addConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+		else
+			globalNet.removeConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
 	}
 
 	public void notifyNeighbours()
@@ -315,7 +278,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
-		Matrix4 mat = transform.isPresent()?new Matrix4(transform.get().getMatrix()): new Matrix4();
+		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrix())).orElseGet(Matrix4::new);
 		mat = mat.translate(.5, 0, .5).rotate(Math.PI/2*rotation, 0, 1, 0).translate(-.5, 0, -.5);
 		transform = Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 		return transform;
@@ -346,35 +309,23 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		rotation = f.getHorizontalIndex();
 	}
 
-	protected void onConnectionChange()
+	@Override
+	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		if(world!=null&&world.isRemote)
-		{
-			endOfLeftConnection = null;
-			ImmersiveEngineering.proxy.clearConnectionModelCache();
-			// reset cached connection vertices
-			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
-			if(conns!=null)
-				for(Connection c : conns)
-				{
-					c.catenaryVertices = null;
-					world.markBlockRangeForRenderUpdate(c.end, c.end);
-					Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(world, c.end);
-					if(connsThere!=null)
-						for(Connection c2 : connsThere)
-							if(c2.end.equals(pos))
-								c2.catenaryVertices = null;
-				}
-		}
-		if(world!=null)
-			markContainingBlockForUpdate(null);
+		return ImmutableList.of(new ConnectionPoint(pos, LEFT_INDEX), new ConnectionPoint(pos, RIGHT_INDEX));
 	}
 
 	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	public Iterable<? extends Connection> getInternalConnections()
 	{
-		if(c.end.equals(endOfLeftConnection))
-			endOfLeftConnection = newEnd;
-		return true;
+		if(allowEnergyToPass())
+			return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+		else
+			return ImmutableList.of();
+	}
+
+	protected boolean allowEnergyToPass()
+	{
+		return active;
 	}
 }

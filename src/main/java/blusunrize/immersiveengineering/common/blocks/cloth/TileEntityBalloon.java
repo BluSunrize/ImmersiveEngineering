@@ -8,7 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
@@ -34,12 +35,14 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityBalloon extends TileEntityConnectorStructural implements ILightValue, IPlayerInteraction, IHammerInteraction
@@ -149,11 +152,12 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(this.getPos())&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(this.getPos())&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(this.getPos())&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(this.getPos())&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
-		int yDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(this.getPos())&&con.end!=null)?con.end.getY()-getPos().getY(): (con.end.equals(this.getPos())&&con.start!=null)?con.start.getY()-getPos().getY(): 0;
+		BlockPos end = con.getOtherEnd(here).getPosition();
+		int xDif = end.getX()-getPos().getX();
+		int zDif = end.getZ()-getPos().getZ();
+		int yDif = end.getY()-getPos().getY();
 		if(yDif < 0)
 		{
 			double dist = Math.sqrt(xDif*xDif+zDif*zDif);

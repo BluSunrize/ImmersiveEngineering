@@ -10,8 +10,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
@@ -46,7 +45,7 @@ public class IESaveData extends WorldSavedData
 			for(int i = 0; i < connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
-				Connection con = Connection.readFromNBT(conTag);
+				ImmersiveNetHandler.Connection con = ImmersiveNetHandler.Connection.readFromNBT(conTag);
 				if(con!=null)
 				{
 					ImmersiveNetHandler.INSTANCE.addConnection(dim, con.start, con);
@@ -103,7 +102,7 @@ public class IESaveData extends WorldSavedData
 		for(int dim : savedDimensions)
 		{
 			NBTTagList connectionList = new NBTTagList();
-			for(Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(dim))
+			for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(dim))
 			{
 				connectionList.appendTag(con.writeToNBT());
 			}
@@ -139,6 +138,7 @@ public class IESaveData extends WorldSavedData
 			receivedShaderList.appendTag(tag);
 		}
 		nbt.setTag("receivedShaderList", receivedShaderList);
+
 		return nbt;
 	}
 

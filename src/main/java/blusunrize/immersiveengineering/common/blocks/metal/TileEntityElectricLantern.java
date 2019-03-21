@@ -10,8 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -24,7 +26,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 
-public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IDirectionalTile, IHammerInteraction, IBlockBounds, IActiveState, ILightValue
+import javax.annotation.Nonnull;
+
+public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable,
+		IDirectionalTile, IHammerInteraction, IBlockBounds, IActiveState, ILightValue, EnergyConnector
 {
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.Machines.lantern_energyDraw;
@@ -116,31 +121,9 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public boolean isEnergyOutput()
-	{
-		return true;
-	}
-
-	@Override
 	protected boolean isRelay()
 	{
 		return true;
-	}
-
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		if(amount > 0&&energyStorage < maximumStorage)
-		{
-			if(!simulate)
-			{
-				int rec = Math.min(maximumStorage-energyStorage, energyDraw);
-				energyStorage += rec;
-				return rec;
-			}
-			return Math.min(maximumStorage-energyStorage, energyDraw);
-		}
-		return 0;
 	}
 
 	@Override
@@ -156,10 +139,11 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)?con.end.getX()-getPos().getX(): (con.end.equals(getPos())&&con.start!=null)?con.start.getX()-getPos().getX(): 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(getPos())&&con.end!=null)?con.end.getZ()-getPos().getZ(): (con.end.equals(getPos())&&con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
+		BlockPos other = con.getOtherEnd(here).getPosition();
+		int xDif = other.getX()-pos.getX();
+		int zDif = other.getZ()-pos.getZ();
 		if(Math.abs(xDif) >= Math.abs(zDif))
 			return new Vec3d(xDif < 0?.25: xDif > 0?.75: .5, flipped?.9375: .0625, .5);
 		return new Vec3d(.5, flipped?.9375: .0625, zDif < 0?.25: zDif > 0?.75: .5);
@@ -235,8 +219,26 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public boolean moveConnectionTo(Connection c, BlockPos newEnd)
+	public boolean isSource(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSink(ConnectionPoint cp)
 	{
 		return true;
+	}
+
+	@Override
+	public int getRequestedEnergy()
+	{
+		return maximumStorage-energyStorage;
+	}
+
+	@Override
+	public void insertEnergy(int amount)
+	{
+		energyStorage += amount;
 	}
 }
