@@ -18,6 +18,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
@@ -84,6 +85,15 @@ public class CommonProxy implements IGuiHandler
 	public void onWorldLoad()
 	{
 	}
+
+	public void addFailedConnection(ImmersiveNetHandler.Connection connection, BlockPos reason, EntityPlayer player)
+	{
+	}
+
+	public void reloadManual()
+	{
+	}
+
 
 	public static <T extends TileEntity & IGuiTile> void openGuiForTile(@Nonnull EntityPlayer player, @Nonnull T tile)
 	{

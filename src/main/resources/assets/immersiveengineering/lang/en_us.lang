@@ -1042,7 +1042,6 @@ ie.manual.newerVersion= - NEW
 #ie.manual.entry.=
 
 
-ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews_0.name=What's new in v0.6.0
 ie.manual.entry.updateNews_0.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_00=Dear Engineer!<br><br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§o§nnew §o§nlights§r>, <link;barrel;§o§nwooden §o§nbarrels§r>, <link;tanksilo;§o§ntanks§r>, <link;tanksilo;§o§nsilos§r;1> and <link;fluidPipes;§o§nfluid §o§npipes§r>, achievements, <link;shader;§o§nshaders§r> and the <link;assembler;§o§nAssembler§r> and <link;bottlingMachine;§o§nBottling §o§nMachine§r>!
@@ -1068,12 +1067,16 @@ ie.manual.entry.updateNews_4.name=What's new in v0.6.4
 ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_40=Dear Engineer!<br><br>The past update has brought only little changes.<br>The energy transmission is fixed again, the engineer it that broke has been dunked into cold water as punishment.<br>The <link;furnaceHeater;§o§nFurnace §o§nHeater§r> has seen some improvements that now allow it to heat up Alchemical Furnaces from Thaumcraft or Evaporators from Cutting Edge.<br><br>That's all for now, let's hope it stays sufficiently stable.
 
-ie.manual.category.general.name=Overview and Resources
-ie.manual.category.construction.name=Construction
-ie.manual.category.energy.name=Power, wires, generators
-ie.manual.category.tools.name=Tools
-ie.manual.category.machines.name=Simple Machines
-ie.manual.category.heavymachines.name=Heavy Machinery
+manual.immersiveengineering.manual=Engineer's manual
+
+manual.immersiveengineering.update=UPDATE NEWS!
+manual.immersiveengineering.general=Overview and Resources
+manual.immersiveengineering.construction=Construction
+manual.immersiveengineering.energy=Power, wires, generators
+manual.immersiveengineering.test=A subcategory!?
+manual.immersiveengineering.tools=Tools
+manual.immersiveengineering.machines=Simple Machines
+manual.immersiveengineering.heavymachines=Heavy Machinery
 
 ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering

@@ -45,7 +45,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
 	 */
 	private static Set<BlockPos> routed = null;
-	
+
 	public TileEntitySorter()
 	{
 		filter = new SorterInventory(this);

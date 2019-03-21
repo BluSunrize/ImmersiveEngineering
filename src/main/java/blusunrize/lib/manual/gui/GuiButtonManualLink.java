@@ -9,6 +9,7 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualInstance.ManualLink;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -16,12 +17,14 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Collections;
+import java.util.List;
 
 public class GuiButtonManualLink extends GuiButton
 {
 	public String localized;
 	public ManualLink link;
 	GuiManual gui;
+	public List<GuiButtonManualLink> otherParts = ImmutableList.of();
 
 	public GuiButtonManualLink(GuiManual gui, int id, int x, int y, int w, int h, ManualLink link, String localized)
 	{
@@ -45,16 +48,23 @@ public class GuiButtonManualLink extends GuiButton
 		this.hovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 		if(hovered)
 		{
-//			FontRenderer font = gui.manual.fontRenderer;
-			FontRenderer font = mc.fontRenderer;
-			boolean uni = font.getUnicodeFlag();
-			font.setUnicodeFlag(true);
-			font.drawString(localized, x, y, gui.manual.getHighlightColour());
-			font.setUnicodeFlag(false);
-			gui.drawHoveringText(Collections.singletonList(gui.manual.formatLink(link)), mx+8, my+4, font);
-			font.setUnicodeFlag(uni);
+			drawHovered(mc, true, mx, my);
+			for(GuiButtonManualLink btn : otherParts)
+				if(btn!=this)
+					btn.drawHovered(mc, false, mx, my);
 			GlStateManager.enableBlend();
 		}
+	}
 
+	private void drawHovered(Minecraft mc, boolean mouse, int mx, int my)
+	{
+		FontRenderer font = mc.fontRenderer;
+		boolean uni = font.getUnicodeFlag();
+		font.setUnicodeFlag(true);
+		font.drawString(localized, x, y, gui.manual.getHighlightColour());
+		font.setUnicodeFlag(false);
+		gui.drawHoveringText(Collections.singletonList(gui.manual.formatLink(link)), mx+8, my+4, font);
+		font.setUnicodeFlag(uni);
+		GlStateManager.disableLighting();
 	}
 }

@@ -8,35 +8,51 @@
 
 package blusunrize.lib.manual.gui;
 
+import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 public class GuiClickableList extends GuiButton
 {
-	String[] entries;
-	float textScale;
-	int offset;
-	int maxOffset;
+	String[] headers;
+	boolean[] isCategory;
+	@Nonnull
+	List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes;
+	private float textScale;
+	private int offset;
+	private int maxOffset;
 	int perPage;
-	int translationType;
-	GuiManual gui;
+	private GuiManual gui;
 
 	private long prevWheelNano = 0;
 
-	public GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, int translationType, String... entries)
+	GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale,
+					 @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes)
 	{
 		super(id, x, y, w, h, "");
 		this.gui = gui;
 		this.textScale = textScale;
-		this.entries = entries;
-		this.translationType = translationType;
+		this.nodes = nodes;
+		headers = new String[nodes.size()];
+		isCategory = new boolean[nodes.size()];
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			headers[i] = ManualUtils.getTitleForNode(nodes.get(i), gui.manual);
+			isCategory[i] = !nodes.get(i).isLeaf();
+		}
 
 		perPage = (h-8)/getFontHeight();
-		if(perPage < entries.length)
-			maxOffset = entries.length-perPage;
+		if(perPage < headers.length)
+			maxOffset = headers.length-perPage;
 	}
 
 	int getFontHeight()
@@ -45,7 +61,7 @@ public class GuiClickableList extends GuiButton
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
+	public void drawButton(@Nonnull Minecraft mc, int mx, int my, float partialTicks)
 	{
 		FontRenderer fr = gui.manual.fontRenderer;
 		boolean uni = fr.getUnicodeFlag();
@@ -55,20 +71,27 @@ public class GuiClickableList extends GuiButton
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(textScale, textScale, textScale);
 		GlStateManager.translate(x/textScale, y/textScale, 0);
-		GlStateManager.color(1, 1, 1);
 		this.hovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
-		for(int i = 0; i < Math.min(perPage, entries.length); i++)
+		for(int i = 0; i < Math.min(perPage, headers.length); i++)
 		{
+			GlStateManager.color(1, 1, 1);
 			int col = gui.manual.getTextColour();
-			if(hovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
+			boolean currEntryHovered = hovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight();
+			if(currEntryHovered)
 				col = gui.manual.getHighlightColour();
 			if(i!=0)
 				GlStateManager.translate(0, getFontHeight(), 0);
 			int j = offset+i;
-			if(j > entries.length-1)
-				j = entries.length-1;
-			String s = translationType==-1?entries[j]: translationType==0?gui.manual.formatCategoryName(entries[j]): gui.manual.formatEntryName(entries[j]);
-			fr.drawString(s, 0, 0, col, false);
+			if(j > headers.length-1)
+				j = headers.length-1;
+			String s = headers[j];
+			if(isCategory[j])
+			{
+				ManualUtils.bindTexture(gui.texture);
+				GlStateManager.enableBlend();
+				this.drawTexturedModalRect(0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
+			}
+			fr.drawString(s, isCategory[j]?7: 0, 0, col, false);
 		}
 		GlStateManager.scale(1/textScale, 1/textScale, 1/textScale);
 		GlStateManager.popMatrix();
@@ -111,7 +134,7 @@ public class GuiClickableList extends GuiButton
 		if(b)
 		{
 			int mmY = my-this.y;
-			for(int i = 0; i < Math.min(perPage, entries.length); i++)
+			for(int i = 0; i < Math.min(perPage, headers.length); i++)
 				if(mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
 					selectedOption = offset+i;
 		}

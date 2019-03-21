@@ -1,0 +1,145 @@
+{
+  "wire_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+      {
+        "recipe": "material/wire_copper"
+      },
+      {
+        "recipe": "wirecoils/wirecoil_lv"
+      },
+      {
+        "recipe": "wirecoils/wirecoil_lv_ins"
+      },
+
+      {
+        "recipe": "material/wire_electrum"
+      },
+      {
+        "recipe": "wirecoils/wirecoil_mv"
+      },
+      {
+        "recipe": "wirecoils/wirecoil_mv_ins"
+      },
+
+      {
+        "recipe": "material/wire_steel"
+      },
+      {
+        "recipe": "material/wire_aluminum"
+      },
+      {
+        "recipe": "wirecoils/wirecoil_hv"
+      }
+      ]
+    ]
+  },
+  "images": [
+    {
+    "type": "image",
+    "images": [
+      {
+        "location": "textures/misc/wiring.png",
+        "uMin": 0,
+        "vMin": 0,
+        "uSize": 110,
+        "vSize": 40
+      },
+      {
+        "location": "textures/misc/wiring.png",
+        "uMin": 0,
+        "vMin": 40,
+        "uSize": 110,
+        "vSize": 30
+      }
+    ]
+  },
+    {
+      "type": "image",
+      "offset": 1,
+      "images": [
+        {
+          "location": "textures/misc/wiring.png",
+          "uMin": 0,
+          "vMin": 70,
+          "uSize": 110,
+          "vSize": 60
+        },
+        {
+          "location": "textures/misc/wiring.png",
+          "uMin": 0,
+          "vMin": 130,
+          "uSize": 110,
+          "vSize": 60
+        }
+      ]
+    }
+  ],
+  "connector_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+      {
+        "recipe": "connectors/connector_lv"
+      },
+      {
+        "recipe": "connectors/relay_lv"
+      },
+      {
+        "recipe": "connectors/connector_mv"
+      },
+      {
+        "recipe": "connectors/relay_mv"
+      },
+      {
+        "recipe": "connectors/connector_hv"
+      },
+      {
+        "recipe": "connectors/relay_hv"
+      }
+      ]
+    ]
+  },
+  "capacitor_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+      {
+        "recipe": "metal_devices/capacitor_lv"
+      },
+      {
+        "recipe": "metal_devices/capacitor_mv"
+      },
+      {
+        "recipe": "metal_devices/capacitor_hv"
+      }
+      ]
+    ]
+  },
+  "transformer_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+      {
+        "recipe": "connectors/transformer"
+      },
+      {
+        "recipe": "connectors/transformer_hv"
+      }
+      ]
+    ]
+  },
+  "wirecutter_recipe": {
+    "type": "crafting",
+    "recipe": "tool/wirecutters"
+  },
+  "voltmeter_recipe": {
+    "type": "crafting",
+    "recipe": "tool/voltmeter"
+  },
+  "feedthrough": {
+    "type": "multiblock",
+    "name": "IE:Feedthrough"
+  }
+}

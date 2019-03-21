@@ -18,20 +18,19 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.util.network.MessageShaderManual.MessageType;
-import blusunrize.lib.manual.IManualPage;
+import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualUtils;
+import blusunrize.lib.manual.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import org.lwjgl.input.Keyboard;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -41,7 +40,8 @@ public class IEManualInstance extends ManualInstance
 
 	public IEManualInstance()
 	{
-		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png");
+		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png",
+				120, 179-28, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;
 		this.fontRenderer.colorCode[16+6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
 		((IEItemFontRender)this.fontRenderer).createColourBackup();
@@ -54,16 +54,22 @@ public class IEManualInstance extends ManualInstance
 	}
 
 	@Override
+	public String getDefaultResourceDomain()
+	{
+		return ImmersiveEngineering.MODID;
+	}
+
+	@Override
 	public String formatText(String s)
 	{
-		if(!s.contains(" "))//if it contains spaces, it's probably already translated.
-		{
-			s = ManualUtils.attemptStringTranslation("ie.manual.entry.%s", s);
+//		if(!s.contains(" "))//if it contains spaces, it's probably already translated.
+//		{
+//			s = ManualUtils.attemptStringTranslation("ie.manual.entry.%s",s);
 //			String translKey =  + s;
 //			String translated = I18n.format(translKey);
 //			if(!translKey.equals(translated))
 //				s = translated;
-		}
+//		}
 		String splitKey = ";";
 
 		s = s.replaceAll("<br>", "\n");
@@ -74,62 +80,7 @@ public class IEManualInstance extends ManualInstance
 			overflow++;
 			int end = s.indexOf(">", start);
 			String rep = s.substring(start, end+1);
-			String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
-			if(segment.length < 3)
-				break;
-			String result = "";
-			if(segment[1].equalsIgnoreCase("b"))
-			{
-				if(segment.length > 3)
-					result = (Config.manual_bool.get(segment[2])?segment[3]: segment.length > 4?segment[4]: "");
-				else
-					result = ""+Config.manual_bool.get(segment[2]);
-			}
-			else if(segment[1].equalsIgnoreCase("i"))
-				result = ""+Config.manual_int.get(segment[2]);
-			else if(segment[1].equalsIgnoreCase("iA"))
-			{
-				int[] iA = Config.manual_intA.get(segment[2]);
-				if(segment.length > 3)
-					try
-					{
-						if(segment[3].startsWith("l"))
-						{
-							int limiter = Integer.parseInt(segment[3].substring(1));
-							for(int i = 0; i < limiter; i++)
-								result += (i > 0?", ": "")+iA[i];
-						}
-						else
-						{
-							int idx = Integer.parseInt(segment[3]);
-							result = ""+iA[idx];
-						}
-					} catch(Exception ex)
-					{
-						break;
-					}
-				else
-					for(int i = 0; i < iA.length; i++)
-						result += (i > 0?", ": "")+iA[i];
-			}
-			else if(segment[1].equalsIgnoreCase("d"))
-				result = ""+Config.manual_double.get(segment[2]);
-			else if(segment[1].equalsIgnoreCase("dA"))
-			{
-				double[] iD = Config.manual_doubleA.get(segment[2]);
-				if(segment.length > 3)
-					try
-					{
-						int idx = Integer.parseInt(segment[3]);
-						result = ""+Utils.formatDouble(iD[idx], "##0.0##");
-					} catch(Exception ex)
-					{
-						break;
-					}
-				else
-					for(int i = 0; i < iD.length; i++)
-						result += (i > 0?", ": "")+Utils.formatDouble(iD[i], "##0.0##");
-			}
+			String result = formatConfigEntry(rep, splitKey);
 
 			s = s.replaceFirst(rep, result);
 		}
@@ -271,42 +222,26 @@ public class IEManualInstance extends ManualInstance
 	}
 
 	@Override
-	public void addEntry(String name, String category, IManualPage... pages)
+	public String formatCategoryName(ResourceLocation s)
 	{
-		super.addEntry(name, category, pages);
-		categorySet.add(category);
-	}
-
-	LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
-
-	@Override
-	public String[] getSortedCategoryList()
-	{
-		return categorySet.toArray(new String[categorySet.size()]);
-	}
-
-	@Override
-	public String formatCategoryName(String s)
-	{
-		return (improveReadability()?TextFormatting.BOLD: "")+I18n.format("ie.manual.category."+s+".name");
+		return (improveReadability()?TextFormatting.BOLD: "")+I18n.format("manual."
+				+s.toString().replace(':', '.'));
 	}
 
 	@Override
 	public String formatEntryName(String s)
 	{
-		String unformatted = "ie.manual.entry."+s+".name";
-		String formatted = I18n.format(unformatted);
-//		return "\uD83D\uDCBB";
-		return (improveReadability()?TextFormatting.BOLD: "")+(unformatted.equals(formatted)?s: formatted);
+		return (improveReadability()?TextFormatting.BOLD: "")+s;
 	}
 
 	@Override
 	public String formatEntrySubtext(String s)
 	{
-		String unformatted = "ie.manual.entry."+s+".subtext";
-		String formatted = I18n.format(unformatted);
-		return unformatted.equals(formatted)?"": formatted;
+		return s;
 	}
+
+	//TODO this was changed to snake_case. Where else do I need to change it
+	private static final ResourceLocation SHADER_ENTRY = new ResourceLocation(ImmersiveEngineering.MODID, "shader_list");
 
 	public void hideEntry(String name)
 	{
@@ -314,11 +249,13 @@ public class IEManualInstance extends ManualInstance
 	}
 
 	@Override
-	public boolean showEntryInList(ManualEntry entry)
+	public boolean showNodeInList(Tree.AbstractNode<ResourceLocation, ManualEntry> node)
 	{
-		if(entry!=null&&ManualHelper.CAT_UPDATE.equalsIgnoreCase(entry.getCategory()))
+		ResourceLocation nodeLoc = node.isLeaf()?node.getLeafData().getLocation(): node.getNodeData();
+		if(ImmersiveEngineering.MODID.equals(nodeLoc.getNamespace())&&
+				nodeLoc.getPath().startsWith(ManualHelper.CAT_UPDATE))
 			return IEConfig.showUpdateNews;
-		return !(entry!=null&&hiddenEntries.contains(entry.getName().toLowerCase()));
+		return !nodeLoc.equals(SHADER_ENTRY);
 	}
 
 	@Override
@@ -330,13 +267,14 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatLink(ManualLink link)
 	{
-		return TextFormatting.GOLD+"  -> "+formatEntryName(link.getKey())+", "+(link.getPage()+1);
+		return TextFormatting.GOLD+"  -> "+link.getKey().getTitle()+", "+
+				(link.getPage()+1);
 	}
 
 	@Override
-	public void openEntry(String entry)
+	public void openEntry(ManualEntry entry)
 	{
-		if("shaderList".equalsIgnoreCase(entry))
+		if(SHADER_ENTRY.equals(entry.getLocation()))
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC));
 	}
 
@@ -380,5 +318,75 @@ public class IEManualInstance extends ManualInstance
 	public boolean improveReadability()
 	{
 		return IEConfig.badEyesight;
+	}
+
+	public String formatConfigEntry(String rep, String splitKey)
+	{
+		String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
+		if(segment.length < 3)
+			return "~ERROR0~";
+		if(segment[1].equalsIgnoreCase("b"))
+		{
+			if(segment.length > 3)
+				return (Config.manual_bool.get(segment[2])?segment[3]: segment.length > 4?segment[4]: "");
+			else
+				return ""+Config.manual_bool.get(segment[2]);
+		}
+		else if(segment[1].equalsIgnoreCase("i"))
+			return ""+Config.manual_int.get(segment[2]);
+		else if(segment[1].equalsIgnoreCase("iA"))
+		{
+			int[] iA = Config.manual_intA.get(segment[2]);
+			if(segment.length > 3)
+				try
+				{
+					if(segment[3].startsWith("l"))
+					{
+						int limiter = Integer.parseInt(segment[3].substring(1));
+						StringBuilder result = new StringBuilder();
+						for(int i = 0; i < limiter; i++)
+							result.append(i > 0?", ": "").append(iA[i]);
+						return result.toString();
+					}
+					else
+					{
+						int idx = Integer.parseInt(segment[3]);
+						return ""+iA[idx];
+					}
+				} catch(Exception ex)
+				{
+					return "~ERROR1~";
+				}
+			else
+			{
+				StringBuilder result = new StringBuilder();
+				for(int i = 0; i < iA.length; i++)
+					result.append(i > 0?", ": "").append(iA[i]);
+				return result.toString();
+			}
+		}
+		else if(segment[1].equalsIgnoreCase("d"))
+			return ""+Config.manual_double.get(segment[2]);
+		else if(segment[1].equalsIgnoreCase("dA"))
+		{
+			double[] iD = Config.manual_doubleA.get(segment[2]);
+			if(segment.length > 3)
+				try
+				{
+					int idx = Integer.parseInt(segment[3]);
+					return ""+Utils.formatDouble(iD[idx], "##0.0##");
+				} catch(Exception ex)
+				{
+					return "~ERROR2~";
+				}
+			else
+			{
+				StringBuilder result = new StringBuilder();
+				for(int i = 0; i < iD.length; i++)
+					result.append(i > 0?", ": "").append(Utils.formatDouble(iD[i], "##0.0##"));
+				return result.toString();
+			}
+		}
+		return "~ERROR3~";
 	}
 }

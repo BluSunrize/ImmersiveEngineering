@@ -1,0 +1,80 @@
+{
+  "copper": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "ore",
+        "data": 0
+      },
+      {
+        "item": "metal",
+        "data": 0
+      }
+    ]
+  },
+  "alu": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "ore",
+        "data": 1
+      },
+      {
+        "item": "metal",
+        "data": 1
+      }
+    ]
+  },
+  "lead": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "ore",
+        "data": 2
+      },
+      {
+        "item": "metal",
+        "data": 2
+      }
+    ]
+  },
+  "silver": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "ore",
+        "data": 3
+      },
+      {
+        "item": "metal",
+        "data": 3
+      }
+    ]
+  },
+  "nickel": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "ore",
+        "data": 4
+      },
+      {
+        "item": "metal",
+        "data": 4
+      }
+    ]
+  },
+  "uranium": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "ore",
+        "data": 5
+      },
+      {
+        "item": "metal",
+        "data": 5
+      }
+    ]
+  }
+}

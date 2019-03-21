@@ -123,7 +123,7 @@ public class ActuallyAdditionsHelper extends IECompatModule
 							seeds.add(new ItemStack(IEContent.itemSeeds));
 							stack.shrink(1);
 						}
-					
+
 					if(!seeds.isEmpty()&&farmer.canAddToSeeds(seeds))
 					{
 						farmer.addToSeeds(seeds);

@@ -10,10 +10,8 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -29,7 +27,6 @@ import blusunrize.immersiveengineering.client.fx.ParticleIEBubble;
 import blusunrize.immersiveengineering.client.fx.ParticleSparks;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
-import blusunrize.immersiveengineering.client.manual.ManualPageShader;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
@@ -38,43 +35,39 @@ import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
-import blusunrize.immersiveengineering.common.blocks.stone.*;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCoresample;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.lib.manual.ManualElementTable;
+import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
+import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.Tree;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
-import blusunrize.lib.manual.IManualPage;
-import blusunrize.lib.manual.ManualInstance.ManualEntry;
-import blusunrize.lib.manual.ManualPages;
-import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -105,7 +98,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -138,7 +134,6 @@ import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
@@ -148,6 +143,7 @@ import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(Side.CLIENT)
@@ -583,37 +579,11 @@ public class ClientProxy extends CommonProxy
 	public void postInit()
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
-		//		int subVersion = 0;
-		//		while(!(ManualHelper.ieManualInstance.formatEntryName("updateNews_"+subVersion).equals("ie.manual.entry.updateNews_"+subVersion+".name")))
-		//		{
-		//			ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
-		//			int i=0;
-		//			String key;
-		//			while(!ManualHelper.ieManualInstance.formatText(key = "updateNews_"+subVersion+""+i).equals(key) && i<5)
-		//			{
-		//				pages.add(new ManualPages.Text(ManualHelper.getManual(), key));
-		//				i++;
-		//			}
-		//			ManualHelper.addEntry("updateNews_"+subVersion, ManualHelper.CAT_UPDATE, pages.toArray(new IManualPage[pages.size()]));
-		//			subVersion++;
-		//		}
-		NonNullList<ItemStack> tempItemList;
-		List<PositionedItemStack[]> tempRecipeList;
-		List<IManualPage> pages;
-
-		addChangelogToManual();
-
+		/*
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "introduction0"),
 				new ManualPages.Text(ManualHelper.getManual(), "introduction1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "introductionHammer", new ItemStack(IEContent.itemTool, 1, 0)));
-		ManualHelper.addEntry("ores", ManualHelper.CAT_GENERAL,
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresCopper", new ItemStack(IEContent.blockOre, 1, 0), new ItemStack(IEContent.itemMetal, 1, 0)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresBauxite", new ItemStack(IEContent.blockOre, 1, 1), new ItemStack(IEContent.itemMetal, 1, 1)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresLead", new ItemStack(IEContent.blockOre, 1, 2), new ItemStack(IEContent.itemMetal, 1, 2)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresSilver", new ItemStack(IEContent.blockOre, 1, 3), new ItemStack(IEContent.itemMetal, 1, 3)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresNickel", new ItemStack(IEContent.blockOre, 1, 4), new ItemStack(IEContent.itemMetal, 1, 4)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresUranium", new ItemStack(IEContent.blockOre, 1, 5), new ItemStack(IEContent.itemMetal, 1, 5)));
 		tempRecipeList = new ArrayList<>();
 		if(!IERecipes.hammerCrushingList.isEmpty())
 		{
@@ -661,7 +631,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageBlueprint(ManualHelper.getManual(), "components3", new ItemStack(IEContent.itemMaterial, 1, 27)));
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.ItemDisplay(ManualHelper.getManual(), "graphite0", new ItemStack(IEContent.itemMaterial, 1, 18), new ItemStack(IEContent.itemMaterial, 1, 19)), new ManualPageBlueprint(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemGraphiteElectrode)));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.Text(ManualHelper.getManual(), "shader2"));
-		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
+		//ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
 		pages = new ArrayList<IManualPage>();
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			pages.add(new ManualPageShader(ManualHelper.getManual(), entry));
@@ -727,35 +697,28 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "silo1"),
 				new ManualPages.Text(ManualHelper.getManual(), "silo2"));
 
-		Object[] wires = {
-				new ItemStack(IEContent.itemMaterial, 1, 20),
-				new ItemStack(IEContent.itemWireCoil, 1, 0),
-				new ItemStack(IEContent.itemWireCoil, 1, 6),
-				new ItemStack(IEContent.itemMaterial, 1, 21),
-				new ItemStack(IEContent.itemWireCoil, 1, 1),
-				new ItemStack(IEContent.itemWireCoil, 1, 7),
-				new ItemStack(IEContent.itemMaterial, 1, 22),
-				new ItemStack(IEContent.itemMaterial, 1, 23),
-				new ItemStack(IEContent.itemWireCoil, 1, 2)
-		};
-		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
-				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiring1", wires),
-				new ManualPages.Image(ManualHelper.getManual(), "wiring2", "immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"),
-				new ManualPages.Image(ManualHelper.getManual(), "wiring3", "immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"),
-				new ManualPages.Text(ManualHelper.getManual(), "wiring4"),
-				new ManualPages.Text(ManualHelper.getManual(), "wiring5"),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringConnector",
-						new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_LV.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.RELAY_LV.getMeta()),
-						new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_MV.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.RELAY_HV.getMeta()),
-						new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_HV.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.RELAY_HV.getMeta())),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringCapacitor", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_LV.getMeta()), new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()), new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringTransformer0", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.TRANSFORMER.getMeta()), new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.TRANSFORMER_HV.getMeta())),
-				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool, 1, 1)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool, 1, 2)),
-				new ManualPageMultiblock(ManualHelper.getManual(), "wiringFeedthrough0", MultiblockFeedthrough.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "wiringFeedthrough1"));
+		*/
+		ManualInstance ieMan = ManualHelper.getManual();
+		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
+				s -> new ManualElementMultiblock(ieMan,
+						MultiblockHandler.getByUniqueName(JsonUtils.getString(s, "name"))));
+		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				ManualHelper.CAT_ENERGY), 1);
+		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				ManualHelper.CAT_GENERAL), 0);
+
+		ieMan.addEntry(energyCat.getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				"test"), 1), new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
+		ieMan.addEntry(generalCat, new ResourceLocation(ImmersiveEngineering.MODID, "ores"));
+		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
+		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+		builder.addSpecialElement("values", 0, new ManualElementTable(ieMan, table, false));
+		builder.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "thermoelectric"));
+		ieMan.addEntry(energyCat, builder.create());
+
+		addChangelogToManual();
+
+		/*
 		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.DYNAMO.getMeta())),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generator1", new ItemStack(IEContent.blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.WATERMILL.getMeta()), new ItemStack(IEContent.itemMaterial, 1, 10)),
@@ -770,12 +733,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires3"),
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires4"),
 				new ManualPages.Text(ManualHelper.getManual(), "redstoneWires5"));
-		Map<String, Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
-		String[][] table = formatToTable_ItemIntHashmap(sortedMap, "K");
-		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
-				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
-				new ManualPages.Text(ManualHelper.getManual(), "thermoElectric1"),
-				new ManualPages.Table(ManualHelper.getManual(), "", table, false));
 		//		ManualHelper.addEntry("highvoltage", ManualHelper.CAT_ENERGY,
 		//				new ManualPages.Text(ManualHelper.getManual(), "highvoltage0"),
 		//				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDevice,1,8),new ItemStack(IEContent.blockMetalDevice,1,4)),
@@ -975,6 +932,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
+		*/
 
 
 		ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
@@ -998,7 +956,7 @@ public class ClientProxy extends CommonProxy
 
 	public static void handleMineralManual()
 	{
-		if(ManualHelper.getManual()!=null)
+		/*if(ManualHelper.getManual()!=null)
 		{
 			ArrayList<IManualPage> pages = new ArrayList();
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals0"));
@@ -1082,14 +1040,14 @@ public class ClientProxy extends CommonProxy
 //			String[][][] multiTables = formatToTable_ExcavatorMinerals();
 //			for(String[][] minTable : multiTables)
 //				pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));
-			if(mineralEntry!=null)
-				mineralEntry.setPages(pages.toArray(new IManualPage[pages.size()]));
-			else
-			{
-				ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
-				mineralEntry = ManualHelper.getManual().getEntry("minerals");
-			}
-		}
+			//if(mineralEntry!=null)
+			//	mineralEntry.setPages(pages.toArray(new IManualPage[pages.size()]));
+			//else
+			//{
+			//	ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
+			//	mineralEntry = ManualHelper.getManual().getEntry("minerals");
+			//}
+		}*/
 	}
 
 	static String[][][] formatToTable_ExcavatorMinerals()
@@ -1129,7 +1087,7 @@ public class ClientProxy extends CommonProxy
 		FontRenderer fr = ManualHelper.getManual().fontRenderer;
 		boolean isUnicode = fr.getUnicodeFlag();
 		fr.setUnicodeFlag(true);
-		SortedMap<ComparableVersion, Pair<String, IManualPage[]>> allChanges = new TreeMap<>(Comparator.reverseOrder());
+		SortedMap<ComparableVersion, ManualEntry> allChanges = new TreeMap<>(Comparator.reverseOrder());
 		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
 		//Included changelog
 		try(InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
@@ -1140,7 +1098,7 @@ public class ClientProxy extends CommonProxy
 			for(Entry<String, JsonElement> entry : upToCurrent.entrySet())
 			{
 				ComparableVersion version = new ComparableVersion(entry.getKey());
-				Pair<String, IManualPage[]> manualEntry = addVersionToManual(currIEVer, version,
+				ManualEntry manualEntry = addVersionToManual(currIEVer, version,
 						entry.getValue().getAsString(), false);
 				if(manualEntry!=null)
 					allChanges.put(version, manualEntry);
@@ -1155,12 +1113,15 @@ public class ClientProxy extends CommonProxy
 			for(Entry<ComparableVersion, String> e : result.changes.entrySet())
 				allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
 
-		for(Pair<String, IManualPage[]> entry : allChanges.values())
-			ManualHelper.addEntry(entry.getLeft(), ManualHelper.CAT_UPDATE, entry.getRight());
+		ManualInstance ieMan = ManualHelper.getManual();
+		Tree.Node<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+				ManualHelper.CAT_UPDATE), -1);
+		for(ManualEntry entry : allChanges.values())
+			ManualHelper.getManual().addEntry(updateCat, entry);
 		fr.setUnicodeFlag(isUnicode);
 	}
 
-	private Pair<String, IManualPage[]> addVersionToManual(ComparableVersion currVer, ComparableVersion version, String changes, boolean ahead)
+	private ManualEntry addVersionToManual(ComparableVersion currVer, ComparableVersion version, String changes, boolean ahead)
 	{
 		String title = version.toString();
 		if(ahead)
@@ -1174,18 +1135,11 @@ public class ClientProxy extends CommonProxy
 				return null;
 		}
 
-		List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(changes.replace("\t", "  "), 120);
-		final int LINES_PER_PAGE = 16;
-		int pageCount = l.size()/LINES_PER_PAGE+(l.size()%LINES_PER_PAGE==0?0: 1);
-		ManualPages.Text[] pages = new ManualPages.Text[pageCount];
-		for(int i = 0; i < pageCount; i++)
-		{
-			StringBuilder nextPage = new StringBuilder();
-			for(int j = LINES_PER_PAGE*i; j < l.size()&&j < (i+1)*LINES_PER_PAGE; j++)
-				nextPage.append(l.get(j)).append("\n");
-			pages[i] = new ManualPages.Text(ManualHelper.getManual(), nextPage.toString());
-		}
-		return new ImmutablePair<>(title, pages);
+		String text = changes.replace("\t", "  ");
+		ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ManualHelper.getManual());
+		builder.setContent(title, "", text);
+		builder.setLocation(new ResourceLocation(ImmersiveEngineering.MODID, "changelog_"+version.toString()));
+		return builder.create();
 	}
 
 	@Override
@@ -1516,7 +1470,6 @@ public class ClientProxy extends CommonProxy
 		ClientUtils.mc().effectRenderer.addEffect(particle);
 	}
 
-
 	@Override
 	public void draw3DBlockCauldron()
 	{
@@ -1702,6 +1655,21 @@ public class ClientProxy extends CommonProxy
 	public void clearConnectionModelCache()
 	{
 		ConnModelReal.cache.invalidateAll();
+	}
+
+	@Override
+	public void addFailedConnection(ImmersiveNetHandler.Connection connection, BlockPos reason, EntityPlayer player)
+	{
+		ClientEventHandler.FAILED_CONNECTIONS.put(connection,
+				new ImmutablePair<>(reason, new AtomicInteger(200)));
+	}
+
+	@Override
+	public void reloadManual()
+	{
+		if(ManualHelper.getManual()!=null)
+			ManualHelper.getManual().getAllEntries()
+					.forEach(ManualEntry::refreshPages);
 	}
 
 	static

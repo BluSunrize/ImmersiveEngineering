@@ -22,7 +22,10 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 27.04.2015
@@ -32,10 +35,12 @@ import java.util.ArrayList;
 public class MultiblockHandler
 {
 	static ArrayList<IMultiblock> multiblocks = new ArrayList<IMultiblock>();
+	static Map<String, IMultiblock> byUniqueName = new HashMap<>();
 
 	public static void registerMultiblock(IMultiblock multiblock)
 	{
 		multiblocks.add(multiblock);
+		byUniqueName.put(multiblock.getUniqueName(), multiblock);
 	}
 
 	public static ArrayList<IMultiblock> getMultiblocks()
@@ -43,6 +48,11 @@ public class MultiblockHandler
 		return multiblocks;
 	}
 
+	@Nullable
+	public static IMultiblock getByUniqueName(String name)
+	{
+		return byUniqueName.get(name);
+	}
 
 	public interface IMultiblock
 	{
