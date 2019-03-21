@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.util.network.MessageWireSync;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerChunkMapEntry;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -38,8 +39,22 @@ public class WireSyncManager
 		Collection<ConnectionPoint> connsInChunk = net.getAllConnectorsIn(chunk.getPos());
 		for(ConnectionPoint cp : connsInChunk)
 			for(Connection conn : net.getLocalNet(cp).getConnections(cp))
-				if(!conn.isInternal()&&conn.isPositiveEnd(cp))
+				if(shouldSendConnection(conn, chunk, player, add, cp))
 					ImmersiveEngineering.packetHandler.sendTo(new MessageWireSync(conn, add), player);
+	}
+
+	private static boolean shouldSendConnection(Connection conn, Chunk chunk, EntityPlayerMP player, boolean add,
+												ConnectionPoint currEnd)
+	{
+		if(conn.isInternal())
+			return false;
+		ConnectionPoint other = conn.getOtherEnd(currEnd);
+		ChunkPos otherChunk = new ChunkPos(other.getPosition());
+		if(otherChunk.equals(chunk.getPos()))
+			return conn.isPositiveEnd(currEnd);
+		PlayerChunkMapEntry e = ((WorldServer)chunk.getWorld()).getPlayerChunkMap().getEntry(otherChunk.x, otherChunk.z);
+		boolean playerTracking = e!=null&&e.containsPlayer(player);
+		return add==playerTracking;
 	}
 
 	private static void addPlayersTrackingPoint(Set<EntityPlayerMP> receivers, int x, int z, WorldServer world)
@@ -61,13 +76,13 @@ public class WireSyncManager
 
 	public static void onConnectionAdded(Connection c, World w)
 	{
-		if(!w.isRemote&&w instanceof WorldServer)
+		if(!c.isInternal()&&!w.isRemote&&w instanceof WorldServer)
 			sendToPlayersForConnection(new MessageWireSync(c, true), (WorldServer)w, c);
 	}
 
 	public static void onConnectionRemoved(Connection c, World w)
 	{
-		if(!w.isRemote&&w instanceof WorldServer)
+		if(!c.isInternal()&&!w.isRemote&&w instanceof WorldServer)
 			sendToPlayersForConnection(new MessageWireSync(c, false), (WorldServer)w, c);
 	}
 

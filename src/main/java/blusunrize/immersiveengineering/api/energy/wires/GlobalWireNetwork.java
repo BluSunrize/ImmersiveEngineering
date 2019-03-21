@@ -11,12 +11,15 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -183,7 +186,11 @@ public class GlobalWireNetwork implements ITickable
 
 	public LocalWireNetwork getLocalNet(ConnectionPoint pos)
 	{
-		return localNets.computeIfAbsent(pos, p -> new LocalWireNetwork(this));
+		return localNets.computeIfAbsent(pos, p -> {
+			LocalWireNetwork ret = new LocalWireNetwork(this);
+			ret.loadConnector(pos, new IICProxy(0, pos.getPosition()));
+			return ret;
+		});
 	}
 
 	public LocalWireNetwork getNullableLocalNet(ConnectionPoint pos)
@@ -220,7 +227,7 @@ public class GlobalWireNetwork implements ITickable
 			LocalWireNetwork local = getLocalNet(cp);
 			local.loadConnector(cp, iic);
 		}
-		if(isNew)
+		if(isNew&&!world.isRemote)
 		{
 			for(Connection c : iic.getInternalConnections())
 			{
@@ -282,8 +289,11 @@ public class GlobalWireNetwork implements ITickable
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 		localNets.values().stream().distinct().forEach(
 				(local) -> {
+					Object2IntMap<ResourceLocation> handlers = new Object2IntOpenHashMap<>();
 					for(ConnectionPoint cp : local.getConnectionPoints())
 					{
+						for(ResourceLocation rl : local.getConnector(cp).getRequestedHandlers())
+							handlers.put(rl, handlers.getInt(rl)+1);
 						if(localNets.get(cp)!=local)
 							IELogger.logger.warn("{} has net {}, but is in net {}", cp, localNets.get(cp), local);
 						else
@@ -295,8 +305,13 @@ public class GlobalWireNetwork implements ITickable
 								else if(!local.getConnections(c.getOtherEnd(cp)).contains(c))
 									IELogger.logger.warn("Connection {} from {} to {} is a diode!", c, cp,
 											c.getOtherEnd(cp));
+								if(c.isPositiveEnd(cp))
+									for(ResourceLocation rl : c.type.getRequestedHandlers())
+										handlers.put(rl, handlers.getInt(rl)+1);
 							}
 					}
+					if(!handlers.equals(local.handlerUserCount))
+						IELogger.logger.warn("Net assumes user counts as {}, but should be {}!", local.handlerUserCount, handlers);
 					for(BlockPos p : local.getConnectors())
 						if(world.isBlockLoaded(p))
 						{

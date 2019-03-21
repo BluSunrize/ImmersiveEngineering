@@ -73,10 +73,10 @@ public class WireCollisions implements IWorldEventListener
 					if(info.isInBlock)
 					{
 						Vec3d vecA = info.conn.getPoint(0, info.conn.getEndA());
-						if(Utils.isVecInBlock(vecA, pos, info.conn.getEndA().getPosition()))
+						if(Utils.isVecInBlock(vecA, pos, info.conn.getEndA().getPosition(), 1e-3))
 							continue;
 						Vec3d vecB = info.conn.getPoint(0, info.conn.getEndB());
-						if(Utils.isVecInBlock(vecB, pos, info.conn.getEndB().getPosition()))
+						if(Utils.isVecInBlock(vecB, pos, info.conn.getEndB().getPosition(), 1e-3))
 							continue;
 						BlockPos dropPos = pos;
 						if(ApiUtils.preventsConnection(worldIn, pos, newState, info.intersectA, info.intersectB))

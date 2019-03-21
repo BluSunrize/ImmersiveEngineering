@@ -115,16 +115,36 @@ public class Connection
 			return;
 		}
 		double wireLength = Math.sqrt(catData.deltaX*catData.deltaX+catData.deltaY*catData.deltaY+catData.deltaZ*catData.deltaZ)*type.getSlack();
-		double x = Math.sqrt(wireLength*wireLength-catData.deltaY*catData.deltaY)/catData.horLength;
-		double l = 0;
-		//TODO nicer numerical solver? Newton/Binary?
-		int limiter = 0;
-		while(limiter < 300)
+		double l;
 		{
-			limiter++;
-			l += 0.01;
-			if(Math.sinh(l)/l >= x)
-				break;
+			double goal = Math.sqrt(wireLength*wireLength-catData.deltaY*catData.deltaY)/catData.horLength;
+			double lower = 0;
+			double upper = 1;
+			while(Math.sinh(upper)/upper < goal)
+			{
+				lower = upper;
+				upper *= 2;
+			}
+			final int iterations = 20;
+			for(int i = 0; i < iterations; ++i)
+			{
+				double middleL = (lower+upper)/2;
+				double middleVal = Math.sinh(middleL)/middleL;
+				if(middleVal < goal)
+				{
+					lower = middleL;
+				}
+				else if(middleVal > goal)
+				{
+					upper = middleL;
+				}
+				else
+				{
+					upper = lower = middleL;
+					break;
+				}
+			}
+			l = (lower+upper)/2;
 		}
 		catData.a = catData.horLength/(2*l);
 		catData.offsetX = (0+catData.horLength-catData.a*Math.log((wireLength+catData.deltaY)/(wireLength-catData.deltaY)))*0.5;
@@ -272,6 +292,8 @@ public class Connection
 
 		public Vec3d getPoint(double pos)
 		{
+			if(pos==1)
+				return vecA.add(deltaX, deltaY, deltaZ);
 			double x = deltaX*pos;
 			double y;
 			if(isVertical)
@@ -279,7 +301,7 @@ public class Connection
 			else
 				y = a*Math.cosh((horLength*pos-offsetX)/a)+offsetY;
 			double z = deltaZ*pos;
-			return new Vec3d(x, y, z).add(vecA);
+			return vecA.add(x, y, z);
 		}
 
 		public boolean isVertical()
@@ -325,6 +347,13 @@ public class Connection
 		public Vec3d getVecA()
 		{
 			return vecA;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "Vertical: "+isVertical+", offset: x "+offsetX+" y "+offsetY+", Factor A: "+a+", Vector at end A: "+
+					vecA+", horizontal length: "+horLength+", delta: "+deltaX+", "+deltaY+", "+deltaZ;
 		}
 
 		@Override

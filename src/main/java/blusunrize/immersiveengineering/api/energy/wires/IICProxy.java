@@ -58,6 +58,7 @@ public class IICProxy implements IImmersiveConnectable
 	@Override
 	public void removeCable(Connection connection)
 	{
+		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
 		World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
 		if(w==null)

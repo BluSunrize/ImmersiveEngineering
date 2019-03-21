@@ -36,7 +36,7 @@ public class LocalWireNetwork implements IWorldTickable
 	private final Map<ConnectionPoint, Collection<Connection>> connections = new HashMap<>();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new HashMap<>();
-	private final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
+	/*private */final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
 
 	public LocalWireNetwork(NBTTagCompound subnet, GlobalWireNetwork globalNet)
 	{
