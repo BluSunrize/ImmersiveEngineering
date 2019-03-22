@@ -40,7 +40,7 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 			return;
 
 		//Grab model + correct eextended state
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=IEContent.blockMetalDevice1)
@@ -87,7 +87,7 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		if(Minecraft.isAmbientOcclusionEnabled())
 			GlStateManager.shadeModel(7425);
 		else

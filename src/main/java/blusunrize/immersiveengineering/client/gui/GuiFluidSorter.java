@@ -159,8 +159,8 @@ public class GuiFluidSorter extends GuiIEContainerBase
 	{
 		tile.filters[side][slot] = fluid;
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("filter_side", side);
-		tag.setInteger("filter_slot", slot);
+		tag.setInt("filter_side", side);
+		tag.setInt("filter_slot", slot);
 		if(fluid!=null)
 			tag.setTag("filter", fluid.writeToNBT(new NBTTagCompound()));
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));

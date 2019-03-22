@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 public class ConnModelReal implements IBakedModel
 {
 
-	TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
+	TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getTextureMapBlocks()
 			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":blocks/wire");
 	public static final Cache<ModelKey, IBakedModel> cache = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)

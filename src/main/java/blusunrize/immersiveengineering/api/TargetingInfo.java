@@ -33,7 +33,7 @@ public class TargetingInfo
 
 	public void writeToNBT(NBTTagCompound tag)
 	{
-		tag.setInteger("side", side.ordinal());
+		tag.setInt("side", side.ordinal());
 		tag.setFloat("hitX", hitX);
 		tag.setFloat("hitY", hitY);
 		tag.setFloat("hitZ", hitZ);
@@ -41,6 +41,6 @@ public class TargetingInfo
 
 	public static TargetingInfo readFromNBT(NBTTagCompound tag)
 	{
-		return new TargetingInfo(EnumFacing.byIndex(tag.getInteger("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
+		return new TargetingInfo(EnumFacing.byIndex(tag.getInt("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
 	}
 }

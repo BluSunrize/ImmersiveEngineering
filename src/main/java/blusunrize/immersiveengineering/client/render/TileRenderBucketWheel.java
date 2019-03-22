@@ -45,7 +45,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 	{
 		if(!tile.formed||!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.isDummy())
 			return;
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
@@ -68,7 +68,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 						list.add("dig"+i);
 						Block b = Block.getBlockFromItem(tile.digStacks.get(i).getItem());
 						IBlockState digState = b!=Blocks.AIR?b.getStateFromMeta(tile.digStacks.get(i).getMetadata()): Blocks.COBBLESTONE.getDefaultState();
-						IBakedModel digModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
+						IBakedModel digModel = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
 						if(digModel!=null&&digModel.getParticleTexture()!=null)
 							texMap.put("dig"+i, digModel.getParticleTexture().getIconName());
 					}
@@ -95,7 +95,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		GlStateManager.rotate(rot, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);

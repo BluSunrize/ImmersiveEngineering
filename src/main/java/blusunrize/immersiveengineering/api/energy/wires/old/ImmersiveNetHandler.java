@@ -651,7 +651,7 @@ public class ImmersiveNetHandler
 			if(end!=null)
 				tag.setIntArray("end", new int[]{end.getX(), end.getY(), end.getZ()});
 			tag.setString("cableType", cableType.getUniqueName());
-			tag.setInteger("length", length);
+			tag.setInt("length", length);
 			return tag;
 		}
 
@@ -668,7 +668,7 @@ public class ImmersiveNetHandler
 			WireType type = ApiUtils.getWireTypeFromNBT(tag, "cableType");
 
 			if(start!=null&&end!=null&&type!=null)
-				return new Connection(start, end, type, tag.getInteger("length"));
+				return new Connection(start, end, type, tag.getInt("length"));
 			return null;
 		}
 

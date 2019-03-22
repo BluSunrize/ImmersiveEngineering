@@ -71,7 +71,7 @@ public class FeedthroughModel implements IBakedModel
 	{
 		//TODO find a better place to put this
 		Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter =
-				(rl) -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rl.toString());
+				(rl) -> Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(rl.toString());
 		for(WireApi.FeedthroughModelInfo f : INFOS.values())
 			f.onResourceReload(bakedTextureGetter, DefaultVertexFormats.ITEM);
 	}
@@ -262,17 +262,17 @@ public class FeedthroughModel implements IBakedModel
 
 		private void init(FeedthroughCacheKey k, @Nullable World world, @Nullable BlockPos pos)
 		{
-			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes()
+			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes()
 					.getModelForState(k.baseState);
 			Function<Integer, Integer> colorMultiplier = null;
 			if(world!=null&&pos!=null)
 			{
-				BlockColors colors = Minecraft.getMinecraft().getBlockColors();
+				BlockColors colors = Minecraft.getInstance().getBlockColors();
 				colorMultiplier = (i) -> colors.colorMultiplier(k.baseState, world, pos, i);
 			}
 			else
 			{
-				ItemColors colors = Minecraft.getMinecraft().getItemColors();
+				ItemColors colors = Minecraft.getInstance().getItemColors();
 				ItemStack stack = new ItemStack(k.baseState.getBlock(), 1, k.baseState.getBlock().getMetaFromState(k.baseState));
 				colorMultiplier = (i) -> colors.colorMultiplier(stack, i);
 			}

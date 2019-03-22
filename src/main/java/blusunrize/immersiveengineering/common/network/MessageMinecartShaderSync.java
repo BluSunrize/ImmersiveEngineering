@@ -12,22 +12,26 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fml.network.PacketDistributor;
+
+import java.util.Objects;
+import java.util.function.Supplier;
 
 public class MessageMinecartShaderSync implements IMessage
 {
-	int entityID;
-	boolean request = false;
-	ItemStack shader;
+	private int entityID;
+	private boolean request = false;
+	private ItemStack shader;
 
 	public MessageMinecartShaderSync(Entity entity, Object o)
 	{
@@ -38,62 +42,52 @@ public class MessageMinecartShaderSync implements IMessage
 			request = true;
 	}
 
-	public MessageMinecartShaderSync()
-	{
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageMinecartShaderSync(PacketBuffer buf)
 	{
 		this.entityID = buf.readInt();
 		this.request = buf.readBoolean();
 		if(!request)
-			this.shader = ByteBufUtils.readItemStack(buf);
+			this.shader = buf.readItemStack();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(this.entityID);
 		buf.writeBoolean(this.request);
 		if(!request)
-			ByteBufUtils.writeItemStack(buf, this.shader);
+			buf.writeItemStack(this.shader);
 	}
 
-	public static class HandlerServer implements IMessageHandler<MessageMinecartShaderSync, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageMinecartShaderSync message, MessageContext ctx)
+		if(context.get().getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			WorldServer world = ctx.getServerHandler().player.getServerWorld();
+			WorldServer world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
 			world.addScheduledTask(() -> {
-				Entity entity = world.getEntityByID(message.entityID);
-				if(entity!=null&&entity.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+				Entity entity = world.getEntityByID(entityID);
+				if(entity==null)
+					return;
+				LazyOptional<ShaderWrapper> cap = entity.getCapability(CapabilityShader.SHADER_CAPABILITY);
+				if(cap.isPresent())
 				{
-					ShaderWrapper handler = entity.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+					ShaderWrapper handler = cap.orElse(null);
 					if(handler!=null)
-						ImmersiveEngineering.packetHandler.sendToDimension(new MessageMinecartShaderSync(entity, handler), world.provider.getDimension());
+						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world.getDimension()::getType),
+								new MessageMinecartShaderSync(entity, handler));
 				}
 			});
-			return null;
 		}
-	}
-
-	public static class HandlerClient implements IMessageHandler<MessageMinecartShaderSync, IMessage>
-	{
-		@Override
-		public IMessage onMessage(MessageMinecartShaderSync message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().addScheduledTask(() -> {
+		else
+			Minecraft.getInstance().addScheduledTask(() -> {
 				World world = ImmersiveEngineering.proxy.getClientWorld();
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
-					Entity entity = world.getEntityByID(message.entityID);
+					Entity entity = world.getEntityByID(entityID);
 					if(entity instanceof EntityMinecart)
-						ModelShaderMinecart.shadedCarts.put(message.entityID, message.shader);
+						ModelShaderMinecart.shadedCarts.put(entityID, shader);
 				}
 			});
-			return null;
-		}
 	}
 }

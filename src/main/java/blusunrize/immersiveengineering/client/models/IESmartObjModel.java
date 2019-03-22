@@ -152,7 +152,7 @@ public class IESmartObjModel extends OBJBakedModel
 
 					ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
 					builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
-					TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
+					TextureAtlasSprite missing = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
 
 					for(String s : newModel.getModel().getMatLib().getMaterialNames())
 					{
@@ -174,7 +174,7 @@ public class IESmartObjModel extends OBJBakedModel
 						if(sprite==null&&stack.getItem() instanceof IOBJModelCallback)
 							sprite = ((IOBJModelCallback)stack.getItem()).getTextureReplacement(stack, s);
 						if(sprite==null)
-							sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(newModel.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
+							sprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(newModel.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
 						if(sprite==null)
 							sprite = missing;
 						builder.put(s, sprite);
@@ -389,13 +389,13 @@ public class IESmartObjModel extends OBJBakedModel
 					{
 						String s = texReplace.get(groupName);
 						if(s!=null)
-							tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
+							tempSprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(s);
 					}
 					if(tempSprite==null&&!"null".equals(f.getMaterialName()))
-						tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
+						tempSprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
 				}
 				if(tempSprite==null)
-					tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+					tempSprite = Minecraft.getInstance().getTextureMapBlocks().getMissingSprite();
 				if(tempSprite!=null)
 				{
 					Builder builder = new Builder(getFormat());
@@ -477,7 +477,7 @@ public class IESmartObjModel extends OBJBakedModel
 					break;
 				case UV:
 					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+						sprite = Minecraft.getInstance().getTextureMapBlocks().getMissingSprite();
 					builder.put(e,
 							sprite.getInterpolatedU(texCoord.u*16),
 							sprite.getInterpolatedV((texCoord.v)*16),//v-flip used to be processed here but was moved because of shader layers

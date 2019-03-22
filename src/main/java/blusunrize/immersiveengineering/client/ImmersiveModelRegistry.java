@@ -128,7 +128,7 @@ public class ImmersiveModelRegistry
 					@Override
 					public TextureAtlasSprite apply(ResourceLocation location)
 					{
-						return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+						return Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(location.toString());
 					}
 				};
 				ResourceLocation modelLocation = new ResourceLocation(objPath);

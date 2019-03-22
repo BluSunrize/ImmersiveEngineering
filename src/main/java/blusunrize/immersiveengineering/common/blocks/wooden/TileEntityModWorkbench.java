@@ -141,7 +141,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
 		if(!inventory.get(0).isEmpty()&&inventory.get(0).getItem() instanceof IConfigurableTool)
-			for(String key : message.getKeySet())
+			for(String key : message.keySet())
 			{
 				if(key.startsWith("b_"))
 					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key.substring(2), message.getBoolean(key));

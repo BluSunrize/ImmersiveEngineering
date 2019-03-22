@@ -626,7 +626,7 @@ public class ApiUtils
 		//Legacy code for old save data, where types used to be integers
 		if(tag.getTag(key) instanceof NBTTagInt)
 		{
-			int i = tag.getInteger(key);
+			int i = tag.getInt(key);
 			return i==1?WireType.ELECTRUM: i==2?WireType.STEEL: i==3?WireType.STRUCTURE_ROPE: i==4?WireType.STRUCTURE_STEEL: WireType.COPPER;
 		}
 		else

@@ -306,7 +306,7 @@ public class ExcavatorHandler
 				tag.setString("mineral", mineral.name);
 			if(mineralOverride!=null)
 				tag.setString("mineralOverride", mineralOverride.name);
-			tag.setInteger("depletion", depletion);
+			tag.setInt("depletion", depletion);
 			return tag;
 		}
 
@@ -327,7 +327,7 @@ public class ExcavatorHandler
 					if(s.equalsIgnoreCase(mineral.name))
 						info.mineralOverride = mineral;
 			}
-			info.depletion = tag.getInteger("depletion");
+			info.depletion = tag.getInt("depletion");
 			return info;
 		}
 	}

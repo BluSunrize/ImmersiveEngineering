@@ -81,7 +81,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 			else
 				tile.selectedRecipe = button.id;
 			NBTTagCompound message = new NBTTagCompound();
-			message.setInteger("recipe", tile.selectedRecipe);
+			message.setInt("recipe", tile.selectedRecipe);
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.tile, message));
 			initGui();
 		}

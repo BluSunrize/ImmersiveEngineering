@@ -212,7 +212,7 @@ public final class WireApi
 				model = obj.process(ImmutableMap.of("flip-v", "true"));
 			}
 			this.model = model.bake(model.getDefaultState(), format, bakedTextureGetter);
-			tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(texLoc.toString());
+			tex = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(texLoc.toString());
 		}
 	}
 }

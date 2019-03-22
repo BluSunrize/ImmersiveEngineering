@@ -44,7 +44,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 	{
 		if(tile.dummy!=0||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
 		if(!quads.containsKey(tile.getFacing()))
 		{
@@ -69,7 +69,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
 
 

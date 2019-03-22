@@ -38,7 +38,7 @@ public class IEItemFontRender extends FontRenderer
 	public IEItemFontRender()
 	{
 		super(ClientUtils.mc().gameSettings, new ResourceLocation("textures/font/ascii.png"), ClientUtils.mc().renderEngine, false);
-		if(Minecraft.getMinecraft().gameSettings.language!=null)
+		if(Minecraft.getInstance().gameSettings.language!=null)
 		{
 			this.setUnicodeFlag(ClientUtils.mc().getLanguageManager().isCurrentLocaleUnicode());
 			this.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());

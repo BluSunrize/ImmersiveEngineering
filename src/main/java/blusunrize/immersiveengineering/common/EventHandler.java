@@ -61,6 +61,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.common.DimensionManager;
@@ -100,7 +101,7 @@ public class EventHandler
 	public static final ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
-	public static final Queue<Pair<Integer, BlockPos>> requestedBlockUpdates = new LinkedList<>();
+	public static final Queue<Pair<DimensionType, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
 
 	@SubscribeEvent

@@ -9,52 +9,46 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.EventHandler;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import java.util.Objects;
+import java.util.function.Supplier;
 
 public class MessageRequestBlockUpdate implements IMessage
 {
-	BlockPos pos;
+	private BlockPos pos;
 
 	public MessageRequestBlockUpdate(BlockPos pos)
 	{
 		this.pos = pos;
 	}
 
-	public MessageRequestBlockUpdate()
+	public MessageRequestBlockUpdate(PacketBuffer buf)
 	{
+		pos = buf.readBlockPos();
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
-		pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+		buf.writeBlockPos(pos);
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void process(Supplier<Context> context)
 	{
-		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
-	}
-
-	public static class Handler implements IMessageHandler<MessageRequestBlockUpdate, IMessage>
-	{
-		@Override
-		public IMessage onMessage(MessageRequestBlockUpdate message, MessageContext ctx)
-		{
-			WorldServer world = ctx.getServerHandler().player.getServerWorld();
-			world.addScheduledTask(() -> {
-				if(world.isBlockLoaded(message.pos))
-				{
-					int dim = world.provider.getDimension();
-					EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, message.pos));
-				}
-			});
-			return null;
-		}
+		WorldServer world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
+		world.addScheduledTask(() -> {
+			if(world.isBlockLoaded(pos))
+			{
+				DimensionType dim = world.getDimension().getType();
+				EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, pos));
+			}
+		});
 	}
 }

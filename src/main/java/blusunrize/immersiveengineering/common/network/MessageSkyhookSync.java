@@ -11,14 +11,14 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import java.util.function.Supplier;
 
 public class MessageSkyhookSync implements IMessage
 {
@@ -35,47 +35,38 @@ public class MessageSkyhookSync implements IMessage
 		speed = entity.horizontalSpeed;
 	}
 
-	public MessageSkyhookSync()
-	{
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageSkyhookSync(PacketBuffer buf)
 	{
 		entityID = buf.readInt();
-		NBTTagCompound tag = ByteBufUtils.readTag(buf);
-		connection = Connection.readFromNBT(tag);
+		NBTTagCompound tag = buf.readCompoundTag();
+		connection = ImmersiveNetHandler.Connection.readFromNBT(tag);
 		linePos = buf.readDouble();
 		speed = buf.readDouble();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(entityID);
-		ByteBufUtils.writeTag(buf, connection.writeToNBT());
+		buf.writeCompoundTag(connection.writeToNBT());
 		buf.writeDouble(linePos);
 		buf.writeDouble(speed);
 	}
 
-	public static class Handler implements IMessageHandler<MessageSkyhookSync, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageSkyhookSync message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-				World world = ImmersiveEngineering.proxy.getClientWorld();
-				if(world!=null)
+		Minecraft.getInstance().addScheduledTask(() -> {
+			World world = ImmersiveEngineering.proxy.getClientWorld();
+			if(world!=null)
+			{
+				Entity ent = world.getEntityByID(entityID);
+				if(ent instanceof EntitySkylineHook)
 				{
-					Entity ent = world.getEntityByID(message.entityID);
-					if(ent instanceof EntitySkylineHook)
-					{
-						message.connection.getSubVertices(world);
-						((EntitySkylineHook)ent).setConnectionAndPos(message.connection, message.linePos, message.speed);
-					}
+					connection.getSubVertices(world);
+					((EntitySkylineHook)ent).setConnectionAndPos(connection, linePos, speed);
 				}
-			});
-			return null;
-		}
+			}
+		});
 	}
 }

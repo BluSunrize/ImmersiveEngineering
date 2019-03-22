@@ -304,13 +304,13 @@ public class IngredientStack
 		if(this.fluid!=null)
 		{
 			nbt.setString("fluid", FluidRegistry.getFluidName(fluid));
-			nbt.setInteger("fluidAmount", fluid.amount);
-			nbt.setInteger("nbtType", 3);
+			nbt.setInt("fluidAmount", fluid.amount);
+			nbt.setInt("nbtType", 3);
 		}
 		else if(this.oreName!=null)
 		{
 			nbt.setString("oreName", oreName);
-			nbt.setInteger("nbtType", 2);
+			nbt.setInt("nbtType", 2);
 		}
 		else if(this.stackList!=null)
 		{
@@ -319,26 +319,26 @@ public class IngredientStack
 				if(!stack.isEmpty())
 					list.appendTag(stack.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("stackList", list);
-			nbt.setInteger("nbtType", 1);
+			nbt.setInt("nbtType", 1);
 		}
 		else
 		{
 			nbt.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
-			nbt.setInteger("nbtType", 0);
+			nbt.setInt("nbtType", 0);
 			nbt.setBoolean("useNBT", useNBT);
 		}
-		nbt.setInteger("inputSize", inputSize);
+		nbt.setInt("inputSize", inputSize);
 		return nbt;
 	}
 
 	public static IngredientStack readFromNBT(NBTTagCompound nbt)
 	{
 		if(nbt.hasKey("nbtType"))
-			switch(nbt.getInteger("nbtType"))
+			switch(nbt.getInt("nbtType"))
 			{
 				case 0:
 					ItemStack stack = new ItemStack(nbt.getCompoundTag("stack"));
-					stack.setCount(nbt.getInteger("inputSize"));
+					stack.setCount(nbt.getInt("inputSize"));
 					IngredientStack ingr = new IngredientStack(stack);
 					ingr.useNBT = nbt.getBoolean("useNBT");
 					return ingr;
@@ -347,11 +347,11 @@ public class IngredientStack
 					List<ItemStack> stackList = new ArrayList();
 					for(int i = 0; i < list.tagCount(); i++)
 						stackList.add(new ItemStack(list.getCompoundTagAt(i)));
-					return new IngredientStack(stackList, nbt.getInteger("inputSize"));
+					return new IngredientStack(stackList, nbt.getInt("inputSize"));
 				case 2:
-					return new IngredientStack(nbt.getString("oreName"), nbt.getInteger("inputSize"));
+					return new IngredientStack(nbt.getString("oreName"), nbt.getInt("inputSize"));
 				case 3:
-					FluidStack fs = new FluidStack(FluidRegistry.getFluid(nbt.getString("fluid")), nbt.getInteger("fluidAmount"));
+					FluidStack fs = new FluidStack(FluidRegistry.getFluid(nbt.getString("fluid")), nbt.getInt("fluidAmount"));
 					return new IngredientStack(fs);
 			}
 		return null;

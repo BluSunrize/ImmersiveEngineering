@@ -49,16 +49,16 @@ public class DimensionChunkCoords extends ChunkPos
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("dim", dimension);
-		tag.setInteger("x", this.x);
-		tag.setInteger("z", this.z);
+		tag.setInt("dim", dimension);
+		tag.setInt("x", this.x);
+		tag.setInt("z", this.z);
 		return tag;
 	}
 
 	public static DimensionChunkCoords readFromNBT(NBTTagCompound tag)
 	{
 		if(tag.hasKey("dim", 3)&&tag.hasKey("x", 3)&&tag.hasKey("z", 3))
-			return new DimensionChunkCoords(tag.getInteger("dim"), tag.getInteger("x"), tag.getInteger("z"));
+			return new DimensionChunkCoords(tag.getInt("dim"), tag.getInt("x"), tag.getInt("z"));
 		return null;
 	}
 }

@@ -31,7 +31,7 @@ public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
 	{
 		if(entity.block==null)
 			return;
-		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x, (float)y+0.5F, (float)z);
 

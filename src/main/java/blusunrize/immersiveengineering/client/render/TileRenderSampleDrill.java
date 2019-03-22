@@ -33,7 +33,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
 		IBakedModel model = blockRenderer.getModelForState(state);

@@ -29,13 +29,13 @@ public final class ConnectionPoint implements Comparable<ConnectionPoint>
 	public ConnectionPoint(NBTTagCompound nbt)
 	{
 		pos = NBTUtil.getPosFromTag(nbt);
-		index = nbt.getInteger("index");
+		index = nbt.getInt("index");
 	}
 
 	public NBTTagCompound createTag()
 	{
 		NBTTagCompound ret = NBTUtil.createPosTag(pos);
-		ret.setInteger("index", index);
+		ret.setInt("index", index);
 		return ret;
 	}
 

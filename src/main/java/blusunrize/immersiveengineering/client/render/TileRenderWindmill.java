@@ -40,7 +40,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 	{
 		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
 		if(quads[tile.sails]==null)
 		{
@@ -74,7 +74,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		GlStateManager.rotate(dir, 0, 1, 0);
 
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);

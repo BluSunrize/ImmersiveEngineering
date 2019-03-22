@@ -71,7 +71,7 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 		GlStateManager.translate(-0.25, -1, 0);
 		GlStateManager.color(1, 1, 1);
 		if(tex==null)
-			tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/iron_block");
+			tex = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/iron_block");
 
 		wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		ClientUtils.renderTexturedBox(wr, 0, 0, 0, .0625, 1, .0625, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());

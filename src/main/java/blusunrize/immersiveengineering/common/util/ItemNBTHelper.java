@@ -237,7 +237,7 @@ public class ItemNBTHelper
 	{
 		if(target==null||target.isEmpty())
 			return add.copy();
-		for(String key : add.getKeySet())
+		for(String key : add.keySet())
 			if(pattern==null||pattern.matcher(key).matches())
 				if(!target.hasKey(key))
 					target.setTag(key, add.getTag(key));

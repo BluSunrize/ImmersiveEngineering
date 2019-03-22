@@ -124,7 +124,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
-		TextureMap texturemap = Minecraft.getMinecraft().getTextureMapBlocks();
+		TextureMap texturemap = Minecraft.getInstance().getTextureMapBlocks();
 		for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
 			ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_"+i);
 
@@ -727,7 +727,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 								ClientUtils.drawTexturedRect(11, -38, 16, 16, 11/256f, 27/256f, 160/256f, 176/256f);
 								if(upgrades.hasKey("flash_cooldown"))
 								{
-									float h = upgrades.getInteger("flash_cooldown")/40f*16;
+									float h = upgrades.getInt("flash_cooldown")/40f*16;
 									ClientUtils.drawTexturedRect(11, -22-h, 16, h, 11/256f, 27/256f, (214-h)/256f, 214/256f);
 								}
 							}
@@ -736,7 +736,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 								ClientUtils.drawTexturedRect(40, -38, 12, 16, 40/256f, 52/256f, 160/256f, 176/256f);
 								if(upgrades.hasKey("shock_cooldown"))
 								{
-									float h = upgrades.getInteger("shock_cooldown")/40f*16;
+									float h = upgrades.getInt("shock_cooldown")/40f*16;
 									ClientUtils.drawTexturedRect(40, -22-h, 12, h, 40/256f, 52/256f, (214-h)/256f, 214/256f);
 								}
 							}
@@ -1443,11 +1443,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onLoginClient(EntityJoinWorldEvent ev)
 	{
-		if(ev.getEntity()==Minecraft.getMinecraft().player&&justLoggedIn)
+		if(ev.getEntity()==Minecraft.getInstance().player&&justLoggedIn)
 		{
 			String javaV = System.getProperty("java.version");
 			if(javaV.equals("1.8.0_25"))
-				Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"old_java", javaV));
+				Minecraft.getInstance().player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"old_java", javaV));
 			justLoggedIn = false;
 		}
 	}

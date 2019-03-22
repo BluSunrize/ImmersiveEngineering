@@ -149,7 +149,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
 	{
 		boolean openBuffer = false;
-		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
+		int stackDepth = GL11.glgetInt(GL11.GL_MODELVIEW_STACK_DEPTH);
 		try
 		{
 			if(multiblock.getStructureManual()!=null)
@@ -176,7 +176,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 				int i = 0;
 				ItemStack highlighted = ItemStack.EMPTY;
 
-				final BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
+				final BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
 
 				float f = (float)Math.sqrt(structureHeight*structureHeight+structureWidth*structureWidth+structureLength*structureLength);
 
@@ -251,7 +251,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			} catch(Exception e)
 			{
 			}
-		int newStackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
+		int newStackDepth = GL11.glgetInt(GL11.GL_MODELVIEW_STACK_DEPTH);
 		while(newStackDepth > stackDepth)
 		{
 			GlStateManager.popMatrix();
@@ -373,7 +373,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		@Override
 		public Biome getBiome(BlockPos pos)
 		{
-			World world = Minecraft.getMinecraft().world;
+			World world = Minecraft.getInstance().world;
 			if(world!=null)
 				return world.getBiome(pos);
 			else
@@ -390,7 +390,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		public WorldType getWorldType()
 		{
 
-			World world = Minecraft.getMinecraft().world;
+			World world = Minecraft.getInstance().world;
 			if(world!=null)
 				return world.getWorldType();
 			else

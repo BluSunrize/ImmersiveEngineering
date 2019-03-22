@@ -29,7 +29,7 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer<TileEnt
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
 
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=IEContent.blockMetalMultiblock)

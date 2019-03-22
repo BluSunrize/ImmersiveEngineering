@@ -9,66 +9,59 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import java.util.function.Supplier;
 
 public class MessageMagnetEquip implements IMessage
 {
-	int fetchSlot;
+	private int fetchSlot;
 
 	public MessageMagnetEquip(int fetch)
 	{
 		this.fetchSlot = fetch;
 	}
 
-	public MessageMagnetEquip()
-	{
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageMagnetEquip(PacketBuffer buf)
 	{
 		this.fetchSlot = buf.readInt();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(this.fetchSlot);
 	}
 
-	public static class Handler implements IMessageHandler<MessageMagnetEquip, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageMagnetEquip message, MessageContext ctx)
-		{
-			EntityPlayerMP player = ctx.getServerHandler().player;
-			player.getServerWorld().addScheduledTask(() -> {
-				ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
-				if(message.fetchSlot >= 0)
+		EntityPlayerMP player = context.get().getSender();
+		assert player!=null;
+		player.getServerWorld().addScheduledTask(() -> {
+			ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
+			if(fetchSlot >= 0)
+			{
+				ItemStack s = player.inventory.mainInventory.get(fetchSlot);
+				if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
 				{
-					ItemStack s = player.inventory.mainInventory.get(message.fetchSlot);
-					if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-					{
-						((ItemIEShield)s.getItem()).getUpgrades(s).setInteger("prevSlot", message.fetchSlot);
-						player.inventory.mainInventory.set(message.fetchSlot, held);
-						player.setHeldItem(EnumHand.OFF_HAND, s);
-					}
-				}
-				else
-				{
-					int prevSlot = ((ItemIEShield)held.getItem()).getUpgrades(held).getInteger("prevSlot");
-					ItemStack s = player.inventory.mainInventory.get(prevSlot);
-					player.inventory.mainInventory.set(prevSlot, held);
+					((ItemIEShield)s.getItem()).getUpgrades(s).setInt("prevSlot", fetchSlot);
+					player.inventory.mainInventory.set(fetchSlot, held);
 					player.setHeldItem(EnumHand.OFF_HAND, s);
-					((ItemIEShield)held.getItem()).getUpgrades(held).removeTag("prevSlot");
 				}
-			});
-			return null;
-		}
+			}
+			else
+			{
+				int prevSlot = ((ItemIEShield)held.getItem()).getUpgrades(held).getInt("prevSlot");
+				ItemStack s = player.inventory.mainInventory.get(prevSlot);
+				player.inventory.mainInventory.set(prevSlot, held);
+				player.setHeldItem(EnumHand.OFF_HAND, s);
+				((ItemIEShield)held.getItem()).getUpgrades(held).removeTag("prevSlot");
+			}
+		});
 	}
 }

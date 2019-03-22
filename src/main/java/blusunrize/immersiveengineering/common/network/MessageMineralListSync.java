@@ -11,15 +11,14 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientProxy;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class MessageMineralListSync implements IMessage
 {
@@ -30,51 +29,42 @@ public class MessageMineralListSync implements IMessage
 		this.map = map;
 	}
 
-	public MessageMineralListSync()
-	{
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageMineralListSync(PacketBuffer buf)
 	{
 		int size = buf.readInt();
 		for(int i = 0; i < size; i++)
 		{
-			NBTTagCompound tag = ByteBufUtils.readTag(buf);
+			NBTTagCompound tag = buf.readCompoundTag();
+			assert tag!=null;
 			MineralMix mix = MineralMix.readFromNBT(tag);
 			if(mix!=null)
-				map.put(mix, tag.getInteger("weight"));
+				map.put(mix, tag.getInt("weight"));
 		}
-
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(map.size());
 		for(Map.Entry<MineralMix, Integer> e : map.entrySet())
 		{
 			NBTTagCompound tag = e.getKey().writeToNBT();
-			tag.setInteger("weight", e.getValue());
-			ByteBufUtils.writeTag(buf, tag);
+			tag.setInt("weight", e.getValue());
+			buf.writeCompoundTag(tag);
 		}
 	}
 
-	public static class Handler implements IMessageHandler<MessageMineralListSync, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageMineralListSync message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().addScheduledTask(() -> onMessageMain(message));
-			return null;
-		}
+		Minecraft.getInstance().addScheduledTask(this::onMessageMain);
+	}
 
-		private void onMessageMain(MessageMineralListSync message)
-		{
-			ExcavatorHandler.mineralList.clear();
-			for(MineralMix min : message.map.keySet())
-				ExcavatorHandler.mineralList.put(min, message.map.get(min));
-			ClientProxy.handleMineralManual();
-		}
+	private void onMessageMain()
+	{
+		ExcavatorHandler.mineralList.clear();
+		for(MineralMix min : map.keySet())
+			ExcavatorHandler.mineralList.put(min, map.get(min));
+		ClientProxy.handleMineralManual();
 	}
 }

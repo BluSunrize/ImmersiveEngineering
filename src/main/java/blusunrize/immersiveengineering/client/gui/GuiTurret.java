@@ -79,7 +79,7 @@ public class GuiTurret extends GuiIEContainerBase
 		{
 			int rem = ((GuiReactiveList)button).selectedOption;
 			tile.targetList.remove(rem);
-			tag.setInteger("remove", rem);
+			tag.setInt("remove", rem);
 			listOffset = ((GuiReactiveList)button).getOffset()-1;
 		}
 		else if(button.id==1&&!this.nameField.getText().isEmpty())

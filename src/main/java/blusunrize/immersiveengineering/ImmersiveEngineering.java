@@ -30,50 +30,53 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION,
-		dependencies = "required-after:forge@[14.23.5.2768,);after:jei@[4.8,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
-		certificateFingerprint = "4cb49fcde3b43048c9889e0a3d083225da926334", acceptedMinecraftVersions = "[1.12,1.12.2]",
-		updateJSON = "https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.json")
+@Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
 	public static final int DATA_FIXER_VERSION = 1;
-
-	@Mod.Instance(MODID)
-	public static ImmersiveEngineering instance = new ImmersiveEngineering();
-	@SidedProxy(clientSide = "blusunrize.immersiveengineering.client.ClientProxy", serverSide = "blusunrize.immersiveengineering.common.CommonProxy")
+	public static final String NETWORK_VERSION = "1";
 	public static CommonProxy proxy;
 
-	public static final SimpleNetworkWrapper packetHandler = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
+			.named(new ResourceLocation(MODID, "main"))
+			.networkProtocolVersion(() -> NETWORK_VERSION)
+			.serverAcceptedVersions(NETWORK_VERSION::equals)
+			.clientAcceptedVersions(NETWORK_VERSION::equals)
+			.simpleChannel();
+
+	public ImmersiveEngineering()
+	{
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
 
 	static
 	{
 		FluidRegistry.enableUniversalBucket();
 	}
 
-	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event)
+	public void setup(FMLCommonSetupEvent event)
 	{
-		IELogger.logger = event.getModLog();
-		Config.preInit(event);
+		//Previously in PREINIT
+		IELogger.logger = LogManager.getLogger(MODID);
+		//TODO Config.preInit(event);
 
 		IEContent.preInit();
 		proxy.preInit();
@@ -97,19 +100,17 @@ public class ImmersiveEngineering
 		new ThreadContributorSpecialsDownloader();
 
 		IEContent.preInitEnd();
-	}
 
-	@Mod.EventHandler
-	public void init(FMLInitializationEvent event)
-	{
+		//Previously in INIT
+
 		proxy.preInitEnd();
 		IEContent.init();
 		IEWorldGen ieWorldGen = new IEWorldGen();
-		GameRegistry.registerWorldGenerator(ieWorldGen, 0);
+		//TODO GameRegistry.registerWorldGenerator(ieWorldGen, 0);
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
+		//TODO NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 		proxy.init();
 
 		IESounds.init();
@@ -121,27 +122,45 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
 		int messageId = 0;
-		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageTileSync.HandlerServer.class, MessageTileSync.class, messageId++, Side.SERVER);
-		packetHandler.registerMessage(MessageTileSync.HandlerClient.class, MessageTileSync.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageSpeedloaderSync.Handler.class, MessageSpeedloaderSync.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageSkyhookSync.Handler.class, MessageSkyhookSync.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerServer.class, MessageMinecartShaderSync.class, messageId++, Side.SERVER);
-		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerClient.class, MessageMinecartShaderSync.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageRequestBlockUpdate.Handler.class, MessageRequestBlockUpdate.class, messageId++, Side.SERVER);
-		packetHandler.registerMessage(MessageNoSpamChatComponents.Handler.class, MessageNoSpamChatComponents.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageShaderManual.HandlerServer.class, MessageShaderManual.class, messageId++, Side.SERVER);
-		packetHandler.registerMessage(MessageShaderManual.HandlerClient.class, MessageShaderManual.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageBirthdayParty.HandlerClient.class, MessageBirthdayParty.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageMagnetEquip.Handler.class, MessageMagnetEquip.class, messageId++, Side.SERVER);
-		packetHandler.registerMessage(MessageChemthrowerSwitch.Handler.class, MessageChemthrowerSwitch.class, messageId++, Side.SERVER);
-		packetHandler.registerMessage(MessageObstructedConnection.Handler.class, MessageObstructedConnection.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageSetGhostSlots.Handler.class, MessageSetGhostSlots.class, messageId++, Side.SERVER);
-		packetHandler.registerMessage(MessageWireSync.Handler.class, MessageWireSync.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageMaintenanceKit.Handler.class, MessageMaintenanceKit.class, messageId++, Side.SERVER);
+		packetHandler.registerMessage(messageId++, MessageMineralListSync.class, MessageMineralListSync::toBytes,
+				MessageMineralListSync::new, MessageMineralListSync::process);
+		packetHandler.registerMessage(messageId++, MessageTileSync.class, MessageTileSync::toBytes,
+				MessageTileSync::new, MessageTileSync::process);
+		packetHandler.registerMessage(messageId++, MessageTileSync.class, MessageTileSync::toBytes,
+				MessageTileSync::new, MessageTileSync::process);
+		packetHandler.registerMessage(messageId++, MessageSpeedloaderSync.class, MessageSpeedloaderSync::toBytes,
+				MessageSpeedloaderSync::new, MessageSpeedloaderSync::process);
+		packetHandler.registerMessage(messageId++, MessageSkyhookSync.class, MessageSkyhookSync::toBytes,
+				MessageSkyhookSync::new, MessageSkyhookSync::process);
+		packetHandler.registerMessage(messageId++, MessageMinecartShaderSync.class, MessageMinecartShaderSync::toBytes,
+				MessageMinecartShaderSync::new, MessageMinecartShaderSync::process);
+		packetHandler.registerMessage(messageId++, MessageMinecartShaderSync.class, MessageMinecartShaderSync::toBytes,
+				MessageMinecartShaderSync::new, MessageMinecartShaderSync::process);
+		packetHandler.registerMessage(messageId++, MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::toBytes,
+				MessageRequestBlockUpdate::new, MessageRequestBlockUpdate::process);
+		packetHandler.registerMessage(messageId++, MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::toBytes,
+				MessageNoSpamChatComponents::new, MessageNoSpamChatComponents::process);
+		packetHandler.registerMessage(messageId++, MessageShaderManual.class, MessageShaderManual::toBytes,
+				MessageShaderManual::new, MessageShaderManual::process);
+		packetHandler.registerMessage(messageId++, MessageShaderManual.class, MessageShaderManual::toBytes,
+				MessageShaderManual::new, MessageShaderManual::process);
+		packetHandler.registerMessage(messageId++, MessageBirthdayParty.class, MessageBirthdayParty::toBytes,
+				MessageBirthdayParty::new, MessageBirthdayParty::process);
+		packetHandler.registerMessage(messageId++, MessageMagnetEquip.class, MessageMagnetEquip::toBytes,
+				MessageMagnetEquip::new, MessageMagnetEquip::process);
+		packetHandler.registerMessage(messageId++, MessageChemthrowerSwitch.class, MessageChemthrowerSwitch::toBytes,
+				MessageChemthrowerSwitch::new, MessageChemthrowerSwitch::process);
+		packetHandler.registerMessage(messageId++, MessageObstructedConnection.class, MessageObstructedConnection::toBytes,
+				MessageObstructedConnection::new, MessageObstructedConnection::process);
+		packetHandler.registerMessage(messageId++, MessageSetGhostSlots.class, MessageSetGhostSlots::toBytes,
+				MessageSetGhostSlots::new, MessageSetGhostSlots::process);
+		packetHandler.registerMessage(messageId++, MessageWireSync.class, MessageWireSync::toBytes,
+				MessageWireSync::new, MessageWireSync::process);
+		packetHandler.registerMessage(messageId++, MessageMaintenanceKit.class, MessageMaintenanceKit::toBytes,
+				MessageMaintenanceKit::new, MessageMaintenanceKit::process);
 
 		IEIMCHandler.init();
-		IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(instance));
+		IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
 	}
 
 	@Mod.EventHandler

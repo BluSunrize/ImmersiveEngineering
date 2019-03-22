@@ -35,7 +35,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 			return;
 		if(quads==null)
 		{
-			final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+			final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 			IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 			if(state.getBlock()!=IEContent.blockWoodenDevice1)
 				return;
@@ -54,7 +54,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 		GlStateManager.rotate(dir, 0, 1, 0);
 		GlStateManager.rotate(wheelRotation, 0, 0, 1);
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);

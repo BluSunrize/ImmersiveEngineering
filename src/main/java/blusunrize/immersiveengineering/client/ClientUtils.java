@@ -275,7 +275,7 @@ public class ClientUtils
 
 	public static Minecraft mc()
 	{
-		return Minecraft.getMinecraft();
+		return Minecraft.getInstance();
 	}
 
 	public static void bindTexture(String path)
@@ -1028,8 +1028,8 @@ public class ClientUtils
 		double d0 = entityIn.lastTickPosX+(entityIn.posX-entityIn.lastTickPosX)*(double)partialTicks;
 		double d1 = entityIn.lastTickPosY+(entityIn.posY-entityIn.lastTickPosY)*(double)partialTicks;
 		double d2 = entityIn.lastTickPosZ+(entityIn.posZ-entityIn.lastTickPosZ)*(double)partialTicks;
-		TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
-		int progress = (int)(Minecraft.getMinecraft().playerController.curBlockDamageMP*10f)-1; // 0-10
+		TextureManager renderEngine = Minecraft.getInstance().renderEngine;
+		int progress = (int)(Minecraft.getInstance().playerController.curBlockDamageMP*10f)-1; // 0-10
 		if(progress < 0)
 			return;
 		renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -1062,7 +1062,7 @@ public class ClientUtils
 				if(iblockstate.getMaterial()!=Material.AIR)
 				{
 					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
-					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 					blockrendererdispatcher.renderBlockDamage(iblockstate, blockpos, textureatlassprite, world);
 				}
 			}
@@ -1619,7 +1619,7 @@ public class ClientUtils
 					break;
 				case UV:
 					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+						sprite = Minecraft.getInstance().getTextureMapBlocks().getMissingSprite();
 					builder.put(e,
 							sprite.getInterpolatedU(u),
 							sprite.getInterpolatedV((v)),

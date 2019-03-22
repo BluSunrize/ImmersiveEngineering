@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import java.util.function.Supplier;
 
 public class MessageWireSync implements IMessage
 {
@@ -37,19 +37,13 @@ public class MessageWireSync implements IMessage
 		this.added = added;
 	}
 
-	public MessageWireSync()
+	public MessageWireSync(PacketBuffer buf)
 	{
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf)
-	{
-		PacketBuffer pb = new PacketBuffer(buf);
-		added = pb.readBoolean();
-		start = readConnPoint(pb);
-		end = readConnPoint(pb);
+		added = buf.readBoolean();
+		start = readConnPoint(buf);
+		end = readConnPoint(buf);
 		if(added)
-			type = WireType.getValue(pb.readString(128));
+			type = WireType.getValue(buf.readString(128));
 		else
 			type = null;
 	}
@@ -66,7 +60,7 @@ public class MessageWireSync implements IMessage
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		PacketBuffer pb = new PacketBuffer(buf);
 		pb.writeBoolean(added);
@@ -76,28 +70,21 @@ public class MessageWireSync implements IMessage
 			pb.writeString(type.getUniqueName());
 	}
 
-	public static class Handler implements IMessageHandler<MessageWireSync, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageWireSync message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-				EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
-				World w = player.world;
-				GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
-				if(message.added)
-				{
-					//TODO handle connections loading before the connectors do!
-					globalNet.addConnection(new Connection(message.type, message.start, message.end));
-				}
-				else
-					globalNet.removeConnection(new Connection(WireType.STEEL, message.start, message.end));
-				IBlockState state = w.getBlockState(message.start.getPosition());
-				w.notifyBlockUpdate(message.start.getPosition(), state, state, 3);
-				state = w.getBlockState(message.end.getPosition());
-				w.notifyBlockUpdate(message.end.getPosition(), state, state, 3);
-			});
-			return null;
-		}
+		Minecraft.getInstance().addScheduledTask(() -> {
+			EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
+			World w = player.world;
+			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
+			if(added)
+				globalNet.addConnection(new Connection(type, start, end));
+			else
+				globalNet.removeConnection(new Connection(WireType.STEEL, start, end));
+			IBlockState state = w.getBlockState(start.getPosition());
+			w.notifyBlockUpdate(start.getPosition(), state, state, 3);
+			state = w.getBlockState(end.getPosition());
+			w.notifyBlockUpdate(end.getPosition(), state, state, 3);
+		});
 	}
 }

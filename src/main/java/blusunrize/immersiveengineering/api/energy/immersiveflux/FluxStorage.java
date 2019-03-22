@@ -41,7 +41,7 @@ public class FluxStorage implements IFluxStorage
 
 	public FluxStorage readFromNBT(NBTTagCompound nbt)
 	{
-		this.energy = nbt.getInteger("ifluxEnergy");
+		this.energy = nbt.getInt("ifluxEnergy");
 		if(energy > capacity)
 			energy = capacity;
 		return this;
@@ -51,7 +51,7 @@ public class FluxStorage implements IFluxStorage
 	{
 		if(energy < 0)
 			energy = 0;
-		nbt.setInteger("ifluxEnergy", energy);
+		nbt.setInt("ifluxEnergy", energy);
 		return nbt;
 	}
 

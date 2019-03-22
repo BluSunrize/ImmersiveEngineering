@@ -60,7 +60,7 @@ public class GuiAssembler extends GuiIEContainerBase
 	protected void actionPerformed(GuiButton button)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("buttonID", button.id);
+		tag.setInt("buttonID", button.id);
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 		if(button.id==3)
 		{

@@ -10,21 +10,23 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import java.util.Objects;
+import java.util.function.Supplier;
 
 public class MessageTileSync implements IMessage
 {
-	BlockPos pos;
-	NBTTagCompound nbt;
+	private BlockPos pos;
+	private NBTTagCompound nbt;
 
 	public MessageTileSync(TileEntityIEBase tile, NBTTagCompound nbt)
 	{
@@ -32,57 +34,44 @@ public class MessageTileSync implements IMessage
 		this.nbt = nbt;
 	}
 
-	public MessageTileSync()
-	{
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageTileSync(PacketBuffer buf)
 	{
 		this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		this.nbt = ByteBufUtils.readTag(buf);
+		this.nbt = buf.readCompoundTag();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
-		ByteBufUtils.writeTag(buf, this.nbt);
+		buf.writeCompoundTag(this.nbt);
 	}
 
-	public static class HandlerServer implements IMessageHandler<MessageTileSync, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageTileSync message, MessageContext ctx)
+		Context ctx = context.get();
+		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			WorldServer world = ctx.getServerHandler().player.getServerWorld();
+			WorldServer world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
 			world.addScheduledTask(() -> {
-				if(world.isBlockLoaded(message.pos))
+				if(world.isBlockLoaded(pos))
 				{
-					TileEntity tile = world.getTileEntity(message.pos);
+					TileEntity tile = world.getTileEntity(pos);
 					if(tile instanceof TileEntityIEBase)
-						((TileEntityIEBase)tile).receiveMessageFromClient(message.nbt);
+						((TileEntityIEBase)tile).receiveMessageFromClient(nbt);
 				}
 			});
-			return null;
 		}
-	}
-
-	public static class HandlerClient implements IMessageHandler<MessageTileSync, IMessage>
-	{
-		@Override
-		public IMessage onMessage(MessageTileSync message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().addScheduledTask(() -> {
+		else
+			Minecraft.getInstance().addScheduledTask(() -> {
 				World world = ImmersiveEngineering.proxy.getClientWorld();
-				if (world!=null) // This can happen if the task is scheduled right before leaving the world
+				if(world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
-					TileEntity tile = world.getTileEntity(message.pos);
+					TileEntity tile = world.getTileEntity(pos);
 					if(tile instanceof TileEntityIEBase)
-						((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
+						((TileEntityIEBase)tile).receiveMessageFromServer(nbt);
 				}
 			});
-			return null;
-		}
 	}
 }

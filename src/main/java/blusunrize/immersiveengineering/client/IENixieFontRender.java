@@ -36,7 +36,7 @@ public class IENixieFontRender extends FontRenderer
 	public IENixieFontRender()
 	{
 		super(ClientUtils.mc().gameSettings, new ResourceLocation("immersiveengineering:textures/misc/nixie_ascii.png"), ClientUtils.mc().renderEngine, false);
-		if(Minecraft.getMinecraft().gameSettings.language!=null)
+		if(Minecraft.getInstance().gameSettings.language!=null)
 		{
 			this.setUnicodeFlag(ClientUtils.mc().getLanguageManager().isCurrentLocaleUnicode());
 			this.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());

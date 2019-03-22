@@ -12,17 +12,16 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class MessageObstructedConnection implements IMessage
 {
@@ -40,45 +39,36 @@ public class MessageObstructedConnection implements IMessage
 		wireType = conn.type;
 	}
 
-	public MessageObstructedConnection()
-	{
-	}
-
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageObstructedConnection(PacketBuffer buf)
 	{
 		start = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
 		end = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		startB = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		endB = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		blocking = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		wireType = WireType.getValue(ByteBufUtils.readUTF8String(buf));
+		startB = buf.readBlockPos();
+		endB = buf.readBlockPos();
+		blocking = buf.readBlockPos();
+		wireType = WireType.getValue(buf.readString(100));
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeDouble(start.x).writeDouble(start.y).writeDouble(start.z);
 		buf.writeDouble(end.x).writeDouble(end.y).writeDouble(end.z);
-		buf.writeInt(startB.getX()).writeInt(startB.getY()).writeInt(startB.getZ());
-		buf.writeInt(endB.getX()).writeInt(endB.getY()).writeInt(endB.getZ());
-		buf.writeInt(blocking.getX()).writeInt(blocking.getY()).writeInt(blocking.getZ());
-		ByteBufUtils.writeUTF8String(buf, wireType.getUniqueName());
+		buf.writeBlockPos(startB);
+		buf.writeBlockPos(endB);
+		buf.writeBlockPos(blocking);
+		buf.writeString(wireType.getUniqueName());
 	}
 
-	public static class Handler implements IMessageHandler<MessageObstructedConnection, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageObstructedConnection message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-				Connection conn = new Connection(message.wireType, new ConnectionPoint(message.startB, 0),
-						new ConnectionPoint(message.endB, 0));
-				conn.generateCatenaryData(message.start, message.end);
-				ClientEventHandler.FAILED_CONNECTIONS.put(conn,
-						new ImmutablePair<>(message.blocking, new AtomicInteger(200)));
-			});
-			return null;
-		}
+		Minecraft.getInstance().addScheduledTask(() -> {
+			Connection conn = new Connection(wireType, new ConnectionPoint(startB, 0),
+					new ConnectionPoint(endB, 0));
+			conn.generateCatenaryData(start, end);
+			ClientEventHandler.FAILED_CONNECTIONS.put(conn,
+					new ImmutablePair<>(blocking, new AtomicInteger(200)));
+		});
 	}
 }

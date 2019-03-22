@@ -54,7 +54,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 			return;
 
 		//Grab model + correct eextended state
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=IEContent.blockMetalMultiblock)

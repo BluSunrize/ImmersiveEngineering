@@ -10,14 +10,14 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.gui.ContainerMaintenanceKit;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import java.util.function.Supplier;
 
 public class MessageMaintenanceKit implements IMessage
 {
@@ -30,45 +30,37 @@ public class MessageMaintenanceKit implements IMessage
 		this.nbt = nbt;
 	}
 
-	public MessageMaintenanceKit()
+	public MessageMaintenanceKit(PacketBuffer buf)
 	{
+		this.slot = EntityEquipmentSlot.fromString(buf.readString(100));
+		this.nbt = buf.readCompoundTag();
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
-		this.slot = EntityEquipmentSlot.fromString(ByteBufUtils.readUTF8String(buf));
-		this.nbt = ByteBufUtils.readTag(buf);
+		buf.writeString(this.slot.getName());
+		buf.writeCompoundTag(this.nbt);
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void process(Supplier<Context> context)
 	{
-		ByteBufUtils.writeUTF8String(buf, this.slot.getName());
-		ByteBufUtils.writeTag(buf, this.nbt);
-	}
-
-	public static class Handler implements IMessageHandler<MessageMaintenanceKit, IMessage>
-	{
-		@Override
-		public IMessage onMessage(MessageMaintenanceKit message, MessageContext ctx)
-		{
-			EntityPlayerMP player = ctx.getServerHandler().player;
-			player.getServerWorld().addScheduledTask(() -> {
-				if(player.openContainer instanceof ContainerMaintenanceKit)
-				{
-					ItemStack tool = ((ContainerMaintenanceKit)player.openContainer).inventorySlots.get(0).getStack();
-					if(!tool.isEmpty()&&tool.getItem() instanceof IConfigurableTool)
-						for(String key : message.nbt.getKeySet())
-						{
-							if(key.startsWith("b_"))
-								((IConfigurableTool)tool.getItem()).applyConfigOption(tool, key.substring(2), message.nbt.getBoolean(key));
-							else if(key.startsWith("f_"))
-								((IConfigurableTool)tool.getItem()).applyConfigOption(tool, key.substring(2), message.nbt.getFloat(key));
-						}
-				}
-			});
-			return null;
-		}
+		EntityPlayerMP player = context.get().getSender();
+		assert player!=null;
+		player.getServerWorld().addScheduledTask(() -> {
+			if(player.openContainer instanceof ContainerMaintenanceKit)
+			{
+				ItemStack tool = ((ContainerMaintenanceKit)player.openContainer).inventorySlots.get(0).getStack();
+				if(!tool.isEmpty()&&tool.getItem() instanceof IConfigurableTool)
+					for(String key : nbt.keySet())
+					{
+						if(key.startsWith("b_"))
+							((IConfigurableTool)tool.getItem()).applyConfigOption(tool, key.substring(2), nbt.getBoolean(key));
+						else if(key.startsWith("f_"))
+							((IConfigurableTool)tool.getItem()).applyConfigOption(tool, key.substring(2), nbt.getFloat(key));
+					}
+			}
+		});
 	}
 }

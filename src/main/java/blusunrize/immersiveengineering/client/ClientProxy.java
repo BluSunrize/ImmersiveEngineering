@@ -461,10 +461,10 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
 
 		//		revolverTextureMap = new TextureMap("textures/revolvers",true);
-		//		revolverTextureMap.setMipmapLevels(Minecraft.getMinecraft().gameSettings.mipmapLevels);
-		//		Minecraft.getMinecraft().renderEngine.loadTickableTexture(revolverTextureResource, revolverTextureMap);
-		//		Minecraft.getMinecraft().renderEngine.bindTexture(revolverTextureResource);
-		//		revolverTextureMap.setBlurMipmapDirect(false, Minecraft.getMinecraft().gameSettings.mipmapLevels > 0);
+		//		revolverTextureMap.setMipmapLevels(Minecraft.getInstance().gameSettings.mipmapLevels);
+		//		Minecraft.getInstance().renderEngine.loadTickableTexture(revolverTextureResource, revolverTextureMap);
+		//		Minecraft.getInstance().renderEngine.bindTexture(revolverTextureResource);
+		//		revolverTextureMap.setBlurMipmapDirect(false, Minecraft.getInstance().gameSettings.mipmapLevels > 0);
 		//		ClientUtils.mc().renderEngine.loadTextureMap(revolverTextureResource, revolverTextureMap);
 
 		nixieFontOptional = IEConfig.nixietubeFont?new IENixieFontRender(): ClientUtils.font();
@@ -558,7 +558,7 @@ public class ClientProxy extends CommonProxy
 				ClientUtils.mc().getBlockColors().registerBlockColorHandler(IEDefaultColourHandlers.INSTANCE, block);
 
 		/**Render Layers*/
-		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
+		Map<String, RenderPlayer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
 		RenderPlayer render = skinMap.get("default");
 		render.addLayer(new IEBipedLayerRenderer());
 		render = skinMap.get("slim");
@@ -1093,7 +1093,7 @@ public class ClientProxy extends CommonProxy
 		SortedMap<ComparableVersion, ManualEntry> allChanges = new TreeMap<>(Comparator.reverseOrder());
 		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
 		//Included changelog
-		try(InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
+		try(InputStream in = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
 				"changelog.json")).getInputStream())
 		{
 			JsonElement ele = new JsonParser().parse(new InputStreamReader(in));
@@ -1293,7 +1293,7 @@ public class ClientProxy extends CommonProxy
 
 	public void registerItemModel(Item item, int meta, String path, String renderCase)
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, meta, new ModelResourceLocation(path, renderCase));
+		Minecraft.getInstance().getRenderItem().getItemModelMesher().register(item, meta, new ModelResourceLocation(path, renderCase));
 	}
 
 	public static String getPropertyString(Map<IProperty, Comparable> propertyMap)
@@ -1427,7 +1427,7 @@ public class ClientProxy extends CommonProxy
 		////					particle = new EntityFXItemParts(tile.getworld(), stack, tile.getworld().rand.nextInt(16), x,y,z, mX,mY,mZ);
 		//				particle.noClip=true;
 		//				particle.multipleParticleScaleBy(2);
-		//				Minecraft.getMinecraft().effectRenderer.addEffect(particle);
+		//				Minecraft.getInstance().effectRenderer.addEffect(particle);
 		//			}
 	}
 
@@ -1435,7 +1435,7 @@ public class ClientProxy extends CommonProxy
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
 		Particle particle = new ParticleSparks(world, x, y, z, mx, my, mz);
-		Minecraft.getMinecraft().effectRenderer.addEffect(particle);
+		Minecraft.getInstance().effectRenderer.addEffect(particle);
 	}
 
 	@Override
@@ -1476,7 +1476,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void draw3DBlockCauldron()
 	{
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		IBlockState state = Blocks.CAULDRON.getDefaultState();
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
@@ -1494,7 +1494,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void drawSpecificFluidPipe(String configuration)
 	{
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		IBlockState state = IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		if(state instanceof IExtendedBlockState)
@@ -1558,7 +1558,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void drawFluidPumpTop()
 	{
-		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		IBlockState state = IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 		state = state.withProperty(IEProperties.MULTIBLOCKSLAVE, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
@@ -1715,7 +1715,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void startSkyhookSound(EntitySkylineHook hook)
 	{
-		Minecraft.getMinecraft().getSoundHandler().playSound(new SkyhookSound(hook,
+		Minecraft.getInstance().getSoundHandler().playSound(new SkyhookSound(hook,
 				new ResourceLocation(ImmersiveEngineering.MODID, "skyhook")));
 	}
 

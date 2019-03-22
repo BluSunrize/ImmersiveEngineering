@@ -10,13 +10,14 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.Utils;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import java.util.function.Supplier;
 
 public class MessageBirthdayParty implements IMessage
 {
@@ -27,40 +28,31 @@ public class MessageBirthdayParty implements IMessage
 		this.entityId = entity.getEntityId();
 	}
 
-	public MessageBirthdayParty()
+	public MessageBirthdayParty(PacketBuffer buf)
 	{
+		entityId = buf.readInt();
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
-	{
-		this.entityId = buf.readInt();
-	}
-
-	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(this.entityId);
 	}
 
-	public static class HandlerClient implements IMessageHandler<MessageBirthdayParty, IMessage>
+	@Override
+	public void process(Supplier<Context> context)
 	{
-		@Override
-		public IMessage onMessage(MessageBirthdayParty message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-				World world = ImmersiveEngineering.proxy.getClientWorld();
-				if (world!=null) // This can happen if the task is scheduled right before leaving the world
+		Minecraft.getInstance().addScheduledTask(() -> {
+			World world = ImmersiveEngineering.proxy.getClientWorld();
+			if(world!=null) // This can happen if the task is scheduled right before leaving the world
+			{
+				Entity entity = world.getEntityByID(entityId);
+				if(entity!=null&&entity instanceof EntityLivingBase)
 				{
-					Entity entity = world.getEntityByID(message.entityId);
-					if(entity!=null&&entity instanceof EntityLivingBase)
-					{
-						world.makeFireworks(entity.posX, entity.posY, entity.posZ, 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
-						entity.getEntityData().setBoolean("headshot", true);
-					}
+					world.makeFireworks(entity.posX, entity.posY, entity.posZ, 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
+					entity.getEntityData().setBoolean("headshot", true);
 				}
-			});
-			return null;
-		}
+			}
+		});
 	}
 }
