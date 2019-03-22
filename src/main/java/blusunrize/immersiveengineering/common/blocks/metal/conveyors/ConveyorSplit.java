@@ -74,7 +74,7 @@ public class ConveyorSplit extends ConveyorBasic
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 		if(entity.getEntityData().hasKey(nbtKey))
 		{
-			EnumFacing redirect = EnumFacing.values()[entity.getEntityData().getInteger(nbtKey)];
+			EnumFacing redirect = EnumFacing.values()[entity.getEntityData().getInt(nbtKey)];
 			BlockPos nextPos = tile.getPos().offset(redirect);
 			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
 			if(distNext < .7)
@@ -92,11 +92,11 @@ public class ConveyorSplit extends ConveyorBasic
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 			if(entity.getEntityData().hasKey(nbtKey))
-				redirect = EnumFacing.values()[entity.getEntityData().getInteger(nbtKey)];
+				redirect = EnumFacing.values()[entity.getEntityData().getInt(nbtKey)];
 			else
 			{
 				redirect = this.outputFace;
-				entity.getEntityData().setInteger(nbtKey, redirect.ordinal());
+				entity.getEntityData().setInt(nbtKey, redirect.ordinal());
 				BlockPos nextPos = tile.getPos().offset(this.outputFace.getOpposite());
 				if(tile.getWorld().isBlockLoaded(nextPos))
 				{
@@ -140,7 +140,7 @@ public class ConveyorSplit extends ConveyorBasic
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(conveyorTile.getPos().hashCode());
 		if(!entity.getEntityData().hasKey(nbtKey))
 			return vec;
-		EnumFacing redirect = EnumFacing.byIndex(entity.getEntityData().getInteger(nbtKey));
+		EnumFacing redirect = EnumFacing.byIndex(entity.getEntityData().getInt(nbtKey));
 		BlockPos wallPos = conveyorTile.getPos().offset(facing);
 		double distNext = Math.abs((facing.getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(facing.getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distNext < 1.33)
@@ -157,7 +157,7 @@ public class ConveyorSplit extends ConveyorBasic
 	public NBTTagCompound writeConveyorNBT()
 	{
 		NBTTagCompound nbt = super.writeConveyorNBT();
-		nbt.setInteger("outputFace", outputFace.ordinal());
+		nbt.setInt("outputFace", outputFace.ordinal());
 		return nbt;
 	}
 
@@ -165,7 +165,7 @@ public class ConveyorSplit extends ConveyorBasic
 	public void readConveyorNBT(NBTTagCompound nbt)
 	{
 		super.readConveyorNBT(nbt);
-		outputFace = EnumFacing.values()[nbt.getInteger("outputFace")];
+		outputFace = EnumFacing.values()[nbt.getInt("outputFace")];
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor_split");

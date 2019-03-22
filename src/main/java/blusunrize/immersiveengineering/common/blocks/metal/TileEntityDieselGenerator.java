@@ -61,8 +61,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		tanks[0].readFromNBT(nbt.getCompoundTag("tank0"));
 		active = nbt.getBoolean("active");
 		animation_fanRotation = nbt.getFloat("animation_fanRotation");
-		animation_fanFadeIn = nbt.getInteger("animation_fanFadeIn");
-		animation_fanFadeOut = nbt.getInteger("animation_fanFadeOut");
+		animation_fanFadeIn = nbt.getInt("animation_fanFadeIn");
+		animation_fanFadeOut = nbt.getInt("animation_fanFadeOut");
 	}
 
 	@Override
@@ -72,8 +72,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		nbt.setTag("tank0", tanks[0].writeToNBT(new NBTTagCompound()));
 		nbt.setBoolean("active", active);
 		nbt.setFloat("animation_fanRotation", animation_fanRotation);
-		nbt.setInteger("animation_fanFadeIn", animation_fanFadeIn);
-		nbt.setInteger("animation_fanFadeOut", animation_fanFadeOut);
+		nbt.setInt("animation_fanFadeIn", animation_fanFadeIn);
+		nbt.setInt("animation_fanFadeOut", animation_fanFadeOut);
 	}
 
 	@Override

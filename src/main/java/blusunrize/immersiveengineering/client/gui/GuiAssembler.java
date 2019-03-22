@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;

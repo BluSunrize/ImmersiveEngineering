@@ -58,10 +58,10 @@ public class ItemCoresample extends ItemIEBase
 			else
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.noMineral"));
 			int[] coords = ItemNBTHelper.getIntArray(stack, "coords");
-			boolean singleplayer = Minecraft.getMinecraft().isSingleplayer();
+			boolean singleplayer = Minecraft.getInstance().isSingleplayer();
 			if(world==null||world.provider.getDimension()!=0)
 			{
-				World clientWorld = Minecraft.getMinecraft().world;
+				World clientWorld = Minecraft.getInstance().world;
 				if(clientWorld!=null&&clientWorld.provider.getDimension()==coords[0])
 					world = clientWorld;
 			}

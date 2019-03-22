@@ -35,7 +35,7 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 			ComparableItemStack comp = ComparableItemStack.readFromNBT(nbt.getCompoundTag("mapKey"));
 			if(cache.containsKey(comp))
 				return cache.get(comp);
-			PackedDelegate delegate = new PackedDelegate(comp, new ItemStack(nbt.getCompoundTag("output")), IngredientStack.readFromNBT(nbt.getCompoundTag("input")), ComparableItemStack.readFromNBT(nbt.getCompoundTag("mold")), nbt.getInteger("energy"));
+			PackedDelegate delegate = new PackedDelegate(comp, new ItemStack(nbt.getCompoundTag("output")), IngredientStack.readFromNBT(nbt.getCompoundTag("input")), ComparableItemStack.readFromNBT(nbt.getCompoundTag("mold")), nbt.getInt("energy"));
 			cache.put(comp, delegate);
 			return delegate;
 		});
@@ -83,7 +83,7 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 			nbt.setTag("output", output.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("mold", mold.writeToNBT(new NBTTagCompound()));
-			nbt.setInteger("energy", (int)(getTotalProcessEnergy()/energyModifier));
+			nbt.setInt("energy", (int)(getTotalProcessEnergy()/energyModifier));
 			return nbt;
 		}
 	}

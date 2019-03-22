@@ -452,7 +452,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 				nbt.setTag("input", items.get(0).writeToNBT(new NBTTagCompound()));
 			if(!items.get(1).isEmpty())
 				nbt.setTag("output", items.get(1).writeToNBT(new NBTTagCompound()));
-			nbt.setInteger("processTick", processTick);
+			nbt.setInt("processTick", processTick);
 			return nbt;
 		}
 
@@ -462,7 +462,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 			BottlingProcess process = new BottlingProcess(input);
 			if(nbt.hasKey("output"))
 				process.items.set(1, new ItemStack(nbt.getCompoundTag("output")));
-			process.processTick = nbt.getInteger("processTick");
+			process.processTick = nbt.getInt("processTick");
 			return process;
 		}
 	}

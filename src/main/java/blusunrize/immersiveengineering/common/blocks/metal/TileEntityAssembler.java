@@ -123,7 +123,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		if(message.hasKey("buttonID"))
 		{
-			int id = message.getInteger("buttonID");
+			int id = message.getInt("buttonID");
 			if(id >= 0&&id < patterns.length)
 			{
 				CrafterPatternInventory pattern = patterns[id];
@@ -137,13 +137,13 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 		else if(message.hasKey("patternSync"))
 		{
-			int r = message.getInteger("recipe");
+			int r = message.getInt("recipe");
 			NBTTagList list = message.getTagList("patternSync", 10);
 			CrafterPatternInventory pattern = patterns[r];
 			for(int i = 0; i < list.tagCount(); i++)
 			{
 				NBTTagCompound itemTag = list.getCompoundTagAt(i);
-				pattern.inv.set(itemTag.getInteger("slot"), new ItemStack(itemTag));
+				pattern.inv.set(itemTag.getInt("slot"), new ItemStack(itemTag));
 			}
 		}
 	}

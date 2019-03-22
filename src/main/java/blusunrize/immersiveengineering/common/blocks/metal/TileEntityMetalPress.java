@@ -487,7 +487,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//		if (descPacket)
 	//			active = nbt.getBoolean("active");
 	//		if (nbt.hasKey("stoppedSlot"))
-	//			stopped = nbt.getInteger("stoppedSlot");
+	//			stopped = nbt.getInt("stoppedSlot");
 	//	}
 	//	@Override
 	//	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -500,7 +500,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//			nbt.setTag("mold", this.mold.writeToNBT(new NBTTagCompound()));
 	//		if (descPacket)
 	//			nbt.setBoolean("active", active);
-	//		nbt.setInteger("stoppedSlot", stopped);
+	//		nbt.setInt("stoppedSlot", stopped);
 	//	}
 	//	@Override
 	//	public boolean receiveClientEvent(int id, int arg)

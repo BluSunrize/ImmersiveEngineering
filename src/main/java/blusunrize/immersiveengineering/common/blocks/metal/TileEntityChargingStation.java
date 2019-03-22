@@ -129,7 +129,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		inventory.set(0, new ItemStack(nbt.getCompoundTag("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
@@ -138,7 +138,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
 			nbt.setTag("inventory", inventory.get(0).writeToNBT(new NBTTagCompound()));

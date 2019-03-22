@@ -26,12 +26,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
@@ -261,12 +261,12 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		if(type==0)
 		{
 			nbt.setFloat("growth", growth);
-			nbt.setInteger("energy", energyStorage.getEnergyStored());
+			nbt.setInt("energy", energyStorage.getEnergyStored());
 			nbt.setBoolean("renderActive", renderActive);
 		}
 		else if(type==1)
 		{
-			nbt.setInteger("fertilizerAmount", fertilizerAmount);
+			nbt.setInt("fertilizerAmount", fertilizerAmount);
 			nbt.setFloat("fertilizerMod", fertilizerMod);
 		}
 		else if(type==2)
@@ -282,9 +282,9 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		if(message.hasKey("renderActive"))
 			renderActive = message.getBoolean("renderActive");
 		if(message.hasKey("energy"))
-			energyStorage.setEnergy(message.getInteger("energy"));
+			energyStorage.setEnergy(message.getInt("energy"));
 		if(message.hasKey("fertilizerAmount"))
-			fertilizerAmount = message.getInteger("fertilizerAmount");
+			fertilizerAmount = message.getInt("fertilizerAmount");
 		if(message.hasKey("fertilizerMod"))
 			fertilizerMod = message.getFloat("fertilizerMod");
 		if(message.hasKey("tank"))
@@ -294,12 +294,12 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
-		dummy = nbt.getInteger("dummy");
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		dummy = nbt.getInt("dummy");
 		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 7);
 		energyStorage.readFromNBT(nbt);
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
-		fertilizerAmount = nbt.getInteger("fertilizerAmount");
+		fertilizerAmount = nbt.getInt("fertilizerAmount");
 		fertilizerMod = nbt.getFloat("fertilizerMod");
 		growth = nbt.getFloat("growth");
 		renderBB = null;
@@ -308,13 +308,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing", facing.ordinal());
-		nbt.setInteger("dummy", dummy);
+		nbt.setInt("facing", facing.ordinal());
+		nbt.setInt("dummy", dummy);
 		nbt.setTag("inventory", Utils.writeInventory(inventory));
 		energyStorage.writeToNBT(nbt);
 		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
 		nbt.setTag("tank", tankTag);
-		nbt.setInteger("fertilizerAmount", fertilizerAmount);
+		nbt.setInt("fertilizerAmount", fertilizerAmount);
 		nbt.setFloat("fertilizerMod", fertilizerMod);
 		nbt.setFloat("growth", growth);
 	}

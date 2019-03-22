@@ -150,7 +150,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("dummy", lower);
 	}
 
@@ -158,7 +158,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.values()[nbt.getInteger("facing")];
+		facing = EnumFacing.values()[nbt.getInt("facing")];
 		lower = nbt.getBoolean("dummy");
 	}
 

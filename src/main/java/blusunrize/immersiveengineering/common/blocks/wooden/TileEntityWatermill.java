@@ -231,7 +231,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		prevRotation = nbt.getFloat("prevRotation");
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
@@ -243,7 +243,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setFloat("prevRotation", prevRotation);
 		nbt.setIntArray("offset", offset);
 		nbt.setFloat("rotation", rotation);

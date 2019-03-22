@@ -27,13 +27,13 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 	}
 
 	@Override

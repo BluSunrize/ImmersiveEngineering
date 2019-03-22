@@ -58,8 +58,8 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		int oldLength = totalLength, oldPos = slopePosition;
-		totalLength = nbt.getInteger("totalLength");
-		slopePosition = nbt.getInteger("slopePosition");
+		totalLength = nbt.getInt("totalLength");
+		slopePosition = nbt.getInt("slopePosition");
 		onCeiling = nbt.getBoolean("onCeiling");
 		if(world!=null&&world.isRemote&&(oldLength!=totalLength||slopePosition!=oldPos))
 		{
@@ -67,15 +67,15 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 			world.notifyBlockUpdate(pos, state, state, 3);
 			bounds = null;
 		}
-		facing = EnumFacing.VALUES[nbt.getInteger("facing")];
+		facing = EnumFacing.VALUES[nbt.getInt("facing")];
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("totalLength", totalLength);
-		nbt.setInteger("slopePosition", slopePosition);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("totalLength", totalLength);
+		nbt.setInt("slopePosition", slopePosition);
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("onCeiling", onCeiling);
 	}
 

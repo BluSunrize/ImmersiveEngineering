@@ -48,7 +48,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		if(nbt.hasKey("name"))
 			this.name = nbt.getString("name");
 		if(nbt.hasKey("enchantments"))
@@ -60,7 +60,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		if(this.name!=null)
 			nbt.setString("name", this.name);
 		if(this.enchantments!=null)

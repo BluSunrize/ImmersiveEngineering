@@ -29,7 +29,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		redstone = nbt.getBoolean("redstone");
 		invert = nbt.getBoolean("invert");
 	}
@@ -37,7 +37,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("redstone", redstone);
 		nbt.setBoolean("invert", invert);
 	}

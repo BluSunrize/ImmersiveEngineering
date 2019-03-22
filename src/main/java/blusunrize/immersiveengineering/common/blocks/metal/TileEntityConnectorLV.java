@@ -111,7 +111,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		NBTTagCompound toNet = new NBTTagCompound();
 		storageToNet.writeToNBT(toNet);
 		nbt.setTag("toNet", toNet);
@@ -124,7 +124,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		NBTTagCompound toMachine = nbt.getCompoundTag("toMachine");
 		storageToMachine.readFromNBT(toMachine);
 		NBTTagCompound toNet = nbt.getCompoundTag("toNet");

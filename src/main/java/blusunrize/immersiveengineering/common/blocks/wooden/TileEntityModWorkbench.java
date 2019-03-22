@@ -44,9 +44,9 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		dummy = nbt.getBoolean("dummy");
-		dummyOffset = nbt.getInteger("dummyOffset");
+		dummyOffset = nbt.getInt("dummyOffset");
 		//		if(!descPacket)
 		//		{
 		//read inv
@@ -57,9 +57,9 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("dummy", dummy);
-		nbt.setInteger("dummyOffset", dummyOffset);
+		nbt.setInt("dummyOffset", dummyOffset);
 		//		if(!descPacket)
 		//		{
 		nbt.setTag("inventory", Utils.writeInventory(inventory));

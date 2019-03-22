@@ -296,13 +296,13 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		super.readCustomNBT(nbt, descPacket);
 		boolean oldActive = active;
 		active = nbt.getBoolean("active");
-		energyStorage = nbt.getInteger("energy");
+		energyStorage = nbt.getInt("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
-		side = EnumFacing.byIndex(nbt.getInteger("side"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		side = EnumFacing.byIndex(nbt.getInt("side"));
 		rotY = nbt.getFloat("rotY");
 		rotX = nbt.getFloat("rotX");
-		int lightAmount = nbt.getInteger("lightAmount");
+		int lightAmount = nbt.getInt("lightAmount");
 		fakeLights.clear();
 		for(int i = 0; i < lightAmount; i++)
 		{
@@ -327,13 +327,13 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active", active);
-		nbt.setInteger("energyStorage", energyStorage);
+		nbt.setInt("energyStorage", energyStorage);
 		nbt.setBoolean("redstoneControlInverted", redstoneControlInverted);
-		nbt.setInteger("facing", facing.ordinal());
-		nbt.setInteger("side", side.ordinal());
+		nbt.setInt("facing", facing.ordinal());
+		nbt.setInt("side", side.ordinal());
 		nbt.setFloat("rotY", rotY);
 		nbt.setFloat("rotX", rotX);
-		nbt.setInteger("lightAmount", fakeLights.size());
+		nbt.setInt("lightAmount", fakeLights.size());
 		for(int i = 0; i < fakeLights.size(); i++)
 		{
 			BlockPos cc = fakeLights.get(i);

@@ -207,11 +207,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 				return true;
 
 			if(group.equals("upgrade_damage0"))
-				return upgrades.getInteger("damage") > 0;
+				return upgrades.getInt("damage") > 0;
 			if(group.equals("upgrade_damage1")||group.equals("upgrade_damage2"))
-				return upgrades.getInteger("damage") > 1;
+				return upgrades.getInt("damage") > 1;
 			if(group.equals("upgrade_damage3")||group.equals("upgrade_damage4"))
-				return upgrades.getInteger("damage") > 2;
+				return upgrades.getInt("damage") > 2;
 		}
 		return false;
 	}
@@ -223,7 +223,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		if(transform.isPresent())
 		{
 			NBTTagCompound upgrades = this.getUpgrades(stack);
-			if(group.equals("drill_head")&&upgrades.getInteger("damage") <= 0)
+			if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
 			{
 				Matrix4 mat = new Matrix4(transform.get().getMatrix());
 				mat.translate(-.25f, 0, 0);
@@ -419,7 +419,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
 			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInteger("damage"), 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), 0));
 				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, 0));
 			}
 		}
@@ -489,8 +489,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		if(mop==null||head.isEmpty()||this.isDrillBroken(stack))
 			return false;
 		//		EnumFacing side = mop.sideHit;
-		//		int diameter = ((IDrillHead)head.getItem()).getMiningSize(head)+getUpgrades(stack).getInteger("size");
-		//		int depth = ((IDrillHead)head.getItem()).getMiningDepth(head)+getUpgrades(stack).getInteger("depth");
+		//		int diameter = ((IDrillHead)head.getItem()).getMiningSize(head)+getUpgrades(stack).getInt("size");
+		//		int depth = ((IDrillHead)head.getItem()).getMiningDepth(head)+getUpgrades(stack).getInt("depth");
 		//
 		//		BlockPos startPos=iPos;
 		//		if(diameter%2==0)//even numbers
@@ -607,7 +607,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	@Override
 	public int getCapacity(ItemStack container, int baseCapacity)
 	{
-		return baseCapacity+getUpgrades(container).getInteger("capacity");
+		return baseCapacity+getUpgrades(container).getInt("capacity");
 	}
 
 	@Override

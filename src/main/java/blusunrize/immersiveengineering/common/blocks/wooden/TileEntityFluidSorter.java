@@ -130,8 +130,8 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 			this.sortWithNBT = message.getByteArray("sideConfig");
 		if(message.hasKey("filter_side"))
 		{
-			int side = message.getInteger("filter_side");
-			int slot = message.getInteger("filter_slot");
+			int side = message.getInt("filter_side");
+			int slot = message.getInt("filter_slot");
 			this.filters[side][slot] = FluidStack.loadFluidStackFromNBT(message.getCompoundTag("filter"));
 		}
 		this.markDirty();

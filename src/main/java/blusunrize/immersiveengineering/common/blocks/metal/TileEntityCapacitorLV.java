@@ -126,7 +126,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		for(int i = 0; i < 6; i++)
-			nbt.setInteger("sideConfig_"+i, sideConfig[i].ordinal());
+			nbt.setInt("sideConfig_"+i, sideConfig[i].ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 
@@ -141,7 +141,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		}
 		else
 			for(int i = 0; i < 6; i++)
-				sideConfig[i] = SideConfig.values()[nbt.getInteger("sideConfig_"+i)];
+				sideConfig[i] = SideConfig.values()[nbt.getInt("sideConfig_"+i)];
 		energyStorage.readFromNBT(nbt);
 	}
 

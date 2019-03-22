@@ -83,8 +83,8 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		dummy = nbt.getInteger("dummy");
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		dummy = nbt.getInt("dummy");
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 		active = nbt.getBoolean("active");
 		if(descPacket)
@@ -94,8 +94,8 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("dummy", dummy);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("dummy", dummy);
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("active", active);
 		energyStorage.writeToNBT(nbt);
 	}

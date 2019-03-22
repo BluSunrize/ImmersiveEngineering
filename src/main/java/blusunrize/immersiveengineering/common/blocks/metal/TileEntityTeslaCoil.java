@@ -22,11 +22,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -214,7 +214,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	protected void sendRenderPacket(Entity target)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("targetEntity", target.getEntityId());
+		tag.setInt("targetEntity", target.getEntityId());
 		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
 	}
 
@@ -232,7 +232,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		if(message.hasKey("targetEntity"))
 		{
-			Entity target = world.getEntityByID(message.getInteger("targetEntity"));
+			Entity target = world.getEntityByID(message.getInt("targetEntity"));
 			if(target instanceof EntityLivingBase)
 			{
 				double dx = target.posX-getPos().getX();
@@ -332,7 +332,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 
 	private void addAnimation(LightningAnimation ani)
 	{
-		Minecraft.getMinecraft().addScheduledTask(() -> effectMap.put(getPos(), ani));
+		Minecraft.getInstance().addScheduledTask(() -> effectMap.put(getPos(), ani));
 	}
 
 	@Override
@@ -341,7 +341,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 	}
 
@@ -352,7 +352,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		nbt.setBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.setBoolean("lowPower", lowPower);
 		if(facing!=null)
-			nbt.setInteger("facing", facing.ordinal());
+			nbt.setInt("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 

@@ -34,22 +34,22 @@ public class DataFixerHammerCutterDamage implements IFixableData
 		if(IEContent.itemTool.getRegistryName().toString()
 				.equals(compound.getString("id")))
 		{
-			int meta = compound.getInteger("Damage");
+			int meta = compound.getInt("Damage");
 			if(meta==CUTTER_META||meta==HAMMER_META)
 			{
 				int damage;
 				NBTTagCompound stackTag = compound.getCompoundTag("tag");
 				if(meta==CUTTER_META)
 				{
-					damage = stackTag.getInteger("cutterDmg");
+					damage = stackTag.getInt("cutterDmg");
 					stackTag.removeTag("cutterDmg");
 				}
 				else
 				{
-					damage = stackTag.getInteger("hammerDmg");
+					damage = stackTag.getInt("hammerDmg");
 					stackTag.removeTag("hammerDmg");
 				}
-				stackTag.setInteger(Lib.NBT_DAMAGE, damage);
+				stackTag.setInt(Lib.NBT_DAMAGE, damage);
 			}
 		}
 		return compound;

@@ -121,7 +121,7 @@ public class ConveyorCovered extends ConveyorBasic
 		ItemStack cover = !coverGet.get().isEmpty()?coverGet.get(): defaultCover;
 		Block b = Block.getBlockFromItem(cover.getItem());
 		IBlockState state = !cover.isEmpty()?b.getStateFromMeta(cover.getMetadata()): Blocks.STONE.getDefaultState();
-		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 		if(model!=null)
 		{
 			TextureAtlasSprite sprite = model.getParticleTexture();

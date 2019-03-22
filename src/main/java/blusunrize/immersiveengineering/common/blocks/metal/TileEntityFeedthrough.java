@@ -60,8 +60,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		if(connPositive!=null)
 			nbt.setTag(POSITIVE, connPositive.createTag());
 		nbt.setBoolean(HAS_NEGATIVE, hasNegative);
-		nbt.setInteger(FACING, facing.getIndex());
-		nbt.setInteger(OFFSET, offset);
+		nbt.setInt(FACING, facing.getIndex());
+		nbt.setInt(OFFSET, offset);
 		NBTTagCompound stateNbt = new NBTTagCompound();
 		Utils.stateToNBT(stateNbt, stateForMiddle);
 		nbt.setTag(MIDDLE_STATE, stateNbt);
@@ -75,8 +75,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		if(nbt.hasKey(POSITIVE, NBT.TAG_COMPOUND))
 			connPositive = new ConnectionPoint(nbt.getCompoundTag(POSITIVE));
 		hasNegative = nbt.getBoolean(HAS_NEGATIVE);
-		facing = EnumFacing.VALUES[nbt.getInteger(FACING)];
-		offset = nbt.getInteger(OFFSET);
+		facing = EnumFacing.VALUES[nbt.getInt(FACING)];
+		offset = nbt.getInt(OFFSET);
 		stateForMiddle = Utils.stateFromNBT(nbt.getCompoundTag(MIDDLE_STATE));
 	}
 

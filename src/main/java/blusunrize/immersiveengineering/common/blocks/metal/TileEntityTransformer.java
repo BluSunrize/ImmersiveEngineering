@@ -73,12 +73,12 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		if(leftType!=null)
 			nbt.setString("leftType", leftType.getUniqueName());
 		if(rightType!=null)
 			nbt.setString("rightType", rightType.getUniqueName());
-		nbt.setInteger("dummy", dummy);
+		nbt.setInt("dummy", dummy);
 		nbt.setBoolean("postAttached", onPost);
 	}
 
@@ -86,7 +86,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		if(nbt.hasKey("leftType"))
 			leftType = ApiUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
@@ -95,7 +95,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 			rightType = ApiUtils.getWireTypeFromNBT(nbt, "rightType");
 		else
 			rightType = null;
-		dummy = nbt.getInteger("dummy");
+		dummy = nbt.getInt("dummy");
 		onPost = nbt.getBoolean("postAttached");
 	}
 

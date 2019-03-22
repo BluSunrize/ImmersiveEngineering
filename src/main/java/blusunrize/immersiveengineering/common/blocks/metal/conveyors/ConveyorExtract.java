@@ -317,9 +317,9 @@ public class ConveyorExtract extends ConveyorBasic
 	public NBTTagCompound writeConveyorNBT()
 	{
 		NBTTagCompound nbt = super.writeConveyorNBT();
-		nbt.setInteger("extractDirection", extractDirection.ordinal());
-		nbt.setInteger("transferCooldown", transferCooldown);
-		nbt.setInteger("transferTickrate", transferTickrate);
+		nbt.setInt("extractDirection", extractDirection.ordinal());
+		nbt.setInt("transferCooldown", transferCooldown);
+		nbt.setInt("transferTickrate", transferTickrate);
 		return nbt;
 	}
 
@@ -327,8 +327,8 @@ public class ConveyorExtract extends ConveyorBasic
 	public void readConveyorNBT(NBTTagCompound nbt)
 	{
 		super.readConveyorNBT(nbt);
-		extractDirection = EnumFacing.values()[nbt.getInteger("extractDirection")];
-		transferCooldown = nbt.getInteger("transferCooldown");
-		transferTickrate = nbt.getInteger("transferTickrate");
+		extractDirection = EnumFacing.values()[nbt.getInt("extractDirection")];
+		transferCooldown = nbt.getInt("transferCooldown");
+		transferTickrate = nbt.getInt("transferTickrate");
 	}
 }

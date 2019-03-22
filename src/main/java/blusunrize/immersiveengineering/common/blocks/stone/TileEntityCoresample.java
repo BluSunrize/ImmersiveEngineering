@@ -49,14 +49,14 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		coresample = new ItemStack(nbt.getCompoundTag("coresample"));
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setTag("coresample", coresample.writeToNBT(new NBTTagCompound()));
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 	}
 
 	@Override

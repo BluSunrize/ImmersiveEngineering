@@ -273,7 +273,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		if(message.hasKey("add"))
 			targetList.add(message.getString("add"));
 		if(message.hasKey("remove"))
-			targetList.remove(message.getInteger("remove"));
+			targetList.remove(message.getInt("remove"));
 		if(message.hasKey("whitelist"))
 			whitelist = message.getBoolean("whitelist");
 		if(message.hasKey("attackAnimals"))
@@ -291,7 +291,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 
 		if(nbt.hasKey("owner"))
@@ -316,7 +316,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		nbt.setBoolean("dummy", dummy);
 		nbt.setBoolean("redstoneInverted", redstoneControlInverted);
 		if(facing!=null)
-			nbt.setInteger("facing", facing.ordinal());
+			nbt.setInt("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
 
 		if(owner!=null)

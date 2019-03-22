@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurret;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretChem;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
 import blusunrize.immersiveengineering.common.gui.ContainerTurret;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;

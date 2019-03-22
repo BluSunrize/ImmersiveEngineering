@@ -132,8 +132,8 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		}
 		if(cur!=-1)
 		{
-			tag.setInteger("Energy", cur);
-			tag.setInteger("MaxStorage", max);
+			tag.setInt("Energy", cur);
+			tag.setInt("MaxStorage", max);
 		}
 		if(te instanceof TileEntityTeslaCoil)
 		{

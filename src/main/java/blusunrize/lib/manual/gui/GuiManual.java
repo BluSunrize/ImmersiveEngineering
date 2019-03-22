@@ -14,7 +14,10 @@ import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -58,9 +61,9 @@ public class GuiManual extends GuiScreen
 		this.currentNode = manual.contentTree.getRoot();
 		this.texture = texture;
 
-		prevGuiScale = Minecraft.getMinecraft().gameSettings.guiScale;
+		prevGuiScale = Minecraft.getInstance().gameSettings.guiScale;
 		if(prevGuiScale!=0&&prevGuiScale!=2&&manual.allowGuiRescale())
-			Minecraft.getMinecraft().gameSettings.guiScale = 2;
+			Minecraft.getInstance().gameSettings.guiScale = 2;
 		activeManual = this;
 	}
 
@@ -90,13 +93,13 @@ public class GuiManual extends GuiScreen
 	@Override
 	public void initGui()
 	{
-		if(Minecraft.getMinecraft().gameSettings.guiScale==1)
+		if(Minecraft.getInstance().gameSettings.guiScale==1)
 		{
-			Minecraft.getMinecraft().gameSettings.guiScale = 2;
+			Minecraft.getInstance().gameSettings.guiScale = 2;
 			ScaledResolution res = new ScaledResolution(this.mc);
 			this.width = res.getScaledWidth();
 			this.height = res.getScaledHeight();
-			Minecraft.getMinecraft().gameSettings.guiScale = 1;
+			Minecraft.getInstance().gameSettings.guiScale = 1;
 		}
 		this.manual.openManual();
 
@@ -238,7 +241,7 @@ public class GuiManual extends GuiScreen
 		this.manual.closeManual();
 		super.onGuiClosed();
 		if(prevGuiScale!=-1&&manual.allowGuiRescale())
-			Minecraft.getMinecraft().gameSettings.guiScale = prevGuiScale;
+			Minecraft.getInstance().gameSettings.guiScale = prevGuiScale;
 	}
 
 	@Override

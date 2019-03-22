@@ -63,12 +63,12 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	{
 		super.readCustomNBT(nbt, descPacket);
 		//to prevent old ballons from going black
-		int nbtVersion = nbt.getInteger("nbtVersion");
+		int nbtVersion = nbt.getInt("nbtVersion");
 		if(nbtVersion >= 1)
 		{
-			style = nbt.getInteger("style");
-			colour0 = nbt.getInteger("colour0");
-			colour1 = nbt.getInteger("colour1");
+			style = nbt.getInt("style");
+			colour0 = nbt.getInt("colour0");
+			colour1 = nbt.getInt("colour1");
 		}
 		if(nbt.hasKey("shader"))
 		{
@@ -81,10 +81,10 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("nbtVersion", 1);
-		nbt.setInteger("style", style);
-		nbt.setInteger("colour0", colour0);
-		nbt.setInteger("colour1", colour1);
+		nbt.setInt("nbtVersion", 1);
+		nbt.setInt("style", style);
+		nbt.setInt("colour0", colour0);
+		nbt.setInt("colour1", colour1);
 		nbt.setTag("shader", shader.serializeNBT());
 	}
 

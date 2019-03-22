@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicT
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
+import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -142,7 +142,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 				{
 					Block b = Block.getBlockFromItem(this.digStacks.get(i).getItem());
 					IBlockState state = b!=null?b.getStateFromMeta(this.digStacks.get(i).getMetadata()): Blocks.STONE.getDefaultState();
-					IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+					IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 					if(model!=null&&model.getParticleTexture()!=null)
 						texMap.put("dig"+i, model.getParticleTexture().getIconName());
 				}
@@ -164,12 +164,12 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		synchronized(digStacks)
 		{
 			if(message.hasKey("fill"))
-				this.digStacks.set(message.getInteger("fill"), new ItemStack(message.getCompoundTag("fillStack")));
+				this.digStacks.set(message.getInt("fill"), new ItemStack(message.getCompoundTag("fillStack")));
 			if(message.hasKey("empty"))
-				this.digStacks.set(message.getInteger("empty"), ItemStack.EMPTY);
+				this.digStacks.set(message.getInt("empty"), ItemStack.EMPTY);
 			if(message.hasKey("rotation"))
 			{
-				int packetRotation = message.getInteger("rotation");
+				int packetRotation = message.getInt("rotation");
 				if(Math.abs(packetRotation-rotation) > 5*IEConfig.Machines.excavator_speed)
 					rotation = packetRotation;
 			}

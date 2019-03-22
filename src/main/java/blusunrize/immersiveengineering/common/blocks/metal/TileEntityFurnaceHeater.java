@@ -131,7 +131,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		//		sockets = nbt.getIntArray("sockets");
 		//		if(sockets.length<6)
 		//			sockets = new int[0];
@@ -142,7 +142,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 		//		nbt.setIntArray("sockets", sockets);
 		nbt.setBoolean("active", active);
 	}

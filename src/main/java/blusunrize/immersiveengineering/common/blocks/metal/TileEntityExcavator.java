@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
+import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -173,7 +173,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								}
 								if(!wheel.digStacks.get(targetDown).isEmpty())
 								{
-									packet.setInteger("fill", targetDown);
+									packet.setInt("fill", targetDown);
 									packet.setTag("fillStack", wheel.digStacks.get(targetDown).writeToNBT(new NBTTagCompound()));
 								}
 							}
@@ -186,7 +186,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								wheel.digStacks.set(target, ItemStack.EMPTY);
 								wheel.markDirty();
 								this.markContainingBlockForUpdate(null);
-								packet.setInteger("empty", target);
+								packet.setInt("empty", target);
 							}
 							if(!packet.isEmpty())
 								ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(wheel, packet));

@@ -110,13 +110,13 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		this.energyOutput = nbt.getInteger("enegyOutput");
+		this.energyOutput = nbt.getInt("enegyOutput");
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("enegyOutput", this.energyOutput);
+		nbt.setInt("enegyOutput", this.energyOutput);
 	}
 
 

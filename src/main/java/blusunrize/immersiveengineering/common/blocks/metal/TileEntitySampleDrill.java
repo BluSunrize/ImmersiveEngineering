@@ -120,7 +120,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		if(sample.isEmpty())
 			return -1;
-		return ExcavatorHandler.mineralVeinCapacity-sample.getTagCompound().getInteger("depletion");
+		return ExcavatorHandler.mineralVeinCapacity-sample.getTagCompound().getInt("depletion");
 	}
 
 	@Nonnull
@@ -148,8 +148,8 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.setInteger("dummy", dummy);
-		nbt.setInteger("process", process);
+		nbt.setInt("dummy", dummy);
+		nbt.setInt("process", process);
 		nbt.setBoolean("active", active);
 		if(!sample.isEmpty())
 			nbt.setTag("sample", sample.writeToNBT(new NBTTagCompound()));
@@ -159,8 +159,8 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		dummy = nbt.getInteger("dummy");
-		process = nbt.getInteger("process");
+		dummy = nbt.getInt("dummy");
+		process = nbt.getInt("process");
 		active = nbt.getBoolean("active");
 		if(nbt.hasKey("sample"))
 			sample = new ItemStack(nbt.getCompoundTag("sample"));

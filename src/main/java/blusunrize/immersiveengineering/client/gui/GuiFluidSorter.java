@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.GuiSorter.ButtonSorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorter;
 import blusunrize.immersiveengineering.common.gui.ContainerFluidSorter;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;

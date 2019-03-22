@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
-import blusunrize.immersiveengineering.common.util.network.MessageSetGhostSlots;
+import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mezz.jei.api.gui.IGuiIngredient;

@@ -244,7 +244,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		pipeCover = new ItemStack(nbt.getCompoundTag("pipeCover"));
 		EnumDyeColor oldColor = color;
 		if(nbt.hasKey("color", NBT.TAG_INT))
-			color = EnumDyeColor.byMetadata(nbt.getInteger("color"));
+			color = EnumDyeColor.byMetadata(nbt.getInt("color"));
 		else
 			color = null;
 		byte oldConns = connections;
@@ -264,7 +264,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			nbt.setTag("pipeCover", (pipeCover.writeToNBT(new NBTTagCompound())));
 		nbt.setByte("connections", connections);
 		if(color!=null)
-			nbt.setInteger("color", color.getMetadata());
+			nbt.setInt("color", color.getMetadata());
 	}
 
 
@@ -301,7 +301,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			Block b = Block.getBlockFromItem(pipeCover.getItem());
 			IBlockState state = b!=null?b.getStateFromMeta(pipeCover.getMetadata()): Blocks.STONE.getDefaultState();
-			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 			BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
 			if(model!=null)
 				for(BlockRenderLayer layer : BlockRenderLayer.values())
@@ -712,7 +712,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 ////			map.put("cover","minecraft:blocks/stone");
 //			Block b = Block.getBlockFromItem(pipeCover.getItem());
 //			IBlockState state = b!=null?b.getStateFromMeta(pipeCover.getMetadata()): Blocks.STONE.getDefaultState();
-//			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+//			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 //			if(model!=null && model.getParticleTexture()!=null)
 //				map.put("cover", model.getParticleTexture().getIconName());
 //

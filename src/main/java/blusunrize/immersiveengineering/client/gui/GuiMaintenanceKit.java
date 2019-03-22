@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import blusunrize.immersiveengineering.common.gui.ContainerMaintenanceKit;
-import blusunrize.immersiveengineering.common.util.network.MessageMaintenanceKit;
+import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;

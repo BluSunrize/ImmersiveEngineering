@@ -101,7 +101,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		super.readCustomNBT(nbt, descPacket);
 		active = nbt.getBoolean("active");
-		energyStorage = nbt.getInteger("energyStorage");
+		energyStorage = nbt.getInt("energyStorage");
 		flipped = nbt.getBoolean("flipped");
 	}
 
@@ -110,7 +110,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active", active);
-		nbt.setInteger("energyStorage", energyStorage);
+		nbt.setInt("energyStorage", energyStorage);
 		nbt.setBoolean("flipped", flipped);
 	}
 

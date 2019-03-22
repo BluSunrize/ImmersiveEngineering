@@ -49,7 +49,7 @@ public class ChiselHelper extends IECompatModule
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("group", group);
 		tag.setString("block", block.getRegistryName().toString());
-		tag.setInteger("meta", meta);
+		tag.setInt("meta", meta);
 		FMLInterModComms.sendMessage("chisel", "add_variation", tag);
 	}
 }

@@ -402,7 +402,7 @@ public class ManualUtils
 
 	public static Minecraft mc()
 	{
-		return Minecraft.getMinecraft();
+		return Minecraft.getInstance();
 	}
 
 	public static void bindTexture(String path)

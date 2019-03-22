@@ -239,8 +239,8 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		process = nbt.getInteger("process");
-		processMax = nbt.getInteger("processMax");
+		process = nbt.getInt("process");
+		processMax = nbt.getInt("processMax");
 		active = nbt.getBoolean("active");
 
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
@@ -254,8 +254,8 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("process", process);
-		nbt.setInteger("processMax", processMax);
+		nbt.setInt("process", process);
+		nbt.setInt("processMax", processMax);
 		nbt.setBoolean("active", active);
 
 		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());

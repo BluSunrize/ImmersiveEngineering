@@ -28,13 +28,13 @@ import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
+import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -443,7 +443,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@Override
 	public int getBulletCount(ItemStack revolver)
 	{
-		return 8+this.getUpgrades(revolver).getInteger("bullets");
+		return 8+this.getUpgrades(revolver).getInt("bullets");
 	}
 
 	@Override
@@ -501,7 +501,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 					render.add(ss);
 		}
 		NBTTagCompound upgrades = this.getUpgrades(stack);
-		if(upgrades.getInteger("bullets") > 0&&!render.contains("dev_mag"))
+		if(upgrades.getInt("bullets") > 0&&!render.contains("dev_mag"))
 			render.add("player_mag");
 		if(upgrades.getDouble("melee") > 0&&!render.contains("dev_bayonet"))
 		{
@@ -658,7 +658,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			if(e.getValue() instanceof Boolean)
 				baseUpgrades.setBoolean(e.getKey(), (Boolean)e.getValue());
 			else if(e.getValue() instanceof Integer)
-				baseUpgrades.setInteger(e.getKey(), (Integer)e.getValue());
+				baseUpgrades.setInt(e.getKey(), (Integer)e.getValue());
 			else if(e.getValue() instanceof Float)
 				baseUpgrades.setDouble(e.getKey(), (Float)e.getValue());
 			else if(e.getValue() instanceof Double)

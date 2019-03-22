@@ -99,20 +99,20 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		formed = nbt.getBoolean("formed");
-		pos = nbt.getInteger("pos");
+		pos = nbt.getInt("pos");
 		offset = nbt.getIntArray("offset");
 		mirrored = nbt.getBoolean("mirrored");
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setBoolean("formed", formed);
-		nbt.setInteger("pos", pos);
+		nbt.setInt("pos", pos);
 		nbt.setIntArray("offset", offset);
 		nbt.setBoolean("mirrored", mirrored);
-		nbt.setInteger("facing", facing.ordinal());
+		nbt.setInt("facing", facing.ordinal());
 	}
 
 	@Override

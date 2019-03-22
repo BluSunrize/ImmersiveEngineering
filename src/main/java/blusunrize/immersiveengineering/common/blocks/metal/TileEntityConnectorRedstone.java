@@ -193,20 +193,20 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("facing", facing.ordinal());
-		nbt.setInteger("ioMode", ioMode);
-		nbt.setInteger("redstoneChannel", redstoneChannel);
-		nbt.setInteger("output", output);
+		nbt.setInt("facing", facing.ordinal());
+		nbt.setInt("ioMode", ioMode);
+		nbt.setInt("redstoneChannel", redstoneChannel);
+		nbt.setInt("output", output);
 	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
-		ioMode = nbt.getInteger("ioMode");
-		redstoneChannel = nbt.getInteger("redstoneChannel");
-		output = nbt.getInteger("output");
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		ioMode = nbt.getInt("ioMode");
+		redstoneChannel = nbt.getInt("redstoneChannel");
+		output = nbt.getInt("output");
 	}
 
 	@Override

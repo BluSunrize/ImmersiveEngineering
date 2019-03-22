@@ -28,15 +28,15 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
-		orientation = nbt.getInteger("orientation");
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		orientation = nbt.getInt("orientation");
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("facing", facing.ordinal());
-		nbt.setInteger("orientation", orientation);
+		nbt.setInt("facing", facing.ordinal());
+		nbt.setInt("orientation", orientation);
 	}
 
 	@Override

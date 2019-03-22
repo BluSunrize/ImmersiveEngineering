@@ -56,7 +56,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		this.pageHeight = pageHeight;
 		this.pageWidth = pageWidth;
 		contentTree = new Tree<>(name);
-		((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
+		((IReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
 			Object[] stacksAndRecipes;
 			if(JsonUtils.isJsonArray(s, "recipes"))

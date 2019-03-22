@@ -87,7 +87,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			IMultiblockRecipe recipe = readRecipeFromNBT(tag);
 			if(recipe!=null)
 			{
-				int processTick = tag.getInteger("process_processTick");
+				int processTick = tag.getInt("process_processTick");
 				MultiblockProcess process = loadProcessFromNBT(tag);
 				if(process!=null)
 				{
@@ -146,7 +146,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	protected NBTTagCompound writeProcessToNBT(MultiblockProcess process)
 	{
 		NBTTagCompound tag = process.recipe.writeToNBT(new NBTTagCompound());
-		tag.setInteger("process_processTick", process.processTick);
+		tag.setInt("process_processTick", process.processTick);
 		process.writeExtraDataToNBT(tag);
 		return tag;
 	}

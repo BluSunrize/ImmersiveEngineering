@@ -237,7 +237,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if("base".equals(group)||"grip".equals(group)||"cage".equals(group)||"tanks".equals(group))
 			return true;
 		NBTTagCompound upgrades = this.getUpgrades(stack);
-		if("large_tank".equals(group)&&upgrades.getInteger("capacity") > 0)
+		if("large_tank".equals(group)&&upgrades.getInt("capacity") > 0)
 			return true;
 		else if("multi_tank".equals(group)&&upgrades.getBoolean("multitank"))
 			return true;
@@ -300,7 +300,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public int getCapacity(ItemStack stack, int baseCapacity)
 	{
-		return baseCapacity+getUpgrades(stack).getInteger("capacity");
+		return baseCapacity+getUpgrades(stack).getInt("capacity");
 	}
 
 	@Override

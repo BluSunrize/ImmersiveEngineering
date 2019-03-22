@@ -119,14 +119,14 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("redstoneChannelSending", redstoneChannelSending);
+		nbt.setInt("redstoneChannelSending", redstoneChannelSending);
 	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		redstoneChannelSending = nbt.getInteger("redstoneChannelSending");
+		redstoneChannelSending = nbt.getInt("redstoneChannelSending");
 	}
 
 	@Override

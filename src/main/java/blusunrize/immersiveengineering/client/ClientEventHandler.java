@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.fx.ParticleFractal;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
@@ -39,14 +38,14 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.network.MessageChemthrowerSwitch;
+import blusunrize.immersiveengineering.common.network.MessageMagnetEquip;
+import blusunrize.immersiveengineering.common.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import blusunrize.immersiveengineering.common.util.network.MessageChemthrowerSwitch;
-import blusunrize.immersiveengineering.common.util.network.MessageMagnetEquip;
-import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;

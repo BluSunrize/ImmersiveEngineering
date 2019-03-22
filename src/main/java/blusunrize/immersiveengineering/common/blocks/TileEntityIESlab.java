@@ -17,7 +17,7 @@ public class TileEntityIESlab extends TileEntityIEBase
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		slabType = nbt.getInteger("slabType");
+		slabType = nbt.getInt("slabType");
 		if(descPacket&&world!=null)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -25,6 +25,6 @@ public class TileEntityIESlab extends TileEntityIEBase
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setInteger("slabType", slabType);
+		nbt.setInt("slabType", slabType);
 	}
 }

@@ -125,7 +125,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 		ItemStack cover = !this.cover.isEmpty()?this.cover: ConveyorCovered.defaultCover;
 		Block b = Block.getBlockFromItem(cover.getItem());
 		IBlockState state = !cover.isEmpty()?b.getStateFromMeta(cover.getMetadata()): Blocks.STONE.getDefaultState();
-		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 		if(model!=null)
 		{
 			TextureAtlasSprite sprite = model.getParticleTexture();

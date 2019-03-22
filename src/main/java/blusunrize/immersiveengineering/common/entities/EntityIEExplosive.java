@@ -121,7 +121,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		tagCompound.setBoolean("explosionSmoke", explosionSmoke);
 		tagCompound.setBoolean("explosionFire", explosionFire);
 		if(this.block!=null)
-			tagCompound.setInteger("block", Block.getStateId(this.block));
+			tagCompound.setInt("block", Block.getStateId(this.block));
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		explosionSmoke = tagCompound.getBoolean("explosionSmoke");
 		explosionFire = tagCompound.getBoolean("explosionFire");
 		if(tagCompound.hasKey("block"))
-			this.block = Block.getStateById(tagCompound.getInteger("block"));
+			this.block = Block.getStateById(tagCompound.getInt("block"));
 	}
 
 

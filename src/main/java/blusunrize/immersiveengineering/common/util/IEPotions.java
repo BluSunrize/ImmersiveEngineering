@@ -88,7 +88,7 @@ public class IEPotions
 		@Override
 		public int getStatusIconIndex()
 		{
-			Minecraft.getMinecraft().getTextureManager().bindTexture(tex);
+			Minecraft.getInstance().getTextureManager().bindTexture(tex);
 			return super.getStatusIconIndex();
 		}
 

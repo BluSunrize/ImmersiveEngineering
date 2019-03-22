@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.network.MessageBirthdayParty;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.network.MessageBirthdayParty;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -440,7 +440,7 @@ public class EntityRevolvershot extends Entity
 		nbt.setShort("yTile", (short)this.yTile);
 		nbt.setShort("zTile", (short)this.zTile);
 		nbt.setByte("inTile", (byte)Block.getIdFromBlock(this.inTile));
-		nbt.setInteger("inData", this.inData);
+		nbt.setInt("inData", this.inData);
 		nbt.setByte("inGround", (byte)(this.inGround?1: 0));
 		nbt.setTag("direction", this.newDoubleNBTList(this.motionX, this.motionY, this.motionZ));
 		nbt.setString("bulletType", this.bulletType);
@@ -459,7 +459,7 @@ public class EntityRevolvershot extends Entity
 		this.yTile = nbt.getShort("yTile");
 		this.zTile = nbt.getShort("zTile");
 		this.inTile = Block.getBlockById(nbt.getByte("inTile")&255);
-		this.inData = nbt.getInteger("inData");
+		this.inData = nbt.getInt("inData");
 		this.inGround = nbt.getByte("inGround")==1;
 		this.bulletType = nbt.getString("bulletType");
 		if(nbt.hasKey("bulletPotion"))

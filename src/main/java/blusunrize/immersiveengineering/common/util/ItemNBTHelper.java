@@ -48,7 +48,7 @@ public class ItemNBTHelper
 
 	public static void setInt(ItemStack stack, String key, int val)
 	{
-		getTag(stack).setInteger(key, val);
+		getTag(stack).setInt(key, val);
 	}
 
 	public static void modifyInt(ItemStack stack, String key, int mod)
@@ -58,12 +58,12 @@ public class ItemNBTHelper
 
 	public static void modifyInt(NBTTagCompound tagCompound, String key, int mod)
 	{
-		tagCompound.setInteger(key, tagCompound.getInteger(key)+mod);
+		tagCompound.setInt(key, tagCompound.getInt(key)+mod);
 	}
 
 	public static int getInt(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getInteger(key): 0;
+		return hasTag(stack)?getTag(stack).getInt(key): 0;
 	}
 
 	public static void setString(ItemStack stack, String key, String val)
@@ -252,7 +252,7 @@ public class ItemNBTHelper
 							target.setShort(key, (short)(target.getShort(key)+add.getShort(key)));
 							break;
 						case 3: //Int
-							target.setInteger(key, (target.getInteger(key)+add.getInteger(key)));
+							target.setInt(key, (target.getInt(key)+add.getInt(key)));
 							break;
 						case 4: //Long
 							target.setLong(key, (target.getLong(key)+add.getLong(key)));

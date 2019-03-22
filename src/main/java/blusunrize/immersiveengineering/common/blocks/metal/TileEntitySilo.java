@@ -93,7 +93,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		}
 		else
 			this.identStack = ItemStack.EMPTY;
-		storageAmount = nbt.getInteger("storageAmount");
+		storageAmount = nbt.getInt("storageAmount");
 		lockItem = nbt.getBoolean("lockItem");
 	}
 
@@ -106,7 +106,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 			NBTTagCompound t = this.identStack.writeToNBT(new NBTTagCompound());
 			nbt.setTag("identStack", t);
 		}
-		nbt.setInteger("storageAmount", storageAmount);
+		nbt.setInt("storageAmount", storageAmount);
 		nbt.setBoolean("lockItem", lockItem);
 	}
 

@@ -260,7 +260,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			location = name;
 			getContent = (splitter) -> {
 				ResourceLocation langLoc = new ResourceLocation(name.getNamespace(),
-						"manual/"+Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()
+						"manual/"+Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getLanguageCode()
 								+"/"+name.getPath()+".txt");
 				ResourceLocation dataLoc = new ResourceLocation(name.getNamespace(),
 						"manual/"+name.getPath()+".json");
@@ -268,7 +268,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 				IResource resData;
 				try
 				{
-					resData = Minecraft.getMinecraft().getResourceManager().getResource(dataLoc);
+					resData = Minecraft.getInstance().getResourceManager().getResource(dataLoc);
 				} catch(IOException e)
 				{
 					throw new RuntimeException(e);
@@ -322,7 +322,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		{
 			try
 			{
-				return Minecraft.getMinecraft().getResourceManager().getResource(rl);
+				return Minecraft.getInstance().getResourceManager().getResource(rl);
 			} catch(IOException e)
 			{
 				return null;

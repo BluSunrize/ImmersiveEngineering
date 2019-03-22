@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -484,7 +484,7 @@ public class EntitySkylineHook extends Entity
 		if (!world.isRemote)
 			ApiUtils.addFutureServerTask(world, () -> handleDismount(passenger));
 		else
-			ApiUtils.callFromOtherThread(Minecraft.getMinecraft()::addScheduledTask, ()->handleDismount(passenger));
+			ApiUtils.callFromOtherThread(Minecraft.getInstance()::addScheduledTask, () -> handleDismount(passenger));
 	}
 
 	@Override

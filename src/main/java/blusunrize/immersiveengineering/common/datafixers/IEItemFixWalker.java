@@ -34,7 +34,7 @@ public class IEItemFixWalker implements IDataWalker
 		String type = compound.getString("id");
 		if(type.equals(CRATE_ID))
 		{
-			int meta = compound.getInteger("Damage");
+			int meta = compound.getInt("Damage");
 			if(meta==BlockTypes_WoodenDevice0.CRATE.getMeta()||meta==BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta())
 			{
 				NBTTagCompound stackTag = compound.getCompoundTag("tag");

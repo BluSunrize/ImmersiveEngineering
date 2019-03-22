@@ -47,7 +47,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		selectedRecipe = nbt.getInteger("selectedRecipe");
+		selectedRecipe = nbt.getInt("selectedRecipe");
 		if(!descPacket)
 		{
 			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 17);
@@ -58,7 +58,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInteger("selectedRecipe", selectedRecipe);
+		nbt.setInt("selectedRecipe", selectedRecipe);
 //		if(!descPacket) Disabled because blueprint. Have yet to see issue because of this
 		{
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
@@ -70,7 +70,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	{
 		if(message.hasKey("recipe"))
 		{
-			this.selectedRecipe = message.getInteger("recipe");
+			this.selectedRecipe = message.getInt("recipe");
 		}
 	}
 

@@ -73,16 +73,16 @@ public class ConveyorBasic implements IConveyorBelt
 	public NBTTagCompound writeConveyorNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setInteger("direction", direction.ordinal());
-		nbt.setInteger("dyeColour", dyeColour);
+		nbt.setInt("direction", direction.ordinal());
+		nbt.setInt("dyeColour", dyeColour);
 		return nbt;
 	}
 
 	@Override
 	public void readConveyorNBT(NBTTagCompound nbt)
 	{
-		direction = ConveyorDirection.values()[nbt.getInteger("direction")];
-		dyeColour = nbt.hasKey("dyeColour")?nbt.getInteger("dyeColour"): -1;
+		direction = ConveyorDirection.values()[nbt.getInt("direction")];
+		dyeColour = nbt.hasKey("dyeColour")?nbt.getInt("dyeColour"): -1;
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor");
