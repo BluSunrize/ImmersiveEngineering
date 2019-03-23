@@ -28,19 +28,25 @@ import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 
+import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
@@ -65,6 +71,11 @@ public class ImmersiveEngineering
 	public ImmersiveEngineering()
 	{
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
+		//TODO right bus?
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarted);
 	}
 
 	static
@@ -160,12 +171,10 @@ public class ImmersiveEngineering
 				MessageMaintenanceKit::new, MessageMaintenanceKit::process);
 
 		IEIMCHandler.init();
-		IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
-	}
+		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
 
-	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
+		//Previously in POSTINIT
+
 		IEContent.postInit();
 		ExcavatorHandler.recalculateChances(true);
 		proxy.postInit();
@@ -174,15 +183,9 @@ public class ImmersiveEngineering
 		ShaderRegistry.compileWeight();
 	}
 
-	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		IECompatModule.doModulesLoadComplete();
-	}
-
-	@Mod.EventHandler
-	public void modIDMapping(FMLModIdMappingEvent event)
-	{
 	}
 
 	private static final String[] alternativeCerts = {
@@ -190,7 +193,6 @@ public class ImmersiveEngineering
 			"MavenKeyHere"//TODO maven
 	};
 
-	@Mod.EventHandler
 	public void wrongSignature(FMLFingerprintViolationEvent event)
 	{
 		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
@@ -204,73 +206,41 @@ public class ImmersiveEngineering
 	}
 
 
-	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
-		event.registerServerCommand(new CommandHandler(false));
+		//TODO do client commands exist yet? I don't think so
+		CommandHandler.registerServer(event.getCommandDispatcher());
 	}
 
-	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
-			World world = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
+			//TODO hardcoding DimensionType.OVERWORLD seems hacky/broken
+			World world = event.getServer().getWorld(DimensionType.OVERWORLD);
 			if(!world.isRemote)
 			{
-				IESaveData worldData = (IESaveData)world.loadData(IESaveData.class, IESaveData.dataName);
+				IESaveData worldData = world.func_212411_a(DimensionType.OVERWORLD, IESaveData::new, IESaveData.dataName);
 
 				if(worldData==null)
 				{
 					IELogger.info("WorldData not found");
 					worldData = new IESaveData(IESaveData.dataName);
-					world.setData(IESaveData.dataName, worldData);
+					world.func_212409_a(DimensionType.OVERWORLD, IESaveData.dataName, worldData);
 				}
 				else
 					IELogger.info("WorldData retrieved");
-				IESaveData.setInstance(world.provider.getDimension(), worldData);
+				IESaveData.setInstance(world.getDimension().getType(), worldData);
 			}
 		}
 		IEContent.refreshFluidReferences();
 	}
 
-//	public static Item registerItem(Item item, String name)
-//	{
-//		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(MODID+":"+name)));
-//		return item;
-//	}
-//	public static Item registerItemByFullName(Item item, String name)
-//	{
-//		ForgeRegistries.ITEMS.register(item.setRegistryName(new ResourceLocation(name)));
-//		return item;
-//	}
-//	public static Block registerBlockByFullName(Block block, ItemBlock itemBlock, String name)
-//	{
-//		ResourceLocation rl = new ResourceLocation(name);
-//		ForgeRegistries.BLOCKS.register(block.setRegistryName(rl));
-//		ForgeRegistries.ITEMS.register(itemBlock.setRegistryName(rl));
-//		return block;
-//	}
-//	public static Block registerBlockByFullName(Block block, Class<? extends ItemBlock> itemBlock, String name)
-//	{
-//		try{
-//			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), name);
-//		}catch(Exception e){e.printStackTrace();}
-//		return null;
-//	}
-//	public static Block registerBlock(Block block, Class<? extends ItemBlock> itemBlock, String name)
-//	{
-//		try{
-//			return registerBlockByFullName(block, itemBlock.getConstructor(Block.class).newInstance(block), MODID+":"+name);
-//		}catch(Exception e){e.printStackTrace();}
-//		return null;
-//	}
-
-
-	public static CreativeTabs creativeTab = new CreativeTabs(MODID)
+	public static ItemGroup itemGroup = new ItemGroup(MODID)
 	{
 		@Override
+		@Nonnull
 		public ItemStack createIcon()
 		{
 			return ItemStack.EMPTY;
@@ -280,7 +250,7 @@ public class ImmersiveEngineering
 		@Override
 		public ItemStack getIcon()
 		{
-			return new ItemStack(IEContent.blockMetalDecoration0, 1, 0);
+			return new ItemStack(IEContent.blockMetalDecoration0, 1);
 		}
 	};
 

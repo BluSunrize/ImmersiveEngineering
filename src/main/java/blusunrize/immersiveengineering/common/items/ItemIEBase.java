@@ -30,7 +30,7 @@ public class ItemIEBase extends Item implements IColouredItem
 	{
 		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
 		this.setHasSubtypes(subNames!=null&&subNames.length > 0);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
+		this.setCreativeTab(ImmersiveEngineering.itemGroup);
 		this.setMaxStackSize(stackSize);
 		this.itemName = name;
 		this.subNames = subNames!=null&&subNames.length > 0?subNames: null;

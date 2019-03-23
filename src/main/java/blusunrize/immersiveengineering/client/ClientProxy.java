@@ -870,7 +870,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "improvedBlastfurnace2"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace3", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta())));
 		tempItemList = NonNullList.create();
-		IEContent.itemMold.getSubItems(ImmersiveEngineering.creativeTab, tempItemList);
+		IEContent.itemMold.getSubItems(ImmersiveEngineering.itemGroup, tempItemList);
 		ManualHelper.addEntry("metalPress", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "metalPress0", MultiblockMetalPress.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "metalPress1"),

@@ -35,7 +35,7 @@ public class BlockIEFluid extends BlockFluidClassic
 	{
 		super(fluid, material);
 		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
+		this.setCreativeTab(ImmersiveEngineering.itemGroup);
 		IEContent.registeredIEBlocks.add(this);
 	}
 

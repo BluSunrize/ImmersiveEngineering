@@ -8,106 +8,27 @@
 
 package blusunrize.immersiveengineering.common.util.commands;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.server.command.CommandTreeBase;
-import net.minecraftforge.server.command.CommandTreeHelp;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-
-public class CommandHandler extends CommandTreeBase
+public class CommandHandler
 {
-	private final String name;
-
-	public CommandHandler(boolean client)
+	public static void registerServer(CommandDispatcher<CommandSource> dispatcher)
 	{
-		if(client)
-		{
-			addSubcommand(new CommandResetRenders());
-			addSubcommand(new CommandManual());
-			name = "cie";
-		}
-		else
-		{
-			addSubcommand(new CommandMineral());
-			addSubcommand(new CommandShaders());
-			name = "ie";
-		}
-		addSubcommand(new CommandTreeHelp(this));
+		//TODO do all subcommands have proper permission requirements?
+		LiteralArgumentBuilder<CommandSource> main = Commands.literal("ie");
+		main.then(CommandMineral.create())
+				.then(CommandShaders.create());
+		dispatcher.register(main);
 	}
 
-	@Nonnull
-	@Override
-	public String getName()
+	public static void registerClient(CommandDispatcher<CommandSource> dispatcher)
 	{
-		return name;
-	}
-
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return name.equals("cie")?0: 4;
-	}
-
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "Use \"/"+name+" help\" for more information";
-	}
-
-	private static final String start = "<";
-	private static final String end = ">";
-
-	@Nonnull
-	@Override
-	public List<String> getTabCompletions(@Nullable MinecraftServer server, @Nonnull ICommandSender sender, String[] args, @Nullable BlockPos pos)
-	{
-		List<String> ret = super.getTabCompletions(server, sender, args, pos);
-		for(int i = 0; i < ret.size(); i++)
-		{
-			String curr = ret.get(i);
-			if(curr.indexOf(' ') >= 0)
-			{
-				ret.set(i, start+curr+end);
-			}
-		}
-		return ret;
-	}
-
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args) throws CommandException
-	{
-		List<String> argsCleaned = new ArrayList<>(args.length);
-		String currentPart = null;
-		for(String s : args)
-		{
-			if(s.startsWith(start))
-			{
-				if(currentPart!=null)
-					throw new CommandException("String opens twice (once \""+currentPart+"\", once \""+s+"\")");
-				currentPart = s;
-			}
-			else if(currentPart!=null)
-				currentPart += " "+s;
-			else
-				argsCleaned.add(s);
-			if(s.endsWith(end))
-			{
-				if(currentPart==null)
-					throw new CommandException("String closed without being openeed first! (\""+s+"\")");
-				if(currentPart.length() >= 2)
-					argsCleaned.add(currentPart.substring(1, currentPart.length()-1));
-				currentPart = null;
-			}
-		}
-		if(currentPart!=null)
-			throw new CommandException("Unclosed string ("+currentPart+")");
-		super.execute(server, sender, argsCleaned.toArray(new String[0]));
+		LiteralArgumentBuilder<CommandSource> main = Commands.literal("cie");
+		main.then(CommandResetRenders.create())
+				.then(CommandManual.create());
+		dispatcher.register(main);
 	}
 }

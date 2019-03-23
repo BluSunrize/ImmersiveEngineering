@@ -96,7 +96,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.setDefaultState(getInitDefaultState());
 		String registryName = createRegistryName();
 		this.setTranslationKey(registryName.replace(':', '.'));
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
+		this.setCreativeTab(ImmersiveEngineering.itemGroup);
 		this.adjustSound();
 
 //		ImmersiveEngineering.registerBlockByFullName(this, itemBlock, registryName);

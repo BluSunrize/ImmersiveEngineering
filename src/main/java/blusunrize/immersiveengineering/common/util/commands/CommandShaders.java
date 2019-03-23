@@ -10,52 +10,38 @@ package blusunrize.immersiveengineering.common.util.commands;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentTranslation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
+import java.util.UUID;
 
-public class CommandShaders extends CommandBase
+public class CommandShaders
 {
-	@Nonnull
-	@Override
-	public String getName()
+	public static LiteralArgumentBuilder<CommandSource> create()
 	{
-		return "clearshaders";
+		LiteralArgumentBuilder<CommandSource> main = Commands.literal("clearshaders");
+		main.requires(source -> source.hasPermissionLevel(4));
+		main.executes(source -> clearShaders(source, source.getSource().asPlayer()));
+		main.then(Commands.argument("player", EntityArgument.singlePlayer()).executes(
+				context -> clearShaders(context, context.getArgument("player", EntityPlayerMP.class))));
+		return main;
 	}
 
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
+	private static int clearShaders(CommandContext<CommandSource> context, EntityPlayerMP player)
 	{
-		return "/ie clearshaders [player name]";
-	}
-
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
-	{
-		String player = args.length > 0?args[0].trim(): sender.getName();
-		if(ShaderRegistry.receivedShaders.containsKey(player))
-			ShaderRegistry.receivedShaders.get(player).clear();
-		ShaderRegistry.recalculatePlayerTotalWeight(player);
-		sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"shaders.clear.sucess", player));
-	}
-
-	@Nonnull
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
-	{
-		return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
-	}
-
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 4;
+		UUID uuid = player.getUniqueID();
+		if(ShaderRegistry.receivedShaders.containsKey(uuid))
+			ShaderRegistry.receivedShaders.get(uuid).clear();
+		ShaderRegistry.recalculatePlayerTotalWeight(uuid);
+		context.getSource().sendFeedback(
+				new TextComponentTranslation(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
+				true);
+		return Command.SINGLE_SUCCESS;
 	}
 }

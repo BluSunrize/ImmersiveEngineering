@@ -9,55 +9,25 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.command.CommandTreeBase;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 
-import javax.annotation.Nonnull;
-
-public class CommandManual extends CommandTreeBase
+public class CommandManual
 {
+
+	public static LiteralArgumentBuilder<CommandSource> create()
 	{
-		addSubcommand(new CommandReload());
-	}
-
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return "manual";
-	}
-
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "";
-	}
-
-	private class CommandReload extends CommandBase
-	{
-
-		@Nonnull
-		@Override
-		public String getName()
-		{
-			return "reload";
-		}
-
-		@Nonnull
-		@Override
-		public String getUsage(@Nonnull ICommandSender sender)
-		{
-			return "reload: Reloads the IE manual";
-		}
-
-		@Override
-		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
-		{
-			ImmersiveEngineering.proxy.reloadManual();
-		}
+		LiteralArgumentBuilder<CommandSource> main = Commands.literal("manual");
+		main.then(
+				Commands.literal("reload")
+						.executes(context -> {
+									ImmersiveEngineering.proxy.reloadManual();
+									return Command.SINGLE_SUCCESS;
+								}
+						)
+		);
+		return main;
 	}
 }

@@ -33,7 +33,7 @@ public class BlockIEStairs extends BlockStairs
 		super(state);
 		this.name = name;
 		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
+		this.setCreativeTab(ImmersiveEngineering.itemGroup);
 		this.useNeighborBrightness = true;
 		this.explosionResistance = this.blockResistance/5f;
 //		ImmersiveEngineering.registerBlock(this, ItemBlockIEStairs.class, name);

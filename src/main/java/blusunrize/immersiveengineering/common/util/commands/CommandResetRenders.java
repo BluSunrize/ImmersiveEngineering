@@ -9,40 +9,23 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-
-import javax.annotation.Nonnull;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 
 /**
  * @author BluSunrize - 05.09.2016
  */
-public class CommandResetRenders extends CommandBase
+public class CommandResetRenders
 {
-	@Nonnull
-	@Override
-	public String getName()
+	public static LiteralArgumentBuilder<CommandSource> create()
 	{
-		return "resetrender";
-	}
-
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "Reset the render caches of Immersive Engineering and its addons";
-	}
-
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
-	{
-		ImmersiveEngineering.proxy.clearRenderCaches();
-	}
-
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 0;
+		LiteralArgumentBuilder<CommandSource> ret = Commands.literal("resetrender");
+		ret.executes(context -> {
+			ImmersiveEngineering.proxy.clearRenderCaches();
+			return Command.SINGLE_SUCCESS;
+		});
+		return ret;
 	}
 }

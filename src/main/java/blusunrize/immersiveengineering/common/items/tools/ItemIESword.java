@@ -18,7 +18,7 @@ public class ItemIESword extends ItemSword
 		super(material);
 		this.oreDict = oreDict;
 		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
+		this.setCreativeTab(ImmersiveEngineering.itemGroup);
 		IEContent.registeredIEItems.add(this);
 	}
 

@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInf
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -143,7 +144,7 @@ public class IESaveData extends WorldSavedData
 	}
 
 
-	public static void setDirty(int dimension)
+	public static void setDirty(DimensionType dimension)
 	{
 		//		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER && INSTANCE.get(dimension)!=null)
 		//		{
@@ -153,7 +154,7 @@ public class IESaveData extends WorldSavedData
 			INSTANCE.markDirty();
 	}
 
-	public static void setInstance(int dimension, IESaveData in)
+	public static void setInstance(DimensionType dimension, IESaveData in)
 	{
 		//		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		//			INSTANCE.put(dimension, in);

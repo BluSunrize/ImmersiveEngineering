@@ -9,15 +9,12 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -60,7 +57,7 @@ public class ShaderRegistry
 	/**
 	 * A map of player names to received shaders. Saved with worlddata. Designed to prioritize shaders the player has not yet received
 	 */
-	public static ArrayListMultimap<String, String> receivedShaders = ArrayListMultimap.create();
+	public static ArrayListMultimap<UUID, String> receivedShaders = ArrayListMultimap.create();
 	/**
 	 * The map of EnumRarities to the total weight of all shaders of that rarity or rarer
 	 */
@@ -68,7 +65,7 @@ public class ShaderRegistry
 	/**
 	 * The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight
 	 */
-	public static HashMap<String, HashMap<EnumRarity, Integer>> playerTotalWeight = new HashMap<String, HashMap<EnumRarity, Integer>>();
+	public static HashMap<UUID, HashMap<EnumRarity, Integer>> playerTotalWeight = new HashMap<>();
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
@@ -449,7 +446,7 @@ public class ShaderRegistry
 		//TODO manual entry
 	}
 
-	public static void recalculatePlayerTotalWeight(String player)
+	public static void recalculatePlayerTotalWeight(UUID player)
 	{
 		if(!playerTotalWeight.containsKey(player))
 			playerTotalWeight.put(player, new HashMap<EnumRarity, Integer>());
@@ -472,7 +469,7 @@ public class ShaderRegistry
 			}
 	}
 
-	public static String getRandomShader(String player, Random rand, EnumRarity minRarity, boolean addToReceived)
+	public static String getRandomShader(UUID player, Random rand, EnumRarity minRarity, boolean addToReceived)
 	{
 		int total = 0;
 		if(!playerTotalWeight.containsKey(player))

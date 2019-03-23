@@ -13,207 +13,184 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.ColumnPosArgument;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.server.command.CommandTreeBase;
-import net.minecraftforge.server.command.CommandTreeHelp;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
-public class CommandMineral extends CommandTreeBase
+public class CommandMineral
 {
+	public static LiteralArgumentBuilder<CommandSource> create()
 	{
-		addSubcommand(new CommandMineralList());
-		addSubcommand(new CommandMineralGet());
-		addSubcommand(new CommandMineralSet());
-		addSubcommand(new CommandMineralSetDepletion());
-		addSubcommand(new CommandTreeHelp(this));
+		LiteralArgumentBuilder<CommandSource> main = Commands.literal("mineral");
+		main
+				.then(listMineral())
+				.then(getMineral())
+				.then(setMineral())
+				.then(setMineralDepletion());
+		return main;
 	}
 
-	@Nonnull
-	@Override
-	public String getName()
+	private static LiteralArgumentBuilder<CommandSource> listMineral()
 	{
-		return "mineral";
-	}
-
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "Use \"/ie mineral help\" for more information";
-	}
-
-	@Nonnull
-	@Override
-	public List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args,
-										  BlockPos pos)
-	{
-		ArrayList<String> list = new ArrayList<>();
-		// subcommand argument autocomplete
-		if(args.length > 1)
-		{
-			switch(args[0])
-			{
-				case "set":
-					if(args.length > 2)
-						break;
-					for(MineralMix mineralMix : ExcavatorHandler.mineralList.keySet())
-						if(args[1].isEmpty()||mineralMix.name.toLowerCase(Locale.ENGLISH).startsWith(args[1].toLowerCase(Locale.ENGLISH)))
-							list.add(mineralMix.name);
-					break;
-			}
-			return list;
-		}
-		return super.getTabCompletions(server, sender, args, pos);
-	}
-
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 4;
-	}
-
-	private class CommandMineralList extends CommandBase
-	{
-		@Nonnull
-		@Override
-		public String getName()
-		{
-			return "list";
-		}
-
-		@Nonnull
-		@Override
-		public String getUsage(@Nonnull ICommandSender sender)
-		{
-			return "/mineral list";
-		}
-
-		@Override
-		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
-		{
+		LiteralArgumentBuilder<CommandSource> list = Commands.literal("list");
+		list.executes(command -> {
 			StringBuilder s = new StringBuilder();
 			int i = 0;
 			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
 				s.append((i++) > 0?", ": "").append(mm.name);
-			sender.sendMessage(new TextComponentString(s.toString()));
-		}
+			command.getSource().sendFeedback(new TextComponentString(s.toString()), true);
+			return Command.SINGLE_SUCCESS;
+		});
+		return list;
 	}
 
-	private class CommandMineralGet extends CommandBase
+	private static LiteralArgumentBuilder<CommandSource> getMineral()
 	{
-		@Nonnull
-		@Override
-		public String getName()
-		{
-			return "get";
-		}
-
-		@Nonnull
-		@Override
-		public String getUsage(@Nonnull ICommandSender sender)
-		{
-			return "/mineral get";
-		}
-
-		@Override
-		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
-		{
-			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),
-					sender.getPosition().getX() >> 4, sender.getPosition().getZ() >> 4);
-			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+
-					CommandMineral.this.getName()+".get",
-					TextFormatting.GOLD+(info.mineral!=null?info.mineral.name: "null")+TextFormatting.RESET,
-					TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name: "null")+TextFormatting.RESET,
-					TextFormatting.GOLD+(""+info.depletion)+TextFormatting.RESET));
-		}
+		LiteralArgumentBuilder<CommandSource> get = Commands.literal("get");
+		get.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
+			EntityPlayerMP player = command.getSource().asPlayer();
+			getMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
+			return Command.SINGLE_SUCCESS;
+		}).then(
+				Commands.argument("location", ColumnPosArgument.func_212603_a())
+						.executes(command -> {
+							ColumnPosArgument.ColumnPos pos = command.getArgument("location", ColumnPosArgument.ColumnPos.class);
+							getMineral(command, pos.field_212600_a, pos.field_212601_b);
+							return Command.SINGLE_SUCCESS;
+						})
+		);
+		return get;
 	}
 
-	private class CommandMineralSet extends CommandBase
+	private static void getMineral(CommandContext<CommandSource> context, int xChunk, int zChunk)
 	{
-		@Nonnull
+		CommandSource sender = context.getSource();
+		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
+				xChunk, zChunk);
+		sender.sendFeedback(new TextComponentTranslation(Lib.CHAT_COMMAND+"mineral.get",
+				TextFormatting.GOLD+(info.mineral!=null?info.mineral.name: "null")+TextFormatting.RESET,
+				TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name: "null")+TextFormatting.RESET,
+				TextFormatting.GOLD+(""+info.depletion)+TextFormatting.RESET), true);
+	}
+
+	private static LiteralArgumentBuilder<CommandSource> setMineral()
+	{
+		LiteralArgumentBuilder<CommandSource> set = Commands.literal("set");
+		RequiredArgumentBuilder<CommandSource, MineralMix> mineralArg = Commands.argument("mineral", new MineralArgument());
+		mineralArg.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
+			EntityPlayerMP player = command.getSource().asPlayer();
+			setMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
+			return Command.SINGLE_SUCCESS;
+		}).then(
+				Commands.argument("location", ColumnPosArgument.func_212603_a())
+						.executes(command -> {
+							ColumnPosArgument.ColumnPos pos = command.getArgument("location", ColumnPosArgument.ColumnPos.class);
+							setMineral(command, pos.field_212600_a, pos.field_212601_b);
+							return Command.SINGLE_SUCCESS;
+						})
+		);
+		set.then(mineralArg);
+		return set;
+	}
+
+	private static void setMineral(CommandContext<CommandSource> context, int xChunk, int zChunk)
+	{
+		CommandSource sender = context.getSource();
+		//TODO getWorld for commands send from the server?
+		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
+				xChunk, zChunk);
+		MineralMix mineral = context.getArgument("mineral", MineralMix.class);
+		info.mineralOverride = mineral;
+		sender.sendFeedback(new TextComponentTranslation(Lib.CHAT_COMMAND+
+				"mineral.set.sucess", mineral.name), true);
+		IESaveData.setDirty(sender.getWorld().getDimension().getType());
+	}
+
+	private static LiteralArgumentBuilder<CommandSource> setMineralDepletion()
+	{
+		LiteralArgumentBuilder<CommandSource> setDepletion = Commands.literal("setDepletion");
+		RequiredArgumentBuilder<CommandSource, Integer> mineralArg = Commands.argument("depletion",
+				IntegerArgumentType.integer(-1, 100));
+		mineralArg.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
+			EntityPlayerMP player = command.getSource().asPlayer();
+			setMineralDepletion(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
+			return Command.SINGLE_SUCCESS;
+		}).then(
+				Commands.argument("location", ColumnPosArgument.func_212603_a())
+						.executes(command -> {
+							ColumnPosArgument.ColumnPos pos = command.getArgument("location", ColumnPosArgument.ColumnPos.class);
+							setMineralDepletion(command, pos.field_212600_a, pos.field_212601_b);
+							return Command.SINGLE_SUCCESS;
+						})
+		);
+		setDepletion.then(mineralArg);
+		return setDepletion;
+	}
+
+	private static void setMineralDepletion(CommandContext<CommandSource> context, int xChunk, int zChunk)
+	{
+		CommandSource sender = context.getSource();
+		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), xChunk, zChunk);
+		int depl = context.getArgument("depletion", Integer.class);
+		info.depletion = depl;
+		//sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+CommandMineral.this.getName()+".setDepletion.sucess",
+		//TODO localization on the server?		(depl < 0?I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"): Integer.toString(depl))));
+		IESaveData.setDirty(sender.getWorld().getDimension().getType());
+	}
+
+	private static class MineralArgument implements ArgumentType<MineralMix>
+	{
+		public static final DynamicCommandExceptionType invalidVein = new DynamicCommandExceptionType(
+				(input) -> new TextComponentTranslation(Lib.CHAT_COMMAND+"mineral.invalid", input));
+
 		@Override
-		public String getName()
+		public <S> MineralMix parse(StringReader reader) throws CommandSyntaxException
 		{
-			return "set";
-		}
-
-		@Nonnull
-		@Override
-		public String getUsage(@Nonnull ICommandSender sender)
-		{
-			return "/mineral set <mineral name> (surround the name in <angle brackets> if it contains a space)";
-		}
-
-		@Override
-		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
-		{
-
-			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),
-					sender.getPosition().getX() >> 4, sender.getPosition().getZ() >> 4);
-			if(args.length < 1)
-				throw new CommandException("Need exactly one parameter");
-
-			StringBuilder name = new StringBuilder();
-			for(int i = 0; i < args.length; i++)
-			{
-				name.append(args[i]);
-				if(i < args.length-1)
-					name.append(" ");
-			}
-			MineralMix mineral = null;
+			String name = reader.readQuotedString();//TODO does this work properly?
 			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
-				if(mm.name.equalsIgnoreCase(name.toString()))
-					mineral = mm;
-			if(mineral==null)
-				throw new CommandException(Lib.CHAT_COMMAND+
-						CommandMineral.this.getName()+".set.invalidMineral", name.toString());
-			info.mineralOverride = mineral;
-			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+
-					CommandMineral.this.getName()+".set.sucess", mineral.name));
-			IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
-		}
-	}
-
-	private class CommandMineralSetDepletion extends CommandBase
-	{
-		@Nonnull
-		@Override
-		public String getName()
-		{
-			return "setDepletion";
-		}
-
-		@Nonnull
-		@Override
-		public String getUsage(@Nonnull ICommandSender sender)
-		{
-			return "/mineral setDepletion <depletion>";
+				if(mm.name.equalsIgnoreCase(name))
+					return mm;
+			throw invalidVein.create(name);
 		}
 
 		@Override
-		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
+		public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 		{
+			return ISuggestionProvider.suggest(ExcavatorHandler.mineralList.keySet().stream().map(mix -> mix.name), builder);
+		}
 
-			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),
-					sender.getPosition().getX() >> 4, sender.getPosition().getZ() >> 4);
-			if(args.length!=1)
-				throw new CommandException("Need exactly one parameter");
-			int depl = parseInt(args[0].trim());
-			info.depletion = depl;
-			sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+CommandMineral.this.getName()+".setDepletion.sucess", (depl < 0?I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"): Integer.toString(depl))));
-			IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
+		@Override
+		public Collection<String> getExamples()
+		{
+			List<String> ret = new ArrayList<>();
+			for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
+			{
+				ret.add(mix.name);
+				if(ret.size() > 5)
+					break;
+			}
+			return ret;
 		}
 	}
 }

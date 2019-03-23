@@ -32,7 +32,7 @@ public class ItemToolBase extends ItemTool
 		this.toolClasses = ImmutableSet.of(toolclass);
 		this.oreDict = oreDict;
 		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
+		this.setCreativeTab(ImmersiveEngineering.itemGroup);
 		IEContent.registeredIEItems.add(this);
 	}
 
