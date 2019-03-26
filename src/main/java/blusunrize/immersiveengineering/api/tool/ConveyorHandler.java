@@ -27,8 +27,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -435,25 +433,25 @@ public class ConveyorHandler
 
 		void readConveyorNBT(NBTTagCompound nbt);
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		default Matrix4f modifyBaseRotationMatrix(Matrix4f matrix, @Nullable TileEntity tile, EnumFacing facing)
 		{
 			return matrix;
 		}
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		ResourceLocation getActiveTexture();
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		ResourceLocation getInactiveTexture();
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		default ResourceLocation getColouredStripesTexture()
 		{
 			return textureConveyorColour;
 		}
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
 		{
 			return baseModel;

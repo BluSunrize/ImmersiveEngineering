@@ -19,8 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -94,7 +92,7 @@ public class MultiblockHandler
 		/**
 		 * Use this to overwrite the rendering of a Multiblock's Component
 		 */
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		boolean overwriteBlockRender(ItemStack stack, int iterator);
 
 		/**
@@ -105,13 +103,13 @@ public class MultiblockHandler
 		/**
 		 * returns true to add a button that will switch between the assembly of multiblocks and the finished render
 		 */
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		boolean canRenderFormedStructure();
 
 		/**
 		 * use this function to render the complete multiblock
 		 */
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		void renderFormedStructure();
 	}
 

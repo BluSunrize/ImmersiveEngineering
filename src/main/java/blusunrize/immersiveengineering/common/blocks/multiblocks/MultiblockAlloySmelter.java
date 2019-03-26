@@ -23,8 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MultiblockAlloySmelter implements IMultiblock
 {
@@ -47,7 +45,7 @@ public class MultiblockAlloySmelter implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
@@ -60,14 +58,14 @@ public class MultiblockAlloySmelter implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return false;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
 	}
@@ -103,7 +101,7 @@ public class MultiblockAlloySmelter implements IMultiblock
 						return false;
 				}
 		IBlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta());
-		state = state.withProperty(IEProperties.FACING_HORIZONTAL, f.getOpposite());
+		state = state.with(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h = 0; h <= 1; h++)
 			for(int l = 0; l <= 1; l++)
 				for(int w = 0; w <= 1; w++)

@@ -507,10 +507,10 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//	{
 	//		return false;
 	//	}
-	//	@SideOnly(Side.CLIENT)
+	//	@OnlyIn(Dist.CLIENT)
 	//	private AxisAlignedBB renderAABB;
 	//	@Override
-	//	@SideOnly(Side.CLIENT)
+	//	@OnlyIn(Dist.CLIENT)
 	//	public AxisAlignedBB getRenderBoundingBox()
 	//	{
 	//		if (!formed)
@@ -523,7 +523,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//		return renderAABB;
 	//	}
 	//	@Override
-	//	@SideOnly(Side.CLIENT)
+	//	@OnlyIn(Dist.CLIENT)
 	//	public double getMaxRenderDistanceSquared()
 	//	{
 	//		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

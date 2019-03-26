@@ -104,7 +104,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof TileEntityImmersiveConnectable))
 				return state;
-			state = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
+			state = ext.with(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
 		}
 		return state;
 	}
@@ -251,10 +251,10 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			IBlockState placedAgainst = world.getBlockState(pos2);
 			Block block = placedAgainst.getBlock();
 			if(block instanceof IPostBlock&&((IPostBlock)block).canConnectTransformer(world, pos2))
-				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
+				ret = ret.with(IEProperties.BOOLEANS[1], true);
 			TileEntity tile = world.getTileEntity(pos2);
 			if(tile instanceof IPostBlock&&((IPostBlock)tile).canConnectTransformer(world, pos2))
-				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
+				ret = ret.with(IEProperties.BOOLEANS[1], true);
 		}
 		return ret;
 	}

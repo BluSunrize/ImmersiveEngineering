@@ -11,14 +11,15 @@ package blusunrize.immersiveengineering.api;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 import javax.annotation.Nonnull;
 
 public class DimensionBlockPos extends BlockPos
 {
-	public int dimension;
+	public DimensionType dimension;
 
-	public DimensionBlockPos(int x, int y, int z, int dim)
+	public DimensionBlockPos(int x, int y, int z, DimensionType dim)
 	{
 		super(x, y, z);
 		dimension = dim;
@@ -26,15 +27,15 @@ public class DimensionBlockPos extends BlockPos
 
 	public DimensionBlockPos(int x, int y, int z, World w)
 	{
-		this(x, y, z, w.provider.getDimension());
+		this(x, y, z, w.getDimension().getType());
 	}
 
 	public DimensionBlockPos(BlockPos pos, World w)
 	{
-		this(pos.getX(), pos.getY(), pos.getZ(), w.provider.getDimension());
+		this(pos.getX(), pos.getY(), pos.getZ(), w.getDimension().getType());
 	}
 
-	public DimensionBlockPos(BlockPos pos, int dim)
+	public DimensionBlockPos(BlockPos pos, DimensionType dim)
 	{
 		this(pos.getX(), pos.getY(), pos.getZ(), dim);
 	}
@@ -49,7 +50,7 @@ public class DimensionBlockPos extends BlockPos
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime*result+dimension;
+		result = prime*result+dimension.getId();
 		result = prime*result+getX();
 		result = prime*result+getY();
 		result = prime*result+getZ();

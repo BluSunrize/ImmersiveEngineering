@@ -23,11 +23,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -37,6 +32,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -47,14 +44,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.Properties;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -69,13 +66,14 @@ import java.util.function.Consumer;
 import static blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.getNetwork;
 
 @Mod.EventBusSubscriber
-public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements IColouredBlock
+public abstract class BlockIETileProvider extends BlockIEBase implements IColouredBlock
 {
 	private boolean hasColours = false;
 
-	public BlockIETileProvider(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
+	public BlockIETileProvider(String name, Block.Properties blockProps, Class<? extends ItemBlockIEBase> itemBlock,
+							   Object... stateProps)
 	{
-		super(name, material, mainProperty, itemBlock, additionalProperties);
+		super(name, blockProps, itemBlock, stateProps);
 	}
 
 	private static final Map<DimensionBlockPos, TileEntity> tempTile = new HashMap<>();
@@ -95,17 +93,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
+	public TileEntity createTileEntity(IBlockState state, IBlockReader world)
 	{
-		TileEntity basic = createBasicTE(world, state.getValue(property));
-		Collection<IProperty<?>> keys = state.getPropertyKeys();
+		TileEntity basic = createBasicTE(world);
+		Collection<IProperty<?>> keys = state.getProperties();
 		if(basic instanceof IDirectionalTile)
 		{
 			EnumFacing newFacing = null;
 			if(keys.contains(IEProperties.FACING_HORIZONTAL))
-				newFacing = state.getValue(IEProperties.FACING_HORIZONTAL);
+				newFacing = state.get(IEProperties.FACING_HORIZONTAL);
 			else if(keys.contains(IEProperties.FACING_ALL))
-				newFacing = state.getValue(IEProperties.FACING_ALL);
+				newFacing = state.get(IEProperties.FACING_ALL);
 			int type = ((IDirectionalTile)basic).getFacingLimitation();
 			if(newFacing!=null)
 			{
@@ -133,9 +131,9 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			String[] names = ((IAttachedIntegerProperies)basic).getIntPropertyNames();
 			for(String propertyName : names)
 			{
-				PropertyInteger property = tileIntProps.getIntProperty(propertyName);
+				IntegerProperty property = tileIntProps.getIntProperty(propertyName);
 				if(keys.contains(property))
-					tileIntProps.setValue(propertyName, state.getValue(property));
+					tileIntProps.setValue(propertyName, state.get(property));
 			}
 		}
 
@@ -146,22 +144,21 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	protected IBlockState getInitDefaultState()
 	{
 		IBlockState ret = super.getInitDefaultState();
-		if(ret.getPropertyKeys().contains(IEProperties.FACING_ALL))
-			ret = ret.withProperty(IEProperties.FACING_ALL, getDefaultFacing());
-		else if(ret.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
-			ret = ret.withProperty(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
+		if(ret.getProperties().contains(IEProperties.FACING_ALL))
+			ret = ret.with(IEProperties.FACING_ALL, getDefaultFacing());
+		else if(ret.getProperties().contains(IEProperties.FACING_HORIZONTAL))
+			ret = ret.with(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
 		return ret;
 	}
 
 	@Nullable
-	public abstract TileEntity createBasicTE(World worldIn, E type);
+	public abstract TileEntity createBasicTE(IBlockReader worldIn);
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
-//	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		DimensionBlockPos dpos = new DimensionBlockPos(pos, world instanceof World?((World)world).provider.getDimension(): 0);
+		DimensionBlockPos dpos = new DimensionBlockPos(pos, world.getDimension().getType());
 		if(tile==null&&tempTile.containsKey(dpos))
 			tile = tempTile.get(dpos);
 		if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop()))
@@ -172,16 +169,19 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 					if(!s.isEmpty())
 						drops.add(s);
 			}
-			else if(tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+			else
 			{
-				IItemHandler h = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-				if(h instanceof IEInventoryHandler)
-					for(int i = 0; i < h.getSlots(); i++)
-						if(!h.getStackInSlot(i).isEmpty())
-						{
-							drops.add(h.getStackInSlot(i));
-							((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
-						}
+				LazyOptional<IItemHandler> itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+				itemHandler.ifPresent((h) ->
+				{
+					if(h instanceof IEInventoryHandler)
+						for(int i = 0; i < h.getSlots(); i++)
+							if(!h.getStackInSlot(i).isEmpty())
+							{
+								drops.add(h.getStackInSlot(i));
+								((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
+							}
+				});
 			}
 		}
 		if(tile instanceof ITileDrop)
@@ -190,7 +190,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			drops.addAll(s);
 		}
 		else
-			super.getDrops(drops, world, pos, state, fortune);
+			super.getDrops(state, drops, world, pos, fortune);
 
 		tempTile.remove(dpos);
 	}
@@ -287,22 +287,22 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				state = applyProperty(state, ((IAttachedIntegerProperies)tile).getIntProperty(s), ((IAttachedIntegerProperies)tile).getIntPropertyValue(s));
 		}
 
-		if(tile instanceof IDirectionalTile&&(state.getPropertyKeys().contains(IEProperties.FACING_ALL)||state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)))
+		if(tile instanceof IDirectionalTile&&(state.getProperties().contains(IEProperties.FACING_ALL)||state.getProperties().contains(IEProperties.FACING_HORIZONTAL)))
 		{
-			PropertyDirection prop = state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
+			DirectionProperty prop = state.getProperties().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
 			state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
 		}
 		if(tile instanceof IActiveState)
 		{
 			IProperty boolProp = ((IActiveState)tile).getBoolProperty(IActiveState.class);
-			if(state.getPropertyKeys().contains(boolProp))
+			if(state.getProperties().contains(boolProp))
 				state = applyProperty(state, boolProp, ((IActiveState)tile).getIsActive());
 		}
 
 		if(tile instanceof IDualState)
 		{
 			IProperty boolProp = ((IDualState)tile).getBoolProperty(IDualState.class);
-			if(state.getPropertyKeys().contains(boolProp))
+			if(state.getProperties().contains(boolProp))
 				state = applyProperty(state, boolProp, ((IDualState)tile).getIsSecondState());
 		}
 
@@ -326,9 +326,9 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			if(!((IDirectionalTile)tile).canRotate(axis))
 				return false;
 			IBlockState state = world.getBlockState(pos);
-			if(state.getPropertyKeys().contains(IEProperties.FACING_ALL)||state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL))
+			if(state.getProperties().contains(IEProperties.FACING_ALL)||state.getProperties().contains(IEProperties.FACING_HORIZONTAL))
 			{
-				PropertyDirection prop = state.getPropertyKeys().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
+				DirectionProperty prop = state.getProperties().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
 				EnumFacing f = ((IDirectionalTile)tile).getFacing();
 				int limit = ((IDirectionalTile)tile).getFacingLimitation();
 
@@ -364,21 +364,21 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				if(te instanceof IConfigurableSides)
 					for(int i = 0; i < 6; i++)
 						if(extended.getUnlistedNames().contains(IEProperties.SIDECONFIG[i]))
-							extended = extended.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)te).getSideConfig(i));
+							extended = extended.with(IEProperties.SIDECONFIG[i], ((IConfigurableSides)te).getSideConfig(i));
 				if(te instanceof IAdvancedHasObjProperty)
-					extended = extended.withProperty(Properties.AnimationProperty, ((IAdvancedHasObjProperty)te).getOBJState());
+					extended = extended.with(Properties.AnimationProperty, ((IAdvancedHasObjProperty)te).getOBJState());
 				else if(te instanceof IHasObjProperty)
-					extended = extended.withProperty(Properties.AnimationProperty, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
+					extended = extended.with(Properties.AnimationProperty, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
 				if(te instanceof IDynamicTexture)
-					extended = extended.withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
+					extended = extended.with(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
 				if(te instanceof IOBJModelCallback)
-					extended = extended.withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
+					extended = extended.with(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
 				if(te.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-					extended = extended.withProperty(CapabilityShader.BLOCKSTATE_PROPERTY, te.getCapability(CapabilityShader.SHADER_CAPABILITY, null));
+					extended = extended.with(CapabilityShader.BLOCKSTATE_PROPERTY, te.getCapability(CapabilityShader.SHADER_CAPABILITY, null));
 				if(te instanceof IPropertyPassthrough&&((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
-					extended = extended.withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
+					extended = extended.with(IEProperties.TILEENTITY_PASSTHROUGH, te);
 				if(te instanceof TileEntityImmersiveConnectable&&((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.CONNECTIONS))
-					extended = extended.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
+					extended = extended.with(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
 			}
 			state = extended;
 		}

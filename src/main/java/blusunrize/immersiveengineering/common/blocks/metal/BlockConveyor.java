@@ -127,7 +127,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof TileEntityConveyorBelt))
 				return state;
-			state = ext.withProperty(ICONEYOR_PASSTHROUGH, ((TileEntityConveyorBelt)te).getConveyorSubtype());
+			state = ext.with(ICONEYOR_PASSTHROUGH, ((TileEntityConveyorBelt)te).getConveyorSubtype());
 		}
 		return state;
 	}
@@ -140,8 +140,8 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 //		if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical))
 //		{
 //			for(int i=0; i<IEProperties.CONVEYORWALLS.length; i++)
-//				state = state.withProperty(IEProperties.CONVEYORWALLS[i], ((TileEntityConveyorBelt)tile).renderWall(i));
-//			state = state.withProperty(IEProperties.CONVEYORUPDOWN, ((TileEntityConveyorBelt)tile).transportUp?1: ((TileEntityConveyorBelt)tile).transportDown?2: 0);
+//				state = state.with(IEProperties.CONVEYORWALLS[i], ((TileEntityConveyorBelt)tile).renderWall(i));
+//			state = state.with(IEProperties.CONVEYORUPDOWN, ((TileEntityConveyorBelt)tile).transportUp?1: ((TileEntityConveyorBelt)tile).transportDown?2: 0);
 //		}
 		return state;
 	}

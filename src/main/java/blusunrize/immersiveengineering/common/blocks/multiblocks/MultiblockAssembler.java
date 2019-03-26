@@ -31,8 +31,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MultiblockAssembler implements IMultiblock
 {
@@ -80,7 +78,7 @@ public class MultiblockAssembler implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(iterator==10||iterator==16)
@@ -89,17 +87,17 @@ public class MultiblockAssembler implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
 
-	//@SideOnly(Side.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
@@ -200,7 +198,7 @@ public class MultiblockAssembler implements IMultiblock
 
 
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ASSEMBLER.getMeta());
-		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
+		state = state.with(IEProperties.FACING_HORIZONTAL, side);
 		for(int l = 0; l < 3; l++)
 			for(int w = -1; w <= 1; w++)
 				for(int h = -1; h <= 1; h++)

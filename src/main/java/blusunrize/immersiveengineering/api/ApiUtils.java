@@ -1139,7 +1139,7 @@ public class ApiUtils
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static TextureAtlasSprite getRegisterSprite(TextureMap map, String path)
 	{
 		TextureAtlasSprite sprite = map.getTextureExtry(path);
@@ -1151,7 +1151,7 @@ public class ApiUtils
 		return sprite;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static TextureAtlasSprite getRegisterSprite(TextureMap map, ResourceLocation path)
 	{
 		TextureAtlasSprite sprite = map.getTextureExtry(path.toString());
@@ -1163,7 +1163,7 @@ public class ApiUtils
 		return sprite;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
 															   Function<Integer, Integer> colorMultiplier)
 	{

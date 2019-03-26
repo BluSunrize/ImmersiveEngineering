@@ -372,9 +372,9 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		if(state.getBlock()==IEContent.blockConveyor)
 		{
 			if((l==2&&w==0)||l==1)
-				state = state.withProperty(IEProperties.FACING_ALL, facing.rotateY());
+				state = state.with(IEProperties.FACING_ALL, facing.rotateY());
 			else
-				state = state.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
+				state = state.with(IEProperties.FACING_ALL, facing.getOpposite());
 		}
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 	}

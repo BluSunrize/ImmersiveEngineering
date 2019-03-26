@@ -34,7 +34,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.Properties;
 
 public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDevice0>
 {
@@ -74,7 +73,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 	public int getExplosivesType(IBlockState state)
 	{
-		if(!state.getPropertyKeys().contains(this.property))
+		if(!state.getProperties().contains(this.property))
 			return -1;
 		if(state.getValue(this.property)==BlockTypes_WoodenDevice0.GUNPOWDER_BARREL)
 			return 0;

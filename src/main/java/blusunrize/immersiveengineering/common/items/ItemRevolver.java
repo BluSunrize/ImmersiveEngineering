@@ -62,8 +62,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -168,7 +166,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
@@ -465,7 +463,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		return "";
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
 	{
@@ -476,7 +474,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			return this.revolverDefaultTexture;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
@@ -516,7 +514,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		return render.contains(group);
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity)
 	{
@@ -562,7 +560,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	private static final String[][] groups = {{"frame"}, {"cylinder"}};
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
 	{

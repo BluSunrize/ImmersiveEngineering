@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAttached
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.properties.IntegerProperty;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,7 +46,7 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 	}
 
 	@Override
-	public PropertyInteger getIntProperty(String name)
+	public IntegerProperty getIntProperty(String name)
 	{
 		return IEProperties.INT_4;
 	}

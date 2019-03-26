@@ -36,8 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
@@ -63,11 +61,11 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 		return "immersiveengineering:textures/models/earmuffs.png";
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	ModelBiped armorModel;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelEarmuffs model = ModelEarmuffs.getModel();
@@ -125,7 +123,7 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack)
 	{
 		return ClientProxy.itemFont;

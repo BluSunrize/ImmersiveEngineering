@@ -88,7 +88,7 @@ public class ExtBlockstateAdapter
 		if(o instanceof IBlockState)
 		{
 			String ret = "";
-			for(IProperty<?> p : ((IBlockState)o).getPropertyKeys())
+			for(IProperty<?> p : ((IBlockState)o).getProperties())
 			{
 				ret += toStringProp(p)+" has value "+toStringDebug(((IBlockState)o).getValue(p))+"\n";
 			}

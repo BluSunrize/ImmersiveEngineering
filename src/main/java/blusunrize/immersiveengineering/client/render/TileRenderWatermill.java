@@ -39,7 +39,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 			IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 			if(state.getBlock()!=IEContent.blockWoodenDevice1)
 				return;
-			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
+			state = state.with(IEProperties.FACING_ALL, EnumFacing.NORTH);
 			quads = blockRenderer.getModelForState(state).getQuads(state, null, 0);
 		}
 		Tessellator tessellator = Tessellator.getInstance();

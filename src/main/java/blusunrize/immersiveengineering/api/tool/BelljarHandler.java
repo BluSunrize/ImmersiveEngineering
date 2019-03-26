@@ -17,7 +17,7 @@ import net.minecraft.block.BlockChorusPlant;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockStem;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.properties.IntegerProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,8 +30,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
@@ -145,16 +143,16 @@ public class BelljarHandler
 	{
 		boolean isValid(ItemStack seed);
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile);
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		default boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 		{
 			return false;
 		}
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		default float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
 			return .875f;
@@ -209,7 +207,7 @@ public class BelljarHandler
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
 			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed, false, false));
@@ -244,7 +242,7 @@ public class BelljarHandler
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
 			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed, false, false));
@@ -260,14 +258,14 @@ public class BelljarHandler
 						}
 						else
 						{
-							for(IProperty prop : states[i].getPropertyKeys())
-								if("age".equals(prop.getName())&&prop instanceof PropertyInteger)
+							for(IProperty prop : states[i].getProperties())
+								if("age".equals(prop.getName())&&prop instanceof IntegerProperty)
 								{
 									int max = 0;
-									for(Integer allowed : ((PropertyInteger)prop).getAllowedValues())
+									for(Integer allowed : ((IntegerProperty)prop).getAllowedValues())
 										if(allowed!=null&&allowed > max)
 											max = allowed;
-									ret[i] = states[i].withProperty(prop, Math.min(max, Math.round(max*growth)));
+									ret[i] = states[i].with(prop, Math.min(max, Math.round(max*growth)));
 								}
 							if(ret[i]==null)
 								ret[i] = states[i];
@@ -300,21 +298,21 @@ public class BelljarHandler
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
 			return new IBlockState[0];
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
 			return 1f;
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 		{
 			ComparableItemStack comp = new ComparableItemStack(seed, false, false);
@@ -323,9 +321,9 @@ public class BelljarHandler
 			{
 				GlStateManager.rotate(-90, 0, 1, 0);
 				BlockStem stem = (BlockStem)renderStates[0].getBlock();
-				IBlockState state = stem.getDefaultState().withProperty(BlockStem.AGE, (int)(growth >= .5?7: 2*growth*7));
+				IBlockState state = stem.getDefaultState().with(BlockStem.AGE, (int)(growth >= .5?7: 2*growth*7));
 				if(growth >= .5)
-					state = state.withProperty(BlockStem.FACING, EnumFacing.NORTH);
+					state = state.with(BlockStem.FACING, EnumFacing.NORTH);
 				IBakedModel model = blockRenderer.getModelForState(state);
 				GlStateManager.translate(.25f, .0625f, 0);
 				GlStateManager.pushMatrix();
@@ -365,7 +363,7 @@ public class BelljarHandler
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
 			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed, false, false));
@@ -375,7 +373,7 @@ public class BelljarHandler
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 		{
 			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed, false, false));
@@ -385,7 +383,7 @@ public class BelljarHandler
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 		{
 			IBlockState[] states = seedRenderMap.get(new ComparableItemStack(seed, false, false));
@@ -413,7 +411,7 @@ public class BelljarHandler
 
 		stackingHandler.register(new ItemStack(Items.REEDS), new ItemStack[]{new ItemStack(Items.REEDS, 2)}, "sand", Blocks.REEDS.getDefaultState(), Blocks.REEDS.getDefaultState());
 		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS, 2)}, "sand", Blocks.CACTUS.getDefaultState(), Blocks.CACTUS.getDefaultState());
-		stackingHandler.register(new ItemStack(Blocks.CHORUS_FLOWER), new ItemStack[]{new ItemStack(Items.CHORUS_FRUIT, 1)}, new ItemStack(Blocks.END_STONE), Blocks.CHORUS_PLANT.getDefaultState().withProperty(BlockChorusPlant.DOWN, true).withProperty(BlockChorusPlant.UP, true), Blocks.CHORUS_PLANT.getDefaultState().withProperty(BlockChorusPlant.DOWN, true).withProperty(BlockChorusPlant.UP, true), Blocks.CHORUS_FLOWER.getDefaultState());
+		stackingHandler.register(new ItemStack(Blocks.CHORUS_FLOWER), new ItemStack[]{new ItemStack(Items.CHORUS_FRUIT, 1)}, new ItemStack(Blocks.END_STONE), Blocks.CHORUS_PLANT.getDefaultState().with(BlockChorusPlant.DOWN, true).with(BlockChorusPlant.UP, true), Blocks.CHORUS_PLANT.getDefaultState().with(BlockChorusPlant.DOWN, true).with(BlockChorusPlant.UP, true), Blocks.CHORUS_FLOWER.getDefaultState());
 
 		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.DIRT, 1, 2)));
 		cropHandler.register(new ItemStack(Blocks.RED_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.RED_MUSHROOM, 2)}, shroomSoil, Blocks.RED_MUSHROOM.getDefaultState());

@@ -36,8 +36,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -141,7 +139,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 		return config.name;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
@@ -149,7 +147,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack)
 	{
 		return ClientProxy.itemFont;

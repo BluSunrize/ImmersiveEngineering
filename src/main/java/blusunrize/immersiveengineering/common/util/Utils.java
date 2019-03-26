@@ -1118,7 +1118,7 @@ public class Utils
 	{
 		int val = 0;
 		final int prime = 31;
-		for(IProperty<?> n : state.getPropertyKeys())
+		for(IProperty<?> n : state.getProperties())
 			if(!ignoredProperties.contains(n))
 			{
 				Object o = state.getValue(n);
@@ -1139,7 +1139,7 @@ public class Utils
 
 	public static boolean areStatesEqual(IBlockState state, IBlockState other, Set<Object> ignoredProperties, boolean includeExtended)
 	{
-		for(IProperty<?> i : state.getPropertyKeys())
+		for(IProperty<?> i : state.getProperties())
 		{
 			if(!other.getProperties().containsKey(i))
 				return false;
@@ -1693,7 +1693,7 @@ public class Utils
 	public static void stateToNBT(NBTTagCompound out, IBlockState state)
 	{
 		out.setString("block", state.getBlock().getRegistryName().toString());
-		for(IProperty<?> prop : state.getPropertyKeys())
+		for(IProperty<?> prop : state.getProperties())
 			saveProp(state, prop, out);
 	}
 
@@ -1703,7 +1703,7 @@ public class Utils
 		if(b==null)
 			return Blocks.BOOKSHELF.getDefaultState();
 		IBlockState ret = b.getDefaultState();
-		for(IProperty<?> prop : ret.getPropertyKeys())
+		for(IProperty<?> prop : ret.getProperties())
 		{
 			String name = prop.getName();
 			if(in.hasKey(name, Constants.NBT.TAG_STRING))
@@ -1729,7 +1729,7 @@ public class Utils
 	{
 		Optional<T> valueParsed = prop.parseValue(value);
 		if(valueParsed.isPresent())
-			return state.withProperty(prop, valueParsed.get());
+			return state.with(prop, valueParsed.get());
 		return state;
 	}
 

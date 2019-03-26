@@ -19,15 +19,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
 /**
@@ -81,7 +78,7 @@ public abstract class WireType implements ILocalHandlerProvider
 	 */
 	public abstract double getSlack();
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public abstract TextureAtlasSprite getIcon(Connection connection);
 
 	public abstract int getMaxLength();
@@ -114,7 +111,7 @@ public abstract class WireType implements ILocalHandlerProvider
 	public static int[] wireLength;
 	public static Item ieWireCoil;
 	public static double[] renderDiameter = {.03125, .03125, .0625, .0625, .0625, .03125};
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;
 
 	public static WireType COPPER;
@@ -213,7 +210,7 @@ public abstract class WireType implements ILocalHandlerProvider
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite getIcon(Connection connection)
 		{
 			return iconDefaultWire;

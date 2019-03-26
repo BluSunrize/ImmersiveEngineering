@@ -58,7 +58,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 							(isSourceBlock(world, pos.east())?1: 0)+
 							(isSourceBlock(world, pos.west())?1: 0);
 			if(adjacentSourceBlocks >= 2&&(world.getBlockState(pos.up(densityDir)).getMaterial().isSolid()||isSourceBlock(world, pos.up(densityDir))))
-				world.setBlockState(pos, state.withProperty(LEVEL, 0));
+				world.setBlockState(pos, state.with(LEVEL, 0));
 		}
 
 		int level = state.getValue(LEVEL);
@@ -85,7 +85,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 		}
 		else
 		{
-			state = state.withProperty(IEProperties.INT_16, Math.min(15, timer+1));
+			state = state.with(IEProperties.INT_16, Math.min(15, timer+1));
 			world.setBlockState(pos, state);
 
 		}
@@ -128,7 +128,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 			{
 				IBlockState otherState = world.getBlockState(pos.offset(f));
 				if(otherState.getBlock()==this)
-					world.setBlockState(pos.offset(f), otherState.withProperty(LEVEL, newEvenQuanta));
+					world.setBlockState(pos.offset(f), otherState.with(LEVEL, newEvenQuanta));
 
 			}
 
@@ -141,7 +141,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 					world.setBlockToAir(pos);
 				else
 				{
-					world.setBlockState(pos, state.withProperty(LEVEL, quantaPerBlock-expQuanta), 2);
+					world.setBlockState(pos, state.with(LEVEL, quantaPerBlock-expQuanta), 2);
 					world.scheduleUpdate(pos, this, tickRate);
 					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
@@ -162,7 +162,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 		int flowMeta = quantaPerBlock-quantaRemaining+1;
 		if(flowMeta >= quantaPerBlock)
 		{
-			world.setBlockState(pos, state.withProperty(IEProperties.INT_16, Math.min(15, timer+1)));
+			world.setBlockState(pos, state.with(IEProperties.INT_16, Math.min(15, timer+1)));
 			world.scheduleUpdate(pos, this, tickRate);
 			return;
 		}
@@ -184,7 +184,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 
 			if(!hasFlown)
 			{
-				world.setBlockState(pos, state.withProperty(IEProperties.INT_16, Math.min(15, timer+1)));
+				world.setBlockState(pos, state.with(IEProperties.INT_16, Math.min(15, timer+1)));
 				world.scheduleUpdate(pos, this, tickRate);
 			}
 		}
@@ -196,7 +196,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 			return false;
 		if(displaceIfPossible(world, pos))
 		{
-			world.setBlockState(pos, this.getBlockState().getBaseState().withProperty(LEVEL, meta).withProperty(IEProperties.INT_16, harden), 3);
+			world.setBlockState(pos, this.getBlockState().getBaseState().with(LEVEL, meta).with(IEProperties.INT_16, harden), 3);
 			return true;
 		}
 		return false;

@@ -27,8 +27,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MultiblockSheetmetalTank implements IMultiblock
 {
@@ -61,7 +59,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
@@ -74,17 +72,17 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
 
-	//@SideOnly(Side.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
@@ -147,7 +145,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 					}
 
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.TANK.getMeta());
-		state = state.withProperty(IEProperties.FACING_HORIZONTAL, f.getOpposite());
+		state = state.with(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h = 0; h <= 4; h++)
 			for(int l = -1; l <= 1; l++)
 				for(int w = -1; w <= 1; w++)

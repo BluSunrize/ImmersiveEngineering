@@ -33,8 +33,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -217,10 +215,10 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private AxisAlignedBB renderAABB;
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
@@ -257,7 +255,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
@@ -268,7 +266,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public int getRenderColour(IBlockState object, String group)
 	{

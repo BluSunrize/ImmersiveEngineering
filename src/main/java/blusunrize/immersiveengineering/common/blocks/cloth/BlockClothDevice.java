@@ -28,8 +28,6 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -51,14 +49,14 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		setMetaHidden(BlockTypes_ClothDevice.SHADER_BANNER.getMeta());
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public int getRenderColor(IBlockState state)
 	{
 		return 16777215;
 	}
 
 	//    @Override
-//	@SideOnly(Side.CLIENT)
+//	@OnlyIn(Dist.CLIENT)
 //    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
 //    {
 //        return 16777215;
@@ -109,7 +107,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 			IExtendedBlockState ext = (IExtendedBlockState)state;
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof TileEntityImmersiveConnectable)
-				ext = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
+				ext = ext.with(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
 			state = ext;
 		}
 		return state;

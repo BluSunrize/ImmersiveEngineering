@@ -25,8 +25,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -42,7 +40,7 @@ public class IEFluid extends Fluid
 		super(fluidName, still, flowing);
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip)
 	{
 	}
@@ -55,7 +53,7 @@ public class IEFluid extends Fluid
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip)
 		{
 			if(fluidStack!=null&&fluidStack.tag!=null)

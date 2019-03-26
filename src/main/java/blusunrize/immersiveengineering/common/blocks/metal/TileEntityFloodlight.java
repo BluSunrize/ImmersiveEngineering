@@ -42,7 +42,6 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
@@ -501,7 +500,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		facing = f;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
@@ -511,7 +510,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.SOLID;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
@@ -574,7 +573,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		return Optional.of(new TRSRTransformation(mat));
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public String getCacheKey(IBlockState object)
 	{

@@ -16,8 +16,6 @@ import elucent.albedo.lighting.Light;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AlbedoHelper extends IECompatModule
 {
@@ -39,7 +37,7 @@ public class AlbedoHelper extends IECompatModule
 	}
 
 	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void gatherLights(GatherLightsEvent event)
 	{
 		for(LightningAnimation animation : TileEntityTeslaCoil.effectMap.values())

@@ -46,8 +46,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -157,7 +155,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
@@ -175,13 +173,13 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack)
 	{
 		return ClientProxy.itemFont;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
@@ -231,7 +229,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String getModelCacheKey(ItemStack stack)
 	{
 		if(stack.getMetadata()==2&&ItemNBTHelper.hasKey(stack, "bullet"))
@@ -240,7 +238,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public List<ResourceLocation> getTextures(ItemStack stack, String key)
 	{
 		IBullet bullet = BulletHandler.getBullet(key);

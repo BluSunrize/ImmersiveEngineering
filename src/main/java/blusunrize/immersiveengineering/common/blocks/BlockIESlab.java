@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IntegerProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 
 public class BlockIESlab<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
 {
-	public static final PropertyInteger prop_SlabType = PropertyInteger.create("slabtype", 0, 2);
+	public static final IntegerProperty prop_SlabType = IntegerProperty.create("slabtype", 0, 2);
 
 	public BlockIESlab(String name, Material material, PropertyEnum<E> property)
 	{
@@ -37,7 +37,7 @@ public class BlockIESlab<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	//	@Override
 	//	public IBlockState getInventoryState(int meta)
 	//	{
-	//		return super.getInventoryState(meta).withProperty(prop_SlabType, 0);
+	//		return super.getInventoryState(meta).with(prop_SlabType, 0);
 	//	}
 	//	
 	//	@Override
@@ -48,7 +48,7 @@ public class BlockIESlab<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	//	@Override
 	//	protected IBlockState getInitDefaultState()
 	//	{
-	//		return super.getInitDefaultState().withProperty(prop_SlabType, 0);
+	//		return super.getInitDefaultState().with(prop_SlabType, 0);
 	//	}
 
 	@Override
@@ -57,13 +57,13 @@ public class BlockIESlab<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		state = super.getActualState(state, world, pos);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof TileEntityIESlab)
-			return state.withProperty(prop_SlabType, ((TileEntityIESlab)tile).slabType);
+			return state.with(prop_SlabType, ((TileEntityIESlab)tile).slabType);
 		return state;
 	}
 	//	@Override
 	//	public IBlockState getStateFromMeta(int meta)
 	//	{
-	//		return super.getStateFromMeta(meta).withProperty(prop_SlabType, 0);
+	//		return super.getStateFromMeta(meta).with(prop_SlabType, 0);
 	//	}
 
 	@Override

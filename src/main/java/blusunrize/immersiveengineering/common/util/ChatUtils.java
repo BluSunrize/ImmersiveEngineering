@@ -15,15 +15,13 @@ import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ChatUtils
 {
 	private static final int DELETION_ID = 3718126;
 	private static int lastAdded;
 
-	@SideOnly(Side.CLIENT)//Credit goes to WayOfFlowingTime
+	@OnlyIn(Dist.CLIENT)//Credit goes to WayOfFlowingTime
 	public static void sendClientNoSpamMessages(ITextComponent[] messages)
 	{
 		GuiNewChat chat = Minecraft.getInstance().ingameGUI.getChatGUI();

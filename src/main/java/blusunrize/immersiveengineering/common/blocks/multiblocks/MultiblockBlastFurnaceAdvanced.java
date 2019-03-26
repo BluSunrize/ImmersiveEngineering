@@ -28,8 +28,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 {
@@ -62,24 +60,24 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
 
-	//@SideOnly(Side.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
@@ -127,7 +125,7 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 					}
 
 		IBlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta());
-		state = state.withProperty(IEProperties.FACING_HORIZONTAL, f.getOpposite());
+		state = state.with(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h = -1; h <= 2; h++)
 			for(int l = -1; l <= 1; l++)
 				for(int w = -1; w <= 1; w++)

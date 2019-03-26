@@ -29,8 +29,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -158,7 +156,7 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
@@ -180,7 +178,7 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public String getCacheKey(IBlockState object)
 	{

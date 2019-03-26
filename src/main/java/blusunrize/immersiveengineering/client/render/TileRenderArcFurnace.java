@@ -59,10 +59,10 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
-		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
+		state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(renderedParts, true));
+			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(renderedParts, true));
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();

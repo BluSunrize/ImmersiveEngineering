@@ -10,15 +10,13 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -27,11 +25,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -41,31 +39,11 @@ import java.util.List;
 
 public class IEBlockInterfaces
 {
-	public interface IIEMetaBlock
-	{
-		String getIEBlockName();
-
-		IProperty getMetaProperty();
-
-		Enum[] getMetaEnums();
-
-		IBlockState getInventoryState(int meta);
-
-		boolean useCustomStateMapper();
-
-		String getCustomStateMapping(int meta, boolean itemBlock);
-
-		@SideOnly(Side.CLIENT)
-		StateMapperBase getCustomMapper();
-
-		boolean appendPropertiesToState();
-	}
-
 	public interface IAttachedIntegerProperies
 	{
 		String[] getIntPropertyNames();
 
-		PropertyInteger getIntProperty(String name);
+		IntegerProperty getIntProperty(String name);
 
 		int getIntPropertyValue(String name);
 
@@ -122,7 +100,7 @@ public class IEBlockInterfaces
 	{
 		boolean hasCustomBlockColours();
 
-		int getRenderColour(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex);
+		int getRenderColour(IBlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex);
 	}
 
 	public interface IColouredTile
@@ -329,7 +307,7 @@ public class IEBlockInterfaces
 
 	public interface IDynamicTexture
 	{
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		HashMap<String, String> getTextureReplacements();
 	}
 

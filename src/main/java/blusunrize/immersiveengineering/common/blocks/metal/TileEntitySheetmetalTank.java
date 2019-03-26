@@ -32,8 +32,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntitySheetmetalTank> implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride
 {
@@ -179,11 +177,11 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private AxisAlignedBB renderAABB;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)

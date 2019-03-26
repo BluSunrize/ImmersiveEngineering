@@ -35,7 +35,7 @@ public class TileRenderCrusher extends TileEntitySpecialRenderer<TileEntityCrush
 		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
-		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
+		state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		boolean b = te.shouldRenderAsActive();

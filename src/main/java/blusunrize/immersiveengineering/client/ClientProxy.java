@@ -1498,7 +1498,7 @@ public class ClientProxy extends CommonProxy
 		IBlockState state = IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
+			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(0, 0, 1);
@@ -1560,7 +1560,7 @@ public class ClientProxy extends CommonProxy
 	{
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		IBlockState state = IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
-		state = state.withProperty(IEProperties.MULTIBLOCKSLAVE, true);
+		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		GlStateManager.pushMatrix();

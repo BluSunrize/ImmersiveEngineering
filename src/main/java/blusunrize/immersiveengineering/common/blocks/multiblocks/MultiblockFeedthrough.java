@@ -30,8 +30,6 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -55,14 +53,14 @@ public class MultiblockFeedthrough implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
@@ -71,7 +69,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	private ItemStack renderStack;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack==null||renderStack.isEmpty())
@@ -92,7 +90,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	{
 		IBlockState ret = IMultiblock.super.getBlockstateFromStack(index, stack);
 		if(stack==structure[0][0][0])
-			return ret.withProperty(IEProperties.FACING_ALL, EnumFacing.SOUTH);
+			return ret.with(IEProperties.FACING_ALL, EnumFacing.SOUTH);
 		return ret;
 	}
 
@@ -119,7 +117,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	{
 		//Check
 		IBlockState stateHere = world.getBlockState(pos).getActualState(world, pos);
-		if(stateHere.getPropertyKeys().contains(IEProperties.FACING_ALL))
+		if(stateHere.getProperties().contains(IEProperties.FACING_ALL))
 			side = stateHere.getValue(IEProperties.FACING_ALL);
 		Set<ImmersiveNetHandler.Connection> connHere = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if(connHere==null)
@@ -152,8 +150,8 @@ public class MultiblockFeedthrough implements IMultiblock
 		//Form
 		if(!world.isRemote)
 		{
-			IBlockState state = IEContent.blockConnectors.getDefaultState().withProperty(IEContent.blockConnectors.property,
-					BlockTypes_Connector.FEEDTHROUGH).withProperty(IEProperties.FACING_ALL, side);
+			IBlockState state = IEContent.blockConnectors.getDefaultState().with(IEContent.blockConnectors.property,
+					BlockTypes_Connector.FEEDTHROUGH).with(IEProperties.FACING_ALL, side);
 			BlockPos masterPos = pos.offset(side);
 			TileEntityFeedthrough master = setBlock(world, masterPos, state, wire, middle, 0);
 			if(master!=null)

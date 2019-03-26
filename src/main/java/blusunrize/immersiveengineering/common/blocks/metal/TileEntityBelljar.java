@@ -51,8 +51,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -481,7 +479,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
 	{
 		if(!inventory.get(SLOT_SOIL).isEmpty()&&"farmland".equals(material))
@@ -494,21 +492,21 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
 		return !"glass".equals(group);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		return transform;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String getCacheKey(IBlockState object)
 	{
 		if(!inventory.get(SLOT_SOIL).isEmpty())
@@ -520,7 +518,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		return null;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private ResourceLocation getSoilTexture()
 	{
 		ItemStack soil = inventory.get(SLOT_SOIL);

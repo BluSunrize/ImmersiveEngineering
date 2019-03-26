@@ -16,8 +16,6 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -31,7 +29,7 @@ public final class WireApi
 {
 	public static final Map<WireType, FeedthroughModelInfo> INFOS = new HashMap<>();
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Deprecated//This should be done in JSON in IE 86+
 	public static void registerConnectorForRender(String key, ResourceLocation baseModel,
 												  @Nullable ImmutableMap<String, String> texReplacement)
@@ -134,10 +132,10 @@ public final class WireApi
 		public final Function<Float, Float> postProcessDmg;
 		@Nullable
 		public IBlockState conn;
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public IBakedModel model;
 		final ResourceLocation texLoc;
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite tex;
 		public final double[] uvs = new double[4];
 		public final double connLength;
@@ -181,7 +179,7 @@ public final class WireApi
 				assert conn!=null;
 				if(state.getBlock()!=conn.getBlock())
 					return false;
-				for(IProperty<?> p : state.getPropertyKeys())
+				for(IProperty<?> p : state.getProperties())
 					if(p!=IEProperties.FACING_ALL&&!state.getValue(p).equals(conn.getValue(p)))
 						return false;
 				return true;
@@ -193,7 +191,7 @@ public final class WireApi
 			return conn!=null;
 		}
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public void onResourceReload(Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter, VertexFormat format)
 		{
 			IModel model;

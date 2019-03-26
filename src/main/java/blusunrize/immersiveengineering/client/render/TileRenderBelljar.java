@@ -54,7 +54,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 			state = state.getActualState(getWorld(), blockPos);
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 			if(state instanceof IExtendedBlockState)
-				state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Arrays.asList("glass"), true));
+				state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(Arrays.asList("glass"), true));
 			quads.put(tile.getFacing(), model.getQuads(state, null, 0));
 		}
 		ClientUtils.bindAtlas();

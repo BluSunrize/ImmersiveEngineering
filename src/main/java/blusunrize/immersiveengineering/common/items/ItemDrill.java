@@ -66,7 +66,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -178,7 +177,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
 	{
@@ -190,7 +189,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return null;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
@@ -216,7 +215,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
 	{
@@ -251,7 +250,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
 	{
 		if(shouldRotate(entity, stack, transform))

@@ -34,8 +34,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -81,7 +79,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	@Override
 	public IBlockState getInventoryState(int meta)
 	{
-		IBlockState state = this.blockState.getBaseState().withProperty(this.property, enumValues[meta]);
+		IBlockState state = this.blockState.getBaseState().with(this.property, enumValues[meta]);
 		return state;
 	}
 
@@ -104,7 +102,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public StateMapperBase getCustomMapper()
 	{
 		return null;
@@ -132,7 +130,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 
 	protected IBlockState getInitDefaultState()
 	{
-		IBlockState state = this.blockState.getBaseState().withProperty(this.property, enumValues[0]);
+		IBlockState state = this.blockState.getBaseState().with(this.property, enumValues[0]);
 		return state;
 	}
 
@@ -167,7 +165,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		IBlockState state = this.getDefaultState().withProperty(this.property, fromMeta(meta));
+		IBlockState state = this.getDefaultState().with(this.property, fromMeta(meta));
 		return state;
 	}
 

@@ -50,7 +50,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
@@ -294,7 +293,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
 	{
 		if(!pipeCover.isEmpty())
@@ -317,14 +316,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String getCacheKey(IBlockState object)
 	{
 		return getRenderCacheKey();
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		return transform;

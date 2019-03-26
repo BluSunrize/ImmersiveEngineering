@@ -41,7 +41,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 			return;
 //				.getModelFromBlockState(state, getWorld(), blockPos);
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Lists.newArrayList("drill"), true));
+			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(Lists.newArrayList("drill"), true));
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();

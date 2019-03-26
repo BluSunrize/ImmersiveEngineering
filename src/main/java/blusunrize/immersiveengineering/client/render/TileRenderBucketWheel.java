@@ -51,8 +51,8 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 			return;
 		if(model==null)
 		{
-			state = state.withProperty(IEProperties.DYNAMICRENDER, true);
-			state = state.withProperty(IEProperties.FACING_HORIZONTAL, EnumFacing.NORTH);
+			state = state.with(IEProperties.DYNAMICRENDER, true);
+			state = state.with(IEProperties.FACING_HORIZONTAL, EnumFacing.NORTH);
 			model = blockRenderer.getModelForState(state);
 		}
 		OBJState objState = null;

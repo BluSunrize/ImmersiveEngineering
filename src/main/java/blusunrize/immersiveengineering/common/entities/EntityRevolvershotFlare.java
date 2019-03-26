@@ -24,8 +24,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -153,7 +151,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 
 	@Nullable
 	@Optional.Method(modid = "albedo")
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public Light provideLight()
 	{

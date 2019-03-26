@@ -686,10 +686,10 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//	{
 	//		return false;
 	//	}
-	//	@SideOnly(Side.CLIENT)
+	//	@OnlyIn(Dist.CLIENT)
 	//	private AxisAlignedBB renderAABB;
 	//	@Override
-	//	@SideOnly(Side.CLIENT)
+	//	@OnlyIn(Dist.CLIENT)
 	//	public AxisAlignedBB getRenderBoundingBox()
 	//	{
 	//		if (!formed)
@@ -702,7 +702,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//		return renderAABB;
 	//	}
 	//	@Override
-	//	@SideOnly(Side.CLIENT)
+	//	@OnlyIn(Dist.CLIENT)
 	//	public double getMaxRenderDistanceSquared()
 	//	{
 	//		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

@@ -34,8 +34,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class MultiblockArcFurnace implements IMultiblock
@@ -119,7 +117,7 @@ public class MultiblockArcFurnace implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
@@ -139,17 +137,17 @@ public class MultiblockArcFurnace implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
 
-	//@SideOnly(Side.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
@@ -209,7 +207,7 @@ public class MultiblockArcFurnace implements IMultiblock
 		if(b)
 		{
 			IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
-			state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
+			state = state.with(IEProperties.FACING_HORIZONTAL, side);
 			for(int l = 0; l < 5; l++)
 				for(int w = -2; w <= 2; w++)
 					for(int h = 0; h < 5; h++)

@@ -38,8 +38,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -56,7 +54,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	//	public boolean hasPower = false;
 	//	public boolean mobGrinding = false;
 	//	public int grindingTimer = 0;
-	//	@SideOnly(Side.CLIENT)
+	//	@OnlyIn(Dist.CLIENT)
 	//	ItemStack particleStack;
 
 	public TileEntityCrusher()
@@ -106,10 +104,10 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private AxisAlignedBB renderAABB;
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{

@@ -15,7 +15,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -56,10 +55,10 @@ public class IEItemInterfaces
 
 	public interface ITextureOverride
 	{
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		String getModelCacheKey(ItemStack stack);
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		List<ResourceLocation> getTextures(ItemStack stack, String key);
 	}
 

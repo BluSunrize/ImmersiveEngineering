@@ -44,8 +44,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -61,7 +59,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	public EnumFacing facing = EnumFacing.UP;
 	public boolean lowPower = false;
 	private Vec3d soundPos = null;
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static ArrayListMultimap<BlockPos, LightningAnimation> effectMap;
 	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
 
@@ -382,7 +380,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	AxisAlignedBB renderBB;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderBB==null)

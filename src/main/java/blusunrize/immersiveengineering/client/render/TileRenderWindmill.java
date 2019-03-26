@@ -48,7 +48,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 			if(state.getBlock()!=IEContent.blockWoodenDevice1)
 				return;
 			state = state.getActualState(getWorld(), blockPos);
-			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
+			state = state.with(IEProperties.FACING_ALL, EnumFacing.NORTH);
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 			if(state instanceof IExtendedBlockState)
 			{
@@ -56,7 +56,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 				parts.add("base");
 				for(int i = 1; i <= tile.sails; i++)
 					parts.add("sail_"+i);
-				state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(parts, true));
+				state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(parts, true));
 			}
 			quads[tile.sails] = model.getQuads(state, null, 0);
 		}

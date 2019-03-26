@@ -31,8 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -149,7 +147,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getDrillTexture(ItemStack drill, ItemStack head)
 	{
 		return getHeadPerm(head).sprite;
@@ -177,7 +175,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		final float drillAttack;
 		final int maxDamage;
 		public final String texture;
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite sprite;
 
 		public DrillHeadPerm(String repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture)

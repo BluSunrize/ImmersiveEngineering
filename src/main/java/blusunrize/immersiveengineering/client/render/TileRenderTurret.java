@@ -81,7 +81,7 @@ public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret
 	{
 		pos = pos.up();
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));
+			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);

@@ -15,8 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author BluSunrize - 28.05.2015
@@ -79,6 +77,6 @@ public interface IDrillHead
 	 * Look at IE's default texture for the UV layout
 	 * This IIcon should be stitched in the item sheet
 	 */
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	TextureAtlasSprite getDrillTexture(ItemStack drill, ItemStack head);
 }

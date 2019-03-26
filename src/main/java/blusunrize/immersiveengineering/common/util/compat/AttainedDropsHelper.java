@@ -24,8 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AttainedDropsHelper extends IECompatModule
 {
@@ -106,24 +104,24 @@ public class AttainedDropsHelper extends IECompatModule
 			}
 
 			@Override
-			@SideOnly(Side.CLIENT)
+			@OnlyIn(Dist.CLIENT)
 			public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 			{
 				return new IBlockState[0];
 			}
 
 			@Override
-			@SideOnly(Side.CLIENT)
+			@OnlyIn(Dist.CLIENT)
 			public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 			{
 				return .875f;
 			}
 
 			@Override
-			@SideOnly(Side.CLIENT)
+			@OnlyIn(Dist.CLIENT)
 			public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 			{
-				IBlockState state = plant.getDefaultState().withProperty(BlockCrops.AGE, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
+				IBlockState state = plant.getDefaultState().with(BlockCrops.AGE, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
 				IBakedModel model = blockRenderer.getModelForState(state);
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(0, 0, 1);

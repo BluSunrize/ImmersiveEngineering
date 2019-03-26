@@ -42,7 +42,7 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
-		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
+		state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		Tessellator tessellator = Tessellator.getInstance();

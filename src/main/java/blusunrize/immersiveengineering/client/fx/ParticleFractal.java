@@ -9,8 +9,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayDeque;
@@ -19,7 +17,7 @@ import java.util.Deque;
 /**
  * @author BluSunrize - 13.05.2018
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ParticleFractal extends Particle
 {
 	public static final Deque<ParticleFractal> PARTICLE_FRACTAL_DEQUE = new ArrayDeque<>();

@@ -10,11 +10,10 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyHelper;
-import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.state.AbstractProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -22,12 +21,13 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 
 public class IEProperties
 {
-	public static final PropertyDirection FACING_ALL = PropertyDirection.create("facing");
-	public static final PropertyDirection FACING_HORIZONTAL = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	public static final DirectionProperty FACING_ALL = DirectionProperty.create("facing");
+	public static final DirectionProperty FACING_HORIZONTAL = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
 
 	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("_0multiblockslave");//Name starts with '_0' to ensure priority when overriding models
 	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("_1dynamicrender");//Name starts with '_1' to ensure priority over anything but the multiblockslave property
@@ -64,8 +64,8 @@ public class IEProperties
 			PropertyBoolInverted.create("boolean1"),
 			PropertyBoolInverted.create("boolean2")
 	};
-	public static final PropertyInteger INT_4 = PropertyInteger.create("int_4", 0, 3);
-	public static final PropertyInteger INT_16 = PropertyInteger.create("int_16", 0, 15);
+	public static final IntegerProperty INT_4 = IntegerProperty.create("int_4", 0, 3);
+	public static final IntegerProperty INT_16 = IntegerProperty.create("int_16", 0, 15);
 
 	public static class ProperySideConfig implements IUnlistedProperty<SideConfig>
 	{
@@ -128,7 +128,7 @@ public class IEProperties
 		}
 	};
 
-	public static class PropertyBoolInverted extends PropertyHelper<Boolean>
+	public static class PropertyBoolInverted extends AbstractProperty<Boolean>
 	{
 		private static final ImmutableList<Boolean> ALLOWED_VALUES = ImmutableList.of(false, true);
 

@@ -6,10 +6,11 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import mcp.MethodsReturnNonnullByDefault;
+import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+public class BlockStripCurtain extends BlockIETileProvider
+{
+
+}

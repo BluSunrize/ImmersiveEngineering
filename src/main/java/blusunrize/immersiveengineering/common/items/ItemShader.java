@@ -44,8 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
@@ -270,7 +268,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				{
 					boolean wall = blockState.getBlock()==Blocks.WALL_BANNER;
 					int orientation = wall?blockState.getValue(BlockBanner.FACING).getIndex(): blockState.getValue(BlockBanner.ROTATION);
-					world.setBlockState(pos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.SHADER_BANNER.getMeta()).withProperty(IEProperties.FACING_ALL, EnumFacing.SOUTH));
+					world.setBlockState(pos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.SHADER_BANNER.getMeta()).with(IEProperties.FACING_ALL, EnumFacing.SOUTH));
 					tile = world.getTileEntity(pos);
 					if(tile instanceof TileEntityShaderBanner)
 					{
@@ -304,7 +302,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(I18n.format("Level: "+this.getRarity(stack).color+this.getRarity(stack).rarityName));
@@ -339,7 +337,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
@@ -416,7 +414,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public int getColour()
 		{
 			if(func_getColour!=null)
@@ -425,7 +423,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		}
 
 		@Override
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		public void modifyRender(boolean pre, float partialTick)
 		{
 			if(func_modifyRender!=null)

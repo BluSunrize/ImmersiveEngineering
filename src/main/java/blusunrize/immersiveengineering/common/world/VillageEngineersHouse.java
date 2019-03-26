@@ -79,7 +79,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 1, 0, 1, 9, 0, 8, Blocks.COBBLESTONE.getDefaultState(), Blocks.COBBLESTONE.getDefaultState(), false);
 		this.fillWithBlocks(world, box, 6, 0, 1, 9, 0, 2, Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), false);
 		//Stair
-		this.setBlockState(world, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH), 4, 0, 0, box);
+		this.setBlockState(world, Blocks.STONE_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.NORTH), 4, 0, 0, box);
 
 		//Pillars
 		this.fillWithBlocks(world, box, 1, 1, 3, 1, 4, 3, IEContent.blockTreatedWood.getDefaultState(), IEContent.blockTreatedWood.getDefaultState(), false);
@@ -164,7 +164,7 @@ public class VillageEngineersHouse extends Village
 		this.placeLantern(world, box, 5, 7, 6, 0);
 
 		//Stairs
-		IBlockState stairs = Blocks.OAK_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH);
+		IBlockState stairs = Blocks.OAK_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.NORTH);
 		setBlockState(world, stairs, 8, 1, 6, box);
 		stairs = stairs.withRotation(Rotation.COUNTERCLOCKWISE_90);
 //		stairMeta = this.getMetadataWithOffset(Blocks.OAK_STAIRS, 1);
@@ -174,8 +174,8 @@ public class VillageEngineersHouse extends Village
 		setBlockState(world, stairs, 5, 4, 7, box);
 
 		//Roof
-		IBlockState brickSlab = Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.BRICK);
-		IBlockState brickSlabInverted = brickSlab.withProperty(BlockSlab.HALF, EnumBlockHalf.TOP);
+		IBlockState brickSlab = Blocks.STONE_SLAB.getDefaultState().with(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.BRICK);
+		IBlockState brickSlabInverted = brickSlab.with(BlockSlab.HALF, EnumBlockHalf.TOP);
 		this.fillWithBlocks(world, box, 0, 6, 4, 0, 6, 8, brickSlabInverted, brickSlabInverted, false);
 		this.fillWithBlocks(world, box, 1, 7, 4, 1, 7, 8, brickSlab, brickSlab, false);
 		this.fillWithBlocks(world, box, 3, 8, 4, 3, 8, 8, brickSlab, brickSlab, false);
@@ -184,7 +184,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 9, 7, 2, 9, 7, 8, brickSlab, brickSlab, false);
 		this.fillWithBlocks(world, box, 10, 6, 2, 10, 6, 8, brickSlabInverted, brickSlabInverted, false);
 
-		IBlockState brickStairs = Blocks.BRICK_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST);
+		IBlockState brickStairs = Blocks.BRICK_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.EAST);
 		this.fillWithBlocks(world, box, 2, 7, 4, 2, 7, 8, brickStairs, brickStairs, false);
 		this.fillWithBlocks(world, box, 4, 8, 4, 4, 8, 8, brickStairs, brickStairs, false);
 		brickStairs = brickStairs.withRotation(Rotation.CLOCKWISE_180);
@@ -239,8 +239,8 @@ public class VillageEngineersHouse extends Village
 
 	protected void placeDoor(World worldIn, StructureBoundingBox boundingBoxIn, Random rand, int x, int y, int z, EnumFacing facing, EnumHingePosition hinge)
 	{
-		this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, facing).withProperty(BlockDoor.HINGE, hinge), x, y, z, boundingBoxIn);
-		this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, facing).withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER).withProperty(BlockDoor.HINGE, hinge), x, y+1, z, boundingBoxIn);
+		this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().with(BlockDoor.FACING, facing).with(BlockDoor.HINGE, hinge), x, y, z, boundingBoxIn);
+		this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().with(BlockDoor.FACING, facing).with(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER).with(BlockDoor.HINGE, hinge), x, y+1, z, boundingBoxIn);
 	}
 
 	protected boolean placeLantern(World world, StructureBoundingBox box, int x, int y, int z, int facing)

@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -96,7 +95,7 @@ public class RailcraftHelper extends IECompatModule
 
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public class ModelShaderLowSidesMinecart extends ModelShaderMinecart
 	{
 		public ModelShaderLowSidesMinecart()

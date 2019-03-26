@@ -34,8 +34,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
@@ -300,7 +298,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
 	{
 		float lowerHeight = slopePosition/(float)totalLength;
@@ -381,7 +379,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 				EAST, tas, upperV, lowerV, invert));
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private BakedQuad createSide(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite,
 								 double leftV, double rightV, boolean invert)
 	{

@@ -32,8 +32,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.client.MaterialRenderInfo;
@@ -139,7 +137,7 @@ public class TConstructHelper extends IECompatModule
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void clientPostInit()
 	{
 		treatedWood.setRenderInfo(new MaterialRenderInfo.BlockTexture(new ResourceLocation(ImmersiveEngineering.MODID, "blocks/treatedWood_horizontal")));
@@ -233,7 +231,7 @@ public class TConstructHelper extends IECompatModule
 	}
 //
 //
-//	@SideOnly(Side.CLIENT)
+//	@OnlyIn(Dist.CLIENT)
 //	@Override
 //	public void clientPreInit()
 //	{

@@ -47,7 +47,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 		if(state.getBlock()!=IEContent.blockMetalMultiblock)
 			return;
 		state = state.getBlock().getActualState(state, getWorld(), blockPos);
-		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
+		state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		//Initialize Tesselator and BufferBuilder
@@ -233,7 +233,7 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));
+			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);

@@ -20,8 +20,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 
@@ -59,7 +57,7 @@ public class ExtraUtilsHelper extends IECompatModule
 	{
 		IProperty propGrowth = null;
 		final IBlockState state = block.getDefaultState();
-		for(IProperty prop : state.getPropertyKeys())
+		for(IProperty prop : state.getProperties())
 			if("growth".equals(prop.getName()))
 				propGrowth = prop;
 		if(propGrowth!=null)
@@ -82,10 +80,10 @@ public class ExtraUtilsHelper extends IECompatModule
 				}
 
 				@Override
-				@SideOnly(Side.CLIENT)
+				@OnlyIn(Dist.CLIENT)
 				public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 				{
-					return new IBlockState[]{state.withProperty(finalPropGrowth, Math.min(maxAge, Math.round(maxAge*growth)))};
+					return new IBlockState[]{state.with(finalPropGrowth, Math.min(maxAge, Math.round(maxAge*growth)))};
 				}
 			};
 			handler.register(seed, output, soil, state);

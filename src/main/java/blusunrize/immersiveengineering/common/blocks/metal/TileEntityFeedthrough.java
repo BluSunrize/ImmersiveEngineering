@@ -334,13 +334,13 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			switch(toBreak)
 			{
 				case -1:
-					newState = info.conn.withProperty(IEProperties.FACING_ALL, facing);
+					newState = info.conn.with(IEProperties.FACING_ALL, facing);
 					break;
 				case 0:
 					newState = stateForMiddle;
 					break;
 				case 1:
-					newState = info.conn.withProperty(IEProperties.FACING_ALL, facing.getOpposite());
+					newState = info.conn.with(IEProperties.FACING_ALL, facing.getOpposite());
 					break;
 			}
 			world.setBlockState(replacePos, newState);//TODO move wires properly

@@ -16,8 +16,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,43 +53,43 @@ public interface IOBJModelCallback<T>
 		}
 	};
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default TextureAtlasSprite getTextureReplacement(T object, String material)
 	{
 		return null;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default boolean shouldRenderGroup(T object, String group)
 	{
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform)
 	{
 		return transform;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity)
 	{
 		return perspective;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default int getRenderColour(T object, String group)
 	{
 		return 0xffffffff;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default List<BakedQuad> modifyQuads(T object, List<BakedQuad> quads)
 	{
 		return quads;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default String getCacheKey(T object)
 	{
 		return null;
@@ -99,13 +97,13 @@ public interface IOBJModelCallback<T>
 
 	String[][] EMPTY_STRING_A = new String[0][];
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
 	{
 		return IOBJModelCallback.EMPTY_STRING_A;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Nonnull
 	default Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, EntityLivingBase entity,
 										  Matrix4 mat, float partialTicks)
@@ -113,7 +111,7 @@ public interface IOBJModelCallback<T>
 		return mat.setIdentity();
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	default boolean areGroupsFullbright(ItemStack stack, String[] groups)
 	{
 		return false;

@@ -9,184 +9,99 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.EnumPushReaction;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
 
-public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Block implements IIEMetaBlock
+public class BlockIEBase extends Block
 {
 	protected static IProperty[] tempProperties;
 	protected static IUnlistedProperty[] tempUnlistedProperties;
 
 	public final String name;
-	public final PropertyEnum<E> property;
 	public final IProperty[] additionalProperties;
 	public final IUnlistedProperty[] additionalUnlistedProperties;
-	public final E[] enumValues;
-	boolean[] isMetaHidden;
-	boolean[] hasFlavour;
+	boolean isHidden;
+	boolean hasFlavour;
 	protected Set<BlockRenderLayer> renderLayers = Sets.newHashSet(BlockRenderLayer.SOLID);
-	protected Set<BlockRenderLayer>[] metaRenderLayers;
-	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
-	protected Map<Integer, Float> metaHardness = new HashMap<>();
-	protected Map<Integer, Integer> metaResistances = new HashMap<>();
-	protected EnumPushReaction[] metaMobilityFlags;
-	protected boolean[] canHammerHarvest;
-	protected boolean[] metaNotNormalBlock;
+	//TODO wtf is variable opacity?
+	protected int lightOpacity;
+	protected EnumPushReaction mobilityFlag = EnumPushReaction.NORMAL;
+	protected boolean canHammerHarvest;
+	protected boolean notNormalBlock;
 	private boolean opaqueCube = false;
 
-	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
+	public BlockIEBase(String name, Block.Properties blockProps, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
-		super(setTempProperties(material, mainProperty, additionalProperties));
+		super(setTempProperties(blockProps, additionalProperties));
 		this.name = name;
-		this.property = mainProperty;
-		this.enumValues = mainProperty.getValueClass().getEnumConstants();
-		this.isMetaHidden = new boolean[this.enumValues.length];
-		this.hasFlavour = new boolean[this.enumValues.length];
-		this.metaRenderLayers = new Set[this.enumValues.length];
-		this.canHammerHarvest = new boolean[this.enumValues.length];
-		this.metaMobilityFlags = new EnumPushReaction[this.enumValues.length];
 
-		ArrayList<IProperty> propList = new ArrayList<IProperty>();
-		ArrayList<IUnlistedProperty> unlistedPropList = new ArrayList<IUnlistedProperty>();
-		for(Object o : additionalProperties)
-		{
-			if(o instanceof IProperty)
-				propList.add((IProperty)o);
-			if(o instanceof IProperty[])
-				for(IProperty p : ((IProperty[])o))
-					propList.add(p);
-			if(o instanceof IUnlistedProperty)
-				unlistedPropList.add((IUnlistedProperty)o);
-			if(o instanceof IUnlistedProperty[])
-				for(IUnlistedProperty p : ((IUnlistedProperty[])o))
-					unlistedPropList.add(p);
-		}
-		this.additionalProperties = propList.toArray(new IProperty[propList.size()]);
-		this.additionalUnlistedProperties = unlistedPropList.toArray(new IUnlistedProperty[unlistedPropList.size()]);
+		this.additionalProperties = Arrays.copyOf(tempProperties, tempProperties.length);
+		this.additionalUnlistedProperties = Arrays.copyOf(tempUnlistedProperties, tempUnlistedProperties.length);
 		this.setDefaultState(getInitDefaultState());
 		String registryName = createRegistryName();
-		this.setTranslationKey(registryName.replace(':', '.'));
-		this.setCreativeTab(ImmersiveEngineering.itemGroup);
-		this.adjustSound();
+		//TODO this.setCreativeTab(ImmersiveEngineering.itemGroup);
+		//TODO this.adjustSound();
 
-//		ImmersiveEngineering.registerBlockByFullName(this, itemBlock, registryName);
 		IEContent.registeredIEBlocks.add(this);
 		try
 		{
-			IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class).newInstance(this));
+			Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
+			IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class, Item.Properties.class)
+					.newInstance(this, itemProps));
 		} catch(Exception e)
 		{
-			e.printStackTrace();
+			//TODO e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		lightOpacity = 255;
 	}
 
-	@Override
-	public String getIEBlockName()
-	{
-		return this.name;
-	}
-
-	@Override
-	public Enum[] getMetaEnums()
-	{
-		return enumValues;
-	}
-
-	@Override
-	public IBlockState getInventoryState(int meta)
-	{
-		return getStateFromMeta(meta);
-	}
-
-	@Override
-	public PropertyEnum<E> getMetaProperty()
-	{
-		return this.property;
-	}
-
-	@Override
-	public boolean useCustomStateMapper()
-	{
-		return false;
-	}
-
-	@Override
-	public String getCustomStateMapping(int meta, boolean itemBlock)
-	{
-		return null;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public StateMapperBase getCustomMapper()
-	{
-		return null;
-	}
-
-	@Override
-	public boolean appendPropertiesToState()
-	{
-		return true;
-	}
-
-	public String getTranslationKey(ItemStack stack)
-	{
-		String subName = getStateFromMeta(stack.getItemDamage()).getValue(property).toString().toLowerCase(Locale.US);
-		return super.getTranslationKey()+"."+subName;
-	}
-
-	protected static Material setTempProperties(Material material, PropertyEnum<?> property, Object... additionalProperties)
+	//TODO do we still need this hackyness?
+	protected static Block.Properties setTempProperties(Properties blockProps, Object[] additionalProperties)
 	{
 		ArrayList<IProperty> propList = new ArrayList<IProperty>();
 		ArrayList<IUnlistedProperty> unlistedPropList = new ArrayList<IUnlistedProperty>();
-		propList.add(property);
 		for(Object o : additionalProperties)
 		{
 			if(o instanceof IProperty)
 				propList.add((IProperty)o);
 			if(o instanceof IProperty[])
-				for(IProperty p : ((IProperty[])o))
-					propList.add(p);
+				propList.addAll(Arrays.asList(((IProperty[])o)));
 			if(o instanceof IUnlistedProperty)
 				unlistedPropList.add((IUnlistedProperty)o);
 			if(o instanceof IUnlistedProperty[])
-				for(IUnlistedProperty p : ((IUnlistedProperty[])o))
-					unlistedPropList.add(p);
+				unlistedPropList.addAll(Arrays.asList(((IUnlistedProperty[])o)));
 		}
-		tempProperties = propList.toArray(new IProperty[propList.size()]);
-		tempUnlistedProperties = unlistedPropList.toArray(new IUnlistedProperty[unlistedPropList.size()]);
-		return material;
+		tempProperties = propList.toArray(new IProperty[0]);
+		tempUnlistedProperties = unlistedPropList.toArray(new IUnlistedProperty[0]);
+		return blockProps;
 	}
 
 	protected static Object[] combineProperties(Object[] currentProperties, Object... addedProperties)
@@ -199,210 +114,111 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return array;
 	}
 
-	public BlockIEBase setMetaHidden(int... meta)
+	public BlockIEBase setHidden(boolean shouldHide)
 	{
-		for(int i : meta)
-			if(i >= 0&&i < this.isMetaHidden.length)
-				this.isMetaHidden[i] = true;
+		isHidden = shouldHide;
 		return this;
 	}
 
-	public BlockIEBase setMetaUnhidden(int... meta)
+	public boolean isHidden()
 	{
-		for(int i : meta)
-			if(i >= 0&&i < this.isMetaHidden.length)
-				this.isMetaHidden[i] = false;
+		return isHidden;
+	}
+
+	public BlockIEBase setHasFlavour(boolean shouldHave)
+	{
+		hasFlavour = shouldHave;
 		return this;
 	}
 
-	public boolean isMetaHidden(int meta)
+	public boolean hasFlavour()
 	{
-		return this.isMetaHidden[Math.max(0, Math.min(meta, this.isMetaHidden.length-1))];
+		return hasFlavour;
 	}
 
-	public BlockIEBase setHasFlavour(int... meta)
-	{
-		if(meta==null||meta.length < 1)
-			for(int i = 0; i < hasFlavour.length; i++)
-				this.hasFlavour[i] = true;
-		else
-			for(int i : meta)
-				if(i >= 0&&i < this.hasFlavour.length)
-					this.hasFlavour[i] = false;
-		return this;
-	}
-
-	public boolean hasFlavour(ItemStack stack)
-	{
-		return this.hasFlavour[Math.max(0, Math.min(stack.getItemDamage(), this.hasFlavour.length-1))];
-	}
-
-	public BlockIEBase<E> setBlockLayer(BlockRenderLayer... layer)
+	public BlockIEBase setBlockLayer(BlockRenderLayer... layer)
 	{
 		this.renderLayers = Sets.newHashSet(layer);
-		return this;
-	}
-
-	public BlockIEBase<E> setMetaBlockLayer(int meta, BlockRenderLayer... layer)
-	{
-		this.metaRenderLayers[Math.max(0, Math.min(meta, this.metaRenderLayers.length-1))] = Sets.newHashSet(layer);
 		return this;
 	}
 
 	@Override
 	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
 	{
-		int meta = this.getMetaFromState(state);
-		if(meta >= 0&&meta < metaRenderLayers.length&&metaRenderLayers[meta]!=null)
-			return metaRenderLayers[meta].contains(layer);
 		return renderLayers.contains(layer);
 	}
 
-	public BlockIEBase<E> setMetaLightOpacity(int meta, int opacity)
+	public BlockIEBase setLightOpacity(int opacity)
 	{
-		metaLightOpacities.put(meta, opacity);
+		lightOpacity = opacity;
 		return this;
 	}
 
 	@Override
-	public int getLightOpacity(IBlockState state, IBlockAccess w, BlockPos pos)
+	public int getLightValue(IBlockState state, IWorldReader world, BlockPos pos)
 	{
-		int meta = getMetaFromState(state);
-		if(metaLightOpacities.containsKey(meta))
-			return metaLightOpacities.get(meta);
-		return super.getLightOpacity(state, w, pos);
+		return lightOpacity;
 	}
 
-	public BlockIEBase<E> setMetaHardness(int meta, float hardness)
+	public BlockIEBase setMobility(EnumPushReaction flag)
 	{
-		metaHardness.put(meta, hardness);
-		return this;
-	}
-
-	@Override
-	public float getBlockHardness(IBlockState state, World world, BlockPos pos)
-	{
-		int meta = getMetaFromState(state);
-		if(metaHardness.containsKey(meta))
-			return metaHardness.get(meta);
-		return super.getBlockHardness(state, world, pos);
-	}
-
-	public BlockIEBase<E> setMetaExplosionResistance(int meta, int resistance)
-	{
-		metaResistances.put(meta, resistance);
-		return this;
-	}
-
-	@Override
-	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
-	{
-		int meta = getMetaFromState(world.getBlockState(pos));
-		if(metaResistances.containsKey(meta))
-			return metaResistances.get(meta);
-		return super.getExplosionResistance(world, pos, exploder, explosion);
-	}
-
-
-	public BlockIEBase<E> setMetaMobilityFlag(int meta, EnumPushReaction flag)
-	{
-		metaMobilityFlags[meta] = flag;
+		mobilityFlag = flag;
 		return this;
 	}
 
 	@Override
 	public EnumPushReaction getPushReaction(IBlockState state)
 	{
-		int meta = getMetaFromState(state);
-		if(metaMobilityFlags[meta]==null)
-			return EnumPushReaction.NORMAL;
-		return metaMobilityFlags[meta];
+		return mobilityFlag;
 	}
 
-	public BlockIEBase<E> setNotNormalBlock(int meta)
+	public BlockIEBase setNotNormalBlock()
 	{
-		if(metaNotNormalBlock==null)
-			metaNotNormalBlock = new boolean[this.enumValues.length];
-		metaNotNormalBlock[meta] = true;
+		notNormalBlock = true;
 		return this;
-	}
-
-	public BlockIEBase<E> setAllNotNormalBlock()
-	{
-		if(metaNotNormalBlock==null)
-			metaNotNormalBlock = new boolean[this.enumValues.length];
-		for(int i = 0; i < metaNotNormalBlock.length; i++)
-			metaNotNormalBlock[i] = true;
-		return this;
-	}
-
-	protected boolean normalBlockCheck(IBlockState state)
-	{
-		if(metaNotNormalBlock==null)
-			return true;
-		int meta = getMetaFromState(state);
-		return (meta < 0||meta >= metaNotNormalBlock.length)||!metaNotNormalBlock[meta];
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return normalBlockCheck(state);
 	}
 
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
-		return normalBlockCheck(state);
+		return notNormalBlock;
 	}
 
-	@Override
+
+/*TODO does this still exist?	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
-		return normalBlockCheck(state);
-	}
+		return notNormalBlock;
+	}*/
 
 	@Override
 	public boolean causesSuffocation(IBlockState state)
 	{
-		if(metaNotNormalBlock==null)
-			return true;
-		int majority = 0;
-		for(boolean b : metaNotNormalBlock)
-			if(b)
-				majority++;
-		return majority < metaNotNormalBlock.length/2;
+		return !notNormalBlock;
 	}
 
 	@Override
-	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
+	public boolean isNormalCube(IBlockState state, IBlockReader world, BlockPos pos)
 	{
-		return normalBlockCheck(state);
+		return notNormalBlock;
 	}
 
-	protected BlockStateContainer createNotTempBlockState()
+	@Override
+	protected void fillStateContainer(Builder<Block, IBlockState> builder)
 	{
-		IProperty[] array = new IProperty[1+this.additionalProperties.length];
-		array[0] = this.property;
-		for(int i = 0; i < this.additionalProperties.length; i++)
-			array[1+i] = this.additionalProperties[i];
-		if(this.additionalUnlistedProperties.length > 0)
-			return new ExtendedBlockState(this, array, additionalUnlistedProperties);
-		return new BlockStateContainer(this, array);
+		super.fillStateContainer(builder);
+		//TODO ext states?
+		builder.add(tempProperties);
 	}
 
 	protected IBlockState getInitDefaultState()
 	{
-		IBlockState state = this.blockState.getBaseState().withProperty(this.property, enumValues[0]);
-		for(int i = 0; i < this.additionalProperties.length; i++)
-			if(this.additionalProperties[i]!=null&&!this.additionalProperties[i].getAllowedValues().isEmpty())
-				state = applyProperty(state, additionalProperties[i], additionalProperties[i].getAllowedValues().iterator().next());
-		return state;
+		return this.stateContainer.getBaseState();
 	}
 
 	protected <V extends Comparable<V>> IBlockState applyProperty(IBlockState in, IProperty<V> prop, Object val)
 	{
-		return in.withProperty(prop, (V)val);
+		return in.with(prop, (V)val);
 	}
 
 	public void onIEBlockPlacedBy(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
@@ -415,79 +231,16 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		if(this.property!=null)
-			return createNotTempBlockState();
-		if(tempUnlistedProperties.length > 0)
-			return new ExtendedBlockState(this, tempProperties, tempUnlistedProperties);
-		return new BlockStateContainer(this, tempProperties);
-	}
-
-	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public int getMetaFromState(IBlockState state)
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
 	{
-		if(state==null||!this.equals(state.getBlock()))
-			return 0;
-		return state.getValue(this.property).getMeta();
-	}
-
-	protected E fromMeta(int meta)
-	{
-		if(meta < 0||meta >= enumValues.length)
-			meta = 0;
-		return enumValues[meta];
-	}
-
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		return this.getDefaultState().withProperty(this.property, fromMeta(meta));
-	}
-
-	@Override
-	public int damageDropped(IBlockState state)
-	{
-		return getMetaFromState(state);
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
-	{
-		for(E type : this.enumValues)
-			if(type.listForCreative()&&!this.isMetaHidden[type.getMeta()])
-				list.add(new ItemStack(this, 1, type.getMeta()));
-	}
-
-	void adjustSound()
-	{
-		if(this.material==Material.ANVIL)
-			this.blockSoundType = SoundType.ANVIL;
-		else if(this.material==Material.CARPET||this.material==Material.CLOTH)
-			this.blockSoundType = SoundType.CLOTH;
-		else if(this.material==Material.GLASS||this.material==Material.ICE)
-			this.blockSoundType = SoundType.GLASS;
-		else if(this.material==Material.GRASS||this.material==Material.TNT||this.material==Material.PLANTS||this.material==Material.VINE)
-			this.blockSoundType = SoundType.PLANT;
-		else if(this.material==Material.GROUND)
-			this.blockSoundType = SoundType.GROUND;
-		else if(this.material==Material.IRON)
-			this.blockSoundType = SoundType.METAL;
-		else if(this.material==Material.SAND)
-			this.blockSoundType = SoundType.SAND;
-		else if(this.material==Material.SNOW)
-			this.blockSoundType = SoundType.SNOW;
-		else if(this.material==Material.ROCK)
-			this.blockSoundType = SoundType.STONE;
-		else if(this.material==Material.WOOD||this.material==Material.CACTUS)
-			this.blockSoundType = SoundType.WOOD;
+		items.add(new ItemStack(this, 1));
 	}
 
 	@Override
@@ -501,25 +254,15 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return super.eventReceived(state, worldIn, pos, eventID, eventParam);
 	}
 
-	public BlockIEBase<E> setMetaHammerHarvest(int meta)
+	public BlockIEBase setHammerHarvest()
 	{
-		canHammerHarvest[meta] = true;
-		return this;
-	}
-
-	public BlockIEBase<E> setHammerHarvest()
-	{
-		for(int i = 0; i < metaNotNormalBlock.length; i++)
-			canHammerHarvest[i] = true;
+		canHammerHarvest = true;
 		return this;
 	}
 
 	public boolean allowHammerHarvest(IBlockState blockState)
 	{
-		int meta = getMetaFromState(blockState);
-		if(meta >= 0&&meta < canHammerHarvest.length)
-			return canHammerHarvest[meta];
-		return false;
+		return canHammerHarvest;
 	}
 
 	public boolean allowWirecutterHarvest(IBlockState blockState)
@@ -532,21 +275,20 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return opaqueCube;
 	}
 
-	public BlockIEBase<E> setOpaque(boolean isOpaque)
+	public BlockIEBase setOpaque(boolean isOpaque)
 	{
 		opaqueCube = isOpaque;
-		fullBlock = isOpaque;
 		return this;
 	}
 
 	@Override
-	public boolean isToolEffective(String type, IBlockState state)
+	public boolean isToolEffective(IBlockState state, ToolType tool)
 	{
-		if(allowHammerHarvest(state)&&type.equals(Lib.TOOL_HAMMER))
+		if(allowHammerHarvest(state)&&tool==IEContent.toolHammer)
 			return true;
-		if(allowWirecutterHarvest(state)&&type.equals(Lib.TOOL_WIRECUTTER))
+		if(allowWirecutterHarvest(state)&&IEContent.toolWireCutter)
 			return true;
-		return super.isToolEffective(type, state);
+		return super.isToolEffective(state, tool);
 	}
 
 	public String createRegistryName()
@@ -561,18 +303,18 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		boolean listForCreative();
 	}
 
-	public abstract static class IELadderBlock<E extends Enum<E> & IBlockEnum> extends BlockIEBase<E>
+	public abstract static class IELadderBlock<E extends Enum<E> & IBlockEnum> extends BlockIEBase
 	{
-		public IELadderBlock(String name, Material material, PropertyEnum<E> mainProperty,
+		public IELadderBlock(String name, Block.Properties material,
 							 Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 		{
-			super(name, material, mainProperty, itemBlock, additionalProperties);
+			super(name, material, itemBlock, additionalProperties);
 		}
 
 		@Override
-		public void onEntityCollision(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+		public void onEntityCollision(IBlockState state, World worldIn, BlockPos pos, Entity entityIn)
 		{
-			super.onEntityCollision(worldIn, pos, state, entityIn);
+			super.onEntityCollision(state, worldIn, pos, entityIn);
 			if(entityIn instanceof EntityLivingBase&&!((EntityLivingBase)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (EntityLivingBase)entityIn))
 			{
 				float f5 = 0.15F;

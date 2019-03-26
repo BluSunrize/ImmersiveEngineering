@@ -32,7 +32,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.property.Properties;
 
 import java.util.Arrays;
 
@@ -115,11 +114,11 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		state = super.getExtendedState(state, world, pos);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof TileEntityImmersiveConnectable&&state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)tile).genConnBlockstate());
+			state = ((IExtendedBlockState)state).with(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)tile).genConnBlockstate());
 		if(tile instanceof TileEntityElectricLantern)
-			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityElectricLantern)tile).active);
+			state = state.with(IEProperties.BOOLEANS[0], ((TileEntityElectricLantern)tile).active);
 		if(tile instanceof TileEntityFloodlight)
-			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityFloodlight)tile).active);
+			state = state.with(IEProperties.BOOLEANS[0], ((TileEntityFloodlight)tile).active);
 		return state;
 	}
 

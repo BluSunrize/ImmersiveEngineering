@@ -26,8 +26,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -157,7 +155,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
@@ -166,7 +164,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.CUTOUT;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public int getRenderColour(IBlockState object, String group)
 	{

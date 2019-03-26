@@ -22,8 +22,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemShaderBag extends ItemIEBase
 {
@@ -33,7 +31,7 @@ public class ItemShaderBag extends ItemIEBase
 	}
 
 	//	@Override
-//	@SideOnly(Side.CLIENT)
+//	@OnlyIn(Dist.CLIENT)
 //	public int getColorFromItemStack(ItemStack stack, int pass)
 //	{
 //		EnumRarity rarity = this.getRarity(stack);
@@ -52,7 +50,7 @@ public class ItemShaderBag extends ItemIEBase
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))

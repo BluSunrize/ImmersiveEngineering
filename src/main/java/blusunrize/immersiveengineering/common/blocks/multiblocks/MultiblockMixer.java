@@ -26,8 +26,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MultiblockMixer implements IMultiblock
 {
@@ -74,7 +72,7 @@ public class MultiblockMixer implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(iterator==1)
@@ -102,17 +100,17 @@ public class MultiblockMixer implements IMultiblock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderFormedStructure()
 	{
 		return true;
 	}
 
-	//@SideOnly(Side.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	static ItemStack renderStack = ItemStack.EMPTY;
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
@@ -156,7 +154,7 @@ public class MultiblockMixer implements IMultiblock
 			return false;
 
 		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.MIXER.getMeta());
-		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
+		state = state.with(IEProperties.FACING_HORIZONTAL, side);
 		for(int h = -1; h <= 1; h++)
 			for(int l = -1; l <= 1; l++)
 				for(int w = -1; w <= 1; w++)
