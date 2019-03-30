@@ -14,9 +14,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -37,7 +34,6 @@ import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -47,8 +43,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -196,7 +190,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
@@ -219,8 +213,8 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 		if(tile instanceof IImmersiveConnectable&&!world.isRemote)
 			for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
 				getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
-		tempTile.put(new DimensionBlockPos(pos, world.provider.getDimension()), tile);
-		super.breakBlock(world, pos, state);
+		tempTile.put(new DimensionBlockPos(pos, world.getDimension().getType()), tile);
+		super.onReplaced(state, world, pos, newState, isMoving);
 		world.removeTileEntity(pos);
 	}
 
@@ -239,7 +233,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity)
+	public boolean canEntityDestroy(IBlockState state, IBlockReader world, BlockPos pos, Entity entity)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IEntityProof)
@@ -248,7 +242,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)
@@ -258,7 +252,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 				return s;
 		}
 		Item item = Item.getItemFromBlock(this);
-		return item==Items.AIR?ItemStack.EMPTY: new ItemStack(item, 1, this.damageDropped(world.getBlockState(pos)));
+		return item==Items.AIR?ItemStack.EMPTY: new ItemStack(item, 1);
 	}
 
 
@@ -275,50 +269,9 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 		return EnumFacing.NORTH;
 	}
 
+	/*TODO why isn't there an axis/EnumFacing parameter any more
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getActualState(state, world, pos);
-		TileEntity tile = world.getTileEntity(pos);
-
-		if(tile instanceof IAttachedIntegerProperies)
-		{
-			for(String s : ((IAttachedIntegerProperies)tile).getIntPropertyNames())
-				state = applyProperty(state, ((IAttachedIntegerProperies)tile).getIntProperty(s), ((IAttachedIntegerProperies)tile).getIntPropertyValue(s));
-		}
-
-		if(tile instanceof IDirectionalTile&&(state.getProperties().contains(IEProperties.FACING_ALL)||state.getProperties().contains(IEProperties.FACING_HORIZONTAL)))
-		{
-			DirectionProperty prop = state.getProperties().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
-			state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
-		}
-		if(tile instanceof IActiveState)
-		{
-			IProperty boolProp = ((IActiveState)tile).getBoolProperty(IActiveState.class);
-			if(state.getProperties().contains(boolProp))
-				state = applyProperty(state, boolProp, ((IActiveState)tile).getIsActive());
-		}
-
-		if(tile instanceof IDualState)
-		{
-			IProperty boolProp = ((IDualState)tile).getBoolProperty(IDualState.class);
-			if(state.getProperties().contains(boolProp))
-				state = applyProperty(state, boolProp, ((IDualState)tile).getIsSecondState());
-		}
-
-		if(tile instanceof TileEntityMultiblockPart)
-			state = applyProperty(state, IEProperties.MULTIBLOCKSLAVE, ((TileEntityMultiblockPart)tile).isDummy());
-		else if(tile instanceof IHasDummyBlocks)
-			state = applyProperty(state, IEProperties.MULTIBLOCKSLAVE, ((IHasDummyBlocks)tile).isDummy());
-
-		if(tile instanceof IMirrorAble)
-			state = applyProperty(state, ((IMirrorAble)tile).getBoolProperty(IMirrorAble.class), ((IMirrorAble)tile).getIsMirrored());
-
-		return state;
-	}
-
-	@Override
-	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
+	public IBlockState rotate(IBlockState state, IWorld world, BlockPos pos, Rotation direction)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IDirectionalTile)
@@ -349,8 +302,9 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 			}
 		}
 		return false;
-	}
+	}*/
 
+	/*TODO when extended states are a thing again...
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -385,6 +339,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 
 		return state;
 	}
+	 */
 
 	@Override
 	public void onIEBlockPlacedBy(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
