@@ -40,7 +40,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.LazyOptional;
@@ -306,7 +311,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 
 	/*TODO when extended states are a thing again...
 	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+	public IBlockState getExtendedState(IBlockState state, IBlockReader world, BlockPos pos)
 	{
 		state = super.getExtendedState(state, world, pos);
 		if(state instanceof IExtendedBlockState)
@@ -368,7 +373,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tile = world.getTileEntity(pos);
@@ -394,7 +399,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 			((IDirectionalTile)tile).afterRotation(oldF, f);
 			tile.markDirty();
 			world.notifyBlockUpdate(pos, state, state, 3);
-			world.addBlockEvent(tile.getPos(), tile.getBlockType(), 255, 0);
+			world.addBlockEvent(tile.getPos(), tile.getBlockState().getBlock(), 255, 0);
 			return true;
 		}
 		if(tile instanceof IHammerInteraction&&Utils.isHammer(heldItem)&&!world.isRemote)
@@ -429,7 +434,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 			//TODO figure out why this became a "future task"...
 			ApiUtils.addFutureServerTask(world, () ->
 			{
-				if(world.isBlockLoaded(pos)&&!posChunk.unloadQueued)
+				if(world.isBlockLoaded(pos))//TODO where did this go? &&!posChunk.unloadQueued)
 				{
 					TileEntity tile = world.getTileEntity(pos);
 					if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
@@ -440,7 +445,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
+	public int getLightValue(IBlockState state, IWorldReader world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof ILightValue)
@@ -461,7 +466,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public int getRenderColour(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex)
+	public int getRenderColour(IBlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
 		if(worldIn!=null&&pos!=null)
 		{
@@ -473,9 +478,9 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	public BlockFaceShape getBlockFaceShape(IBlockReader world, IBlockState state, BlockPos pos, EnumFacing side)
 	{
-		if(normalBlockCheck(state))
+		if(!notNormalBlock)
 			return BlockFaceShape.SOLID;
 		else if(side!=null)
 		{
@@ -484,7 +489,8 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 				return ((IFaceShape)te).getFaceShape(side);
 			else
 			{
-				AxisAlignedBB bb = getBoundingBox(state, world, pos);
+				//TODO nicer way?
+				AxisAlignedBB bb = getShape(state, world, pos).getBoundingBox();
 				double wMin = side.getAxis()==Axis.X?bb.minZ: bb.minX;
 				double wMax = side.getAxis()==Axis.X?bb.maxZ: bb.maxX;
 				double hMin = side.getAxis()==Axis.Y?bb.minZ: bb.minY;
@@ -516,42 +522,35 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
+	public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos)
 	{
-		if(world.getBlockState(pos).getBlock()!=this)
-			return FULL_BLOCK_AABB;
-		else
+		//TODO caching?
+		if(world.getBlockState(pos).getBlock()==this)
 		{
 			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof IBlockBounds)
+			if(te instanceof IAdvancedCollisionBounds)
+			{
+				List<AxisAlignedBB> bounds = ((IAdvancedCollisionBounds)te).getAdvancedColisionBounds();
+				if(!bounds.isEmpty())
+				{
+					VoxelShape ret = VoxelShapes.empty();
+					for(AxisAlignedBB aabb : bounds)
+						if(aabb!=null)
+							ret = VoxelShapes.combineAndSimplify(ret, VoxelShapes.create(aabb), IBooleanFunction.OR);
+					return ret;
+				}
+			}
+			else if(te instanceof IBlockBounds)
 			{
 				float[] bounds = ((IBlockBounds)te).getBlockBounds();
-				if(bounds!=null)
-					return new AxisAlignedBB(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+				AxisAlignedBB aabb = new AxisAlignedBB(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+				return VoxelShapes.create(aabb);
 			}
 		}
-		return super.getBoundingBox(state, world, pos);
+		return super.getShape(state, world, pos);
 	}
 
-	@Override
-	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, @Nullable Entity ent, boolean p_185477_7_)
-	{
-		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof IAdvancedCollisionBounds)
-		{
-			List<AxisAlignedBB> bounds = ((IAdvancedCollisionBounds)te).getAdvancedColisionBounds();
-			if(bounds!=null&&!bounds.isEmpty())
-			{
-				for(AxisAlignedBB aabb : bounds)
-					if(aabb!=null&&mask.intersects(aabb))
-						list.add(aabb);
-				return;
-			}
-		}
-		super.addCollisionBoxToList(state, world, pos, mask, list, ent, p_185477_7_);
-	}
-
-	@Override
+	Override
 	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end)
 	{
 		TileEntity te = world.getTileEntity(pos);
@@ -670,7 +669,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 
 
 	@Override
-	public int getWeakPower(IBlockState blockState, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public int getWeakPower(IBlockState blockState, IBlockReader world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
@@ -679,7 +678,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public int getStrongPower(IBlockState blockState, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public int getStrongPower(IBlockState blockState, IBlockReader world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
@@ -694,7 +693,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean canConnectRedstone(IBlockState state, IBlockReader world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
