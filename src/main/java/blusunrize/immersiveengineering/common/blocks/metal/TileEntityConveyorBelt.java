@@ -44,6 +44,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		if(nbt.hasKey("conveyorBeltSubtype"))
 		{
 			conveyorBeltSubtype = ConveyorHandler.getConveyor(new ResourceLocation(nbt.getString("conveyorBeltSubtype")), this);
-			conveyorBeltSubtype.readConveyorNBT(nbt.getCompoundTag("conveyorBeltSubtypeNBT"));
+			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
 		}
 
 		if(descPacket&&world!=null)
@@ -172,7 +173,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+			world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 			return true;
 		}
 		return false;
@@ -195,7 +196,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
-				world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+				world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 				return true;
 			}
 		}
@@ -257,8 +258,9 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 
 	IItemHandler insertionHandler = new ConveyorInventoryHandler(this);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T)insertionHandler;

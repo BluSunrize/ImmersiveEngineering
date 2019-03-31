@@ -102,27 +102,27 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 		{
 			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 			{
-				NBTTagList tagList = stack.getTagCompound().getTagList("multiblockPermission", 8);
+				NBTTagList tagList = stack.getTagCompound().getList("multiblockPermission", 8);
 				String s = I18n.format(Lib.DESC_INFO+"multiblocksAllowed");
 				if(!GuiScreen.isShiftKeyDown())
 					list.add(s+" "+I18n.format(Lib.DESC_INFO+"holdShift"));
 				else
 				{
 					list.add(s);
-					for(int i = 0; i < tagList.tagCount(); i++)
+					for(int i = 0; i < tagList.size(); i++)
 						list.add(TextFormatting.DARK_GRAY+" "+I18n.format(Lib.DESC_INFO+"multiblock."+tagList.getStringTagAt(i)));
 				}
 			}
 			if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 			{
-				NBTTagList tagList = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
+				NBTTagList tagList = stack.getTagCompound().getList("multiblockInterdiction", 8);
 				String s = I18n.format(Lib.DESC_INFO+"multiblockForbidden");
 				if(!GuiScreen.isShiftKeyDown())
 					list.add(s+" "+I18n.format(Lib.DESC_INFO+"holdShift"));
 				else
 				{
 					list.add(s);
-					for(int i = 0; i < tagList.tagCount(); i++)
+					for(int i = 0; i < tagList.size(); i++)
 						list.add(TextFormatting.DARK_GRAY+" "+I18n.format(Lib.DESC_INFO+"multiblock."+tagList.getStringTagAt(i)));
 				}
 			}
@@ -250,15 +250,15 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 			String[] interdictedMultiblocks = null;
 			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 			{
-				NBTTagList list = stack.getTagCompound().getTagList("multiblockPermission", 8);
-				permittedMultiblocks = new String[list.tagCount()];
+				NBTTagList list = stack.getTagCompound().getList("multiblockPermission", 8);
+				permittedMultiblocks = new String[list.size()];
 				for(int i = 0; i < permittedMultiblocks.length; i++)
 					permittedMultiblocks[i] = list.getStringTagAt(i);
 			}
 			if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 			{
-				NBTTagList list = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
-				interdictedMultiblocks = new String[list.tagCount()];
+				NBTTagList list = stack.getTagCompound().getList("multiblockInterdiction", 8);
+				interdictedMultiblocks = new String[list.size()];
 				for(int i = 0; i < interdictedMultiblocks.length; i++)
 					interdictedMultiblocks[i] = list.getStringTagAt(i);
 			}

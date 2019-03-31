@@ -43,6 +43,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -751,11 +752,11 @@ public class ApiUtils
 										if(!player.capabilities.isCreativeMode)
 											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
 										((TileEntity)iicHere).markDirty();
-										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockType(), -1, 0);
+										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockState(), -1, 0);
 										IBlockState state = world.getBlockState(masterPos);
 										world.notifyBlockUpdate(masterPos, state, state, 3);
 										((TileEntity)iicLink).markDirty();
-										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockType(), -1, 0);
+										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockState(), -1, 0);
 										state = world.getBlockState(linkPos);
 										world.notifyBlockUpdate(linkPos, state, state, 3);
 									}
@@ -1097,6 +1098,11 @@ public class ApiUtils
 			//		new Connection(newEnd, fixedPos, conn.cableType, conn.length));
 			//ImmersiveNetHandler.INSTANCE.addBlockData(world, newConn);
 		}
+	}
+
+	public static <T> LazyOptional<T> constantOptional(T value)
+	{
+		return LazyOptional.of(() -> value);
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>

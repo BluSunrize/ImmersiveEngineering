@@ -114,7 +114,7 @@ public class EntitySkylineHook extends Entity
 	@Override
 	public boolean isInRangeToRenderDist(double p_70112_1_)
 	{
-		double d1 = this.getEntityBoundingBox().getAverageEdgeLength()*4.0D;
+		double d1 = this.getBoundingBox().getAverageEdgeLength()*4.0D;
 		d1 *= 64.0D;
 		return p_70112_1_ < d1*d1;
 	}

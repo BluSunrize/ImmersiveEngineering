@@ -52,6 +52,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -179,7 +180,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				changed |= updateConnectionByte(f);
 			if(changed)
 			{
-				world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
+				world.notifyNeighborsOfStateChange(pos, getBlockState(), false);
 				markContainingBlockForUpdate(null);
 			}
 		}
@@ -240,7 +241,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{0, 0, 0, 0, 0, 0};
-		pipeCover = new ItemStack(nbt.getCompoundTag("pipeCover"));
+		pipeCover = new ItemStack(nbt.getCompound("pipeCover"));
 		EnumDyeColor oldColor = color;
 		if(nbt.hasKey("color", NBT.TAG_INT))
 			color = EnumDyeColor.byMetadata(nbt.getInt("color"));
@@ -284,8 +285,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&sideConfig[facing.ordinal()]==0)
 			return (T)sidedHandlers[facing.ordinal()];
@@ -344,7 +346,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				otherPos.getY()-pos.getY(), otherPos.getZ()-pos.getZ());
 		if(updateConnectionByte(dir))
 		{
-			world.notifyNeighborsOfStateExcept(pos, getBlockType(), dir);
+			world.notifyNeighborsOfStateExcept(pos, getBlockState(), dir);
 			markContainingBlockForUpdate(null);
 		}
 	}
@@ -541,9 +543,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			((TileEntityFluidPipe)connected).sideConfig[fd.getOpposite().ordinal()] = sideConfig[side];
 			connected.markDirty();
-			world.addBlockEvent(getPos().offset(fd), getBlockType(), 0, 0);
+			world.addBlockEvent(getPos().offset(fd), getBlockState(), 0, 0);
 		}
-		world.addBlockEvent(getPos(), getBlockType(), 0, 0);
+		world.addBlockEvent(getPos(), getBlockState(), 0, 0);
 	}
 
 	@Override
@@ -997,7 +999,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			}
 			pipeCover = ItemStack.EMPTY;
 			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), getBlockType(), 255, 0);
+			world.addBlockEvent(getPos(), getBlockState(), 255, 0);
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&!player.isSneaking())
@@ -1016,7 +1018,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
 						heldItem.shrink(1);
 						this.markContainingBlockForUpdate(null);
-						world.addBlockEvent(getPos(), getBlockType(), 255, 0);
+						world.addBlockEvent(getPos(), getBlockState(), 255, 0);
 						return true;
 					}
 				}

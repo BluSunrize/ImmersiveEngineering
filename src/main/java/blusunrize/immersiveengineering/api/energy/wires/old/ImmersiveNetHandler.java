@@ -517,7 +517,7 @@ public class ImmersiveNetHandler
 		/*TODO move to new handler/own class
 		if(!in.isEmpty())
 		{
-			AxisAlignedBB eAabb = e.getEntityBoundingBox();
+			AxisAlignedBB eAabb = e.getBoundingBox();
 			for(Triple<Connection, Vec3d, Vec3d> conn : in)
 				if(conn.getLeft().cableType.canCauseDamage())
 				{

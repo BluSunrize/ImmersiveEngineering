@@ -138,7 +138,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			{
 				BlockPos cc = it.next();
 				if(Utils.getExistingTileEntity(world, cc) instanceof TileEntityFakeLight)
-					world.setBlockToAir(cc);
+					world.removeBlock(cc);
 				it.remove();
 			}
 		}
@@ -596,7 +596,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				return;
 		}
 		this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(dir?-11.25f: 11.25f)));
-		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
+		world.addBlockEvent(getPos(), getBlockState(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
 	}
@@ -612,7 +612,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		this.rotY += dir?-11.25: 11.25;
 		this.rotY %= 360;
-		world.addBlockEvent(getPos(), getBlockType(), 255, 0);
+		world.addBlockEvent(getPos(), getBlockState(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
 	}

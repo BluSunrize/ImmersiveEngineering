@@ -107,7 +107,7 @@ public class FermenterRecipe extends MultiblockRecipe
 
 	public static FermenterRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
+		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		for(FermenterRecipe recipe : recipeList)
 			if(recipe.input.equals(input))
 				return recipe;

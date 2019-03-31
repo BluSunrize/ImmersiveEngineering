@@ -156,7 +156,7 @@ public class GlobalWireNetwork implements ITickable
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		localNets.clear();
-		NBTTagList locals = nbt.getTagList("locals", NBT.TAG_COMPOUND);
+		NBTTagList locals = nbt.getList("locals", NBT.TAG_COMPOUND);
 		for(NBTBase b : locals)
 		{
 			NBTTagCompound subnet = (NBTTagCompound)b;

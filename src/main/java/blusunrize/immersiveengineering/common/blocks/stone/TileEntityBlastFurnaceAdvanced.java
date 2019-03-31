@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 {
 
@@ -147,8 +149,9 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	IItemHandler outputHandler = new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true});
 	IItemHandler slagHandler = new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true});
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if((pos==1||pos==7||pos==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

@@ -114,7 +114,7 @@ public class EntityRevolvershot extends Entity
 	@Override
 	public boolean isInRangeToRenderDist(double p_70112_1_)
 	{
-		double d1 = this.getEntityBoundingBox().getAverageEdgeLength()*4.0D;
+		double d1 = this.getBoundingBox().getAverageEdgeLength()*4.0D;
 		d1 *= 64.0D;
 		return p_70112_1_ < d1*d1;
 	}
@@ -209,7 +209,7 @@ public class EntityRevolvershot extends Entity
 				vec31 = new Vec3d(movingobjectposition.hitVec.x, movingobjectposition.hitVec.y, movingobjectposition.hitVec.z);
 
 			Entity entity = null;
-			List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D));
+			List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D));
 			double d0 = 0.0D;
 
 			for(int i = 0; i < list.size(); ++i)
@@ -218,7 +218,7 @@ public class EntityRevolvershot extends Entity
 				if(entity1.canBeCollidedWith()&&(!entity1.isEntityEqual(this.shootingEntity)))
 				{
 					float f = 0.3F;
-					AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(f);
+					AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow(f);
 					RayTraceResult movingobjectposition1 = axisalignedbb.calculateIntercept(vec3, vec31);
 
 					if(movingobjectposition1!=null)
@@ -384,7 +384,7 @@ public class EntityRevolvershot extends Entity
 //				}
 //				else if(bulletPotion.getItem() instanceof ItemSplashPotion)
 //				{
-//					List<EntityLivingBase> livingEntities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
+//					List<EntityLivingBase> livingEntities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, this.getBoundingBox().expand(4.0D, 2.0D, 4.0D));
 //					if(livingEntities!=null && !livingEntities.isEmpty())
 //						for(EntityLivingBase living : livingEntities)
 //							if(living.canBeHitWithPotion())
@@ -461,11 +461,11 @@ public class EntityRevolvershot extends Entity
 		this.inGround = nbt.getByte("inGround")==1;
 		this.bulletType = nbt.getString("bulletType");
 		if(nbt.hasKey("bulletPotion"))
-			this.bulletPotion = new ItemStack(nbt.getCompoundTag("bulletPotion"));
+			this.bulletPotion = new ItemStack(nbt.getCompound("bulletPotion"));
 
 		if(nbt.hasKey("direction", 9))
 		{
-			NBTTagList nbttaglist = nbt.getTagList("direction", 6);
+			NBTTagList nbttaglist = nbt.getList("direction", 6);
 			this.motionX = nbttaglist.getFloatAt(0);
 			this.motionY = nbttaglist.getFloatAt(1);
 			this.motionZ = nbttaglist.getFloatAt(2);

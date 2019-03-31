@@ -93,7 +93,7 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 		if(!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount(revolver)));
 		else
-			return Utils.readInventory(ItemNBTHelper.getTag(revolver).getTagList("bullets", 10), getSlotCount(revolver));
+			return Utils.readInventory(ItemNBTHelper.getTag(revolver).getList("bullets", 10), getSlotCount(revolver));
 	}
 
 	@Nullable

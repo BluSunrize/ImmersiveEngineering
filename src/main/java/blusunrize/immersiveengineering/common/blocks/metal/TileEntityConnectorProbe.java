@@ -109,7 +109,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		//TODO wireNetwork.updateValues();
 		//TODO onChange();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
 		return true;
 	}
 

@@ -140,7 +140,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 				.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
 				.updateValues();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
 		return true;
 	}
 

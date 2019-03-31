@@ -44,7 +44,6 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -550,8 +549,9 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 		return super.getShape(state, world, pos);
 	}
 
-	Override
-	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end)
+	@Nullable
+	@Override
+	public RayTraceResult getRayTraceResult(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IAdvancedSelectionBounds)
@@ -563,7 +563,8 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 				double minDist = Double.POSITIVE_INFINITY;
 				for(AxisAlignedBB aabb : list)
 				{
-					RayTraceResult mop = this.rayTrace(pos, start, end, aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
+					RayTraceResult mop = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ())
+							.calculateIntercept(start, end, pos);
 					if(mop!=null)
 					{
 						double dist = mop.hitVec.squareDistanceTo(start);
@@ -577,80 +578,8 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 				return min;
 			}
 		}
-		return super.collisionRayTrace(state, world, pos, start, end);
+		return original;
 	}
-//	public RayTraceResult doRaytrace(World world, BlockPos pos, Vec3d start, Vec3d end)
-//	{
-//		start = start.add((double)(-pos.getX()), (double)(-pos.getY()), (double)(-pos.getZ()));
-//		end = end.add((double)(-pos.getX()), (double)(-pos.getY()), (double)(-pos.getZ()));
-//		Vec3d vec3 = start.getIntermediateWithXValue(end, this.minX);
-//		Vec3d vec31 = start.getIntermediateWithXValue(end, this.maxX);
-//		Vec3d vec32 = start.getIntermediateWithYValue(end, this.minY);
-//		Vec3d vec33 = start.getIntermediateWithYValue(end, this.maxY);
-//		Vec3d vec34 = start.getIntermediateWithZValue(end, this.minZ);
-//		Vec3d vec35 = start.getIntermediateWithZValue(end, this.maxZ);
-//
-//		if(!this.isVecInsideYZBounds(vec3))
-//			vec3 = null;
-//		if(!this.isVecInsideYZBounds(vec31))
-//			vec31 = null;
-//		if(!this.isVecInsideXZBounds(vec32))
-//			vec32 = null;
-//		if(!this.isVecInsideXZBounds(vec33))
-//			vec33 = null;
-//		if(!this.isVecInsideXYBounds(vec34))
-//			vec34 = null;
-//		if(!this.isVecInsideXYBounds(vec35))
-//			vec35 = null;
-//
-//		Vec3d vec36 = null;
-//
-//		if(vec3 != null && (vec36 == null || start.squareDistanceTo(vec3) < start.squareDistanceTo(vec36)))
-//			vec36 = vec3;
-//		if(vec31 != null && (vec36 == null || start.squareDistanceTo(vec31) < start.squareDistanceTo(vec36)))
-//			vec36 = vec31;
-//		if(vec32 != null && (vec36 == null || start.squareDistanceTo(vec32) < start.squareDistanceTo(vec36)))
-//			vec36 = vec32;
-//		if(vec33 != null && (vec36 == null || start.squareDistanceTo(vec33) < start.squareDistanceTo(vec36)))
-//			vec36 = vec33;
-//		if(vec34 != null && (vec36 == null || start.squareDistanceTo(vec34) < start.squareDistanceTo(vec36)))
-//			vec36 = vec34;
-//		if(vec35 != null && (vec36 == null || start.squareDistanceTo(vec35) < start.squareDistanceTo(vec36)))
-//			vec36 = vec35;
-//
-//		if (vec36 == null)
-//			return null;
-//		else
-//		{
-//			EnumFacing enumfacing = null;
-//			if(vec36 == vec3)
-//				enumfacing = EnumFacing.WEST;
-//			if(vec36 == vec31)
-//				enumfacing = EnumFacing.EAST;
-//			if(vec36 == vec32)
-//				enumfacing = EnumFacing.DOWN;
-//			if(vec36 == vec33)
-//				enumfacing = EnumFacing.UP;
-//			if(vec36 == vec34)
-//				enumfacing = EnumFacing.NORTH;
-//			if(vec36 == vec35)
-//				enumfacing = EnumFacing.SOUTH;
-//			return new RayTraceResult(vec36.add((double)pos.getX(), (double)pos.getY(), (double)pos.getZ()), enumfacing, pos);
-//		}
-//	}
-//	protected boolean isVecInsideYZBounds(Vec3d point)
-//	{
-//		return point != null && (point.yCoord >= this.minY && point.yCoord <= this.maxY && point.zCoord >= this.minZ && point.zCoord <= this.maxZ);
-//	}
-//	protected boolean isVecInsideXZBounds(Vec3d point)
-//	{
-//		return point != null && (point.xCoord >= this.minX && point.xCoord <= this.maxX && point.zCoord >= this.minZ && point.zCoord <= this.maxZ);
-//	}
-//	protected boolean isVecInsideXYBounds(Vec3d point)
-//	{
-//		return point != null && (point.xCoord >= this.minX && point.xCoord <= this.maxX && point.yCoord >= this.minY && point.yCoord <= this.maxY);
-//	}
-
 
 	@Override
 	public boolean hasComparatorInputOverride(IBlockState state)
@@ -702,7 +631,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
+	public void onEntityCollision(IBlockState state, World world, BlockPos pos, Entity entity)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIEBase)

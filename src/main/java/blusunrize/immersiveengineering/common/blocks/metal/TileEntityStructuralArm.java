@@ -218,7 +218,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		slopePosition = 0;
 		bounds = null;
 		if(world!=null)
-			world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
+			world.notifyNeighborsOfStateChange(pos, getBlockState(), true);
 	}
 
 	@Override

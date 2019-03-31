@@ -174,7 +174,7 @@ public class IEExplosion extends Explosion
 						d5 = d5/d13;
 						d7 = d7/d13;
 						d9 = d9/d13;
-						double d14 = (double)this.world.getBlockDensity(vec3, entity.getEntityBoundingBox());
+						double d14 = (double)this.world.getBlockDensity(vec3, entity.getBoundingBox());
 						double d10 = (1.0D-d12)*d14;
 						entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10*d10+d10)/2.0D*8.0D*(double)f3+1.0D)));
 						double d11 = entity instanceof EntityLivingBase?EnchantmentProtection.getBlastDamageReduction((EntityLivingBase)entity, d10): d10;

@@ -355,7 +355,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if(onPost)
 			return;
 		for(int i = 0; i <= 2; i++)
-			world.setBlockToAir(getPos().add(0, -dummy, 0).add(0, i, 0));
+			world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
 	}
 
 	@Override

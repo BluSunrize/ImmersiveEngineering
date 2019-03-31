@@ -34,6 +34,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,15 +54,15 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 	{
 		super.readCustomNBT(nbt, descPacket);
 
-		NBTTagList processNBT = nbt.getTagList("bottlingQueue", 10);
+		NBTTagList processNBT = nbt.getList("bottlingQueue", 10);
 		bottlingProcessQueue.clear();
-		for(int i = 0; i < processNBT.tagCount(); i++)
+		for(int i = 0; i < processNBT.size(); i++)
 		{
 			NBTTagCompound tag = processNBT.getCompoundTagAt(i);
 			BottlingProcess process = BottlingProcess.readFromNBT(tag);
 			bottlingProcessQueue.add(process);
 		}
-		tanks[0].readFromNBT(nbt.getCompoundTag("tank"));
+		tanks[0].readFromNBT(nbt.getCompound("tank"));
 	}
 
 	@Override
@@ -343,8 +344,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 
 	IItemHandler insertionHandler = new BottlingMachineInventoryHandler(this);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -458,10 +460,10 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 
 		public static BottlingProcess readFromNBT(NBTTagCompound nbt)
 		{
-			ItemStack input = new ItemStack(nbt.getCompoundTag("input"));
+			ItemStack input = new ItemStack(nbt.getCompound("input"));
 			BottlingProcess process = new BottlingProcess(input);
 			if(nbt.hasKey("output"))
-				process.items.set(1, new ItemStack(nbt.getCompoundTag("output")));
+				process.items.set(1, new ItemStack(nbt.getCompound("output")));
 			process.processTick = nbt.getInt("processTick");
 			return process;
 		}

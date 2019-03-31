@@ -138,7 +138,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 				quantaRemaining = expQuanta;
 
 				if(expQuanta <= 0)
-					world.setBlockToAir(pos);
+					world.removeBlock(pos);
 				else
 				{
 					world.setBlockState(pos, state.with(LEVEL, quantaPerBlock-expQuanta), 2);

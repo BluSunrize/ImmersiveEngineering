@@ -137,7 +137,7 @@ public class ActuallyAdditionsHelper extends IECompatModule
 						if(IEContent.blockCrop==stateUp.getBlock())
 						{
 							world.playEvent(2001, up, Block.getStateId(state));
-							world.setBlockToAir(up);
+							world.removeBlock(up);
 						}
 						farmer.extractEnergy(use);
 						farmer.addToOutput(drops);

@@ -38,6 +38,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityArcFurnace, ArcFurnaceRecipe> implements ISoundTile, IGuiTile, IAdvancedSelectionBounds, IAdvancedCollisionBounds
@@ -55,7 +56,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 26);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 26);
 	}
 
 	@Override
@@ -625,8 +626,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -716,7 +718,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		protected void processFinish(TileEntityMultiblockMetal te)
 		{
 			super.processFinish(te);
-			te.getWorld().addBlockEvent(te.getPos(), te.getBlockType(), 0, 40);
+			te.getWorld().addBlockEvent(te.getPos(), te.getBlockState(), 0, 40);
 		}
 	}
 

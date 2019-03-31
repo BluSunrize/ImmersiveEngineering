@@ -88,7 +88,7 @@ public class CapabilityShader
 			NBTTagCompound tagCompound = container.getTagCompound();
 			if(tagCompound==null||!tagCompound.hasKey(SHADER_NBT_KEY))
 				return ItemStack.EMPTY;
-			return new ItemStack(tagCompound.getCompoundTag(SHADER_NBT_KEY));
+			return new ItemStack(tagCompound.getCompound(SHADER_NBT_KEY));
 		}
 	}
 

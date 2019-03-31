@@ -58,7 +58,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 				if(i!=this.comparatorOutput)
 				{
 					this.comparatorOutput = i;
-					world.updateComparatorOutputLevel(getPos(), getBlockType());
+					world.updateComparatorOutputLevel(getPos(), getBlockState());
 				}
 			}
 		}
@@ -92,7 +92,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		sideConfig[side] = SideConfig.next(sideConfig[side]);
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 		return true;
 	}
 

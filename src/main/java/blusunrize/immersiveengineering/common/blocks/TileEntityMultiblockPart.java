@@ -123,8 +123,9 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&this.getAccessibleFluidTanks(facing).length > 0)
 			return (T)new MultiblockFluidWrapper(this, facing);
@@ -352,8 +353,8 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 
 	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
 	{
-		if(state.getBlock()==this.getBlockType())
-			world.setBlockToAir(pos);
+		if(state.getBlock()==this.getBlockState())
+			world.removeBlock(pos);
 		world.setBlockState(pos, state);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)

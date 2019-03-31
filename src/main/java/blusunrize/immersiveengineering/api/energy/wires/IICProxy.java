@@ -116,7 +116,7 @@ public class IICProxy implements IImmersiveConnectable
 	public static IICProxy readFromNBT(NBTTagCompound nbt)
 	{
 		return new IICProxy(nbt.getInt("dim"),
-				NBTUtil.getPosFromTag(nbt.getCompoundTag("pos")));
+				NBTUtil.getPosFromTag(nbt.getCompound("pos")));
 	}
 
 	public NBTTagCompound writeToNBT()

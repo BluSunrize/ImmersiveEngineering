@@ -99,12 +99,12 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public static ArcFurnaceRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
+		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		IngredientStack[] additives = null;
 		if(nbt.hasKey("additives"))
 		{
-			NBTTagList list = nbt.getTagList("additives", 10);
-			additives = new IngredientStack[list.tagCount()];
+			NBTTagList list = nbt.getList("additives", 10);
+			additives = new IngredientStack[list.size()];
 			for(int i = 0; i < additives.length; i++)
 				additives[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
 		}

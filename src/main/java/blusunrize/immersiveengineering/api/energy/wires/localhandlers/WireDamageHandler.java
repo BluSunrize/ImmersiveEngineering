@@ -42,7 +42,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			return;
 		IShockingWire shockWire = (IShockingWire)wType;
 		double extra = shockWire.getDamageRadius();
-		AxisAlignedBB eAabb = e.getEntityBoundingBox();
+		AxisAlignedBB eAabb = e.getBoundingBox();
 		AxisAlignedBB includingExtra = eAabb.grow(extra).offset(-pos.getX(), -pos.getY(), -pos.getZ());
 		boolean endpointsInEntity = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
 		RayTraceResult rayRes;

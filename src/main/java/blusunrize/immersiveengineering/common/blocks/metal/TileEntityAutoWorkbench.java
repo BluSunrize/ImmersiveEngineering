@@ -33,6 +33,8 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntityAutoWorkbench, IMultiblockRecipe> implements IGuiTile, IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
 	public TileEntityAutoWorkbench()
@@ -50,7 +52,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		selectedRecipe = nbt.getInt("selectedRecipe");
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 17);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 17);
 		}
 	}
 
@@ -294,8 +296,9 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 
 	IItemHandler insertionHandler = new IEInventoryHandler(16, this, 1, true, false);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(pos==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

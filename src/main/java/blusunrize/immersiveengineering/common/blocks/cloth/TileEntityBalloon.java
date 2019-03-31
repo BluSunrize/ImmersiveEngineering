@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -26,6 +27,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
@@ -33,12 +35,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -73,12 +75,12 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		if(nbt.hasKey("shader"))
 		{
 			shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
-			shader.deserializeNBT(nbt.getCompoundTag("shader"));
+			shader.deserializeNBT(nbt.getCompound("shader"));
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("nbtVersion", 1);
@@ -88,6 +90,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		nbt.setTag("shader", shader.serializeNBT());
 	}
 
+	@Nonnull
 	@Override
 	public float[] getBlockBounds()
 	{
@@ -105,24 +108,18 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		return super.receiveClientEvent(id, arg);
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
-	{
-		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return (T)shader;
+			return ApiUtils.constantOptional((T)shader);
 		return super.getCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(@Nonnull IBlockState object)
 	{
 		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
 			return ((IShaderItem)shader.getShaderItem().getItem()).getShaderName(shader.getShaderItem());
@@ -198,10 +195,10 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 			else
 				target = (hitY > .5625&&hitY < .75)?1: 0;
 		}
-		int heldDye = Utils.getDye(heldItem);
-		if(heldDye==-1)
+		EnumDyeColor heldDye = Utils.getDye(heldItem);
+		if(heldDye==null)
 			return false;
-		int color = ObfuscationReflectionHelper.getPrivateValue(EnumDyeColor.class, EnumDyeColor.byMetadata(15-heldDye),
+		int color = ObfuscationReflectionHelper.getPrivateValue(EnumDyeColor.class, heldDye,
 				"field_193351_w");
 		if(target==0)
 		{
@@ -233,9 +230,10 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		if(entity instanceof EntityArrow||entity instanceof EntityRevolvershot)
 		{
 			Vec3d pos = new Vec3d(getPos()).add(.5, .5, .5);
-			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_BLAST, SoundCategory.BLOCKS, 1.5f, 0.7f);
-			world.setBlockToAir(getPos());
-			world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, pos.x, pos.y, pos.z, 0, .05, 0);
+			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,
+					SoundCategory.BLOCKS, 1.5f, 0.7f);
+			world.removeBlock(getPos());
+			world.spawnParticle(Particles.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
 			if(shader!=null)
 				shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), null, shader.getRight().getShaderType(), pos, null, .375f);

@@ -40,6 +40,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
@@ -58,13 +59,13 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		if(nbt.hasKey("name"))
 			this.name = nbt.getString("name");
 		if(nbt.hasKey("enchantments"))
-			this.enchantments = nbt.getTagList("enchantments", 10);
+			this.enchantments = nbt.getList("enchantments", 10);
 		if(!descPacket)
 		{
 			if(nbt.hasKey("lootTable", 8))
 				this.lootTable = new ResourceLocation(nbt.getString("lootTable"));
 			else
-				inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 27);
+				inventory = Utils.readInventory(nbt.getList("inventory", 10), 27);
 		}
 	}
 
@@ -73,7 +74,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	{
 		if(this.name!=null)
 			nbt.setString("name", this.name);
-		if(this.enchantments!=null&&this.enchantments.tagCount() > 0)
+		if(this.enchantments!=null&&this.enchantments.size() > 0)
 			nbt.setTag("enchantments", this.enchantments);
 		if(!descPacket)
 		{
@@ -193,7 +194,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			stack.setTagCompound(tag);
 		if(this.name!=null)
 			stack.setStackDisplayName(this.name);
-		if(enchantments!=null&&enchantments.tagCount() > 0)
+		if(enchantments!=null&&enchantments.size() > 0)
 			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
 	}
@@ -232,8 +233,9 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 
 	IItemHandler insertionHandler = new IEInventoryHandler(27, this);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T)insertionHandler;

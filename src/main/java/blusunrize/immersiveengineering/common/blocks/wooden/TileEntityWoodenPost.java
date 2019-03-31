@@ -175,7 +175,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		{
 			world.setBlockState(pos.add(0, i, 0), state);
 			((TileEntityWoodenPost)world.getTileEntity(pos.add(0, i, 0))).dummy = (byte)i;
-			world.addBlockEvent(pos.add(0, i, 0), getBlockType(), 255, 0);
+			world.addBlockEvent(pos.add(0, i, 0), getBlockState(), 255, 0);
 		}
 	}
 
@@ -186,7 +186,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 			for(int i = 0; i <= 3; i++)
 			{
 				if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntityWoodenPost)
-					world.setBlockToAir(getPos().add(0, -dummy, 0).add(0, i, 0));
+					world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
 				if(i==3)
 				{
 					TileEntity te;
@@ -194,7 +194,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 					{
 						te = world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
 						if(te instanceof TileEntityWoodenPost&&((TileEntityWoodenPost)te).dummy==(3+facing.ordinal()))
-							world.setBlockToAir(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
+							world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
 					}
 				}
 			}
@@ -225,7 +225,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		else if(this.dummy > 3)
 		{
 			EnumFacing f = EnumFacing.byIndex(dummy-3).getOpposite();
-			this.world.setBlockToAir(getPos());
+			this.world.removeBlock(getPos());
 			this.markBlockForUpdate(getPos().offset(f).add(0, -3, 0), null);
 		}
 		return false;

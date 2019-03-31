@@ -243,7 +243,7 @@ public class ChemthrowerHandler
 		{
 			Block b = world.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
 			if(b instanceof BlockFire)
-				world.setBlockToAir(mop.getBlockPos().offset(mop.sideHit));
+				world.removeBlock(mop.getBlockPos().offset(mop.sideHit));
 		}
 	}
 

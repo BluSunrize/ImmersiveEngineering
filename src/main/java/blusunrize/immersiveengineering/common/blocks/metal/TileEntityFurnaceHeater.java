@@ -71,7 +71,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
-				world.addBlockEvent(getPos(), this.getBlockType(), 1, active?1: 0);
+				world.addBlockEvent(getPos(), this.getBlockState(), 1, active?1: 0);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	//		sockets[side] = sockets[side]==1?0:1;
 	//		this.markDirty();
 	//		world.markBlockForUpdate(getPos());
-	//		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+	//		world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 	//	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)

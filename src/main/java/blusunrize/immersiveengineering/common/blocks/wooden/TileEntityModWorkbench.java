@@ -48,7 +48,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 		//		if(!descPacket)
 		//		{
 		//read inv
-		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 7);
+		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
 		//		}
 	}
 
@@ -180,7 +180,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		EnumFacing dummyDir = dummy?facing.rotateYCCW(): facing.rotateY();
-		world.setBlockToAir(pos.offset(dummyDir));
+		world.removeBlock(pos.offset(dummyDir));
 	}
 
 	@Override

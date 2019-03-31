@@ -42,6 +42,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -65,16 +66,16 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tanks[0].readFromNBT(nbt.getCompoundTag("tank0"));
-		tanks[1].readFromNBT(nbt.getCompoundTag("tank1"));
-		tanks[2].readFromNBT(nbt.getCompoundTag("tank2"));
+		tanks[0].readFromNBT(nbt.getCompound("tank0"));
+		tanks[1].readFromNBT(nbt.getCompound("tank1"));
+		tanks[2].readFromNBT(nbt.getCompound("tank2"));
 		recursiveIngredients = nbt.getBoolean("recursiveIngredients");
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 18+3);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 18+3);
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
-				NBTTagList patternList = nbt.getTagList("pattern"+iPattern, 10);
+				NBTTagList patternList = nbt.getList("pattern"+iPattern, 10);
 				patterns[iPattern] = new CrafterPatternInventory(this);
 				patterns[iPattern].readFromNBT(patternList);
 			}
@@ -138,9 +139,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		else if(message.hasKey("patternSync"))
 		{
 			int r = message.getInt("recipe");
-			NBTTagList list = message.getTagList("patternSync", 10);
+			NBTTagList list = message.getList("patternSync", 10);
 			CrafterPatternInventory pattern = patterns[r];
-			for(int i = 0; i < list.tagCount(); i++)
+			for(int i = 0; i < list.size(); i++)
 			{
 				NBTTagCompound itemTag = list.getCompoundTagAt(i);
 				pattern.inv.set(itemTag.getInt("slot"), new ItemStack(itemTag));
@@ -498,8 +499,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	IItemHandler insertionHandler = new IEInventoryHandler(18, this, 0, true, false);
 	IItemHandler extractionHandler = new IEInventoryHandler(3, this, 18, false, true);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -752,7 +754,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 
 		public void readFromNBT(NBTTagList list)
 		{
-			for(int i = 0; i < list.tagCount(); i++)
+			for(int i = 0; i < list.size(); i++)
 			{
 				NBTTagCompound itemTag = list.getCompoundTagAt(i);
 				int slot = itemTag.getByte("Slot")&255;

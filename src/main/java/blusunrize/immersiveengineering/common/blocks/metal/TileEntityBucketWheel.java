@@ -63,9 +63,9 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		super.readCustomNBT(nbt, descPacket);
 		float nbtRot = nbt.getFloat("rotation");
 		rotation = (Math.abs(nbtRot-rotation) > 5*IEConfig.Machines.excavator_speed)?nbtRot: rotation; // avoid stuttering due to packet delays
-		digStacks = Utils.readInventory(nbt.getTagList("digStacks", 10), 8);
+		digStacks = Utils.readInventory(nbt.getList("digStacks", 10), 8);
 		active = nbt.getBoolean("active");
-		particleStack = nbt.hasKey("particleStack")?new ItemStack(nbt.getCompoundTag("particleStack")): ItemStack.EMPTY;
+		particleStack = nbt.hasKey("particleStack")?new ItemStack(nbt.getCompound("particleStack")): ItemStack.EMPTY;
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		synchronized(digStacks)
 		{
 			if(message.hasKey("fill"))
-				this.digStacks.set(message.getInt("fill"), new ItemStack(message.getCompoundTag("fillStack")));
+				this.digStacks.set(message.getInt("fill"), new ItemStack(message.getCompound("fillStack")));
 			if(message.hasKey("empty"))
 				this.digStacks.set(message.getInt("empty"), ItemStack.EMPTY);
 			if(message.hasKey("rotation"))

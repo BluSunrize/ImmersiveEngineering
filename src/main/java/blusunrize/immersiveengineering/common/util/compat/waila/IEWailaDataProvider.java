@@ -83,7 +83,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		}
 		else if(tile instanceof TileEntityWoodenBarrel)
 		{
-			NBTTagCompound tank = accessor.getNBTData().getCompoundTag("tank");
+			NBTTagCompound tank = accessor.getNBTData().getCompound("tank");
 			if(!tank.hasKey("Empty")&&!tank.isEmpty())
 			{
 				FluidStack fluid = FluidStack.loadFluidStackFromNBT(tank);

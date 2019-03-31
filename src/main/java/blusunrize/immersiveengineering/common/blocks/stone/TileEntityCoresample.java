@@ -48,7 +48,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		coresample = new ItemStack(nbt.getCompoundTag("coresample"));
+		coresample = new ItemStack(nbt.getCompound("coresample"));
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 	}
 
@@ -104,7 +104,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 			{
 				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
-				getWorld().setBlockToAir(getPos());
+				getWorld().removeBlock(getPos());
 				getWorld().spawnEntity(entityitem);
 			}
 			return true;
@@ -119,9 +119,9 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 					int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
 					String ident = "ie:coresample_"+coords[0]+";"+coords[1]+";"+coords[2];
 					NBTTagCompound mapTagCompound = ItemNBTHelper.getTag(heldItem);
-					NBTTagList nbttaglist = mapTagCompound.getTagList("Decorations", 10);
+					NBTTagList nbttaglist = mapTagCompound.getList("Decorations", 10);
 
-					for(int i=0; i<nbttaglist.tagCount(); i++)
+					for(int i = 0; i < nbttaglist.size(); i++)
 					{
 						NBTTagCompound tagCompound = (NBTTagCompound)nbttaglist.get(i);
 						if(ident.equalsIgnoreCase(tagCompound.getString("id")))

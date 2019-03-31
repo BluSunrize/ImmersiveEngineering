@@ -286,7 +286,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		if(message.hasKey("fertilizerMod"))
 			fertilizerMod = message.getFloat("fertilizerMod");
 		if(message.hasKey("tank"))
-			tank.readFromNBT(message.getCompoundTag("tank"));
+			tank.readFromNBT(message.getCompound("tank"));
 	}
 
 	@Override
@@ -294,9 +294,9 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	{
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		dummy = nbt.getInt("dummy");
-		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 7);
+		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
 		energyStorage.readFromNBT(nbt);
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 		fertilizerAmount = nbt.getInt("fertilizerAmount");
 		fertilizerMod = nbt.getFloat("fertilizerMod");
 		growth = nbt.getFloat("growth");
@@ -383,7 +383,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		{
 			BlockPos p = getPos().down(dummy).up(i);
 			if(world.getTileEntity(p) instanceof TileEntityBelljar)
-				world.setBlockToAir(p);
+				world.removeBlock(p);
 		}
 	}
 
@@ -435,8 +435,9 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	IItemHandler inputHandler = new IEInventoryHandler(1, this, 2, true, false);
 	IItemHandler outputHandler = new IEInventoryHandler(4, this, 3, false, true);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

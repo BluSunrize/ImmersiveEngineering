@@ -100,7 +100,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 		{
 			invert = !invert;
 			markDirty();
-			world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+			world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
 			return true;
 		}
 		return false;

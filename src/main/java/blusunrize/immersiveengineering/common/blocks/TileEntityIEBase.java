@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -26,8 +27,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class TileEntityIEBase extends TileEntity
@@ -165,24 +168,16 @@ public abstract class TileEntityIEBase extends TileEntity
 		if(newState==null)
 			newState = state;
 		world.notifyBlockUpdate(pos, state, newState, 3);
-		world.notifyNeighborsOfStateChange(pos, newState.getBlock(), true);
+		world.notifyNeighborsOfStateChange(pos, newState.getBlock());
 	}
 
-
+	@Nonnull
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
-			return ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing)!=null;
-		return super.hasCapability(capability, facing);
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
-	{
-		if(capability==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
-			return (T)((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing);
-		return super.getCapability(capability, facing);
+		if(cap==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
+			return ApiUtils.constantOptional((T)((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(side));
+		return super.getCapability(cap, side);
 	}
 
 	@Override

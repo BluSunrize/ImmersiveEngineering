@@ -89,7 +89,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 				EntityIEExplosive explosive = new EntityIEExplosive(world, pos, igniter, state, 4).setDropChance(1);
 				world.spawnEntity(explosive);
 				world.playSound(null, explosive.posX, explosive.posY, explosive.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
-				world.setBlockToAir(pos);
+				world.removeBlock(pos);
 			}
 		}
 	}
@@ -309,7 +309,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//
 	//			for(int i=0;i<=3;i++)
 	//			{
-	//				world.setBlockToAir(x,yy+i,z);
+	//				world.removeBlock(x,yy+i,z);
 	//				if(i==3)
 	//				{
 	//					TileEntity te;
@@ -317,7 +317,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//					{
 	//						te = world.getTileEntity(x+fd.offsetX, yy+i, z+fd.offsetZ);
 	//						if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) te).type==(2+fd.ordinal()))
-	//							world.setBlockToAir(x+fd.offsetX, yy+i, z+fd.offsetZ);
+	//							world.removeBlock(x+fd.offsetX, yy+i, z+fd.offsetZ);
 	//					}
 	//				}
 	//			}
@@ -334,12 +334,12 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//
 	//			if(!(off[0]==0&&off[1]==0) && world.isAirBlock(xx, yy, zz))
 	//				return;
-	//			world.setBlockToAir(xx, yy, zz);
+	//			world.removeBlock(xx, yy, zz);
 	//			for(int hh=-2;hh<=2;hh++)
 	//			{
 	//				int r=hh<-1||hh>1?1:2;
 	//				for(int ww=-r;ww<=r;ww++)
-	//					world.setBlockToAir(xx+((f==2||f==3)?ww:0), yy+hh, zz+((f==2||f==3)?0:ww));
+	//					world.removeBlock(xx+((f==2||f==3)?ww:0), yy+hh, zz+((f==2||f==3)?0:ww));
 	//			}
 	//		}
 	//		if(tileEntity instanceof TileEntityModWorkbench)
@@ -353,7 +353,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//			int zz = z+(f>3?off:0);
 	//
 	//			if(world.getTileEntity(xx, y, zz) instanceof TileEntityModWorkbench)
-	//				world.setBlockToAir(xx, y, zz);
+	//				world.removeBlock(xx, y, zz);
 	//			if(!world.isRemote && !tile.dummy && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
 	//				for(int i=0; i<tile.getSizeInventory(); i++)
 	//				{

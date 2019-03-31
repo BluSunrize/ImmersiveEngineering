@@ -36,6 +36,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -56,9 +57,9 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tanks[0].readFromNBT(nbt.getCompoundTag("tank"));
+		tanks[0].readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 11);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 11);
 	}
 
 	@Override
@@ -434,8 +435,9 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]);
 	IItemHandler extractionHandler = new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true});
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if((pos==15||pos==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

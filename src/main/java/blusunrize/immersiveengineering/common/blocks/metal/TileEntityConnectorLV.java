@@ -46,7 +46,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	private FluxStorage storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(!world.isRemote)
 		{
@@ -125,9 +125,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
-		NBTTagCompound toMachine = nbt.getCompoundTag("toMachine");
+		NBTTagCompound toMachine = nbt.getCompound("toMachine");
 		storageToMachine.readFromNBT(toMachine);
-		NBTTagCompound toNet = nbt.getCompoundTag("toNet");
+		NBTTagCompound toNet = nbt.getCompound("toNet");
 		storageToNet.readFromNBT(toNet);
 	}
 

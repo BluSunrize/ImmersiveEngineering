@@ -24,6 +24,7 @@ import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -132,7 +133,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		{
 			int side = message.getInt("filter_side");
 			int slot = message.getInt("filter_slot");
-			this.filters[side][slot] = FluidStack.loadFluidStackFromNBT(message.getCompoundTag("filter"));
+			this.filters[side][slot] = FluidStack.loadFluidStackFromNBT(message.getCompound("filter"));
 		}
 		this.markDirty();
 	}
@@ -181,8 +182,8 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		sortWithNBT = nbt.getByteArray("sortWithNBT");
 		for(int side = 0; side < 6; side++)
 		{
-			NBTTagList filterList = nbt.getTagList("filter_"+side, 10);
-			for(int i = 0; i < filterList.tagCount(); i++)
+			NBTTagList filterList = nbt.getList("filter_"+side, 10);
+			for(int i = 0; i < filterList.size(); i++)
 				filters[side][i] = FluidStack.loadFluidStackFromNBT(filterList.getCompoundTagAt(i));
 		}
 	}
@@ -221,8 +222,9 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 			new SorterFluidHandler(this, EnumFacing.WEST),
 			new SorterFluidHandler(this, EnumFacing.EAST)};
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null)
 			return (T)insertionHandlers[facing.ordinal()];

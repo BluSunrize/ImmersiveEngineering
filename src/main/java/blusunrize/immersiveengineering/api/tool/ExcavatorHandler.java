@@ -262,23 +262,23 @@ public class ExcavatorHandler
 			String name = tag.getString("name");
 			float failChance = tag.getFloat("failChance");
 
-			NBTTagList tagList = tag.getTagList("ores", 8);
-			String[] ores = new String[tagList.tagCount()];
+			NBTTagList tagList = tag.getList("ores", 8);
+			String[] ores = new String[tagList.size()];
 			for(int i = 0; i < ores.length; i++)
 				ores[i] = tagList.getStringTagAt(i);
 
-			tagList = tag.getTagList("chances", 5);
-			float[] chances = new float[tagList.tagCount()];
+			tagList = tag.getList("chances", 5);
+			float[] chances = new float[tagList.size()];
 			for(int i = 0; i < chances.length; i++)
 				chances[i] = tagList.getFloatAt(i);
 
-			tagList = tag.getTagList("oreOutput", 10);
-			NonNullList<ItemStack> oreOutput = NonNullList.withSize(tagList.tagCount(), ItemStack.EMPTY);
+			tagList = tag.getList("oreOutput", 10);
+			NonNullList<ItemStack> oreOutput = NonNullList.withSize(tagList.size(), ItemStack.EMPTY);
 			for(int i = 0; i < oreOutput.size(); i++)
 				oreOutput.set(i, new ItemStack(tagList.getCompoundTagAt(i)));
 
-			tagList = tag.getTagList("recalculatedChances", 5);
-			float[] recalculatedChances = new float[tagList.tagCount()];
+			tagList = tag.getList("recalculatedChances", 5);
+			float[] recalculatedChances = new float[tagList.size()];
 			for(int i = 0; i < recalculatedChances.length; i++)
 				recalculatedChances[i] = tagList.getFloatAt(i);
 

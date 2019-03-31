@@ -28,6 +28,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -302,7 +303,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		sideFilter = nbt.getIntArray("sideFilter");
 		if(!descPacket)
 		{
-			NBTTagList filterList = nbt.getTagList("filter", 10);
+			NBTTagList filterList = nbt.getList("filter", 10);
 			filter = new SorterInventory(this);
 			filter.readFromNBT(filterList);
 
@@ -339,8 +340,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			new SorterInventoryHandler(this, EnumFacing.WEST),
 			new SorterInventoryHandler(this, EnumFacing.EAST)};
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&facing!=null)
 			return (T)insertionHandlers[facing.ordinal()];
@@ -549,7 +551,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 		public void readFromNBT(NBTTagList list)
 		{
-			for(int i = 0; i < list.tagCount(); i++)
+			for(int i = 0; i < list.size(); i++)
 			{
 				NBTTagCompound itemTag = list.getCompoundTagAt(i);
 				int slot = itemTag.getByte("Slot")&255;

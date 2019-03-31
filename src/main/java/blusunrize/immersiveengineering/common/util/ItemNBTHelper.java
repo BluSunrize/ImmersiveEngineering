@@ -128,7 +128,7 @@ public class ItemNBTHelper
 
 	public static NBTTagCompound getTagCompound(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getCompoundTag(key): new NBTTagCompound();
+		return hasTag(stack)?getTag(stack).getCompound(key): new NBTTagCompound();
 	}
 
 	public static void setFluidStack(ItemStack stack, String key, FluidStack val)
@@ -277,12 +277,12 @@ public class ItemNBTHelper
 						case 9: //List
 							NBTTagList listTarget = (NBTTagList)target.getTag(key);
 							NBTTagList listAdd = (NBTTagList)add.getTag(key);
-							for(int i = 0; i < listAdd.tagCount(); i++)
+							for(int i = 0; i < listAdd.size(); i++)
 								listTarget.appendTag(listAdd.get(i));
 							target.setTag(key, listTarget);
 							break;
 						case 10: //Compound
-							combineTags(target.getCompoundTag(key), add.getCompoundTag(key), null);
+							combineTags(target.getCompound(key), add.getCompound(key), null);
 							break;
 						case 11: //IntArray
 							int[] intsTarget = target.getIntArray(key);

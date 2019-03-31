@@ -303,8 +303,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static BlueprintCraftingRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		NBTTagList list = nbt.getTagList("inputs", 10);
-		IngredientStack[] inputs = new IngredientStack[list.tagCount()];
+		NBTTagList list = nbt.getList("inputs", 10);
+		IngredientStack[] inputs = new IngredientStack[list.size()];
 		for(int i = 0; i < inputs.length; i++)
 			inputs[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
 

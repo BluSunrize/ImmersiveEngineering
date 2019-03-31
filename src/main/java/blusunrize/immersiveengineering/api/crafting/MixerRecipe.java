@@ -169,12 +169,12 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public static MixerRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		FluidStack fluidInput = FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("fluidInput"));
+		FluidStack fluidInput = FluidStack.loadFluidStackFromNBT(nbt.getCompound("fluidInput"));
 		IngredientStack[] itemInputs = null;
 		if(nbt.hasKey("itemInputs"))
 		{
-			NBTTagList list = nbt.getTagList("itemInputs", 10);
-			itemInputs = new IngredientStack[list.tagCount()];
+			NBTTagList list = nbt.getList("itemInputs", 10);
+			itemInputs = new IngredientStack[list.size()];
 			for(int i = 0; i < itemInputs.length; i++)
 				itemInputs[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
 		}

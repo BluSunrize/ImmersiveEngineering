@@ -73,11 +73,11 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		super.readCustomNBT(nbt, descPacket);
 		reference = WireType.getValue(nbt.getString(WIRE));
 		if(nbt.hasKey(POSITIVE, NBT.TAG_COMPOUND))
-			connPositive = new ConnectionPoint(nbt.getCompoundTag(POSITIVE));
+			connPositive = new ConnectionPoint(nbt.getCompound(POSITIVE));
 		hasNegative = nbt.getBoolean(HAS_NEGATIVE);
 		facing = EnumFacing.VALUES[nbt.getInt(FACING)];
 		offset = nbt.getInt(OFFSET);
-		stateForMiddle = Utils.stateFromNBT(nbt.getCompoundTag(MIDDLE_STATE));
+		stateForMiddle = Utils.stateFromNBT(nbt.getCompound(MIDDLE_STATE));
 	}
 
 	@Override
@@ -324,7 +324,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		int offsetLocal = toBreak-offset;
 		BlockPos replacePos = pos.offset(facing, offsetLocal);
 		if(!info.canReplace())
-			world.setBlockToAir(replacePos);
+			world.removeBlock(replacePos);
 		else if(toBreak!=offset)
 		{
 			TileEntity te = world.getTileEntity(replacePos);

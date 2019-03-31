@@ -31,6 +31,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -189,7 +190,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{1, 0, 1, 1, 1, 1};
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -216,7 +217,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		prepareAreaCheck();
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		getWorld().addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+		getWorld().addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 		return true;
 	}
 
@@ -228,8 +229,9 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||sideConfig[facing.ordinal()]==0))
 			return (T)tank;

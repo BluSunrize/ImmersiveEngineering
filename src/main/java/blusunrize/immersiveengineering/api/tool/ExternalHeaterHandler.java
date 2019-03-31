@@ -144,7 +144,7 @@ public class ExternalHeaterHandler
 
 		public void updateFurnace(TileEntity tileEntity, boolean active)
 		{
-			Block containing = tileEntity.getBlockType();
+			Block containing = tileEntity.getBlockState();
 			if(containing==Blocks.FURNACE)
 				BlockFurnace.setState(active, tileEntity.getWorld(), tileEntity.getPos());
 //			else

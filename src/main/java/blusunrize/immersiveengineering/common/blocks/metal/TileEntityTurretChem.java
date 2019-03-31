@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityTurretChem extends TileEntityTurret
@@ -120,7 +121,7 @@ public class TileEntityTurretChem extends TileEntityTurret
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 		ignite = nbt.getBoolean("ignite");
 	}
 
@@ -140,8 +141,9 @@ public class TileEntityTurretChem extends TileEntityTurret
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(!dummy&&capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
 			return (T)tank;

@@ -41,17 +41,17 @@ public class LocalWireNetwork implements IWorldTickable
 	public LocalWireNetwork(NBTTagCompound subnet, GlobalWireNetwork globalNet)
 	{
 		this(globalNet);
-		NBTTagList proxies = subnet.getTagList("proxies", NBT.TAG_COMPOUND);
+		NBTTagList proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
 		for(NBTBase b : proxies)
 		{
-			IICProxy proxy = IICProxy.readFromNBT(((NBTTagCompound)b).getCompoundTag("proxy"));
-			for(NBTBase p : ((NBTTagCompound)b).getTagList("points", NBT.TAG_COMPOUND))
+			IICProxy proxy = IICProxy.readFromNBT(((NBTTagCompound)b).getCompound("proxy"));
+			for(NBTBase p : ((NBTTagCompound)b).getList("points", NBT.TAG_COMPOUND))
 			{
 				ConnectionPoint point = new ConnectionPoint((NBTTagCompound)p);
 				loadConnector(point, proxy);
 			}
 		}
-		NBTTagList wires = subnet.getTagList("wires", NBT.TAG_COMPOUND);
+		NBTTagList wires = subnet.getList("wires", NBT.TAG_COMPOUND);
 		for(NBTBase b : wires)
 		{
 			Connection wire = new Connection((NBTTagCompound)b);

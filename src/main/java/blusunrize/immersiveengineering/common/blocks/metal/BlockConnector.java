@@ -154,7 +154,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
 				this.dropBlockAsItem(connector.getWorld(), pos, world.getBlockState(pos), 0);
-				connector.getWorld().setBlockToAir(pos);
+				connector.getWorld().removeBlock(pos);
 				return;
 			}
 		}
@@ -164,7 +164,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
 				this.dropBlockAsItem(connector.getWorld(), pos, world.getBlockState(pos), 0);
-				connector.getWorld().setBlockToAir(pos);
+				connector.getWorld().removeBlock(pos);
 				return;
 			}
 			if(connector.isRSInput())

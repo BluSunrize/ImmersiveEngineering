@@ -39,8 +39,8 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		if(nbt.hasKey("fluids"))
 		{
 			fluids.clear();
-			NBTTagList tagList = nbt.getTagList("fluids", 10);
-			for(int i = 0; i < tagList.tagCount(); i++)
+			NBTTagList tagList = nbt.getList("fluids", 10);
+			for(int i = 0; i < tagList.size(); i++)
 			{
 				FluidStack fs = FluidStack.loadFluidStackFromNBT(tagList.getCompoundTagAt(i));
 				if(fs!=null)

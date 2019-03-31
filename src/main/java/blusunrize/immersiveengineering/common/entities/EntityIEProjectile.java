@@ -180,7 +180,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 			if(mop==null||mop.entityHit==null)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1), (e) -> e.canBeCollidedWith());
+				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1), (e) -> e.canBeCollidedWith());
 				double d0 = 0.0D;
 				for(int i = 0; i < list.size(); ++i)
 				{
@@ -188,7 +188,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 					if(entity1.canBeCollidedWith()&&(!entity1.isEntityEqual(this.shootingEntity)||this.ticksInAir > 5))
 					{
 						float f = 0.3F;
-						AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow((double)f, (double)f, (double)f);
+						AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)f, (double)f, (double)f);
 						RayTraceResult movingobjectposition1 = axisalignedbb.calculateIntercept(currentPos, nextPos);
 
 						if(movingobjectposition1!=null)
@@ -296,7 +296,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	@Override
 	public boolean isInRangeToRenderDist(double p_70112_1_)
 	{
-		double d1 = this.getEntityBoundingBox().getAverageEdgeLength()*4.0D;
+		double d1 = this.getBoundingBox().getAverageEdgeLength()*4.0D;
 		d1 *= 64.0D;
 		return p_70112_1_ < d1*d1;
 	}

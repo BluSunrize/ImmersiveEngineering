@@ -47,8 +47,8 @@ public class Connection
 	public Connection(NBTTagCompound nbt)
 	{
 		type = WireType.getValue(nbt.getString("type"));
-		endA = new ConnectionPoint(nbt.getCompoundTag("endA"));
-		endB = new ConnectionPoint(nbt.getCompoundTag("endB"));
+		endA = new ConnectionPoint(nbt.getCompound("endA"));
+		endB = new ConnectionPoint(nbt.getCompound("endB"));
 		internal = nbt.getBoolean("internal");
 	}
 

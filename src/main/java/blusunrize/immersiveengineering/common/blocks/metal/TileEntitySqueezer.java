@@ -36,6 +36,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -57,9 +58,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tanks[0].readFromNBT(nbt.getCompoundTag("tank"));
+		tanks[0].readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 11);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 11);
 	}
 
 	@Override
@@ -506,8 +507,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]);
 	IItemHandler extractionHandler = new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true});
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if((pos==15||pos==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -657,12 +659,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//	{
 	//		super.readCustomNBT(nbt, descPacket);
 	//		int[] processTmp = nbt.getIntArray("process");
-	//		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 3);
+	//		inventory = Utils.readInventory(nbt.getList("inventory", 10), 3);
 	//		for (int i = 0;i<processTmp.length;i++)
 	//			if ((process[i]<0^processTmp[i]<0)||!descPacket)
 	//				process[i] = processTmp[i];
 	//		energyStorage.readFromNBT(nbt);
-	//		mold = new ItemStack(nbt.getCompoundTag("mold"));
+	//		mold = new ItemStack(nbt.getCompound("mold"));
 	//		if (descPacket)
 	//			active = nbt.getBoolean("active");
 	//		if (nbt.hasKey("stoppedSlot"))
@@ -760,7 +762,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 	//						else
 	//						{
 	//							if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
-	//								world.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+	//								world.removeBlock(startX+xx,startY+yy,startZ+zz);
 	//							int meta = s.getItemDamage();
 	//							world.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), meta, 0x3);
 	//						}

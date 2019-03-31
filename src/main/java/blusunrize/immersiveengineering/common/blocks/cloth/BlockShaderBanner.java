@@ -8,6 +8,30 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-public class BlockShaderBanner
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
+import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockReader;
+
+import javax.annotation.Nullable;
+
+public class BlockShaderBanner extends BlockIETileProvider
 {
+	public BlockShaderBanner()
+	{
+		super("shader_banner", Block.Properties.create(Material.CLOTH), ItemBlockIEBase.class,
+				IEProperties.FACING_ALL, IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY);
+	}
+
+	@Nullable
+	@Override
+	public TileEntity createBasicTE(IBlockReader worldIn)
+	{
+		return new TileEntityShaderBanner();
+	}
 }

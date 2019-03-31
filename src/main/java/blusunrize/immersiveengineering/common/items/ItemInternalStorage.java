@@ -85,7 +85,7 @@ public abstract class ItemInternalStorage extends ItemIEBase
 		//Update old inventories to caps
 		if(ItemNBTHelper.hasKey(stack, "Inv"))
 		{
-			NBTTagList list = ItemNBTHelper.getTag(stack).getTagList("Inv", 10);
+			NBTTagList list = ItemNBTHelper.getTag(stack).getList("Inv", 10);
 			setContainedItems(stack, Utils.readInventory(list, getSlotCount(stack)));
 			ItemNBTHelper.remove(stack, "Inv");
 			//Sync the changes

@@ -337,15 +337,15 @@ public class IngredientStack
 			switch(nbt.getInt("nbtType"))
 			{
 				case 0:
-					ItemStack stack = new ItemStack(nbt.getCompoundTag("stack"));
+					ItemStack stack = new ItemStack(nbt.getCompound("stack"));
 					stack.setCount(nbt.getInt("inputSize"));
 					IngredientStack ingr = new IngredientStack(stack);
 					ingr.useNBT = nbt.getBoolean("useNBT");
 					return ingr;
 				case 1:
-					NBTTagList list = nbt.getTagList("stackList", 10);
+					NBTTagList list = nbt.getList("stackList", 10);
 					List<ItemStack> stackList = new ArrayList();
-					for(int i = 0; i < list.tagCount(); i++)
+					for(int i = 0; i < list.size(); i++)
 						stackList.add(new ItemStack(list.getCompoundTagAt(i)));
 					return new IngredientStack(stackList, nbt.getInt("inputSize"));
 				case 2:

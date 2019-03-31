@@ -145,8 +145,8 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(nbt.hasKey("type")&&deserializers.containsKey(nbt.getString("type")))
 			return deserializers.get(nbt.getString("type")).apply(nbt);
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
-		ComparableItemStack mold = ComparableItemStack.readFromNBT(nbt.getCompoundTag("mold"));
+		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
+		ComparableItemStack mold = ComparableItemStack.readFromNBT(nbt.getCompound("mold"));
 		List<MetalPressRecipe> list = recipeList.get(mold);
 		for(MetalPressRecipe recipe : list)
 			if(recipe.input.equals(input))

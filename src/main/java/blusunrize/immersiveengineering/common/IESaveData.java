@@ -42,8 +42,8 @@ public class IESaveData extends WorldSavedData
 		int[] savedDimensions = nbt.getIntArray("savedDimensions");
 		for(int dim : savedDimensions)
 		{
-			NBTTagList connectionList = nbt.getTagList("connectionList"+dim, 10);
-			for(int i = 0; i < connectionList.tagCount(); i++)
+			NBTTagList connectionList = nbt.getList("connectionList"+dim, 10);
+			for(int i = 0; i < connectionList.size(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				ImmersiveNetHandler.Connection con = ImmersiveNetHandler.Connection.readFromNBT(conTag);
@@ -54,35 +54,35 @@ public class IESaveData extends WorldSavedData
 			}
 		}
 
-		NBTTagList proxies = nbt.getTagList("iicProxies", 10);
-		for(int i = 0; i < proxies.tagCount(); i++)
+		NBTTagList proxies = nbt.getList("iicProxies", 10);
+		for(int i = 0; i < proxies.size(); i++)
 			ImmersiveNetHandler.INSTANCE.addProxy(IICProxy.readFromNBT(proxies.getCompoundTagAt(i)));
 
 		EventHandler.validateConnsNextTick = true;
 
-		NBTTagList mineralList = nbt.getTagList("mineralDepletion", 10);
+		NBTTagList mineralList = nbt.getList("mineralDepletion", 10);
 		ExcavatorHandler.mineralCache.clear();
-		for(int i = 0; i < mineralList.tagCount(); i++)
+		for(int i = 0; i < mineralList.size(); i++)
 		{
 			NBTTagCompound tag = mineralList.getCompoundTagAt(i);
 			DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(tag);
 			if(coords!=null)
 			{
-				MineralWorldInfo info = MineralWorldInfo.readFromNBT(tag.getCompoundTag("info"));
+				MineralWorldInfo info = MineralWorldInfo.readFromNBT(tag.getCompound("info"));
 				ExcavatorHandler.mineralCache.put(coords, info);
 			}
 		}
 
 
-		NBTTagList receivedShaderList = nbt.getTagList("receivedShaderList", 10);
-		for(int i = 0; i < receivedShaderList.tagCount(); i++)
+		NBTTagList receivedShaderList = nbt.getList("receivedShaderList", 10);
+		for(int i = 0; i < receivedShaderList.size(); i++)
 		{
 			NBTTagCompound tag = receivedShaderList.getCompoundTagAt(i);
 			String player = tag.getString("player");
 			ShaderRegistry.receivedShaders.get(player).clear();
 
-			NBTTagList playerReceived = tag.getTagList("received", 8);
-			for(int j = 0; j < playerReceived.tagCount(); j++)
+			NBTTagList playerReceived = tag.getList("received", 8);
+			for(int j = 0; j < playerReceived.size(); j++)
 			{
 				String s = playerReceived.getStringTagAt(j);
 				if(s!=null&&!s.isEmpty())

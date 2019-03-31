@@ -91,7 +91,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public static BottlingMachineRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
+		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		for(BottlingMachineRecipe recipe : recipeList)
 			if(recipe.input.equals(input))
 				return recipe;

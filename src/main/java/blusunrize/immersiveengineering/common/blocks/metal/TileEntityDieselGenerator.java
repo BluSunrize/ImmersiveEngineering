@@ -58,7 +58,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tanks[0].readFromNBT(nbt.getCompoundTag("tank0"));
+		tanks[0].readFromNBT(nbt.getCompound("tank0"));
 		active = nbt.getBoolean("active");
 		animation_fanRotation = nbt.getFloat("animation_fanRotation");
 		animation_fanFadeIn = nbt.getInt("animation_fanFadeIn");

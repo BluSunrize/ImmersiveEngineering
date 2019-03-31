@@ -104,7 +104,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 				if(wheel.facing==fRot)
 				{
 					if(active!=wheel.active)
-						world.addBlockEvent(wheel.getPos(), wheel.getBlockType(), 0, active?1: 0);
+						world.addBlockEvent(wheel.getPos(), wheel.getBlockState(), 0, active?1: 0);
 					rot = wheel.rotation;
 					if(rot%45 > 40)
 						target = Math.round(rot/360f*8)%8;
@@ -122,7 +122,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								((TileEntityBucketWheel)te).mirrored = this.mirrored;
 								te.markDirty();
 								((TileEntityBucketWheel)te).markContainingBlockForUpdate(null);
-								world.addBlockEvent(te.getPos(), te.getBlockType(), 255, 0);
+								world.addBlockEvent(te.getPos(), te.getBlockState(), 255, 0);
 							}
 						}
 				}
@@ -534,6 +534,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		BlockPos wheelPos = this.getBlockPosForPos(31);
 		TileEntity center = world.getTileEntity(wheelPos);
 		if(center instanceof TileEntityBucketWheel)
-			world.addBlockEvent(center.getPos(), center.getBlockType(), 0, 0);
+			world.addBlockEvent(center.getPos(), center.getBlockState(), 0, 0);
 	}
 }

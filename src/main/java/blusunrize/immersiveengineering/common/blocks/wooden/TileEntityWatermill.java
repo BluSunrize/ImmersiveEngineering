@@ -166,7 +166,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 			Vec3d dirVer = getVerticalVec();
 			rotationVec = Utils.addVectors(rotationVec, dirHoz);
 			rotationVec = Utils.addVectors(rotationVec, dirVer);
-			//			world.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
+			//			world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
 		}
 		return rotationVec;
 	}
@@ -334,7 +334,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 					if(te instanceof TileEntityWatermill)
 					{
 						((TileEntityWatermill)te).formed = false;
-						world.setBlockToAir(pos2);
+						world.removeBlock(pos2);
 					}
 				}
 	}

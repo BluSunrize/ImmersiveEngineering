@@ -33,6 +33,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityTurretGun extends TileEntityTurret
@@ -196,7 +197,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 		super.readCustomNBT(nbt, descPacket);
 		expelCasings = nbt.getBoolean("expelCasings");
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 2);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 2);
 	}
 
 	@Override
@@ -218,8 +219,9 @@ public class TileEntityTurretGun extends TileEntityTurret
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
 			return (T)itemHandler;

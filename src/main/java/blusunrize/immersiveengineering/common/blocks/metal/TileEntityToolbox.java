@@ -52,9 +52,9 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		if(nbt.hasKey("name"))
 			this.name = nbt.getString("name");
 		if(nbt.hasKey("enchantments"))
-			this.enchantments = nbt.getTagList("enchantments", 10);
+			this.enchantments = nbt.getList("enchantments", 10);
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), ItemToolbox.SLOT_COUNT);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), ItemToolbox.SLOT_COUNT);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 			{
 				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
-				getWorld().setBlockToAir(getPos());
+				getWorld().removeBlock(getPos());
 				getWorld().spawnEntity(entityitem);
 			}
 			return true;

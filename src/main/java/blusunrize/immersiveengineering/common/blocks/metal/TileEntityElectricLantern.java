@@ -66,7 +66,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		{
 			this.markContainingBlockForUpdate(null);
 			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
-			world.addBlockEvent(getPos(), getBlockType(), 1, 0);
+			world.addBlockEvent(getPos(), getBlockState(), 1, 0);
 		}
 	}
 
@@ -214,7 +214,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), getBlockType(), active?1: 0, 0);
+		world.addBlockEvent(getPos(), getBlockState(), active?1: 0, 0);
 		return true;
 	}
 

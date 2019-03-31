@@ -258,7 +258,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 		lastBurnTime = nbt.getInt("lastBurnTime");
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 4);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 4);
 		}
 	}
 

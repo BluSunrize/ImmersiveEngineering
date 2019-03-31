@@ -30,6 +30,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
+
 public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> implements IComparatorOverride //IDeepStorageUnit
 {
 	public ItemStack identStack = ItemStack.EMPTY;
@@ -86,7 +88,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		super.readCustomNBT(nbt, descPacket);
 		if(nbt.hasKey("identStack"))
 		{
-			NBTTagCompound t = nbt.getCompoundTag("identStack");
+			NBTTagCompound t = nbt.getCompound("identStack");
 			this.identStack = new ItemStack(t);
 		}
 		else
@@ -237,8 +239,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 
 	IItemHandler insertionHandler = new SiloInventoryHandler(this);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if((pos==4||pos==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T)insertionHandler;
@@ -360,7 +363,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		int vol = maxStorage/6;
 		if((15*storageAmount)/maxStorage!=masterCompOld)
-			world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+			world.notifyNeighborsOfStateChange(getPos(), getBlockState(), true);
 		for(int i = 0; i < 6; i++)
 		{
 			int filled = storageAmount-i*vol;

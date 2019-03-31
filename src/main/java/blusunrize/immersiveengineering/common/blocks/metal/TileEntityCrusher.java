@@ -41,6 +41,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,9 +69,9 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inputs", 10);
+			NBTTagList invList = nbt.getList("inputs", 10);
 			inputs.clear();
-			for(int i = 0; i < invList.tagCount(); i++)
+			for(int i = 0; i < invList.size(); i++)
 				inputs.add(new ItemStack(invList.getCompoundTagAt(i)));
 		}
 	}
@@ -305,7 +306,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 				return;
 			Vec3d center = new Vec3d(master.getPos()).add(.5, .75, .5);
 			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
-			if(!entity.getEntityBoundingBox().intersects(crusherInternal))
+			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;
 			if(entity instanceof EntityItem&&!((EntityItem)entity).getItem().isEmpty())
 			{
@@ -495,8 +496,9 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 
 	IItemHandler insertionHandler = new MultiblockInventoryHandler_DirectProcessing(this).setProcessStacking(true);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(pos > 30&&pos < 44&&pos%5 > 0&&pos%5 < 4&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
@@ -44,6 +45,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
@@ -52,6 +54,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.EnumFacing.Axis;
@@ -66,6 +69,7 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.util.Constants;
@@ -161,18 +165,38 @@ public class Utils
 		return s2;
 	}
 
-	public static String[] dyeNames = {"Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan", "LightGray", "Gray", "Pink", "Lime", "Yellow", "LightBlue", "Magenta", "Orange", "White"};
+	public static Map<ResourceLocation, EnumDyeColor> dyesByTag = ImmutableMap.of(
+			Tags.Items.DYES_BLACK.getId(), EnumDyeColor.BLACK,
+			Tags.Items.DYES_RED.getId(), EnumDyeColor.RED,
+			Tags.Items.DYES_GREEN.getId(), EnumDyeColor.GREEN,
+			Tags.Items.DYES_BROWN.getId(), EnumDyeColor.BROWN,
+			Tags.Items.DYES_BLUE.getId(), EnumDyeColor.BLUE,
+			Tags.Items.DYES_PURPLE.getId(), EnumDyeColor.PURPLE,
+			Tags.Items.DYES_CYAN.getId(), EnumDyeColor.CYAN,
+			Tags.Items.DYES_LIGHT_GRAY.getId(), EnumDyeColor.LIGHT_GRAY,
+			Tags.Items.DYES_GRAY.getId(), EnumDyeColor.GRAY,
+			Tags.Items.DYES_PINK.getId(), EnumDyeColor.PINK,
+			Tags.Items.DYES_LIME.getId(), EnumDyeColor.LIME,
+			Tags.Items.DYES_YELLOW.getId(), EnumDyeColor.YELLOW,
+			Tags.Items.DYES_LIGHT_BLUE.getId(), EnumDyeColor.LIGHT_BLUE,
+			Tags.Items.DYES_MAGENTA.getId(), EnumDyeColor.MAGENTA,
+			Tags.Items.DYES_ORANGE.getId(), EnumDyeColor.ORANGE,
+			Tags.Items.DYES_WHITE.getId(), EnumDyeColor.WHITE,
+			);
 
-	public static int getDye(ItemStack stack)
+	@Nullable
+	public static EnumDyeColor getDye(ItemStack stack)
 	{
 		if(stack.isEmpty())
-			return -1;
-		if(stack.getItem().equals(Items.DYE))
-			return stack.getItemDamage();
-		for(int dye = 0; dye < dyeNames.length; dye++)
-			if(compareToOreName(stack, "dye"+dyeNames[dye]))
-				return dye;
-		return -1;
+			return null;
+		Collection<ResourceLocation> owners = ItemTags.getCollection().getOwningTags(stack.getItem());
+		if(owners.contains(Tags.Items.DYES.getId()))
+		{
+			for(ResourceLocation tag : owners)
+				if(dyesByTag.containsKey(tag))
+					return dyesByTag.get(tag);
+		}
+		return null;
 	}
 
 	public static boolean isDye(ItemStack stack)
@@ -732,7 +756,7 @@ public class Utils
 				if(b.getMetaFromState(world.getBlockState(pos))==0)
 				{
 					if(doDrain)
-						world.setBlockToAir(pos);
+						world.removeBlock(pos);
 					return new FluidStack(f, 1000);
 				}
 				return null;
@@ -1484,7 +1508,7 @@ public class Utils
 	public static NonNullList<ItemStack> readInventory(NBTTagList nbt, int size)
 	{
 		NonNullList<ItemStack> inv = NonNullList.withSize(size, ItemStack.EMPTY);
-		int max = nbt.tagCount();
+		int max = nbt.size();
 		for(int i = 0; i < max; i++)
 		{
 			NBTTagCompound itemTag = nbt.getCompoundTagAt(i);
@@ -1539,7 +1563,7 @@ public class Utils
 		else if(nbt instanceof NBTTagList)
 		{
 			NBTTagList list = (NBTTagList)nbt;
-			return readInventory(list, list.tagCount());
+			return readInventory(list, list.size());
 		}
 		return itemStacks;
 	}

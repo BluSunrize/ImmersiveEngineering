@@ -172,11 +172,11 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 				!=null)
 			return false;
 		//Don't shoot non-targeted entities between the turret and the target
-		AxisAlignedBB potentialCollateralArea = entity.getEntityBoundingBox().union(new AxisAlignedBB(pos.up()));
+		AxisAlignedBB potentialCollateralArea = entity.getBoundingBox().union(new AxisAlignedBB(pos.up()));
 		List<EntityLivingBase> potentialCollateral = world.getEntitiesWithinAABB(EntityLivingBase.class, potentialCollateralArea);
 		for(EntityLivingBase coll : potentialCollateral)
 		{
-			AxisAlignedBB entityBB = coll.getEntityBoundingBox().grow(.125f/2+.4);//Add the range of a revolver bullet in all directions
+			AxisAlignedBB entityBB = coll.getBoundingBox().grow(.125f/2+.4);//Add the range of a revolver bullet in all directions
 			if(!isValidTarget(coll, false)&&entityBB.calculateIntercept(start, end)!=null)
 				return false;
 		}
@@ -294,9 +294,9 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 		if(nbt.hasKey("owner"))
 			owner = nbt.getString("owner");
-		NBTTagList list = nbt.getTagList("targetList", 8);
+		NBTTagList list = nbt.getList("targetList", 8);
 		targetList.clear();
-		for(int i = 0; i < list.tagCount(); i++)
+		for(int i = 0; i < list.size(); i++)
 			targetList.add(list.getStringTagAt(i));
 		whitelist = nbt.getBoolean("whitelist");
 		attackAnimals = nbt.getBoolean("attackAnimals");
@@ -505,7 +505,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		if(world.getTileEntity(dummy?getPos().down(): getPos().up()) instanceof TileEntityTurret)
-			world.setBlockToAir(dummy?getPos().down(): getPos().up());
+			world.removeBlock(dummy?getPos().down(): getPos().up());
 	}
 
 	@Override
@@ -561,9 +561,9 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 				this.owner = placer.getName();
 			if(tag.hasKey("targetList"))
 			{
-				NBTTagList list = tag.getTagList("targetList", 8);
+				NBTTagList list = tag.getList("targetList", 8);
 				targetList.clear();
-				for(int i = 0; i < list.tagCount(); i++)
+				for(int i = 0; i < list.size(); i++)
 					targetList.add(list.getStringTagAt(i));
 			}
 			else if(owner!=null)

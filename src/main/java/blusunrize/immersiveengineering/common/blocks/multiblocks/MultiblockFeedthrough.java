@@ -195,7 +195,7 @@ public class MultiblockFeedthrough implements IMultiblock
 			feedthrough.stateForMiddle = middle;
 			feedthrough.offset = offset;
 			world.checkLight(here);
-			world.addBlockEvent(here, feedthrough.getBlockType(), 253, 0);
+			world.addBlockEvent(here, feedthrough.getBlockState(), 253, 0);
 			return feedthrough;
 		}
 		return null;

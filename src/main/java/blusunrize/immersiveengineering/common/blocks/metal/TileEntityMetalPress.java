@@ -35,6 +35,8 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMetalPress, MetalPressRecipe> implements IPlayerInteraction, IConveyorAttachable
 {
 	public TileEntityMetalPress()
@@ -81,7 +83,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		mold = new ItemStack(nbt.getCompoundTag("mold"));
+		mold = new ItemStack(nbt.getCompound("mold"));
 	}
 
 	@Override
@@ -322,8 +324,9 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 
 	IItemHandler insertionHandler = new MultiblockInventoryHandler_DirectProcessing(this);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -478,12 +481,12 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//	{
 	//		super.readCustomNBT(nbt, descPacket);
 	//		int[] processTmp = nbt.getIntArray("process");
-	//		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 3);
+	//		inventory = Utils.readInventory(nbt.getList("inventory", 10), 3);
 	//		for (int i = 0;i<processTmp.length;i++)
 	//			if ((process[i]<0^processTmp[i]<0)||!descPacket)
 	//				process[i] = processTmp[i];
 	//		energyStorage.readFromNBT(nbt);
-	//		mold = new ItemStack(nbt.getCompoundTag("mold"));
+	//		mold = new ItemStack(nbt.getCompound("mold"));
 	//		if (descPacket)
 	//			active = nbt.getBoolean("active");
 	//		if (nbt.hasKey("stoppedSlot"))
@@ -581,7 +584,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//						else
 	//						{
 	//							if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
-	//								world.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+	//								world.removeBlock(startX+xx,startY+yy,startZ+zz);
 	//							int meta = s.getItemDamage();
 	//							world.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), meta, 0x3);
 	//						}

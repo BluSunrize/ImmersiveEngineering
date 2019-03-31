@@ -8,12 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import net.minecraft.block.Block;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,9 +25,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvancedCollisionBounds, ITileDrop
@@ -44,7 +46,7 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 		if(nbt.hasKey("shader"))
 		{
 			shader = new ShaderWrapper_Direct("immersiveengineering:banner");
-			shader.deserializeNBT(nbt.getCompoundTag("shader"));
+			shader.deserializeNBT(nbt.getCompound("shader"));
 		}
 	}
 
@@ -75,20 +77,18 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 		return new float[]{.25f, 0, .25f, .75f, 1, .75f};
 	}
 
-	private static final List<AxisAlignedBB> COLLISION = Collections.singletonList(Block.NULL_AABB);
-
 	@Override
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
-		return COLLISION;
+		return ImmutableList.of();
 	}
 
 
 	@Override
 	public NonNullList<ItemStack> getTileDrops(@Nullable EntityPlayer player, IBlockState state)
 	{
-		NonNullList<ItemStack> list = NonNullList.from(ItemStack.EMPTY,  new ItemStack(Items.BANNER, 1, 15), this.shader.getShaderItem());
-		return list;
+		return NonNullList.from(ItemStack.EMPTY,
+				new ItemStack(Items.WHITE_BANNER, 1), this.shader.getShaderItem());
 	}
 
 	@Override
@@ -107,19 +107,12 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 		return super.receiveClientEvent(id, arg);
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
-	{
-		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return (T)shader;
+			return ApiUtils.constantOptional((T)shader);
 		return super.getCapability(capability, facing);
 	}
 }

@@ -117,7 +117,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	@Override
 	public void readEntityFromNBT(NBTTagCompound nbt)
 	{
-		NBTTagCompound comp = nbt.getCompoundTag("nbt");
+		NBTTagCompound comp = nbt.getCompound("nbt");
 		rgb = new float[]{comp.getFloat("r"), comp.getFloat("g"), comp.getFloat("b")};
 		angleHorizontal = nbt.getFloat("angleHor");
 
@@ -155,9 +155,9 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	}
 
 	@Override
-	public AxisAlignedBB getEntityBoundingBox()
+	public AxisAlignedBB getBoundingBox()
 	{
-		return super.getEntityBoundingBox();
+		return super.getBoundingBox();
 	}
 
 	@Override

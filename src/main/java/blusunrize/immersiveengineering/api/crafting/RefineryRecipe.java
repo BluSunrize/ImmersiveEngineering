@@ -127,8 +127,8 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public static RefineryRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		FluidStack input0 = FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("input0"));
-		FluidStack input1 = FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("input1"));
+		FluidStack input0 = FluidStack.loadFluidStackFromNBT(nbt.getCompound("input0"));
+		FluidStack input1 = FluidStack.loadFluidStackFromNBT(nbt.getCompound("input1"));
 		return findRecipe(input0, input1);
 	}
 }

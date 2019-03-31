@@ -199,7 +199,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		for(int i = 0; i <= 1; i++)
 			if(world.getTileEntity(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0)) instanceof TileEntityEnergyMeter)
-				world.setBlockToAir(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0));
+				world.removeBlock(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0));
 	}
 
 	public int getAveragePower()
@@ -311,8 +311,8 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		}
 		if(oldVal!=compVal)
 		{
-			world.updateComparatorOutputLevel(pos, getBlockType());
-			world.updateComparatorOutputLevel(pos.down(), getBlockType());
+			world.updateComparatorOutputLevel(pos, getBlockState());
+			world.updateComparatorOutputLevel(pos.down(), getBlockState());
 		}
 	}
 

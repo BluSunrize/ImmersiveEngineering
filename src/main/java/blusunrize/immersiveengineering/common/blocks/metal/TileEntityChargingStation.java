@@ -120,7 +120,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 			if(i!=this.comparatorOutput)
 			{
 				this.comparatorOutput = i;
-				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+				world.notifyNeighborsOfStateChange(getPos(), getBlockState(), true);
 			}
 		}
 	}
@@ -130,7 +130,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		energyStorage.readFromNBT(nbt);
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
-		inventory.set(0, new ItemStack(nbt.getCompoundTag("inventory")));
+		inventory.set(0, new ItemStack(nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
 
@@ -269,8 +269,9 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 
 	IItemHandler insertionHandler = new IEInventoryHandler(1, this);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T)insertionHandler;
@@ -325,7 +326,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	//					setInventorySlotContents(slot, null);
 	//			}
 	//		this.markDirty();
-	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
+	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), 0, 0);
 	//		return stack;
 	//	}
 	//	@Override
@@ -343,7 +344,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	//		if(stack != null && stack.stackSize > getInventoryStackLimit())
 	//			stack.stackSize = getInventoryStackLimit();
 	//		this.markDirty();
-	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
+	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), 0, 0);
 	//	}
 	//	@Override
 	//	public String getInventoryName()

@@ -77,9 +77,9 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
-		NBTTagList processNBT = nbt.getTagList("processQueue", 10);
+		NBTTagList processNBT = nbt.getList("processQueue", 10);
 		processQueue.clear();
-		for(int i = 0; i < processNBT.tagCount(); i++)
+		for(int i = 0; i < processNBT.size(); i++)
 		{
 			NBTTagCompound tag = processNBT.getCompoundTagAt(i);
 			IMultiblockRecipe recipe = readRecipeFromNBT(tag);

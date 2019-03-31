@@ -425,7 +425,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		if(!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
 		else
-			return Utils.readInventory(ItemNBTHelper.getTag(revolver).getTagList("bullets", 10), getBulletCount(revolver));
+			return Utils.readInventory(ItemNBTHelper.getTag(revolver).getList("bullets", 10), getBulletCount(revolver));
 	}
 
 	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)

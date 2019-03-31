@@ -170,7 +170,7 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public static CrusherRecipe loadFromNBT(NBTTagCompound nbt)
 	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
+		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		for(CrusherRecipe recipe : recipeList)
 			if(recipe.input.equals(input))
 				return recipe;

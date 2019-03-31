@@ -50,11 +50,11 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tanks[0].readFromNBT(nbt.getCompoundTag("tank0"));
-		tanks[1].readFromNBT(nbt.getCompoundTag("tank1"));
-		tanks[2].readFromNBT(nbt.getCompoundTag("tank2"));
+		tanks[0].readFromNBT(nbt.getCompound("tank0"));
+		tanks[1].readFromNBT(nbt.getCompound("tank1"));
+		tanks[2].readFromNBT(nbt.getCompound("tank2"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 6);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 6);
 	}
 
 	@Override

@@ -375,7 +375,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 					}
 					else if(bullet.bulletPotion.getItem() instanceof ItemSplashPotion)
 					{
-						List<EntityLivingBase> livingEntities = bullet.world.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D));
+						List<EntityLivingBase> livingEntities = bullet.world.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getBoundingBox().grow(4.0D, 2.0D, 4.0D));
 						if(livingEntities!=null&&!livingEntities.isEmpty())
 							for(EntityLivingBase living : livingEntities)
 								if(living.canBeHitWithPotion())

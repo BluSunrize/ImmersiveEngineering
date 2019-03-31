@@ -34,7 +34,8 @@ import java.util.List;
 /**
  * @author BluSunrize - 01.10.2016
  */
-public class TileEntityStripCurtain extends TileEntityIEBase implements ITickable, IRedstoneOutput, IHammerInteraction, IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
+public class TileEntityStripCurtain extends TileEntityIEBase implements ITickable, IRedstoneOutput, IHammerInteraction,
+		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public boolean ceilingAttached = false;
@@ -43,26 +44,25 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	private boolean strongSignal = false;
 
 	@Override
-	public void update()
+	public void tick()
 	{
-		if(!world.isRemote&&world.getTotalWorldTime()%4==((getPos().getX()^getPos().getZ())&3))
+		if(!world.isRemote&&world.getGameTime()%4==((getPos().getX()^getPos().getZ())&3))
 		{
-			List<Entity> entities = null;
 			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
 			aabb = new AxisAlignedBB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
-			entities = world.getEntitiesWithinAABB(Entity.class, aabb);
+			List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, aabb);
 			if(!ceilingAttached&&!entities.isEmpty()&&redstoneSignal==0)
 			{
 				redstoneSignal = 15;
 				markDirty();
-				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
-				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockType(), false);
+				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockState().getBlock());
 			}
 			if(entities.isEmpty()&&redstoneSignal!=0)
 			{
 				redstoneSignal = 0;
-				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
-				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockType(), false);
+				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockState().getBlock());
 			}
 		}
 	}
@@ -70,16 +70,16 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(ceilingAttached&&!entity.isDead&&redstoneSignal==0)
+		if(ceilingAttached&&entity.isAlive()&&redstoneSignal==0)
 		{
 			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
 			aabb = new AxisAlignedBB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
-			if(entity.getEntityBoundingBox().intersects(aabb))
+			if(entity.getBoundingBox().intersects(aabb))
 			{
 				redstoneSignal = 15;
 				markDirty();
-				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
-				world.notifyNeighborsOfStateChange(getPos().offset(EnumFacing.UP), getBlockType(), false);
+				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+				world.notifyNeighborsOfStateChange(getPos().offset(EnumFacing.UP), getBlockState().getBlock());
 			}
 		}
 	}
@@ -211,7 +211,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		if(colour!=0xffffff)
 			ItemNBTHelper.setInt(stack, "colour", colour);
 		return stack;

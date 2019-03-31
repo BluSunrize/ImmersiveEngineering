@@ -188,6 +188,6 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	public void readConveyorNBT(NBTTagCompound nbt)
 	{
 		super.readConveyorNBT(nbt);
-		cover = new ItemStack(nbt.getCompoundTag("cover"));
+		cover = new ItemStack(nbt.getCompound("cover"));
 	}
 }

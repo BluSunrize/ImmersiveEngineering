@@ -122,14 +122,14 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 			{
 				if(floodlightCoords==null||floodlightCoords.length < 3)
 				{
-					world.setBlockToAir(getPos());
+					world.removeBlock(getPos());
 					return;
 				}
 				BlockPos floodlightPos = new BlockPos(floodlightCoords[0], floodlightCoords[1], floodlightCoords[2]);
 				TileEntity tile = Utils.getExistingTileEntity(world, floodlightPos);
 				if(!(tile instanceof TileEntityFloodlight)||!((TileEntityFloodlight)tile).active)
 				{
-					world.setBlockToAir(getPos());
+					world.removeBlock(getPos());
 					return;
 				}
 			}

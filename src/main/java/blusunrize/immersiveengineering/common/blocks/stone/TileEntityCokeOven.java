@@ -36,6 +36,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
 {
 	public FluidTank tank = new FluidTank(12000);
@@ -243,10 +245,10 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 		processMax = nbt.getInt("processMax");
 		active = nbt.getBoolean("active");
 
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 4);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 4);
 		}
 	}
 
@@ -335,8 +337,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
 	IItemHandler invHandler = new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false}, new boolean[]{false, true, false, true});
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

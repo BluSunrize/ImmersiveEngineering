@@ -56,7 +56,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 		rotation += player.isSneaking()?-22.5f: 22.5f;
 		rotation %= 360;
 		markDirty();
-		world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
 		return true;
 	}
 

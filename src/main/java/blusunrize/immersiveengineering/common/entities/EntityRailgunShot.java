@@ -153,6 +153,6 @@ public class EntityRailgunShot extends EntityIEProjectile
 	public void readEntityFromNBT(NBTTagCompound nbt)
 	{
 		super.readEntityFromNBT(nbt);
-		this.ammo = new ItemStack(nbt.getCompoundTag("ammo"));
+		this.ammo = new ItemStack(nbt.getCompound("ammo"));
 	}
 }

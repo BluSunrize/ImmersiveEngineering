@@ -163,7 +163,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		{
 			active = !active;
 			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F, 1);
-			world.addBlockEvent(getPos(), getBlockType(), active?1: 0, 0);
+			world.addBlockEvent(getPos(), getBlockState(), active?1: 0, 0);
 			notifyNeighbours();
 			updateConductivity();
 		}
@@ -181,9 +181,9 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public void notifyNeighbours()
 	{
 		markDirty();
-		world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+		world.notifyNeighborsOfStateChange(getPos(), getBlockState(), true);
 		for(EnumFacing f : EnumFacing.VALUES)
-			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockType(), true);
+			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockState(), true);
 	}
 
 	@Override

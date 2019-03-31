@@ -161,7 +161,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		process = nbt.getInt("process");
 		active = nbt.getBoolean("active");
 		if(nbt.hasKey("sample"))
-			sample = new ItemStack(nbt.getCompoundTag("sample"));
+			sample = new ItemStack(nbt.getCompound("sample"));
 
 	}
 
@@ -237,7 +237,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		for(int i = 0; i <= 2; i++)
 			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntitySampleDrill)
-				world.setBlockToAir(getPos().add(0, -dummy, 0).add(0, i, 0));
+				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
 	}
 
 	@Override

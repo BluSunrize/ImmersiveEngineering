@@ -41,6 +41,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, MixerRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile
@@ -59,9 +60,9 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 8);
+			inventory = Utils.readInventory(nbt.getList("inventory", 10), 8);
 		outputAll = nbt.getBoolean("outputAll");
 	}
 
@@ -512,8 +513,9 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 
 	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]);
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if((facing==null||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

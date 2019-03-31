@@ -77,7 +77,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	{
 		for(int i = 0; i <= 2; i++)
 			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntityBlastFurnacePreheater)
-				world.setBlockToAir(getPos().add(0, -dummy, 0).add(0, i, 0));
+				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
 	}
 
 	@Override

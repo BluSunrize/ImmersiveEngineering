@@ -94,7 +94,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			AxisAlignedBB aabbSmall = new AxisAlignedBB(getPos().getX()+.5-radius, getPos().getY()+.5-radius, getPos().getZ()+.5-radius, getPos().getX()+.5+radius, getPos().getY()+.5+radius, getPos().getZ()+.5+radius);
 			AxisAlignedBB aabb = aabbSmall.grow(radius/2);
 			List<Entity> targetsAll = world.getEntitiesWithinAABB(Entity.class, aabb);
-			List<Entity> targets = targetsAll.stream().filter((e) -> (e instanceof EntityLivingBase&&aabbSmall.intersects(e.getEntityBoundingBox()))).collect(Collectors.toList());
+			List<Entity> targets = targetsAll.stream().filter((e) -> (e instanceof EntityLivingBase&&aabbSmall.intersects(e.getBoundingBox()))).collect(Collectors.toList());
 			EntityLivingBase target = null;
 			if(!targets.isEmpty())
 			{
@@ -477,7 +477,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		for(int i = 0; i <= 1; i++)
 			if(world.getTileEntity(getPos().offset(facing, dummy?-1: 0).offset(facing, i)) instanceof TileEntityTeslaCoil)
-				world.setBlockToAir(getPos().offset(facing, dummy?-1: 0).offset(facing, i));
+				world.removeBlock(getPos().offset(facing, dummy?-1: 0).offset(facing, i));
 	}
 
 	@Nonnull

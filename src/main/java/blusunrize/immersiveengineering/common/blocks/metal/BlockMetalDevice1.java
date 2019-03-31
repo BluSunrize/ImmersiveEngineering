@@ -255,7 +255,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//			if(world.isAirBlock(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ))
 	//			{
 	//				dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
-	//				world.setBlockToAir(x, y, z);
+	//				world.removeBlock(x, y, z);
 	//			}
 	//		}
 	//		if(te instanceof TileEntityTransformer)
@@ -267,10 +267,10 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//			if(transf.postAttached>0 && !(blockPost instanceof IPostBlock && ((IPostBlock)blockPost).canConnectTransformer(world, postX, y, postZ)))
 	//			{
 	//				this.dropBlockAsItem(world, x, y, z, new ItemStack(this,1,world.getBlockMetadata(x, y, z)));
-	//				world.setBlockToAir(x, y, z);
+	//				world.removeBlock(x, y, z);
 	//			}
 	//			else if(transf.postAttached<=0 && ((transf.dummy && world.isAirBlock(x,y+1,z))|| (!transf.dummy && world.isAirBlock(x,y-1,z))))
-	//				world.setBlockToAir(x, y, z);
+	//				world.removeBlock(x, y, z);
 	//		}
 	//		if(te instanceof TileEntitySampleDrill)
 	//		{
@@ -278,7 +278,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//			if((drill.pos==0 && (world.isAirBlock(x,y+1,z)||world.isAirBlock(x,y+2,z)))
 	//					||(drill.pos==1 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y+1,z)))
 	//					||(drill.pos==2 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y-2,z))))
-	//				world.setBlockToAir(x, y, z);
+	//				world.removeBlock(x, y, z);
 	//		}
 	//	}
 

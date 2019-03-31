@@ -32,10 +32,10 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 		this.baseEnergy = energy;
 
 		MetalPressRecipe.deserializers.put("unpacking", nbt -> {
-			ComparableItemStack comp = ComparableItemStack.readFromNBT(nbt.getCompoundTag("mapKey"));
+			ComparableItemStack comp = ComparableItemStack.readFromNBT(nbt.getCompound("mapKey"));
 			if(cache.containsKey(comp))
 				return cache.get(comp);
-			PackedDelegate delegate = new PackedDelegate(comp, new ItemStack(nbt.getCompoundTag("output")), IngredientStack.readFromNBT(nbt.getCompoundTag("input")), ComparableItemStack.readFromNBT(nbt.getCompoundTag("mold")), nbt.getInt("energy"));
+			PackedDelegate delegate = new PackedDelegate(comp, new ItemStack(nbt.getCompound("output")), IngredientStack.readFromNBT(nbt.getCompound("input")), ComparableItemStack.readFromNBT(nbt.getCompound("mold")), nbt.getInt("energy"));
 			cache.put(comp, delegate);
 			return delegate;
 		});

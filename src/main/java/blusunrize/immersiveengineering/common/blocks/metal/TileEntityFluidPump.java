@@ -262,7 +262,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		dummy = nbt.getBoolean("dummy");
 		if(nbt.hasKey("placeCobble"))
 			placeCobble = nbt.getBoolean("placeCobble");
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 		energyStorage.readFromNBT(nbt);
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
@@ -294,7 +294,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				sideConfig[side] = -1;
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+			world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 			return true;
 		}
 		else if(p.isSneaking())
@@ -323,8 +323,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!dummy)
 		{
@@ -448,7 +449,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	{
 		for(int i = 0; i <= 1; i++)
 			if(Utils.isBlockAt(world, getPos().add(0, dummy?-1: 0, 0).add(0, i, 0), IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
-				world.setBlockToAir(getPos().add(0, dummy?-1: 0, 0).add(0, i, 0));
+				world.removeBlock(getPos().add(0, dummy?-1: 0, 0).add(0, i, 0));
 	}
 
 	@Override

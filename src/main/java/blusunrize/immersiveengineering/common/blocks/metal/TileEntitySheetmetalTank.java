@@ -108,7 +108,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	{
 		int vol = tank.getCapacity()/6;
 		if((15*tank.getFluidAmount())/tank.getCapacity()!=masterCompOld)
-			world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+			world.notifyNeighborsOfStateChange(getPos(), getBlockState(), true);
 		for(int i = 0; i < 4; i++)
 		{
 			int filled = tank.getFluidAmount()-i*vol;

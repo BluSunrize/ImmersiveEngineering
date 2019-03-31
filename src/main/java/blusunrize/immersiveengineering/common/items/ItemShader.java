@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IELogger;

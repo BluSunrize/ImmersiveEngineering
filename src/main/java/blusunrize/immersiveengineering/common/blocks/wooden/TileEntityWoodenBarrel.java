@@ -37,6 +37,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickable, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
@@ -120,7 +121,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 
 	public void readTank(NBTTagCompound nbt)
 	{
-		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
 	@Override
@@ -149,8 +150,9 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing.getAxis()==Axis.Y))
 			return (T)(facing==null?nullsideFluidHandler: sidedFluidHandler[facing.ordinal()]);
@@ -235,7 +237,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			sideConfig[side] = -1;
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 		return true;
 	}
 

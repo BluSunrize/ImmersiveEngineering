@@ -148,7 +148,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 			if(getMetaFromState(state)==0&&!this.canAttachTo(world, pos.offset(enumfacing.getOpposite()), enumfacing))
 			{
 				this.dropBlockAsItem(world, pos, state, 0);
-				world.setBlockToAir(pos);
+				world.removeBlock(pos);
 			}
 		}
 		super.neighborChanged(state, world, pos, blockIn, fromPos);
