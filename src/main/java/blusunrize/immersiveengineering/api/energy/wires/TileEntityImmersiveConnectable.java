@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -36,24 +37,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 {
 	protected GlobalWireNetwork globalNet;
 
-	protected boolean canTakeLV()
+	public TileEntityImmersiveConnectable(TileEntityType<? extends TileEntityImmersiveConnectable> type)
 	{
-		return false;
-	}
-
-	protected boolean canTakeMV()
-	{
-		return false;
-	}
-
-	protected boolean canTakeHV()
-	{
-		return false;
-	}
-
-	protected boolean isRelay()
-	{
-		return false;
+		super(type);
 	}
 
 	@Override
@@ -71,16 +57,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
 		return getPos();
-	}
-
-	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
-	{
-		String category = cableType.getCategory();
-		//TODO handle connectors vs relays, but not in here
-		return (HV_CATEGORY.equals(category)&&canTakeHV())
-				||(MV_CATEGORY.equals(category)&&canTakeMV())
-				||(LV_CATEGORY.equals(category)&&canTakeLV());
 	}
 
 	@Override
@@ -105,7 +81,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public void addAvailableEnergy(float amount, Consumer<Float> consume)
 	{
-		long currentTime = world.getTotalWorldTime();
+		long currentTime = world.getGameTime();
 		if(lastSourceUpdate!=currentTime)
 		{
 			sources.clear();
@@ -161,7 +137,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			IBlockState state = world.getBlockState(pos);
 			if(state instanceof IExtendedBlockState)
 			{
-				state = state.getActualState(world, getPos());
 				state = state.getBlock().getExtendedState(state, world, getPos());
 				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState)state);
 				ImmersiveEngineering.proxy.removeStateFromConnectionModelCache((IExtendedBlockState)state);
@@ -211,9 +186,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
-		super.onChunkUnload();
+		super.onChunkUnloaded();
 		IELogger.logger.info("Unloading connector at {}", pos);
 		globalNet.onConnectorUnload(pos, this);
 	}
@@ -227,9 +202,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
-		super.invalidate();
+		super.remove();
 		IELogger.logger.info("Removing connector at {}", pos);
 		globalNet.removeConnector(this);
 	}

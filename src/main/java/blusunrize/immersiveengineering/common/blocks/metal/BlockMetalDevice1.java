@@ -203,7 +203,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 			//		case 3://RELAY_HV
 			//			return new TileEntityRelayHV();
 			//		case META_connectorLV:
-			//			return new TileEntityConnectorLV();
+			//			return new TileEntityConnector();
 			//		case META_capacitorLV:
 			//			return new TileEntityCapacitorLV();
 			//		case META_connectorMV:
@@ -248,9 +248,9 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//	public void onNeighborBlockChange(World world, int x, int y, int z, Block nbid)
 	//	{
 	//		TileEntity te = world.getTileEntity(x, y, z);
-	//		if(te instanceof TileEntityConnectorLV)
+	//		if(te instanceof TileEntityConnector)
 	//		{
-	//			TileEntityConnectorLV relay = (TileEntityConnectorLV)te;
+	//			TileEntityConnector relay = (TileEntityConnector)te;
 	//			ForgeDirection fd = ForgeDirection.getOrientation(relay.facing);
 	//			if(world.isAirBlock(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ))
 	//			{

@@ -31,7 +31,9 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFur
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
-import blusunrize.immersiveengineering.common.blocks.cloth.*;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
@@ -83,6 +85,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -99,6 +102,7 @@ import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -106,7 +110,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IRegistryDelegate;
@@ -380,6 +383,95 @@ public class IEContent
 		IEPotions.init();
 	}
 
+	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
+	{
+		TileEntityConnector.registerConnectorTEs(event);
+
+		registerTile(TileEntityIESlab.class, event);
+
+		registerTile(TileEntityBalloon.class, event);
+		registerTile(TileEntityStripCurtain.class, event);
+		registerTile(TileEntityShaderBanner.class, event);
+
+		registerTile(TileEntityCokeOven.class, event);
+		registerTile(TileEntityBlastFurnace.class, event);
+		registerTile(TileEntityBlastFurnaceAdvanced.class, event);
+		registerTile(TileEntityCoresample.class, event);
+		registerTile(TileEntityAlloySmelter.class, event);
+
+		registerTile(TileEntityWoodenCrate.class, event);
+		registerTile(TileEntityWoodenBarrel.class, event);
+		registerTile(TileEntityModWorkbench.class, event);
+		registerTile(TileEntitySorter.class, event);
+		registerTile(TileEntityTurntable.class, event);
+		registerTile(TileEntityFluidSorter.class, event);
+		registerTile(TileEntityWatermill.class, event);
+		registerTile(TileEntityWindmill.class, event);
+		registerTile(TileEntityWoodenPost.class, event);
+		registerTile(TileEntityWallmount.class, event);
+
+		registerTile(TileEntityLadder.class, event);
+		registerTile(TileEntityLantern.class, event);
+		registerTile(TileEntityRazorWire.class, event);
+		registerTile(TileEntityToolbox.class, event);
+		registerTile(TileEntityStructuralArm.class, event);
+
+		registerTile(TileEntityConnectorStructural.class, event);
+		registerTile(TileEntityTransformer.class, event);
+		registerTile(TileEntityTransformerHV.class, event);
+		registerTile(TileEntityBreakerSwitch.class, event);
+		registerTile(TileEntityRedstoneBreaker.class, event);
+		registerTile(TileEntityEnergyMeter.class, event);
+		registerTile(TileEntityConnectorRedstone.class, event);
+		registerTile(TileEntityConnectorProbe.class, event);
+		registerTile(TileEntityFeedthrough.class, event);
+
+		registerTile(TileEntityCapacitorLV.class, event);
+		registerTile(TileEntityCapacitorMV.class, event);
+		registerTile(TileEntityCapacitorHV.class, event);
+		registerTile(TileEntityCapacitorCreative.class, event);
+		registerTile(TileEntityMetalBarrel.class, event);
+		registerTile(TileEntityFluidPump.class, event);
+		registerTile(TileEntityFluidPlacer.class, event);
+
+		registerTile(TileEntityBlastFurnacePreheater.class, event);
+		registerTile(TileEntityFurnaceHeater.class, event);
+		registerTile(TileEntityDynamo.class, event);
+		registerTile(TileEntityThermoelectricGen.class, event);
+		registerTile(TileEntityElectricLantern.class, event);
+		registerTile(TileEntityChargingStation.class, event);
+		registerTile(TileEntityFluidPipe.class, event);
+		registerTile(TileEntitySampleDrill.class, event);
+		registerTile(TileEntityTeslaCoil.class, event);
+		registerTile(TileEntityFloodlight.class, event);
+		registerTile(TileEntityTurret.class, event);
+		registerTile(TileEntityTurretChem.class, event);
+		registerTile(TileEntityTurretGun.class, event);
+		registerTile(TileEntityBelljar.class, event);
+
+		registerTile(TileEntityConveyorBelt.class, event);
+		registerTile(TileEntityConveyorVertical.class, event);
+
+		registerTile(TileEntityMetalPress.class, event);
+		registerTile(TileEntityCrusher.class, event);
+		registerTile(TileEntitySheetmetalTank.class, event);
+		registerTile(TileEntitySilo.class, event);
+		registerTile(TileEntityAssembler.class, event);
+		registerTile(TileEntityAutoWorkbench.class, event);
+		registerTile(TileEntityBottlingMachine.class, event);
+		registerTile(TileEntitySqueezer.class, event);
+		registerTile(TileEntityFermenter.class, event);
+		registerTile(TileEntityRefinery.class, event);
+		registerTile(TileEntityDieselGenerator.class, event);
+		registerTile(TileEntityBucketWheel.class, event);
+		registerTile(TileEntityExcavator.class, event);
+		registerTile(TileEntityArcFurnace.class, event);
+		registerTile(TileEntityLightningrod.class, event);
+		registerTile(TileEntityMixer.class, event);
+		//		registerTile(TileEntitySkycrateDispenser.class);
+		registerTile(TileEntityFakeLight.class, event);
+	}
+
 	@SubscribeEvent
 	public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{
@@ -608,99 +700,6 @@ public class IEContent
 		addConfiguredWorldgen(blockOre.getStateFromMeta(3), "silver", IEConfig.Ores.ore_silver);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
 		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
-
-		/*TILEENTITIES*/
-		registerTile(TileEntityIESlab.class);
-
-		registerTile(TileEntityBalloon.class);
-		registerTile(TileEntityStripCurtain.class);
-		registerTile(TileEntityShaderBanner.class);
-
-		registerTile(TileEntityCokeOven.class);
-		registerTile(TileEntityBlastFurnace.class);
-		registerTile(TileEntityBlastFurnaceAdvanced.class);
-		registerTile(TileEntityCoresample.class);
-		registerTile(TileEntityAlloySmelter.class);
-
-		registerTile(TileEntityWoodenCrate.class);
-		registerTile(TileEntityWoodenBarrel.class);
-		registerTile(TileEntityModWorkbench.class);
-		registerTile(TileEntitySorter.class);
-		registerTile(TileEntityTurntable.class);
-		registerTile(TileEntityFluidSorter.class);
-		registerTile(TileEntityWatermill.class);
-		registerTile(TileEntityWindmill.class);
-		registerTile(TileEntityWoodenPost.class);
-		registerTile(TileEntityWallmount.class);
-
-		registerTile(TileEntityLadder.class);
-		registerTile(TileEntityLantern.class);
-		registerTile(TileEntityRazorWire.class);
-		registerTile(TileEntityToolbox.class);
-		registerTile(TileEntityStructuralArm.class);
-
-		registerTile(TileEntityConnectorLV.class);
-		registerTile(TileEntityRelayLV.class);
-		registerTile(TileEntityConnectorMV.class);
-		registerTile(TileEntityRelayMV.class);
-		registerTile(TileEntityConnectorHV.class);
-		registerTile(TileEntityRelayHV.class);
-		registerTile(TileEntityConnectorStructural.class);
-		registerTile(TileEntityTransformer.class);
-		registerTile(TileEntityTransformerHV.class);
-		registerTile(TileEntityBreakerSwitch.class);
-		registerTile(TileEntityRedstoneBreaker.class);
-		registerTile(TileEntityEnergyMeter.class);
-		registerTile(TileEntityConnectorRedstone.class);
-		registerTile(TileEntityConnectorProbe.class);
-		registerTile(TileEntityFeedthrough.class);
-
-		registerTile(TileEntityCapacitorLV.class);
-		registerTile(TileEntityCapacitorMV.class);
-		registerTile(TileEntityCapacitorHV.class);
-		registerTile(TileEntityCapacitorCreative.class);
-		registerTile(TileEntityMetalBarrel.class);
-		registerTile(TileEntityFluidPump.class);
-		registerTile(TileEntityFluidPlacer.class);
-
-		registerTile(TileEntityBlastFurnacePreheater.class);
-		registerTile(TileEntityFurnaceHeater.class);
-		registerTile(TileEntityDynamo.class);
-		registerTile(TileEntityThermoelectricGen.class);
-		registerTile(TileEntityElectricLantern.class);
-		registerTile(TileEntityChargingStation.class);
-		registerTile(TileEntityFluidPipe.class);
-		registerTile(TileEntitySampleDrill.class);
-		registerTile(TileEntityTeslaCoil.class);
-		registerTile(TileEntityFloodlight.class);
-		registerTile(TileEntityTurret.class);
-		registerTile(TileEntityTurretChem.class);
-		registerTile(TileEntityTurretGun.class);
-		registerTile(TileEntityBelljar.class);
-
-		registerTile(TileEntityConveyorBelt.class);
-		registerTile(TileEntityConveyorVertical.class);
-
-		registerTile(TileEntityMetalPress.class);
-		registerTile(TileEntityCrusher.class);
-		registerTile(TileEntitySheetmetalTank.class);
-		registerTile(TileEntitySilo.class);
-		registerTile(TileEntityAssembler.class);
-		registerTile(TileEntityAutoWorkbench.class);
-		registerTile(TileEntityBottlingMachine.class);
-		registerTile(TileEntitySqueezer.class);
-		registerTile(TileEntityFermenter.class);
-		registerTile(TileEntityRefinery.class);
-		registerTile(TileEntityDieselGenerator.class);
-		registerTile(TileEntityBucketWheel.class);
-		registerTile(TileEntityExcavator.class);
-		registerTile(TileEntityArcFurnace.class);
-		registerTile(TileEntityLightningrod.class);
-		registerTile(TileEntityMixer.class);
-		//		registerTile(TileEntitySkycrateDispenser.class);
-		registerTile(TileEntityFakeLight.class);
-
-
 
 		/*ENTITIES*/
 		int i = 0;
@@ -1133,11 +1132,29 @@ public class IEContent
 			OreDictionary.registerOre("slabSheetmetal"+type, slabSheet);
 	}
 
-	public static void registerTile(Class<? extends TileEntity> tile)
+	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event)
 	{
 		String s = tile.getSimpleName();
 		s = s.substring(s.indexOf("TileEntity")+"TileEntity".length());
-		GameRegistry.registerTileEntity(tile, ImmersiveEngineering.MODID+":"+s);
+		TileEntityType<T> type = new TileEntityType<>(() -> {
+			try
+			{
+				return (T)tile.newInstance();
+			} catch(InstantiationException|IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
+			return null;
+		}, null);
+		type.setRegistryName(ImmersiveEngineering.MODID, s);
+		try
+		{
+			Field typeField = tile.getField("TYPE");
+			typeField.set(null, type);
+		} catch(NoSuchFieldException|IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
 		registeredIETiles.add(tile);
 	}
 

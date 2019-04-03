@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.Config;
@@ -22,28 +21,72 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.event.RegistryEvent;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
-public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements IDirectionalTile,
+
+public class TileEntityConnector extends TileEntityImmersiveConnectable implements IDirectionalTile,
 		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickable
 {
+	public static final BiMap<Pair<String, Boolean>, TileEntityType<TileEntityConnector>> DATA_TYPE_MAP = HashBiMap.create();
+
+	public static void registerConnectorTEs(RegistryEvent.Register<TileEntityType<?>> event)
+	{
+		for(String type : new String[]{LV_CATEGORY, MV_CATEGORY, HV_CATEGORY})
+			for(int b = 0; b < 2; ++b)
+			{
+				boolean relay = b!=0;
+				TileEntityType<TileEntityConnector> teType = new TileEntityType<>(() -> new TileEntityConnector(type, relay),
+						null);
+				teType.setRegistryName(ImmersiveEngineering.MODID, type.toLowerCase()+"_"+(relay?"relay": "conn"));
+				event.getRegistry().register(teType);
+				DATA_TYPE_MAP.put(new ImmutablePair<>(type, relay), teType);
+			}
+	}
+
+	private final String voltage;
+	private final boolean relay;
 	public EnumFacing facing = EnumFacing.DOWN;
 	public int currentTickToMachine = 0;
 	public int currentTickToNet = 0;
 	public static int[] connectorInputValues = Config.IEConfig.Machines.wireConnectorInput;
 	private FluxStorage storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 	private FluxStorage storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
+
+	public TileEntityConnector(TileEntityType<? extends TileEntityConnector> type)
+	{
+		super(type);
+		Pair<String, Boolean> data = DATA_TYPE_MAP.inverse().get(type);
+		voltage = data.getKey();
+		relay = data.getValue();
+	}
+
+	public TileEntityConnector(String voltage, boolean relay)
+	{
+		super(DATA_TYPE_MAP.get(new ImmutablePair<>(voltage, relay)));
+		this.voltage = voltage;
+		this.relay = relay;
+	}
 
 	@Override
 	public void tick()
@@ -102,9 +145,15 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	protected boolean canTakeLV()
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		return true;
+		if(!relay)
+		{
+			LocalWireNetwork local = globalNet.getNullableLocalNet(new ConnectionPoint(pos, 0));
+			if(local!=null&&!local.getConnections(pos).isEmpty())
+				return false;
+		}
+		return voltage.equals(cableType.getCategory());
 	}
 
 	@Override
@@ -144,7 +193,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(facing!=this.facing||isRelay())
+		if(facing!=this.facing||relay)
 			return null;
 		if(energyWrapper==null||energyWrapper.side!=this.facing)
 			energyWrapper = new IEForgeEnergyWrapper(this, this.facing);
@@ -160,13 +209,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		return (!isRelay()&&facing==this.facing)?SideConfig.INPUT: SideConfig.NONE;
+		return (!relay&&facing==this.facing)?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
-		if(isRelay())
+		if(relay)
 			return false;
 		return from==facing;
 	}
@@ -174,7 +223,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
 	{
-		if(world.isRemote||isRelay())
+		if(world.isRemote||relay)
 			return 0;
 		energy = Math.min(getMaxInput()-currentTickToNet, energy);
 		if(energy <= 0)
@@ -198,7 +247,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		if(isRelay())
+		if(relay)
 			return 0;
 		return storageToNet.getEnergyStored();
 	}
@@ -206,7 +255,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		if(isRelay())
+		if(relay)
 			return 0;
 		return getMaxInput();
 	}
@@ -217,22 +266,39 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		return 0;
 	}
 
+	private int getVoltageIndex()
+	{
+		if(LV_CATEGORY.equals(voltage))
+			return 0;
+		else if(WireType.MV_CATEGORY.equals(voltage))
+			return 1;
+		else
+			return 2;
+	}
+
 	public int getMaxInput()
 	{
-		return connectorInputValues[0];
+		return connectorInputValues[getVoltageIndex()];
 	}
 
 	public int getMaxOutput()
 	{
-		return connectorInputValues[0];
+		return connectorInputValues[getVoltageIndex()];
 	}
 
-	@Override
-	public float[] getBlockBounds()
+	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatAVLTreeMap<>();
+
+	static
 	{
-		float length = this instanceof TileEntityRelayHV?.875f: this instanceof TileEntityConnectorHV?.75f: this instanceof TileEntityConnectorMV?.5625f: .5f;
-		float wMin = this instanceof TileEntityConnectorStructural?.25f: .3125f;
-		float wMax = this instanceof TileEntityConnectorStructural?.75f: .6875f;
+		LENGTH.put(new ImmutablePair<>("HV", false), 0.75F);
+		LENGTH.put(new ImmutablePair<>("HV", true), 0.875F);
+		LENGTH.put(new ImmutablePair<>("MV", false), 0.5625F);
+		LENGTH.defaultReturnValue(0.5F);
+	}
+
+	public static float[] getConnectorBounds(EnumFacing facing, float wMin, float length)
+	{
+		float wMax = 1-wMin;
 		switch(facing.getOpposite())
 		{
 			case UP:
@@ -252,15 +318,23 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
+	public float[] getBlockBounds()
+	{
+		float length = LENGTH.getFloat(new ImmutablePair<>(voltage, relay));
+		float wMin = .3125f;
+		return getConnectorBounds(facing, wMin, length);
+	}
+
+	@Override
 	public boolean isSource(ConnectionPoint cp)
 	{
-		return !isRelay();
+		return !relay;
 	}
 
 	@Override
 	public boolean isSink(ConnectionPoint cp)
 	{
-		return !isRelay();
+		return !relay;
 	}
 
 	@Override

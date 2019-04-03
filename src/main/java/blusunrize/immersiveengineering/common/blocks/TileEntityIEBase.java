@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -35,6 +36,11 @@ import javax.annotation.Nullable;
 
 public abstract class TileEntityIEBase extends TileEntity
 {
+	public TileEntityIEBase(TileEntityType<? extends TileEntityIEBase> type)
+	{
+		super(type);
+	}
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -17,38 +18,28 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.STRUCTURE_CATEGORY;
 
-public class TileEntityConnectorStructural extends TileEntityConnectorLV implements IHammerInteraction, IOBJModelCallback<IBlockState>
+public class TileEntityConnectorStructural extends TileEntityImmersiveConnectable implements IHammerInteraction, IOBJModelCallback<IBlockState>
 {
 	public float rotation = 0;
+	public EnumFacing facing = EnumFacing.DOWN;
 
-	@Override
-	protected boolean canTakeMV()
-	{
-		return false;
-	}
+	public static TileEntityType<TileEntityConnectorStructural> TYPE;
 
-	@Override
-	protected boolean canTakeLV()
+	public TileEntityConnectorStructural()
 	{
-		return false;
+		super(TYPE);
 	}
-//	@Override
-//	public boolean canUpdate()
-//	{
-//		return false;
-//	}
 
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
@@ -56,7 +47,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 		rotation += player.isSneaking()?-22.5f: 22.5f;
 		rotation %= 360;
 		markDirty();
-		world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 		return true;
 	}
 
@@ -64,6 +55,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
+		nbt.setInt("facing", facing.ordinal());
 		nbt.setFloat("rotation", rotation);
 	}
 
@@ -71,8 +63,9 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
+		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		rotation = nbt.getFloat("rotation");
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT&&world!=null)
+		if(world!=null&&world.isRemote)
 			this.markContainingBlockForUpdate(null);
 	}
 
@@ -81,19 +74,9 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = .03125;
-		return new Vec3d(.5+side.getXOffset()*(-.125-conRadius), .5+side.getYOffset()*(-.125-conRadius), .5+side.getZOffset()*(-.125-conRadius));
-	}
-
-	@Override
-	public int getMaxInput()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getMaxOutput()
-	{
-		return 0;
+		return new Vec3d(.5+side.getXOffset()*(-.125-conRadius),
+				.5+side.getYOffset()*(-.125-conRadius),
+				.5+side.getZOffset()*(-.125-conRadius));
 	}
 
 	@Override
@@ -106,7 +89,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
-		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrix())).orElseGet(Matrix4::new);
+		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrixVec())).orElseGet(Matrix4::new);
 		mat = mat.translate(.5, 0, .5).rotate(Math.toRadians(rotation), 0, 1, 0).translate(-.5, 0, -.5);
 		transform = Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 		return transform;
@@ -117,25 +100,4 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	{
 		return Float.toString(rotation);
 	}
-
-//	@Override
-//	public boolean canConnectEnergy(ForgeDirection from)
-//	{
-//		return false;
-//	}
-//	@Override
-//	public int receiveEnergy(ForgeDirection from, int maxReceive,boolean simulate)
-//	{
-//		return 0;
-//	}
-//	@Override
-//	public int getEnergyStored(ForgeDirection from)
-//	{
-//		return 0;
-//	}
-//	@Override
-//	public int getMaxEnergyStored(ForgeDirection from)
-//	{
-//		return 0;
-//	}
 }

@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -45,13 +48,19 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 {
 	public EnumFacing facing = EnumFacing.DOWN;
 	public int ioMode = 0; // 0 - input, 1 -output
-	public int redstoneChannel = 0;
+	public EnumDyeColor redstoneChannel = EnumDyeColor.WHITE;
 	public boolean rsDirty = false;
 	//Only write to this in wire network updates!
 	private int output;
+	public static TileEntityType<TileEntityConnectorRedstone> TYPE;
+
+	public TileEntityConnectorRedstone()
+	{
+		super(TYPE);
+	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(hasWorld()&&!world.isRemote&&rsDirty)
 			globalNet.getLocalNet(pos)
@@ -84,8 +93,8 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	@Override
 	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{
-		output = handler.getValue(redstoneChannel);
-		if(!isInvalid()&&isRSOutput())
+		output = handler.getValue(redstoneChannel.getId());
+		if(!isRemoved()&&isRSOutput())
 		{
 			markDirty();
 			IBlockState stateHere = world.getBlockState(pos);
@@ -103,7 +112,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
 		if(isRSInput())
-			signals[redstoneChannel] = (byte)Math.max(getLocalRS(), signals[redstoneChannel]);
+			signals[redstoneChannel.getId()] = (byte)Math.max(getLocalRS(), signals[redstoneChannel.getId()]);
 		rsDirty = false;
 	}
 
@@ -112,11 +121,11 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		int val = world.getRedstonePowerFromNeighbors(pos);
 		if(val==0)
 		{
-			for(EnumFacing f : EnumFacing.HORIZONTALS)
+			for(EnumFacing f : EnumFacing.BY_HORIZONTAL_INDEX)
 			{
 				IBlockState state = world.getBlockState(pos.offset(f));
-				if(state.getBlock()==Blocks.REDSTONE_WIRE&&state.getValue(BlockRedstoneWire.POWER) > val)
-					val = state.getValue(BlockRedstoneWire.POWER);
+				if(state.getBlock()==Blocks.REDSTONE_WIRE&&state.get(BlockRedstoneWire.POWER) > val)
+					val = state.get(BlockRedstoneWire.POWER);
 			}
 		}
 		return val;
@@ -132,7 +141,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		//Sneaking iterates through colours, normal hammerign toggles in and out
 		if(player.isSneaking())
-			redstoneChannel = (redstoneChannel+1)%16;
+			redstoneChannel = EnumDyeColor.byId(redstoneChannel.getId()+1);
 		else
 			ioMode = ioMode==0?1: 0;
 		markDirty();
@@ -140,7 +149,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 				.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
 				.updateValues();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 		return true;
 	}
 
@@ -193,7 +202,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("facing", facing.ordinal());
 		nbt.setInt("ioMode", ioMode);
-		nbt.setInt("redstoneChannel", redstoneChannel);
+		nbt.setInt("redstoneChannel", redstoneChannel.getId());
 		nbt.setInt("output", output);
 	}
 
@@ -203,7 +212,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		super.readCustomNBT(nbt, descPacket);
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		ioMode = nbt.getInt("ioMode");
-		redstoneChannel = nbt.getInt("redstoneChannel");
+		redstoneChannel = EnumDyeColor.byId(nbt.getInt("redstoneChannel"));
 		output = nbt.getInt("output");
 	}
 
@@ -236,23 +245,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		float length = .625f;
 		float wMin = .3125f;
-		float wMax = .6875f;
-		switch(facing.getOpposite())
-		{
-			case UP:
-				return new float[]{wMin, 0, wMin, wMax, length, wMax};
-			case DOWN:
-				return new float[]{wMin, 1-length, wMin, wMax, 1, wMax};
-			case SOUTH:
-				return new float[]{wMin, wMin, 0, wMax, wMax, length};
-			case NORTH:
-				return new float[]{wMin, wMin, 1-length, wMax, wMax, 1};
-			case EAST:
-				return new float[]{0, wMin, wMin, length, wMax, wMax};
-			case WEST:
-				return new float[]{1-length, wMin, wMin, 1, wMax, wMax};
-		}
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return TileEntityConnector.getConnectorBounds(facing, wMin, length);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -271,7 +264,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public int getRenderColour(IBlockState object, String group)
 	{
 		if("coloured".equals(group))
-			return 0xff000000|EnumDyeColor.byMetadata(this.redstoneChannel).getColorValue();
+			return 0xff000000|redstoneChannel.func_196057_c();
 		return 0xffffffff;
 	}
 
@@ -287,7 +280,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannel).getTranslationKey())),
+				I18n.format(Lib.DESC_INFO+"redstoneChannel", I18n.format("item.fireworksCharge."+redstoneChannel.getTranslationKey())),
 				I18n.format(Lib.DESC_INFO+"blockSide.io."+this.ioMode)
 		};
 	}
