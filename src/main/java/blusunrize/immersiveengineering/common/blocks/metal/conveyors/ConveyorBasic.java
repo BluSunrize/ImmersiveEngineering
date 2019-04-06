@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -55,7 +56,7 @@ public class ConveyorBasic implements IConveyorBelt
 	}
 
 	@Override
-	public boolean setDyeColour(int colour)
+	public boolean setDyeColour(EnumDyeColor colour)
 	{
 		if(colour==this.dyeColour)
 			return false;

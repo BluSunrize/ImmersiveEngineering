@@ -10,10 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,6 +23,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityBanner;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -37,6 +41,12 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 	public byte orientation = 0;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct("immersiveengineering:banner");
 
+	public static TileEntityType<TileEntityBanner> TYPE;
+
+	public TileEntityShaderBanner()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -107,12 +117,18 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 		return super.receiveClientEvent(id, arg);
 	}
 
+	private final CapabilityHolder<ShaderWrapper> shaderCap = CapabilityHolder.empty();
+
+	{
+		caps.add(shaderCap);
+	}
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return ApiUtils.constantOptional((T)shader);
+			return ApiUtils.constantOptional(shaderCap, shader);
 		return super.getCapability(capability, facing);
 	}
 }

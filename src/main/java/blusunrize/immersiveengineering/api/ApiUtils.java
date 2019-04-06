@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -1100,9 +1101,9 @@ public class ApiUtils
 		}
 	}
 
-	public static <T> LazyOptional<T> constantOptional(T value)
+	public static <T, Ret> LazyOptional<Ret> constantOptional(CapabilityHolder<T> out, T val)
 	{
-		return LazyOptional.of(() -> value);
+		return (LazyOptional<Ret>)out.replaceIfAbsent(() -> LazyOptional.of(() -> val));
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>

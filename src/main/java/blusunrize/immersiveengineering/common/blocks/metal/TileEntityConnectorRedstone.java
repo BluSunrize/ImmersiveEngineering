@@ -245,7 +245,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		float length = .625f;
 		float wMin = .3125f;
-		return TileEntityConnector.getConnectorBounds(facing, wMin, length);
+		return TileEntityEnergyConnector.getConnectorBounds(facing, wMin, length);
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -45,10 +45,10 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 
-public class TileEntityConnector extends TileEntityImmersiveConnectable implements IDirectionalTile,
+public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable implements IDirectionalTile,
 		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickable
 {
-	public static final BiMap<Pair<String, Boolean>, TileEntityType<TileEntityConnector>> DATA_TYPE_MAP = HashBiMap.create();
+	public static final BiMap<Pair<String, Boolean>, TileEntityType<TileEntityEnergyConnector>> DATA_TYPE_MAP = HashBiMap.create();
 
 	public static void registerConnectorTEs(RegistryEvent.Register<TileEntityType<?>> event)
 	{
@@ -56,7 +56,7 @@ public class TileEntityConnector extends TileEntityImmersiveConnectable implemen
 			for(int b = 0; b < 2; ++b)
 			{
 				boolean relay = b!=0;
-				TileEntityType<TileEntityConnector> teType = new TileEntityType<>(() -> new TileEntityConnector(type, relay),
+				TileEntityType<TileEntityEnergyConnector> teType = new TileEntityType<>(() -> new TileEntityEnergyConnector(type, relay),
 						null);
 				teType.setRegistryName(ImmersiveEngineering.MODID, type.toLowerCase()+"_"+(relay?"relay": "conn"));
 				event.getRegistry().register(teType);
@@ -73,7 +73,7 @@ public class TileEntityConnector extends TileEntityImmersiveConnectable implemen
 	private FluxStorage storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 	private FluxStorage storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 
-	public TileEntityConnector(TileEntityType<? extends TileEntityConnector> type)
+	public TileEntityEnergyConnector(TileEntityType<? extends TileEntityEnergyConnector> type)
 	{
 		super(type);
 		Pair<String, Boolean> data = DATA_TYPE_MAP.inverse().get(type);
@@ -81,7 +81,7 @@ public class TileEntityConnector extends TileEntityImmersiveConnectable implemen
 		relay = data.getValue();
 	}
 
-	public TileEntityConnector(String voltage, boolean relay)
+	public TileEntityEnergyConnector(String voltage, boolean relay)
 	{
 		super(DATA_TYPE_MAP.get(new ImmutablePair<>(voltage, relay)));
 		this.voltage = voltage;

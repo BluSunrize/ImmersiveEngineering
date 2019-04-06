@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -22,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightVal
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -108,12 +110,17 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		return super.receiveClientEvent(id, arg);
 	}
 
+	CapabilityHolder<ShaderWrapper> shaderCap = CapabilityHolder.empty();
+
+	{
+		caps.add(shaderCap);
+	}
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return ApiUtils.constantOptional((T)shader);
+			return ApiUtils.constantOptional(shaderCap, shader);
 		return super.getCapability(capability, facing);
 	}
 

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
@@ -18,11 +17,11 @@ import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -30,126 +29,47 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
+public class BlockConveyor extends BlockIETileProvider
 {
-	public static final IUnlistedProperty<IConveyorBelt> ICONEYOR_PASSTHROUGH = new IUnlistedProperty<IConveyorBelt>()
+	private final ResourceLocation typeName;
+
+	public BlockConveyor(ResourceLocation type)
 	{
-		@Override
-		public String getName()
-		{
-			return "iconveyor_passthrough";
-		}
-
-		@Override
-		public boolean isValid(IConveyorBelt value)
-		{
-			return true;
-		}
-
-		@Override
-		public Class<IConveyorBelt> getType()
-		{
-			return IConveyorBelt.class;
-		}
-
-		@Override
-		public String valueToString(IConveyorBelt value)
-		{
-			return ConveyorHandler.classRegistry.get(value.getClass()).toString();
-		}
-	};
-
-	public BlockConveyor()
-	{
-		super("conveyor", Material.IRON, PropertyEnum.create("type", BlockTypes_Conveyor.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.TILEENTITY_PASSTHROUGH, ICONEYOR_PASSTHROUGH);
-		this.setHardness(3.0F);
-		this.setResistance(15.0F);
+		super("conveyor_"+type.toString().replace(':', '_'),
+				Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
+				ItemBlockIEBase.class, IEProperties.FACING_ALL);
+		this.typeName = type;
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
-		this.setAllNotNormalBlock();
+		this.setNotNormalBlock();
 		lightOpacity = 0;
-		ConveyorHandler.conveyorBlock = this;
+		ConveyorHandler.conveyorBlocks.put(type, this);
 	}
 
 	@Override
-	public boolean useCustomStateMapper()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean appendPropertiesToState()
-	{
-		return false;
-	}
-
-	@Override
-	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
 	{
 		for(ResourceLocation key : ConveyorHandler.classRegistry.keySet())
 		{
 			ItemStack stack = new ItemStack(this);
 			ItemNBTHelper.setString(stack, "conveyorType", key.toString());
-			list.add(stack);
+			items.add(stack);
 		}
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
+	public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag advanced)
 	{
-		String flavourKey = getTranslationKey(stack)+".flavour";
-		if(I18n.canTranslate(flavourKey))
-			tooltip.add(I18n.translateToLocal(flavourKey));
-	}
-
-	@Override
-	public String getTranslationKey(ItemStack stack)
-	{
-		String subName = ItemNBTHelper.getString(stack, "conveyorType");
-		return super.getTranslationKey()+"."+subName;
-	}
-
-	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getExtendedState(state, world, pos);
-		if(state instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState ext = (IExtendedBlockState)state;
-			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof TileEntityConveyorBelt))
-				return state;
-			state = ext.with(ICONEYOR_PASSTHROUGH, ((TileEntityConveyorBelt)te).getConveyorSubtype());
-		}
-		return state;
-	}
-
-	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getActualState(state, world, pos);
-//		TileEntity tile = world.getTileEntity(pos);
-//		if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical))
-//		{
-//			for(int i=0; i<IEProperties.CONVEYORWALLS.length; i++)
-//				state = state.with(IEProperties.CONVEYORWALLS[i], ((TileEntityConveyorBelt)tile).renderWall(i));
-//			state = state.with(IEProperties.CONVEYORUPDOWN, ((TileEntityConveyorBelt)tile).transportUp?1: ((TileEntityConveyorBelt)tile).transportDown?2: 0);
-//		}
-		return state;
-	}
-
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		return this.getDefaultState();
+		String flavourKey = getTranslationKey()+".flavour";
+		if(I18n.hasKey(flavourKey))
+			tooltip.add(new TextComponentTranslation(flavourKey));
 	}
 
 	@Override
@@ -161,49 +81,20 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 		{
 			TileEntityConveyorBelt conveyor = (TileEntityConveyorBelt)tile;
 			EnumFacing f = conveyor.facing;
-			ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(stack, "conveyorType"));
-			IConveyorBelt subType = ConveyorHandler.getConveyor(rl, conveyor);
-			conveyor.setConveyorSubtype(subType);
 			tile = world.getTileEntity(pos.offset(f));
 			TileEntity tileUp = world.getTileEntity(pos.offset(f).add(0, 1, 0));
-			if(subType!=null&&(!(tile instanceof IConveyorTile)||((IConveyorTile)tile).getFacing()==f.getOpposite())&&tileUp instanceof IConveyorTile&&((IConveyorTile)tileUp).getFacing()!=f.getOpposite()&&world.isAirBlock(pos.add(0, 1, 0)))
+			IConveyorBelt subType = conveyor.getConveyorSubtype();
+			if(subType!=null&&(!(tile instanceof IConveyorTile)||((IConveyorTile)tile).getFacing()==f.getOpposite())
+					&&tileUp instanceof IConveyorTile&&((IConveyorTile)tileUp).getFacing()!=f.getOpposite()
+					&&world.isAirBlock(pos.add(0, 1, 0)))
 				subType.setConveyorDirection(ConveyorDirection.UP);
-			tile = world.getTileEntity(pos.offset(f.getOpposite()).add(0, 1, 0));
-//			if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing==f)
-//				conveyor.transportDown = true;
-//			if(conveyor.transportUp && conveyor.transportDown)
-//				conveyor.transportDown = false;
-
 		}
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public TileEntity createBasicTE(IBlockReader world)
 	{
-		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityConveyorVertical)
-			return side==((TileEntityConveyorVertical)te).facing;
-		else if(te instanceof TileEntityConveyorBelt)
-		{
-			return side==EnumFacing.DOWN&&(((TileEntityConveyorBelt)te).getConveyorSubtype()==null||((TileEntityConveyorBelt)te).getConveyorSubtype().getConveyorDirection()==ConveyorDirection.HORIZONTAL);
-		}
-		return false;
-	}
-
-	@Override
-	public TileEntity createBasicTE(World world, BlockTypes_Conveyor meta)
-	{
-//		switch(BlockTypes_Conveyor.values()[meta])
-//		{
-//		case CONVEYOR:
-//			return new TileEntityConveyorBelt();
-//		case CONVEYOR_DROPPER:
-//			return new TileEntityConveyorBelt(true);
-//		case CONVEYOR_VERTICAL:
-//			return new TileEntityConveyorVertical();
-//		}
-//		return null;
-		return new TileEntityConveyorBelt();
+		return new TileEntityConveyorBelt(typeName);
 	}
 
 	@Override
@@ -212,9 +103,4 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 		return true;
 	}
 
-	@Override
-	public boolean isToolEffective(String type, IBlockState state)
-	{
-		return type.equals(Lib.TOOL_HAMMER)||super.isToolEffective(type, state);
-	}
 }

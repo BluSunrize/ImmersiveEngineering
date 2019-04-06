@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
@@ -29,7 +30,8 @@ import java.util.Optional;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.STRUCTURE_CATEGORY;
 
-public class TileEntityConnectorStructural extends TileEntityImmersiveConnectable implements IHammerInteraction, IOBJModelCallback<IBlockState>
+public class TileEntityConnectorStructural extends TileEntityImmersiveConnectable implements IHammerInteraction,
+		IOBJModelCallback<IBlockState>, IBlockBounds
 {
 	public float rotation = 0;
 	public EnumFacing facing = EnumFacing.DOWN;
@@ -99,5 +101,11 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	public String getCacheKey(IBlockState object)
 	{
 		return Float.toString(rotation);
+	}
+
+	@Override
+	public float[] getBlockBounds()
+	{
+		return TileEntityEnergyConnector.getConnectorBounds(facing, .3125F, .5F);
 	}
 }

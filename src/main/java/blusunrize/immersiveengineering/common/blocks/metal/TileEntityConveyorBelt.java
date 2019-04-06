@@ -19,11 +19,10 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorCov
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorExtractCovered;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVerticalCovered;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -40,6 +39,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -49,22 +49,24 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop, ITickable, IGeneralMultiblock, IFaceShape
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds,
+		IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
+		ITickable, IGeneralMultiblock, IFaceShape
 {
 	public EnumFacing facing = EnumFacing.NORTH;
-	private IConveyorBelt conveyorBeltSubtype;
+	private final IConveyorBelt conveyorBeltSubtype;
+
+	public TileEntityConveyorBelt(ResourceLocation typeName)
+	{
+		super(ConveyorHandler.getTEType(typeName));
+		conveyorBeltSubtype = ConveyorHandler.getConveyor(typeName, this);
+	}
 
 	@Override
 	@Nullable
 	public IConveyorBelt getConveyorSubtype()
 	{
 		return conveyorBeltSubtype;
-	}
-
-	@Override
-	public void setConveyorSubtype(IConveyorBelt conveyor)
-	{
-		this.conveyorBeltSubtype = conveyor;
 	}
 
 	@Override
@@ -78,11 +80,8 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
-		if(nbt.hasKey("conveyorBeltSubtype"))
-		{
-			conveyorBeltSubtype = ConveyorHandler.getConveyor(new ResourceLocation(nbt.getString("conveyorBeltSubtype")), this);
+		if(nbt.hasKey("conveyorBeltSubtypeNBT"))
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
-		}
 
 		if(descPacket&&world!=null)
 			this.markContainingBlockForUpdate(null);
@@ -93,10 +92,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	{
 		nbt.setInt("facing", facing.ordinal());
 		if(conveyorBeltSubtype!=null)
-		{
-			nbt.setString("conveyorBeltSubtype", ConveyorHandler.reverseClassRegistry.get(conveyorBeltSubtype.getClass()).toString());
 			nbt.setTag("conveyorBeltSubtypeNBT", conveyorBeltSubtype.writeConveyorNBT());
-		}
 	}
 
 	@Override
@@ -149,7 +145,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(this.conveyorBeltSubtype!=null)
@@ -173,7 +169,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
+			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 			return true;
 		}
 		return false;
@@ -187,8 +183,8 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			boolean update;
 			if(conveyorBeltSubtype.canBeDyed()&&Utils.isDye(heldItem))
 			{
-				EnumDyeColor dye = EnumDyeColor.byDyeDamage(Utils.getDye(heldItem));
-				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye.getColorValue());
+				EnumDyeColor dye = Utils.getDye(heldItem);
+				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye);
 			}
 			else
 				update = conveyorBeltSubtype.playerInteraction(this, player, hand, heldItem, hitX, hitY, hitZ, side);
@@ -196,7 +192,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
-				world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
+				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 				return true;
 			}
 		}
@@ -214,14 +210,15 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		return new float[]{0, 0, 0, 1, .125f, 1};
 	}
 
-	static AxisAlignedBB COLISIONBB = new AxisAlignedBB(0, 0, 0, 1, .125F, 1);
+	private static final AxisAlignedBB COLISIONBB =
+			new AxisAlignedBB(0, 0, 0, 1, .125F, 1);
 
 	@Override
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
 		if(conveyorBeltSubtype!=null)
 		{
-			List<AxisAlignedBB> boxes = new ArrayList();
+			List<AxisAlignedBB> boxes = new ArrayList<>();
 			for(AxisAlignedBB aabb : conveyorBeltSubtype.getColisionBoxes(this, facing))
 				boxes.add(aabb.offset(getPos()));
 			return boxes;
@@ -234,7 +231,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	{
 		if(conveyorBeltSubtype!=null)
 		{
-			List<AxisAlignedBB> boxes = new ArrayList();
+			List<AxisAlignedBB> boxes = new ArrayList<>();
 			for(AxisAlignedBB aabb : conveyorBeltSubtype.getSelectionBoxes(this, facing))
 				boxes.add(aabb.offset(getPos()));
 			return boxes;
@@ -248,40 +245,19 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		return false;
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
+	private CapabilityHolder<IItemHandler> insertionCap = CapabilityHolder.empty();
 
-	IItemHandler insertionHandler = new ConveyorInventoryHandler(this);
+	{
+		caps.add(insertionCap);
+	}
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T)insertionHandler;
-		return super.getCapability(capability, facing);
-	}
-
-	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
-	{
-		ItemStack stack = new ItemStack(state.getBlock());
-		if(conveyorBeltSubtype!=null)
-			ItemNBTHelper.setString(stack, "conveyorType", ConveyorHandler.reverseClassRegistry.get(this.conveyorBeltSubtype.getClass()).toString());
-		return stack;
-	}
-
-	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
-	{
-		String key = ItemNBTHelper.getString(stack, "conveyorType");
-		IConveyorBelt subType = ConveyorHandler.getConveyor(new ResourceLocation(key), this);
-		setConveyorSubtype(subType);
+		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return (LazyOptional<T>)insertionCap.replaceIfAbsent(LazyOptional.of(() -> new ConveyorInventoryHandler(this)));
+		return super.getCapability(cap, side);
 	}
 
 	@Override
@@ -352,6 +328,12 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		public int getSlotLimit(int slot)
 		{
 			return 64;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+		{
+			return true;
 		}
 
 		@Override

@@ -40,7 +40,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		this.setAllNotNormalBlock();
+		this.setNotNormalBlock();
 		lightOpacity = 0;
 	}
 

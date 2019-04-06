@@ -69,7 +69,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	private boolean hasColours = false;
 
 	public BlockIETileProvider(String name, Block.Properties blockProps, Class<? extends ItemBlockIEBase> itemBlock,
-							   Object... stateProps)
+							   IProperty... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
 	}

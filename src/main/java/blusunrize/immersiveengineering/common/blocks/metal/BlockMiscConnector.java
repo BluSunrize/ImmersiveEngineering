@@ -9,26 +9,27 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
-public class BlockPowerConnector extends BlockConnector
+public class BlockMiscConnector extends BlockConnector
 {
-	private final String voltage;
-	private final boolean relay;
+	private final TileEntityType<?> tileType;
 
-	public BlockPowerConnector(String voltage, boolean relay)
+	public BlockMiscConnector(String name, TileEntityType<?> tileType, BlockRenderLayer... layers)
 	{
-		super("connector_"+voltage.toLowerCase()+(relay?"_relay": ""));
-		this.voltage = voltage;
-		this.relay = relay;
+		super(name);
+		this.tileType = tileType;
+		setBlockLayer(layers);
 	}
 
 	@Nullable
 	@Override
 	public TileEntity createBasicTE(IBlockReader worldIn)
 	{
-		return new TileEntityEnergyConnector(voltage, relay);
+		return tileType.create();
 	}
 }

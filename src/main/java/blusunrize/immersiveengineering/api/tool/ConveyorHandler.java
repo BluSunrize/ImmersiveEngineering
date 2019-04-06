@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -16,9 +19,11 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
@@ -27,6 +32,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.RegistryEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,15 +48,16 @@ import java.util.function.Function;
  */
 public class ConveyorHandler
 {
-	public static HashMap<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<ResourceLocation, Class<? extends IConveyorBelt>>();
-	public static HashMap<ResourceLocation, Set<ResourceLocation>> substituteRegistry = new HashMap<>();
-	public static HashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>>();
-	public static HashMap<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<Class<? extends IConveyorBelt>, ResourceLocation>();
-	public static Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<BiConsumer<Entity, IConveyorTile>>();
-	public static Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<BiConsumer<Entity, IConveyorTile>>();
+	public static final Map<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<ResourceLocation, Class<? extends IConveyorBelt>>();
+	public static final Map<ResourceLocation, Set<ResourceLocation>> substituteRegistry = new HashMap<>();
+	public static final Map<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>>();
+	public static final Map<ResourceLocation, TileEntityType<? extends TileEntity>> tileEntities = new LinkedHashMap<>();
+	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<Class<? extends IConveyorBelt>, ResourceLocation>();
+	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<BiConsumer<Entity, IConveyorTile>>();
+	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<BiConsumer<Entity, IConveyorTile>>();
 
-	public static Block conveyorBlock;
-	public static ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:blocks/conveyor_colour");
+	public static final Map<ResourceLocation, Block> conveyorBlocks = new HashMap<>();
+	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:blocks/conveyor_colour");
 
 	/**
 	 * @param key           A unique ResourceLocation to identify the conveyor by
@@ -89,15 +96,36 @@ public class ConveyorHandler
 		return null;
 	}
 
-	/**
-	 * @return an ItemStack with the given key written to NBT
-	 */
-	public static ItemStack getConveyorStack(String key)
+	public static void registerConveyorTEs(RegistryEvent.Register<TileEntityType<?>> evt)
 	{
-		ItemStack stack = new ItemStack(conveyorBlock);
-		stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setString("conveyorType", key);
-		return stack;
+		for(ResourceLocation rl : classRegistry.keySet())
+		{
+			TileEntityType<TileEntityConveyorBelt> te = new TileEntityType<>(() -> new TileEntityConveyorBelt(rl), null);
+			te.setRegistryName(rl);
+			tileEntities.put(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"
+					+rl.toString().replace(':', '_')), te);
+			evt.getRegistry().register(te);
+		}
+	}
+
+	public static TileEntityType<? extends TileEntity> getTEType(ResourceLocation typeName)
+	{
+		return tileEntities.get(typeName);
+	}
+
+	public static void registerConveyorBlocks(RegistryEvent.Register<Block> evt)
+	{
+		for(ResourceLocation rl : classRegistry.keySet())
+		{
+			Block b = new BlockConveyor(rl);
+			evt.getRegistry().register(b);
+			conveyorBlocks.put(rl, b);
+		}
+	}
+
+	public static Block getBlock(ResourceLocation typeName)
+	{
+		return conveyorBlocks.get(typeName);
 	}
 
 	/**
@@ -221,8 +249,9 @@ public class ConveyorHandler
 		 * parsed value is a hex RGB
 		 *
 		 * @return true if renderupdate should happen
+		 * @param colour
 		 */
-		boolean setDyeColour(int colour);
+		boolean setDyeColour(EnumDyeColor colour);
 
 		/**
 		 * @return the dyed colour as a hex RGB
@@ -484,8 +513,6 @@ public class ConveyorHandler
 	public interface IConveyorTile extends IConveyorAttachable
 	{
 		IConveyorBelt getConveyorSubtype();
-
-		void setConveyorSubtype(IConveyorBelt conveyor);
 
 		@Override
 		default EnumFacing[] sigOutputDirections()

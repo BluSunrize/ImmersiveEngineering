@@ -21,21 +21,23 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class BlockConnector extends BlockIETileProvider
 {
 
-	public BlockConnector(String name)
+	public BlockConnector(String name, IProperty... additional)
 	{
 		super(name, Block.Properties.create(Material.IRON).
 						hardnessAndResistance(3.0F, 15.0F),
-				ItemBlockIEBase.class, IEProperties.FACING_ALL);
+				ItemBlockIEBase.class, ArrayUtils.add(additional, IEProperties.FACING_ALL));
 		lightOpacity = 0;
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock();
@@ -80,9 +82,9 @@ public abstract class BlockConnector extends BlockIETileProvider
 	{
 		super.neighborChanged(state, world, pos, blockIn, fromPos);
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityConnector)
+		if(te instanceof TileEntityEnergyConnector)
 		{
-			TileEntityConnector connector = (TileEntityConnector)te;
+			TileEntityEnergyConnector connector = (TileEntityEnergyConnector)te;
 			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
 				spawnAsEntity(world, pos, new ItemStack(this));

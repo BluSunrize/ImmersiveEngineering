@@ -15,12 +15,6 @@ import java.util.Locale;
 
 public enum BlockTypes_Connector implements IStringSerializable, BlockIEBase.IBlockEnum
 {
-	CONNECTOR_LV,
-	RELAY_LV,
-	CONNECTOR_MV,
-	RELAY_MV,
-	CONNECTOR_HV,
-	RELAY_HV,
 	CONNECTOR_STRUCTURAL,
 	TRANSFORMER,
 	TRANSFORMER_HV,

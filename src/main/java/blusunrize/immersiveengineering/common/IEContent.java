@@ -347,6 +347,7 @@ public class IEContent
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
+		ConveyorHandler.registerConveyorBlocks(event);
 		for(Block block : registeredIEBlocks)
 			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getTranslationKey())));
 	}
@@ -385,7 +386,8 @@ public class IEContent
 
 	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
 	{
-		TileEntityConnector.registerConnectorTEs(event);
+		TileEntityEnergyConnector.registerConnectorTEs(event);
+		ConveyorHandler.registerConveyorTEs(event);
 
 		registerTile(TileEntityIESlab.class, event);
 

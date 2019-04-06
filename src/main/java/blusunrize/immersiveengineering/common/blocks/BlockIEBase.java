@@ -24,7 +24,6 @@ import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -57,7 +56,7 @@ public class BlockIEBase extends Block
 	protected boolean notNormalBlock;
 	private boolean opaqueCube = false;
 
-	public BlockIEBase(String name, Block.Properties blockProps, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
+	public BlockIEBase(String name, Block.Properties blockProps, Class<? extends ItemBlockIEBase> itemBlock, IProperty... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
 		this.name = name;
@@ -296,17 +295,10 @@ public class BlockIEBase extends Block
 		return ImmersiveEngineering.MODID+":"+name;
 	}
 
-	public interface IBlockEnum extends IStringSerializable
-	{
-		int getMeta();
-
-		boolean listForCreative();
-	}
-
-	public abstract static class IELadderBlock<E extends Enum<E> & IBlockEnum> extends BlockIEBase
+	public abstract static class IELadderBlock extends BlockIEBase
 	{
 		public IELadderBlock(String name, Block.Properties material,
-							 Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
+							 Class<? extends ItemBlockIEBase> itemBlock, IProperty... additionalProperties)
 		{
 			super(name, material, itemBlock, additionalProperties);
 		}

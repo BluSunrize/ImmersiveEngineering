@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,30 +30,33 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class TileEntityIEBase extends TileEntity
 {
-	public TileEntityIEBase(TileEntityType<? extends TileEntityIEBase> type)
+	public TileEntityIEBase(TileEntityType<? extends TileEntity> type)
 	{
 		super(type);
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void read(NBTTagCompound nbt)
 	{
-		super.readFromNBT(nbt);
+		super.read(nbt);
 		this.readCustomNBT(nbt, false);
 	}
 
 	public abstract void readCustomNBT(NBTTagCompound nbt, boolean descPacket);
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound write(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		super.write(nbt);
 		this.writeCustomNBT(nbt, false);
 		return nbt;
 	}
@@ -71,7 +74,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
-		NBTTagCompound nbt = super.writeToNBT(new NBTTagCompound());
+		NBTTagCompound nbt = super.getUpdateTag();
 		writeCustomNBT(nbt, true);
 		return nbt;
 	}
@@ -152,17 +155,6 @@ public abstract class TileEntityIEBase extends TileEntity
 		return super.receiveClientEvent(id, type);
 	}
 
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
-	{
-		if(world.isBlockLoaded(pos))
-			newState = world.getBlockState(pos);
-		if(oldState.getBlock()!=newState.getBlock()||!(oldState.getBlock() instanceof BlockIEBase)||!(newState.getBlock() instanceof BlockIEBase))
-			return true;
-		IProperty type = ((BlockIEBase)oldState.getBlock()).getMetaProperty();
-		return oldState.getValue(type)!=newState.getValue(type);
-	}
-
 	public void markContainingBlockForUpdate(@Nullable IBlockState newState)
 	{
 		markBlockForUpdate(getPos(), newState);
@@ -177,12 +169,19 @@ public abstract class TileEntityIEBase extends TileEntity
 		world.notifyNeighborsOfStateChange(pos, newState.getBlock());
 	}
 
+	protected final Set<CapabilityHolder<?>> caps = new HashSet<>();
+	private final CapabilityHolder<IEnergyStorage> energyCap = CapabilityHolder.empty();
+
+	{
+		caps.add(energyCap);
+	}
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
 	{
 		if(cap==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
-			return ApiUtils.constantOptional((T)((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(side));
+			return ApiUtils.constantOptional(energyCap, ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(side));
 		return super.getCapability(cap, side);
 	}
 
@@ -191,5 +190,14 @@ public abstract class TileEntityIEBase extends TileEntity
 	{
 		return super.getMaxRenderDistanceSquared()*
 				Config.IEConfig.increasedTileRenderdistance*Config.IEConfig.increasedTileRenderdistance;
+	}
+
+	@Override
+	public void remove()
+	{
+		super.remove();
+		for(CapabilityHolder<?> cap : caps)
+			if(cap.isPresent())
+				cap.get().invalidate();
 	}
 }
