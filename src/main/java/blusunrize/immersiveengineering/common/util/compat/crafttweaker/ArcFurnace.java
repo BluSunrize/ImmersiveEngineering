@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -26,6 +27,7 @@ public class ArcFurnace
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives, @Optional String specialRecipeType)
 	{
+		if (!Config.IEConfig.machines.arcfurnace_enabled) return;
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput==null)
 			return;
@@ -67,7 +69,7 @@ public class ArcFurnace
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.arcfurnace_enabled) CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IAction

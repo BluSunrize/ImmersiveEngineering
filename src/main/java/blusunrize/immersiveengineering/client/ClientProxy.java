@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.client.models.smart.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.smart.FeedthroughModel;
 import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
@@ -640,13 +641,16 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial, 1, 5)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.CUSHION.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp3", new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.STRIPCURTAIN.getMeta())));
+		if (IEConfig.machines.cokeoven_enabled)
 		ManualHelper.addEntry("cokeoven", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.COKEBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockCokeOven.instance));
+		if (IEConfig.machines.alloysmelter_enabled)
 		ManualHelper.addEntry("alloysmelter", ManualHelper.CAT_GENERAL,
 				new ManualPages.Crafting(ManualHelper.getManual(), "alloysmelter0", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "alloysmelter1", MultiblockAlloySmelter.instance));
+		if (IEConfig.machines.blastfurnace_enabled)
 		ManualHelper.addEntry("blastfurnace", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "blastfurnace0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
@@ -723,9 +727,11 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "lighting2"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "lighting4"));
+		if (IEConfig.machines.tank_enabled)
 		ManualHelper.addEntry("tank", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPageMultiblock(ManualHelper.getManual(), "tank0", MultiblockSheetmetalTank.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "tank1"));
+		if (IEConfig.machines.silo_enabled)
 		ManualHelper.addEntry("silo", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPageMultiblock(ManualHelper.getManual(), "silo0", MultiblockSilo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "silo1"),
@@ -795,6 +801,7 @@ public class ClientProxy extends CommonProxy
 		//			String am = Utils.formatDouble(bt/20f, "0.###")+" ("+bt+")";
 		//			table[i] = new String[]{sf,am};
 		//		}
+		if (IEConfig.machines.dieselgenerator_enabled)
 		ManualHelper.addEntry("dieselgen", ManualHelper.CAT_ENERGY,
 				new ManualPages.Text(ManualHelper.getManual(), "dieselgen0"),
 				new ManualPageMultiblock(ManualHelper.getManual(), "dieselgen1", MultiblockDieselGenerator.instance),
@@ -802,6 +809,7 @@ public class ClientProxy extends CommonProxy
 				//,
 				//				new ManualPages.Table(ManualHelper.getManual(), "dieselgen3", table, false)
 		);
+		if (IEConfig.machines.lightningrod_enabled)
 		ManualHelper.addEntry("lightningrod", ManualHelper.CAT_ENERGY,
 				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod0", MultiblockLightningrod.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "lightningrod1"));
@@ -908,6 +916,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "turret4", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.TURRET_GUN.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "turret5"));
 
+		if (IEConfig.machines.blastfurnace_enabled)
 		ManualHelper.addEntry("improvedBlastfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace0", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "improvedBlastfurnace1", MultiblockBlastFurnaceAdvanced.instance),
@@ -915,41 +924,50 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace3", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta())));
 		tempItemList = NonNullList.create();
 		IEContent.itemMold.getSubItems(ImmersiveEngineering.creativeTab, tempItemList);
+		if (IEConfig.machines.metalpress_enabled)
 		ManualHelper.addEntry("metalPress", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "metalPress0", MultiblockMetalPress.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "metalPress1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "metalPress2", BlueprintCraftingRecipe.getTypedBlueprint("molds")),
 				new ManualPageBlueprint(ManualHelper.getManual(), "metalPress3", tempItemList.toArray(new ItemStack[tempItemList.size()])),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "metalPress4", new ItemStack(IEContent.itemMold, 1, 5), new ItemStack(IEContent.itemMold, 1, 6), new ItemStack(IEContent.itemMold, 1, 7)));
+		if (IEConfig.machines.assembler_enabled)
 		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
+		if (IEConfig.machines.bottlingmachine_enabled)
 		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
+		if (IEConfig.machines.autoworkbench_enabled)
 		ManualHelper.addEntry("autoworkbench", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "autoworkbench0", MultiblockAutoWorkbench.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "autoworkbench1"));
+		if (IEConfig.machines.crusher_enabled)
 		ManualHelper.addEntry("crusher", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
+		if (IEConfig.machines.mixer_enabled)
 		ManualHelper.addEntry("mixer", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "mixer0", MultiblockMixer.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "mixer1"),
 				new ManualPages.Text(ManualHelper.getManual(), "mixer2"));
 		sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
 		table = formatToTable_ItemIntHashmap(sortedMap, "mB");
+		if (IEConfig.machines.squeezer_enabled)
 		ManualHelper.addEntry("squeezer", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "squeezer0", MultiblockSqueezer.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "squeezer1"),
 				new ManualPages.Table(ManualHelper.getManual(), "squeezer2T", table, false));
 		sortedMap = FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true);
 		table = formatToTable_ItemIntHashmap(sortedMap, "mB");
+		if (IEConfig.machines.fermenter_enabled)
 		ManualHelper.addEntry("fermenter", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "fermenter0", MultiblockFermenter.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "fermenter1"),
 				new ManualPages.Table(ManualHelper.getManual(), "fermenter2T", table, false));
+		if (IEConfig.machines.refinery_enabled)
 		ManualHelper.addEntry("refinery", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "refinery0", MultiblockRefinery.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "refinery1"));
@@ -967,6 +985,7 @@ public class ClientProxy extends CommonProxy
 //				new ManualPages.Table(ManualHelper.getManual(), "biodiesel2T", table2, false),
 //				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel3", MultiblockRefinery.instance),
 //				new ManualPages.Text(ManualHelper.getManual(), "biodiesel4"));
+		if (IEConfig.machines.arcfurnace_enabled)
 		ManualHelper.addEntry("arcfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "arcfurnace0", MultiblockArcFurnace.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace1"),
@@ -974,6 +993,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace3"),
 				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace4"),
 				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace5"));
+		if (IEConfig.machines.excavator_enabled)
 		ManualHelper.addEntry("excavator", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "excavator0", MultiblockExcavator.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),

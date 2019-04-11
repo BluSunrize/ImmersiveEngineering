@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -25,6 +26,7 @@ public class AlloySmelter
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient first, IIngredient second, int time)
 	{
+		if (!Config.IEConfig.machines.alloysmelter_enabled) return;
 		Object oFirst = CraftTweakerHelper.toObject(first), oSecond = CraftTweakerHelper.toObject(second);
 		if(oFirst==null||oSecond==null)
 			return;
@@ -58,7 +60,7 @@ public class AlloySmelter
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.alloysmelter_enabled) CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IAction

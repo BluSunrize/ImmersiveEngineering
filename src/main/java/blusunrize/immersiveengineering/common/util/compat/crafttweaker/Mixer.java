@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
@@ -27,6 +28,7 @@ public class Mixer
 	@ZenMethod
 	public static void addRecipe(ILiquidStack output, ILiquidStack fluidInput, IIngredient[] itemInputs, int energy)
 	{
+		if (!Config.IEConfig.machines.mixer_enabled) return;
 		Object[] adds = null;
 		if(itemInputs!=null)
 		{
@@ -64,7 +66,7 @@ public class Mixer
 	@ZenMethod
 	public static void removeRecipe(ILiquidStack output)
 	{
-		if(CraftTweakerHelper.toFluidStack(output)!=null)
+		if (Config.IEConfig.machines.mixer_enabled && CraftTweakerHelper.toFluidStack(output)!=null)
 			CraftTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(output)));
 	}
 

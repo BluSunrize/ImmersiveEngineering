@@ -61,6 +61,18 @@ public class Config
 		@Comment({"The percentage of power lost every 16 blocks of distance for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )"})
 		public static double[] wireLossRatio = new double[]{.05, .025, .025, 1, 1, 1};
 
+		@Comment({"Horizontal Speed of Skyline Hooks."})
+		@RangeDouble(min = 1e-3)
+		public static double skylinehook_move_speed_hor = .25;
+
+		@Comment({"Vertical Speed of Skyline Hooks."})
+		@RangeDouble(min = 1e-3)
+		public static double skylinehook_move_speed_vert = .1;
+
+		@Comment({"Maximum Speed of Skyline Hooks in limited mode."})
+		@RangeDouble(min = 1e-3)
+		public static double skylinehook_limit_speed = .25;
+
 		public static int[] wireColourationDefault = new int[]{0xb36c3f, 0xeda045, 0x6f6f6f, 0x967e6d, 0x6f6f6f, 0xff2f2f, 0xfaf1de, 0x9d857a};
 		@Comment({"The RGB colourate of the wires."})
 		public static int[] wireColouration = wireColourationDefault;
@@ -363,6 +375,95 @@ public class Config
 			@Comment({"List of dimensions that can't contain minerals. Default: The End."})
 			public static int[] excavator_dimBlacklist = new int[]{1};
 
+			@Comment({"Should the Crusher multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean crusher_enabled = true;
+
+			@Comment({"Should the Excavator multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean excavator_enabled = true;
+
+			@Comment({"Should the Arc Furnace multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean arcfurnace_enabled = true;
+
+			@Comment({"Should the Alloy Smelter multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean alloysmelter_enabled = true;
+
+			@Comment({"Should the Blast Furnace multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean blastfurnace_enabled = true;
+
+			@Comment({"Should the Bottling Machine multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean bottlingmachine_enabled = true;
+
+			@Comment({"Should the Coke Oven multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean cokeoven_enabled = true;
+
+			@Comment({"Should the Fermenter multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean fermenter_enabled = true;
+
+			@Comment({"Should the Squeezer multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean squeezer_enabled = true;
+
+			@Comment({"Should the Refinery multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean refinery_enabled = true;
+
+			@Comment({"Should the Mixer multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean mixer_enabled = true;
+
+			@Comment({"Should the Metal Press multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean metalpress_enabled = true;
+
+			@Comment({"Should the Automated Engineer's Workbench multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean autoworkbench_enabled = true;
+
+			@Comment({"Should the Lightning Rod multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean lightningrod_enabled = true;
+
+			@Comment({"Should the Assembler multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean assembler_enabled = true;
+
+			@Comment({"Should the Diesel Generator multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean dieselgenerator_enabled = true;
+
+			@Comment({"Should the Silo multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean silo_enabled = true;
+
+			@Comment({"Should the Tank multiblock be enabled?"})
+			@Mapped(mapClass = Config.class, mapName = "manual_bool")
+			@RequiresMcRestart
+			public static boolean tank_enabled = true;
 		}
 
 		public static class Ores

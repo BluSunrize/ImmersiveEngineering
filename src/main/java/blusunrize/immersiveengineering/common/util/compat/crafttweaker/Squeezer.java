@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -29,6 +30,7 @@ public class Squeezer
 	@ZenMethod
 	public static void addRecipe(IItemStack output, ILiquidStack fluid, IIngredient input, int energy)
 	{
+		if (!Config.IEConfig.machines.squeezer_enabled) return;
 		if(CraftTweakerHelper.toObject(input)==null)
 			return;
 		//Either output or fluid must not be null. 
@@ -66,7 +68,7 @@ public class Squeezer
 	@ZenMethod
 	public static void removeFluidRecipe(ILiquidStack fluid)
 	{
-		if(CraftTweakerHelper.toFluidStack(fluid)!=null)
+		if (Config.IEConfig.machines.squeezer_enabled && CraftTweakerHelper.toFluidStack(fluid)!=null)
 			CraftTweakerAPI.apply(new RemoveFluid(CraftTweakerHelper.toFluidStack(fluid)));
 	}
 
@@ -105,7 +107,7 @@ public class Squeezer
 	@ZenMethod
 	public static void removeItemRecipe(IItemStack stack)
 	{
-		if(!CraftTweakerHelper.toStack(stack).isEmpty())
+		if (Config.IEConfig.machines.squeezer_enabled && !CraftTweakerHelper.toStack(stack).isEmpty())
 			CraftTweakerAPI.apply(new RemoveStack(CraftTweakerHelper.toStack(stack)));
 	}
 
@@ -144,7 +146,7 @@ public class Squeezer
 	@ZenMethod
 	public static void removeByInput(IItemStack stack)
 	{
-		if(CraftTweakerHelper.toStack(stack)!=null)
+		if (Config.IEConfig.machines.squeezer_enabled && CraftTweakerHelper.toStack(stack)!=null)
 			CraftTweakerAPI.apply(new RemoveByInput(CraftTweakerHelper.toStack(stack)));
 	}
 

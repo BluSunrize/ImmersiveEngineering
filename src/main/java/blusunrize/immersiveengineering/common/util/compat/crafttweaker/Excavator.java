@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import stanhebben.zenscript.annotations.*;
@@ -25,6 +26,7 @@ public class Excavator
 	@ZenMethod
 	public static void addMineral(String name, int mineralWeight, double failChance, String[] ores, double[] chances, @Optional int[] dimensionWhitelist, @Optional boolean blacklist)
 	{
+		if (!Config.IEConfig.machines.excavator_enabled) return;
 		float[] fChances = new float[chances.length];
 		for(int i = 0; i < chances.length; i++)
 			fChances[i] = (float)chances[i];
@@ -75,7 +77,7 @@ public class Excavator
 	@ZenMethod
 	public static void removeMineral(String name)
 	{
-		CraftTweakerAPI.apply(new RemoveMineral(name));
+		if (Config.IEConfig.machines.excavator_enabled) CraftTweakerAPI.apply(new RemoveMineral(name));
 	}
 
 	private static class RemoveMineral implements IAction
@@ -120,6 +122,7 @@ public class Excavator
 	@ZenMethod
 	public static MTMineralMix getMineral(String name)
 	{
+		if (!Config.IEConfig.machines.excavator_enabled) return null;
 		for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
 			if(mix.name.equalsIgnoreCase(name))
 				return new MTMineralMix(mix, ExcavatorHandler.mineralList.get(mix));

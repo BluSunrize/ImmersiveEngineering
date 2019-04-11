@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -26,6 +27,7 @@ public class BottlingMachine
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient input, ILiquidStack fluid)
 	{
+		if (!Config.IEConfig.machines.bottlingmachine_enabled) return;
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput==null||output==null||fluid==null)
 			return;
@@ -59,7 +61,7 @@ public class BottlingMachine
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.bottlingmachine_enabled) CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IAction

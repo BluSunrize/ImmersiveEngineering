@@ -390,66 +390,82 @@ public class IEContent
 		BelljarHandler.init();
 
 		/*EXCAVATOR*/
-		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
-		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
-		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
-		String sulfur = OreDictionary.doesOreNameExist("oreSulfur")?"oreSulfur": "dustSulfur";
-		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron", "oreNickel", "oreTin", "denseoreIron"}, new float[]{.5f, .25f, .20f, .05f});
-		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron", "oreGold"}, new float[]{.85f, .15f});
-		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", sulfur}, new float[]{.5f, .5f});
-		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum", "oreTitanium", "denseoreAluminum"}, new float[]{.90f, .05f, .05f});
-		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper", "oreGold", "oreNickel", "denseoreCopper"}, new float[]{.65f, .25f, .05f, .05f});
-		if(OreDictionary.doesOreNameExist("oreTin"))
-			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin", "denseoreTin"}, new float[]{.95f, .05f});
-		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold", "oreCopper", "oreNickel", "denseoreGold"}, new float[]{.65f, .25f, .05f, .05f});
-		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel", "orePlatinum", "oreIron", "denseoreNickel"}, new float[]{.85f, .05f, .05f, .05f});
-		if(OreDictionary.doesOreNameExist("orePlatinum"))
-			ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum", "oreNickel", "", "oreIridium", "denseorePlatinum"}, new float[]{.40f, .30f, .15f, .1f, .05f});
-		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium", "oreLead", "orePlutonium", "denseoreUranium"}, new float[]{.55f, .3f, .1f, .05f}).addReplacement("oreUranium", "oreYellorium");
-		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz", "oreCertusQuartz"}, new float[]{.6f, .4f});
-		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead", "oreSilver", "oreSulfur", "denseoreLead", "denseoreSilver"}, new float[]{.40f, .40f, .1f, .05f, .05f});
-		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead", "oreSilver", "denseoreLead"}, new float[]{.55f, .4f, .05f});
-		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver", "oreLead", "denseoreSilver"}, new float[]{.55f, .4f, .05f});
-		ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", sulfur, "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
-		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new String[]{"oreRedstone", "denseoreRedstone", "oreRuby", "oreCinnabar", sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
-		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
-		ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
-
+		if (IEConfig.machines.excavator_enabled) {
+			ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
+			ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
+			ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
+			String sulfur = OreDictionary.doesOreNameExist("oreSulfur") ? "oreSulfur" : "dustSulfur";
+			ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron", "oreNickel", "oreTin", "denseoreIron"}, new float[]{.5f, .25f, .20f, .05f});
+			ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron", "oreGold"}, new float[]{.85f, .15f});
+			ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", sulfur}, new float[]{.5f, .5f});
+			ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum", "oreTitanium", "denseoreAluminum"}, new float[]{.90f, .05f, .05f});
+			ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper", "oreGold", "oreNickel", "denseoreCopper"}, new float[]{.65f, .25f, .05f, .05f});
+			if (OreDictionary.doesOreNameExist("oreTin"))
+				ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin", "denseoreTin"}, new float[]{.95f, .05f});
+			ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold", "oreCopper", "oreNickel", "denseoreGold"}, new float[]{.65f, .25f, .05f, .05f});
+			ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel", "orePlatinum", "oreIron", "denseoreNickel"}, new float[]{.85f, .05f, .05f, .05f});
+			if (OreDictionary.doesOreNameExist("orePlatinum"))
+				ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum", "oreNickel", "", "oreIridium", "denseorePlatinum"}, new float[]{.40f, .30f, .15f, .1f, .05f});
+			ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium", "oreLead", "orePlutonium", "denseoreUranium"}, new float[]{.55f, .3f, .1f, .05f}).addReplacement("oreUranium", "oreYellorium");
+			ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz", "oreCertusQuartz"}, new float[]{.6f, .4f});
+			ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead", "oreSilver", "oreSulfur", "denseoreLead", "denseoreSilver"}, new float[]{.40f, .40f, .1f, .05f, .05f});
+			ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead", "oreSilver", "denseoreLead"}, new float[]{.55f, .4f, .05f});
+			ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver", "oreLead", "denseoreSilver"}, new float[]{.55f, .4f, .05f});
+			ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", sulfur, "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
+			ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new String[]{"oreRedstone", "denseoreRedstone", "oreRuby", "oreCinnabar", sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
+			ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
+			ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
+		}
 		/*MULTIBLOCK RECIPES*/
-		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial, 1, 6), new ItemStack(Items.COAL), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration, 1, 3), "blockCoal", 1800*9, 5000);
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL, 1, 1), "logWood", 900, 250);
+		if (IEConfig.machines.cokeoven_enabled) {
+			CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial, 1, 6), new ItemStack(Items.COAL), 1800, 500);
+			CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration, 1, 3), "blockCoal", 1800 * 9, 5000);
+			CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL, 1, 1), "logWood", 900, 250);
+		}
 
-		IERecipes.initBlastFurnaceRecipes();
+		if (IEConfig.machines.blastfurnace_enabled)
+			IERecipes.initBlastFurnaceRecipes();
 
-		IERecipes.initMetalPressRecipes();
+		if (IEConfig.machines.metalpress_enabled)
+			IERecipes.initMetalPressRecipes();
 
-		IERecipes.initAlloySmeltingRecipes();
+		if (IEConfig.machines.alloysmelter_enabled)
+			IERecipes.initAlloySmeltingRecipes();
 
-		IERecipes.initCrusherRecipes();
+		if (IEConfig.machines.crusher_enabled)
+			IERecipes.initCrusherRecipes();
 
-		IERecipes.initArcSmeltingRecipes();
+		if (IEConfig.machines.arcfurnace_enabled)
+			IERecipes.initArcSmeltingRecipes();
 
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.WHEAT_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 60), ItemStack.EMPTY, Items.BEETROOT_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 40), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
-		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial, 1, 18), new ItemStack(itemMaterial, 8, 17), 19200);
-		Fluid fluidBlood = FluidRegistry.getFluid("blood");
-		if(fluidBlood!=null)
-			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood, 5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
+		if (IEConfig.machines.squeezer_enabled) {
+			SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.WHEAT_SEEDS, 6400);
+			SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 60), ItemStack.EMPTY, Items.BEETROOT_SEEDS, 6400);
+			SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 40), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
+			SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
+			SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
+			SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial, 1, 18), new ItemStack(itemMaterial, 8, 17), 19200);
 
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.REEDS, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.MELON, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.APPLE, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, "cropPotato", 6400);
+			Fluid fluidBlood = FluidRegistry.getFluid("blood");
+			if (fluidBlood != null)
+				SqueezerRecipe.addRecipe(new FluidStack(fluidBlood, 5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
+		}
 
-		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
+		if (IEConfig.machines.fermenter_enabled) {
+			FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.REEDS, 6400);
+			FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.MELON, 6400);
+			FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.APPLE, 6400);
+			FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, "cropPotato", 6400);
+		}
 
-		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(FluidRegistry.WATER, 500), new Object[]{"sand", "sand", Items.CLAY_BALL, "gravel"}, 3200);
+		if (IEConfig.machines.refinery_enabled)
+			RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
 
-		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(FluidRegistry.WATER, 1000));
+		if (IEConfig.machines.mixer_enabled)
+			MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(FluidRegistry.WATER, 500), new Object[]{"sand", "sand", Items.CLAY_BALL, "gravel"}, 3200);
+
+		if (IEConfig.machines.bottlingmachine_enabled)
+			BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(FluidRegistry.WATER, 1000));
 
 		IECompatModule.doModulesRecipes();
 
@@ -610,11 +626,15 @@ public class IEContent
 		registerTile(TileEntityStripCurtain.class);
 		registerTile(TileEntityShaderBanner.class);
 
-		registerTile(TileEntityCokeOven.class);
-		registerTile(TileEntityBlastFurnace.class);
-		registerTile(TileEntityBlastFurnaceAdvanced.class);
+		if (IEConfig.machines.cokeoven_enabled)
+			registerTile(TileEntityCokeOven.class);
+		if (IEConfig.machines.excavator_enabled) {
+			registerTile(TileEntityBlastFurnace.class);
+			registerTile(TileEntityBlastFurnaceAdvanced.class);
+		}
 		registerTile(TileEntityCoresample.class);
-		registerTile(TileEntityAlloySmelter.class);
+		if (IEConfig.machines.alloysmelter_enabled)
+			registerTile(TileEntityAlloySmelter.class);
 
 		registerTile(TileEntityWoodenCrate.class);
 		registerTile(TileEntityWoodenBarrel.class);
@@ -656,7 +676,6 @@ public class IEContent
 		registerTile(TileEntityMetalBarrel.class);
 		registerTile(TileEntityFluidPump.class);
 		registerTile(TileEntityFluidPlacer.class);
-
 		registerTile(TileEntityBlastFurnacePreheater.class);
 		registerTile(TileEntityFurnaceHeater.class);
 		registerTile(TileEntityDynamo.class);
@@ -674,23 +693,38 @@ public class IEContent
 
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityConveyorVertical.class);
-
-		registerTile(TileEntityMetalPress.class);
-		registerTile(TileEntityCrusher.class);
-		registerTile(TileEntitySheetmetalTank.class);
-		registerTile(TileEntitySilo.class);
-		registerTile(TileEntityAssembler.class);
-		registerTile(TileEntityAutoWorkbench.class);
-		registerTile(TileEntityBottlingMachine.class);
-		registerTile(TileEntitySqueezer.class);
-		registerTile(TileEntityFermenter.class);
-		registerTile(TileEntityRefinery.class);
-		registerTile(TileEntityDieselGenerator.class);
-		registerTile(TileEntityBucketWheel.class);
-		registerTile(TileEntityExcavator.class);
-		registerTile(TileEntityArcFurnace.class);
-		registerTile(TileEntityLightningrod.class);
-		registerTile(TileEntityMixer.class);
+		if (IEConfig.machines.metalpress_enabled)
+			registerTile(TileEntityMetalPress.class);
+		if (IEConfig.machines.crusher_enabled)
+			registerTile(TileEntityCrusher.class);
+		if (IEConfig.machines.tank_enabled)
+			registerTile(TileEntitySheetmetalTank.class);
+		if (IEConfig.machines.silo_enabled)
+			registerTile(TileEntitySilo.class);
+		if (IEConfig.machines.assembler_enabled)
+			registerTile(TileEntityAssembler.class);
+		if (IEConfig.machines.autoworkbench_enabled)
+			registerTile(TileEntityAutoWorkbench.class);
+		if (IEConfig.machines.bottlingmachine_enabled)
+			registerTile(TileEntityBottlingMachine.class);
+		if (IEConfig.machines.squeezer_enabled)
+			registerTile(TileEntitySqueezer.class);
+		if (IEConfig.machines.fermenter_enabled)
+			registerTile(TileEntityFermenter.class);
+		if (IEConfig.machines.refinery_enabled)
+			registerTile(TileEntityRefinery.class);
+		if (IEConfig.machines.dieselgenerator_enabled)
+			registerTile(TileEntityDieselGenerator.class);
+		if (IEConfig.machines.excavator_enabled) {
+			registerTile(TileEntityBucketWheel.class);
+			registerTile(TileEntityExcavator.class);
+		}
+		if (IEConfig.machines.arcfurnace_enabled)
+			registerTile(TileEntityArcFurnace.class);
+		if (IEConfig.machines.lightningrod_enabled)
+			registerTile(TileEntityLightningrod.class);
+		if (IEConfig.machines.mixer_enabled)
+			registerTile(TileEntityMixer.class);
 		//		registerTile(TileEntitySkycrateDispenser.class);
 		registerTile(TileEntityFakeLight.class);
 
@@ -906,26 +940,46 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
 
 		/*MULTIBLOCKS*/
-		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
-		MultiblockHandler.registerMultiblock(MultiblockAlloySmelter.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBlastFurnaceAdvanced.instance);
-		MultiblockHandler.registerMultiblock(MultiblockMetalPress.instance);
-		MultiblockHandler.registerMultiblock(MultiblockCrusher.instance);
-		MultiblockHandler.registerMultiblock(MultiblockSheetmetalTank.instance);
-		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
-		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
-		MultiblockHandler.registerMultiblock(MultiblockAutoWorkbench.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
-		MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
-		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
-		MultiblockHandler.registerMultiblock(MultiblockRefinery.instance);
-		MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);
-		MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
-		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
-		MultiblockHandler.registerMultiblock(MultiblockLightningrod.instance);
-		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
+		if (IEConfig.machines.cokeoven_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
+		if (IEConfig.machines.alloysmelter_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockAlloySmelter.instance);
+		if (IEConfig.machines.blastfurnace_enabled) {
+			MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
+			MultiblockHandler.registerMultiblock(MultiblockBlastFurnaceAdvanced.instance);
+		}
+		if (IEConfig.machines.metalpress_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockMetalPress.instance);
+		if (IEConfig.machines.crusher_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockCrusher.instance);
+		if (IEConfig.machines.tank_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockSheetmetalTank.instance);
+		if (IEConfig.machines.silo_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
+		if (IEConfig.machines.assembler_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
+		if (IEConfig.machines.autoworkbench_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockAutoWorkbench.instance);
+		if (IEConfig.machines.bottlingmachine_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
+		if (IEConfig.machines.squeezer_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
+		if (IEConfig.machines.fermenter_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
+		if (IEConfig.machines.refinery_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockRefinery.instance);
+		if (IEConfig.machines.dieselgenerator_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);
+		if (IEConfig.machines.excavator_enabled) {
+			MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
+			MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
+		}
+		if (IEConfig.machines.arcfurnace_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
+		if (IEConfig.machines.lightningrod_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockLightningrod.instance);
+		if (IEConfig.machines.mixer_enabled)
+			MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFeedthrough.instance);
 
 		/*VILLAGE*/

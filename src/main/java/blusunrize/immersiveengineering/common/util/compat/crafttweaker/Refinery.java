@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.liquid.ILiquidStack;
@@ -25,6 +26,7 @@ public class Refinery
 	@ZenMethod
 	public static void addRecipe(ILiquidStack output, ILiquidStack input0, ILiquidStack input1, int energy)
 	{
+		if (!Config.IEConfig.machines.refinery_enabled) return;
 		FluidStack fOut = CraftTweakerHelper.toFluidStack(output);
 		FluidStack fIn0 = CraftTweakerHelper.toFluidStack(input0);
 		FluidStack fIn1 = CraftTweakerHelper.toFluidStack(input1);
@@ -61,7 +63,7 @@ public class Refinery
 	@ZenMethod
 	public static void removeRecipe(ILiquidStack output)
 	{
-		if(CraftTweakerHelper.toFluidStack(output)!=null)
+		if (Config.IEConfig.machines.refinery_enabled && CraftTweakerHelper.toFluidStack(output)!=null)
 			CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toFluidStack(output)));
 	}
 

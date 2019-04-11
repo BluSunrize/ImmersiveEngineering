@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -29,6 +30,7 @@ public class MetalPress
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient input, IItemStack mold, int energy, @Optional int inputSize)
 	{
+		if (!Config.IEConfig.machines.metalpress_enabled) return;
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput==null)
 			return;
@@ -68,7 +70,7 @@ public class MetalPress
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.metalpress_enabled) CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IAction
@@ -97,7 +99,7 @@ public class MetalPress
 	@ZenMethod
 	public static void removeRecipeByMold(IItemStack mold)
 	{
-		CraftTweakerAPI.apply(new RemoveByMold(CraftTweakerHelper.toStack(mold)));
+		if (Config.IEConfig.machines.metalpress_enabled) CraftTweakerAPI.apply(new RemoveByMold(CraftTweakerHelper.toStack(mold)));
 	}
 
 	private static class RemoveByMold implements IAction

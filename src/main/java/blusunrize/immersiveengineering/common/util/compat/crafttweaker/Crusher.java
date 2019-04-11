@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -26,6 +27,7 @@ public class Crusher
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient input, int energy, @Optional IItemStack secondaryOutput, @Optional double secondaryChance)
 	{
+		if (!Config.IEConfig.machines.crusher_enabled) return;
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput==null)
 		{
@@ -69,7 +71,8 @@ public class Crusher
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.crusher_enabled)
+			CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IAction
@@ -98,7 +101,7 @@ public class Crusher
 	@ZenMethod
 	public static void removeRecipesForInput(IItemStack input)
 	{
-		CraftTweakerAPI.apply(new RemoveForInput(CraftTweakerHelper.toStack(input)));
+		if (Config.IEConfig.machines.crusher_enabled) CraftTweakerAPI.apply(new RemoveForInput(CraftTweakerHelper.toStack(input)));
 	}
 
 	private static class RemoveForInput implements IAction

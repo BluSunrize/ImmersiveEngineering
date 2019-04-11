@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -25,6 +26,7 @@ public class CokeOven
 	@ZenMethod
 	public static void addRecipe(IItemStack output, int fuelOutput, IIngredient input, int time)
 	{
+		if (!Config.IEConfig.machines.cokeoven_enabled) return;
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput==null)
 			return;
@@ -58,7 +60,7 @@ public class CokeOven
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.cokeoven_enabled) CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IAction

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.client.gui.*;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
@@ -85,20 +86,33 @@ public class JEIHelper implements IModPlugin
 		//Recipes
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 		slotDrawable = guiHelper.getSlotDrawable();
-		categories.put(CokeOvenRecipe.class, new CokeOvenRecipeCategory(guiHelper));
-		categories.put(AlloyRecipe.class, new AlloySmelterRecipeCategory(guiHelper));
-		categories.put(BlastFurnaceRecipe.class, new BlastFurnaceRecipeCategory(guiHelper));
-		categories.put(BlastFurnaceFuel.class, new BlastFurnaceFuelCategory(guiHelper));
-		categories.put(MetalPressRecipe.class, new MetalPressRecipeCategory(guiHelper));
-		categories.put(CrusherRecipe.class, new CrusherRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.cokeoven_enabled)
+			categories.put(CokeOvenRecipe.class, new CokeOvenRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.alloysmelter_enabled)
+			categories.put(AlloyRecipe.class, new AlloySmelterRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.blastfurnace_enabled) {
+			categories.put(BlastFurnaceRecipe.class, new BlastFurnaceRecipeCategory(guiHelper));
+			categories.put(BlastFurnaceFuel.class, new BlastFurnaceFuelCategory(guiHelper));
+		}
+		if (Config.IEConfig.machines.metalpress_enabled)
+			categories.put(MetalPressRecipe.class, new MetalPressRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.crusher_enabled)
+			categories.put(CrusherRecipe.class, new CrusherRecipeCategory(guiHelper));
 		categories.put(BlueprintCraftingRecipe.class, new WorkbenchRecipeCategory(guiHelper));
-		categories.put(SqueezerRecipe.class, new SqueezerRecipeCategory(guiHelper));
-		categories.put(FermenterRecipe.class, new FermenterRecipeCategory(guiHelper));
-		categories.put(RefineryRecipe.class, new RefineryRecipeCategory(guiHelper));
-		categories.put(ArcFurnaceRecipe.class, ArcFurnaceRecipeCategory.getDefault(guiHelper));
-		categories.put(ArcRecyclingRecipe.class, ArcFurnaceRecipeCategory.getRecycling(guiHelper));
-		categories.put(BottlingMachineRecipe.class, new BottlingMachineRecipeCategory(guiHelper));
-		categories.put(MixerRecipe.class, new MixerRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.squeezer_enabled)
+			categories.put(SqueezerRecipe.class, new SqueezerRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.fermenter_enabled)
+			categories.put(FermenterRecipe.class, new FermenterRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.refinery_enabled)
+			categories.put(RefineryRecipe.class, new RefineryRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.arcfurnace_enabled) {
+			categories.put(ArcFurnaceRecipe.class, ArcFurnaceRecipeCategory.getDefault(guiHelper));
+			categories.put(ArcRecyclingRecipe.class, ArcFurnaceRecipeCategory.getRecycling(guiHelper));
+		}
+		if (Config.IEConfig.machines.bottlingmachine_enabled)
+			categories.put(BottlingMachineRecipe.class, new BottlingMachineRecipeCategory(guiHelper));
+		if (Config.IEConfig.machines.mixer_enabled)
+			categories.put(MixerRecipe.class, new MixerRecipeCategory(guiHelper));
 		registry.addRecipeCategories(categories.values().toArray(new IRecipeCategory[0]));
 	}
 
@@ -125,33 +139,53 @@ public class JEIHelper implements IModPlugin
 //		modRegistry.addRecipeHandlers(categories);
 
 		IELogger.info("Adding recipes to JEI!!");
-		modRegistry.addRecipes(new ArrayList<>(CokeOvenRecipe.recipeList), "ie.cokeoven");
-		modRegistry.addRecipes(new ArrayList<>(AlloyRecipe.recipeList), "ie.alloysmelter");
-		modRegistry.addRecipes(new ArrayList<>(BlastFurnaceRecipe.recipeList), "ie.blastfurnace");
-		modRegistry.addRecipes(new ArrayList<>(BlastFurnaceRecipe.blastFuels), "ie.blastfurnace.fuel");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(MetalPressRecipe.recipeList.values(), IJEIRecipe::listInJEI)), "ie.metalPress");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.crusher");
+		if (Config.IEConfig.machines.cokeoven_enabled)
+			modRegistry.addRecipes(new ArrayList<>(CokeOvenRecipe.recipeList), "ie.cokeoven");
+		if (Config.IEConfig.machines.alloysmelter_enabled)
+			modRegistry.addRecipes(new ArrayList<>(AlloyRecipe.recipeList), "ie.alloysmelter");
+		if (Config.IEConfig.machines.blastfurnace_enabled) {
+			modRegistry.addRecipes(new ArrayList<>(BlastFurnaceRecipe.recipeList), "ie.blastfurnace");
+			modRegistry.addRecipes(new ArrayList<>(BlastFurnaceRecipe.blastFuels), "ie.blastfurnace.fuel");
+		}
+		if (Config.IEConfig.machines.metalpress_enabled)
+			modRegistry.addRecipes(new ArrayList<>(Collections2.filter(MetalPressRecipe.recipeList.values(), IJEIRecipe::listInJEI)), "ie.metalPress");
+		if (Config.IEConfig.machines.crusher_enabled)
+			modRegistry.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.crusher");
 		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(BlueprintCraftingRecipe.recipeList.values(), IJEIRecipe::listInJEI)), "ie.workbench");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(SqueezerRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.squeezer");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(FermenterRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.fermenter");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(RefineryRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.refinery");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> input instanceof ArcRecyclingRecipe&&input.listInJEI())), "ie.arcFurnace.recycling");
-		modRegistry.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> {
-			return !(input instanceof ArcRecyclingRecipe)&&input.listInJEI();
-		})), "ie.arcFurnace");
-    modRegistry.addRecipes(new ArrayList(Collections2.filter(BottlingMachineRecipe.recipeList, input -> input.listInJEI())), "ie.bottlingMachine");
-		modRegistry.addRecipes(new ArrayList(Collections2.filter(MixerRecipe.recipeList, input -> input.listInJEI())), "ie.mixer");
+		if (Config.IEConfig.machines.squeezer_enabled)
+			modRegistry.addRecipes(new ArrayList<>(Collections2.filter(SqueezerRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.squeezer");
+		if (Config.IEConfig.machines.fermenter_enabled)
+			modRegistry.addRecipes(new ArrayList<>(Collections2.filter(FermenterRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.fermenter");
+		if (Config.IEConfig.machines.refinery_enabled)
+			modRegistry.addRecipes(new ArrayList<>(Collections2.filter(RefineryRecipe.recipeList, IJEIRecipe::listInJEI)), "ie.refinery");
+		if (Config.IEConfig.machines.arcfurnace_enabled) {
+			modRegistry.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> input instanceof ArcRecyclingRecipe&&input.listInJEI())), "ie.arcFurnace.recycling");
+			modRegistry.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> {
+				return !(input instanceof ArcRecyclingRecipe)&&input.listInJEI();
+			})), "ie.arcFurnace");
+		}
+		if (Config.IEConfig.machines.bottlingmachine_enabled)
+    		modRegistry.addRecipes(new ArrayList(Collections2.filter(BottlingMachineRecipe.recipeList, input -> input.listInJEI())), "ie.bottlingMachine");
+		if (Config.IEConfig.machines.mixer_enabled)
+			modRegistry.addRecipes(new ArrayList(Collections2.filter(MixerRecipe.recipeList, input -> input.listInJEI())), "ie.mixer");
 
 		// Allow jumping to recipies from the block GUIs.
-		modRegistry.addRecipeClickArea(GuiCokeOven.class, 58, 36, 11, 13, "ie.cokeoven");
-		modRegistry.addRecipeClickArea(GuiAlloySmelter.class, 84, 35, 22, 16, "ie.alloysmelter");
-		modRegistry.addRecipeClickArea(GuiBlastFurnace.class, 76, 35, 22, 15, "ie.blastfurnace", "ie.blastfurnace.fuel");
-
-		modRegistry.addRecipeClickArea(GuiSqueezer.class, 110, 19, 20, 51, "ie.squeezer");
-		modRegistry.addRecipeClickArea(GuiFermenter.class, 110, 19, 20, 51, "ie.fermenter");
-		modRegistry.addRecipeClickArea(GuiRefinery.class, 83, 36, 20, 13, "ie.refinery");
-		modRegistry.addRecipeClickArea(GuiArcFurnace.class, 81, 38, 23, 35, "ie.arcFurnace", "ie.arcFurnace.recycling");
-		modRegistry.addRecipeClickArea(GuiMixer.class, 76, 11, 58, 47, "ie.mixer");
+		if (Config.IEConfig.machines.cokeoven_enabled)
+			modRegistry.addRecipeClickArea(GuiCokeOven.class, 58, 36, 11, 13, "ie.cokeoven");
+		if (Config.IEConfig.machines.alloysmelter_enabled)
+			modRegistry.addRecipeClickArea(GuiAlloySmelter.class, 84, 35, 22, 16, "ie.alloysmelter");
+		if (Config.IEConfig.machines.blastfurnace_enabled)
+			modRegistry.addRecipeClickArea(GuiBlastFurnace.class, 76, 35, 22, 15, "ie.blastfurnace", "ie.blastfurnace.fuel");
+		if (Config.IEConfig.machines.squeezer_enabled)
+			modRegistry.addRecipeClickArea(GuiSqueezer.class, 110, 19, 20, 51, "ie.squeezer");
+		if (Config.IEConfig.machines.fermenter_enabled)
+			modRegistry.addRecipeClickArea(GuiFermenter.class, 110, 19, 20, 51, "ie.fermenter");
+		if (Config.IEConfig.machines.refinery_enabled)
+			modRegistry.addRecipeClickArea(GuiRefinery.class, 83, 36, 20, 13, "ie.refinery");
+		if (Config.IEConfig.machines.arcfurnace_enabled)
+			modRegistry.addRecipeClickArea(GuiArcFurnace.class, 81, 38, 23, 35, "ie.arcFurnace", "ie.arcFurnace.recycling");
+		if (Config.IEConfig.machines.mixer_enabled)
+			modRegistry.addRecipeClickArea(GuiMixer.class, 76, 11, 58, 47, "ie.mixer");
 
 		modRegistry.addRecipeClickArea(GuiModWorkbench.class, 4, 41, 53, 18, "ie.workbench");
 		modRegistry.addRecipeClickArea(GuiAutoWorkbench.class, 90, 12, 39, 37, "ie.workbench");

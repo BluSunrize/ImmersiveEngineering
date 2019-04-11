@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
@@ -45,9 +46,6 @@ public class EntitySkylineHook extends Entity
 {
 	public static final double GRAVITY = 10;
 	private static final double MAX_SPEED = 2.5;
-	private static final double LIMIT_SPEED = .25;
-	public static final double MOVE_SPEED_HOR = .25;
-	public static final double MOVE_SPEED_VERT = .1;
 	private Connection connection;
 	public double linePos;//Start is 0, end is 1
 	public double horizontalSpeed;//Blocks per tick, vertical iff the connection is vertical
@@ -157,13 +155,13 @@ public class EntitySkylineHook extends Entity
 		{
 			double slope = connection.getSlopeAt(linePos);
 			double slopeInDirection = Math.signum(inLineDirection)*slope;
-			double speed = MOVE_SPEED_VERT;
+			double speed = Config.IEConfig.skylinehook_move_speed_vert;
 			double slopeFactor = 1;
 			if(!connection.vertical)
 			{
 				//Linear interpolation w.r.t. the angle of the line
 				double lambda = Math.atan(slopeInDirection)/(Math.PI/2);
-				speed = lambda*MOVE_SPEED_VERT+(1-lambda)*MOVE_SPEED_HOR;
+				speed = lambda*Config.IEConfig.skylinehook_move_speed_vert+(1-lambda)*Config.IEConfig.skylinehook_move_speed_hor;
 				slopeFactor = 1/Math.sqrt(1+slope*slope);
 			}
 			if(slopeInDirection > -.1)
@@ -197,7 +195,7 @@ public class EntitySkylineHook extends Entity
 		if(limitSpeed)
 		{
 			double totSpeed = getSpeed();
-			double max = limitSpeed?LIMIT_SPEED: MAX_SPEED;
+			double max = limitSpeed? Config.IEConfig.skylinehook_limit_speed: MAX_SPEED;
 			if(totSpeed > max)
 				horizontalSpeed *= max/totSpeed;
 		}

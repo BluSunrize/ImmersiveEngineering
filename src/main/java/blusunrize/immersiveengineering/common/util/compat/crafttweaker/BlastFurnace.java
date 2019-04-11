@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.common.Config;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -28,6 +29,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient input, int time, @Optional IItemStack slag)
 	{
+		if (!Config.IEConfig.machines.blastfurnace_enabled) return;
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput==null)
 			return;
@@ -61,7 +63,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.blastfurnace_enabled) CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class Remove implements IAction
@@ -91,6 +93,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void addFuel(IIngredient input, int time)
 	{
+		if (!Config.IEConfig.machines.blastfurnace_enabled) return;
 		Object oInput = CraftTweakerHelper.toObject(input);
 		if(oInput==null)
 			return;
@@ -126,7 +129,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void removeFuel(IItemStack output)
 	{
-		CraftTweakerAPI.apply(new RemoveFuel(CraftTweakerHelper.toStack(output)));
+		if (Config.IEConfig.machines.blastfurnace_enabled) CraftTweakerAPI.apply(new RemoveFuel(CraftTweakerHelper.toStack(output)));
 	}
 
 	private static class RemoveFuel implements IAction
