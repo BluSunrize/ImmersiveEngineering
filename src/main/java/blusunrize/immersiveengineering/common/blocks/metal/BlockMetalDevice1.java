@@ -385,14 +385,15 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 //		super.onNeighborChange(world, pos, fromPos);
 		super.neighborChanged(state, world, pos, block, fromPos);
-		if(world.getBlockState(pos).getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
+		if(!world.isRemote&&world.getBlockState(pos).getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
 			TileEntityFluidPipe.indirectConnections.clear();
 	}
 
 	@Override
 	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
-		TileEntityFluidPipe.indirectConnections.clear();
+		if(!worldIn.isRemote)
+			TileEntityFluidPipe.indirectConnections.clear();
 		return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
 	}
 

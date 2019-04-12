@@ -49,7 +49,7 @@ minecraft {
 repositories {
     maven { // JEI & Tinkers
         name 'DVS1 Maven FS'
-        url 'http://dvs1.progwml6.com/files/maven'
+        url 'https://dvs1.progwml6.com/files/maven'
     }
     maven { // HWYLA
         name "TehNuts WAILA fork"
