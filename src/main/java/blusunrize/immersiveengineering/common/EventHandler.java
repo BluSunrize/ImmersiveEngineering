@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRazorWire;
+import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
@@ -50,10 +51,14 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -64,6 +69,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -77,6 +84,11 @@ import net.minecraftforge.event.entity.minecart.MinecartUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -91,6 +103,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
@@ -148,7 +162,7 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttach(AttachCapabilitiesEvent<Entity> event)
+	public void onCapabilitiesAttachEntity(AttachCapabilitiesEvent<Entity> event)
 	{
 		if(event.getObject() instanceof EntityMinecart)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
@@ -156,6 +170,95 @@ public class EventHandler
 		if(event.getObject() instanceof EntityPlayer)
 			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
 					new SimpleSkyhookProvider());
+	}
+
+	@SubscribeEvent
+	public void onCapabilitiesAttachItem(AttachCapabilitiesEvent<ItemStack> event)
+	{
+		if(event.getObject().getItem() instanceof ItemPotion)
+		{
+			IFluidHandlerItem potionHandler = new IFluidHandlerItem()
+			{
+				boolean isEmpty = false;
+				FluidStack potion = null;
+
+				void ensurePotionAvailable()
+				{
+					if(potion==null)
+						//Lazy generation since NBT usually isn't wavailable when the event is fired
+						potion = MixerRecipePotion.getFluidStackForType(PotionUtils.getPotionFromItem(event.getObject()), 250);
+				}
+
+				@Nonnull
+				@Override
+				public ItemStack getContainer()
+				{
+					if(isEmpty)
+						return new ItemStack(Items.GLASS_BOTTLE);
+					else
+						return event.getObject();
+				}
+
+				@Override
+				public IFluidTankProperties[] getTankProperties()
+				{
+					ensurePotionAvailable();
+					if(isEmpty)
+						return new IFluidTankProperties[0];
+					else
+						return new IFluidTankProperties[]{
+								new FluidTankProperties(potion, 250, false, true)
+						};
+				}
+
+				@Override
+				public int fill(FluidStack resource, boolean doFill)
+				{
+					return 0;
+				}
+
+				@Nullable
+				@Override
+				public FluidStack drain(FluidStack resource, boolean doDrain)
+				{
+					ensurePotionAvailable();
+					if(isEmpty)
+						return null;
+					if(!resource.isFluidEqual(potion))
+						return null;
+					return drain(resource.amount, doDrain);
+				}
+
+				@Nullable
+				@Override
+				public FluidStack drain(int maxDrain, boolean doDrain)
+				{
+					ensurePotionAvailable();
+					if(maxDrain < 250)
+						return null;
+					if(doDrain)
+						isEmpty = true;
+					return new FluidStack(potion, 250);
+				}
+			};
+			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "potions"), new ICapabilityProvider()
+			{
+				@Override
+				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+				{
+					return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
+				}
+
+				@Nullable
+				@Override
+				public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+				{
+					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+						return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.cast(potionHandler);
+					return null;
+				}
+			});
+		}
 	}
 
 	@SubscribeEvent

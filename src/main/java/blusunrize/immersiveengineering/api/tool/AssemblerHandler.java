@@ -87,11 +87,14 @@ public class AssemblerHandler
 	{
 		IRecipeAdapter adapter = registry.get(recipeClass);
 		boolean isSuperIRecipe = IRecipe.class.isAssignableFrom(recipeClass.getSuperclass());
-		if(adapter==null&&recipeClass!=IRecipe.class&&isSuperIRecipe)
-			adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
-		else
-			adapter = defaultAdapter;
-		registry.put(recipeClass, adapter);
+		if(adapter==null)
+		{
+			if(recipeClass!=IRecipe.class&&isSuperIRecipe)
+				adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
+			else
+				adapter = defaultAdapter;
+			registry.put(recipeClass, adapter);
+		}
 		return adapter;
 	}
 

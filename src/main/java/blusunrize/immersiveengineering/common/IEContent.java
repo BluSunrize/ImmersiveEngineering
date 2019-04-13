@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
@@ -34,10 +35,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
-import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
+import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.datafixers.IEDataFixers;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -66,6 +64,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -744,6 +743,34 @@ public class IEContent
 			if(o instanceof IngredientFluidStack)
 				return new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount);
 			else return null;
+		});
+		//Potion bullets
+		AssemblerHandler.registerRecipeAdapter(RecipePotionBullets.class, new IRecipeAdapter<RecipePotionBullets>()
+		{
+			@Nullable
+			@Override
+			public RecipeQuery[] getQueriedInputs(RecipePotionBullets recipe, NonNullList<ItemStack> input)
+			{
+				RecipeQuery bullet = null;
+				RecipeQuery potion = null;
+				for(int i = 0; i < input.size()-1; ++i)
+				{
+					ItemStack s = input.get(i);
+					if(!s.isEmpty())
+					{
+						if(bullet==null&&RecipePotionBullets.isPotionBullet(s))
+							bullet = AssemblerHandler.createQueryFromItemStack(s);
+						else if(potion==null&&s.getItem() instanceof ItemPotion)
+							potion = AssemblerHandler.createQuery(
+									MixerRecipePotion.getFluidStackForType(PotionUtils.getPotionFromItem(s), 250));
+						else
+							return null;
+					}
+				}
+				if(bullet==null||potion==null)
+					return null;
+				return new RecipeQuery[]{bullet, potion};
+			}
 		});
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
