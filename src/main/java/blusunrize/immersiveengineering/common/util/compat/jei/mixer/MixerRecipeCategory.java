@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
@@ -26,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
-public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerRecipeWrapper>
+public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MultiblockRecipeWrapper>
 {
 	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/mixer.png");
 	private final IDrawable tankTexture;
@@ -42,7 +43,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, MixerRecipeWrapper recipeWrapper, IIngredients ingredients)
+	public void setRecipe(IRecipeLayout recipeLayout, MultiblockRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, true, 48, 3, 58, 47, 4000, false, null);
@@ -75,6 +76,6 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 	@Override
 	public IRecipeWrapper getRecipeWrapper(MixerRecipe recipe)
 	{
-		return new MixerRecipeWrapper(recipe);
+		return new MultiblockRecipeWrapper(recipe);
 	}
 }

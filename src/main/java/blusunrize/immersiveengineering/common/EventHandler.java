@@ -34,7 +34,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRazorWire;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
+import blusunrize.immersiveengineering.common.crafting.MixerPotionHelper;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.util.*;
@@ -186,7 +186,7 @@ public class EventHandler
 				{
 					if(potion==null)
 						//Lazy generation since NBT usually isn't wavailable when the event is fired
-						potion = MixerRecipePotion.getFluidStackForType(PotionUtils.getPotionFromItem(event.getObject()), 250);
+						potion = MixerPotionHelper.getFluidStackForType(PotionUtils.getPotionFromItem(event.getObject()), 250);
 				}
 
 				@Nonnull

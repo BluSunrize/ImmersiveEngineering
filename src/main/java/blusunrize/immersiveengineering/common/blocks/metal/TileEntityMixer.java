@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMixer;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
@@ -24,7 +23,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -572,7 +570,8 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 				return false;
 			TileEntityMixer mixer = (TileEntityMixer)multiblock;
 			// we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
-			return mixer.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick&&mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), false)!=null;
+			return mixer.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick&&
+					mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), false)!=null;
 		}
 
 		@Override
@@ -604,20 +603,6 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer, 
 				}
 			}
 			super.doProcessTick(multiblock);
-		}
-
-		@Override
-		protected void processFinish(TileEntityMultiblockMetal multiblock)
-		{
-			super.processFinish(multiblock);
-			if(this.recipe instanceof MixerRecipePotion)
-				for(int i : this.inputSlots)
-					if(!multiblock.getInventory().get(i).isEmpty()&&PotionHelper.isReagent(multiblock.getInventory().get(i)))
-					{
-						multiblock.getInventory().get(i).shrink(1);
-						if(multiblock.getInventory().get(i).getCount() <= 0)
-							multiblock.getInventory().set(i, ItemStack.EMPTY);
-					}
 		}
 	}
 

@@ -762,7 +762,7 @@ public class IEContent
 							bullet = AssemblerHandler.createQueryFromItemStack(s);
 						else if(potion==null&&s.getItem() instanceof ItemPotion)
 							potion = AssemblerHandler.createQuery(
-									MixerRecipePotion.getFluidStackForType(PotionUtils.getPotionFromItem(s), 250));
+									MixerPotionHelper.getFluidStackForType(PotionUtils.getPotionFromItem(s), 250));
 						else
 							return null;
 					}
@@ -1010,7 +1010,7 @@ public class IEContent
 			input.setAccessible(true);
 			for(Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
 				//noinspection unchecked
-				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
+				MixerPotionHelper.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
 						((IRegistryDelegate<PotionType>)input.get(mixPredicate)).get(),
 						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
 		} catch(Exception x)
@@ -1024,7 +1024,7 @@ public class IEContent
 				ItemStack input = ((AbstractBrewingRecipe)recipe).getInput();
 				ItemStack output = ((AbstractBrewingRecipe)recipe).getOutput();
 				if(input.getItem()==Items.POTIONITEM&&output.getItem()==Items.POTIONITEM)
-					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
+					MixerPotionHelper.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
 			}
 		if(arcRecycleThread!=null)
 		{
