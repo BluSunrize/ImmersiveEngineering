@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -95,7 +96,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_WoodenDevice0.WORKBENCH.getMeta())
 		{
@@ -291,10 +292,10 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	//	{
 	//		TileEntity tileEntity = world.getTileEntity(x, y, z);
-	//		if(tileEntity instanceof TileEntityWoodenPost)
+	//		if(tileEntity instanceof TileEntityPost)
 	//		{
 	//			int yy=y;
-	//			byte type = ((TileEntityWoodenPost)tileEntity).type;
+	//			byte type = ((TileEntityPost)tileEntity).type;
 	//			switch(type)
 	//			{
 	//			case 4:
@@ -303,7 +304,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//			case 7:
 	//				return;
 	//			default:
-	//				yy-= ((TileEntityWoodenPost)tileEntity).type;
+	//				yy-= ((TileEntityPost)tileEntity).type;
 	//				break;
 	//			}
 	//
@@ -316,7 +317,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//					for(ForgeDirection fd : new ForgeDirection[]{ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.EAST, ForgeDirection.WEST})
 	//					{
 	//						te = world.getTileEntity(x+fd.offsetX, yy+i, z+fd.offsetZ);
-	//						if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) te).type==(2+fd.ordinal()))
+	//						if(te instanceof TileEntityPost && ((TileEntityPost) te).type==(2+fd.ordinal()))
 	//							world.removeBlock(x+fd.offsetX, yy+i, z+fd.offsetZ);
 	//					}
 	//				}

@@ -6,31 +6,40 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.blocks.wooden;
+package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
-import com.google.common.collect.Lists;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 
-public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock, IFaceShape, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
-{
-	public static ArrayList<? extends Enum> postMetaProperties = Lists.newArrayList(BlockTypes_WoodenDevice1.POST, BlockTypes_MetalDecoration2.ALUMINUM_POST, BlockTypes_MetalDecoration2.STEEL_POST);
+import static net.minecraft.block.state.BlockFaceShape.*;
 
+public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFaceShape, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
+{
+	//TODO replace with blockstate property
 	public byte dummy;
+
+	public static TileEntityType<TileEntityPost> TYPE;
+
+	public TileEntityPost()
+	{
+		super(TYPE);
+	}
 
 	public static boolean _Immovable()
 	{
@@ -59,27 +68,27 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		return new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(1, 4, 1));
 	}
 
-	static ArrayList<String> emptyDisplayList = new ArrayList();
+	static ArrayList<String> emptyDisplayList = new ArrayList<>();
 
 	@Override
 	public ArrayList<String> compileDisplayList()
 	{
 		if(dummy!=0)
 			return emptyDisplayList;
-		ArrayList<String> list = new ArrayList();
+		ArrayList<String> list = new ArrayList<>();
 		list.add("base");
 		TileEntity te;
 		for(int i = 0; i <= 2; i++)
 		{
 			te = world.getTileEntity(getPos().add(0, 1+i, 0));
-			if(te instanceof TileEntityWoodenPost)//Stacked pieces
+			if(te instanceof TileEntityPost)//Stacked pieces
 			{
-				for(EnumFacing f : EnumFacing.HORIZONTALS)
-					if(((TileEntityWoodenPost)te).hasConnection(f))
+				for(EnumFacing f : EnumFacing.BY_HORIZONTAL_INDEX)
+					if(((TileEntityPost)te).hasConnection(f))
 					{
 						if(i==2)//Arms
 						{
-							TileEntityWoodenPost arm = (TileEntityWoodenPost)world.getTileEntity(pos.add(0, 1+i, 0).offset(f));
+							TileEntityPost arm = (TileEntityPost)world.getTileEntity(pos.add(0, 1+i, 0).offset(f));
 							boolean down = arm.hasConnection(EnumFacing.DOWN);
 							if(down)
 								list.add("arm_"+f.getName2()+"_down");
@@ -110,31 +119,23 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		if(dummy > 0&&dummy < 3)
 		{
 			IBlockState state = world.getBlockState(pos);
-			for(Enum meta : postMetaProperties)
-				if(state.getProperties().containsValue(meta))
-					return false;
-			AxisAlignedBB boundingBox = state.getBoundingBox(world, pos);
-			double minX = boundingBox.minX;
-			double maxX = boundingBox.maxX;
-			double minZ = boundingBox.minZ;
-			double maxZ = boundingBox.maxZ;
-			boolean connect = dir==EnumFacing.NORTH?maxZ==1: dir==EnumFacing.SOUTH?minZ==0: dir==EnumFacing.WEST?maxX==1: minX==0;
-			return connect&&((dir.getAxis()==Axis.Z&&minX > 0&&maxX < 1)||(dir.getAxis()==Axis.X&&minZ > 0&&maxZ < 1));
+			//TODO test
+			return state.canBeConnectedTo(world, pos, dir.getOpposite());
 		}
 		else if(dummy==3)
 		{
 			TileEntity te = world.getTileEntity(pos);
-			return (te instanceof TileEntityWoodenPost&&((TileEntityWoodenPost)te).dummy-3==dir.ordinal());
+			return (te instanceof TileEntityPost&&((TileEntityPost)te).dummy-3==dir.ordinal());
 		}
 		else if(dummy > 3)
 		{
-			if(world.isAirBlock(pos))
+			if(world.isAirBlock(pos)||dir.getAxis()!=Axis.Y)
 				return false;
 			IBlockState state = world.getBlockState(pos);
 			if(state.getMaterial().isReplaceable())
 				return false;
-			AxisAlignedBB boundingBox = state.getBoundingBox(world, pos);
-			return dir==EnumFacing.UP?boundingBox.minY==0: dir==EnumFacing.DOWN&&boundingBox.maxY==1;
+			BlockFaceShape shape = state.getBlockFaceShape(world, pos, dir.getOpposite());
+			return shape==SOLID||shape==CENTER_SMALL||shape==CENTER_BIG||shape==CENTER;
 		}
 		return false;
 	}
@@ -174,8 +175,9 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		for(int i = 1; i <= 3; i++)
 		{
 			world.setBlockState(pos.add(0, i, 0), state);
-			((TileEntityWoodenPost)world.getTileEntity(pos.add(0, i, 0))).dummy = (byte)i;
-			world.addBlockEvent(pos.add(0, i, 0), getBlockState(), 255, 0);
+			((TileEntityPost)world.getTileEntity(pos.add(0, i, 0))).dummy = (byte)i;
+			world.addBlockEvent(pos.add(0, i, 0), getBlockState().getBlock(),
+					255, 0);
 		}
 	}
 
@@ -185,15 +187,15 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 		if(dummy <= 3)
 			for(int i = 0; i <= 3; i++)
 			{
-				if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntityWoodenPost)
+				if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntityPost)
 					world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
 				if(i==3)
 				{
 					TileEntity te;
-					for(EnumFacing facing : EnumFacing.HORIZONTALS)
+					for(EnumFacing facing : EnumFacing.BY_HORIZONTAL_INDEX)
 					{
 						te = world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
-						if(te instanceof TileEntityWoodenPost&&((TileEntityWoodenPost)te).dummy==(3+facing.ordinal()))
+						if(te instanceof TileEntityPost&&((TileEntityPost)te).dummy==(3+facing.ordinal()))
 							world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
 					}
 				}
@@ -211,14 +213,14 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 				return false;
 			//No Arms if perpendicular arms exist
 			TileEntity perpendicular = world.getTileEntity(getPos().offset(side.rotateY()));
-			if(perpendicular instanceof TileEntityWoodenPost&&((TileEntityWoodenPost)perpendicular).dummy-3==side.rotateY().ordinal())
+			if(perpendicular instanceof TileEntityPost&&((TileEntityPost)perpendicular).dummy-3==side.rotateY().ordinal())
 				return false;
 			perpendicular = world.getTileEntity(getPos().offset(side.rotateYCCW()));
-			if(perpendicular instanceof TileEntityWoodenPost&&((TileEntityWoodenPost)perpendicular).dummy-3==side.rotateYCCW().ordinal())
+			if(perpendicular instanceof TileEntityPost&&((TileEntityPost)perpendicular).dummy-3==side.rotateYCCW().ordinal())
 				return false;
 
 			world.setBlockState(offsetPos, world.getBlockState(getPos()));
-			((TileEntityWoodenPost)world.getTileEntity(offsetPos)).dummy = (byte)(3+side.ordinal());
+			((TileEntityPost)world.getTileEntity(offsetPos)).dummy = (byte)(3+side.ordinal());
 			this.markBlockForUpdate(offsetPos, null);
 			this.markBlockForUpdate(getPos().add(0, -3, 0), null);
 		}
@@ -232,7 +234,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock
 	}
 
 	@Override
-	public boolean canConnectTransformer(IBlockAccess world, BlockPos pos)
+	public boolean canConnectTransformer(IBlockReader world, BlockPos pos)
 	{
 		return this.dummy > 0&&this.dummy <= 3;
 	}

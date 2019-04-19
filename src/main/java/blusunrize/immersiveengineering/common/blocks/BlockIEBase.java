@@ -17,6 +17,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -220,11 +222,11 @@ public class BlockIEBase extends Block
 		return in.with(prop, (V)val);
 	}
 
-	public void onIEBlockPlacedBy(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
+	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
 	{
 	}
 
-	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
 	{
 		return true;
 	}
@@ -293,6 +295,22 @@ public class BlockIEBase extends Block
 	public String createRegistryName()
 	{
 		return ImmersiveEngineering.MODID+":"+name;
+	}
+
+	@Override
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand,
+									EnumFacing side, float hitX, float hitY, float hitZ)
+	{
+		ItemStack activeStack = player.getHeldItem(hand);
+		if(activeStack.getToolTypes().contains(IEContent.toolHammer))
+			return hammerUseSide(side, player, world, pos, hitX, hitY, hitZ);
+		return super.onBlockActivated(state, world, pos, player, hand, side, hitX, hitY, hitZ);
+	}
+
+	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, World w, BlockPos pos,
+								 float hitX, float hitY, float hitZ)
+	{
+
 	}
 
 	public abstract static class IELadderBlock extends BlockIEBase

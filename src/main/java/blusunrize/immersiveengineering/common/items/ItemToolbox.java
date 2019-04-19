@@ -100,7 +100,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 				IBlockState toolbox = IEContent.blockMetalDecoration2.getStateFromMeta(BlockTypes_MetalDecoration2.TOOLBOX.getMeta());
 				if(world.setBlockState(pos, toolbox, 3))
 				{
-					IEContent.blockMetalDecoration2.onIEBlockPlacedBy(world, pos, toolbox, side, hitX, hitY, hitZ, player, stack);
+					IEContent.blockMetalDecoration2.onIEBlockPlacedBy(, world, toolbox);
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);

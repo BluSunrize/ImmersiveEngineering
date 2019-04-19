@@ -13,16 +13,13 @@ import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPost;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -32,7 +29,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.Properties;
 
 public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalDecoration2> implements IPostBlock
 {
@@ -61,80 +57,19 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
-	{
-		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityWoodenPost)
-		{
-			if(!((TileEntityWoodenPost)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
-				world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
-		}
-		super.breakBlock(world, pos, state);
-	}
-
-	@Override
-	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
-	{
-		int meta = this.getMetaFromState(world.getBlockState(pos));
-		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta()||meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
-		{
-			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof TileEntityWallmount)
-			{
-				if(facing==EnumFacing.UP)
-					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2;
-				else if(facing==EnumFacing.DOWN)
-					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
-				else
-					return facing==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
-			}
-		}
-		return super.canBeConnectedTo(world, pos, facing);
-	}
-
-	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityWoodenPost)
+		if(te instanceof TileEntityPost)
 		{
-			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
-		}
-		if(te instanceof TileEntityWallmount)
-		{
-			if(side==EnumFacing.UP)
-				return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2;
-			else if(side==EnumFacing.DOWN)
-				return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
-			else
-				return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
+			//TODO getFaceShape
+			return ((TileEntityPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
 		return super.isSideSolid(state, world, pos, side);
 	}
 
-
 	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
-	{
-		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_MetalDecoration2.STEEL_WALLMOUNT.getMeta()||meta==BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta())
-		{
-			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof TileEntityWallmount)
-			{
-				if(side==EnumFacing.UP)
-					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
-				else if(side==EnumFacing.DOWN)
-					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
-				else
-					return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
-			}
-		}
-		return BlockFaceShape.SOLID;
-	}
-
-	@Override
-	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_MetalDecoration2.STEEL_POST.getMeta()||stack.getItemDamage()==BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())
 		{
@@ -151,7 +86,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	@Override
 	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
 	{
-		return (world.getTileEntity(pos) instanceof TileEntityWoodenPost);
+		return (world.getTileEntity(pos) instanceof TileEntityPost);
 	}
 
 	@Override
@@ -160,13 +95,9 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		switch(type)
 		{
 			case STEEL_POST:
-				return new TileEntityWoodenPost();
-			case STEEL_WALLMOUNT:
-				return new TileEntityWallmount();
+				return new TileEntityPost();
 			case ALUMINUM_POST:
-				return new TileEntityWoodenPost();
-			case ALUMINUM_WALLMOUNT:
-				return new TileEntityWallmount();
+				return new TileEntityPost();
 			case LANTERN:
 				return new TileEntityLantern();
 			case RAZOR_WIRE:

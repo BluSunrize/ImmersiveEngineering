@@ -117,7 +117,7 @@ public class ItemCoresample extends ItemIEBase
 				IBlockState toolbox = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CORESAMPLE.getMeta());
 				if(world.setBlockState(pos, toolbox, 3))
 				{
-					IEContent.blockStoneDevice.onIEBlockPlacedBy(world, pos, toolbox, side, hitX, hitY, hitZ, player, stack);
+					IEContent.blockStoneDevice.onIEBlockPlacedBy(, world, toolbox);
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPost;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -19,7 +20,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -55,9 +56,9 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityWoodenPost)
+		if(tileEntity instanceof TileEntityPost)
 		{
-			if(!((TileEntityWoodenPost)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
+			if(!((TileEntityPost)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
 				world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
@@ -107,9 +108,9 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityWoodenPost)
+		if(te instanceof TileEntityPost)
 		{
-			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
+			return ((TileEntityPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
 		if(te instanceof TileEntityWallmount)
 		{
@@ -126,18 +127,18 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	@Override
 	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
 	{
-		return (world.getTileEntity(pos) instanceof TileEntityWoodenPost);
+		return (world.getTileEntity(pos) instanceof TileEntityPost);
 	}
 
 	//	@Override
 	//	public boolean canConnectTransformer(IBlockAccess world, BlockPos pos)
 	//	{
 	//		TileEntity tileEntity = world.getTileEntity(pos);
-	//		return tileEntity instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) tileEntity).dummy>0&&((TileEntityWoodenPost)tileEntity).dummy<=3;
+	//		return tileEntity instanceof TileEntityPost && ((TileEntityPost) tileEntity).dummy>0&&((TileEntityPost)tileEntity).dummy<=3;
 	//	}
 
 	@Override
-	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_WoodenDevice1.WATERMILL.getMeta())
 		{
@@ -258,10 +259,10 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	//	{
 	//		TileEntity tileEntity = world.getTileEntity(x, y, z);
-	//		if(tileEntity instanceof TileEntityWoodenPost)
+	//		if(tileEntity instanceof TileEntityPost)
 	//		{
 	//			int yy=y;
-	//			byte type = ((TileEntityWoodenPost)tileEntity).type;
+	//			byte type = ((TileEntityPost)tileEntity).type;
 	//			switch(type)
 	//			{
 	//			case 4:
@@ -270,7 +271,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//			case 7:
 	//				return;
 	//			default:
-	//				yy-= ((TileEntityWoodenPost)tileEntity).type;
+	//				yy-= ((TileEntityPost)tileEntity).type;
 	//				break;
 	//			}
 	//
@@ -283,7 +284,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//					for(ForgeDirection fd : new ForgeDirection[]{ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.EAST, ForgeDirection.WEST})
 	//					{
 	//						te = world.getTileEntity(x+fd.offsetX, yy+i, z+fd.offsetZ);
-	//						if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) te).type==(2+fd.ordinal()))
+	//						if(te instanceof TileEntityPost && ((TileEntityPost) te).type==(2+fd.ordinal()))
 	//							world.removeBlock(x+fd.offsetX, yy+i, z+fd.offsetZ);
 	//					}
 	//				}
@@ -356,7 +357,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 //		case WINDMILL_ADVANCED:
 //			return new TileEntityWindmillAdvanced();
 			case POST:
-				return new TileEntityWoodenPost();
+				return new TileEntityPost();
 			case WALLMOUNT:
 				return new TileEntityWallmount();
 		}

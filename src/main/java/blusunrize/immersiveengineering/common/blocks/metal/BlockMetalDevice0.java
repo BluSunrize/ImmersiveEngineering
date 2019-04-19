@@ -15,8 +15,7 @@ import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -52,7 +51,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())
 		{

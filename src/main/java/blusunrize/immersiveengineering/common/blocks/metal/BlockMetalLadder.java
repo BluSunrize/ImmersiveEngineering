@@ -19,8 +19,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -115,7 +114,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getMetadata() > 0)
 			return true;
@@ -155,7 +154,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public void onIEBlockPlacedBy(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
+	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
 	{
 		TileEntityLadder tile = (TileEntityLadder)world.getTileEntity(pos);
 		if(tile!=null)

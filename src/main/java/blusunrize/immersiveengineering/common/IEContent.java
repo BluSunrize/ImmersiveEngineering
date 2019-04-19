@@ -34,6 +34,8 @@ import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFa
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
+import blusunrize.immersiveengineering.common.blocks.generic.BlockConnector;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPost;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
@@ -409,7 +411,7 @@ public class IEContent
 		registerTile(TileEntityFluidSorter.class, event);
 		registerTile(TileEntityWatermill.class, event);
 		registerTile(TileEntityWindmill.class, event);
-		registerTile(TileEntityWoodenPost.class, event);
+		registerTile(TileEntityPost.class, event);
 		registerTile(TileEntityWallmount.class, event);
 
 		registerTile(TileEntityLadder.class, event);

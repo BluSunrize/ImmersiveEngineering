@@ -15,10 +15,13 @@ import java.util.Locale;
 
 public enum BlockTypes_MetalDecoration2 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
-	STEEL_POST,
+	//BlockWallmount
 	STEEL_WALLMOUNT,
-	ALUMINUM_POST,
 	ALUMINUM_WALLMOUNT,
+	//BlockPost
+	STEEL_POST,
+	ALUMINUM_POST,
+
 	LANTERN,
 	RAZOR_WIRE,
 	TOOLBOX,

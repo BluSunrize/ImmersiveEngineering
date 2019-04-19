@@ -15,11 +15,13 @@ import java.util.Locale;
 
 public enum BlockTypes_MetalDecoration1 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
+	//Use instances of BlockFence (no custom class needed)
+	ALUMINUM_FENCE(false),
 	STEEL_FENCE(false),
+	//BlockScaffold
 	STEEL_SCAFFOLDING_0(true),
 	STEEL_SCAFFOLDING_1(true),
 	STEEL_SCAFFOLDING_2(true),
-	ALUMINUM_FENCE(false),
 	ALUMINUM_SCAFFOLDING_0(true),
 	ALUMINUM_SCAFFOLDING_1(true),
 	ALUMINUM_SCAFFOLDING_2(true);

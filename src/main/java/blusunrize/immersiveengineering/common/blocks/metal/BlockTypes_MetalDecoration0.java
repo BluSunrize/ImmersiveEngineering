@@ -15,6 +15,7 @@ import java.util.Locale;
 
 public enum BlockTypes_MetalDecoration0 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
+	//Use BlockIEBase or some "BlockIEInert"
 	COIL_LV,
 	COIL_MV,
 	COIL_HV,

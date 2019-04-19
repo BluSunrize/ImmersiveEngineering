@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.common.blocks.generic.BlockConnector;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 

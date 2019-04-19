@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.blocks.metal;
+package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyConnector;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

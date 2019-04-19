@@ -23,10 +23,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
@@ -346,7 +346,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	 */
 
 	@Override
-	public void onIEBlockPlacedBy(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
+	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 
