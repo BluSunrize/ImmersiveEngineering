@@ -102,7 +102,7 @@ public class MultiblockBucketWheel implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return Utils.compareToOreName(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "blockSteel");
+		return Utils.isInTag(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "blockSteel");
 	}
 
 	@Override

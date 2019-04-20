@@ -125,7 +125,7 @@ public class MultiblockAutoWorkbench implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return Utils.compareToOreName(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "slabTreatedWood");
+		return Utils.isInTag(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "slabTreatedWood");
 	}
 
 	@Override

@@ -233,23 +233,23 @@ public class ExcavatorHandler
 			tag.setFloat("failChance", this.failChance);
 			NBTTagList tagList = new NBTTagList();
 			for(String ore : this.ores)
-				tagList.appendTag(new NBTTagString(ore));
+				tagList.add(new NBTTagString(ore));
 			tag.setTag("ores", tagList);
 
 			tagList = new NBTTagList();
 			for(float chance : this.chances)
-				tagList.appendTag(new NBTTagFloat(chance));
+				tagList.add(new NBTTagFloat(chance));
 			tag.setTag("chances", tagList);
 
 			tagList = new NBTTagList();
 			if(this.oreOutput!=null)
 				for(ItemStack output : this.oreOutput)
-					tagList.appendTag(output.writeToNBT(new NBTTagCompound()));
+					tagList.add(output.writeToNBT(new NBTTagCompound()));
 			tag.setTag("oreOutput", tagList);
 
 			tagList = new NBTTagList();
 			for(float chance : this.recalculatedChances)
-				tagList.appendTag(new NBTTagFloat(chance));
+				tagList.add(new NBTTagFloat(chance));
 			tag.setTag("recalculatedChances", tagList);
 			tag.setBoolean("isValid", isValid);
 			tag.setIntArray("dimensionWhitelist", dimensionWhitelist);
@@ -275,7 +275,7 @@ public class ExcavatorHandler
 			tagList = tag.getList("oreOutput", 10);
 			NonNullList<ItemStack> oreOutput = NonNullList.withSize(tagList.size(), ItemStack.EMPTY);
 			for(int i = 0; i < oreOutput.size(); i++)
-				oreOutput.set(i, new ItemStack(tagList.getCompoundTagAt(i)));
+				oreOutput.set(i, new ItemStack(tagList.getCompound(i)));
 
 			tagList = tag.getList("recalculatedChances", 5);
 			float[] recalculatedChances = new float[tagList.size()];

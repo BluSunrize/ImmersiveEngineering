@@ -82,7 +82,7 @@ public class InventoryTile implements IInventory
 				inv.getInventory().set(index, ItemStack.EMPTY);
 			else
 			{
-				stack = stack.splitStack(count);
+				stack = stack.split(count);
 				if(stack.getCount()==0)
 					inv.getInventory().set(index, ItemStack.EMPTY);
 			}

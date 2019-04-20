@@ -168,10 +168,10 @@ public class TConstructHelper extends IECompatModule
 			}
 
 		NBTTagList tagList = new NBTTagList();
-		tagList.appendTag(output.writeToNBT(new NBTTagCompound()));
+		tagList.add(output.writeToNBT(new NBTTagCompound()));
 		for(FluidStack stack : inputStacks)
 			if(stack!=null)
-				tagList.appendTag(stack.writeToNBT(new NBTTagCompound()));
+				tagList.add(stack.writeToNBT(new NBTTagCompound()));
 
 		NBTTagCompound message = new NBTTagCompound();
 		message.setTag("alloy", tagList);

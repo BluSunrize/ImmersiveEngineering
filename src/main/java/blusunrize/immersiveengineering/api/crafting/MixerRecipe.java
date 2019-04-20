@@ -161,7 +161,7 @@ public class MixerRecipe extends MultiblockRecipe
 		{
 			NBTTagList list = new NBTTagList();
 			for(IngredientStack add : this.itemInputs)
-				list.appendTag(add.writeToNBT(new NBTTagCompound()));
+				list.add(add.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("itemInputs", list);
 		}
 		return nbt;
@@ -176,7 +176,7 @@ public class MixerRecipe extends MultiblockRecipe
 			NBTTagList list = nbt.getList("itemInputs", 10);
 			itemInputs = new IngredientStack[list.size()];
 			for(int i = 0; i < itemInputs.length; i++)
-				itemInputs[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
+				itemInputs[i] = IngredientStack.readFromNBT(list.getCompound(i));
 		}
 		for(MixerRecipe recipe : recipeList)
 			if(recipe.fluidInput.equals(fluidInput))

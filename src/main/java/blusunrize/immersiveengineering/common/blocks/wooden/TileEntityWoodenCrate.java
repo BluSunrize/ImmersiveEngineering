@@ -97,7 +97,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", (byte)i);
 				this.inventory.get(i).writeToNBT(itemTag);
-				invList.appendTag(itemTag);
+				invList.add(itemTag);
 			}
 		if(!toItem||write)
 			nbt.setTag("inventory", invList);

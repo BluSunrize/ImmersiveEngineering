@@ -86,7 +86,7 @@ public abstract class ContainerItem extends Container
 							continue;
 						ItemStack insert = stackInSlot;
 						if(space < stackInSlot.getCount())
-							insert = stackInSlot.splitStack(space);
+							insert = stackInSlot.split(space);
 						if(this.mergeItemStack(insert, i, i+1, true))
 						{
 							b = false;

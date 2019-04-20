@@ -317,7 +317,7 @@ public class IngredientStack
 			NBTTagList list = new NBTTagList();
 			for(ItemStack stack : stackList)
 				if(!stack.isEmpty())
-					list.appendTag(stack.writeToNBT(new NBTTagCompound()));
+					list.add(stack.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("stackList", list);
 			nbt.setInt("nbtType", 1);
 		}
@@ -346,7 +346,7 @@ public class IngredientStack
 					NBTTagList list = nbt.getList("stackList", 10);
 					List<ItemStack> stackList = new ArrayList();
 					for(int i = 0; i < list.size(); i++)
-						stackList.add(new ItemStack(list.getCompoundTagAt(i)));
+						stackList.add(new ItemStack(list.getCompound(i)));
 					return new IngredientStack(stackList, nbt.getInt("inputSize"));
 				case 2:
 					return new IngredientStack(nbt.getString("oreName"), nbt.getInt("inputSize"));

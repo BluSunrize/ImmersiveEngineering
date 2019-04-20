@@ -148,7 +148,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 						tagCompound.setDouble("z", sampleZ);
 						tagCompound.setDouble("rot", 180.0);
 
-						nbttaglist.appendTag(tagCompound);
+						nbttaglist.add(tagCompound);
 						mapTagCompound.setTag("Decorations", nbttaglist);
 					}
 					else

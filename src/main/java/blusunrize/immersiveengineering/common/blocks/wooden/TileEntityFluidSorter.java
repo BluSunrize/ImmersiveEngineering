@@ -8,18 +8,22 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -27,14 +31,19 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
 /**
  * @author BluSunrize - 02.03.2017
  */
 public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 {
+	public static TileEntityType<TileEntityFluidSorter> TYPE;
+
 	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
 	//	public static final int filterSlotsPerSide = 8;
 	public FluidStack[][] filters = new FluidStack[6][8];
@@ -44,6 +53,14 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
 	 */
 	private static Set<BlockPos> usedRouters = null;
+	private EnumMap<EnumFacing, CapabilityReference<IFluidHandler>> neighborCaps = new EnumMap<>(EnumFacing.class);
+
+	public TileEntityFluidSorter()
+	{
+		super(TYPE);
+		for(EnumFacing f : EnumFacing.VALUES)
+			neighborCaps.put(f, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, f));
+	}
 
 	public int routeFluid(EnumFacing inputSide, FluidStack stack, boolean doFill)
 	{
@@ -82,12 +99,10 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		{
 			int rand = Utils.RAND.nextInt(lengthFiltered);
 			EnumFacing currentSide = sides[rand];
-			TileEntity te = Utils.getExistingTileEntity(world, pos.offset(currentSide));
-			if (te!=null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, currentSide.getOpposite()))
+			CapabilityReference<IFluidHandler> capRef = neighborCaps.get(currentSide);
+			IFluidHandler fluidOut = capRef.get();
+			if(fluidOut!=null)
 			{
-				IFluidHandler fluidOut = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-						currentSide.getOpposite());
-				assert fluidOut!=null;
 				int filledHere = fluidOut.fill(stack, doFill);
 				stack.amount -= filledHere;
 				ret += filledHere;
@@ -184,7 +199,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 		{
 			NBTTagList filterList = nbt.getList("filter_"+side, 10);
 			for(int i = 0; i < filterList.size(); i++)
-				filters[side][i] = FluidStack.loadFluidStackFromNBT(filterList.getCompoundTagAt(i));
+				filters[side][i] = FluidStack.loadFluidStackFromNBT(filterList.getCompound(i));
 		}
 	}
 
@@ -200,34 +215,30 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 				NBTTagCompound tag = new NBTTagCompound();
 				if(filters[side][i]!=null)
 					filters[side][i].writeToNBT(tag);
-				filterList.appendTag(tag);
+				filterList.add(tag);
 			}
 			nbt.setTag("filter_"+side, filterList);
 		}
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
 
-	IFluidHandler[] insertionHandlers = {
-			new SorterFluidHandler(this, EnumFacing.DOWN),
-			new SorterFluidHandler(this, EnumFacing.UP),
-			new SorterFluidHandler(this, EnumFacing.NORTH),
-			new SorterFluidHandler(this, EnumFacing.SOUTH),
-			new SorterFluidHandler(this, EnumFacing.WEST),
-			new SorterFluidHandler(this, EnumFacing.EAST)};
+	private EnumMap<EnumFacing, CapabilityHolder<IFluidHandler>> insertionHandlers = new EnumMap<>(EnumFacing.class);
+
+	{
+		for(EnumFacing f : EnumFacing.VALUES)
+		{
+			CapabilityHolder<IFluidHandler> forSide = CapabilityHolder.empty();
+			insertionHandlers.put(f, forSide);
+			caps.add(forSide);
+		}
+	}
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null)
-			return (T)insertionHandlers[facing.ordinal()];
+		if(capability==FLUID_HANDLER_CAPABILITY&&facing!=null)
+			return ApiUtils.constantOptional(insertionHandlers.get(facing), new SorterFluidHandler(this, facing));
 		return super.getCapability(capability, facing);
 	}
 

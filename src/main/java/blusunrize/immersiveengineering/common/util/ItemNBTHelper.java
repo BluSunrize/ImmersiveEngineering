@@ -167,7 +167,7 @@ public class ItemNBTHelper
 		NBTTagCompound displayTag = getTagCompound(stack, "display");
 		NBTTagList list = new NBTTagList();
 		for(String s : lore)
-			list.appendTag(new NBTTagString(s));
+			list.add(new NBTTagString(s));
 		displayTag.setTag("Lore", list);
 		setTagCompound(stack, "display", displayTag);
 	}
@@ -278,7 +278,7 @@ public class ItemNBTHelper
 							NBTTagList listTarget = (NBTTagList)target.getTag(key);
 							NBTTagList listAdd = (NBTTagList)add.getTag(key);
 							for(int i = 0; i < listAdd.size(); i++)
-								listTarget.appendTag(listAdd.get(i));
+								listTarget.add(listAdd.get(i));
 							target.setTag(key, listTarget);
 							break;
 						case 10: //Compound

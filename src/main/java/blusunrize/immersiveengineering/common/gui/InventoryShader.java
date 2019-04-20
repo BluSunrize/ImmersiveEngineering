@@ -80,7 +80,7 @@ public class InventoryShader implements IInventory
 				this.container.onCraftMatrixChanged(this);
 				return itemstack;
 			}
-			itemstack = this.shader.splitStack(j);
+			itemstack = this.shader.split(j);
 
 			if(shader.getCount()==0)
 				this.shader = ItemStack.EMPTY;

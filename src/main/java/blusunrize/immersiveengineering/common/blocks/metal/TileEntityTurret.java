@@ -321,7 +321,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			nbt.setString("owner", owner);
 		NBTTagList list = new NBTTagList();
 		for(String s : targetList)
-			list.appendTag(new NBTTagString(s));
+			list.add(new NBTTagString(s));
 		nbt.setTag("targetList", list);
 		nbt.setBoolean("whitelist", whitelist);
 		nbt.setBoolean("attackAnimals", attackAnimals);
@@ -530,7 +530,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		{
 			NBTTagList list = new NBTTagList();
 			for(String s : turret.targetList)
-				list.appendTag(new NBTTagString(s));
+				list.add(new NBTTagString(s));
 			tag.setTag("targetList", list);
 		}
 		if(turret.whitelist)

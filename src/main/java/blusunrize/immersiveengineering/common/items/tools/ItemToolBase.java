@@ -56,7 +56,7 @@ public class ItemToolBase extends ItemTool
 	public boolean getIsRepairable(ItemStack itemToRepair, ItemStack stack)
 	{
 		if(this.oreDict!=null)
-			return Utils.compareToOreName(stack, oreDict);
+			return Utils.isInTag(stack, oreDict);
 		return false;
 	}
 }

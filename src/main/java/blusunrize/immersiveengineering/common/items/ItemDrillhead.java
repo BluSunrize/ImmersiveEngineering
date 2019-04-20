@@ -96,7 +96,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@Override
 	public boolean getIsRepairable(ItemStack stack, ItemStack material)
 	{
-		return Utils.compareToOreName(material, getHeadPerm(stack).repairMaterial);
+		return Utils.isInTag(material, getHeadPerm(stack).repairMaterial);
 	}
 
 	@Override

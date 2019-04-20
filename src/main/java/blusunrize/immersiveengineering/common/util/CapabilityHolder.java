@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.common.util;
 
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
@@ -18,6 +20,16 @@ public class CapabilityHolder<T>
 	public static <T> CapabilityHolder<T> empty()
 	{
 		return new CapabilityHolder<>(null);
+	}
+
+	public static <T> CapabilityHolder<T> ofConstant(@Nonnull T val)
+	{
+		return new CapabilityHolder<>(LazyOptional.of(() -> val));
+	}
+
+	public static <T> CapabilityHolder<T> of(NonNullSupplier<T> source)
+	{
+		return new CapabilityHolder<>(LazyOptional.of(source));
 	}
 
 	private LazyOptional<T> value;

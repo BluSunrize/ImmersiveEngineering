@@ -55,6 +55,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.EnumFacing.Axis;
@@ -102,16 +103,10 @@ public class Utils
 {
 	public static final Random RAND = new Random();
 
-	public static boolean compareToOreName(ItemStack stack, String oreName)
+	public static boolean isInTag(ItemStack stack, ResourceLocation tagName)
 	{
-		if(!ApiUtils.isExistingOreName(oreName))
-			return false;
-		ItemStack comp = copyStackWithAmount(stack, 1);
-		List<ItemStack> s = OreDictionary.getOres(oreName);
-		for(ItemStack st : s)
-			if(OreDictionary.itemMatches(st, comp, false))
-				return true;
-		return false;
+		Tag<Item> tag = ItemTags.getCollection().get(tagName);
+		return tag!=null&&tag.contains(stack.getItem());
 	}
 
 	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
@@ -206,7 +201,7 @@ public class Utils
 		if(stack.getItem().equals(Items.DYE))
 			return true;
 		for(int dye = 0; dye < dyeNames.length; dye++)
-			if(compareToOreName(stack, "dye"+dyeNames[dye]))
+			if(isInTag(stack, "dye"+dyeNames[dye]))
 				return true;
 		return false;
 	}
@@ -265,7 +260,7 @@ public class Utils
 	{
 		IBlockState state = world.getBlockState(pos);
 		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
-		return compareToOreName(stack, oreName);
+		return isInTag(stack, oreName);
 	}
 
 	public static boolean canFenceConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing, Material material)
@@ -731,7 +726,7 @@ public class Utils
 			type = 4;
 		expl.setByte("Type", (byte)type);
 		NBTTagList list = new NBTTagList();
-		list.appendTag(expl);
+		list.add(expl);
 		tag.setTag("Explosions", list);
 
 		return tag;
@@ -943,7 +938,7 @@ public class Utils
 		}
 		int stackLimit = inventory.getInventoryStackLimit();
 		inventory.setInventorySlotContents(slot, copyStackWithAmount(stack, Math.min(stack.getCount(), stackLimit)));
-		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.splitStack(stack.getCount()-stackLimit);
+		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
 	}
 
 	public static ItemStack addToOccupiedSlot(IInventory inventory, int slot, ItemStack stack, ItemStack existingStack)
@@ -959,7 +954,7 @@ public class Utils
 		}
 		existingStack.grow(min(stack.getCount(), stackLimit));
 		inventory.setInventorySlotContents(slot, existingStack);
-		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.splitStack(stack.getCount()-stackLimit);
+		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
 	}
 
 
@@ -1511,7 +1506,7 @@ public class Utils
 		int max = nbt.size();
 		for(int i = 0; i < max; i++)
 		{
-			NBTTagCompound itemTag = nbt.getCompoundTagAt(i);
+			NBTTagCompound itemTag = nbt.getCompound(i);
 			int slot = itemTag.getByte("Slot")&255;
 			if(slot >= 0&&slot < size)
 				inv.set(slot, new ItemStack(itemTag));
@@ -1528,7 +1523,7 @@ public class Utils
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", (byte)i);
 				inv[i].writeToNBT(itemTag);
-				invList.appendTag(itemTag);
+				invList.add(itemTag);
 			}
 		return invList;
 	}
@@ -1544,7 +1539,7 @@ public class Utils
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", slot);
 				s.writeToNBT(itemTag);
-				invList.appendTag(itemTag);
+				invList.add(itemTag);
 			}
 			slot++;
 		}

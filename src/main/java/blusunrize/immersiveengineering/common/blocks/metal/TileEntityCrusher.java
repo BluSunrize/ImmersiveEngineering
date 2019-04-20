@@ -72,7 +72,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			NBTTagList invList = nbt.getList("inputs", 10);
 			inputs.clear();
 			for(int i = 0; i < invList.size(); i++)
-				inputs.add(new ItemStack(invList.getCompoundTagAt(i)));
+				inputs.add(new ItemStack(invList.getCompound(i)));
 		}
 	}
 
@@ -84,7 +84,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		{
 			NBTTagList invList = new NBTTagList();
 			for(ItemStack s : inputs)
-				invList.appendTag(s.writeToNBT(new NBTTagCompound()));
+				invList.add(s.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("inputs", invList);
 		}
 	}

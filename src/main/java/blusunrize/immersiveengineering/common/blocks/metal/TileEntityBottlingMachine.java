@@ -58,7 +58,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		bottlingProcessQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
 		{
-			NBTTagCompound tag = processNBT.getCompoundTagAt(i);
+			NBTTagCompound tag = processNBT.getCompound(i);
 			BottlingProcess process = BottlingProcess.readFromNBT(tag);
 			bottlingProcessQueue.add(process);
 		}
@@ -71,7 +71,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		super.writeCustomNBT(nbt, descPacket);
 		NBTTagList processNBT = new NBTTagList();
 		for(BottlingProcess process : this.bottlingProcessQueue)
-			processNBT.appendTag(process.writeToNBT());
+			processNBT.add(process.writeToNBT());
 		nbt.setTag("bottlingQueue", processNBT);
 		nbt.setTag("tank", tanks[0].writeToNBT(new NBTTagCompound()));
 	}

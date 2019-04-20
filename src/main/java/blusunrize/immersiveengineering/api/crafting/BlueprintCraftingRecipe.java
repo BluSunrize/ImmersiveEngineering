@@ -295,7 +295,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	{
 		NBTTagList list = new NBTTagList();
 		for(IngredientStack ingr : this.inputs)
-			list.appendTag(ingr.writeToNBT(new NBTTagCompound()));
+			list.add(ingr.writeToNBT(new NBTTagCompound()));
 		nbt.setTag("inputs", list);
 		nbt.setString("blueprintCategory", this.blueprintCategory);
 		return nbt;
@@ -306,7 +306,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		NBTTagList list = nbt.getList("inputs", 10);
 		IngredientStack[] inputs = new IngredientStack[list.size()];
 		for(int i = 0; i < inputs.length; i++)
-			inputs[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
+			inputs[i] = IngredientStack.readFromNBT(list.getCompound(i));
 
 		List<BlueprintCraftingRecipe> recipeList = BlueprintCraftingRecipe.recipeList.get(nbt.getString("blueprintCategory"));
 		for(BlueprintCraftingRecipe recipe : recipeList)

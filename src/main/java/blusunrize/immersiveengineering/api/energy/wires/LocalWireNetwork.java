@@ -74,7 +74,7 @@ public class LocalWireNetwork implements IWorldTickable
 		for(ConnectionPoint p : connections.keySet())
 			for(Connection conn : connections.get(p))
 				if(conn.isPositiveEnd(p))
-					wires.appendTag(conn.toNBT());
+					wires.add(conn.toNBT());
 		NBTTagCompound ret = new NBTTagCompound();
 		ret.setTag("wires", wires);
 		Multimap<BlockPos, ConnectionPoint> connsByBlock = HashMultimap.create();
@@ -95,9 +95,9 @@ public class LocalWireNetwork implements IWorldTickable
 				complete.setTag("proxy", proxy.writeToNBT());
 				NBTTagList cps = new NBTTagList();
 				for(ConnectionPoint cp : connsByBlock.get(p))
-					cps.appendTag(cp.createTag());
+					cps.add(cp.createTag());
 				complete.setTag("points", cps);
-				proxies.appendTag(complete);
+				proxies.add(complete);
 			}
 		}
 		ret.setTag("proxies", proxies);

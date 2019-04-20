@@ -174,7 +174,7 @@ public class GlobalWireNetwork implements ITickable
 		Set<LocalWireNetwork> savedNets = Collections.newSetFromMap(new IdentityHashMap<>());
 		for(LocalWireNetwork local : localNets.values())
 			if(savedNets.add(local))
-				locals.appendTag(local.writeToNBT());
+				locals.add(local.writeToNBT());
 		ret.setTag("locals", locals);
 		return ret;
 	}

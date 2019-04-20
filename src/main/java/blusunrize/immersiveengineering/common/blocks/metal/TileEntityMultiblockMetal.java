@@ -81,7 +81,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		processQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
 		{
-			NBTTagCompound tag = processNBT.getCompoundTagAt(i);
+			NBTTagCompound tag = processNBT.getCompound(i);
 			IMultiblockRecipe recipe = readRecipeFromNBT(tag);
 			if(recipe!=null)
 			{
@@ -120,7 +120,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		nbt.setBoolean("redstoneControlInverted", redstoneControlInverted);
 		NBTTagList processNBT = new NBTTagList();
 		for(MultiblockProcess process : this.processQueue)
-			processNBT.appendTag(writeProcessToNBT(process));
+			processNBT.add(writeProcessToNBT(process));
 		nbt.setTag("processQueue", processNBT);
 		if(computerOn.isPresent())
 			nbt.setBoolean("computerOn", computerOn.get());
@@ -840,7 +840,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 				if(size > 0&&inputItem.getCount() > size)
 				{
-					inputItem.splitStack(size);
+					inputItem.split(size);
 					processTick = 0;
 					clearProcess = false;
 				}

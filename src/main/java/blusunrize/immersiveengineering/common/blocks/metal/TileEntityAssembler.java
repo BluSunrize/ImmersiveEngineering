@@ -143,7 +143,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			CrafterPatternInventory pattern = patterns[r];
 			for(int i = 0; i < list.size(); i++)
 			{
-				NBTTagCompound itemTag = list.getCompoundTagAt(i);
+				NBTTagCompound itemTag = list.getCompound(i);
 				pattern.inv.set(itemTag.getInt("slot"), new ItemStack(itemTag));
 			}
 		}
@@ -293,7 +293,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					if(!next.isEmpty()&&ApiUtils.stackMatchesObject(next, recipeQuery.query, true))
 					{
 						int taken = Math.min(querySize, next.getCount());
-						ItemStack forGrid = next.splitStack(taken);
+						ItemStack forGrid = next.split(taken);
 						if(gridItems!=null)
 							gridItems.set(i, forGrid);
 						if(next.getCount() <= 0)
@@ -622,7 +622,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					setInventorySlotContents(slot, ItemStack.EMPTY);
 				else
 				{
-					stack = stack.splitStack(amount);
+					stack = stack.split(amount);
 					if(stack.getCount()==0)
 						setInventorySlotContents(slot, ItemStack.EMPTY);
 				}
@@ -748,7 +748,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					NBTTagCompound itemTag = new NBTTagCompound();
 					itemTag.setByte("Slot", (byte)i);
 					this.inv.get(i).writeToNBT(itemTag);
-					list.appendTag(itemTag);
+					list.add(itemTag);
 				}
 		}
 
@@ -756,7 +756,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
-				NBTTagCompound itemTag = list.getCompoundTagAt(i);
+				NBTTagCompound itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
 				if(slot >= 0&&slot < getSizeInventory())
 					this.inv.set(slot, new ItemStack(itemTag));

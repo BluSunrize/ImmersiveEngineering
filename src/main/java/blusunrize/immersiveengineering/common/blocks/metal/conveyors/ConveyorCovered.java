@@ -74,7 +74,7 @@ public class ConveyorCovered extends ConveyorBasic
 				return Boolean.FALSE;
 			}
 		});
-		validCoveyorCovers.add(input -> input==null?Boolean.FALSE: Utils.compareToOreName(input, "blockGlass"));
+		validCoveyorCovers.add(input -> input==null?Boolean.FALSE: Utils.isInTag(input, "blockGlass"));
 	}
 
 	public ItemStack cover = ItemStack.EMPTY;

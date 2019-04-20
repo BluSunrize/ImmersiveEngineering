@@ -80,7 +80,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			{
 				if(!simulate)
 				{
-					inv.getInventory().set(offsetSlot, stack.splitStack(accepted));
+					inv.getInventory().set(offsetSlot, stack.split(accepted));
 					inv.doGraphicalUpdates(offsetSlot);
 					return stack;
 				}
@@ -110,7 +110,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			{
 				if(!simulate)
 				{
-					ItemStack newStack = stack.splitStack(accepted);
+					ItemStack newStack = stack.split(accepted);
 					newStack.grow(currentStack.getCount());
 					inv.getInventory().set(offsetSlot, newStack);
 					inv.doGraphicalUpdates(offsetSlot);

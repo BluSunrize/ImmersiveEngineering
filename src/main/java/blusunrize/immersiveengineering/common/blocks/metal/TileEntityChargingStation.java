@@ -321,7 +321,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	//				setInventorySlotContents(slot, null);
 	//			else
 	//			{
-	//				stack = stack.splitStack(amount);
+	//				stack = stack.split(amount);
 	//				if(stack.stackSize == 0)
 	//					setInventorySlotContents(slot, null);
 	//			}

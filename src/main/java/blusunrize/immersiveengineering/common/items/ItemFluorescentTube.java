@@ -65,7 +65,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 				EntityFluorescentTube tube = new EntityFluorescentTube(world, stack.copy(), angle);
 				tube.setPosition(pos.getX()+hitX, pos.getY()+1.5, pos.getZ()+hitZ);
 				world.spawnEntity(tube);
-				stack.splitStack(1);
+				stack.split(1);
 				if(stack.getCount() > 0)
 					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
 				else

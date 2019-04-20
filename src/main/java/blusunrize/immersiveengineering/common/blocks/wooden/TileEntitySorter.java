@@ -8,35 +8,42 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.function.Predicate;
+
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 {
+	public static TileEntityType<TileEntitySorter> TYPE;
+
 	public SorterInventory filter;
 	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
 	public static final int filterSlotsPerSide = 8;
@@ -47,9 +54,14 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	 */
 	private static Set<BlockPos> routed = null;
 
+	private EnumMap<EnumFacing, CapabilityReference<IItemHandler>> neighborCaps = new EnumMap<>(EnumFacing.class);
+
 	public TileEntitySorter()
 	{
+		super(TYPE);
 		filter = new SorterInventory(this);
+		for(EnumFacing f : EnumFacing.VALUES)
+			neighborCaps.put(f, CapabilityReference.forNeighbor(this, ITEM_HANDLER_CAPABILITY, f));
 	}
 
 
@@ -170,11 +182,11 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			for(EnumFacing side : EnumFacing.values())
 				if(side!=outputSide)
 				{
-					TileEntity neighbourTile = world.getTileEntity(getPos().offset(side));
-					if(neighbourTile!=null&&neighbourTile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()))
+					CapabilityReference<IItemHandler> capRef = neighborCaps.get(side);
+					IItemHandler itemHandler = capRef.get();
+					if(itemHandler!=null)
 					{
 						Predicate<ItemStack> concatFilter = null;
-						IItemHandler itemHandler = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
 						for(int i = 0; i < itemHandler.getSlots(); i++)
 						{
 							ItemStack extractItem = itemHandler.extractItem(i, amount, true);
@@ -202,12 +214,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 
 	private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean oredict, boolean nbt)
 	{
-		boolean b = OreDictionary.itemMatches(filterStack, stack, true);
+		boolean b = ItemStack.areItemsEqual(filterStack, stack);
 		if(!b&&fuzzy)
-			b = filterStack.getItem().equals(stack.getItem());
+			b = ItemStack.areItemsEqualIgnoreDurability(filterStack, stack);
 		if(!b&&oredict)
-			for(String name : OreDictionary.getOreNames())
-				if(Utils.compareToOreName(stack, name)&&Utils.compareToOreName(filterStack, name))
+			for(ResourceLocation name : ItemTags.getCollection().getOwningTags(stack.getItem()))
+				if(Utils.isInTag(filterStack, name))
 				{
 					b = true;
 					break;
@@ -323,29 +335,23 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		}
 	}
 
+	private EnumMap<EnumFacing, CapabilityHolder<IItemHandler>> insertionHandlers = new EnumMap<>(EnumFacing.class);
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&facing!=null)
-			return true;
-		return super.hasCapability(capability, facing);
+		for(EnumFacing f : EnumFacing.VALUES)
+		{
+			CapabilityHolder<IItemHandler> forSide = CapabilityHolder.empty();
+			insertionHandlers.put(f, forSide);
+			caps.add(forSide);
+		}
 	}
-
-	IItemHandler[] insertionHandlers = {
-			new SorterInventoryHandler(this, EnumFacing.DOWN),
-			new SorterInventoryHandler(this, EnumFacing.UP),
-			new SorterInventoryHandler(this, EnumFacing.NORTH),
-			new SorterInventoryHandler(this, EnumFacing.SOUTH),
-			new SorterInventoryHandler(this, EnumFacing.WEST),
-			new SorterInventoryHandler(this, EnumFacing.EAST)};
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&facing!=null)
-			return (T)insertionHandlers[facing.ordinal()];
+		if(capability==ITEM_HANDLER_CAPABILITY&&facing!=null)
+			return ApiUtils.constantOptional(insertionHandlers.get(facing), new SorterInventoryHandler(this, facing));
 		return super.getCapability(capability, facing);
 	}
 
@@ -394,6 +400,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		public int getSlotLimit(int slot)
 		{
 			return 64;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+		{
+			return true;
 		}
 
 		@Override
@@ -451,7 +463,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 					setInventorySlotContents(slot, null);
 				else
 				{
-					stack = stack.splitStack(amount);
+					stack = stack.split(amount);
 					if(stack.getCount()==0)
 						setInventorySlotContents(slot, null);
 				}
@@ -484,9 +496,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		}
 
 		@Override
-		public String getName()
+		public ITextComponent getName()
 		{
-			return "IESorterLayout";
+			return new TextComponentString("IESorterLayout");
 		}
 
 		@Override
@@ -495,10 +507,11 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			return false;
 		}
 
+		@Nullable
 		@Override
-		public ITextComponent getDisplayName()
+		public ITextComponent getCustomName()
 		{
-			return new TextComponentString(getName());
+			return null;
 		}
 
 		@Override
@@ -543,8 +556,8 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 					{
 						NBTTagCompound itemTag = new NBTTagCompound();
 						itemTag.setByte("Slot", (byte)(i*filterSlotsPerSide+j));
-						this.filters[i][j].writeToNBT(itemTag);
-						list.appendTag(itemTag);
+						this.filters[i][j].write(itemTag);
+						list.add(itemTag);
 					}
 
 		}
@@ -553,13 +566,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
-				NBTTagCompound itemTag = list.getCompoundTagAt(i);
+				NBTTagCompound itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
-				if(slot >= 0&&slot < getSizeInventory())
-					this.filters[slot/filterSlotsPerSide][slot%filterSlotsPerSide] = new ItemStack(itemTag);
+				if(slot < getSizeInventory())
+					this.filters[slot/filterSlotsPerSide][slot%filterSlotsPerSide] = ItemStack.read(itemTag);
 			}
 		}
-
 
 		@Override
 		public int getField(int id)
