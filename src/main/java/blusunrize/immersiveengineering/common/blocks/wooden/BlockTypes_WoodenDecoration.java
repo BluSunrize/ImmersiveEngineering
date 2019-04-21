@@ -15,7 +15,9 @@ import java.util.Locale;
 
 public enum BlockTypes_WoodenDecoration implements IStringSerializable, BlockIEBase.IBlockEnum
 {
+	//BlockFence
 	FENCE,
+	//BlockScaffolding
 	SCAFFOLDING;
 
 	@Override

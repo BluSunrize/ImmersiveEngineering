@@ -16,15 +16,21 @@ import blusunrize.immersiveengineering.common.util.RotationUtil;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityTurntable extends TileEntityIEBase implements IDirectionalTile, INeighbourChangeTile, IHammerInteraction
 {
-
+	public static TileEntityType<TileEntityTurntable> TYPE;
 	private EnumFacing facing = EnumFacing.UP;
 	private boolean redstone = false;
 	public boolean invert = false;
+
+	public TileEntityTurntable()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -100,7 +106,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 		{
 			invert = !invert;
 			markDirty();
-			world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
+			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 			return true;
 		}
 		return false;

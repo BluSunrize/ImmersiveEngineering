@@ -203,13 +203,13 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public SideConfig getSideConfig(int side)
+	public SideConfig getSideConfig(EnumFacing side)
 	{
 		return (side >= 0&&side < 6)?SideConfig.values()[this.sideConfig[side]+1]: SideConfig.NONE;
 	}
 
 	@Override
-	public boolean toggleSide(int side, EntityPlayer p)
+	public boolean toggleSide(EnumFacing side, EntityPlayer p)
 	{
 		sideConfig[side]++;
 		if(sideConfig[side] > 1)

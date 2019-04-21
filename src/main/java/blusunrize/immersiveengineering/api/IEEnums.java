@@ -20,6 +20,8 @@ public class IEEnums
 		INPUT("in"),
 		OUTPUT("out");
 
+		public static final SideConfig[] VALUES = values();
+
 		final String texture;
 
 		SideConfig(String texture)

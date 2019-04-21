@@ -19,6 +19,7 @@ public enum BlockTypes_MetalDevice0 implements IStringSerializable, BlockIEBase.
 	CAPACITOR_MV,
 	CAPACITOR_HV,
 	CAPACITOR_CREATIVE,
+	//BlockBarrel
 	BARREL,
 	FLUID_PUMP,
 	FLUID_PLACER;

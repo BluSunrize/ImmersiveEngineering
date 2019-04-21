@@ -14,15 +14,18 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalBarrel;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
@@ -30,38 +33,64 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+
+import static blusunrize.immersiveengineering.api.IEEnums.SideConfig.NONE;
+import static blusunrize.immersiveengineering.api.IEEnums.SideConfig.OUTPUT;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
 public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickable, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
 {
-	public int[] sideConfig = {1, 0};
-	public FluidTank tank = new FluidTank(12000);
 	public static final int IGNITION_TEMPERATURE = 573;
+	public static TileEntityType<TileEntityWoodenBarrel> TYPE;
+
+	public EnumMap<EnumFacing, SideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
+			EnumFacing.DOWN, OUTPUT,
+			EnumFacing.UP, SideConfig.INPUT
+	));
+	public FluidTank tank = new FluidTank(12000);
+
+	public TileEntityWoodenBarrel(TileEntityType<? extends TileEntityWoodenBarrel> type)
+	{
+		super(type);
+	}
+
+	public TileEntityWoodenBarrel()
+	{
+		this(TYPE);
+	}
+
+	private Map<EnumFacing, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(
+			EnumFacing.DOWN, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN),
+			EnumFacing.UP, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, EnumFacing.UP)
+	);
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(world.isRemote)
 			return;
 
 		boolean update = false;
-		for(int i = 0; i < 2; i++)
-			if(tank.getFluidAmount() > 0&&sideConfig[i]==1)
+		for(EnumFacing side : neighbors.keySet())
+			if(tank.getFluidAmount() > 0&&sideConfig.get(side)==OUTPUT)
 			{
-				EnumFacing f = EnumFacing.byIndex(i);
 				int out = Math.min(40, tank.getFluidAmount());
-				TileEntity te = world.getTileEntity(getPos().offset(f));
-				if(te!=null&&te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
+				CapabilityReference<IFluidHandler> capRef = neighbors.get(side);
+				IFluidHandler handler = capRef.get();
+				if(handler!=null)
 				{
-					IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
 					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), false);
 					FluidStack drained = this.tank.drain(accepted, true);
 					if(drained!=null)
@@ -92,13 +121,13 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		}
 		if(hammer&&IEConfig.colourblindSupport&&mop.sideHit.getAxis()==Axis.Y)
 		{
-			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
-			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
+			SideConfig side = sideConfig.getOrDefault(mop.sideHit, NONE);
+			SideConfig opposite = sideConfig.getOrDefault(mop.sideHit.getOpposite(), NONE);
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+side.getName()),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j)
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+opposite.getName())
 			};
 		}
 		return null;
@@ -113,9 +142,12 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		sideConfig = nbt.getIntArray("sideConfig");
-		if(sideConfig==null||sideConfig.length < 2)
-			sideConfig = new int[]{-1, 0};
+		int[] sideCfgArray = nbt.getIntArray("sideConfig");
+		if(sideCfgArray.length < 2)
+			sideCfgArray = new int[]{-1, 0};
+		sideConfig.clear();
+		for(int i = 0; i < sideCfgArray.length; ++i)
+			sideConfig.put(EnumFacing.byIndex(i), SideConfig.VALUES[sideCfgArray[i]]);
 		this.readTank(nbt);
 	}
 
@@ -127,7 +159,10 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setIntArray("sideConfig", sideConfig);
+		int[] sideCfgArray = new int[2];
+		sideCfgArray[0] = sideConfig.get(EnumFacing.DOWN).ordinal();
+		sideCfgArray[1] = sideConfig.get(EnumFacing.UP).ordinal();
+		nbt.setIntArray("sideConfig", sideCfgArray);
 		this.writeTank(nbt, false);
 	}
 
@@ -139,32 +174,31 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			nbt.setTag("tank", tankTag);
 	}
 
-	SidedFluidHandler[] sidedFluidHandler = {new SidedFluidHandler(this, EnumFacing.DOWN), new SidedFluidHandler(this, EnumFacing.UP)};
-	SidedFluidHandler nullsideFluidHandler = new SidedFluidHandler(this, null);
+	private Map<EnumFacing, CapabilityHolder<IFluidHandler>> sidedFluidHandler = new HashMap<>();
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing.getAxis()==Axis.Y))
-			return true;
-		return super.hasCapability(capability, facing);
+		sidedFluidHandler.put(EnumFacing.DOWN, CapabilityHolder.of(() -> new SidedFluidHandler(this, EnumFacing.DOWN)));
+		sidedFluidHandler.put(EnumFacing.UP, CapabilityHolder.of(() -> new SidedFluidHandler(this, EnumFacing.UP)));
+		sidedFluidHandler.put(null, CapabilityHolder.of(() -> new SidedFluidHandler(this, null)));
+		caps.addAll(sidedFluidHandler.values());
 	}
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing.getAxis()==Axis.Y))
-			return (T)(facing==null?nullsideFluidHandler: sidedFluidHandler[facing.ordinal()]);
+		if(capability==FLUID_HANDLER_CAPABILITY&&(facing==null||facing.getAxis()==Axis.Y))
+			return sidedFluidHandler.getOrDefault(facing, CapabilityHolder.empty()).getAndCast();
 		return super.getCapability(capability, facing);
 	}
 
 	static class SidedFluidHandler implements IFluidHandler
 	{
 		TileEntityWoodenBarrel barrel;
+		@Nullable
 		EnumFacing facing;
 
-		SidedFluidHandler(TileEntityWoodenBarrel barrel, EnumFacing facing)
+		SidedFluidHandler(TileEntityWoodenBarrel barrel, @Nullable EnumFacing facing)
 		{
 			this.barrel = barrel;
 			this.facing = facing;
@@ -173,7 +207,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		@Override
 		public int fill(FluidStack resource, boolean doFill)
 		{
-			if(resource==null||(facing!=null&&barrel.sideConfig[facing.ordinal()]!=0)||!barrel.isFluidValid(resource))
+			if(resource==null||(facing!=null&&barrel.sideConfig.get(facing)!=SideConfig.INPUT)||!barrel.isFluidValid(resource))
 				return 0;
 
 			int i = barrel.tank.fill(resource, doFill);
@@ -196,7 +230,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		@Override
 		public FluidStack drain(int maxDrain, boolean doDrain)
 		{
-			if(facing!=null&&barrel.sideConfig[facing.ordinal()]!=1)
+			if(facing!=null&&barrel.sideConfig.get(facing)!=OUTPUT)
 				return null;
 			FluidStack f = barrel.tank.drain(maxDrain, doDrain);
 			if(f!=null&&f.amount > 0)
@@ -216,28 +250,26 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 
 	public boolean isFluidValid(FluidStack fluid)
 	{
-		return fluid!=null&&fluid.getFluid()!=null&&fluid.getFluid().getTemperature(fluid) < IGNITION_TEMPERATURE&&!fluid.getFluid().isGaseous(fluid);
+		return fluid!=null&&fluid.getFluid()!=null
+				&&fluid.getFluid().getTemperature(fluid) < IGNITION_TEMPERATURE
+				&&!fluid.getFluid().isGaseous(fluid);
 	}
 
 	@Override
-	public SideConfig getSideConfig(int side)
+	public SideConfig getSideConfig(EnumFacing side)
 	{
-		if(side > 1)
-			return SideConfig.NONE;
-		return SideConfig.values()[this.sideConfig[side]+1];
+		return sideConfig.getOrDefault(side, NONE);
 	}
 
 	@Override
-	public boolean toggleSide(int side, EntityPlayer p)
+	public boolean toggleSide(EnumFacing side, EntityPlayer p)
 	{
-		if(side!=0&&side!=1)
+		if(side.getAxis()!=Axis.Y)
 			return false;
-		sideConfig[side]++;
-		if(sideConfig[side] > 1)
-			sideConfig[side] = -1;
+		sideConfig.compute(side, (s, config) -> SideConfig.next(config));
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 		return true;
 	}
 
@@ -255,19 +287,27 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		FluidStack f = FluidUtil.getFluidContained(heldItem);
+		LazyOptional<FluidStack> fOptional = FluidUtil.getFluidContained(heldItem);
 		boolean metal = this instanceof TileEntityMetalBarrel;
-		if(f!=null)
-			if(!metal&&f.getFluid().isGaseous(f))
-			{
-				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+		if(!metal)
+		{
+			LazyOptional<Boolean> ret = fOptional.map((f) -> {
+				if(f.getFluid().isGaseous(f))
+				{
+					ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+					return true;
+				}
+				else if(f.getFluid().getTemperature(f) >= TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
+				{
+					ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+					return true;
+				}
+				else
+					return false;
+			});
+			if(ret.orElse(false))
 				return true;
-			}
-			else if(!metal&&f.getFluid().getTemperature(f) >= TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
-			{
-				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"tooHot"));
-				return true;
-			}
+		}
 
 		if(FluidUtil.interactWithFluidHandler(player, hand, tank))
 		{
@@ -281,19 +321,19 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		NBTTagCompound tag = new NBTTagCompound();
 		writeTank(tag, true);
 		if(!tag.isEmpty())
-			stack.setTagCompound(tag);
+			stack.setTag(tag);
 		return stack;
 	}
 
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{
-		if(stack.hasTagCompound())
-			readTank(stack.getTagCompound());
+		if(stack.hasTag())
+			readTank(stack.getOrCreateTag());
 	}
 
 	@Override

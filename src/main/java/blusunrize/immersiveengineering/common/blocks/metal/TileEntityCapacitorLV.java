@@ -81,13 +81,13 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public IEEnums.SideConfig getSideConfig(int side)
+	public IEEnums.SideConfig getSideConfig(EnumFacing side)
 	{
 		return this.sideConfig[side];
 	}
 
 	@Override
-	public boolean toggleSide(int side, EntityPlayer player)
+	public boolean toggleSide(EnumFacing side, EntityPlayer player)
 	{
 		sideConfig[side] = SideConfig.next(sideConfig[side]);
 		this.markDirty();

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.state.AbstractProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
@@ -19,10 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class IEProperties
 {
@@ -33,37 +31,26 @@ public class IEProperties
 	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("_1dynamicrender");//Name starts with '_1' to ensure priority over anything but the multiblockslave property
 	public static final PropertyConnections CONNECTIONS = new PropertyConnections("conns");
 
-	//	public static final PropertyEnum[] SIDECONFIG = {
-//			PropertyEnum.create("sideconfig_down", IEEnums.SideConfig.class),
-//			PropertyEnum.create("sideconfig_up", IEEnums.SideConfig.class),
-//			PropertyEnum.create("sideconfig_north", IEEnums.SideConfig.class),
-//			PropertyEnum.create("sideconfig_south", IEEnums.SideConfig.class),
-//			PropertyEnum.create("sideconfig_west", IEEnums.SideConfig.class),
-//			PropertyEnum.create("sideconfig_east", IEEnums.SideConfig.class)
-//	};
-	public static final ProperySideConfig[] SIDECONFIG = {
-			new ProperySideConfig("sideconfig_down"),
-			new ProperySideConfig("sideconfig_up"),
-			new ProperySideConfig("sideconfig_north"),
-			new ProperySideConfig("sideconfig_south"),
-			new ProperySideConfig("sideconfig_west"),
-			new ProperySideConfig("sideconfig_east")
-	};
-	public static final PropertyBoolInverted[] SIDECONNECTION = {
-			PropertyBoolInverted.create("sideconnection_down"),
-			PropertyBoolInverted.create("sideconnection_up"),
-			PropertyBoolInverted.create("sideconnection_north"),
-			PropertyBoolInverted.create("sideconnection_south"),
-			PropertyBoolInverted.create("sideconnection_west"),
-			PropertyBoolInverted.create("sideconnection_east")
-	};
+	public static final Map<EnumFacing, ProperySideConfig> SIDECONFIG =
+			ImmutableMap.<EnumFacing, ProperySideConfig>builder()
+					.put(EnumFacing.DOWN, new ProperySideConfig("sideconfig_down"))
+					.put(EnumFacing.UP, new ProperySideConfig("sideconfig_up"))
+					.put(EnumFacing.NORTH, new ProperySideConfig("sideconfig_north"))
+					.put(EnumFacing.SOUTH, new ProperySideConfig("sideconfig_south"))
+					.put(EnumFacing.WEST, new ProperySideConfig("sideconfig_west"))
+					.put(EnumFacing.EAST, new ProperySideConfig("sideconfig_east"))
+					.build();
+	public static final Map<EnumFacing, PropertyBoolInverted> SIDECONNECTION =
+			ImmutableMap.<EnumFacing, PropertyBoolInverted>builder()
+					.put(EnumFacing.DOWN, PropertyBoolInverted.create("sideconnection_down"))
+					.put(EnumFacing.UP, PropertyBoolInverted.create("sideconnection_up"))
+					.put(EnumFacing.NORTH, PropertyBoolInverted.create("sideconnection_north"))
+					.put(EnumFacing.SOUTH, PropertyBoolInverted.create("sideconnection_south"))
+					.put(EnumFacing.WEST, PropertyBoolInverted.create("sideconnection_west"))
+					.put(EnumFacing.EAST, PropertyBoolInverted.create("sideconnection_east"))
+					.build();
 
-	//An array of non-descript booleans for mirroring, active textures, etc.
-	public static final PropertyBoolInverted[] BOOLEANS = {
-			PropertyBoolInverted.create("boolean0"),
-			PropertyBoolInverted.create("boolean1"),
-			PropertyBoolInverted.create("boolean2")
-	};
+	
 	public static final IntegerProperty INT_4 = IntegerProperty.create("int_4", 0, 3);
 	public static final IntegerProperty INT_16 = IntegerProperty.create("int_16", 0, 15);
 

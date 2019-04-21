@@ -176,9 +176,9 @@ public class IEBlockInterfaces
 
 	public interface IConfigurableSides
 	{
-		IEEnums.SideConfig getSideConfig(int side);
+		IEEnums.SideConfig getSideConfig(EnumFacing side);
 
-		boolean toggleSide(int side, EntityPlayer p);
+		boolean toggleSide(EnumFacing side, EntityPlayer p);
 	}
 
 	public interface ITileDrop

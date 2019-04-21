@@ -15,6 +15,7 @@ import java.util.Locale;
 
 public enum BlockTypes_TreatedWood implements IStringSerializable, BlockIEBase.IBlockEnum
 {
+	//Use BlockIEBase instances and probably a tag
 	HORIZONTAL,
 	VERTICAL,
 	PACKAGED;

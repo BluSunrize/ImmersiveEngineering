@@ -15,13 +15,19 @@ import java.util.Locale;
 
 public enum BlockTypes_WoodenDevice0 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
-	CRATE,
-	BARREL,
+
 	WORKBENCH,
-	SORTER,
+	//BlockGunpowderBarrel
 	GUNPOWDER_BARREL,
-	REINFORCED_CRATE,
+	//BlockBarrel
+	BARREL,
+	//BlockTurntable
 	TURNTABLE,
+	//BlockCrate
+	CRATE,
+	REINFORCED_CRATE,
+	//BlockSorter
+	SORTER,
 	FLUID_SORTER;
 
 	@Override

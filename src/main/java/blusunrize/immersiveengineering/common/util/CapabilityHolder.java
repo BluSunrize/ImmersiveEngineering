@@ -12,14 +12,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class CapabilityHolder<T>
 {
 	public static <T> CapabilityHolder<T> empty()
 	{
-		return new CapabilityHolder<>(null);
+		return new CapabilityHolder<>(LazyOptional.empty());
 	}
 
 	public static <T> CapabilityHolder<T> ofConstant(@Nonnull T val)
@@ -32,16 +31,17 @@ public class CapabilityHolder<T>
 		return new CapabilityHolder<>(LazyOptional.of(source));
 	}
 
+	@Nonnull
 	private LazyOptional<T> value;
 
-	private CapabilityHolder(LazyOptional<T> val)
+	private CapabilityHolder(@Nonnull LazyOptional<T> val)
 	{
 		value = val;
 	}
 
 	public boolean isPresent()
 	{
-		return false;
+		return value.isPresent();
 	}
 
 	public LazyOptional<T> get()
@@ -61,14 +61,8 @@ public class CapabilityHolder<T>
 		if(isPresent())
 		{
 			value.invalidate();
-			value = null;
+			value = LazyOptional.empty();
 		}
-	}
-
-	@Nullable
-	public LazyOptional<T> orNull()
-	{
-		return value;
 	}
 
 	@Override
@@ -90,5 +84,10 @@ public class CapabilityHolder<T>
 	public String toString()
 	{
 		return Objects.toString(value);
+	}
+
+	public <T> LazyOptional<T> getAndCast()
+	{
+		return (LazyOptional<T>)value;
 	}
 }
