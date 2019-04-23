@@ -29,7 +29,7 @@ public class XLFoodHelper extends IECompatModule
 	}
 
 	String[] item = {"xlfoodmod:rice", "xlfoodmod:pepper", "xlfoodmod:corn", "xlfoodmod:cucumber",
-					 "xlfoodmod:lettuce", "xlfoodmod:onion", "xlfoodmod:tomato", "xlfoodmod:strawberry"};
+			 "xlfoodmod:lettuce", "xlfoodmod:onion", "xlfoodmod:tomato", "xlfoodmod:strawberry"};
 	@Override
 	public void init()
 	{
