@@ -39,8 +39,8 @@ import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPost;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
+import blusunrize.immersiveengineering.common.blocks.plant.BlockHemp;
+import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
@@ -263,7 +263,7 @@ public class IEContent
 		blockWoodenDecoration = new BlockWoodenDecoration();
 		blockWoodenDevice0 = new BlockWoodenDevice0();
 		blockWoodenDevice1 = new BlockWoodenDevice1().setMetaHidden(BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta());
-		blockCrop = new BlockIECrop("hemp", PropertyEnum.create("type", BlockTypes_Hemp.class));
+		blockCrop = new BlockHemp("hemp", PropertyEnum.create("type", EnumHempGrowth.class));
 		blockClothDevice = new BlockClothDevice();
 		blockFakeLight = new BlockFakeLight();
 

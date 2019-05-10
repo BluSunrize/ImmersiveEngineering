@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
+import blusunrize.immersiveengineering.common.blocks.plant.BlockHemp;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import mcp.mobius.waila.api.*;
 import net.minecraft.block.Block;
@@ -33,7 +33,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	public static void callbackRegister(IWailaRegistrar registrar)
 	{
 		IEWailaDataProvider dataProvider = new IEWailaDataProvider();
-		registrar.registerBodyProvider(dataProvider, BlockIECrop.class);
+		registrar.registerBodyProvider(dataProvider, BlockHemp.class);
 		registrar.registerBodyProvider(dataProvider, TileEntityWoodenBarrel.class);
 		registrar.registerNBTProvider(dataProvider, TileEntityWoodenBarrel.class);
 		registrar.registerStackProvider(dataProvider, TileEntityMultiblockPart.class);
@@ -64,11 +64,11 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	{
 		Block b = accessor.getBlock();
 		TileEntity tile = accessor.getTileEntity();
-		if(b instanceof BlockIECrop)
+		if(b instanceof BlockHemp)
 		{
 			int meta = accessor.getMetadata();
-			int min = ((BlockIECrop)b).getMinMeta(meta);
-			int max = ((BlockIECrop)b).getMaxMeta(meta);
+			int min = ((BlockHemp)b).getMinGrowth(meta);
+			int max = ((BlockHemp)b).getMaxGrowth(meta);
 			if(min==max)
 				currenttip.add(String.format("%s : %s", I18n.format("hud.msg.growth"), I18n.format("hud.msg.mature")));
 			else
