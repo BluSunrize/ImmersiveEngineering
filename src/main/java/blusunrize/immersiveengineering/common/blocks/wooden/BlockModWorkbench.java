@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
@@ -17,18 +18,19 @@ import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
 
-public class BlockTurntable extends BlockIETileProvider
+public class BlockModWorkbench extends BlockIETileProvider
 {
-	public BlockTurntable(String name)
+
+	public BlockModWorkbench(String name)
 	{
-		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				ItemBlockIEBase.class);
+		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5), ItemBlockIEBase.class,
+				IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Nullable
 	@Override
 	public TileEntity createBasicTE(IBlockState state)
 	{
-		return new TileEntityTurntable();
+		return new TileEntityModWorkbench();
 	}
 }

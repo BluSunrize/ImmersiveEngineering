@@ -798,7 +798,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							}
 							if(text!=null)
 							{
-								if(player.world.getTotalWorldTime()%20==0)
+								if(player.world.getGameTime()%20==0)
 								{
 									ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getBlockPos()));
 								}

@@ -6,8 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.blocks.wooden;
+package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
@@ -17,18 +18,18 @@ import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
 
-public class BlockTurntable extends BlockIETileProvider
+public class BlockCoresample extends BlockIETileProvider
 {
-	public BlockTurntable(String name)
+	public BlockCoresample(String name)
 	{
-		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				ItemBlockIEBase.class);
+		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20), ItemBlockIEBase.class,
+				IEProperties.FACING_HORIZONTAL);
 	}
 
 	@Nullable
 	@Override
 	public TileEntity createBasicTE(IBlockState state)
 	{
-		return new TileEntityTurntable();
+		return new TileEntityCoresample();
 	}
 }

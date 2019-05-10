@@ -25,37 +25,43 @@ import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
-import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
 
-public class TileEntityCoresample extends TileEntityIEBase implements IDirectionalTile, ITileDrop, IPlayerInteraction, IBlockOverlayText
+public class TileEntityCoresample extends TileEntityIEBase implements IDirectionalTile, ITileDrop, IPlayerInteraction,
+		IBlockOverlayText
 {
+	public static TileEntityType<TileEntityCoresample> TYPE;
+	
 	public ItemStack coresample = ItemStack.EMPTY;
 	public EnumFacing facing = EnumFacing.NORTH;
+
+	public TileEntityCoresample()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		coresample = new ItemStack(nbt.getCompound("coresample"));
+		coresample = ItemStack.read(nbt.getCompound("coresample"));
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setTag("coresample", coresample.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("coresample", coresample.write(new NBTTagCompound()));
 		nbt.setInt("facing", facing.ordinal());
 	}
 
@@ -100,20 +106,20 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	{
 		if(player.isSneaking())
 		{
-			if(!getWorld().isRemote)
+			if(!world.isRemote)
 			{
-				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
+				EntityItem entityitem = new EntityItem(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
-				getWorld().removeBlock(getPos());
-				getWorld().spawnEntity(entityitem);
+				world.removeBlock(getPos());
+				world.spawnEntity(entityitem);
 			}
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(coresample, "coords"))
 		{
-			if(!getWorld().isRemote)
+			if(!world.isRemote)
 			{
-				MapData mapData = ((ItemMap)heldItem.getItem()).getMapData(heldItem, player.getEntityWorld());
+				MapData mapData = ItemMap.getMapData(heldItem, player.getEntityWorld());
 				if(mapData!=null)
 				{
 					int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
@@ -160,11 +166,14 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 		return false;
 	}
 
-	@Override
+	//TODO @Override
 	@Nullable
 	public ITextComponent getDisplayName()
 	{
-		return coresample.hasDisplayName()?new TextComponentString(coresample.getDisplayName()): new TextComponentTranslation("item.immersiveengineering.coresample.name");
+		if(coresample.hasDisplayName())
+			return coresample.getDisplayName();
+		else
+			return new TextComponentTranslation("item.immersiveengineering.coresample.name");
 	}
 
 	@Override
@@ -196,6 +205,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 			{
 				overlay = new String[3];
 				int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
+				String dimName = ItemNBTHelper.getString(coresample, "dimension");
 				overlay[0] = I18n.format(Lib.CHAT_INFO+"coresample.noMineral");
 				if(ItemNBTHelper.hasKey(coresample, "mineral"))
 				{
@@ -205,18 +215,12 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 					overlay[0] = TextFormatting.GOLD+I18n.format(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc));
 				}
 
-				World world = DimensionManager.getWorld(coords[0]);
 				String s0 = (coords[1]*16)+", "+(coords[2]*16);
 				String s1 = (coords[1]*16+16)+", "+(coords[2]*16+16);
-				if(world!=null&&world.provider!=null)
-				{
-					String name = world.provider.getDimensionType().getName();
-					if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
-						name = name.substring(4);
-					overlay[1] = name;
-				}
-				else
-					overlay[1] = "Dimension "+coords[0];
+				String name = dimName;//TODO
+				if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
+					name = name.substring(4);
+				overlay[1] = name;
 				overlay[2] = I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1);
 			}
 			return overlay;

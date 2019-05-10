@@ -9,33 +9,33 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 
-public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
+public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory,
+		IActiveState, IGuiTile, IProcessTile
 {
+	public static TileEntityType<TileEntityBlastFurnace> TYPE;
+
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
@@ -46,18 +46,12 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 
 	public TileEntityBlastFurnace()
 	{
-		super(size);
+		super(size, TYPE);
 	}
 
-	public TileEntityBlastFurnace(int[] size)
+	protected TileEntityBlastFurnace(int[] size, TileEntityType<? extends TileEntityBlastFurnace> type)
 	{
-		super(size);
-	}
-
-	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return inf==IActiveState.class?IEProperties.BOOLEANS[0]: null;
+		super(size, type);
 	}
 
 	@Override
@@ -93,7 +87,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		return new ItemStack(IEContent.blockStoneDecoration, 1, 1);
+		return new ItemStack(IEContent.blockBlastBrick, 1);
 	}
 
 	@Override
@@ -103,7 +97,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&!isDummy())
@@ -218,8 +212,10 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 		if(recipe==null)
 			return null;
 		if((inventory.get(0).getCount() >= ((recipe.input instanceof ItemStack)?((ItemStack)recipe.input).getCount(): 1)
-				&&inventory.get(2).isEmpty()||(OreDictionary.itemMatches(inventory.get(2), recipe.output, true)&&inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
-				&&(inventory.get(3).isEmpty()||(OreDictionary.itemMatches(inventory.get(3), recipe.slag, true)&&inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
+				&&inventory.get(2).isEmpty()||(ItemStack.areItemsEqual(inventory.get(2), recipe.output)&&
+				inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
+				&&(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.slag)&&
+				inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
 			return recipe;
 		return null;
 	}

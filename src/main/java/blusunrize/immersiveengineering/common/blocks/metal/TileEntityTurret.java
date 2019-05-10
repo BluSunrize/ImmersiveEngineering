@@ -121,7 +121,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 		if(world.isRemote)
 			return;
-		if(world.getTotalWorldTime()%64==((getPos().getX()^getPos().getZ())&63))
+		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.Machines.turret_consumption;

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -23,11 +24,16 @@ import java.util.function.Supplier;
 
 public class CapabilityReference<T>
 {
-	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull EnumFacing side)
+	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vec3i offset, EnumFacing side)
 	{
 		return new CapabilityReference<>(
-				() -> Objects.requireNonNull(local.getWorld()).getTileEntity(local.getPos().offset(side)),
+				() -> Objects.requireNonNull(local.getWorld()).getTileEntity(local.getPos().add(offset)),
 				cap, side.getOpposite());
+	}
+
+	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull EnumFacing side)
+	{
+		return forRelative(local, cap, BlockPos.ORIGIN.offset(side), side);
 	}
 
 	public static <T> CapabilityReference<T> forTE(World w, BlockPos pos, Capability<T> cap, @Nullable EnumFacing side)

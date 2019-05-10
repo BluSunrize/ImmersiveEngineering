@@ -10,52 +10,67 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 {
+	public static TileEntityType<TileEntityBlastFurnaceAdvanced> TYPE;
 
 	private static final int[] size = {4, 3, 3};
 
 	public TileEntityBlastFurnaceAdvanced()
 	{
-		super(size);
+		super(size, TYPE);
+		initCapReferences();
 	}
 
+	private CapabilityReference<IItemHandler> output;
+	private CapabilityReference<IItemHandler> slag;
+
 	@Override
-	public void update()
+	public void tick()
 	{
-		super.update();
-		if(!world.isRemote&&world.getTotalWorldTime()%8==0&&!isDummy())
+		super.tick();
+		if(!world.isRemote&&world.getGameTime()%8==0&&!isDummy())
 		{
-			TileEntity inventoryFront = Utils.getExistingTileEntity(world, getPos().offset(facing, 2).add(0, -1, 0));
 			if(!this.inventory.get(2).isEmpty())
 			{
 				ItemStack stack = this.inventory.get(2);
-				if(inventoryFront!=null)
-					stack = Utils.insertStackIntoInventory(inventoryFront, stack, facing.getOpposite());
+				stack = Utils.insertStackIntoInventory(output, stack, false);
 				this.inventory.set(2, stack);
 			}
-			TileEntity inventoryBack = Utils.getExistingTileEntity(world, getPos().offset(facing, -2).add(0, -1, 0));
 			if(!this.inventory.get(3).isEmpty())
 			{
 				ItemStack stack = this.inventory.get(3);
-				if(inventoryBack!=null)
-					stack = Utils.insertStackIntoInventory(inventoryBack, stack, facing);
+				stack = Utils.insertStackIntoInventory(slag, stack, false);
 				this.inventory.set(3, stack);
 			}
 		}
+	}
+
+	private void initCapReferences()
+	{
+		output = CapabilityReference.forRelative(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+				BlockPos.ORIGIN.offset(facing, 2).add(0, -1, 0), facing.getOpposite());
+		slag = CapabilityReference.forRelative(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+				BlockPos.ORIGIN.offset(facing, 2).add(0, -1, 0), facing.getOpposite());
 	}
 
 	@Override
@@ -107,7 +122,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	{
 		if(this.pos==31)
 			return new ItemStack(Blocks.HOPPER);
-		return new ItemStack(IEContent.blockStoneDecoration, 1, 2);
+		return new ItemStack(IEContent.blockReinforcedBlastBrick, 1);
 	}
 
 	@Override
@@ -128,30 +143,25 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		return i;
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if((pos==1||pos==7||pos==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			TileEntityBlastFurnaceAdvanced master = (TileEntityBlastFurnaceAdvanced)master();
-			if(master==null)
-				return false;
-			if(pos==31&&facing==EnumFacing.UP)
-				return true;
-			if(pos==1&&facing==master.facing)
-				return true;
-			return pos==7&&facing==master.facing.getOpposite();
-		}
-		return super.hasCapability(capability, facing);
-	}
+	private CapabilityHolder<IItemHandler> inputHandler = CapabilityHolder.ofConstant(
+			new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false})
+	);
+	private CapabilityHolder<IItemHandler> outputHandler = CapabilityHolder.ofConstant(
+			new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true})
+	);
+	private CapabilityHolder<IItemHandler> slagHandler = CapabilityHolder.ofConstant(
+			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
+	);
 
-	IItemHandler inputHandler = new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false});
-	IItemHandler outputHandler = new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true});
-	IItemHandler slagHandler = new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true});
+	{
+		caps.add(inputHandler);
+		caps.add(outputHandler);
+		caps.add(slagHandler);
+	}
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if((pos==1||pos==7||pos==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -159,13 +169,20 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 			if(master==null)
 				return null;
 			if(pos==31&&facing==EnumFacing.UP)
-				return (T)master.inputHandler;
+				return master.inputHandler.get().cast();
 			if(pos==1&&facing==master.facing)
-				return (T)master.outputHandler;
+				return master.outputHandler.get().cast();
 			if(pos==7&&facing==master.facing.getOpposite())
-				return (T)master.slagHandler;
-			return null;
+				return master.slagHandler.get().cast();
+			return LazyOptional.empty();
 		}
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public void setFacing(EnumFacing facing)
+	{
+		super.setFacing(facing);
+		initCapReferences();
 	}
 }

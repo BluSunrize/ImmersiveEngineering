@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
@@ -54,6 +55,7 @@ public class IEBlockInterfaces
 
 	public interface IUsesBooleanProperty
 	{
+		@Nullable
 		PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf);
 	}
 
@@ -238,16 +240,46 @@ public class IEBlockInterfaces
 	public interface IActiveState extends IUsesBooleanProperty
 	{
 		boolean getIsActive();
+
+		@Nullable
+		@Override
+		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		{
+			if(inf==IActiveState.class)
+				return IEProperties.ACTIVE;
+			else
+				return null;
+		}
 	}
 
 	public interface IDualState extends IUsesBooleanProperty
 	{
 		boolean getIsSecondState();
+
+		@Nullable
+		@Override
+		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		{
+			if(inf==IActiveState.class)
+				return IEProperties.IS_SECOND_STATE;
+			else
+				return null;
+		}
 	}
 
 	public interface IMirrorAble extends IUsesBooleanProperty
 	{
 		boolean getIsMirrored();
+
+		@Nullable
+		@Override
+		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		{
+			if(inf==IActiveState.class)
+				return IEProperties.MIRRORED;
+			else
+				return null;
+		}
 	}
 
 	public interface IBlockBounds
@@ -272,6 +304,7 @@ public class IEBlockInterfaces
 		List<AxisAlignedBB> getAdvancedColisionBounds();
 	}
 
+	//TODO move a lot of this to block states!
 	public interface IHasDummyBlocks extends IGeneralMultiblock
 	{
 		void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ);

@@ -8,42 +8,28 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IWorldReader;
 
 import javax.annotation.Nullable;
 
-public class BlockCrate extends BlockIETileProvider
+public class BlockWindmill extends BlockIETileProvider
 {
-
-	private boolean reinforced;
-
-	public BlockCrate(String name, boolean reinforced)
+	public BlockWindmill(String name)
 	{
 		super(name, Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				ItemBlockIEBase.class);
-		this.reinforced = reinforced;
+				ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+		setNotNormalBlock();
 	}
 
 	@Nullable
 	@Override
 	public TileEntity createBasicTE(IBlockState state)
 	{
-		return new TileEntityWoodenCrate();
-	}
-
-	@Override
-	public float getExplosionResistance(IBlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion)
-	{
-		if(reinforced)
-			return 1200000;
-		return super.getExplosionResistance(state, world, pos, exploder, explosion);
+		return new TileEntityWindmill();
 	}
 }

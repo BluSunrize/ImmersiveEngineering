@@ -33,7 +33,7 @@ public class TileRenderShaderBanner extends TileEntitySpecialRenderer<TileEntity
 	{
 		boolean flag = te.getWorld()!=null;
 		int orientation = flag?te.orientation: 0;
-		long time = flag?te.getWorld().getTotalWorldTime(): 0L;
+		long time = flag?te.getWorld().getGameTime(): 0L;
 		GlStateManager.pushMatrix();
 		float f = 0.6666667F;
 

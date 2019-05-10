@@ -174,7 +174,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 					{
 						growth += Config.IEConfig.Machines.belljar_growth_mod*handler.getGrowthStep(seed, soil, growth, this, fertilizerMod, false);
 						consume = true;
-						if(world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
+						if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 							sendSyncPacket(0);
 					}
 					if(consume)
@@ -221,7 +221,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			else
 				growth = 0;
 
-			if(world.getTotalWorldTime()%8==0)
+			if(world.getGameTime()%8==0)
 			{
 				BlockPos outputPos = getPos().up().offset(facing.getOpposite());
 				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);

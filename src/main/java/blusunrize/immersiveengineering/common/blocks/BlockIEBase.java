@@ -105,16 +105,6 @@ public class BlockIEBase extends Block
 		return blockProps;
 	}
 
-	protected static Object[] combineProperties(Object[] currentProperties, Object... addedProperties)
-	{
-		Object[] array = new Object[currentProperties.length+addedProperties.length];
-		for(int i = 0; i < currentProperties.length; i++)
-			array[i] = currentProperties[i];
-		for(int i = 0; i < addedProperties.length; i++)
-			array[currentProperties.length+i] = addedProperties[i];
-		return array;
-	}
-
 	public BlockIEBase setHidden(boolean shouldHide)
 	{
 		isHidden = shouldHide;

@@ -93,7 +93,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	@Override
 	public TileEntity createTileEntity(IBlockState state, IBlockReader world)
 	{
-		TileEntity basic = createBasicTE(world);
+		TileEntity basic = createBasicTE(state);
 		Collection<IProperty<?>> keys = state.getProperties();
 		if(basic instanceof IDirectionalTile)
 		{
@@ -150,7 +150,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Nullable
-	public abstract TileEntity createBasicTE(IBlockReader worldIn);
+	public abstract TileEntity createBasicTE(IBlockState state);
 
 	@Override
 	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
@@ -348,7 +348,15 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	@Override
 	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
 	{
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
 		TileEntity tile = world.getTileEntity(pos);
+		EntityPlayer placer = context.getPlayer();
+		EnumFacing side = context.getFace();
+		float hitX = context.getHitX();
+		float hitY = context.getHitY();
+		float hitZ = context.getHitZ();
+		ItemStack stack = context.getItem();
 
 		if(tile instanceof IDirectionalTile)
 		{
@@ -378,8 +386,8 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IConfigurableSides&&Utils.isHammer(heldItem)&&!world.isRemote)
 		{
-			int iSide = player.isSneaking()?side.getOpposite().ordinal(): side.ordinal();
-			if(((IConfigurableSides)tile).toggleSide(iSide, player))
+			EnumFacing activeSide = player.isSneaking()?side.getOpposite(): side;
+			if(((IConfigurableSides)tile).toggleSide(activeSide, player))
 				return true;
 		}
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player)&&!world.isRemote)

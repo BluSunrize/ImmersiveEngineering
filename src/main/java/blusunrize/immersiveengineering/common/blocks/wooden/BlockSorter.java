@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
@@ -30,7 +30,7 @@ public class BlockSorter extends BlockIETileProvider
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(IBlockReader worldIn)
+	public TileEntity createBasicTE(IBlockState state)
 	{
 		if(fluid)
 			return new TileEntityFluidSorter();

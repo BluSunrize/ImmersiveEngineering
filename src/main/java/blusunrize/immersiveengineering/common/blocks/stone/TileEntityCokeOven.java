@@ -9,37 +9,39 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 
-public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
+public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory,
+		IActiveState, IGuiTile, IProcessTile
 {
+	public static TileEntityType<TileEntityCokeOven> TYPE;
+
 	public FluidTank tank = new FluidTank(12000);
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
@@ -49,14 +51,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
 	public TileEntityCokeOven()
 	{
-		super(size);
+		super(size, TYPE);
 	}
 
-	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return inf==IActiveState.class?IEProperties.BOOLEANS[0]: null;
-	}
 
 	@Override
 	public boolean getIsActive()
@@ -91,7 +88,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		return new ItemStack(IEContent.blockStoneDecoration, 1, 0);
+		return new ItemStack(IEContent.blockCokeBrick, 1);
 	}
 
 	@Override
@@ -101,7 +98,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&!isDummy())
@@ -167,7 +164,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 					}
 					else
 					{
-						if(!inventory.get(3).isEmpty()&&OreDictionary.itemMatches(inventory.get(3), filledContainer, true))
+						if(!inventory.get(3).isEmpty()&&ItemStack.areItemStacksEqual(inventory.get(3), filledContainer))
 							inventory.get(3).grow(filledContainer.getCount());
 						else if(inventory.get(3).isEmpty())
 							inventory.set(3, filledContainer.copy());
@@ -201,7 +198,8 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 		if(recipe==null)
 			return null;
 
-		if(inventory.get(1).isEmpty()||(OreDictionary.itemMatches(inventory.get(1), recipe.output, false)&&inventory.get(1).getCount()+recipe.output.getCount() <= getSlotLimit(1)))
+		if(inventory.get(1).isEmpty()||(ItemStack.areItemsEqual(inventory.get(1), recipe.output)&&
+				inventory.get(1).getCount()+recipe.output.getCount() <= getSlotLimit(1)))
 			if(tank.getFluidAmount()+recipe.creosoteOutput <= tank.getCapacity())
 				return recipe;
 		return null;
@@ -327,26 +325,25 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	{
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return master()!=null;
-		return super.hasCapability(capability, facing);
-	}
+	CapabilityHolder<IItemHandler> invHandler = CapabilityHolder.ofConstant(
+			new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false},
+					new boolean[]{false, true, false, true})
+	);
 
-	IItemHandler invHandler = new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false}, new boolean[]{false, true, false, true});
+	{
+		caps.add(invHandler);
+	}
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityCokeOven master = master();
 			if(master==null)
 				return null;
-			return (T)master.invHandler;
+			return master.invHandler.get().cast();
 		}
 		return super.getCapability(capability, facing);
 	}

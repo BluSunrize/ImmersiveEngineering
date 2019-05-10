@@ -15,14 +15,18 @@ import java.util.Locale;
 
 public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.IBlockEnum
 {
+	//Instances of BlockStoneMultiblock with appropiate TEType
 	COKE_OVEN,
 	BLAST_FURNACE,
+	ALLOY_SMELTER,
+	//BlockBFAdvanced
 	BLAST_FURNACE_ADVANCED,
+	//BlockPartialConcrete
 	CONCRETE_SHEET,
 	CONCRETE_QUARTER,
 	CONCRETE_THREEQUARTER,
-	CORESAMPLE,
-	ALLOY_SMELTER;
+	//BlockCoresample
+	CORESAMPLE;
 
 	@Override
 	public String getName()

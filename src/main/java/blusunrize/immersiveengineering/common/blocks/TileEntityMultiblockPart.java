@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,11 +20,13 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -33,6 +36,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumMap;
 
 public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPart<T>> extends TileEntityIEBase
 		implements ITickable, IDirectionalTile, IBlockBounds, IGeneralMultiblock
@@ -50,8 +54,9 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	 */
 	protected final int[] structureDimensions;
 
-	protected TileEntityMultiblockPart(int[] structureDimensions)
+	protected TileEntityMultiblockPart(int[] structureDimensions, TileEntityType<? extends T> type)
 	{
+		super(type);
 		this.structureDimensions = structureDimensions;
 	}
 
@@ -102,7 +107,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		pos = nbt.getInt("pos");
 		offset = nbt.getIntArray("offset");
 		mirrored = nbt.getBoolean("mirrored");
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		setFacing(EnumFacing.byIndex(nbt.getInt("facing")));
 	}
 
 	@Override
@@ -115,20 +120,23 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		nbt.setInt("facing", facing.ordinal());
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&this.getAccessibleFluidTanks(facing).length > 0)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
+	private EnumMap<EnumFacing, CapabilityHolder<IFluidHandler>> fluidCaps = new EnumMap<>(EnumFacing.class);
 
+	{
+		for(EnumFacing f : EnumFacing.VALUES)
+		{
+			CapabilityHolder<IFluidHandler> forSide = CapabilityHolder.ofConstant(new MultiblockFluidWrapper(this, f));
+			caps.add(forSide);
+			fluidCaps.put(f, forSide);
+		}
+	}
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&this.getAccessibleFluidTanks(facing).length > 0)
-			return (T)new MultiblockFluidWrapper(this, facing);
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&
+				this.getAccessibleFluidTanks(facing).length > 0)
+			return fluidCaps.get(facing).get().cast();
 		return super.getCapability(capability, facing);
 	}
 
@@ -248,12 +256,6 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		}
 	}
 
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-	}
-
 	public static boolean _Immovable()
 	{
 		return true;
@@ -299,7 +301,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		{
 			BlockPos startPos = getOrigin();
 			BlockPos masterPos = getPos().add(-offset[0], -offset[1], -offset[2]);
-			long time = world.getTotalWorldTime();
+			long time = world.getGameTime();
 			for(int yy = 0; yy < structureDimensions[0]; yy++)
 				for(int ll = 0; ll < structureDimensions[1]; ll++)
 					for(int ww = 0; ww < structureDimensions[2]; ww++)

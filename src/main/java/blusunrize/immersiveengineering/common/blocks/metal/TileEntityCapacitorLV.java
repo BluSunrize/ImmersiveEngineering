@@ -52,7 +52,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 			for(int i = 0; i < 6; i++)
 				this.transferEnergy(i);
 
-			if(world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
+			if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 			{
 				int i = scaleStoredEnergyTo(15);
 				if(i!=this.comparatorOutput)

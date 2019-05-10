@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
@@ -107,7 +105,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 
 		switchCooldown--;
-		if(active!=b||world.getTotalWorldTime()%512==((getPos().getX()^getPos().getZ())&511))
+		if(active!=b||world.getGameTime()%512==((getPos().getX()^getPos().getZ())&511))
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true, active);
@@ -118,7 +116,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			if(!lightsToBePlaced.isEmpty())
 				lightsToBePlaced.clear();
 		}
-		if((!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty())&&world.getTotalWorldTime()%8==((getPos().getX()^getPos().getZ())&7))
+		if((!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty())&&world.getGameTime()%8==((getPos().getX()^getPos().getZ())&7))
 		{
 			Iterator<BlockPos> it = lightsToBePlaced.iterator();
 			int timeout = 0;
@@ -413,12 +411,6 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				side.getAxis()==Axis.Y?1: .9375f,
 				side.getAxis()==Axis.Z?1: .9375f
 		};
-	}
-
-	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return IEProperties.BOOLEANS[0];
 	}
 
 	@Override

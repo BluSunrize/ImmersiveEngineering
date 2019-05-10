@@ -613,7 +613,7 @@ public class EventHandler
 			TileEntity te = event.getWorld().getTileEntity(event.getPos());
 			if(te instanceof TileEntityMultiblockPart)
 			{
-				((TileEntityMultiblockPart)te).onlyLocalDissassembly = event.getWorld().getTotalWorldTime();
+				((TileEntityMultiblockPart)te).onlyLocalDissassembly = event.getWorld().getGameTime();
 			}
 		}
 	}

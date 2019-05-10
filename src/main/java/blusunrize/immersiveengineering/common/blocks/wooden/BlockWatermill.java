@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
@@ -17,18 +18,19 @@ import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
 
-public class BlockTurntable extends BlockIETileProvider
+public class BlockWatermill extends BlockIETileProvider
 {
-	public BlockTurntable(String name)
+	public BlockWatermill(String name)
 	{
 		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				ItemBlockIEBase.class);
+				ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+		setNotNormalBlock();
 	}
 
 	@Nullable
 	@Override
 	public TileEntity createBasicTE(IBlockState state)
 	{
-		return new TileEntityTurntable();
+		return new TileEntityWatermill();
 	}
 }

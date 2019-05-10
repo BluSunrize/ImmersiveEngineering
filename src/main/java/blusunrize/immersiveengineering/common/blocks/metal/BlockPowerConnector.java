@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.blocks.generic.BlockConnector;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +28,7 @@ public class BlockPowerConnector extends BlockConnector
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(IBlockReader worldIn)
+	public TileEntity createBasicTE(IBlockState state)
 	{
 		return new TileEntityEnergyConnector(voltage, relay);
 	}

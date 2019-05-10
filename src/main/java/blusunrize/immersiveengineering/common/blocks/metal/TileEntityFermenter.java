@@ -27,6 +27,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
@@ -161,7 +162,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 					}
 				}
 			}
-			if(!inventory.get(8).isEmpty()&&world.getTotalWorldTime()%8==0)
+			if(!inventory.get(8).isEmpty()&&world.getGameTime()%8==0)
 			{
 				BlockPos outputPos = this.getPos().offset(fw);
 				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
@@ -437,7 +438,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if((pos==15||pos==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

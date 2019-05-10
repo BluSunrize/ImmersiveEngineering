@@ -118,7 +118,7 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 		@Override
 		public void update()
 		{
-			if(world.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
+			if(world.getGameTime()%256==((getPos().getX()^getPos().getZ())&255))
 			{
 				if(floodlightCoords==null||floodlightCoords.length < 3)
 				{

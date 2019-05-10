@@ -87,7 +87,7 @@ public class ItemCoresample extends ItemIEBase
 			if(hasStamp&&world!=null)
 			{
 				long timestamp = ItemNBTHelper.getLong(stack, "timestamp");
-				long dist = world.getTotalWorldTime()-timestamp;
+				long dist = world.getGameTime()-timestamp;
 				if(dist < 0)
 					list.add("Somehow this sample is dated in the future...are you a time traveller?!");
 				else

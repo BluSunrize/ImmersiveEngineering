@@ -81,7 +81,6 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
@@ -836,37 +835,19 @@ public class Utils
 		return Block.getBlockFromItem(item);
 	}
 
-	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
+	public static boolean canInsertStackIntoInventory(CapabilityReference<IItemHandler> ref, ItemStack stack)
 	{
-		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
-		{
-			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			return temp.isEmpty()||temp.getCount() < stack.getCount();
-		}
-		return false;
+		ItemStack temp = insertStackIntoInventory(ref, stack, true);
+		return temp.isEmpty()||temp.getCount() < stack.getCount();
 	}
 
-	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
+	public static ItemStack insertStackIntoInventory(CapabilityReference<IItemHandler> ref, ItemStack stack, boolean simulate)
 	{
-		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
-		{
-			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp.isEmpty()||temp.getCount() < stack.getCount())
-				return ItemHandlerHelper.insertItem(handler, stack, false);
-		}
-		return stack;
-	}
-
-	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side, boolean simulate)
-	{
-		if(inventory!=null&&!stack.isEmpty()&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
-		{
-			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+		IItemHandler handler = ref.get();
+		if(handler!=null&&!stack.isEmpty())
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
-		}
-		return stack;
+		else
+			return stack;
 	}
 
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, EnumFacing facing)

@@ -9,15 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -26,16 +23,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityAlloySmelter> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
+public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityAlloySmelter> implements IIEInventory,
+		IActiveState, IGuiTile, IProcessTile
 {
+	public static TileEntityType<TileEntityAlloySmelter> TYPE;
+
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
@@ -46,13 +46,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 
 	public TileEntityAlloySmelter()
 	{
-		super(size);
-	}
-
-	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return inf==IActiveState.class?IEProperties.BOOLEANS[0]: null;
+		super(size, TYPE);
 	}
 
 	@Override
@@ -88,7 +82,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		return new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta());
+		return new ItemStack(IEContent.blockAlloyBrick, 1);
 	}
 
 	@Override
@@ -98,7 +92,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&!isDummy())
@@ -212,7 +206,8 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 		AlloyRecipe recipe = AlloyRecipe.findRecipe(inventory.get(0), inventory.get(1));
 		if(recipe==null)
 			return null;
-		if(inventory.get(3).isEmpty()||(OreDictionary.itemMatches(inventory.get(3), recipe.output, true)&&inventory.get(3).getCount()+recipe.output.getCount() <= getSlotLimit(3)))
+		if(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.output)&&
+				inventory.get(3).getCount()+recipe.output.getCount() <= getSlotLimit(3)))
 			return recipe;
 		return null;
 	}

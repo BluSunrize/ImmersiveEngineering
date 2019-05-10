@@ -23,18 +23,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 
 public class TileEntityWindmill extends TileEntityIEBase implements ITickable, IDirectionalTile, ITileDrop, IPlayerInteraction, IHasObjProperty
 {
+	public static TileEntityType<TileEntityWindmill> TYPE;
 	public EnumFacing facing = EnumFacing.NORTH;
 	public float prevRotation = 0;
 	public float rotation = 0;
@@ -44,16 +47,15 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 	public boolean canTurn = false;
 
-//	@Override
-//	public boolean hasFastRenderer()
-//	{
-//		return true;
-//	}
+	public TileEntityWindmill()
+	{
+		super(TYPE);
+	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
-		if(world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127))
+		if(world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127))
 			canTurn = checkArea();
 		if(!canTurn)
 			return;
@@ -63,14 +65,6 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 			mod *= .75;
 		if(!world.isThundering())
 			mod *= .66;
-//		if(getPos().getY()>200)
-//			mod *= 2;
-//		else if(getPos().getY()>150)
-//			mod *= 1.5;
-//		else if(getPos().getY()>100)
-//			mod *= 1.25;
-//		else if(getPos().getY()<70)
-//			mod *= .33;
 		mod *= getSpeedModifier();
 
 
@@ -216,7 +210,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(sails < 8&&OreDictionary.itemMatches(new ItemStack(IEContent.itemMaterial, 1, 12), heldItem, false))
+		if(sails < 8&&heldItem.getItem()==IEContent.itemWindmillSail)
 		{
 			this.sails++;
 			heldItem.shrink(1);
@@ -228,7 +222,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+		ItemStack stack = new ItemStack(state.getBlock());
 		if(sails > 0)
 			ItemNBTHelper.setInt(stack, "sails", sails);
 		return stack;

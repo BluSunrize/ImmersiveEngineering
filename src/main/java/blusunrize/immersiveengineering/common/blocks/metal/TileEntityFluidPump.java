@@ -92,7 +92,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 						int out = this.outputFluid(drain, false);
 						handler.drain(out, true);
 					}
-					else if(world.getTotalWorldTime()%20==((getPos().getX()^getPos().getZ())&19)&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER&&IEConfig.Machines.pump_infiniteWater&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000&&this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
+					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER&&IEConfig.Machines.pump_infiniteWater&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000&&this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
 					{
 						int connectedSources = 0;
 						for(EnumFacing f2 : EnumFacing.HORIZONTALS)
@@ -108,7 +108,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 						}
 					}
 				}
-			if(world.getTotalWorldTime()%40==(((getPos().getX()^getPos().getZ()))%40+40)%40)
+			if(world.getGameTime()%40==(((getPos().getX()^getPos().getZ()))%40+40)%40)
 			{
 				if(closedList.isEmpty())
 					prepareAreaCheck();

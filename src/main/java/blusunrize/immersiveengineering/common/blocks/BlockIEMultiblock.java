@@ -11,40 +11,34 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.ArrayUtils;
 
-public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
+public abstract class BlockIEMultiblock extends BlockIETileProvider
 {
-	protected final boolean[] hasMultiblockTile;
 
-	public BlockIEMultiblock(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
+	public BlockIEMultiblock(String name, Block.Properties props, Class<? extends ItemBlockIEBase> itemBlock, IProperty<?>... additionalProperties)
 	{
-		super(name, material, mainProperty, itemBlock, combineProperties(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
-		this.hasMultiblockTile = new boolean[this.enumValues.length];
-		for(int i = 0; i < this.hasMultiblockTile.length; i++)
-			this.hasMultiblockTile[i] = true;
+		super(name, props, itemBlock,
+				ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
+		setMobility(EnumPushReaction.BLOCK);
+		setNotNormalBlock();
 	}
 
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getActualState(state, world, pos);
-		return state;
-	}
-
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityMultiblockPart&&world.getGameRules().getBoolean("doTileDrops"))
@@ -64,19 +58,16 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 		}
 		if(tileEntity instanceof TileEntityMultiblockPart)
 			((TileEntityMultiblockPart)tileEntity).disassemble();
-		super.breakBlock(world, pos, state);
+		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
 	{
-		int meta = this.getMetaFromState(state);
-		if(meta >= 0&&meta < this.hasMultiblockTile.length&&!this.hasMultiblockTile[meta])
-			super.getDrops(drops, world, pos, state, fortune);
 	}
 
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, EntityPlayer player)
 	{
 		ItemStack stack = getOriginalBlock(world, pos);
 		if(!stack.isEmpty())
@@ -84,7 +75,7 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 		return super.getPickBlock(state, target, world, pos, player);
 	}
 
-	public ItemStack getOriginalBlock(World world, BlockPos pos)
+	public ItemStack getOriginalBlock(IBlockReader world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityMultiblockPart)

@@ -8,19 +8,19 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.state.AbstractProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class IEProperties
 {
@@ -29,17 +29,10 @@ public class IEProperties
 
 	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("_0multiblockslave");//Name starts with '_0' to ensure priority when overriding models
 	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("_1dynamicrender");//Name starts with '_1' to ensure priority over anything but the multiblockslave property
-	public static final PropertyConnections CONNECTIONS = new PropertyConnections("conns");
+	public static final PropertyBoolInverted ACTIVE = PropertyBoolInverted.create("active");
+	public static final PropertyBoolInverted IS_SECOND_STATE = PropertyBoolInverted.create("issecondstate");
+	public static final PropertyBoolInverted MIRRORED = PropertyBoolInverted.create("mirrored");
 
-	public static final Map<EnumFacing, ProperySideConfig> SIDECONFIG =
-			ImmutableMap.<EnumFacing, ProperySideConfig>builder()
-					.put(EnumFacing.DOWN, new ProperySideConfig("sideconfig_down"))
-					.put(EnumFacing.UP, new ProperySideConfig("sideconfig_up"))
-					.put(EnumFacing.NORTH, new ProperySideConfig("sideconfig_north"))
-					.put(EnumFacing.SOUTH, new ProperySideConfig("sideconfig_south"))
-					.put(EnumFacing.WEST, new ProperySideConfig("sideconfig_west"))
-					.put(EnumFacing.EAST, new ProperySideConfig("sideconfig_east"))
-					.build();
 	public static final Map<EnumFacing, PropertyBoolInverted> SIDECONNECTION =
 			ImmutableMap.<EnumFacing, PropertyBoolInverted>builder()
 					.put(EnumFacing.DOWN, PropertyBoolInverted.create("sideconnection_down"))
@@ -54,66 +47,6 @@ public class IEProperties
 	public static final IntegerProperty INT_4 = IntegerProperty.create("int_4", 0, 3);
 	public static final IntegerProperty INT_16 = IntegerProperty.create("int_16", 0, 15);
 
-	public static class ProperySideConfig implements IUnlistedProperty<SideConfig>
-	{
-		final String name;
-
-		public ProperySideConfig(String name)
-		{
-			this.name = name;
-		}
-
-		@Override
-		public String getName()
-		{
-			return name;
-		}
-
-		@Override
-		public boolean isValid(SideConfig value)
-		{
-			return true;
-		}
-
-		@Override
-		public Class<SideConfig> getType()
-		{
-			return IEEnums.SideConfig.class;
-		}
-
-		@Override
-		public String valueToString(SideConfig value)
-		{
-			return value.toString();
-		}
-	}
-
-	public static final IUnlistedProperty<HashMap> OBJ_TEXTURE_REMAP = new IUnlistedProperty<HashMap>()
-	{
-		@Override
-		public String getName()
-		{
-			return "obj_texture_remap";
-		}
-
-		@Override
-		public boolean isValid(HashMap value)
-		{
-			return true;
-		}
-
-		@Override
-		public Class<HashMap> getType()
-		{
-			return HashMap.class;
-		}
-
-		@Override
-		public String valueToString(HashMap value)
-		{
-			return value.toString();
-		}
-	};
 
 	public static class PropertyBoolInverted extends AbstractProperty<Boolean>
 	{
@@ -165,65 +98,4 @@ public class IEProperties
 			return connections+" at "+here;
 		}
 	}
-
-	public static class PropertyConnections implements IUnlistedProperty<ConnectionModelData>
-	{
-		String name;
-
-		public PropertyConnections(String n)
-		{
-			name = n;
-		}
-
-		@Override
-		public String getName()
-		{
-			return name;
-		}
-
-		@Override
-		public boolean isValid(ConnectionModelData value)
-		{
-			return value!=null;
-		}
-
-		@Override
-		public Class<ConnectionModelData> getType()
-		{
-			return ConnectionModelData.class;
-		}
-
-		@Override
-		public String valueToString(ConnectionModelData value)
-		{
-			return value.toString();
-		}
-	}
-
-	public static final IUnlistedProperty<TileEntity> TILEENTITY_PASSTHROUGH = new IUnlistedProperty<TileEntity>()
-	{
-		@Override
-		public String getName()
-		{
-			return "tileentity_passthrough";
-		}
-
-		@Override
-		public boolean isValid(TileEntity value)
-		{
-			return true;
-		}
-
-		@Override
-		public Class<TileEntity> getType()
-		{
-			return TileEntity.class;
-		}
-
-		@Override
-		public String valueToString(TileEntity value)
-		{
-			return value.toString();
-		}
-	};
 }

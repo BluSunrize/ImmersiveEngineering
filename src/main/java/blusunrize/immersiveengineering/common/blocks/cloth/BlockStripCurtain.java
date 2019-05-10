@@ -41,7 +41,7 @@ public class BlockStripCurtain extends BlockIETileProvider
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(IBlockReader worldIn)
+	public TileEntity createBasicTE(IBlockState state)
 	{
 		return new TileEntityBalloon();
 	}

@@ -27,6 +27,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
@@ -81,7 +82,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	{
 		super.update();
 
-		if(isDummy()||isRSDisabled()||world.isRemote||world.getTotalWorldTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
+		if(isDummy()||isRSDisabled()||world.isRemote||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
 			return;
 
 		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(inventory.get(0), "blueprint"));
@@ -298,7 +299,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(pos==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

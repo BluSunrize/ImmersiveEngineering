@@ -15,22 +15,27 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class TileEntityWatermill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
 {
+	public static TileEntityType<TileEntityWatermill> TYPE;
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int[] offset = {0, 0};
 	public float rotation = 0;
@@ -41,14 +46,13 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	private boolean formed = true;
 	public double perTick;
 
-//	@Override
-//	public boolean hasFastRenderer()
-//	{
-//		return true;
-//	}
+	public TileEntityWatermill()
+	{
+		super(TYPE);
+	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(offset[0]!=0||offset[1]!=0||world==null)
@@ -61,7 +65,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		else
 			canTurn = multiblock||getRotationVec().length()!=0;
 
-		if(world.getTotalWorldTime()%64==((getPos().getX()^getPos().getZ())&63))
+		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
 		{
 			rotationVec = null;
 		}
@@ -137,11 +141,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 			{
 				BlockPos pos = getPos().offset(fdW, 2).offset(fdY, 2);
 				IBlockState state = world.getBlockState(pos);
-				if(state==null)
-					return false;
-				if(state.isSideSolid(world, pos, fdW.getOpposite()))
+				if(state.getBlockFaceShape(world, pos, fdW.getOpposite())==BlockFaceShape.SOLID)
 					return true;
-				if(state.isSideSolid(world, pos, fdY.getOpposite()))
+				if(state.getBlockFaceShape(world, pos, fdY.getOpposite())==BlockFaceShape.SOLID)
 					return true;
 			}
 		return false;
@@ -171,7 +173,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		return rotationVec;
 	}
 
-	Vec3d getHorizontalVec()
+	private Vec3d getHorizontalVec()
 	{
 		Vec3d dir = new Vec3d(0, 0, 0);
 		boolean faceZ = facing.ordinal() <= 3;
@@ -191,7 +193,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		return dir;
 	}
 
-	Vec3d getVerticalVec()
+	private Vec3d getVerticalVec()
 	{
 		Vec3d dir = new Vec3d(0, 0, 0);
 

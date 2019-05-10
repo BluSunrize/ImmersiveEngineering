@@ -90,7 +90,7 @@ public class BlockConveyor extends BlockIETileProvider
 	}
 
 	@Override
-	public TileEntity createBasicTE(IBlockReader world)
+	public TileEntity createBasicTE(IBlockState world)
 	{
 		return new TileEntityConveyorBelt(typeName);
 	}

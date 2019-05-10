@@ -67,12 +67,12 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				}
 			}
 
-			if(world.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
+			if(world.getGameTime()%256==((getPos().getX()^getPos().getZ())&255))
 				fenceNet = null;
 			if(fenceNet==null)
 				fenceNet = this.getFenceNet();
 			if(fenceNet!=null&&fenceNet.size() > 0
-					&&world.getTotalWorldTime()%128==((getPos().getX()^getPos().getZ())&127)
+					&&world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127)
 					&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
 			{
 				int i = this.height+this.fenceNet.size();

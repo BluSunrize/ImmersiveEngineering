@@ -84,7 +84,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		int energyDrain = IEConfig.Machines.teslacoil_consumption;
 		if(lowPower)
 			energyDrain /= 2;
-		if(!world.isRemote&&world.getTotalWorldTime()%32==(timeKey&31)&&canRun(energyDrain))
+		if(!world.isRemote&&world.getGameTime()%32==(timeKey&31)&&canRun(energyDrain))
 		{
 			this.energyStorage.extractEnergy(energyDrain, false);
 
@@ -131,7 +131,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					else if(e instanceof EntityLivingBase)
 						IElectricEquipment.applyToEntity((EntityLivingBase)e, null, TC_FIELD);
 				}
-			if(targets.isEmpty()&&world.getTotalWorldTime()%128==(timeKey&127))
+			if(targets.isEmpty()&&world.getGameTime()%128==(timeKey&127))
 			{
 				//target up to 4 blocks away
 				double tV = (Utils.RAND.nextDouble()-.5)*8;

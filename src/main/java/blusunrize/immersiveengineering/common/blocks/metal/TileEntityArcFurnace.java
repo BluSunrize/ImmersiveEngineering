@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -153,7 +154,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					}
 			}
 
-			if(world.getTotalWorldTime()%8==0)
+			if(world.getGameTime()%8==0)
 			{
 				BlockPos outputPos = this.getBlockPosForPos(2).offset(facing, -1);
 				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
@@ -628,7 +629,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

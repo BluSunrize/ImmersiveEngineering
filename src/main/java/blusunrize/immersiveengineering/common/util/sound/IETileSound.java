@@ -203,7 +203,7 @@ public class IETileSound implements ITickableSound
 	@Override
 	public void update()
 	{
-		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.world.getTotalWorldTime()%40==0)
+		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.world.getGameTime()%40==0)
 			evaluateVolume();
 	}
 

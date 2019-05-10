@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -21,35 +22,43 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.INBTBase;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 
-public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInventory, IDirectionalTile, IHasDummyBlocks, IGuiTile, IHasObjProperty
+public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInventory, IDirectionalTile, IHasDummyBlocks,
+		IGuiTile, IHasObjProperty
 {
+	public static TileEntityType<TileEntityModWorkbench> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 	EnumFacing facing = EnumFacing.NORTH;
 	public boolean dummy = false;
-	public int dummyOffset = 0;
+
+	public TileEntityModWorkbench()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		dummy = nbt.getBoolean("dummy");
-		dummyOffset = nbt.getInt("dummyOffset");
-		//		if(!descPacket)
-		//		{
-		//read inv
 		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
-		//		}
 	}
 
 	@Override
@@ -57,11 +66,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	{
 		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("dummy", dummy);
-		nbt.setInt("dummyOffset", dummyOffset);
-		//		if(!descPacket)
-		//		{
 		nbt.setTag("inventory", Utils.writeInventory(inventory));
-		//		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -141,10 +146,14 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 		if(!inventory.get(0).isEmpty()&&inventory.get(0).getItem() instanceof IConfigurableTool)
 			for(String key : message.keySet())
 			{
-				if(key.startsWith("b_"))
-					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key.substring(2), message.getBoolean(key));
-				else if(key.startsWith("f_"))
-					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key.substring(2), message.getFloat(key));
+				//TODO remove suffix whatever sends these
+				INBTBase tag = message.getTag(key);
+				if(tag instanceof NBTTagByte)
+					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key,
+							((NBTTagByte)tag).getByte()!=0);
+				else if(tag instanceof NBTTagFloat)
+					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key,
+							((NBTTagFloat)tag).getFloat());
 			}
 	}
 
@@ -158,22 +167,21 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		EnumFacing dummyDir = facing.getAxis()==Axis.X?(hitZ < .5?EnumFacing.NORTH: EnumFacing.SOUTH): (hitX < .5?EnumFacing.WEST: EnumFacing.EAST);
-		boolean mirror = false;
+		boolean mirror;
 		BlockPos dummyPos = pos.offset(dummyDir);
-		if(!world.getBlockState(dummyPos).getBlock().isReplaceable(world, dummyPos))
+		if(!world.getBlockState(dummyPos).getBlock().isReplaceable(world, new BlockItemUseContext(world, null,
+				new ItemStack(IEContent.blockModWorkbench), dummyPos, side, hitX, hitY, hitZ)))
 		{
 			dummyDir = dummyDir.getOpposite();
 			dummyPos = pos.offset(dummyDir);
 		}
 		mirror = dummyDir!=facing.rotateY();
-		dummyOffset = mirror?-1: 1;
 		if(mirror)
 			this.dummy = true;
 		world.setBlockState(dummyPos, state);
 		TileEntityModWorkbench tileEntityDummy = ((TileEntityModWorkbench)world.getTileEntity(dummyPos));
 		tileEntityDummy.facing = this.facing;
 		tileEntityDummy.dummy = !mirror;
-		tileEntityDummy.dummyOffset = mirror?-1: 1;
 	}
 
 	@Override
@@ -200,15 +208,15 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	{
 		if(!dummy)
 			return this;
-		EnumFacing dummyDir = dummy?facing.rotateYCCW(): facing.rotateY();
+		EnumFacing dummyDir = facing.rotateYCCW();
 		TileEntity tileEntityModWorkbench = world.getTileEntity(pos.offset(dummyDir));
 		if(tileEntityModWorkbench instanceof TileEntityModWorkbench)
 			return tileEntityModWorkbench;
 		return null;
 	}
 
-	static ArrayList<String> normalDisplayList = Lists.newArrayList("cube0");
-	static ArrayList<String> blueprintDisplayList = Lists.newArrayList("cube0", "blueprint");
+	private static ArrayList<String> normalDisplayList = Lists.newArrayList("cube0");
+	private static ArrayList<String> blueprintDisplayList = Lists.newArrayList("cube0", "blueprint");
 
 	@Override
 	public ArrayList<String> compileDisplayList()

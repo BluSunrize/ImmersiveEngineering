@@ -105,7 +105,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		if(world.isRemote)
 		{
 			ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f, 1);
-			if(active&&world.getTotalWorldTime()%4==0)
+			if(active&&world.getGameTime()%4==0)
 			{
 				BlockPos exhaust = this.getBlockPosForPos(38);
 				EnumFacing fl = facing;

@@ -38,7 +38,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	@Override
 	public void update()
 	{
-		if(!world.isRemote&&world.getTotalWorldTime()%8!=((getPos().getX()^getPos().getZ())&8))
+		if(!world.isRemote&&world.getGameTime()%8!=((getPos().getX()^getPos().getZ())&8))
 		{
 			int out = getComparatorSignal();
 			if(out!=lastOutput)

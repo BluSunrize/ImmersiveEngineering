@@ -41,7 +41,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	@Override
 	public void update()
 	{
-		if(world.getTotalWorldTime()%1024==((getPos().getX()^getPos().getZ())&1023))
+		if(world.getGameTime()%1024==((getPos().getX()^getPos().getZ())&1023))
 			recalculateEnergyOutput();
 		if(!world.isRemote&&this.energyOutput > 0)
 			outputEnergy(this.energyOutput);

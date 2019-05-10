@@ -118,7 +118,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 				particleStack = ItemStack.EMPTY;
 			}
 		}
-		else if(active&&world.getTotalWorldTime()%20==0)
+		else if(active&&world.getGameTime()%20==0)
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setFloat("rotation", rotation);

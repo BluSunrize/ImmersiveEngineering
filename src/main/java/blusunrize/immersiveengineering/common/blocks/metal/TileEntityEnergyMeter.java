@@ -96,7 +96,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		ApiUtils.checkForNeedlessTicking(this);
 		if(lower||world.isRemote)
 			return;
-		if(((world.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal < 0))
+		if(((world.getGameTime()&31)==(pos.toLong()&31)||compVal < 0))
 			updateComparatorValues();
 		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
 		lastPackets.add(lastEnergyPassed);

@@ -36,6 +36,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -498,7 +499,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(pos > 30&&pos < 44&&pos%5 > 0&&pos%5 < 4&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

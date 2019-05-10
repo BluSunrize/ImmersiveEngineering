@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -27,7 +26,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -147,8 +145,6 @@ public abstract class TileEntityIEBase extends TileEntity
 		else if(id==254)
 		{
 			IBlockState state = world.getBlockState(pos);
-			if(state instanceof IExtendedBlockState)
-				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState)state);
 			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}

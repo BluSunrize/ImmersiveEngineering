@@ -60,7 +60,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 
 				for(int i = 0; i < 3; i++)
 				{
-					long time = world.getTotalWorldTime();
+					long time = world.getGameTime();
 					if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 					{
 						int shift = i-1;
@@ -105,7 +105,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		}
 
 
-		if(!world.isRemote&&world.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
+		if(!world.isRemote&&world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 		{
 			float charge = 0;
 			if(EnergyHelper.isFluxItem(inventory.get(0)))
