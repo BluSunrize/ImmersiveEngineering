@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import com.google.common.base.Function;

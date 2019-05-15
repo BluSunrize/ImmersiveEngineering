@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.waila;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockHemp;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;

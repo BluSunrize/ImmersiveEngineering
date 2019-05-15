@@ -6,12 +6,14 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.blocks;
+package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
@@ -42,10 +44,11 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		implements ITickable, IDirectionalTile, IBlockBounds, IGeneralMultiblock
 {
 	public boolean formed = false;
-	public int pos = -1;
+	public int posInMultiblock = -1;
 	public int[] offset = {0, 0, 0};
 	public boolean mirrored = false;
 	public EnumFacing facing = EnumFacing.NORTH;
+	private final IMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
@@ -54,10 +57,11 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	 */
 	protected final int[] structureDimensions;
 
-	protected TileEntityMultiblockPart(int[] structureDimensions, TileEntityType<? extends T> type)
+	protected TileEntityMultiblockPart(IMultiblock multiblockInstance, TileEntityType<? extends T> type)
 	{
 		super(type);
-		this.structureDimensions = structureDimensions;
+		this.multiblockInstance = multiblockInstance;
+		this.structureDimensions = multiblockInstance.getSize();
 	}
 
 	@Override
@@ -104,7 +108,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		formed = nbt.getBoolean("formed");
-		pos = nbt.getInt("pos");
+		posInMultiblock = nbt.getInt("pos");
 		offset = nbt.getIntArray("offset");
 		mirrored = nbt.getBoolean("mirrored");
 		setFacing(EnumFacing.byIndex(nbt.getInt("facing")));
@@ -114,7 +118,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setBoolean("formed", formed);
-		nbt.setInt("pos", pos);
+		nbt.setInt("pos", posInMultiblock);
 		nbt.setIntArray("offset", offset);
 		nbt.setBoolean("mirrored", mirrored);
 		nbt.setInt("facing", facing.ordinal());
@@ -125,8 +129,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	{
 		for(EnumFacing f : EnumFacing.VALUES)
 		{
-			CapabilityHolder<IFluidHandler> forSide = CapabilityHolder.ofConstant(new MultiblockFluidWrapper(this, f));
-			caps.add(forSide);
+			CapabilityHolder<IFluidHandler> forSide = registerConstantCap(new MultiblockFluidWrapper(this, f));
 			fluidCaps.put(f, forSide);
 		}
 	}
@@ -293,7 +296,24 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		return isDummy();
 	}
 
-	public abstract ItemStack getOriginalBlock();
+	public ItemStack getOriginalBlock()
+	{
+		if(posInMultiblock < 0)
+			return ItemStack.EMPTY;
+		ItemStack s = ItemStack.EMPTY;
+		try
+		{
+			int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
+			int h = (posInMultiblock/blocksPerLevel);
+			int l = (posInMultiblock%blocksPerLevel/structureDimensions[2]);
+			int w = (posInMultiblock%structureDimensions[2]);
+			s = this.multiblockInstance.getStructureManual()[h][l][w];
+		} catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return s.copy();
+	}
 
 	public void disassemble()
 	{
@@ -346,9 +366,9 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	{
 		int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
 		// dist = target position - current position
-		int distH = (targetPos/blocksPerLevel)-(pos/blocksPerLevel);
-		int distL = (targetPos%blocksPerLevel/structureDimensions[2])-(pos%blocksPerLevel/structureDimensions[2]);
-		int distW = (targetPos%structureDimensions[2])-(pos%structureDimensions[2]);
+		int distH = (targetPos/blocksPerLevel)-(posInMultiblock/blocksPerLevel);
+		int distL = (targetPos%blocksPerLevel/structureDimensions[2])-(posInMultiblock%blocksPerLevel/structureDimensions[2]);
+		int distW = (targetPos%structureDimensions[2])-(posInMultiblock%structureDimensions[2]);
 		int w = mirrored?-distW: distW;
 		return getPos().offset(facing, distL).offset(facing.rotateY(), w).add(0, distH, 0);
 	}

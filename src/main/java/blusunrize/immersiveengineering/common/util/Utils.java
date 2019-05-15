@@ -51,7 +51,7 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tags.ItemTags;
@@ -1527,7 +1527,7 @@ public class Utils
 		return invList;
 	}
 
-	public static NonNullList<ItemStack> loadItemStacksFromNBT(NBTBase nbt)
+	public static NonNullList<ItemStack> loadItemStacksFromNBT(INBTBase nbt)
 	{
 		NonNullList<ItemStack> itemStacks = NonNullList.create();
 		if(nbt instanceof NBTTagCompound)

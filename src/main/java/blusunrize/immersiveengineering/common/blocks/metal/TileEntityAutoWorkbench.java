@@ -15,7 +15,10 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAutoWorkbench;
+import blusunrize.immersiveengineering.common.util.CapabilityHolder;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -23,6 +26,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -36,11 +40,14 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntityAutoWorkbench, IMultiblockRecipe> implements IGuiTile, IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
+public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEntityAutoWorkbench, IMultiblockRecipe>
+		implements IGuiTile, IConveyorAttachable
 {
+	public static TileEntityType<TileEntityAutoWorkbench> TYPE;
+
 	public TileEntityAutoWorkbench()
 	{
-		super(MultiblockAutoWorkbench.instance, new int[]{2, 3, 3}, 32000, true);
+		super(MultiblockAutoWorkbench.instance, 32000, true, TYPE);
 	}
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);
@@ -78,9 +85,9 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
-		super.update();
+		super.tick();
 
 		if(isDummy()||isRSDisabled()||world.isRemote||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
 			return;
@@ -97,9 +104,9 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 				int crafted = recipe.getMaxCrafted(query);
 				if(crafted > 0)
 				{
-					if(this.addProcessToQueue(new MultiblockProcessInWorld(recipe, 0.78f, NonNullList.create()), true))
+					if(this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, 0.78f, NonNullList.create()), true))
 					{
-						this.addProcessToQueue(new MultiblockProcessInWorld(recipe, 0.78f, recipe.consumeInputs(query, 1)), false);
+						this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, 0.78f, recipe.consumeInputs(query, 1)), false);
 						for(int i = 0; i < query.size(); i++)
 							inventory.set(i+1, query.get(i));
 						this.markDirty();
@@ -113,9 +120,9 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos < 10||pos==12)
+		if(posInMultiblock < 10||posInMultiblock==12)
 			return new float[]{0, 0, 0, 1, 1, 1};
-		if(pos >= 13&&pos <= 16)
+		if(posInMultiblock >= 13&&posInMultiblock <= 16)
 			return new float[]{0, 0, 0, 1, .125f, 1};
 		float xMin = 0;
 		float yMin = 0;
@@ -123,35 +130,35 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if(pos==10||pos==11)
+		if(posInMultiblock==10||posInMultiblock==11)
 		{
 			yMax = .8125f;
 			if(facing==EnumFacing.NORTH)
 			{
 				zMin = .1875f;
-				if(pos==11)
+				if(posInMultiblock==11)
 					xMax = .875f;
 			}
 			else if(facing==EnumFacing.SOUTH)
 			{
 				zMax = .8125f;
-				if(pos==11)
+				if(posInMultiblock==11)
 					xMin = .125f;
 			}
 			else if(facing==EnumFacing.WEST)
 			{
 				xMin = .1875f;
-				if(pos==11)
+				if(posInMultiblock==11)
 					zMin = .125f;
 			}
 			else if(facing==EnumFacing.EAST)
 			{
 				xMax = .8125f;
-				if(pos==11)
+				if(posInMultiblock==11)
 					zMax = .875f;
 			}
 		}
-		if(pos==17)
+		if(posInMultiblock==17)
 		{
 			yMax = .3125f;
 			if(facing==EnumFacing.NORTH)
@@ -202,14 +209,27 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		return true;
 	}
 
+	CapabilityReference<IItemHandler> output;
+
+	@Override
+	public void setFacing(EnumFacing facing)
+	{
+		super.setFacing(facing);
+		reinitCapRefs();
+	}
+
+	private void reinitCapRefs()
+	{
+		EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+		output = CapabilityReference.forRelative(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+				BlockPos.ORIGIN.offset(outDir, 2), outDir.getOpposite());
+	}
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
 		EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
-		BlockPos pos = getPos().offset(outDir, 2);
-		TileEntity inventoryTile = this.world.getTileEntity(pos);
-		if(inventoryTile!=null)
-			output = Utils.insertStackIntoInventory(inventoryTile, output, outDir.getOpposite());
+		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
 			Utils.dropStackAtPos(world, pos, output, outDir);
 	}
@@ -290,18 +310,20 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(pos==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(posInMultiblock==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return master()!=null;
 		return super.hasCapability(capability, facing);
 	}
 
-	IItemHandler insertionHandler = new IEInventoryHandler(16, this, 1, true, false);
+	CapabilityHolder<IItemHandler> insertionHandler = registerConstantCap(
+			new IEInventoryHandler(16, this, 1, true, false)
+	);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
-		if(pos==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(posInMultiblock==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityAutoWorkbench master = master();
 			if(master==null)
@@ -365,7 +387,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	@Override
 	public EnumFacing[] sigOutputDirections()
 	{
-		if(pos==14)
+		if(posInMultiblock==14)
 			return new EnumFacing[]{this.facing.rotateY()};
 		return new EnumFacing[0];
 	}

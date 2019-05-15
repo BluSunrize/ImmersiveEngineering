@@ -168,8 +168,15 @@ public abstract class TileEntityIEBase extends TileEntity
 	protected final Set<CapabilityHolder<?>> caps = new HashSet<>();
 	private final CapabilityHolder<IEnergyStorage> energyCap = CapabilityHolder.empty();
 
+	protected <T> CapabilityHolder<T> registerConstantCap(T val)
 	{
-		caps.add(energyCap);
+		return registerCap(CapabilityHolder.ofConstant(val));
+	}
+
+	protected <T> CapabilityHolder<T> registerCap(CapabilityHolder<T> cap)
+	{
+		caps.add(cap);
+		return cap;
 	}
 
 	@Nonnull

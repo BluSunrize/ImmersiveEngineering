@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
@@ -327,9 +326,8 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	{
 		for(EnumFacing f : EnumFacing.VALUES)
 		{
-			CapabilityHolder<IItemHandler> forSide = CapabilityHolder.empty();
+			CapabilityHolder<IItemHandler> forSide = registerConstantCap(new SorterInventoryHandler(this, f));
 			insertionHandlers.put(f, forSide);
-			caps.add(forSide);
 		}
 	}
 
@@ -338,7 +336,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==ITEM_HANDLER_CAPABILITY&&facing!=null)
-			return ApiUtils.constantOptional(insertionHandlers.get(facing), new SorterInventoryHandler(this, facing));
+			return insertionHandlers.get(facing).getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

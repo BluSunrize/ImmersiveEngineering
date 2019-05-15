@@ -165,7 +165,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 					{
 						TileEntitySheetmetalTank currTank = (TileEntitySheetmetalTank)curr;
 						currTank.offset = new int[]{xx, h, zz};
-						currTank.pos = h*9+(l+1)*3+(w+1);
+						currTank.posInMultiblock = h*9+(l+1)*3+(w+1);
 						currTank.formed = true;
 						currTank.offset = new int[]{xx, h, zz};
 						currTank.markDirty();

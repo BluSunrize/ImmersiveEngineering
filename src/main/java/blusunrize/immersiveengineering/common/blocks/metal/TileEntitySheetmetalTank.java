@@ -10,13 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,7 +78,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(pos==4&&!world.isRemote&&world.getRedstonePowerFromNeighbors(getPos()) > 0)
+		if(posInMultiblock==4&&!world.isRemote&&world.getRedstonePowerFromNeighbors(getPos()) > 0)
 			for(int i = 0; i < 6; i++)
 				if(i!=1&&tank.getFluidAmount() > 0)
 				{
@@ -122,17 +119,11 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos==9)
+		if(posInMultiblock==9)
 			return new float[]{.375f, 0, .375f, .625f, 1, .625f};
-		if(pos==0||pos==2||pos==6||pos==8)
+		if(posInMultiblock==0||posInMultiblock==2||posInMultiblock==6||posInMultiblock==8)
 			return new float[]{.375f, 0, .375f, .625f, 1, .625f};
 		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		return pos==0||pos==2||pos==6||pos==8?new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta()): new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 	}
 
 	@Override
@@ -145,7 +136,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntitySheetmetalTank master = master();
-		if(master!=null&&(pos==4||pos==40))
+		if(master!=null&&(posInMultiblock==4||posInMultiblock==40))
 			return new FluidTank[]{master.tank};
 		return new FluidTank[0];
 	}
@@ -153,13 +144,13 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
 	{
-		return pos==4||pos==40;
+		return posInMultiblock==4||posInMultiblock==40;
 	}
 
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
-		return pos==4;
+		return posInMultiblock==4;
 	}
 
 	@Override
@@ -185,7 +176,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			if(pos==4)
+			if(posInMultiblock==4)
 				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 5, 2));
 			else
 				renderAABB = new AxisAlignedBB(getPos(), getPos());
@@ -195,7 +186,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	@Override
 	public int getComparatorInputOverride()
 	{
-		if(pos==4)
+		if(posInMultiblock==4)
 			return (15*tank.getFluidAmount())/tank.getCapacity();
 		TileEntitySheetmetalTank master = master();
 		if(offset[1] >= 1&&offset[1] <= 4&&master!=null)//4 layers of storage

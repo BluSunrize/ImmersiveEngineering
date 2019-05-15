@@ -10,6 +10,7 @@
  - Remove config-mirroring fields from all over the place (e.g. `WireType.wireTransferRate`)
  - Remove WireType parameter from ``IImmersiveConnectable.getConnectionMaster``
  - Split `ApiUtils` in a client and a server class
+ - Refer to the garden cloche by that name rather than as the belljar in the config, and possibly in code too
  
 Maybe:
  - Change the manual to:

@@ -6,20 +6,20 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.blocks.metal;
+package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -30,19 +30,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,21 +53,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IIEInternalFluxHandler, IHammerInteraction, IMirrorAble, IProcessTile, IComparatorOverride
+public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMultiblock<T, R>, R extends IMultiblockRecipe>
+		extends TileEntityMultiblockPart<T> implements IIEInventory, IIEInternalFluxHandler, IHammerInteraction,
+		IMirrorAble, IProcessTile, IComparatorOverride
 {
 	public final FluxStorageAdvanced energyStorage;
 	protected final boolean hasRedstoneControl;
-	protected final IMultiblock mutliblockInstance;
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
 	public Optional<Boolean> computerOn = Optional.empty();
 
-	public TileEntityMultiblockMetal(IMultiblock mutliblockInstance, int[] structureDimensions, int energyCapacity, boolean redstoneControl)
+	public TileEntityPoweredMultiblock(IMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
+									   TileEntityType<? extends T> type)
 	{
-		super(structureDimensions);
+		super(multiblockInstance, type);
 		this.energyStorage = new FluxStorageAdvanced(energyCapacity);
 		this.hasRedstoneControl = redstoneControl;
-		this.mutliblockInstance = mutliblockInstance;
 	}
 
 	//	=================================
@@ -86,7 +89,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			if(recipe!=null)
 			{
 				int processTick = tag.getInt("process_processTick");
-				MultiblockProcess process = loadProcessFromNBT(tag);
+				MultiblockProcess<R> process = loadProcessFromNBT(tag);
 				if(process!=null)
 				{
 					process.processTick = processTick;
@@ -94,7 +97,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				}
 			}
 		}
-		if(nbt.hasKey("computerOn", Constants.NBT.TAG_BYTE)&&Loader.isModLoaded("opencomputers"))
+		if(nbt.contains("computerOn", Constants.NBT.TAG_BYTE)&&ModList.get().isLoaded("opencomputers"))
 		{
 			byte cOn = nbt.getByte("computerOn");
 			switch(cOn)
@@ -130,14 +133,16 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	protected abstract R readRecipeFromNBT(NBTTagCompound tag);
 
-	protected MultiblockProcess loadProcessFromNBT(NBTTagCompound tag)
+	protected MultiblockProcess<R> loadProcessFromNBT(NBTTagCompound tag)
 	{
-		IMultiblockRecipe recipe = readRecipeFromNBT(tag);
+		R recipe = readRecipeFromNBT(tag);
 		if(recipe!=null)
 			if(isInWorldProcessingMachine())
-				return new MultiblockProcessInWorld<>(recipe, tag.getFloat("process_transformationPoint"), Utils.loadItemStacksFromNBT(tag.getTag("process_inputItem")));
+				return new MultiblockProcessInWorld<>(recipe, tag.getFloat("process_transformationPoint"),
+						Utils.loadItemStacksFromNBT(tag.getTag("process_inputItem")));
 			else
-				return new MultiblockProcessInMachine<>(recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
+				return new MultiblockProcessInMachine<>(recipe, tag.getIntArray("process_inputSlots"))
+						.setInputTanks(tag.getIntArray("process_inputTanks"));
 		return null;
 	}
 
@@ -157,7 +162,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public boolean isEnergyPos()
 	{
 		for(int i : getEnergyPos())
-			if(pos==i)
+			if(posInMultiblock==i)
 				return true;
 		return false;
 	}
@@ -219,7 +224,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		if(!hasRedstoneControl||getRedstonePos()==null)
 			return false;
 		for(int i : getRedstonePos())
-			if(pos==i)
+			if(posInMultiblock==i)
 				return true;
 		return false;
 	}
@@ -229,7 +234,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		if(!this.isRedstonePos())
 			return 0;
-		TileEntityMultiblockMetal master = master();
+		TileEntityPoweredMultiblock master = master();
 		if(master==null)
 			return 0;
 		return Utils.calcRedstoneFromInventory(master);
@@ -240,7 +245,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		if(this.isRedstonePos())
 		{
-			TileEntityMultiblockMetal<T, R> master = master();
+			TileEntityPoweredMultiblock<T, R> master = master();
 			master.redstoneControlInverted = !master.redstoneControlInverted;
 			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
 			this.updateMasterBlock(null, true);
@@ -283,35 +288,9 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	}
 
 	@Override
-	public ItemStack getOriginalBlock()
-	{
-		if(pos < 0)
-			return ItemStack.EMPTY;
-		ItemStack s = ItemStack.EMPTY;
-		try
-		{
-			int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
-			int h = (pos/blocksPerLevel);
-			int l = (pos%blocksPerLevel/structureDimensions[2]);
-			int w = (pos%structureDimensions[2]);
-			s = this.mutliblockInstance.getStructureManual()[h][l][w];
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return s.copy();
-	}
-
-	@Override
 	public boolean getIsMirrored()
 	{
 		return this.mirrored;
-	}
-
-	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return IEProperties.BOOLEANS[0];
 	}
 
 	//	=================================
@@ -321,7 +300,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public int tickedProcesses = 0;
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		tickedProcesses = 0;
@@ -379,15 +358,16 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		if(addToPrevious&&process instanceof MultiblockProcessInWorld)
 		{
+			MultiblockProcessInWorld<R> newProcess = (MultiblockProcessInWorld<R>)process;
 			for(MultiblockProcess<R> curr : processQueue)
 				if(curr instanceof MultiblockProcessInWorld&&process.recipe.equals(curr.recipe))
 				{
-					MultiblockProcessInWorld p = (MultiblockProcessInWorld)curr;
+					MultiblockProcessInWorld<R> existingProcess = (MultiblockProcessInWorld<R>)curr;
 					boolean canStack = true;
-					for(ItemStack old : (List<ItemStack>)p.inputItems)
+					for(ItemStack old : existingProcess.inputItems)
 					{
-						for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
-							if(OreDictionary.itemMatches(old, in, true)&&Utils.compareItemNBT(old, in))
+						for(ItemStack in : newProcess.inputItems)
+							if(ItemStack.areItemsEqual(old, in)&&Utils.compareItemNBT(old, in))
 								if(old.getCount()+in.getCount() > old.getMaxStackSize())
 								{
 									canStack = false;
@@ -399,10 +379,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					if(canStack)
 					{
 						if(!simulate)
-							for(ItemStack old : (List<ItemStack>)p.inputItems)
+							for(ItemStack old : existingProcess.inputItems)
 							{
-								for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
-									if(OreDictionary.itemMatches(old, in, true)&&Utils.compareItemNBT(old, in))
+								for(ItemStack in : newProcess.inputItems)
+									if(ItemStack.areItemsEqual(old, in)&&Utils.compareItemNBT(old, in))
 									{
 										old.grow(in.getCount());
 										break;
@@ -432,6 +412,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public int[] getCurrentProcessesStep()
 	{
@@ -444,6 +425,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		return ia;
 	}
 
+	@Nonnull
 	@Override
 	public int[] getCurrentProcessesMax()
 	{
@@ -477,17 +459,17 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			this.energyPerTick = this.recipe.getTotalProcessEnergy()/this.maxTicks;
 		}
 
-		protected List<ItemStack> getRecipeItemOutputs(TileEntityMultiblockMetal multiblock)
+		protected List<ItemStack> getRecipeItemOutputs(TileEntityPoweredMultiblock multiblock)
 		{
 			return recipe.getActualItemOutputs(multiblock);
 		}
 
-		protected List<FluidStack> getRecipeFluidOutputs(TileEntityMultiblockMetal multiblock)
+		protected List<FluidStack> getRecipeFluidOutputs(TileEntityPoweredMultiblock multiblock)
 		{
 			return recipe.getActualFluidOutputs(multiblock);
 		}
 
-		public boolean canProcess(TileEntityMultiblockMetal multiblock)
+		public boolean canProcess(TileEntityPoweredMultiblock<?, R> multiblock)
 		{
 			if(multiblock.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick)
 			{
@@ -546,7 +528,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			return false;
 		}
 
-		public void doProcessTick(TileEntityMultiblockMetal multiblock)
+		public void doProcessTick(TileEntityPoweredMultiblock<?, R> multiblock)
 		{
 			int energyExtracted = energyPerTick;
 			int ticksAdded = 1;
@@ -575,7 +557,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			}
 		}
 
-		protected void processFinish(TileEntityMultiblockMetal multiblock)
+		protected void processFinish(TileEntityPoweredMultiblock<?, R> multiblock)
 		{
 			List<ItemStack> outputs = getRecipeItemOutputs(multiblock);
 			if(outputs!=null&&!outputs.isEmpty())
@@ -644,13 +626,13 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			this.inputSlots = inputSlots;
 		}
 
-		public MultiblockProcessInMachine setInputTanks(int... inputTanks)
+		public MultiblockProcessInMachine<R> setInputTanks(int... inputTanks)
 		{
 			this.inputTanks = inputTanks;
 			return this;
 		}
 
-		public MultiblockProcessInMachine setInputAmounts(int... inputAmounts)
+		public MultiblockProcessInMachine<R> setInputAmounts(int... inputAmounts)
 		{
 			this.inputAmounts = inputAmounts;
 			return this;
@@ -672,18 +654,18 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			return this.inputTanks;
 		}
 
-		protected List<IngredientStack> getRecipeItemInputs(TileEntityMultiblockMetal multiblock)
+		protected List<IngredientStack> getRecipeItemInputs(TileEntityPoweredMultiblock multiblock)
 		{
 			return recipe.getItemInputs();
 		}
 
-		protected List<FluidStack> getRecipeFluidInputs(TileEntityMultiblockMetal multiblock)
+		protected List<FluidStack> getRecipeFluidInputs(TileEntityPoweredMultiblock multiblock)
 		{
 			return recipe.getFluidInputs();
 		}
 
 		@Override
-		public void doProcessTick(TileEntityMultiblockMetal multiblock)
+		public void doProcessTick(TileEntityPoweredMultiblock multiblock)
 		{
 			NonNullList<ItemStack> inv = multiblock.getInventory();
 			if(recipe.shouldCheckItemAvailability()&&recipe.getItemInputs()!=null&&inv!=null)
@@ -698,24 +680,11 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					return;
 				}
 			}
-			//			FluidTank[] tanks = multiblock.getInternalTanks();
-			//			if(tanks!=null)
-			//			{
-			//				ItemStack[] query = new ItemStack[inputSlots.length];
-			//				for(int i=0; i	inputSlots.length; i++)
-			//					if(inputSlots[i]>=0&&inputSlots[i]<inv.length)
-			//						query[i] = multiblock.getInventory()[inputSlots[i]];
-			//				if(!ApiUtils.stacksMatchIngredientList(recipe.getItemInputs(), query))
-			//				{
-			//					this.clearProcess = true;
-			//					return;
-			//				}
-			//			}
 			super.doProcessTick(multiblock);
 		}
 
 		@Override
-		protected void processFinish(TileEntityMultiblockMetal multiblock)
+		protected void processFinish(TileEntityPoweredMultiblock multiblock)
 		{
 			super.processFinish(multiblock);
 			NonNullList<ItemStack> inv = multiblock.getInventory();
@@ -731,7 +700,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				}
 				else
 				{
-					Iterator<IngredientStack> iterator = new ArrayList(itemInputList).iterator();
+					Iterator<IngredientStack> iterator = new ArrayList<>(itemInputList).iterator();
 					while(iterator.hasNext())
 					{
 						IngredientStack ingr = iterator.next();
@@ -753,7 +722,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			List<FluidStack> fluidInputList = this.getRecipeFluidInputs(multiblock);
 			if(tanks!=null&&this.inputTanks!=null&&fluidInputList!=null)
 			{
-				Iterator<FluidStack> iterator = new ArrayList(fluidInputList).iterator();
+				Iterator<FluidStack> iterator = new ArrayList<>(fluidInputList).iterator();
 				while(iterator.hasNext())
 				{
 					FluidStack ingr = iterator.next();
@@ -799,9 +768,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		public MultiblockProcessInWorld(R recipe, float transformationPoint, NonNullList<ItemStack> inputItem)
 		{
 			super(recipe);
-			this.inputItems = new ArrayList<>(inputItem.size());
-			for(ItemStack s : inputItem)
-				this.inputItems.add(s);
+			this.inputItems = new ArrayList<>(inputItem);
 			this.transformationPoint = transformationPoint;
 		}
 
@@ -824,7 +791,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		}
 
 		@Override
-		protected void processFinish(TileEntityMultiblockMetal multiblock)
+		protected void processFinish(TileEntityPoweredMultiblock multiblock)
 		{
 			super.processFinish(multiblock);
 			int size = -1;
@@ -848,13 +815,15 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		}
 	}
 
-	public static class MultiblockInventoryHandler_DirectProcessing implements IItemHandlerModifiable
+	public static class MultiblockInventoryHandler_DirectProcessing
+			<T extends TileEntityPoweredMultiblock<T, R>, R extends IMultiblockRecipe>
+			implements IItemHandlerModifiable
 	{
-		TileEntityMultiblockMetal multiblock;
+		T multiblock;
 		float transformationPoint = .5f;
 		boolean doProcessStacking = false;
 
-		public MultiblockInventoryHandler_DirectProcessing(TileEntityMultiblockMetal multiblock)
+		public MultiblockInventoryHandler_DirectProcessing(T multiblock)
 		{
 			this.multiblock = multiblock;
 		}
@@ -887,11 +856,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			stack = stack.copy();
-			IMultiblockRecipe recipe = this.multiblock.findRecipeForInsertion(stack);
+			R recipe = this.multiblock.findRecipeForInsertion(stack);
 			if(recipe==null)
 				return stack;
 			ItemStack displayStack = recipe.getDisplayStack(stack);
-			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, transformationPoint, Utils.createNonNullItemStackListFromItemStack(displayStack)), simulate, doProcessStacking))
+			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, transformationPoint,
+					Utils.createNonNullItemStackListFromItemStack(displayStack)), simulate, doProcessStacking))
 			{
 				multiblock.markDirty();
 				multiblock.markContainingBlockForUpdate(null);
@@ -912,6 +882,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		public int getSlotLimit(int slot)
 		{
 			return 64;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+		{
+			return true;//TODO
 		}
 
 		@Override

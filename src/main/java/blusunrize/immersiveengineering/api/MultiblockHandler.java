@@ -111,6 +111,8 @@ public class MultiblockHandler
 		 */
 		@OnlyIn(Dist.CLIENT)
 		void renderFormedStructure();
+
+		int[] getSize();
 	}
 
 	public static MultiblockFormEvent postMultiblockFormationEvent(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
@@ -44,7 +45,7 @@ public abstract class BlockIEMultiblock extends BlockIETileProvider
 		if(tileEntity instanceof TileEntityMultiblockPart&&world.getGameRules().getBoolean("doTileDrops"))
 		{
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)tileEntity;
-			if(!tile.formed&&tile.pos==-1&&!tile.getOriginalBlock().isEmpty())
+			if(!tile.formed&&tile.posInMultiblock==-1&&!tile.getOriginalBlock().isEmpty())
 				world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, tile.getOriginalBlock().copy()));
 
 			if(tile.formed&&tile instanceof IIEInventory)

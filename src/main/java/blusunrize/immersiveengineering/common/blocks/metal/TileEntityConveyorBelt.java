@@ -245,18 +245,14 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		return false;
 	}
 
-	private CapabilityHolder<IItemHandler> insertionCap = CapabilityHolder.empty();
-
-	{
-		caps.add(insertionCap);
-	}
+	private CapabilityHolder<IItemHandler> insertionCap = registerCap(CapabilityHolder.of(() -> new ConveyorInventoryHandler(this)));
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
 	{
 		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (LazyOptional<T>)insertionCap.replaceIfAbsent(LazyOptional.of(() -> new ConveyorInventoryHandler(this)));
+			return insertionCap.getAndCast();
 		return super.getCapability(cap, side);
 	}
 

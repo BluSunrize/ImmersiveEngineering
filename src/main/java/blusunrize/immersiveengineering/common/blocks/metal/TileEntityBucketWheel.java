@@ -13,8 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
@@ -46,15 +45,6 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	public TileEntityBucketWheel()
 	{
 		super(size);
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		if(pos < 0)
-			return ItemStack.EMPTY;
-		ItemStack s = pos < 0?ItemStack.EMPTY: MultiblockBucketWheel.instance.getStructureManual()[pos/7][pos%7][0];
-		return s.copy();
 	}
 
 	@Override
@@ -101,7 +91,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(!formed||pos!=24)
+		if(!formed||posInMultiblock!=24)
 			return;
 
 		if(active)
@@ -200,17 +190,17 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos==3||pos==9||pos==11)
+		if(posInMultiblock==3||posInMultiblock==9||posInMultiblock==11)
 			return new float[]{0, .25f, 0, 1, 1, 1};
-		else if(pos==45||pos==37||pos==39)
+		else if(posInMultiblock==45||posInMultiblock==37||posInMultiblock==39)
 			return new float[]{0, 0, 0, 1, .75f, 1};
-		else if(pos==21)
+		else if(posInMultiblock==21)
 			return new float[]{facing==EnumFacing.NORTH?.25f: 0, 0, facing==EnumFacing.WEST?.25f: 0, facing==EnumFacing.SOUTH?.75f: 1, 1, facing==EnumFacing.EAST?.75f: 1};
-		else if(pos==27)
+		else if(posInMultiblock==27)
 			return new float[]{facing==EnumFacing.SOUTH?.25f: 0, 0, facing==EnumFacing.EAST?.25f: 0, facing==EnumFacing.NORTH?.75f: 1, 1, facing==EnumFacing.WEST?.75f: 1};
-		else if(pos==15||pos==29)
+		else if(posInMultiblock==15||posInMultiblock==29)
 			return new float[]{facing==EnumFacing.NORTH?.25f: 0, 0, facing==EnumFacing.WEST?.25f: 0, facing==EnumFacing.SOUTH?.75f: 1, 1, facing==EnumFacing.EAST?.75f: 1};
-		else if(pos==19||pos==33)
+		else if(posInMultiblock==19||posInMultiblock==33)
 			return new float[]{facing==EnumFacing.SOUTH?.25f: 0, 0, facing==EnumFacing.EAST?.25f: 0, facing==EnumFacing.NORTH?.75f: 1, 1, facing==EnumFacing.WEST?.75f: 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}

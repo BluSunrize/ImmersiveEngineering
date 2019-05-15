@@ -10,12 +10,14 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.item.ItemStack;
@@ -42,16 +44,15 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
-	private static final int[] size = {3, 3, 3};
 
 	public TileEntityBlastFurnace()
 	{
-		super(size, TYPE);
+		super(MultiblockBlastFurnace.instance, TYPE);
 	}
 
-	protected TileEntityBlastFurnace(int[] size, TileEntityType<? extends TileEntityBlastFurnace> type)
+	protected TileEntityBlastFurnace(IMultiblock mb, TileEntityType<? extends TileEntityBlastFurnace> type)
 	{
-		super(size, type);
+		super(mb, type);
 	}
 
 	@Override
@@ -82,12 +83,6 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	public float[] getBlockBounds()
 	{
 		return null;
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		return new ItemStack(IEContent.blockBlastBrick, 1);
 	}
 
 	@Override

@@ -13,14 +13,12 @@ import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningrod;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -53,7 +51,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(!world.isRemote&&formed&&pos==13)
+		if(!world.isRemote&&formed&&posInMultiblock==13)
 		{
 			if(energyStorage.getEnergyStored() > 0)
 			{
@@ -149,11 +147,11 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos==22)
+		if(posInMultiblock==22)
 			return new float[]{-.125f, 0, -.125f, 1.125f, 1, 1.125f};
-		if(pos%9==4||(pos < 18&&pos%9%2==1))
+		if(posInMultiblock%9==4||(posInMultiblock < 18&&posInMultiblock%9%2==1))
 			return new float[]{0, 0, 0, 1, 1, 1};
-		if(pos < 9)
+		if(posInMultiblock < 9)
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		float xMin = 0;
 		float xMax = 1;
@@ -161,28 +159,28 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 		float yMax = 1;
 		float zMin = 0;
 		float zMax = 1;
-		if(pos%9==0||pos%9==2||pos%9==6||pos%9==8)
+		if(posInMultiblock%9==0||posInMultiblock%9==2||posInMultiblock%9==6||posInMultiblock%9==8)
 		{
-			if(pos < 18)
+			if(posInMultiblock < 18)
 			{
 				yMin = -.5f;
 				yMax = 1.25f;
-				xMin = (facing.getAxis()==Axis.X?(pos%9 > 2^facing==EnumFacing.EAST): (pos%3==2^facing==EnumFacing.NORTH))?.8125f: .4375f;
-				xMax = (facing.getAxis()==Axis.X?(pos%9 < 3^facing==EnumFacing.EAST): (pos%3==0^facing==EnumFacing.NORTH))?.1875f: .5625f;
-				zMin = (facing.getAxis()==Axis.X?(pos%3==2^facing==EnumFacing.EAST): (pos%9 < 3^facing==EnumFacing.NORTH))?.8125f: .4375f;
-				zMax = (facing.getAxis()==Axis.X?(pos%3==0^facing==EnumFacing.EAST): (pos%9 > 2^facing==EnumFacing.NORTH))?.1875f: .5625f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==EnumFacing.EAST): (posInMultiblock%3==2^facing==EnumFacing.NORTH))?.8125f: .4375f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==EnumFacing.EAST): (posInMultiblock%3==0^facing==EnumFacing.NORTH))?.1875f: .5625f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==EnumFacing.EAST): (posInMultiblock%9 < 3^facing==EnumFacing.NORTH))?.8125f: .4375f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==EnumFacing.EAST): (posInMultiblock%9 > 2^facing==EnumFacing.NORTH))?.1875f: .5625f;
 			}
 			else
 			{
 				yMin = .25f;
 				yMax = .75f;
-				xMin = (facing.getAxis()==Axis.X?(pos%9 > 2^facing==EnumFacing.EAST): (pos%3==2^facing==EnumFacing.NORTH))?1: .625f;
-				xMax = (facing.getAxis()==Axis.X?(pos%9 < 3^facing==EnumFacing.EAST): (pos%3==0^facing==EnumFacing.NORTH))?0: .375f;
-				zMin = (facing.getAxis()==Axis.X?(pos%3==2^facing==EnumFacing.EAST): (pos%9 < 3^facing==EnumFacing.NORTH))?1: .625f;
-				zMax = (facing.getAxis()==Axis.X?(pos%3==0^facing==EnumFacing.EAST): (pos%9 > 2^facing==EnumFacing.NORTH))?0: .375f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==EnumFacing.EAST): (posInMultiblock%3==2^facing==EnumFacing.NORTH))?1: .625f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==EnumFacing.EAST): (posInMultiblock%3==0^facing==EnumFacing.NORTH))?0: .375f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==EnumFacing.EAST): (posInMultiblock%9 < 3^facing==EnumFacing.NORTH))?1: .625f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==EnumFacing.EAST): (posInMultiblock%9 > 2^facing==EnumFacing.NORTH))?0: .375f;
 			}
 		}
-		else if(pos > 17)
+		else if(posInMultiblock > 17)
 		{
 			yMin = .25f;
 			yMax = .75f;
@@ -192,22 +190,6 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			zMax = offset[2] > 0?.625f: 1;
 		}
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		if(pos < 0)
-			return ItemStack.EMPTY;
-		ItemStack s = ItemStack.EMPTY;
-		try
-		{
-			s = MultiblockLightningrod.instance.getStructureManual()[pos/9][pos%9/3][pos%3];
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return s.copy();
 	}
 
 	@Override
@@ -236,7 +218,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			if(pos==4)
+			if(posInMultiblock==4)
 				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 5, 2));
 			else
 				renderAABB = new AxisAlignedBB(getPos(), getPos());
@@ -272,7 +254,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 
 	private boolean isEnergyPos()
 	{
-		return pos==10||pos==12||pos==14||pos==16;
+		return posInMultiblock==10||posInMultiblock==12||posInMultiblock==14||posInMultiblock==16;
 	}
 
 	//	@Override

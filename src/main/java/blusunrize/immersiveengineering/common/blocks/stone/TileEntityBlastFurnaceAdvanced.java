@@ -8,13 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
 import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -33,11 +32,9 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 {
 	public static TileEntityType<TileEntityBlastFurnaceAdvanced> TYPE;
 
-	private static final int[] size = {4, 3, 3};
-
 	public TileEntityBlastFurnaceAdvanced()
 	{
-		super(size, TYPE);
+		super(MultiblockBlastFurnaceAdvanced.instance, TYPE);
 		initCapReferences();
 	}
 
@@ -76,7 +73,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos%9==4||pos==1||pos==10||pos==31)
+		if(posInMultiblock%9==4||posInMultiblock==1||posInMultiblock==10||posInMultiblock==31)
 			return new float[]{0, 0, 0, 1, 1, 1};
 
 		float xMin = 0;
@@ -86,7 +83,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		float yMax = 1;
 		float zMax = 1;
 
-		if(pos==7)
+		if(posInMultiblock==7)
 		{
 			xMin = facing.getAxis()==Axis.Z?.1875f: 0;
 			xMax = facing.getAxis()==Axis.Z?.8125f: 1;
@@ -97,32 +94,24 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		else
 		{
 			float indent = 1;
-			if(pos < 9)
-				indent = (pos > 2&&pos < 6)?.5f: .3125f;
-			else if(pos < 18)
+			if(posInMultiblock < 9)
+				indent = (posInMultiblock > 2&&posInMultiblock < 6)?.5f: .3125f;
+			else if(posInMultiblock < 18)
 				indent = .5f;
-			else if(pos < 27)
+			else if(posInMultiblock < 27)
 				indent = .375f;
 
-			if((pos%9 < 3&&facing==EnumFacing.WEST)||(pos%9 > 5&&facing==EnumFacing.EAST)||(pos%3==2&&facing==EnumFacing.SOUTH)||(pos%3==0&&facing==EnumFacing.NORTH))
+			if((posInMultiblock%9 < 3&&facing==EnumFacing.WEST)||(posInMultiblock%9 > 5&&facing==EnumFacing.EAST)||(posInMultiblock%3==2&&facing==EnumFacing.SOUTH)||(posInMultiblock%3==0&&facing==EnumFacing.NORTH))
 				xMin = (1-indent);
-			if((pos%9 < 3&&facing==EnumFacing.EAST)||(pos%9 > 5&&facing==EnumFacing.WEST)||(pos%3==2&&facing==EnumFacing.NORTH)||(pos%3==0&&facing==EnumFacing.SOUTH))
+			if((posInMultiblock%9 < 3&&facing==EnumFacing.EAST)||(posInMultiblock%9 > 5&&facing==EnumFacing.WEST)||(posInMultiblock%3==2&&facing==EnumFacing.NORTH)||(posInMultiblock%3==0&&facing==EnumFacing.SOUTH))
 				xMax = indent;
-			if((pos%9 < 3&&facing==EnumFacing.SOUTH)||(pos%9 > 5&&facing==EnumFacing.NORTH)||(pos%3==2&&facing==EnumFacing.EAST)||(pos%3==0&&facing==EnumFacing.WEST))
+			if((posInMultiblock%9 < 3&&facing==EnumFacing.SOUTH)||(posInMultiblock%9 > 5&&facing==EnumFacing.NORTH)||(posInMultiblock%3==2&&facing==EnumFacing.EAST)||(posInMultiblock%3==0&&facing==EnumFacing.WEST))
 				zMin = (1-indent);
-			if((pos%9 < 3&&facing==EnumFacing.NORTH)||(pos%9 > 5&&facing==EnumFacing.SOUTH)||(pos%3==2&&facing==EnumFacing.WEST)||(pos%3==0&&facing==EnumFacing.EAST))
+			if((posInMultiblock%9 < 3&&facing==EnumFacing.NORTH)||(posInMultiblock%9 > 5&&facing==EnumFacing.SOUTH)||(posInMultiblock%3==2&&facing==EnumFacing.WEST)||(posInMultiblock%3==0&&facing==EnumFacing.EAST))
 				zMax = indent;
 		}
 
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		if(this.pos==31)
-			return new ItemStack(Blocks.HOPPER);
-		return new ItemStack(IEContent.blockReinforcedBlastBrick, 1);
 	}
 
 	@Override
@@ -143,36 +132,30 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		return i;
 	}
 
-	private CapabilityHolder<IItemHandler> inputHandler = CapabilityHolder.ofConstant(
+	private CapabilityHolder<IItemHandler> inputHandler = registerConstantCap(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false})
 	);
-	private CapabilityHolder<IItemHandler> outputHandler = CapabilityHolder.ofConstant(
+	private CapabilityHolder<IItemHandler> outputHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true})
 	);
-	private CapabilityHolder<IItemHandler> slagHandler = CapabilityHolder.ofConstant(
+	private CapabilityHolder<IItemHandler> slagHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
 	);
-
-	{
-		caps.add(inputHandler);
-		caps.add(outputHandler);
-		caps.add(slagHandler);
-	}
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if((pos==1||pos==7||pos==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((posInMultiblock==1||posInMultiblock==7||posInMultiblock==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityBlastFurnaceAdvanced master = (TileEntityBlastFurnaceAdvanced)master();
 			if(master==null)
 				return null;
-			if(pos==31&&facing==EnumFacing.UP)
+			if(posInMultiblock==31&&facing==EnumFacing.UP)
 				return master.inputHandler.get().cast();
-			if(pos==1&&facing==master.facing)
+			if(posInMultiblock==1&&facing==master.facing)
 				return master.outputHandler.get().cast();
-			if(pos==7&&facing==master.facing.getOpposite())
+			if(posInMultiblock==7&&facing==master.facing.getOpposite())
 				return master.slagHandler.get().cast();
 			return LazyOptional.empty();
 		}

@@ -110,11 +110,8 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		return super.receiveClientEvent(id, arg);
 	}
 
-	CapabilityHolder<ShaderWrapper> shaderCap = CapabilityHolder.empty();
+	CapabilityHolder<ShaderWrapper> shaderCap = registerCap(CapabilityHolder.empty());
 
-	{
-		caps.add(shaderCap);
-	}
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)

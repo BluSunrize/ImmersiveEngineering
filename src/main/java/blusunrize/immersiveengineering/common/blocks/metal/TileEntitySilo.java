@@ -9,11 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -59,7 +56,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 
-		if(pos==4&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.getRedstonePowerFromNeighbors(getPos()) > 0&&world.getGameTime()%8==0)
+		if(posInMultiblock==4&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.getRedstonePowerFromNeighbors(getPos()) > 0&&world.getGameTime()%8==0)
 		{
 			updateComparatorValuesPart1();
 			for(EnumFacing f : EnumFacing.values())
@@ -132,21 +129,15 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos==0||pos==2||pos==6||pos==8)
+		if(posInMultiblock==0||posInMultiblock==2||posInMultiblock==6||posInMultiblock==8)
 		{
-			float xMin = (facing.getAxis()==Axis.X?(pos > 2^facing==EnumFacing.EAST): (pos%3==2^facing==EnumFacing.SOUTH))?.75f: 0;
-			float xMax = (facing.getAxis()==Axis.X?(pos < 3^facing==EnumFacing.EAST): (pos%3==0^facing==EnumFacing.SOUTH))?.25f: 1;
-			float zMin = (facing.getAxis()==Axis.X?(pos%3==2^facing==EnumFacing.EAST): (pos < 3^facing==EnumFacing.SOUTH))?.75f: 0;
-			float zMax = (facing.getAxis()==Axis.X?(pos%3==0^facing==EnumFacing.EAST): (pos > 2^facing==EnumFacing.SOUTH))?.25f: 1;
+			float xMin = (facing.getAxis()==Axis.X?(posInMultiblock > 2^facing==EnumFacing.EAST): (posInMultiblock%3==2^facing==EnumFacing.SOUTH))?.75f: 0;
+			float xMax = (facing.getAxis()==Axis.X?(posInMultiblock < 3^facing==EnumFacing.EAST): (posInMultiblock%3==0^facing==EnumFacing.SOUTH))?.25f: 1;
+			float zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==EnumFacing.EAST): (posInMultiblock < 3^facing==EnumFacing.SOUTH))?.75f: 0;
+			float zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==EnumFacing.EAST): (posInMultiblock > 2^facing==EnumFacing.SOUTH))?.25f: 1;
 			return new float[]{xMin, 0, zMin, xMax, 1, zMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		return pos==0||pos==2||pos==6||pos==8?new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta()): new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.IRON.getMeta());
 	}
 
 	@Override
@@ -163,7 +154,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			if(pos==4)
+			if(posInMultiblock==4)
 				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 7, 2));
 			else
 				renderAABB = new AxisAlignedBB(getPos(), getPos());
@@ -231,7 +222,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if((pos==4||pos==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((posInMultiblock==4||posInMultiblock==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return true;
 		//		if(pos>30&&pos<44 && pos%5>0&&pos%5<4 )
 		//			return true;
@@ -244,7 +235,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
-		if((pos==4||pos==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((posInMultiblock==4||posInMultiblock==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (T)insertionHandler;
 		return super.getCapability(capability, facing);
 	}
@@ -335,7 +326,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	@Override
 	public int getComparatorInputOverride()
 	{
-		if(pos==4)
+		if(posInMultiblock==4)
 			return (15*storageAmount)/maxStorage;
 		TileEntitySilo master = master();
 		if(offset[1] >= 1&&offset[1] <= 6&&master!=null) //6 layers of storage

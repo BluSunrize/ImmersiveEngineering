@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -110,49 +110,49 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 				return true;
 			if(te instanceof TileEntityMetalPress)
 			{
-				return tile.pos < 3||(tile.pos==7&&side==EnumFacing.UP);
+				return tile.posInMultiblock < 3||(tile.posInMultiblock==7&&side==EnumFacing.UP);
 			}
 			else if(te instanceof TileEntityCrusher)
 			{
-				return tile.pos%5==0||tile.pos==2||tile.pos==9||(tile.pos==19&&side.getOpposite()==tile.facing);
+				return tile.posInMultiblock%5==0||tile.posInMultiblock==2||tile.posInMultiblock==9||(tile.posInMultiblock==19&&side.getOpposite()==tile.facing);
 			}
 			else if(te instanceof TileEntitySheetmetalTank)
 			{
-				return tile.pos==4||tile.pos==40||(tile.pos >= 18&&tile.pos < 36);
+				return tile.posInMultiblock==4||tile.posInMultiblock==40||(tile.posInMultiblock >= 18&&tile.posInMultiblock < 36);
 			}
 			else if(te instanceof TileEntitySilo)
 			{
-				return tile.pos==4||tile.pos==58||(tile.pos >= 18&&tile.pos < 54);
+				return tile.posInMultiblock==4||tile.posInMultiblock==58||(tile.posInMultiblock >= 18&&tile.posInMultiblock < 54);
 			}
 			else if(te instanceof TileEntitySqueezer||te instanceof TileEntityFermenter)
 			{
-				return tile.pos==0||tile.pos==9||tile.pos==5||(tile.pos==11&&side.getOpposite()==tile.facing);
+				return tile.posInMultiblock==0||tile.posInMultiblock==9||tile.posInMultiblock==5||(tile.posInMultiblock==11&&side.getOpposite()==tile.facing);
 			}
 			else if(te instanceof TileEntityRefinery)
 			{
-				return tile.pos==2||tile.pos==5||tile.pos==9||(tile.pos==19&&side.getOpposite()==tile.facing)||(tile.pos==27&&side==tile.facing);
+				return tile.posInMultiblock==2||tile.posInMultiblock==5||tile.posInMultiblock==9||(tile.posInMultiblock==19&&side.getOpposite()==tile.facing)||(tile.posInMultiblock==27&&side==tile.facing);
 			}
 			else if(te instanceof TileEntityDieselGenerator)
 			{
-				if(tile.pos==0||tile.pos==2)
+				if(tile.posInMultiblock==0||tile.posInMultiblock==2)
 					return side.getAxis()==tile.facing.rotateY().getAxis();
-				else if(tile.pos >= 15&&tile.pos <= 17)
+				else if(tile.posInMultiblock >= 15&&tile.posInMultiblock <= 17)
 					return side==EnumFacing.UP;
-				else if(tile.pos==23)
+				else if(tile.posInMultiblock==23)
 					return side==(tile.mirrored?tile.facing.rotateYCCW(): tile.facing.rotateY());
 			}
 			else if(te instanceof TileEntityExcavator)
 			{
-				if(tile.pos%18 < 9||(tile.pos >= 18&&tile.pos < 36))
+				if(tile.posInMultiblock%18 < 9||(tile.posInMultiblock >= 18&&tile.posInMultiblock < 36))
 					return true;
 			}
 			else if(te instanceof TileEntityArcFurnace)
 			{
-				if(tile.pos==2||tile.pos==25||tile.pos==52)
-					return side.getOpposite()==tile.facing||(tile.pos==52&&side==EnumFacing.UP);
-				if(tile.pos==82||tile.pos==86||tile.pos==88||tile.pos==112)
+				if(tile.posInMultiblock==2||tile.posInMultiblock==25||tile.posInMultiblock==52)
+					return side.getOpposite()==tile.facing||(tile.posInMultiblock==52&&side==EnumFacing.UP);
+				if(tile.posInMultiblock==82||tile.posInMultiblock==86||tile.posInMultiblock==88||tile.posInMultiblock==112)
 					return side==EnumFacing.UP;
-				if((tile.pos >= 21&&tile.pos <= 23)||(tile.pos >= 46&&tile.pos <= 48)||(tile.pos >= 71&&tile.pos <= 73))
+				if((tile.posInMultiblock >= 21&&tile.posInMultiblock <= 23)||(tile.posInMultiblock >= 46&&tile.posInMultiblock <= 48)||(tile.posInMultiblock >= 71&&tile.posInMultiblock <= 73))
 					return side==tile.facing;
 			}
 		}

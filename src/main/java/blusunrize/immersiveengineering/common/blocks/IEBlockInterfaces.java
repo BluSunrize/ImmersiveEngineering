@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

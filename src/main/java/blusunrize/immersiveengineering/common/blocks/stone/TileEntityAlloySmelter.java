@@ -15,7 +15,8 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAlloySmelter;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.item.Item;
@@ -42,11 +43,10 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
-	private static final int[] size = {2, 2, 2};
 
 	public TileEntityAlloySmelter()
 	{
-		super(size, TYPE);
+		super(MultiblockAlloySmelter.instance, TYPE);
 	}
 
 	@Override
@@ -77,12 +77,6 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 	public float[] getBlockBounds()
 	{
 		return null;
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		return new ItemStack(IEContent.blockAlloyBrick, 1);
 	}
 
 	@Override

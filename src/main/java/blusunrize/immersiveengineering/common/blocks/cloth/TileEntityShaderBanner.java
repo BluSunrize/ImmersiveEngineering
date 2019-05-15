@@ -117,11 +117,7 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 		return super.receiveClientEvent(id, arg);
 	}
 
-	private final CapabilityHolder<ShaderWrapper> shaderCap = CapabilityHolder.empty();
-
-	{
-		caps.add(shaderCap);
-	}
+	private final CapabilityHolder<ShaderWrapper> shaderCap = registerCap(CapabilityHolder.empty());
 
 	@Nonnull
 	@Override

@@ -29,7 +29,7 @@ public class BlockBlastFurnaceAdvanced extends BlockStoneMultiblock
 		if(te instanceof TileEntityBlastFurnaceAdvanced)
 		{
 			TileEntityBlastFurnaceAdvanced adv = (TileEntityBlastFurnaceAdvanced)te;
-			if(adv.pos==1||adv.pos==4||adv.pos==7||adv.pos==31)
+			if(adv.posInMultiblock==1||adv.posInMultiblock==4||adv.posInMultiblock==7||adv.posInMultiblock==31)
 				return BlockFaceShape.SOLID;
 			else
 				return BlockFaceShape.UNDEFINED;

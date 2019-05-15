@@ -15,7 +15,8 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
 import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -36,6 +37,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory,
 		IActiveState, IGuiTile, IProcessTile
@@ -43,15 +45,14 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public static TileEntityType<TileEntityCokeOven> TYPE;
 
 	public FluidTank tank = new FluidTank(12000);
-	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
 	public boolean active = false;
-	private static final int[] size = {3, 3, 3};
 
 	public TileEntityCokeOven()
 	{
-		super(size, TYPE);
+		super(MultiblockCokeOven.instance, TYPE);
 	}
 
 
@@ -83,12 +84,6 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public float[] getBlockBounds()
 	{
 		return null;
-	}
-
-	@Override
-	public ItemStack getOriginalBlock()
-	{
-		return new ItemStack(IEContent.blockCokeBrick, 1);
 	}
 
 	@Override
@@ -192,6 +187,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 		}
 	}
 
+	@Nullable
 	public CokeOvenRecipe getRecipe()
 	{
 		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory.get(0));
@@ -325,14 +321,10 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	{
 	}
 
-	CapabilityHolder<IItemHandler> invHandler = CapabilityHolder.ofConstant(
+	CapabilityHolder<IItemHandler> invHandler = registerConstantCap(
 			new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false},
 					new boolean[]{false, true, false, true})
 	);
-
-	{
-		caps.add(invHandler);
-	}
 
 	@Nonnull
 	@Override
