@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -321,12 +320,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 		}
 	}
 
-	private EnumMap<EnumFacing, CapabilityHolder<IItemHandler>> insertionHandlers = new EnumMap<>(EnumFacing.class);
+	private EnumMap<EnumFacing, LazyOptional<IItemHandler>> insertionHandlers = new EnumMap<>(EnumFacing.class);
 
 	{
 		for(EnumFacing f : EnumFacing.VALUES)
 		{
-			CapabilityHolder<IItemHandler> forSide = registerConstantCap(new SorterInventoryHandler(this, f));
+			LazyOptional<IItemHandler> forSide = registerConstantCap(new SorterInventoryHandler(this, f));
 			insertionHandlers.put(f, forSide);
 		}
 	}
@@ -336,7 +335,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==ITEM_HANDLER_CAPABILITY&&facing!=null)
-			return insertionHandlers.get(facing).getAndCast();
+			return insertionHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}
 

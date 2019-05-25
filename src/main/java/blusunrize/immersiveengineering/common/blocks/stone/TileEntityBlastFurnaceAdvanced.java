@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -35,11 +35,16 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	public TileEntityBlastFurnaceAdvanced()
 	{
 		super(MultiblockBlastFurnaceAdvanced.instance, TYPE);
-		initCapReferences();
 	}
 
-	private CapabilityReference<IItemHandler> output;
-	private CapabilityReference<IItemHandler> slag;
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+			() -> new DirectionalBlockPos(BlockPos.ORIGIN.offset(facing, 2).add(0, -1, 0), facing.getOpposite()),
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
+	private CapabilityReference<IItemHandler> slag = CapabilityReference.forTileEntity(this,
+			() -> new DirectionalBlockPos(BlockPos.ORIGIN.offset(facing, -2).add(0, -1, 0), facing.getOpposite()),
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
 
 	@Override
 	public void tick()
@@ -60,14 +65,6 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 				this.inventory.set(3, stack);
 			}
 		}
-	}
-
-	private void initCapReferences()
-	{
-		output = CapabilityReference.forRelative(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-				BlockPos.ORIGIN.offset(facing, 2).add(0, -1, 0), facing.getOpposite());
-		slag = CapabilityReference.forRelative(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-				BlockPos.ORIGIN.offset(facing, 2).add(0, -1, 0), facing.getOpposite());
 	}
 
 	@Override
@@ -132,13 +129,13 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		return i;
 	}
 
-	private CapabilityHolder<IItemHandler> inputHandler = registerConstantCap(
+	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false})
 	);
-	private CapabilityHolder<IItemHandler> outputHandler = registerConstantCap(
+	private LazyOptional<IItemHandler> outputHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true})
 	);
-	private CapabilityHolder<IItemHandler> slagHandler = registerConstantCap(
+	private LazyOptional<IItemHandler> slagHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
 	);
 
@@ -152,20 +149,13 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 			if(master==null)
 				return null;
 			if(posInMultiblock==31&&facing==EnumFacing.UP)
-				return master.inputHandler.get().cast();
+				return master.inputHandler.cast();
 			if(posInMultiblock==1&&facing==master.facing)
-				return master.outputHandler.get().cast();
+				return master.outputHandler.cast();
 			if(posInMultiblock==7&&facing==master.facing.getOpposite())
-				return master.slagHandler.get().cast();
+				return master.slagHandler.cast();
 			return LazyOptional.empty();
 		}
 		return super.getCapability(capability, facing);
-	}
-
-	@Override
-	public void setFacing(EnumFacing facing)
-	{
-		super.setFacing(facing);
-		initCapReferences();
 	}
 }

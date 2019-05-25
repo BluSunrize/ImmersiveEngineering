@@ -9,14 +9,16 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.Lists;
@@ -24,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
@@ -31,6 +34,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,16 +45,41 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
-public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityArcFurnace, ArcFurnaceRecipe> implements ISoundTile, IGuiTile, IAdvancedSelectionBounds, IAdvancedCollisionBounds
+public class TileEntityArcFurnace extends TileEntityPoweredMultiblock<TileEntityArcFurnace, ArcFurnaceRecipe>
+		implements ISoundTile, IGuiTile, IAdvancedSelectionBounds, IAdvancedCollisionBounds
 {
+	public static TileEntityType<TileEntityArcFurnace> TYPE;
+	private static final int SLAG_SLOT = 22;
+	private static final int FIRST_OUT_SLOT = 16;
+	private static final int OUT_SLOT_COUNT = 6;
+	private static final int SLAG_OUT_POS = 22;
+	private static final int MAIN_OUT_POS = 2;
+	private static final int[] OUTPUT_SLOTS;
+
+	static
+	{
+		OUTPUT_SLOTS = new int[OUT_SLOT_COUNT];
+		for(int i = 0; i < OUT_SLOT_COUNT; ++i)
+		{
+			OUTPUT_SLOTS[i] = FIRST_OUT_SLOT+i;
+		}
+	}
+
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
 	public int pouringMetal = 0;
-
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).offset(facing, -1), facing.getOpposite()),
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forTileEntity(this,
+			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).offset(facing), facing.getOpposite()),
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	
 	public TileEntityArcFurnace()
 	{
-		super(MultiblockArcFurnace.instance, new int[]{5, 5, 5}, 64000, true);
+		super(MultiblockArcFurnace.instance, 64000, true, TYPE);
 	}
 
 	@Override
@@ -69,9 +99,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
-		super.update();
+		super.tick();
 		if(isDummy())
 			return;
 		if(world.isRemote)
@@ -156,14 +186,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 
 			if(world.getGameTime()%8==0)
 			{
-				BlockPos outputPos = this.getBlockPosForPos(2).offset(facing, -1);
-				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
-				if(outputTile!=null)
-					for(int j = 16; j < 22; j++)
+				if(output.isPresent())
+					for(int j : OUTPUT_SLOTS)
 						if(!inventory.get(j).isEmpty())
 						{
 							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j), 1);
-							stack = Utils.insertStackIntoInventory(outputTile, stack, facing.getOpposite());
+							stack = Utils.insertStackIntoInventory(output, stack, false);
 							if(stack.isEmpty())
 							{
 								this.inventory.get(j).shrink(1);
@@ -171,20 +199,17 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 									this.inventory.set(j, ItemStack.EMPTY);
 							}
 						}
-				outputPos = this.getBlockPosForPos(22).offset(facing);
-				outputTile = Utils.getExistingTileEntity(world, outputPos);
-				if(outputTile!=null)
-					if(!inventory.get(22).isEmpty())
-					{
-						int out = Math.min(inventory.get(22).getCount(), 16);
-						ItemStack stack = Utils.copyStackWithAmount(inventory.get(22), out);
-						stack = Utils.insertStackIntoInventory(outputTile, stack, facing);
-						if(!stack.isEmpty())
-							out -= stack.getCount();
-						this.inventory.get(22).shrink(out);
-						if(this.inventory.get(22).getCount() <= 0)
-							this.inventory.set(22, ItemStack.EMPTY);
-					}
+				if(!inventory.get(SLAG_SLOT).isEmpty()&&slagOut.isPresent())
+				{
+					int out = Math.min(inventory.get(SLAG_SLOT).getCount(), 16);
+					ItemStack stack = Utils.copyStackWithAmount(inventory.get(SLAG_SLOT), out);
+					stack = Utils.insertStackIntoInventory(slagOut, stack, false);
+					if(!stack.isEmpty())
+						out -= stack.getCount();
+					this.inventory.get(SLAG_SLOT).shrink(out);
+					if(this.inventory.get(SLAG_SLOT).getCount() <= 0)
+						this.inventory.set(SLAG_SLOT, ItemStack.EMPTY);
+				}
 			}
 		}
 	}
@@ -205,7 +230,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		//		if(renderAABB==null)
-		//			if(pos==17)
+		//			if(posInMultiblock==17)
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
@@ -216,24 +241,24 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos==1||pos==3)
+		if(posInMultiblock==1||posInMultiblock==3)
 			return new float[]{facing==EnumFacing.EAST?.4375f: 0, 0, facing==EnumFacing.SOUTH?.4375f: 0, facing==EnumFacing.WEST?.5625f: 1, .5f, facing==EnumFacing.NORTH?.5625f: 1};
-		else if(pos < 20&&pos!=2)
+		else if(posInMultiblock < 20&&posInMultiblock!=2)
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		else if(pos==25)
+		else if(posInMultiblock==25)
 			return new float[]{facing==EnumFacing.WEST?.5f: 0, 0, facing==EnumFacing.NORTH?.5f: 0, facing==EnumFacing.EAST?.5f: 1, 1, facing==EnumFacing.SOUTH?.5f: 1};
-		else if((pos >= 36&&pos <= 38)||(pos >= 41&&pos <= 43))
+		else if((posInMultiblock >= 36&&posInMultiblock <= 38)||(posInMultiblock >= 41&&posInMultiblock <= 43))
 		{
 			EnumFacing fw = facing.rotateY();
-			if(mirrored|pos%5==3)
+			if(mirrored|posInMultiblock%5==3)
 				fw = fw.getOpposite();
-			if(pos%5==2)
+			if(posInMultiblock%5==2)
 				fw = null;
 			float minX = fw==EnumFacing.EAST?.125f: 0;
 			float maxX = fw==EnumFacing.WEST?.875f: 1;
 			float minZ = fw==EnumFacing.SOUTH?.125f: 0;
 			float maxZ = fw==EnumFacing.NORTH?.875f: 1;
-			if(pos <= 38)
+			if(posInMultiblock <= 38)
 			{
 				minX -= facing==EnumFacing.EAST?.875f: 0;
 				maxX += facing==EnumFacing.WEST?.875f: 0;
@@ -242,25 +267,25 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			}
 			return new float[]{minX, .5f, minZ, maxX, 1, maxZ};
 		}
-		else if(pos==40||pos==44)
+		else if(posInMultiblock==40||posInMultiblock==44)
 		{
-			EnumFacing fl = pos==44?facing.getOpposite(): facing;
+			EnumFacing fl = posInMultiblock==44?facing.getOpposite(): facing;
 			return new float[]{fl==EnumFacing.NORTH?.125f: fl==EnumFacing.SOUTH?.625f: 0, .125f, fl==EnumFacing.EAST?.125f: fl==EnumFacing.WEST?.625f: 0, fl==EnumFacing.SOUTH?.875f: fl==EnumFacing.NORTH?.375f: 1, .375f, fl==EnumFacing.WEST?.875f: fl==EnumFacing.EAST?.375f: 1};
 		}
-		else if(pos >= 46&&pos <= 48)
+		else if(posInMultiblock >= 46&&posInMultiblock <= 48)
 			return new float[]{facing==EnumFacing.WEST?.25f: 0, 0, facing==EnumFacing.NORTH?.25f: 0, facing==EnumFacing.EAST?.75f: 1, 1, facing==EnumFacing.SOUTH?.75f: 1};
-		else if(pos==97)
+		else if(posInMultiblock==97)
 			return new float[]{facing.getAxis()==Axis.X?.375f: 0, 0, facing.getAxis()==Axis.Z?.375f: 0, facing.getAxis()==Axis.X?.625f: 1, 1, facing.getAxis()==Axis.Z?.625f: 1};
-		else if(pos==122)
+		else if(posInMultiblock==122)
 			return new float[]{facing==EnumFacing.WEST?.3125f: 0, 0, facing==EnumFacing.NORTH?.3125f: 0, facing==EnumFacing.EAST?.6875f: 1, .9375f, facing==EnumFacing.SOUTH?.6875f: 1};
-		else if(pos==117)
+		else if(posInMultiblock==117)
 			return new float[]{0, .625f, 0, 1, .9375f, 1};
-		else if(pos==112)
+		else if(posInMultiblock==112)
 			return new float[]{facing==EnumFacing.EAST?.125f: 0, 0, facing==EnumFacing.SOUTH?.125f: 0, facing==EnumFacing.WEST?.875f: 1, .9375f, facing==EnumFacing.NORTH?.875f: 1};
-		else if(pos==51||pos==53||pos==96||pos==98||pos==121||pos==123)
+		else if(posInMultiblock==51||posInMultiblock==53||posInMultiblock==96||posInMultiblock==98||posInMultiblock==121||posInMultiblock==123)
 		{
 			EnumFacing fw = facing.rotateY();
-			if(mirrored^pos%5==3)
+			if(mirrored^posInMultiblock%5==3)
 				fw = fw.getOpposite();
 			return new float[]{fw==EnumFacing.EAST?.5f: 0, 0, fw==EnumFacing.SOUTH?.5f: 0, fw==EnumFacing.WEST?.5f: 1, 1, fw==EnumFacing.NORTH?.5f: 1};
 		}
@@ -270,13 +295,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		if(pos%15==7)
+		if(posInMultiblock%15==7)
 			return null;
 		EnumFacing fl = facing;
 		EnumFacing fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(pos==0)
+		if(posInMultiblock==0)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			float minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .125f;
@@ -292,7 +317,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(pos >= 46&&pos <= 48)
+		else if(posInMultiblock >= 46&&posInMultiblock <= 48)
 		{
 			float minX = fl==EnumFacing.WEST?.25f: 0;
 			float maxX = fl==EnumFacing.EAST?.75f: 1;
@@ -307,25 +332,25 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			list.add(new AxisAlignedBB(minX, .25f, minZ, maxX, .75, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(pos%25 >= 10&&(pos%5==0||pos%5==4))
+		else if(posInMultiblock%25 >= 10&&(posInMultiblock%5==0||posInMultiblock%5==4))
 		{
-			List<AxisAlignedBB> list = pos < 25?Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ())): new ArrayList(2);
-			if(pos%5==4)
+			List<AxisAlignedBB> list = posInMultiblock < 25?Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ())): new ArrayList(2);
+			if(posInMultiblock%5==4)
 				fw = fw.getOpposite();
 			float minX = fw==EnumFacing.EAST?.5f: 0;
 			float maxX = fw==EnumFacing.WEST?.5f: 1;
 			float minZ = fw==EnumFacing.SOUTH?.5f: 0;
 			float maxZ = fw==EnumFacing.NORTH?.5f: 1;
-			if(pos%25/5!=3)
-				list.add(new AxisAlignedBB(minX, pos < 25?.5: 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(pos < 25)
+			if(posInMultiblock%25/5!=3)
+				list.add(new AxisAlignedBB(minX, posInMultiblock < 25?.5: 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			if(posInMultiblock < 25)
 			{
 				minX = fw==EnumFacing.EAST?.125f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.375f: -1.625f;
 				maxX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: fl==EnumFacing.WEST?.625f: 2.625f;
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: .375f;
@@ -333,7 +358,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?2.375f: -1.625f;
@@ -341,17 +366,17 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
 				list.add(aabb);
 			}
-			else if(pos < 50)
+			else if(posInMultiblock < 50)
 			{
 				minX = fw==EnumFacing.EAST?.125f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.375f: -1.625f;
 				maxX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: fl==EnumFacing.WEST?.625f: 2.625f;
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
 				list.add(aabb);
 
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: .375f;
@@ -359,18 +384,18 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
-				if(pos%5==0)
+				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
+				if(posInMultiblock%5==0)
 					aabb = aabb.offset(0, .6875, 0);
 				list.add(aabb);
-				if(pos%5==0)
+				if(posInMultiblock%5==0)
 				{
 					minX = fw==EnumFacing.EAST?.125f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.375f: .375f;
 					maxX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: fl==EnumFacing.WEST?.625f: .625f;
 					minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: .375f;
 					maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: .625f;
 					aabb = new AxisAlignedBB(minX, .375, minZ, maxX, 1.0625, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-					aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
+					aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
 					list.add(aabb);
 				}
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?2.375f: -1.625f;
@@ -378,10 +403,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f: -1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(pos%25-10)/5, 0, -fl.getZOffset()*(pos%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
 				list.add(aabb);
 			}
-			else if(pos==60||pos==64)
+			else if(posInMultiblock==60||posInMultiblock==64)
 			{
 				minX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.5f: .25f;
 				maxX = fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?.625f: .75f;
@@ -421,7 +446,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public int getComparatorInputOverride()
 	{
-		if(this.pos==112)
+		if(posInMultiblock==112)
 		{
 			TileEntityArcFurnace master = master();
 			if(master!=null)
@@ -429,7 +454,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				float f = 0;
 				for(int i = 23; i < 26; i++)
 					if(!master.inventory.get(i).isEmpty())
-						f += 1-(master.inventory.get(i).getItemDamage()/(float)master.inventory.get(i).getMaxDamage());
+						f += 1-(master.inventory.get(i).getDamage()/(float)master.inventory.get(i).getMaxDamage());
 				return MathHelper.floor(Math.max(f/3f, 0)*15);
 			}
 		}
@@ -455,9 +480,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			return false;
 		if(process.recipe!=null&&!process.recipe.slag.isEmpty())
 		{
-			if(this.inventory.get(22).isEmpty())
+			if(this.inventory.get(SLAG_SLOT).isEmpty())
 				return true;
-			return ItemHandlerHelper.canItemStacksStack(this.inventory.get(22), process.recipe.slag)&&inventory.get(22).getCount()+process.recipe.slag.getCount() <= getSlotLimit(22);
+			return ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), process.recipe.slag)&&inventory.get(SLAG_SLOT).getCount()+process.recipe.slag.getCount() <= getSlotLimit(SLAG_SLOT);
 		}
 		return true;
 	}
@@ -465,12 +490,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		BlockPos pos = getPos().add(0, -1, 0).offset(facing, -2);
-		TileEntity inventoryTile = this.world.getTileEntity(pos);
-		if(inventoryTile!=null)
-			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
+		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
+		{
+			BlockPos pos = getPos().add(0, -1, 0).offset(facing, -2);
 			Utils.dropStackAtPos(world, pos, output, facing);
+		}
 	}
 
 	@Override
@@ -483,10 +508,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		if(!process.recipe.slag.isEmpty())
 		{
-			if(this.inventory.get(22).isEmpty())
-				this.inventory.set(22, process.recipe.slag.copy());
-			else if(ItemHandlerHelper.canItemStacksStack(this.inventory.get(22), process.recipe.slag)||inventory.get(22).getCount()+process.recipe.slag.getCount() > getSlotLimit(22))
-				this.inventory.get(22).grow(process.recipe.slag.getCount());
+			if(this.inventory.get(SLAG_SLOT).isEmpty())
+				this.inventory.set(SLAG_SLOT, process.recipe.slag.copy());
+			else if(ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), process.recipe.slag)||inventory.get(SLAG_SLOT).getCount()+process.recipe.slag.getCount() > getSlotLimit(SLAG_SLOT))
+				this.inventory.get(SLAG_SLOT).grow(process.recipe.slag.getCount());
 		}
 	}
 
@@ -530,15 +555,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public int getSlotLimit(int slot)
 	{
-		return slot > 22?1: 64;
+		return slot > SLAG_SLOT?1: 64;
 	}
-
-	static int[] outputSlots = {16, 17, 18, 19, 20, 21};
 
 	@Override
 	public int[] getOutputSlots()
 	{
-		return outputSlots;
+		return OUTPUT_SLOTS;
 	}
 
 	@Override
@@ -577,7 +600,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	}
 
 
-	IItemHandler inputHandler = new IEInventoryHandler(12, this, 0, true, false)
+	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
+			new IEInventoryHandler(12, this, 0, true, false)
 	{
 		//ignore the given slot and spread it out
 		@Override
@@ -601,7 +625,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					possibleSlots.add(i);
 				}
 			}
-			Collections.sort(possibleSlots, (a, b) -> Integer.compare(inventory.get(a).getCount(), inventory.get(b).getCount()));
+			possibleSlots.sort(Comparator.comparingInt(a -> inventory.get(a).getCount()));
 			for(int i : possibleSlots)
 			{
 				ItemStack here = inventory.get(i);
@@ -614,36 +638,31 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			}
 			return stack;
 		}
-	};
-	IItemHandler additiveHandler = new IEInventoryHandler(4, this, 12, true, false);
-	IItemHandler outputHandler = new IEInventoryHandler(6, this, 16, false, true);
-	IItemHandler slagHandler = new IEInventoryHandler(1, this, 22, false, true);
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if((pos==2||pos==22||pos==86||pos==88)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return master()!=null;
-		return super.hasCapability(capability, facing);
-	}
-
+	});
+	private LazyOptional<IItemHandler> additiveHandler = registerConstantCap(
+			new IEInventoryHandler(4, this, 12, true, false));
+	private LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+			new IEInventoryHandler(OUT_SLOT_COUNT, this, FIRST_OUT_SLOT, false, true));
+	private LazyOptional<IItemHandler> slagHandler = registerConstantCap(
+			new IEInventoryHandler(1, this, SLAG_SLOT, false, true));
+	
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityArcFurnace master = master();
 			if(master==null)
-				return null;
-			if(pos==2)
-				return (T)master.outputHandler;
-			else if(pos==22)
-				return (T)master.slagHandler;
-			else if(pos==(mirrored?88: 86))
-				return (T)master.inputHandler;
-			else if(pos==(mirrored?86: 88))
-				return (T)master.additiveHandler;
+				return LazyOptional.empty();
+			if(posInMultiblock==MAIN_OUT_POS)
+				return master.outputHandler.cast();
+			else if(posInMultiblock==SLAG_OUT_POS)
+				return master.slagHandler.cast();
+			else if(posInMultiblock==(mirrored?88: 86))
+				return master.inputHandler.cast();
+			else if(posInMultiblock==(mirrored?86: 88))
+				return master.additiveHandler.cast();
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -661,12 +680,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	}
 
 	@Override
-	protected MultiblockProcess loadProcessFromNBT(NBTTagCompound tag)
+	@Nullable
+	protected MultiblockProcess<ArcFurnaceRecipe> loadProcessFromNBT(NBTTagCompound tag)
 	{
-		IMultiblockRecipe recipe = readRecipeFromNBT(tag);
-		if(recipe!=null&&recipe instanceof ArcFurnaceRecipe)
+		ArcFurnaceRecipe recipe = readRecipeFromNBT(tag);
+		if(recipe!=null)
 		{
-			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace((ArcFurnaceRecipe)recipe, tag.getIntArray("process_inputSlots"));
+			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, tag.getIntArray("process_inputSlots"));
 			if(tag.hasKey("process_inputAmounts"))
 				process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
 			return process;
@@ -677,7 +697,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public boolean canOpenGui()
 	{
-		return formed&&(pos==2||pos==25||(pos > 25&&pos%5 > 0&&pos%5 < 4&&pos%25/5 < 4));
+		return formed&&(posInMultiblock==2||posInMultiblock==25||(posInMultiblock > 25&&posInMultiblock%5 > 0&&posInMultiblock%5 < 4&&posInMultiblock%25/5 < 4));
 	}
 
 	@Override
@@ -706,7 +726,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		}
 
 		@Override
-		protected NonNullList<ItemStack> getRecipeItemOutputs(TileEntityMultiblockMetal multiblock)
+		protected NonNullList<ItemStack> getRecipeItemOutputs(TileEntityPoweredMultiblock<?, ArcFurnaceRecipe> multiblock)
 		{
 			ItemStack input = multiblock.getInventory().get(this.inputSlots[0]);
 			NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -716,10 +736,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		}
 
 		@Override
-		protected void processFinish(TileEntityMultiblockMetal te)
+		protected void processFinish(TileEntityPoweredMultiblock<?, ArcFurnaceRecipe> te)
 		{
 			super.processFinish(te);
-			te.getWorld().addBlockEvent(te.getPos(), te.getBlockState(), 0, 40);
+			te.getWorld().addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 0, 40);
 		}
 	}
 

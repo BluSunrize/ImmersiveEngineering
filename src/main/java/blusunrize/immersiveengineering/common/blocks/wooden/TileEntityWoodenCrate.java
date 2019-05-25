@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -250,18 +249,14 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		return Utils.calcRedstoneFromInventory(this);
 	}
 
-	private IItemHandler insertionHandler = new IEInventoryHandler(27, this);
-	private CapabilityHolder<IItemHandler> insertionCap = CapabilityHolder.ofConstant(insertionHandler);
+	private LazyOptional<IItemHandler> insertionCap = registerConstantCap(new IEInventoryHandler(27, this));
 
-	{
-		caps.add(insertionCap);
-	}
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return insertionCap.get().cast();
+			return insertionCap.cast();
 		return super.getCapability(capability, facing);
 	}
 

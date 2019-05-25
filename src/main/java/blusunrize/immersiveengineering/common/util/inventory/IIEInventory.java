@@ -11,8 +11,11 @@ package blusunrize.immersiveengineering.common.util.inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nullable;
+
 public interface IIEInventory
 {
+	@Nullable
 	NonNullList<ItemStack> getInventory();
 
 	boolean isStackValid(int slot, ItemStack stack);

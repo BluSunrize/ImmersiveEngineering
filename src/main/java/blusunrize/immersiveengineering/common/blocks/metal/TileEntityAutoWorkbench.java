@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -17,7 +18,6 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAutoWorkbench;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -209,21 +209,12 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 		return true;
 	}
 
-	CapabilityReference<IItemHandler> output;
-
-	@Override
-	public void setFacing(EnumFacing facing)
-	{
-		super.setFacing(facing);
-		reinitCapRefs();
-	}
-
-	private void reinitCapRefs()
-	{
-		EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
-		output = CapabilityReference.forRelative(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-				BlockPos.ORIGIN.offset(outDir, 2), outDir.getOpposite());
-	}
+	CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+			() -> {
+				EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+				return new DirectionalBlockPos(pos.offset(outDir, 2), outDir.getOpposite());
+			}
+			, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
 	public void doProcessOutput(ItemStack output)
@@ -315,7 +306,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 		return super.hasCapability(capability, facing);
 	}
 
-	CapabilityHolder<IItemHandler> insertionHandler = registerConstantCap(
+	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
 			new IEInventoryHandler(16, this, 1, true, false)
 	);
 

@@ -8,17 +8,16 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -27,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,9 +39,10 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.Optional;
 
 public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPart<T>> extends TileEntityIEBase
-		implements ITickable, IDirectionalTile, IBlockBounds, IGeneralMultiblock
+		implements ITickable, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction
 {
 	public boolean formed = false;
 	public int posInMultiblock = -1;
@@ -56,12 +57,17 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	 * H L W
 	 */
 	protected final int[] structureDimensions;
+	protected final boolean hasRedstoneControl;
+	protected boolean redstoneControlInverted = false;
+	//Absent means no controlling computers
+	public Optional<Boolean> computerOn = Optional.empty();
 
-	protected TileEntityMultiblockPart(IMultiblock multiblockInstance, TileEntityType<? extends T> type)
+	protected TileEntityMultiblockPart(IMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
 	{
 		super(type);
 		this.multiblockInstance = multiblockInstance;
 		this.structureDimensions = multiblockInstance.getSize();
+		this.hasRedstoneControl = hasRSControl;
 	}
 
 	@Override
@@ -124,12 +130,12 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		nbt.setInt("facing", facing.ordinal());
 	}
 
-	private EnumMap<EnumFacing, CapabilityHolder<IFluidHandler>> fluidCaps = new EnumMap<>(EnumFacing.class);
+	private EnumMap<EnumFacing, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(EnumFacing.class);
 
 	{
 		for(EnumFacing f : EnumFacing.VALUES)
 		{
-			CapabilityHolder<IFluidHandler> forSide = registerConstantCap(new MultiblockFluidWrapper(this, f));
+			LazyOptional<IFluidHandler> forSide = registerConstantCap(new MultiblockFluidWrapper(this, f));
 			fluidCaps.put(f, forSide);
 		}
 	}
@@ -139,7 +145,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&
 				this.getAccessibleFluidTanks(facing).length > 0)
-			return fluidCaps.get(facing).get().cast();
+			return fluidCaps.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}
 
@@ -381,5 +387,70 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)
 			((ITileDrop)tile).readOnPlacement(null, stack);
+	}
+
+	//	=================================
+	//		REDSTONE CONTROL
+	//	=================================
+	public int[] getRedstonePos()
+	{
+		throw new UnsupportedOperationException("Tried to get RS position for a multiblock without RS control!");
+	}
+
+	public boolean isRedstonePos()
+	{
+		if(!hasRedstoneControl||getRedstonePos()==null)
+			return false;
+		for(int i : getRedstonePos())
+			if(posInMultiblock==i)
+				return true;
+		return false;
+	}
+
+	@Override
+	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	{
+		if(this.isRedstonePos()&&hasRedstoneControl)
+		{
+			TileEntityMultiblockPart<T> master = master();
+			if(master!=null)
+			{
+				master.redstoneControlInverted = !master.redstoneControlInverted;
+				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."
+						+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
+				this.updateMasterBlock(null, true);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isRSDisabled()
+	{
+		if(computerOn.isPresent())
+			return !computerOn.get();
+		int[] rsPositions = getRedstonePos();
+		if(rsPositions==null||rsPositions.length < 1)
+			return false;
+		for(int rsPos : rsPositions)
+		{
+			T tile = this.getTileForPos(rsPos);
+			if(tile!=null)
+			{
+				boolean b = world.getRedstonePowerFromNeighbors(tile.getPos()) > 0;
+				return redstoneControlInverted!=b;
+			}
+		}
+		return false;
+	}
+
+	@Nullable
+	public T getTileForPos(int targetPos)
+	{
+		BlockPos target = getBlockPosForPos(targetPos);
+		TileEntity tile = Utils.getExistingTileEntity(world, target);
+		if(this.getClass().isInstance(tile))
+			return (T)tile;
+		return null;
 	}
 }

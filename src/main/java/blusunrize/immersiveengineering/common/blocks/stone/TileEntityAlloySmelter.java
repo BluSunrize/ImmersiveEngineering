@@ -46,7 +46,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 
 	public TileEntityAlloySmelter()
 	{
-		super(MultiblockAlloySmelter.instance, TYPE);
+		super(MultiblockAlloySmelter.instance, TYPE, false);
 	}
 
 	@Override

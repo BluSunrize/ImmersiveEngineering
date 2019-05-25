@@ -8,27 +8,30 @@
 
 package blusunrize.immersiveengineering.common.util;
 
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.function.Supplier;
 
-public class CapabilityReference<T>
+public abstract class CapabilityReference<T>
 {
+	public static <T> CapabilityReference<T> forTileEntity(TileEntity local, Supplier<DirectionalBlockPos> pos,
+														   Capability<T> cap)
+	{
+		return new TECapReference<>(local::getWorld, pos, cap);
+	}
+
 	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vec3i offset, EnumFacing side)
 	{
-		return new CapabilityReference<>(
-				() -> Objects.requireNonNull(local.getWorld()).getTileEntity(local.getPos().add(offset)),
-				cap, side.getOpposite());
+		return forTileEntity(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);
 	}
 
 	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull EnumFacing side)
@@ -36,35 +39,69 @@ public class CapabilityReference<T>
 		return forRelative(local, cap, BlockPos.ORIGIN.offset(side), side);
 	}
 
-	public static <T> CapabilityReference<T> forTE(World w, BlockPos pos, Capability<T> cap, @Nullable EnumFacing side)
+	protected final Capability<T> cap;
+
+	protected CapabilityReference(Capability<T> cap)
 	{
-		return new CapabilityReference<>(() -> w.getTileEntity(pos), cap, side);
-	}
-
-	private final Supplier<ICapabilityProvider> provider;
-	private Capability<T> cap;
-	@Nullable
-	private final EnumFacing side;
-
-	private LazyOptional<T> currentCap = LazyOptional.empty();
-
-	public CapabilityReference(Supplier<ICapabilityProvider> provider, Capability<T> cap, @Nullable EnumFacing side)
-	{
-
-		this.provider = provider;
 		this.cap = cap;
-		this.side = side;
 	}
 
 	@Nullable
-	public T get()
+	public abstract T get();
+
+	public abstract boolean isPresent();
+
+	private static class TECapReference<T> extends CapabilityReference<T>
 	{
-		if(!currentCap.isPresent())
+		private final Supplier<World> world;
+		private final Supplier<DirectionalBlockPos> pos;
+		@Nonnull
+		private LazyOptional<T> currentCap = LazyOptional.empty();
+		private DirectionalBlockPos lastPos;
+		private World lastWorld;//TODO does this leak anywhere?
+
+		public TECapReference(Supplier<World> world, Supplier<DirectionalBlockPos> pos, Capability<T> cap)
 		{
-			ICapabilityProvider source = provider.get();
-			if(source!=null)
-				currentCap = source.getCapability(cap, side);
+			super(cap);
+			this.world = world;
+			this.pos = pos;
 		}
-		return currentCap.orElse(null);
+
+		@Nullable
+		@Override
+		public T get()
+		{
+			updateLazyOptional();
+			return currentCap.orElse(null);
+		}
+
+		@Override
+		public boolean isPresent()
+		{
+			updateLazyOptional();
+			return currentCap.isPresent();
+		}
+
+		private void updateLazyOptional()
+		{
+			World currWorld = world.get();
+			DirectionalBlockPos currPos = pos.get();
+			if(currWorld==null||currPos==null)
+			{
+				currentCap = LazyOptional.empty();
+				lastWorld = null;
+				lastPos = null;
+			}
+			else if(currWorld!=lastWorld||!currPos.equals(lastPos)||!currentCap.isPresent())
+			{
+				TileEntity te = Utils.getExistingTileEntity(currWorld, currPos);
+				if(te!=null)
+					currentCap = te.getCapability(cap, currPos.direction);
+				else
+					currentCap = LazyOptional.empty();
+				lastWorld = currWorld;
+				lastPos = currPos;
+			}
+		}
 	}
 }

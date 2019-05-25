@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorCov
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorExtractCovered;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVerticalCovered;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.BlockFaceShape;
@@ -245,14 +244,14 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		return false;
 	}
 
-	private CapabilityHolder<IItemHandler> insertionCap = registerCap(CapabilityHolder.of(() -> new ConveyorInventoryHandler(this)));
+	private LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
 	{
 		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return insertionCap.getAndCast();
+			return insertionCap.cast();
 		return super.getCapability(cap, side);
 	}
 

@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -27,11 +25,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -165,15 +165,20 @@ public abstract class TileEntityIEBase extends TileEntity
 		world.notifyNeighborsOfStateChange(pos, newState.getBlock());
 	}
 
-	protected final Set<CapabilityHolder<?>> caps = new HashSet<>();
-	private final CapabilityHolder<IEnergyStorage> energyCap = CapabilityHolder.empty();
+	private final Set<LazyOptional<?>> caps = new HashSet<>();
+	private final EnumMap<EnumFacing, LazyOptional<IEnergyStorage>> energyCaps = new EnumMap<>(EnumFacing.class);
 
-	protected <T> CapabilityHolder<T> registerConstantCap(T val)
+	protected <T> LazyOptional<T> registerConstantCap(T val)
 	{
-		return registerCap(CapabilityHolder.ofConstant(val));
+		return registerCap(() -> val);
 	}
 
-	protected <T> CapabilityHolder<T> registerCap(CapabilityHolder<T> cap)
+	protected <T> LazyOptional<T> registerCap(NonNullSupplier<T> cap)
+	{
+		return registerCap(LazyOptional.of(cap));
+	}
+
+	protected <T> LazyOptional<T> registerCap(LazyOptional<T> cap)
 	{
 		caps.add(cap);
 		return cap;
@@ -184,7 +189,10 @@ public abstract class TileEntityIEBase extends TileEntity
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
 	{
 		if(cap==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
-			return ApiUtils.constantOptional(energyCap, ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(side));
+			return energyCaps
+					.computeIfAbsent(side, (f) ->
+							registerCap(() -> ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(f)))
+					.cast();
 		return super.getCapability(cap, side);
 	}
 
@@ -199,8 +207,8 @@ public abstract class TileEntityIEBase extends TileEntity
 	public void remove()
 	{
 		super.remove();
-		for(CapabilityHolder<?> cap : caps)
+		for(LazyOptional<?> cap : caps)
 			if(cap.isPresent())
-				cap.get().invalidate();
+				cap.invalidate();
 	}
 }

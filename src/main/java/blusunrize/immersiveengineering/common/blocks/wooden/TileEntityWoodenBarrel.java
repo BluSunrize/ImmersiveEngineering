@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalBarrel;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -174,13 +173,12 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			nbt.setTag("tank", tankTag);
 	}
 
-	private Map<EnumFacing, CapabilityHolder<IFluidHandler>> sidedFluidHandler = new HashMap<>();
+	private Map<EnumFacing, LazyOptional<IFluidHandler>> sidedFluidHandler = new HashMap<>();
 
 	{
-		sidedFluidHandler.put(EnumFacing.DOWN, CapabilityHolder.of(() -> new SidedFluidHandler(this, EnumFacing.DOWN)));
-		sidedFluidHandler.put(EnumFacing.UP, CapabilityHolder.of(() -> new SidedFluidHandler(this, EnumFacing.UP)));
-		sidedFluidHandler.put(null, CapabilityHolder.of(() -> new SidedFluidHandler(this, null)));
-		caps.addAll(sidedFluidHandler.values());
+		sidedFluidHandler.put(EnumFacing.DOWN, registerCap(() -> new SidedFluidHandler(this, EnumFacing.DOWN)));
+		sidedFluidHandler.put(EnumFacing.UP, registerCap(() -> new SidedFluidHandler(this, EnumFacing.UP)));
+		sidedFluidHandler.put(null, registerCap(() -> new SidedFluidHandler(this, null)));
 	}
 
 	@Nonnull
@@ -188,7 +186,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==FLUID_HANDLER_CAPABILITY&&(facing==null||facing.getAxis()==Axis.Y))
-			return sidedFluidHandler.getOrDefault(facing, CapabilityHolder.empty()).getAndCast();
+			return sidedFluidHandler.getOrDefault(facing, LazyOptional.empty()).cast();
 		return super.getCapability(capability, facing);
 	}
 

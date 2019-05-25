@@ -47,12 +47,12 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 
 	public TileEntityBlastFurnace()
 	{
-		super(MultiblockBlastFurnace.instance, TYPE);
+		super(MultiblockBlastFurnace.instance, TYPE, false);
 	}
 
 	protected TileEntityBlastFurnace(IMultiblock mb, TileEntityType<? extends TileEntityBlastFurnace> type)
 	{
-		super(mb, type);
+		super(mb, type, false);
 	}
 
 	@Override

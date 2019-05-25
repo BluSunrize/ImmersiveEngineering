@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightVal
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -110,7 +109,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		return super.receiveClientEvent(id, arg);
 	}
 
-	CapabilityHolder<ShaderWrapper> shaderCap = registerCap(CapabilityHolder.empty());
+	LazyOptional<ShaderWrapper> shaderCap = registerConstantCap(shader);//TODO deal with NBT reads
 
 	@Nonnull
 	@Override

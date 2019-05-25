@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
@@ -17,9 +18,10 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.fluids.FluidUtil;
@@ -51,13 +53,15 @@ public class AssemblerHandler
 			if(recipe instanceof IShapedRecipe)
 			{
 				IShapedRecipe shapedInput = (IShapedRecipe)recipe;
-				ShapedRecipes verify = new ShapedRecipes("temp", shapedInput.getRecipeWidth(), shapedInput.getRecipeHeight(),
+				ShapedRecipe verify = new ShapedRecipe(new ResourceLocation(ImmersiveEngineering.MODID, "temp"),
+						"temp", shapedInput.getRecipeWidth(), shapedInput.getRecipeHeight(),
 						ingred, new ItemStack(Items.GUNPOWDER));
 				matches = verify.matches(verificationInv, null);
 			}
 			else
 			{
-				ShapelessRecipes verify = new ShapelessRecipes("temp", new ItemStack(Blocks.DIRT), ingred);
+				ShapelessRecipe verify = new ShapelessRecipe(new ResourceLocation(ImmersiveEngineering.MODID, "temp"),
+						"temp", new ItemStack(Blocks.DIRT), ingred);
 				matches = verify.matches(verificationInv, null);
 			}
 			ForgeHooks.setCraftingPlayer(null);
@@ -83,7 +87,7 @@ public class AssemblerHandler
 	}
 
 	@Nonnull
-	public static IRecipeAdapter findAdapterForClass(Class<? extends IRecipe> recipeClass)
+	public static IRecipeAdapter<?> findAdapterForClass(Class<? extends IRecipe> recipeClass)
 	{
 		IRecipeAdapter adapter = registry.get(recipeClass);
 		boolean isSuperIRecipe = IRecipe.class.isAssignableFrom(recipeClass.getSuperclass());
@@ -96,7 +100,7 @@ public class AssemblerHandler
 	}
 
 	@Nonnull
-	public static IRecipeAdapter findAdapter(IRecipe recipe)
+	public static IRecipeAdapter<?> findAdapter(IRecipe recipe)
 	{
 		return findAdapterForClass(recipe.getClass());
 	}

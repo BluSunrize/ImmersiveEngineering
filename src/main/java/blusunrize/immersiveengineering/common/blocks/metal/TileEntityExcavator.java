@@ -9,14 +9,17 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
@@ -30,6 +33,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -41,18 +45,22 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExcavator, IMultiblockRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds
+public class TileEntityExcavator extends TileEntityPoweredMultiblock<TileEntityExcavator, IMultiblockRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds
 {
+	public static TileEntityType<TileEntityExcavator> TYPE;
+	public boolean active = false;
+
 	public TileEntityExcavator()
 	{
-		super(MultiblockExcavator.instance, new int[]{3, 6, 3}, 64000, true);
+		super(MultiblockExcavator.instance, 64000, true, TYPE);
 	}
-
-	public boolean active = false;
 
 
 	@Override
@@ -85,9 +93,9 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
-		super.update();
+		super.tick();
 		if(isDummy())
 			return;
 		BlockPos wheelPos = this.getBlockPosForPos(31);
@@ -104,7 +112,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 				if(wheel.facing==fRot)
 				{
 					if(active!=wheel.active)
-						world.addBlockEvent(wheel.getPos(), wheel.getBlockState(), 0, active?1: 0);
+						world.addBlockEvent(wheel.getPos(), wheel.getBlockState().getBlock(), 0, active?1: 0);
 					rot = wheel.rotation;
 					if(rot%45 > 40)
 						target = Math.round(rot/360f*8)%8;
@@ -122,7 +130,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								((TileEntityBucketWheel)te).mirrored = this.mirrored;
 								te.markDirty();
 								((TileEntityBucketWheel)te).markContainingBlockForUpdate(null);
-								world.addBlockEvent(te.getPos(), te.getBlockState(), 255, 0);
+								world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
 							}
 						}
 				}
@@ -152,13 +160,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 									wheel.markDirty();
 									this.markContainingBlockForUpdate(null);
 								}
-								else if(mineral!=null
-										/*&&!world.isAirBlock(lowGroundPos.offset(facing, -2))
-										&&!world.isAirBlock(lowGroundPos.offset(facing, 2))
-										&&!world.isAirBlock(lowGroundPos.offset(facing, -1))
-										&&!world.isAirBlock(lowGroundPos.offset(facing, 1))
-										&&!world.isAirBlock(lowGroundPos)*/
-								)
+								else if(mineral!=null)
 								{
 									ItemStack ore = mineral.getRandomOre(Utils.RAND);
 									float configChance = Utils.RAND.nextFloat();
@@ -174,7 +176,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								if(!wheel.digStacks.get(targetDown).isEmpty())
 								{
 									packet.setInt("fill", targetDown);
-									packet.setTag("fillStack", wheel.digStacks.get(targetDown).writeToNBT(new NBTTagCompound()));
+									packet.setTag("fillStack", wheel.digStacks.get(targetDown).write(new NBTTagCompound()));
 								}
 							}
 							if(!wheel.digStacks.get(target).isEmpty())
@@ -189,7 +191,8 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								packet.setInt("empty", target);
 							}
 							if(!packet.isEmpty())
-								ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(wheel, packet));
+								ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
+										new MessageTileSync(wheel, packet));
 						}
 					}
 					else if(active)
@@ -198,13 +201,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 				else if(active)
 				{
 					active = false;
-//					update = true;
 				}
-//				if(update)
-//				{
-//					this.markDirty();
-//					world.markBlockForUpdate(xCoord, yCoord, zCoord);
-//				}
 			}
 		}
 	}
@@ -266,19 +263,19 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		Block block = blockstate.getBlock();
 		if(block!=null&&!world.isAirBlock(pos)&&blockstate.getPlayerRelativeBlockHardness(fakePlayer, world, pos)!=0)
 		{
-			if(!block.canHarvestBlock(world, pos, fakePlayer))
+			if(!block.canHarvestBlock(blockstate, world, pos, fakePlayer))
 				return ItemStack.EMPTY;
 			block.onBlockHarvested(world, pos, blockstate, fakePlayer);
-			if(block.removedByPlayer(blockstate, world, pos, fakePlayer, true))
+			if(block.removedByPlayer(blockstate, world, pos, fakePlayer, true, blockstate.getFluidState()))
 			{
 				block.onPlayerDestroy(world, pos, blockstate);
-				if(block.canSilkHarvest(world, pos, blockstate, fakePlayer))
+				if(block.canSilkHarvest(blockstate, world, pos, fakePlayer))
 				{
-					ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+					NonNullList<ItemStack> items = NonNullList.create();
 					Item bitem = Item.getItemFromBlock(block);
 					if(bitem==Items.AIR)
 						return ItemStack.EMPTY;
-					ItemStack itemstack = new ItemStack(bitem, 1, block.getMetaFromState(blockstate));
+					ItemStack itemstack = new ItemStack(bitem, 1);
 					if(!itemstack.isEmpty())
 						items.add(itemstack);
 
@@ -312,25 +309,25 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		if(mirrored)
 			fw = fw.getOpposite();
 
-		if(pos==45)
+		if(posInMultiblock==45)
 			return new float[]{fl==EnumFacing.EAST?.5f: 0, 0, fl==EnumFacing.SOUTH?.5f: 0, fl==EnumFacing.WEST?.5f: 1, .5f, fl==EnumFacing.NORTH?.5f: 1};
-		if(pos==48)
+		if(posInMultiblock==48)
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(pos==51)
+		if(posInMultiblock==51)
 			return new float[]{fl==EnumFacing.WEST?.5f: 0, 0, fl==EnumFacing.NORTH?.5f: 0, fl==EnumFacing.EAST?.5f: 1, .5f, fl==EnumFacing.SOUTH?.5f: 1};
 
-		if(pos==47)
+		if(posInMultiblock==47)
 			return new float[]{fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.375f: 0, 0, fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.375f: 0, fl==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.625f: 1, 1, fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.625f: 1};
-		if(pos==50)
+		if(posInMultiblock==50)
 			return new float[]{fw==EnumFacing.EAST?.875f: 0, 0, fw==EnumFacing.SOUTH?.875f: 0, fw==EnumFacing.WEST?.125f: 1, 1, fw==EnumFacing.NORTH?.125f: 1};
-		if(pos==53)
+		if(posInMultiblock==53)
 			return new float[]{fl==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: 0, 0, fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: 0, fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.625f: 1, 1, fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.625f: 1};
 
-		if(pos==5||pos==23||pos==41)
+		if(posInMultiblock==5||posInMultiblock==23||posInMultiblock==41)
 			return new float[]{fw==EnumFacing.WEST?.5f: 0, 0, fw==EnumFacing.NORTH?.5f: 0, fw==EnumFacing.EAST?.5f: 1, 1, fw==EnumFacing.SOUTH?.5f: 1};
-		if(pos==9||pos==12||pos==15)
+		if(posInMultiblock==9||posInMultiblock==12||posInMultiblock==15)
 			return new float[]{fw==EnumFacing.EAST?.5f: 0, 0, fw==EnumFacing.SOUTH?.5f: 0, fw==EnumFacing.WEST?.5f: 1, 1, fw==EnumFacing.NORTH?.5f: 1};
-		if(pos==11||pos==14||pos==17)
+		if(posInMultiblock==11||posInMultiblock==14||posInMultiblock==17)
 			return new float[]{fw==EnumFacing.WEST?.5f: 0, 0, fw==EnumFacing.NORTH?.5f: 0, fw==EnumFacing.EAST?.5f: 1, 1, fw==EnumFacing.SOUTH?.5f: 1};
 
 
@@ -345,30 +342,30 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		if(mirrored)
 			fw = fw.getOpposite();
 
-		if(pos==5||pos==23||pos==41)
+		if(posInMultiblock==5||posInMultiblock==23||posInMultiblock==41)
 		{
 			List list = Lists.newArrayList(new AxisAlignedBB(fw==EnumFacing.WEST?.5f: 0, 0, fw==EnumFacing.NORTH?.5f: 0, fw==EnumFacing.EAST?.5f: 1, 1, fw==EnumFacing.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?0: .25f, .25f, fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?0: .25f, fw==EnumFacing.WEST?.5f: fw==EnumFacing.EAST?1: .75f, .75f, fw==EnumFacing.NORTH?.5f: fw==EnumFacing.SOUTH?1: .75f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(pos==9||pos==12||pos==15)
+		else if(posInMultiblock==9||posInMultiblock==12||posInMultiblock==15)
 		{
 			List list = Lists.newArrayList(new AxisAlignedBB(fw==EnumFacing.EAST?.5f: 0, 0, fw==EnumFacing.SOUTH?.5f: 0, fw==EnumFacing.WEST?.5f: 1, 1, fw==EnumFacing.NORTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(pos==9)
+			if(posInMultiblock==9)
 				list.add(new AxisAlignedBB(fw==EnumFacing.WEST||fl==EnumFacing.EAST?.5f: 0, .5f, fw==EnumFacing.NORTH||fl==EnumFacing.SOUTH?.5f: 0, fw==EnumFacing.EAST||fl==EnumFacing.WEST?.5f: 1, 1, fw==EnumFacing.SOUTH||fl==EnumFacing.NORTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			else if(pos==12)
+			else if(posInMultiblock==12)
 				list.add(new AxisAlignedBB(fw==EnumFacing.WEST?.5f: 0, .5f, fw==EnumFacing.NORTH?.5f: 0, fw==EnumFacing.EAST?.5f: 1, 1, fw==EnumFacing.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			else
 				list.add(new AxisAlignedBB(fw==EnumFacing.WEST||fl==EnumFacing.WEST?.5f: 0, .5f, fw==EnumFacing.NORTH||fl==EnumFacing.NORTH?.5f: 0, fw==EnumFacing.EAST||fl==EnumFacing.EAST?.5f: 1, 1, fw==EnumFacing.SOUTH||fl==EnumFacing.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(pos==47)
+		else if(posInMultiblock==47)
 		{
 			List list = Lists.newArrayList(new AxisAlignedBB(fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.375f: 0, 0, fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.375f: 0, fl==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.625f: 1, 1, fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			list.add(new AxisAlignedBB(fl==EnumFacing.EAST?.625f: fw==EnumFacing.EAST?.875f: 0, 0, fl==EnumFacing.SOUTH?.625f: fw==EnumFacing.SOUTH?.875f: 0, fl==EnumFacing.WEST?.375f: fw==EnumFacing.WEST?.125f: 1, 1, fl==EnumFacing.NORTH?.375f: fw==EnumFacing.NORTH?.125f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(pos==53)
+		else if(posInMultiblock==53)
 		{
 			List list = Lists.newArrayList(new AxisAlignedBB(fl==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.375f: 0, 0, fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: 0, fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.625f: 1, 1, fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			list.add(new AxisAlignedBB(fl==EnumFacing.WEST?.625f: fw==EnumFacing.EAST?.875f: 0, 0, fl==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.875f: 0, fl==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.125f: 1, 1, fl==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.125f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
@@ -413,15 +410,15 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		return false;
 	}
 
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+			() -> new DirectionalBlockPos(getPos().offset(facing, -1), facing.getOpposite()), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		BlockPos pos = getPos().offset(facing, -1);
-		TileEntity inventoryTile = this.world.getTileEntity(pos);
-		if(inventoryTile!=null)
-			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
+		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, pos, output, facing);
+			Utils.dropStackAtPos(world, getPos().offset(facing, -1), output, facing);
 	}
 
 	@Override
@@ -534,6 +531,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		BlockPos wheelPos = this.getBlockPosForPos(31);
 		TileEntity center = world.getTileEntity(wheelPos);
 		if(center instanceof TileEntityBucketWheel)
-			world.addBlockEvent(center.getPos(), center.getBlockState(), 0, 0);
+			world.addBlockEvent(center.getPos(), center.getBlockState().getBlock(), 0, 0);
 	}
 }

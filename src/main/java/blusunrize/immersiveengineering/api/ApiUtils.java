@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;

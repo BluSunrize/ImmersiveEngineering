@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
@@ -16,7 +17,9 @@ import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.block.state.IBlockState;
@@ -28,6 +31,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -37,25 +41,27 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler, IMultiblockRecipe> implements IGuiTile, IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
+//TODO powered MB or not?
+public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityAssembler, IMultiblockRecipe>
+		implements IGuiTile, IConveyorAttachable
 {
+	public static TileEntityType<TileEntityAssembler> TYPE;
+
 	public boolean[] computerOn = new boolean[3];
 	public boolean isComputerControlled = false;
 
 	public TileEntityAssembler()
 	{
-		super(MultiblockAssembler.instance, new int[]{3, 3, 3}, 32000, true);
+		super(MultiblockAssembler.instance, 32000, true, TYPE);
 	}
 
 	public FluidTank[] tanks = {new FluidTank(8000), new FluidTank(8000), new FluidTank(8000)};
@@ -145,15 +151,19 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			for(int i = 0; i < list.size(); i++)
 			{
 				NBTTagCompound itemTag = list.getCompound(i);
-				pattern.inv.set(itemTag.getInt("slot"), new ItemStack(itemTag));
+				pattern.inv.set(itemTag.getInt("slot"), ItemStack.read(itemTag));
 			}
 		}
 	}
 
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+			() -> new DirectionalBlockPos(pos.offset(facing, 2), facing.getOpposite()),
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+
 	@Override
-	public void update()
+	public void tick()
 	{
-		super.update();
+		super.tick();
 
 		if(isDummy()||isRSDisabled()||world.isRemote||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15))
 			return;
@@ -201,8 +211,6 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				}
 			}
 		}
-		BlockPos outputPos = getPos().offset(facing, 2);
-		TileEntity inventoryTile = Utils.getExistingTileEntity(world, outputPos);
 		for(int buffer = 0; buffer < outputBuffer.length; buffer++)
 			if(outputBuffer[buffer]!=null&&outputBuffer[buffer].size() > 0)
 				for(int iOutput = 0; iOutput < outputBuffer[buffer].size(); iOutput++)
@@ -210,9 +218,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					ItemStack output = outputBuffer[buffer].get(iOutput);
 					if(!output.isEmpty()&&output.getCount() > 0)
 					{
-						if(!isRecipeIngredient(output, buffer)&&inventoryTile!=null)
+						if(!isRecipeIngredient(output, buffer))
 						{
-							output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
+							output = Utils.insertStackIntoInventory(this.output, output, false);
 							if(output.isEmpty()||output.getCount() <= 0)
 								continue;
 						}
@@ -221,7 +229,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 						{
 							if(this.inventory.get(18+buffer).isEmpty()&&free < 0)
 								free = 18+buffer;
-							else if(!this.inventory.get(18+buffer).isEmpty()&&OreDictionary.itemMatches(output, this.inventory.get(18+buffer), true)&&this.inventory.get(18+buffer).getCount()+output.getCount() <= this.inventory.get(18+buffer).getMaxStackSize())
+							else if(!this.inventory.get(18+buffer).isEmpty()&&
+									ItemStack.areItemStacksEqual(output, this.inventory.get(18+buffer))&&
+									this.inventory.get(18+buffer).getCount()+output.getCount() <= this.inventory.get(18+buffer).getMaxStackSize())
 							{
 								this.inventory.get(18+buffer).grow(output.getCount());
 								free = -1;
@@ -233,7 +243,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 							{
 								if(this.inventory.get(i).isEmpty()&&free < 0)
 									free = i;
-								else if(!this.inventory.get(i).isEmpty()&&OreDictionary.itemMatches(output, this.inventory.get(i), true)&&this.inventory.get(i).getCount()+output.getCount() <= this.inventory.get(i).getMaxStackSize())
+								else if(!this.inventory.get(i).isEmpty()&&
+										ItemStack.areItemStacksEqual(output, this.inventory.get(i))&&
+										this.inventory.get(i).getCount()+output.getCount() <= this.inventory.get(i).getMaxStackSize())
 								{
 									this.inventory.get(i).grow(output.getCount());
 									free = -1;
@@ -245,8 +257,8 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					}
 				}
 		for(int i = 0; i < 3; i++)
-			if(!isRecipeIngredient(this.inventory.get(18+i), i)&&inventoryTile!=null)
-				this.inventory.set(18+i, Utils.insertStackIntoInventory(inventoryTile, this.inventory.get(18+i), facing.getOpposite()));
+			if(!isRecipeIngredient(this.inventory.get(18+i), i))
+				this.inventory.set(18+i, Utils.insertStackIntoInventory(output, this.inventory.get(18+i), false));
 
 		if(update)
 		{
@@ -316,7 +328,8 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		if(this.inventory.get(18+iPattern).isEmpty())
 			return true;
 		else
-			return OreDictionary.itemMatches(output, this.inventory.get(18+iPattern), true)&&Utils.compareItemNBT(output, this.inventory.get(18+iPattern))&&this.inventory.get(18+iPattern).getCount()+output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize();
+			return ItemStack.areItemStacksEqual(output, this.inventory.get(18+iPattern))&&
+					this.inventory.get(18+iPattern).getCount()+output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize();
 	}
 
 	public boolean isRecipeIngredient(ItemStack stack, int slot)
@@ -330,9 +343,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				for(int i = 0; i < 9; i++)
 					if(!pattern.inv.get(i).isEmpty())
 					{
-						if(OreDictionary.itemMatches(pattern.inv.get(i), stack, false))
-							return true;
-						else if(pattern.inv.get(i).getItem()==stack.getItem()&&!pattern.inv.get(i).getHasSubtypes()&&pattern.inv.get(i).isItemStackDamageable())
+						if(ItemStack.areItemsEqual(pattern.inv.get(i), stack))
 							return true;
 					}
 			}
@@ -342,7 +353,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(pos < 9||pos==10||pos==13||pos==16||pos==22)
+		if(posInMultiblock < 9||posInMultiblock==10||posInMultiblock==13||posInMultiblock==16||posInMultiblock==22)
 			return new float[]{0, 0, 0, 1, 1, 1};
 		float xMin = 0;
 		float yMin = 0;
@@ -350,21 +361,21 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if((pos%9 < 3&&facing==EnumFacing.SOUTH)||(pos%9 >= 6&&facing==EnumFacing.NORTH))
+		if((posInMultiblock%9 < 3&&facing==EnumFacing.SOUTH)||(posInMultiblock%9 >= 6&&facing==EnumFacing.NORTH))
 			zMin = .25f;
-		else if((pos%9 < 3&&facing==EnumFacing.NORTH)||(pos%9 >= 6&&facing==EnumFacing.SOUTH))
+		else if((posInMultiblock%9 < 3&&facing==EnumFacing.NORTH)||(posInMultiblock%9 >= 6&&facing==EnumFacing.SOUTH))
 			zMax = .75f;
-		else if((pos%9 < 3&&facing==EnumFacing.EAST)||(pos%9 >= 6&&facing==EnumFacing.WEST))
+		else if((posInMultiblock%9 < 3&&facing==EnumFacing.EAST)||(posInMultiblock%9 >= 6&&facing==EnumFacing.WEST))
 			xMin = .25f;
-		else if((pos%9 < 3&&facing==EnumFacing.WEST)||(pos%9 >= 6&&facing==EnumFacing.EAST))
+		else if((posInMultiblock%9 < 3&&facing==EnumFacing.WEST)||(posInMultiblock%9 >= 6&&facing==EnumFacing.EAST))
 			xMax = .75f;
-		if((pos%3==0&&facing==EnumFacing.EAST)||(pos%3==2&&facing==EnumFacing.WEST))
+		if((posInMultiblock%3==0&&facing==EnumFacing.EAST)||(posInMultiblock%3==2&&facing==EnumFacing.WEST))
 			zMin = .1875f;
-		else if((pos%3==0&&facing==EnumFacing.WEST)||(pos%3==2&&facing==EnumFacing.EAST))
+		else if((posInMultiblock%3==0&&facing==EnumFacing.WEST)||(posInMultiblock%3==2&&facing==EnumFacing.EAST))
 			zMax = .8125f;
-		else if((pos%3==0&&facing==EnumFacing.NORTH)||(pos%3==2&&facing==EnumFacing.SOUTH))
+		else if((posInMultiblock%3==0&&facing==EnumFacing.NORTH)||(posInMultiblock%3==2&&facing==EnumFacing.SOUTH))
 			xMin = .1875f;
-		else if((pos%3==0&&facing==EnumFacing.SOUTH)||(pos%3==2&&facing==EnumFacing.NORTH))
+		else if((posInMultiblock%3==0&&facing==EnumFacing.SOUTH)||(posInMultiblock%3==2&&facing==EnumFacing.NORTH))
 			xMax = .8125f;
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}
@@ -408,12 +419,13 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		BlockPos pos = getPos().offset(facing, -1);
-		TileEntity inventoryTile = this.world.getTileEntity(pos);
-		if(inventoryTile!=null)
-			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, pos, output, facing);
+		//TODO this seems both unnecessary and wrong
+		//BlockPos pos = getPos().offset(facing, -1);
+		//TileEntity inventoryTile = this.world.getTileEntity(pos);
+		//if(inventoryTile!=null)
+		//	output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
+		//if(!output.isEmpty())
+		//	Utils.dropStackAtPos(world, pos, output, facing);
 	}
 
 	@Override
@@ -488,32 +500,25 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		this.markContainingBlockForUpdate(null);
 	}
 
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return ((pos==10&&facing==this.facing.getOpposite())||(pos==16&&facing==this.facing))&&master()!=null;
-		return super.hasCapability(capability, facing);
-	}
-
-	IItemHandler insertionHandler = new IEInventoryHandler(18, this, 0, true, false);
-	IItemHandler extractionHandler = new IEInventoryHandler(3, this, 18, false, true);
+	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+			new IEInventoryHandler(18, this, 0, true, false));
+	private LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
+			new IEInventoryHandler(3, this, 18, false, true));
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
-		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((posInMultiblock==10||posInMultiblock==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityAssembler master = master();
 			if(master==null)
-				return null;
-			if(pos==10&&facing==this.facing.getOpposite())
-				return (T)master.insertionHandler;
-			if(pos==16&&facing==this.facing)
-				return (T)master.extractionHandler;
-			return null;
+				return LazyOptional.empty();
+			if(posInMultiblock==10&&facing==this.facing.getOpposite())
+				return master.insertionHandler.cast();
+			if(posInMultiblock==16&&facing==this.facing)
+				return master.extractionHandler.cast();
+			return LazyOptional.empty();
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -555,7 +560,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntityAssembler master = master();
-		if(master!=null&&pos==1&&(side==null||side==facing.getOpposite()))
+		if(master!=null&&posInMultiblock==1&&(side==null||side==facing.getOpposite()))
 			return master.tanks;
 		return new FluidTank[0];
 	}
@@ -575,7 +580,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	@Override
 	public EnumFacing[] sigOutputDirections()
 	{
-		if(pos==16)
+		if(posInMultiblock==16)
 			return new EnumFacing[]{this.facing};
 		return new EnumFacing[0];
 	}
@@ -665,40 +670,17 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
 		}
 
-		public ArrayList<ItemStack> getTotalPossibleOutputs()
+		@Nullable
+		@Override
+		public ITextComponent getCustomName()
 		{
-			ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();
-			outputList.add(inv.get(9).copy());
-			for(int i = 0; i < 9; i++)
-			{
-				FluidStack fs = FluidUtil.getFluidContained(inv.get(i));
-				if(fs!=null)
-				{
-					boolean hasFluid = false;
-					for(FluidTank tank : tile.tanks)
-						if(tank.getFluid()!=null&&tank.getFluid().containsFluid(fs))
-						{
-							hasFluid = true;
-							break;
-						}
-					if(hasFluid)
-						continue;
-				}
-				//				ItemStack container = inv[i].getItem().getContainerItem(inv[i]);
-				//				if(container!=null && inv[i].getItem().doesContainerItemLeaveCraftingGrid(inv[i]))
-				//					outputList.add(container.copy());
-			}
-			InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-			for(ItemStack ss : this.recipe.getRemainingItems(invC))
-				if(!ss.isEmpty())
-					outputList.add(ss);
-			return outputList;
+			return getName();
 		}
 
 		@Override
-		public String getName()
+		public ITextComponent getName()
 		{
-			return "IECrafterPattern";
+			return new TextComponentString("IECrafterPattern");
 		}
 
 		@Override
@@ -748,7 +730,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				{
 					NBTTagCompound itemTag = new NBTTagCompound();
 					itemTag.setByte("Slot", (byte)i);
-					this.inv.get(i).writeToNBT(itemTag);
+					this.inv.get(i).write(itemTag);
 					list.add(itemTag);
 				}
 		}
@@ -759,8 +741,8 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			{
 				NBTTagCompound itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
-				if(slot >= 0&&slot < getSizeInventory())
-					this.inv.set(slot, new ItemStack(itemTag));
+				if(slot < getSizeInventory())
+					this.inv.set(slot, ItemStack.read(itemTag));
 			}
 			recalculateOutput();
 		}
@@ -768,7 +750,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		@Override
 		public ITextComponent getDisplayName()
 		{
-			return new TextComponentString(this.getName());
+			return getName();
 		}
 
 		@Override

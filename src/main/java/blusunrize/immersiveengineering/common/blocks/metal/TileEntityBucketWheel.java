@@ -14,37 +14,37 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBucketWheel> implements IHasObjProperty, IDynamicTexture
 {
+	public static TileEntityType<TileEntityBucketWheel> TYPE;
+
 	public float rotation = 0;
 	public NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
 	public ItemStack particleStack = ItemStack.EMPTY;
-	private static final int[] size = {7, 1, 7};
 
 	public TileEntityBucketWheel()
 	{
-		super(size);
+		super(MultiblockBucketWheel.instance, TYPE, false);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		rotation = (Math.abs(nbtRot-rotation) > 5*IEConfig.Machines.excavator_speed)?nbtRot: rotation; // avoid stuttering due to packet delays
 		digStacks = Utils.readInventory(nbt.getList("digStacks", 10), 8);
 		active = nbt.getBoolean("active");
-		particleStack = nbt.hasKey("particleStack")?new ItemStack(nbt.getCompound("particleStack")): ItemStack.EMPTY;
+		particleStack = nbt.hasKey("particleStack")?ItemStack.read(nbt.getCompound("particleStack")): ItemStack.EMPTY;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		nbt.setTag("digStacks", Utils.writeInventory(digStacks));
 		nbt.setBoolean("active", active);
 		if(!particleStack.isEmpty())
-			nbt.setTag("particleStack", particleStack.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("particleStack", particleStack.write(new NBTTagCompound()));
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!formed||posInMultiblock!=24)
@@ -113,8 +113,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setFloat("rotation", rotation);
 			MessageTileSync sync = new MessageTileSync(this, nbt);
-			ImmersiveEngineering.packetHandler.sendToAllAround(sync, new TargetPoint(world.provider.getDimension(),
-					getPos().getX(), getPos().getY(), getPos().getZ(), 100));
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), sync);
 		}
 	}
 
@@ -122,20 +121,22 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	@OnlyIn(Dist.CLIENT)
 	public HashMap<String, String> getTextureReplacements()
 	{
-		synchronized(digStacks)
-		{
-			HashMap<String, String> texMap = new HashMap<String, String>();
-			for(int i = 0; i < this.digStacks.size(); i++)
-				if(!this.digStacks.get(i).isEmpty())
-				{
-					Block b = Block.getBlockFromItem(this.digStacks.get(i).getItem());
-					IBlockState state = b!=null?b.getStateFromMeta(this.digStacks.get(i).getMetadata()): Blocks.STONE.getDefaultState();
-					IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-					if(model!=null&&model.getParticleTexture()!=null)
-						texMap.put("dig"+i, model.getParticleTexture().getIconName());
-				}
-			return texMap;
-		}
+		//TODO
+		//synchronized(digStacks)
+		//{
+		//	HashMap<String, String> texMap = new HashMap<String, String>();
+		//	for(int i = 0; i < this.digStacks.size(); i++)
+		//		if(!this.digStacks.get(i).isEmpty())
+		//		{
+		//			Block b = Block.getBlockFromItem(this.digStacks.get(i).getItem());
+		//			IBlockState state = b!=null?b.getStateFromMeta(this.digStacks.get(i).getMetadata()): Blocks.STONE.getDefaultState();
+		//			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+		//			if(model!=null&&model.getParticleTexture()!=null)
+		//				texMap.put("dig"+i, model.getParticleTexture().getIconName());
+		//		}
+		//	return texMap;
+		//}
+		return new HashMap<>();
 	}
 
 	static ArrayList<String> emptyDisplayList = new ArrayList<>();
@@ -152,7 +153,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		synchronized(digStacks)
 		{
 			if(message.hasKey("fill"))
-				this.digStacks.set(message.getInt("fill"), new ItemStack(message.getCompound("fillStack")));
+				this.digStacks.set(message.getInt("fill"), ItemStack.read(message.getCompound("fillStack")));
 			if(message.hasKey("empty"))
 				this.digStacks.set(message.getInt("empty"), ItemStack.EMPTY);
 			if(message.hasKey("rotation"))

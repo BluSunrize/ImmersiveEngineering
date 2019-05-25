@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
-import blusunrize.immersiveengineering.common.util.CapabilityHolder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -52,7 +51,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
 	public TileEntityCokeOven()
 	{
-		super(MultiblockCokeOven.instance, TYPE);
+		super(MultiblockCokeOven.instance, TYPE, false);
 	}
 
 
@@ -321,7 +320,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	{
 	}
 
-	CapabilityHolder<IItemHandler> invHandler = registerConstantCap(
+	LazyOptional<IItemHandler> invHandler = registerConstantCap(
 			new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false},
 					new boolean[]{false, true, false, true})
 	);
@@ -335,7 +334,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 			TileEntityCokeOven master = master();
 			if(master==null)
 				return null;
-			return master.invHandler.get().cast();
+			return master.invHandler.cast();
 		}
 		return super.getCapability(capability, facing);
 	}
