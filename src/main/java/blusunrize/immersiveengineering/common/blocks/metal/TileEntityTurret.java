@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -34,6 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
@@ -41,7 +41,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,7 +54,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class TileEntityTurret extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IGuiTile, IEntityProof, IHammerInteraction, IHasObjProperty
+public abstract class TileEntityTurret extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory,
+		IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IGuiTile, IEntityProof, IHammerInteraction, IHasObjProperty
 {
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(16000);
@@ -71,8 +76,13 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 	private UUID targetId;
 
+	public TileEntityTurret(TileEntityType<? extends TileEntityTurret> type)
+	{
+		super(type);
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy)
@@ -80,7 +90,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		double range = getRange();
 		if(targetId!=null)
 		{
-			AxisAlignedBB validBox = Block.FULL_BLOCK_AABB.offset(pos).grow(range);
+			AxisAlignedBB validBox = VoxelShapes.fullCube().getBoundingBox().offset(pos).grow(range);
 			List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, validBox);
 			for(EntityLivingBase entity : entities)
 				if(entity.getUniqueID().equals(targetId)&&isValidTarget(entity, true))
@@ -130,7 +140,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
 				energyStorage.extractEnergy(energy, false);
-				if(target==null||target.isDead||world.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canShootEntity(target))
+				if(target==null||!target.isAlive()||world.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canShootEntity(target))
 				{
 					target = getTarget();
 					if(target!=null)
@@ -214,16 +224,16 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 	public boolean isValidTarget(EntityLivingBase entity, boolean checkCanShoot)
 	{
-		if(entity==null||entity.isDead||entity.getHealth() <= 0)
+		if(entity==null||!entity.isAlive()||entity.getHealth() <= 0)
 			return false;
 		//Continue if blacklist and name is in list, or whitelist and name is not in list
-		if(whitelist^isListedName(targetList, entity.getName()))
+		if(whitelist^isListedName(targetList, entity.getName().getString()))
 			return false;
 		//Same as above but for the owner of the pet, to prevent shooting wolves
 		if(entity instanceof IEntityOwnable)
 		{
 			Entity entityOwner = ((IEntityOwnable)entity).getOwner();
-			if(entityOwner!=null&&(whitelist^isListedName(targetList, entityOwner.getName())))
+			if(entityOwner!=null&&(whitelist^isListedName(targetList, entityOwner.getName().getString())))
 				return false;
 		}
 
@@ -260,9 +270,9 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 	protected boolean hasOwnerRights(EntityPlayer player)
 	{
-		if(player.capabilities.isCreativeMode||owner==null||owner.isEmpty())
+		if(player.abilities.isCreativeMode||owner==null||owner.isEmpty())
 			return true;
-		return owner.equalsIgnoreCase(player.getName());
+		return owner.equalsIgnoreCase(player.getName().getString());
 	}
 
 	@Override
@@ -297,14 +307,14 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		NBTTagList list = nbt.getList("targetList", 8);
 		targetList.clear();
 		for(int i = 0; i < list.size(); i++)
-			targetList.add(list.getStringTagAt(i));
+			targetList.add(list.getString(i));
 		whitelist = nbt.getBoolean("whitelist");
 		attackAnimals = nbt.getBoolean("attackAnimals");
 		attackPlayers = nbt.getBoolean("attackPlayers");
 		attackNeutrals = nbt.getBoolean("attackNeutrals");
 
 		target = null;
-		if(nbt.hasKey("target", 8))
+		if(nbt.contains("target", NBT.TAG_STRING))
 			targetId = UUID.fromString(nbt.getString("target"));
 	}
 
@@ -511,7 +521,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		TileEntityTurret turret = this;
 		if(dummy)
 		{
@@ -524,7 +534,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 		NBTTagCompound tag = new NBTTagCompound();
 		//Only writing values when they are different from defaults
-		if(turret.owner!=null&&(player==null||!player.getName().equalsIgnoreCase(turret.owner)))
+		if(turret.owner!=null&&(player==null||!player.getName().getString().equalsIgnoreCase(turret.owner)))
 			tag.setString("owner", turret.owner);
 		if(turret.targetList.size()!=1||!isListedName(turret.targetList, turret.owner))
 		{
@@ -545,26 +555,26 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			tag.setBoolean("redstoneControlInverted", turret.redstoneControlInverted);
 
 		if(!tag.isEmpty())
-			stack.setTagCompound(tag);
+			stack.setTag(tag);
 		return stack;
 	}
 
 	@Override
 	public void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack)
 	{
-		if(stack.hasTagCompound())
+		if(stack.hasTag())
 		{
-			NBTTagCompound tag = stack.getTagCompound();
+			NBTTagCompound tag = stack.getOrCreateTag();
 			if(tag.hasKey("owner"))
 				this.owner = tag.getString("owner");
 			else if(placer!=null)
-				this.owner = placer.getName();
+				this.owner = placer.getName().getString();
 			if(tag.hasKey("targetList"))
 			{
 				NBTTagList list = tag.getList("targetList", 8);
 				targetList.clear();
 				for(int i = 0; i < list.size(); i++)
-					targetList.add(list.getStringTagAt(i));
+					targetList.add(list.getString(i));
 			}
 			else if(owner!=null)
 				targetList.add(owner);
@@ -581,7 +591,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		}
 		else if(placer!=null)
 		{
-			this.owner = placer.getName();
+			this.owner = placer.getName().getString();
 			targetList.add(owner);
 		}
 	}

@@ -26,31 +26,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nullable;
 
 public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalTile, IBlockBounds, IIEInventory, IGuiTile, ITileDrop, IPlayerInteraction
 {
+	public static TileEntityType<TileEntityToolbox> TYPE;
+	
 	NonNullList<ItemStack> inventory = NonNullList.withSize(ItemToolbox.SLOT_COUNT, ItemStack.EMPTY);
-	public String name;
+	public ITextComponent name;
 	private EnumFacing facing = EnumFacing.NORTH;
 	private NBTTagList enchantments;
+
+	public TileEntityToolbox()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
 		if(nbt.hasKey("name"))
-			this.name = nbt.getString("name");
+			this.name = ITextComponent.Serializer.fromJson(nbt.getString("name"));
 		if(nbt.hasKey("enchantments"))
 			this.enchantments = nbt.getList("enchantments", 10);
 		if(!descPacket)
@@ -62,7 +65,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	{
 		nbt.setInt("facing", facing.ordinal());
 		if(this.name!=null)
-			nbt.setString("name", this.name);
+			nbt.setString("name", ITextComponent.Serializer.toJson(this.name));
 		if(this.enchantments!=null)
 			nbt.setTag("enchantments", this.enchantments);
 		if(!descPacket)
@@ -74,24 +77,26 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	{
 		if(player.isSneaking())
 		{
-			if(!getWorld().isRemote)
+			if(!world.isRemote)
 			{
-				EntityItem entityitem = new EntityItem(getWorld(), getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, getWorld().getBlockState(getPos())));
+				EntityItem entityitem = new EntityItem(world, getPos().getX()+.5, getPos().getY()+.5,
+						getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
-				getWorld().removeBlock(getPos());
-				getWorld().spawnEntity(entityitem);
+				world.removeBlock(getPos());
+				world.spawnEntity(entityitem);
 			}
 			return true;
 		}
 		return false;
 	}
 
-	@Override
-	@Nullable
-	public ITextComponent getDisplayName()
-	{
-		return name!=null?new TextComponentString(name): new TextComponentTranslation("item.immersiveengineering.toolbox.name");
-	}
+	//TODO
+	//@Override
+	//@Nullable
+	//public ITextComponent getDisplayName()
+	//{
+	//	return name!=null?new TextComponentString(name): new TextComponentTranslation("item.immersiveengineering.toolbox.name");
+	//}
 
 	@Override
 	public boolean canOpenGui()
@@ -141,7 +146,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		ItemStack stack = new ItemStack(IEContent.itemToolbox);
 		((ItemInternalStorage)IEContent.itemToolbox).setContainedItems(stack, inventory);
 		if(this.name!=null)
-			stack.setStackDisplayName(this.name);
+			stack.setDisplayName(this.name);
 		if(enchantments!=null)
 			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
@@ -152,13 +157,12 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	{
 		if(stack.getItem() instanceof ItemInternalStorage)
 		{
-			IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if(inv!=null)
+			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(inv ->
 			{
 				inventory = NonNullList.withSize(inv.getSlots(), ItemStack.EMPTY);
 				for(int i = 0; i < inv.getSlots(); i++)
 					inventory.set(i, inv.getStackInSlot(i));
-			}
+			});
 
 			if(stack.hasDisplayName())
 				this.name = stack.getDisplayName();

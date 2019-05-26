@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -28,18 +29,20 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.EnumLightType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
@@ -50,6 +53,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>,
 		EnergyConnector
 {
+	public static TileEntityType<TileEntityFloodlight> TYPE;
+
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.Machines.floodlight_energyDraw;
 	private int maximumStorage = IEConfig.Machines.floodlight_maximumStorage;
@@ -69,8 +74,13 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public int controllingComputers = 0;
 	public int turnCooldown = 0;
 
+	public TileEntityFloodlight()
+	{
+		super(TYPE);
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(world.isRemote)
 			return;
@@ -109,7 +119,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true, active);
-			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
+			world.checkLightFor(EnumLightType.BLOCK, getPos());
 		}
 		if(!active)
 		{
@@ -124,7 +134,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			{
 				BlockPos cc = it.next();
 				//				world.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
-				world.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
+				world.setBlockState(cc, IEContent.blockFakeLight.getDefaultState(), 2);
 				TileEntity te = world.getTileEntity(cc);
 				if(te instanceof TileEntityFakeLight)
 					((TileEntityFakeLight)te).floodlightCoords = new int[]{getPos().getX(), getPos().getY(), getPos().getZ()};
@@ -268,23 +278,23 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
 		synchronized(EventHandler.interdictionTiles)
 		{
 			EventHandler.interdictionTiles.remove(this);
 		}
-		super.invalidate();
+		super.remove();
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
 		synchronized(EventHandler.interdictionTiles)
 		{
 			EventHandler.interdictionTiles.remove(this);
 		}
-		super.onChunkUnload();
+		super.onChunkUnloaded();
 	}
 
 	@Override
@@ -306,7 +316,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			int[] icc = nbt.getIntArray("fakeLight_"+i);
 			fakeLights.add(new BlockPos(icc[0], icc[1], icc[2]));
 		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT&&world!=null)
+		if(world!=null&&world.isRemote)
 			this.markContainingBlockForUpdate(null);
 		if(descPacket)
 		{
@@ -315,7 +325,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		if(world!=null&&oldActive!=active)
 		{
-			world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+			world.checkLightFor(EnumLightType.BLOCK, pos);
 		}
 	}
 
@@ -344,27 +354,21 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	protected boolean canTakeLV()
-	{
-		return true;
-	}
-
-	@Override
-	protected boolean isRelay()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
+			world.checkLightFor(EnumLightType.BLOCK, getPos());
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
+	}
+
+	@Override
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	{
+		return WireType.LV_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
@@ -508,7 +512,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	{
 		if(!transform.isPresent())
 			transform = Optional.of(new TRSRTransformation((Matrix4f)null));
-		Matrix4f mat = transform.get().getMatrix();
+		Matrix4f mat = transform.get().getMatrixVec();//TODO is this correct?
 		Vector3f transl = new Vector3f(.5f, .5f, .5f);
 
 		double yaw = 0;
@@ -588,7 +592,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				return;
 		}
 		this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(dir?-11.25f: 11.25f)));
-		world.addBlockEvent(getPos(), getBlockState(), 255, 0);
+		world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
 	}
@@ -604,7 +608,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		this.rotY += dir?-11.25: 11.25;
 		this.rotY %= 360;
-		world.addBlockEvent(getPos(), getBlockState(), 255, 0);
+		world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
 	}

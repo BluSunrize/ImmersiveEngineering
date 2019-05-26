@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -16,42 +15,41 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.client.model.obj.OBJModel.Normal;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
-import static blusunrize.immersiveengineering.common.IEContent.blockMetalDecoration2;
 import static net.minecraft.util.EnumFacing.*;
 
 public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJModelCallback<IBlockState>, INeighbourChangeTile,
 		IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds
 {
+	public static TileEntityType<TileEntityStructuralArm> TYPE;
+
 	private int totalLength = 1;
 	private int slopePosition = 0;
 	private EnumFacing facing = NORTH;
 	private boolean onCeiling = false;
+
+	public TileEntityStructuralArm()
+	{
+		super(TYPE);
+	}
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -97,9 +95,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 				TileEntityStructuralArm tmp = (TileEntityStructuralArm)atOther;
 				IBlockState stateHere = world.getBlockState(pos);
 				IBlockState stateThere = world.getBlockState(otherPos);
-				BlockTypes_MetalDecoration2 typeHere = stateHere.getValue(blockMetalDecoration2.property);
-				BlockTypes_MetalDecoration2 typeOther = stateThere.getValue(blockMetalDecoration2.property);
-				if(tmp.facing==this.facing&&typeHere==typeOther)
+				if(tmp.facing==this.facing&&stateHere.getBlock()==stateThere.getBlock())
 					slope = (TileEntityStructuralArm)atOther;
 			}
 		}
@@ -188,11 +184,9 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 			TileEntityStructuralArm slope = (TileEntityStructuralArm)teAtI;
 			int offsetAtPos = slopePosition+offsetToHere;
 			IBlockState stateHere = world.getBlockState(pos);
-			IBlockState otherState = world.getBlockState(posI);
-			BlockTypes_MetalDecoration2 typeHere = stateHere.getValue(blockMetalDecoration2.property);
-			BlockTypes_MetalDecoration2 typeOther = otherState.getValue(blockMetalDecoration2.property);
+			IBlockState stateThere = world.getBlockState(posI);
 			if((!removing||(slope.totalLength==this.totalLength&&slope.slopePosition==offsetAtPos&&slope.onCeiling==this.onCeiling))
-					&&typeHere==typeOther
+					&&stateHere.getBlock()==stateThere.getBlock()
 					&&slope.facing==this.facing)
 				out.accept(slope);
 		}
@@ -218,7 +212,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		slopePosition = 0;
 		bounds = null;
 		if(world!=null)
-			world.notifyNeighborsOfStateChange(pos, getBlockState(), true);
+			world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
 	}
 
 	@Override
@@ -297,6 +291,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		return bounds;
 	}
 
+	/*TODO
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
@@ -412,6 +407,8 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		return builder.build();
 	}
+
+	 */
 
 	private Vector3f[] getArrayByIndices(Vector3f[] in, int... indices)
 	{

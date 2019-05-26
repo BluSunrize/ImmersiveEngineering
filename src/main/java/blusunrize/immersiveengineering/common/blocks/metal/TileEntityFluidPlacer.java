@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
@@ -37,19 +37,25 @@ import java.util.*;
 
 public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable, IConfigurableSides, IBlockOverlayText
 {
+	public static TileEntityType<TileEntityFluidPlacer> TYPE;
 	public int[] sideConfig = new int[]{1, 0, 1, 1, 1, 1};
 	public FluidTank tank = new FluidTank(4000);
 
 	private int tickCount = 0;
 
-	HashSet<BlockPos> checkedPositions = new HashSet<BlockPos>();
-	TreeMap<Integer, Queue<BlockPos>> layeredPlacementQueue = new TreeMap<Integer, Queue<BlockPos>>();
-	HashSet<BlockPos> tempFluids = new HashSet<BlockPos>();
+	private HashSet<BlockPos> checkedPositions = new HashSet<>();
+	private TreeMap<Integer, Queue<BlockPos>> layeredPlacementQueue = new TreeMap<>();
+	private HashSet<BlockPos> tempFluids = new HashSet<>();
+
+	public TileEntityFluidPlacer()
+	{
+		super(TYPE);
+	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
-		if(getWorld().isRemote||getWorld().getRedstonePowerFromNeighbors(getPos())!=0)
+		if(world.isRemote||world.getRedstonePowerFromNeighbors(getPos())!=0)
 			return;
 
 		if(tickCount%16==0)
@@ -64,9 +70,9 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 				else
 				{
 					BlockPos targetPos = lowestLayer.poll();
-					IBlockState state = getWorld().getBlockState(targetPos);
-					if((state.getBlock().isAir(state, getWorld(), targetPos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(targetPos, state))
-						if(tryPlaceFluid(null, getWorld(), tank.getFluid(), targetPos))
+					IBlockState state = world.getBlockState(targetPos);
+					if((state.getBlock().isAir(state, world, targetPos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(targetPos, state))
+						if(tryPlaceFluid(null, world, tank.getFluid(), targetPos))
 						{
 							tank.drain(Fluid.BUCKET_VOLUME, true);
 							addConnectedSpaces(targetPos);
@@ -104,7 +110,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 			return false; // Non-air, solid, unreplacable block. We can't put fluid here.
 		}
 
-		if(worldIn.provider.doesWaterVaporize()&&fluid.doesVaporize(fluidStack))
+		if(worldIn.getDimension().doesWaterVaporize()&&fluid.doesVaporize(fluidStack))
 		{
 			fluid.vaporize(player, worldIn, pos, fluidStack);
 		}
@@ -139,7 +145,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		Queue<BlockPos> queue = layeredPlacementQueue.get(yLevel);
 		if(queue==null)
 		{
-			queue = new LinkedList<BlockPos>();
+			queue = new LinkedList<>();
 			layeredPlacementQueue.put(yLevel, queue);
 		}
 		return queue;
@@ -157,12 +163,12 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		if(pos.getY() >= 0&&pos.getY() <= 255)//Within world borders
 			if(checkedPositions.add(pos))//Don't add checked positions
 				if(pos.distanceSq(getPos()) < 64*64)//Within max range
-					if(getWorld().isBlockLoaded(pos))
+					if(world.isBlockLoaded(pos))
 					{
-						IBlockState state = getWorld().getBlockState(pos);
+						IBlockState state = world.getBlockState(pos);
 						if(tank.getFluid()!=null&&tank.getFluid().getFluid()==FluidRegistry.lookupFluidForBlock(state.getBlock()))
 							tempFluids.add(pos);
-						if((state.getBlock().isAir(state, getWorld(), pos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(pos, state))
+						if((state.getBlock().isAir(state, world, pos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(pos, state))
 							getQueueForYLevel(pos.getY()).add(pos);
 					}
 	}
@@ -178,7 +184,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	private boolean isFullFluidBlock(BlockPos pos, IBlockState state)
 	{
 		if(state.getBlock() instanceof IFluidBlock)
-			return Math.abs(((IFluidBlock)state.getBlock()).getFilledPercentage(getWorld(), pos))==1;
+			return Math.abs(((IFluidBlock)state.getBlock()).getFilledPercentage(world, pos))==1;
 		else if(state.getBlock() instanceof BlockLiquid)
 			return state.getBlock().getMetaFromState(state)==0;
 		return false;
@@ -205,7 +211,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	@Override
 	public SideConfig getSideConfig(EnumFacing side)
 	{
-		return (side >= 0&&side < 6)?SideConfig.values()[this.sideConfig[side]+1]: SideConfig.NONE;
+		return SideConfig.values()[this.sideConfig[side]+1];
 	}
 
 	@Override
@@ -217,7 +223,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		prepareAreaCheck();
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		getWorld().addBlockEvent(getPos(), this.getBlockState(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
 		return true;
 	}
 

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
@@ -23,9 +24,16 @@ import javax.annotation.Nonnull;
 
 public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implements ITickable
 {
-	@Override
-	public void update()
+	public static TileEntityType<TileEntityRedstoneBreaker> TYPE;
+
+	public TileEntityRedstoneBreaker()
 	{
+		super(TYPE);
+	}
+	@Override
+	public void tick()
+	{
+		//TODO use block updates to detect RS changes?
 		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==active)
 		{
 			active = !active;

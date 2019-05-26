@@ -27,7 +27,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,7 +46,7 @@ public class ItemCoresample extends ItemIEBase
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		if(ItemNBTHelper.hasKey(stack, "coords"))
 		{
@@ -51,16 +55,16 @@ public class ItemCoresample extends ItemIEBase
 				String mineral = ItemNBTHelper.getString(stack, "mineral");
 				String unloc = Lib.DESC_INFO+"mineral."+mineral;
 				String loc = I18n.format(unloc);
-				list.add(I18n.format(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc)));
+				list.add(new TextComponentTranslation(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc)));
 			}
 			else
-				list.add(I18n.format(Lib.CHAT_INFO+"coresample.noMineral"));
+				list.add(new TextComponentTranslation(Lib.CHAT_INFO+"coresample.noMineral"));
 			int[] coords = ItemNBTHelper.getIntArray(stack, "coords");
 			boolean singleplayer = Minecraft.getInstance().isSingleplayer();
-			if(world==null||world.provider.getDimension()!=0)
+			if(world==null||world.getDimension()!=0)
 			{
 				World clientWorld = Minecraft.getInstance().world;
-				if(clientWorld!=null&&clientWorld.provider.getDimension()==coords[0])
+				if(clientWorld!=null&&clientWorld.getDimension()==coords[0])
 					world = clientWorld;
 			}
 			String s0 = (coords[1]*16)+", "+(coords[2]*16);

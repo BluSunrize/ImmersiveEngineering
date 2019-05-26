@@ -22,6 +22,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -29,18 +31,26 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityTurretGun extends TileEntityTurret
 {
+	public static TileEntityType<TileEntityTurretGun> TYPE;
+
 	public int cycleRender;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	public boolean expelCasings = false;
+
+	public TileEntityTurretGun()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	protected double getRange()
@@ -84,7 +94,8 @@ public class TileEntityTurretGun extends TileEntityTurret
 			if(bullet!=null&&bullet.isValidForTurret())
 			{
 				ItemStack casing = bullet.getCasing(bulletStack);
-				if(expelCasings||casing.isEmpty()||inventory.get(1).isEmpty()||(OreDictionary.itemMatches(casing, inventory.get(1), false)&&inventory.get(1).getCount()+casing.getCount() <= inventory.get(1).getMaxStackSize()))
+				if(expelCasings||casing.isEmpty()||inventory.get(1).isEmpty()||(ItemStack.areItemsEqual(casing, inventory.get(1))&&
+						inventory.get(1).getCount()+casing.getCount() <= inventory.get(1).getMaxStackSize()))
 				{
 					this.energyStorage.extractEnergy(energy, false);
 					this.sendRenderPacket();
@@ -115,7 +126,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 							double cY = getPos().getY()+1.375;
 							double cZ = getPos().getZ()+.5;
 							Vec3d vCasing = vec.rotateYaw(-1.57f);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0, 1, 0);
+							world.spawnParticle(RedstoneParticleData.REDSTONE_DUST, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
 							EntityItem entCasing = new EntityItem(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
 							entCasing.motionX = 0;
 							entCasing.motionY = -0.01;
@@ -143,7 +154,8 @@ public class TileEntityTurretGun extends TileEntityTurret
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setBoolean("cycle", true);
-		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
+				new MessageTileSync(this, tag));
 	}
 
 	EntityRevolvershot getBulletEntity(World world, Vec3d vecDir, IBullet type)
@@ -169,11 +181,11 @@ public class TileEntityTurretGun extends TileEntityTurret
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(world.isRemote&&!dummy&&cycleRender > 0)
 			cycleRender--;
-		super.update();
+		super.tick();
 	}
 
 	@Override
@@ -209,22 +221,16 @@ public class TileEntityTurretGun extends TileEntityTurret
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
 	}
 
-	IItemHandler itemHandler = new IEInventoryHandler(2, this, 0, new boolean[]{true, false}, new boolean[]{false, true});
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-	{
-		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
-			return true;
-		return super.hasCapability(capability, facing);
-	}
+	private LazyOptional<IItemHandler> itemHandler = registerConstantCap(
+			new IEInventoryHandler(2, this, 0, new boolean[]{true, false}, new boolean[]{false, true})
+	);
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
-			return (T)itemHandler;
+			return itemHandler.cast();
 		return super.getCapability(capability, facing);
 	}
 }

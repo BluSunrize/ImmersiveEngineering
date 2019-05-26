@@ -10,19 +10,18 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.tileentity.TileEntityType;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
 
 public class TileEntityTransformerHV extends TileEntityTransformer
 {
-	{
-		acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY, WireType.MV_CATEGORY);
-	}
+	public static TileEntityType<TileEntityTransformerHV> TYPE;
 
-	@Override
-	protected boolean canTakeHV()
+	public TileEntityTransformerHV()
 	{
-		return true;
+		super(TYPE);
+		acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY, WireType.MV_CATEGORY);
 	}
 
 	@Override

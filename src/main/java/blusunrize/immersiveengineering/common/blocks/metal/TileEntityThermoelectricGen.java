@@ -17,29 +17,32 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDynamicLiquid;
-import net.minecraft.block.BlockStaticLiquid;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.IFluidBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITickable, INeighbourChangeTile, IIEInternalFluxConnector
 {
+	public static TileEntityType<TileEntityThermoelectricGen> TYPE;
+
 	private int energyOutput = -1;
 
+	public TileEntityThermoelectricGen()
+	{
+		super(TYPE);
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(world.getGameTime()%1024==((getPos().getX()^getPos().getZ())&1023))
 			recalculateEnergyOutput();
@@ -79,32 +82,22 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 		this.energyOutput = energy==0?-1: energy;
 	}
 
-	int getTemperature(BlockPos pos)
+	private int getTemperature(BlockPos pos)
 	{
-		Fluid f = getFluid(pos);
-		if(f!=null)
-			return f.getTemperature(world, pos);
+		//TODO
+		//Fluid f = getFluid(pos);
+		//if(f!=null)
+		//	return f.getTemperature(world, pos);
 		IBlockState state = world.getBlockState(pos);
-		return ThermoelectricHandler.getTemperature(state.getBlock(), state.getBlock().getMetaFromState(state));
+		return ThermoelectricHandler.getTemperature(state.getBlock());
 	}
 
+	@Nullable
 	Fluid getFluid(BlockPos pos)
 	{
 		IBlockState state = world.getBlockState(pos);
-		Block b = state.getBlock();
-		Fluid f = FluidRegistry.lookupFluidForBlock(b);
-		if(f==null&&b instanceof BlockDynamicLiquid&&b.getMetaFromState(state)==0)
-			if(state.getMaterial().equals(Material.WATER))
-				f = FluidRegistry.WATER;
-			else if(state.getMaterial().equals(Material.LAVA))
-				f = FluidRegistry.LAVA;
-		if(b instanceof IFluidBlock&&!((IFluidBlock)b).canDrain(world, pos))
-			return null;
-		if(b instanceof BlockStaticLiquid&&b.getMetaFromState(state)!=0)
-			return null;
-		if(f==null)
-			return null;
-		return f;
+		IFluidState fState = state.getFluidState();
+		return fState.getFluid();
 	}
 
 	@Override

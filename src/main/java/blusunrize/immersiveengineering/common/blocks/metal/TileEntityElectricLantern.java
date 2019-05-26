@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -20,17 +19,21 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.EnumLightType;
 
 import javax.annotation.Nonnull;
 
 public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable,
 		IDirectionalTile, IHammerInteraction, IBlockBounds, IActiveState, ILightValue, EnergyConnector
 {
+	public static TileEntityType<TileEntityElectricLantern> TYPE;
+
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.Machines.lantern_energyDraw;
 	private int maximumStorage = IEConfig.Machines.lantern_maximumStorage;
@@ -38,8 +41,13 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	private boolean interdictionList = false;
 	private boolean flipped = false;
 
+	public TileEntityElectricLantern()
+	{
+		super(TYPE);
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(world.isRemote)
 			return;
@@ -65,8 +73,8 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		if(active!=b)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
-			world.addBlockEvent(getPos(), getBlockState(), 1, 0);
+			world.checkLightFor(EnumLightType.BLOCK, getPos());
+			world.addBlockEvent(getPos(), getBlockState().getBlock(), 1, 0);
 		}
 	}
 
@@ -77,23 +85,23 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
 		synchronized(EventHandler.interdictionTiles)
 		{
 			EventHandler.interdictionTiles.remove(this);
 		}
-		super.invalidate();
+		super.remove();
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
 		synchronized(EventHandler.interdictionTiles)
 		{
 			EventHandler.interdictionTiles.remove(this);
 		}
-		super.onChunkUnload();
+		super.onChunkUnloaded();
 	}
 
 	@Override
@@ -115,27 +123,21 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	protected boolean canTakeLV()
-	{
-		return true;
-	}
-
-	@Override
-	protected boolean isRelay()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(EnumSkyBlock.BLOCK, getPos());
+			world.checkLightFor(EnumLightType.BLOCK, getPos());
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
+	}
+
+	@Override
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	{
+		return WireType.LV_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
@@ -153,12 +155,6 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	public float[] getBlockBounds()
 	{
 		return new float[]{.1875f, 0, .1875f, .8125f, 1, .8125f};
-	}
-
-	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return IEProperties.BOOLEANS[0];
 	}
 
 	@Override
@@ -214,7 +210,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), getBlockState(), active?1: 0, 0);
+		world.addBlockEvent(getPos(), getBlockState().getBlock(), active?1: 0, 0);
 		return true;
 	}
 

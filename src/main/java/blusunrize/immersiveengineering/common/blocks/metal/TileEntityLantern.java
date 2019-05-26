@@ -16,13 +16,22 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 
 import java.util.ArrayList;
 
+//TODO replace with blockstates?
 public class TileEntityLantern extends TileEntityIEBase implements IDirectionalTile, IHasObjProperty, IBlockBounds, ILightValue
 {
+	public static TileEntityType<TileEntityLantern> TYPE;
+
 	public EnumFacing facing = EnumFacing.NORTH;
+
+	public TileEntityLantern()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

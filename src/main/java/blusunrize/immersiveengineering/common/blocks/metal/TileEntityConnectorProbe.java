@@ -25,6 +25,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
@@ -32,11 +34,11 @@ import java.util.List;
 
 public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 {
-	private int redstoneChannelSending = 0;
+	private EnumDyeColor redstoneChannelSending = EnumDyeColor.WHITE;
 	private int lastOutput = 0;
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(!world.isRemote&&world.getGameTime()%8!=((getPos().getX()^getPos().getZ())&8))
 		{
@@ -47,7 +49,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 				this.rsDirty = true;
 			}
 		}
-		super.update();
+		super.tick();
 	}
 
 	@Override
@@ -102,14 +104,14 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
-			redstoneChannel = (redstoneChannel+1)%16;
+			redstoneChannel = EnumDyeColor.byId(redstoneChannel.getId()+1);
 		else
-			redstoneChannelSending = (redstoneChannelSending+1)%16;
+			redstoneChannelSending = EnumDyeColor.byId(redstoneChannelSending.getId()+1);
 		markDirty();
 		//TODO wireNetwork.updateValues();
 		//TODO onChange();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState(), 254, 0);
+		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 		return true;
 	}
 
@@ -117,14 +119,14 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("redstoneChannelSending", redstoneChannelSending);
+		nbt.setInt("redstoneChannelSending", redstoneChannelSending.getId());
 	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		redstoneChannelSending = nbt.getInt("redstoneChannelSending");
+		redstoneChannelSending = EnumDyeColor.byId(nbt.getInt("redstoneChannelSending"));
 	}
 
 	@Override
@@ -169,9 +171,9 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	public int getRenderColour(IBlockState object, String group)
 	{
 		if("colour_in".equals(group))
-			return 0xff000000|EnumDyeColor.byMetadata(this.redstoneChannel).getColorValue();
+			return 0xff000000|redstoneChannel.colorValue;
 		else if("colour_out".equals(group))
-			return 0xff000000|EnumDyeColor.byMetadata(this.redstoneChannelSending).getColorValue();
+			return 0xff000000|redstoneChannelSending.colorValue;
 		return 0xffffffff;
 	}
 
@@ -187,8 +189,8 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannel).getTranslationKey())),
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.fireworksCharge."+EnumDyeColor.byMetadata(redstoneChannelSending).getTranslationKey()))
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.fireworksCharge."+redstoneChannel.getTranslationKey())),
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.fireworksCharge."+redstoneChannelSending.getTranslationKey()))
 		};
 	}
 

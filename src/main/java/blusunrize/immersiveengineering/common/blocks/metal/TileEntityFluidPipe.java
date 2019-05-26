@@ -14,43 +14,36 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -64,48 +57,37 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
 		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
 {
-	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
+	public static TileEntityType<TileEntityFluidPipe> TYPE;
+
+	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<>();
 	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList<>();
 	public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList<>();
+
+	public TileEntityFluidPipe()
+	{
+		super(TYPE);
+	}
 
 	public static void initCovers()
 	{
 		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(
-				new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
-		TileEntityFluidPipe.validPipeCovers.add(new Function<ItemStack, Boolean>()
-		{
-			@Nullable
-			@Override
-			public Boolean apply(ItemStack input)
-			{
-				if(input.isEmpty())
-					return Boolean.FALSE;
-				for(ItemStack stack : scaffolds)
-					if(OreDictionary.itemMatches(stack, input, false))
-						return Boolean.TRUE;
-				return Boolean.FALSE;
-			}
-		});
-		TileEntityFluidPipe.climbablePipeCovers.add(new Function<ItemStack, Boolean>()
-		{
-			@Nullable
-			@Override
-			public Boolean apply(ItemStack input)
-			{
-				if(input.isEmpty())
-					return Boolean.FALSE;
-				for(ItemStack stack : scaffolds)
-					if(OreDictionary.itemMatches(stack, input, false))
-						return Boolean.TRUE;
-				return Boolean.FALSE;
-			}
-		});
+				new ItemStack(IEContent.blockWoodenScaffolding, 1),
+				new ItemStack(IEContent.blockSteelScaffolding0, 1),
+				new ItemStack(IEContent.blockSteelScaffolding1, 1),
+				new ItemStack(IEContent.blockSteelScaffolding2, 1),
+				new ItemStack(IEContent.blockAluScaffolding0, 1),
+				new ItemStack(IEContent.blockAluScaffolding1, 1),
+				new ItemStack(IEContent.blockAluScaffolding2, 1));
+		Function<ItemStack, Boolean> defaultMatch = (input) -> {
+			if(input.isEmpty())
+				return false;
+			for(ItemStack stack : scaffolds)
+				if(ItemStack.areItemsEqual(stack, input))
+					return true;
+			return false;
+		};
+		TileEntityFluidPipe.validPipeCovers.add(defaultMatch);
+		TileEntityFluidPipe.climbablePipeCovers.add(defaultMatch);
 	}
 
 	public int[] sideConfig = new int[]{0, 0, 0, 0, 0, 0};
@@ -131,7 +113,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			{
 				if(pipeTile instanceof TileEntityFluidPipe)
 					closedList.add(next);
-				IFluidTankProperties[] tankInfo;
 				for(int i = 0; i < 6; i++)
 				{
 					//						boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
@@ -143,26 +124,27 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						if(adjacentTile!=null)
 							if(adjacentTile instanceof TileEntityFluidPipe)
 								openList.add(nextPos);
-							else if(adjacentTile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite()))
+							else
 							{
-								IFluidHandler handler = adjacentTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
-								if(handler!=null)
+								LazyOptional<IFluidHandler> handlerOptional = adjacentTile.getCapability(
+										CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
+								handlerOptional.ifPresent(handler ->
 								{
-									tankInfo = handler.getTankProperties();
+									IFluidTankProperties[] tankInfo = handler.getTankProperties();
 									if(tankInfo!=null&&tankInfo.length > 0)
 										fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
-								}
+								});
 							}
 					}
 				}
 			}
 			openList.remove(0);
 		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+		if(!world.isRemote)
 		{
 			if(!indirectConnections.containsKey(node))
 			{
-				indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<DirectionalFluidOutput, Boolean>()));
+				indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<>()));
 				indirectConnections.get(node).addAll(fluidHandlers);
 			}
 		}
@@ -180,16 +162,16 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				changed |= updateConnectionByte(f);
 			if(changed)
 			{
-				world.notifyNeighborsOfStateChange(pos, getBlockState(), false);
+				world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
 				markContainingBlockForUpdate(null);
 			}
 		}
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
-		super.invalidate();
+		super.remove();
 		if(!world.isRemote)
 			indirectConnections.clear();
 	}
@@ -241,10 +223,10 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{0, 0, 0, 0, 0, 0};
-		pipeCover = new ItemStack(nbt.getCompound("pipeCover"));
+		pipeCover = ItemStack.read(nbt.getCompound("pipeCover"));
 		EnumDyeColor oldColor = color;
-		if(nbt.hasKey("color", NBT.TAG_INT))
-			color = EnumDyeColor.byMetadata(nbt.getInt("color"));
+		if(nbt.contains("color", NBT.TAG_INT))
+			color = EnumDyeColor.byId(nbt.getInt("color"));
 		else
 			color = null;
 		byte oldConns = connections;
@@ -261,10 +243,10 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
 		if(!pipeCover.isEmpty())
-			nbt.setTag("pipeCover", (pipeCover.writeToNBT(new NBTTagCompound())));
+			nbt.setTag("pipeCover", (pipeCover.write(new NBTTagCompound())));
 		nbt.setByte("connections", connections);
 		if(color!=null)
-			nbt.setInt("color", color.getMetadata());
+			nbt.setInt("color", color.getId());
 	}
 
 
@@ -275,25 +257,27 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return false;
 	}
 
-	PipeFluidHandler[] sidedHandlers = {new PipeFluidHandler(this, EnumFacing.DOWN), new PipeFluidHandler(this, EnumFacing.UP), new PipeFluidHandler(this, EnumFacing.NORTH), new PipeFluidHandler(this, EnumFacing.SOUTH), new PipeFluidHandler(this, EnumFacing.WEST), new PipeFluidHandler(this, EnumFacing.EAST)};
+	private EnumMap<EnumFacing, LazyOptional<IFluidHandler>> sidedHandlers = new EnumMap<>(EnumFacing.class);
+	private EnumMap<EnumFacing, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(EnumFacing.class);
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&sideConfig[facing.ordinal()]==0)
-			return true;
-		return super.hasCapability(capability, facing);
+		for(EnumFacing f : EnumFacing.VALUES)
+		{
+			sidedHandlers.put(f, registerConstantCap(new PipeFluidHandler(this, f)));
+			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
+		}
 	}
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&sideConfig[facing.ordinal()]==0)
-			return (T)sidedHandlers[facing.ordinal()];
+			return sidedHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}
 
+	/*TODO
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
@@ -316,6 +300,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		}
 		return quads;
 	}
+	*/
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -346,7 +331,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				otherPos.getY()-pos.getY(), otherPos.getZ()-pos.getZ());
 		if(updateConnectionByte(dir))
 		{
-			world.notifyNeighborsOfStateExcept(pos, getBlockState(), dir);
+			world.notifyNeighborsOfStateExcept(pos, getBlockState().getBlock(), dir);
 			markContainingBlockForUpdate(null);
 		}
 	}
@@ -385,7 +370,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				return 0;
 			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
 			int sum = 0;
-			HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<DirectionalFluidOutput, Integer>();
+			HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<>();
 			for(DirectionalFluidOutput output : outputList)
 			{
 				BlockPos cc = Utils.toCC(output.containingTile);
@@ -472,10 +457,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		int i = dir.getIndex();
 		int mask = 1<<i;
 		connections &= ~mask;
-		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(dir));
-		if(sideConfig[i]==0&&con!=null&&con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
+		if(sideConfig[i]==0&&neighbors.get(dir).isPresent())
 		{
-			IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
+			IFluidHandler handler = neighbors.get(dir).get();
 			if(handler!=null)
 			{
 				tankInfo = handler.getTankProperties();
@@ -490,20 +474,18 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		byte connections = 0;
 		IFluidTankProperties[] tankInfo;
-		for(int i = 5; i >= 0; i--)
+		int mask = 1<<6;
+		for(EnumFacing dir : EnumFacing.VALUES)
 		{
-			//			TileEntity con = world.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
-			EnumFacing dir = EnumFacing.byIndex(i);
-			TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(dir));
-			connections <<= 1;
-			if(con!=null&&con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
+			mask >>= 1;
+			if(neighbors.get(dir).isPresent())
 			{
-				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
+				IFluidHandler handler = neighbors.get(dir).get();
 				if(handler!=null)
 				{
 					tankInfo = handler.getTankProperties();
 					if(tankInfo!=null&&tankInfo.length > 0)
-						connections |= 1;
+						connections |= mask;
 				}
 			}
 		}
@@ -543,9 +525,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			((TileEntityFluidPipe)connected).sideConfig[fd.getOpposite().ordinal()] = sideConfig[side];
 			connected.markDirty();
-			world.addBlockEvent(getPos().offset(fd), getBlockState(), 0, 0);
+			world.addBlockEvent(getPos().offset(fd), getBlockState().getBlock(), 0, 0);
 		}
-		world.addBlockEvent(getPos(), getBlockState(), 0, 0);
+		world.addBlockEvent(getPos(), getBlockState().getBlock(), 0, 0);
 	}
 
 	@Override
@@ -648,7 +630,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return false;
 	}
 
-	public static HashMap<String, OBJState> cachedOBJStates = new HashMap<String, OBJState>();
+	public static HashMap<String, OBJState> cachedOBJStates = new HashMap<>();
 	static String[] CONNECTIONS = new String[]{
 			"con_yMin", "con_yMax", "con_zMin", "con_zMax", "con_xMin", "con_xMax"
 	};
@@ -704,29 +686,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return getStateFromKey(key);
 	}
 
-	//	@Override
-//	public HashMap<String, String> getTextureReplacements()
-//	{
-//		if(pipeCover!=null)
-//		{
-//			HashMap<String,String> map = new HashMap<String,String>();
-////			map.put("cover","minecraft:blocks/stone");
-//			Block b = Block.getBlockFromItem(pipeCover.getItem());
-//			IBlockState state = b!=null?b.getStateFromMeta(pipeCover.getMetadata()): Blocks.STONE.getDefaultState();
-//			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-//			if(model!=null && model.getParticleTexture()!=null)
-//				map.put("cover", model.getParticleTexture().getIconName());
-//
-//			return map;
-//		}
-//		return null;
-//	}
 	public static OBJState getStateFromKey(String key)
 	{
 		if(!cachedOBJStates.containsKey(key))
 		{
-			ArrayList<String> parts = new ArrayList();
-			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrix());//new Matrix4();
+			ArrayList<String> parts = new ArrayList<>();
+			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrixVec());//TODO is getMatrixVec correct?
 			short connections = getConnectionsFromKey(key);
 //			if(pipeCover!=null)
 //				parts.add("cover");
@@ -999,7 +964,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			}
 			pipeCover = ItemStack.EMPTY;
 			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), getBlockState(), 255, 0);
+			world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&!player.isSneaking())
@@ -1007,7 +972,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			for(Function<ItemStack, Boolean> func : validPipeCovers)
 				if(func.apply(heldItem)==Boolean.TRUE)
 				{
-					if(!OreDictionary.itemMatches(pipeCover, heldItem, true))
+					if(!ItemStack.areItemsEqual(pipeCover, heldItem))
 					{
 						if(!world.isRemote&&!pipeCover.isEmpty()&&world.getGameRules().getBoolean("doTileDrops"))
 						{
@@ -1018,14 +983,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
 						heldItem.shrink(1);
 						this.markContainingBlockForUpdate(null);
-						world.addBlockEvent(getPos(), getBlockState(), 255, 0);
+						world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
 						return true;
 					}
 				}
-			int heldDye = Utils.getDye(heldItem);
-			if(heldDye!=-1)
+			EnumDyeColor heldDye = Utils.getDye(heldItem);
+			if(heldDye!=null)
 			{
-				color = EnumDyeColor.byDyeDamage(heldDye);
+				color = heldDye;
 				markContainingBlockForUpdate(null);
 				return true;
 			}
@@ -1083,7 +1048,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public int getRenderColour(IBlockState object, String group)
 	{
 		if(color!=null)
-			return color.getColorValue()|(0xff000000);
+			return color.colorValue|(0xff000000);
 		return 0xffffffff;
 	}
 }

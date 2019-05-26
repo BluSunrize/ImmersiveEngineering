@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -33,6 +34,8 @@ import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
 public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implements ITileDrop, IDirectionalTile,
 		IHasDummyBlocks, IPropertyPassthrough, IBlockBounds, ICacheData
 {
+	public static TileEntityType<TileEntityFeedthrough> TYPE;
+
 	public static final String WIRE = "wire";
 	private static final String HAS_NEGATIVE = "hasNeg";
 	private static final String FACING = "facing";
@@ -51,6 +54,11 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	public ConnectionPoint connPositive = null;
 	public boolean hasNegative = false;
 	private boolean formed = true;
+
+	public TileEntityFeedthrough()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -72,7 +80,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		reference = WireType.getValue(nbt.getString(WIRE));
-		if(nbt.hasKey(POSITIVE, NBT.TAG_COMPOUND))
+		if(nbt.contains(POSITIVE, NBT.TAG_COMPOUND))
 			connPositive = new ConnectionPoint(nbt.getCompound(POSITIVE));
 		hasNegative = nbt.getBoolean(HAS_NEGATIVE);
 		facing = EnumFacing.VALUES[nbt.getInt(FACING)];
@@ -169,12 +177,12 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			{
 				assert info.conn!=null;//If it's marked as replaceable it should have a state to replace with
 				return NonNullList.from(ItemStack.EMPTY,
-						new ItemStack(info.conn.getBlock(), 1, info.conn.getBlock().getMetaFromState(info.conn)));
+						new ItemStack(info.conn.getBlock(), 1));
 			}
 		}
 		else
 		{
-			ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+			ItemStack stack = new ItemStack(state.getBlock(), 1);
 			stack.setTagInfo(WIRE, new NBTTagString(reference.getUniqueName()));
 			NBTTagCompound stateNbt = new NBTTagCompound();
 			Utils.stateToNBT(stateNbt, stateForMiddle);

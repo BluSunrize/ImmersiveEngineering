@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
@@ -40,34 +41,17 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
 		EnergyConnector
 {
+	public static TileEntityType<TileEntityEnergyMeter> TYPE;
+
 	public EnumFacing facing = EnumFacing.NORTH;
 	public double lastEnergyPassed = 0;
 	public final ArrayList<Double> lastPackets = new ArrayList<>(25);
 	public boolean lower = true;
 	private int compVal = -1;
 
-	@Override
-	protected boolean canTakeLV()
+	public TileEntityEnergyMeter()
 	{
-		return true;
-	}
-
-	@Override
-	protected boolean canTakeMV()
-	{
-		return true;
-	}
-
-	@Override
-	protected boolean canTakeHV()
-	{
-		return true;
-	}
-
-	@Override
-	protected boolean isRelay()
-	{
-		return true;
+		super(TYPE);
 	}
 
 	@Override
@@ -91,7 +75,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(lower||world.isRemote)
@@ -119,9 +103,8 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
 			if(above instanceof TileEntityEnergyMeter)
 				return ((TileEntityEnergyMeter)above).canConnectCable(cableType, target, offset);
-			return false;
 		}
-		return super.canConnectCable(cableType, target, offset);
+		return false;
 	}
 
 	@Override
@@ -311,8 +294,8 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		}
 		if(oldVal!=compVal)
 		{
-			world.updateComparatorOutputLevel(pos, getBlockState());
-			world.updateComparatorOutputLevel(pos.down(), getBlockState());
+			world.updateComparatorOutputLevel(pos, getBlockState().getBlock());
+			world.updateComparatorOutputLevel(pos.down(), getBlockState().getBlock());
 		}
 	}
 

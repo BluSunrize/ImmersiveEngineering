@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
@@ -42,8 +43,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks, IPlayerInteraction, IHasObjProperty
+public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks,
+		IPlayerInteraction, IHasObjProperty
 {
+	public static TileEntityType<TileEntitySampleDrill> TYPE;
+
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public int dummy = 0;
 	public int process = 0;
@@ -51,13 +55,18 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
 
+	public TileEntitySampleDrill()
+	{
+		super(TYPE);
+	}
+
 	public static boolean _Immovable()
 	{
 		return true;
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy!=0||world.isAirBlock(getPos().add(0, -1, 0))||!sample.isEmpty())
@@ -111,14 +120,14 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		if(sample.isEmpty())
 			return "";
-		return sample.getTagCompound().getString("mineral");
+		return sample.getOrCreateTag().getString("mineral");
 	}
 
 	public int getExpectedVeinYield()
 	{
 		if(sample.isEmpty())
 			return -1;
-		return ExcavatorHandler.mineralVeinCapacity-sample.getTagCompound().getInt("depletion");
+		return ExcavatorHandler.mineralVeinCapacity-sample.getOrCreateTag().getInt("depletion");
 	}
 
 	@Nonnull
@@ -126,7 +135,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		ItemStack stack = new ItemStack(IEContent.itemCoresample);
 		ItemNBTHelper.setLong(stack, "timestamp", world.getGameTime());
-		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.provider.getDimension(), chunkX, chunkZ});
+		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.getDimension(), chunkX, chunkZ});
 		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)

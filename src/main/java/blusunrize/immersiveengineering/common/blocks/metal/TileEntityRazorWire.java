@@ -11,24 +11,30 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -38,7 +44,14 @@ import java.util.List;
 public class TileEntityRazorWire extends TileEntityImmersiveConnectable implements IDirectionalTile, IAdvancedCollisionBounds,
 		IOBJModelCallback<IBlockState>, EnergyConnector
 {
+	public static TileEntityType<TileEntityRazorWire> TYPE;
+
 	public EnumFacing facing = EnumFacing.NORTH;
+
+	public TileEntityRazorWire()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -138,13 +151,13 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		if(world.getTileEntity(neighbourPos) instanceof TileEntityRazorWire)
 			return false;
 		IBlockState neighbour = world.getBlockState(neighbourPos);
-		return !neighbour.isSideSolid(world, neighbourPos, dir);
+		return neighbour.getBlockFaceShape(world, neighbourPos, dir)!=BlockFaceShape.SOLID;
 	}
 
 	private boolean isOnGround()
 	{
 		BlockPos down = getPos().down();
-		return world.getBlockState(down).isSideSolid(world, down, EnumFacing.UP);
+		return world.getBlockState(down).getBlockFaceShape(world, down, EnumFacing.UP)==BlockFaceShape.SOLID;
 	}
 
 	private boolean isStacked()
@@ -189,9 +202,9 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	}
 
 	@Override
-	protected boolean canTakeLV()
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		return true;
+		return WireType.LV_CATEGORY.equals(cableType.getCategory());//TODO only allow one connection!
 	}
 
 	@Override

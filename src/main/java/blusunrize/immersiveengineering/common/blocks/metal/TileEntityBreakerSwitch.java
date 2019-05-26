@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
@@ -26,6 +24,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
@@ -45,6 +44,8 @@ import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEG
 //TODO ConnectionPoints for opening/closing
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<IBlockState>
 {
+	public static TileEntityType<TileEntityBreakerSwitch> TYPE;
+
 	public static final int LEFT_INDEX = 0;
 	public static final int RIGHT_INDEX = 1;
 	public int rotation = 0;
@@ -53,22 +54,14 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public boolean active = false;
 	public boolean inverted = false;
 
-	@Override
-	protected boolean canTakeLV()
+	public TileEntityBreakerSwitch()
 	{
-		return true;
+		super(TYPE);
 	}
 
-	@Override
-	protected boolean canTakeMV()
+	public TileEntityBreakerSwitch(TileEntityType<? extends TileEntityBreakerSwitch> type)
 	{
-		return true;
-	}
-
-	@Override
-	protected boolean canTakeHV()
-	{
-		return false;
+		super(type);
 	}
 
 	@Nullable
@@ -92,6 +85,11 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			return false;
 		//TODO
 		return true;
+	}
+
+	protected boolean canTakeHV()
+	{
+		return false;
 	}
 
 	@Override
@@ -163,7 +161,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		{
 			active = !active;
 			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F, 1);
-			world.addBlockEvent(getPos(), getBlockState(), active?1: 0, 0);
+			world.addBlockEvent(getPos(), getBlockState().getBlock(), active?1: 0, 0);
 			notifyNeighbours();
 			updateConductivity();
 		}
@@ -181,9 +179,9 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public void notifyNeighbours()
 	{
 		markDirty();
-		world.notifyNeighborsOfStateChange(getPos(), getBlockState(), true);
+		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
 		for(EnumFacing f : EnumFacing.VALUES)
-			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockState(), true);
+			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockState().getBlock());
 	}
 
 	@Override
@@ -194,12 +192,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		this.active = id==1;
 		this.markContainingBlockForUpdate(null);
 		return true;
-	}
-
-	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return IEProperties.BOOLEANS[0];
 	}
 
 	@Override
@@ -278,7 +270,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
 	{
-		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrix())).orElseGet(Matrix4::new);
+		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrixVec())).orElseGet(Matrix4::new);
 		mat = mat.translate(.5, 0, .5).rotate(Math.PI/2*rotation, 0, 1, 0).translate(-.5, 0, -.5);
 		transform = Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 		return transform;

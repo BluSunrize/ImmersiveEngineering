@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
@@ -28,7 +29,13 @@ import javax.annotation.Nullable;
 
 public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFluxConnector, IDirectionalTile, IRotationAcceptor
 {
+	public static TileEntityType<TileEntityDynamo> TYPE;
 	public EnumFacing facing = EnumFacing.NORTH;
+
+	public TileEntityDynamo()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void inputRotation(double rotation, @Nonnull EnumFacing side)
@@ -84,8 +91,6 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
-//		if(descPacket && world!=null)
-//			world.markBlockForUpdate(getPos());
 	}
 
 	@Override

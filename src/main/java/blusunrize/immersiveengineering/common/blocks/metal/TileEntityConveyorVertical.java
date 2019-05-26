@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,17 +17,27 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
 
 public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 {
+	public TileEntityConveyorVertical(ResourceLocation typeName)
+	{
+		super(typeName);
+	}
+
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(entity!=null&&!entity.isDead)
+		if(entity!=null&&entity.isAlive())
 		{
 			if(world.getRedstonePowerFromNeighbors(pos) > 0)
 				return;
@@ -84,9 +95,9 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 						ItemStack stack = ((EntityItem)entity).getItem();
 						if(!stack.isEmpty())
 						{
-							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.DOWN);
+							ItemStack ret = Utils.insertStackIntoInventory(output, stack, false);
 							if(ret.isEmpty())
-								entity.setDead();
+								entity.remove();
 							else if(ret.getCount() < stack.getCount())
 								((EntityItem)entity).setItem(ret);
 						}

@@ -22,6 +22,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.*;
@@ -35,8 +36,10 @@ import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.MV_CATEGORY;
 
-public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
+public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble,
+		IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
+	public static TileEntityType<TileEntityTransformer> TYPE;
 	private static final int RIGHT_INDEX = 0;
 	private static final int LEFT_INDEX = 1;
 	private WireType leftType;
@@ -46,23 +49,20 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public boolean onPost = false;
 	protected Set<String> acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY);
 
+	public TileEntityTransformer()
+	{
+		super(TYPE);
+	}
+
+	public TileEntityTransformer(TileEntityType<? extends TileEntityTransformer> type)
+	{
+		super(type);
+	}
+
 	public static boolean _Immovable()
 	{
 		return true;
 	}
-
-	@Override
-	protected boolean canTakeLV()
-	{
-		return true;
-	}
-
-	@Override
-	protected boolean canTakeMV()
-	{
-		return true;
-	}
-
 	@Override
 	public boolean canConnect()
 	{
@@ -265,7 +265,12 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
-		return inf==IMirrorAble.class?IEProperties.BOOLEANS[0]: inf==IDualState.class?IEProperties.BOOLEANS[1]: null;
+		if(inf==IMirrorAble.class)
+			return IEProperties.MIRRORED;
+		else if(inf==IDualState.class)
+			return IEProperties.IS_SECOND_STATE;
+		else
+			return null;
 	}
 
 	@Override
@@ -333,7 +338,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(state.getValue(IEProperties.BOOLEANS[1]))
+		if(state.get(IEProperties.IS_SECOND_STATE))
 		{
 			onPost = true;
 			facing = side.getOpposite();

@@ -13,14 +13,22 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+//TODO can this be done with just blockstates now?
 public class TileEntityLadder extends TileEntityIEBase implements IDirectionalTile
 {
+	public static TileEntityType<TileEntityLadder> TYPE;
 	public EnumFacing facing = EnumFacing.NORTH;
+
+	public TileEntityLadder()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

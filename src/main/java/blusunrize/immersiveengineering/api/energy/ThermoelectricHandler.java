@@ -49,9 +49,9 @@ public class ThermoelectricHandler
 		registerSource(new IngredientStack(source), (int)Math.round((value-32)/1.8D+273));
 	}
 
-	public static int getTemperature(Block block, int meta)
+	public static int getTemperature(Block block)
 	{
-		ItemStack stack = new ItemStack(block, 1, meta);
+		ItemStack stack = new ItemStack(block, 1);
 		if(!stack.isEmpty())
 			for(Map.Entry<IngredientStack, Integer> entry : temperatureMap.entrySet())
 				if(entry.getKey().matchesItemStackIgnoringSize(stack))
@@ -66,7 +66,7 @@ public class ThermoelectricHandler
 		{
 			ItemStack example = ingr.getExampleStack();
 			if(!example.isEmpty())
-				existingMap.put(example.getDisplayName(), temperatureMap.get(ingr));
+				existingMap.put(example.getDisplayName().getFormattedText(), temperatureMap.get(ingr));
 		}
 		return ApiUtils.sortMap(existingMap, inverse);
 	}
