@@ -9,9 +9,17 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.Config.IEConfig;
+import net.minecraft.tileentity.TileEntityType;
 
 public class TileEntityCapacitorMV extends TileEntityCapacitorLV
 {
+	public static TileEntityType<TileEntityCapacitorMV> TYPE;
+
+	public TileEntityCapacitorMV()
+	{
+		super(TYPE);
+	}
+
 	@Override
 	public int getMaxStorage()
 	{

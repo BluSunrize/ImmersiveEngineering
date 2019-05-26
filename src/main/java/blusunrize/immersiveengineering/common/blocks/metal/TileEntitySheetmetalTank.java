@@ -14,42 +14,38 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntitySheetmetalTank> implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride
+public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntitySheetmetalTank>
+		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride
 {
+	public static TileEntityType<TileEntitySheetmetalTank> TYPE;
+
 	public FluidTank tank = new FluidTank(512000);
 	private int[] oldComps = new int[4];
 	private int masterCompOld;
 
-	private static final int[] size = {5, 3, 3};
-
 	public TileEntitySheetmetalTank()
 	{
-		super(size);
+		super(MultiblockSheetmetalTank.instance, TYPE, true);
 	}
-	//	@Override
-	//	public TileEntitySheetmetalTank master()
-	//	{
-	//		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
-	//			return null;
-	//		TileEntity te = world.getTileEntity(xCoord-offset[0], yCoord-offset[1], zCoord-offset[2]);
-	//		return te instanceof TileEntitySheetmetalTank?(TileEntitySheetmetalTank)te : null;
-	//	}
 
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
@@ -75,19 +71,17 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(posInMultiblock==4&&!world.isRemote&&world.getRedstonePowerFromNeighbors(getPos()) > 0)
-			for(int i = 0; i < 6; i++)
-				if(i!=1&&tank.getFluidAmount() > 0)
+		if(!isDummy()&&!world.isRemote&&!isRSDisabled())
+			for(EnumFacing f : EnumFacing.VALUES)
+				if(f!=EnumFacing.UP&&tank.getFluidAmount() > 0)
 				{
-					EnumFacing f = EnumFacing.byIndex(i);
 					int outSize = Math.min(144, tank.getFluidAmount());
 					FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
 					BlockPos outputPos = getPos().offset(f);
-					IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, f.getOpposite());
-					if(output!=null)
+					FluidUtil.getFluidHandler(world, outputPos, f.getOpposite()).ifPresent(output ->
 					{
 						int accepted = output.fill(out, false);
 						if(accepted > 0)
@@ -97,8 +91,14 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 							this.markContainingBlockForUpdate(null);
 							updateComparatorValuesPart2();
 						}
-					}
+					});
 				}
+	}
+
+	@Override
+	public int[] getRedstonePos()
+	{
+		return new int[]{4};
 	}
 
 	@Override
@@ -195,8 +195,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 			int layer = offset[1]-1;
 			int vol = t.getCapacity()/4;
 			int filled = t.getFluidAmount()-layer*vol;
-			int ret = Math.min(15, Math.max(0, (15*filled)/vol));
-			return ret;
+			return Math.min(15, Math.max(0, (15*filled)/vol));
 		}
 		return 0;
 	}
@@ -216,7 +215,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	{
 		int vol = tank.getCapacity()/6;
 		if((15*tank.getFluidAmount())/tank.getCapacity()!=masterCompOld)
-			world.notifyNeighborsOfStateChange(getPos(), getBlockState(), true);
+			world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
 		for(int i = 0; i < 4; i++)
 		{
 			int filled = tank.getFluidAmount()-i*vol;
@@ -227,7 +226,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 					for(int z = -1; z <= 1; z++)
 					{
 						BlockPos pos = getPos().add(-offset[0]+x, -offset[1]+i+1, -offset[2]+z);
-						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
+						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
 					}
 			}
 		}

@@ -183,6 +183,7 @@ public class EnergyHelper
 			return getEnergySideConfig(fd)!=SideConfig.NONE;
 		}
 
+		@Nullable
 		IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing);
 	}
 

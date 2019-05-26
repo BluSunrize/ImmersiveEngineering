@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -167,6 +168,7 @@ public class MixerRecipe extends MultiblockRecipe
 		return nbt;
 	}
 
+	@Nullable
 	public static MixerRecipe loadFromNBT(NBTTagCompound nbt)
 	{
 		FluidStack fluidInput = FluidStack.loadFluidStackFromNBT(nbt.getCompound("fluidInput"));

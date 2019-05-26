@@ -12,13 +12,16 @@ import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 {
+	public static TileEntityType<TileEntityCapacitorCreative> TYPE;
+
 	public TileEntityCapacitorCreative()
 	{
-		super();
+		super(TYPE);
 		for(int i = 0; i < sideConfig.length; i++)
 			sideConfig[i] = SideConfig.OUTPUT;
 	}
@@ -52,7 +55,7 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	}
 
 	@Override
-	protected void transferEnergy(int side)
+	protected void transferEnergy(EnumFacing side)
 	{
 		if(sideConfig[side]!=SideConfig.OUTPUT)
 			return;

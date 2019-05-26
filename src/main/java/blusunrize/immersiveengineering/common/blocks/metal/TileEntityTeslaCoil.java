@@ -36,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
@@ -44,6 +45,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -51,8 +55,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks, IDirectionalTile, IBlockBounds, IHammerInteraction
+public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks,
+		IDirectionalTile, IBlockBounds, IHammerInteraction
 {
+	public static TileEntityType<TileEntityTeslaCoil> TYPE;
+
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(48000);
 	public boolean redstoneControlInverted = false;
@@ -63,8 +70,13 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	public static ArrayListMultimap<BlockPos, LightningAnimation> effectMap;
 	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
 
+	public TileEntityTeslaCoil()
+	{
+		super(TYPE);
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy)
@@ -151,8 +163,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				if(!world.isAirBlock(targetBlock))
 				{
 					IBlockState state = world.getBlockState(targetBlock);
-					AxisAlignedBB blockBounds = state.getBoundingBox(world, targetBlock);
-					//					ty = (blockY-getPos().getY())+state.getBlock().getBlockBoundsMaxY();
+					AxisAlignedBB blockBounds = state.getShape(world, targetBlock).getBoundingBox();
 					if(facing==EnumFacing.UP)
 						tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
 					else if(facing==EnumFacing.DOWN)
@@ -178,7 +189,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 							if(!world.isAirBlock(targetBlock2))
 							{
 								IBlockState state = world.getBlockState(targetBlock2);
-								AxisAlignedBB blockBounds = state.getBoundingBox(world, targetBlock2);
+								AxisAlignedBB blockBounds = state.getShape(world, targetBlock2).getBoundingBox();
 								tL = facing.getAxis()==Axis.Y?(targetBlock2.getY()-getPos().getY()): facing.getAxis()==Axis.Z?(targetBlock2.getZ()-getPos().getZ()): (targetBlock2.getZ()-getPos().getZ());
 								EnumFacing tempF = positiveFirst?facing: facing.getOpposite();
 								if(tempF==EnumFacing.UP)
@@ -213,7 +224,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInt("targetEntity", target.getEntityId());
-		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), new MessageTileSync(this, tag));
 	}
 
 	protected void sendFreePacket(double tL, double tH, double tV)
@@ -222,7 +233,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		tag.setDouble("tL", tL);
 		tag.setDouble("tV", tV);
 		tag.setDouble("tH", tH);
-		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), new MessageTileSync(this, tag));
 	}
 
 	@Override

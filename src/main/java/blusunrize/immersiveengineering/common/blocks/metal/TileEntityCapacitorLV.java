@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -30,27 +29,52 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.EnumMap;
 
-public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IBlockOverlayText, IConfigurableSides, IComparatorOverride, ITileDrop
+public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IBlockOverlayText,
+		IConfigurableSides, IComparatorOverride, ITileDrop
 {
-	public SideConfig[] sideConfig = {SideConfig.NONE, SideConfig.INPUT, SideConfig.NONE, SideConfig.NONE, SideConfig.NONE, SideConfig.NONE};
+	public static TileEntityType<TileEntityCapacitorLV> TYPE;
+
+	public EnumMap<EnumFacing, SideConfig> sideConfig = new EnumMap<>(EnumFacing.class);
+
+	{
+		for(EnumFacing f : EnumFacing.VALUES)
+			if(f==EnumFacing.UP)
+				sideConfig.put(f, SideConfig.INPUT);
+			else
+				sideConfig.put(f, SideConfig.NONE);
+	}
+
 	FluxStorage energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
 
 	public int comparatorOutput = 0;
 
+	public TileEntityCapacitorLV(TileEntityType<? extends TileEntityCapacitorLV> type)
+	{
+		super(type);
+	}
+
+	public TileEntityCapacitorLV()
+	{
+		super(TYPE);
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(!world.isRemote)
 		{
-			for(int i = 0; i < 6; i++)
-				this.transferEnergy(i);
+			for(EnumFacing f : EnumFacing.VALUES)
+				this.transferEnergy(f);
 
 			if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 			{
@@ -58,7 +82,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 				if(i!=this.comparatorOutput)
 				{
 					this.comparatorOutput = i;
-					world.updateComparatorOutputLevel(getPos(), getBlockState());
+					world.updateComparatorOutputLevel(getPos(), getBlockState().getBlock());
 				}
 			}
 		}
@@ -69,30 +93,29 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		return (int)(scale*(energyStorage.getEnergyStored()/(float)energyStorage.getMaxEnergyStored()));
 	}
 
-	protected void transferEnergy(int side)
+	protected void transferEnergy(EnumFacing side)
 	{
-		if(this.sideConfig[side]!=SideConfig.OUTPUT)
+		if(this.sideConfig.get(side)!=SideConfig.OUTPUT)
 			return;
-		EnumFacing fd = EnumFacing.byIndex(side);
-		BlockPos outPos = getPos().offset(fd);
+		BlockPos outPos = getPos().offset(side);
 		TileEntity tileEntity = Utils.getExistingTileEntity(world, outPos);
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
-		this.energyStorage.modifyEnergyStored(-EnergyHelper.insertFlux(tileEntity, fd.getOpposite(), out, false));
+		this.energyStorage.modifyEnergyStored(-EnergyHelper.insertFlux(tileEntity, side.getOpposite(), out, false));
 	}
 
 	@Override
 	public IEEnums.SideConfig getSideConfig(EnumFacing side)
 	{
-		return this.sideConfig[side];
+		return this.sideConfig.get(side);
 	}
 
 	@Override
 	public boolean toggleSide(EnumFacing side, EntityPlayer player)
 	{
-		sideConfig[side] = SideConfig.next(sideConfig[side]);
+		sideConfig.put(side, SideConfig.next(sideConfig.get(side)));
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 		return true;
 	}
 
@@ -125,28 +148,20 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		for(int i = 0; i < 6; i++)
-			nbt.setInt("sideConfig_"+i, sideConfig[i].ordinal());
+		for(EnumFacing f : EnumFacing.VALUES)
+			nbt.setInt("sideConfig_"+f.ordinal(), sideConfig.get(f).ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		if(nbt.hasKey("sideConfig"))//old NBT style
-		{
-			int[] old = nbt.getIntArray("sideConfig");
-			for(int i = 0; i < old.length; i++)
-				sideConfig[i] = SideConfig.values()[old[i]+1];
-		}
-		else
-			for(int i = 0; i < 6; i++)
-				sideConfig[i] = SideConfig.values()[nbt.getInt("sideConfig_"+i)];
+		for(EnumFacing f : EnumFacing.VALUES)
+			sideConfig.put(f, SideConfig.values()[nbt.getInt("sideConfig_"+f.ordinal())]);
 		energyStorage.readFromNBT(nbt);
 	}
 
-
-	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
+	private IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
 
 	@Nonnull
 	@Override
@@ -157,11 +172,11 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
 	{
 		if(facing==null)
 			return SideConfig.NONE;
-		return this.sideConfig[facing.ordinal()];
+		return this.sideConfig.get(facing);
 	}
 
 	@Override
@@ -177,8 +192,8 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	{
 		if(hammer&&IEConfig.colourblindSupport)
 		{
-			SideConfig i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
-			SideConfig j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
+			SideConfig i = sideConfig.get(mop.sideHit);
+			SideConfig j = sideConfig.get(mop.sideHit.getOpposite());
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
 							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
@@ -202,23 +217,16 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
-		if(energyStorage.getEnergyStored() > 0)
-			ItemNBTHelper.setInt(stack, "energyStorage", energyStorage.getEnergyStored());
-		for(int i = 0; i < 6; i++)
-			ItemNBTHelper.setInt(stack, "sideConfig_"+i, sideConfig[i].ordinal());
+		ItemStack stack = new ItemStack(state.getBlock(), 1);
+		writeCustomNBT(stack.getOrCreateTag(), false);
 		return stack;
 	}
 
 	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack)
 	{
-		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			energyStorage.setEnergy(ItemNBTHelper.getInt(stack, "energyStorage"));
-		for(int i = 0; i < 6; i++)
-			if(ItemNBTHelper.hasKey(stack, "sideConfig_"+i))
-				sideConfig[i] = SideConfig.values()[ItemNBTHelper.getInt(stack, "sideConfig_"+i)];
+		readCustomNBT(stack.getOrCreateTag(), false);
 	}
 }

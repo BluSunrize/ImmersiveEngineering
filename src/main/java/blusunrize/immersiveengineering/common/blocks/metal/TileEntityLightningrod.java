@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningrod;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -21,10 +22,13 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -35,20 +39,21 @@ import java.util.List;
 
 public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityLightningrod> implements IIEInternalFluxHandler
 {
+	public static TileEntityType<TileEntityLightningrod> TYPE;
+
 	FluxStorage energyStorage = new FluxStorage(IEConfig.Machines.lightning_output);
 
 	@Nullable
-	List<BlockPos> fenceNet = null;
-	int height;
-	private static final int[] size = {3, 3, 3};
+	private List<BlockPos> fenceNet = null;
+	private int height;
 
 	public TileEntityLightningrod()
 	{
-		super(size);
+		super(MultiblockLightningrod.instance, TYPE, false);
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&posInMultiblock==13)
@@ -56,7 +61,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			if(energyStorage.getEnergyStored() > 0)
 			{
 				TileEntity tileEntity;
-				for(EnumFacing f : EnumFacing.HORIZONTALS)
+				for(EnumFacing f : EnumFacing.BY_HORIZONTAL_INDEX)
 				{
 					tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f, 2));
 					int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getLimitExtract(), true);
@@ -105,8 +110,8 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			}
 		}
 
-		ArrayList<BlockPos> openList = new ArrayList();
-		ArrayList<BlockPos> closedList = new ArrayList();
+		ArrayList<BlockPos> openList = new ArrayList<>();
+		ArrayList<BlockPos> closedList = new ArrayList<>();
 		openList.add(getPos().add(0, height, 0));
 		while(!openList.isEmpty()&&closedList.size() < 256)
 		{
@@ -125,9 +130,9 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 		return closedList;
 	}
 
-	boolean isFence(BlockPos pos)
+	private boolean isFence(BlockPos pos)
 	{
-		return Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
+		return Utils.isBlockAt(world, pos, IEContent.blockSteelFence);
 	}
 
 	@Override
@@ -242,7 +247,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 		return this.formed&&this.isEnergyPos()?SideConfig.OUTPUT: SideConfig.NONE;
 	}
 
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
+	private IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
 
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
@@ -256,33 +261,4 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	{
 		return posInMultiblock==10||posInMultiblock==12||posInMultiblock==14||posInMultiblock==16;
 	}
-
-	//	@Override
-//	public int extractEnergy(@Nullable EnumFacing from, int energy, boolean simulate)
-//	{
-//		if(pos!=10&&pos!=12&&pos!=14&pos!=16)
-//			return 0;
-//		TileEntityLightningrod master = master();
-//		return master==null?0: master.energyStorage.extractEnergy(energy, simulate);
-//	}
-//
-//	@Override
-//	public int getEnergyStored(@Nullable EnumFacing from)
-//	{
-//		TileEntityLightningrod master = master();
-//		return master==null?0: master.energyStorage.getEnergyStored();
-//	}
-//
-//	@Override
-//	public int getMaxEnergyStored(@Nullable EnumFacing from)
-//	{
-//		TileEntityLightningrod master = master();
-//		return master==null?0: master.energyStorage.getMaxEnergyStored();
-//	}
-//
-//	@Override
-//	public boolean canConnectEnergy(@Nullable EnumFacing from)
-//	{
-//		return ;
-//	}
 }

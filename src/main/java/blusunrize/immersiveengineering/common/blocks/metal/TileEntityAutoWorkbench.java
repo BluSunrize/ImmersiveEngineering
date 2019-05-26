@@ -39,6 +39,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEntityAutoWorkbench, IMultiblockRecipe>
 		implements IGuiTile, IConveyorAttachable
@@ -297,29 +298,19 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 		this.markContainingBlockForUpdate(null);
 	}
 
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if(posInMultiblock==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return master()!=null;
-		return super.hasCapability(capability, facing);
-	}
-
-	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
 			new IEInventoryHandler(16, this, 1, true, false)
 	);
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(posInMultiblock==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityAutoWorkbench master = master();
-			if(master==null)
-				return null;
-			return (T)master.insertionHandler;
+			if(master!=null)
+				return master.insertionHandler.cast();
 		}
 		return super.getCapability(capability, facing);
 	}

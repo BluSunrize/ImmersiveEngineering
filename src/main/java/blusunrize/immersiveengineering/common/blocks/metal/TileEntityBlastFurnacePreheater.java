@@ -20,6 +20,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
@@ -27,12 +28,19 @@ import javax.annotation.Nonnull;
 
 public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements IIEInternalFluxHandler, IDirectionalTile, IHasDummyBlocks
 {
+	public static TileEntityType<TileEntityBlastFurnacePreheater> TYPE;
+
 	public boolean active;
 	public int dummy = 0;
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public EnumFacing facing = EnumFacing.NORTH;
 	public float angle = 0;
 	public long lastRenderTick = -1;
+
+	public TileEntityBlastFurnacePreheater()
+	{
+		super(TYPE);
+	}
 
 	public int doSpeedup()
 	{

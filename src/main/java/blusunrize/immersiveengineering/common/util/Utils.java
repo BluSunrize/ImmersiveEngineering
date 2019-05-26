@@ -243,12 +243,12 @@ public class Utils
 		return null;
 	}
 
-	public static boolean isBlockAt(World world, BlockPos pos, Block b, int meta)
+	public static boolean isBlockAt(World world, BlockPos pos, Block b)
 	{
 		return blockstateMatches(world.getBlockState(pos), b, meta);
 	}
 
-	public static boolean blockstateMatches(IBlockState state, Block b, int meta)
+	public static boolean blockstateMatches(IBlockState state, Block b)
 	{
 		if(state.getBlock().equals(b))
 			return meta < 0||meta==OreDictionary.WILDCARD_VALUE||state.getBlock().getMetaFromState(state)==meta;
@@ -848,6 +848,12 @@ public class Utils
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
 		else
 			return stack;
+	}
+
+
+	public static void dropStackAtPos(World world, DirectionalBlockPos pos, ItemStack stack)
+	{
+		dropStackAtPos(world, pos, stack, pos.direction);
 	}
 
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, EnumFacing facing)

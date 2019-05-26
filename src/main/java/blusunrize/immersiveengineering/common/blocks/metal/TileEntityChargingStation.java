@@ -27,27 +27,38 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class TileEntityChargingStation extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory, IDirectionalTile, IBlockBounds, IComparatorOverride, IPlayerInteraction
+public class TileEntityChargingStation extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory,
+		IDirectionalTile, IBlockBounds, IComparatorOverride, IPlayerInteraction
 {
+	public static TileEntityType<TileEntityChargingStation> TYPE;
+
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	public EnumFacing facing = EnumFacing.NORTH;
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	private boolean charging = true;
 	public int comparatorOutput = 0;
 
+	public TileEntityChargingStation()
+	{
+		super(TYPE);
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(EnergyHelper.isFluxItem(inventory.get(0)))
 		{
@@ -120,7 +131,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 			if(i!=this.comparatorOutput)
 			{
 				this.comparatorOutput = i;
-				world.notifyNeighborsOfStateChange(getPos(), getBlockState(), true);
+				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
 			}
 		}
 	}
@@ -130,7 +141,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		energyStorage.readFromNBT(nbt);
 		facing = EnumFacing.byIndex(nbt.getInt("facing"));
-		inventory.set(0, new ItemStack(nbt.getCompound("inventory")));
+		inventory.set(0, ItemStack.read(nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
 
@@ -141,7 +152,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
-			nbt.setTag("inventory", inventory.get(0).writeToNBT(new NBTTagCompound()));
+			nbt.setTag("inventory", inventory.get(0).write(new NBTTagCompound()));
 	}
 
 	@Override
@@ -259,22 +270,14 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		this.markContainingBlockForUpdate(null);
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
-
-	IItemHandler insertionHandler = new IEInventoryHandler(1, this);
+	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new IEInventoryHandler(1, this));
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T)insertionHandler;
+			return insertionHandler.cast();
 		return super.getCapability(capability, facing);
 	}
 
@@ -301,82 +304,4 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		}
 		return false;
 	}
-
-	//	@Override
-	//	public int getSizeInventory()
-	//	{
-	//		return 1;
-	//	}
-	//	@Override
-	//	public ItemStack getStackInSlot(int slot)
-	//	{
-	//		return inventory;
-	//	}
-	//	@Override
-	//	public ItemStack decrStackSize(int slot, int amount)
-	//	{
-	//		ItemStack stack = getStackInSlot(slot);
-	//		if(stack != null)
-	//			if(stack.stackSize <= amount)
-	//				setInventorySlotContents(slot, null);
-	//			else
-	//			{
-	//				stack = stack.split(amount);
-	//				if(stack.stackSize == 0)
-	//					setInventorySlotContents(slot, null);
-	//			}
-	//		this.markDirty();
-	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), 0, 0);
-	//		return stack;
-	//	}
-	//	@Override
-	//	public ItemStack getStackInSlotOnClosing(int slot)
-	//	{
-	//		ItemStack stack = getStackInSlot(slot);
-	//		if (stack != null)
-	//			setInventorySlotContents(slot, null);
-	//		return stack;
-	//	}
-	//	@Override
-	//	public void setInventorySlotContents(int slot, ItemStack stack)
-	//	{
-	//		inventory = stack;
-	//		if(stack != null && stack.stackSize > getInventoryStackLimit())
-	//			stack.stackSize = getInventoryStackLimit();
-	//		this.markDirty();
-	//		world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), 0, 0);
-	//	}
-	//	@Override
-	//	public String getInventoryName()
-	//	{
-	//		return "IEChargingStation";
-	//	}
-	//	@Override
-	//	public boolean hasCustomInventoryName()
-	//	{
-	//		return false;
-	//	}
-	//	@Override
-	//	public int getInventoryStackLimit()
-	//	{
-	//		return 1;
-	//	}
-	//	@Override
-	//	public boolean isUseableByPlayer(EntityPlayer player)
-	//	{
-	//		return world.getTileEntity(xCoord,yCoord,zCoord)!=this?false:player.getDistanceSq(xCoord+.5D,yCoord+.5D,zCoord+.5D)<=64;
-	//	}
-	//	@Override
-	//	public void openInventory()
-	//	{
-	//	}
-	//	@Override
-	//	public void closeInventory()
-	//	{
-	//	}
-	//	@Override
-	//	public boolean isItemValidForSlot(int slot, ItemStack stack)
-	//	{
-	//		return stack!=null && stack.getItem() instanceof IEnergyContainerItem;
-	//	}
 }
