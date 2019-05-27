@@ -8,9 +8,13 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -79,6 +83,9 @@ public class IEItemInterfaces
 
 		int getMaxDamageIE(ItemStack stack);
 
-		int getItemDamageIE(ItemStack stack);
+		default int getItemDamageIE(ItemStack stack)
+		{
+			return ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE);
+		}
 	}
 }

@@ -155,6 +155,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack stack)
 	{

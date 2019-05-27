@@ -9,104 +9,91 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import net.minecraft.creativetab.CreativeTabs;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.enchantment.EnchantmentDurability;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.stats.StatList;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 public class ItemIEBase extends Item implements IColouredItem
 {
 	public String itemName;
-	protected String[] subNames;
-	boolean[] isMetaHidden;
-	public boolean registerSubModels = true;
-	private int[] burnTime;
+	private int burnTime = -1;
 
-	public ItemIEBase(String name, int stackSize, String... subNames)
+	public ItemIEBase(String name, Properties props)
 	{
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setHasSubtypes(subNames!=null&&subNames.length > 0);
-		this.setCreativeTab(ImmersiveEngineering.itemGroup);
-		this.setMaxStackSize(stackSize);
+		super(props.group(ImmersiveEngineering.itemGroup));
 		this.itemName = name;
-		this.subNames = subNames!=null&&subNames.length > 0?subNames: null;
-		this.isMetaHidden = new boolean[this.subNames!=null?this.subNames.length: 1];
-		this.burnTime = new int[this.subNames!=null?this.subNames.length: 1];
-//		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
-	public String[] getSubNames()
+	public ItemIEBase setBurnTime(int burnTime)
 	{
-		return subNames;
+		this.burnTime = burnTime;
+		return this;
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public int getBurnTime(ItemStack itemStack)
 	{
-		if(this.isInCreativeTab(tab))
-			if(getSubNames()!=null)
-			{
-				for(int i = 0; i < getSubNames().length; i++)
-					if(!isMetaHidden(i))
-						list.add(new ItemStack(this, 1, i));
-			}
-			else
-				list.add(new ItemStack(this));
-
+		return burnTime;
 	}
 
-	@Override
-	public String getTranslationKey(ItemStack stack)
+	protected void damageIETool(ItemStack stack, int amount, Random rand, @Nullable EntityPlayer player)
 	{
-		if(getSubNames()!=null)
+		if(amount <= 0||!(this instanceof IItemDamageableIE))
+			return;
+
+		int unbreakLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.UNBREAKING, stack);
+		for(int i = 0; unbreakLevel > 0&&i < amount; i++)
+			if(EnchantmentDurability.negateDamage(stack, unbreakLevel, rand))
+				amount--;
+		if(amount <= 0)
+			return;
+
+		int curDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE);
+		curDamage += amount;
+
+		if(player instanceof EntityPlayerMP)
+			CriteriaTriggers.ITEM_DURABILITY_CHANGED.trigger((EntityPlayerMP)player, stack, curDamage);
+
+		if(curDamage >= ((IItemDamageableIE)this).getItemDamageIE(stack))
 		{
-			String subName = stack.getMetadata() < getSubNames().length?getSubNames()[stack.getMetadata()]: "";
-			return this.getTranslationKey()+"."+subName;
+			if(player!=null)
+			{
+				player.renderBrokenItemStack(stack);
+				player.addStat(StatList.ITEM_BROKEN.get(this));
+			}
+			stack.shrink(1);
+			return;
 		}
-		return this.getTranslationKey();
-	}
-
-	public ItemIEBase setMetaHidden(int... meta)
-	{
-		for(int i : meta)
-			if(i >= 0&&i < this.isMetaHidden.length)
-				this.isMetaHidden[i] = true;
-		return this;
-	}
-
-	public ItemIEBase setMetaUnhidden(int... meta)
-	{
-		for(int i : meta)
-			if(i >= 0&&i < this.isMetaHidden.length)
-				this.isMetaHidden[i] = false;
-		return this;
-	}
-
-	public boolean isMetaHidden(int meta)
-	{
-		return this.isMetaHidden[Math.max(0, Math.min(meta, this.isMetaHidden.length-1))];
-	}
-
-	public ItemIEBase setRegisterSubModels(boolean register)
-	{
-		this.registerSubModels = register;
-		return this;
-	}
-
-	public ItemIEBase setBurnTime(int meta, int burnTime)
-	{
-		if(meta >= 0&&meta < this.burnTime.length)
-			this.burnTime[meta] = burnTime;
-		return this;
+		ItemNBTHelper.setInt(stack, Lib.NBT_DAMAGE, curDamage);
 	}
 
 	@Override
-	public int getItemBurnTime(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return this.burnTime[Math.max(0, Math.min(itemStack.getMetadata(), this.burnTime.length-1))];
+		return this instanceof IItemDamageableIE&&((IItemDamageableIE)this).getItemDamageIE(stack) > 0;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		if(!(this instanceof IItemDamageableIE))
+			return 0;
+		double max = (double)((IItemDamageableIE)this).getMaxDamageIE(stack);
+		return ((IItemDamageableIE)this).getItemDamageIE(stack)/max;
 	}
 }

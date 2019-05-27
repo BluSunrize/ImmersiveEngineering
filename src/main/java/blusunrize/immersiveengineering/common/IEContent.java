@@ -300,7 +300,7 @@ public class IEContent
 				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
 				"nugget_copper", "nugget_aluminum", "nugget_lead", "nugget_silver", "nugget_nickel", "nugget_uranium", "nugget_constantan", "nugget_electrum", "nugget_steel", "nugget_iron",
 				"plate_copper", "plate_aluminum", "plate_lead", "plate_silver", "plate_nickel", "plate_uranium", "plate_constantan", "plate_electrum", "plate_steel", "plate_iron", "plate_gold");
-		itemTool = new ItemIETool();
+		itemTool = new ItemWirecutter();
 		itemSteelPick = new ItemIEPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel", "pickaxe", "ingotSteel");
 		itemSteelShovel = new ItemIEShovel(Lib.MATERIAL_Steel, "shovel_steel", "shovel", "ingotSteel");
 		itemSteelAxe = new ItemIEAxe(Lib.MATERIAL_Steel, "axe_steel", "axe", "ingotSteel");

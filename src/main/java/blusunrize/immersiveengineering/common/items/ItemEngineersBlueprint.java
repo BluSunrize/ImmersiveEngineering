@@ -30,6 +30,7 @@ public class ItemEngineersBlueprint extends ItemIEBase
 		super("blueprint", 1);
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack stack)
 	{

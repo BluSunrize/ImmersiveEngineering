@@ -202,6 +202,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack stack)
 	{

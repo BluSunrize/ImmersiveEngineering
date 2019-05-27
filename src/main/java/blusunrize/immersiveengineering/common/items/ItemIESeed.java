@@ -12,32 +12,39 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+
+import javax.annotation.Nonnull;
 
 public class ItemIESeed extends ItemIEBase implements IPlantable
 {
 	private Block cropBlock;
 
-	public ItemIESeed(Block cropBlock, String... subNames)
+	public ItemIESeed(Block cropBlock)
 	{
-		super("seed", 64, subNames);
+		super("seed", new Properties());
 		this.cropBlock = cropBlock;
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext context)
 	{
-		ItemStack stack = player.getHeldItem(hand);
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		ItemStack stack = context.getItem();
+		EntityPlayer player = context.getPlayer();
+		EnumFacing side = context.getFace();
 		if(side!=EnumFacing.UP)
 			return EnumActionResult.PASS;
-		else if(player.canPlayerEdit(pos, side, stack)&&player.canPlayerEdit(pos.add(0, 1, 0), side, stack))
+		else if(player!=null&&player.canPlayerEdit(pos, side, stack)&&player.canPlayerEdit(pos.add(0, 1, 0), side, stack))
 		{
 			IBlockState state = world.getBlockState(pos);
 			if(state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this)&&world.isAirBlock(pos.add(0, 1, 0)))
@@ -54,13 +61,13 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 	}
 
 	@Override
-	public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos)
+	public EnumPlantType getPlantType(IBlockReader world, BlockPos pos)
 	{
 		return ((IPlantable)cropBlock).getPlantType(world, pos);
 	}
 
 	@Override
-	public IBlockState getPlant(IBlockAccess world, BlockPos pos)
+	public IBlockState getPlant(IBlockReader world, BlockPos pos)
 	{
 		return cropBlock.getDefaultState();
 	}
