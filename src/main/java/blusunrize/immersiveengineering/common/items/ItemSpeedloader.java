@@ -26,15 +26,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiItem, IBulletContainer
 {
 	public ItemSpeedloader()
 	{
-		super("speedloader", 1);
+		super("speedloader", new Properties().maxStackSize(1));
 	}
 
 	@Override
@@ -43,26 +43,28 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 		return 8;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
 			CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND?EntityEquipmentSlot.MAINHAND: EntityEquipmentSlot.OFFHAND);
-		return new ActionResult(EnumActionResult.SUCCESS, stack);
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
 	public boolean isEmpty(ItemStack stack)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if(inv!=null)
+		return stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).map(inv->
+		{
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack b = inv.getStackInSlot(i);
 				if(!b.isEmpty()&&b.getItem() instanceof ItemBullet&&ItemNBTHelper.hasKey(b, "bullet"))
 					return false;
 			}
-		return true;
+			return true;
+		}).orElse(true);
 	}
 
 	@Override
@@ -98,21 +100,21 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 
 	@Nullable
 	@Override
-	public NBTTagCompound getNBTShareTag(ItemStack stack)
+	public NBTTagCompound getShareTag(ItemStack stack)
 	{
-		NBTTagCompound ret = super.getNBTShareTag(stack);
+		NBTTagCompound ret = super.getShareTag(stack);
 		if(ret==null)
 			ret = new NBTTagCompound();
 		else
 			ret = ret.copy();
-		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if(handler!=null)
+		final NBTTagCompound retConst = ret;
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler->
 		{
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(stack), ItemStack.EMPTY);
 			for(int i = 0; i < getSlotCount(stack); i++)
 				bullets.set(i, handler.getStackInSlot(i));
-			ret.setTag("bullets", Utils.writeInventory(bullets));
-		}
-		return ret;
+			retConst.setTag("bullets", Utils.writeInventory(bullets));
+		});
+		return retConst;
 	}
 }

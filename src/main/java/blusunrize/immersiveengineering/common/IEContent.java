@@ -340,7 +340,7 @@ public class IEContent
 		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky", "drillbreak")
 		{
 			@Override
-			public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+			public void fillItemGroup(CreativeTabs tab, NonNullList<ItemStack> list)
 			{
 			}
 		};

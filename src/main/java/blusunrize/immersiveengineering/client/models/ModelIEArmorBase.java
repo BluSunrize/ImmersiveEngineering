@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -23,7 +24,6 @@ import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,14 +31,21 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -53,40 +60,42 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 {
 	public ItemChemthrower()
 	{
-		super("chemthrower", 1, "CHEMTHROWER");
+		super("chemthrower", new Item.Properties(), "CHEMTHROWER");
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		int cap = getCapacity(stack, 2000);
 		if(!getUpgrades(stack).getBoolean("multitank"))
 			list.add(formatFluidStack(getFluid(stack), cap));
 		else
 			for(int i = 0; i < 3; i++)
-				list.add((i > 0?"  ": "")+formatFluidStack(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap));
+			{
+				ITextComponent add = formatFluidStack(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
+				if (i>0)
+					add.setStyle(new Style().setColor(TextFormatting.GRAY));
+				list.add(add);
+			}
 	}
 
-	private String formatFluidStack(FluidStack fs, int capacity)
+	private ITextComponent formatFluidStack(FluidStack fs, int capacity)
 	{
 		if(fs!=null)
 		{
-			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().color;
-			return rarity+fs.getLocalizedName()+TextFormatting.GRAY+": "+fs.amount+"/"+capacity+"mB";
+			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY:
+					fs.getFluid().getRarity().color;
+			return new TextComponentTranslation(Lib.DESC_FLAVOUR+"chemthrower.fluidStack", fs.getLocalizedName(),
+					fs.amount, capacity).setStyle(new Style().setColor(rarity));
 		}
 		else
-			return I18n.format(Lib.DESC_FLAVOUR+"drill.empty");
+			return new TextComponentTranslation(Lib.DESC_FLAVOUR+"drill.empty");
 
 	}
 
+	@Nonnull
 	@Override
-	public boolean isFull3D()
-	{
-		return true;
-	}
-
-	@Override
-	public EnumAction getItemUseAction(ItemStack p_77661_1_)
+	public EnumAction getUseAction(ItemStack stack)
 	{
 		return EnumAction.NONE;
 	}
@@ -119,7 +128,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		FluidStack fs = this.getFluid(stack);
 		if(fs!=null&&fs.getFluid()!=null)
 		{
-			int duration = getMaxItemUseDuration(stack)-count;
+			int duration = getUseDuration(stack)-count;
 			int consumed = IEConfig.Tools.chemthrower_consumption;
 			if(consumed*duration <= fs.amount)
 			{
@@ -179,7 +188,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		FluidStack fs = this.getFluid(stack);
 		if(fs!=null)
 		{
-			int duration = getMaxItemUseDuration(stack)-timeLeft;
+			int duration = getUseDuration(stack)-timeLeft;
 			fs.amount -= IEConfig.Tools.chemthrower_consumption*duration;
 			if(fs.amount <= 0)
 				ItemNBTHelper.remove(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
@@ -189,7 +198,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack stack)
+	public int getUseDuration(ItemStack stack)
 	{
 		return 72000;
 	}
@@ -248,13 +257,14 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	{
 		if(slotChanged)
 			return true;
-		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null)&&newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-		{
-			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
-				return true;
-		}
+		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld->{
+			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+			return wrapperNew.map(w->ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+					.orElse(true);
+		});
+		if (!sameShader.orElse(true))
+			return true;
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
@@ -264,24 +274,17 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
-				ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:chemthrower", stack);
+				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item("immersiveengineering:chemthrower", stack));
 
+				@Nonnull
 				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-				{
-					return capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY||
-							capability==CapabilityShader.SHADER_CAPABILITY||
-							super.hasCapability(capability, facing);
-				}
-
-				@Override
-				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 				{
 					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-						return (T)fluids;
+						return fluids.cast();
 					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return (T)shaders;
+						return shaders.cast();
 					return super.getCapability(capability, facing);
 				}
 
@@ -310,11 +313,11 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 80, 32, "CHEMTHROWER", stack, true),
-						new IESlot.Upgrades(container, inv, 1, 100, 32, "CHEMTHROWER", stack, true)
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 0, 80, 32, "CHEMTHROWER", stack, true),
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 1, 100, 32, "CHEMTHROWER", stack, true)
 				};
 	}
 

@@ -124,7 +124,7 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 			{
 				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 				boolean cut = ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
-				IESaveData.setDirty(world.getDimension());
+				IESaveData.setDirty(world.getDimension().getType());
 				if(cut)
 				{
 					int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;

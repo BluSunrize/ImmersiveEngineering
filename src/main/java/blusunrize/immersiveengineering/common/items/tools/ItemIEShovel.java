@@ -6,51 +6,56 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 /**
  * @author BluSunrize - 08.07.2018
  */
 public class ItemIEShovel extends ItemToolBase
 {
-	public ItemIEShovel(ToolMaterial materialIn, String name, String toolclass, String oreDict)
+	public ItemIEShovel(IItemTier materialIn, String name, ResourceLocation oreDict)
 	{
-		super(materialIn, name, toolclass, oreDict, SHOVEL_EFFECTIVE, 1.5f, -3.0f);
+		super(materialIn, name, ToolType.SHOVEL, oreDict, ItemSpade.EFFECTIVE_ON, 1.5f, -3.0f);
 	}
 
 	@Override
 	public boolean canHarvestBlock(IBlockState blockIn)
 	{
 		Block block = blockIn.getBlock();
-		return block==Blocks.SNOW_LAYER||block==Blocks.SNOW;
+		return block==Blocks.SNOW_BLOCK||block==Blocks.SNOW;
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		ItemStack itemstack = player.getHeldItem(hand);
+		ItemStack itemstack = ctx.getItem();
+		EntityPlayer player = ctx.getPlayer();
+		BlockPos pos = ctx.getPos();
+		EnumFacing facing = ctx.getFace();
+		World world = ctx.getWorld();
 
-		if(!player.canPlayerEdit(pos.offset(facing), facing, itemstack))
+		if(player==null||!player.canPlayerEdit(pos.offset(facing), facing, itemstack))
 			return EnumActionResult.FAIL;
 		else
 		{
-			IBlockState iblockstate = worldIn.getBlockState(pos);
+			IBlockState iblockstate = world.getBlockState(pos);
 			Block block = iblockstate.getBlock();
 
-			if(facing!=EnumFacing.DOWN&&worldIn.getBlockState(pos.up()).getMaterial()==Material.AIR&&block==Blocks.GRASS)
+			if(facing!=EnumFacing.DOWN&&world.getBlockState(pos.up()).getMaterial()==Material.AIR&&block==Blocks.GRASS)
 			{
 				IBlockState iblockstate1 = Blocks.GRASS_PATH.getDefaultState();
-				worldIn.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				world.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-				if(!worldIn.isRemote)
+				if(!world.isRemote)
 				{
-					worldIn.setBlockState(pos, iblockstate1, 11);
+					world.setBlockState(pos, iblockstate1, 11);
 					itemstack.damageItem(1, player);
 				}
 

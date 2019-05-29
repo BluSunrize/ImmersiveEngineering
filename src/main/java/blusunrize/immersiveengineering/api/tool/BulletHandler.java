@@ -18,6 +18,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -48,7 +49,6 @@ public class BulletHandler
 
 	public static IBullet getBullet(String name)
 	{
-		name = BulletHandler.handleLeagcyNames(name);
 		return registry.get(name);
 	}
 
@@ -63,20 +63,9 @@ public class BulletHandler
 
 	public static ItemStack getBulletStack(String key)
 	{
-		key = handleLeagcyNames(key);
 		ItemStack stack = basicCartridge.copy();
-		stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setString("bullet", key);
+		stack.getOrCreateTag().setString("bullet", key);
 		return stack;
-	}
-
-	public static String handleLeagcyNames(final String key)
-	{
-		if(key.equals("armorPiercing"))
-			return "armor_piercing";
-		if(key.equals("HE"))
-			return "he";
-		return key;
 	}
 
 	public interface IBullet
@@ -94,7 +83,7 @@ public class BulletHandler
 			return baseName;
 		}
 
-		default void addTooltip(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+		default void addTooltip(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 		{
 		}
 
@@ -188,13 +177,13 @@ public class BulletHandler
 		@Override
 		public void onHitTarget(World world, RayTraceResult target, @Nullable EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
-			if(!world.isRemote&&target.entityHit!=null&&damageSourceGetter!=null)
-				if(target.entityHit.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entityHit}), getDamage(headshot)))
+			if(!world.isRemote&&target.entity!=null&&damageSourceGetter!=null)
+				if(target.entity.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entity}), getDamage(headshot)))
 				{
 					if(resetHurt)
-						target.entityHit.hurtResistantTime = 0;
+						target.entity.hurtResistantTime = 0;
 					if(setFire)
-						target.entityHit.setFire(3);
+						target.entity.setFire(3);
 				}
 		}
 

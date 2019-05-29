@@ -81,7 +81,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void fillItemGroup(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
 			for(int i = 0; i < getSubNames().length; i++)

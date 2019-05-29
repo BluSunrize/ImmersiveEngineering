@@ -18,6 +18,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -29,8 +31,52 @@ import java.util.function.BiPredicate;
 
 public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
 {
+	private final ToolUpgrade type;
 
-	public enum ToolUpgrades
+	public ItemToolUpgrade(ToolUpgrade type)
+	{
+		super("toolupgrade_"+type.name().toLowerCase(), new Properties().maxStackSize(1));
+		this.type = type;
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	{
+			String[] flavour = ImmersiveEngineering.proxy.splitStringOnWidth(
+					I18n.format(Lib.DESC_FLAVOUR+getRegistryName().getPath()), 200);
+			for(String s : flavour)
+				list.add(new TextComponentString(s));
+	}
+
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		return type.stackSize;
+	}
+
+	@Override
+	public Set<String> getUpgradeTypes(ItemStack upgrade)
+	{
+		return type.toolset;
+	}
+
+	@Override
+	public boolean canApplyUpgrades(ItemStack target, ItemStack upgrade)
+	{
+		BiPredicate<ItemStack, ItemStack> check = type.applyCheck;
+		if(check!=null&&target.getItem() instanceof IUpgradeableTool)
+			return check.test(target, upgrade);
+		return true;
+	}
+
+	@Override
+	public void applyUpgrades(ItemStack target, ItemStack upgrade, NBTTagCompound modifications)
+	{
+		type.function.accept(upgrade, modifications);
+	}
+
+
+	public enum ToolUpgrade
 	{
 		DRILL_WATERPROOF(ImmutableSet.of("DRILL"), (upgrade, modifications) -> modifications.setBoolean("waterproof", true)),
 		DRILL_LUBE(ImmutableSet.of("DRILL"), (upgrade, modifications) -> modifications.setBoolean("oiled", true)),
@@ -55,81 +101,22 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
 		private BiPredicate<ItemStack, ItemStack> applyCheck;
 		private BiConsumer<ItemStack, NBTTagCompound> function;
 
-		ToolUpgrades(ImmutableSet<String> toolset, BiConsumer<ItemStack, NBTTagCompound> function)
+		ToolUpgrade(ImmutableSet<String> toolset, BiConsumer<ItemStack, NBTTagCompound> function)
 		{
 			this(toolset, 1, function);
 		}
 
-		ToolUpgrades(ImmutableSet<String> toolset, int stackSize, BiConsumer<ItemStack, NBTTagCompound> function)
+		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiConsumer<ItemStack, NBTTagCompound> function)
 		{
 			this(toolset, stackSize, null, function);
 		}
 
-		ToolUpgrades(ImmutableSet<String> toolset, int stackSize, BiPredicate<ItemStack, ItemStack> applyCheck, BiConsumer<ItemStack, NBTTagCompound> function)
+		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiPredicate<ItemStack, ItemStack> applyCheck, BiConsumer<ItemStack, NBTTagCompound> function)
 		{
 			this.toolset = toolset;
 			this.stackSize = stackSize;
 			this.applyCheck = applyCheck;
 			this.function = function;
 		}
-
-		static String[] parse()
-		{
-			String[] ret = new String[values().length];
-			for(int i = 0; i < ret.length; i++)
-				ret[i] = values()[i].toString().toLowerCase(Locale.US);
-			return ret;
-		}
-
-		static ToolUpgrades get(int meta)
-		{
-			if(meta >= 0&&meta < values().length)
-				return values()[meta];
-			return DRILL_WATERPROOF;
-		}
 	}
-
-	public ItemToolUpgrade()
-	{
-		super("toolupgrade", 1, ToolUpgrades.parse());
-	}
-
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
-	{
-		if(stack.getItemDamage() < getSubNames().length)
-		{
-			String[] flavour = ImmersiveEngineering.proxy.splitStringOnWidth(I18n.format(Lib.DESC_FLAVOUR+"toolupgrade."+this.getSubNames()[stack.getItemDamage()]), 200);
-			for(String s : flavour)
-				list.add(s);
-		}
-	}
-
-	@Override
-	public int getItemStackLimit(ItemStack stack)
-	{
-		return ToolUpgrades.get(stack.getMetadata()).stackSize;
-	}
-
-	@Override
-	public Set<String> getUpgradeTypes(ItemStack upgrade)
-	{
-		return ToolUpgrades.get(upgrade.getMetadata()).toolset;
-	}
-
-	@Override
-	public boolean canApplyUpgrades(ItemStack target, ItemStack upgrade)
-	{
-		BiPredicate<ItemStack, ItemStack> check = ToolUpgrades.get(upgrade.getMetadata()).applyCheck;
-		if(check!=null&&target.getItem() instanceof IUpgradeableTool)
-			return check.test(target, upgrade);
-		return true;
-	}
-
-	@Override
-	public void applyUpgrades(ItemStack target, ItemStack upgrade, NBTTagCompound modifications)
-	{
-		ToolUpgrades.get(upgrade.getMetadata()).function.accept(upgrade, modifications);
-	}
-
 }

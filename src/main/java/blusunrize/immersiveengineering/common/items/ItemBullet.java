@@ -23,17 +23,14 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemLingeringPotion;
-import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemSplashPotion;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
@@ -44,25 +41,29 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
+public class ItemBullet extends ItemIEBase implements ITextureOverride
 {
 	public ItemBullet()
 	{
-//		super("bullet", 64, "emptyCasing","emptyShell","casull","armorPiercing","buckshot","HE","dragonsbreath","homing","wolfpack","silver","potion","flare");
-		super("bullet", 64, "empty_casing", "empty_shell", "bullet");
+		super("bullet", new Properties());
 
-		BulletHandler.emptyCasing = new ItemStack(this, 1, 0);
-		BulletHandler.emptyShell = new ItemStack(this, 1, 1);
-		BulletHandler.basicCartridge = new ItemStack(this, 1, 2);
+		//TODO "basic" items for empty shells/casings
+		//BulletHandler.emptyCasing = new ItemStack(this, 1, 0);
+		//BulletHandler.emptyShell = new ItemStack(this, 1, 1);
+		BulletHandler.basicCartridge = new ItemStack(this, 1);
 	}
 
 	public static void initBullets()
@@ -156,16 +157,14 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void fillItemGroup(@Nonnull ItemGroup tab, @Nonnull NonNullList<ItemStack> list)
 	{
-		if(this.isInCreativeTab(tab))
+		if(this.isInGroup(tab))
 		{
-			list.add(new ItemStack(this, 1, 0));
-			list.add(new ItemStack(this, 1, 1));
 			for(Map.Entry<String, IBullet> entry : BulletHandler.registry.entrySet())
 				if(entry.getValue().isProperCartridge())
 				{
-					ItemStack s = new ItemStack(this, 1, 2);
+					ItemStack s = new ItemStack(this, 1);
 					ItemNBTHelper.setString(s, "bullet", entry.getKey());
 					list.add(s);
 				}
@@ -181,33 +180,25 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		if(stack.getItemDamage()==2)
-		{
 			String key = ItemNBTHelper.getString(stack, "bullet");
 			IBullet bullet = BulletHandler.getBullet(key);
 			if(bullet!=null)
 				bullet.addTooltip(stack, world, list, flag);
-		}
 	}
 
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
 	{
-		if(stack.getItemDamage()==2)
-		{
-			String s = "item.immersiveengineering.bullet.";
-			String key = ItemNBTHelper.getString(stack, "bullet");
-			// handle legacy bullets
-			key = BulletHandler.handleLeagcyNames(key);
-			s += key;
-			IBullet bullet = BulletHandler.getBullet(key);
-			if(bullet!=null)
-				s = bullet.getTranslationKey(stack, s);
-			return I18n.translateToLocal(s+".name").trim();
-		}
-		return super.getItemStackDisplayName(stack);
+		String s = "item.immersiveengineering.bullet.";
+		String key = ItemNBTHelper.getString(stack, "bullet");
+		s += key;
+		IBullet bullet = BulletHandler.getBullet(key);
+		if(bullet!=null)
+			s = bullet.getTranslationKey(stack, s);
+		return new TextComponentTranslation(s+".name");
 	}
 
 	@Override
@@ -219,7 +210,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
-		if(stack.getMetadata()==2&&ItemNBTHelper.hasKey(stack, "bullet"))
+		if(ItemNBTHelper.hasKey(stack, "bullet"))
 		{
 			IBullet bullet = BulletHandler.getBullet(ItemNBTHelper.getString(stack, "bullet"));
 			if(bullet!=null)
@@ -232,7 +223,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	@OnlyIn(Dist.CLIENT)
 	public String getModelCacheKey(ItemStack stack)
 	{
-		if(stack.getMetadata()==2&&ItemNBTHelper.hasKey(stack, "bullet"))
+		if(ItemNBTHelper.hasKey(stack, "bullet"))
 			return ItemNBTHelper.getString(stack, "bullet");
 		return null;
 	}
@@ -243,83 +234,9 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	{
 		IBullet bullet = BulletHandler.getBullet(key);
 		if(bullet!=null)
-			return Arrays.asList(bullet.getTextures());
-		return Arrays.asList(new ResourceLocation("immersiveengieering:items/bullet_casull"));
+			return ImmutableList.copyOf(bullet.getTextures());
+		return ImmutableList.of(new ResourceLocation("immersiveengieering:items/bullet_casull"));
 	}
-
-	//	@Override
-//	public ItemStack getCasing(ItemStack stack)
-//	{
-//		return new ItemStack(this, 1, stack.getItemDamage()==1||stack.getItemDamage()==4||stack.getItemDamage()==6||stack.getItemDamage()==11?1:0);
-//	}
-//	@Override
-//	public boolean canSpawnBullet(ItemStack bulletStack)
-//	{
-//		return bulletStack!=null && bulletStack.getItemDamage()>1 && (bulletStack.getItemDamage()!=10||ItemNBTHelper.getItemStack(bulletStack, "potion")!=null);
-//	}
-//	@Override
-//	public void spawnBullet(EntityPlayer player, ItemStack bulletStack, boolean electro)
-//	{
-//		Vec3d vec = player.getLookVec();
-//		int type = bulletStack.getItemDamage()-2;
-//		switch(type)
-//		{
-//			case 0://casull
-//				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-//				break;
-//			case 1://armorPiercing
-//				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-//				break;
-//			case 2://buckshot
-//				for(int i=0; i<10; i++)
-//				{
-//					Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
-//					doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
-//				}
-//				break;
-//			case 3://HE
-//				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-//				break;
-//			case 4://dragonsbreath
-//				for(int i=0; i<30; i++)
-//				{
-//					Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
-//					EntityRevolvershot shot = doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
-//					shot.setTickLimit(10);
-//					shot.setFire(3);
-//				}
-//				break;
-//			case 5://homing
-//				EntityRevolvershotHoming bullet = new EntityRevolvershotHoming(player.world, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
-//				bullet.motionX = vec.xCoord;
-//				bullet.motionY = vec.yCoord;
-//				bullet.motionZ = vec.zCoord;
-//				bullet.bulletElectro = electro;
-//				player.world.spawnEntity(bullet);
-//				break;
-//			case 6://wolfpack
-//				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-//				break;
-//			case 7://Silver
-//				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-//				break;
-//			case 8://Potion
-//				EntityRevolvershot shot = doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-//				shot.bulletPotion = ItemNBTHelper.getItemStack(bulletStack, "potion");
-//				break;
-//			case 9://Flare
-//				EntityRevolvershotFlare flare = new EntityRevolvershotFlare(player.world, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
-//				flare.motionX = vec.xCoord;
-//				flare.motionY = vec.yCoord;
-//				flare.motionZ = vec.zCoord;
-//				flare.bulletElectro = electro;
-//				flare.colour = this.getColourForIEItem(bulletStack, 1);
-//				flare.setColourSynced();
-//				player.world.spawnEntity(flare);
-//				break;
-//		}
-//	}
-
 
 	public static class PotionBullet extends BulletHandler.DamagingBullet
 	{
@@ -355,7 +272,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
 			EntityRevolvershot bullet = (EntityRevolvershot)projectile;
-			if(!bullet.bulletPotion.isEmpty()&&bullet.bulletPotion.hasTagCompound())
+			if(!bullet.bulletPotion.isEmpty()&&bullet.bulletPotion.hasTag())
 			{
 				PotionType potionType = PotionUtils.getPotionFromItem(bullet.bulletPotion);
 				List<PotionEffect> effects = PotionUtils.getEffectsFromStack(bullet.bulletPotion);
@@ -384,7 +301,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 									if(dist < 16D)
 									{
 										double dist2 = 1-Math.sqrt(dist)/4D;
-										if(living==target.entityHit)
+										if(living==target.entity)
 											dist2 = 1D;
 										for(PotionEffect p : effects)
 											if(p.getPotion().isInstant())
@@ -399,12 +316,12 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 								}
 
 					}
-					else if(target.entityHit instanceof EntityLivingBase)
+					else if(target.entity instanceof EntityLivingBase)
 						for(PotionEffect p : effects)
 						{
 							if(p.getDuration() < 1)
 								p = new PotionEffect(p.getPotion(), 1);
-							((EntityLivingBase)target.entityHit).addPotionEffect(p);
+							((EntityLivingBase)target.entity).addPotionEffect(p);
 						}
 				world.playEvent(2002, new BlockPos(bullet), PotionUtils.getPotionColor(potionType));
 			}
@@ -412,7 +329,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 
 		@Override
-		public void addTooltip(ItemStack stack, World world, List<String> list, ITooltipFlag flag)
+		public void addTooltip(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flag)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
 			if(!pot.isEmpty()&&pot.getItem() instanceof ItemPotion)
@@ -470,12 +387,12 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public void addTooltip(ItemStack stack, World world, List<String> list, ITooltipFlag flag)
+		public void addTooltip(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flag)
 		{
 			if(stack.getItem() instanceof IColouredItem)
 			{
 				String hexCol = Integer.toHexString(((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1));
-				list.add(I18n.translateToLocalFormatted(Lib.DESC_INFO+"bullet.flareColour", "<hexcol="+hexCol+":#"+hexCol+">"));
+				list.add(new TextComponentTranslation(Lib.DESC_INFO+"bullet.flareColour", "<hexcol="+hexCol+":#"+hexCol+">"));
 			}
 		}
 
@@ -498,14 +415,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	{
 		public HomingBullet(float damage, ResourceLocation... textures)
 		{
-			super(new Function<Entity[], DamageSource>()
-				  {
-					  @Override
-					  public DamageSource apply(Entity[] entities)
-					  {
-						  return IEDamageSources.causeHomingDamage((EntityRevolvershot)entities[0], entities[1]);
-					  }
-				  },
+			super(entities -> IEDamageSources.causeHomingDamage((EntityRevolvershot)entities[0], entities[1]),
 					damage,
 					BulletHandler.emptyCasing,
 					textures);
@@ -554,8 +464,8 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				vecDir = matrix.apply(vecDir);
 
 				EntityWolfpackShot bullet = shooter!=null?new EntityWolfpackShot(world, shooter, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this, null): new EntityWolfpackShot(world, 0, 0, 0, 0, 0, 0, this);
-				if(target.entityHit instanceof EntityLivingBase)
-					bullet.targetOverride = (EntityLivingBase)target.entityHit;
+				if(target.entity instanceof EntityLivingBase)
+					bullet.targetOverride = (EntityLivingBase)target.entity;
 				bullet.setPosition(target.hitVec.x+vecDir.x, target.hitVec.y+vecDir.y, target.hitVec.z+vecDir.z);
 				bullet.motionX = vecDir.x*.375;
 				bullet.motionY = vecDir.y*.375;

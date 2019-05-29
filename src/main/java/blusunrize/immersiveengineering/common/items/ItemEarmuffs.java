@@ -23,7 +23,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -31,32 +31,36 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.ItemArmorDyeable;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigurableTool, ITool, IColouredItem
+public class ItemEarmuffs extends ItemArmorDyeable implements IConfigurableTool, ITool, IColouredItem
 {
 	public ItemEarmuffs()
 	{
-		super(ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.HEAD);
-		String name = "earmuffs";
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.itemGroup);
-//		ImmersiveEngineering.registerItem(this, name);
+		super(ArmorMaterial.LEATHER, EntityEquipmentSlot.HEAD, new Properties().group(ImmersiveEngineering.itemGroup)
+		.maxStackSize(1));
 		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
-		if(type=="overlay")
+		if("overlay".equals(type))
 			return "immersiveengineering:textures/models/earmuffs_overlay.png";
 		return "immersiveengineering:textures/models/earmuffs.png";
 	}
@@ -68,8 +72,7 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	@OnlyIn(Dist.CLIENT)
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
-		ModelEarmuffs model = ModelEarmuffs.getModel();
-		return model;
+		return ModelEarmuffs.getModel();
 	}
 
 	@Override
@@ -116,10 +119,10 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String hexCol = Integer.toHexString(this.getColourForIEItem(stack, 0));
-		list.add(I18n.format(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
+		list.add(new TextComponentTranslation(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
 	}
 
 	@Override
@@ -129,40 +132,10 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 		return ClientProxy.itemFont;
 	}
 
-	//	@Override
-	//	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	//	{
-	//		int i = EntityLiving.getArmorPosition(stack) - 1;
-	//		ItemStack itemstack = player.getCurrentArmor(i);
-	//		if(itemstack == null)
-	//		{
-	//			player.setCurrentItemOrArmor(i + 1, stack.copy());
-	//			stack.stackSize = 0;
-	//		}
-	//		return stack;
-	//	}
-
 	@Override
-	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
+	public IArmorMaterial getArmorMaterial()
 	{
-		return HashMultimap.create();
-	}
-
-	@Override
-	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
-	{
-		return new ArmorProperties(0, 0, 0);
-	}
-
-	@Override
-	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
-	{
-		return 0;
-	}
-
-	@Override
-	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot)
-	{
+		return super.getArmorMaterial();//TODO
 	}
 
 	public static LinkedHashSet<String> affectedSoundCategories = Sets.newLinkedHashSet();

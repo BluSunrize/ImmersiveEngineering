@@ -14,27 +14,28 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class ItemUpgradeableTool extends ItemInternalStorage implements IUpgradeableTool
 {
-	String upgradeType;
+	private String upgradeType;
 
-	public ItemUpgradeableTool(String name, int stackSize, String upgradeType, String... subNames)
+	public ItemUpgradeableTool(String name, Item.Properties props, String upgradeType)
 	{
-		super(name, stackSize, subNames);
+		super(name, props.maxStackSize(1));
 		this.upgradeType = upgradeType;
 	}
 
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		return !OreDictionary.itemMatches(oldStack, newStack, true);
+		return !ItemStack.areItemStacksEqual(oldStack, newStack);
 	}
 
 	@Override
@@ -55,15 +56,15 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack)
+	public void recalculateUpgrades(ItemStack stack, World w)
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if(w.isRemote)
 			return;
 		clearUpgrades(stack);
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
-		if(inv!=null)
+		LazyOptional<IItemHandler> lazyInv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		lazyInv.ifPresent(inv->
 		{
+			NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack u = inv.getStackInSlot(i);
@@ -76,7 +77,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 			}
 			ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
 			finishUpgradeRecalculation(stack);
-		}
+		});
 	}
 
 	public NBTTagCompound getUpgradeBase(ItemStack stack)

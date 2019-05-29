@@ -19,12 +19,13 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ItemMaintenanceKit extends ItemIEBase implements IGuiItem
 {
 	public ItemMaintenanceKit()
 	{
-		super("maintenance_kit", 1);
-		this.setMaxDamage(50);
+		super("maintenance_kit", new Properties().maxStackSize(1).defaultMaxDamage(50));
 	}
 
 	@Override
@@ -33,8 +34,9 @@ public class ItemMaintenanceKit extends ItemIEBase implements IGuiItem
 		return Lib.GUIID_MaintenanceKit;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)

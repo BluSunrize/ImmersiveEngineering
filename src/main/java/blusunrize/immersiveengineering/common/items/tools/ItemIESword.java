@@ -3,22 +3,22 @@ package blusunrize.immersiveengineering.common.items.tools;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * @author BluSunrize - 08.07.2018
  */
 public class ItemIESword extends ItemSword
 {
-	private final String oreDict;
+	private final ResourceLocation oreDict;
 
-	public ItemIESword(ToolMaterial material, String name, String oreDict)
+	public ItemIESword(IItemTier material, ResourceLocation oreDict)
 	{
-		super(material);
+		super(material, 3, -2.4F, new Properties().group(ImmersiveEngineering.itemGroup).maxStackSize(1));
 		this.oreDict = oreDict;
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.itemGroup);
 		IEContent.registeredIEItems.add(this);
 	}
 

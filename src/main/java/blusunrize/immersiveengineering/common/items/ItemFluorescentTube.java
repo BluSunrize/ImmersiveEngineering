@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -27,15 +27,19 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,21 +53,25 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 
 	public ItemFluorescentTube()
 	{
-		super("fluorescent_tube", 1);
+		super("fluorescent_tube", new Properties().maxStackSize(1));
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		if(side==EnumFacing.UP)
+		EnumFacing side = ctx.getFace();
+		World world = ctx.getWorld();
+		EntityPlayer player = ctx.getPlayer();
+		if(side==EnumFacing.UP && player!=null)
 		{
 			if(!world.isRemote)
 			{
-				ItemStack stack = player.getHeldItem(hand);
+				ItemStack stack = ctx.getItem();
 				Vec3d look = player.getLookVec();
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
 				EntityFluorescentTube tube = new EntityFluorescentTube(world, stack.copy(), angle);
-				tube.setPosition(pos.getX()+hitX, pos.getY()+1.5, pos.getZ()+hitZ);
+				BlockPos pos = ctx.getPos();
+				tube.setPosition(pos.getX()+ctx.getHitX(), pos.getY()+1.5, pos.getZ()+ctx.getHitZ());
 				world.spawnEntity(tube);
 				stack.split(1);
 				if(stack.getCount() > 0)
@@ -73,7 +81,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 			}
 			return EnumActionResult.SUCCESS;
 		}
-		return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(ctx);
 	}
 
 	public static float[] getRGB(ItemStack s)
@@ -141,9 +149,9 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(I18n.format(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
+		list.add(new TextComponentTranslation(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
 	}
 
 	@Override
@@ -203,9 +211,9 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
-		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+		super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
 		if(!worldIn.isRemote&&isLit(stack))
 		{
 			int litTicksRemaining = ItemNBTHelper.getInt(stack, LIT_TIME);

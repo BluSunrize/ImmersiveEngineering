@@ -17,6 +17,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -27,16 +29,12 @@ import java.util.Map;
 
 public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 {
-	public static ArmorMaterial mat;
+	public static IArmorMaterial mat;
 
 	public ItemFaradaySuit(EntityEquipmentSlot type)
 	{
-		super(mat, 0, type);
+		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.itemGroup));
 		String name = "faraday_suit_"+type.getName().toLowerCase(Locale.ENGLISH);
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.itemGroup);
-		this.setMaxStackSize(1);
-//		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
@@ -59,7 +57,8 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 		else
 		{
 			dmg.dmg *= 1.2;
-			if((!(p instanceof EntityPlayer)||!((EntityPlayer)p).capabilities.isCreativeMode)&&s.attemptDamageItem(2, itemRand, (dmg.getTrueSource() instanceof EntityPlayerMP)?(EntityPlayerMP)dmg.getTrueSource(): null))
+			if((!(p instanceof EntityPlayer)||!((EntityPlayer)p).abilities.isCreativeMode)&&
+					s.attemptDamageItem(2, Item.random, (dmg.getTrueSource() instanceof EntityPlayerMP)?(EntityPlayerMP)dmg.getTrueSource(): null))
 				p.setItemStackToSlot(eqSlot, ItemStack.EMPTY);
 		}
 	}

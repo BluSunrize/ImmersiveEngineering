@@ -13,30 +13,29 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nonnull;
 
 public class ItemShaderBag extends ItemIEBase
 {
 	public ItemShaderBag()
 	{
-		super("shader_bag", 64);
+		super("shader_bag", new Properties());
 	}
 
-	//	@Override
-//	@OnlyIn(Dist.CLIENT)
-//	public int getColorFromItemStack(ItemStack stack, int pass)
-//	{
-//		EnumRarity rarity = this.getRarity(stack);
-//		return ClientUtils.getFormattingColour(rarity.color);
-//	}
 	@Override
 	public boolean hasCustomItemColours()
 	{
@@ -51,9 +50,9 @@ public class ItemShaderBag extends ItemIEBase
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void fillItemGroup(ItemGroup tab, @Nonnull NonNullList<ItemStack> list)
 	{
-		if(this.isInCreativeTab(tab))
+		if(this.isInGroup(tab))
 			for(int i = ShaderRegistry.sortedRarityMap.size()-1; i >= 0; i--)
 			{
 				EnumRarity rarity = ShaderRegistry.sortedRarityMap.get(i);
@@ -64,9 +63,9 @@ public class ItemShaderBag extends ItemIEBase
 	}
 
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		return getRarity(stack).rarityName+" "+super.getItemStackDisplayName(stack);
+		return new TextComponentString(getRarity(stack).name()+" ").appendSibling(super.getDisplayName(stack));
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public class ItemShaderBag extends ItemIEBase
 		if(!world.isRemote)
 			if(ShaderRegistry.totalWeight.containsKey(stack.getRarity()))
 			{
-				String shader = ShaderRegistry.getRandomShader(player.getName(), player.getRNG(), stack.getRarity(), true);
+				String shader = ShaderRegistry.getRandomShader(player.getUniqueID(), player.getRNG(), stack.getRarity(), true);
 				if(shader==null||shader.isEmpty())
 					return new ActionResult(EnumActionResult.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(IEContent.itemShader);

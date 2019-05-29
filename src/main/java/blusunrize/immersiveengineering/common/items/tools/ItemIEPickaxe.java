@@ -4,16 +4,20 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ToolType;
 
 /**
  * @author BluSunrize - 08.07.2018
  */
 public class ItemIEPickaxe extends ItemToolBase
 {
-	public ItemIEPickaxe(ToolMaterial materialIn, String name, String toolclass, String oreDict)
+	public ItemIEPickaxe(IItemTier materialIn, String name, ResourceLocation oreDict)
 	{
-		super(materialIn, name, toolclass, oreDict, PICKAXE_EFFECTIVE, 1.0f, -2.8f);
+		super(materialIn, name, ToolType.PICKAXE, oreDict, ItemPickaxe.EFFECTIVE_ON, 1.0f, -2.8f);
 	}
 
 	@Override
@@ -21,13 +25,13 @@ public class ItemIEPickaxe extends ItemToolBase
 	{
 		Block block = blockIn.getBlock();
 		if(block==Blocks.OBSIDIAN)
-			return this.toolMaterial.getHarvestLevel()==3;
+			return getTier().getHarvestLevel()==3;
 		else if(block!=Blocks.DIAMOND_BLOCK&&block!=Blocks.DIAMOND_ORE)
 			if(block!=Blocks.EMERALD_ORE&&block!=Blocks.EMERALD_BLOCK)
 				if(block!=Blocks.GOLD_BLOCK&&block!=Blocks.GOLD_ORE)
 					if(block!=Blocks.IRON_BLOCK&&block!=Blocks.IRON_ORE)
 						if(block!=Blocks.LAPIS_BLOCK&&block!=Blocks.LAPIS_ORE)
-							if(block!=Blocks.REDSTONE_ORE&&block!=Blocks.LIT_REDSTONE_ORE)
+							if(block!=Blocks.REDSTONE_ORE)
 							{
 								Material material = blockIn.getMaterial();
 								if(material==Material.ROCK)
@@ -38,17 +42,17 @@ public class ItemIEPickaxe extends ItemToolBase
 									return material==Material.ANVIL;
 							}
 							else
-								return this.toolMaterial.getHarvestLevel() >= 2;
+								return getTier().getHarvestLevel() >= 2;
 						else
-							return this.toolMaterial.getHarvestLevel() >= 1;
+							return getTier().getHarvestLevel() >= 1;
 					else
-						return this.toolMaterial.getHarvestLevel() >= 1;
+						return getTier().getHarvestLevel() >= 1;
 				else
-					return this.toolMaterial.getHarvestLevel() >= 2;
+					return getTier().getHarvestLevel() >= 2;
 			else
-				return this.toolMaterial.getHarvestLevel() >= 2;
+				return getTier().getHarvestLevel() >= 2;
 		else
-			return this.toolMaterial.getHarvestLevel() >= 2;
+			return getTier().getHarvestLevel() >= 2;
 	}
 
 	@Override

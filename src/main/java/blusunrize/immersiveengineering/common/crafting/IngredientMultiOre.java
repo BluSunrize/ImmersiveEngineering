@@ -57,7 +57,7 @@ public class IngredientMultiOre extends Ingredient
 				for(ItemStack stack : list)
 				{
 					if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
-						stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
+						stack.getItem().fillItemGroup(CreativeTabs.SEARCH, lst);
 					else
 						lst.add(stack);
 				}
@@ -81,7 +81,7 @@ public class IngredientMultiOre extends Ingredient
 					if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
 					{
 						NonNullList<ItemStack> lst = NonNullList.create();
-						stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
+						stack.getItem().fillItemGroup(CreativeTabs.SEARCH, lst);
 						for(ItemStack item : lst)
 							this.itemIds.add(RecipeItemHelper.pack(item));
 					}

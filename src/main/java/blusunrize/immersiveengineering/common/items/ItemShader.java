@@ -24,25 +24,26 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.block.BlockBanner;
+import net.minecraft.block.BlockBannerWall;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
@@ -58,7 +59,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 {
 	public ItemShader()
 	{
-		super("shader", 1);
+		super("shader", new Properties().maxStackSize(1));
 		//DEFAULT CUTOUTS
 		//whitestripe
 		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_whitestripe"), 0, 0, .25, .25);
@@ -107,8 +108,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				(pre, partialTick) -> {
 					if(pre)
 					{
-						GlStateManager.pushAttrib();
-						GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(.5f, .2f, 0, .5f));
+						GlStateManager.pushLightingAttrib();
+						GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(.5f, .2f, 0, .5f));
 						ClientUtils.toggleLightmap(true, true);
 					}
 					else
@@ -253,9 +254,11 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		String name = getShaderName(player.getHeldItem(hand));
+		World world = ctx.getWorld();
+		BlockPos pos = ctx.getPos();
+		String name = getShaderName(ctx.getItem());
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
 			IBlockState blockState = world.getBlockState(pos);
@@ -265,15 +268,15 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase("immersiveengineering:banner");
 				if(sCase!=null)
 				{
-					boolean wall = blockState.getBlock()==Blocks.WALL_BANNER;
-					int orientation = wall?blockState.getValue(BlockBanner.FACING).getIndex(): blockState.getValue(BlockBanner.ROTATION);
-					world.setBlockState(pos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.SHADER_BANNER.getMeta()).with(IEProperties.FACING_ALL, EnumFacing.SOUTH));
+					boolean wall = blockState.getBlock() instanceof BlockBannerWall;
+					int orientation = wall?blockState.get(BlockBannerWall.HORIZONTAL_FACING).getIndex(): blockState.get(BlockBanner.ROTATION);
+					world.setBlockState(pos, IEContent.blockShaderBanner.getDefaultState().with(IEProperties.FACING_ALL, EnumFacing.SOUTH));
 					tile = world.getTileEntity(pos);
 					if(tile instanceof TileEntityShaderBanner)
 					{
 						((TileEntityShaderBanner)tile).wall = wall;
 						((TileEntityShaderBanner)tile).orientation = (byte)orientation;
-						((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(player.getHeldItem(hand), 1));
+						((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
 						tile.markDirty();
 						return EnumActionResult.SUCCESS;
 					}
@@ -282,16 +285,16 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 			else if(tile instanceof TileEntityShaderBanner)
 			{
 				ItemStack current = ((TileEntityShaderBanner)tile).shader.getShaderItem();
-				if(!current.isEmpty() && !world.isRemote && !player.capabilities.isCreativeMode)
+				if(!current.isEmpty() && !world.isRemote && (ctx.getPlayer()==null || !ctx.getPlayer().abilities.isCreativeMode))
 				{
-					double dx = pos.getX()+.5+side.getXOffset();
-					double dy = pos.getY()+.5+side.getYOffset();
-					double dz = pos.getZ()+.5+side.getZOffset();
+					double dx = pos.getX()+.5+ctx.getFace().getXOffset();
+					double dy = pos.getY()+.5+ctx.getFace().getYOffset();
+					double dz = pos.getZ()+.5+ctx.getFace().getZOffset();
 					EntityItem entityitem = new EntityItem(world, dx, dy, dz, current.copy());
 					entityitem.setDefaultPickupDelay();
 					world.spawnEntity(entityitem);
 				}
-				((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(player.getHeldItem(hand), 1));
+				((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
 				tile.markDirty();
 				return EnumActionResult.SUCCESS;
 			}
@@ -302,32 +305,38 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(I18n.format("Level: "+this.getRarity(stack).color+this.getRarity(stack).rarityName));
+		//TODO proper translation
+		list.add(new TextComponentString("Level: "+this.getRarity(stack).color+this.getRarity(stack).name()));
 		if(!GuiScreen.isShiftKeyDown())
-			list.add(I18n.format(Lib.DESC_INFO+"shader.applyTo")+" "+I18n.format(Lib.DESC_INFO+"holdShift"));
+			list.add(new TextComponentTranslation(Lib.DESC_INFO+"shader.applyTo")
+					.appendText(" ")
+					.appendSibling(new TextComponentTranslation(Lib.DESC_INFO+"holdShift")));
 		else
 		{
-			list.add(I18n.format(Lib.DESC_INFO+"shader.applyTo"));
+			list.add(new TextComponentTranslation(Lib.DESC_INFO+"shader.applyTo"));
 			String name = getShaderName(stack);
 			if(name!=null&&!name.isEmpty())
 			{
 				List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
 				for(ShaderCase sCase : array)
 					if(!(sCase instanceof ShaderCaseItem))
-						list.add(TextFormatting.DARK_GRAY+" "+I18n.format(Lib.DESC_INFO+"shader."+sCase.getShaderType()));
+						list.add(new TextComponentTranslation(Lib.DESC_INFO+"shader."+sCase.getShaderType())
+								.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
 			}
 		}
 	}
 
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
 	{
 		String s = getShaderName(stack);
-		return super.getItemStackDisplayName(stack)+(s!=null&&!s.isEmpty()?(": "+s): "");
+		return super.getDisplayName(stack).appendText(s!=null&&!s.isEmpty()?(": "+s): "");
 	}
 
+	@Nonnull
 	@Override
 	public EnumRarity getRarity(ItemStack stack)
 	{
@@ -337,9 +346,9 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> list)
 	{
-		if(this.isInCreativeTab(tab))
+		if(this.isInGroup(tab))
 			for(String key : ShaderRegistry.shaderRegistry.keySet())
 			{
 				ItemStack s = new ItemStack(this);

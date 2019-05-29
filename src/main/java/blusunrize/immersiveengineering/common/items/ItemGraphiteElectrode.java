@@ -16,6 +16,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -27,29 +29,15 @@ public class ItemGraphiteElectrode extends ItemIEBase
 
 	public ItemGraphiteElectrode()
 	{
-		super("graphite_electrode", 16);
+		super("graphite_electrode", new Properties().maxStackSize(16));
 		electrodeMaxDamage = IEConfig.Machines.arcfurnace_electrodeDamage;
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		float integrity = 100-(float)getDurabilityForDisplay(stack)*100f;
-		list.add(String.format("%s %.2f %%", I18n.format(Lib.DESC_INFO+"electrodeIntegrity"), integrity));
-		if(super.getDamage(stack)!=0)
-			list.add("This item is deprecated. Hold it in your inventory to update it.");
-	}
-
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean hand)
-	{
-		if(ent instanceof EntityPlayer)
-			if(super.getDamage(stack)!=0)
-			{
-				ItemStack fixed = new ItemStack(this);
-				ItemNBTHelper.setInt(fixed, "graphDmg", stack.getItemDamage());
-				((EntityPlayer)ent).inventory.setInventorySlotContents(slot, fixed);
-			}
+		list.add(new TextComponentTranslation(Lib.DESC_INFO+"electrodeIntegrity", String.format("%.2f", integrity)));
 	}
 
 	@Override

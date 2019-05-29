@@ -196,7 +196,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public void onSlotChanged()
 		{
-			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool);
+			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, );
 		}
 	}
 

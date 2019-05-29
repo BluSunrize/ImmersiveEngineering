@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -29,7 +30,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -42,10 +43,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -61,7 +67,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 {
 	public ItemRailgun()
 	{
-		super("railgun", 1, "RAILGUN");
+		super("railgun", new Properties().maxStackSize(1), "RAILGUN");
 	}
 
 	@Override
@@ -73,7 +79,8 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
 						new IESlot.Upgrades(container, inv, 0, 80, 32, "RAILGUN", stack, true),
@@ -88,9 +95,9 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack)
+	public void recalculateUpgrades(ItemStack stack, World w)
 	{
-		super.recalculateUpgrades(stack);
+		super.recalculateUpgrades(stack, w);
 		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
 			ItemNBTHelper.setInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
@@ -108,13 +115,14 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	{
 		if(slotChanged)
 			return true;
-		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null)&&newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-		{
-			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
-				return true;
-		}
+		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld->{
+			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+			return wrapperNew.map(w->ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+					.orElse(true);
+		});
+		if (!sameShader.orElse(true))
+			return true;
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
@@ -124,24 +132,21 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-				final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
+				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = ApiUtils.constantOptional(
+						new EnergyHelper.ItemEnergyStorage(stack)
+				);
+				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
+						new ShaderWrapper_Item("immersiveengineering:railgun", stack)
+				);
 
+				@Nonnull
 				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-				{
-					return capability==CapabilityEnergy.ENERGY||
-							capability==CapabilityShader.SHADER_CAPABILITY||
-							super.hasCapability(capability, facing);
-				}
-
-				@Override
-				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 				{
 					if(capability==CapabilityEnergy.ENERGY)
-						return (T)energyStorage;
+						return energyStorage.cast();
 					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return (T)shaders;
+						return shaders.cast();
 					return super.getCapability(capability, facing);
 				}
 			};
@@ -149,10 +154,10 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-		list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
+		list.add(new TextComponentTranslation(Lib.DESC+"info.energyStored", stored));
 	}
 
 	@Nonnull
@@ -168,26 +173,16 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		return super.getTranslationKey(stack);
 	}
 
+	@Nonnull
 	@Override
-	public boolean isFull3D()
-	{
-		return true;
-	}
-
-	@Override
-	public EnumAction getItemUseAction(ItemStack p_77661_1_)
+	public EnumAction getUseAction(ItemStack p_77661_1_)
 	{
 		return EnumAction.NONE;
 	}
 
+	@Nonnull
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
-	{
-		super.onUpdate(stack, world, ent, slot, inHand);
-	}
-
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		int energy = IEConfig.Tools.railgun_consumption;
@@ -197,7 +192,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		{
 			player.setActiveHand(hand);
 			player.world.playSound(null, player.posX, player.posY, player.posZ, getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
@@ -205,7 +200,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase user, int count)
 	{
-		int inUse = this.getMaxItemUseDuration(stack)-count;
+		int inUse = this.getUseDuration(stack)-count;
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRNG().nextInt(20))
 		{
 			user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.spark, SoundCategory.PLAYERS, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
@@ -223,7 +218,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	{
 		if(user instanceof EntityPlayer)
 		{
-			int inUse = this.getMaxItemUseDuration(stack)-timeLeft;
+			int inUse = this.getUseDuration(stack)-timeLeft;
 			ItemNBTHelper.remove(stack, "inUse");
 			if(inUse < getChargeTime(stack))
 				return;
@@ -287,7 +282,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack stack)
+	public int getUseDuration(ItemStack stack)
 	{
 		return 72000;
 	}

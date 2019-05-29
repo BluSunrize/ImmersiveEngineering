@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -20,8 +22,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamag
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -36,9 +37,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -52,9 +58,8 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 {
 	public ItemIEShield()
 	{
-		super("shield", 1, "SHIELD");
-		this.setMaxDamage(1024);
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, ItemArmor.DISPENSER_BEHAVIOR);
+		super("shield", new Properties().maxStackSize(1).defaultMaxDamage(1024), "SHIELD");
+		BlockDispenser.registerDispenseBehavior(this, ItemArmor.DISPENSER_BEHAVIOR);
 	}
 
 	@Override
@@ -63,24 +68,21 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-				final ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:shield", stack);
+				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = ApiUtils.constantOptional(
+						new EnergyHelper.ItemEnergyStorage(stack)
+				);
+				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
+						new ShaderWrapper_Item("immersiveengineering:shield", stack)
+				);
 
+				@Nonnull
 				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-				{
-					return capability==CapabilityEnergy.ENERGY||
-							capability==CapabilityShader.SHADER_CAPABILITY||
-							super.hasCapability(capability, facing);
-				}
-
-				@Override
-				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 				{
 					if(capability==CapabilityEnergy.ENERGY)
-						return (T)energyStorage;
+						return energyStorage.cast();
 					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return (T)shaders;
+						return shaders.cast();
 					return super.getCapability(capability, facing);
 				}
 			};
@@ -92,31 +94,32 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	{
 		if(slotChanged)
 			return true;
-		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null)&&newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-		{
-			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
-				return true;
-		}
+		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld->{
+			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+			return wrapperNew.map(w->ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+					.orElse(true);
+		});
+		if (!sameShader.orElse(true))
+			return true;
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		if(this.getMaxEnergyStored(stack) > 0)
 		{
 			String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-			list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
+			list.add(new TextComponentTranslation(Lib.DESC+"info.energyStored", stored));
 		}
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
+	public void inventoryTick(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
-		super.onUpdate(stack, world, ent, slot, inHand);
+		super.inventoryTick(stack, world, ent, slot, inHand);
 		if(world.isRemote)
 			return;
 
@@ -175,7 +178,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			if(event.getSource().isProjectile()&&event.getSource().getImmediateSource()!=null)
 			{
 				Entity projectile = event.getSource().getImmediateSource();
-				projectile.setDead();
+				projectile.remove();
 				event.setCanceled(true);
 				b = true;
 			}
@@ -196,7 +199,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	@Override
 	public boolean getIsRepairable(ItemStack stack, ItemStack material)
 	{
-		return Utils.isInTag(material, "ingotSteel");
+		return Utils.isInTag(material, new ResourceLocation(ImmersiveEngineering.MODID, "ingot_steel"));
 	}
 
 	@Override
@@ -206,21 +209,23 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack stack)
+	public int getUseDuration(ItemStack stack)
 	{
 		return 72000;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, @Nonnull EnumHand handIn)
 	{
 		ItemStack itemstack = playerIn.getHeldItem(handIn);
 		playerIn.setActiveHand(handIn);
-		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 	}
 
+	@Nonnull
 	@Override
-	public EnumAction getItemUseAction(ItemStack stack)
+	public EnumAction getUseAction(ItemStack stack)
 	{
 		return EnumAction.BLOCK;
 	}
@@ -265,7 +270,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
 						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true),

@@ -63,7 +63,7 @@ public class ItemEngineersBlueprint extends ItemIEBase
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
+	public void fillItemGroup(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(tab))
 			for(String key : BlueprintCraftingRecipe.blueprintCategories)

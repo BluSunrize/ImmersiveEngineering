@@ -13,6 +13,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 /**
  * @author BluSunrize - 27.10.2015
@@ -35,7 +36,7 @@ public interface IUpgradeableTool
 	/**
 	 * Iterate through the stored items and apply upgrades. For an example implementation, see ItemUpgradeableTool in the IE source
 	 */
-	void recalculateUpgrades(ItemStack stack);
+	void recalculateUpgrades(ItemStack stack, World w);
 
 	/**
 	 * @return false to prevent this item from being removed from the workbench. Used by blueprints for example.

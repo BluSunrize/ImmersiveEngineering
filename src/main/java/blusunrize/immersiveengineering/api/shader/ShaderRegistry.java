@@ -27,17 +27,17 @@ public class ShaderRegistry
 	/**
 	 * A map of shader name to ShaderRegistryEntry, which contains ShaderCases, rarity, weight and loot specifics
 	 */
-	public static LinkedHashMap<String, ShaderRegistryEntry> shaderRegistry = new LinkedHashMap<String, ShaderRegistryEntry>();
+	public static LinkedHashMap<String, ShaderRegistryEntry> shaderRegistry = new LinkedHashMap<>();
 
 	/**
 	 * A list of shader names that can generate in chests/crates. Names are added multiple times depending on their weight
 	 */
-	public static ArrayList<String> chestLootShaders = new ArrayList<String>();
+	public static ArrayList<String> chestLootShaders = new ArrayList<>();
 
 	/**
 	 * A map of EnumRarities to weight for grab bag distribution
 	 */
-	public static HashMap<EnumRarity, Integer> rarityWeightMap = new HashMap<EnumRarity, Integer>();
+	public static HashMap<EnumRarity, Integer> rarityWeightMap = new HashMap<>();
 
 	static
 	{
@@ -51,7 +51,7 @@ public class ShaderRegistry
 	/**
 	 * A list of EnumRarities sorted by their weight
 	 */
-	public static ArrayList<EnumRarity> sortedRarityMap = new ArrayList<EnumRarity>();
+	public static ArrayList<EnumRarity> sortedRarityMap = new ArrayList<>();
 
 
 	/**
@@ -61,7 +61,7 @@ public class ShaderRegistry
 	/**
 	 * The map of EnumRarities to the total weight of all shaders of that rarity or rarer
 	 */
-	public static HashMap<EnumRarity, Integer> totalWeight = new HashMap<EnumRarity, Integer>();
+	public static HashMap<EnumRarity, Integer> totalWeight = new HashMap<>();
 	/**
 	 * The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight
 	 */
@@ -73,7 +73,7 @@ public class ShaderRegistry
 	/**
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */
-	public static HashMap<ResourceLocation, double[]> defaultLayerBounds = new HashMap<ResourceLocation, double[]>();
+	public static HashMap<ResourceLocation, double[]> defaultLayerBounds = new HashMap<>();
 
 	public static ShaderCase getShader(String name, String shaderType)
 	{
@@ -377,7 +377,7 @@ public class ShaderRegistry
 	/**
 	 * A map of shader name to ShaderRegistryEntry, which contains ShaderCases, rarity, weight and loot specifics
 	 */
-	public static Set<IShaderRegistryMethod> shaderRegistrationMethods = new HashSet<IShaderRegistryMethod>();
+	public static Set<IShaderRegistryMethod> shaderRegistrationMethods = new HashSet<>();
 
 	public static void addRegistrationMethod(IShaderRegistryMethod method)
 	{
@@ -449,7 +449,7 @@ public class ShaderRegistry
 	public static void recalculatePlayerTotalWeight(UUID player)
 	{
 		if(!playerTotalWeight.containsKey(player))
-			playerTotalWeight.put(player, new HashMap<EnumRarity, Integer>());
+			playerTotalWeight.put(player, new HashMap<>());
 		else
 			playerTotalWeight.get(player).clear();
 		List<String> received = receivedShaders.get(player);
@@ -517,7 +517,7 @@ public class ShaderRegistry
 
 	public static ArrayList<EnumRarity> getAllLowerRarities(EnumRarity rarity)
 	{
-		ArrayList<EnumRarity> list = new ArrayList<EnumRarity>();
+		ArrayList<EnumRarity> list = new ArrayList<>();
 		int idx = sortedRarityMap.indexOf(rarity);
 		int weight = rarityWeightMap.get(rarity);
 		for(int next = idx+1; next < sortedRarityMap.size(); next++)
@@ -528,7 +528,7 @@ public class ShaderRegistry
 
 	public static ArrayList<EnumRarity> getHigherRarities(EnumRarity rarity)
 	{
-		ArrayList<EnumRarity> list = new ArrayList<EnumRarity>();
+		ArrayList<EnumRarity> list = new ArrayList<>();
 		int idx = sortedRarityMap.indexOf(rarity);
 		if(idx <= 0)
 			return list;
@@ -550,7 +550,7 @@ public class ShaderRegistry
 
 	public static ArrayList<EnumRarity> getAllHigherRarities(EnumRarity rarity)
 	{
-		ArrayList<EnumRarity> list = new ArrayList<EnumRarity>();
+		ArrayList<EnumRarity> list = new ArrayList<>();
 		int idx = sortedRarityMap.indexOf(rarity);
 		if(idx <= 0)
 			return list;
@@ -593,7 +593,7 @@ public class ShaderRegistry
 	public static class ShaderRegistryEntry
 	{
 		public String name;
-		public HashMap<String, ShaderCase> cases = new HashMap<String, ShaderCase>();
+		public HashMap<String, ShaderCase> cases = new HashMap<>();
 		public EnumRarity rarity;
 		public int weight;
 		public boolean isCrateLoot;

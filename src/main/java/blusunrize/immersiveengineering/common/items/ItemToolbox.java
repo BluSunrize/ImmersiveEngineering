@@ -21,11 +21,14 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -36,37 +39,13 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 
 	public ItemToolbox()
 	{
-		super("toolbox", 1);
-		ToolboxHandler.addToolType(new Predicate<ItemStack>()
-		{
-			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_tools);
-
-			@Override
-			public boolean test(ItemStack stack)
-			{
-				return set.contains(stack.getItem().getRegistryName().toString());
-			}
-		});
-		ToolboxHandler.addFoodType(new Predicate<ItemStack>()
-		{
-			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_foods);
-
-			@Override
-			public boolean test(ItemStack stack)
-			{
-				return set.contains(stack.getItem().getRegistryName().toString());
-			}
-		});
-		ToolboxHandler.addWiringType(new BiPredicate<ItemStack, World>()
-		{
-			final Set<String> set = Sets.newHashSet(Config.IEConfig.Tools.toolbox_wiring);
-
-			@Override
-			public boolean test(ItemStack stack, World world)
-			{
-				return set.contains(stack.getItem().getRegistryName().toString());
-			}
-		});
+		super("toolbox", new Properties().maxStackSize(1));
+		final Set<String> configTools = Sets.newHashSet(Config.IEConfig.Tools.toolbox_tools);
+		final Set<String> configFood = Sets.newHashSet(Config.IEConfig.Tools.toolbox_foods);
+		final Set<String> configWires = Sets.newHashSet(Config.IEConfig.Tools.toolbox_wiring);
+		ToolboxHandler.addToolType(stack -> configTools.contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addFoodType(stack -> configFood.contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addWiringType((stack, world) -> configWires.contains(stack.getItem().getRegistryName().toString()));
 	}
 
 	@Override
@@ -75,8 +54,9 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 		return Lib.GUIID_Toolbox;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
@@ -85,22 +65,26 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		ItemStack stack = player.getHeldItem(hand);
-		if(player.isSneaking())
+		ItemStack stack = ctx.getItem();
+		EntityPlayer player = ctx.getPlayer();
+		if(player!=null && player.isSneaking())
 		{
+			World world = ctx.getWorld();
+			BlockPos pos = ctx.getPos();
+			EnumFacing side = ctx.getFace();
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
-			if(!block.isReplaceable(world, pos))
+			if(!block.isReplaceable(state, new BlockItemUseContext(ctx)))
 				pos = pos.offset(side);
 
-			if(stack.getCount()!=0&&player.canPlayerEdit(pos, side, stack)&&world.mayPlace(IEContent.blockMetalDecoration2, pos, false, side, null))
+			if(stack.getCount()!=0&&player.canPlayerEdit(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
 			{
-				IBlockState toolbox = IEContent.blockMetalDecoration2.getStateFromMeta(BlockTypes_MetalDecoration2.TOOLBOX.getMeta());
+				IBlockState toolbox = IEContent.blockToolbox.getDefaultState();
 				if(world.setBlockState(pos, toolbox, 3))
 				{
-					IEContent.blockMetalDecoration2.onIEBlockPlacedBy(, world, toolbox);
+					IEContent.blockToolbox.onIEBlockPlacedBy(new BlockItemUseContext(ctx), toolbox);
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
@@ -111,7 +95,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 			else
 				return EnumActionResult.FAIL;
 		}
-		return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(ctx);
 	}
 
 	@Override

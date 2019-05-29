@@ -634,7 +634,7 @@ public class ApiUtils
 			return WireType.getValue(tag.getString(key));
 	}
 
-	public static EnumActionResult doCoilUse(IWireCoil coil, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public static EnumActionResult doCoilUse(IWireCoil coil, EntityPlayer player, World world, BlockPos pos, ItemStack hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
@@ -1100,9 +1100,9 @@ public class ApiUtils
 		}
 	}
 
-	public static <T, Ret> LazyOptional<Ret> constantOptional(CapabilityHolder<T> out, T val)
+	public static <T> LazyOptional<T> constantOptional(T val)
 	{
-		return (LazyOptional<Ret>)out.replaceIfAbsent(() -> LazyOptional.of(() -> val));
+		return new LazyOptional<>(()->val);
 	}
 
 	public static class ValueComparator implements java.util.Comparator<String>

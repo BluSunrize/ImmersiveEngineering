@@ -21,6 +21,7 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -30,9 +31,9 @@ import javax.annotation.Nullable;
 public abstract class ItemInternalStorage extends ItemIEBase
 {
 
-	public ItemInternalStorage(String name, int stackSize, String... subNames)
+	public ItemInternalStorage(String name, Properties props)
 	{
-		super(name, stackSize, subNames);
+		super(name, props);
 	}
 
 	public abstract int getSlotCount(ItemStack stack);
@@ -48,49 +49,35 @@ public abstract class ItemInternalStorage extends ItemIEBase
 
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)
 	{
-		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if(handler instanceof IItemHandlerModifiable)
-		{
-			if(inventory.size()!=handler.getSlots())
-				throw new IllegalArgumentException("Parameter inventory has "+inventory.size()+" slots, capability inventory has "+handler.getSlots());
-			for(int i = 0; i < handler.getSlots(); i++)
-				((IItemHandlerModifiable)handler).setStackInSlot(i, inventory.get(i));
-		}
-		else
-			IELogger.warn("No valid inventory handler found for "+stack);
+		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		lazyHandler.ifPresent(handler-> {
+			if(handler instanceof IItemHandlerModifiable)
+			{
+				if(inventory.size()!=handler.getSlots())
+					throw new IllegalArgumentException("Parameter inventory has "+inventory.size()+" slots, capability inventory has "+handler.getSlots());
+				for(int i = 0; i < handler.getSlots(); i++)
+					((IItemHandlerModifiable)handler).setStackInSlot(i, inventory.get(i));
+			}
+			else
+				IELogger.warn("No valid inventory handler found for "+stack);
+		});
 	}
 
 	public NonNullList<ItemStack> getContainedItems(ItemStack stack)
 	{
-		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if(handler instanceof IEItemStackHandler)
-			return ((IEItemStackHandler)handler).getContainedItems();
-		else if(handler!=null)
-		{
-			IELogger.warn("Inefficiently getting contained items. Why does "+stack+" have a non-IE IItemHandler?");
-			NonNullList<ItemStack> inv = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
-			for(int i = 0; i < handler.getSlots(); i++)
-				inv.set(i, handler.getStackInSlot(i));
-			return inv;
-		}
-		else
-			IELogger.info("No valid inventory handler found for "+stack);
-		return NonNullList.create();
-	}
-
-	@Override
-	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
-	{
-		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
-		//Update old inventories to caps
-		if(ItemNBTHelper.hasKey(stack, "Inv"))
-		{
-			NBTTagList list = ItemNBTHelper.getTag(stack).getList("Inv", 10);
-			setContainedItems(stack, Utils.readInventory(list, getSlotCount(stack)));
-			ItemNBTHelper.remove(stack, "Inv");
-			//Sync the changes
-			if(entityIn instanceof EntityPlayerMP&&!worldIn.isRemote)
-				((EntityPlayerMP)entityIn).connection.sendPacket(new SPacketSetSlot(-2, itemSlot, stack));
-		}
+		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<NonNullList<ItemStack>> ret = lazyHandler.map(handler -> {
+			if(handler instanceof IEItemStackHandler)
+				return ((IEItemStackHandler)handler).getContainedItems();
+			else
+			{
+				IELogger.warn("Inefficiently getting contained items. Why does "+stack+" have a non-IE IItemHandler?");
+				NonNullList<ItemStack> inv = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
+				for(int i = 0; i < handler.getSlots(); i++)
+					inv.set(i, handler.getStackInSlot(i));
+				return inv;
+			}
+		});
+		return ret.orElse(NonNullList.create());
 	}
 }

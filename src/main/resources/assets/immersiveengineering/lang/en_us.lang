@@ -701,7 +701,7 @@ desc.immersiveengineering.info.blueprint.bullet=Common Projectiles
 desc.immersiveengineering.info.blueprint.specialBullet=Specialized Projectiles
 desc.immersiveengineering.info.blueprint.electrode=Arc Furnace Electrodes
 
-desc.immersiveengineering.info.electrodeIntegrity=Integrity
+desc.immersiveengineering.info.electrodeIntegrity=Integrity %1$s %
 
 desc.immersiveengineering.info.bullet.flareColour=Flare Colour: %1$s
 
@@ -789,6 +789,7 @@ desc.immersiveengineering.flavour.drill.noHead=No Drill head equipped
 desc.immersiveengineering.flavour.drill.headDamage=Drill head status:
 desc.immersiveengineering.flavour.drill.fuel=Fuel:
 desc.immersiveengineering.flavour.drill.empty=Empty
+desc.immersiveengineering.flavour.fluidStack=%1$s: %2$s/%3$smB
 
 desc.immersiveengineering.flavour.drillhead.size=Mining Area: %1$sx%1$sx%2$s
 desc.immersiveengineering.flavour.drillhead.level=Mining Level: %1$s

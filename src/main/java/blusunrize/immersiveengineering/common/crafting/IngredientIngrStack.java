@@ -55,7 +55,7 @@ public class IngredientIngrStack extends Ingredient
 				if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
 				{
 					NonNullList<ItemStack> lst = NonNullList.create();
-					stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
+					stack.getItem().fillItemGroup(CreativeTabs.SEARCH, lst);
 					for(ItemStack item : lst)
 						list2.add(item);
 				}
@@ -84,7 +84,7 @@ public class IngredientIngrStack extends Ingredient
 				if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
 				{
 					NonNullList<ItemStack> lst = NonNullList.create();
-					stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
+					stack.getItem().fillItemGroup(CreativeTabs.SEARCH, lst);
 					for(ItemStack item : lst)
 						this.itemIds.add(RecipeItemHelper.pack(item));
 				}

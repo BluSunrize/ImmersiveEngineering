@@ -2,16 +2,20 @@ package blusunrize.immersiveengineering.common.items.tools;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ToolType;
 
 /**
  * @author BluSunrize - 08.07.2018
  */
 public class ItemIEAxe extends ItemToolBase
 {
-	public ItemIEAxe(ToolMaterial materialIn, String name, String toolclass, String oreDict)
+	public ItemIEAxe(IItemTier materialIn, String name, ResourceLocation oreDict)
 	{
-		super(materialIn, name, toolclass, oreDict, AXE_EFFECTIVE, 5.5f, -3.1f);
+		super(materialIn, name, ToolType.AXE, oreDict, ItemAxe.EFFECTIVE_ON, 5.5f, -3.1f);
 	}
 
 	@Override

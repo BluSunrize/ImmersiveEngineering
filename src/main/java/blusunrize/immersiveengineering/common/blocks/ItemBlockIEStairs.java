@@ -35,7 +35,7 @@ public class ItemBlockIEStairs extends ItemBlock
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList)
+	public void fillItemGroup(CreativeTabs tab, NonNullList<ItemStack> itemList)
 	{
 		if(this.isInCreativeTab(tab))
 			this.block.getSubBlocks(tab, itemList);

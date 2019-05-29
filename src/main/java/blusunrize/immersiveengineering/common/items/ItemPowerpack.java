@@ -9,32 +9,33 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nonnull;
@@ -45,16 +46,14 @@ import java.util.List;
  * @author BluSunrize
  * @since 15.06.2017
  */
-public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergyItem
+public class ItemPowerpack extends ItemArmor implements IIEEnergyItem
 {
 	public ItemPowerpack()
 	{
-		super(ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.CHEST);
-		setMaxDamage(0);
+		//TODO custome material rather than leather
+		super(ArmorMaterial.LEATHER, EntityEquipmentSlot.CHEST, new Properties().maxStackSize(1).defaultMaxDamage(0)
+		.group(ImmersiveEngineering.itemGroup));
 		String name = "powerpack";
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.itemGroup);
-//		ImmersiveEngineering.registerItem(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
@@ -72,10 +71,10 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-		list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
+		list.add(new TextComponentTranslation(Lib.DESC+"info.energyStored", stored));
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	}
 
 	@Override
-	public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack)
+	public void onArmorTick(ItemStack itemStack, World world, EntityPlayer player)
 	{
 		int energy = getEnergyStored(itemStack);
 		if(energy > 0)
@@ -101,29 +100,6 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 	}
 
 	@Override
-	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
-	{
-		return HashMultimap.create();
-	}
-
-	@Override
-	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
-	{
-		return new ArmorProperties(0, 0, 0);
-	}
-
-	@Override
-	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
-	{
-		return 0;
-	}
-
-	@Override
-	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot)
-	{
-	}
-
-	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
 		return 100000;
@@ -135,19 +111,14 @@ public class ItemPowerpack extends ItemArmor implements ISpecialArmor, IIEEnergy
 		if(!stack.isEmpty())
 			return new ICapabilityProvider()
 			{
-				final EnergyHelper.ItemEnergyStorage energyStorage = new EnergyHelper.ItemEnergyStorage(stack);
-
-				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
-				{
-					return capability==CapabilityEnergy.ENERGY;
-				}
+				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = ApiUtils.constantOptional(
+						new EnergyHelper.ItemEnergyStorage(stack));
 
 				@Nullable
 				@Override
-				public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 				{
-					return capability==CapabilityEnergy.ENERGY?(T)energyStorage: null;
+					return capability==CapabilityEnergy.ENERGY?energyStorage.cast(): null;
 				}
 			};
 		else
