@@ -53,7 +53,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -165,7 +167,7 @@ public class ApiUtils
 
 	public static Ingredient createIngredientFromList(List<ItemStack> list)
 	{
-		return Ingredient.fromStacks(list.toArray(new ItemStack[list.size()]));
+		return Ingredient.fromStacks(list.toArray(new ItemStack[0]));
 	}
 
 	@Deprecated
@@ -242,7 +244,7 @@ public class ApiUtils
 
 	public static int getComponentIngotWorth(ItemStack stack)
 	{
-		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
+		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);
 		String key = getMetalComponentType(stack, keys);
 		if(key!=null)
 		{
@@ -258,7 +260,7 @@ public class ApiUtils
 
 	public static ItemStack breakStackIntoIngots(ItemStack stack)
 	{
-		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
+		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);
 		String[] type = getMetalComponentTypeAndMetal(stack, keys);
 		if(type!=null)
 		{
@@ -272,9 +274,9 @@ public class ApiUtils
 		return ItemStack.EMPTY;
 	}
 
-	public static Object[] breakStackIntoPreciseIngots(ItemStack stack)
+	public static Pair<ItemStack, Double> breakStackIntoPreciseIngots(ItemStack stack)
 	{
-		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
+		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);
 		String[] type = getMetalComponentTypeAndMetal(stack, keys);
 		if(type!=null)
 		{
@@ -282,7 +284,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return new Object[]{IEApi.getPreferredOreStack("ingot"+type[1]), val};
+				return new ImmutablePair<>(IEApi.getPreferredOreStack("ingot"+type[1]), val);
 			}
 		}
 		return null;

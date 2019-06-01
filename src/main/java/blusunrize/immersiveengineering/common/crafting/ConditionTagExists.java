@@ -8,24 +8,34 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.gson.JsonObject;
 import net.minecraft.util.JsonUtils;
-import net.minecraftforge.common.crafting.IConditionFactory;
-import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IConditionSerializer;
 
+import javax.annotation.Nonnull;
 import java.util.function.BooleanSupplier;
 
 /**
  * @author BluSunrize
  * @since 09.07.2017
  */
-public class ConditionFactoryOreExists implements IConditionFactory
+public class ConditionTagExists implements IConditionSerializer
 {
-	@Override
-	public BooleanSupplier parse(JsonContext context, JsonObject json)
+	static
 	{
-		String key = JsonUtils.getString(json, "ore");
+		CraftingHelper.register(new ResourceLocation(ImmersiveEngineering.MODID, "tag_exists"),
+				new ConditionTagExists());
+	}
+
+	@Nonnull
+	@Override
+	public BooleanSupplier parse(@Nonnull JsonObject json)
+	{
+		String key = JsonUtils.getString(json, "tag");
 		boolean value = JsonUtils.getBoolean(json, "value", true);
 		return () -> ApiUtils.isExistingOreName(key)==value;
 	}

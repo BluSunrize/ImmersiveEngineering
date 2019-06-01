@@ -19,8 +19,8 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -30,7 +30,12 @@ public class ArcRecyclingThreadHandler extends Thread
 	static boolean hasProfiled = false;
 	private ArrayList<RecyclingCalculation> validated;
 	private ArrayListMultimap<ItemStack, RecyclingCalculation> nonValidated;
-	private List<IRecipe> recipeList = new ArrayList<>(ForgeRegistries.RECIPES.getValuesCollection());
+	private List<IRecipe> recipeList;
+
+	public ArcRecyclingThreadHandler(World w)
+	{
+		recipeList = new ArrayList<>(w.getRecipeManager().getRecipes());
+	}
 
 	@Override
 	public void run()
@@ -94,7 +99,7 @@ public class ArcRecyclingThreadHandler extends Thread
 			{
 				for(ItemStack key : nonValidated.keySet())
 				{
-					if(OreDictionary.itemMatches(key, valid.stack, false))
+					if(ItemStack.areItemsEqual(key, valid.stack))
 						for(RecyclingCalculation nonValid : nonValidated.get(key))
 							if(nonValid.validateSubcomponent(valid))
 								newlyValid.add(nonValid);
@@ -186,18 +191,18 @@ public class ArcRecyclingThreadHandler extends Thread
 					ItemStack inputStack = IEApi.getPreferredStackbyMod(in.getMatchingStacks());
 					if(inputStack.isEmpty())
 					{
-						IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getRegistryName()+")");
+						IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getId()+")");
 						return null;
 					}
 
-					Object[] brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
+					Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
 					if(brokenDown==null)
 					{
 						if(isValidForRecycling(inputStack))
 						{
 							boolean b = false;
 							for(ItemStack storedMiss : missingSub.keySet())
-								if(OreDictionary.itemMatches(inputStack, storedMiss, false))
+								if(ItemStack.areItemsEqual(inputStack, storedMiss))
 								{
 									missingSub.put(storedMiss, missingSub.get(storedMiss)+inputStack.getCount());
 									b = true;
@@ -207,24 +212,23 @@ public class ArcRecyclingThreadHandler extends Thread
 						}
 						continue;
 					}
-					if(brokenDown[0] instanceof ItemStack&&!((ItemStack)brokenDown[0]).isEmpty()
-							&&brokenDown[1]!=null&&(Double)brokenDown[1] > 0)
+					if(!brokenDown.getLeft().isEmpty()&&brokenDown.getRight() > 0)
 					{
 						boolean invalidOutput = false;
 						for(Object invalid : ArcFurnaceRecipe.invalidRecyclingOutput)
-							if(ApiUtils.stackMatchesObject((ItemStack)brokenDown[0], invalid))
+							if(ApiUtils.stackMatchesObject(brokenDown.getLeft(), invalid))
 								invalidOutput = true;
 						if(!invalidOutput)
 						{
 							boolean b = false;
 							for(ItemStack storedOut : outputs.keySet())
-								if(OreDictionary.itemMatches((ItemStack)brokenDown[0], storedOut, false))
+								if(ItemStack.areItemsEqual(brokenDown.getLeft(), storedOut))
 								{
-									outputs.put(storedOut, outputs.get(storedOut)+(Double)brokenDown[1]);
+									outputs.put(storedOut, outputs.get(storedOut)+brokenDown.getRight());
 									b = true;
 								}
 							if(!b)
-								outputs.put(Utils.copyStackWithAmount((ItemStack)brokenDown[0], 1), (Double)brokenDown[1]);
+								outputs.put(Utils.copyStackWithAmount(brokenDown.getLeft(), 1), brokenDown.getRight());
 						}
 					}
 				}
@@ -234,8 +238,6 @@ public class ArcRecyclingThreadHandler extends Thread
 			if(!outputs.isEmpty()||!missingSub.isEmpty())
 			{
 				ItemStack in = Utils.copyStackWithAmount(stack, 1);
-				if(in.getItem().isDamageable())
-					in.setItemDamage(OreDictionary.WILDCARD_VALUE);
 				RecyclingCalculation calc = new RecyclingCalculation(recipe, in
 						, outputScaled);
 				if(!missingSub.isEmpty())
@@ -276,7 +278,7 @@ public class ArcRecyclingThreadHandler extends Thread
 			while(it.hasNext())
 			{
 				ItemStack next = it.next();
-				if(OreDictionary.itemMatches(next, calc.stack, false))
+				if(ItemStack.areItemsEqual(next, calc.stack))
 				{
 					double queriedAmount = queriedSubcomponents.get(next);
 					for(Map.Entry<ItemStack, Double> e : calc.outputs.entrySet())
@@ -284,7 +286,7 @@ public class ArcRecyclingThreadHandler extends Thread
 						double scaledVal = e.getValue()*queriedAmount;
 						boolean b = true;
 						for(ItemStack key : outputs.keySet())
-							if(OreDictionary.itemMatches(key, e.getKey(), false))
+							if(ItemStack.areItemsEqual(key, e.getKey()))
 							{
 								outputs.put(key, outputs.get(key)+scaledVal);
 								b = false;

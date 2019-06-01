@@ -16,20 +16,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
-import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class RecipeFactoryShapedIngredient implements IRecipeFactory
+public class RecipeSerializerShapedIngredient implements IRecipeSerializer<RecipeShapedIngredient>
 {
 	@Override
 	public IRecipe parse(JsonContext context, JsonObject json)

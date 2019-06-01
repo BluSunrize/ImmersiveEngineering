@@ -8,21 +8,27 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipesBanners;
+import net.minecraft.item.crafting.BannerAddPatternRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 
 /**
  * @author BluSunrize - 18.09.2016
  */
-public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
+public class RecipeBannerAdvanced extends BannerAddPatternRecipe
 {
 	public static LinkedHashMap<BannerPattern, RecipeReference> advancedPatterns = new LinkedHashMap<>();
 
@@ -41,14 +47,14 @@ public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 
 	}
 
-	public RecipeBannerAdvanced()
+	public RecipeBannerAdvanced(ResourceLocation id)
 	{
-		super();
+		super(id);
 	}
 
 	@Override
 	@Nullable
-	protected BannerPattern matchPatterns(InventoryCrafting invCrafting)
+	public BannerPattern func_201838_c(IInventory invCrafting)
 	{
 		for(BannerPattern pattern : BannerPattern.values())
 			if(advancedPatterns.containsKey(pattern))
@@ -58,10 +64,10 @@ public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 				boolean hasIngr = false;
 				boolean hasColour = false;
 
-				for(int i = 0; i < invCrafting.getSizeInventory()&&matchesPattern; i++)
+				for(int i = 0; i < invCrafting.getSizeInventory(); i++)
 				{
 					ItemStack itemstack = invCrafting.getStackInSlot(i);
-					if(!itemstack.isEmpty()&&itemstack.getItem()!=Items.BANNER)
+					if(!itemstack.isEmpty()&&!itemstack.getItem().isIn(ItemTags.BANNERS))
 					{
 						if(Utils.isDye(itemstack))
 						{
@@ -94,7 +100,7 @@ public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 									break;
 								}
 								ItemStack bannerCheck = invCrafting.getStackInSlot(bannerSlot);
-								if(bannerCheck.isEmpty()||bannerCheck.getItem()!=Items.BANNER)
+								if(bannerCheck.isEmpty()||!bannerCheck.getItem().isIn(ItemTags.BANNERS))
 								{
 									matchesPattern = false;
 									break;
@@ -110,6 +116,17 @@ public class RecipeBannerAdvanced extends RecipesBanners.RecipeAddPattern
 					return pattern;
 			}
 		return null;
+	}
+
+	private static final IRecipeSerializer<RecipeBannerAdvanced> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":adv_banner", RecipeBannerAdvanced::new)
+	);
+
+	@Nonnull
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		return SERIALIZER;
 	}
 
 	private static class RecipeReference

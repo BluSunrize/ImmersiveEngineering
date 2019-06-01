@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author BluSunrize - 03.07.2017
@@ -35,7 +36,7 @@ public class IngredientIngrStack extends Ingredient
 
 	public IngredientIngrStack(IngredientStack ingredientStack)
 	{
-		super(0);
+		super(Stream.empty());
 		this.ingredientStack = ingredientStack;
 	}
 

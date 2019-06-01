@@ -15,6 +15,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.*;
@@ -62,12 +63,12 @@ public class MetalPressRecipe extends MultiblockRecipe
 		this.jeiTotalItemInputList.add(mold.stack);
 	}
 
-	public boolean matches(ItemStack mold, ItemStack input)
+	public boolean matches(ItemStack mold, ItemStack input, World world)
 	{
 		return this.input.matches(input);
 	}
 
-	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input)
+	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, World world)
 	{
 		return this;
 	}
@@ -86,15 +87,15 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return r;
 	}
 
-	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input)
+	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, World world)
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold, false);
 		List<MetalPressRecipe> list = recipeList.get(comp);
 		for(MetalPressRecipe recipe : list)
-			if(recipe.matches(mold, input))
-				return recipe.getActualRecipe(mold, input);
+			if(recipe.matches(mold, input, world))
+				return recipe.getActualRecipe(mold, input, world);
 		return null;
 	}
 

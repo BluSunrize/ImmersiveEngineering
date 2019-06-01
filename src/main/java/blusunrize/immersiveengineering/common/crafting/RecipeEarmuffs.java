@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -16,21 +17,34 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
-public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeEarmuffs implements IRecipe
 {
+	public static final IRecipeSerializer<RecipeEarmuffs> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":earmuffs", RecipeEarmuffs::new)
+	);
+	private final ResourceLocation id;
+
+	public RecipeEarmuffs(ResourceLocation rl)
+	{
+		id = rl;
+	}
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(IInventory inv, @Nonnull World worldIn)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -41,7 +55,9 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 			if(!stackInSlot.isEmpty())
 				if(earmuffs.isEmpty()&&IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					earmuffs = stackInSlot;
-				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ItemArmor&&((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.HEAD&&!IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ItemArmor&&
+						((ItemArmor)stackInSlot.getItem()).getEquipmentSlot()==EntityEquipmentSlot.HEAD&&
+						!IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -53,8 +69,9 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 		else return !armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Earmuffs)&&earmuffs.isEmpty()&&list.isEmpty();
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -80,7 +97,7 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = EntitySheep.getDyeRgb(EnumDyeColor.byDyeDamage(Utils.getDye(stackInSlot)));
+					float[] afloat = EntitySheep.getDyeRgb(Utils.getDye(stackInSlot));
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
@@ -90,7 +107,9 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 					colourArray[2] += b;
 					++totalColourSets;
 				}
-				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ItemArmor&&((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.HEAD&&!IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ItemArmor&&
+						((ItemArmor)stackInSlot.getItem()).getEquipmentSlot()==EntityEquipmentSlot.HEAD&&
+						!IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 		}
 
@@ -135,16 +154,18 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 		return width >= 2&&height >= 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemBullet, 1, 10);
+		return new ItemStack(IEContent.itemBullet, 1);
 	}
 
+	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
 	{
-		NonNullList<ItemStack> remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		NonNullList<ItemStack> remaining = IRecipe.super.getRemainingItems(inv);
 		for(int i = 0; i < remaining.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
@@ -152,5 +173,18 @@ public class RecipeEarmuffs extends net.minecraftforge.registries.IForgeRegistry
 				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Earmuffs));
 		}
 		return remaining;
+	}
+
+	@Override
+	public ResourceLocation getId()
+	{
+		return id;
+	}
+
+	@Nonnull
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		return SERIALIZER;
 	}
 }

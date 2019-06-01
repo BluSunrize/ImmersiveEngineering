@@ -17,7 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 
 import java.util.HashMap;
 
@@ -29,7 +30,7 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 	private final int gridSize;
 	private final int totalAmount;
 	private final int baseEnergy;
-	private HashMap<ComparableItemStack, PackedDelegate> cache = new HashMap();
+	private HashMap<ComparableItemStack, PackedDelegate> cache = new HashMap<>();
 
 	public MetalPressPackingRecipe(ComparableItemStack mold, int energy, int gridSize)
 	{
@@ -42,7 +43,9 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 			ComparableItemStack comp = ComparableItemStack.readFromNBT(nbt.getCompound("mapKey"));
 			if(cache.containsKey(comp))
 				return cache.get(comp);
-			PackedDelegate delegate = new PackedDelegate(comp, new ItemStack(nbt.getCompound("output")), IngredientStack.readFromNBT(nbt.getCompound("input")), ComparableItemStack.readFromNBT(nbt.getCompound("mold")), nbt.getInt("energy"));
+			PackedDelegate delegate = new PackedDelegate(comp, ItemStack.read(nbt.getCompound("output")),
+					IngredientStack.readFromNBT(nbt.getCompound("input")),
+					ComparableItemStack.readFromNBT(nbt.getCompound("mold")), nbt.getInt("energy"));
 			cache.put(comp, delegate);
 			return delegate;
 		});
@@ -55,15 +58,15 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 	}
 
 	@Override
-	public boolean matches(ItemStack mold, ItemStack input)
+	public boolean matches(ItemStack mold, ItemStack input, World world)
 	{
-		return input.getCount() >= this.totalAmount&&getOutputCached(input)!=null;
+		return input.getCount() >= this.totalAmount&&getOutputCached(input, world)!=null;
 	}
 
 	@Override
-	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input)
+	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, World world)
 	{
-		return getOutputCached(input);
+		return getOutputCached(input, world);
 	}
 
 	public static class PackedDelegate extends MetalPressRecipe
@@ -87,7 +90,7 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 		{
 			nbt.setString("type", "packing"+input.inputSize);
 			nbt.setTag("mapKey", mapKey.writeToNBT(new NBTTagCompound()));
-			nbt.setTag("output", output.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("output", output.write(new NBTTagCompound()));
 			nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("mold", mold.writeToNBT(new NBTTagCompound()));
 			nbt.setInt("energy", (int)(getTotalProcessEnergy()/energyModifier));
@@ -95,14 +98,14 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 		}
 	}
 
-	private PackedDelegate getOutputCached(ItemStack input)
+	private PackedDelegate getOutputCached(ItemStack input, World world)
 	{
 		ComparableItemStack comp = new ComparableItemStack(input, true, false);
 		if(this.cache.containsKey(comp))
 			return this.cache.get(comp);
 
 		comp.copy();
-		ItemStack out = getPackedOutput(this.gridSize, this.totalAmount, input);
+		ItemStack out = getPackedOutput(this.gridSize, this.totalAmount, input, world);
 		if(out.isEmpty())
 		{
 			this.cache.put(comp, null);
@@ -113,10 +116,10 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 		return delegate;
 	}
 
-	public static ItemStack getPackedOutput(int gridSize, int totalAmount, ItemStack stack)
+	public static ItemStack getPackedOutput(int gridSize, int totalAmount, ItemStack stack, World world)
 	{
 		InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(gridSize, gridSize, NonNullList.withSize(totalAmount, stack.copy()));
-		IRecipe recipe = Utils.findRecipe(invC, FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
+		IRecipe recipe = world.getRecipeManager().getRecipe(invC, world, VanillaRecipeTypes.CRAFTING);
 		if(recipe!=null)
 			return recipe.getCraftingResult(invC);
 		return ItemStack.EMPTY;

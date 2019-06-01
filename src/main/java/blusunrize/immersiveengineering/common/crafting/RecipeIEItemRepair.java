@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeRepairItem;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -24,8 +25,9 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 {
 	private Ingredient tool;
 
-	public RecipeIEItemRepair(Ingredient tool)
+	public RecipeIEItemRepair(ResourceLocation name, Ingredient tool)
 	{
+		super(name);
 		this.tool = tool;
 	}
 
@@ -97,5 +99,10 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 				return null;
 		}
 		return indexInRet==2?ret: null;
+	}
+
+	public Ingredient getToolIngredient()
+	{
+		return tool;
 	}
 }

@@ -10,11 +10,13 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nullable;
+import java.util.stream.Stream;
 
 /**
  * @author BluSunrize - 03.07.2017
@@ -25,7 +27,7 @@ public class IngredientFluidStack extends Ingredient
 
 	public IngredientFluidStack(FluidStack fluid)
 	{
-		super(0);
+		super(Stream.empty());
 		this.fluid = fluid;
 	}
 
@@ -52,7 +54,7 @@ public class IngredientFluidStack extends Ingredient
 	}
 
 	@Override
-	public boolean apply(@Nullable ItemStack stack)
+	public boolean test(@Nullable ItemStack stack)
 	{
 		if(stack==null)
 		{
@@ -63,5 +65,11 @@ public class IngredientFluidStack extends Ingredient
 			FluidStack fs = FluidUtil.getFluidContained(stack);
 			return fs==null&&this.fluid==null||fs!=null&&fs.containsFluid(fluid);
 		}
+	}
+
+	@Override
+	public IIngredientSerializer<? extends Ingredient> getSerializer()
+	{
+		return IngredientSerializerFluidStack.INSTANCE;
 	}
 }

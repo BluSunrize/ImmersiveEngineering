@@ -336,7 +336,7 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 	@Override
 	public MetalPressRecipe findRecipeForInsertion(ItemStack inserting)
 	{
-		return MetalPressRecipe.findRecipe(mold, inserting);
+		return MetalPressRecipe.findRecipe(mold, inserting, world);
 	}
 
 	@Override

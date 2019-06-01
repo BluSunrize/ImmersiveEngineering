@@ -59,13 +59,13 @@ public class MixerRecipePotion extends MixerRecipe
 			MixerRecipePotion recipe = REGISTERED.get(output);
 			recipe.addAlternateInput(input, reagent);
 		}
-		else if(!BLACKLIST.contains(PotionType.REGISTRY.getNameForObject(output).toString()))
+		else if(!BLACKLIST.contains(output.getRegistryName().toString()))
 		{
 			MixerRecipePotion recipe = new MixerRecipePotion(output, input, reagent);
 			MixerRecipe.recipeList.add(recipe);
 			REGISTERED.put(output, recipe);
 
-			BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), output),
+			BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), output),
 					new ItemStack(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
 		}
 	}
@@ -76,7 +76,7 @@ public class MixerRecipePotion extends MixerRecipe
 			return new FluidStack(FluidRegistry.WATER, amount);
 		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
 		stack.tag = new NBTTagCompound();
-		stack.tag.setString("Potion", PotionType.REGISTRY.getNameForObject(type).toString());
+		stack.tag.setString("Potion", type.getRegistryName().toString());
 		return stack;
 	}
 

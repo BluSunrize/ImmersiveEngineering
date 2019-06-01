@@ -31,19 +31,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		for(Entry<ItemStack, Double> e : outputs.entrySet())
 		{
 			double scaledOut = e.getValue();
-			//Noone likes nuggets anyway >_>
-			if(scaledOut >= 1)
-				outputList.add(Utils.copyStackWithAmount(e.getKey(), (int)scaledOut));
-			int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
-			if(nuggetOut > 0)
-			{
-				String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingot");
-				if(type!=null)
-				{
-					ItemStack nuggets = IEApi.getPreferredOreStack("nugget"+type[1]);
-					outputList.add(Utils.copyStackWithAmount(nuggets, nuggetOut));
-				}
-			}
+			addOutputToList(scaledOut, outputList, e);
 		}
 	}
 
@@ -52,26 +40,35 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	{
 		if(outputs==null)
 			return NonNullList.create();
-		float mod = !input.isItemStackDamageable()?1: (input.getMaxDamage()-input.getItemDamage())/(float)input.getMaxDamage();
+		float mod;
+		if(!input.isDamageable())
+			mod = 1;
+		else
+			mod = (input.getMaxDamage()-input.getDamage())/(float)input.getMaxDamage();
 		NonNullList<ItemStack> outs = NonNullList.create();
 		for(Entry<ItemStack, Double> e : outputs.entrySet())
 		{
 			double scaledOut = mod*e.getValue();
-			//Noone likes nuggets anyway >_>
-			if(scaledOut >= 1)
-				outs.add(Utils.copyStackWithAmount(e.getKey(), (int)scaledOut));
-			int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
-			if(nuggetOut > 0)
-			{
-				String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingot");
-				if(type!=null)
-				{
-					ItemStack nuggets = IEApi.getPreferredOreStack("nugget"+type[1]);
-					outs.add(Utils.copyStackWithAmount(nuggets, nuggetOut));
-				}
-			}
+			addOutputToList(scaledOut, outs, e);
 		}
 		return outs;
+	}
+
+	private void addOutputToList(double scaledOut, NonNullList<ItemStack> outs, Entry<ItemStack, Double> e)
+	{
+		//Noone likes nuggets anyway >_>
+		if(scaledOut >= 1)
+			outs.add(Utils.copyStackWithAmount(e.getKey(), (int)scaledOut));
+		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
+		if(nuggetOut > 0)
+		{
+			String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingot");
+			if(type!=null)
+			{
+				ItemStack nuggets = IEApi.getPreferredOreStack("nugget"+type[1]);
+				outs.add(Utils.copyStackWithAmount(nuggets, nuggetOut));
+			}
+		}
 	}
 
 	@Override
