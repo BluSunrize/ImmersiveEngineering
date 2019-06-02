@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -15,20 +16,33 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
-public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeFlareBullets implements IRecipe
 {
+	public static final IRecipeSerializer<RecipeFlareBullets> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":flare_bullets", RecipeFlareBullets::new)
+	);
+
+	private final ResourceLocation id;
+
+	public RecipeFlareBullets(ResourceLocation id)
+	{
+		this.id = id;
+	}
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(IInventory inv, @Nonnull World world)
 	{
 		ItemStack bullet = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
@@ -37,7 +51,8 @@ public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegi
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&"flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&
+						"flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -48,8 +63,9 @@ public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegi
 		return !bullet.isEmpty()&&!list.isEmpty();
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
@@ -75,7 +91,7 @@ public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegi
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = EntitySheep.getDyeRgb(EnumDyeColor.byDyeDamage(Utils.getDye(stackInSlot)));
+					float[] afloat = EntitySheep.getDyeRgb(Utils.getDye(stackInSlot));
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
@@ -112,15 +128,24 @@ public class RecipeFlareBullets extends net.minecraftforge.registries.IForgeRegi
 		return width >= 2&&height >= 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
 		return BulletHandler.getBulletStack("flare");
 	}
 
+	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public IRecipeSerializer<?> getSerializer()
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return SERIALIZER;
+	}
+
+	@Nonnull
+	@Override
+	public ResourceLocation getId()
+	{
+		return id;
 	}
 }

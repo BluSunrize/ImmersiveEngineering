@@ -8,19 +8,34 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+import javax.annotation.Nonnull;
+
+public class RecipeRevolver implements IRecipe
 {
+	public static final IRecipeSerializer<RecipeRevolver> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":revolver", RecipeRevolver::new)
+	);
+
+	private final ResourceLocation id;
+
+	public RecipeRevolver(ResourceLocation id)
+	{
+		this.id = id;
+	}
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(IInventory inv, @Nonnull World world)
 	{
 		ItemStack revolver = ItemStack.EMPTY;
 		for(int i = 0; i < inv.getSizeInventory(); i++)
@@ -28,7 +43,7 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty()&&OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver, 1, OreDictionary.WILDCARD_VALUE), stackInSlot, false)&&stackInSlot.getItemDamage()!=1)
+				if(revolver.isEmpty()&&stackInSlot.getItem()==IEContent.itemRevolver)
 					revolver = stackInSlot;
 				else
 					return false;
@@ -37,8 +52,9 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 		return !revolver.isEmpty();
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		ItemStack revolver = ItemStack.EMPTY;
 		for(int i = 0; i < inv.getSizeInventory(); i++)
@@ -46,7 +62,7 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty()&&OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver, 1, OreDictionary.WILDCARD_VALUE), stackInSlot, false)&&stackInSlot.getItemDamage()!=1)
+				if(revolver.isEmpty()&&stackInSlot.getItem()==IEContent.itemRevolver)
 					revolver = stackInSlot.copy();
 				else
 					return ItemStack.EMPTY;
@@ -61,6 +77,7 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 		return width >= 2&&height >= 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
@@ -68,8 +85,14 @@ public class RecipeRevolver extends net.minecraftforge.registries.IForgeRegistry
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public ResourceLocation getId()
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return id;
+	}
+
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		return SERIALIZER;
 	}
 }

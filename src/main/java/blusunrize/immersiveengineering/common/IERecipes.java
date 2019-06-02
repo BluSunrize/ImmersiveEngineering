@@ -45,7 +45,7 @@ public class IERecipes
 	public static void initCraftingRecipes(IForgeRegistry<IRecipe> registry)
 	{
 		//Recipe Sorter is deprecated apparently
-		//RecipeSorter.register(ImmersiveEngineering.MODID+":shapedIngredient", RecipeShapedIngredient.class, Category.SHAPED, "after:forge:shapedore");
+		//RecipeSorter.register(ImmersiveEngineering.MODID+":shapedIngredient", RecipeTurnAndCopy.class, Category.SHAPED, "after:forge:shapedore");
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":shapelessIngredient", RecipeShapelessIngredient.class, Category.SHAPELESS, "after:forge:shapedore");
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":banners", RecipeBannerAdvanced.class, Category.SHAPELESS, "after:forge:shapelessore");
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":RGBColour", RecipeRGBColouration.class, Category.SHAPELESS, "after:forge:shapelessore");
@@ -57,14 +57,17 @@ public class IERecipes
 
 		//Loop, special or colouration recipes
 		registry.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
-		registry.register(new RecipeRevolver().setRegistryName(ImmersiveEngineering.MODID, "revolver_loop"));
-		registry.register(new RecipeSpeeloader().setRegistryName(ImmersiveEngineering.MODID, "speedloader_load"));
-		registry.register(new RecipeJerrycan().setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
-		registry.register(new RecipeShaderBags().setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
+		registry.register(new RecipeRevolver(id).setRegistryName(ImmersiveEngineering.MODID, "revolver_loop"));
+		registry.register(new RecipeSpeedloader().setRegistryName(ImmersiveEngineering.MODID, "speedloader_load"));
+		registry.register(new RecipeJerrycan(id).setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
+		registry.register(new RecipeShaderBags(id).setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
 		registry.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
-		registry.register(new RecipePowerpack().setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
+		registry.register(new RecipePowerpack(id).setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
 		final ItemStack stripCurtain = new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
-		registry.register(new RecipeRGBColouration((s) -> (OreDictionary.itemMatches(stripCurtain, s, true)), (s) -> (ItemNBTHelper.hasKey(s, "colour")?ItemNBTHelper.getInt(s, "colour"): 0xffffff), (s, i) -> ItemNBTHelper.setInt(s, "colour", i)).setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
+		registry.register(new RecipeRGBColouration((s) -> (OreDictionary.itemMatches(stripCurtain, s, true)),
+				(s) -> (ItemNBTHelper.hasKey(s, "colour")?ItemNBTHelper.getInt(s, "colour"): 0xffffff),
+				(s, i) -> ItemNBTHelper.setInt(s, "colour", i))
+				.setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
 	}
 
 	public static void addShapelessOredictRecipe(String registryName, ItemStack output, Object... recipe)
@@ -134,7 +137,7 @@ public class IERecipes
 		//Potion
 		bullet = BulletHandler.getBulletStack("potion");
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Items.GLASS_BOTTLE);
-		ForgeRegistries.RECIPES.register(new RecipePotionBullets().setRegistryName(ImmersiveEngineering.MODID, "bullet_potion"));
+		ForgeRegistries.RECIPES.register(new RecipePotionBullets(id).setRegistryName(ImmersiveEngineering.MODID, "bullet_potion"));
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 		//Flare
 		bullet = BulletHandler.getBulletStack("flare");
@@ -144,7 +147,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeGreen");
 		ItemNBTHelper.setInt(bullet, "flareColour", 0xffff82);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
-		ForgeRegistries.RECIPES.register(new RecipeFlareBullets().setRegistryName(ImmersiveEngineering.MODID, "potion_flare"));
+		ForgeRegistries.RECIPES.register(new RecipeFlareBullets(id).setRegistryName(ImmersiveEngineering.MODID, "potion_flare"));
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":flareBullet", RecipeFlareBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 
 		//Wolfpack

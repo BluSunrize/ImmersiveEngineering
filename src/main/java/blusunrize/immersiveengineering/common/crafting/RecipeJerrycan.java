@@ -8,15 +8,19 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -24,10 +28,21 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
 
-public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeJerrycan implements IRecipe
 {
+	public static final IRecipeSerializer<RecipeJerrycan> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":jerrycan", RecipeJerrycan::new)
+	);
+
+	private final ResourceLocation id;
+
+	public RecipeJerrycan(ResourceLocation id)
+	{
+		this.id = id;
+	}
+
 	@Override
-	public boolean matches(@Nonnull InventoryCrafting inv, World world)
+	public boolean matches(@Nonnull IInventory inv, World world)
 	{
 
 		ItemStack jerrycan = ItemStack.EMPTY;
@@ -48,7 +63,7 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
+	public ItemStack getCraftingResult(@Nonnull IInventory inv)
 	{
 		ItemStack jerrycan = ItemStack.EMPTY;
 		ItemStack container = ItemStack.EMPTY;
@@ -78,7 +93,7 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 		return ItemStack.EMPTY;
 	}
 
-	private int[] getRelevantSlots(InventoryCrafting inv)
+	private int[] getRelevantSlots(IInventory inv)
 	{
 		int[] ret = {-1, -1};
 		for(int i = 0; i < inv.getSizeInventory(); i++)
@@ -113,12 +128,26 @@ public class RecipeJerrycan extends net.minecraftforge.registries.IForgeRegistry
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
 	{
-		NonNullList<ItemStack> remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		NonNullList<ItemStack> remaining = IRecipe.super.getRemainingItems(inv);
 		int[] inputs = getRelevantSlots(inv);
 		if(inputs[1] >= 0)
 			remaining.set(inputs[1], ItemStack.EMPTY);
 		return remaining;
+	}
+
+	@Nonnull
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		return SERIALIZER;
+	}
+
+	@Nonnull
+	@Override
+	public ResourceLocation getId()
+	{
+		return id;
 	}
 }

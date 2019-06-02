@@ -11,8 +11,9 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeRepairItem;
 import net.minecraft.util.NonNullList;
@@ -32,14 +33,14 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World worldIn)
+	public boolean matches(IInventory inv, World worldIn)
 	{
 		return getRelevantStacks(inv)!=null;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		int[] relevant = getRelevantStacks(inv);
 		if(relevant==null)
@@ -58,14 +59,14 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 		if(i1 < 0)
 			i1 = 0;
 
-		ItemStack ret = new ItemStack(first.getItem(), 1, first.getMetadata());
+		ItemStack ret = new ItemStack(first.getItem(), 1);
 		ItemNBTHelper.setInt(ret, Lib.NBT_DAMAGE, i1);
 		return ret;
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
 	{
 		NonNullList<ItemStack> ret = super.getRemainingItems(inv);
 		int[] relevantStacks = getRelevantStacks(inv);
@@ -78,7 +79,7 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 	}
 
 
-	private int[] getRelevantStacks(InventoryCrafting inv)
+	private int[] getRelevantStacks(IInventory inv)
 	{
 		int[] ret = new int[2];
 		int indexInRet = 0;
@@ -86,7 +87,7 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 		{
 			ItemStack curr = inv.getStackInSlot(i);
 
-			if(tool.apply(curr)&&curr.getItem() instanceof IItemDamageableIE)
+			if(tool.test(curr)&&curr.getItem() instanceof IItemDamageableIE)
 			{
 				if(indexInRet > 1)
 					return null;
@@ -104,5 +105,12 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 	public Ingredient getToolIngredient()
 	{
 		return tool;
+	}
+
+	@Nonnull
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		return RecipeSerializerIEItemRepair.INSTANCE;
 	}
 }

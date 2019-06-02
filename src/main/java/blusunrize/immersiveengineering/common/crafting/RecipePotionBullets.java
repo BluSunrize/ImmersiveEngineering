@@ -8,22 +8,38 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
-public class RecipePotionBullets extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+import javax.annotation.Nonnull;
+
+public class RecipePotionBullets implements IRecipe
 {
+	public static final IRecipeSerializer<RecipePotionBullets> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":potion_bullets", RecipePotionBullets::new)
+	);
+
+	private final ResourceLocation id;
+
+	public RecipePotionBullets(ResourceLocation id)
+	{
+		this.id = id;
+	}
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(IInventory inv, @Nonnull World world)
 	{
 		ItemStack bullet = ItemStack.EMPTY;
 		ItemStack potion = ItemStack.EMPTY;
@@ -41,8 +57,9 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		return !bullet.isEmpty()&&!potion.isEmpty();
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		ItemStack bullet = ItemStack.EMPTY;
 		ItemStack potion = ItemStack.EMPTY;
@@ -66,15 +83,24 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		return width >= 2&&height >= 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
 		return BulletHandler.getBulletStack("potion");
 	}
 
+	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public IRecipeSerializer<?> getSerializer()
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return SERIALIZER;
+	}
+
+	@Nonnull
+	@Override
+	public ResourceLocation getId()
+	{
+		return id;
 	}
 }

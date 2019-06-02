@@ -11,34 +11,34 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeRGBColouration implements IRecipe
 {
-	final Predicate<ItemStack> predicate;
-	final Function<ItemStack, Integer> colourGetter;
-	final BiConsumer<ItemStack, Integer> colourSetter;
+	private final Ingredient target;
+	private final String colorKey;
+	private final ResourceLocation id;
 
-	public RecipeRGBColouration(Predicate<ItemStack> predicate, Function<ItemStack, Integer> colourGetter, BiConsumer<ItemStack, Integer> colourSetter)
+	public RecipeRGBColouration(Ingredient target, String colorKey, ResourceLocation id)
 	{
-		this.predicate = predicate;
-		this.colourGetter = colourGetter;
-		this.colourSetter = colourSetter;
+
+		this.target = target;
+		this.colorKey = colorKey;
+		this.id = id;
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(IInventory inv, @Nonnull World world)
 	{
 		ItemStack itemToColour = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
@@ -47,7 +47,7 @@ public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRe
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(itemToColour.isEmpty()&&predicate.test(stackInSlot))
+				if(itemToColour.isEmpty()&&target.test(stackInSlot))
 					itemToColour = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -58,8 +58,9 @@ public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRe
 		return !itemToColour.isEmpty()&&!list.isEmpty();
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
@@ -69,10 +70,14 @@ public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(itemToColour.isEmpty()&&predicate.test(stackInSlot))
+				if(itemToColour.isEmpty()&&target.test(stackInSlot))
 				{
 					itemToColour = stackInSlot;
-					int colour = colourGetter.apply(itemToColour);
+					int colour;
+					if(itemToColour.getOrCreateTag().contains(colorKey, NBT.TAG_INT))
+						colour = itemToColour.getOrCreateTag().getInt(colorKey);
+					else
+						colour = 0xff_ff_ff;
 					float r = (float)(colour >> 16&255)/255.0F;
 					float g = (float)(colour >> 8&255)/255.0F;
 					float b = (float)(colour&255)/255.0F;
@@ -84,7 +89,7 @@ public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = EntitySheep.getDyeRgb(EnumDyeColor.byDyeDamage(Utils.getDye(stackInSlot)));
+					float[] afloat = EntitySheep.getDyeRgb(Utils.getDye(stackInSlot));
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
@@ -108,7 +113,7 @@ public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRe
 			b = (int)((float)b*colourMod/highestColour);
 			int newColour = (r<<8)+g;
 			newColour = (newColour<<8)+b;
-			colourSetter.accept(newItem, newColour);
+			newItem.getOrCreateTag().setInt(colorKey, newColour);
 			return newItem;
 		}
 		return ItemStack.EMPTY;
@@ -120,15 +125,34 @@ public class RecipeRGBColouration extends net.minecraftforge.registries.IForgeRe
 		return width >= 2&&height >= 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
 		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public ResourceLocation getId()
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return id;
+	}
+
+	@Nonnull
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		return RecipeSerializerRGB.INSTANCE;
+	}
+
+	public Ingredient getTarget()
+	{
+		return target;
+	}
+
+	public String getColorKey()
+	{
+		return colorKey;
 	}
 }

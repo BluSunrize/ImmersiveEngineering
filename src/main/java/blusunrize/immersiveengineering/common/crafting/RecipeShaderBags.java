@@ -8,21 +8,37 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
-public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+import javax.annotation.Nonnull;
+
+public class RecipeShaderBags implements IRecipe
 {
+	public static final IRecipeSerializer<RecipeShaderBags> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":shader_bags", RecipeShaderBags::new)
+	);
+
+	private final ResourceLocation id;
+
+	public RecipeShaderBags(ResourceLocation id)
+	{
+		this.id = id;
+	}
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(IInventory inv, @Nonnull World world)
 	{
 		ItemStack stack = ItemStack.EMPTY;
 		for(int i = 0; i < inv.getSizeInventory(); i++)
@@ -35,8 +51,6 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 						stack = stackInSlot;
 					else
 						return false;
-//					if(IEContent.itemShader.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "shader_name"))
-//						stack = stackInSlot;
 				}
 				else
 					return false;
@@ -44,8 +58,9 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 		return !stack.isEmpty();
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
@@ -70,6 +85,7 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 		return width >= 2&&height >= 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
@@ -77,8 +93,14 @@ public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegist
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public IRecipeSerializer<?> getSerializer()
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return SERIALIZER;
+	}
+
+	@Override
+	public ResourceLocation getId()
+	{
+		return id;
 	}
 }

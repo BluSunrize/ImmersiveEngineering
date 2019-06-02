@@ -8,23 +8,38 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
-public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipePowerpack implements IRecipe
 {
+	public static final IRecipeSerializer<RecipePowerpack> SERIALIZER = RecipeSerializers.register(
+			new SimpleSerializer<>(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack::new)
+	);
+
+	private final ResourceLocation id;
+
+	public RecipePowerpack(ResourceLocation id)
+	{
+		this.id = id;
+	}
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(IInventory inv, World world)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -45,7 +60,7 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(IInventory inv)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -84,13 +99,13 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemPowerpack, 1, 0);
+		return new ItemStack(IEContent.itemPowerpack, 1);
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
 	{
-		NonNullList<ItemStack> remaining = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		NonNullList<ItemStack> remaining = IRecipe.super.getRemainingItems(inv);
 		for(int i = 0; i < remaining.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
@@ -102,7 +117,7 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 
 	private boolean isValidArmor(ItemStack stack)
 	{
-		if(!(stack.getItem() instanceof ItemArmor)||((ItemArmor)stack.getItem()).armorType!=EntityEquipmentSlot.CHEST)
+		if(!(stack.getItem() instanceof ItemArmor)||((ItemArmor)stack.getItem()).getEquipmentSlot()!=EntityEquipmentSlot.CHEST)
 			return false;
 		if(stack.getItem()==IEContent.itemPowerpack)
 			return false;
@@ -114,5 +129,17 @@ public class RecipePowerpack extends net.minecraftforge.registries.IForgeRegistr
 			if(regName.equals(s))
 				return false;
 		return true;
+	}
+
+	@Override
+	public ResourceLocation getId()
+	{
+		return id;
+	}
+
+	@Override
+	public IRecipeSerializer<?> getSerializer()
+	{
+		return SERIALIZER;
 	}
 }
