@@ -1441,7 +1441,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
 	{
-		ParticleRedstone particle = (ParticleRedstone)ClientUtils.mc().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x, y, z, 0, 0, 0);
+		ParticleRedstone particle = (ParticleRedstone)ClientUtils.mc().effectRenderer.spawnEffectParticle(Particles.REDSTONE.getParticleID(), x, y, z, 0, 0, 0);
 		particle.motionX *= mx;
 		particle.motionY *= my;
 		particle.motionZ *= mz;

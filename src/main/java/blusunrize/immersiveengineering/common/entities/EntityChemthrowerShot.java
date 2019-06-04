@@ -47,7 +47,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 
 	public EntityChemthrowerShot(World world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
 	{
-		super(world, x, y, z, ax, ay, az);
+		super(type, world, x, y, z, ax, ay, az);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}
@@ -136,26 +136,26 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 				if(shooter!=null)
 					thrower = shooter.getHeldItem(EnumHand.MAIN_HAND);
 
-				if(mop.typeOfHit==Type.ENTITY&&mop.entityHit instanceof EntityLivingBase)
-					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluidStack);
-				else if(mop.typeOfHit==Type.BLOCK)
+				if(mop.type==Type.ENTITY&&mop.entity instanceof EntityLivingBase)
+					effect.applyToEntity((EntityLivingBase)mop.entity, shooter, thrower, fluidStack);
+				else if(mop.type==Type.BLOCK)
 					effect.applyToBlock(world, mop, shooter, thrower, fluidStack);
 			}
-			else if(mop.entityHit!=null&&fluid.getTemperature(fluidStack) > 500)
+			else if(mop.entity!=null&&fluid.getTemperature(fluidStack) > 500)
 			{
 				int tempDiff = fluid.getTemperature(fluidStack)-300;
 				int damage = Math.abs(tempDiff)/500;
-				if(mop.entityHit.attackEntityFrom(DamageSource.LAVA, damage))
-					mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);
+				if(mop.entity.attackEntityFrom(DamageSource.LAVA, damage))
+					mop.entity.hurtResistantTime = (int)(mop.entity.hurtResistantTime*.75);
 			}
-			if(mop.entityHit!=null)
+			if(mop.entity!=null)
 			{
 				int f = this.isBurning()?this.fire: fire?3: 0;
 				if(f > 0)
 				{
-					mop.entityHit.setFire(f);
-					if(mop.entityHit.attackEntityFrom(DamageSource.IN_FIRE, 2))
-						mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);
+					mop.entity.setFire(f);
+					if(mop.entity.attackEntityFrom(DamageSource.IN_FIRE, 2))
+						mop.entity.hurtResistantTime = (int)(mop.entity.hurtResistantTime*.75);
 				}
 			}
 		}
@@ -206,17 +206,17 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 	}
 
 //	@Override
-//	protected void writeEntityToNBT(NBTTagCompound nbt)
+//	protected void writeAdditional(NBTTagCompound nbt)
 //	{
-//		super.writeEntityToNBT(nbt);
+//		super.writeAdditional(nbt);
 //		if(this.fluid!=null)
 //			nbt.setString("fluid", this.fluid.getName());
 //	}
 //
 //	@Override
-//	protected void readEntityFromNBT(NBTTagCompound nbt)
+//	protected void readAdditional(NBTTagCompound nbt)
 //	{
-//		super.readEntityFromNBT(nbt);
+//		super.readAdditional(nbt);
 //		this.fluid = FluidRegistry.getFluid(nbt.getString("fluid"));
 //	}
 }

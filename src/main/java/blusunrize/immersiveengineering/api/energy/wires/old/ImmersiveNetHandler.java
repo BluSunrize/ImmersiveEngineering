@@ -526,7 +526,7 @@ public class ImmersiveNetHandler
 					boolean endpointsInEntity = includingExtra.contains(conn.getMiddle())||
 							includingExtra.contains(conn.getRight());
 					RayTraceResult rayRes = endpointsInEntity?null: includingExtra.calculateIntercept(conn.getMiddle(), conn.getRight());
-					if(endpointsInEntity||(rayRes!=null&&rayRes.typeOfHit==RayTraceResult.Type.BLOCK))
+					if(endpointsInEntity||(rayRes!=null&&rayRes.type==RayTraceResult.Type.BLOCK))
 					{
 						IImmersiveConnectable iic = toIIC(conn.getLeft().start, e.world);
 						float damage = 0;

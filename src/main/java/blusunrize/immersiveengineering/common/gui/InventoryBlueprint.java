@@ -15,16 +15,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextComponentString;
 
 public class InventoryBlueprint extends InventoryBasic
 {
-	private final Container container;
 	private final BlueprintCraftingRecipe[] recipes;
 
 	public InventoryBlueprint(Container container, BlueprintCraftingRecipe[] recipes)
 	{
-		super("BlueprintOutput", true, recipes.length);
-		this.container = container;
+		super(new TextComponentString("BlueprintOutput"), recipes.length);
 		this.recipes = recipes;
 	}
 

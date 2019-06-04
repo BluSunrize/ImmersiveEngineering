@@ -90,21 +90,22 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 		{
 			int i = 0;
 			ItemStack held = this.secondHand==null?heldItem: (hand==0)==(player.getPrimaryHand()==EnumHandSide.RIGHT)?secondRevolver: heldItem;
-			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+					.orElseThrow(RuntimeException::new);
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getPrimaryHand()==EnumHandSide.RIGHT)?secondRevolverInventory: this.inv;
 			int revolverSlots = ((IBulletContainer)(held).getItem()).getBulletCount(held);
 
 			if(inv instanceof IEItemStackHandler)
 				((IEItemStackHandler)inv).setInventoryForUpdate(this.inventoryPlayer);
-			this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+29, 3, 1));
+			this.addSlot(new IESlot.Bullet(inv, i++, off+29, 3, 1));
 			int slots = revolverSlots >= 18?2: revolverSlots > 8?1: 0;
 			for(int[] slot : slotPositions[slots])
-				this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+slot[0], slot[1], 1));
-			this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+48, 49, 1));
-			this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+29, 57, 1));
-			this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+10, 49, 1));
-			this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+2, 30, 1));
-			this.addSlotToContainer(new IESlot.Bullet(inv, i++, off+10, 11, 1));
+				this.addSlot(new IESlot.Bullet(inv, i++, off+slot[0], slot[1], 1));
+			this.addSlot(new IESlot.Bullet(inv, i++, off+48, 49, 1));
+			this.addSlot(new IESlot.Bullet(inv, i++, off+29, 57, 1));
+			this.addSlot(new IESlot.Bullet(inv, i++, off+10, 49, 1));
+			this.addSlot(new IESlot.Bullet(inv, i++, off+2, 30, 1));
+			this.addSlot(new IESlot.Bullet(inv, i++, off+10, 11, 1));
 			off += (revolverSlots >= 18?150: revolverSlots > 8?136: 74)+4;
 			total += i;
 		}
@@ -118,10 +119,10 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 		int off = (offset > 0?offset: 0);
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, off+8+j*18, 85+i*18));
+				this.addSlot(new Slot(inventoryPlayer, j+i*9+9, off+8+j*18, 85+i*18));
 
 		for(int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(inventoryPlayer, i, off+8+i*18, 143));
+			this.addSlot(new Slot(inventoryPlayer, i, off+8+i*18, 143));
 	}
 
 
@@ -152,7 +153,8 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 
 		for(int hand = 0; hand < (this.secondHand!=null?2: 1); hand++)
 		{
-			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+					.orElseThrow(RuntimeException::new);
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getPrimaryHand()==EnumHandSide.RIGHT)?secondRevolverInventory: this.inv;
 			if(inv instanceof IEItemStackHandler)
 				((IEItemStackHandler)inv).setInventoryForUpdate(null);

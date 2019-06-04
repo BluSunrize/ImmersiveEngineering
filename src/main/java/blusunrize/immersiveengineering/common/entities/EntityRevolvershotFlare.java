@@ -11,8 +11,6 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
-import elucent.albedo.lighting.ILightProvider;
-import elucent.albedo.lighting.Light;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -21,16 +19,12 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
 
-import javax.annotation.Nullable;
-
-@Optional.Interface(iface = "elucent.albedo.lighting.ILightProvider", modid = "albedo")
-public class EntityRevolvershotFlare extends EntityRevolvershot implements ILightProvider
+public class EntityRevolvershotFlare extends EntityRevolvershot
 {
-	boolean shootUp = false;
 	public int colour = -1;
 	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.createKey(EntityRevolvershotFlare.class, DataSerializers.VARINT);
 	private BlockPos lightPos;
@@ -49,15 +43,15 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 
 	public EntityRevolvershotFlare(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
-		super(world, living, ax, ay, az, type, stack);
+		super(world, living, ax, ay, az, type);
 		this.setTickLimit(400);
 	}
 
 	@Override
-	protected void entityInit()
+	protected void registerData()
 	{
-		super.entityInit();
-		this.dataManager.register(dataMarker_colour, Integer.valueOf(-1));
+		super.registerData();
+		this.dataManager.register(dataMarker_colour, -1);
 	}
 
 	public void setColourSynced()
@@ -76,12 +70,12 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 		if(colour < 0)
 			colour = getColourSynced();
-		if(world.isRemote&&ticksExisted%1==0)
+		if(world.isRemote)
 		{
 			float r = (getColour() >> 16&255)/255f;
 			float g = (getColour() >> 8&255)/255f;
@@ -121,17 +115,17 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult mop)
+	public void onImpact(RayTraceResult mop)
 	{
 		if(ticksExisted <= 40)
 		{
 			if(!this.world.isRemote)
-				if(mop.entityHit!=null)
+				if(mop.type==Type.ENTITY)
 				{
-					if(!mop.entityHit.isImmuneToFire())
-						mop.entityHit.setFire(8);
+					if(!mop.entity.isImmuneToFire())
+						mop.entity.setFire(8);
 				}
-				else if(mop.getBlockPos()!=null)
+				else if(mop.type==Type.BLOCK)
 				{
 					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 					if(this.world.isAirBlock(pos))
@@ -146,10 +140,10 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 				ImmersiveEngineering.proxy.spawnRedstoneFX(world, posX+v.x, posY+v.y, posZ+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
 			}
 		}
-		this.setDead();
+		this.remove();
 	}
 
-	@Nullable
+	/*@Nullable
 	@Optional.Method(modid = "albedo")
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -161,5 +155,5 @@ public class EntityRevolvershotFlare extends EntityRevolvershot implements ILigh
 		if(lightPos!=null)
 			return Light.builder().pos(lightPos).radius(16).color(r, g, b).build();
 		return Light.builder().pos(this).radius(1).color(r, g, b).build();
-	}
+	}*/
 }

@@ -25,9 +25,9 @@ public class ContainerFluidSorter extends Container
 		this.tile = tile;
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 221));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 221));
 	}
 
 	@Override

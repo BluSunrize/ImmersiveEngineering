@@ -23,24 +23,24 @@ public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
 		super(inventoryPlayer, tile);
 		this.tile = tile;
 		for(int i = 0; i < 12; i++)
-			this.addSlotToContainer(new IESlot.ArcInput(this, this.inv, i, 10+i%3*21, 34+i/3*18));
+			this.addSlot(new IESlot.ArcInput(this, this.inv, i, 10+i%3*21, 34+i/3*18));
 		for(int i = 0; i < 4; i++)
-			this.addSlotToContainer(new IESlot.ArcAdditive(this, this.inv, 12+i, 114+i%2*18, 34+i/2*18));
+			this.addSlot(new IESlot.ArcAdditive(this, this.inv, 12+i, 114+i%2*18, 34+i/2*18));
 		for(int i = 0; i < 6; i++)
-			this.addSlotToContainer(new IESlot.Output(this, this.inv, 16+i, 78+i%3*18, 80+i/3*18));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 22, 132, 98));
+			this.addSlot(new IESlot.Output(this, this.inv, 16+i, 78+i%3*18, 80+i/3*18));
+		this.addSlot(new IESlot.Output(this, this.inv, 22, 132, 98));
 
-		this.addSlotToContainer(new IESlot.ArcElectrode(this, this.inv, 23, 62, 10));
-		this.addSlotToContainer(new IESlot.ArcElectrode(this, this.inv, 24, 80, 10));
-		this.addSlotToContainer(new IESlot.ArcElectrode(this, this.inv, 25, 98, 10));
+		this.addSlot(new IESlot.ArcElectrode(this, this.inv, 23, 62, 10));
+		this.addSlot(new IESlot.ArcElectrode(this, this.inv, 24, 80, 10));
+		this.addSlot(new IESlot.ArcElectrode(this, this.inv, 25, 98, 10));
 
 		slotCount = 26;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 126+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 126+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 184));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 184));
 	}
 
 	@Nonnull

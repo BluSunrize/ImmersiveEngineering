@@ -33,13 +33,13 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 
 	public EntityRevolvershotHoming(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
-		super(world, living, ax, ay, az, type, stack);
+		super(world, living, ax, ay, az, type);
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 
 		if(!world.isRemote&&this.ticksExisted > trackCountdown)
 		{
@@ -60,7 +60,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 
 	public EntityLivingBase getTarget()
 	{
-		if(targetOverride!=null&&!targetOverride.isDead)
+		if(targetOverride!=null&&targetOverride.isAlive())
 			return targetOverride;
 		double r = 20D;
 		AxisAlignedBB aabb = new AxisAlignedBB(posX-r, posY-r, posZ-r, posX+r, posY+r, posZ+r);

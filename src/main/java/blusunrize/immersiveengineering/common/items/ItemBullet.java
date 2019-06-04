@@ -34,7 +34,6 @@ import net.minecraft.item.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -49,10 +48,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.UUID;
 
 public class ItemBullet extends ItemIEBase implements ITextureOverride
 {
@@ -98,7 +96,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 		BulletHandler.registerBullet("he", new BulletHandler.DamagingBullet(null, 0, BulletHandler.emptyCasing, new ResourceLocation("immersiveengineering:items/bullet_he"))
 		{
 			@Override
-			public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
+			public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
 			{
 				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
 			}
@@ -268,7 +266,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
 			EntityRevolvershot bullet = (EntityRevolvershot)projectile;
@@ -370,7 +368,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
 		{
 		}
 
@@ -450,7 +448,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
 			Vec3d v = new Vec3d(-projectile.motionX, -projectile.motionY, -projectile.motionZ);

@@ -19,16 +19,16 @@ public class ContainerFermenter extends ContainerIEBase<TileEntityFermenter>
 		super(inventoryPlayer, tile);
 
 		for(int i = 0; i < 8; i++)
-			this.addSlotToContainer(new Slot(this.inv, i, 8+(i%4)*18, 19+(i/4)*18));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 8, 91, 53));
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 9, 134, 17, 0));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 10, 134, 53));
+			this.addSlot(new Slot(this.inv, i, 8+(i%4)*18, 19+(i/4)*18));
+		this.addSlot(new IESlot.Output(this, this.inv, 8, 91, 53));
+		this.addSlot(new IESlot.FluidContainer(this, this.inv, 9, 134, 17, 0));
+		this.addSlot(new IESlot.Output(this, this.inv, 10, 134, 53));
 		slotCount = 11;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 143));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
 	}
 }

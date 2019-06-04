@@ -8,12 +8,15 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,12 +29,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class EntityFluorescentTube extends Entity implements ITeslaEntity
 {
+	public static final EntityType<EntityFluorescentTube> TYPE = new Builder<>(EntityFluorescentTube.class, EntityFluorescentTube::new)
+			.build(ImmersiveEngineering.MODID+":fluorescent_tube");
+
 	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> dataMarker_g = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
@@ -54,15 +61,15 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 
 	public EntityFluorescentTube(World world)
 	{
-		super(world);
+		super(TYPE, world);
 		setSize(tubeLength/2, 1+tubeLength/2);
 	}
 
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 		//movement logic
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
@@ -105,7 +112,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	}
 
 	@Override
-	protected void entityInit()
+	protected void registerData()
 	{
 		dataManager.register(dataMarker_r, 1F);
 		dataManager.register(dataMarker_g, 1F);
@@ -115,7 +122,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound nbt)
+	protected void readAdditional(NBTTagCompound nbt)
 	{
 		NBTTagCompound comp = nbt.getCompound("nbt");
 		rgb = new float[]{comp.getFloat("r"), comp.getFloat("g"), comp.getFloat("b")};
@@ -124,7 +131,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound nbt)
+	protected void writeAdditional(NBTTagCompound nbt)
 	{
 		NBTTagCompound comp = new NBTTagCompound();
 		comp.setFloat("r", rgb[0]);
@@ -137,13 +144,13 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
-		if(!isDead&&!world.isRemote)
+		if(isAlive()&&!world.isRemote)
 		{
 			ItemStack tube = new ItemStack(IEContent.itemFluorescentTube);
 			ItemFluorescentTube.setRGB(tube, rgb);
 			EntityItem ent = new EntityItem(world, posX, posY, posZ, tube);
 			world.spawnEntity(ent);
-			setDead();
+			remove();
 		}
 		return super.attackEntityFrom(source, amount);
 	}
@@ -151,13 +158,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	@Override
 	public boolean canBeCollidedWith()
 	{
-		return !isDead;
-	}
-
-	@Override
-	public AxisAlignedBB getBoundingBox()
-	{
-		return super.getBoundingBox();
+		return isAlive();
 	}
 
 	@Override
@@ -170,6 +171,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		}
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d targetVec3, EnumHand hand)
 	{

@@ -27,7 +27,8 @@ public class ContainerTurret extends ContainerIEBase<TileEntityTurret>
 
 		if(tile instanceof TileEntityTurretGun)
 		{
-			this.addSlotToContainer(new IESlot.Bullet(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), 0, 134, 13, 64)
+			this.addSlot(new IESlot.Bullet(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+					.orElseThrow(RuntimeException::new), 0, 134, 13, 64)
 			{
 				@Override
 				public boolean isItemValid(ItemStack itemStack)
@@ -39,14 +40,14 @@ public class ContainerTurret extends ContainerIEBase<TileEntityTurret>
 					return bullet!=null&&bullet.isValidForTurret();
 				}
 			});
-			this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 134, 49));
+			this.addSlot(new IESlot.Output(this, this.inv, 1, 134, 49));
 			slotCount = 2;
 		}
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 109+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 109+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 167));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 167));
 	}
 }

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -25,15 +24,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 
@@ -83,18 +80,20 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			IFluidHandler handler = FluidUtil.getFluidHandler(itemStack);
-			if(handler==null||handler.getTankProperties()==null)
-				return false;
-			IFluidTankProperties[] tank = handler.getTankProperties();
-			if(tank==null||tank.length < 1||tank[0]==null)
-				return false;
+			LazyOptional<IFluidHandlerItem> handlerCap = FluidUtil.getFluidHandler(itemStack);
+			return handlerCap.map(handler -> {
+				if(handler.getTankProperties()==null)
+					return false;
+				IFluidTankProperties[] tank = handler.getTankProperties();
+				if(tank==null||tank.length < 1||tank[0]==null)
+					return false;
 
-			if(filter==1)
-				return tank[0].getContents()==null;
-			else if(filter==2)
-				return tank[0].getContents()!=null;
-			return true;
+				if(filter==1)
+					return tank[0].getContents()==null;
+				else if(filter==2)
+					return tank[0].getContents()!=null;
+				return true;
+			}).orElse(false);
 		}
 	}
 
@@ -178,11 +177,11 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean isItemValid(@Nonnull ItemStack itemStack)
 		{
 			if(preventDoubles)
 				for(Slot slot : container.inventorySlots)
-					if(slot instanceof Upgrades&&((Upgrades)slot).preventDoubles&&OreDictionary.itemMatches(slot.getStack(), itemStack, true))
+					if(slot instanceof Upgrades&&((Upgrades)slot).preventDoubles&&ItemStack.areItemsEqual(slot.getStack(), itemStack))
 						return false;
 			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IUpgrade&&((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type)&&((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
 		}
@@ -196,7 +195,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public void onSlotChanged()
 		{
-			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, );
+			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, container.);
 		}
 	}
 
@@ -208,19 +207,17 @@ public abstract class IESlot extends Slot
 		{
 			super(container, inv, id, x, y);
 			this.tool = tool;
-			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-				this.setBackgroundName("immersiveengineering:items/shader_slot");
+			this.setBackgroundName("immersiveengineering:items/shader_slot");
 		}
 
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			if(itemStack.isEmpty()||!(itemStack.getItem() instanceof IShaderItem)||tool.isEmpty()||!tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+			if(itemStack.isEmpty()||!(itemStack.getItem() instanceof IShaderItem)||tool.isEmpty())
 				return false;
-			ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			if(wrapper==null)
-				return false;
-			return ((IShaderItem)itemStack.getItem()).getShaderCase(itemStack, tool, wrapper.getShaderType())!=null;
+			return tool.getCapability(CapabilityShader.SHADER_CAPABILITY).map(
+					wrapper -> ((IShaderItem)itemStack.getItem()).getShaderCase(itemStack, tool, wrapper.getShaderType())!=null
+			).orElse(false);
 		}
 
 		@Override
@@ -280,9 +277,10 @@ public abstract class IESlot extends Slot
 			ItemStack result = super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
 				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
-			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if(handler instanceof IEItemStackHandler)
-				((IEItemStackHandler)handler).setTile(null);
+			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler -> {
+				if(handler instanceof IEItemStackHandler)
+					((IEItemStackHandler)handler).setTile(null);
+			});
 			return result;
 		}
 	}

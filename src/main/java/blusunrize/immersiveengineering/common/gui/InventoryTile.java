@@ -15,6 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+
+import javax.annotation.Nullable;
 
 public class InventoryTile implements IInventory
 {
@@ -31,9 +34,9 @@ public class InventoryTile implements IInventory
 	}
 
 	@Override
-	public String getName()
+	public ITextComponent getName()
 	{
-		return this.name;
+		return new TextComponentTranslation(this.name);
 	}
 
 	@Override
@@ -44,6 +47,13 @@ public class InventoryTile implements IInventory
 
 	@Override
 	public ITextComponent getDisplayName()
+	{
+		return new TextComponentString(this.name);
+	}
+
+	@Nullable
+	@Override
+	public ITextComponent getCustomName()
 	{
 		return new TextComponentString(this.name);
 	}
@@ -118,7 +128,7 @@ public class InventoryTile implements IInventory
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player)
 	{
-		return !tile.isInvalid()&&tile.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
+		return !tile.isRemoved()&&tile.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
 	}
 
 	@Override

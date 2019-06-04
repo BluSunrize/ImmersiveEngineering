@@ -29,19 +29,19 @@ public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 			{
 				int x = 9+i*58+(j%3)*18;
 				int y = 7+(j/3)*18;
-				this.addSlotToContainer(new IESlot.Ghost(this, tile.patterns[i], j, x, y));
+				this.addSlot(new IESlot.Ghost(this, tile.patterns[i], j, x, y));
 			}
-			this.addSlotToContainer(new IESlot.Output(this, this.inv, 18+i, 27+i*58, 64));
+			this.addSlot(new IESlot.Output(this, this.inv, 18+i, 27+i*58, 64));
 		}
 		for(int i = 0; i < 18; i++)
-			this.addSlotToContainer(new Slot(this.inv, i, 13+(i%9)*18, 87+(i/9)*18));
+			this.addSlot(new Slot(this.inv, i, 13+(i%9)*18, 87+(i/9)*18));
 		slotCount = 21;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 13+j*18, 137+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 13+j*18, 137+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 13+i*18, 195));
+			addSlot(new Slot(inventoryPlayer, i, 13+i*18, 195));
 	}
 
 	@Nonnull

@@ -975,7 +975,7 @@ public class ApiUtils
 			}
 			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.add(pos.getX(), pos.getY(), pos.getZ()),
 					b.add(pos.getX(), pos.getY(), pos.getZ()));
-			return rayResult!=null&&rayResult.typeOfHit==RayTraceResult.Type.BLOCK;
+			return rayResult!=null&&rayResult.type==RayTraceResult.Type.BLOCK;
 		}
 		return false;
 	}

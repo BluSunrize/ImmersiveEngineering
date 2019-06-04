@@ -40,14 +40,15 @@ public class EntityWolfpackShot extends EntityRevolvershotHoming
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult mop)
+	public void onImpact(RayTraceResult mop)
 	{
-		if(!this.world.isRemote&&mop.entityHit!=null)
+		if(!this.world.isRemote&&mop.entity!=null)
 		{
-			if(mop.entityHit.hurtResistantTime > 0)
-				mop.entityHit.hurtResistantTime = 0;
-			mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), IEConfig.Tools.bulletDamage_WolfpackPart);
+			if(mop.entity.hurtResistantTime > 0)
+				mop.entity.hurtResistantTime = 0;
+			mop.entity.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, world.getPlayerEntityByUUID(shootingEntity)),
+					IEConfig.Tools.bulletDamage_WolfpackPart);
 		}
-		this.setDead();
+		this.remove();
 	}
 }

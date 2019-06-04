@@ -10,10 +10,8 @@ package blusunrize.immersiveengineering.api.tool;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -107,7 +105,7 @@ public class BulletHandler
 		/**
 		 * called when the bullet hits a target
 		 */
-		void onHitTarget(World world, RayTraceResult target, @Nullable EntityLivingBase shooter, Entity projectile, boolean headshot);
+		void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile, boolean headshot);
 
 		/**
 		 * @return the casing left when fired. Can return the static ItemStacks in BulletHandler
@@ -175,7 +173,7 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, @Nullable EntityLivingBase shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile, boolean headshot)
 		{
 			if(!world.isRemote&&target.entity!=null&&damageSourceGetter!=null)
 				if(target.entity.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entity}), getDamage(headshot)))

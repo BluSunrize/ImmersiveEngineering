@@ -18,6 +18,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class InventoryShader implements IInventory
 {
@@ -101,9 +102,9 @@ public class InventoryShader implements IInventory
 	}
 
 	@Override
-	public String getName()
+	public ITextComponent getName()
 	{
-		return "container."+name;
+		return new TextComponentTranslation("container."+name);
 	}
 
 	@Override
@@ -115,7 +116,14 @@ public class InventoryShader implements IInventory
 	@Override
 	public ITextComponent getDisplayName()
 	{
-		return this.hasCustomName()?new TextComponentString(this.getName()): new TextComponentTranslation(this.getName());
+		return this.hasCustomName()?this.getCustomName(): this.getName();
+	}
+
+	@Nullable
+	@Override
+	public ITextComponent getCustomName()
+	{
+		return new TextComponentString(name);
 	}
 
 	@Override

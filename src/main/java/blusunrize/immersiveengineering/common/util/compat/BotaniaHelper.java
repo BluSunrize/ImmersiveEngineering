@@ -102,7 +102,7 @@ public class BotaniaHelper extends IECompatModule
 		if(!event.isCanceled()&&event.getEntityLiving().getClass().getName().endsWith("EntityDoppleganger"))
 		{
 			NBTTagCompound tag = new NBTTagCompound();
-			event.getEntityLiving().writeEntityToNBT(tag);
+			event.getEntityLiving().writeAdditional(tag);
 			if(tag.getBoolean("hardMode"))
 				for(EntityItem item : event.getDrops())
 					if(item!=null&&!item.getItem().isEmpty()&&IEContent.itemShaderBag.equals(item.getItem().getItem()))

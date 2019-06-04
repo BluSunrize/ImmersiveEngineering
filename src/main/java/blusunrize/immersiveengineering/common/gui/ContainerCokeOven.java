@@ -20,7 +20,7 @@ public class ContainerCokeOven extends ContainerIEBase<TileEntityCokeOven>
 	{
 		super(inventoryPlayer, tile);
 
-		this.addSlotToContainer(new IESlot(this, this.inv, 0, 30, 35)
+		this.addSlot(new IESlot(this, this.inv, 0, 30, 35)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
@@ -28,15 +28,15 @@ public class ContainerCokeOven extends ContainerIEBase<TileEntityCokeOven>
 				return CokeOvenRecipe.findRecipe(itemStack)!=null;
 			}
 		});
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 85, 35));
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2, 152, 17, 0));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 152, 53));
+		this.addSlot(new IESlot.Output(this, this.inv, 1, 85, 35));
+		this.addSlot(new IESlot.FluidContainer(this, this.inv, 2, 152, 17, 0));
+		this.addSlot(new IESlot.Output(this, this.inv, 3, 152, 53));
 		slotCount = 4;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 142));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
 	}
 }

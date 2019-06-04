@@ -50,7 +50,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			rayRes = null;
 		else
 			rayRes = includingExtra.calculateIntercept(info.intersectA, info.intersectB);
-		if(endpointsInEntity||(rayRes!=null&&rayRes.typeOfHit==RayTraceResult.Type.BLOCK))
+		if(endpointsInEntity||(rayRes!=null&&rayRes.type==RayTraceResult.Type.BLOCK))
 		{
 			//TODO proper damage calculations
 			float damage = 5;

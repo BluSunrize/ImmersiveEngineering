@@ -8,11 +8,15 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
 import blusunrize.immersiveengineering.common.Config.IEConfig.Tools;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntityType.Builder;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -21,22 +25,27 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class EntityRailgunShot extends EntityIEProjectile
 {
+	public static final EntityType<EntityRailgunShot> TYPE = new Builder<>(EntityRailgunShot.class, EntityRailgunShot::new)
+			.build(ImmersiveEngineering.MODID+":railgun_shot");
+
 	private ItemStack ammo = ItemStack.EMPTY;
 	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(EntityRailgunShot.class, DataSerializers.ITEM_STACK);
 	private RailgunProjectileProperties ammoProperties;
 
 	public EntityRailgunShot(World world)
 	{
-		super(world);
+		super(TYPE, world);
 		this.setSize(.5f, .5f);
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 
 	public EntityRailgunShot(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
 	{
-		super(world, x, y, z, ax, ay, az);
+		super(TYPE, world, x, y, z, ax, ay, az);
 		this.setSize(.5f, .5f);
 		this.ammo = ammo;
 		this.setAmmoSynced();
@@ -45,7 +54,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 
 	public EntityRailgunShot(World world, EntityLivingBase living, double ax, double ay, double az, ItemStack ammo)
 	{
-		super(world, living, ax, ay, az);
+		super(TYPE, world, living, ax, ay, az);
 		this.setSize(.5f, .5f);
 		this.ammo = ammo;
 		this.setAmmoSynced();
@@ -53,12 +62,13 @@ public class EntityRailgunShot extends EntityIEProjectile
 	}
 
 	@Override
-	protected void entityInit()
+	protected void registerData()
 	{
-		super.entityInit();
+		super.registerData();
 		this.dataManager.register(dataMarker_ammo, ItemStack.EMPTY);
 	}
 
+	@Nonnull
 	@Override
 	protected ItemStack getArrowStack()
 	{
@@ -101,7 +111,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	}
 
 	@Override
-	public void onEntityUpdate()
+	public void baseTick()
 	{
 		// For testign Desync
 		//		if(world instanceof WorldServer)
@@ -110,7 +120,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 		//			world.spawnParticle("smoke", posX, posY, posZ, 0, 0, 0);
 		if(this.getAmmo().isEmpty()&&this.world.isRemote)
 			this.ammo = getAmmoSynced();
-		super.onEntityUpdate();
+		super.baseTick();
 	}
 
 	@Override
@@ -118,12 +128,13 @@ public class EntityRailgunShot extends EntityIEProjectile
 	{
 		if(!this.world.isRemote&&!getAmmo().isEmpty())
 		{
-			if(mop.entityHit!=null)
+			if(mop.entity!=null)
 			{
 				if(getAmmoProperties()!=null)
 				{
-					if(!getAmmoProperties().overrideHitEntity(mop.entityHit, getShooter()))
-						mop.entityHit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, getShooter()), (float)getAmmoProperties().damage*Tools.railgun_damage);
+					EntityPlayer shooter = world.getPlayerEntityByUUID(getShooter());
+					if(!getAmmoProperties().overrideHitEntity(mop.entity, shooter))
+						mop.entity.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, shooter), (float)getAmmoProperties().damage*Tools.railgun_damage);
 				}
 			}
 		}
@@ -142,17 +153,17 @@ public class EntityRailgunShot extends EntityIEProjectile
 
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound nbt)
+	public void writeAdditional(NBTTagCompound nbt)
 	{
-		super.writeEntityToNBT(nbt);
+		super.writeAdditional(nbt);
 		if(!this.ammo.isEmpty())
-			nbt.setTag("ammo", this.ammo.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("ammo", this.ammo.write(new NBTTagCompound()));
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound nbt)
+	public void readAdditional(NBTTagCompound nbt)
 	{
-		super.readEntityFromNBT(nbt);
-		this.ammo = new ItemStack(nbt.getCompound("ammo"));
+		super.readAdditional(nbt);
+		this.ammo = ItemStack.read(nbt.getCompound("ammo"));
 	}
 }

@@ -39,9 +39,9 @@ public class ContainerMaintenanceKit extends ContainerItem
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 143));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ContainerMaintenanceKit extends ContainerItem
 						return this.internalSlots;
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();
-		this.addSlotToContainer(new IESlot.Maintenance(this, this.inv, 0, 28, 10));
+		this.addSlot(new IESlot.Maintenance(this, this.inv, 0, 28, 10));
 		int slotCount = 1;
 
 		ItemStack tool = this.getSlot(0).getStack();
@@ -68,7 +68,7 @@ public class ContainerMaintenanceKit extends ContainerItem
 			if(slots!=null)
 				for(Slot s : slots)
 				{
-					this.addSlotToContainer(s);
+					this.addSlot(s);
 					slotCount++;
 				}
 		}

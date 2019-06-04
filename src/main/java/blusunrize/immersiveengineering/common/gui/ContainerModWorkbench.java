@@ -49,9 +49,9 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 87+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 87+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 145));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 
 	public void rebindSlots()
@@ -64,7 +64,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 						return;
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();
-		this.addSlotToContainer(new IESlot.ModWorkbench(this, this.inv, 0, 24, 22, 1));
+		this.addSlot(new IESlot.ModWorkbench(this, this.inv, 0, 24, 22, 1));
 		slotCount = 1;
 
 		ItemStack tool = this.getSlot(0).getStack();
@@ -77,7 +77,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 			if(slots!=null)
 				for(Slot s : slots)
 				{
-					this.addSlotToContainer(s);
+					this.addSlot(s);
 					slotCount++;
 				}
 
@@ -87,7 +87,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 				if(wrapper!=null)
 				{
 					this.shaderInv = new InventoryShader(this, wrapper);
-					this.addSlotToContainer(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
+					this.addSlot(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
 					slotCount++;
 					this.shaderInv.shader = wrapper.getShaderItem();
 				}
@@ -107,7 +107,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 				for(int i = 0; i < recipes.length; i++)
 				{
 					int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
-					this.addSlotToContainer(new IESlot.BlueprintOutput(this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes[i]));
+					this.addSlot(new IESlot.BlueprintOutput(this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes[i]));
 					slotCount++;
 				}
 			}
@@ -115,9 +115,9 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 			for(int i = 0; i < 6; i++)
 			{
 				if(blueprint)
-					this.addSlotToContainer(new IESlot.BlueprintInput(this, this.inv, this.inventoryBPoutput, i+1, i%2==0?74: 92, 21+(i/2)*18));
+					this.addSlot(new IESlot.BlueprintInput(this, this.inv, this.inventoryBPoutput, i+1, i%2==0?74: 92, 21+(i/2)*18));
 				else
-					this.addSlotToContainer(new Slot(this.inv, i+1, i%2==0?74: 92, 21+(i/2)*18));
+					this.addSlot(new Slot(this.inv, i+1, i%2==0?74: 92, 21+(i/2)*18));
 				slotCount++;
 			}
 		}

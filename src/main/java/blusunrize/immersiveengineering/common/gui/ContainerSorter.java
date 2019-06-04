@@ -30,15 +30,15 @@ public class ContainerSorter extends ContainerIEBase<TileEntitySorter>
 				int x = 4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 				int y = 22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 				int id = side*TileEntitySorter.filterSlotsPerSide+i;
-				this.addSlotToContainer(new IESlot.Ghost(this, tile.filter, id, x, y));
+				this.addSlot(new IESlot.Ghost(this, tile.filter, id, x, y));
 			}
 		slotCount = 6*TileEntitySorter.filterSlotsPerSide;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 221));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 221));
 	}
 
 	@Override

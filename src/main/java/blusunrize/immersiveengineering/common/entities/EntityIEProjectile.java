@@ -8,84 +8,73 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public abstract class EntityIEProjectile extends EntityArrow//Yes I have to extend arrow or else it's all weird and broken >_>
 {
-	protected int blockX = -1;
-	protected int blockY = -1;
-	protected int blockZ = -1;
-	protected Block inBlock;
-	protected int inMeta;
+	protected BlockPos stuckIn = null;
+	protected IBlockState inBlockState;
 	public boolean inGround;
 	public int ticksInGround;
 	public int ticksInAir;
 
 	private int tickLimit = 40;
-	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.STRING);
 
-	public EntityIEProjectile(World world)
+	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world)
 	{
-		super(world);
+		super(type, world);
 		this.setSize(.125f, .125f);
 		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
-	public EntityIEProjectile(World world, double x, double y, double z, double ax, double ay, double az)
+	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world, double x, double y, double z, double ax, double ay, double az)
 	{
-		super(world);
-		this.setSize(0.125F, 0.125F);
+		this(type, world);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
-		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
-	public EntityIEProjectile(World world, EntityLivingBase living, double ax, double ay, double az)
+	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world, EntityLivingBase living, double ax, double ay, double az)
 	{
-		super(world);
-		this.setSize(0.125F, 0.125F);
+		this(type, world);
 		this.setLocationAndAngles(living.posX, living.posY+living.getEyeHeight(), living.posZ, living.rotationYaw, living.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
 		this.motionX = this.motionY = this.motionZ = 0.0D;
 		this.motionX = ax;
 		this.motionY = ay;
 		this.motionZ = az;
-		this.shootingEntity = living;
+		this.shootingEntity = living.getUniqueID();
 		this.setShooterSynced();
-		//		this.posX -= (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
-		//		this.posY -= 0.10000000149011612D;
-		//		this.posZ -= (double)(MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
-		//		this.setPosition(this.posX, this.posY, this.posZ);
-		//		this.motionX = (double)(-MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI));
-		//		this.motionZ = (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI));
-		//		this.motionY = (double)(-MathHelper.sin(this.rotationPitch / 180.0F * (float)Math.PI));
-
 		this.shoot(this.motionX, this.motionY, this.motionZ, 2*1.5F, 1.0F);
-		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
 	@Override
-	protected void entityInit()
+	protected void registerData()
 	{
-		super.entityInit();
-		this.dataManager.register(dataMarker_shooter, "");
+		super.registerData();
+		this.dataManager.register(field_212362_a, Optional.empty());
 	}
 
 
@@ -96,22 +85,21 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 	public void setShooterSynced()
 	{
-		this.dataManager.set(dataMarker_shooter, this.shootingEntity.getName());
+		this.dataManager.set(field_212362_a, Optional.ofNullable(this.shootingEntity));
 	}
 
-	public EntityLivingBase getShooterSynced()
+	public UUID getShooterSynced()
 	{
-		String s = this.dataManager.get(dataMarker_shooter);
-		if(s!=null)
-			return this.world.getPlayerEntityByName(s);
-		return null;
+		Optional<UUID> s = this.dataManager.get(field_212362_a);
+		return s.orElse(null);
 	}
 
-	public Entity getShooter()
+	public UUID getShooter()
 	{
 		return shootingEntity;
 	}
 
+	@Nonnull
 	@Override
 	protected ItemStack getArrowStack()
 	{
@@ -119,32 +107,33 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
 		if(this.getShooter()==null&&this.world.isRemote)
 			this.shootingEntity = getShooterSynced();
 
-		this.onEntityUpdate();
+		this.baseTick();
 
-		BlockPos blockpos = new BlockPos(this.blockX, this.blockY, this.blockZ);
-		IBlockState iblockstate = this.world.getBlockState(blockpos);
-		Block block = iblockstate.getBlock();
+		IBlockState localState = this.world.getBlockState(stuckIn);
 
-		if(iblockstate.getMaterial()!=Material.AIR)
+		if(localState.getMaterial()!=Material.AIR)
 		{
-			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(iblockstate, this.world, blockpos);
-			if(axisalignedbb!=null&&axisalignedbb.contains(new Vec3d(this.posX, this.posY, this.posZ)))
-				this.inGround = true;
+			VoxelShape shape = localState.getCollisionShape(this.world, stuckIn);
+			for(AxisAlignedBB subbox : shape.toBoundingBoxList())
+				if(subbox.contains(this.posX, this.posY, this.posZ))
+				{
+					inGround = true;
+					break;
+				}
 		}
 
 		if(this.inGround)
 		{
-			int j = block.getMetaFromState(iblockstate);
-			if(block==this.inBlock&&j==this.inMeta)
+			if(localState==inBlockState)
 			{
 				++this.ticksInGround;
 				if(this.ticksInGround >= getMaxTicksInGround())
-					this.setDead();
+					this.remove();
 			}
 			else
 			{
@@ -162,13 +151,14 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 			if(ticksInAir >= tickLimit)
 			{
-				this.setDead();
+				this.remove();
 				return;
 			}
 
 			Vec3d currentPos = new Vec3d(this.posX, this.posY, this.posZ);
 			Vec3d nextPos = new Vec3d(this.posX+this.motionX, this.posY+this.motionY, this.posZ+this.motionZ);
-			RayTraceResult mop = this.world.rayTraceBlocks(currentPos, nextPos, false, true, false);
+			RayTraceResult mop = this.world.rayTraceBlocks(currentPos, nextPos, RayTraceFluidMode.NEVER,
+					true, false);
 
 			currentPos = new Vec3d(this.posX, this.posY, this.posZ);
 
@@ -177,15 +167,15 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 			else
 				nextPos = new Vec3d(this.posX+this.motionX, this.posY+this.motionY, this.posZ+this.motionZ);
 
-			if(mop==null||mop.entityHit==null)
+			if(mop==null||mop.entity==null)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1), (e) -> e.canBeCollidedWith());
+				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1), Entity::canBeCollidedWith);
 				double d0 = 0.0D;
 				for(int i = 0; i < list.size(); ++i)
 				{
 					Entity entity1 = (Entity)list.get(i);
-					if(entity1.canBeCollidedWith()&&(!entity1.isEntityEqual(this.shootingEntity)||this.ticksInAir > 5))
+					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.shootingEntity)||this.ticksInAir > 5))
 					{
 						float f = 0.3F;
 						AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)f, (double)f, (double)f);
@@ -208,42 +198,34 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 			if(mop!=null)
 			{
-				if(!this.isBurning()&&this.canIgnite()&&mop.entityHit!=null&&mop.entityHit.isBurning())
+				if(!this.isBurning()&&this.canIgnite()&&mop.entity!=null&&mop.entity.isBurning())
 					this.setFire(3);
-				if(mop.entityHit!=null)
+				if(mop.entity!=null)
 				{
 					boolean allowHit = true;
-					if(this.shootingEntity instanceof EntityPlayer&&mop.entityHit instanceof EntityPlayer)
-						allowHit = ((EntityPlayer)this.shootingEntity).canAttackPlayer((EntityPlayer)mop.entityHit);
+					EntityPlayer shooter = world.getPlayerEntityByUUID(shootingEntity);
+					if(shooter!=null&&mop.entity instanceof EntityPlayer)
+						allowHit = shooter.canAttackPlayer((EntityPlayer)mop.entity);
 					if(allowHit)
 						this.onImpact(mop);
-					this.setDead();
+					this.remove();
 				}
-				else if(mop.typeOfHit==RayTraceResult.Type.BLOCK)
+				else if(mop.type==RayTraceResult.Type.BLOCK)
 				{
 					this.onImpact(mop);
-					this.blockX = mop.getBlockPos().getX();
-					this.blockY = mop.getBlockPos().getY();
-					this.blockZ = mop.getBlockPos().getZ();
-					IBlockState state = this.world.getBlockState(mop.getBlockPos());
-					this.inBlock = state.getBlock();
-					this.inMeta = inBlock.getMetaFromState(state);
+					this.stuckIn = mop.getBlockPos();
+					this.inBlockState = this.world.getBlockState(mop.getBlockPos());
 					this.motionX = mop.hitVec.x-this.posX;
 					this.motionY = mop.hitVec.y-this.posY;
 					this.motionZ = mop.hitVec.z-this.posZ;
 					float f2 = MathHelper.sqrt(this.motionX*this.motionX+this.motionY*this.motionY+this.motionZ*this.motionZ);
-					this.posX -= this.motionX/(double)f2*0.05000000074505806D;
-					this.posY -= this.motionY/(double)f2*0.05000000074505806D;
-					this.posZ -= this.motionZ/(double)f2*0.05000000074505806D;
-					//						this.posX = movingobjectposition.hitVec.xCoord;
-					//						this.posY = movingobjectposition.hitVec.yCoord;
-					//						this.posZ = movingobjectposition.hitVec.zCoord;
-					//						this.setPosition(this.posX, this.posY, this.posZ);
+					this.posX -= this.motionX/(double)f2*0.05;
+					this.posY -= this.motionY/(double)f2*0.05;
+					this.posZ -= this.motionZ/(double)f2*0.05;
 
 					this.inGround = true;
-					if(this.inBlock.getMaterial(state)!=Material.AIR)
-						this.inBlock.onEntityCollision(this.world, mop.getBlockPos(), state, this);
-					//						return;
+					if(this.inBlockState.getMaterial()!=Material.AIR)
+						this.inBlockState.onEntityCollision(this.world, mop.getBlockPos(), this);
 				}
 			}
 
@@ -273,7 +255,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 				for(int j = 0; j < 4; ++j)
 				{
 					float f3 = 0.25F;
-					this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
+					this.world.spawnParticle(Particles.BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
 				}
 				movementDecay *= 0.8F;
 			}
@@ -294,11 +276,11 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean isInRangeToRenderDist(double p_70112_1_)
+	public boolean isInRangeToRenderDist(double distSq)
 	{
 		double d1 = this.getBoundingBox().getAverageEdgeLength()*4.0D;
 		d1 *= 64.0D;
-		return p_70112_1_ < d1*d1;
+		return distSq < d1*d1;
 	}
 
 	public double getGravity()
@@ -324,31 +306,37 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound nbt)
+	public void writeAdditional(NBTTagCompound nbt)
 	{
-		super.writeEntityToNBT(nbt);
-		nbt.setShort("xTile", (short)this.blockX);
-		nbt.setShort("yTile", (short)this.blockY);
-		nbt.setShort("zTile", (short)this.blockZ);
-		nbt.setByte("inTile", (byte)Block.getIdFromBlock(this.inBlock));
-		nbt.setByte("inMeta", (byte)this.inMeta);
+		super.writeAdditional(nbt);
+		if(inBlockState!=null)
+		{
+			nbt.setTag("inPos", NBTUtil.writeBlockPos(stuckIn));
+			nbt.setTag("inTile", NBTUtil.writeBlockState(inBlockState));
+		}
 		nbt.setByte("inGround", (byte)(this.inGround?1: 0));
 		if(this.shootingEntity!=null)
-			nbt.setString("shootingEntity", this.shootingEntity.getName());
+			nbt.setUniqueId("shootingEntity", this.shootingEntity);
 
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound nbt)
+	public void readAdditional(NBTTagCompound nbt)
 	{
-		super.readEntityFromNBT(nbt);
-		this.blockX = nbt.getShort("xTile");
-		this.blockY = nbt.getShort("yTile");
-		this.blockZ = nbt.getShort("zTile");
-		this.inBlock = Block.getBlockById(nbt.getByte("inTile")&255);
+		super.readAdditional(nbt);
+		if(nbt.contains("inTile", NBT.TAG_COMPOUND))
+		{
+			inBlockState = NBTUtil.readBlockState(nbt.getCompound("inTile"));
+			stuckIn = NBTUtil.readBlockPos(nbt.getCompound("inPos"));
+		}
+		else
+		{
+			inBlockState = null;
+			stuckIn = null;
+		}
 		this.inGround = nbt.getByte("inGround")==1;
 		if(this.world!=null)
-			this.shootingEntity = this.world.getPlayerEntityByName(nbt.getString("shootingEntity"));
+			this.shootingEntity = nbt.getUniqueId("shootingEntity");
 	}
 
 	@Override

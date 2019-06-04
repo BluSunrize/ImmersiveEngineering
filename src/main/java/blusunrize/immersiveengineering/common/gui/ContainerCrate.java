@@ -22,7 +22,7 @@ public class ContainerCrate extends ContainerIEBase
 	{
 		super(inventoryPlayer, tile);
 		for(int i = 0; i < tile.getInventory().size(); i++)
-			this.addSlotToContainer(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18)
+			this.addSlot(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18)
 			{
 				@Override
 				public boolean isItemValid(ItemStack stack)
@@ -35,8 +35,8 @@ public class ContainerCrate extends ContainerIEBase
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 87+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 87+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 145));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 }

@@ -26,7 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Particles;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -257,7 +257,7 @@ public class EntitySkylineHook extends Entity
 			for(int j = 0; j < 4; ++j)
 			{
 				float f3 = 0.25F;
-				this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
+				this.world.spawnParticle(Particles.WATER_BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
 			}
 		}
 
@@ -405,12 +405,12 @@ public class EntitySkylineHook extends Entity
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbt)
+	protected void writeAdditional(NBTTagCompound nbt)
 	{
 	}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbt)
+	protected void readAdditional(NBTTagCompound nbt)
 	{
 	}
 

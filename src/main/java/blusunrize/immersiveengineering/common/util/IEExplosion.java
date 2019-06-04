@@ -19,7 +19,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Particles;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -78,8 +78,8 @@ public class IEExplosion extends Explosion
 				d3 = d3*d7;
 				d4 = d4*d7;
 				d5 = d5*d7;
-				this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0+this.x*1.0D)/2.0D, (d1+this.y*1.0D)/2.0D, (d2+this.z*1.0D)/2.0D, d3, d4, d5);
-				this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
+				this.world.spawnParticle(Particles.EXPLOSION_NORMAL, (d0+this.x*1.0D)/2.0D, (d1+this.y*1.0D)/2.0D, (d2+this.z*1.0D)/2.0D, d3, d4, d5);
+				this.world.spawnParticle(Particles.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
 			}
 
 			if(state.getMaterial()!=Material.AIR)
@@ -195,9 +195,9 @@ public class IEExplosion extends Explosion
 		this.world.playSound(this.x, this.y, this.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F+(Utils.RAND.nextFloat()-Utils.RAND.nextFloat())*0.2F)*0.7F, true);
 
 		if(this.size >= 2.0F&&this.damagesTerrain)
-			this.world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(Particles.EXPLOSION_HUGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
 		else
-			this.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(Particles.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
 
 		EventHandler.currentExplosions.add(this);
 //		if(this.isSmoking)
@@ -222,8 +222,8 @@ public class IEExplosion extends Explosion
 //					d3 = d3 * d7;
 //					d4 = d4 * d7;
 //					d5 = d5 * d7;
-//					this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.x * 1.0D) / 2.0D, (d1 + this.y * 1.0D) / 2.0D, (d2 + this.z * 1.0D) / 2.0D, d3, d4, d5, new int[0]);
-//					this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
+//					this.world.spawnParticle(Particles.EXPLOSION_NORMAL, (d0 + this.x * 1.0D) / 2.0D, (d1 + this.y * 1.0D) / 2.0D, (d2 + this.z * 1.0D) / 2.0D, d3, d4, d5, new int[0]);
+//					this.world.spawnParticle(Particles.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
 //				}
 //
 //				if(block.getMaterial() != Material.air)

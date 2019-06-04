@@ -789,10 +789,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							//							if(gregStored!=null)
 							//								text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+gregStored).split("<br>");
 							//						}
-							else if(mop.entityHit instanceof IFluxReceiver)
+							else if(mop.entity instanceof IFluxReceiver)
 							{
-								int maxStorage = ((IFluxReceiver)mop.entityHit).getMaxEnergyStored(null);
-								int storage = ((IFluxReceiver)mop.entityHit).getEnergyStored(null);
+								int maxStorage = ((IFluxReceiver)mop.entity).getMaxEnergyStored(null);
+								int storage = ((IFluxReceiver)mop.entity).getEnergyStored(null);
 								if(maxStorage > 0)
 									text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
 							}
@@ -977,7 +977,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
 	{
-		if(event.getSubID()==0&&event.getTarget().typeOfHit==Type.BLOCK)
+		if(event.getSubID()==0&&event.getTarget().type==Type.BLOCK)
 		{
 			float f1 = 0.002F;
 			double px = -TileEntityRendererDispatcher.staticPlayerX;
@@ -1247,7 +1247,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				chunkBorders = true;
 				break;
 			}
-		if(!chunkBorders&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK&&ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
+		if(!chunkBorders&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.type==Type.BLOCK&&ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();

@@ -26,7 +26,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 		super(inventoryPlayer, tile);
 
 		final TileEntityRefinery tileF = tile;
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 0, 37, 15, 2)
+		this.addSlot(new IESlot.FluidContainer(this, this.inv, 0, 37, 15, 2)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
@@ -47,9 +47,9 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 				return incomplete!=null&&!incomplete.isEmpty();
 			}
 		});
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 37, 54));
+		this.addSlot(new IESlot.Output(this, this.inv, 1, 37, 54));
 
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 2, 85, 15, 2)
+		this.addSlot(new IESlot.FluidContainer(this, this.inv, 2, 85, 15, 2)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
@@ -70,16 +70,16 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 				return incomplete!=null&&!incomplete.isEmpty();
 			}
 		});
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 85, 54));
+		this.addSlot(new IESlot.Output(this, this.inv, 3, 85, 54));
 
-		this.addSlotToContainer(new IESlot.FluidContainer(this, this.inv, 4, 133, 15, 0));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 5, 133, 54));
+		this.addSlot(new IESlot.FluidContainer(this, this.inv, 4, 133, 15, 0));
+		this.addSlot(new IESlot.Output(this, this.inv, 5, 133, 54));
 		slotCount = 6;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 143));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
 	}
 }

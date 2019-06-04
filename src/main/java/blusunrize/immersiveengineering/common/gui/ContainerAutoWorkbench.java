@@ -27,10 +27,10 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 		super(inventoryPlayer, tile);
 
 		this.inventoryPlayer = inventoryPlayer;
-		this.addSlotToContainer(new IESlot.AutoBlueprint(this, this.inv, 0, 102, 69));
+		this.addSlot(new IESlot.AutoBlueprint(this, this.inv, 0, 102, 69));
 
 		for(int i = 0; i < 16; i++)
-			this.addSlotToContainer(new Slot(this.inv, 1+i, 7+(i%4)*18, 24+(i/4)*18));
+			this.addSlot(new Slot(this.inv, 1+i, 7+(i%4)*18, 24+(i/4)*18));
 		slotCount = 17;
 
 		bindPlayerInv(inventoryPlayer);
@@ -40,9 +40,9 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 103+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 103+i*18));
 		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 161));
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 161));
 	}
 
 //	public void rebindSlots()
