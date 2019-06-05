@@ -9,13 +9,16 @@
 package blusunrize.immersiveengineering.api;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class DimensionChunkCoords extends ChunkPos
 {
-	public int dimension;
+	public DimensionType dimension;
 
-	public DimensionChunkCoords(int dimension, int x, int z)
+	public DimensionChunkCoords(DimensionType dimension, int x, int z)
 	{
 		super(x, z);
 		this.dimension = dimension;
@@ -49,7 +52,7 @@ public class DimensionChunkCoords extends ChunkPos
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInt("dim", dimension);
+		tag.setString("dim", dimension.getRegistryName().toString());
 		tag.setInt("x", this.x);
 		tag.setInt("z", this.z);
 		return tag;
@@ -57,8 +60,13 @@ public class DimensionChunkCoords extends ChunkPos
 
 	public static DimensionChunkCoords readFromNBT(NBTTagCompound tag)
 	{
-		if(tag.hasKey("dim", 3)&&tag.hasKey("x", 3)&&tag.hasKey("z", 3))
-			return new DimensionChunkCoords(tag.getInt("dim"), tag.getInt("x"), tag.getInt("z"));
+		if(tag.contains("dim", NBT.TAG_STRING)&&tag.contains("x", NBT.TAG_INT)&&tag.contains("z", NBT.TAG_INT))
+		{
+			String dimNameStr = tag.getString("dim");
+			ResourceLocation dimName = new ResourceLocation(dimNameStr);
+			DimensionType dimType = DimensionType.byName(dimName);
+			return new DimensionChunkCoords(dimType, tag.getInt("x"), tag.getInt("z"));
+		}
 		return null;
 	}
 }

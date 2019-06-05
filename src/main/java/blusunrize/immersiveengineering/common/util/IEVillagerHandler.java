@@ -220,7 +220,7 @@ public class IEVillagerHandler
 			}
 			else
 			{
-				itemstack = new ItemStack(Items.EMERALD, i, 0);
+				itemstack = new ItemStack(Items.EMERALD, i);
 				itemstack1 = Utils.copyStackWithAmount(sellingItem, 1);
 			}
 			recipeList.add(new MerchantRecipe(itemstack, itemstack1));
@@ -246,7 +246,7 @@ public class IEVillagerHandler
 			DimensionChunkCoords chunkCoords = null;
 			for(int i = 0; i < 8; i++) //Let's just try this a maximum of 8 times before I give up
 			{
-				chunkCoords = new DimensionChunkCoords(merchant.getWorld().provider.getDimension(), cX+(random.nextInt(32)-16)*2, cZ+(random.nextInt(32)-16)*2);
+				chunkCoords = new DimensionChunkCoords(merchant.getWorld().getDimension().getType(), cX+(random.nextInt(32)-16)*2, cZ+(random.nextInt(32)-16)*2);
 				if(!ExcavatorHandler.mineralCache.containsKey(chunkCoords))
 					break;
 				else
@@ -263,7 +263,7 @@ public class IEVillagerHandler
 					return;
 				}
 				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);
-				ItemStack itemstack = ItemMap.setupNewMap(world, (double)blockPos.getX(), (double)blockPos.getZ(), (byte)1, true, true);
+				ItemStack itemstack = ItemMap.setupNewMap(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				ItemMap.renderBiomePreviewMap(world, itemstack);
 				MapData.addTargetDecoration(itemstack, blockPos, "ie:coresample_treasure", Type.TARGET_POINT);
 				itemstack.setTranslatableName("item.immersiveengineering.map_orevein.name");

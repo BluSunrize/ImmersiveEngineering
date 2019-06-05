@@ -18,42 +18,35 @@ import java.util.regex.Pattern;
 
 public class ItemNBTHelper
 {
-	public static NBTTagCompound getTag(ItemStack stack)
-	{
-		if(!stack.hasTagCompound())
-			stack.setTagCompound(new NBTTagCompound());
-		return stack.getTagCompound();
-	}
-
 	public static boolean hasTag(ItemStack stack)
 	{
-		return stack.hasTagCompound();
+		return stack.hasTag();
 	}
 
 	public static boolean hasKey(ItemStack stack, String key)
 	{
-		return hasTag(stack)&&getTag(stack).hasKey(key);
+		return hasTag(stack)&&stack.getOrCreateTag().hasKey(key);
 	}
 
 	public static void remove(ItemStack stack, String key)
 	{
 		if(hasKey(stack, key))
 		{
-			getTag(stack).removeTag(key);
-			if(getTag(stack).isEmpty())
-				stack.setTagCompound(null);
+			stack.getOrCreateTag().removeTag(key);
+			if(stack.getOrCreateTag().isEmpty())
+				stack.setTag(null);
 		}
 	}
 
 
 	public static void setInt(ItemStack stack, String key, int val)
 	{
-		getTag(stack).setInt(key, val);
+		stack.getOrCreateTag().setInt(key, val);
 	}
 
 	public static void modifyInt(ItemStack stack, String key, int mod)
 	{
-		modifyInt(getTag(stack), key, mod);
+		modifyInt(stack.getOrCreateTag(), key, mod);
 	}
 
 	public static void modifyInt(NBTTagCompound tagCompound, String key, int mod)
@@ -63,42 +56,42 @@ public class ItemNBTHelper
 
 	public static int getInt(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getInt(key): 0;
+		return hasTag(stack)?stack.getOrCreateTag().getInt(key): 0;
 	}
 
 	public static void setString(ItemStack stack, String key, String val)
 	{
-		getTag(stack).setString(key, val);
+		stack.getOrCreateTag().setString(key, val);
 	}
 
 	public static String getString(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getString(key): "";
+		return hasTag(stack)?stack.getOrCreateTag().getString(key): "";
 	}
 
 	public static void setLong(ItemStack stack, String key, long val)
 	{
-		getTag(stack).setLong(key, val);
+		stack.getOrCreateTag().setLong(key, val);
 	}
 
 	public static long getLong(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getLong(key): 0;
+		return hasTag(stack)?stack.getOrCreateTag().getLong(key): 0;
 	}
 
 	public static void setIntArray(ItemStack stack, String key, int[] val)
 	{
-		getTag(stack).setIntArray(key, val);
+		stack.getOrCreateTag().setIntArray(key, val);
 	}
 
 	public static int[] getIntArray(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getIntArray(key): new int[0];
+		return hasTag(stack)?stack.getOrCreateTag().getIntArray(key): new int[0];
 	}
 
 	public static void setFloat(ItemStack stack, String key, float val)
 	{
-		getTag(stack).setFloat(key, val);
+		stack.getOrCreateTag().setFloat(key, val);
 	}
 
 	public static void modifyFloat(NBTTagCompound tagCompound, String key, float mod)
@@ -108,27 +101,27 @@ public class ItemNBTHelper
 
 	public static float getFloat(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getFloat(key): 0;
+		return hasTag(stack)?stack.getOrCreateTag().getFloat(key): 0;
 	}
 
 	public static void setBoolean(ItemStack stack, String key, boolean val)
 	{
-		getTag(stack).setBoolean(key, val);
+		stack.getOrCreateTag().setBoolean(key, val);
 	}
 
 	public static boolean getBoolean(ItemStack stack, String key)
 	{
-		return hasTag(stack)&&getTag(stack).getBoolean(key);
+		return hasTag(stack)&&stack.getOrCreateTag().getBoolean(key);
 	}
 
 	public static void setTagCompound(ItemStack stack, String key, NBTTagCompound val)
 	{
-		getTag(stack).setTag(key, val);
+		stack.getOrCreateTag().setTag(key, val);
 	}
 
 	public static NBTTagCompound getTagCompound(ItemStack stack, String key)
 	{
-		return hasTag(stack)?getTag(stack).getCompound(key): new NBTTagCompound();
+		return hasTag(stack)?stack.getOrCreateTag().getCompound(key): new NBTTagCompound();
 	}
 
 	public static void setFluidStack(ItemStack stack, String key, FluidStack val)
@@ -152,13 +145,13 @@ public class ItemNBTHelper
 
 	public static void setItemStack(ItemStack stack, String key, ItemStack val)
 	{
-		getTag(stack).setTag(key, val.writeToNBT(new NBTTagCompound()));
+		stack.getOrCreateTag().setTag(key, val.write(new NBTTagCompound()));
 	}
 
 	public static ItemStack getItemStack(ItemStack stack, String key)
 	{
-		if(hasTag(stack)&&getTag(stack).hasKey(key))
-			return new ItemStack(getTagCompound(stack, key));
+		if(hasTag(stack)&&stack.getOrCreateTag().hasKey(key))
+			return ItemStack.read(getTagCompound(stack, key));
 		return ItemStack.EMPTY;
 	}
 

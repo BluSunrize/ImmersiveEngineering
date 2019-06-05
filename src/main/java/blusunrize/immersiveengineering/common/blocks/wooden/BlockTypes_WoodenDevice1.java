@@ -17,7 +17,6 @@ public enum BlockTypes_WoodenDevice1 implements IStringSerializable, BlockIEBase
 {
 	WATERMILL,
 	WINDMILL,
-	WINDMILL_ADVANCED,
 	POST,
 	WALLMOUNT;
 

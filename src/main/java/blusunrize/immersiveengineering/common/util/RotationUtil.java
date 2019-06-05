@@ -8,12 +8,16 @@
 
 package blusunrize.immersiveengineering.common.util;
 
+import net.minecraft.block.BlockBed;
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockPistonBase;
+import net.minecraft.block.BlockSkull;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -32,11 +36,11 @@ public class RotationUtil
 	{
 		permittedRotation.add(state -> {
 			//preventing extended pistons from rotating
-			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.getValue(BlockPistonBase.EXTENDED));
+			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.get(BlockPistonBase.EXTENDED));
 		});
 		permittedRotation.add(state -> {
 			//beds don't like being rotated piecewise
-			return state.getBlock()!=Blocks.BED;
+			return !(state.getBlock() instanceof BlockBed);
 		});
 		/*permittedRotation.add(state -> {
 			//A lot of the RS stuff breaks when rotated
@@ -50,15 +54,12 @@ public class RotationUtil
 		});*/
 		permittedRotation.add(state -> {
 			//preventing endportals, skulls from rotating
-			return !(state.getBlock()==Blocks.END_PORTAL_FRAME||state.getBlock()==Blocks.SKULL);
+			return !(state.getBlock()==Blocks.END_PORTAL_FRAME||state.getBlock() instanceof BlockSkull);
 		});
 		permittedTileRotation.add(tile -> {
 			//preventing double chests from rotating
 			if(tile instanceof TileEntityChest)
-			{
-				TileEntityChest chest = (TileEntityChest)tile;
-				return chest.adjacentChestXNeg!=null||chest.adjacentChestXPos!=null||chest.adjacentChestZNeg!=null||chest.adjacentChestZPos!=null;
-			}
+				return tile.getBlockState().get(BlockChest.TYPE)==ChestType.SINGLE;
 			return true;
 		});
 	}
@@ -77,6 +78,7 @@ public class RotationUtil
 					if(!pred.test(tile))
 						return false;
 		}
+		//TODO what did this become?
 		return state.getBlock().rotateBlock(world, pos, axis);
 	}
 
