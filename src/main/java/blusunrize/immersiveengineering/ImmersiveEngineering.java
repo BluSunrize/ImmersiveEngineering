@@ -23,7 +23,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat112.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

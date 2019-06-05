@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,14 +36,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
@@ -188,13 +186,13 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 102, 42, "SKYHOOK", stack, true),
-						new IESlot.Upgrades(container, inv, 1, 102, 22, "SKYHOOK", stack, true),
+						new IESlot.Upgrades(container, inv, 0, 102, 42, "SKYHOOK", stack, true, getWorld),
+						new IESlot.Upgrades(container, inv, 1, 102, 22, "SKYHOOK", stack, true, getWorld),
 				};
 	}
 

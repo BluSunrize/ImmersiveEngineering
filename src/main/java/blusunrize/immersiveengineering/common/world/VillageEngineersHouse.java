@@ -28,15 +28,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.*;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.structure.VillagePieces.Start;
+import net.minecraft.world.gen.feature.structure.VillagePieces.Village;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
-import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
-import net.minecraft.world.gen.structure.StructureVillagePieces.Village;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 
@@ -52,18 +51,18 @@ public class VillageEngineersHouse extends Village
 	{
 	}
 
-	public VillageEngineersHouse(Start villagePiece, int par2, Random par3Random, StructureBoundingBox par4StructureBoundingBox, EnumFacing facing)
+	public VillageEngineersHouse(Start villagePiece, int par2, Random par3Random, MutableBoundingBox par4StructureBoundingBox, EnumFacing facing)
 	{
 		super(villagePiece, par2);
 		this.setCoordBaseMode(facing);
 		this.boundingBox = par4StructureBoundingBox;
 	}
 
-	static List<BlockPos> framesHung = new ArrayList();
+	static List<BlockPos> framesHung = new ArrayList<>();
 	private int groundLevel = -1;
 
 	@Override
-	public boolean addComponentParts(World world, Random rand, StructureBoundingBox box)
+	public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox box, ChunkPos pos)
 	{
 		if(groundLevel < 0)
 		{
@@ -79,7 +78,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 1, 0, 1, 9, 0, 8, Blocks.COBBLESTONE.getDefaultState(), Blocks.COBBLESTONE.getDefaultState(), false);
 		this.fillWithBlocks(world, box, 6, 0, 1, 9, 0, 2, Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), false);
 		//Stair
-		this.setBlockState(world, Blocks.STONE_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.NORTH), 4, 0, 0, box);
+		this.setBlockState(world, Blocks.COBBLESTONE_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.NORTH), 4, 0, 0, box);
 
 		//Pillars
 		this.fillWithBlocks(world, box, 1, 1, 3, 1, 4, 3, IEContent.blockTreatedWood.getDefaultState(), IEContent.blockTreatedWood.getDefaultState(), false);
@@ -93,33 +92,33 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 2, 4, 5, 8, 4, 7, Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), false);
 
 		//Wool
-		this.fillWithBlocks(world, box, 2, 0, 3, 5, 0, 4, Blocks.WOOL.getStateFromMeta(13), Blocks.WOOL.getStateFromMeta(13), false);
-		this.fillWithBlocks(world, box, 2, 0, 4, 8, 0, 7, Blocks.WOOL.getStateFromMeta(13), Blocks.WOOL.getStateFromMeta(13), false);
-		this.fillWithBlocks(world, box, 6, 4, 4, 8, 4, 4, Blocks.WOOL.getStateFromMeta(13), Blocks.WOOL.getStateFromMeta(13), false);
-		this.fillWithBlocks(world, box, 2, 4, 5, 7, 4, 5, Blocks.WOOL.getStateFromMeta(13), Blocks.WOOL.getStateFromMeta(13), false);
-		this.fillWithBlocks(world, box, 2, 4, 6, 6, 4, 6, Blocks.WOOL.getStateFromMeta(13), Blocks.WOOL.getStateFromMeta(13), false);
-		this.fillWithBlocks(world, box, 2, 4, 7, 4, 4, 7, Blocks.WOOL.getStateFromMeta(13), Blocks.WOOL.getStateFromMeta(13), false);
+		this.fillWithBlocks(world, box, 2, 0, 3, 5, 0, 4, Blocks.GREEN_WOOL.getDefaultState(), Blocks.GREEN_WOOL.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 2, 0, 4, 8, 0, 7, Blocks.GREEN_WOOL.getDefaultState(), Blocks.GREEN_WOOL.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 6, 4, 4, 8, 4, 4, Blocks.GREEN_WOOL.getDefaultState(), Blocks.GREEN_WOOL.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 2, 4, 5, 7, 4, 5, Blocks.GREEN_WOOL.getDefaultState(), Blocks.GREEN_WOOL.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 2, 4, 6, 6, 4, 6, Blocks.GREEN_WOOL.getDefaultState(), Blocks.GREEN_WOOL.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 2, 4, 7, 4, 4, 7, Blocks.GREEN_WOOL.getDefaultState(), Blocks.GREEN_WOOL.getDefaultState(), false);
 
 		//Walls
 		//Front
-		this.fillWithBlocks(world, box, 2, 1, 3, 8, 3, 3, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.fillWithBlocks(world, box, 7, 5, 3, 8, 6, 3, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.setBlockState(world, Blocks.PLANKS.getDefaultState(), 7, 7, 3, box);
-		this.fillWithBlocks(world, box, 6, 5, 4, 6, 7, 4, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.fillWithBlocks(world, box, 2, 5, 5, 5, 6, 5, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.fillWithBlocks(world, box, 3, 7, 5, 5, 7, 5, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.setBlockState(world, Blocks.PLANKS.getDefaultState(), 5, 8, 5, box);
+		this.fillWithBlocks(world, box, 2, 1, 3, 8, 3, 3, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 7, 5, 3, 8, 6, 3, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.setBlockState(world, Blocks.OAK_PLANKS.getDefaultState(), 7, 7, 3, box);
+		this.fillWithBlocks(world, box, 6, 5, 4, 6, 7, 4, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 2, 5, 5, 5, 6, 5, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 3, 7, 5, 5, 7, 5, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.setBlockState(world, Blocks.OAK_PLANKS.getDefaultState(), 5, 8, 5, box);
 		//Back
-		this.fillWithBlocks(world, box, 2, 1, 8, 8, 3, 8, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.fillWithBlocks(world, box, 2, 5, 8, 8, 6, 8, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.fillWithBlocks(world, box, 3, 7, 8, 7, 7, 8, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.setBlockState(world, Blocks.PLANKS.getDefaultState(), 5, 8, 8, box);
+		this.fillWithBlocks(world, box, 2, 1, 8, 8, 3, 8, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 2, 5, 8, 8, 6, 8, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 3, 7, 8, 7, 7, 8, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.setBlockState(world, Blocks.OAK_PLANKS.getDefaultState(), 5, 8, 8, box);
 		//Left
-		this.fillWithBlocks(world, box, 1, 1, 4, 1, 3, 7, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.fillWithBlocks(world, box, 1, 5, 6, 1, 5, 7, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 1, 1, 4, 1, 3, 7, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 1, 5, 6, 1, 5, 7, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
 		//Right
-		this.fillWithBlocks(world, box, 9, 1, 4, 9, 3, 7, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
-		this.fillWithBlocks(world, box, 9, 5, 4, 9, 6, 7, Blocks.PLANKS.getDefaultState(), Blocks.PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 9, 1, 4, 9, 3, 7, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
+		this.fillWithBlocks(world, box, 9, 5, 4, 9, 6, 7, Blocks.OAK_PLANKS.getDefaultState(), Blocks.OAK_PLANKS.getDefaultState(), false);
 
 		//Windows
 		//Front
@@ -168,7 +167,7 @@ public class VillageEngineersHouse extends Village
 		setBlockState(world, stairs, 8, 1, 6, box);
 		stairs = stairs.withRotation(Rotation.COUNTERCLOCKWISE_90);
 //		stairMeta = this.getMetadataWithOffset(Blocks.OAK_STAIRS, 1);
-		setBlockState(world, Blocks.PLANKS.getDefaultState(), 8, 1, 7, box);
+		setBlockState(world, Blocks.OAK_PLANKS.getDefaultState(), 8, 1, 7, box);
 		setBlockState(world, stairs, 7, 2, 7, box);
 		setBlockState(world, stairs, 6, 3, 7, box);
 		setBlockState(world, stairs, 5, 4, 7, box);
@@ -237,7 +236,7 @@ public class VillageEngineersHouse extends Village
 			return false;
 	}
 
-	protected void placeDoor(World worldIn, StructureBoundingBox boundingBoxIn, Random rand, int x, int y, int z, EnumFacing facing, EnumHingePosition hinge)
+	protected void placeDoor(IWorld worldIn, StructureBoundingBox boundingBoxIn, Random rand, int x, int y, int z, EnumFacing facing, EnumHingePosition hinge)
 	{
 		this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().with(BlockDoor.FACING, facing).with(BlockDoor.HINGE, hinge), x, y, z, boundingBoxIn);
 		this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().with(BlockDoor.FACING, facing).with(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER).with(BlockDoor.HINGE, hinge), x, y+1, z, boundingBoxIn);

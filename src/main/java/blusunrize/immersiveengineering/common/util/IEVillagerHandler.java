@@ -27,13 +27,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraft.world.gen.feature.structure.StructureIO;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration.Type;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ObjectHolder;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -55,7 +55,7 @@ public class IEVillagerHandler
 			return;
 
 		VILLAGER_REGISTRY.registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
-		MapGenStructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID+":EngineersHouse");
+		StructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID+":EngineersHouse");
 	}
 
 	public static void initIEVillagerTrades()

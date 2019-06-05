@@ -9,23 +9,24 @@
 package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
 
 @EventBusSubscriber
 public class FakePlayerUtil
 {
 	private static GameProfile IE_PROFILE = new GameProfile(UUID.fromString("99562b85-bd1a-4ded-bb1a-c307bf0c0133"), "[ImmersiveEngineering]");
-	private static Map<World, FakePlayer> fakePlayerInstances = new WeakHashMap<>();
+	private static Map<IWorld, FakePlayer> fakePlayerInstances = new HashMap<>();
 
 	public static FakePlayer getAnyFakePlayer()
 	{
@@ -43,9 +44,17 @@ public class FakePlayerUtil
 	@SubscribeEvent
 	public static void onLoad(WorldEvent.Load ev)
 	{
-		World world = ev.getWorld();
+		IWorld world = ev.getWorld();
 		if(world instanceof WorldServer)
 			fakePlayerInstances.put(world, FakePlayerFactory.get((WorldServer)world, IE_PROFILE));
+	}
+
+	@SubscribeEvent
+	public static void onUnload(WorldEvent.Unload ev)
+	{
+		IWorld world = ev.getWorld();
+		if(world instanceof WorldServer)
+			fakePlayerInstances.remove(world);
 	}
 
 }

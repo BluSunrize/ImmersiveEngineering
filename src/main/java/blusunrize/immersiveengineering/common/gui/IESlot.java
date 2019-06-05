@@ -24,6 +24,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -33,6 +36,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SEED;
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SOIL;
@@ -162,18 +166,21 @@ public abstract class IESlot extends Slot
 
 	public static class Upgrades extends SlotItemHandler
 	{
-		ItemStack upgradeableTool;
-		String type;
-		boolean preventDoubles;
-		Container container;
+		final ItemStack upgradeableTool;
+		final String type;
+		final boolean preventDoubles;
+		final Container container;
+		final Supplier<World> getWorld;
 
-		public Upgrades(Container container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool, boolean preventDoubles)
+		public Upgrades(Container container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool,
+						boolean preventDoubles, Supplier<World> getWorld)
 		{
 			super(inv, id, x, y);
 			this.container = container;
 			this.type = type;
 			this.upgradeableTool = upgradeableTool;
 			this.preventDoubles = preventDoubles;
+			this.getWorld = getWorld;
 		}
 
 		@Override
@@ -195,7 +202,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public void onSlotChanged()
 		{
-			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, container.);
+			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get());
 		}
 	}
 

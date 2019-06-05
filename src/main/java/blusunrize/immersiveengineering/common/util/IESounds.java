@@ -14,7 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public class IESounds
 {
-	static Set<SoundEvent> registeredEvents = new HashSet();
+	static Set<SoundEvent> registeredEvents = new HashSet<>();
 	public static SoundEvent metalpress_piston = registerSound("metalPressPiston");
 	public static SoundEvent metalpress_smash = registerSound("metalPressSmash");
 	public static SoundEvent birthdayParty = registerSound("birthdayParty");

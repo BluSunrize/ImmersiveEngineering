@@ -55,6 +55,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
 {
@@ -311,13 +312,13 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
 	{
 		LazyOptional<IItemHandler> inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 0, 80, 32, "CHEMTHROWER", stack, true),
-						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 1, 100, 32, "CHEMTHROWER", stack, true)
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 0, 80, 32, "CHEMTHROWER", stack, true, getWorld),
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 1, 100, 32, "CHEMTHROWER", stack, true, getWorld)
 				};
 	}
 

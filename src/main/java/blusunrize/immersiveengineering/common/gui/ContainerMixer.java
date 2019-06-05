@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -26,7 +26,8 @@ public class ContainerMixer extends ContainerIEBase<TileEntityMixer> implements 
 	{
 		super(inventoryPlayer, tile);
 
-		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+				.orElseThrow(RuntimeException::new);
 		for(int i = 0; i < 8; i++)
 			this.addSlot(new IESlot.ContainerCallback(this, inv, i, 7+(i%2)*21, 7+(i/2)*18));
 		slotCount = 8;

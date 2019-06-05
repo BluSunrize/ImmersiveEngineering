@@ -53,6 +53,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, IOBJModelCallback<ItemStack>
 {
@@ -268,13 +269,13 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true),
-						new IESlot.Upgrades(container, inv, 1, 100, 32, "SHIELD", stack, true)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true, getWorld),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "SHIELD", stack, true, getWorld)
 //						new IESlot.Upgrades(container, invItem,2,100,32, "SHIELD", stack, true)
 				};
 

@@ -22,6 +22,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.function.Supplier;
+
 public abstract class ItemUpgradeableTool extends ItemInternalStorage implements IUpgradeableTool
 {
 	private String upgradeType;
@@ -100,5 +102,5 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	public abstract boolean canModify(ItemStack stack);
 
 	@Override
-	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack);
+	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld);
 }

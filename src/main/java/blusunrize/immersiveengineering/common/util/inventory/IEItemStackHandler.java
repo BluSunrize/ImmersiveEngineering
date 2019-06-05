@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.inventory;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -72,6 +74,9 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	}
 
 	//TODO invalidate the LazyOptional objects after use?
+	private LazyOptional<IItemHandler> thisOpt = ApiUtils.constantOptional(this);
+
+	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 	{
@@ -86,8 +91,8 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 			first = false;
 		}
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T)this;
-		return null;
+			return thisOpt.cast();
+		return LazyOptional.empty();
 	}
 
 	public NonNullList<ItemStack> getContainedItems()

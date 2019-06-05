@@ -171,6 +171,12 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	}
 
 	@Override
+	public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+	{
+		return canInsert[slot]&&inv.isStackValid(slot, stack);
+	}
+
+	@Override
 	public void setStackInSlot(int slot, @Nonnull ItemStack stack)
 	{
 		inv.getInventory().set(this.slotOffset+slot, stack);

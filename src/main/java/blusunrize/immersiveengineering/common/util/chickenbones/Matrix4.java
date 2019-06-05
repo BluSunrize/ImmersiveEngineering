@@ -434,23 +434,6 @@ public class Matrix4
 		return mult3x3(vec).add(m03, m13, m23);
 	}
 
-	private org.lwjgl.util.vector.Vector3f mult3x3(org.lwjgl.util.vector.Vector3f vec)
-	{
-		float x = (float)(m00*vec.x+m01*vec.y+m02*vec.z);
-		float y = (float)(m10*vec.x+m11*vec.y+m12*vec.z);
-		float z = (float)(m20*vec.x+m21*vec.y+m22*vec.z);
-		return new org.lwjgl.util.vector.Vector3f(x, y, z);
-	}
-
-	public org.lwjgl.util.vector.Vector3f apply(org.lwjgl.util.vector.Vector3f vec)
-	{
-		org.lwjgl.util.vector.Vector3f vec2 = mult3x3(vec);
-		vec2.x += m03;
-		vec2.y += m13;
-		vec2.z += m23;
-		return vec2;
-	}
-
 	public Matrix4f toMatrix4f()
 	{
 		return new Matrix4f((float)m00, (float)m01, (float)m02, (float)m03, (float)m10, (float)m11, (float)m12, (float)m13, (float)m20, (float)m21, (float)m22, (float)m23, (float)m30, (float)m31, (float)m32, (float)m33);

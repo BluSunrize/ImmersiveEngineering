@@ -18,15 +18,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
 
 public class ContainerMaintenanceKit extends ContainerItem
 {
-	private final IInventory inv = new InventoryBasic("MaintenanceKit", true, 1);
+	private final IInventory inv = new InventoryBasic(new TextComponentString("MaintenanceKit"), 1);
 	private boolean wasUsed = false;
 
 	public ContainerMaintenanceKit(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack item)
@@ -50,7 +49,7 @@ public class ContainerMaintenanceKit extends ContainerItem
 		if(this.inv==null)
 			return 0;
 		//Don't rebind if the tool didn't change
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+		if(world.isRemote)
 			for(Slot slot : inventorySlots)
 				if(slot instanceof IESlot.Upgrades)
 					if(ItemStack.areItemsEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
@@ -64,7 +63,7 @@ public class ContainerMaintenanceKit extends ContainerItem
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
 			wasUsed = true;
-			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool);
+			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world);
 			if(slots!=null)
 				for(Slot s : slots)
 				{

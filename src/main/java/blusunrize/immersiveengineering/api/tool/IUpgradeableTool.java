@@ -15,6 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import java.util.function.Supplier;
+
 /**
  * @author BluSunrize - 27.10.2015
  * <p>
@@ -50,6 +52,6 @@ public interface IUpgradeableTool
 	/**
 	 * @return an array of Slots to display in the workbench when this item is placed in it
 	 */
-	Slot[] getWorkbenchSlots(Container container, ItemStack stack);
+	Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld);
 
 }

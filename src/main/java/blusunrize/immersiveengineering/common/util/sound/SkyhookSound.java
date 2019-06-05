@@ -36,7 +36,7 @@ public class SkyhookSound implements ITickableSound
 	@Override
 	public boolean isDonePlaying()
 	{
-		return hook.isDead;
+		return !hook.isAlive();
 	}
 
 	@Nonnull
@@ -97,19 +97,19 @@ public class SkyhookSound implements ITickableSound
 	}
 
 	@Override
-	public float getXPosF()
+	public float getX()
 	{
 		return (float)hook.posX;
 	}
 
 	@Override
-	public float getYPosF()
+	public float getY()
 	{
 		return (float)hook.posY;
 	}
 
 	@Override
-	public float getZPosF()
+	public float getZ()
 	{
 		return (float)hook.posZ;
 	}
@@ -122,10 +122,16 @@ public class SkyhookSound implements ITickableSound
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		speed = (float)hook.getSpeed();
 		if(speed < .01)
 			speed = .01F;
+	}
+
+	@Override
+	public boolean isPriority()
+	{
+		return false;
 	}
 }

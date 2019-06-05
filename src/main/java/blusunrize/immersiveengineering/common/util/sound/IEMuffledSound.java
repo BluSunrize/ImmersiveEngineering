@@ -60,6 +60,12 @@ public class IEMuffledSound implements ISound
 	}
 
 	@Override
+	public boolean isPriority()
+	{
+		return originalSound.isPriority();
+	}
+
+	@Override
 	public int getRepeatDelay()
 	{
 		return originalSound.getRepeatDelay();
@@ -78,21 +84,21 @@ public class IEMuffledSound implements ISound
 	}
 
 	@Override
-	public float getXPosF()
+	public float getX()
 	{
-		return originalSound.getXPosF();
+		return originalSound.getX();
 	}
 
 	@Override
-	public float getYPosF()
+	public float getY()
 	{
-		return originalSound.getYPosF();
+		return originalSound.getY();
 	}
 
 	@Override
-	public float getZPosF()
+	public float getZ()
 	{
-		return originalSound.getZPosF();
+		return originalSound.getZ();
 	}
 
 	@Override

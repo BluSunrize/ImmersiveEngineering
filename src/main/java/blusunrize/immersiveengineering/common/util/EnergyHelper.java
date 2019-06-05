@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -26,60 +27,8 @@ import java.util.HashMap;
  */
 public class EnergyHelper
 {
-	public static boolean isFluxItem(ItemStack stack)
-	{
-		if(stack.isEmpty())
-			return false;
-		if(stack.getItem() instanceof IFluxContainerItem)
-			return true;
-		return stack.hasCapability(CapabilityEnergy.ENERGY, null);
-	}
 
-	public static int getEnergyStored(ItemStack stack)
-	{
-		if(stack.isEmpty())
-			return 0;
-		if(stack.getItem() instanceof IFluxContainerItem)
-			return ((IFluxContainerItem)stack.getItem()).getEnergyStored(stack);
-		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
-			return stack.getCapability(CapabilityEnergy.ENERGY, null).getEnergyStored();
-		return 0;
-	}
-
-	public static int getMaxEnergyStored(ItemStack stack)
-	{
-		if(stack.isEmpty())
-			return 0;
-		if(stack.getItem() instanceof IFluxContainerItem)
-			return ((IFluxContainerItem)stack.getItem()).getMaxEnergyStored(stack);
-		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
-			return stack.getCapability(CapabilityEnergy.ENERGY, null).getMaxEnergyStored();
-		return 0;
-	}
-
-	public static int insertFlux(ItemStack stack, int energy, boolean simulate)
-	{
-		if(stack.isEmpty())
-			return 0;
-		if(stack.getItem() instanceof IFluxContainerItem)
-			return ((IFluxContainerItem)stack.getItem()).receiveEnergy(stack, energy, simulate);
-		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
-			return stack.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(energy, simulate);
-		return 0;
-	}
-
-	public static int extractFlux(ItemStack stack, int energy, boolean simulate)
-	{
-		if(stack.isEmpty())
-			return 0;
-		if(stack.getItem() instanceof IFluxContainerItem)
-			return ((IFluxContainerItem)stack.getItem()).extractEnergy(stack, energy, simulate);
-		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
-			return stack.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(energy, simulate);
-		return 0;
-	}
-
-	static HashMap<Item, Boolean> reverseInsertion = new HashMap<Item, Boolean>();
+	static HashMap<Item, Boolean> reverseInsertion = new HashMap<>();
 
 	public static int forceExtractFlux(ItemStack stack, int energy, boolean simulate)
 	{
@@ -107,26 +56,74 @@ public class EnergyHelper
 		}
 	}
 
-	public static boolean isFluxReceiver(TileEntity tile, EnumFacing facing)
+	public static int getEnergyStored(ICapabilityProvider stack)
+	{
+		return getEnergyStored(stack, null);
+	}
+
+	public static int getEnergyStored(ICapabilityProvider stack, @Nullable EnumFacing side)
+	{
+		if(stack==null)
+			return 0;
+		return stack.getCapability(CapabilityEnergy.ENERGY, side)
+				.map(IEnergyStorage::getEnergyStored)
+				.orElse(0);
+	}
+
+	public static int getMaxEnergyStored(ICapabilityProvider stack)
+	{
+		return getMaxEnergyStored(stack, null);
+	}
+
+	public static int getMaxEnergyStored(ICapabilityProvider stack, @Nullable EnumFacing side)
+	{
+		if(stack==null)
+			return 0;
+		return stack.getCapability(CapabilityEnergy.ENERGY, side)
+				.map(IEnergyStorage::getMaxEnergyStored)
+				.orElse(0);
+	}
+
+	public static boolean isFluxReceiver(ICapabilityProvider tile)
+	{
+		return isFluxReceiver(tile, null);
+	}
+
+	public static boolean isFluxReceiver(ICapabilityProvider tile, @Nullable EnumFacing facing)
 	{
 		if(tile==null)
 			return false;
-		if(tile instanceof IFluxReceiver&&((IFluxReceiver)tile).canConnectEnergy(facing))
-			return true;
-		if(tile.hasCapability(CapabilityEnergy.ENERGY, facing))
-			return tile.getCapability(CapabilityEnergy.ENERGY, facing).canReceive();
-		return false;
+		return tile.getCapability(CapabilityEnergy.ENERGY, facing)
+				.map(IEnergyStorage::canReceive)
+				.orElse(false);
 	}
 
-	public static int insertFlux(TileEntity tile, EnumFacing facing, int energy, boolean simulate)
+	public static int insertFlux(ICapabilityProvider tile, int energy, boolean simulate)
+	{
+		return insertFlux(tile, null, energy, simulate);
+	}
+
+	public static int insertFlux(ICapabilityProvider tile, @Nullable EnumFacing facing, int energy, boolean simulate)
 	{
 		if(tile==null)
 			return 0;
-		if(tile instanceof IFluxReceiver&&((IFluxReceiver)tile).canConnectEnergy(facing))
-			return ((IFluxReceiver)tile).receiveEnergy(facing, energy, simulate);
-		if(tile.hasCapability(CapabilityEnergy.ENERGY, facing))
-			return tile.getCapability(CapabilityEnergy.ENERGY, facing).receiveEnergy(energy, simulate);
-		return 0;
+		return tile.getCapability(CapabilityEnergy.ENERGY, facing)
+				.map(storage -> storage.receiveEnergy(energy, simulate))
+				.orElse(0);
+	}
+
+	public static int extractFlux(ICapabilityProvider tile, int energy, boolean simulate)
+	{
+		return extractFlux(tile, null, energy, simulate);
+	}
+
+	public static int extractFlux(ICapabilityProvider tile, @Nullable EnumFacing facing, int energy, boolean simulate)
+	{
+		if(tile==null)
+			return 0;
+		return tile.getCapability(CapabilityEnergy.ENERGY, facing)
+				.map(storage -> storage.extractEnergy(energy, simulate))
+				.orElse(0);
 	}
 
 	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IFluxProvider

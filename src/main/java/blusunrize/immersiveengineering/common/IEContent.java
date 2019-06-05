@@ -58,7 +58,7 @@ import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat112.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import com.google.common.collect.ImmutableSet;

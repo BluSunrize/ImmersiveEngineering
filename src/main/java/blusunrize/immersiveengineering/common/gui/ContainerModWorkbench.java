@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
@@ -23,10 +22,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -57,7 +53,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	public void rebindSlots()
 	{
 		//Don't rebind if the tool didn't change
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+		if(world.isRemote)
 			for(Slot slot : inventorySlots)
 				if(slot instanceof IESlot.Upgrades)
 					if(ItemStack.areItemsEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
@@ -70,10 +66,12 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		ItemStack tool = this.getSlot(0).getStack();
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
-			IItemHandler handler = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if(handler instanceof IEItemStackHandler)
-				((IEItemStackHandler)handler).setTile(tile);
-			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool);
+			tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+					.ifPresent(handler -> {
+						if(handler instanceof IEItemStackHandler)
+							((IEItemStackHandler)handler).setTile(tile);
+					});
+			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world);
 			if(slots!=null)
 				for(Slot s : slots)
 				{
@@ -81,17 +79,13 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 					slotCount++;
 				}
 
-			if(tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+			tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null).ifPresent(wrapper ->
 			{
-				ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-				if(wrapper!=null)
-				{
 					this.shaderInv = new InventoryShader(this, wrapper);
 					this.addSlot(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
 					slotCount++;
 					this.shaderInv.shader = wrapper.getShaderItem();
-				}
-			}
+			});
 		}
 		else if(!(tool.getItem() instanceof IConfigurableTool))
 		{
@@ -197,7 +191,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	{
 		ItemStack ret = super.slotClick(id, button, clickType, player);
 		tile.markContainingBlockForUpdate(null);
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(!world.isRemote)
 			detectAndSendChanges();
 		return ret;
 	}

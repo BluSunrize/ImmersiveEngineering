@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class IEPotions
 {
@@ -35,13 +35,13 @@ public class IEPotions
 
 	public static void init()
 	{
-		flammable = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flammable"), true, 0x8f3f1f, 0, false, 0, true, true).setPotionName("immersiveengineering.potion.flammable");
-		slippery = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "slippery"), true, 0x171003, 0, false, 1, true, true).setPotionName("immersiveengineering.potion.slippery");
-		conductive = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "conductive"), true, 0x690000, 0, false, 2, true, true).setPotionName("immersiveengineering.potion.conductive");
-		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), true, 0x9c6800, 0, false, 3, true, true).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
-		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), true, 0x624a98, 0, false, 4, true, true).setPotionName("immersiveengineering.potion.stunned");
-		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concreteFeet"), true, 0x624a98, 0, false, 5, true, true).setPotionName("immersiveengineering.potion.concreteFeet").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
-		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), true, 0x624a98, 0, false, 6, true, true).setPotionName("immersiveengineering.potion.flashed").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
+		flammable = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flammable"), true, 0x8f3f1f, 0, false, 0, true, true);
+		slippery = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "slippery"), true, 0x171003, 0, false, 1, true, true);
+		conductive = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "conductive"), true, 0x690000, 0, false, 2, true, true);
+		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), true, 0x9c6800, 0, false, 3, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
+		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), true, 0x624a98, 0, false, 4, true, true);
+		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concreteFeet"), true, 0x624a98, 0, false, 5, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
+		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), true, 0x624a98, 0, false, 6, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
 
 		IEApi.potions = new Potion[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
 	}
@@ -57,7 +57,6 @@ public class IEPotions
 		public IEPotion(ResourceLocation resource, boolean isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
 		{
 			super(isBad, colour);
-			this.setPotionName("potion."+resource.getPath());
 			this.showInInventory = showInInventory;
 			this.showInHud = showInHud;
 			this.tickrate = tick;
@@ -120,11 +119,7 @@ public class IEPotions
 			{
 				IBlockState state = living.world.getBlockState(living.getPosition());
 				if(state.getBlock()!=IEContent.blockStoneDecoration&&state.getBlock()!=IEContent.blockStoneDecorationSlabs&&state.getBlock()!=IEContent.blockStoneDevice)
-				{
-					PotionEffect effect = living.getActivePotionEffect(this);
-					if(effect!=null)
-						effect.duration = 0;
-				}
+					living.removeActivePotionEffect(this);
 			}
 		}
 	}

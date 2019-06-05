@@ -26,7 +26,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
 
 public class IETileSound implements ITickableSound
 {
@@ -48,7 +47,7 @@ public class IETileSound implements ITickableSound
 
 	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation, SoundCategory category)
 	{
-		this(event.getSoundName(), volume, pitch, repeat, repeatDelay, x, y, z, attenuation, category);
+		this(event.getName(), volume, pitch, repeat, repeatDelay, x, y, z, attenuation, category);
 	}
 
 	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation, SoundCategory category)
@@ -68,7 +67,7 @@ public class IETileSound implements ITickableSound
 
 	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation, SoundCategory category)
 	{
-		this(event.getSoundName(), volume, pitch, repeat, repeatDelay, pos.getX(), pos.getY(), pos.getZ(), attenuation, category);
+		this(event.getName(), volume, pitch, repeat, repeatDelay, pos.getX(), pos.getY(), pos.getZ(), attenuation, category);
 	}
 
 	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation, SoundCategory category)
@@ -127,19 +126,19 @@ public class IETileSound implements ITickableSound
 	}
 
 	@Override
-	public float getXPosF()
+	public float getX()
 	{
 		return tileX;
 	}
 
 	@Override
-	public float getYPosF()
+	public float getY()
 	{
 		return tileY;
 	}
 
 	@Override
-	public float getZPosF()
+	public float getZ()
 	{
 		return tileZ;
 	}
@@ -148,6 +147,12 @@ public class IETileSound implements ITickableSound
 	public boolean canRepeat()
 	{
 		return canRepeat;
+	}
+
+	@Override
+	public boolean isPriority()
+	{
+		return false;
 	}
 
 	@Override
@@ -174,23 +179,24 @@ public class IETileSound implements ITickableSound
 			if(!stack.isEmpty()&&IEContent.itemEarmuffs.equals(stack.getItem()))
 				volumeAjustment = ItemEarmuffs.getVolumeMod(stack);
 		}
-		if(volumeAjustment > .1f)
-			for(int dx = (int)Math.floor(tileX-8) >> 4; dx <= (int)Math.floor(tileX+8) >> 4; dx++)
-				for(int dz = (int)Math.floor(tileZ-8) >> 4; dz <= (int)Math.floor(tileZ+8) >> 4; dz++)
-				{
-					Iterator it = ClientUtils.mc().player.world.getChunk(dx, dz).getTileEntityMap().values().iterator();
-					while(it.hasNext())
-					{
-						TileEntity tile = (TileEntity)it.next();
-						if(tile!=null&&tile.getClass().getName().endsWith("TileEntitySoundMuffler"))
-							if(tile.getBlockMetadata()!=1)
-							{
-								double d = tile.getDistanceSq(tileX, tileY, tileZ);
-								if(d <= 64&&d > 0)
-									volumeAjustment = .1f;
-							}
-					}
-				}
+		//TODO uncomment when XU updates and maybe look for a better solution (API)
+		//if(volumeAjustment > .1f)
+		//	for(int dx = (int)Math.floor(tileX-8) >> 4; dx <= (int)Math.floor(tileX+8) >> 4; dx++)
+		//		for(int dz = (int)Math.floor(tileZ-8) >> 4; dz <= (int)Math.floor(tileZ+8) >> 4; dz++)
+		//		{
+		//			Iterator it = ClientUtils.mc().player.world.getChunk(dx, dz).getTileEntityMap().values().iterator();
+		//			while(it.hasNext())
+		//			{
+		//				TileEntity tile = (TileEntity)it.next();
+		//				if(tile!=null&&tile.getClass().getName().endsWith("TileEntitySoundMuffler"))
+		//					if(tile.getBlockMetadata()!=1)
+		//					{
+		//						double d = tile.getDistanceSq(tileX, tileY, tileZ);
+		//						if(d <= 64&&d > 0)
+		//							volumeAjustment = .1f;
+		//					}
+		//			}
+		//		}
 
 		TileEntity tile = ClientUtils.mc().player.world.getTileEntity(new BlockPos(tileX, tileY, tileZ));
 		if(!(tile instanceof ISoundTile))
@@ -201,7 +207,7 @@ public class IETileSound implements ITickableSound
 
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.world.getGameTime()%40==0)
 			evaluateVolume();

@@ -31,9 +31,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -62,6 +60,7 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
 {
@@ -77,14 +76,14 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 80, 32, "RAILGUN", stack, true),
-						new IESlot.Upgrades(container, inv, 1, 100, 32, "RAILGUN", stack, true)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "RAILGUN", stack, true, getWorld),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "RAILGUN", stack, true, getWorld)
 				};
 	}
 

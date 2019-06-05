@@ -58,7 +58,7 @@ import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat112.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.ManualElementTable;
@@ -328,7 +328,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent evt)
 	{
-		//Going through registered stuff at the end of preInit, because of compat modules possibly adding items
+		//Going through registered stuff at the end of preInit, because of compat112 modules possibly adding items
 		for(Block block : IEContent.registeredIEBlocks)
 		{
 			final ResourceLocation loc = Block.REGISTRY.getNameForObject(block);

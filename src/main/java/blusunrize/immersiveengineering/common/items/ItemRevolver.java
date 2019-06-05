@@ -74,6 +74,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IGuiItem, IBulletContainer
 {
@@ -106,14 +107,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 18+0, 80, 32, "REVOLVER", stack, true),
-						new IESlot.Upgrades(container, inv, 18+1, 100, 32, "REVOLVER", stack, true)
+						new IESlot.Upgrades(container, inv, 18+0, 80, 32, "REVOLVER", stack, true, getWorld),
+						new IESlot.Upgrades(container, inv, 18+1, 100, 32, "REVOLVER", stack, true, getWorld)
 				};
 	}
 

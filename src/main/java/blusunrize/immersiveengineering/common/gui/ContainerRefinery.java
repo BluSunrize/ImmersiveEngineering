@@ -15,7 +15,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 
@@ -31,20 +30,22 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				if(h==null||h.getTankProperties().length==0)
-					return false;
-				FluidStack fs = h.getTankProperties()[0].getContents();
-				if(fs==null)
-					return false;
-				if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
-					return false;
-				if(tileF.tanks[0].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[0].getFluid()))
-					return false;
-				if(tileF.tanks[1].getFluidAmount() <= 0)
-					return true;
-				List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
-				return incomplete!=null&&!incomplete.isEmpty();
+				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
+						.map(h -> {
+							if(h.getTankProperties().length==0)
+								return false;
+							FluidStack fs = h.getTankProperties()[0].getContents();
+							if(fs==null)
+								return false;
+							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
+								return false;
+							if(tileF.tanks[0].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[0].getFluid()))
+								return false;
+							if(tileF.tanks[1].getFluidAmount() <= 0)
+								return true;
+							List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
+							return incomplete!=null&&!incomplete.isEmpty();
+						}).orElse(false);
 			}
 		});
 		this.addSlot(new IESlot.Output(this, this.inv, 1, 37, 54));
@@ -54,20 +55,22 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				if(h==null||h.getTankProperties().length==0)
-					return false;
-				FluidStack fs = h.getTankProperties()[0].getContents();
-				if(fs==null)
-					return false;
-				if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
-					return false;
-				if(tileF.tanks[1].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[1].getFluid()))
-					return false;
-				if(tileF.tanks[0].getFluidAmount() <= 0)
-					return true;
-				List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
-				return incomplete!=null&&!incomplete.isEmpty();
+				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
+						.map(h -> {
+							if(h.getTankProperties().length==0)
+								return false;
+							FluidStack fs = h.getTankProperties()[0].getContents();
+							if(fs==null)
+								return false;
+							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
+								return false;
+							if(tileF.tanks[1].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[1].getFluid()))
+								return false;
+							if(tileF.tanks[0].getFluidAmount() <= 0)
+								return true;
+							List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
+							return incomplete!=null&&!incomplete.isEmpty();
+						}).orElse(false);
 			}
 		});
 		this.addSlot(new IESlot.Output(this, this.inv, 3, 85, 54));

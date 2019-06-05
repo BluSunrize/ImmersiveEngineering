@@ -10,10 +10,9 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerHelper;
-import blusunrize.immersiveengineering.common.util.compat.opencomputers.OCHelper;
-import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ModList;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,33 +26,33 @@ public abstract class IECompatModule
 
 	static
 	{
-		moduleClasses.put("actuallyadditions", ActuallyAdditionsHelper.class);
-		moduleClasses.put("albedo", AlbedoHelper.class);
-		moduleClasses.put("attaineddrops2", AttainedDropsHelper.class);
-		moduleClasses.put("baubles", BaublesHelper.class);
-		moduleClasses.put("betterwithmods", BetterWithModsHelper.class);
-		moduleClasses.put("bloodmagic", BloodMagicHelper.class);
-		moduleClasses.put("botania", BotaniaHelper.class);
-		moduleClasses.put("chisel", ChiselHelper.class);
-		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
-		moduleClasses.put("cofhcore", CoFHHelper.class);
-		moduleClasses.put("crafttweaker", CraftTweakerHelper.class);
-		moduleClasses.put("denseores", DenseOresHelper.class);
-		moduleClasses.put("enderio", EnderIOHelper.class);
-		moduleClasses.put("extrautils2", ExtraUtilsHelper.class);
-		moduleClasses.put("forestry", ForestryHelper.class);
-		moduleClasses.put("foundry", FoundryHelper.class);
-		moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
-		moduleClasses.put("ic2", IC2Helper.class);
-		moduleClasses.put("inspirations", InspirationsHelper.class);
-		moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
-		moduleClasses.put("opencomputers", OCHelper.class);
-		moduleClasses.put("theoneprobe", OneProbeHelper.class);
-		moduleClasses.put("tconstruct", TConstructHelper.class);
-		moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
-		moduleClasses.put("thaumcraft", ThaumcraftHelper.class);
-		moduleClasses.put("railcraft", RailcraftHelper.class);
-		moduleClasses.put("waila", WailaHelper.class);
+		//moduleClasses.put("actuallyadditions", ActuallyAdditionsHelper.class);
+		//moduleClasses.put("albedo", AlbedoHelper.class);
+		//moduleClasses.put("attaineddrops2", AttainedDropsHelper.class);
+		//moduleClasses.put("baubles", BaublesHelper.class);
+		//moduleClasses.put("betterwithmods", BetterWithModsHelper.class);
+		//moduleClasses.put("bloodmagic", BloodMagicHelper.class);
+		//moduleClasses.put("botania", BotaniaHelper.class);
+		//moduleClasses.put("chisel", ChiselHelper.class);
+		//moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
+		//moduleClasses.put("cofhcore", CoFHHelper.class);
+		//moduleClasses.put("crafttweaker", CraftTweakerHelper.class);
+		//moduleClasses.put("denseores", DenseOresHelper.class);
+		//moduleClasses.put("enderio", EnderIOHelper.class);
+		//moduleClasses.put("extrautils2", ExtraUtilsHelper.class);
+		//moduleClasses.put("forestry", ForestryHelper.class);
+		//moduleClasses.put("foundry", FoundryHelper.class);
+		//moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
+		//moduleClasses.put("ic2", IC2Helper.class);
+		//moduleClasses.put("inspirations", InspirationsHelper.class);
+		//moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
+		//moduleClasses.put("opencomputers", OCHelper.class);
+		//moduleClasses.put("theoneprobe", OneProbeHelper.class);
+		//moduleClasses.put("tconstruct", TConstructHelper.class);
+		//moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
+		//moduleClasses.put("thaumcraft", ThaumcraftHelper.class);
+		//moduleClasses.put("railcraft", RailcraftHelper.class);
+		//moduleClasses.put("waila", WailaHelper.class);
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
@@ -77,11 +76,11 @@ public abstract class IECompatModule
 	public static void doModulesPreInit()
 	{
 		for(Entry<String, Class<? extends IECompatModule>> e : moduleClasses.entrySet())
-			if(Loader.isModLoaded(e.getKey()))
+			if(ModList.get().isLoaded(e.getKey()))
 				try
 				{
 					//IC2 Classic is not supported.
-					if("ic2".equals(e.getKey())&&Loader.isModLoaded("ic2-classic-spmod"))
+					if("ic2".equals(e.getKey())&&ModList.get().isLoaded("ic2-classic-spmod"))
 						continue;
 
 					Boolean enabled = Config.IEConfig.compat.get(e.getKey());

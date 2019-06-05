@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
@@ -42,7 +43,7 @@ public class IELootFunctions
 		@Override
 		public ItemStack apply(ItemStack stack, Random rand, LootContext context)
 		{
-			stack.setStackDisplayName("Super Special BluPrintz");
+			stack.setDisplayName(new TextComponentString("Super Special BluPrintz"));
 			ItemNBTHelper.setLore(stack, "Congratulations!", "You have found an easter egg!");
 			return stack;
 		}

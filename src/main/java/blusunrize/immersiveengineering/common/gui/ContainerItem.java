@@ -19,8 +19,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
-public abstract class ContainerItem extends Container
+public abstract class ContainerItem extends Container implements Supplier<World>
 {
 	protected final InventoryPlayer inventoryPlayer;
 	protected final World world;
@@ -145,5 +146,11 @@ public abstract class ContainerItem extends Container
 
 	protected void updatePlayerItem()
 	{
+	}
+
+	@Override
+	public World get()
+	{
+		return world;
 	}
 }

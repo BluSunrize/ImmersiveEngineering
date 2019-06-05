@@ -15,6 +15,9 @@ import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class ChatUtils
 {
@@ -35,6 +38,7 @@ public class ChatUtils
 	public static void sendServerNoSpamMessages(EntityPlayer player, ITextComponent... messages)
 	{
 		if(messages.length > 0&&player instanceof EntityPlayerMP)
-			ImmersiveEngineering.packetHandler.sendTo(new MessageNoSpamChatComponents(messages), (EntityPlayerMP)player);
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP)player),
+					new MessageNoSpamChatComponents(messages));
 	}
 }
