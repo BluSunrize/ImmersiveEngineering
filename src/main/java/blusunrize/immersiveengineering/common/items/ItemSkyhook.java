@@ -78,7 +78,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 
 	public static boolean toggleSpeedLimit(ItemStack stack)
 	{
-		NBTTagCompound nbt = ItemNBTHelper.getTag(stack);
+		NBTTagCompound nbt = stack.getOrCreateTag();
 		boolean wasActive = nbt.getBoolean(LIMIT_SPEED);
 		nbt.setBoolean(LIMIT_SPEED, !wasActive);
 		return !wasActive;

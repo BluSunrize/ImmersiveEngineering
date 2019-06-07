@@ -98,7 +98,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 			@Override
 			public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
 			{
-				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
+				world.createExplosion(world.getPlayerEntityByUUID(shooter), projectile.posX, projectile.posY, projectile.posZ, 2, false);
 			}
 
 			@Override
@@ -278,7 +278,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 					if(bullet.bulletPotion.getItem() instanceof ItemLingeringPotion)
 					{
 						EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(bullet.world, bullet.posX, bullet.posY, bullet.posZ);
-						entityareaeffectcloud.setOwner(shooter);
+						entityareaeffectcloud.setOwner(world.getPlayerEntityByUUID(shooter));
 						entityareaeffectcloud.setRadius(3.0F);
 						entityareaeffectcloud.setRadiusOnUse(-0.5F);
 						entityareaeffectcloud.setWaitTime(10);
@@ -303,7 +303,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 											dist2 = 1D;
 										for(PotionEffect p : effects)
 											if(p.getPotion().isInstant())
-												p.getPotion().affectEntity(bullet, shooter, living, p.getAmplifier(), dist2);
+												p.getPotion().affectEntity(bullet, world.getPlayerEntityByUUID(shooter), living, p.getAmplifier(), dist2);
 											else
 											{
 												int j = (int)(dist2*p.getDuration()+.5D);
@@ -461,7 +461,12 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 				Vec3d vecDir = new Vec3d(0, 1, 0);
 				vecDir = matrix.apply(vecDir);
 
-				EntityWolfpackShot bullet = shooter!=null?new EntityWolfpackShot(world, shooter, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this, null): new EntityWolfpackShot(world, 0, 0, 0, 0, 0, 0, this);
+				EntityWolfpackShot bullet;
+				if(shooter!=null)
+					bullet = new EntityWolfpackShot(world, world.getPlayerEntityByUUID(shooter),
+							vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this, null);
+				else
+					bullet = new EntityWolfpackShot(world, 0, 0, 0, 0, 0, 0, this);
 				if(target.entity instanceof EntityLivingBase)
 					bullet.targetOverride = (EntityLivingBase)target.entity;
 				bullet.setPosition(target.hitVec.x+vecDir.x, target.hitVec.y+vecDir.y, target.hitVec.z+vecDir.z);

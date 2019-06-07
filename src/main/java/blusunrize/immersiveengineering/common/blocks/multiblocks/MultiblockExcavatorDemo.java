@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
@@ -48,14 +48,14 @@ public class MultiblockExcavatorDemo implements IMultiblock
 						else if(w==0&&h==0)
 							structure[h+2][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RADIATOR.getMeta());
 						else
-							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.STEEL.getMeta());
 					}
 					else if(w==0)
 					{
 						if(l < 3&&h==2)
 							structure[h+2][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RADIATOR.getMeta());
 						else if(l < 3)
-							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.STEEL.getMeta());
 						else if(h==0)
 							structure[h+2][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 						else
@@ -66,13 +66,13 @@ public class MultiblockExcavatorDemo implements IMultiblock
 						if(l==1)
 							structure[h+2][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else if(l==2)
-							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.STEEL.getMeta());
 						else if(h==0)
 							structure[h+2][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 						else if(h==1)
 							structure[h+2][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else
-							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h+2][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.STEEL.getMeta());
 					}
 				}
 		for(int h = 0; h < 7; h++)

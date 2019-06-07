@@ -47,26 +47,25 @@ import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
-import blusunrize.immersiveengineering.common.datafixers.IEDataFixers;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
-import blusunrize.immersiveengineering.common.items.tools.*;
+import blusunrize.immersiveengineering.common.items.tools.ItemIEAxe;
+import blusunrize.immersiveengineering.common.items.tools.ItemIEPickaxe;
+import blusunrize.immersiveengineering.common.items.tools.ItemIEShovel;
+import blusunrize.immersiveengineering.common.items.tools.ItemIESword;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
-import blusunrize.immersiveengineering.common.util.compat112.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -75,7 +74,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -95,30 +93,29 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.brewing.AbstractBrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IRegistryDelegate;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
+
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
 @Mod.EventBusSubscriber
 public class IEContent
@@ -127,194 +124,6 @@ public class IEContent
 	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
 	public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
 
-	public static Map<BlockTypes_MetalsAll, Block> blocksOre = new EnumMap<>(BlockTypes_MetalsAll.class);
-	public static Map<BlockTypes_MetalsAll, Block> blocksStorage = new EnumMap<>(BlockTypes_MetalsAll.class);
-	public static Map<BlockTypes_MetalsAll, Block> blocksStorageSlab = new EnumMap<>(BlockTypes_MetalsAll.class);
-	public static Block blockStoneDecorationCokebrick;
-	public static Block blockStoneDecorationBlastbrick;
-	public static Block blockStoneDecorationBlastbrickReinforced;
-	public static Block blockStoneDecorationCoke;
-	public static Block blockStoneDecorationHempcrete;
-	public static Block blockStoneDecorationConcrete;
-	public static Block blockStoneDecorationConcreteTile;
-	public static Block blockStoneDecorationConcreteLeaded;
-	public static Block blockStoneDecorationInsulatingGlass;
-	public static Block blockStoneDecorationConcreteSprayed;
-	public static Block blockStoneDecorationAlloybrick;
-	public static Block blockStoneDecorationSlabsCokebrick;
-	public static Block blockStoneDecorationSlabsBlastbrick;
-	public static Block blockStoneDecorationSlabsBlastbrickReinforced;
-	public static Block blockStoneDecorationSlabsCoke;
-	public static Block blockStoneDecorationSlabsHempcrete;
-	public static Block blockStoneDecorationSlabsConcrete;
-	public static Block blockStoneDecorationSlabsConcreteTile;
-	public static Block blockStoneDecorationSlabsConcreteLeaded;
-	public static Block blockStoneDecorationSlabsInsulatingGlass;
-	public static Block blockStoneDecorationSlabsConcreteSprayed;
-	public static Block blockStoneDecorationSlabsAlloybrick;
-
-	public static Block blockStoneStair_hempcrete;
-	public static Block blockStoneStair_concrete0;
-	public static Block blockStoneStair_concrete1;
-	public static Block blockStoneStair_concrete2;
-
-	public static Block blockCokeOven;
-	public static Block blockBlastFurnace;
-	public static Block blockAlloySmelter;
-	public static Block blockBlastFurnaceAdv;
-	//TODO possibly merge into a single block with "arbitrary" height?
-	public static Block blockConcreteSheet;
-	public static Block blockConcreteQuarter;
-	public static Block blockConcreteThreeQuarter;
-
-	public static Block blockCoresample;
-
-	public static Map<BlockTypes_TreatedWood, Block> blocksTreatedWood = new EnumMap<>(BlockTypes_TreatedWood.class);
-	public static Map<BlockTypes_TreatedWood, Block> blocksTreatedWoodSlab = new EnumMap<>(BlockTypes_TreatedWood.class);
-	public static Block blockWoodenStair;
-	public static Block blockWoodenStair1;
-	public static Block blockWoodenStair2;
-	public static Block blockTreatedFence;
-	public static Block blockTreatedScaffolding;
-
-	public static Block blockWorkbench;
-	public static Block blockGunpowderBarrel;
-	public static Block blockWoodenBarrel;
-	public static Block blockTurntable;
-	public static Block blockCrate;
-	public static Block blockReinforcedCrate;
-	public static Block blockSorter;
-	public static Block blockFluidSorter;
-	public static Block blockWindmill;
-	public static Block blockWatermill;
-	public static Block blockTreatedPost;
-	public static Block blockTreatedWallmount;
-
-	public static Block blockCrop;
-
-	public static Block blockCushion;
-	public static Block blockBalloon;
-	public static Block blockCurtain;
-	public static Block blockShaderBanner;
-
-	public static Block blockFakeLight;
-
-	public static Map<BlockTypes_MetalsAll, Block> blocksSheetmetal = new EnumMap<>(BlockTypes_MetalsAll.class);
-	public static Map<BlockTypes_MetalsAll, Block> blocksSheetmetalSlabs = new EnumMap<>(BlockTypes_MetalsAll.class);
-	public static Block blockLVCoil;
-	public static Block blockMVCoil;
-	public static Block blockHVCoil;
-	public static Block blockEngineeringRS;
-	public static Block blockEngineeringHeavy;
-	public static Block blockEngineeringLight;
-	public static Block blockGenerator;
-	public static Block blockRadiator;
-	public static Block blockSteelFence;
-	public static Block blockAluFence;
-	public static Block[] blockSteelScaffolding = new Block[3];
-	public static Block[] blockAluScaffolding = new Block[3];
-	public static Block blockSteelWallmount;
-	public static Block blockAluWallmount;
-	public static Block blockSteelPost;
-	public static Block blockAluPost;
-	public static Block blockLantern;
-	public static Block blockRazorWire;
-	public static Block blockToolbox;
-	public static Block blockSlopeSteel;
-	public static Block blockSlopeAlu;
-	public static Block[] blockSteelScaffoldingSlabs = new Block[3];
-	public static Block[] blockAluScaffoldingSlabs = new Block[3];
-	public static Block[] blockSteelScaffoldingStair = new Block[3];
-	public static Block[] blockAluScaffoldingStair = new Block[3];
-	public static Block blockMetalLadder;
-	public static Block blockConnectorStructural;
-	public static Block blockTransformer;
-	public static Block blockTransformerHV;
-	public static Block blockBreakerswitch;
-	public static Block blockRedstoneBreaker;
-	public static Block blockEnergyMeter;
-	public static Block blockConnectorRedstone;
-	public static Block blockConnectorProbe;
-	public static Block blockFeedthrough;
-	public static Block blockCapacitorLV;
-	public static Block blockCapacitorMV;
-	public static Block blockCapacitorHV;
-	public static Block blockCapacitorCreative;
-	public static Block blockBarrel;
-	public static Block blockFluidPump;
-	public static Block blockFluidPlacer;
-	public static Block blockBlastFurnacePreheater;
-	public static Block blockFurnaceHeater;
-	public static Block blockDynamo;
-	public static Block blockThermoelectricGen;
-	public static Block blockElectricLantern;
-	public static Block blockChargingStation;
-	public static Block blockFluid_pipe;
-	public static Block blockSampleDrill;
-	public static Block blockTesla_coil;
-	public static Block blockFloodlight;
-	public static Block blockTurretChem;
-	public static Block blockTurretGun;
-	public static Block blockBelljar;
-	public static Block blockConveyor;
-	public static Block blockMetalPress;
-	public static Block blockCrusher;
-	public static Block blockTank;
-	public static Block blockSilo;
-	public static Block blockAssembler;
-	public static Block blockAutoWorkbench;
-	public static Block blockBottlingMachine;
-	public static Block blockSqueezer;
-	public static Block blockFermenter;
-	public static Block blockRefinery;
-	public static Block blockDieselGenerator;
-	public static Block blockExcavator;
-	public static Block blockBucketWheel;
-	public static Block blockArcFurnace;
-	public static Block blockLightningrod;
-	public static Block blockMixer;
-	public static BlockIEFluid blockFluidCreosote;
-	public static BlockIEFluid blockFluidPlantoil;
-	public static BlockIEFluid blockFluidEthanol;
-	public static BlockIEFluid blockFluidBiodiesel;
-	public static BlockIEFluid blockFluidConcrete;
-
-	public static ItemIEBase itemMaterial;
-	public static ItemIEBase itemMetal;
-	public static ItemIEBase itemTool;
-	public static ItemToolBase itemSteelPick;
-	public static ItemToolBase itemSteelShovel;
-	public static ItemToolBase itemSteelAxe;
-	public static ItemIESword itemSteelSword;
-	public static ItemIEBase itemToolbox;
-	public static ItemIEBase itemWireCoil;
-	public static ItemIEBase itemSeeds;
-	public static ItemIEBase itemDrill;
-	public static ItemIEBase itemDrillhead;
-	public static ItemIEBase itemJerrycan;
-	public static ItemIEBase itemMold;
-	public static ItemIEBase itemBlueprint;
-	public static ItemIEBase itemRevolver;
-	public static ItemIEBase itemSpeedloader;
-	public static ItemIEBase itemBullet;
-	public static ItemIEBase itemChemthrower;
-	public static ItemIEBase itemRailgun;
-	public static ItemIEBase itemSkyhook;
-	public static ItemIEBase itemToolUpgrades;
-	public static ItemIEBase itemShader;
-	public static ItemIEBase itemShaderBag;
-	public static Item itemEarmuffs;
-	public static ItemIEBase itemCoresample;
-	public static ItemIEBase itemGraphiteElectrode;
-	public static ItemFaradaySuit[] itemsFaradaySuit = new ItemFaradaySuit[4];
-	public static ItemIEBase itemFluorescentTube;
-	public static Item itemPowerpack;
-	public static ItemIEBase itemShield;
-	public static ItemIEBase itemMaintenanceKit;
-
-	public static ItemIEBase itemFakeIcons;
-
-	//	public static BlockIEBase<BlockTypes_> blockClothDevice;
 	public static Fluid fluidCreosote;
 	public static Fluid fluidPlantoil;
 	public static Fluid fluidEthanol;
@@ -332,24 +141,90 @@ public class IEContent
 		fluidConcrete = setupFluid(new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000));
 		fluidPotion = setupFluid(new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
 
-		blockOre = (BlockIEBase)new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
-		blockStorage = (BlockIEBase)new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
-		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storage_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
-		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stone_decoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class)
+		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
+		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
+		for(EnumMetals m : EnumMetals.values())
+		{
+			String name = m.name().toLowerCase();
+			Block storage;
+			Block ore;
+			Block sheetmetal = new BlockIEBase("sheetmetal_"+name, sheetmetalProperties, ItemBlockIEBase.class)
+					.setOpaque(true);
+			addSlabFor(sheetmetal);
+			if(!m.isVanillaMetal())
+			{
+				ore = new BlockIEBase("ore_"+m.name().toLowerCase(), Block.Properties.create(Material.ROCK)
+						.hardnessAndResistance(3, 5), ItemBlockIEBase.class)
+						.setOpaque(true);
+				storage = new BlockIEBase("storage_"+m.name().toLowerCase(), storageProperties, ItemBlockIEBase.class)
+						.setOpaque(true);
+				addSlabFor(storage);
+			}
+			else if(m==EnumMetals.IRON)
+			{
+				storage = Blocks.IRON_BLOCK;
+				ore = Blocks.IRON_ORE;
+			}
+			else if(m==EnumMetals.GOLD)
+			{
+				storage = Blocks.GOLD_BLOCK;
+				ore = Blocks.GOLD_ORE;
+			}
+			else
+			{
+				throw new RuntimeException("Unkown vanilla metal: "+m.name());
+			}
+			IEBlocks.Metals.storage.put(m, storage);
+			IEBlocks.Metals.ores.put(m, ore);
+			IEBlocks.Metals.sheetmetal.put(m, sheetmetal);
+		}
+		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
+
+		IEBlocks.StoneDecoration.cokebrick = new BlockIEBase("cokebrick", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.blastbrick = new BlockIEBase("blastbrick", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.blastbrickReinforced = new BlockIEBase("blastbrick_reinforced", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.coke = new BlockIEBase("coke", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.hempcrete = new BlockIEBase("hempcrete", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.concrete = new BlockIEBase("concrete", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.concreteTile = new BlockIEBase("concrete_tile", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.concreteLeaded = new BlockIEBase("concrete_leaded", Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180), ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.alloybrick = new BlockIEBase("alloybrick", stoneDecoProps, ItemBlockIEBase.class);
+
+		IEBlocks.StoneDecoration.insulatingGlass = new BlockIEBase("insulating_glass", stoneDecoProps, ItemBlockIEBase.class)
 		{
 			@Override
-			public int quantityDropped(IBlockState state, int fortune, Random random)
+			public int getOpacity(IBlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
 			{
-				if(getMetaFromState(state)==BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
-					return 0;
-				return super.quantityDropped(state, fortune, random);
+				return 0;
 			}
-		}.setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		//Insulated Glass + Sprayed concrete are special
-		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
-		blockStoneDecoration.setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta);
-		int sprConcreteMeta = BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta();
-		blockStoneDecoration.setMetaHidden(sprConcreteMeta).setMetaBlockLayer(sprConcreteMeta, BlockRenderLayer.CUTOUT).setMetaLightOpacity(sprConcreteMeta, 0).setNotNormalBlock(sprConcreteMeta).setMetaHardness(sprConcreteMeta, .2f).setMetaHammerHarvest(sprConcreteMeta);
+		}
+				.setBlockLayer(BlockRenderLayer.TRANSLUCENT)
+				.setNotNormalBlock();
+		IEBlocks.StoneDecoration.concreteSprayed = new BlockIEBase("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1)., ItemBlockIEBase.class)
+		{
+			@Override
+			public int getItemsToDropCount(@Nonnull IBlockState state, int fortune, World world, BlockPos pos, @Nonnull Random r)
+			{
+				return 0;
+			}
+
+			@Override
+			public int getOpacity(IBlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
+			{
+				return 0;
+			}
+		}.setNotNormalBlock().setHammerHarvest().setBlockLayer(BlockRenderLayer.CUTOUT);
+		addSlabFor(IEBlocks.StoneDecoration.cokebrick);
+		addSlabFor(IEBlocks.StoneDecoration.blastbrick);
+		addSlabFor(IEBlocks.StoneDecoration.blastbrickReinforced);
+		addSlabFor(IEBlocks.StoneDecoration.coke);
+		addSlabFor(IEBlocks.StoneDecoration.hempcrete);
+		addSlabFor(IEBlocks.StoneDecoration.concrete);
+		addSlabFor(IEBlocks.StoneDecoration.concreteTile);
+		addSlabFor(IEBlocks.StoneDecoration.concreteLeaded);
+		addSlabFor(IEBlocks.StoneDecoration.insulatingGlass);
+		addSlabFor(IEBlocks.StoneDecoration.concreteSprayed);
+		addSlabFor(IEBlocks.StoneDecoration.alloybrick);
 
 		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stone_decoration_slab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8, sprConcreteMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
 		blockStoneStair_hempcrete = new BlockIEStairs("stone_decoration_stairs_hempcrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
@@ -359,8 +234,8 @@ public class IEContent
 
 		blockStoneDevice = new BlockStoneDevice();
 
-		blockTreatedWood = (BlockIEBase)new BlockIEBase("treated_wood", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
-		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treated_wood_slab", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
+		blockTreatedWood = (BlockIEBase)new BlockIEBase("treated_wood", Material.WOOD, PropertyEnum.create("type", TreatedWoodStyles.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
+		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treated_wood_slab", Material.WOOD, PropertyEnum.create("type", TreatedWoodStyles.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
 		blockWoodenStair = new BlockIEStairs("treated_wood_stairs0", blockTreatedWood.getStateFromMeta(0)).setHasFlavour(true);
 		blockWoodenStair1 = new BlockIEStairs("treated_wood_stairs1", blockTreatedWood.getStateFromMeta(1)).setHasFlavour(true);
 		blockWoodenStair2 = new BlockIEStairs("treated_wood_stairs2", blockTreatedWood.getStateFromMeta(2)).setHasFlavour(true);
@@ -372,8 +247,6 @@ public class IEContent
 		blockClothDevice = new BlockClothDevice();
 		blockFakeLight = new BlockFakeLight();
 
-		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
-		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetal_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
 
 		blockMetalDecoration0 = new BlockMetalDecoration0();
 		blockMetalDecoration1 = new BlockMetalDecoration1();
@@ -399,12 +272,6 @@ public class IEContent
 		blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
 		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
 
-		itemMaterial = new ItemMaterial();
-		itemMetal = new ItemIEBase("metal", 64,
-				"ingot_copper", "ingot_aluminum", "ingot_lead", "ingot_silver", "ingot_nickel", "ingot_uranium", "ingot_constantan", "ingot_electrum", "ingot_steel",
-				"dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
-				"nugget_copper", "nugget_aluminum", "nugget_lead", "nugget_silver", "nugget_nickel", "nugget_uranium", "nugget_constantan", "nugget_electrum", "nugget_steel", "nugget_iron",
-				"plate_copper", "plate_aluminum", "plate_lead", "plate_silver", "plate_nickel", "plate_uranium", "plate_constantan", "plate_electrum", "plate_steel", "plate_iron", "plate_gold");
 		itemTool = new ItemWirecutter();
 		itemSteelPick = new ItemIEPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel", "pickaxe", "ingotSteel");
 		itemSteelShovel = new ItemIEShovel(Lib.MATERIAL_Steel, "shovel_steel", "shovel", "ingotSteel");
@@ -419,7 +286,6 @@ public class IEContent
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
-		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bullet_casing", "wire", "packing4", "packing9", "unpacking");
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
 		itemRevolver = new ItemRevolver();
@@ -489,6 +355,13 @@ public class IEContent
 	{
 		/*POTIONS*/
 		IEPotions.init();
+	}
+
+	private static Block addSlabFor(Block b)
+	{
+		BlockIESlab ret = new BlockIESlab("slab_"+b.getRegistryName().getPath(), Block.Properties.from(b), ItemBlockIESlabs.class);
+		IEBlocks.toSlab.put(b, ret);
+		return ret;
 	}
 
 	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
@@ -690,17 +563,17 @@ public class IEContent
 		}, (entity, iConveyorTile) -> {
 			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
 		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "droppercovered"), ConveyorDropCovered.class, (tileEntity) -> new ConveyorDropCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
-		ConveyorHandler.registerSubstitute(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), ConveyorDropCovered.class, (tileEntity) -> new ConveyorDropCovered());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
+		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
 		/*BULLETS*/
 		ItemBullet.initBullets();
@@ -812,16 +685,16 @@ public class IEContent
 
 		/*ENTITIES*/
 		int i = 0;
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShot"), EntityRevolvershot.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "skylineHook"), EntitySkylineHook.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShot"), EntityRevolvershot.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "skylineHook"), EntitySkylineHook.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
 		//EntityRegistry.registerModEntity(EntitySkycrate.class, "skylineCrate", 2, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShotHoming"), EntityRevolvershotHoming.class, "revolverShotHoming", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShotWolfpack"), EntityWolfpackShot.class, "revolverShotWolfpack", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrowerShot"), EntityChemthrowerShot.class, "chemthrowerShot", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "railgunShot"), EntityRailgunShot.class, "railgunShot", i++, ImmersiveEngineering.instance, 64, 5, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "revolverShotFlare"), EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "explosive"), EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(ImmersiveEngineering.MODID, "fluorescentTube"), EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotHoming"), EntityRevolvershotHoming.class, "revolverShotHoming", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotWolfpack"), EntityWolfpackShot.class, "revolverShotWolfpack", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "chemthrowerShot"), EntityChemthrowerShot.class, "chemthrowerShot", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "railgunShot"), EntityRailgunShot.class, "railgunShot", i++, ImmersiveEngineering.instance, 64, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotFlare"), EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "explosive"), EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "fluorescentTube"), EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 		CapabilityShader.register();
 		NetHandlerCapability.register();
 		CapabilitySkyhookData.register();
@@ -1255,7 +1128,7 @@ public class IEContent
 			}
 			return null;
 		}, null);
-		type.setRegistryName(ImmersiveEngineering.MODID, s);
+		type.setRegistryName(MODID, s);
 		try
 		{
 			Field typeField = tile.getField("TYPE");
@@ -1275,7 +1148,7 @@ public class IEContent
 
 	public static void addBanner(String name, String id, Object item, int... offset)
 	{
-		name = ImmersiveEngineering.MODID+"_"+name;
+		name = MODID+"_"+name;
 		id = "ie_"+id;
 		ItemStack craftingStack = ItemStack.EMPTY;
 		if(item instanceof ItemStack&&(offset==null||offset.length < 1))

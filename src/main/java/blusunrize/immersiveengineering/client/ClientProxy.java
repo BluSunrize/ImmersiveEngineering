@@ -532,7 +532,7 @@ public class ClientProxy extends CommonProxy
 		//		
 		//		MinecraftForgeClient.registerItemRenderer(IEContent.itemRevolver, new ItemRenderRevolver());
 		//		//DRILL
-		//		MinecraftForgeClient.registerItemRenderer(IEContent.itemDrill, new ItemRenderDrill());
+		//		MinecraftForgeClient.registerItemRenderer(IEContent.drill, new ItemRenderDrill());
 		//		//ZIPLINE
 		//		RenderingRegistry.registerEntityRenderingHandler(EntitySkycrate.class, new EntityRenderSkycrate());
 		//		//CHEMTHROWER
@@ -656,7 +656,7 @@ public class ClientProxy extends CommonProxy
 			storageSlabs.set(i, new ItemStack(IEContent.blockStorageSlabs, 1, i));
 		}
 		tempItemList = NonNullList.create();
-		for(int i = 0; i < BlockTypes_MetalsAll.values().length; i++)
+		for(int i = 0; i < EnumMetals.values().length; i++)
 			if(!IEContent.blockSheetmetal.isMetaHidden(i))
 				tempItemList.add(new ItemStack(IEContent.blockSheetmetal, 1, i));
 		ItemStack[] sheetmetal = tempItemList.toArray(new ItemStack[tempItemList.size()]);
@@ -777,7 +777,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "shield2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.SHIELD_SHOCK.ordinal())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "shield3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.SHIELD_MAGNET.ordinal())));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_TOOLS,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.drill, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead, 1, 0)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_WATERPROOF.ordinal())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.DRILL_LUBE.ordinal())),

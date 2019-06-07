@@ -23,10 +23,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
@@ -34,7 +31,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,11 +39,9 @@ import java.util.Set;
 public class BlockIEBase extends Block
 {
 	protected static IProperty[] tempProperties;
-	protected static IUnlistedProperty[] tempUnlistedProperties;
 
 	public final String name;
 	public final IProperty[] additionalProperties;
-	public final IUnlistedProperty[] additionalUnlistedProperties;
 	boolean isHidden;
 	boolean hasFlavour;
 	protected Set<BlockRenderLayer> renderLayers = Sets.newHashSet(BlockRenderLayer.SOLID);
@@ -64,10 +58,9 @@ public class BlockIEBase extends Block
 		this.name = name;
 
 		this.additionalProperties = Arrays.copyOf(tempProperties, tempProperties.length);
-		this.additionalUnlistedProperties = Arrays.copyOf(tempUnlistedProperties, tempUnlistedProperties.length);
 		this.setDefaultState(getInitDefaultState());
-		String registryName = createRegistryName();
-		//TODO this.setCreativeTab(ImmersiveEngineering.itemGroup);
+		ResourceLocation registryName = createRegistryName();
+		setRegistryName(registryName);
 		//TODO this.adjustSound();
 
 		IEContent.registeredIEBlocks.add(this);
@@ -88,20 +81,14 @@ public class BlockIEBase extends Block
 	protected static Block.Properties setTempProperties(Properties blockProps, Object[] additionalProperties)
 	{
 		ArrayList<IProperty> propList = new ArrayList<IProperty>();
-		ArrayList<IUnlistedProperty> unlistedPropList = new ArrayList<IUnlistedProperty>();
 		for(Object o : additionalProperties)
 		{
 			if(o instanceof IProperty)
 				propList.add((IProperty)o);
 			if(o instanceof IProperty[])
 				propList.addAll(Arrays.asList(((IProperty[])o)));
-			if(o instanceof IUnlistedProperty)
-				unlistedPropList.add((IUnlistedProperty)o);
-			if(o instanceof IUnlistedProperty[])
-				unlistedPropList.addAll(Arrays.asList(((IUnlistedProperty[])o)));
 		}
 		tempProperties = propList.toArray(new IProperty[0]);
-		tempUnlistedProperties = unlistedPropList.toArray(new IUnlistedProperty[0]);
 		return blockProps;
 	}
 
@@ -282,9 +269,9 @@ public class BlockIEBase extends Block
 		return super.isToolEffective(state, tool);
 	}
 
-	public String createRegistryName()
+	public ResourceLocation createRegistryName()
 	{
-		return ImmersiveEngineering.MODID+":"+name;
+		return new ResourceLocation(ImmersiveEngineering.MODID, name);
 	}
 
 	@Override

@@ -8,10 +8,9 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -19,84 +18,60 @@ import com.google.common.collect.ImmutableList.Builder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.Tags.Items;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemDrillhead extends ItemIEBase implements IDrillHead
 {
-	public ItemDrillhead()
-	{
-		super("drillhead", 1, "steel", "iron");
-		perms = new DrillHeadPerm[this.subNames.length];
-		//Maximal damage is slightly proportionate to pickaxes
-		addPerm(0, new DrillHeadPerm("ingotSteel", 3, 1, 3, 10, 7, 10000, "immersiveengineering:items/drill_diesel"));
-		addPerm(1, new DrillHeadPerm("ingotIron", 2, 1, 2, 9, 6, 6000, "immersiveengineering:items/drill_iron"));
-	}
+	//Maximal damage is slightly proportionate to pickaxes
+	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", "ingotSteel", 3, 1, 3, 10, 7, 10000, "immersiveengineering:items/drill_diesel");
+	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, "immersiveengineering:items/drill_iron");
 
-	public DrillHeadPerm[] perms;
+	public DrillHeadPerm perms;
 
-	private void addPerm(int i, DrillHeadPerm perm)
+	public ItemDrillhead(DrillHeadPerm perms)
 	{
-		if(i < perms.length)
-			perms[i] = perm;
-	}
-
-	private DrillHeadPerm getHeadPerm(ItemStack stack)
-	{
-		if(stack.getItemDamage() >= 0&&stack.getItemDamage() < perms.length)
-			return perms[stack.getItemDamage()];
-		return new DrillHeadPerm("", 0, 0, 0, 0, 0, 0, "immersiveengineering:items/drill_diesel");
+		super("drillhead_"+perms.name, new Properties().maxStackSize(1));
+		this.perms = perms;
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		if(stack.getItemDamage() < getSubNames().length)
-		{
-			list.add(I18n.format(Lib.DESC_FLAVOUR+"drillhead.size", getHeadPerm(stack).drillSize, getHeadPerm(stack).drillDepth));
-			list.add(I18n.format(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));
-			list.add(I18n.format(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")));
-			list.add(I18n.format(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")));
+		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));
+		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));
+		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")));
+		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")));
 
-			int maxDmg = getMaximumHeadDamage(stack);
-			int dmg = maxDmg-getHeadDamage(stack);
-			float quote = dmg/(float)maxDmg;
-			String status = ""+(quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			String s = status+(getMaximumHeadDamage(stack)-getHeadDamage(stack))+"/"+getMaximumHeadDamage(stack);
-			list.add(I18n.format(Lib.DESC_INFO+"durability", s));
-		}
-	}
-
-	@Override
-	public void fillItemGroup(CreativeTabs tab, NonNullList<ItemStack> list)
-	{
-		if(this.isInCreativeTab(tab))
-			for(int i = 0; i < getSubNames().length; i++)
-			{
-				ItemStack s = new ItemStack(this, 1, i);
-				if(ApiUtils.isExistingOreName(getHeadPerm(s).repairMaterial))
-					list.add(s);
-			}
-
+		int maxDmg = getMaximumHeadDamage(stack);
+		int dmg = maxDmg-getHeadDamage(stack);
+		float quote = dmg/(float)maxDmg;
+		String status = ""+(quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
+		String s = status+(getMaximumHeadDamage(stack)-getHeadDamage(stack))+"/"+getMaximumHeadDamage(stack);
+		list.add(new TextComponentTranslation(Lib.DESC_INFO+"durability", s));
 	}
 
 	@Override
 	public boolean getIsRepairable(ItemStack stack, ItemStack material)
 	{
-		return Utils.isInTag(material, getHeadPerm(stack).repairMaterial);
+		return perms.repairMaterial.contains(material.getItem());
 	}
 
 	@Override
@@ -113,19 +88,19 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@Override
 	public int getMiningLevel(ItemStack head)
 	{
-		return getHeadPerm(head).drillLevel;
+		return perms.drillLevel;
 	}
 
 	@Override
 	public float getMiningSpeed(ItemStack head)
 	{
-		return getHeadPerm(head).drillSpeed;
+		return perms.drillSpeed;
 	}
 
 	@Override
 	public float getAttackDamage(ItemStack head)
 	{
-		return getHeadPerm(head).drillAttack;
+		return perms.drillAttack;
 	}
 
 	@Override
@@ -137,7 +112,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@Override
 	public int getMaximumHeadDamage(ItemStack head)
 	{
-		return getHeadPerm(head).maxDamage;
+		return perms.maxDamage;
 	}
 
 	@Override
@@ -150,7 +125,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getDrillTexture(ItemStack drill, ItemStack head)
 	{
-		return getHeadPerm(head).sprite;
+		return perms.sprite;
 	}
 
 	@Override
@@ -167,7 +142,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 
 	public static class DrillHeadPerm
 	{
-		final String repairMaterial;
+		final String name;
+		final Tag<Item> repairMaterial;
 		final int drillSize;
 		final int drillDepth;
 		final int drillLevel;
@@ -178,8 +154,9 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite sprite;
 
-		public DrillHeadPerm(String repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture)
+		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture)
 		{
+			this.name = name;
 			this.repairMaterial = repairMaterial;
 			this.drillSize = drillSize;
 			this.drillDepth = drillDepth;
@@ -195,8 +172,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, EntityPlayer player, RayTraceResult mop)
 	{
 		EnumFacing side = mop.sideHit;
-		int diameter = getHeadPerm(head).drillSize;
-		int depth = getHeadPerm(head).drillDepth;
+		int diameter = perms.drillSize;
+		int depth = perms.drillDepth;
 
 		BlockPos startPos = mop.getBlockPos();
 		IBlockState state = world.getBlockState(startPos);
@@ -234,8 +211,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 					state = world.getBlockState(pos);
 					block = state.getBlock();
 					float h = state.getPlayerRelativeBlockHardness(player, world, pos);
-					boolean canHarvest = block.canHarvestBlock(world, pos, player);
-					boolean drillMat = ((ItemDrill)IEContent.itemDrill).isEffective(state.getMaterial());
+					boolean canHarvest = block.canHarvestBlock(world.getBlockState(pos), world, pos, player);
+					boolean drillMat = ((ItemDrill)Tools.drill).isEffective(state.getMaterial());
 					boolean hardness = h > maxHardness;
 					if(canHarvest&&drillMat&&hardness)
 						b.add(pos);

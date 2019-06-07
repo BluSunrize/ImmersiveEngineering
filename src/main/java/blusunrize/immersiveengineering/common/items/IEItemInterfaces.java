@@ -15,10 +15,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.util.List;
 
@@ -53,7 +54,11 @@ public class IEItemInterfaces
 
 		default FluidStack getFluid(ItemStack container)
 		{
-			return FluidUtil.getFluidContained(container);
+			LazyOptional<FluidStack> optional = FluidUtil.getFluidContained(container);
+			if(optional.isPresent())
+				return optional.orElseThrow(RuntimeException::new);
+			else
+				return null;
 		}
 	}
 
@@ -72,7 +77,7 @@ public class IEItemInterfaces
 
 		default NonNullList<ItemStack> getBullets(ItemStack container)
 		{
-			return getBullets(container, FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT);
+			return getBullets(container, EffectiveSide.get()==LogicalSide.CLIENT);
 		}
 
 		int getBulletCount(ItemStack container);

@@ -45,6 +45,8 @@ public class EntityRevolvershot extends EntityIEProjectile
 	private IBullet bulletType;
 	public boolean bulletElectro = false;
 	public ItemStack bulletPotion = ItemStack.EMPTY;
+	private float gravity;
+	private float movementDecay;
 
 	public EntityRevolvershot(EntityType<? extends EntityRevolvershot> type, World world)
 	{
@@ -135,7 +137,7 @@ public class EntityRevolvershot extends EntityIEProjectile
 			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 			{
 				ItemStack stack = ((EntityLivingBase)mop.entity).getItemStackFromSlot(slot);
-				if(EnergyHelper.isFluxItem(stack)&&EnergyHelper.getEnergyStored(stack) > 0)
+				if(EnergyHelper.isFluxReceiver(stack)&&EnergyHelper.getEnergyStored(stack) > 0)
 				{
 					int drain = (int)Math.max(EnergyHelper.getEnergyStored(stack), EnergyHelper.getMaxEnergyStored(stack)*percentualDrain);
 					int hasDrained = 0;
@@ -209,5 +211,27 @@ public class EntityRevolvershot extends EntityIEProjectile
 	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
 	{
 		return false;
+	}
+
+	public void setGravity(float gravity)
+	{
+		this.gravity = gravity;
+	}
+
+	@Override
+	public double getGravity()
+	{
+		return gravity;
+	}
+
+	public void setMovementDecay(float movementDecay)
+	{
+		this.movementDecay = movementDecay;
+	}
+
+	@Override
+	protected float getMotionDecayFactor()
+	{
+		return movementDecay;
 	}
 }

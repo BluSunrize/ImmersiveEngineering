@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecor
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAutoWorkbench;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_TreatedWood;
+import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -61,7 +61,7 @@ public class MultiblockAutoWorkbench implements IMultiblock
 						else if(w==2&&l==2)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else if(l==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockTreatedWoodSlabs, 1, BlockTypes_TreatedWood.HORIZONTAL.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockTreatedWoodSlabs, 1, TreatedWoodStyles.HORIZONTAL.getMeta());
 						else
 							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor");
 					}

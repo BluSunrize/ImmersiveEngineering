@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
@@ -58,9 +58,9 @@ public class MultiblockArcFurnace implements IMultiblock
 						else if(l==4&&w==2)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else if(l==4||(l > 2&&(w==0||w==4)))
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.STEEL.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetalSlabs, 1, BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetalSlabs, 1, EnumMetals.STEEL.getMeta());
 					}
 					else if(h==1)
 					{
@@ -82,7 +82,7 @@ public class MultiblockArcFurnace implements IMultiblock
 						else if(l==4&&w > 0&&w < 4)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else if(l==4)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.STEEL.getMeta());
 						else if(w > 0&&w < 4)
 							structure[h][l][w] = new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta());
 					}
@@ -255,12 +255,12 @@ public class MultiblockArcFurnace implements IMultiblock
 							if(!Utils.isOreBlockAt(world, pos, "scaffoldingSteel"))
 								return false;
 						}
-						else if(OreDictionary.itemMatches(structure[h][l][w+2], new ItemStack(IEContent.blockSheetmetal, 1, BlockTypes_MetalsAll.STEEL.getMeta()), true))
+						else if(OreDictionary.itemMatches(structure[h][l][w+2], new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.STEEL.getMeta()), true))
 						{
 							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalSteel"))
 								return false;
 						}
-						else if(OreDictionary.itemMatches(structure[h][l][w+2], new ItemStack(IEContent.blockSheetmetalSlabs, 1, BlockTypes_MetalsAll.STEEL.getMeta()), true))
+						else if(OreDictionary.itemMatches(structure[h][l][w+2], new ItemStack(IEContent.blockSheetmetalSlabs, 1, EnumMetals.STEEL.getMeta()), true))
 						{
 							if(!Utils.isOreBlockAt(world, pos, "slabSheetmetalSteel"))
 								return false;
