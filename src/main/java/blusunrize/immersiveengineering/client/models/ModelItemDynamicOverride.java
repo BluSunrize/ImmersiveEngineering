@@ -130,7 +130,7 @@ public class ModelItemDynamicOverride implements IBakedModel
 					IBakedModel model = modelCache.get(key);
 					if(model==null)
 					{
-						model = new ModelItemDynamicOverride(originalModel, texOverride.getTextures(stack, key));
+						model = new ModelItemDynamicOverride(originalModel instanceof ModelItemDynamicOverride?((ModelItemDynamicOverride)originalModel).itemModel:originalModel, texOverride.getTextures(stack, key));
 						modelCache.put(key, model);
 					}
 					return model;

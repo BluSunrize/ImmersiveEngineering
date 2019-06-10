@@ -355,6 +355,8 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		try
 		{
 			IBakedModel ibakedmodel = ClientUtils.mc().getRenderItem().getItemModelWithOverrides(stack, world, player);
+			if(ibakedmodel==null||ibakedmodel.isGui3d())
+				return new BlueprintLinesEmpty();
 			HashSet<String> textures = new HashSet();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, 0);
 			for(BakedQuad quad : quads)
@@ -371,6 +373,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 			}
 		} catch(Exception e)
 		{
+			e.printStackTrace();
 		}
 		if(images.isEmpty())
 			return null;
@@ -530,6 +533,19 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 						style.drawShading(pixel);
 				GlStateManager.glEnd();
 			}
+		}
+	}
+
+	public static class BlueprintLinesEmpty extends BlueprintLines
+	{
+		BlueprintLinesEmpty()
+		{
+			super(0, null, null);
+		}
+
+		@Override
+		public void draw(float lineWidth)
+		{
 		}
 	}
 

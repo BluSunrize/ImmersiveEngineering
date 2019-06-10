@@ -69,6 +69,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 							GlStateManager.translate(dX, dY/scale, 0);
 
 							//Width depends on distance
+							GlStateManager.disableLighting();
 							GlStateManager.disableCull();
 							GlStateManager.disableTexture2D();
 							GlStateManager.enableBlend();
@@ -80,6 +81,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 							GlStateManager.enableAlpha();
 							GlStateManager.enableTexture2D();
 							GlStateManager.enableCull();
+							GlStateManager.enableLighting();
 							GlStateManager.translate(-dX, -dY/scale, 0);
 							i++;
 						}
