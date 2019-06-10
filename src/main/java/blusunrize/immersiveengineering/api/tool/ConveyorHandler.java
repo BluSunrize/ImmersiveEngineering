@@ -368,10 +368,7 @@ public class ConveyorHandler
 				{
 					EntityItem item = (EntityItem)entity;
 					if(!contact)
-					{
-						if(item.getAge() > item.lifespan-60*20)
-							item.setAgeToCreativeDespawnTime();
-					}
+						item.setNoDespawn(); //misnamed, actually sets despawn timer to 10 minutes
 					else
 						handleInsertion(tile, item, facing, conveyorDirection, distX, distZ);
 				}
