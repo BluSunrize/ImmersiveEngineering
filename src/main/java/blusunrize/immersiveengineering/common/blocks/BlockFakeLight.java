@@ -17,10 +17,12 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -80,6 +82,12 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 	public RayTraceResult collisionRayTrace(IBlockState state, World par1World, BlockPos pos, Vec3d par5Vec3, Vec3d par6Vec3)
 	{
 		return null;
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+	{
+		return BlockFaceShape.UNDEFINED;
 	}
 
 	@Override
