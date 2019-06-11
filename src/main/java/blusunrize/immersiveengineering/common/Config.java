@@ -78,6 +78,8 @@ public class Config
 		public static boolean increasedRenderboxes = true;
 		@Comment({"Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.", "Affects turrets and garden cloches"})
 		public static boolean disableFancyTESR = false;
+		@Comment({"Disables the fancy rendering of blueprints on the Workbench and Autoworkbench.","Set this to true if your game keeps freezing or crashing when looking at such a block."})
+		public static boolean disableFancyBlueprints = true;
 		@Comment({"Support for colourblind people, gives a text-based output on capacitor sides"})
 		public static boolean colourblindSupport = false;
 		@Comment({"Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things"})

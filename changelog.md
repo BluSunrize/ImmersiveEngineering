@@ -1,4 +1,5 @@
 ##### Version 0.12-90
+- Added a config option to disable fancy Blueprint rendering
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)

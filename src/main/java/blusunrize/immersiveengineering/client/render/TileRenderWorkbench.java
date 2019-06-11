@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -45,7 +46,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 			{
 				GlStateManager.pushMatrix();
 				double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(te.getPos());
-				if(playerDistanceSq < 120)
+				if(!Config.IEConfig.disableFancyBlueprints&&playerDistanceSq < 120)
 				{
 					BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint"));
 
