@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -27,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -47,7 +48,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TileEntitySqueezer extends TileEntityPoweredMultiblock<TileEntitySqueezer, SqueezerRecipe> implements
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile
+		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
 {
 	public static TileEntityType<TileEntitySqueezer> TYPE;
 	
@@ -505,19 +506,19 @@ public class TileEntitySqueezer extends TileEntityPoweredMultiblock<TileEntitySq
 	}
 
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return formed;
 	}
 
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_Squeezer;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return master();
 	}

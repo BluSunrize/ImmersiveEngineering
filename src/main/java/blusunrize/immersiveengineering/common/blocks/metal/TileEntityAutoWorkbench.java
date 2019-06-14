@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAutoWorkbench;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -23,12 +23,13 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,7 +43,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEntityAutoWorkbench, IMultiblockRecipe>
-		implements IGuiTile, IConveyorAttachable
+		implements IInteractionObjectIE, IConveyorAttachable
 {
 	public static TileEntityType<TileEntityAutoWorkbench> TYPE;
 
@@ -328,25 +329,23 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 		return BlueprintCraftingRecipe.loadFromNBT(tag);
 	}
 
-
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return formed;
 	}
 
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_AutoWorkbench;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return master();
 	}
-
 
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
@@ -377,7 +376,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	@Override
 	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
 	{
-		if(state.getBlock()==IEContent.blockConveyor)
+		if(state.getBlock()==MetalDevices.conveyor)
 		{
 			if((l==2&&w==0)||l==1)
 				state = state.with(IEProperties.FACING_ALL, facing.rotateY());

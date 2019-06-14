@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.tileentity.TileEntity;
 
 public class GuiCrate extends GuiIEContainerBase
 {
@@ -25,13 +26,15 @@ public class GuiCrate extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		this.fontRenderer.drawString(((ContainerCrate)this.inventorySlots).tile.getDisplayName().getUnformattedText(), 8, 6, 0x0a0a0a);
+		TileEntity te = ((ContainerCrate)this.inventorySlots).tile;
+		this.fontRenderer.drawString(((TileEntityWoodenCrate)te).getName().getFormattedText(),
+				8, 6, 0x0a0a0a);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}

@@ -28,6 +28,7 @@ public class MessageTileSync implements IMessage
 	private BlockPos pos;
 	private NBTTagCompound nbt;
 
+	//TODO get rid of NBT in packets
 	public MessageTileSync(TileEntityIEBase tile, NBTTagCompound nbt)
 	{
 		this.pos = tile.getPos();

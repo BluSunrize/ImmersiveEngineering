@@ -9,14 +9,15 @@
 package blusunrize.immersiveengineering.api;
 
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.IItemTier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.util.EnumHelper;
 
 public class Lib
 {
-	public static final String MODID = "immersiveengineering";
+	public static final String MODID = ImmersiveEngineering.MODID;
 
 	public static final String[] METALS_IE = {"Copper", "Aluminum", "Lead", "Silver", "Nickel", "Uranium", "Constantan", "Electrum", "Steel"};
 	public static final String[] METALS_ALL = {"Copper", "Aluminum", "Lead", "Silver", "Nickel", "Uranium", "Constantan", "Electrum", "Steel", "Iron", "Gold"};
@@ -46,30 +47,28 @@ public class Lib
 	 * Gui IDs
 	 */
 	//Tiles
-	public static final int GUIID_Base_Tile = 0;
-	public static final int GUIID_CokeOven = GUIID_Base_Tile+0;
-	public static final int GUIID_AlloySmelter = GUIID_Base_Tile+1;
-	public static final int GUIID_BlastFurnace = GUIID_Base_Tile+2;
-	public static final int GUIID_WoodenCrate = GUIID_Base_Tile+3;
-	public static final int GUIID_Workbench = GUIID_Base_Tile+4;
-	public static final int GUIID_Assembler = GUIID_Base_Tile+5;
-	public static final int GUIID_Sorter = GUIID_Base_Tile+6;
-	public static final int GUIID_Squeezer = GUIID_Base_Tile+7;
-	public static final int GUIID_Fermenter = GUIID_Base_Tile+8;
-	public static final int GUIID_Refinery = GUIID_Base_Tile+9;
-	public static final int GUIID_ArcFurnace = GUIID_Base_Tile+10;
-	public static final int GUIID_AutoWorkbench = GUIID_Base_Tile+11;
-	public static final int GUIID_Mixer = GUIID_Base_Tile+12;
-	public static final int GUIID_Turret = GUIID_Base_Tile+13;
-	public static final int GUIID_FluidSorter = GUIID_Base_Tile+14;
-	public static final int GUIID_Belljar = GUIID_Base_Tile+15;
-	public static final int GUIID_ToolboxBlock = GUIID_Base_Tile+16;
+	public static final ResourceLocation GUIID_CokeOven = new ResourceLocation(MODID, ":cokeoven");
+	public static final ResourceLocation GUIID_AlloySmelter = new ResourceLocation(MODID, ":alloysmelter");
+	public static final ResourceLocation GUIID_BlastFurnace = new ResourceLocation(MODID, ":blastfurnace");
+	public static final ResourceLocation GUIID_WoodenCrate = new ResourceLocation(MODID, ":woodencrate");
+	public static final ResourceLocation GUIID_Workbench = new ResourceLocation(MODID, ":workbench");
+	public static final ResourceLocation GUIID_Assembler = new ResourceLocation(MODID, ":assembler");
+	public static final ResourceLocation GUIID_Sorter = new ResourceLocation(MODID, ":sorter");
+	public static final ResourceLocation GUIID_Squeezer = new ResourceLocation(MODID, ":squeezer");
+	public static final ResourceLocation GUIID_Fermenter = new ResourceLocation(MODID, ":fermenter");
+	public static final ResourceLocation GUIID_Refinery = new ResourceLocation(MODID, ":refinery");
+	public static final ResourceLocation GUIID_ArcFurnace = new ResourceLocation(MODID, ":arcfurnace");
+	public static final ResourceLocation GUIID_AutoWorkbench = new ResourceLocation(MODID, ":autoworkbench");
+	public static final ResourceLocation GUIID_Mixer = new ResourceLocation(MODID, ":mixer");
+	public static final ResourceLocation GUIID_Turret = new ResourceLocation(MODID, ":turret");
+	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, ":fluidsorter");
+	public static final ResourceLocation GUIID_Belljar = new ResourceLocation(MODID, ":belljar");
+	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, ":toolboxblock");
 	//Items
-	public static final int GUIID_Base_Item = 64;
-	public static final int GUIID_Manual = GUIID_Base_Item+0;
-	public static final int GUIID_Revolver = GUIID_Base_Item+1;
-	public static final int GUIID_Toolbox = GUIID_Base_Item+2;
-	public static final int GUIID_MaintenanceKit= GUIID_Base_Item+3;
+	public static final ResourceLocation GUIID_Manual = new ResourceLocation(MODID, ":manual");
+	public static final ResourceLocation GUIID_Revolver = new ResourceLocation(MODID, ":revolver");
+	public static final ResourceLocation GUIID_Toolbox = new ResourceLocation(MODID, ":toolbox");
+	public static final ResourceLocation GUIID_MaintenanceKit = new ResourceLocation(MODID, ":maintenancekit");
 
 	public static final String NBT_Earmuffs = "IE:Earmuffs";
 	public static final String NBT_EarmuffColour = "IE:EarmuffColour";

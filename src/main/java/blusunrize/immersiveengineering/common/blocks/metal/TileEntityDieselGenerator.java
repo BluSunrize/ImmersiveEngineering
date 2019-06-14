@@ -12,7 +12,10 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IFaceShape;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -39,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEntityDieselGenerator>
-		implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile, ISoundTile, IFaceShape
+		implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, ISoundTile, IFaceShape
 {
 	public static TileEntityType<TileEntityDieselGenerator> TYPE;
 
@@ -361,24 +364,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
 		return false;
-	}
-
-	@Override
-	public boolean canOpenGui()
-	{
-		return false;
-	}
-
-	@Override
-	public int getGuiID()
-	{
-		return -1;
-	}
-
-	@Override
-	public TileEntity getGuiMaster()
-	{
-		return master();
 	}
 
 	@Override

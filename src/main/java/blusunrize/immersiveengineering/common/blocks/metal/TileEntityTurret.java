@@ -37,6 +37,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -55,7 +56,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TileEntityTurret extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory,
-		IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IGuiTile, IEntityProof, IHammerInteraction, IHasObjProperty
+		IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IInteractionObjectIE, IEntityProof, IHammerInteraction, IHasObjProperty
 {
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(16000);
@@ -416,7 +417,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean canOpenGui(EntityPlayer player)
+	public boolean canUseGui(EntityPlayer player)
 	{
 		if(hasOwnerRights(player))
 			return true;
@@ -425,25 +426,19 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean canOpenGui()
-	{
-		return false;
-	}
-
-	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_Turret;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		if(!dummy)
 			return this;
 		TileEntity te = world.getTileEntity(getPos().down());
 		if(te instanceof TileEntityTurret)
-			return te;
+			return (IInteractionObjectIE)te;
 		return null;
 	}
 

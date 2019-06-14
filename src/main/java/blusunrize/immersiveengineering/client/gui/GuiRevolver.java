@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -48,7 +48,7 @@ public class GuiRevolver extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 		this.drawTexturedModalRect(guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);
 
@@ -69,7 +69,7 @@ public class GuiRevolver extends GuiIEContainerBase
 	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-		GlStateManager.color(1, 1, 1, 1);
+		GlStateManager.color3f(1, 1, 1);
 
 		RenderHelper.disableStandardItemLighting();
 
@@ -80,9 +80,9 @@ public class GuiRevolver extends GuiIEContainerBase
 			ClientUtils.drawTexturedRect(57, 1, 79, 39, 57/256f, 136/256f, 12/256f, 51/256f);
 
 		RenderHelper.enableGUIStandardItemLighting();
-		GlStateManager.enableDepth();
+		GlStateManager.enableDepthTest();
 
-		RenderItem ir = ClientUtils.mc().getRenderItem();
+		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = ContainerRevolver.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
 		for(int i = 0; i < bulletAmount; i++)
 		{
@@ -111,6 +111,6 @@ public class GuiRevolver extends GuiIEContainerBase
 			}
 		}
 
-		GlStateManager.disableDepth();
+		GlStateManager.disableDepthTest();
 	}
 }

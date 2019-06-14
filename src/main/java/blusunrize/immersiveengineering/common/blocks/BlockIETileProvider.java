@@ -421,11 +421,12 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 			if(b)
 				return b;
 		}
-		if(tile instanceof IGuiTile&&hand==EnumHand.MAIN_HAND&&!player.isSneaking())
+		if(tile instanceof IInteractionObjectIE&&hand==EnumHand.MAIN_HAND&&!player.isSneaking())
 		{
-			TileEntity master = ((IGuiTile)tile).getGuiMaster();
-			if(!world.isRemote&&master!=null&&((IGuiTile)master).canOpenGui(player))
-				CommonProxy.openGuiForTile(player, (TileEntity & IGuiTile)master);
+			IInteractionObjectIE interaction = (IInteractionObjectIE)tile;
+			IInteractionObjectIE master = interaction.getGuiMaster();
+			if(!world.isRemote&&master!=null)
+				CommonProxy.openGuiForTile(player, (TileEntity & IInteractionObjectIE)master);
 			return true;
 		}
 		return false;

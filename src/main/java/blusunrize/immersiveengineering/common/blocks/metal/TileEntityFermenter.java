@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -23,10 +23,10 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -46,7 +46,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class TileEntityFermenter extends TileEntityPoweredMultiblock<TileEntityFermenter, FermenterRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile
+public class TileEntityFermenter extends TileEntityPoweredMultiblock<TileEntityFermenter, FermenterRecipe> implements
+		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
 {
 	public static TileEntityType<TileEntityFermenter> TYPE;
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
@@ -459,19 +460,19 @@ public class TileEntityFermenter extends TileEntityPoweredMultiblock<TileEntityF
 	}
 
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return formed;
 	}
 
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_Fermenter;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return master();
 	}

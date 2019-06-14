@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -52,7 +53,7 @@ import java.util.Iterator;
 
 //TODO powered MB or not?
 public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityAssembler, IMultiblockRecipe>
-		implements IGuiTile, IConveyorAttachable
+		implements IInteractionObjectIE, IConveyorAttachable
 {
 	public static TileEntityType<TileEntityAssembler> TYPE;
 
@@ -536,25 +537,23 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 		return null;
 	}
 
-
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return formed;
 	}
 
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_Assembler;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return master();
 	}
-
 
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)

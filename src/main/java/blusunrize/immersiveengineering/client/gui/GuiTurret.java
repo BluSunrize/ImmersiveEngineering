@@ -20,16 +20,17 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretChem;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
 import blusunrize.immersiveengineering.common.gui.ContainerTurret;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import org.lwjgl.input.Keyboard;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import org.lwjgl.glfw.GLFW;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GuiTurret extends GuiIEContainerBase
@@ -48,110 +49,162 @@ public class GuiTurret extends GuiIEContainerBase
 	public void initGui()
 	{
 		super.initGui();
-		Keyboard.enableRepeatEvents(true);
+		mc.keyboardListener.enableRepeatEvents(true);
 		this.nameField = new GuiTextField(0, this.fontRenderer, guiLeft+11, guiTop+88, 58, 12);
 		this.nameField.setTextColor(-1);
 		this.nameField.setDisabledTextColour(-1);
 		this.nameField.setEnableBackgroundDrawing(false);
 		this.nameField.setMaxStringLength(30);
 
-		this.buttonList.clear();
-		this.buttonList.add(new GuiReactiveList(this, 0, guiLeft+10, guiTop+10, 60, 72, tile.targetList.toArray(new String[tile.targetList.size()])).setPadding(0, 0, 2, 2).setFormatting(1, false));
-		this.buttonList.add(new GuiButtonIE(1, guiLeft+74, guiTop+84, 24, 16, I18n.format(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65));
-		this.buttonList.add(new GuiButtonCheckbox(2, guiLeft+74, guiTop+10, I18n.format(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist));
-		this.buttonList.add(new GuiButtonCheckbox(3, guiLeft+74, guiTop+26, I18n.format(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals));
-		this.buttonList.add(new GuiButtonCheckbox(4, guiLeft+74, guiTop+42, I18n.format(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers));
-		this.buttonList.add(new GuiButtonCheckbox(5, guiLeft+74, guiTop+58, I18n.format(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals));
+		this.buttons.clear();
+		this.buttons.add(new GuiReactiveList(this, 0, guiLeft+10, guiTop+10, 60, 72, tile.targetList.toArray(new String[0]))
+		{
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				super.onClick(mouseX, mouseY);
+				NBTTagCompound tag = new NBTTagCompound();
+				int listOffset = -1;
+				int rem = selectedOption;
+				tile.targetList.remove(rem);
+				tag.setInt("remove", rem);
+				listOffset = getOffset()-1;
+				handleButtonClick(tag, listOffset);
+			}
+		}.setPadding(0, 0, 2, 2));
+		this.buttons.add(new GuiButtonIE(1, guiLeft+74, guiTop+84, 24, 16, I18n.format(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65)
+		{
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				super.onClick(mouseX, mouseY);
+				NBTTagCompound tag = new NBTTagCompound();
+				int listOffset = -1;
+				String name = nameField.getText();
+				if(!tile.targetList.contains(name))
+				{
+					listOffset = ((GuiReactiveList)buttons.get(0)).getMaxOffset();
+					tag.setString("add", name);
+					tile.targetList.add(name);
+				}
+				nameField.setText("");
+				handleButtonClick(tag, listOffset);
+			}
+		});
+		this.buttons.add(new GuiButtonCheckbox(2, guiLeft+74, guiTop+10, I18n.format(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist)
+		{
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				super.onClick(mouseX, mouseY);
+				NBTTagCompound tag = new NBTTagCompound();
+				int listOffset = -1;
+				tile.whitelist = !state;
+				tag.setBoolean("whitelist", tile.whitelist);
+				handleButtonClick(tag, listOffset);
+			}
+		});
+		this.buttons.add(new GuiButtonCheckbox(3, guiLeft+74, guiTop+26, I18n.format(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals)
+		{
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				super.onClick(mouseX, mouseY);
+				NBTTagCompound tag = new NBTTagCompound();
+				int listOffset = -1;
+				tile.attackAnimals = state;
+				tag.setBoolean("attackAnimals", tile.attackAnimals);
+				handleButtonClick(tag, listOffset);
+			}
+		});
+		this.buttons.add(new GuiButtonCheckbox(4, guiLeft+74, guiTop+42, I18n.format(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers)
+		{
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				super.onClick(mouseX, mouseY);
+				NBTTagCompound tag = new NBTTagCompound();
+				int listOffset = -1;
+				tile.attackPlayers = state;
+				tag.setBoolean("attackPlayers", tile.attackPlayers);
+				handleButtonClick(tag, listOffset);
+			}
+		});
+		this.buttons.add(new GuiButtonCheckbox(5, guiLeft+74, guiTop+58, I18n.format(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals)
+		{
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				super.onClick(mouseX, mouseY);
+				NBTTagCompound tag = new NBTTagCompound();
+				int listOffset = -1;
+				tile.attackNeutrals = state;
+				tag.setBoolean("attackNeutrals", tile.attackNeutrals);
+				handleButtonClick(tag, listOffset);
+			}
+		});
 
 		if(tile instanceof TileEntityTurretChem)
-			this.buttonList.add(new GuiButtonState(6, guiLeft+135, guiTop+68, 14, 14, null, ((TileEntityTurretChem)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0));
+			this.buttons.add(new GuiButtonState(6, guiLeft+135, guiTop+68, 14, 14, null, ((TileEntityTurretChem)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0)
+			{
+				@Override
+				public void onClick(double mouseX, double mouseY)
+				{
+					super.onClick(mouseX, mouseY);
+					NBTTagCompound tag = new NBTTagCompound();
+					int listOffset = -1;
+					((TileEntityTurretChem)tile).ignite = state;
+					tag.setBoolean("ignite", ((TileEntityTurretChem)tile).ignite);
+					handleButtonClick(tag, listOffset);
+				}
+			});
 		else if(tile instanceof TileEntityTurretGun)
-			this.buttonList.add(new GuiButtonState(6, guiLeft+134, guiTop+31, 16, 16, null, ((TileEntityTurretGun)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0));
+			this.buttons.add(new GuiButtonState(6, guiLeft+134, guiTop+31, 16, 16, null, ((TileEntityTurretGun)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0)
+			{
+				@Override
+				public void onClick(double mouseX, double mouseY)
+				{
+					super.onClick(mouseX, mouseY);
+					NBTTagCompound tag = new NBTTagCompound();
+					int listOffset = -1;
+					((TileEntityTurretGun)tile).expelCasings = state;
+					tag.setBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
+					handleButtonClick(tag, listOffset);
+				}
+			});
 
 	}
 
-	@Override
-	protected void actionPerformed(GuiButton button)
+	private void handleButtonClick(NBTTagCompound nbt, int listOffset)
 	{
-		NBTTagCompound tag = new NBTTagCompound();
-		int listOffset = -1;
-		if(button.id==0)
+		if(!nbt.isEmpty())
 		{
-			int rem = ((GuiReactiveList)button).selectedOption;
-			tile.targetList.remove(rem);
-			tag.setInt("remove", rem);
-			listOffset = ((GuiReactiveList)button).getOffset()-1;
-		}
-		else if(button.id==1&&!this.nameField.getText().isEmpty())
-		{
-			String name = this.nameField.getText();
-			if(!tile.targetList.contains(name))
-			{
-				listOffset = ((GuiReactiveList)buttonList.get(0)).getMaxOffset();
-				tag.setString("add", name);
-				tile.targetList.add(name);
-			}
-			this.nameField.setText("");
-		}
-		else if(button.id==2)
-		{
-			tile.whitelist = !((GuiButtonState)button).state;
-			tag.setBoolean("whitelist", tile.whitelist);
-		}
-		else if(button.id==3)
-		{
-			tile.attackAnimals = ((GuiButtonState)button).state;
-			tag.setBoolean("attackAnimals", tile.attackAnimals);
-		}
-		else if(button.id==4)
-		{
-			tile.attackPlayers = ((GuiButtonState)button).state;
-			tag.setBoolean("attackPlayers", tile.attackPlayers);
-		}
-		else if(button.id==5)
-		{
-			tile.attackNeutrals = ((GuiButtonState)button).state;
-			tag.setBoolean("attackNeutrals", tile.attackNeutrals);
-		}
-		else if(button.id==6&&tile instanceof TileEntityTurretChem)
-		{
-			((TileEntityTurretChem)tile).ignite = ((GuiButtonState)button).state;
-			tag.setBoolean("ignite", ((TileEntityTurretChem)tile).ignite);
-		}
-		else if(button.id==6&&tile instanceof TileEntityTurretGun)
-		{
-			((TileEntityTurretGun)tile).expelCasings = ((GuiButtonState)button).state;
-			tag.setBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
-		}
-		if(!tag.isEmpty())
-		{
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, nbt));
 			this.initGui();
 			if(listOffset >= 0)
-				((GuiReactiveList)this.buttonList.get(0)).setOffset(listOffset);
+				((GuiReactiveList)this.buttons.get(0)).setOffset(listOffset);
 		}
 	}
-
 	@Override
-	public void drawScreen(int mx, int my, float partial)
+	public void render(int mx, int my, float partial)
 	{
-		super.drawScreen(mx, my, partial);
-		this.nameField.drawTextBox();
+		super.render(mx, my, partial);
+		this.nameField.drawTextField(mx, my, partial);
 
-		ArrayList<String> tooltip = new ArrayList<String>();
+		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my >= guiTop+16&&my < guiTop+62)
-			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
+			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(tile instanceof TileEntityTurretChem)
 		{
 			ClientUtils.handleGuiTank(((TileEntityTurretChem)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, "immersiveengineering:textures/gui/turret.png", tooltip);
 			if(mx >= guiLeft+135&&mx < guiLeft+149&&my >= guiTop+68&&my < guiTop+82)
-				tooltip.add(I18n.format(Lib.GUI_CONFIG+"turret.ignite_fluid"));
+				tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"turret.ignite_fluid"));
 		}
 		else if(tile instanceof TileEntityTurretGun)
 		{
 			if(mx >= guiLeft+134&&mx < guiLeft+150&&my >= guiTop+31&&my < guiTop+47)
-				tooltip.add(I18n.format(Lib.GUI_CONFIG+"turret.expel_casings_"+(((TileEntityTurretGun)tile).expelCasings?"on": "off")));
+				tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"turret.expel_casings_"+(((TileEntityTurretGun)tile).expelCasings?"on": "off")));
 		}
 		if(!tooltip.isEmpty())
 		{
@@ -164,7 +217,7 @@ public class GuiTurret extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/turret.png");
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -187,13 +240,15 @@ public class GuiTurret extends GuiIEContainerBase
 	public void onGuiClosed()
 	{
 		super.onGuiClosed();
-		Keyboard.enableRepeatEvents(false);
+		mc.keyboardListener.enableRepeatEvents(false);
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException
+	public boolean keyPressed(int key, int scancode, int p_keyPressed_3_)
 	{
-		if(this.nameField.isFocused()&&keyCode==28)
+		if(super.keyPressed(key, scancode, p_keyPressed_3_))
+			return true;
+		else if(this.nameField.isFocused()&&key==GLFW.GLFW_KEY_ENTER)
 		{
 			String name = this.nameField.getText();
 			if(!tile.targetList.contains(name))
@@ -204,18 +259,19 @@ public class GuiTurret extends GuiIEContainerBase
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 
 				this.initGui();
-				((GuiReactiveList)this.buttonList.get(0)).setOffset(((GuiReactiveList)this.buttonList.get(0)).getMaxOffset());
+				((GuiReactiveList)this.buttons.get(0)).setOffset(((GuiReactiveList)this.buttons.get(0)).getMaxOffset());
 			}
+			return true;
 		}
-		else if(!this.nameField.textboxKeyTyped(typedChar, keyCode))
-			super.keyTyped(typedChar, keyCode);
-
+		else if(!this.nameField.keyPressed(key, scancode, p_keyPressed_3_))
+			return true;
+		else
+			return false;
 	}
-
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
 	{
 		super.mouseClicked(mouseX, mouseY, mouseButton);
-		this.nameField.mouseClicked(mouseX, mouseY, mouseButton);
+		return this.nameField.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 }

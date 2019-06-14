@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMixer;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
@@ -26,10 +26,10 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TileEntityMixer extends TileEntityPoweredMultiblock<TileEntityMixer, MixerRecipe> implements
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IGuiTile
+		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
 {
 	public static TileEntityType<TileEntityMixer> TYPE;
 	
@@ -601,19 +601,19 @@ public class TileEntityMixer extends TileEntityPoweredMultiblock<TileEntityMixer
 	}
 
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return formed;
 	}
 
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_Mixer;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return master();
 	}

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
 
@@ -28,10 +29,10 @@ public class GuiCokeOven extends GuiIEContainerBase
 	}
 
 	@Override
-	public void drawScreen(int mx, int my, float partial)
+	public void render(int mx, int my, float partial)
 	{
-		super.drawScreen(mx, my, partial);
-		ArrayList<String> tooltip = new ArrayList<String>();
+		super.render(mx, my, partial);
+		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		ClientUtils.handleGuiTank(tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/coke_oven.png", tooltip);
 		if(!tooltip.isEmpty())
 		{
@@ -44,7 +45,7 @@ public class GuiCokeOven extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/coke_oven.png");
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 

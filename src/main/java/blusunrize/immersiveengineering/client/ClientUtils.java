@@ -51,7 +51,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Timer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
@@ -1223,28 +1223,25 @@ public class ClientUtils
 		drawHoveringText(list, x, y, (font==null?font(): font));
 	}
 
-	public static void drawHoveringText(List<String> list, int x, int y, FontRenderer font)
+	public static void drawHoveringText(List<ITextComponent> list, int x, int y, FontRenderer font)
 	{
 		drawHoveringText(list, x, y, font, -1, -1);
 	}
 
-	public static void drawHoveringText(List<String> list, int x, int y, FontRenderer font, int xSize, int ySize)
+	public static void drawHoveringText(List<ITextComponent> list, int x, int y, FontRenderer font, int xSize, int ySize)
 	{
 		if(!list.isEmpty())
 		{
-			boolean uni = ClientUtils.font().getUnicodeFlag();
-			ClientUtils.font().setUnicodeFlag(false);
-
 			GlStateManager.disableRescaleNormal();
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.disableLighting();
-			GlStateManager.disableDepth();
+			GlStateManager.disableDepthTest();
 			int k = 0;
-			Iterator<String> iterator = list.iterator();
+			Iterator<ITextComponent> iterator = list.iterator();
 			while(iterator.hasNext())
 			{
-				String s = iterator.next();
-				int l = font.getStringWidth(s);
+				ITextComponent s = iterator.next();
+				int l = font.getStringWidth(s.getFormattedText());
 				if(l > k)
 					k = l;
 			}
@@ -1274,21 +1271,7 @@ public class ClientUtils
 
 			if(list.size() > 1)
 				i1 += 2+(list.size()-1)*10;
-			//            this.zLevel = 300.0F;
-			//            this.itemRender.zLevel = 300.0F;
-			//            int l = -267386864;
-			//            this.drawGradientRect(l1 - 3, i2 - 4, l1 + i + 3, i2 - 3, l, l);
-			//            this.drawGradientRect(l1 - 3, i2 + k + 3, l1 + i + 3, i2 + k + 4, l, l);
-			//            this.drawGradientRect(l1 - 3, i2 - 3, l1 + i + 3, i2 + k + 3, l, l);
-			//            this.drawGradientRect(l1 - 4, i2 - 3, l1 - 3, i2 + k + 3, l, l);
-			//            this.drawGradientRect(l1 + i + 3, i2 - 3, l1 + i + 4, i2 + k + 3, l, l);
-			//            int i1 = 1347420415;
-			//            int j1 = (i1 & 16711422) >> 1 | i1 & -16777216;
-			//            this.drawGradientRect(l1 - 3, i2 - 3 + 1, l1 - 3 + 1, i2 + k + 3 - 1, i1, j1);
-			//            this.drawGradientRect(l1 + i + 2, i2 - 3 + 1, l1 + i + 3, i2 + k + 3 - 1, i1, j1);
-			//            this.drawGradientRect(l1 - 3, i2 - 3, l1 + i + 3, i2 - 3 + 1, i1, i1);
-			//            this.drawGradientRect(l1 - 3, i2 + k + 2, l1 + i + 3, i2 + k + 3, j1, j1);
-			GlStateManager.translate(0, 0, 300);
+			GlStateManager.translatef(0, 0, 300);
 			int j1 = -267386864;
 			drawGradientRect(j2-3, k2-4, j2+k+3, k2-3, j1, j1);
 			drawGradientRect(j2-3, k2+i1+3, j2+k+3, k2+i1+4, j1, j1);
@@ -1301,11 +1284,11 @@ public class ClientUtils
 			drawGradientRect(j2+k+2, k2-3+1, j2+k+3, k2+i1+3-1, k1, l1);
 			drawGradientRect(j2-3, k2-3, j2+k+3, k2-3+1, k1, k1);
 			drawGradientRect(j2-3, k2+i1+2, j2+k+3, k2+i1+3, l1, l1);
-			GlStateManager.translate(0, 0, -300);
+			GlStateManager.translatef(0, 0, -300);
 
 			for(int i2 = 0; i2 < list.size(); ++i2)
 			{
-				String s1 = list.get(i2);
+				String s1 = list.get(i2).getFormattedText();
 				font.drawStringWithShadow(s1, j2, k2, -1);
 
 				if(i2==0)
@@ -1315,20 +1298,18 @@ public class ClientUtils
 			}
 
 			GlStateManager.enableLighting();
-			GlStateManager.enableDepth();
+			GlStateManager.enableDepthTest();
 			RenderHelper.enableStandardItemLighting();
 			GlStateManager.enableRescaleNormal();
-
-			ClientUtils.font().setUnicodeFlag(uni);
 		}
 	}
 
-	public static void handleGuiTank(IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, ArrayList<String> tooltip)
+	public static void handleGuiTank(IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
 		handleGuiTank(tank.getFluid(), tank.getCapacity(), x, y, w, h, oX, oY, oW, oH, mX, mY, originalTexture, tooltip);
 	}
 
-	public static void handleGuiTank(FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, ArrayList<String> tooltip)
+	public static void handleGuiTank(FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
 		if(tooltip==null)
 		{
@@ -1337,7 +1318,7 @@ public class ClientUtils
 				int fluidHeight = (int)(h*(fluid.amount/(float)capacity));
 				drawRepeatedFluidSprite(fluid, x, y+h-fluidHeight, w, fluidHeight);
 				bindTexture(originalTexture);
-				GlStateManager.color(1, 1, 1, 1);
+				GlStateManager.color3f(1, 1, 1);
 			}
 			int xOff = (w-oW)/2;
 			int yOff = (h-oH)/2;
@@ -1350,31 +1331,34 @@ public class ClientUtils
 		}
 	}
 
-	public static void addFluidTooltip(FluidStack fluid, List<String> tooltip, int tankCapacity)
+	public static void addFluidTooltip(FluidStack fluid, List<ITextComponent> tooltip, int tankCapacity)
 	{
 		if(fluid!=null&&fluid.getFluid()!=null)
-			tooltip.add(fluid.getFluid().getRarity(fluid).color+fluid.getLocalizedName());
+			tooltip.add(new TextComponentTranslation(fluid.getUnlocalizedName()).setStyle(new Style().setColor(fluid.getFluid().getRarity(fluid).color)));
 		else
-			tooltip.add(I18n.format("gui.immersiveengineering.empty"));
+			tooltip.add(new TextComponentTranslation("gui.immersiveengineering.empty"));
 		if(fluid!=null&&fluid.getFluid() instanceof IEFluid)
 			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, tooltip);
 
 		if(mc().gameSettings.advancedItemTooltips&&fluid!=null)
 			if(!GuiScreen.isShiftKeyDown())
-				tooltip.add(I18n.format(Lib.DESC_INFO+"holdShiftForInfo"));
+				tooltip.add(new TextComponentTranslation(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{
-				tooltip.add(TextFormatting.DARK_GRAY+"Fluid Registry: "+FluidRegistry.getFluidName(fluid));
-				tooltip.add(TextFormatting.DARK_GRAY+"Density: "+fluid.getFluid().getDensity(fluid));
-				tooltip.add(TextFormatting.DARK_GRAY+"Temperature: "+fluid.getFluid().getTemperature(fluid));
-				tooltip.add(TextFormatting.DARK_GRAY+"Viscosity: "+fluid.getFluid().getViscosity(fluid));
-				tooltip.add(TextFormatting.DARK_GRAY+"NBT Data: "+fluid.tag);
+				Style darkGray = new Style().setColor(TextFormatting.DARK_GRAY);
+				//TODO translation keys
+				tooltip.add(new TextComponentString("Fluid Registry: "+FluidRegistry.getFluidName(fluid)).setStyle(darkGray));
+				tooltip.add(new TextComponentString("Density: "+fluid.getFluid().getDensity(fluid)).setStyle(darkGray));
+				tooltip.add(new TextComponentString("Temperature: "+fluid.getFluid().getTemperature(fluid)).setStyle(darkGray));
+				tooltip.add(new TextComponentString("Viscosity: "+fluid.getFluid().getViscosity(fluid)).setStyle(darkGray));
+				tooltip.add(new TextComponentString("NBT Data: "+fluid.tag).setStyle(darkGray));
 			}
 
+		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(tankCapacity > 0)
-			tooltip.add(TextFormatting.GRAY.toString()+(fluid!=null?fluid.amount: 0)+"/"+tankCapacity+"mB");
+			tooltip.add(new TextComponentString((fluid!=null?fluid.amount: 0)+"/"+tankCapacity+"mB").setStyle(gray));
 		else
-			tooltip.add(TextFormatting.GRAY.toString()+(fluid!=null?fluid.amount: 0)+"mB");
+			tooltip.add(new TextComponentString((fluid!=null?fluid.amount: 0)+"mB").setStyle(gray));
 	}
 
 	public static Quat4d degreeToQuaterion(double x, double y, double z)

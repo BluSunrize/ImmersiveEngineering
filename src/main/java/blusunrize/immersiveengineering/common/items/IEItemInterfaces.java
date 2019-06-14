@@ -38,11 +38,6 @@ public class IEItemInterfaces
 		}
 	}
 
-	public interface IGuiItem
-	{
-		int getGuiID(ItemStack stack);
-	}
-
 	public interface IAdvancedFluidItem
 	{
 		int getCapacity(ItemStack stack, int baseCapacity);

@@ -9,13 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -38,7 +37,7 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 /**
  * @author BluSunrize - 02.03.2017
  */
-public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
+public class TileEntityFluidSorter extends TileEntityIEBase implements IInteractionObjectIE
 {
 	public static TileEntityType<TileEntityFluidSorter> TYPE;
 
@@ -120,19 +119,19 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IGuiTile
 	}
 
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return true;
 	}
 
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_FluidSorter;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return this;
 	}

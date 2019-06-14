@@ -12,20 +12,23 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.ContainerMixer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GuiMixer extends GuiIEContainerBase
 {
@@ -42,34 +45,32 @@ public class GuiMixer extends GuiIEContainerBase
 	public void initGui()
 	{
 		super.initGui();
-		this.buttonList.clear();
-		this.buttonList.add(new GuiButtonState(0, guiLeft+106, guiTop+61, 30, 16, null, tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1));
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button)
-	{
-		if(button.id==0)
+		this.buttons.clear();
+		this.buttons.add(new GuiButtonState(0, guiLeft+106, guiTop+61, 30, 16, null, tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1)
 		{
-			NBTTagCompound tag = new NBTTagCompound();
-			tile.outputAll = ((GuiButtonState)button).state;
-			tag.setBoolean("outputAll", tile.outputAll);
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-			this.initGui();
-		}
+			@Override
+			public void onClick(double mX, double mY)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tile.outputAll = state;
+				tag.setBoolean("outputAll", tile.outputAll);
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+				initGui();
+			}
+		});
 	}
 
 	@Override
-	public void drawScreen(int mx, int my, float partial)
+	public void render(int mx, int my, float partial)
 	{
-		super.drawScreen(mx, my, partial);
-		ArrayList<String> tooltip = new ArrayList<String>();
+		super.render(mx, my, partial);
+		List<ITextComponent> tooltip = new ArrayList<>();
 
 		if(mx >= guiLeft+76&&mx <= guiLeft+134&&my >= guiTop+11&&my <= guiTop+58)
 		{
 			float capacity = tile.tank.getCapacity();
 			if(tile.tank.getFluidTypes()==0)
-				tooltip.add(I18n.format("gui.immersiveengineering.empty"));
+				tooltip.add(new TextComponentTranslation("gui.immersiveengineering.empty"));
 			else
 			{
 
@@ -94,9 +95,9 @@ public class GuiMixer extends GuiIEContainerBase
 			}
 		}
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF");
+			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
-			tooltip.add(I18n.format(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
+			tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
@@ -107,12 +108,12 @@ public class GuiMixer extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/mixer.png");
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess process : tile.processQueue)
-			if(process instanceof MultiblockProcessInMachine)
+			if(process instanceof TileEntityPoweredMultiblock.MultiblockProcessInMachine)
 			{
 				float mod = 1-(process.processTick/(float)process.maxTicks);
 				for(int slot : ((MultiblockProcessInMachine)process).getInputSlots())

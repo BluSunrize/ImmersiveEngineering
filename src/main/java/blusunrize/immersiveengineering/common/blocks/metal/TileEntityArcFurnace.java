@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
@@ -25,11 +25,11 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TileEntityArcFurnace extends TileEntityPoweredMultiblock<TileEntityArcFurnace, ArcFurnaceRecipe>
-		implements ISoundTile, IGuiTile, IAdvancedSelectionBounds, IAdvancedCollisionBounds
+		implements ISoundTile, IInteractionObjectIE, IAdvancedSelectionBounds, IAdvancedCollisionBounds
 {
 	public static TileEntityType<TileEntityArcFurnace> TYPE;
 	private static final int SLAG_SLOT = 22;
@@ -695,19 +695,20 @@ public class TileEntityArcFurnace extends TileEntityPoweredMultiblock<TileEntity
 	}
 
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return formed&&(posInMultiblock==2||posInMultiblock==25||(posInMultiblock > 25&&posInMultiblock%5 > 0&&posInMultiblock%5 < 4&&posInMultiblock%25/5 < 4));
 	}
 
+	@Nonnull
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_ArcFurnace;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return master();
 	}

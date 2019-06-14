@@ -11,84 +11,55 @@ package blusunrize.immersiveengineering.common.world;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ArrayListMultimap;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.pattern.BlockMatcher;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.feature.WorldGenMinable;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GenerationStage.Decoration;
+import net.minecraft.world.gen.feature.CompositeFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.MinableConfig;
+import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraftforge.event.world.ChunkDataEvent;
-import net.minecraftforge.fml.common.IWorldGenerator;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
-public class IEWorldGen implements IWorldGenerator
+@EventBusSubscriber
+public class IEWorldGen
 {
-	public static class OreGen
+	public static Map<String, CompositeFeature<MinableConfig, CountRangeConfig>> features = new HashMap<>();
+	//TODO public static ArrayList<Integer> oreDimBlacklist = new ArrayList();
+	public static Map<String, Boolean> retrogenMap = new HashMap<>();
+
+	public static void addOreGen(String name, IBlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence, int weight)
 	{
-		String name;
-		WorldGenMinable mineableGen;
-		int minY;
-		int maxY;
-		int chunkOccurence;
-		int weight;
-
-		public OreGen(String name, IBlockState state, int maxVeinSize, Block replaceTarget, int minY, int maxY, int chunkOccurence, int weight)
-		{
-			this.name = name;
-			this.mineableGen = new WorldGenMinable(state, maxVeinSize, BlockMatcher.forBlock(replaceTarget));
-			this.minY = minY;
-			this.maxY = maxY;
-			this.chunkOccurence = chunkOccurence;
-			this.weight = weight;
-		}
-
-		public void generate(World world, Random rand, int x, int z)
-		{
-			BlockPos pos;
-			for(int i = 0; i < chunkOccurence; i++)
-				if(rand.nextInt(100) < weight)
-				{
-					pos = new BlockPos(x+rand.nextInt(16), minY+rand.nextInt(maxY-minY), z+rand.nextInt(16));
-					mineableGen.generate(world, rand, pos);
-				}
-		}
-	}
-
-	public static ArrayList<OreGen> orespawnList = new ArrayList();
-	public static ArrayList<Integer> oreDimBlacklist = new ArrayList();
-	public static HashMap<String, Boolean> retrogenMap = new HashMap();
-
-	public static OreGen addOreGen(String name, IBlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence, int weight)
-	{
-		OreGen gen = new OreGen(name, state, maxVeinSize, Blocks.STONE, minY, maxY, chunkOccurence, weight);
-		orespawnList.add(gen);
-		return gen;
-	}
-
-	@Override
-	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
-	{
-		this.generateOres(random, chunkX, chunkZ, world, true);
+		MinableConfig cfg = new MinableConfig(MinableConfig.IS_ROCK, state, maxVeinSize);
+		CompositeFeature<MinableConfig, CountRangeConfig> feature = Biome.createCompositeFeature(Feature.MINABLE, cfg, Biome.COUNT_RANGE,
+				new CountRangeConfig(chunkOccurence, minY, maxY, minY));
+		for(Biome biome : Biome.BIOMES)
+			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
+		features.put(name, feature);
 	}
 
 	public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration)
 	{
-		if(!oreDimBlacklist.contains(world.provider.getDimension()))
-			for(OreGen gen : orespawnList)
-				if(newGeneration||retrogenMap.get("retrogen_"+gen.name))
-					gen.generate(world, random, chunkX*16, chunkZ*16);
+		//if(!oreDimBlacklist.contains(world.provider.getDimension()))
+		for(Entry<String, CompositeFeature<MinableConfig, CountRangeConfig>> gen : features.entrySet())
+			if(newGeneration||retrogenMap.get("retrogen_"+gen.getKey()))
+				gen.getValue().func_212245_a(world, world.getChunkProvider().getChunkGenerator(),
+						random, new BlockPos(16*chunkX, 0, 16*chunkZ),
+						null);
 	}
 
 	@SubscribeEvent
@@ -102,7 +73,7 @@ public class IEWorldGen implements IWorldGenerator
 	@SubscribeEvent
 	public void chunkLoad(ChunkDataEvent.Load event)
 	{
-		int dimension = event.getWorld().provider.getDimension();
+		DimensionType dimension = event.getWorld().getDimension().getType();
 		if((!event.getData().getCompound("ImmersiveEngineering").hasKey(IEConfig.Ores.retrogen_key))&&(IEConfig.Ores.retrogen_copper||IEConfig.Ores.retrogen_bauxite||IEConfig.Ores.retrogen_lead||IEConfig.Ores.retrogen_silver||IEConfig.Ores.retrogen_nickel||IEConfig.Ores.retrogen_uranium))
 		{
 			if(IEConfig.Ores.retrogen_log_flagChunk)
@@ -111,14 +82,14 @@ public class IEWorldGen implements IWorldGenerator
 		}
 	}
 
-	public static ArrayListMultimap<Integer, ChunkPos> retrogenChunks = ArrayListMultimap.create();
+	public static ArrayListMultimap<DimensionType, ChunkPos> retrogenChunks = ArrayListMultimap.create();
 
 	@SubscribeEvent
 	public void serverWorldTick(TickEvent.WorldTickEvent event)
 	{
-		if(event.side==Side.CLIENT||event.phase==TickEvent.Phase.START)
+		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START)
 			return;
-		int dimension = event.world.provider.getDimension();
+		DimensionType dimension = event.world.getDimension().getType();
 		int counter = 0;
 		List<ChunkPos> chunks = retrogenChunks.get(dimension);
 		if(chunks!=null&&chunks.size() > 0)

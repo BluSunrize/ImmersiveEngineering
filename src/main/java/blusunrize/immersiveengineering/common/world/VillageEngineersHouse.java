@@ -10,8 +10,11 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockSlab;
@@ -80,7 +83,7 @@ public class VillageEngineersHouse extends Village
 		this.setBlockState(world, Blocks.COBBLESTONE_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.NORTH), 4, 0, 0, box);
 
 		//Pillars
-		IBlockState treatedWood = getBiomeSpecificBlockState(IEContent.blockTreatedWood.getDefaultState());
+		IBlockState treatedWood = getBiomeSpecificBlockState(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL).getDefaultState());
 		this.fillWithBlocks(world, box, 1, 1, 3, 1, 4, 3, treatedWood, treatedWood, false);
 		this.fillWithBlocks(world, box, 1, 1, 8, 1, 6, 8, treatedWood, treatedWood, false);
 		this.fillWithBlocks(world, box, 9, 1, 3, 9, 6, 3, treatedWood, treatedWood, false);
@@ -141,7 +144,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 9, 6, 5, 9, 6, 6, glassPane, glassPane, false);
 
 		//Fences
-		IBlockState fence = getBiomeSpecificBlockState(IEContent.blockTreatedFence.getDefaultState());
+		IBlockState fence = getBiomeSpecificBlockState(WoodenDecoration.treatedFence.getDefaultState());
 		this.fillWithBlocks(world, box, 1, 1, 1, 1, 1, 2, fence, fence, false);
 		this.fillWithBlocks(world, box, 2, 1, 1, 3, 1, 1, fence, fence, false);
 		this.fillWithBlocks(world, box, 5, 1, 1, 5, 1, 2, fence, fence, false);
@@ -205,7 +208,7 @@ public class VillageEngineersHouse extends Village
 			this.placeCrate(world, box, rand, 6, 0, 1);
 			this.placeCrate(world, box, rand, 8, 0, 2);
 			this.placeCrate(world, box, rand, 5, 1, 7);
-			this.placeItemframe(rand, world, 4, 3, 2, getCoordBaseMode().getOpposite(), new ItemStack(IEContent.itemHammer, 1));
+			this.placeItemframe(rand, world.getWorld(), 4, 3, 2, getCoordBaseMode().getOpposite(), new ItemStack(Tools.hammer, 1));
 		} catch(Exception e)
 		{
 			e.printStackTrace();
@@ -229,7 +232,7 @@ public class VillageEngineersHouse extends Village
 		int j1 = this.getYWithOffset(y);
 		int k1 = this.getZWithOffset(x, z);
 		BlockPos pos = new BlockPos(i1, j1, k1);
-		IBlockState crateState = IEContent.blockCrate.getDefaultState();
+		IBlockState crateState = WoodenDevices.crate.getDefaultState();
 		if(box.isVecInside(pos)&&(world.getBlockState(pos)!=crateState))
 		{
 			world.setBlockState(pos, crateState, 2);

@@ -12,11 +12,14 @@ import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -24,15 +27,20 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -129,7 +137,7 @@ public class IEBlockInterfaces
 			if(limit==0)
 				f = side;
 			else if(limit==1)
-				f = EnumFacing.getDirectionFromEntityLiving(pos, placer);
+				f = EnumFacing.getFacingDirections(placer)[0];
 			else if(limit==2)
 				f = EnumFacing.fromAngle(placer.rotationYaw);
 			else if(limit==3)
@@ -345,22 +353,45 @@ public class IEBlockInterfaces
 		HashMap<String, String> getTextureReplacements();
 	}
 
-	public interface IGuiTile
+	public interface IInteractionObjectIE extends IInteractionObject
 	{
-		default boolean canOpenGui(EntityPlayer player)
+		@Nullable
+		IInteractionObjectIE getGuiMaster();
+
+		boolean canUseGui(EntityPlayer player);
+
+		@Nonnull
+		ResourceLocation getGuiName();
+
+		@Override
+		default ITextComponent getName()
 		{
-			return canOpenGui();
+			return new TextComponentString("Unknown");
 		}
 
-		boolean canOpenGui();
-
-		int getGuiID();
-
 		@Nullable
-		TileEntity getGuiMaster();
-
-		default void onGuiOpened(EntityPlayer player, boolean clientside)
+		@Override
+		default ITextComponent getCustomName()
 		{
+			return null;
+		}
+
+		@Override
+		default boolean hasCustomName()
+		{
+			return false;
+		}
+
+		@Override
+		default String getGuiID()
+		{
+			return getGuiName().toString();
+		}
+
+		@Override
+		default Container createContainer(InventoryPlayer inventoryPlayer, EntityPlayer entityPlayer)
+		{
+			return GuiHandler.createContainer(getGuiName(), inventoryPlayer, (TileEntity)this);
 		}
 	}
 

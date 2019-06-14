@@ -14,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 
 public class GuiButtonIE extends GuiButton
 {
@@ -37,34 +39,29 @@ public class GuiButtonIE extends GuiButton
 		return this;
 	}
 
-	public boolean canClick(Minecraft mc, int mouseX, int mouseY)
+	@Override
+	protected boolean isPressable(double mouseX, double mouseY)
 	{
-		return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+		return this.enabled&&this.visible&&mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
-	{
-		return canClick(mc, mouseX, mouseY);
-	}
-
-	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+	public void render(int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{
+			Minecraft mc = Minecraft.getInstance();
 			ClientUtils.bindTexture(texture);
 			FontRenderer fontrenderer = mc.fontRenderer;
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = canClick(mc, mouseX, mouseY);
+			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+			this.hovered = isPressable(mouseX, mouseY);
 			GlStateManager.enableBlend();
-			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 			GlStateManager.blendFunc(770, 771);
 			if(hoverOffset!=null&&this.hovered)
 				this.drawTexturedModalRect(x, y, texU+hoverOffset[0], texV+hoverOffset[1], width, height);
 			else
 				this.drawTexturedModalRect(x, y, texU, texV, width, height);
-			this.mouseDragged(mc, mouseX, mouseY);
 			if(displayString!=null&&!displayString.isEmpty())
 			{
 				int txtCol = 0xE0E0E0;

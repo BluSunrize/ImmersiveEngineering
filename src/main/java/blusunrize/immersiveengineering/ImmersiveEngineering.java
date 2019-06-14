@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
@@ -23,7 +25,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
-import blusunrize.immersiveengineering.common.util.compat112.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -35,6 +37,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
@@ -76,6 +80,7 @@ public class ImmersiveEngineering
 		//TODO right bus?
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarted);
+		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::createGui);
 	}
 
 	static
@@ -126,10 +131,6 @@ public class ImmersiveEngineering
 
 		IESounds.init();
 
-//		Lib.IC2 = Loader.isModLoaded("IC2") && Config.getBoolean("ic2compat");
-//		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
-//		Config.setBoolean("ic2Manual", Lib.IC2);
-//		Config.setBoolean("gregManual", Lib.GREG);
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
 		int messageId = 0;
@@ -250,7 +251,7 @@ public class ImmersiveEngineering
 		@Override
 		public ItemStack getIcon()
 		{
-			return new ItemStack(IEContent.blockMetalDecoration0, 1);
+			return new ItemStack(MetalDecoration.lVCoil, 1);
 		}
 	};
 

@@ -37,7 +37,7 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 	@Override
 	public void initGui()
 	{
-		this.buttonList.clear();
+		this.buttons.clear();
 		super.initGui();
 		Slot s = inventorySlots.getSlot(0);
 		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof IConfigurableTool)
@@ -48,18 +48,18 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			if(boolArray!=null)
 				for(ToolConfigBoolean b : boolArray)
-					this.buttonList.add(new GuiButtonCheckbox(buttonid++, guiLeft+b.x, guiTop+b.y, tool.fomatConfigName(stack, b), b.value));
+					this.buttons.add(new GuiButtonCheckbox(buttonid++, guiLeft+b.x, guiTop+b.y, tool.fomatConfigName(stack, b), b.value));
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
-					this.buttonList.add(new GuiSliderIE(buttonid++, guiLeft+f.x, guiTop+f.y, 80, tool.fomatConfigName(stack, f), f.value));
+					this.buttons.add(new GuiSliderIE(buttonid++, guiLeft+f.x, guiTop+f.y, 80, tool.fomatConfigName(stack, f), f.value));
 		}
 	}
 
 	NBTTagCompound lastMessage;
 
 	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state)
+	public boolean mouseReleased(double mouseX, double mouseY, int state)
 	{
 		super.mouseReleased(mouseX, mouseY, state);
 		Slot s = inventorySlots.getSlot(0);
@@ -72,7 +72,7 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 			int iBool = 0;
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			int iFloat = 0;
-			for(GuiButton button : this.buttonList)
+			for(GuiButton button : this.buttons)
 			{
 				if(button instanceof GuiButtonCheckbox&&boolArray!=null)
 				{
@@ -88,13 +88,15 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 			if(!message.equals(lastMessage))//Only send packets when values have changed
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(((ContainerMaintenanceKit)this.inventorySlots).getEquipmentSlot(), message));
 			lastMessage = message;
+			return true;
 		}
+		return false;
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/maintenance_kit.png");
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 

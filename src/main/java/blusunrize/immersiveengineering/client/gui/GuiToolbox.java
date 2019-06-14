@@ -13,11 +13,13 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -32,10 +34,10 @@ public class GuiToolbox extends GuiIEContainerBase
 	}
 
 	@Override
-	public void drawScreen(int mx, int my, float partial)
+	public void render(int mx, int my, float partial)
 	{
-		super.drawScreen(mx, my, partial);
-		ArrayList<String> tooltip = new ArrayList<String>();
+		super.render(mx, my, partial);
+		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		int slot = -1;
 		for(int i = 0; i < ((ContainerToolbox)this.inventorySlots).internalSlots; i++)
 		{
@@ -47,7 +49,7 @@ public class GuiToolbox extends GuiIEContainerBase
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			tooltip.add(TextFormatting.GRAY+I18n.format(Lib.DESC_INFO+"toolbox."+ss));
+			tooltip.add(new TextComponentTranslation(Lib.DESC_INFO+"toolbox."+ss).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
@@ -58,7 +60,7 @@ public class GuiToolbox extends GuiIEContainerBase
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/toolbox.png");
 		this.drawTexturedModalRect(guiLeft, guiTop-17, 0, 0, 176, ySize+17);
 	}

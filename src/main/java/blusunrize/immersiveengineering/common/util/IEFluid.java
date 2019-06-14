@@ -18,6 +18,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.potion.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,7 +41,7 @@ public class IEFluid extends Fluid
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip)
+	public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<ITextComponent> tooltip)
 	{
 	}
 
@@ -53,7 +54,7 @@ public class IEFluid extends Fluid
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip)
+		public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<ITextComponent> tooltip)
 		{
 			if(fluidStack!=null&&fluidStack.tag!=null)
 			{

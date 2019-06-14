@@ -10,12 +10,10 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.input.Mouse;
 
 import java.util.function.Function;
 
@@ -29,7 +27,6 @@ public class GuiReactiveList extends GuiButton
 	private Function<String, String> translationFunction;
 	private int scrollMode = 0;
 	private float textScale = 1;
-	private boolean unicode = false;
 
 	private int offset;
 	private int maxOffset;
@@ -83,10 +80,9 @@ public class GuiReactiveList extends GuiButton
 		return this;
 	}
 
-	public GuiReactiveList setFormatting(float textScale, boolean unicode)
+	public GuiReactiveList setFormatting(float textScale)
 	{
 		this.textScale = textScale;
-		this.unicode = unicode;
 		this.recalculateEntries();
 		return this;
 	}
@@ -107,15 +103,13 @@ public class GuiReactiveList extends GuiButton
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
+	public void render(int mx, int my, float partialTicks)
 	{
 		FontRenderer fr = ClientUtils.mc().fontRenderer;
-		boolean uni = fr.getUnicodeFlag();
-		fr.setUnicodeFlag(unicode);
 
 		int mmY = my-this.y;
 		int strWidth = width-padding[2]-padding[3]-(needsSlider?6: 0);
-		GlStateManager.color(1, 1, 1);
+		GlStateManager.color3f(1, 1, 1);
 		if(needsSlider)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
@@ -133,7 +127,7 @@ public class GuiReactiveList extends GuiButton
 				this.drawTexturedModalRect(x+width-5, y+silderShift+3+i, 20, 131, 4, 1);
 		}
 
-		GlStateManager.scale(textScale, textScale, 1);
+		GlStateManager.scalef(textScale, textScale, 1);
 		this.hovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		boolean hasTarget = false;
 		for(int i = 0; i < Math.min(perPage, entries.length); i++)
@@ -168,42 +162,44 @@ public class GuiReactiveList extends GuiButton
 			}
 			float tx = ((x+padding[2])/textScale);
 			float ty = ((y+padding[0]+(fr.FONT_HEIGHT*i))/textScale);
-			GlStateManager.translate(tx, ty, 0);
-			fr.drawString(s, 0, 0, col, false);
-			GlStateManager.translate(-tx, -ty, 0);
+			GlStateManager.translatef(tx, ty, 0);
+			fr.drawString(s, 0, 0, col);
+			GlStateManager.translatef(-tx, -ty, 0);
 		}
-		GlStateManager.scale(1/textScale, 1/textScale, 1);
+		GlStateManager.scalef(1/textScale, 1/textScale, 1);
 		if(!hasTarget)
 		{
 			targetEntry = -1;
 			hoverTimer = 0;
 		}
+	}
 
-		fr.setUnicodeFlag(uni);
-
-		//Handle DWheel
-		int mouseWheel = Mouse.getEventDWheel();
-		if(mouseWheel!=0&&maxOffset > 0&&Mouse.getEventNanoseconds()!=prevWheelNano)
+	@Override
+	public boolean mouseScrolled(double mouseWheel)
+	{
+		if(mouseWheel!=0&&maxOffset > 0)
 		{
-			prevWheelNano = Mouse.getEventNanoseconds();
 			if(mouseWheel < 0&&offset < maxOffset)
 				offset++;
 			if(mouseWheel > 0&&offset > 0)
 				offset--;
+			return true;
 		}
+		else
+			return false;
 	}
 
 	public int selectedOption = -1;
 
 	@Override
-	public boolean mousePressed(Minecraft mc, int mx, int my)
+	public boolean mouseClicked(double mx, double my, int key)
 	{
-		boolean b = super.mousePressed(mc, mx, my);
+		boolean b = super.mouseClicked(mx, my, key);
 		FontRenderer fr = ClientUtils.mc().fontRenderer;
 		selectedOption = -1;
 		if(b)
 		{
-			int mmY = my-this.y;
+			double mmY = my-this.y;
 			for(int i = 0; i < Math.min(perPage, entries.length); i++)
 				if(mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT)
 					selectedOption = offset+i;

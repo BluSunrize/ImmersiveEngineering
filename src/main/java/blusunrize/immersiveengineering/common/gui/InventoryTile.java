@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -128,6 +129,8 @@ public class InventoryTile implements IInventory
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player)
 	{
+		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
+			return false;
 		return !tile.isRemoved()&&tile.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
 	}
 

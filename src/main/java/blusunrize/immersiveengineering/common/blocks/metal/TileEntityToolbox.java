@@ -10,12 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.state.IBlockState;
@@ -25,16 +24,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalTile, IBlockBounds, IIEInventory, IGuiTile, ITileDrop, IPlayerInteraction
+public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalTile, IBlockBounds, IIEInventory, IInteractionObjectIE, ITileDrop, IPlayerInteraction
 {
 	public static TileEntityType<TileEntityToolbox> TYPE;
 	
@@ -99,19 +98,19 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	//}
 
 	@Override
-	public boolean canOpenGui()
+	public boolean canUseGui(EntityPlayer player)
 	{
 		return true;
 	}
 
 	@Override
-	public int getGuiID()
+	public ResourceLocation getGuiName()
 	{
 		return Lib.GUIID_ToolboxBlock;
 	}
 
 	@Override
-	public TileEntity getGuiMaster()
+	public IInteractionObjectIE getGuiMaster()
 	{
 		return this;
 	}
@@ -143,12 +142,12 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(IEContent.itemToolbox);
-		((ItemInternalStorage)IEContent.itemToolbox).setContainedItems(stack, inventory);
+		ItemStack stack = new ItemStack(Tools.toolbox);
+		((ItemInternalStorage)Tools.toolbox).setContainedItems(stack, inventory);
 		if(this.name!=null)
 			stack.setDisplayName(this.name);
 		if(enchantments!=null)
-			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
+			stack.getOrCreateTag().setTag("ench", enchantments);
 		return stack;
 	}
 

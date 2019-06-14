@@ -99,9 +99,9 @@ public final class IEBlocks
 
 	public static final class MetalDecoration
 	{
-		public static Block lVCoil;
-		public static Block mVCoil;
-		public static Block hVCoil;
+		public static Block lvCoil;
+		public static Block mvCoil;
+		public static Block hvCoil;
 		public static Block engineeringRS;
 		public static Block engineeringHeavy;
 		public static Block engineeringLight;

@@ -22,43 +22,46 @@ public class GuiSliderIE extends GuiSlider
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+	public void render(int mouseX, int mouseY, float partial)
 	{
 		if(this.visible)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-			FontRenderer fontrenderer = mc.fontRenderer;
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
+			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			GlStateManager.enableBlend();
-			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
 			this.drawTexturedModalRect(x, y, 8, 128, 4, height);
 			this.drawTexturedModalRect(x+width-4, y, 16, 128, 4, height);
 			for(int i = 0; i < width-8; i += 2)
 				this.drawTexturedModalRect(x+4+i, y, 13, 128, 2, height);
-			this.mouseDragged(mc, mouseX, mouseY);
-			int j = 14737632;
+			//TODO this.mouseDragged(mc, mouseX, mouseY);
+			int color = 0xe0e0e0;
 			if(!this.enabled)
-				j = 10526880;
+				color = 0xa0a0a0;
 			else if(this.hovered)
-				j = 16777120;
-			this.drawCenteredString(fontrenderer, displayString, x+width/2, y-10+height/2-3, j);
+				color = 0xffffa0;
+			this.drawCenteredString(fontrenderer, displayString, x+width/2, y-10+height/2-3, color);
 		}
 	}
 
 	@Override
-	protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3)
+	public boolean mouseDragged(double cx, double cy, int button, double dx, double dy)
 	{
 		if(this.visible)
 		{
 			if(this.dragging)
 			{
-				this.sliderValue = (par2-(this.x+4))/(float)(this.width-8);
+				this.sliderValue = (cx-(this.x+4))/(float)(this.width-8);
 				updateSlider();
 			}
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 			this.drawTexturedModalRect(this.x+2+(int)(this.sliderValue*(float)(this.width-2))-2, this.y, 20, 128, 4, 8);
+			return true;
 		}
+		else
+			return false;
 	}
 }

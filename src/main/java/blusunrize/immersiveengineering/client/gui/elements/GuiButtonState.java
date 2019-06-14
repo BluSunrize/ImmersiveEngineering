@@ -29,21 +29,22 @@ public class GuiButtonState extends GuiButtonIE
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+	public void render(int mouseX, int mouseY, float partialTicks)
 	{
+		Minecraft mc = Minecraft.getInstance();
 		if(this.visible)
 		{
 			ClientUtils.bindTexture(texture);
 			FontRenderer fontrenderer = mc.fontRenderer;
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			GlStateManager.enableBlend();
-			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
 			int u = texU+(!state?0: offsetDir==0?width: offsetDir==2?-width: 0);
 			int v = texV+(!state?0: offsetDir==1?height: offsetDir==3?-height: 0);
 			this.drawTexturedModalRect(x, y, u, v, width, height);
-			this.mouseDragged(mc, mouseX, mouseY);
+			//TODO this.mouseDragged(mc, mouseX, mouseY);
 			if(displayString!=null&&!displayString.isEmpty())
 			{
 				int txtCol = 0xE0E0E0;
@@ -57,9 +58,9 @@ public class GuiButtonState extends GuiButtonIE
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+	public boolean mouseClicked(double mouseX, double mouseY, int key)
 	{
-		boolean b = super.mousePressed(mc, mouseX, mouseY);
+		boolean b = super.mouseClicked(mouseX, mouseY, key);
 		if(b)
 			this.state = !state;
 		return b;
