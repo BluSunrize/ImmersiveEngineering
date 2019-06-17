@@ -158,7 +158,7 @@ public class ExtBlockstateAdapter
 		final int prime = 31;
 		if(extraCacheKey!=null)
 			val = val*prime+extraCacheKey.hashCode();
-		val = prime*val+Utils.hashBlockstate(state, ignoredProperties, true);
+		val = prime*val+Utils.hashBlockstate(state, ignoredProperties);
 		val = prime*val+Arrays.hashCode(additionalProperties);
 		return val;
 	}

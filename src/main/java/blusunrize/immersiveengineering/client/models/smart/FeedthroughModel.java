@@ -234,7 +234,7 @@ public class FeedthroughModel implements IBakedModel
 		@Override
 		public int hashCode()
 		{
-			int ret = Utils.hashBlockstate(baseState, ImmutableSet.of(), false);
+			int ret = Utils.hashBlockstate(baseState, ImmutableSet.of());
 			return 31*ret+Objects.hash(type, offset, facing, layer);
 		}
 	}

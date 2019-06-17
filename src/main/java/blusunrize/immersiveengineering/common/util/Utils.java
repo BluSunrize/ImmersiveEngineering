@@ -11,13 +11,12 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.items.ItemHammer;
+import blusunrize.immersiveengineering.common.items.ItemWirecutter;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -28,9 +27,9 @@ import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -39,51 +38,43 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Biomes;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.state.IProperty;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.*;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -112,18 +103,18 @@ public class Utils
 	{
 		if((stack1.isEmpty())!=(stack2.isEmpty()))
 			return false;
-		boolean empty1 = (stack1.getTagCompound()==null||stack1.getTagCompound().isEmpty());
-		boolean empty2 = (stack2.getTagCompound()==null||stack2.getTagCompound().isEmpty());
+		boolean empty1 = stack1.hasTag();
+		boolean empty2 = stack2.hasTag();
 		if(empty1!=empty2)
 			return false;
-		if(!empty1&&!stack1.getTagCompound().equals(stack2.getTagCompound()))
+		if(!empty1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
 			return false;
 		return stack1.areCapsCompatible(stack2);
 	}
 
 	public static boolean canCombineArrays(ItemStack[] stacks, ItemStack[] target)
 	{
-		HashSet<IngredientStack> inputSet = new HashSet();
+		HashSet<IngredientStack> inputSet = new HashSet<>();
 		for(ItemStack s : stacks)
 			inputSet.add(new IngredientStack(s));
 		for(ItemStack t : target)
@@ -159,24 +150,25 @@ public class Utils
 		return s2;
 	}
 
-	public static Map<ResourceLocation, EnumDyeColor> dyesByTag = ImmutableMap.of(
-			Tags.Items.DYES_BLACK.getId(), EnumDyeColor.BLACK,
-			Tags.Items.DYES_RED.getId(), EnumDyeColor.RED,
-			Tags.Items.DYES_GREEN.getId(), EnumDyeColor.GREEN,
-			Tags.Items.DYES_BROWN.getId(), EnumDyeColor.BROWN,
-			Tags.Items.DYES_BLUE.getId(), EnumDyeColor.BLUE,
-			Tags.Items.DYES_PURPLE.getId(), EnumDyeColor.PURPLE,
-			Tags.Items.DYES_CYAN.getId(), EnumDyeColor.CYAN,
-			Tags.Items.DYES_LIGHT_GRAY.getId(), EnumDyeColor.LIGHT_GRAY,
-			Tags.Items.DYES_GRAY.getId(), EnumDyeColor.GRAY,
-			Tags.Items.DYES_PINK.getId(), EnumDyeColor.PINK,
-			Tags.Items.DYES_LIME.getId(), EnumDyeColor.LIME,
-			Tags.Items.DYES_YELLOW.getId(), EnumDyeColor.YELLOW,
-			Tags.Items.DYES_LIGHT_BLUE.getId(), EnumDyeColor.LIGHT_BLUE,
-			Tags.Items.DYES_MAGENTA.getId(), EnumDyeColor.MAGENTA,
-			Tags.Items.DYES_ORANGE.getId(), EnumDyeColor.ORANGE,
-			Tags.Items.DYES_WHITE.getId(), EnumDyeColor.WHITE,
-			);
+	public static Map<ResourceLocation, EnumDyeColor> dyesByTag =
+			ImmutableMap.<ResourceLocation, EnumDyeColor>builder()
+					.put(Tags.Items.DYES_BLACK.getId(), EnumDyeColor.BLACK)
+					.put(Tags.Items.DYES_RED.getId(), EnumDyeColor.RED)
+					.put(Tags.Items.DYES_GREEN.getId(), EnumDyeColor.GREEN)
+					.put(Tags.Items.DYES_BROWN.getId(), EnumDyeColor.BROWN)
+					.put(Tags.Items.DYES_BLUE.getId(), EnumDyeColor.BLUE)
+					.put(Tags.Items.DYES_PURPLE.getId(), EnumDyeColor.PURPLE)
+					.put(Tags.Items.DYES_CYAN.getId(), EnumDyeColor.CYAN)
+					.put(Tags.Items.DYES_LIGHT_GRAY.getId(), EnumDyeColor.LIGHT_GRAY)
+					.put(Tags.Items.DYES_GRAY.getId(), EnumDyeColor.GRAY)
+					.put(Tags.Items.DYES_PINK.getId(), EnumDyeColor.PINK)
+					.put(Tags.Items.DYES_LIME.getId(), EnumDyeColor.LIME)
+					.put(Tags.Items.DYES_YELLOW.getId(), EnumDyeColor.YELLOW)
+					.put(Tags.Items.DYES_LIGHT_BLUE.getId(), EnumDyeColor.LIGHT_BLUE)
+					.put(Tags.Items.DYES_MAGENTA.getId(), EnumDyeColor.MAGENTA)
+					.put(Tags.Items.DYES_ORANGE.getId(), EnumDyeColor.ORANGE)
+					.put(Tags.Items.DYES_WHITE.getId(), EnumDyeColor.WHITE)
+					.build();
 
 	@Nullable
 	public static EnumDyeColor getDye(ItemStack stack)
@@ -197,11 +189,8 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		if(stack.getItem().equals(Items.DYE))
+		if(stack.getItem().isIn(Tags.Items.DYES))
 			return true;
-		for(int dye = 0; dye < dyeNames.length; dye++)
-			if(isInTag(stack, "dye"+dyeNames[dye]))
-				return true;
 		return false;
 	}
 
@@ -219,12 +208,12 @@ public class Utils
 		return fs;
 	}
 
-	static long UUIDBase = 109406000905L;
-	static long UUIDAdd = 01L;
+	private static final long UUID_BASE = 109406000905L;
+	private static long UUIDAdd = 1L;
 
 	public static UUID generateNewUUID()
 	{
-		UUID uuid = new UUID(UUIDBase, UUIDAdd);
+		UUID uuid = new UUID(UUID_BASE, UUIDAdd);
 		UUIDAdd++;
 		return uuid;
 	}
@@ -245,50 +234,22 @@ public class Utils
 
 	public static boolean isBlockAt(World world, BlockPos pos, Block b)
 	{
-		return blockstateMatches(world.getBlockState(pos), b, meta);
+		return world.getBlockState(pos).getBlock()==b;
 	}
 
-	public static boolean blockstateMatches(IBlockState state, Block b)
-	{
-		if(state.getBlock().equals(b))
-			return meta < 0||meta==OreDictionary.WILDCARD_VALUE||state.getBlock().getMetaFromState(state)==meta;
-		return false;
-	}
-
-	public static boolean isOreBlockAt(World world, BlockPos pos, String oreName)
+	public static boolean isOreBlockAt(World world, BlockPos pos, Tag<Block> tag)
 	{
 		IBlockState state = world.getBlockState(pos);
-		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
-		return isInTag(stack, oreName);
+		return state.getBlock().isIn(tag);
 	}
 
-	public static boolean canFenceConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing, Material material)
+	public static boolean canFenceConnectTo(IBlockReader world, BlockPos pos, EnumFacing facing, Material material)
 	{
 		BlockPos other = pos.offset(facing);
 		IBlockState state = world.getBlockState(other);
-		Block block = world.getBlockState(other).getBlock();
-		if(block.canBeConnectedTo(world, other, facing.getOpposite()))
-			return true;
-		BlockFaceShape blockfaceshape = state.getBlockFaceShape(world, other, facing.getOpposite());
-		boolean flag = blockfaceshape==BlockFaceShape.MIDDLE_POLE&&(state.getMaterial()==material||block instanceof BlockFenceGate);
-		return !isExceptBlockForAttachWithFence(block)&&blockfaceshape==BlockFaceShape.SOLID||flag;
+		BlockFaceShape shape = state.getBlockFaceShape(world, other, facing.getOpposite());
+		return ((BlockFence)Blocks.ACACIA_FENCE).attachesTo(state, shape);
 	}
-
-	private static boolean isExceptionBlockForAttaching(Block block)
-	{
-		return block instanceof BlockShulkerBox||block instanceof BlockLeaves||block instanceof BlockTrapDoor||block==Blocks.BEACON||block==Blocks.CAULDRON||block==Blocks.GLASS||block==Blocks.GLOWSTONE||block==Blocks.ICE||block==Blocks.SEA_LANTERN||block==Blocks.STAINED_GLASS;
-	}
-
-	private static boolean isExceptBlockForAttachWithPiston(Block block)
-	{
-		return isExceptionBlockForAttaching(block)||block==Blocks.PISTON||block==Blocks.STICKY_PISTON||block==Blocks.PISTON_HEAD;
-	}
-
-	private static boolean isExceptBlockForAttachWithFence(Block block)
-	{
-		return isExceptBlockForAttachWithPiston(block)||block==Blocks.BARRIER||block==Blocks.MELON_BLOCK||block==Blocks.PUMPKIN||block==Blocks.LIT_PUMPKIN;
-	}
-
 
 	public static String formatDouble(double d, String s)
 	{
@@ -308,17 +269,18 @@ public class Utils
 		return s.substring(0, 1).toUpperCase(Locale.ENGLISH)+s.substring(1).toLowerCase(Locale.ENGLISH);
 	}
 
-	static Method m_getHarvestLevel = null;
+	private static Method m_getHarvestLevel = null;
 
 	public static String getHarvestLevelName(int lvl)
 	{
-		if(Loader.isModLoaded("TConstruct"))
+		//TODO this is probably pre-1.11 code. Does it still work in 1.13+?
+		if(ModList.get().isLoaded("tconstruct"))
 		{
 			try
 			{
 				if(m_getHarvestLevel==null)
 				{
-					Class clazz = Class.forName("tconstruct.library.util");
+					Class<?> clazz = Class.forName("tconstruct.library.util");
 					if(clazz!=null)
 						m_getHarvestLevel = clazz.getDeclaredMethod("getHarvestLevelName", int.class);
 				}
@@ -333,52 +295,34 @@ public class Utils
 
 	public static String getModVersion(String modid)
 	{
-		for(ModContainer container : Loader.instance().getActiveModList())
-			if(container.getModId().equalsIgnoreCase(modid))
-				return container.getVersion();
-		return "";
+		return ModList.get().getModContainerById(modid)
+				.map(container -> container.getModInfo().getVersion().toString())
+				.orElse("");
 	}
-
-	private static final HashMap<String, String> MODNAME_LOOKUP = new HashMap<>();
 
 	public static String getModName(String modid)
 	{
-		if(MODNAME_LOOKUP.containsKey(modid))
-			return MODNAME_LOOKUP.get(modid);
-		else
-		{
-			ModContainer modContainer = Loader.instance().getIndexedModList().get(modid);
-			if(modContainer!=null)
-			{
-				MODNAME_LOOKUP.put(modid, modContainer.getName());
-				return modContainer.getName();
-			}
-			return "";
-		}
+		return ModList.get().getModContainerById(modid)
+				.map(container -> container.getModInfo().getDisplayName())
+				.orElse(modid);
 	}
 
-	public static <T> int findSequenceInList(List<T> list, T[] sequence, BiPredicate<T, T> predicate)
+	public static <T> int findSequenceInList(List<T> list, T[] sequence, BiPredicate<T, T> equal)
 	{
 		if(list.size() <= 0||list.size() < sequence.length)
 			return -1;
 
 		for(int i = 0; i < list.size(); i++)
-			if(predicate.test(sequence[0], list.get(i)))
+			if(equal.test(sequence[0], list.get(i)))
 			{
 				boolean found = true;
 				for(int j = 1; j < sequence.length; j++)
-					if(!(found = predicate.test(sequence[j], list.get(i+j))))
+					if(!(found = equal.test(sequence[j], list.get(i+j))))
 						break;
 				if(found)
 					return i;
 			}
 		return -1;
-	}
-
-
-	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
-	{
-		return tile0.getPos().equals(tile1.getPos());
 	}
 
 	public static EnumFacing rotateFacingTowardsDir(EnumFacing f, EnumFacing dir)
@@ -398,7 +342,8 @@ public class Utils
 		return f;
 	}
 
-	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityLivingBase living, boolean bool)
+	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityLivingBase living, boolean bool,
+																   RayTraceFluidMode fluidMode)
 	{
 		float f = 1.0F;
 		float f1 = living.prevRotationPitch+(living.rotationPitch-living.prevRotationPitch)*f;
@@ -407,18 +352,18 @@ public class Utils
 		double d1 = living.prevPosY+(living.posY-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof EntityPlayer?((EntityPlayer)living).getDefaultEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
 		double d2 = living.prevPosZ+(living.posZ-living.prevPosZ)*(double)f;
 		Vec3d vec3 = new Vec3d(d0, d1, d2);
-		float f3 = MathHelper.cos(-f2*0.017453292F-(float)Math.PI);
-		float f4 = MathHelper.sin(-f2*0.017453292F-(float)Math.PI);
-		float f5 = -MathHelper.cos(-f1*0.017453292F);
-		float f6 = MathHelper.sin(-f1*0.017453292F);
+		float f3 = MathHelper.cos(-f2*(float)Math.PI/180-(float)Math.PI);
+		float f4 = MathHelper.sin(-f2*(float)Math.PI/180-(float)Math.PI);
+		float f5 = -MathHelper.cos(-f1*(float)Math.PI/180);
+		float f6 = MathHelper.sin(-f1*(float)Math.PI/180);
 		float f7 = f4*f5;
 		float f8 = f3*f5;
 		double d3 = 5.0D;
-		if(living instanceof EntityPlayerMP)
-			d3 = ((EntityPlayerMP)living).interactionManager.getBlockReachDistance();
+		if(living instanceof EntityPlayer)
+			d3 = living.getAttribute(EntityPlayer.REACH_DISTANCE).getValue();
 
 		Vec3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
-		return world.rayTraceBlocks(vec3, vec31, bool, !bool, false);
+		return world.rayTraceBlocks(vec3, vec31, fluidMode, !bool, false);
 	}
 
 	public static boolean canBlocksSeeOther(World world, BlockPos cc0, BlockPos cc1, Vec3d pos0, Vec3d pos1)
@@ -443,10 +388,10 @@ public class Utils
 			yaw = entity.prevRenderYawOffset+(entity.renderYawOffset-entity.prevRenderYawOffset)*partialTicks;
 		float pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
 
-		float yawCos = MathHelper.cos(-yaw*0.017453292F-(float)Math.PI);
-		float yawSin = MathHelper.sin(-yaw*0.017453292F-(float)Math.PI);
-		float pitchCos = -MathHelper.cos(-pitch*0.017453292F);
-		float pitchSin = MathHelper.sin(-pitch*0.017453292F);
+		float yawCos = MathHelper.cos(-yaw*(float)Math.PI/180-(float)Math.PI);
+		float yawSin = MathHelper.sin(-yaw*(float)Math.PI/180-(float)Math.PI);
+		float pitchCos = -MathHelper.cos(-pitch*(float)Math.PI/180);
+		float pitchSin = MathHelper.sin(-pitch*(float)Math.PI/180);
 
 		return new Vec3d(entity.posX+offsetX*yawCos+offset*pitchCos*yawSin, entity.posY+offset*pitchSin+height, entity.posZ+offset*pitchCos*yawCos-offsetX*yawSin);
 	}
@@ -464,42 +409,35 @@ public class Utils
 				maxInArray(start.x, endLow.x, endHigh.x), maxInArray(start.y, endLow.y, endHigh.y), maxInArray(start.z, endLow.z, endHigh.z));
 
 		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
-		Iterator<EntityLivingBase> iterator = list.iterator();
-		while(iterator.hasNext())
-		{
-			EntityLivingBase e = iterator.next();
-			if(!isPointInCone(start, dirNorm, radius, length, truncationLength, e.getPositionVector().subtract(start)))
-				iterator.remove();
-		}
+		list.removeIf(e -> !isPointInCone(dirNorm, radius, length, truncationLength, e.getPositionVector().subtract(start)));
 		return list;
 	}
 
 	public static boolean isPointInConeByAngle(Vec3d start, Vec3d normDirection, double aperture, double length, Vec3d relativePoint)
 	{
-		return isPointInCone(start, normDirection, Math.tan(aperture/2)*length, length, 0, relativePoint);
+		return isPointInCone(normDirection, Math.tan(aperture/2)*length, length, 0, relativePoint);
 	}
 
 	public static boolean isPointInCone(Vec3d start, Vec3d normDirection, double radius, double length, Vec3d relativePoint)
 	{
-		return isPointInCone(start, normDirection, radius, length, 0, relativePoint);
+		return isPointInCone(normDirection, radius, length, 0, relativePoint);
 	}
 
 	public static boolean isPointInConeByAngle(Vec3d start, Vec3d normDirection, float aperture, double length, float truncationLength, Vec3d relativePoint)
 	{
-		return isPointInCone(start, normDirection, Math.tan(aperture/2)*length, length, truncationLength, relativePoint);
+		return isPointInCone(normDirection, Math.tan(aperture/2)*length, length, truncationLength, relativePoint);
 	}
 
 	/**
 	 * Checks if  point is contained within a cone in 3D space
 	 *
-	 * @param start            tip of the cone
 	 * @param normDirection    normalized (length==1) vector, direction of cone
 	 * @param radius           radius at the end of the cone
 	 * @param length           length of the cone
 	 * @param truncationLength optional lenght at which the cone is truncated (flat tip)
 	 * @param relativePoint    point to be checked, relative to {@code start}
 	 */
-	public static boolean isPointInCone(Vec3d start, Vec3d normDirection, double radius, double length, float truncationLength, Vec3d relativePoint)
+	public static boolean isPointInCone(Vec3d normDirection, double radius, double length, float truncationLength, Vec3d relativePoint)
 	{
 		double projectedDist = relativePoint.dotProduct(normDirection); //Orthogonal projection, establishing point's distance on cone direction vector
 		if(projectedDist < truncationLength||projectedDist > length) //If projected distance is before truncation or beyond length, point not contained
@@ -540,10 +478,10 @@ public class Utils
 
 	private static Vec3d getVectorForRotation(float pitch, float yaw)
 	{
-		float f = MathHelper.cos(-yaw*0.017453292F-(float)Math.PI);
-		float f1 = MathHelper.sin(-yaw*0.017453292F-(float)Math.PI);
-		float f2 = -MathHelper.cos(-pitch*0.017453292F);
-		float f3 = MathHelper.sin(-pitch*0.017453292F);
+		float f = MathHelper.cos(-yaw*(float)Math.PI/180-(float)Math.PI);
+		float f1 = MathHelper.sin(-yaw*(float)Math.PI/180-(float)Math.PI);
+		float f2 = -MathHelper.cos(-pitch*(float)Math.PI/180);
+		float f3 = MathHelper.sin(-pitch*(float)Math.PI/180);
 		return new Vec3d((double)(f1*f2), (double)f3, (double)(f*f2));
 	}
 
@@ -569,14 +507,14 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER);
+		return stack.getItem().getToolTypes(stack).contains(ItemHammer.HAMMER_TOOL);
 	}
 
 	public static boolean isWirecutter(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return false;
-		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_WIRECUTTER);
+		return stack.getItem().getToolTypes(stack).contains(ItemWirecutter.CUTTER_TOOL);
 	}
 
 	public static boolean canBlockDamageSource(EntityLivingBase entity, DamageSource damageSourceIn)
@@ -597,64 +535,9 @@ public class Utils
 
 	public static Vec3d getFlowVector(World world, BlockPos pos)
 	{
-		IBlockState state = world.getBlockState(pos);
-		if(state.getBlock() instanceof BlockFluidBase)
-			return ((BlockFluidBase)state.getBlock()).getFlowVector(world, pos);
-		else if(!(state.getBlock() instanceof BlockLiquid))
-			return new Vec3d(0, 0, 0);
-
-		BlockLiquid block = (BlockLiquid)state.getBlock();
-		Vec3d vec3 = new Vec3d(0.0D, 0.0D, 0.0D);
-		Material mat = state.getMaterial();
-		int i = getEffectiveFlowDecay(world, pos, mat);
-
-		for(EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
-		{
-			BlockPos blockpos = pos.offset(enumfacing);
-			int j = getEffectiveFlowDecay(world, blockpos, mat);
-			if(j < 0)
-			{
-				if(!world.getBlockState(blockpos).getMaterial().blocksMovement())
-				{
-					j = getEffectiveFlowDecay(world, blockpos.down(), mat);
-					if(j >= 0)
-					{
-						int k = j-(i-8);
-						vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*k), (double)((blockpos.getY()-pos.getY())*k), (double)((blockpos.getZ()-pos.getZ())*k));
-					}
-				}
-			}
-			else if(j >= 0)
-			{
-				int l = j-i;
-				vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*l), (double)((blockpos.getY()-pos.getY())*l), (double)((blockpos.getZ()-pos.getZ())*l));
-			}
-		}
-
-		if(state.getValue(BlockLiquid.LEVEL).intValue() >= 8)
-		{
-			for(EnumFacing enumfacing1 : EnumFacing.Plane.HORIZONTAL)
-			{
-				BlockPos blockpos1 = pos.offset(enumfacing1);
-				if(block.causesDownwardCurrent(world, blockpos1, enumfacing1)||block.causesDownwardCurrent(world, blockpos1.up(), enumfacing1))
-				{
-					vec3 = vec3.normalize().add(0.0D, -6.0D, 0.0D);
-					break;
-				}
-			}
-		}
-		return vec3.normalize();
-	}
-
-	static int getEffectiveFlowDecay(IBlockAccess world, BlockPos pos, Material mat)
-	{
-		IBlockState state = world.getBlockState(pos);
-		if(state.getMaterial()!=mat)
-			return -1;
-		int l = state.getBlock().getMetaFromState(state);
-		if(l >= 8)
-			l = 0;
-		return l;
+		IBlockState bState = world.getBlockState(pos);
+		IFluidState fState = bState.getFluidState();
+		return fState.getFlow(world, pos);
 	}
 
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
@@ -695,13 +578,14 @@ public class Utils
 		if(player instanceof EntityPlayerMP)
 		{
 			PlayerAdvancements advancements = ((EntityPlayerMP)player).getAdvancements();
-			AdvancementManager manager = ((WorldServer)player.getEntityWorld()).getAdvancementManager();
+			AdvancementManager manager = ((WorldServer)player.getEntityWorld()).getServer().getAdvancementManager();
 			Advancement advancement = manager.getAdvancement(new ResourceLocation(ImmersiveEngineering.MODID, name));
 			if(advancement!=null)
 				advancements.grantCriterion(advancement, "code_trigger");
 		}
 	}
 
+	//TODO test! I think the NBT format is wrong
 	public static NBTTagCompound getRandomFireworkExplosion(Random rand, int preType)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
@@ -712,12 +596,12 @@ public class Utils
 		for(int i = 0; i < colors.length; i++)
 		{
 			int j = rand.nextInt(11)+1;
+			//no black, brown, light grey, grey or white
 			if(j > 2)
 				j++;
 			if(j > 6)
 				j += 2;
-			//no black, brown, light grey, grey or white
-			colors[i] = ItemDye.DYE_COLORS[j];
+			colors[i] = EnumDyeColor.byId(j).func_196060_f();
 		}
 		expl.setIntArray("Colors", colors);
 		int type = preType >= 0?preType: rand.nextInt(4);
@@ -797,42 +681,14 @@ public class Utils
 		return false;
 	}
 
-//	public static Collection<ItemStack> getContainersFilledWith(FluidStack fluidStack)
-//	{
-//		List<ItemStack> containers = new ArrayList();
-//		for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
-//			if(data.fluid.containsFluid(fluidStack))
-//				containers.add(data.filledContainer);
-//		return containers;
-//	}
-
-	//	public static String nameFromStack(ItemStack stack)
-	//	{
-	//		if(stack==null)
-	//			return "";
-	//		try
-	//		{
-	//			return GameData.getItemRegistry().getNameForObject(stack.getItem());
-	//		}
-	//		catch (NullPointerException e) {}
-	//		return "";
-	//	}
-
 	public static IBlockState getStateFromItemStack(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return null;
-		Block block = getBlockFromItem(stack.getItem());
-		if(block!=null)
-			return block.getStateFromMeta(stack.getItemDamage());
+		Block block = Block.getBlockFromItem(stack.getItem());
+		if(block!=Blocks.AIR)
+			return block.getDefaultState();
 		return null;
-	}
-
-	public static Block getBlockFromItem(Item item)
-	{
-		if(item==Items.CAULDRON)
-			return Blocks.CAULDRON;
-		return Block.getBlockFromItem(item);
 	}
 
 	public static boolean canInsertStackIntoInventory(CapabilityReference<IItemHandler> ref, ItemStack stack)
@@ -861,7 +717,7 @@ public class Utils
 		if(!stack.isEmpty())
 		{
 			EntityItem ei = new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack.copy());
-			ei.motionY = 0.025000000372529D;
+			ei.motionY = 0.025;
 			if(facing!=null)
 			{
 				ei.motionX = (0.075F*facing.getXOffset());
@@ -875,47 +731,6 @@ public class Utils
 	{
 		dropStackAtPos(world, pos, stack, null);
 	}
-	//	public static ItemStack insertStackIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side)
-	//	{
-	//		if (stack == null || inventory == null)
-	//			return null;
-	//		int stackSize = stack.stackSize;
-	//		if (inventory instanceof ISidedInventory)
-	//		{
-	//			ISidedInventory sidedInv = (ISidedInventory) inventory;
-	//			int slots[] = sidedInv.getSlotsForFace(side);
-	//			if (slots == null)
-	//				return stack;
-	//			for (int i=0; i<slots.length && stack!=null; i++)
-	//			{
-	//				if (sidedInv.canInsertItem(slots[i], stack, side))
-	//				{
-	//					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
-	//					if(OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
-	//						stack = addToOccupiedSlot(sidedInv, slots[i], stack, existingStack);
-	//				}
-	//			}
-	//			for (int i=0; i<slots.length && stack!=null; i++)
-	//				if (inventory.getStackInSlot(slots[i]) == null && sidedInv.canInsertItem(slots[i], stack, side))
-	//					stack = addToEmptyInventorySlot(sidedInv, slots[i], stack);
-	//		}
-	//		else
-	//		{
-	//			int invSize = inventory.getSizeInventory();
-	//			for (int i=0; i<invSize && stack!=null; i++)
-	//			{
-	//				ItemStack existingStack = inventory.getStackInSlot(i);
-	//				if (OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
-	//					stack = addToOccupiedSlot(inventory, i, stack, existingStack);
-	//			}
-	//			for (int i=0; i<invSize && stack!=null; i++)
-	//				if (inventory.getStackInSlot(i) == null)
-	//					stack = addToEmptyInventorySlot(inventory, i, stack);
-	//		}
-	//		if (stack == null || stack.stackSize != stackSize)
-	//			inventory.markDirty();
-	//		return stack;
-	//	}
 
 	public static ItemStack addToEmptyInventorySlot(IInventory inventory, int slot, ItemStack stack)
 	{
@@ -944,55 +759,10 @@ public class Utils
 		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
 	}
 
-
-	//	public static boolean canInsertStackIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side)
-	//	{
-	//		if(stack == null || inventory == null)
-	//			return false;
-	//		if(inventory instanceof ISidedInventory)
-	//		{
-	//			ISidedInventory sidedInv = (ISidedInventory) inventory;
-	//			int slots[] = sidedInv.getSlotsForFace(side);
-	//			if(slots == null)
-	//				return false;
-	//			for(int i=0; i<slots.length && stack!=null; i++)
-	//			{
-	//				if(sidedInv.canInsertItem(slots[i], stack, side) && sidedInv.isItemValidForSlot(slots[i], stack))
-	//				{
-	//					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
-	//					if(existingStack==null)
-	//						return true;
-	//					else
-	//						if(OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
-	//							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
-	//								return true;
-	//				}
-	//			}
-	//		}
-	//		else
-	//		{
-	//			int invSize = inventory.getSizeInventory();
-	//			for(int i=0; i<invSize && stack!=null; i++)
-	//				if(inventory.isItemValidForSlot(i, stack))
-	//				{
-	//					ItemStack existingStack = inventory.getStackInSlot(i);
-	//					if(existingStack==null)
-	//						return true;
-	//					else
-	//						if(OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
-	//							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
-	//								return true;
-	//				}
-	//		}
-	//		return false;
-	//	}
-
 	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable EntityPlayer player)
 	{
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
-		if(containerIn.hasTagCompound()&&containerIn.getTagCompound().isEmpty())
-			containerIn.setTagCompound(null);
 
 		FluidActionResult result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
 		if(result.isSuccess())
@@ -1053,18 +823,6 @@ public class Utils
 		return true;
 	}
 
-//	public static FluidStack getFluidFromItemStack(ItemStack stack)
-//	{
-//		if(stack==null)
-//			return null;
-//		FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(stack);
-//		if(fluid != null)
-//			return fluid;
-//		else if(stack.getItem() instanceof IFluidContainerItem)
-//			return ((IFluidContainerItem)stack.getItem()).getFluid(stack);
-//		return null;
-//	}
-
 	public static boolean isFluidRelatedItemStack(ItemStack stack)
 	{
 		if(stack.isEmpty())
@@ -1072,9 +830,9 @@ public class Utils
 		return stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	}
 
-	public static IRecipe findRecipe(InventoryCrafting crafting, World world)
+	public static IRecipe findCraftingRecipe(InventoryCrafting crafting, World world)
 	{
-		return CraftingManager.findMatchingRecipe(crafting, world);
+		return world.getRecipeManager().getRecipe(crafting, world, VanillaRecipeTypes.CRAFTING);
 	}
 
 	public static NonNullList<ItemStack> createNonNullItemStackListFromArray(ItemStack[] stacks)
@@ -1120,26 +878,16 @@ public class Utils
 		return ret;
 	}
 
-	public static int hashBlockstate(IBlockState state, Set<Object> ignoredProperties, boolean includeExtended)
+	public static int hashBlockstate(IBlockState state, Set<Object> ignoredProperties)
 	{
 		int val = 0;
 		final int prime = 31;
 		for(IProperty<?> n : state.getProperties())
 			if(!ignoredProperties.contains(n))
 			{
-				Object o = state.getValue(n);
-				val = prime*val+(o==null?0: o.hashCode());
+				Object o = state.get(n);
+				val = prime*val+Objects.hash(o);
 			}
-		if(includeExtended&&state instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState ext = (IExtendedBlockState)state;
-			for(IUnlistedProperty<?> n : ext.getUnlistedNames())
-				if(!ignoredProperties.contains(n))
-				{
-					Object o = ext.getValue(n);
-					val = prime*val+(o==null?0: o.hashCode());
-				}
-		}
 		return val;
 	}
 
@@ -1147,73 +895,16 @@ public class Utils
 	{
 		for(IProperty<?> i : state.getProperties())
 		{
-			if(!other.getProperties().containsKey(i))
+			if(!other.getProperties().contains(i))
 				return false;
 			if(ignoredProperties.contains(i))
 				continue;
-			Object valThis = state.getValue(i);
-			Object valOther = other.getValue(i);
-			if(valThis==null&&valOther==null)
-				continue;
-			else if(valOther==null||!valOther.equals(state.getValue(i)))
+			Object valThis = state.get(i);
+			Object valOther = other.get(i);
+			if(!Objects.equals(valThis, valOther))
 				return false;
-		}
-		if(includeExtended)
-		{
-			if(state instanceof IExtendedBlockState^other instanceof IExtendedBlockState)
-				return false;
-			if(state instanceof IExtendedBlockState)
-			{
-				IExtendedBlockState extState = (IExtendedBlockState)state;
-				IExtendedBlockState extOther = (IExtendedBlockState)other;
-				for(IUnlistedProperty<?> i : extState.getUnlistedNames())
-				{
-					if(!extOther.getUnlistedProperties().containsKey(i))
-						return false;
-					if(ignoredProperties.contains(i))
-						continue;
-					Object valThis = extState.getValue(i);
-					Object valOther = extOther.getValue(i);
-					if(i==IEProperties.CONNECTIONS)
-					{
-						if(!areRenderConnectionsEqual((Set<Connection>)valThis, (Set<Connection>)valOther))
-							return false;
-					}
-					else if(valThis==null&&valOther==null)
-						continue;
-					else if(valOther==null||!valOther.equals(valThis))
-						return false;
-				}
-			}
 		}
 		return true;
-	}
-
-	private static boolean areRenderConnectionsEqual(Set<Connection> setA, Set<Connection> setB)
-	{
-		if(setA==setB)
-			return true;
-		else if(setA==null||setB==null)
-			return false;
-		Map<Connection, Connection> aAsMap = new HashMap<>();
-		for(Connection c : setA)
-			aAsMap.put(c, c);
-		for(Connection inB : setB)
-		{
-			if(!aAsMap.containsKey(inB))
-				return false;
-			Connection inA = aAsMap.remove(inB);
-			if(!epsilonEquals(inA.catA, inB.catA)
-					||!epsilonEquals(inA.catOffsetX, inB.catOffsetX)
-					||!epsilonEquals(inA.catOffsetY, inB.catOffsetY))
-				return false;
-		}
-		return aAsMap.isEmpty();
-	}
-
-	private static boolean epsilonEquals(double a, double b)
-	{
-		return Math.abs(a-b) < 1e-5;
 	}
 
 	public static boolean areArraysEqualIncludingBlockstates(Object[] a, Object[] a2)
@@ -1377,7 +1068,7 @@ public class Utils
 			BlockPos pos = new BlockPos(start);
 			IBlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
-			if(b.canCollideCheck(state, false)&&state.collisionRayTrace(world, pos, start, end)!=null)
+			if(b.isCollidable(state)&&Block.collisionRayTrace(state, world, pos, start, end)!=null)
 				ret.add(pos);
 			checked.add(pos);
 			out.accept(pos);
@@ -1408,7 +1099,7 @@ public class Utils
 			{
 				state = world.getBlockState(blockPos);
 				b = state.getBlock();
-				if(b.canCollideCheck(state, false)&&state.collisionRayTrace(world, blockPos, pos, posNext)!=null)
+				if(b.isCollidable(state)&&Block.collisionRayTrace(state, world, blockPos, pos, posNext)!=null)
 					ret.add(blockPos);
 				//				if (place)
 				//					world.setBlockState(blockPos, tmp);
@@ -1420,7 +1111,7 @@ public class Utils
 			{
 				state = world.getBlockState(blockPos);
 				b = state.getBlock();
-				if(b.canCollideCheck(state, false)&&state.collisionRayTrace(world, blockPos, posVeryPrev, posPrev)!=null)
+				if(b.isCollidable(state)&&Block.collisionRayTrace(state, world, blockPos, posVeryPrev, posPrev)!=null)
 					ret.add(blockPos);
 				//				if (place)
 				//					world.setBlock(blockPos.posX, blockPos.posY, blockPos.posZ, tmp);
@@ -1478,7 +1169,7 @@ public class Utils
 	/**
 	 * get tile entity without loading currently unloaded chunks
 	 *
-	 * @return return value of {@link IBlockAccess#getTileEntity(BlockPos)} or always null if chunk is not loaded
+	 * @return return value of {@link World#getTileEntity(BlockPos)} or always null if chunk is not loaded
 	 */
 	public static TileEntity getExistingTileEntity(World world, BlockPos pos)
 	{
@@ -1487,6 +1178,9 @@ public class Utils
 		return null;
 	}
 
+
+	//TODO use vanilla helpers instead (ItemStackHelper)
+	@Deprecated
 	public static NonNullList<ItemStack> readInventory(NBTTagList nbt, int size)
 	{
 		NonNullList<ItemStack> inv = NonNullList.withSize(size, ItemStack.EMPTY);
@@ -1496,11 +1190,12 @@ public class Utils
 			NBTTagCompound itemTag = nbt.getCompound(i);
 			int slot = itemTag.getByte("Slot")&255;
 			if(slot >= 0&&slot < size)
-				inv.set(slot, new ItemStack(itemTag));
+				inv.set(slot, ItemStack.read(itemTag));
 		}
 		return inv;
 	}
 
+	@Deprecated
 	public static NBTTagList writeInventory(ItemStack[] inv)
 	{
 		NBTTagList invList = new NBTTagList();
@@ -1509,12 +1204,13 @@ public class Utils
 			{
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", (byte)i);
-				inv[i].writeToNBT(itemTag);
+				inv[i].write(itemTag);
 				invList.add(itemTag);
 			}
 		return invList;
 	}
 
+	@Deprecated
 	public static NBTTagList writeInventory(Collection<ItemStack> inv)
 	{
 		NBTTagList invList = new NBTTagList();
@@ -1525,7 +1221,7 @@ public class Utils
 			{
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", slot);
-				s.writeToNBT(itemTag);
+				s.write(itemTag);
 				invList.add(itemTag);
 			}
 			slot++;
@@ -1533,12 +1229,13 @@ public class Utils
 		return invList;
 	}
 
+	@Deprecated
 	public static NonNullList<ItemStack> loadItemStacksFromNBT(INBTBase nbt)
 	{
 		NonNullList<ItemStack> itemStacks = NonNullList.create();
 		if(nbt instanceof NBTTagCompound)
 		{
-			ItemStack stack = new ItemStack((NBTTagCompound)nbt);
+			ItemStack stack = ItemStack.read((NBTTagCompound)nbt);
 			itemStacks.add(stack);
 			return itemStacks;
 		}
@@ -1578,8 +1275,8 @@ public class Utils
 		slotAmount = slotAmount-stacks.size();
 		while(slotAmount > 0&&list.size() > 0)
 		{
-			ItemStack itemstack2 = list.remove(MathHelper.getInt(rand, 0, list.size()-1));
-			int i = MathHelper.getInt(rand, 1, itemstack2.getCount()/2);
+			ItemStack itemstack2 = list.remove(MathHelper.nextInt(rand, 0, list.size()-1));
+			int i = MathHelper.nextInt(rand, 1, itemstack2.getCount()/2);
 			itemstack2.shrink(i);
 			ItemStack itemstack1 = itemstack2.copy();
 			itemstack1.setCount(i);
@@ -1660,13 +1357,13 @@ public class Utils
 		if(!stack.isEmpty())
 		{
 			ret.put("size", stack.getCount());
-			ret.put("name", Item.REGISTRY.getNameForObject(stack.getItem()));
+			ret.put("name", stack.getItem().getRegistryName());
 			ret.put("nameUnlocalized", stack.getTranslationKey());
 			ret.put("label", stack.getDisplayName());
-			ret.put("damage", stack.getItemDamage());
+			ret.put("damage", stack.getDamage());
 			ret.put("maxDamage", stack.getMaxDamage());
 			ret.put("maxSize", stack.getMaxStackSize());
-			ret.put("hasTag", stack.hasTagCompound());
+			ret.put("hasTag", stack.hasTag());
 		}
 		return ret;
 	}
@@ -1696,6 +1393,7 @@ public class Utils
 		return ret;
 	}
 
+	/*TODO use NBTUtil instead!
 	public static void stateToNBT(NBTTagCompound out, IBlockState state)
 	{
 		out.setString("block", state.getBlock().getRegistryName().toString());
@@ -1717,26 +1415,15 @@ public class Utils
 		}
 		return ret;
 	}
+	*/
 
+	//TODO getDrops wants a world now, how do we deal with that?
 	public static NonNullList<ItemStack> getDrops(IBlockState state)
 	{
-		IBlockAccess w = getSingleBlockWorldAccess(state);
+		IBlockReader w = getSingleBlockWorldAccess(state);
 		NonNullList<ItemStack> ret = NonNullList.create();
 		state.getBlock().getDrops(ret, w, BlockPos.ORIGIN, state, 0);
 		return ret;
-	}
-
-	private static <T extends Comparable<T>> void saveProp(IBlockState state, IProperty<T> prop, NBTTagCompound out)
-	{
-		out.setString(prop.getName(), prop.getName(state.getValue(prop)));
-	}
-
-	private static <T extends Comparable<T>> IBlockState setProp(IBlockState state, IProperty<T> prop, String value)
-	{
-		Optional<T> valueParsed = prop.parseValue(value);
-		if(valueParsed.isPresent())
-			return state.with(prop, valueParsed.get());
-		return state;
 	}
 
 	public static AxisAlignedBB transformAABB(AxisAlignedBB original, EnumFacing facing)
@@ -1784,12 +1471,12 @@ public class Utils
 		return new AxisAlignedBB(minX, original.minY, minZ, maxX, original.maxY, maxZ);
 	}
 
-	public static IBlockAccess getSingleBlockWorldAccess(IBlockState state)
+	public static IBlockReader getSingleBlockWorldAccess(IBlockState state)
 	{
 		return new SingleBlockAcess(state);
 	}
 
-	private static class SingleBlockAcess implements IBlockAccess
+	private static class SingleBlockAcess implements IBlockReader
 	{
 		IBlockState state;
 
@@ -1806,12 +1493,6 @@ public class Utils
 			return null;
 		}
 
-		@Override
-		public int getCombinedLight(@Nonnull BlockPos pos, int lightValue)
-		{
-			return 0;
-		}
-
 		@Nonnull
 		@Override
 		public IBlockState getBlockState(@Nonnull BlockPos pos)
@@ -1819,36 +1500,17 @@ public class Utils
 			return pos.equals(BlockPos.ORIGIN)?state: Blocks.AIR.getDefaultState();
 		}
 
-		@Override
-		public boolean isAirBlock(@Nonnull BlockPos pos)
-		{
-			return !pos.equals(BlockPos.ORIGIN);
-		}
-
 		@Nonnull
 		@Override
-		public Biome getBiome(@Nonnull BlockPos pos)
+		public IFluidState getFluidState(@Nonnull BlockPos blockPos)
 		{
-			return Biomes.MUSHROOM_ISLAND;
+			return getBlockState(blockPos).getFluidState();
 		}
 
 		@Override
-		public int getStrongPower(@Nonnull BlockPos pos, @Nonnull EnumFacing direction)
+		public int getMaxLightLevel()
 		{
 			return 0;
-		}
-
-		@Nonnull
-		@Override
-		public WorldType getWorldType()
-		{
-			return WorldType.DEFAULT;
-		}
-
-		@Override
-		public boolean isSideSolid(@Nonnull BlockPos pos, @Nonnull EnumFacing side, boolean _default)
-		{
-			return pos.equals(BlockPos.ORIGIN)&&state.isSideSolid(this, BlockPos.ORIGIN, side);
 		}
 	}
 }

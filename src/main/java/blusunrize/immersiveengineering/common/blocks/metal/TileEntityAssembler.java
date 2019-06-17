@@ -665,7 +665,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 		public void recalculateOutput()
 		{
 			InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-			this.recipe = Utils.findRecipe(invC, tile.getWorld());
+			this.recipe = Utils.findCraftingRecipe(invC, tile.getWorld());
 			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
 		}
 

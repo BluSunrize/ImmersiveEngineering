@@ -22,9 +22,6 @@ public class Lib
 	public static final String[] METALS_IE = {"Copper", "Aluminum", "Lead", "Silver", "Nickel", "Uranium", "Constantan", "Electrum", "Steel"};
 	public static final String[] METALS_ALL = {"Copper", "Aluminum", "Lead", "Silver", "Nickel", "Uranium", "Constantan", "Electrum", "Steel", "Iron", "Gold"};
 
-	public static final String TOOL_HAMMER = "IE_HAMMER";
-	public static final String TOOL_WIRECUTTER = "IE_WIRECUTTER";
-
 	public static final String CHAT = "chat."+MODID+".";
 	public static final String CHAT_WARN = CHAT+"warning.";
 	public static final String CHAT_INFO = CHAT+"info.";
