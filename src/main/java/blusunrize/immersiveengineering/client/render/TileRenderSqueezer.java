@@ -16,12 +16,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
-public class TileRenderSqueezer extends TileEntitySpecialRenderer<TileEntitySqueezer>
+public class TileRenderSqueezer extends TileEntityRenderer<TileEntitySqueezer>
 {
 	@Override
 	public void render(TileEntitySqueezer te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

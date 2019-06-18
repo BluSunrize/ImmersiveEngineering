@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
-public class TileRenderChargingStation extends TileEntitySpecialRenderer<TileEntityChargingStation>
+public class TileRenderChargingStation extends TileEntityRenderer<TileEntityChargingStation>
 {
 	@Override
 	public void render(TileEntityChargingStation te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

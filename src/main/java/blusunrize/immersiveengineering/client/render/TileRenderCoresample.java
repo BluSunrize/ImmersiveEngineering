@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCoresample;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.EnumFacing;
 
-public class TileRenderCoresample extends TileEntitySpecialRenderer<TileEntityCoresample>
+public class TileRenderCoresample extends TileEntityRenderer<TileEntityCoresample>
 {
 	@Override
 	public void render(TileEntityCoresample tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

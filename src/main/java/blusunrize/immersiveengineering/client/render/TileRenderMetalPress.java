@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -28,7 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMetalPress>
+public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPress>
 {
 	@Override
 	public void render(TileEntityMetalPress te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

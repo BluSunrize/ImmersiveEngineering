@@ -16,14 +16,14 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class TileRenderMixer extends TileEntitySpecialRenderer<TileEntityMixer>
+public class TileRenderMixer extends TileEntityRenderer<TileEntityMixer>
 {
 	@Override
 	public void render(TileEntityMixer te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

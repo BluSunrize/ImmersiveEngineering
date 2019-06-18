@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 
-public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
+public class TileRenderSilo extends TileEntityRenderer<TileEntitySilo>
 {
 	@Override
 	public void render(TileEntitySilo tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

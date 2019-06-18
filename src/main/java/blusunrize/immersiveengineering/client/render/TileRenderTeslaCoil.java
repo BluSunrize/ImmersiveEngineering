@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Iterator;
 import java.util.List;
 
-public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTeslaCoil>
+public class TileRenderTeslaCoil extends TileEntityRenderer<TileEntityTeslaCoil>
 {
 	@Override
 	public void render(TileEntityTeslaCoil tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

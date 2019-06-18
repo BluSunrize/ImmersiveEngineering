@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -29,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityArcFurnace>
+public class TileRenderArcFurnace extends TileEntityRenderer<TileEntityArcFurnace>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;

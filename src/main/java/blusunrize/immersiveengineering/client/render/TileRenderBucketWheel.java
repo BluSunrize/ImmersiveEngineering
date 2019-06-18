@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityBucketWheel>
+public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWheel>
 {
 	private static IBakedModel model = null;
 

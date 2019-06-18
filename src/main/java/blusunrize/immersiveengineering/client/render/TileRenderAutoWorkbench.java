@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,7 +45,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntityAutoWorkbench>
+public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWorkbench>
 {
 	@Override
 	public void render(TileEntityAutoWorkbench te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

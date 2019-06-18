@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -25,7 +25,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import org.lwjgl.opengl.GL11;
 
-public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntitySampleDrill>
+public class TileRenderSampleDrill extends TileEntityRenderer<TileEntitySampleDrill>
 {
 	@Override
 	public void render(TileEntitySampleDrill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

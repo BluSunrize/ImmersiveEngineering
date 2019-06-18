@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -31,7 +31,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Arrays;
 import java.util.List;
 
-public class TileRenderTurret extends TileEntitySpecialRenderer<TileEntityTurret>
+public class TileRenderTurret extends TileEntityRenderer<TileEntityTurret>
 {
 	@Override
 	public void render(TileEntityTurret tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

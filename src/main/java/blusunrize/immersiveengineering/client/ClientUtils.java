@@ -30,13 +30,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.ModelBox;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -48,7 +49,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Timer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
@@ -61,6 +61,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Quat4d;
 import java.util.*;
 import java.util.function.Function;
@@ -71,27 +72,6 @@ public class ClientUtils
 	static HashMap<String, ResourceLocation> resourceMap = new HashMap<String, ResourceLocation>();
 	public static TextureAtlasSprite[] destroyBlockIcons = new TextureAtlasSprite[10];
 
-	//
-	//	// MOD SPECIFIC METHODS
-	//	public static void renderAttachedConnections(TileEntity tile)
-	//	{
-	//		if(tile.getworld()!=null && tile instanceof IImmersiveConnectable)
-	//		{
-	//			Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(tile.getworld(), Utils.toCC(tile));
-	//			if(outputs!=null)
-	//			{
-	//				Iterator<ImmersiveNetHandler.Connection> itCon = outputs.iterator();
-	//				while(itCon.hasNext())
-	//				{
-	//					ImmersiveNetHandler.Connection con = itCon.next();
-	//					TileEntity tileEnd = tile.getworld().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
-	//					if(tileEnd instanceof IImmersiveConnectable)
-	//						drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getworld()), con.cableType.getIcon(con));
-	//				}
-	//			}
-	//		}
-	//	}
-	//
 	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite)
 	{
 		if(connection==null||start==null||end==null)
@@ -298,24 +278,17 @@ public class ClientUtils
 
 	public static TextureAtlasSprite getSprite(ResourceLocation rl)
 	{
-		return mc().getTextureMapBlocks().getAtlasSprite(rl.toString());
+		return mc().getTextureMap().getSprite(rl);
 	}
 
-	//	public static WavefrontObject getModel(String path)
-	//	{
-	//		ResourceLocation rl = resourceMap.containsKey(path) ? resourceMap.get(path) : new ResourceLocation(path);
-	//		if(!resourceMap.containsKey(path))
-	//			resourceMap.put(path, rl);
-	//		return (WavefrontObject)AdvancedModelLoader.loadModel(rl);
-	//	}
 	public static FontRenderer font()
 	{
 		return mc().fontRenderer;
 	}
 
-	public static Timer timer()
+	public static float partialTicks()
 	{
-		return mc().timer;
+		return mc().getRenderPartialTicks();
 	}
 
 	public enum TimestampFormat
@@ -367,59 +340,6 @@ public class ClientUtils
 		return s;
 	}
 
-	//	public static String getResourceNameForItemStack(ItemStack stack)
-	//	{
-	//		if(stack!=null)
-	//		{
-	//			IIcon ic = null;
-	//			Block b = Block.getBlockFromItem(stack.getItem());
-	//			if(b!=null&&b!=Blocks.air)
-	//				ic = b.getIcon(2, stack.getItemDamage());
-	//			else
-	//				ic = stack.getIconIndex();
-	//			if(ic!=null)
-	//			{
-	//				String name = ic.getIconName();
-	//				String resource = "";
-	//				String icon = "";
-	//				if(name.indexOf(":")>0)
-	//				{
-	//					String[] split = name.split(":",2);
-	//					resource = split[0]+":";
-	//					icon = split[1];
-	//				}
-	//				else
-	//					icon = name;
-	//				return resource + "textures/" + (stack.getItemSpriteNumber()==0?"blocks":"items") + "/" + icon+ ".png";
-	//			}
-	//		}
-	//		return "";
-	//	}
-
-	static int[] chatColours = {
-			0x000000,//BLACK
-			0x0000AA,//DARK_BLUE
-			0x00AA00,//DARK_GREEN
-			0x00AAAA,//DARK_AQUA
-			0xAA0000,//DARK_RED
-			0xAA00AA,//DARK_PURPLE
-			0xFFAA00,//GOLD
-			0xAAAAAA,//GRAY
-			0x555555,//DARK_GRAY
-			0x5555FF,//BLUE
-			0x55FF55,//GREEN
-			0x55FFFF,//AQUA
-			0xFF5555,//RED
-			0xFF55FF,//LIGHT_PURPLE
-			0xFFFF55,//YELLOW
-			0xFFFFFF//WHITE
-	};
-
-	public static int getFormattingColour(TextFormatting color)
-	{
-		return color.ordinal() < 16?chatColours[color.ordinal()]: 0;
-	}
-
 	public static int getDarkenedTextColour(int colour)
 	{
 		int r = (colour >> 16&255)/4;
@@ -432,7 +352,7 @@ public class ClientUtils
 	{
 		IETileSound sound = new IETileSound(soundEvent, volume, pitch, repeat, delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
 //		sound.evaluateVolume();
-		ClientUtils.mc().getSoundHandler().playSound(sound);
+		ClientUtils.mc().getSoundHandler().play(sound);
 		return sound;
 	}
 
@@ -447,7 +367,7 @@ public class ClientUtils
 				int toY = oldRenderers[i].textureOffsetY;
 				newRenderers[i].setTextureOffset(toX, toY);
 				newRenderers[i].mirror = oldRenderers[i].mirror;
-				ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
+				ArrayList<ModelBox> newCubes = new ArrayList<>();
 				for(ModelBox cube : oldRenderers[i].cubeList)
 					newCubes.add(new ModelBox(newRenderers[i], toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
 				newRenderers[i].cubeList = newCubes;
@@ -515,532 +435,25 @@ public class ClientUtils
 		}
 	}
 
-	//	public static void handleStaticTileRenderer(TileEntity tile)
-	//	{
-	//		handleStaticTileRenderer(tile,true);
-	//	}
-	//	public static void handleStaticTileRenderer(TileEntity tile, boolean translate)
-	//	{
-	//		TileEntitySpecialRenderer tesr = TileEntityRendererDispatcher.instance.getSpecialRenderer(tile);
-	//		if(tesr instanceof TileRenderIE)
-	//		{
-	//			Matrix4 matrixT = new Matrix4();
-	//			if(translate)
-	//				matrixT.translate(tile.xCoord, tile.yCoord, tile.zCoord);
-	//			((TileRenderIE)tesr).renderStatic(tile, Tessellator.instance, matrixT, new Matrix4());
-	//		}
-	//	}
-	//
-	//	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts) {
-	//		renderStaticWavefrontModel(tile, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, 1, 1, 1, renderedParts);
-	//	}
-	//
-	//	/**
-	//	 * A big "Thank you!" to AtomicBlom and Rorax for helping me figure this one out =P
-	//	 */
-	//	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
-	//	{
-	//		renderStaticWavefrontModel(tile.getworld(),tile.xCoord,tile.yCoord,tile.zCoord, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
-	//	}
-	//	public static void renderStaticWavefrontModel(IBlockAccess world, int x, int y, int z, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
-	//	{
-	//		if(world!=null)
-	//		{
-	//			int lb = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
-	//			int lb_j = lb % 65536;
-	//			int lb_k = lb / 65536;
-	//			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
-	//		}
-	//		Vertex vertexCopy = new Vertex(0,0,0);
-	//		Vertex normalCopy = new Vertex(0,0,0);
-	//
-	//		for(GroupObject groupObject : model.groupObjects)
-	//		{
-	//			boolean render = false;
-	//			if(renderedParts==null || renderedParts.length<1)
-	//				render = true;
-	//			else
-	//				for(String s : renderedParts)
-	//					if(groupObject.name.equalsIgnoreCase(s))
-	//						render = true;
-	//			if(render)
-	//				for(Face face : groupObject.faces)
-	//				{
-	//					if(face.faceNormal == null)
-	//						face.faceNormal = face.calculateFaceNormal();
-	//
-	//					normalCopy.x = face.faceNormal.x;
-	//					normalCopy.y = face.faceNormal.y;
-	//					normalCopy.z = face.faceNormal.z;
-	//					rotationMatrix.apply(normalCopy);
-	//					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
-	//					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
-	//
-	//					BlockLightingInfo faceLight = null;
-	//					if(offsetLighting==0 && world!=null)
-	//						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, standardBlockAABB);
-	//					else if(offsetLighting==1 && world!=null)
-	//					{
-	//						double faceMinX = face.vertices[0].x;
-	//						double faceMinY = face.vertices[0].y;
-	//						double faceMinZ = face.vertices[0].z;
-	//						double faceMaxX = face.vertices[0].x;
-	//						double faceMaxY = face.vertices[0].y;
-	//						double faceMaxZ = face.vertices[0].z;
-	//						for(int i=1; i<face.vertices.length; ++i)
-	//						{
-	//							faceMinX = Math.min(faceMinX, face.vertices[i].x);
-	//							faceMinY = Math.min(faceMinY, face.vertices[i].y);
-	//							faceMinZ = Math.min(faceMinZ, face.vertices[i].z);
-	//							faceMaxX = Math.max(faceMaxX, face.vertices[i].x);
-	//							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
-	//							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
-	//						}
-	//						faceLight = calculateBlockLighting(side, world, world.getBlock(x, y, z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
-	//					}
-	//
-	//					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
-	//
-	//					for(int i=0; i<face.vertices.length; ++i)
-	//					{
-	//						int target = !invertFaces?i:(face.vertices.length-1-i);
-	//						int corner = (int)(target/(float)face.vertices.length*4);
-	//						Vertex vertex = face.vertices[target];
-	//						vertexCopy.x = vertex.x;
-	//						vertexCopy.y = vertex.y;
-	//						vertexCopy.z = vertex.z;
-	//						rotationMatrix.apply(vertexCopy);
-	//						translationMatrix.apply(vertexCopy);
-	//						if(faceLight!=null)
-	//						{
-	//							tes.setBrightness(corner==0?faceLight.brightnessTopLeft: corner==1?faceLight.brightnessBottomLeft: corner==2?faceLight.brightnessBottomRight: faceLight.brightnessTopRight);
-	//							float r = corner==0?faceLight.colorRedTopLeft: corner==1?faceLight.colorRedBottomLeft: corner==2?faceLight.colorRedBottomRight: faceLight.colorRedTopRight;
-	//							float g = corner==0?faceLight.colorGreenTopLeft: corner==1?faceLight.colorGreenBottomLeft: corner==2?faceLight.colorGreenBottomRight: faceLight.colorGreenTopRight;
-	//							float b = corner==0?faceLight.colorBlueTopLeft: corner==1?faceLight.colorBlueBottomLeft: corner==2?faceLight.colorBlueBottomRight: faceLight.colorBlueTopRight;
-	//							tes.setColorOpaque_F(r, g, b);
-	//						}
-	//						else if(world!=null)
-	//						{
-	//							tes.setBrightness(0xb000b0);
-	//							tes.setColorOpaque_F(colR,colG,colB);
-	//						}
-	//
-	//						if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
-	//						{
-	//							TextureCoordinate textureCoordinate = face.textureCoordinates[target];
-	//							tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
-	//						}
-	//						else
-	//						{
-	//							tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
-	//						}
-	//					}
-	//				}
-	//		}
-	//	}
-	//	public static void renderStaticWavefrontModelWithIcon(TileEntity tile, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
-	//	{
-	//		renderStaticWavefrontModelWithIcon(tile.getworld(),tile.xCoord,tile.yCoord,tile.zCoord, model, icon, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
-	//	}
-	//	public static void renderStaticWavefrontModelWithIcon(IBlockAccess world, int x, int y, int z, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
-	//	{
-	//		if(icon==null)
-	//			return;
-	//		if(world!=null)
-	//		{
-	//			int lb = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
-	//			int lb_j = lb % 65536;
-	//			int lb_k = lb / 65536;
-	//			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
-	//		}
-	//		Vertex normalCopy = new Vertex(0,0,0);
-	//
-	//		float minU = icon.getInterpolatedU(0);
-	//		float sizeU = icon.getInterpolatedU(16) - minU;
-	//		float minV = icon.getInterpolatedV(0);
-	//		float sizeV = icon.getInterpolatedV(16) - minV;
-	//		float baseOffsetU = (16f/icon.getIconWidth())*.0005F;
-	//		float baseOffsetV = (16f/icon.getIconHeight())*.0005F;
-	//
-	//		for(GroupObject groupObject : model.groupObjects)
-	//		{
-	//			boolean render = false;
-	//			if(renderedParts==null || renderedParts.length<1)
-	//				render = true;
-	//			else
-	//				for(String s : renderedParts)
-	//					if(groupObject.name.equalsIgnoreCase(s))
-	//						render = true;
-	//			if(render)
-	//				for(Face face : groupObject.faces)
-	//				{
-	//					if(face.faceNormal == null)
-	//						face.faceNormal = face.calculateFaceNormal();
-	//
-	//					normalCopy.x = face.faceNormal.x;
-	//					normalCopy.y = face.faceNormal.y;
-	//					normalCopy.z = face.faceNormal.z;
-	//					rotationMatrix.apply(normalCopy);
-	//					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
-	//					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
-	//
-	//					BlockLightingInfo faceLight = null;
-	//					if(offsetLighting==0 && world!=null)
-	//						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, standardBlockAABB);
-	//					else if(offsetLighting==1 && world!=null)
-	//					{
-	//						double faceMinX = face.vertices[0].x;
-	//						double faceMinY = face.vertices[0].y;
-	//						double faceMinZ = face.vertices[0].z;
-	//						double faceMaxX = face.vertices[0].x;
-	//						double faceMaxY = face.vertices[0].y;
-	//						double faceMaxZ = face.vertices[0].z;
-	//						for(int i=1; i<face.vertices.length; ++i)
-	//						{
-	//							faceMinX = Math.min(faceMinX, face.vertices[i].x);
-	//							faceMinY = Math.min(faceMinY, face.vertices[i].y);
-	//							faceMinZ = Math.min(faceMinZ, face.vertices[i].z);
-	//							faceMaxX = Math.max(faceMaxX, face.vertices[i].x);
-	//							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
-	//							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
-	//						}
-	//						faceLight = calculateBlockLighting(side, world, world.getBlock(x, y, z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
-	//					}
-	//
-	//					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
-	//
-	//					float averageU = 0F;
-	//					float averageV = 0F;
-	//					if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
-	//					{
-	//						for(int i=0; i<face.textureCoordinates.length; ++i)
-	//						{
-	//							averageU += face.textureCoordinates[i].u;
-	//							averageV += face.textureCoordinates[i].v;
-	//						}
-	//						averageU = averageU / face.textureCoordinates.length;
-	//						averageV = averageV / face.textureCoordinates.length;
-	//					}
-	//
-	//					TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
-	//					for(int v=0; v<face.vertices.length; ++v)
-	//					{
-	//						float offsetU, offsetV;
-	//						offsetU = baseOffsetU;
-	//						offsetV = baseOffsetV;
-	//						if (face.textureCoordinates[v].u > averageU)
-	//							offsetU = -offsetU;
-	//						if (face.textureCoordinates[v].v > averageV)
-	//							offsetV = -offsetV;
-	//
-	//						oldUVs[v] = face.textureCoordinates[v];
-	//						TextureCoordinate textureCoordinate = face.textureCoordinates[v];
-	//						face.textureCoordinates[v] = new TextureCoordinate(
-	//								minU + sizeU * (textureCoordinate.u+offsetU),
-	//								minV + sizeV * (textureCoordinate.v+offsetV)
-	//								);
-	//					}
-	//					addFaceToWorldRender(face, tes, faceLight, translationMatrix, rotationMatrix, invertFaces, colR, colG, colB);
-	//					for(int v=0; v<face.vertices.length; ++v)
-	//						face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
-	//				}
-	//		}
-	//	}
-	//	public static void renderWavefrontModelWithModifications(WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean flipTextureU, String... renderedParts)
-	//	{
-	//		Vertex vertexCopy = new Vertex(0,0,0);
-	//		Vertex normalCopy = new Vertex(0,0,0);
-	//
-	//		for(GroupObject groupObject : model.groupObjects)
-	//		{
-	//			boolean render = false;
-	//			if(renderedParts==null || renderedParts.length<1)
-	//				render = true;
-	//			else
-	//				for(String s : renderedParts)
-	//					if(groupObject.name.equalsIgnoreCase(s))
-	//						render = true;
-	//			if(render)
-	//				for(Face face : groupObject.faces)
-	//				{
-	//					if(face.faceNormal == null)
-	//						face.faceNormal = face.calculateFaceNormal();
-	//
-	//					normalCopy.x = face.faceNormal.x;
-	//					normalCopy.y = face.faceNormal.y;
-	//					normalCopy.z = face.faceNormal.z;
-	//					rotationMatrix.apply(normalCopy);
-	//
-	//
-	//					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
-	//					for(int i=0; i<face.vertices.length; ++i)
-	//					{
-	//						Vertex vertex = face.vertices[i];
-	//						vertexCopy.x = vertex.x;
-	//						vertexCopy.y = vertex.y;
-	//						vertexCopy.z = vertex.z;
-	//						rotationMatrix.apply(vertexCopy);
-	//						translationMatrix.apply(vertexCopy);
-	//
-	//						if((face.textureCoordinates != null) && (face.textureCoordinates.length > 0))
-	//						{
-	//							TextureCoordinate textureCoordinate = face.textureCoordinates[flipTextureU?(face.textureCoordinates.length-1)-i: i];
-	//							tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
-	//						}
-	//						else
-	//							tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
-	//					}
-	//				}
-	//		}
-	//	}
-	//
-	//	public static void renderWavefrontWithIconUVs(WavefrontObject model, IIcon icon, String... parts)
-	//	{
-	//		renderWavefrontWithIconUVs(model, GL11.GL_QUADS, icon, parts);
-	//		renderWavefrontWithIconUVs(model, GL11.GL_TRIANGLES, icon, parts);
-	//	}
-	//
-	//	public static void renderWavefrontWithIconUVs(WavefrontObject model, int glDrawingMode, IIcon icon, String... parts)
-	//	{
-	//		if(icon==null)
-	//			return;
-	//		List<String> renderParts = Arrays.asList(parts);
-	//		tes().startDrawing(glDrawingMode);
-	//		for(GroupObject go : model.groupObjects)
-	//			if(go.glDrawingMode==glDrawingMode)
-	//				if(renderParts.contains(go.name))
-	//					tessellateWavefrontGroupObjectWithIconUVs(go, icon);
-	//		tes().draw();
-	//	}
-	//	public static void tessellateWavefrontGroupObjectWithIconUVs(GroupObject object, IIcon icon)
-	//	{
-	//		if(icon==null)
-	//			return;
-	//
-	//		float minU = icon.getInterpolatedU(0);
-	//		float sizeU = icon.getInterpolatedU(16) - minU;
-	//		float minV = icon.getInterpolatedV(0);
-	//		float sizeV = icon.getInterpolatedV(16) - minV;
-	//		float baseOffsetU = (16f/icon.getIconWidth())*.0005F;
-	//		float baseOffsetV = (16f/icon.getIconHeight())*.0005F;
-	//		for(Face face : object.faces)
-	//		{
-	//			float averageU = 0F;
-	//			float averageV = 0F;
-	//			if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
-	//			{
-	//				for(int i=0; i<face.textureCoordinates.length; ++i)
-	//				{
-	//					averageU += face.textureCoordinates[i].u;
-	//					averageV += face.textureCoordinates[i].v;
-	//				}
-	//				averageU = averageU / face.textureCoordinates.length;
-	//				averageV = averageV / face.textureCoordinates.length;
-	//			}
-	//
-	//			TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
-	//			for(int v=0; v<face.vertices.length; ++v)
-	//			{
-	//				float offsetU, offsetV;
-	//				offsetU = baseOffsetU;
-	//				offsetV = baseOffsetV;
-	//				if (face.textureCoordinates[v].u > averageU)
-	//					offsetU = -offsetU;
-	//				if (face.textureCoordinates[v].v > averageV)
-	//					offsetV = -offsetV;
-	//
-	//				oldUVs[v] = face.textureCoordinates[v];
-	//				TextureCoordinate textureCoordinate = face.textureCoordinates[v];
-	//				face.textureCoordinates[v] = new TextureCoordinate(
-	//						minU + sizeU * (textureCoordinate.u+offsetU),
-	//						minV + sizeV * (textureCoordinate.v+offsetV)
-	//						);
-	//			}
-	//			face.addFaceForRender(ClientUtils.tes(),0);
-	//			for(int v=0; v<face.vertices.length; ++v)
-	//				face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
-	//		}
-	//	}
-	//
-	//	public static void addFaceToWorldRender(Face face, Tessellator tes, BlockLightingInfo light, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean invert, float colR, float colG, float colB)
-	//	{
-	//		Vertex vertexCopy = new Vertex(0,0,0);
-	//		for(int i=0; i<face.vertices.length; ++i)
-	//		{
-	//			int target = !invert?i:(face.vertices.length-1-i);
-	//			int corner = (int)(target/(float)face.vertices.length*4);
-	//			Vertex vertex = face.vertices[target];
-	//			vertexCopy.x = vertex.x;
-	//			vertexCopy.y = vertex.y;
-	//			vertexCopy.z = vertex.z;
-	//			rotationMatrix.apply(vertexCopy);
-	//			translationMatrix.apply(vertexCopy);
-	//			if(light!=null)
-	//			{
-	//				tes.setBrightness(corner==0?light.brightnessTopLeft: corner==1?light.brightnessBottomLeft: corner==2?light.brightnessBottomRight: light.brightnessTopRight);
-	//				float r = corner==0?light.colorRedTopLeft: corner==1?light.colorRedBottomLeft: corner==2?light.colorRedBottomRight: light.colorRedTopRight;
-	//				float g = corner==0?light.colorGreenTopLeft: corner==1?light.colorGreenBottomLeft: corner==2?light.colorGreenBottomRight: light.colorGreenTopRight;
-	//				float b = corner==0?light.colorBlueTopLeft: corner==1?light.colorBlueBottomLeft: corner==2?light.colorBlueBottomRight: light.colorBlueTopRight;
-	//				tes.setColorOpaque_F(r, g, b);
-	//			}
-	//			else
-	//			{
-	//				tes.setBrightness(0xb000b0);
-	//				tes.setColorOpaque_F(colR,colG,colB);
-	//			}
-	//
-	//			if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
-	//			{
-	//				TextureCoordinate textureCoordinate = face.textureCoordinates[target];
-	//				tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
-	//			}
-	//			else
-	//			{
-	//				tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
-	//			}
-	//		}
-	//	}
-	//
-	//
-	//	public static void renderItemIn2D(IIcon icon, double[] uv, int width, int height, float depth)
-	//	{
-	//		double uMin = icon.getInterpolatedU(uv[0]*16);
-	//		double uMax = icon.getInterpolatedU(uv[1]*16);
-	//		double vMin = icon.getInterpolatedV(uv[2]*16);
-	//		double vMax = icon.getInterpolatedV(uv[3]*16);
-	//
-	//		double w = width/16d/2;
-	//		double h = height/16d;
-	//		tes().startDrawingQuads();
-	//		tes().setNormal(0.0F, 0.0F, 1.0F);
-	//		tes().addVertexWithUV(-w, 0, 0.0D, uMin, vMax);
-	//		tes().addVertexWithUV( w, 0, 0.0D, uMax, vMax);
-	//		tes().addVertexWithUV( w, h, 0.0D, uMax, vMin);
-	//		tes().addVertexWithUV(-w, h, 0.0D, uMin, vMin);
-	//		tes().draw();
-	//		tes().startDrawingQuads();
-	//		tes().setNormal(0.0F, 0.0F, -1.0F);
-	//		tes().addVertexWithUV(-w, h, (0.0F - depth), uMin, vMin);
-	//		tes().addVertexWithUV( w, h, (0.0F - depth), uMax, vMin);
-	//		tes().addVertexWithUV( w, 0, (0.0F - depth), uMax, vMax);
-	//		tes().addVertexWithUV(-w, 0, (0.0F - depth), uMin, vMax);
-	//		tes().draw();
-	//		double f5 = 0.5F * (uMin - uMax) / (float)width;
-	//		double f6 = 0.5F * (vMax - vMin) / (float)height;
-	//		int k;
-	//		double f7;
-	//		double f8;
-	//		double f9;
-	//
-	//		tes().startDrawingQuads();
-	//		tes().setNormal(0.0F, 1.0F, 0.0F);
-	//		for(k=0; k<width; k++)
-	//		{
-	//			f7 = k/(double)width;
-	//			f8 = uMin + (uMax - uMin) * f7 - f5;
-	//			f9 = k/(double)icon.getIconWidth();
-	//			tes().addVertexWithUV(-w+f9, 0, -depth, f8, vMax);
-	//			tes().addVertexWithUV(-w+f9, 0, 0, f8, vMax);
-	//			tes().addVertexWithUV(-w+f9, h, 0, f8, vMin);
-	//			tes().addVertexWithUV(-w+f9, h, -depth, f8, vMin);
-	//		}
-	//		tes().draw();
-	//
-	//		tes().startDrawingQuads();
-	//		tes().setNormal(1.0F, 0.0F, 0.0F);
-	//		for(k=0; k<width; k++)
-	//		{
-	//			f7 = k/(double)width;
-	//			f8 = uMin + (uMax - uMin) * f7 - f5;
-	//			f9 = (k+1)/(double)icon.getIconWidth();
-	//			tes().addVertexWithUV(-w+f9, h, -depth, f8, vMin);
-	//			tes().addVertexWithUV(-w+f9, h, 0, f8, vMin);
-	//			tes().addVertexWithUV(-w+f9, 0, 0, f8, vMax);
-	//			tes().addVertexWithUV(-w+f9, 0, -depth, f8, vMax);
-	//		}
-	//		tes().draw();
-	//
-	//		tes().startDrawingQuads();
-	//		tes().setNormal(0.0F, 1.0F, 0.0F);
-	//		for (k = 0; k < height; ++k)
-	//		{
-	//			f7 = k / (double)height;
-	//			f8 = vMax + (vMin - vMax) * f7 - f6;
-	//			f9 = (k+1)/(double)icon.getIconHeight();
-	//			tes().addVertexWithUV(-w, f9, 0, uMin, f8);
-	//			tes().addVertexWithUV( w, f9, 0, uMax, f8);
-	//			tes().addVertexWithUV( w, f9, -depth, uMax, f8);
-	//			tes().addVertexWithUV(-w, f9,- depth, uMin, f8);
-	//		}
-	//		tes().draw();
-	//
-	//		tes().startDrawingQuads();
-	//		tes().setNormal(0.0F, -1.0F, 0.0F);
-	//		for (k = 0; k < height; ++k)
-	//		{
-	//			f7 = k / (double)height;
-	//			f8 = vMax + (vMin - vMax) * f7 - f6;
-	//			f9 = k/(double)icon.getIconHeight();
-	//			tes().addVertexWithUV( w, f9, 0, uMax, f8);
-	//			tes().addVertexWithUV(-w, f9, 0, uMin, f8);
-	//			tes().addVertexWithUV(-w, f9, -depth, uMin, f8);
-	//			tes().addVertexWithUV( w, f9, -depth, uMax, f8);
-	//		}
-	//		tes().draw();
-	//	}
-	//
-	//	public static void drawInventoryBlock(Block block, int metadata, RenderBlocks renderer)
-	//	{
-	//		Tessellator tes = tes();
-	//		GL11.glPushMatrix();
-	//		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-	//		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-	//		tes.startDrawingQuads();
-	//		tes.setNormal(0.0F, -1.0F, 0.0F);
-	//		renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 0, metadata));
-	//		tes.draw();
-	//		tes.startDrawingQuads();
-	//		tes.setNormal(0.0F, 1.0F, 0.0F);
-	//		renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 1, metadata));
-	//		tes.draw();
-	//		tes.startDrawingQuads();
-	//		tes.setNormal(0.0F, 0.0F, -1.0F);
-	//		renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 2, metadata));
-	//		tes.draw();
-	//		tes.startDrawingQuads();
-	//		tes.setNormal(0.0F, 0.0F, 1.0F);
-	//		renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 3, metadata));
-	//		tes.draw();
-	//		tes.startDrawingQuads();
-	//		tes.setNormal(-1.0F, 0.0F, 0.0F);
-	//		renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 4, metadata));
-	//		tes.draw();
-	//		tes.startDrawingQuads();
-	//		tes.setNormal(1.0F, 0.0F, 0.0F);
-	//		renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderer.overrideBlockTexture!=null?renderer.overrideBlockTexture: renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
-	//		tes.draw();
-	//		GlStateManager.popMatrix();
-	//	}
-
 	//Cheers boni =P
 	public static void drawBlockDamageTexture(Tessellator tessellatorIn, BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
 		double d0 = entityIn.lastTickPosX+(entityIn.posX-entityIn.lastTickPosX)*(double)partialTicks;
 		double d1 = entityIn.lastTickPosY+(entityIn.posY-entityIn.lastTickPosY)*(double)partialTicks;
 		double d2 = entityIn.lastTickPosZ+(entityIn.posZ-entityIn.lastTickPosZ)*(double)partialTicks;
-		TextureManager renderEngine = Minecraft.getInstance().renderEngine;
+		TextureManager renderEngine = Minecraft.getInstance().textureManager;
 		int progress = (int)(Minecraft.getInstance().playerController.curBlockDamageMP*10f)-1; // 0-10
 		if(progress < 0)
 			return;
 		renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		//preRenderDamagedBlocks BEGIN
-		GlStateManager.tryBlendFuncSeparate(774, 768, 1, 0);
+		GlStateManager.blendFuncSeparate(774, 768, 1, 0);
 		GlStateManager.enableBlend();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
-		GlStateManager.doPolygonOffset(-3.0F, -3.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
+		GlStateManager.polygonOffset(-3.0F, -3.0F);
 		GlStateManager.enablePolygonOffset();
 		GlStateManager.alphaFunc(516, 0.1F);
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		GlStateManager.pushMatrix();
 		//preRenderDamagedBlocks END
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
@@ -1048,9 +461,6 @@ public class ClientUtils
 		//		worldRendererIn.markDirty();
 		for(BlockPos blockpos : blocks)
 		{
-			double d3 = (double)blockpos.getX()-d0;
-			double d4 = (double)blockpos.getY()-d1;
-			double d5 = (double)blockpos.getZ()-d2;
 			Block block = world.getBlockState(blockpos).getBlock();
 			TileEntity te = world.getTileEntity(blockpos);
 			boolean hasBreak = block instanceof BlockChest||block instanceof BlockEnderChest
@@ -1070,10 +480,10 @@ public class ClientUtils
 		tessellatorIn.draw();
 		worldRendererIn.setTranslation(0.0D, 0.0D, 0.0D);
 		// postRenderDamagedBlocks BEGIN
-		GlStateManager.disableAlpha();
-		GlStateManager.doPolygonOffset(0.0F, 0.0F);
+		GlStateManager.disableAlphaTest();
+		GlStateManager.polygonOffset(0.0F, 0.0F);
 		GlStateManager.disablePolygonOffset();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		GlStateManager.depthMask(true);
 		GlStateManager.popMatrix();
 		// postRenderDamagedBlocks END
@@ -1083,8 +493,8 @@ public class ClientUtils
 	{
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.disableAlphaTest();
+		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldrenderer = tessellator.getBuffer();
@@ -1096,36 +506,36 @@ public class ClientUtils
 		tessellator.draw();
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		GlStateManager.enableTexture2D();
 	}
 
 	public static void drawGradientRect(int x0, int y0, int x1, int y1, int colour0, int colour1)
 	{
-		float f = (float)(colour0 >> 24&255)/255.0F;
-		float f1 = (float)(colour0 >> 16&255)/255.0F;
-		float f2 = (float)(colour0 >> 8&255)/255.0F;
-		float f3 = (float)(colour0&255)/255.0F;
-		float f4 = (float)(colour1 >> 24&255)/255.0F;
-		float f5 = (float)(colour1 >> 16&255)/255.0F;
-		float f6 = (float)(colour1 >> 8&255)/255.0F;
-		float f7 = (float)(colour1&255)/255.0F;
+		float alpha0 = (colour0 >> 24&255)/255.0F;
+		float blue0 = (colour0 >> 16&255)/255.0F;
+		float green0 = (colour0 >> 8&255)/255.0F;
+		float red0 = (colour0&255)/255.0F;
+		float alpha1 = (colour1 >> 24&255)/255.0F;
+		float blue1 = (colour1 >> 16&255)/255.0F;
+		float green1 = (colour1 >> 8&255)/255.0F;
+		float red1 = (colour1&255)/255.0F;
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.disableAlphaTest();
+		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-		worldrenderer.pos(x1, y0, 0).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos(x0, y0, 0).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos(x0, y1, 0).color(f5, f6, f7, f4).endVertex();
-		worldrenderer.pos(x1, y1, 0).color(f5, f6, f7, f4).endVertex();
+		worldrenderer.pos(x1, y0, 0).color(blue0, green0, red0, alpha0).endVertex();
+		worldrenderer.pos(x0, y0, 0).color(blue0, green0, red0, alpha0).endVertex();
+		worldrenderer.pos(x0, y1, 0).color(blue1, green1, red1, alpha1).endVertex();
+		worldrenderer.pos(x1, y1, 0).color(blue1, green1, red1, alpha1).endVertex();
 		tessellator.draw();
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		GlStateManager.enableTexture2D();
 	}
 
@@ -1150,16 +560,13 @@ public class ClientUtils
 	public static void drawRepeatedFluidSprite(FluidStack fluid, float x, float y, float w, float h)
 	{
 		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE.toString());
-		TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(fluid.getFluid().getStill(fluid).toString());
-		if(sprite!=null)
-		{
-			int col = fluid.getFluid().getColor(fluid);
-			GlStateManager.color((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f, 1);
-			int iW = sprite.getIconWidth();
-			int iH = sprite.getIconHeight();
-			if(iW > 0&&iH > 0)
-				drawRepeatedSprite(x, y, w, h, iW, iH, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
-		}
+		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getStill(fluid));
+		int col = fluid.getFluid().getColor(fluid);
+		GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
+		int iW = sprite.getWidth();
+		int iH = sprite.getHeight();
+		if(iW > 0&&iH > 0)
+			drawRepeatedSprite(x, y, w, h, iW, iH, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 	}
 
 	public static void drawRepeatedSprite(float x, float y, float w, float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
@@ -1376,7 +783,7 @@ public class ClientUtils
 		return quat;
 	}
 
-	private static final Vector3f fadingOffset = new Vector3f(.0001F, .0001F, .0001F);
+	private static final Vec3d fadingOffset = new Vec3d(.0001F, .0001F, .0001F);
 	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
 	private static float[] alphaNoFading = {1, 1, 1, 1};
 
@@ -1388,10 +795,10 @@ public class ClientUtils
 		};
 		if(data==null)
 			return ret;
-		Vector3f dir = new Vector3f();
-		Vector3f cross = new Vector3f();
+		Vec3d dir = Vec3d.ZERO;
+		Vec3d cross = Vec3d.ZERO;
 
-		Vector3f up = new Vector3f(0, 1, 0);
+		Vec3d up = new Vec3d(0, 1, 0);
 		for(Connection.RenderData connData : data)
 		{
 			int color = connData.color;
@@ -1405,50 +812,45 @@ public class ClientUtils
 				boolean fading = i==connData.pointsToRender-1&&connData.pointsToRender <= RenderData.POINTS_PER_WIRE;
 				List<BakedQuad> curr = ret[fading?1: 0];
 				int j = i-1;
-				Vector3f current = asVec3f(connData.getPoint(i));
-				Vector3f previous = asVec3f(connData.getPoint(j));
+				Vec3d current = connData.getPoint(i);
+				Vec3d previous = connData.getPoint(j);
 				if(fading)
 				{
-					Vector3f.add(current, fadingOffset, current);
-					Vector3f.add(previous, fadingOffset, previous);
+					current = current.add(fadingOffset);
+					previous = previous.add(fadingOffset);
 				}
 				boolean vertical = current.x==previous.x&&current.z==previous.z;
 				if(!vertical)
 				{
-					Vector3f.sub(current, previous, dir);
-					Vector3f.cross(up, dir, cross);
+					dir = current.subtract(previous);
+					cross = up.crossProduct(dir);
 					cross.scale(radius/cross.length());
 				}
 				else
-					cross.set(radius, 0, 0);
-				Vector3f[] vertices = {Vector3f.add(current, cross, null),
-						Vector3f.sub(current, cross, null),
-						Vector3f.sub(previous, cross, null),
-						Vector3f.add(previous, cross, null)};
+					cross = new Vec3d(radius, 0, 0);
+				Vec3d[] vertices = {current.add(cross),
+						current.subtract(cross),
+						previous.subtract(cross),
+						previous.add(cross)};
 				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
 				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 
 				if(!vertical)
 				{
-					Vector3f.cross(cross, dir, cross);
+					cross = dir.crossProduct(cross);
 					cross.scale(radius/cross.length());
 				}
 				else
-					cross.set(0, 0, radius);
-				vertices = new Vector3f[]{Vector3f.add(current, cross, null),
-						Vector3f.sub(current, cross, null),
-						Vector3f.sub(previous, cross, null),
-						Vector3f.add(previous, cross, null)};
+					cross = new Vec3d(0, 0, radius);
+				vertices = new Vec3d[]{current.add(cross),
+						current.subtract(cross),
+						previous.subtract(cross),
+						previous.add(cross)};
 				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
 				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 			}
 		}
 		return ret;
-	}
-
-	private static Vector3f asVec3f(Vec3d point)
-	{
-		return new Vector3f((float)point.x, (float)point.y, (float)point.z);
 	}
 
 	public static int getVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
@@ -1472,74 +874,86 @@ public class ClientUtils
 			return greater?totalPoints+1: 0;
 	}
 
-	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,
-										int v, int color)
-	{
-		int i = storeIndex*7;
-		faceData[i] = Float.floatToRawIntBits(position.x);
-		faceData[i+1] = Float.floatToRawIntBits(position.y);
-		faceData[i+2] = Float.floatToRawIntBits(position.z);
-		faceData[i+3] = invertRgb(color);
-		faceData[i+4] = Float.floatToRawIntBits(t.getInterpolatedU(u));
-		faceData[i+5] = Float.floatToRawIntBits(t.getInterpolatedV(v));
-	}
-
-	public static Vector3f[] applyMatrixToVertices(Matrix4 matrix, Vector3f... vertices)
+	public static Vec3d[] applyMatrixToVertices(Matrix4 matrix, Vec3d... vertices)
 	{
 		if(matrix==null)
 			return vertices;
-		Vector3f[] ret = new Vector3f[vertices.length];
+		Vec3d[] ret = new Vec3d[vertices.length];
 		for(int i = 0; i < ret.length; i++)
 			ret[i] = matrix.apply(vertices[i]);
 		return ret;
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		return createBakedBox(from, to, matrix, EnumFacing.NORTH, textureGetter, colour);
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, EnumFacing facing, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, EnumFacing facing, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		return createBakedBox(from, to, matrix, facing, vertices -> vertices, textureGetter, colour);
 	}
 
 	@Nonnull
-	public static Set<BakedQuad> createBakedBox(Vector3f from, Vector3f to, Matrix4 matrix, EnumFacing facing, Function<Vector3f[], Vector3f[]> vertexTransformer, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, EnumFacing facing, Function<Vec3d[], Vec3d[]> vertexTransformer, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		HashSet<BakedQuad> quads = new HashSet<>();
 		if(vertexTransformer==null)
 			vertexTransformer = v -> v;
 
-		Vector3f[] vertices = {new Vector3f(from.x, from.y, from.z), new Vector3f(from.x, from.y, to.z), new Vector3f(to.x, from.y, to.z), new Vector3f(to.x, from.y, from.z)};
+		Vec3d[] vertices = {
+				new Vec3d(from.x, from.y, from.z),
+				new Vec3d(from.x, from.y, to.z),
+				new Vec3d(to.x, from.y, to.z),
+				new Vec3d(to.x, from.y, from.z)
+		};
 		TextureAtlasSprite sprite = textureGetter.apply(EnumFacing.DOWN);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.DOWN, facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
 
-		for(Vector3f v : vertices)
-			v.setY(to.y);
+		for(int i = 0; i < vertices.length; i++)
+		{
+			Vec3d v = vertices[i];
+			vertices[i] = new Vec3d(v.x, to.y, v.z);
+		}
 		sprite = textureGetter.apply(EnumFacing.UP);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
 
-		vertices = new Vector3f[]{new Vector3f(to.x, to.y, from.z), new Vector3f(to.x, from.y, from.z), new Vector3f(from.x, from.y, from.z), new Vector3f(from.x, to.y, from.z)};
+		vertices = new Vec3d[]{
+				new Vec3d(to.x, to.y, from.z),
+				new Vec3d(to.x, from.y, from.z),
+				new Vec3d(from.x, from.y, from.z),
+				new Vec3d(from.x, to.y, from.z)
+		};
 		sprite = textureGetter.apply(EnumFacing.NORTH);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
 
-		for(Vector3f v : vertices)
-			v.setZ(to.z);
+		for(int i = 0; i < vertices.length; i++)
+		{
+			Vec3d v = vertices[i];
+			vertices[i] = new Vec3d(v.x, v.y, to.z);
+		}
 		sprite = textureGetter.apply(EnumFacing.SOUTH);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
 
-		vertices = new Vector3f[]{new Vector3f(from.x, to.y, to.z), new Vector3f(from.x, from.y, to.z), new Vector3f(from.x, from.y, from.z), new Vector3f(from.x, to.y, from.z)};
+		vertices = new Vec3d[]{
+				new Vec3d(from.x, to.y, to.z),
+				new Vec3d(from.x, from.y, to.z),
+				new Vec3d(from.x, from.y, from.z),
+				new Vec3d(from.x, to.y, from.z)
+		};
 		sprite = textureGetter.apply(EnumFacing.WEST);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
 
-		for(Vector3f v : vertices)
-			v.setX(to.x);
+		for(int i = 0; i < vertices.length; i++)
+		{
+			Vec3d v = vertices[i];
+			vertices[i] = new Vec3d(to.x, v.y, v.z);
+		}
 		sprite = textureGetter.apply(EnumFacing.EAST);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
@@ -1547,27 +961,27 @@ public class ClientUtils
 		return quads;
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha);
 	}
 
-	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
+	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha, true, base);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alphaNoFading);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alpha, false, null);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 		builder.setQuadOrientation(facing);
@@ -1589,13 +1003,13 @@ public class ClientUtils
 		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, format, basePos): tmp;
 	}
 
-	public static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
+	public static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vec3d pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
 		for(int e = 0; e < format.getElementCount(); e++)
 			switch(format.getElement(e).getUsage())
 			{
 				case POSITION:
-					builder.put(e, pos.getX(), pos.getY(), pos.getZ(), 0);
+					builder.put(e, (float)pos.x, (float)pos.y, (float)pos.z, 0);
 					break;
 				case COLOR:
 					float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
@@ -1603,7 +1017,7 @@ public class ClientUtils
 					break;
 				case UV:
 					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = Minecraft.getInstance().getTextureMapBlocks().getMissingSprite();
+						sprite = MissingTextureSprite.getSprite();
 					builder.put(e,
 							sprite.getInterpolatedU(u),
 							sprite.getInterpolatedV((v)),
@@ -1651,32 +1065,23 @@ public class ClientUtils
 
 	public static ResourceLocation getSideTexture(@Nonnull ItemStack stack, EnumFacing side)
 	{
-		IBakedModel model = mc().getRenderItem().getItemModelWithOverrides(stack, null, null);
-		List<BakedQuad> quads = model.getQuads(null, side, 0);
-		if(quads==null||quads.isEmpty())//no quads for the specified side D:
-			quads = model.getQuads(null, null, 0);
-		if(quads==null||quads.isEmpty())//no quads at all D:
-			return null;
-		return new ResourceLocation(quads.get(0).getSprite().getIconName());
+		IBakedModel model = mc().getItemRenderer().getItemModelWithOverrides(stack, null, null);
+		return getSideTexture(model, side, null);
 	}
 
 	public static ResourceLocation getSideTexture(@Nonnull IBlockState state, EnumFacing side)
 	{
 		IBakedModel model = mc().getBlockRendererDispatcher().getModelForState(state);
-		List<BakedQuad> quads = model.getQuads(state, side, 0);
-		if(quads==null||quads.isEmpty())//no quads for the specified side D:
-			quads = model.getQuads(state, null, 0);
-		if(quads==null||quads.isEmpty())//no quads at all D:
-			return null;
-		return new ResourceLocation(quads.get(0).getSprite().getIconName());
+		return getSideTexture(model, side, state);
 	}
 
-	private static int invertRgb(int in)
-	{
-		int ret = in&(255<<8);
-		ret += (in >> 16)&255;
-		ret += (in&255)<<16;
-		return ret;
+	public static ResourceLocation getSideTexture(@Nonnull IBakedModel model, EnumFacing side, @Nullable IBlockState state) {
+		List<BakedQuad> quads = model.getQuads(state, side, Utils.RAND);
+		if(quads==null||quads.isEmpty())//no quads for the specified side D:
+			quads = model.getQuads(state, null, Utils.RAND);
+		if(quads==null||quads.isEmpty())//no quads at all D:
+			return null;
+		return quads.get(0).getSprite().getName();
 	}
 
 	public static int pulseRGBAlpha(int rgb, int tickrate, float min, float max)
@@ -1781,12 +1186,6 @@ public class ClientUtils
 
 	// The coordinates for each vertex of a quad
 	private static final float[][] quadCoords = new float[4][3];
-	// one diagonal of a quad. Used to calculate the normal of that quad
-	private static final Vector3f side1 = new Vector3f();
-	// and the other one
-	private static final Vector3f side2 = new Vector3f();
-	// and the normal of that quad
-	private static final Vector3f normal = new Vector3f();
 	// the brighnesses of the surrounding blocks. the first dimension indicates block (1) vs sky (0) light
 	// These are used to create different light direction vectors depending on the direction of a quads normal vector.
 	private static final int[][] neighbourBrightness = new int[2][6];
@@ -1853,17 +1252,17 @@ public class ClientUtils
 					quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+2]);
 				}
 				//generate the normal vector
-				side1.x = quadCoords[1][0]-quadCoords[3][0];
-				side1.y = quadCoords[1][1]-quadCoords[3][1];
-				side1.z = quadCoords[1][2]-quadCoords[3][2];
-				side2.x = quadCoords[2][0]-quadCoords[0][0];
-				side2.y = quadCoords[2][1]-quadCoords[0][1];
-				side2.z = quadCoords[2][2]-quadCoords[0][2];
-				Vector3f.cross(side1, side2, normal);
-				normal.normalise();
+				Vec3d side1 = new Vec3d(quadCoords[1][0]-quadCoords[3][0],
+				quadCoords[1][1]-quadCoords[3][1],
+				quadCoords[1][2]-quadCoords[3][2]);
+				Vec3d side2 = new Vec3d(quadCoords[2][0]-quadCoords[0][0],
+				quadCoords[2][1]-quadCoords[0][1],
+				quadCoords[2][2]-quadCoords[0][2]);
+				Vec3d normal = side1.crossProduct(side2);
+				normal = normal.normalize();
 				// calculate the final light values and do the rendering
-				int l1 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (localBrightness >> 16)&255);
-				int l2 = getLightValue(neighbourBrightness[1], normalizationFactors[1], localBrightness&255);
+				int l1 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (localBrightness >> 16)&255, normal);
+				int l2 = getLightValue(neighbourBrightness[1], normalizationFactors[1], localBrightness&255, normal);
 				for(int i = 0; i < 4; ++i)
 				{
 					renderer
@@ -1877,11 +1276,11 @@ public class ClientUtils
 		}
 	}
 
-	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness)
+	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vec3d normal)
 	{
 		//calculate the dot product between the required light vector and the normal of the quad
 		// quad brightness is proportional to this value, see https://github.com/ssloy/tinyrenderer/wiki/Lesson-2:-Triangle-rasterization-and-back-face-culling#flat-shading-render
-		float sideBrightness;
+		double sideBrightness;
 		byte type = 0;
 		if(normal.x > 0)
 		{
@@ -1942,7 +1341,7 @@ public class ClientUtils
 	//Taken from TESR
 	public static void setLightmapDisabled(boolean disabled)
 	{
-		GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE1);
 
 		if(disabled)
 		{
@@ -1953,30 +1352,31 @@ public class ClientUtils
 			GlStateManager.enableTexture2D();
 		}
 
-		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);
 	}
 
-	private static Optional<Boolean> lightmapState;
+	@Nullable
+	private static Boolean lightmapState;
 
 	public static void toggleLightmap(boolean pre, boolean disabled)
 	{
-		GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE1);
 		if(pre)
 		{
-			lightmapState = Optional.of(GL11.glIsEnabled(GL11.GL_TEXTURE_2D));
+			lightmapState = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 			if(disabled)
 				GlStateManager.disableTexture2D();
 			else
 				GlStateManager.enableTexture2D();
 		}
-		else if(lightmapState.isPresent())
+		else if(lightmapState!=null)
 		{
-			if(lightmapState.get())
+			if(lightmapState)
 				GlStateManager.enableTexture2D();
 			else
 				GlStateManager.disableTexture2D();
-			lightmapState = Optional.empty();
+			lightmapState = null;
 		}
-		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);
 	}
 }

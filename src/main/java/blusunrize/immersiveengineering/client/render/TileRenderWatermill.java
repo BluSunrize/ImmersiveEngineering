@@ -17,14 +17,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWatermill>
+public class TileRenderWatermill extends TileEntityRenderer<TileEntityWatermill>
 {
 	private static List<BakedQuad> quads;
 

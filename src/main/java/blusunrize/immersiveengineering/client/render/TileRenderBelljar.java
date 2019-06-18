@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBelljar>
+public class TileRenderBelljar extends TileEntityRenderer<TileEntityBelljar>
 {
 	private static HashMap<EnumFacing, List<BakedQuad>> quads = new HashMap<>();
 	private static HashMap<IBlockState, List<BakedQuad>> plantQuads = new HashMap<>();

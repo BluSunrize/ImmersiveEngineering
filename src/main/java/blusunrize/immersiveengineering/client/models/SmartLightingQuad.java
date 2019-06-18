@@ -8,7 +8,8 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.chunk.RenderChunkCache;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -16,8 +17,8 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumType;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ChunkCache;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.client.model.pipeline.*;
 
 import java.lang.reflect.Field;
@@ -68,7 +69,7 @@ public class SmartLightingQuad extends BakedQuad
 	@Override
 	public void pipe(IVertexConsumer consumer)
 	{
-		IBlockAccess world = null;
+		IWorldReader world = null;
 		BlockInfo info = null;
 		if(consumer instanceof VertexLighterFlat)
 		{
@@ -76,8 +77,6 @@ public class SmartLightingQuad extends BakedQuad
 			{
 				info = (BlockInfo)blockInfo.get(consumer);
 				world = info.getWorld();
-				if(world instanceof ChunkCache)
-					world = ((ChunkCache)world).world;
 				consumer = (IVertexConsumer)parent.get(consumer);
 			} catch(Throwable e)
 			{
@@ -100,7 +99,7 @@ public class SmartLightingQuad extends BakedQuad
 					if(format.getElement(e).getUsage()==EnumUsage.UV&&format.getElement(e).getType()==EnumType.SHORT)//lightmap is UV with 2 shorts
 					{
 						int brightness;
-						if(!ignoreLight&&world!=null&&!(world instanceof ChunkCache))
+						if(!ignoreLight&&world!=null)
 						{
 							BlockPos here = blockPos.add(relativePos[v][0], relativePos[v][1], relativePos[v][2]);
 							brightness = world.getCombinedLight(here, 0);

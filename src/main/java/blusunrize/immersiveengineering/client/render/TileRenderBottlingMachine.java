@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +32,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
-public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEntityBottlingMachine>
+public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBottlingMachine>
 {
 	@Override
 	public void render(TileEntityBottlingMachine te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
